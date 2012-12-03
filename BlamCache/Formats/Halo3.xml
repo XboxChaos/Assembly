@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<layouts>
+  <!-- Map header (minus version info) -->
+  <layout for="header">
+    <uint32 name="file size" offset="0x8" />
+    <uint32 name="index header address" offset="0x10" />
+    <uint32 name="virtual size" offset="0x18" />
+    <int16 name="type" offset="0x13C" />
+
+    <int32 name="string table count" offset="0x158" />
+    <int32 name="string table size" offset="0x15C" />
+    <int32 name="string index table offset" offset="0x160" />
+    <int32 name="string table offset" offset="0x164" />
+    
+    <asciiz name="internal name" offset="0x18C" />
+    <asciiz name="scenario name" offset="0x1B0" />
+
+    <int32 name="file table count" offset="0x2B4" />
+    <int32 name="file table offset" offset="0x2B8" />
+    <int32 name="file table size" offset="0x2BC" />
+    <int32 name="file index table offset" offset="0x2C0" />
+    
+    <uint32 name="virtual base address" offset="0x2E8" />
+    <uint32 name="xdk version" offset="0x2EC" />
+    <array name="partitions" offset="0x2F0" count="6" entrySize="0x8">
+      <uint32 name="load address" offset="0x0" />
+      <uint32 name="size" offset="0x4" />
+    </array>
+    <uint32 name="raw table offset" offset="0x470" />
+    <uint32 name="locale offset magic" offset="0x478" />
+    <uint32 name="string offset magic" offset="0x47C" />
+    <uint32 name="raw table size" offset="0x488" />
+    <uint32 name="virtual size" offset="0x490" />
+  </layout>
+
+  <!-- Index table header -->
+  <layout for="index header">
+    <int32 name="number of classes" offset="0x0" />
+    <uint32 name="class table address" offset="0x4" />
+    <int32 name="number of tags" offset="0x8" />
+    <uint32 name="tag table address" offset="0xC" />
+    <int32 name="number of important classes" offset="0x10" />
+    <uint32 name="important class table address" offset="0x14" />
+    <int32 name="magic" offset="0x24" />
+  </layout>
+
+  <!-- Class table entry -->
+  <layout for="class entry">
+    <int32 name="magic" offset="0x0" />
+    <int32 name="parent magic" offset="0x4" />
+    <int32 name="grandparent magic" offset="0x8" />
+    <uint32 name="identifier" offset="0xC" />
+  </layout>
+
+  <!-- Tag table entry -->
+  <layout for="tag entry">
+    <int16 name="class index" offset="0x0" />
+    <uint16 name="datum index salt" offset="0x2" />
+    <uint32 name="memory address" offset="0x4"/>
+  </layout>
+
+  <layout for="matg">
+    <array name="languages" offset="0x1C4" entrySize="0x44" count="12">
+      <uint32 name="string count" offset="0x0" />
+      <uint32 name="locale table size" offset="0x4" />
+      <uint32 name="locale index table offset" offset="0x8" />
+      <uint32 name="locale data index offset" offset="0xC" />
+    </array>
+  </layout>
+
+  <layout for="locale index table entry">
+    <uint32 name="unknown" offset="0x0" />
+    <uint32 name="offset" offset="0x4" />
+  </layout>
+
+  <!-- Scenario meta -->
+  <layout for="scnr">
+    <int32 name="number of script objects" offset="0x104" />
+    <uint32 name="script object table address" offset="0x108" />
+
+    <int32 name="script string table size" offset="0x430" />
+    <uint32 name="script string table address" offset="0x43C" />
+
+    <int32 name="number of scripts" offset="0x444" />
+    <uint32 name="script table address" offset="0x448" />
+
+    <int32 name="number of script globals" offset="0x450" />
+    <uint32 name="script global table address" offset="0x454" />
+
+    <int32 name="number of script expressions" offset="0x518" />
+    <uint32 name="script expression table address" offset="0x51C" />
+  </layout>
+
+  <layout for="script object entry">
+    <int32 name="name index" offset="0x0" />
+    <int16 name="type" offset="0x4" />
+    <int16 name="placement index" offset="0x6" />
+  </layout>
+
+  <layout for="script entry">
+    <int32 name="name index" offset="0x0" />
+    <int16 name="execution type" offset="0x4" />
+    <int16 name="return type" offset="0x6" />
+    <int32 name="first expression index" offset="0x8" />
+    <int32 name="number of parameters" offset="0xC" />
+    <uint32 name="address of parameter list" offset="0x10" />
+    <uint32 name="unknown" offset="0x14" />
+  </layout>
+
+  <layout for="script parameter entry">
+    <asciiz name="name" offset="0x0" />
+    <int16 name="type" offset="0x20" />
+    <uint16 name="unknown" offset="0x22" />
+  </layout>
+
+  <layout for="script global entry">
+    <asciiz name="name" offset="0x0" />
+    <int16 name="type" offset="0x20" />
+    <uint16 name="unknown" offset="0x22" />
+    <uint32 name="expression index" offset="0x24" />
+  </layout>
+
+  <layout for="script expression entry">
+    <uint16 name="datum index salt" offset="0x0" />
+    <uint16 name="opcode" offset="0x2" />
+    <int16 name="value type" offset="0x4" />
+    <int16 name="expression type" offset="0x6" />
+    <uint32 name="next expression index" offset="0x8" />
+    <uint32 name="string table offset" offset="0xC" />
+    <uint32 name="value" offset="0x10" />
+    <int16 name="source line" offset="0x14" />
+    <uint16 name="unknown" offset="0x16" />
+  </layout>
+</layouts>

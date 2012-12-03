@@ -1,0 +1,42 @@
+﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.PluginRevisionViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
+        Width="546" SizeToContent="Height" Title="Assembly - Plugin Revisions" ShowInTaskbar="False">
+    <Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}" VerticalAlignment="Top">
+        <Grid VerticalAlignment="Top">
+            <Image VerticalAlignment="Top" HorizontalAlignment="Left" Width="35" Margin="5,5,0,0" Source="{DynamicResource ExtryzeAccentLogo}" />
+            <TextBlock x:Name="lblTitle" Text="Plugin Revisions" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+
+            <Thumb 
+				x:Name="headerThumb" 
+				Opacity="0" 
+				Background="{x:Null}" 
+				Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="50" VerticalAlignment="Top"
+				/>
+
+            <Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnActionClose_Click">
+                <Vectors:CloseModule Width="34" Height="26"/>
+            </Button>
+
+            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+            
+            <StackPanel x:Name="content" Margin="0,40,0,0" VerticalAlignment="Top">
+                <TextBlock x:Name="lblDesc" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="45,12,45,0" FontFamily="{DynamicResource MetroFontRegular}" TextTrimming="CharacterEllipsis" Height="25" TextWrapping="Wrap" FontSize="14" 
+                           Text="Revision list of the Assembly Plugin '%1%'."/>
+
+                <Rectangle Margin="25,20,25,0" Height="1" Fill="#FF999999"/>
+
+                <StackPanel x:Name="revisionViewer" Orientation="Vertical" VerticalAlignment="Top" Margin="30,10,30,0">
+                    
+                </StackPanel>
+
+                <Button Content="OK" HorizontalAlignment="Right" Margin="0,20,40,6" Width="70" Click="btnActionClose_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
+

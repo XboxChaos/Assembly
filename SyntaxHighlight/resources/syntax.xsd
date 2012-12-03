@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="Syntax">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="HighlightWordsRule" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="HighlightLineRule" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="AdvancedHighlightRule" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		<xs:attribute name="name" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="HighlightWordsRule">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Words" type="xs:string"/>
+				<xs:group ref="options"/>
+			</xs:sequence>
+			<xs:attribute name="name" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="HighlightLineRule">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LineStart" type="xs:string"/>
+				<xs:group ref="options"/>
+			</xs:sequence>
+			<xs:attribute name="name" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="AdvancedHighlightRule">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Expression" type="xs:string"/>
+				<xs:group ref="options"/>
+			</xs:sequence>
+			<xs:attribute name="name" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:group name="options">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" name="IgnoreCase" type="xs:boolean"/>
+			<xs:element minOccurs="1" maxOccurs="1" name="Foreground" type="xs:string" />
+			<xs:element minOccurs="1" maxOccurs="1" name="FontWeight" type="xs:string" />
+			<xs:element minOccurs="1" maxOccurs="1" name="FontStyle" type="xs:string" />
+		</xs:sequence>
+	</xs:group>
+</xs:schema>

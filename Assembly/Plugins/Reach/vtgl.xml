@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Reach" baseSize="0x18">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="SnipeStyle/deadcanadian" version="2">Initial Research</revision>
+		<revision author="Lord Zedd" version="3">Completed research, refined plugin, done.</revision>
+	</revisions>
+	<comment title="Info">
+Header is the initial bytes of the embedded MVAR up to the end of the description and the 00 00 after it.
+MPVR idk.
+  </comment>
+	<reflexive name="Sandbox" offset="0x0" visible="true" entrySize="0x128">
+		<int32 name="Raw Header Size" offset="0x0" visible="true" />
+		<raw name="Raw Header Offset (With Magic)" offset="0xC" visible="true" size="0x4" />
+		<dataRef name="Raw Header" offset="0x0" visible="true" />
+		<int32 name="Raw MVAR Size" offset="0x14" visible="true" />
+		<raw name="Raw MVAR Offset (With Magic)" offset="0x20" visible="true" size="0x4" />
+		<dataRef name="Raw MVAR" offset="0x14" visible="true" />
+		<ascii name="Sandbox Filename" offset="0x28" visible="true" length="0x100" />
+	</reflexive>
+	<reflexive name="Megalo" offset="0xC" visible="true" entrySize="0x128">
+		<int32 name="Raw Header Size" offset="0x0" visible="true" />
+		<raw name="Raw Header Offset (With Magic)" offset="0xC" visible="true" size="0x4" />
+		<dataRef name="Raw Header" offset="0x0" visible="true" />
+		<int32 name="Raw MPVR Size" offset="0x14" visible="true" />
+		<raw name="Raw MPVR Offset (With Magic)" offset="0x20" visible="true" size="0x4" />
+		<dataRef name="Raw MPVR" offset="0x14" visible="true" />
+		<ascii name="Megalo Filename" offset="0x28" visible="true" length="0x100" />
+	</reflexive>
+</plugin>

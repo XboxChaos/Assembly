@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
+	
+	<Style x:Key="WindowActionButton" TargetType="Button"> 
+        <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource MetroFontSemiBold}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="OverridesDefaultStyle" Value="True"/> 
+		<Setter Property="Margin" Value="0"/> 
+		<Setter Property="Background" Value="{x:Null}" />
+		<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid x:Name="Grid">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"/>
+                        <ContentPresenter HorizontalAlignment="Center" Margin="-10" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" Value="{DynamicResource WindowActionHoverBrush}"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="true">
+							<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}"/>
+						</Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+	</Style>
+	
+</ResourceDictionary>

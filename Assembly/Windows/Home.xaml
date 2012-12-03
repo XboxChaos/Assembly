@@ -1,0 +1,132 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+		xmlns:CloseableTab="clr-namespace:CloseableTabItemDemo"
+        xmlns:Sidebar="clr-namespace:Assembly.Metro.Controls.Sidebar"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Assembly.Windows.Home"
+        Title="Home Window - Assembly" 
+        d:DesignHeight="700" d:DesignWidth="1200"
+        WindowStartupLocation="CenterScreen" AllowsTransparency="True" ResizeMode="CanResize" WindowStyle="None"
+        Background="{DynamicResource MainBackgroundBrush}" SnapsToDevicePixels="True" 
+        StateChanged="Window_StateChanged" IsVisibleChanged="Home_IsVisibleChanged"
+        PreviewKeyDown="Home_PreviewKeyDown"
+        Drop="HomeWindow_Drop" AllowDrop="True" PreviewDrop="Window_PreviewDrop_1">
+    <Border x:Name="borderFrame" BorderBrush="{DynamicResource ExtryzeAccentBrush}" BorderThickness="1,1,1,23">
+        <Grid>
+			<Grid x:Name="containerFrame">
+				<Grid x:Name="homeHeader" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="60">
+					<Image VerticalAlignment="Top" HorizontalAlignment="Left" Width="35" Margin="5,5,0,0" Source="{DynamicResource ExtryzeAccentLogo}" Opacity="0.98" />
+                    <TextBlock x:Name="lblTitle" Text="Start Page - Assembly" Foreground="{DynamicResource TextBrushSecondary}" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+		            
+					<Thumb 
+						x:Name="headerThumb" 
+						Opacity="0" 
+						Background="{x:Null}" 
+						Foreground="{x:Null}" Margin="0,0,0,0" Height="40" VerticalAlignment="Top"
+                        DragDelta="headerThumb_DragDelta"
+                        MouseDoubleClick="headerThumb_MouseDoubleClick"
+						/>
+					
+					<StackPanel x:Name="homeHeaderActionButtons" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Height="26" Margin="0,0,0,0">
+                        <Button x:Name="btnActionSupport" ToolTip="Support" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" d:LayoutOverrides="Height" Click="btnActionSupport_Click">
+                            <TextBlock Text="?" FontFamily="/Assembly;component/Fonts/#Segoe WP Semibold" FontSize="14" />
+                        </Button>
+
+                        <Button x:Name="btnActionMinimize" ToolTip="Minimize" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" d:LayoutOverrides="Height" Click="btnActionMinimize_Click">
+							<Vectors:MinimizeModule Width="34" Height="26"/>
+						</Button>
+						
+                        <Button x:Name="btnActionRestore" ToolTip="Restore" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" Click="btnActionRestore_Click">
+							<Vectors:RestoreModule Width="34" Height="26"/>
+						</Button>
+                        <Button x:Name="btnActionMaxamize" ToolTip="Maxamize" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" Click="btnActionMaxamize_Click">
+							<Vectors:MaxamizeModule Width="34" Height="26"/>
+						</Button>
+						
+                        <Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" Click="btnActionClose_Click">
+							<Vectors:CloseModule Width="34" Height="26"/>
+						</Button>
+					</StackPanel>
+					
+		            <Menu Margin="0,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="{x:Null}" Foreground="{x:Null}">
+		                <MenuItem Margin="5,0,0,0" Header="FILE" Foreground="White" FontFamily="{DynamicResource MetroFontLight}" BorderBrush="{x:Null}" FontSize="13.333">
+                            <MenuItem Header="Open Cache File" x:Name="menuOpenCacheFile" Click="menuOpenCacheFile_Click" />
+                            <MenuItem Header="Open Map Information" x:Name="menuOpenCacheInfomation" Click="menuOpenCacheInfomation_Click" />
+                            <MenuItem Header="Open Map Image" x:Name="menuOpenCacheImage" Click="menuOpenCacheImage_Click" />
+                            <Separator />
+                            <MenuItem Header="Exit" x:Name="menuCloseApplication" InputGestureText="Alt+F4" Click="menuCloseApplication_Click" />
+						</MenuItem>
+		                <MenuItem Margin="5,0,0,0" Header="EDIT" Foreground="White" FontFamily="{DynamicResource MetroFontLight}" BorderBrush="{x:Null}" FontSize="13.333">
+                            <MenuItem Header="Settings" x:Name="menuOpenSettings" Click="menuOpenSettings_Click" />
+                        </MenuItem>
+                        <MenuItem Margin="5,0,0,0" Header="VIEW" Foreground="White" FontFamily="{DynamicResource MetroFontLight}" BorderBrush="{x:Null}" FontSize="13.333">
+                            <MenuItem Header="Start Page" x:Name="menuViewStartPage" Click="menuViewStartPage_Click" />
+                            <MenuItem Header="Memory Manager" Name="menuMemoryManager" Click="menuMemoryManager_Click"/>
+                            <MenuItem Header="Patches" Name="menuPatches" Click="menuPatches_Click"/>
+                            <MenuItem Header="Network Poking" Name="menuNetworkPoking" Click="menuNetworkPoking_Click"/>
+                            <MenuItem Header="Plugin Generator" Name="menuPluginGeneration" Click="menuPluginGeneration_Click" />
+                        </MenuItem>
+                        <MenuItem Margin="5,0,0,0" Header="HELP" Foreground="White" FontFamily="{DynamicResource MetroFontLight}" BorderBrush="{x:Null}" FontSize="13.333">
+                            <MenuItem Header="Check for Updates" x:Name="menuHelpUpdater" Click="menuHelpUpdater_Click" />
+                            <Separator />
+                            <MenuItem Header="About Assembly" x:Name="menuHelpAbout" Click="menuHelpAbout_Click" />
+						</MenuItem>
+		            </Menu>
+		        </Grid>
+				<Grid x:Name="homeContent" Margin="0, 62, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition x:Name="XBDMSideBarCol" Width="0" /> <!-- Set to 275, for sidebar docking -->
+                    </Grid.ColumnDefinitions>
+                    
+                    <Grid Grid.Column="0" x:Name="tabContent">
+                        <TabControl x:Name="homeTabControl" Background="{x:Null}" Margin="0,0,25,0" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Padding="2" SelectionChanged="homeTabControl_SelectionChanged">
+                            <CloseableTab:CloseableTabItem Header="Start Page" />
+                            <TabItem Header="deadlock.map" />
+                            <TabItem Header="cyberdyne.map" />
+                            <TabItem Header="z00__testchamber.map" />
+                        </TabControl>
+                        
+                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="30" Margin="0,0,0,0">
+                            <StackPanel x:Name="SidebarButtons" Orientation="Vertical">
+                                <Sidebar:XBDMSidebarButton x:Name="xbdmSidebarButton" />
+                            </StackPanel>
+                        </Grid>
+                        
+                        <Grid x:Name="xbdmCoverContent" HorizontalAlignment="Right" Grid.Column="0" VerticalAlignment="Stretch" Margin="0,0,30,0" Width="275">
+                            
+                        </Grid>
+                    </Grid>
+                    <Grid x:Name="xbdmContent"  HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Stretch">
+                        
+                    </Grid>
+				</Grid>
+			</Grid>
+            
+        <TextBlock x:Name="Status"  Margin="5,0,0,-19" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="Ready..." Foreground="{DynamicResource TextBrushPrimary}" FontFamily="{DynamicResource MetroFontRegular}" />
+            
+            <Grid x:Name="maskingIWff" Visibility="Collapsed">
+                <Rectangle Fill="{DynamicResource HomeIWffBrush}" />
+                <MediaElement x:Name="mediaIWff" Volume="1" />
+                
+                <Button x:Name="btnIWff" Content="srsly guys?" Width="90" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,40,20" Click="btnIWff_Click" />
+            </Grid>
+            
+			<Grid Margin="-1, -1, -1, -23" x:Name="homeResizing">
+				<!--Resize-->
+                <!--Corner-->
+                <Vectors:ResizeModule x:Name="ResizeDropVector" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5" Cursor="SizeNWSE"/>
+                <Thumb x:Name="ResizeDrop" DragDelta="ResizeDrop_DragDelta" Opacity="0" Background="{x:Null}" Foreground="{x:Null}" Width="11" Height="11" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1" Cursor="SizeNWSE" />
+
+                <!--Side-->
+                <Thumb x:Name="ResizeRight" DragDelta="ResizeRight_DragDelta" Opacity="0" Background="{x:Null}" Foreground="{x:Null}" Width="8" Margin="0,27.333,0,11" HorizontalAlignment="Right" VerticalAlignment="Stretch" Cursor="SizeWE" />
+
+                <!--Bottom-->
+                <Thumb x:Name="ResizeBottom" DragDelta="ResizeBottom_DragDelta" Opacity="0" Background="{x:Null}" Foreground="{x:Null}" Height="8" Margin="0,0,11,0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Cursor="SizeNS" />
+			</Grid>
+
+            <Rectangle x:Name="OpacityMask"  Opacity="0.65" Fill="{DynamicResource HomeOpacityBrush}" Visibility="Collapsed" />
+		</Grid>
+    </Border>
+</Window>

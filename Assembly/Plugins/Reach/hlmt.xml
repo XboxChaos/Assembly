@@ -1,0 +1,442 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Reach" baseSize="0x220">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">Named some Variant stuff, and whatever else I might have did, probably not much.</revision>
+	</revisions>
+	<enum8 name="Invincibility Enum 1" offset="0xD0" visible="true">
+		<option name="True" value="0xFF" />
+	</enum8>
+	<enum8 name="Invincibility Enum 2" offset="0xE0" visible="true">
+		<option name="True" value="0xFF" />
+	</enum8>
+	<tagRef name="Model" offset="0x0" visible="true" />
+	<tagRef name="Collision" offset="0x10" visible="true" />
+	<tagRef name="JMAD" offset="0x20" visible="true" />
+	<tagRef name="Physics" offset="0x30" visible="true" />
+	<tagRef name="IMPO" offset="0x40" visible="true" />
+	<float32 name="Disappear Distance" offset="0x50" visible="true" />
+	<float32 name="Begin Fade Distance" offset="0x54" visible="true" />
+	<float32 name="L1" offset="0x58" visible="true" />
+	<float32 name="L2" offset="0x5C" visible="true" />
+	<float32 name="L3" offset="0x60" visible="true" />
+	<float32 name="L4" offset="0x64" visible="true" />
+	<float32 name="L5" offset="0x68" visible="true" />
+	<enum16 name="Shadow Fade Distance" offset="0x6C" visible="true">
+		<option name="Fade At Super High" value="0x0" />
+		<option name="Fade At High" value="0x1" />
+		<option name="Fade At Medium" value="0x2" />
+		<option name="Fade At Low" value="0x3" />
+		<option name="Fade Never" value="0x4" />
+	</enum16>
+	<int16 name="Unknown" offset="0x6E" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<reflexive name="Variants" offset="0x84" visible="true" entrySize="0x38">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<int32 name="Name" offset="0x0" visible="true" />
+		<int8 name="Unknown" offset="0x4" visible="true" />
+		<int8 name="Unknown" offset="0x8" visible="true" />
+		<int8 name="Unknown" offset="0xC" visible="true" />
+		<int8 name="Unknown" offset="0x10" visible="true" />
+		<reflexive name="Regions" offset="0x14" visible="true" entrySize="0x18">
+			<int32 name="Type (raw)" offset="0x0" visible="false" />
+			<int8 name="Parent Variant #" offset="0x4" visible="true" />
+			<reflexive name="Permutation" offset="0x8" visible="true" entrySize="0x24">
+				<int32 name="Permuation Name" offset="0x0" visible="true" />
+				<int8 name="Chunk #" offset="0x4" visible="true" />
+				<float32 name="Probability" offset="0x8" visible="true" />
+				<reflexive name="States" offset="0xC" visible="false" entrySize="0xC">
+					<int32 name="Unknown" offset="0x0" visible="true" />
+					<int16 name="Unknown" offset="0x4" visible="false" />
+					<int16 name="Unknown" offset="0x6" visible="false" />
+					<undefined name="Unknown" offset="0x8" visible="false" />
+				</reflexive>
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+			</reflexive>
+			<undefined name="Sort Order" offset="0x14" visible="false" />
+		</reflexive>
+		<reflexive name="Objects" offset="0x20" visible="true" entrySize="0x20">
+			<stringId name="Parent Marker" offset="0x0" visible="true" />
+			<int32 name="Parent Marker" offset="0x0" visible="true" />
+			<int32 name="Child Marker" offset="0x4" visible="true" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<tagRef name="Child Object" offset="0xC" visible="true" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+	</reflexive>
+	<reflexive name="Unknown 1" offset="0x90" visible="false" entrySize="0x4">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+	</reflexive>
+	<undefined name="Unknown" offset="0x9C" visible="false" />
+	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<undefined name="Unknown" offset="0xA4" visible="false" />
+	<reflexive name="Unknown 2" offset="0xA8" visible="true" entrySize="0x14">
+		<int32 name="Unknown" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Unknown" offset="0xC" visible="true" />
+		<int16 name="Unknown" offset="0x10" visible="true" />
+	</reflexive>
+	<reflexive name="Materials" offset="0xB4" visible="true" entrySize="0x14">
+		<int32 name="Material Name (stringID)" offset="0x0" visible="true" />
+		<int32 name="Material Type" offset="0x4" visible="true" />
+		<int16 name="Damage Section" offset="0x8" visible="true" />
+		<int32 name="Global Material Name (stringID)" offset="0xC" visible="true" />
+		<int16 name="Unknown" offset="0x10" visible="false" />
+	</reflexive>
+	<reflexive name="Health/Damage" offset="0xC0" visible="true" entrySize="0x10C">
+		<bitfield32 name="Flags" offset="0x0" visible="true">
+			<bit name="Takes Shield Damage For Children" index="0" />
+			<bit name="Takes Body Damage For Children" index="1" />
+			<bit name="Always Shields Friendly Damage" index="2" />
+			<bit name="Passes Area Damage To Children" index="3" />
+			<bit name="Parent Never Takes Body Damage For Children" index="4" />
+			<bit name="Only Damaged By Explosives" index="5" />
+			<bit name="Parent Never Takes Shield Damage For Children" index="6" />
+			<bit name="Cannot Die From Damage" index="7" />
+			<bit name="Passes Attached Damage To Riders" index="8" />
+		</bitfield32>
+		<stringId name="Global Indirect Material" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<int32 name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<float32 name="Max Vitality" offset="0x28" visible="true" />
+		<float32 name="Min Stun Damage" offset="0x2C" visible="true" />
+		<float32 name="Stun Time" offset="0x30" visible="true" />
+		<float32 name="Recharge Time" offset="0x34" visible="true" />
+		<float32 name="Recharge Fraction" offset="0x38" visible="true" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<float32 name="Max Shield Vitality" offset="0x7C" visible="true" />
+		<int32 name="Global Shield Material Name" offset="0x80" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x84" visible="false" />
+		<float32 name="Stun Time" offset="0x88" visible="false" />
+		<float32 name="Recharge Time" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<tagRef name="Shield Damaged Effect" offset="0x9C" visible="true" />
+		<tagRef name="Shield Depletion Effect" offset="0xAC" visible="true" />
+		<tagRef name="Shield Recharge Effect" offset="0xBC" visible="true" />
+		<reflexive name="Damage Sections" offset="0xCC" visible="true" entrySize="0x44">
+			<int32 name="Name (stringID)" offset="0x0" visible="true" />
+			<bitfield32 name="Flags" offset="0x4" visible="true">
+				<bit name="Absorbs Body Damage" index="0" />
+				<bit name="Takes Full Damage When Object Dies" index="1" />
+				<bit name="Cannot Die With Riders" index="2" />
+				<bit name="Takes Full Damage When Object Destroyed" index="3" />
+				<bit name="Restored On Ressurection" index="4" />
+				<bit name="unused" index="5" />
+				<bit name="unused" index="6" />
+				<bit name="Headshotable" index="7" />
+				<bit name="Ignores Shields" index="8" />
+			</bitfield32>
+			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
+			<reflexive name="Instant Responses" offset="0xC" visible="true" entrySize="0x90">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<undefined name="Unknown" offset="0x8" visible="false" />
+				<undefined name="Unknown" offset="0xC" visible="false" />
+				<undefined name="Unknown" offset="0x10" visible="false" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<tagRef name="Unknown" offset="0x18" visible="true" />
+				<tagRef name="Unknown" offset="0x28" visible="true" />
+				<tagRef name="Unknown" offset="0x38" visible="true" />
+				<undefined name="Unknown" offset="0x48" visible="false" />
+				<undefined name="Unknown" offset="0x4C" visible="false" />
+				<undefined name="Unknown" offset="0x50" visible="false" />
+				<undefined name="Unknown" offset="0x54" visible="false" />
+				<undefined name="Unknown" offset="0x58" visible="false" />
+				<undefined name="Unknown" offset="0x5C" visible="false" />
+				<undefined name="Unknown" offset="0x60" visible="false" />
+				<undefined name="Unknown" offset="0x64" visible="false" />
+				<undefined name="Unknown" offset="0x68" visible="false" />
+				<tagRef name="Unknown" offset="0x6C" visible="true" />
+				<undefined name="Unknown" offset="0x7C" visible="false" />
+				<undefined name="Unknown" offset="0x80" visible="false" />
+				<undefined name="Unknown" offset="0x84" visible="false" />
+				<undefined name="Unknown" offset="0x88" visible="false" />
+				<undefined name="Unknown" offset="0x8C" visible="false" />
+			</reflexive>
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+		</reflexive>
+		<reflexive name="Nodes" offset="0xD8" visible="false" entrySize="0x10">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<undefined name="Unknown" offset="0xE8" visible="false" />
+		<undefined name="Unknown" offset="0xEC" visible="false" />
+		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<reflexive name="Unknown 7" offset="0xF4" visible="false" entrySize="0x20">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<reflexive name="Unknown 8" offset="0x14" visible="false" entrySize="0x2C">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<undefined name="Unknown" offset="0x8" visible="false" />
+				<undefined name="Unknown" offset="0xC" visible="false" />
+				<undefined name="Unknown" offset="0x10" visible="false" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
+				<undefined name="Unknown" offset="0x28" visible="false" />
+			</reflexive>
+		</reflexive>
+		<reflexive name="Unknown 8" offset="0x100" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</reflexive>
+	</reflexive>
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<undefined name="Unknown" offset="0xDC" visible="false" />
+	<reflexive name="Targets" offset="0xE0" visible="true" entrySize="0xB4">
+		<int32 name="Unknown" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<int32 name="Unknown" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<reflexive name="Unknown 6" offset="0x1C" visible="false" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown 7" offset="0x28" visible="false" entrySize="0x4">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+		</reflexive>
+		<tagRef name="Unknown" offset="0x34" visible="true" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<tagRef name="Unknown" offset="0x48" visible="true" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<tagRef name="Unknown" offset="0x5C" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<reflexive name="Unknown 8" offset="0x84" visible="false" entrySize="0xB0">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<tagRef name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<tagRef name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<tagRef name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<tagRef name="Unknown" offset="0x48" visible="false" />
+			<reflexive name="Unknown 9" offset="0x58" visible="false" entrySize="0x8">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+			</reflexive>
+			<reflexive name="Unknown 10" offset="0x64" visible="false" entrySize="0x10">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<undefined name="Unknown" offset="0x8" visible="false" />
+				<undefined name="Unknown" offset="0xC" visible="false" />
+			</reflexive>
+			<undefined name="Unknown" offset="0x70" visible="false" />
+			<undefined name="Unknown" offset="0x74" visible="false" />
+			<undefined name="Unknown" offset="0x78" visible="false" />
+			<tagRef name="Unknown" offset="0x7C" visible="false" />
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<reflexive name="Unknown 11" offset="0x90" visible="false" entrySize="0x4">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+			</reflexive>
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<undefined name="Unknown" offset="0xA0" visible="false" />
+			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<undefined name="Unknown" offset="0xA8" visible="false" />
+			<undefined name="Unknown" offset="0xAC" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown 9" offset="0x90" visible="false" entrySize="0x10">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown 10" offset="0x9C" visible="false" entrySize="0x20">
+			<tagRef name="Unknown" offset="0x0" visible="false" />
+			<tagRef name="Unknown" offset="0x10" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+	</reflexive>
+	<reflexive name="Unknown 6" offset="0xEC" visible="false" entrySize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+	</reflexive>
+	<reflexive name="Unknown 7" offset="0xF8" visible="false" entrySize="0x10">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
+		<int32 name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Unknown" offset="0xC" visible="false" />
+	</reflexive>
+	<int16 name="Unknown" offset="0x104" visible="false" />
+	<reflexive name="Unknown 8" offset="0x108" visible="false" entrySize="0x24">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+	</reflexive>
+	<reflexive name="Unknown 9" offset="0x114" visible="false" entrySize="0x28">
+		<int8 name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+	</reflexive>
+	<reflexive name="Variants" offset="0x120" visible="true" entrySize="0x14">
+		<int32 name="Type (raw)" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Objects" offset="0x8" visible="true" entrySize="0x8">
+			<int32 name="Object" offset="0x0" visible="true" />
+			<stringId name="Object (as string)" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x4" visible="false" />
+		</reflexive>
+	</reflexive>
+	<reflexive name="Nodes" offset="0x12C" visible="true" entrySize="0x5C">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<int16 name="Parent (Index)" offset="0x4" visible="true" />
+		<int16 name="First Child (Index)" offset="0x6" visible="true" />
+		<int16 name="Next Sibling (Index)" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<float32 name="X" offset="0xC" visible="true" />
+		<float32 name="Y" offset="0x10" visible="true" />
+		<float32 name="Z" offset="0x14" visible="true" />
+		<float32 name="i" offset="0x18" visible="true" />
+		<float32 name="j" offset="0x1C" visible="true" />
+		<float32 name="k" offset="0x20" visible="true" />
+		<float32 name="w" offset="0x24" visible="true" />
+		<float32 name="Scale" offset="0x28" visible="true" />
+		<float32 name="X Skew-x" offset="0x2C" visible="true" />
+		<float32 name="Y Skew-x" offset="0x30" visible="true" />
+		<float32 name="Z Skew-x" offset="0x34" visible="true" />
+		<float32 name="X Skew-y" offset="0x38" visible="true" />
+		<float32 name="Y Skew-y" offset="0x3C" visible="true" />
+		<float32 name="Z Skew-y" offset="0x40" visible="true" />
+		<float32 name="X Skew-z" offset="0x44" visible="true" />
+		<float32 name="Y Skew-z" offset="0x48" visible="true" />
+		<float32 name="Z Skew-z" offset="0x4C" visible="true" />
+		<float32 name="X Center" offset="0x50" visible="true" />
+		<float32 name="Y Center" offset="0x54" visible="true" />
+		<float32 name="Z Center" offset="0x58" visible="true" />
+	</reflexive>
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<tagRef name="Unknown" offset="0x13C" visible="false" />
+	<tagRef name="Unknown" offset="0x14C" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<undefined name="Unknown" offset="0x164" visible="false" />
+	<undefined name="Unknown" offset="0x168" visible="false" />
+	<undefined name="Unknown" offset="0x16C" visible="false" />
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<undefined name="Unknown" offset="0x1C0" visible="false" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<reflexive name="Unknown 12" offset="0x1CC" visible="true" entrySize="0x8">
+		<int32 name="Type (raw)" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="true" />
+	</reflexive>
+	<reflexive name="Unknown 13" offset="0x1D8" visible="false" entrySize="0x8">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+	</reflexive>
+	<reflexive name="Unknown 14" offset="0x1E4" visible="false" entrySize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+	</reflexive>
+	<tagRef name="Unknown" offset="0x1F0" visible="true" />
+	<tagRef name="Unknown" offset="0x200" visible="true" />
+	<undefined name="Unknown" offset="0x210" visible="false" />
+	<undefined name="Unknown" offset="0x214" visible="false" />
+	<undefined name="Unknown" offset="0x218" visible="false" />
+	<undefined name="Unknown" offset="0x21C" visible="false" />
+</plugin>
