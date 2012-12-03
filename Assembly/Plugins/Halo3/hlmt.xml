@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo3" baseSize="0x188">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="-DeToX-" version="1">Created layout of plugin</revision>
+		<revision author="-DeToX-" version="2">Named Some Values...</revision>
+		<revision author="Halodu03de" version="3">added chunk code</revision>
+	</revisions>
+	<tagRef name="Model" offset="0x0" visible="true" />
+	<tagRef name="Collision Model" offset="0x10" visible="true" />
+	<tagRef name="Animation" offset="0x20" visible="true" />
+	<tagRef name="Physics Model" offset="0x30" visible="true" />
+	<float32 name="Dissapear Distance" offset="0x40" visible="true" />
+	<float32 name="Begin Fade Distance" offset="0x44" visible="true" />
+	<float32 name="Reduce To L1" offset="0x48" visible="true" />
+	<float32 name="Reduce To L2" offset="0x4C" visible="true" />
+	<float32 name="Reduce To L3" offset="0x50" visible="true" />
+	<float32 name="Reduce To L4" offset="0x54" visible="true" />
+	<float32 name="Reduce To L5" offset="0x58" visible="true" />
+	<enum16 name="Spawn Type" offset="0x5C" visible="true">
+		<option name="Fade At Super High Detail Level" value="0x0" />
+		<option name="Fade At High Detail Level" value="0x1" />
+		<option name="Fade At Medium Detail Level" value="0x2" />
+		<option name="Fade At Low Detail Level" value="0x3" />
+		<option name="Fade At Super Low Detail Level" value="0x4" />
+		<option name="Fade Never" value="0x5" />
+	</enum16>
+	<reflexive name="Variants" offset="0x64" visible="true" entrySize="0x38">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<float32 name="Type" offset="0x0" visible="true" />
+		<reflexive name="Regions" offset="0x14" visible="true" entrySize="0x18">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<uint8 name="Parent Variant #" offset="0x4" visible="true" />
+			<reflexive name="Permutation" offset="0x8" visible="true" entrySize="0x24">
+				<stringId name="Unknown" offset="0x0" visible="false" />
+				<int32 name="Unknown" offset="0x0" visible="false" />
+				<bitfield32 name="Flags" offset="0x4" visible="true">
+					<bit name="Copy States To All Permutations" index="0" />
+				</bitfield32>
+				<float32 name="Probability" offset="0x8" visible="true" />
+				<reflexive name="States" offset="0xC" visible="true" entrySize="0x20">
+					<stringId name="Name" offset="0x0" visible="true" />
+					<bitfield16 name="Property Flags" offset="0x4" visible="true">
+						<bit name="Blurred" index="0" />
+						<bit name="Hella Blurred" index="1" />
+						<bit name="Shielded" index="2" />
+					</bitfield16>
+					<enum16 name="State" offset="0x6" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Minor Damage" value="0x1" />
+						<option name="Medium Damage" value="0x2" />
+						<option name="Major Damage" value="0x3" />
+						<option name="Destroyed" value="0x4" />
+					</enum16>
+					<tagRef name="Looping Effect" offset="0x8" visible="true" />
+					<stringId name="Looping Effect Marker Name" offset="0x18" visible="true" />
+					<float32 name="Initial Probability" offset="0x1C" visible="true" />
+				</reflexive>
+			</reflexive>
+			<enum32 name="Sort Order" offset="0x10" visible="true">
+				<option name="No Sorting" value="0x0" />
+				<option name="-5 (Closest)" value="0x1" />
+				<option name="-4" value="0x2" />
+				<option name="-3" value="0x3" />
+				<option name="-2" value="0x4" />
+				<option name="-1" value="0x5" />
+				<option name="0 (Same As Model)" value="0x6" />
+				<option name="1" value="0x7" />
+				<option name="2" value="0x8" />
+				<option name="3" value="0x9" />
+				<option name="4" value="0xA" />
+				<option name="5 (Farthest)" value="0xB" />
+			</enum32>
+		</reflexive>
+		<uint32 name="Chunk Count" offset="0x20" visible="true" />
+		<uint32 name="Offset" offset="0x24" visible="true" />
+		<uint32 name="Null" offset="0x28" visible="false" />
+		<reflexive name="Objects" offset="0x20" visible="true" entrySize="0x1C">
+			<stringId name="Parent Marker" offset="0x0" visible="true" />
+			<int32 name="Parent Marker" offset="0x0" visible="true" />
+			<float32 name="Child Marker" offset="0x4" visible="true" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<tagRef name="Child Object" offset="0xC" visible="true" />
+		</reflexive>
+		<tagRef name="Dialogue" offset="0x30" visible="true" />
+	</reflexive>
+	<reflexive name="Materials" offset="0x7C" visible="false" entrySize="0x10">
+		<float32 name="Material Name (stringID)" offset="0x0" visible="true" />
+		<int32 name="Material Type" offset="0x4" visible="true" />
+		<int32 name="Damage Section" offset="0x8" visible="true" />
+		<float32 name="Global Material Name (stringID)" offset="0xC" visible="true" />
+	</reflexive>
+	<reflexive name="Health/Damage Properties" offset="0x88" visible="true" entrySize="0xC4">
+		<bitfield32 name="Flags" offset="0x0" visible="true">
+			<bit name="Takes Shield Damage For Children" index="0" />
+			<bit name="Takes Body Damage For Children" index="1" />
+			<bit name="Always Shields Friendly Damage" index="2" />
+			<bit name="Passes Area Damage To Children" index="3" />
+			<bit name="Parent Never Takes Body Damage For Children" index="4" />
+			<bit name="Only Damaged By Explosives" index="5" />
+			<bit name="Parent Never Takes Shield Damage For Children" index="6" />
+			<bit name="Cannot Die From Damage" index="7" />
+			<bit name="Passes Attached Damage To Riders" index="8" />
+		</bitfield32>
+		<float32 name="Global Indirect Material Name (stringID)" offset="0x4" visible="true" />
+		<int16 name="Indirect Damage Section" offset="0x8" visible="true" />
+		<enum16 name="Collision Damage Reporting Type" offset="0x10" visible="true">
+			<option name="The Guardians" value="0x0" />
+			<option name="Falling Damage" value="0x1" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Edamage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
+			<option name="Magnum Pistol" value="0x5" />
+			<option name="Plasma Pistol" value="0x6" />
+			<option name="Needler" value="0x7" />
+			<option name="Smg" value="0x8" />
+			<option name="Plasma Rifle" value="0x9" />
+			<option name="Battle Rifle" value="0xA" />
+			<option name="carbine" value="0xB" />
+			<option name="Shotgun" value="0xC" />
+			<option name="Sniper Rifle" value="0xD" />
+			<option name="Beam Rifle" value="0xE" />
+			<option name="Rocket Launcher" value="0xF" />
+			<option name="Flak Cannon" value="0x10" />
+			<option name="Brute shot" value="0x11" />
+			<option name="Disintegrator" value="0x12" />
+			<option name="Brute Plasma Rifle" value="0x13" />
+			<option name="Energy sword" value="0x14" />
+			<option name="Frag Grenade" value="0x15" />
+			<option name="Plasma Grenade" value="0x16" />
+			<option name="Flasg Melee Damage" value="0x17" />
+			<option name="Bomb Melee Damage" value="0x18" />
+			<option name="Bomb Explosion Damage" value="0x19" />
+			<option name="Ball Melee Damage" value="0x1A" />
+			<option name="Human Turret" value="0x1B" />
+			<option name="Plasma Turret" value="0x1C" />
+			<option name="Banshee" value="0x1D" />
+			<option name="Ghost" value="0x1E" />
+			<option name="Mongoose" value="0x1E" />
+			<option name="Scorpion" value="0x1F" />
+			<option name="Spectre Driver" value="0x20" />
+			<option name="Spectre Gunner" value="0x21" />
+			<option name="Warthog Driver" value="0x22" />
+			<option name="Warthog Gunner" value="0x23" />
+			<option name="Wraith" value="0x24" />
+			<option name="Tank" value="0x25" />
+			<option name="Sentinel beam" value="0x26" />
+			<option name="Sentinel Rpg" value="0x27" />
+			<option name="Teleporter" value="0x28" />
+		</enum16>
+		<enum16 name="Response Damage Reporting Type" offset="0x12" visible="true">
+			<option name="The Guardians" value="0x0" />
+			<option name="Falling Damage" value="0x1" />
+			<option name="Generic Collision Damage" value="0x2" />
+			<option name="Generic Melee Edamage" value="0x3" />
+			<option name="Generic Explosion" value="0x4" />
+			<option name="Magnum Pistol" value="0x5" />
+			<option name="Plasma Pistol" value="0x6" />
+			<option name="Needler" value="0x7" />
+			<option name="Smg" value="0x8" />
+			<option name="Plasma Rifle" value="0x9" />
+			<option name="Battle Rifle" value="0xA" />
+			<option name="carbine" value="0xB" />
+			<option name="Shotgun" value="0xC" />
+			<option name="Sniper Rifle" value="0xD" />
+			<option name="Beam Rifle" value="0xE" />
+			<option name="Rocket Launcher" value="0xF" />
+			<option name="Flak Cannon" value="0x10" />
+			<option name="Brute shot" value="0x11" />
+			<option name="Disintegrator" value="0x12" />
+			<option name="Brute Plasma Rifle" value="0x13" />
+			<option name="Energy sword" value="0x14" />
+			<option name="Frag Grenade" value="0x15" />
+			<option name="Plasma Grenade" value="0x16" />
+			<option name="Flasg Melee Damage" value="0x17" />
+			<option name="Bomb Melee Damage" value="0x18" />
+			<option name="Bomb Explosion Damage" value="0x19" />
+			<option name="Ball Melee Damage" value="0x1A" />
+			<option name="Human Turret" value="0x1B" />
+			<option name="Plasma Turret" value="0x1C" />
+			<option name="Banshee" value="0x1D" />
+			<option name="Ghost" value="0x1E" />
+			<option name="Mongoose" value="0x1E" />
+			<option name="Scorpion" value="0x1F" />
+			<option name="Spectre Driver" value="0x20" />
+			<option name="Spectre Gunner" value="0x21" />
+			<option name="Warthog Driver" value="0x22" />
+			<option name="Warthog Gunner" value="0x23" />
+			<option name="Wraith" value="0x24" />
+			<option name="Tank" value="0x25" />
+			<option name="Sentinel beam" value="0x26" />
+			<option name="Sentinel Rpg" value="0x27" />
+			<option name="Teleporter" value="0x28" />
+		</enum16>
+		<float32 name="Max Vitality" offset="0x28" visible="true" />
+		<float32 name="Min Stun Damage" offset="0x2C" visible="true" />
+		<float32 name="Stun Time" offset="0x30" visible="true" />
+		<float32 name="Recharge Time" offset="0x34" visible="true" />
+		<float32 name="Recharge Fraction" offset="0x38" visible="true" />
+		<tagRef name="Shield Damaged FP Shader" offset="0x5C" visible="true" />
+		<tagRef name="Shield Damaged Shader" offset="0x6C" visible="true" />
+		<float32 name="Max Shielf Vitality" offset="0x7C" visible="true" />
+		<float32 name="Global Shield Material Name (stringID)" offset="0x80" visible="true" />
+		<float32 name="Min Stun Damage" offset="0x84" visible="true" />
+		<float32 name="Stun Time" offset="0x88" visible="true" />
+		<float32 name="Shield Recharge Time" offset="0x8C" visible="true" />
+		<float32 name="Shield Damaged Threshold" offset="0x90" visible="true" />
+		<tagRef name="Shield Damaged Effect" offset="0x94" visible="true" />
+		<tagRef name="Shield Depleted Effect" offset="0xA4" visible="true" />
+		<tagRef name="Shield Recharging Effect" offset="0xB4" visible="true" />
+		<reflexive name="Damage Sections" offset="0xC4" visible="true" entrySize="0x44">
+			<float32 name="Name (stringID)" offset="0x0" visible="true" />
+			<bitfield32 name="Flags" offset="0x4" visible="true">
+				<bit name="Absorbs Body Damage" index="0" />
+				<bit name="Takes Full Damage When Object Dies" index="1" />
+				<bit name="Cannot Die With Riders" index="2" />
+				<bit name="Takes Full Damage When Object Destroyed" index="3" />
+				<bit name="Restored On Ressurection" index="4" />
+				<bit name="unused" index="5" />
+				<bit name="unused" index="6" />
+				<bit name="Headshotable" index="7" />
+				<bit name="Ignores Shields" index="8" />
+			</bitfield32>
+			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
+			<reflexive name="Instant Responses" offset="0xC" visible="true" entrySize="0x88">
+				<enum16 name="Response Type" offset="0x0" visible="true">
+					<option name="Receives All Damage" value="0x0" />
+					<option name="Receives Area Effect Damage" value="0x1" />
+					<option name="Receives Local Damage" value="0x2" />
+				</enum16>
+				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Destroy One Of Group" value="0x1" />
+					<option name="Destroy Entire Group" value="0x2" />
+					<option name="Loosen One Of Group" value="0x3" />
+					<option name="Loosen Entire Group" value="0x4" />
+				</enum16>
+				<bitfield32 name="Flags" offset="0x4" visible="true">
+					<bit name="Kills Object" index="0" />
+					<bit name="Inhibits Melee Attack" index="1" />
+					<bit name="Inhibits Weapon Attack" index="2" />
+					<bit name="Inhibits Walking" index="3" />
+					<bit name="Forces Drop Weapon" index="4" />
+					<bit name="Kills Weapon Primary Trigger" index="5" />
+					<bit name="Kills Weapon Secondary Trigger" index="6" />
+					<bit name="Light Damage Left Turn" index="7" />
+					<bit name="Major Damage Left Turn" index="8" />
+					<bit name="Light Damage Right Turn" index="9" />
+					<bit name="Major Damage Right Turn" index="10" />
+					<bit name="Light Damage Engine" index="11" />
+					<bit name="Major Damage Engine" index="12" />
+					<bit name="Kills Object (No Player Solo)" index="13" />
+					<bit name="Causes Detonation" index="14" />
+					<bit name="Destory All Group Constraints" index="15" />
+					<bit name="Kills Variant Objects" index="16" />
+					<bit name="Force Unattached Effects" index="17" />
+					<bit name="Fires Under Threshold" index="18" />
+					<bit name="Triggers Special Death" index="19" />
+					<bit name="Only On Special Death" index="20" />
+					<bit name="Only NOT on Special Death" index="21" />
+				</bitfield32>
+				<float32 name="Damage Threshold" offset="0x8" visible="true" />
+				<tagRef name="Transition Effect" offset="0x4" visible="true" />
+				<tagRef name="Transition Damage Effect" offset="0xC" visible="true" />
+				<float32 name="Region (stringID)" offset="0x1C" visible="true" />
+				<enum16 name="New State" offset="0x20" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
+				<int16 name="Runtime Region Index" offset="0x22" visible="true" />
+				<float32 name="Effect Marker Name (stringID)" offset="0x24" visible="true" />
+				<float32 name="Damage Effect Marker Name (stringID)" offset="0x28" visible="true" />
+				<float32 name="Response Delay" offset="0x2C" visible="true" />
+				<tagRef name="Delay Effect" offset="0x28" visible="true" />
+				<float32 name="Delay Effect Marker Name (stringID)" offset="0x38" visible="true" />
+				<float32 name="Contraint/Group Name (stringID)" offset="0x3C" visible="true" />
+				<float32 name="Ejecting Seat Label (StringID)" offset="0x40" visible="true" />
+				<float32 name="Skip Fraction" offset="0x44" visible="true" />
+				<float32 name="Destroyed Child Object Marker Name (stringID)" offset="0x48" visible="true" />
+				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" />
+			</reflexive>
+		</reflexive>
+	</reflexive>
+	<reflexive name="Targets" offset="0x94" visible="false" entrySize="0x20">
+		<float32 name="Marker Name (stringID)" offset="0x0" visible="true" />
+		<float32 name="Size" offset="0x4" visible="true" />
+		<float32 name="Cone Angle" offset="0x8" visible="false" />
+		<int16 name="Damage Section #" offset="0xC" visible="true" />
+		<int16 name="Variant #" offset="0xE" visible="true" />
+		<float32 name="Targeting Relevance" offset="0x10" visible="true" />
+		<bitfield32 name="Flags" offset="0x18" visible="true">
+			<bit name="Locked By Human Tracking" index="0" />
+			<bit name="Locked By Plasma Tracking" index="1" />
+			<bit name="Headshot" index="2" />
+			<bit name="Vulnerable" index="4" />
+			<bit name="Always Locked By Plasma Tracking" index="6" />
+		</bitfield32>
+		<float32 name="Lock-On Distance" offset="0x1C" visible="true" />
+	</reflexive>
+	<reflexive name="Model Variations" offset="0xA0" visible="false" entrySize="0xB">
+		<float32 name="Type (stringID)" offset="0x0" visible="true" />
+		<reflexive name="Permutation" offset="0x3" visible="false" entrySize="0x8">
+			<float32 name="Variation (stringID)" offset="0x0" visible="true" />
+		</reflexive>
+	</reflexive>
+	<reflexive name="Nodes" offset="0xAC" visible="false" entrySize="0x5C">
+		<float32 name="Name (stringID)" offset="0x0" visible="true" />
+		<int16 name="Parent (Index)" offset="0x4" visible="true" />
+		<int16 name="First Child (Index)" offset="0x6" visible="true" />
+		<int16 name="Next Sibling (Index)" offset="0x8" visible="true" />
+		<float32 name="Y" offset="0xC" visible="true" />
+		<float32 name="X" offset="0x10" visible="true" />
+		<float32 name="Z" offset="0x14" visible="true" />
+		<float32 name="i" offset="0x18" visible="true" />
+		<float32 name="j" offset="0x1C" visible="true" />
+		<float32 name="k" offset="0x20" visible="true" />
+		<float32 name="w" offset="0x24" visible="true" />
+		<float32 name="Scale Factor" offset="0x28" visible="true" />
+		<float32 name="Y (Leave Child)" offset="0x50" visible="true" />
+		<float32 name="X (Leave Child)" offset="0x54" visible="true" />
+		<float32 name="Z (Leave Child)" offset="0x58" visible="true" />
+		<float32 name="Scale Factor" offset="0x28" visible="true" />
+		<float32 name="Y (Leave Child)" offset="0x50" visible="true" />
+		<float32 name="X (Leave Child)" offset="0x54" visible="true" />
+		<float32 name="Z (Leave Child)" offset="0x58" visible="true" />
+	</reflexive>
+	<reflexive name="Model Object Data" offset="0xBC" visible="false" entrySize="0x4">
+		<enum16 name="Type" offset="0x0" visible="true" />
+		<float32 name="X" offset="0x4" visible="true" />
+		<float32 name="Y" offset="0x8" visible="true" />
+		<float32 name="Z" offset="0xC" visible="true" />
+		<float32 name="Radius" offset="0x10" visible="true" />
+	</reflexive>
+	<tagRef name="Primary Dialog" offset="0xC8" visible="true" />
+	<tagRef name="Secondary Dialog" offset="0xD8" visible="true" />
+	<bitfield32 name="Flags" offset="0xE8" visible="true">
+		<bit name="Active Camo Always On" index="0" />
+		<bit name="Active Camo Always Merge" index="1" />
+		<bit name="Active Camo Never Merge" index="2" />
+	</bitfield32>
+	<float32 name="Default Dialogue Effect (stringID)" offset="0xEC" visible="true" />
+	<bitfield32 name="Runtime Flags" offset="0xF0" visible="true">
+		<bit name="Contains Run-Time Nodes" index="0" />
+	</bitfield32>
+	<tagRef name="Hologram Shader" offset="0x13C" visible="true" />
+	<float32 name="Hologram Control Function (stringID)" offset="0x14C" visible="true" />
+	<tagRef name="Sheild Impact 3p" offset="0x168" visible="false" />
+	<tagRef name="Shield Impact fp" offset="0x178" visible="true" />
+</plugin>

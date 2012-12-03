@@ -1,0 +1,82 @@
+﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.ViewValueAs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
+        Width="740" Height="580" ShowInTaskbar="False" Title="Assembly - About">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assembly;component/Metro/Controls/PageTemplates/Games/Components/MetaComponents/ComponentDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border Background="#FF2E2E31" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
+        <Grid>
+            <Grid>
+                <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+                <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="80" Background="#FF424244" />
+
+                <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="40" Margin="0,40,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="lblOffset" Margin="20,0,0,0" Text="Meta Offset:" Style="{DynamicResource GenericTextblock}" Foreground="White" VerticalAlignment="Center" />
+                        <TextBox x:Name="txtOffset" Margin="10,0,0,0" Padding="0,2,0,0" Width="250" Text="" VerticalAlignment="Center" KeyDown="txtOffset_KeyDown" />
+
+                        <Button x:Name="btnDown" Content="&lt;" Width="20" Margin="2,0,0,0" Height="25" Click="btnDown_Click" />
+                        <Button x:Name="btnUp" Content="&gt;" Width="20" Margin="2,0,0,0" Height="25" Click="btnUp_Click" />
+
+                        <Button x:Name="btnRefresh" Content="Refresh" Width="60" Margin="10,0,0,0" Height="25" Click="btnRefresh_Click" />
+                        <Button x:Name="btnReset" Content="Reset" Width="60" Margin="10,0,0,0" Height="25" Click="btnReset_Click" />
+                    </StackPanel>
+                </Grid>
+                
+                <Button x:Name="btnClose" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="60" Margin="0,0,10,5" Click="btnClose_Click" />
+                
+                <Image VerticalAlignment="Top" HorizontalAlignment="Left" Width="35" Margin="5,5,0,0" Source="{DynamicResource ExtryzeAccentLogo}" />
+                <TextBlock x:Name="lblTitle" Text="Meta Value Viewer - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+
+                <ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,80,0,35"
+                      VirtualizingStackPanel.IsVirtualizing="False" ScrollViewer.CanContentScroll="False"
+                      Padding="15,10,5,10">
+                    <ListBox.Template>
+                        <ControlTemplate>
+                            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListBox.Template>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                                      ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                      ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                      HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                      SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
+
+                <Thumb 
+							x:Name="headerThumb" 
+							Opacity="0" 
+							Background="{x:Null}" 
+							Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="48" VerticalAlignment="Top"
+							/>
+            </Grid>
+
+            <Grid Margin="-1, -1, -1, -23">
+                <!--Resize-->
+                <Vectors:ResizeModule x:Name="ResizeDropVector" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,5,5" Cursor="SizeNWSE"/>
+                <Thumb x:Name="ResizeDrop" DragDelta="ResizeDrop_DragDelta" Opacity="0" Background="{x:Null}" Foreground="{x:Null}" Width="11" Height="11" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,1,1" Cursor="SizeNWSE" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

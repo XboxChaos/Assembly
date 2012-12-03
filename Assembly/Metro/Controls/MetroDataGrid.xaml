@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="DataGridColumnHeaderGripper" TargetType="Thumb">
+        <Setter Property="Width" Value="18"/>
+        <Setter Property="Background" Value="#252526"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border Padding="{TemplateBinding Padding}" Background="Transparent" BorderBrush="#3e3e45">
+                        <Rectangle HorizontalAlignment="Center" Width="1" Fill="{TemplateBinding Background}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type DataGridCell}">
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid Background="Transparent">
+                        <ContentPresenter
+                            Margin="{TemplateBinding Padding}"
+                            Content="{TemplateBinding ContentControl.Content}"
+                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type DataGridRow}">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridRow}">
+                    <Grid>
+                        <Border x:Name="BorderOutline" BorderThickness="2,1,1,1" />
+                        <Border x:Name="BorderInline" BorderThickness="0" />
+                        <Grid Background="Black" Opacity="0" />
+                        <SelectiveScrollingGrid>
+                            <SelectiveScrollingGrid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </SelectiveScrollingGrid.ColumnDefinitions>
+                            <SelectiveScrollingGrid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </SelectiveScrollingGrid.RowDefinitions>
+                            <DataGridCellsPresenter
+                                ItemsPanel="{TemplateBinding ItemsControl.ItemsPanel}"
+                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"
+                                Grid.Column="1" />
+                            <DataGridDetailsPresenter
+                                Visibility="{TemplateBinding DataGridRow.DetailsVisibility}"
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                SelectiveScrollingGrid.SelectiveScrollingOrientation="Both" />
+                            <DataGridRowHeader
+                                Visibility="Visible"
+                                Grid.RowSpan="2"
+                                SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" />
+                        </SelectiveScrollingGrid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsSelected" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+                            <Setter Property="Opacity" Value="0.8" TargetName="BorderOutline" />
+                            <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+                            <Setter Property="Opacity" Value="0.2" TargetName="BorderInline" />
+                        </MultiTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+                            <Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+                            <Setter Property="Opacity" Value="0.3" TargetName="BorderInline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="8,2,8,2"/>
+        <Setter Property="Background" Value="#252526"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                    <Grid>
+                        <Border Name="HeaderBorder" Padding="{TemplateBinding Padding}" BorderThickness="1,1,1,1" BorderBrush="#3e3e45" Background="#252526">
+                            <ContentPresenter
+                                Name="HeaderContent"
+                                Margin="0,0,0,1"
+                                RecognizesAccessKey="True"
+                                Content="{TemplateBinding ContentControl.Content}"
+                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                        </Border>
+                        <!--<Thumb x:Name="PART_HeaderGripper" HorizontalAlignment="Right" Margin="0,0,-9,0" Style="{StaticResource DataGridColumnHeaderGripper}"/>-->
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="HeaderBorder" Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="HeaderBorder" Property="Background" Value="{DynamicResource ExtryzeAccentBrush}"/>
+                            <Setter TargetName="HeaderContent" Property="Margin" Value="1,1,0,0"/>
+                        </Trigger>
+                        <Trigger Property="Selector.IsSelected" Value="True">
+                            <Setter Property="TextElement.Foreground" Value="White"/>
+                        </Trigger>
+                        
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

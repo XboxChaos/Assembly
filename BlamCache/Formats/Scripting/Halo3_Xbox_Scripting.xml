@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="us-ascii" standalone="yes"?>
+
+<!-- Document by kornman00 as part of OpenSauce -->
+<!-- All credit for this goes to him -->
+
+<BlamScript game="Halo3_Xbox">
+  <scriptTypes>
+    <type opcode="0x0" name="startup"/>
+    <type opcode="0x1" name="dormant"/>
+    <type opcode="0x2" name="continuous"/>
+    <type opcode="0x3" name="static"/>
+    <type opcode="0x4" name="command_script"/>
+    <type opcode="0x5" name="stub"/>
+  </scriptTypes>
+  
+  <valueTypes version="1">
+    <type opcode="0x00" name="unparsed" size="0"/>
+    <type opcode="0x01" name="special form" size="0"/>
+    <type opcode="0x02" name="function name" size="0"/>
+    <type opcode="0x03" name="passthrough" size="0"/>
+    <type opcode="0x04" name="void" size="0"/>
+    <type opcode="0x05" name="boolean" size="1"/>
+    <type opcode="0x06" name="real" size="4"/>
+    <type opcode="0x07" name="short" size="2"/>
+    <type opcode="0x08" name="long" size="4"/>
+    <type opcode="0x09" name="string" size="4" quoted="true"/>
+    <type opcode="0x0A" name="script" size="2"/>
+    <type opcode="0x0B" name="string_id" size="4" quoted="true"/>
+    <type opcode="0x0C" name="unit_seat_mapping" size="4"/>
+    <type opcode="0x0D" name="trigger_volume" size="2" quoted="true"/>
+    <type opcode="0x0E" name="cutscene_flag" size="2" quoted="true"/>
+    <type opcode="0x0F" name="cutscene_camera_point" size="2" quoted="true"/>
+    <type opcode="0x10" name="cutscene_title" size="2" quoted="true"/>
+    <type opcode="0x11" name="cutscene_recording" size="2" quoted="true"/>
+    <type opcode="0x12" name="device_group" size="4" quoted="true"/>
+    <type opcode="0x13" name="ai" size="4" quoted="true"/>
+    <type opcode="0x14" name="ai_command_list" size="2" quoted="true"/>
+    <type opcode="0x15" name="ai_command_script" size="2"/>
+    <type opcode="0x16" name="ai_behavior" size="2" quoted="true"/>
+    <type opcode="0x17" name="ai_orders" size="2" quoted="true"/>
+    <type opcode="0x18" name="ai_line" size="4"/>
+    <type opcode="0x19" name="starting_profile" size="2" quoted="true"/>
+    <type opcode="0x1A" name="conversation" size="2" quoted="true"/>
+    <type opcode="0x1B" name="zone_set" size="2" quoted="true"/>
+    <type opcode="0x1C" name="designer_zone" size="2" quoted="true"/>
+    <type opcode="0x1D" name="point_reference" size="4" quoted="true"/>
+    <type opcode="0x1E" name="style" size="4" quoted="true"/>
+    <type opcode="0x1F" name="object_list" size="4"/>
+    <type opcode="0x20" name="folder" size="4" quoted="true"/>
+    <type opcode="0x21" name="sound" size="4" tag="snd!" quoted="true"/>
+    <type opcode="0x22" name="effect" size="4" tag="effe" quoted="true"/>
+    <type opcode="0x23" name="damage" size="4" tag="jpt!" quoted="true"/>
+    <type opcode="0x24" name="looping_sound" size="4" tag="lsnd" quoted="true"/>
+    <type opcode="0x25" name="animation_graph" size="4" tag="jmad" quoted="true"/>
+    <type opcode="0x26" name="damage_effect" size="4" tag="jpt!" quoted="true"/>
+    <type opcode="0x27" name="object_definition" size="4" tag="obje" quoted="true"/>
+    <type opcode="0x28" name="bitmap" size="4" tag="bitm" quoted="true"/>
+    <type opcode="0x29" name="shader" size="4" tag="rm " quoted="true"/>
+    <type opcode="0x2A" name="render model" size="4" tag="mode" quoted="true"/>
+    <type opcode="0x2B" name="structure definition" size="4" tag="sbsp" quoted="true"/>
+    <type opcode="0x2C" name="lightmap definition" size="4" tag="stli" quoted="true"/>
+    <type opcode="0x2D" name="cinematic definition" size="4" tag="cine" quoted="true"/>
+    <type opcode="0x2E" name="cinematic scene definition" size="4" tag="cisc" quoted="true"/>
+    <type opcode="0x2F" name="bink definition" size="4" tag="bink" quoted="true"/>
+    <type opcode="0x30" name="any tag" size="4" tag="BLAM" quoted="true"/>
+    <type opcode="0x31" name="any tag not resolving" size="4" tag="BLAM" quoted="true"/>
+    <type opcode="0x32" name="game_difficulty" size="2">
+      <enum>easy</enum>
+      <enum>normal</enum>
+      <enum>heroic</enum>
+      <enum>legendary</enum>
+    </type>
+    <type opcode="0x33" name="team" size="2">
+      <enum>default</enum>
+      <enum>player</enum>
+      <enum>human</enum>
+      <enum>covenant</enum>
+      <enum>flood</enum>
+      <enum>sentinel</enum>
+      <enum>heretic</enum>
+      <enum>prophet</enum>
+      <enum>guilty</enum>
+      <enum>unused9</enum>
+      <enum>unused10</enum>
+      <enum>unused11</enum>
+      <enum>unused12</enum>
+      <enum>unused13</enum>
+      <enum>unused14</enum>
+      <enum>unused15</enum>
+    </type>
+    <type opcode="0x34" name="mp_team" size="2">
+      <enum>mp_team_red</enum>
+      <enum>mp_team_blue</enum>
+      <enum>mp_team_green</enum>
+      <enum>mp_team_yellow</enum>
+      <enum>mp_team_purple</enum>
+      <enum>mp_team_orange</enum>
+      <enum>mp_team_brown</enum>
+      <enum>mp_team_grey</enum>
+    </type>
+    <type opcode="0x35" name="controller" size="2">
+      <enum>controller1</enum>
+      <enum>controller2</enum>
+      <enum>controller3</enum>
+      <enum>controller4</enum>
+    </type>
+    <type opcode="0x36" name="button preset" size="2">
+      <enum>standard</enum>
+      <enum>south_paw</enum>
+      <enum>boxer</enum>
+      <enum>green_thumb</enum>
+      <enum>professional</enum>
+      <enum>walkie-talkie</enum>
+    </type>
+    <type opcode="0x37" name="joystick preset" size="2">
+      <enum>standard</enum>
+      <enum>south_paw</enum>
+      <enum>legacy</enum>
+      <enum>legacy_south_paw</enum>
+    </type>
+    <type opcode="0x38" name="player color" size="2">
+      <enum>player_color_00</enum>
+      <enum>player_color_01</enum>
+      <enum>player_color_02</enum>
+      <enum>player_color_03</enum>
+      <enum>player_color_04</enum>
+      <enum>player_color_05</enum>
+      <enum>player_color_06</enum>
+      <enum>player_color_07</enum>
+      <enum>player_color_08</enum>
+      <enum>player_color_09</enum>
+      <enum>player_color_10</enum>
+      <enum>player_color_11</enum>
+      <enum>player_color_12</enum>
+      <enum>player_color_13</enum>
+      <enum>player_color_14</enum>
+      <enum>player_color_15</enum>
+      <enum>player_color_16</enum>
+      <enum>player_color_17</enum>
+      <enum>player_color_18</enum>
+      <enum>player_color_19</enum>
+      <enum>player_color_20</enum>
+      <enum>player_color_21</enum>
+      <enum>player_color_22</enum>
+      <enum>player_color_23</enum>
+      <enum>player_color_24</enum>
+      <enum>player_color_25</enum>
+      <enum>player_color_26</enum>
+      <enum>player_color_27</enum>
+      <enum>player_color_28</enum>
+      <enum>player_color_29</enum>
+      <enum>player_color_30</enum>
+      <enum>player_color_31</enum>
+    </type>
+    <type opcode="0x39" name="player character type" size="2">
+      <enum>sp_masterchief</enum>
+      <enum>sp_dervish</enum>
+      <enum>mp_masterchief</enum>
+      <enum>mp_elite</enum>
+      <enum>co-op elite</enum>
+      <enum>monitor</enum>
+    </type>
+    <type opcode="0x3A" name="voice output setting" size="2">
+      <enum>default</enum>
+      <enum>headset</enum>
+    </type>
+    <type opcode="0x3B" name="voice mask" size="2">
+      <enum>none</enum>
+      <enum>anonymous</enum>
+    </type>
+    <type opcode="0x3C" name="subtitle setting" size="2">
+      <enum>automatic</enum>
+      <enum>enabled</enum>
+      <enum>disabled</enum>
+    </type>
+    <type opcode="0x3D" name="actor_type" size="2">
+      <enum>elite</enum>
+      <enum>jackal</enum>
+      <enum>grunt</enum>
+      <enum>hunter</enum>
+      <enum>engineer</enum>
+      <enum>assassin</enum>
+      <enum>player</enum>
+      <enum>marine</enum>
+      <enum>crew</enum>
+      <enum>combat_form</enum>
+      <enum>infection_form"</enum>
+      <enum>carrier_form</enum>
+      <enum>monitor</enum>
+      <enum>sentinel</enum>
+      <enum>none</enum>
+      <enum>mounted_weapon</enum>
+      <enum>brute</enum>
+      <enum>prophet</enum>
+      <enum>bugger</enum>
+      <enum>juggernaut</enum>
+      <enum>pure_form_stealth</enum>
+      <enum>pure_form_tank</enum>
+      <enum>pure_form_ranged</enum>
+      <enum>scarab</enum>
+      <enum>guardian</enum>
+    </type>
+    <type opcode="0x3E" name="model_state" size="2">
+      <enum>standard</enum>
+      <enum>minor damage</enum>
+      <enum>medium damage</enum>
+      <enum>major damage</enum>
+      <enum>destroyed</enum>
+    </type>
+    <type opcode="0x3F" name="event" size="2">
+      <enum>verbose</enum>
+      <enum>status</enum>
+      <enum>message</enum>
+      <enum>warning</enum>
+      <enum>error</enum>
+      <enum>critical</enum>
+      <enum>none</enum>
+    </type>
+    <type opcode="0x40" name="character_physics" size="2">
+      <enum>NONE</enum>
+      <enum>player</enum>
+      <enum>biped</enum>
+    </type>
+    <type opcode="0x41" name="object" size="4" object="true"/>
+    <type opcode="0x42" name="unit" size="4" object="true"/>
+    <type opcode="0x43" name="vehicle" size="4" object="true"/>
+    <type opcode="0x44" name="weapon" size="4" object="true"/>
+    <type opcode="0x45" name="device" size="4" object="true"/>
+    <type opcode="0x46" name="scenery" size="4" object="true"/>
+    <type opcode="0x47" name="effect_scenery" object="true"/>
+    <type opcode="0x48" name="object_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x49" name="unit_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4A" name="vehicle_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4B" name="weapon_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4C" name="device_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4D" name="scenery_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4E" name="effect_scenery_name" size="2" object="true" quoted="true"/>
+    <type opcode="0x4F" name="cinematic_lightprobe" size="4"/>
+    <type opcode="0x50" name="animation budget reference" size="4"/>
+    <type opcode="0x51" name="looping sound budget reference" size="4"/>
+    <type opcode="0x52" name="sound budget reference" size="4"/>
+  </valueTypes>
+  <definition version="1" game="Halo 3" ext="hsc3" maxDynamicSourceDataBytes="0x1000">
+    <objectTypeMasks>
+      <object type="object" mask="0xFFFF"/>
+      <object type="unit" mask="0x1003"/>
+      <object type="vehicle" mask="0x0002"/>
+      <object type="weapon" mask="0x0004"/>
+      <object type="device" mask="0x0190"/>
+      <object type="scenery" mask="0x0040"/>
+      <object type="effect_scenery" mask="0x2000"/>
+    </objectTypeMasks>
+    <valueTypeCasting>
+      <cast from="" to=""/>
+    </valueTypeCasting>
+  </definition>
+</BlamScript>
