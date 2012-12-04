@@ -56,6 +56,21 @@ namespace ExtryzeDLL.Flexibility
             _scriptDefsFile = scriptDefsFile;
         }
 
+        public void AddLayout(string name, StructureLayout layout)
+        {
+            _layouts[name] = layout;
+        }
+
+        public StructureLayout GetLayout(string name)
+        {
+            return _layouts[name];
+        }
+
+        public bool HasLayout(string name)
+        {
+            return _layouts.ContainsKey(name);
+        }
+
         public LocaleSymbolCollection LocaleSymbols
         {
             get { return _localeSymbols; }
