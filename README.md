@@ -1,7 +1,7 @@
 # Assembly #
 ## Third Generation Blam Engine Research Tool ##
 
-__Assembly is currently in the ALPHA stage. Some features may not work correctly. However, you are encouraged to submit bug reports through our issue tracker: [https://github.com/Xerax/Assembly/issues/new](https://github.com/Xerax/Assembly/issues/new "Assembly Issue Tracker").__
+__Assembly is currently in the ALPHA stage. Some features may not work correctly. However, you are encouraged to submit bug reports through our issue tracker: [https://github.com/XboxChaos/Assembly/issues/new](https://github.com/XboxChaos/Assembly/issues/new "Assembly Issue Tracker").__
 
 __Also, an Xbox 360 capable of running unsigned code is required in order to use modifications created with Assembly. Flashed disc drives will not work.__
 
