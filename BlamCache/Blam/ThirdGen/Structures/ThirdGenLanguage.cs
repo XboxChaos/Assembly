@@ -46,7 +46,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             {
                 stringReader.SeekTo(offsets[i]);
                 string locale = stringReader.ReadUTF8();
-                result.Add(ReplaceSymbols(locale));
+                result.Add(locale);
             }
             return result;
         }
@@ -73,12 +73,6 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                 stringData = AES.Decrypt(stringData, _buildInfo.LocaleKey.Key, _buildInfo.LocaleKey.IV);
 
             return new EndianReader(new MemoryStream(stringData), Endian.BigEndian);
-        }
-
-        private string ReplaceSymbols(string locale)
-        {
-            // :)
-            return _buildInfo.LocaleSymbols.ReplaceSymbols(locale);
         }
     }
 }
