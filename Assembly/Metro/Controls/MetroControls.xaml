@@ -305,31 +305,12 @@
                                 <VisualState x:Name="Valid"/>
                                 <VisualState x:Name="InvalidUnfocused">
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ValidationErrorElement">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="InvalidContentValidation" />
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="InvalidFocused">
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="ValidationErrorElement">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="IsOpen" Storyboard.TargetName="validationTooltip">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <System:Boolean>True</System:Boolean>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
+                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="InvalidContentValidation" />
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -337,6 +318,7 @@
                         <Rectangle x:Name="Base" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="1" Fill="{TemplateBinding Background}" />
                         <Rectangle x:Name="FocusRectangle" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="0" Stroke="{x:Null}" />
                         <Rectangle x:Name="FocusInnerRectangle" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="0" Margin="1" Stroke="{x:Null}" />
+                        <Rectangle x:Name="InvalidContentValidation" StrokeThickness="1" Opacity="0" Margin="1" Stroke="Red" />
                         <Grid Margin="0,1,0,0">
                             <Border x:Name="ReadOnlyVisualElement" Background="{x:Null}" Opacity="0"/>
                             <Grid >
