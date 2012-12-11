@@ -141,11 +141,20 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
             if (values.HasNumber("raw table offset") && values.HasNumber("raw table size"))
             {
-                RawTableOffset = values.GetNumber("raw table offset");
+                // Load raw table info
                 RawTableSize = values.GetNumber("raw table size");
-                metaOffset = RawTableOffset + RawTableSize;
+                RawTableOffset = values.GetNumber("raw table offset");
+
+                // There are two ways to get the meta offset:
+                // 1. Raw table offset + raw table size
+                // 2. If raw table offset is zero, then the meta offset is directly stored in the header
+                //    (The raw table offset can still be calculated in this case, but can't be used to find the meta the traditional way)
+                if (RawTableOffset != 0)
+                    metaOffset = RawTableOffset + RawTableSize;
+                else
+                    RawTableOffset = values.GetNumber("raw table offset from header") + (uint)HeaderSize;
             }
-            else if (!values.FindNumber("meta offset", out metaOffset))
+            if (metaOffset == 0 && !values.FindNumber("meta offset", out metaOffset))
             {
                 throw new ArgumentException("The XML layout file is missing information on how to calculate map magic.");
             }
@@ -161,7 +170,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private HeaderOffsetConverter LoadHeaderOffsetConverter(StructureValueCollection values)
         {
-            uint stringOffsetMagic = values.GetNumberOrDefault("string offset magic", (uint)HeaderSize);
+            // Only apply a modifier if the original raw table offset wasn't zero
+            uint stringOffsetMagic = (uint)HeaderSize;
+            if (values.HasNumber("raw table offset") && values.GetNumber("raw table offset") > 0)
+                stringOffsetMagic = values.GetNumberOrDefault("string offset magic", (uint)HeaderSize);
+
             return new HeaderOffsetConverter(stringOffsetMagic, HeaderSize);
         }
 

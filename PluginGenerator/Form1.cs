@@ -104,7 +104,7 @@ namespace PluginGenerator
             List<string> mapFiles = Directory.EnumerateFiles(args.InputFolder, "*.map").ToList();
             for (int i = mapFiles.Count - 1; i >= 0; i--)
             {
-                if (mapFiles[i].EndsWith("shared.map") || mapFiles[i].EndsWith("campaign.map") || mapFiles[i].EndsWith("m05_prologue.map"))
+                if (mapFiles[i].EndsWith("shared.map") || mapFiles[i].EndsWith("campaign.map"))
                     mapFiles.RemoveAt(i);
             }
 
