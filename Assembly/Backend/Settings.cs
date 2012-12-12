@@ -14,8 +14,13 @@ using Assembly.Metro.Controls.PageTemplates.Games;
 
 namespace Assembly.Backend
 {
-    public class Settings
+    public static class Settings
     {
+        /// <summary>
+        /// Raised whenever the settings are loaded or saved.
+        /// </summary>
+        public static event EventHandler SettingsChanged;
+
         public static void LoadSettings(bool applyThemeAswell = false)
         {
             // Declare Registry
@@ -38,7 +43,7 @@ namespace Assembly.Backend
             if (xbdm != null)
             {
                 xbdm.UpdateDeviceIdent(XDKNameIP);
-                try { xbdm.Connect(); } catch { }
+                //try { xbdm.Connect(); } catch { }
             }
             XDKAutoSave = Convert.ToBoolean(keyApp.GetValue("XDKAutoSave", true));
             XDKScreenshotPath = keyApp.GetValue("XDKScreenshotPath", VariousFunctions.GetApplicationLocation() + @"Saved Images\").ToString();
@@ -66,7 +71,10 @@ namespace Assembly.Backend
             defaultMAP = Convert.ToBoolean(keyApp.GetValue("DefaultMAPEditor", true));
             defaultBLF = Convert.ToBoolean(keyApp.GetValue("DefaultBLFEditor", false));
             defaultMIF = Convert.ToBoolean(keyApp.GetValue("DefaultMIFEditor", false));
+
+            OnSettingsChanged();
         }
+
         public static void UpdateSettings(bool applyThemeAswell = false)
         {
             // Declare Registry
@@ -89,7 +97,7 @@ namespace Assembly.Backend
             if (xbdm != null)
             {
                 xbdm.UpdateDeviceIdent(XDKNameIP);
-                try { xbdm.Connect(); } catch { }
+                //try { xbdm.Connect(); } catch { }
             }
 
             keyApp.SetValue("XDKAutoSave", XDKAutoSave);
@@ -125,8 +133,15 @@ namespace Assembly.Backend
 
             // Update File Defaults
             FileDefaults.UpdateFileDefaults();
+
+            OnSettingsChanged();
         }
 
+        private static void OnSettingsChanged()
+        {
+            if (SettingsChanged != null)
+                SettingsChanged(null, EventArgs.Empty);
+        }
 
         public static void ApplyAccent()
         {
@@ -226,7 +241,7 @@ namespace Assembly.Backend
 
     public class TempStorage
     {
-        public static MetroMessageBox.MessageBoxResults msgBoxButtonStorage;
+        public static MetroMessageBox.MessageBoxResult msgBoxButtonStorage;
     }
 
     public class RecentFiles

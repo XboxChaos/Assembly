@@ -61,7 +61,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             if (senderEntry != null)
                 if (!File.Exists(senderEntry.FilePath))
                 {
-                    if (MetroMessageBox.Show("File can't be found", "That file can't be found on your Computer. Would you like it to be removed from the recents list?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResults.Yes)
+                    if (MetroMessageBox.Show("File can't be found", "That file can't be found on your Computer. Would you like it to be removed from the recents list?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
                     {
                         RecentFiles.RemoveEntry(senderEntry);
                         UpdateRecents();

@@ -160,37 +160,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = false)
         {
-            //try
+            if (type == MetaWriter.SaveType.Cache)
             {
-                if (type == MetaWriter.SaveType.Cache)
-                {
-                    MetaWriter metaUpdate = new MetaWriter(_stream, _cache, type, onlyUpdateChanged);
-                    metaUpdate.Poke(_pluginVisitor.Values);
-                }
-                else
+                MetaWriter metaUpdate = new MetaWriter(_stream, _cache, type, onlyUpdateChanged);
+                metaUpdate.Poke(_pluginVisitor.Values);
+
+                if (showActionDialog)
+                    MetroMessageBox.Show("Meta Saved", "The metadata has been saved back to the original file.");
+            }
+            else
+            {
+                if (Settings.xbdm.Connect())
                 {
                     MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _cache, type, onlyUpdateChanged);
                     metaUpdate.Poke(_pluginVisitor.Values);
-                }
 
-                if (showActionDialog)
-                    switch (type)
+                    if (showActionDialog)
                     {
-                        case MetaWriter.SaveType.Cache:
-                            MetroMessageBox.Show("Meta Saved", "The metadata has been saved into the Blam Cache file.");
-                            break;
-                        case MetaWriter.SaveType.Memory:
-                            if (onlyUpdateChanged)
-                                MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the Xbox 360 Console.");
-                            else
-                                MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the Xbox 360 Console.");
-                            break;
+                        if (onlyUpdateChanged)
+                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the Xbox 360 Console.");
+                        else
+                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the Xbox 360 Console.");
                     }
+                }
+                else
+                {
+                    MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+                }
             }
-            //catch (Exception ex)
-            //{
-            //    MetroException.Show(ex);
-            //}
         }
 
 

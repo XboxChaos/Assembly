@@ -56,27 +56,42 @@ namespace XBDMCommunicator
         /// <param name="deviceIdent">The new XBox XDK Name or IP</param>
         public void UpdateDeviceIdent(string deviceIdent)
         {
-            Disconnect();
+            if (_deviceIdent != deviceIdent)
+                Disconnect();
             _deviceIdent = deviceIdent;
         }
+
         /// <summary>
         /// Open a connection to the XBox Console
         /// </summary>
-        public void Connect()
+        /// <returns>true if the connection was successful.</returns>
+        public bool Connect()
         {
             if (!_isConnected)
             {
-                _xboxManager = new XboxManager();
-                _xboxConsole = _xboxManager.OpenConsole(DeviceIdent);
-                _xboxDebugTarget = _xboxConsole.DebugTarget;
-                _xboxConnectionCode = _xboxConsole.OpenConnection(null);
+                try
+                {
+                    _xboxManager = new XboxManager();
+                    _xboxConsole = _xboxManager.OpenConsole(DeviceIdent);
+                    _xboxDebugTarget = _xboxConsole.DebugTarget;
+                    _xboxConnectionCode = _xboxConsole.OpenConnection(null);
+                }
+                catch
+                {
+                    _xboxManager = null;
+                    _xboxConsole = null;
+                    _xboxDebugTarget = null;
+                    return false;
+                }
 
                 try { _xboxType = _xboxConsole.ConsoleType.ToString(); }
                 catch { _xboxType = "Unable to get."; }
 
                 _isConnected = true;
             }
+            return true;
         }
+
         /// <summary>
         /// Close the connection to the XBox Console
         /// </summary>
@@ -84,56 +99,66 @@ namespace XBDMCommunicator
         {
             if (_isConnected)
             {
-                _xboxConsole.CloseConnection(_xboxConnectionCode);
+                if (_xboxConsole != null)
+                    _xboxConsole.CloseConnection(_xboxConnectionCode);
 
                 _xboxManager = null;
                 _xboxDebugTarget = null;
                 _xboxConsole = null;
                 _isConnected = false;
-
             }
         }
+
         /// <summary>
         /// Send a string-based command, such as "bye", "reboot", "go", "stop"
         /// </summary>
-        /// <param name="command">The command to send</param>
-        /// <returns>The responce from the XBox Console</returns>
+        /// <param name="command">The command to send.</param>
+        /// <returns>The responce from the console, or null if sending the command failed.</returns>
         public string SendStringCommand(string command)
         {
-            Connect();
+            if (!Connect())
+                return null;
             
-            string responce = "";
-            _xboxConsole.SendTextCommand(_xboxConnectionCode, command, out responce);
-            if (!(responce.Contains("202") | responce.Contains("203")))
-                return responce;
-            else
-                throw new Exception("String Command wasn't accepted by the XBox Console. It might not be valid or the xbox is just being annoying. The responce was:\n" + responce);
+            string response = "";
+            _xboxConsole.SendTextCommand(_xboxConnectionCode, command, out response);
+            // Alex: Personally I feel that we should always return the response here and leave it up to the caller to check it
+            // -- Aaron
+            //if (!(response.Contains("202") | response.Contains("203")))
+                return response;
+            /*else
+                throw new Exception("String command wasn't accepted by the Xbox 360 Console. It might not be valid or the Xbox is just being annoying. The response was:\n" + response);*/
         }
+
         /// <summary>
         /// Freeze the XBox Console
         /// </summary>
         public void Freeze()
         {
-            Connect();
+            if (!Connect())
+                return;
 
             SendStringCommand("stop");
         }
+
         /// <summary>
         /// UnFreeze the XBox Console
         /// </summary>
         public void Unfreeze()
         {
-            Connect();
+            if (!Connect())
+                return;
 
             SendStringCommand("go");
-        }        
+        }    
+    
         /// <summary>
         /// Reboot the XBox Console
         /// </summary>
         /// <param name="rebootType">The type of Reboot to do (Cold or Title)</param>
         public void Reboot(RebootType rebootType)
         {
-            Connect();
+            if (!Connect())
+                return;
 
             switch (rebootType)
             {
@@ -147,18 +172,21 @@ namespace XBDMCommunicator
                     break;
             }
         }
+
         /// <summary>
         /// Shutdown the XBox Console
         /// </summary>
         public void Shutdown()
         {
-            Connect();
+            if (!Connect())
+                return;
 
             // Tell console to go bye-bye
             SendStringCommand("bye");
 
             Disconnect();
         }
+
         /// <summary>
         /// Save a screenshot from the XBox Console
         /// </summary>
@@ -166,7 +194,8 @@ namespace XBDMCommunicator
         /// <param name="freezeDuring">Do you want to freeze while the screenshot is being taken.</param>
         public void GetScreenshot(string savePath, bool freezeDuring = false)
         {
-            Connect();
+            if (!Connect())
+                return;
 
             // Stop the Console
             if (freezeDuring)
@@ -202,7 +231,8 @@ namespace XBDMCommunicator
             #region Read
             private byte[] ReadPureBytes(uint length)
             {
-                _xbdm.Connect();
+                if (!_xbdm.Connect())
+                    return null;
 
                 bool flag = true;
                 if (length > 20)
@@ -298,7 +328,8 @@ namespace XBDMCommunicator
             #region Write
             private void WritePureBytes(byte[] input)
             {
-                _xbdm.Connect();
+                if (!_xbdm.Connect())
+                    return;
 
                 bool flag = true;
                 if (input.Length > 20)
@@ -420,12 +451,7 @@ namespace XBDMCommunicator
             /// <param name="address">The XBox 360 Memory Address</param>
             private bool IsValidXboxMemoryAddress(long address)
             {
-                bool derp1 = (address >= 0);
-                bool derp2 = (address <= 0xFFFFFFFF);
-
-                // TODO: fix this.
-
-                return (true);
+                return (address >= 0 && address <= 0xFFFFFFFF);
             }
 
 
@@ -444,7 +470,9 @@ namespace XBDMCommunicator
                     return true;
                 }
                 else
+                {
                     return false;
+                }
             }
             public void Skip(long count) { _address += count; }
         }

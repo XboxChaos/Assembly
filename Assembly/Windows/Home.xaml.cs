@@ -553,14 +553,6 @@ namespace Assembly.Windows
                 Settings.selectedHaloMap = (HaloMap)tab.Content;
             else
                 Settings.selectedHaloMap = null;
-
-            if (tab != null)
-            {
-                // Update Settings inside the content.
-                // (try/catch) this, as not all pages will have this function
-                try { dynamic tabContent = tab.Content; tabContent.RefreshFromSettings(); }
-                catch { }
-            }
         }
 
         #region More WPF Annoyance

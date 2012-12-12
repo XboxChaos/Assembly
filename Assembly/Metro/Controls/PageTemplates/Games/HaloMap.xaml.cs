@@ -110,6 +110,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             // Read Settings
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
+            Settings.SettingsChanged += SettingsChanged;
 
             BackgroundWorker initalLoadBackgroundWorker = new BackgroundWorker();
             initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
@@ -336,21 +337,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _stream.Close();
             return true;
         }
-        public void RefreshFromSettings()
-        {
-            if (Settings.halomapTagSort != _tagSorting || Settings.halomapMapInfoDockSide != _dockSide)
-            {
-                if (MetroMessageBox.Show("Settings change detected", "Your settings have changed since you last had the map viewer active. Would you like to refresh the viewer to reflect this? All unsaved changes will be lost.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResults.Yes)
-                {
-                    if (Settings.halomapTagSort != _tagSorting)
-                    {
-                        // Update the Tag Sorting
-                    }
 
-                    if (Settings.halomapMapInfoDockSide != _dockSide)
-                        UpdateDockPanelLocation();
-                }
+        private void SettingsChanged(object sender, EventArgs e)
+        {
+            if (Settings.halomapTagSort != _tagSorting)
+            {
+                // TODO: Update the tag sorting
             }
+
+            if (Settings.halomapMapInfoDockSide != _dockSide)
+                UpdateDockPanelLocation();
         }
 
         private void cbShowEmptyTags_Altered(object sender, System.Windows.RoutedEventArgs e) { UpdateEmptyTags((bool)cbShowEmptyTags.IsChecked); }

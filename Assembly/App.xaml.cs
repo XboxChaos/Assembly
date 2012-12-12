@@ -63,7 +63,7 @@ namespace Assembly
 
             // Create XBDM Instance
             Settings.xbdm = new XBDM(Settings.XDKNameIP);
-            try { Settings.xbdm.Connect(); } catch { }
+            //try { Settings.xbdm.Connect(); } catch { }
 
             // Create Temporary FilePaths
             VariousFunctions.CreateTemporaryDirectories();

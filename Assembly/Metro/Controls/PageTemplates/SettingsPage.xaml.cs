@@ -109,7 +109,7 @@ namespace Assembly.Metro.Controls.PageTemplates
         public bool Close()
         {
             if (_settingsChanged)
-                if (MetroMessageBox.Show("Are you sure bro?", "Are you sure you want to exit? Someone told me you have un-saved settings.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResults.No)
+                if (MetroMessageBox.Show("Are you sure bro?", "Are you sure you want to exit? Someone told me you have un-saved settings.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.No)
                     return false;
 
             Settings.ApplyAccent();
@@ -158,7 +158,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             Settings.UpdateSettings();
 
-            if (MetroMessageBox.Show("Saved", "Your settings have been saved successfully. Do you want to close settings now?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResults.Yes)
+            if (MetroMessageBox.Show("Saved", "Your settings have been saved successfully. Do you want to close settings now?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
                 Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)

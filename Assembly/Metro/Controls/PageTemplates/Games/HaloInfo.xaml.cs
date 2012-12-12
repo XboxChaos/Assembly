@@ -203,7 +203,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
         {
-            if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResults.Yes)
+            if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
             {
                 foreach (LanguageEntry entry in cbLanguages.Items)
                 {
