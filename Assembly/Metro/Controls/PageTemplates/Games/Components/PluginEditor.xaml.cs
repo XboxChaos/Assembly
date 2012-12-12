@@ -41,7 +41,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _sibling = sibling;
 
             // Load Plugin Path
-            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, CharConstant.ToString(tag.RawTag.Class.Magic));
+            string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic));
+            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
 
             if (File.Exists(_pluginPath))
                 txtPlugin.Text = File.ReadAllText(_pluginPath);
