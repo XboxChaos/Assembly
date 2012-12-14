@@ -23,7 +23,7 @@ namespace Assembly.Backend
                         //if (CheckFileIsDownloaded())
                         //{
                         stream.SeekTo(0x00);
-                        if (stream.ReadAscii(0x04) == "IWff")
+                        if (stream.ReadUInt32() == 1230464614)
                         {
                             // Play Video
                             Settings.homeWindow.mediaIWff.LoadedBehavior = System.Windows.Controls.MediaState.Manual;

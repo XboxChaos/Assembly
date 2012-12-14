@@ -127,10 +127,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 // Close Tab
                 Settings.homeWindow.ExternalTabClose(_tab);
 
-                if (!_0xabad1dea.IWff.Heman(_stream))
-                    MetroException.Show(e.Error);
-                else
-                    StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
+                MetroException.Show(e.Error);
+
+                if (_stream != null)
+                    _stream.Close();
             }
         }
 
@@ -143,7 +143,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             _fileStream = new FileStream(_cacheLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
             _stream = new EndianStream(_fileStream, Endian.BigEndian);
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Cache into Memory"); }));
+            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
 
             _version = new ThirdGenVersionInfo(_stream);
             _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
@@ -156,8 +156,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 Dispatcher.Invoke(new Action(delegate
                     {
-                        StatusUpdater.Update("Not a supported cache build");
-                        MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
+                        if (!_0xabad1dea.IWff.Heman(_stream))
+                        {
+                            StatusUpdater.Update("Not a supported cache build");
+                            MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
+                        }
+                        else
+                        {
+                            StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
+                        }
 
                         Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
                     }));
