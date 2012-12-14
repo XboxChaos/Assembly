@@ -29,8 +29,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
         {
             public string ChunkMagic { get; set; }
             public Int32 ChunkMagicIdent { get; set; }
-
             public Int32 ChunkLength { get; set; }
+            public UInt16 Unknown1 { get; set; }
+            public UInt16 Unknown2 { get; set; }
 
             public byte[] ChunkData { get; set; }
         }
@@ -82,8 +83,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
                     chunk.ChunkMagicIdent = _blfStream.ReadInt32();
 
                     chunk.ChunkLength = _blfStream.ReadInt32();
+                    chunk.Unknown1 = _blfStream.ReadUInt16();
+                    chunk.Unknown2 = _blfStream.ReadUInt16();
 
-                    chunk.ChunkData = _blfStream.ReadBlock(chunk.ChunkLength - 0x08);
+                    chunk.ChunkData = _blfStream.ReadBlock(chunk.ChunkLength - 0x0C);
 
                     _blfChunks.Add(chunk);
                 }
@@ -98,7 +101,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         public void RefreshRelativeChunkData()
         {
             foreach (BLFChunk chunk in _blfChunks)
-                chunk.ChunkLength = chunk.ChunkData.Length + 0x08;
+                chunk.ChunkLength = chunk.ChunkData.Length + 0x0C;
         }
         #endregion
 
@@ -122,6 +125,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
                 //_blfStream.SeekTo(_blfStream.Position - 1);
                 _blfStream.WriteInt32(chunk.ChunkLength);
                 //_blfStream.SeekTo(_blfStream.Position - 1);
+                _blfStream.WriteUInt16(chunk.Unknown1);
+                _blfStream.WriteUInt16(chunk.Unknown2);
                 _blfStream.WriteBlock(chunk.ChunkData);
             }
         }
@@ -131,14 +136,18 @@ namespace ExtryzeDLL.Blam.ThirdGen
         /// Add new a BLF chunk to the chunk table
         /// </summary>
         /// <param name="magic">The magic (has to be 4 chars long)</param>
+        /// <param name="unknown1">The first unknown short</param>
+        /// <param name="unknown2">The second unknown short</param>
         /// <param name="content">The content of the BLF Chunk</param>
         /// <param name="chunkToInsertAfter">The BLF chunk to insert the new chunk after</param>
-        public void AddBLFChunk(string magic, byte[] content, BLFChunk chunkToInsertAfter)
+        public void AddBLFChunk(string magic, UInt16 unknown1, UInt16 unknown2, byte[] content, BLFChunk chunkToInsertAfter)
         {
             BLFChunk chunk = new BLFChunk();
             chunk.ChunkMagic = magic;
             chunk.ChunkData = content;
-            chunk.ChunkLength = content.Length + 0x08;
+            chunk.Unknown1 = unknown1;
+            chunk.Unknown2 = unknown2;
+            chunk.ChunkLength = content.Length + 0x0C;
             chunk.ChunkMagicIdent = Convert.ToInt32(magic);
 
             // Checks
@@ -164,15 +173,17 @@ namespace ExtryzeDLL.Blam.ThirdGen
         /// Add new a BLF chunk to the chunk table
         /// </summary>
         /// <param name="magic">The magic (has to be 4 chars long)</param>
+        /// <param name="unknown1">The first unknown short</param>
+        /// <param name="unknown2">The second unknown short</param>
         /// <param name="content">The content of the BLF Chunk</param>
         /// <param name="chunkIndex">The index of the chunk to insert the new chunk behind</param>
-        public void AddBLFChunk(string magic, byte[] content, int chunkIndex)
+        public void AddBLFChunk(string magic,UInt16 unknown1, UInt16 unknown2, byte[] content, int chunkIndex)
         {
             try
             {
                 BLFChunk chunk = _blfChunks[chunkIndex];
 
-                AddBLFChunk(magic, content, chunk);
+                AddBLFChunk(magic,unknown1, unknown2, content, chunk);
             }
             catch
             {
