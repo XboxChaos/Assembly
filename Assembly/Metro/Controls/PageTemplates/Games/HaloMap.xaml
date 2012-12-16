@@ -37,7 +37,7 @@
 
                             <Rectangle Fill="#FF363639" Height="1" Width="250" Margin="25,114.25,25,0" VerticalAlignment="Top" d:LayoutOverrides="Height" />
 
-                            <ScrollViewer Margin="25,130,20,110" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ScrollViewer Margin="25,130,20,25" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                 <StackPanel>
                                     <TextBlock x:Name="lblMapHeader" FontFamily="{DynamicResource MetroFontSemiLight}" Text="" Foreground="White" FontSize="16" />
                                     <StackPanel x:Name="listMapHeader" Margin="0,0,0,5">
@@ -45,8 +45,6 @@
                                     </StackPanel>
                                 </StackPanel>
                             </ScrollViewer>
-                            <Button x:Name="btnEditorsScript" Content="Script Editor" Margin="25,10,20,65" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Click="btnEditorsScript_Click" />
-                            <Button x:Name="btnEditorsString" Content="StringID Viewer" Margin="25,10,20,25" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Click="btnEditorsString_Click" />
                         </Grid>
                     </TabItem>
 
@@ -94,7 +92,7 @@
                             <ListBox x:Name="lbLanguages" Margin="0,25,0,0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch" ScrollViewer.CanContentScroll="False">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Button Name="PART_Button" HorizontalAlignment="Stretch" Click="LocaleButtonClick">
+                                        <Button Name="PART_Button" Height="Auto" HorizontalAlignment="Stretch" Click="LocaleButtonClick">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                     <Border Background="Transparent" HorizontalAlignment="Stretch">
@@ -102,11 +100,6 @@
                                                     </Border>
                                                 </ControlTemplate>
                                             </Button.Template>
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Height" Value="Auto" />
-                                                </Style>
-                                            </Button.Style>
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Name}" FontSize="20">
                                                     <TextBlock.Style>
@@ -142,6 +135,59 @@
                                                     </TextBlock.Style>
                                                 </TextBlock>
                                             </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <ContentPresenter Margin="8,5"
+                                                        Content="{TemplateBinding ContentControl.Content}"
+                                                        ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                        ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                        HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                        VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                        SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                            </ListBox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
+                        <Grid Margin="25,30,25,30">
+                            <ListBox x:Name="lbScripts" Margin="0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch" ScrollViewer.CanContentScroll="False">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Name="PART_Button" HorizontalAlignment="Stretch" Height="Auto" Click="ScriptButtonClick">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="Transparent" HorizontalAlignment="Stretch">
+                                                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <TextBlock Text="{Binding}" FontSize="20">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
+                                                                    <Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Button>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

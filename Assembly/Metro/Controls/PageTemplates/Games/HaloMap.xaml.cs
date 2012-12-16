@@ -108,6 +108,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Show UI Pending Stuff
             doingAction.Visibility = Visibility.Visible;
 
+            tabScripts.Visibility = Visibility.Collapsed;
+
             // Read Settings
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
             Settings.SettingsChanged += SettingsChanged;
@@ -190,6 +192,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             LoadHeader();
             LoadTags();
             LoadLocales();
+            LoadScripts();
         }
         private void LoadHeader()
         {
@@ -311,8 +314,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
             AddLanguage("Unknown", LocaleLanguage.Unknown);
 
-            Dispatcher.Invoke(new Action(delegate { lbLanguages.ItemsSource = _languages; }));
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Initialized Languages"); }));
+            Dispatcher.Invoke(new Action(delegate
+                {
+                    lbLanguages.ItemsSource = _languages;
+                    StatusUpdater.Update("Initialized Languages");
+                }
+            ));
+        }
+
+        private void LoadScripts()
+        {
+            if (_buildInfo.ScriptDefinitionsFilename != null)
+            {
+                // TODO: Actually handle this properly for H4
+                List<string> scripts = new List<string>();
+                scripts.Add(_cache.Info.InternalName.Replace("_", "__") + ".hsc");
+
+                Dispatcher.Invoke(new Action(delegate
+                    {
+                        tabScripts.Visibility = Visibility.Visible;
+                        lbScripts.ItemsSource = scripts;
+                        StatusUpdater.Update("Initialized Scripts");
+                    }
+                ));
+            }
         }
 
         private void AddLanguage(string name, int index)
@@ -534,7 +559,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
         }
 
-        private void btnEditorsScript_Click(object sender, RoutedEventArgs e)
+        private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
             string tabName = _cache.Info.InternalName.Replace("_", "__") + ".hsc";
             if (IsTagOpen(tabName))
