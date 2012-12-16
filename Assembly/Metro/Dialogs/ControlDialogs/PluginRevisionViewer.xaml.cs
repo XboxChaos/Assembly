@@ -23,10 +23,19 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     {
         private IList<PluginRevision> _revisions = new List<PluginRevision>();
         private string _pluginClass;
+        private string _pluginClassDescription;
 
         public IList<PluginRevision> Revisions
         {
             get { return _revisions; }
+        }
+        public string PluginClass
+        {
+            get { return _pluginClass; }
+        }
+        public string PluginClassDescription
+        {
+            get { return _pluginClassDescription; }
         }
 
         public PluginRevisionViewer(IList<PluginRevision> revisions, string pluginClass)
@@ -36,10 +45,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
             _revisions = revisions;
             _pluginClass = pluginClass;
+            _pluginClassDescription = string.Format("Revision list of the Assembly Plugin {0}.", _pluginClass);
 
-            lblDesc.Text = lblDesc.Text.Replace("%1%", pluginClass);
-
-            
+            this.DataContext = this;
         }
 
         private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)

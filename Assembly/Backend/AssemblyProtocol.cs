@@ -13,7 +13,7 @@ namespace Assembly.Backend
             RegistryKey keyProtoBase = Registry.ClassesRoot.CreateSubKey("assembly\\");
             keyProtoBase.SetValue("", "URL:Assembly Application Manager");
             keyProtoBase.SetValue("AppUserModelID", "XboxChaos.Assembly.Default");
-            keyProtoBase.SetValue("FriendlyTypeName", "Assembly Application Manag5er");
+            keyProtoBase.SetValue("FriendlyTypeName", "Assembly Application Manager");
             keyProtoBase.SetValue("SourceFilter", "");
             keyProtoBase.SetValue("URL Protocol", "");
 
