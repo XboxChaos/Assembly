@@ -38,7 +38,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenTagTable _tags;
         private ThirdGenStringIDSource _stringIds;
         private ThirdGenFileNameSource _fileNames;
-        private ThirdGenMapGlobalsMeta _matg;
+        private ThirdGenLanguageGlobals _languageInfo;
         private ThirdGenScenarioMeta _scenario;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
@@ -73,7 +73,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public IList<ILanguage> Languages
         {
-            get { return _matg.Languages; }
+            get { return _languageInfo.Languages; }
         }
 
         public IList<ITagClass> TagClasses
@@ -97,7 +97,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
             _fileNames = LoadFileNames(reader, buildInfo);
             _stringIds = LoadStringIDs(reader, buildInfo);
             _tags = LoadTags(reader, buildInfo);
-            _matg = LoadMapGlobals(reader, buildInfo);
+            _languageInfo = LoadLanguageGlobals(reader, buildInfo);
             _scenario = LoadScenario(reader, buildInfo);
         }
 
@@ -125,15 +125,27 @@ namespace ExtryzeDLL.Blam.ThirdGen
             return new ThirdGenStringIDSource(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo);
         }
 
-        private ThirdGenMapGlobalsMeta LoadMapGlobals(IReader reader, BuildInformation buildInfo)
+        private ThirdGenLanguageGlobals LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
         {
-            ITag matg = FindTagByClass(MatgMagic);
-            if (matg == null)
-                throw new InvalidOperationException("The cache file is missing a matg tag.");
+            // Check for a PATG tag, and if one isn't found, then use MATG
+            ITag tag = null;
+            StructureLayout layout = null;
+            if (buildInfo.HasLayout("patg"))
+            {
+                tag = FindTagByClass(PatgMagic);
+                layout = buildInfo.GetLayout("patg");
+            }
+            if (tag == null)
+            {
+                tag = FindTagByClass(MatgMagic);
+                layout = buildInfo.GetLayout("matg");
+            }
+            if (tag == null || layout == null)
+                throw new InvalidOperationException("The cache file is missing locale information.");
 
-            reader.SeekTo(matg.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("matg"));
-            return new ThirdGenMapGlobalsMeta(values, _header.LocalePointerConverter, buildInfo);
+            reader.SeekTo(tag.MetaLocation.AsOffset());
+            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+            return new ThirdGenLanguageGlobals(values, _header.LocalePointerConverter, buildInfo);
         }
 
         private ThirdGenScenarioMeta LoadScenario(IReader reader, BuildInformation buildInfo)
@@ -160,6 +172,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         }
 
         private static int MatgMagic = CharConstant.FromString("matg");
+        private static int PatgMagic = CharConstant.FromString("patg");
         private static int ScnrMagic = CharConstant.FromString("scnr");
     }
 }

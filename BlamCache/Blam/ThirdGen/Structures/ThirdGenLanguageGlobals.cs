@@ -8,11 +8,11 @@ using ExtryzeDLL.Flexibility;
 
 namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
-    public class ThirdGenMapGlobalsMeta
+    public class ThirdGenLanguageGlobals
     {
         private List<ILanguage> _languages;
 
-        public ThirdGenMapGlobalsMeta(StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
+        public ThirdGenLanguageGlobals(StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
         {
             _languages = LoadLanguages(values, converter, buildInfo);
         }
