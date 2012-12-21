@@ -48,7 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class MetaEditor : UserControl
     {
-        private EndianStream _stream;
+        private IStreamManager _streamManager;
         private TagEntry _tag;
         private TagHierarchy _tags;
         private BuildInformation _buildInfo;
@@ -62,7 +62,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
         private Timer _searchTimer;
 
-        public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, EndianStream stream)
+        public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
 
@@ -70,7 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _tags = tags;
             _buildInfo = buildInfo;
             _cache = cache;
-            _stream = stream;
+            _streamManager = streamManager;
             _searchTimer = new Timer(SearchTimer);
 
             // Load Plugin Path
@@ -103,9 +103,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _flattener = new ReflexiveFlattener();
                     _flattener.Flatten(_pluginVisitor.Values);
 
-                    uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
-                    MetaReader metaReader = new MetaReader(_stream, baseOffset, _cache);
-                    metaReader.ReadFields(_pluginVisitor.Values);
+                    using (EndianReader reader = new EndianReader(_streamManager.OpenRead(), Endian.BigEndian))
+                    {
+                        uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
+                        MetaReader metaReader = new MetaReader(reader, baseOffset, _cache);
+                        metaReader.ReadFields(_pluginVisitor.Values);
+                    }
 
                     panelMetaComponents.ItemsSource = _pluginVisitor.Values;
 
@@ -158,12 +161,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 btnPluginRefresh.Visibility         =   System.Windows.Visibility.Visible;
             }
         }
-        private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = false)
+        private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
         {
             if (type == MetaWriter.SaveType.Cache)
             {
-                MetaWriter metaUpdate = new MetaWriter(_stream, _cache, type, onlyUpdateChanged);
-                metaUpdate.Poke(_pluginVisitor.Values);
+                using (EndianWriter writer = new EndianWriter(_streamManager.OpenWrite(), Endian.BigEndian))
+                {
+                    MetaWriter metaUpdate = new MetaWriter(writer, _cache, type, onlyUpdateChanged);
+                    metaUpdate.Poke(_pluginVisitor.Values);
+                }
 
                 if (showActionDialog)
                     MetroMessageBox.Show("Meta Saved", "The metadata has been saved back to the original file.");
@@ -178,9 +184,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     if (showActionDialog)
                     {
                         if (onlyUpdateChanged)
-                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the Xbox 360 Console.");
+                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to your Xbox 360 console.");
                         else
-                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the Xbox 360 Console.");
+                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to your Xbox 360 console.");
                     }
                 }
                 else
@@ -231,6 +237,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         
         private void metaEditor_KeyDown(object sender, KeyEventArgs e)
         {
+            // Require Ctrl to be down
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
+                return;
+
             switch (e.Key)
             {
                 case Key.S:
@@ -239,21 +249,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     break;
 
                 case Key.P:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        // Poke Changed
-                        UpdateMeta(MetaWriter.SaveType.Memory, true);
-                    else if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    {
                         // Poke All
                         UpdateMeta(MetaWriter.SaveType.Memory, false);
+                    }
+                    else
+                    {
+                        // Poke Changed
+                        UpdateMeta(MetaWriter.SaveType.Memory, true);
+                    }
                     break;
 
                 case Key.R:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        // Refresh Plugin
-                        RefreshEditor();
-                    else if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    {
                         // Show Plugin Revision Viewer
                         RevisionViewer();
+                    }
+                    else
+                    {
+                        // Refresh Plugin
+                        RefreshEditor();
+                    }
                     break;
             }
         }

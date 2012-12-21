@@ -28,7 +28,7 @@ namespace ExtryzeDLL.IO
     /// Writes binary data to a stream.
     /// The endianness can be dynamically changed.
     /// </summary>
-    public class EndianWriter : IWriter
+    public class EndianWriter : IWriter, IDisposable
     {
         /// <summary>
         /// Constructs a new EndianWriter.
@@ -260,6 +260,11 @@ namespace ExtryzeDLL.IO
         public void Skip(long count)
         {
             _stream.Seek(count, SeekOrigin.Current);
+        }
+
+        public void Dispose()
+        {
+            _stream.Dispose();
         }
 
         /// <summary>

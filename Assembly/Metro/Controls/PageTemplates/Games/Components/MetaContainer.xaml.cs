@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         #endregion
 
-        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, EndianStream stream)
+        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
 
@@ -53,7 +53,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             tabTagInfo.Content = metaInformation;
 
             // Create Meta Editor Tab
-            MetaEditor metaEditor = new MetaEditor(_buildInfo, _tag, tags, _cache, stream);
+            MetaEditor metaEditor = new MetaEditor(_buildInfo, _tag, tags, _cache, streamManager);
             tabMetaEditor.Content = metaEditor;
 
             // Create Plugin Editor Tab

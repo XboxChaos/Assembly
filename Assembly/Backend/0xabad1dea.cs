@@ -14,7 +14,7 @@ namespace Assembly.Backend
     {
         public class IWff
         {
-            public static bool Heman(EndianStream stream)
+            public static bool Heman(EndianReader reader)
             {
                 try
                 {
@@ -22,8 +22,8 @@ namespace Assembly.Backend
                     {
                         //if (CheckFileIsDownloaded())
                         //{
-                        stream.SeekTo(0x00);
-                        if (stream.ReadUInt32() == 1230464614)
+                        reader.SeekTo(0x00);
+                        if (reader.ReadUInt32() == 1230464614)
                         {
                             // Play Video
                             Settings.homeWindow.mediaIWff.LoadedBehavior = System.Windows.Controls.MediaState.Manual;

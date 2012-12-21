@@ -27,18 +27,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     public partial class LocaleEditor : UserControl
     {
         private ThirdGenCacheFile _cache;
-        private IReader _reader;
+        private IStreamManager _streamManager;
         private ILanguage _currentLanguage;
         private IList<string> _currentLocaleTable;
         private ObservableCollection<LocaleEntry> locales;
         private ObservableCollection<LanguageEntry> languages = new ObservableCollection<LanguageEntry>();
 
-        public LocaleEditor(ThirdGenCacheFile cache, IReader reader, int index)
+        public LocaleEditor(ThirdGenCacheFile cache, IStreamManager streamManager, int index)
         {
             InitializeComponent();
 
             _cache = cache;
-            _reader = reader;
+            _streamManager = streamManager;
             _currentLanguage = cache.Languages[index];
 
             Thread thrd = new Thread(new ThreadStart(LoadLanguage));
@@ -58,7 +58,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         /// </summary>
         private void LoadLanguage()
         {
-            _currentLocaleTable = _currentLanguage.LoadStrings(_reader);
+            using (EndianReader reader = new EndianReader(_streamManager.OpenRead(), Endian.BigEndian))
+            {
+                _currentLocaleTable = _currentLanguage.LoadStrings(reader);
+            }
             locales = new ObservableCollection<LocaleEntry>();
 
             for (int i = 0; i < _currentLocaleTable.Count; i++)
