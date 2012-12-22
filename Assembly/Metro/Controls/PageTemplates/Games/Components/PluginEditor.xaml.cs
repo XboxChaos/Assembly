@@ -18,6 +18,10 @@ using ExtryzeDLL.Plugins;
 using Assembly.Backend.Plugins;
 using System.IO;
 using ExtryzeDLL.Flexibility;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Highlighting;
+using System.Reflection;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -26,7 +30,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class PluginEditor : UserControl
     {
-
         private BuildInformation _buildInfo;
         private string _pluginPath;
         private MetaContainer _parent;
@@ -39,6 +42,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _buildInfo = buildInfo;
             _parent = parent;
             _sibling = sibling;
+
+            // Load XML syntax highlighting
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly(); // :P
+            using (Stream s = assembly.GetManifestResourceStream("Assembly.SyntaxHighlighting.XMLOrange.xshd"))
+            {
+                using (XmlTextReader reader = new XmlTextReader(s))
+                    txtPlugin.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+            }
 
             // Load Plugin Path
             string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic));
