@@ -49,6 +49,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     public partial class MetaEditor : UserControl
     {
         private IStreamManager _streamManager;
+        private IReader _reader;
         private TagEntry _tag;
         private TagHierarchy _tags;
         private BuildInformation _buildInfo;
@@ -103,12 +104,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _flattener = new ReflexiveFlattener();
                     _flattener.Flatten(_pluginVisitor.Values);
 
-                    using (EndianReader reader = new EndianReader(_streamManager.OpenRead(), Endian.BigEndian))
-                    {
-                        uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
-                        MetaReader metaReader = new MetaReader(reader, baseOffset, _cache);
-                        metaReader.ReadFields(_pluginVisitor.Values);
-                    }
+                    uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
+                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache);
+                    metaReader.ReadFields(_pluginVisitor.Values);
 
                     panelMetaComponents.ItemsSource = _pluginVisitor.Values;
 

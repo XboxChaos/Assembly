@@ -12,19 +12,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class MetaReader : IMetaFieldVisitor
     {
+        private IStreamManager _streamManager;
         private IReader _reader;
         private uint _baseOffset = 0;
         private ICacheFile _cache;
         private HashSet<ReflexiveData> _attachedFields = new HashSet<ReflexiveData>();
 
-        public MetaReader(IReader reader, uint baseOffset, ICacheFile cache)
+        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache)
         {
-            _reader = reader;
+            _streamManager = streamManager;
             _baseOffset = baseOffset;
             _cache = cache;
         }
 
-        public void ReadField(MetaField field)
+        private void ReadField(MetaField field)
         {
             if (!field.HasChanged)
             {
@@ -35,8 +36,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void ReadFields(IList<MetaField> fields)
         {
-            for (int i = 0; i < fields.Count; i++)
-                ReadField(fields[i]);
+            bool opened = OpenReader();
+            try
+            {
+                for (int i = 0; i < fields.Count; i++)
+                    ReadField(fields[i]);
+            }
+            finally
+            {
+                if (opened)
+                    CloseReader();
+            }
         }
 
         public void ReadReflexive(ReflexiveData reflexive)
@@ -294,6 +304,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
         }
 
+        /// <summary>
+        /// Opens the file for reading and sets _reader to the stream. Must be done before any I/O operations are performed.
+        /// </summary>
+        /// <returns>false if the file was already open.</returns>
+        private bool OpenReader()
+        {
+            if (_reader == null)
+            {
+                _reader = new EndianReader(_streamManager.OpenRead(), Endian.BigEndian);
+                return true;
+            }
+            return false;
+        }
+
+        private void CloseReader()
+        {
+            if (_reader != null)
+            {
+                _reader.Close();
+                _reader = null;
+            }
+        }
+
         private void SeekToOffset(uint offset)
         {
             _reader.SeekTo(_baseOffset + offset);
@@ -313,7 +346,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             ReflexiveData field = (ReflexiveData)sender;
             if (e.PropertyName == "CurrentIndex" || e.PropertyName == "Length")
-                ReadReflexive(field);
+            {
+                bool opened = OpenReader();
+                try
+                {
+                    ReadReflexive(field);
+                }
+                finally
+                {
+                    if (opened)
+                        CloseReader();
+                }
+            }
         }
 
         void reflexive_Cloned(object sender, ReflexiveClonedEventArgs e)

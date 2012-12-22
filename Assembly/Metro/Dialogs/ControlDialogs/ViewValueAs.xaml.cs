@@ -29,14 +29,14 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         private MetaReader _reader;
         private IList<MetaField> _fields;
 
-        public ViewValueAs(ICacheFile cacheFile, Stream stream, IList<MetaField> fields, uint cacheOffset)
+        public ViewValueAs(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
             InitializeComponent();
 
             DwmDropShadow.DropShadowToWindow(this);
 
-            _stream = stream;
-            _reader = new MetaReader(new EndianReader(stream, Endian.BigEndian), cacheOffset, cacheFile);
+            _stream = streamManager.OpenRead();
+            _reader = new MetaReader(streamManager, cacheOffset, cacheFile);
             _fields = fields;
             _cacheOffset = _cacheOffsetOriginal = cacheOffset;
 
