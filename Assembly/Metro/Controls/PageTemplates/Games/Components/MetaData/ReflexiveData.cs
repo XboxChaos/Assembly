@@ -200,7 +200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 // Add new pages
                 for (int i = _pages.Count; i < count; i++)
-                    _pages.Add(new ReflexivePage(i + 1, _template.Count));
+                    _pages.Add(new ReflexivePage(i, _template.Count));
                 if (CurrentIndex < 0)
                     CurrentIndex = 0;
             }
