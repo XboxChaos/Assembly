@@ -20,13 +20,24 @@
         </TextBox>-->
         <avalonEdit:TextEditor Name="txtPlugin" Height="Auto" Margin="0,0,0,35"
                                FontFamily="Consolas" FontSize="10pt"
-                               Background="#252526" BorderBrush="#FF595959" Foreground="White"/>
+                               Background="#252526" BorderBrush="#FF595959" Foreground="White"
+                               ShowLineNumbers="True"
+                               MouseRightButtonDown="txtPlugin_MouseRightButtonDown_1">
+            <avalonEdit:TextEditor.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="Cut" />
+                    <MenuItem Command="Copy" />
+                    <MenuItem Command="Paste" />
+                </ContextMenu>
+            </avalonEdit:TextEditor.ContextMenu>
+        </avalonEdit:TextEditor>
         
         <Grid Height="35" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
             <Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
                 <Grid>
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="btnPluginSave" Content="Save and load" ToolTip="Save and Reload the current plugin." Width="100" Margin="10,0,0,0" Click="btnPluginSave_Click"/>
+                        <Button x:Name="btnPluginSave" Content="Save and Refresh" ToolTip="Save and reload the current plugin." Width="144" Margin="10,5,0,5" Click="btnPluginSave_Click"/>
+                        <Button x:Name="btnLoadFromDisk" Content="Reload from Disk" ToolTip="Reloads the plugin from disk, erasing any unsaved changes." Margin="10,5,0,5" Width="144" Click="btnLoadFromDisk_Click_1"/>
                     </StackPanel>
                 </Grid>
             </Border>

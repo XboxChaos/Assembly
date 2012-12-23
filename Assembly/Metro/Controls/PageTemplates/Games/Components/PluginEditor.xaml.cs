@@ -1,27 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Assembly.Backend;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Util;
-using ExtryzeDLL.Plugins;
-using Assembly.Backend.Plugins;
-using System.IO;
+using Assembly.SyntaxHighlighting;
 using ExtryzeDLL.Flexibility;
-using System.Xml;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.AvalonEdit.Highlighting;
-using System.Reflection;
+using ExtryzeDLL.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -30,7 +15,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class PluginEditor : UserControl
     {
-        private BuildInformation _buildInfo;
         private string _pluginPath;
         private MetaContainer _parent;
         private MetaEditor _sibling;
@@ -39,31 +23,71 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             InitializeComponent();
 
-            _buildInfo = buildInfo;
             _parent = parent;
             _sibling = sibling;
 
-            // Load XML syntax highlighting
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly(); // :P
-            using (Stream s = assembly.GetManifestResourceStream("Assembly.SyntaxHighlighting.XMLOrange.xshd"))
-            {
-                using (XmlTextReader reader = new XmlTextReader(s))
-                    txtPlugin.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-            }
+            LoadSyntaxHighlighting();
+            Settings.SettingsChanged += Settings_SettingsChanged;
 
-            // Load Plugin Path
             string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic));
-            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", buildInfo.PluginFolder, className);
+            LoadPlugin();
+        }
 
-            if (File.Exists(_pluginPath))
-                txtPlugin.Text = File.ReadAllText(_pluginPath);
+        void Settings_SettingsChanged(object sender, EventArgs e)
+        {
+            // Reload the syntax highlighting definition in case the theme changed
+            LoadSyntaxHighlighting();
         }
 
         private void btnPluginSave_Click(object sender, RoutedEventArgs e)
         {
             File.WriteAllText(_pluginPath, txtPlugin.Text);
             _sibling.RefreshEditor();
-            _parent.tbMetaEditors.SelectedIndex = 3;
+            _parent.tbMetaEditors.SelectedIndex = 4;
+        }
+
+        private void btnLoadFromDisk_Click_1(object sender, RoutedEventArgs e)
+        {
+            LoadPlugin();
+        }
+
+        private void txtPlugin_MouseRightButtonDown_1(object sender, MouseButtonEventArgs e)
+        {
+            // Move the cursor to the place where the click occurred (AvalonEdit doesn't do this by default)
+            // http://community.sharpdevelop.net/forums/p/12521/34105.aspx
+            var position = txtPlugin.GetPositionFromPoint(e.GetPosition(txtPlugin));
+            if (position.HasValue)
+                txtPlugin.TextArea.Caret.Position = position.Value;
+        }
+
+        private void LoadSyntaxHighlighting()
+        {
+            // Load the file depending upon which theme is being used
+            string filename = "XMLBlue.xshd";
+            switch (Settings.applicationAccent)
+            {
+                case Settings.Accents.Blue:
+                    filename = "XMLBlue.xshd";
+                    break;
+                case Settings.Accents.Green:
+                    filename = "XMLGreen.xshd";
+                    break;
+                case Settings.Accents.Orange:
+                    filename = "XMLOrange.xshd";
+                    break;
+                case Settings.Accents.Purple:
+                    filename = "XMLPurple.xshd";
+                    break;
+            }
+            txtPlugin.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
+        }
+
+        private void LoadPlugin()
+        {
+            // Load Plugin Path
+            if (File.Exists(_pluginPath))
+                txtPlugin.Text = File.ReadAllText(_pluginPath);
         }
     }
 }
