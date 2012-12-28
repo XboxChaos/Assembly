@@ -109,26 +109,36 @@ namespace PluginConverter
                 worker.ReportProgress(progress, "Converting " + name + "...");
                 progress++;
 
-                if (file.EndsWith(".asc") || file.EndsWith(".alt") || file.EndsWith(".ent"))
+                if (file.EndsWith(".asc") || file.EndsWith(".alt") || file.EndsWith(".ent") || file.EndsWith(".xml"))
                 {
                     XmlReader reader = null;
                     XmlWriter writer = null;
-                    //try
+                    try
                     {
+                        string extension = ".xml";
+                        if (ascensionFmt.Checked)
+                            extension = ".asc";
+                        else if (alterationFmt.Checked)
+                            extension = ".alt";
+
                         XmlWriterSettings settings = new XmlWriterSettings();
                         settings.Indent = true;
                         settings.IndentChars = "\t";
-                        writer = XmlWriter.Create(Path.Combine(outputDir, Path.ChangeExtension(name, ".xml")), settings);
+                        string outPath = Path.Combine(outputDir, Path.ChangeExtension(name, extension));
+                        writer = XmlWriter.Create(outPath, settings);
                         reader = XmlReader.Create(file);
 
-                        AssemblyPluginWriter pluginWriter = new AssemblyPluginWriter(writer, gameName);
-                        UniversalPluginLoader.LoadPlugin(reader, pluginWriter);
+                        IPluginVisitor visitor;
+                        if (assemblyFmt.Checked)
+                            visitor = new AssemblyPluginWriter(writer, gameName);
+                        else if (ascensionFmt.Checked)
+                            visitor = new AscensionPluginWriter(writer, Path.GetFileNameWithoutExtension(file));
+                        else
+                            throw new InvalidOperationException("Unsupported output format.");
+
+                        UniversalPluginLoader.LoadPlugin(reader, visitor);
                     }
-                    //catch (Exception ex)
-                    //{
-                    //    throw new Exception("Unable to convert " + Path.GetFileName(file) + ":\n" + ex.ToString(), ex);
-                    //}
-                    //finally
+                    finally
                     {
                         if (reader != null)
                             reader.Close();
@@ -148,6 +158,12 @@ namespace PluginConverter
         private void MainForm_Load(object sender, EventArgs e)
         {
             targetGame.SelectedIndex = 0;
+        }
+
+        private void assemblyFmt_CheckedChanged(object sender, EventArgs e)
+        {
+            // Only Assembly plugins use the "target game" feature
+            targetGame.Enabled = assemblyFmt.Checked;
         }
     }
 }
