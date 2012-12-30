@@ -115,8 +115,9 @@ namespace ExtryzeDLL.Plugins
         public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
         {
             if (!withClass)
-                offset -= 12;
-            WriteBasicValue("tagref", name, offset, visible);
+                WriteBasicValue("uint32", name + " Tag ID", offset, visible);
+            else
+                WriteBasicValue("tagref", name, offset, visible);
         }
 
         public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
