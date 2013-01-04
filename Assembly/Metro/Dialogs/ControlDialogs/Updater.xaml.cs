@@ -120,16 +120,20 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
         private void ExtractUpdateManager(string updateZip)
         {
-            Stream zipDLL = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
-            Stream exeUpd = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.AssemblyUpdateManager.exe");
-
             string tempDir = System.IO.Path.GetTempPath();
+
+            // Extract SharpZipLib
+            Stream zipDLL = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
             using (var zipFileStream = new FileStream(System.IO.Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll"), FileMode.Create))
                 zipDLL.CopyTo(zipFileStream);
+            zipDLL.Close();
 
+            // Extract AssemblyUpdateManager.exe
+            Stream exeUpd = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.AssemblyUpdateManager.exe");
             string updaterPath = System.IO.Path.Combine(tempDir, "AssemblyUpdateManager.exe");
             using (var exeFileStream = new FileStream(updaterPath, FileMode.Create))
                 exeUpd.CopyTo(exeFileStream);
+            exeUpd.Close();
 
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string exeDir = System.IO.Path.GetDirectoryName(exePath);

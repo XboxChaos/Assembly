@@ -93,8 +93,6 @@ namespace Assembly
                     Settings.UpdateSettings();
                 };
 
-
-
 #if !DEBUG
             Application.Current.DispatcherUnhandledException += (o, args) =>
                 {

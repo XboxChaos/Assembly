@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -54,6 +55,14 @@ namespace Assembly.Backend
             string tempDir = Path.GetTempPath();
             string updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
             string dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
+
+            // Wait for the updater to close
+            Process[] updaterProcesses = Process.GetProcessesByName("AssemblyUpdateManager.exe");
+            foreach (Process process in updaterProcesses)
+            {
+                if (!process.HasExited)
+                    process.WaitForExit();
+            }
 
             if (File.Exists(updaterPath))
                 File.Delete(updaterPath);
