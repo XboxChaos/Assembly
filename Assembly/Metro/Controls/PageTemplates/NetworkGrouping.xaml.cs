@@ -18,6 +18,8 @@ using System.Threading;
 using Assembly.Backend;
 using System.Web.Script.Serialization;
 using Assembly.Backend.UIX;
+using System.Runtime.Serialization;
+using Assembly.Backend.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -26,7 +28,11 @@ namespace Assembly.Metro.Controls.PageTemplates
     /// </summary>
     public partial class NetworkGrouping : UserControl
     {
-        private JavaScriptSerializer JSON = new JavaScriptSerializer();
+        class UserCredentials
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
 
         public NetworkGrouping()
         {
@@ -38,64 +44,53 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         private void btnSignIn_Click(object sender, RoutedEventArgs e)
         {
-            Thread thrd = new Thread(new ThreadStart(SignInThread));
+            UserCredentials credentials = new UserCredentials();
+            credentials.Username = txtAccountUsername.Text;
+            credentials.Password = txtAccountPassword.Password;
+
+            Thread thrd = new Thread(new ParameterizedThreadStart(SignInThread));
             thrd.SetApartmentState(ApartmentState.STA);
-            thrd.Start();
+            thrd.Start(credentials);
         }
-        private ServerConnector.ServerError signinError = null;
-        private SignInResponse _signinResponse;
-        public SignInResponse SigninData { get { return _signinResponse; } }
-        private void SignInThread()
+
+        private void SignInThread(object credentialsObj)
         {
             // Try to Sign In
             try
             {
-                SignIn signIn = new SignIn();
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    // Create JSON Query
-                    signIn = new SignIn()
-                    {
-                        username = txtAccountUsername.Text,
-                        password = MD5Crypto.ComputeHashToString(txtAccountPassword.Password).ToLower()
-                    };
-                }));
+                UserCredentials credentials = (UserCredentials)credentialsObj;
 
                 // Send Signin Package to Server        
-                string svrResponse = ServerConnector.SendServerAPICall(signIn);
-                if (svrResponse.Contains("assembly_error_code"))
+                SignInResponse response = SignIn.AttemptSignIn(credentials.Username, credentials.Password);
+                if (!response.Successful)
                 {
-                    signinError = JSON.Deserialize<ServerConnector.ServerError>(svrResponse);
-                    throw new Exception();
+                    Dispatcher.Invoke(new Action(delegate
+                        {
+                            MetroMessageBox.Show("Unable to Sign In", response.ErrorMessage);
+                        }));
+                    return;
                 }
-                _signinResponse = JSON.Deserialize<SignInResponse>(svrResponse);
-
 
                 // Set the UI to show that we have signed in successfully
                 Dispatcher.Invoke(new Action(delegate
                 {
                     gridNetworkType.Visibility = gridSignedIn.Visibility = System.Windows.Visibility.Visible;
                     gridSignIn.Visibility = System.Windows.Visibility.Collapsed;
-                    lblSignedInWelcome.Text = _signinResponse.display_name.ToLower();
-                    lblSignedInPosts.Text = string.Format("posts: {0:##,###}", _signinResponse.post_count.ToString());
+                    lblSignedInWelcome.Text = response.DisplayName.ToLower();
+                    lblSignedInPosts.Text = string.Format("posts: {0:##,###}", response.PostCount.ToString());
 
                     // Validate Avatar
-                    if (_signinResponse.avatar_url != "" && _signinResponse.avatar_url != null && _signinResponse.avatar_url != "http://uploads.xbchaos.netdna-cdn.com/")
-                            ImageLoader.LoadImageAndFade(imgSignedInAvatar, new Uri(_signinResponse.avatar_url), new AnimationHelper(this));
+                    if (!string.IsNullOrEmpty(response.AvatarURL) && response.AvatarURL != "http://uploads.xbchaos.netdna-cdn.com/")
+                            ImageLoader.LoadImageAndFade(imgSignedInAvatar, new Uri(response.AvatarURL), new AnimationHelper(this));
 
-                    MetroMessageBox.Show("welcome", "Welcome to network poking, " + _signinResponse.display_name);
+                    MetroMessageBox.Show("welcome", "Welcome to network poking, " + response.DisplayName);
                 }));
             }
             catch (Exception ex)
             {
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    if (signinError != null)
-                        MetroMessageBox.Show("Unable to Sign In", signinError.error_description);
-                    else
-                        MetroException.Show(ex);
-
-                    signinError = null;
+                    MetroException.Show(ex);
                 }));
             }
         }
@@ -105,24 +100,6 @@ namespace Assembly.Metro.Controls.PageTemplates
             // Remove all session data, then close this mofo
 
             return true;
-        }
-
-        public class SignIn
-        {
-            public string action = "signin";
-            public string username { get; set; }
-            public string password { get; set; }
-        }
-        public class SignInResponse
-        {
-            public int timestamp { get; set; }
-            public int member_id { get; set; }
-            public string session_id { get; set; }
-            public string display_name { get; set; }
-            public string signin_name { get; set; }
-            public int group_id { get; set; }
-            public int post_count { get; set; }
-            public string avatar_url { get; set; }
         }
     }
 }

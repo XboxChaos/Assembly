@@ -15,49 +15,51 @@ namespace AssemblyUpdateManager
     {
         static void Main(string[] args)
         {
-            try
+            if (args.Length != 2)
+            {
+                Console.Error.WriteLine("Error: not enough arguments");
+                Console.Error.WriteLine("Usage: AssemblyUpdateManager <update zip> <assembly exe>");
+                return;
+            }
+            string zipPath = args[0];
+            string exePath = args[1];
+
+            //try
             {
                 // Kill retail shit
-                System.Diagnostics.Process[] openAssemblys = Process.GetProcessesByName("Assembly.exe");
+                Process[] openAssemblys = Process.GetProcessesByName(Path.GetFileName(exePath));
                 foreach (Process process in openAssemblys)
+                {
                     if (!process.HasExited)
                         process.Kill();
+                }
+
                 // Kill dev shit
-                openAssemblys = Process.GetProcessesByName("Assembly.vshost.exe");
+                openAssemblys = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exePath) + ".vshost.exe");
                 foreach (Process process in openAssemblys)
+                {
                     if (!process.HasExited)
                         process.Kill();
+                }
 
-                INIFile ini = new INIFile(GetTemporaryInstallerLocation() + "install.asmini");
-                string basePath = ini.IniReadValue("Assembly Update", "BasePath");
-                string assemblyPath = ini.IniReadValue("Assembly Update", "AssemblyPath");
-
-                // Delete and Move the new Assembly
-                if (File.Exists(assemblyPath))
-                    File.Delete(assemblyPath);
-                File.Move(GetTemporaryInstallerLocation() + "assembly_updated.inst", assemblyPath);
-
-                // Extract Components
+                // Extract the update zip
                 FastZip fz = new FastZip();
                 fz.CreateEmptyDirectories = true;
-                fz.ExtractZip(GetTemporaryInstallerLocation() + "assembly_components_updated.inst", basePath, null);
+                fz.ExtractZip(zipPath, Directory.GetCurrentDirectory(), null);
+                File.Delete(zipPath);
 
                 // Launch "The New iPa... Assembly"
-                Process.Start(assemblyPath);
+                Process.Start(exePath);
             }
-            catch (Exception ex)
+            /*catch (Exception ex)
             {
-                File.WriteAllText(GetTemporaryInstallerLocation() + "error.txt", ex.ToString());
-            }
-        }
+                // Write the exception data to a temporary file and run Assembly again, telling it to display it
+                string filePath = Path.GetTempFileName();
+                File.WriteAllText(filePath, ex.ToString());
 
-        /// <summary>
-        /// Get the temporary location to save update stuff
-        /// </summary>
-        public static string GetTemporaryInstallerLocation()
-        {
-            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\update_storage\\path.txt", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\update_storage\\");
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\update_storage\\";
+                // The --updateError switch tells Assembly to display an exception message read from the text file
+                Process.Start(exePath, "--updateError \"" + filePath + "\"");
+            }*/
         }
     }
 }

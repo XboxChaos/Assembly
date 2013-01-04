@@ -48,6 +48,19 @@ namespace Assembly.Backend
                 try { fi.Delete(); }
                 catch { }
         }
+
+        public static void EmptyUpdaterLocations()
+        {
+            string tempDir = Path.GetTempPath();
+            string updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
+            string dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
+
+            if (File.Exists(updaterPath))
+                File.Delete(updaterPath);
+            if (File.Exists(dllPath))
+                File.Delete(dllPath);
+        }
+
         /// <summary>
         /// Gets the parent directory of the application's exe
         /// </summary>
@@ -61,13 +74,6 @@ namespace Assembly.Backend
         public static string GetApplicationAssemblyLocation()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
-        }
-        /// <summary>
-        /// Get the temporary location to save update stuff
-        /// </summary>
-        public static string GetTemporaryInstallerLocation()
-        {
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\update_storage\\";
         }
         /// <summary>
         /// Get the temporary location to save images
@@ -93,27 +99,6 @@ namespace Assembly.Backend
 
             if (!Directory.Exists(GetTemporaryErrorLogs()))
                 Directory.CreateDirectory(GetTemporaryErrorLogs());
-
-            if (!Directory.Exists(GetTemporaryInstallerLocation()))
-                Directory.CreateDirectory(GetTemporaryInstallerLocation());
-        }
-
-        public enum UpdaterType { Assembly, Components }
-        public static void EmptyUpdaterLocations()
-        {
-            DirectoryInfo tmpLog = new DirectoryInfo(GetTemporaryInstallerLocation());
-            FileInfo[] files = tmpLog.GetFiles("*");
-
-            foreach (FileInfo fi in files)
-                try { fi.Delete(); }
-                catch { }
-        }
-        public static string GetDownloadPath(UpdaterType type)
-        {
-            if (type == UpdaterType.Assembly)
-                return GetTemporaryInstallerLocation() + "assembly_updated.inst";
-            else
-                return GetTemporaryInstallerLocation() + "assembly_components_updated.inst";
         }
 
         /// <summary>

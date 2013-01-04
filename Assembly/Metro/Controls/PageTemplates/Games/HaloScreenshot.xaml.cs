@@ -17,6 +17,7 @@ using Assembly.Backend;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using Assembly.Metro.Dialogs;
+using Assembly.Backend.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -115,7 +116,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         encoder.Save(stream);
                 }));
 
-                string newImageID = ServerConnector.PostImageToImgur(filePath);
+                string newImageID = Imgur.PostImage(filePath);
 
                 Dispatcher.Invoke(new Action(delegate
                 {

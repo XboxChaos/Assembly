@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Assembly.Backend;
+using Assembly.Backend.Net;
 using Assembly.Metro.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
@@ -26,14 +27,15 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     /// </summary>
     public partial class Updater : Window
     {
-        private Backend.Updater.UpdateFormat _updateFormat;
+        private UpdateInfo _info;
+        private string _currentVersion;
 
-        public Updater(Backend.Updater.UpdateFormat updateFormat)
+        public Updater(UpdateInfo info)
         {
             InitializeComponent();
             DwmDropShadow.DropShadowToWindow(this);
 
-            _updateFormat = updateFormat;
+            _info = info;
 
             LoadDataFromFormat();
 
@@ -46,12 +48,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
         private void LoadDataFromFormat()
         {
-            lblCurrentVersion.Text = _updateFormat.AssemblyVersionSpecial;
-            lblServerVersion.Text = _updateFormat.ServerVersionSpecial;
-            lblServerHash.Text = _updateFormat.Hash.ToUpper();
+            _currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            lblCurrentVersion.Text = _currentVersion;
+            lblServerVersion.Text = _info.LatestVersion;
 
-            lblChangeLog.Text = _updateFormat.ChangeLog;
+            BuildChangelog(_info);
         }
+
         private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Left = Left + e.HorizontalChange;
@@ -68,66 +71,77 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             storyboard.Begin();
 
             // Begin Update Downloading...
-            VariousFunctions.EmptyUpdaterLocations();
-            DownloadAssembly();
+            DownloadUpdate();
         }
+
         private void btnIgnoreUpdate_Click(object sender, RoutedEventArgs e) { this.Close(); }
 
+        private void BuildChangelog(UpdateInfo info)
+        {
+            for (int i = 0; i < info.Changelogs.Length; i++)
+            {
+                UpdateChangelog changelog = info.Changelogs[i];
+                if (i == 0)
+                    lblChangeLog.Inlines.Add(new Bold(new Run(string.Format("What's new in version {0} (latest):", changelog.Version))));
+                else
+                    lblChangeLog.Inlines.Add(new Bold(new Run(string.Format("Changes made in previous version {0}:", changelog.Version))));
+
+                lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
+                lblChangeLog.Inlines.Add(new Run(changelog.Changelog.TrimEnd('\r', '\n')));
+                lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
+            }
+        }
+
         #region Update Installing
-        private void DownloadAssembly()
+        private void DownloadUpdate()
         {
             WebClient wb = new WebClient();
+            string tempFile = System.IO.Path.GetTempFileName();
             wb.DownloadFileCompleted += (o, args) =>
                 {
+                    if (args.Error != null)
+                    {
+                        File.Delete(tempFile);
+                        throw args.Error;
+                    }
                     pbDownloadProgress.IsIndeterminate = true;
-                    DownloadComponents();
+                    ExtractUpdateManager(tempFile);
                 };
             wb.DownloadProgressChanged += (o, args) =>
                 {
-                    lblDownloadProgress.Text = string.Format("Currently Downloading: {0} -- ({1}%)", "Assembly's Assembly", args.ProgressPercentage);
+                    lblDownloadProgress.Text = string.Format("Downloading Update -- ({0}%)", args.ProgressPercentage);
                     pbDownloadProgress.Value = args.ProgressPercentage;
                 };
-            wb.DownloadFileAsync(new Uri(_updateFormat.EXELocation), VariousFunctions.GetDownloadPath(VariousFunctions.UpdaterType.Assembly));
+            
+            wb.DownloadFileAsync(new Uri(_info.DownloadLink), tempFile);
             pbDownloadProgress.Value = 0;
             pbDownloadProgress.IsIndeterminate = false;
         }
-        private void DownloadComponents()
-        {
-            WebClient wb = new WebClient();
-            wb.DownloadFileCompleted += (o, args) =>
-            {
-                pbDownloadProgress.IsIndeterminate = true;
-                CreateINI();
-            };
-            wb.DownloadProgressChanged += (o, args) =>
-            {
-                lblDownloadProgress.Text = string.Format("Currently Downloading: {0} -- ({1}%)", "Required Components {2}", args.ProgressPercentage, 
-                    Settings.applicationEasterEggs ? "for prokids" : "");
-                pbDownloadProgress.Value = args.ProgressPercentage;
-            };
-            wb.DownloadFileAsync(new Uri(_updateFormat.ComponentsLocation), VariousFunctions.GetDownloadPath(VariousFunctions.UpdaterType.Components));
-            pbDownloadProgress.Value = 0;
-            pbDownloadProgress.IsIndeterminate = false;
-        }
-        private void CreateINI()
-        {
-            INIFile ini = new INIFile(VariousFunctions.GetTemporaryInstallerLocation() + "install.asmini");
-            ini.IniWriteValue("Assembly Update", "BasePath", VariousFunctions.GetApplicationLocation());
-            ini.IniWriteValue("Assembly Update", "AssemblyPath", VariousFunctions.GetApplicationAssemblyLocation());
 
-            ExtractUpdateManager();
-        }
-        private void ExtractUpdateManager()
+        private void ExtractUpdateManager(string updateZip)
         {
-            Stream zipDLL = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Extryze.Update.ICSharpCode.SharpZipLib.dll");
-            Stream exeUpd = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Extryze.Update.AssemblyUpdateManager.exe");
+            Stream zipDLL = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
+            Stream exeUpd = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.AssemblyUpdateManager.exe");
 
-            using (var zipFileStream = new FileStream(VariousFunctions.GetTemporaryInstallerLocation() + "ICSharpCode.SharpZipLib.dll", FileMode.Create))
+            string tempDir = System.IO.Path.GetTempPath();
+            using (var zipFileStream = new FileStream(System.IO.Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll"), FileMode.Create))
                 zipDLL.CopyTo(zipFileStream);
-            using (var exeFileStream = new FileStream(VariousFunctions.GetTemporaryInstallerLocation() + "AssemblyUpdateManager.exe", FileMode.Create))
+
+            string updaterPath = System.IO.Path.Combine(tempDir, "AssemblyUpdateManager.exe");
+            using (var exeFileStream = new FileStream(updaterPath, FileMode.Create))
                 exeUpd.CopyTo(exeFileStream);
 
-            Process.Start(VariousFunctions.GetTemporaryImageLocation() + "AssemblyUpdateManager.exe");
+            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string exeDir = System.IO.Path.GetDirectoryName(exePath);
+
+            // Run the updater in a windowless setting and pass in the path to the .zip and the current .exe
+            ProcessStartInfo updater = new ProcessStartInfo(updaterPath);
+            updater.Arguments = string.Format("\"{0}\" \"{1}\"", updateZip, exePath);
+            updater.CreateNoWindow = true;
+            updater.WindowStyle = ProcessWindowStyle.Hidden;
+            updater.WorkingDirectory = exeDir;
+            Process.Start(updater);
+
             Application.Current.Shutdown();
         }
         #endregion

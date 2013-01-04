@@ -4,38 +4,23 @@ using System.Linq;
 using System.Text;
 using Assembly.Metro.Dialogs;
 using System.Windows.Threading;
+using Assembly.Backend.Net;
 
 namespace Assembly.Backend
 {
     public class Updater
     {
-        public class UpdateFormat
-        {
-            public int AssemblyVersion { get; set; }
-            public int ServerVersion { get; set; }
-            public string AssemblyVersionSpecial { get; set; }
-            public string ServerVersionSpecial { get; set; }
-            public bool CanUpdate { get; set; }
-
-            public string EXELocation { get; set; }
-            public string ComponentsLocation { get; set; }
-
-            public string ChangeLog { get; set; }
-            public string Hash { get; set; }
-        }
-        private static UpdateFormat _updateFormat = new UpdateFormat();
-
         public static void BeginUpdateProcess()
         {
             // Grab JSON Update package from the server
-            _updateFormat = ServerConnector.GetServerUpdateInfo();
+            UpdateInfo info = Updates.GetUpdateInfo();
 
-            // If there are no updates, tell the user then gtfo
-            if (!CheckForUpdates())
+            // If there are no updates, tell the user to gtfo
+            if (!UpdateAvailable(info))
             {
                 Settings.homeWindow.Dispatcher.Invoke(new Action(delegate
                     {
-                        MetroMessageBox.Show("No Update Avaiable!", "There are currently no updates avaiable for Assembly. Sorry :(.");
+                        MetroMessageBox.Show("No Update Available", "There are currently no updates available for Assembly. Sorry :(");
                     }));
                 return;
             }
@@ -43,14 +28,29 @@ namespace Assembly.Backend
             // WOAH. UPDATES.
             Settings.homeWindow.Dispatcher.Invoke(new Action(delegate
                 {
-                    MetroUpdateDialog.Show(_updateFormat);
+                    MetroUpdateDialog.Show(info);
                 }));
         }
 
-        private static bool CheckForUpdates()
+        private static bool UpdateAvailable(UpdateInfo info)
         {
-            try { return _updateFormat.CanUpdate; }
-            catch { return false; }
+            if (!info.Successful)
+                return false;
+
+            // Just convert the version strings to ints and compare
+            int serverVersion = VersionStringToInt(info.LatestVersion);
+            int localVersion = VersionStringToInt(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+
+            return (serverVersion > localVersion);
+        }
+
+        private static int VersionStringToInt(string version)
+        {
+            version = version.Replace(".", "");
+            int versionInt;
+            if (int.TryParse(version, out versionInt))
+                return versionInt;
+            return 0;
         }
     }
 }
