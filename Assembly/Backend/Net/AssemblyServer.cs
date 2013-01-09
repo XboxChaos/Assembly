@@ -106,6 +106,6 @@ namespace Assembly.Backend.Net
             return result;
         }
 
-        private const string AssemblyEndpoint = "http://assembly.xboxchaos.com/api/hub.php";
+        private const string AssemblyEndpoint = "https://www.xboxchaos.com/assembly/api/hub.php";
     }
 }
