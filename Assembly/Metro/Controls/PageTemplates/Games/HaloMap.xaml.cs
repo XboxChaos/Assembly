@@ -226,7 +226,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 {
                     foreach (ITagClass tagClass in _cacheFile.TagClasses)
                     {
-                        TagClass wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic));
+                        TagClass wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
                         classes.Add(wrapper);
                         classWrappers[tagClass] = wrapper;
                     }

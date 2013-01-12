@@ -12,6 +12,9 @@ using System.IO;
 
 namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
+    /// <summary>
+    /// Loads the stringID table from a cache file and makes it available for outside use.
+    /// </summary>
     public class ThirdGenStringIDSource : IStringIDSource
     {
         private ThirdGenStringTable _strings;
@@ -23,7 +26,20 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             _strings = new ThirdGenStringTable(reader, count, tableSize, indexTableLocation, dataLocation, buildInfo.StringIDKey);
         }
 
-        public string GetString(int id)
+        /// <summary>
+        /// All of the strings in the file.
+        /// </summary>
+        public IList<string> RawStrings
+        {
+            get { return _strings.Strings; }
+        }
+
+        /// <summary>
+        /// Returns the string that corresponds with the specified StringID.
+        /// </summary>
+        /// <param name="id">The StringID of the string to retrieve.</param>
+        /// <returns>The string if it exists, or null otherwise.</returns>
+        public string GetString(StringID id)
         {
             int index = StringIDToIndex(id);
             if (index > 0 && index < RawStrings.Count)
@@ -31,59 +47,30 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return null;
         }
 
-        public IList<string> RawStrings
+        /// <summary>
+        /// Translates a string index into a stringID which can be written to the file.
+        /// </summary>
+        /// <param name="index">The index of the string in the RawStrings list.</param>
+        /// <returns>The stringID associated with the index.</returns>
+        public int StringIDToIndex(StringID id)
         {
-            get { return _strings.Strings; }
+            if (_buildInfo.StringIDResolver != null)
+                return _buildInfo.StringIDResolver.StringIDToIndex(id);
+            else
+                return id.Value;
         }
 
-        public int StringIDToIndex(int id)
+        /// <summary>
+        /// Translates a string index into a stringID which can be written to the file.
+        /// </summary>
+        /// <param name="index">The index of the string in the RawStrings list.</param>
+        /// <returns>The stringID associated with the index.</returns>
+        public StringID IndexToStringID(int index)
         {
-            if (_buildInfo.StringIDModifiers != null)
-            {
-                foreach (BuildInformation.StringIDModifier modifier in _buildInfo.StringIDModifiers)
-                {
-                    bool modify = false;
-
-                    if (modifier.isGreaterThan)
-                        modify = (id > modifier.Identifier);
-                    else
-                        modify = (id < modifier.Identifier);
-
-                    if (modify)
-                    {
-                        if (modifier.isAddition)
-                            id += modifier.Modifier;
-                        else
-                            id -= modifier.Modifier;
-                    }
-                }
-            }
-            return id;
-        }
-
-        public int IndexToStringID(int index)
-        {
-            if (_buildInfo.StringIDModifiers != null)
-            {
-                foreach (BuildInformation.StringIDModifier modifier in _buildInfo.StringIDModifiers)
-                {
-                    bool modify = false;
-
-                    if (modifier.isGreaterThan)
-                        modify = (index > modifier.Identifier);
-                    else
-                        modify = (index < modifier.Identifier);
-
-                    if (modify)
-                    {
-                        if (modifier.isAddition)
-                            index -= modifier.Modifier;
-                        else
-                            index += modifier.Modifier;
-                    }
-                }
-            }
-            return index;
+            if (_buildInfo.StringIDResolver != null)
+                return _buildInfo.StringIDResolver.IndexToStringID(index);
+            else
+                return new StringID(index);
         }
     }
 }

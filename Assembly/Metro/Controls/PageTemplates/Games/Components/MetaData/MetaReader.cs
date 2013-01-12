@@ -187,7 +187,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             SeekToOffset(field.Offset);
             field.CacheOffset = _baseOffset + field.Offset;
             field.MemoryAddress = _cache.MetaPointerConverter.OffsetToAddress(field.CacheOffset);
-            field.Value = _cache.StringIDs.StringIDToIndex(_reader.ReadInt32());
+            field.Value = _cache.StringIDs.StringIDToIndex(new StringID(_reader.ReadInt32()));
         }
 
         public void VisitRawData(RawData field)

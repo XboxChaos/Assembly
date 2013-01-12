@@ -200,7 +200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 else
                     _writer.SeekTo(field.MemoryAddress);
 
-                _writer.WriteInt32(_cache.StringIDs.IndexToStringID(field.Value));
+                _writer.WriteInt32(_cache.StringIDs.IndexToStringID(field.Value).Value);
             }
         }
 

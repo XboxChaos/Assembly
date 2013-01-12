@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Util;
 
 namespace ExtryzeDLL.Flexibility
@@ -70,7 +71,8 @@ namespace ExtryzeDLL.Flexibility
             XAttribute gameNameAttrib = buildElement.Attribute("name");
             XAttribute localeKeyAttrib = buildElement.Attribute("localeKey");
             XAttribute stringidKeyAttrib = buildElement.Attribute("stringidKey");
-            XAttribute stringidModifiersAttrib = buildElement.Attribute("stringidModifiers");
+            XAttribute stringidModifiersAttrib = buildElement.Attribute("stringidModifiers"); // NOTE: Deprecated - use stringidDefinitions instead!
+            XAttribute stringidDefinitionsAttrib = buildElement.Attribute("stringidDefinitions");
             XAttribute filenameKeyAttrib = buildElement.Attribute("filenameKey");
             XAttribute headerSizeAttrib = buildElement.Attribute("headerSize");
             XAttribute loadStringsAttrib = buildElement.Attribute("loadStrings");
@@ -104,13 +106,15 @@ namespace ExtryzeDLL.Flexibility
                 scriptOpcodes = _basePath + @"Scripting\" + scriptDefinitionsAttrib.Value;
 
             // StringID Modifers, this is a bitch
-            IList<BuildInformation.StringIDModifier> stringIDModifiers = new List<BuildInformation.StringIDModifier>();
+            IStringIDResolver stringIdResolver = null;
             if (stringidModifiersAttrib != null)
             {
+                StringIDModifierResolver modifierResolver = new StringIDModifierResolver();
+                stringIdResolver = modifierResolver;
+
                 string[] sets = stringidModifiersAttrib.Value.Split('|');
                 foreach (string set in sets)
                 {
-                    BuildInformation.StringIDModifier modifier = new BuildInformation.StringIDModifier();
                     string[] parts = set.Split(',');
                     /*
                      Format:
@@ -120,16 +124,28 @@ namespace ExtryzeDLL.Flexibility
                      * Direction (>/<)
                      */
 
-                    modifier.Identifier = int.Parse(parts[0].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    modifier.Modifier = int.Parse(parts[1].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    modifier.isAddition = parts[2] == "+";
-                    modifier.isGreaterThan = parts[3] == ">";
+                    int identifier = int.Parse(parts[0].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+                    int modifier = int.Parse(parts[1].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+                    bool isAddition = parts[2] == "+";
+                    bool isGreaterThan = parts[3] == ">";
 
-                    stringIDModifiers.Add(modifier);
+                    modifierResolver.AddModifier(identifier, modifier, isGreaterThan, isAddition);
                 }
             }
+            else if (stringidDefinitionsAttrib != null)
+            {
+                StringIDSetResolver setResolver = new StringIDSetResolver();
+                stringIdResolver = setResolver;
 
-            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIDModifiers, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes);
+                XDocument stringIdDocument = XDocument.Load(_basePath + @"StringIDs\" + stringidDefinitionsAttrib.Value);
+                StringIDSetLoader.LoadAllStringIDSets(stringIdDocument, setResolver);
+            }
+            else
+            {
+                throw new ArgumentException("Build definitions must have either a \"stringidDefinitions\" or a \"stringidModifiers\" attribute");
+            }
+
+            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes);
             XDocument layoutDocument = XDocument.Load(_basePath + filenameAttrib.Value);
             LoadAllLayouts(layoutDocument, info);
 

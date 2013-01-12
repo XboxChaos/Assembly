@@ -38,12 +38,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             Magic = (int)values.GetNumber("magic");
             ParentMagic = (int)values.GetNumber("parent magic");
             GrandparentMagic = (int)values.GetNumber("grandparent magic");
-            Identifier = values.GetNumberOrDefault("identifier", 0);
+            Description = new StringID((int)values.GetNumberOrDefault("stringid", 0));
         }
 
         public int Magic { get; set; }
         public int ParentMagic { get; set; }
         public int GrandparentMagic { get; set; }
-        public uint Identifier { get; set; }
+        public StringID Description { get; set; }
     }
 }

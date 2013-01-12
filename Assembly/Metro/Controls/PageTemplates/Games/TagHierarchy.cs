@@ -16,14 +16,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
     public class TagClass
     {
-        public TagClass(ITagClass baseClass, string name)
+        public TagClass(ITagClass baseClass, string name, string description)
         {
             RawClass = baseClass;
             TagClassMagic = name;
+            Description = description;
             Children = new List<TagEntry>();
         }
 
         public string TagClassMagic { get; set; }
+        public string Description { get; set; }
         public ITagClass RawClass { get; set; }
         public List<TagEntry> Children { get; private set; }
     }
