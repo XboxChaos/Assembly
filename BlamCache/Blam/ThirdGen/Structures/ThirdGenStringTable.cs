@@ -29,7 +29,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         public IList<string> Strings
         {
-            get { return _strings.AsReadOnly(); }
+            get { return _strings; }
         }
 
         private int[] ReadOffsets(IReader reader, Pointer indexTableLocation, int count)

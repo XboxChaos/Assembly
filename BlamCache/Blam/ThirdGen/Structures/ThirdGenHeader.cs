@@ -33,7 +33,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
     /// <summary>
     /// A cache file header whose layout can be changed.
     /// </summary>
-    public class ThirdGenHeader : ICacheFileInfo, IWritable
+    public class ThirdGenHeader : ICacheFileInfo
     {
         private uint _virtualBase;
 
@@ -52,7 +52,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         public uint FileSize { get; set; }
 
-        public CacheFileType Type { get; private set; }
+        public CacheFileType Type { get; set; }
 
         public string BuildString { get; private set; }
 
@@ -64,7 +64,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return new Pointer(_virtualBase, _addrConverter); }
         }
 
-        public uint MetaSize { get; private set; }
+        public uint MetaSize { get; set; }
 
         public int XDKVersion { get; set; }
 
@@ -101,9 +101,50 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return _indexConverter; }
         }
 
-        public void WriteTo(IWriter writer)
+        /// <summary>
+        /// Serializes the header's values, storing them into a StructureValueCollection.
+        /// </summary>
+        /// <returns>The resulting StructureValueCollection.</returns>
+        public StructureValueCollection Serialize()
         {
-            throw new NotImplementedException();
+            StructureValueCollection values = new StructureValueCollection();
+            values.SetNumber("virtual base address", _virtualBase);
+            values.SetNumber("raw table offset", RawTableOffset);
+            values.SetNumber("raw table offset from header", (uint)(RawTableOffset - HeaderSize));
+            values.SetNumber("raw table size", RawTableSize);
+            values.SetNumber("meta offset", MetaBase.AsOffset());
+            values.SetNumber("locale offset magic", LocaleOffsetMask);
+            values.SetNumber("file size", FileSize);
+            values.SetNumber("index header address", IndexHeaderLocation.AsAddress());
+            values.SetNumber("virtual size", MetaSize);
+            values.SetNumber("type", (uint)Type);
+            values.SetNumber("string table count", (uint)StringIDCount);
+            values.SetNumber("string table size", (uint)StringIDTableSize);
+            values.SetNumber("string index table offset", _stringOffsetConverter.PointerToRaw(StringIDIndexTableLocation));
+            values.SetNumber("string table offset", _stringOffsetConverter.PointerToRaw(StringIDDataLocation));
+            values.SetString("internal name", InternalName);
+            values.SetString("scenario name", ScenarioName);
+            values.SetNumber("file table count", (uint)FileNameCount);
+            values.SetNumber("file table offset", _stringOffsetConverter.PointerToRaw(FileNameDataLocation));
+            values.SetNumber("file table size", (uint)FileNameTableSize);
+            values.SetNumber("file index table offset", _stringOffsetConverter.PointerToRaw(FileNameIndexTableLocation));
+            values.SetNumber("xdk version", (uint)XDKVersion);
+            values.SetArray("partitions", SerializePartitions());
+
+            return values;
+        }
+
+        private StructureValueCollection[] SerializePartitions()
+        {
+            StructureValueCollection[] results = new StructureValueCollection[Partitions.Length];
+            for (int i = 0; i < Partitions.Length; i++)
+            {
+                StructureValueCollection values = new StructureValueCollection();
+                values.SetNumber("load address", Partitions[i].BasePointer.AsAddress());
+                values.SetNumber("size", Partitions[i].Size);
+                results[i] = values;
+            }
+            return results;
         }
 
         private void Load(StructureValueCollection values)

@@ -26,9 +26,10 @@
         </Border>-->
         <DataGrid x:Name="lvLocales" ItemsSource="{Binding}" Background="{x:Null}" Margin="0,0,0,35" Padding="0" BorderThickness="0" Foreground="White" VerticalAlignment="Stretch" SelectionChanged="lvLocales_SelectionChanged"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-                  CanUserAddRows="False">
+                  CanUserAddRows="False" CanUserResizeColumns="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Index" Binding="{Binding Index}" Width="55" IsReadOnly="True" />
+                <DataGridTextColumn Header="StringID" Binding="{Binding StringID}" Width="*" IsReadOnly="True" />
                 <DataGridTextColumn Header="Locale" Binding="{Binding Locale}" Width="*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
@@ -57,13 +58,16 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="125" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="Filter:" Grid.Column="0" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                     <TextBox x:Name="txtFilter" Grid.Column="1" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" KeyDown="txtFilter_KeyDown"  />
                     
-                    <Button x:Name="btnFilter" Content="Filter" Grid.Column="2" Click="btnFilter_Click" />
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
+                        <Button x:Name="btnFilter" Content="Filter" Click="btnFilter_Click"  Width="60" />
+                        <Button x:Name="btnReset" Content="Reset" Click="btnReset_Click_1" IsEnabled="False" Margin="5,0,0,0" Width="60" />
+                    </StackPanel>
                 </Grid>
                 
                 <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Text="Double-click on a locale to edit it." Style="{DynamicResource GenericTextblock}" />

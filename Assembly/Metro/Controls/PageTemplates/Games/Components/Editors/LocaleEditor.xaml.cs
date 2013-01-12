@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -29,9 +30,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private ThirdGenCacheFile _cache;
         private IStreamManager _streamManager;
         private ILanguage _currentLanguage;
-        private IList<string> _currentLocaleTable;
-        private ObservableCollection<LocaleEntry> locales;
+        private LocaleTable _currentLocaleTable;
+        private List<LocaleEntry> _locales;
+        private ICollectionView _localeView;
         private ObservableCollection<LanguageEntry> languages = new ObservableCollection<LanguageEntry>();
+        private string _filter;
 
         public LocaleEditor(ThirdGenCacheFile cache, IStreamManager streamManager, int index)
         {
@@ -62,27 +65,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 _currentLocaleTable = _currentLanguage.LoadStrings(reader);
             }
-            locales = new ObservableCollection<LocaleEntry>();
 
-            for (int i = 0; i < _currentLocaleTable.Count; i++)
-                locales.Add(new LocaleEntry() { Index = i, Locale = _currentLocaleTable[i] });
+            _locales = new List<LocaleEntry>();
+            _localeView = CollectionViewSource.GetDefaultView(_locales);
 
-            Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = locales; }));
+            for (int i = 0; i < _currentLocaleTable.Strings.Count; i++)
+            {
+                Locale locale = _currentLocaleTable.Strings[i];
+                _locales.Add(new LocaleEntry()
+                    {
+                        Index = i,
+                        Locale = locale.Value,
+                        StringID = _cache.StringIDs.GetString(locale.ID)
+                    });
+            }
+
+            Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _localeView; }));
         }
+
+        private bool LocaleFilter(object item)
+        {
+            LocaleEntry locale = (LocaleEntry)item;
+            return (locale.Locale.Contains(_filter) || (locale.StringID != null && locale.StringID.Contains(_filter)));
+        }
+
         /// <summary>
         /// Filter the currently selected language
         /// </summary>
         /// <param name="filter">The filter string</param>
         private void FilterLanguage(string filter)
         {
-            locales = new ObservableCollection<LocaleEntry>();
-            string searchFilter = filter.ToLower().Trim();
-
-            for (int i = 0; i < _currentLocaleTable.Count; i++)
-                if (_currentLocaleTable[i].ToLower().Trim().Contains(searchFilter))
-                    locales.Add(new LocaleEntry() { Index = i, Locale = _currentLocaleTable[i] });
-
-            Dispatcher.Invoke(new Action(delegate { lvLocales.DataContext = locales; }));
+            _filter = filter;
+            if (!string.IsNullOrEmpty(filter))
+            {
+                _localeView.Filter = LocaleFilter;
+                btnReset.IsEnabled = true;
+            }
+            else
+            {
+                _localeView.Filter = null;
+                btnReset.IsEnabled = false;
+            }
+            _localeView.Refresh();
         }
 
         private void txtFilter_KeyDown(object sender, KeyEventArgs e)
@@ -90,19 +114,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             if (e.Key == Key.Return || e.Key == Key.Enter)
                 FilterLanguage(txtFilter.Text);
         }
+
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
             FilterLanguage(txtFilter.Text);
         }
+
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
             MetroMessageBox.Show("Not implemented yet, fool.");
+        }
+
+        private void btnReset_Click_1(object sender, RoutedEventArgs e)
+        {
+            txtFilter.Text = "";
+            FilterLanguage(null);
         }
     }
 
     public class LocaleEntry
     {
         public int Index { get; set; }
+        public string StringID { get; set; }
         public string Locale { get; set; }
     }
     public class LanguageEntry

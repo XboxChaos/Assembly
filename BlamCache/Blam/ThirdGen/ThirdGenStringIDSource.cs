@@ -10,7 +10,7 @@ using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Util;
 using System.IO;
 
-namespace ExtryzeDLL.Blam.ThirdGen.Structures
+namespace ExtryzeDLL.Blam.ThirdGen
 {
     /// <summary>
     /// Loads the stringID table from a cache file and makes it available for outside use.

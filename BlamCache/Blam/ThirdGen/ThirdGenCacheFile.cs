@@ -40,6 +40,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenFileNameSource _fileNames;
         private ThirdGenLanguageGlobals _languageInfo;
         private ThirdGenScenarioMeta _scenario;
+        private List<ILanguage> _languages = new List<ILanguage>();
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
@@ -73,7 +74,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public IList<ILanguage> Languages
         {
-            get { return _languageInfo.Languages; }
+            get { return _languages.AsReadOnly(); }
         }
 
         public IList<ITagClass> TagClasses
@@ -99,6 +100,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             _tags = LoadTags(reader, buildInfo);
             _languageInfo = LoadLanguageGlobals(reader, buildInfo);
             _scenario = LoadScenario(reader, buildInfo);
+
+            BuildLanguageList();
         }
 
         private ThirdGenHeader LoadHeader(IReader reader, BuildInformation buildInfo, string buildString)
@@ -148,6 +151,13 @@ namespace ExtryzeDLL.Blam.ThirdGen
             return new ThirdGenLanguageGlobals(values, _header.LocalePointerConverter, buildInfo);
         }
 
+        private void BuildLanguageList()
+        {
+            // hax hax hax
+            foreach (ThirdGenLanguage language in _languageInfo.Languages)
+                _languages.Add(language);
+        }
+
         private ThirdGenScenarioMeta LoadScenario(IReader reader, BuildInformation buildInfo)
         {
             if (!buildInfo.HasLayout("scnr"))
@@ -165,7 +175,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         {
             foreach (ITag tag in _tags.Tags)
             {
-                if (tag.Class.Magic == classMagic)
+                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic)
                     return tag;
             }
             return null;

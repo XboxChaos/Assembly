@@ -429,6 +429,12 @@ namespace XBDMCommunicator
                 WritePureBytes(input);
             }
 
+            public void WriteUTF8(string str)
+            {
+                byte[] data = Encoding.UTF8.GetBytes(str);
+                WritePureBytes(data);
+            }
+
             public void WriteUTF16(string str)
             {
                 byte[] input = Encoding.Unicode.GetBytes(str + char.MinValue);

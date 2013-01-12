@@ -9,7 +9,7 @@ using ExtryzeDLL.IO;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.Blam.Util;
 
-namespace ExtryzeDLL.Blam.ThirdGen.Structures
+namespace ExtryzeDLL.Blam.ThirdGen
 {
     public class ThirdGenFileNameSource : IFileNameSource
     {

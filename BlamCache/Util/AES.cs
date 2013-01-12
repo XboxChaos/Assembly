@@ -8,14 +8,24 @@ namespace ExtryzeDLL.Util
 {
     public static class AES
     {
-        public static byte[] Decrypt(byte[] encryptedBytes, byte[] key, byte[] IV)
+        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
             AesCryptoServiceProvider crypto = new AesCryptoServiceProvider();
             crypto.Key = key;
-            crypto.IV = IV;
+            crypto.IV = iv;
             crypto.Padding = PaddingMode.None;
             ICryptoTransform transformer = crypto.CreateDecryptor();
-            return transformer.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+            return transformer.TransformFinalBlock(data, 0, data.Length);
+        }
+
+        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
+        {
+            AesCryptoServiceProvider crypto = new AesCryptoServiceProvider();
+            crypto.Key = key;
+            crypto.IV = iv;
+            crypto.Padding = PaddingMode.None;
+            ICryptoTransform transformer = crypto.CreateEncryptor();
+            return transformer.TransformFinalBlock(data, 0, data.Length);
         }
     }
 }

@@ -210,6 +210,17 @@ namespace ExtryzeDLL.IO
         }
 
         /// <summary>
+        /// Writes a null-terminated UTF-8 encoded string to the underlying stream.
+        /// </summary>
+        /// <param name="str">The string to write.</param>
+        public void WriteUTF8(string str)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+            WriteBlock(bytes);
+            WriteByte(0);
+        }
+
+        /// <summary>
         /// Writes a null-terminated UTF-16 encoded string to the underlying stream.
         /// </summary>
         /// <param name="str">The string to write.</param>
