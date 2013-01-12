@@ -58,6 +58,8 @@ namespace ExtryzeDLL.Flexibility
 
             if (IsArrayElement(element))
                 HandleArrayElement(layout, element, name, offset);
+            else if (IsRawElement(element))
+                HandleRawElement(layout, element, name, offset);
             else
                 HandleBasicElement(layout, element, name, offset);
         }
@@ -89,6 +91,20 @@ namespace ExtryzeDLL.Flexibility
             int count = GetNumericAttribute(element, "count");
             int entrySize = GetNumericAttribute(element, "entrySize");
             layout.AddArrayField(name, offset, count, entrySize, XMLLayoutLoader.LoadLayout(element));
+        }
+
+        /// <summary>
+        /// Parses an XML element representing an raw byte array and adds the
+        /// field information to a structure layout.
+        /// </summary>
+        /// <param name="layout">The structure layout to add the field's information to.</param>
+        /// <param name="element">The XML element to parse.</param>
+        /// <param name="name">The name of the field to add.</param>
+        /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+        private static void HandleRawElement(StructureLayout layout, XElement element, string name, int offset)
+        {
+            int size = GetNumericAttribute(element, "size");
+            layout.AddRawField(name, offset, size);
         }
 
         /// <summary>
@@ -127,6 +143,16 @@ namespace ExtryzeDLL.Flexibility
         private static bool IsArrayElement(XElement element)
         {
             return (element.Name == "array");
+        }
+
+        /// <summary>
+        /// Determines whether or not an element represents a raw byte array.
+        /// </summary>
+        /// <param name="element">The XML element to parse.</param>
+        /// <returns>true if the element represents a raw byte array.</returns>
+        private static bool IsRawElement(XElement element)
+        {
+            return (element.Name == "raw");
         }
 
         /// <summary>

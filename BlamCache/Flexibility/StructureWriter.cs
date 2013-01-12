@@ -53,13 +53,7 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitBasicField(string name, StructureValueType type, int offset)
         {
-            // Seeking is SLOW - only seek if we have to
-            if (_offset != _baseOffset + offset)
-            {
-                _offset = _baseOffset + offset;
-                _writer.SeekTo(_offset);
-            }
-
+            SeekWriter(offset);
             switch (type)
             {
                 case StructureValueType.Byte:
@@ -100,6 +94,23 @@ namespace ExtryzeDLL.Flexibility
             {
                 _writer.SeekTo(_baseOffset + offset + i * entrySize);
                 WriteStructure(arrayValue[i], entryLayout, _writer);
+            }
+        }
+
+        public void VisitRawField(string name, int offset, int size)
+        {
+            SeekWriter(offset);
+            _writer.WriteBlock(_collection.GetRaw(name), 0, size);
+            _offset += size;
+        }
+
+        private void SeekWriter(int offset)
+        {
+            // Seeking is SLOW - only seek if we have to
+            if (_offset != _baseOffset + offset)
+            {
+                _offset = _baseOffset + offset;
+                _writer.SeekTo(_offset);
             }
         }
     }

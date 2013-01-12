@@ -74,13 +74,7 @@ namespace ExtryzeDLL.Flexibility
         /// <seealso cref="IStructureLayoutVisitor.VisitBasicField"/>
         public void VisitBasicField(string name, StructureValueType type, int offset)
         {
-            // Seeking is SLOW - only seek if we have to
-            if (_offset != _baseOffset + offset)
-            {
-                _offset = _baseOffset + offset;
-                _reader.SeekTo(_offset);
-            }
-
+            SeekReader(offset);
             switch (type)
             {
                 case StructureValueType.Byte:
@@ -132,6 +126,31 @@ namespace ExtryzeDLL.Flexibility
                 arrayValue[i] = ReadStructure(_reader, entryLayout);
             }
             _collection.SetArray(name, arrayValue);
+        }
+
+        /// <summary>
+        /// Reads an raw byte array from the stream and adds it to the value
+        /// collection which is currently being built.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+        /// <param name="size">The size of the raw data to read.</param>
+        public void VisitRawField(string name, int offset, int size)
+        {
+            SeekReader(offset);
+            byte[] data = _reader.ReadBlock(size);
+            _collection.SetRaw(name, data);
+            _offset += data.Length;
+        }
+
+        private void SeekReader(int offset)
+        {
+            // Seeking is SLOW - only seek if we actually have to
+            if (_offset != _baseOffset + offset)
+            {
+                _offset = _baseOffset + offset;
+                _reader.SeekTo(_offset);
+            }
         }
     }
 }
