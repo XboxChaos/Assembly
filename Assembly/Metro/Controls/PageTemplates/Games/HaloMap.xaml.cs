@@ -297,18 +297,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 totalStrings += language.StringCount;
             Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
+            // TODO: Define the language names in an XML file or something
             AddLanguage("English", LocaleLanguage.English);
             AddLanguage("Chinese", LocaleLanguage.Chinese);
+            AddLanguage("Danish", LocaleLanguage.Danish);
+            AddLanguage("Dutch", LocaleLanguage.Dutch);
+            AddLanguage("Finnish", LocaleLanguage.Finnish);
             AddLanguage("French", LocaleLanguage.French);
             AddLanguage("German", LocaleLanguage.German);
             AddLanguage("Italian", LocaleLanguage.Italian);
             AddLanguage("Japanese", LocaleLanguage.Japanese);
             AddLanguage("Korean", LocaleLanguage.Korean);
+            AddLanguage("Norwegian", LocaleLanguage.Norwegian);
             AddLanguage("Polish", LocaleLanguage.Polish);
             AddLanguage("Portuguese", LocaleLanguage.Portuguese);
+            AddLanguage("Russian", LocaleLanguage.Russian);
             AddLanguage("Spanish", LocaleLanguage.Spanish);
             AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
-            AddLanguage("Unknown", LocaleLanguage.Unknown);
+            AddLanguage("Extra", LocaleLanguage.Unknown);
 
             Dispatcher.Invoke(new Action(delegate
                 {

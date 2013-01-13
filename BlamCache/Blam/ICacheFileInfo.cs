@@ -62,18 +62,30 @@ namespace ExtryzeDLL.Blam
 
         /// <summary>
         /// The location of the tag table header in the file.
+        /// (Dependent upon VirtualBaseAddress and MetaOffset - changing one of them will change this value.)
         /// </summary>
         Pointer IndexHeaderLocation { get; }
         
         /// <summary>
         /// The location of the first partition in the file.
+        /// (<see cref="VirtualBaseAddress"/> and <see cref="MetaOffset"/> combined into a Pointer).
         /// </summary>
         Pointer MetaBase { get; }
 
         /// <summary>
+        /// The address of the start of the first partition in the cache file.
+        /// </summary>
+        uint VirtualBaseAddress { get; set; }
+
+        /// <summary>
+        /// The offset of the start of the first partition in the cache file.
+        /// </summary>
+        uint MetaOffset { get; set; }
+
+        /// <summary>
         /// The total size of the cache file's meta partitions.
         /// </summary>
-        uint MetaSize { get; }
+        uint MetaSize { get; set; }
 
         /// <summary>
         /// The XDK version that the cache file was developed with, or 0 if unknown.
@@ -88,12 +100,12 @@ namespace ExtryzeDLL.Blam
         /// <summary>
         /// The offset of the raw table in the cache file, or 0 if unknown.
         /// </summary>
-        uint RawTableOffset { get; }
+        uint RawTableOffset { get; set; }
 
         /// <summary>
         /// The size of the raw table in the cache file, or 0 if unknown.
         /// </summary>
-        uint RawTableSize { get; }
+        uint RawTableSize { get; set; }
 
         /// <summary>
         /// The value which can be subtracted from an address to get its file offset.
@@ -104,6 +116,16 @@ namespace ExtryzeDLL.Blam
         /// <summary>
         /// The value which can be added to a locale table pointer to get its file offset.
         /// </summary>
-        uint LocaleOffsetMask { get; }
+        uint LocaleOffsetMask { get; set; }
+
+        /// <summary>
+        /// The location of the locale data in the cache file.
+        /// </summary>
+        Pointer LocaleDataLocation { get; set; }
+
+        /// <summary>
+        /// The size of the locale data in the cache file.
+        /// </summary>
+        int LocaleDataSize { get; set; }
     }
 }

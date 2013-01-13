@@ -41,13 +41,26 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenLanguageGlobals _languageInfo;
         private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
+        private BuildInformation _buildInfo;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
+            _buildInfo = buildInfo;
             Load(reader, buildInfo, buildString);
         }
 
+        public void SaveChanges(IWriter writer)
+        {
+            WriteHeader(writer);
+            WriteLanguageInfo(writer);
+        }
+
         public ICacheFileInfo Info
+        {
+            get { return _header; }
+        }
+
+        public ThirdGenHeader FullHeader
         {
             get { return _header; }
         }
@@ -130,9 +143,36 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private ThirdGenLanguageGlobals LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
         {
+            // Find the language data
+            ITag languageTag;
+            StructureLayout tagLayout;
+            FindLanguageTable(buildInfo, out languageTag, out tagLayout);
+
+            // Read it
+            reader.SeekTo(languageTag.MetaLocation.AsOffset());
+            StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
+            ThirdGenLanguageGlobals result = new ThirdGenLanguageGlobals(this, values, _header.LocalePointerConverter, buildInfo);
+
+            // If the locale data offset/size is 0, then calculate them
+            if (_header.LocaleDataLocation.AsOffset() == 0 && result.Languages.Count > 0)
+                _header.LocaleDataLocation = result.Languages[0].LocaleIndexTableLocation;
+
+            if (_header.LocaleDataSize == 0 && result.Languages.Count > 0)
+            {
+                ThirdGenLanguage first = result.Languages[0];
+                ThirdGenLanguage last = result.Languages[result.Languages.Count - 1];
+                int size = (int)(last.LocaleDataLocation.AsOffset() + last.LocaleTableSize - first.LocaleIndexTableLocation.AsOffset());
+                _header.LocaleDataSize = (size + buildInfo.LocaleAlignment - 1) & ~(buildInfo.LocaleAlignment - 1);
+            }
+
+            return result;
+        }
+
+        private void FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
+        {
             // Check for a PATG tag, and if one isn't found, then use MATG
-            ITag tag = null;
-            StructureLayout layout = null;
+            tag = null;
+            layout = null;
             if (buildInfo.HasLayout("patg"))
             {
                 tag = FindTagByClass(PatgMagic);
@@ -145,10 +185,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
             }
             if (tag == null || layout == null)
                 throw new InvalidOperationException("The cache file is missing locale information.");
-
-            reader.SeekTo(tag.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-            return new ThirdGenLanguageGlobals(values, _header.LocalePointerConverter, buildInfo);
         }
 
         private void BuildLanguageList()
@@ -169,6 +205,26 @@ namespace ExtryzeDLL.Blam.ThirdGen
             reader.SeekTo(scnr.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("scnr"));
             return new ThirdGenScenarioMeta(values, reader, _header.MetaPointerConverter, _stringIds, buildInfo);
+        }
+
+        private void WriteHeader(IWriter writer)
+        {
+            StructureValueCollection values = _header.Serialize();
+            writer.SeekTo(0);
+            StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);
+        }
+
+        private void WriteLanguageInfo(IWriter writer)
+        {
+            // Find the language data
+            ITag languageTag;
+            StructureLayout tagLayout;
+            FindLanguageTable(_buildInfo, out languageTag, out tagLayout);
+
+            // Write it
+            StructureValueCollection values = _languageInfo.Serialize();
+            writer.SeekTo(languageTag.MetaLocation.AsOffset());
+            StructureWriter.WriteStructure(values, tagLayout, writer);
         }
 
         private ITag FindTagByClass(int classMagic)

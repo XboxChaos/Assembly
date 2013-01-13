@@ -59,11 +59,12 @@ namespace ExtryzeDLL.IO
         }
 
         /// <summary>
-        /// Inserts space into a file by copying everything back by a certain number of bytes.
+        /// Inserts space into a stream by copying everything back by a certain number of bytes.
         /// </summary>
         /// <param name="stream">The stream to insert space into.</param>
         /// <param name="size">The size of the space to insert.</param>
-        public static void Insert(IStream stream, int size)
+        /// <param name="fill">The byte to fill the inserted space with. See <see cref="Fill"/>.</param>
+        public static void Insert(IStream stream, int size, byte fill)
         {
             if (size == 0)
                 return;
@@ -76,18 +77,96 @@ namespace ExtryzeDLL.IO
             byte[] buffer = new byte[BufferSize];
             int endPos = (int)stream.Position;
             int oldLength = (int)stream.Length;
-            int copied = 0;
-            while (copied < size)
+            int pos = Math.Max(endPos, oldLength - BufferSize);
+            while (pos >= endPos)
             {
-                int readPos = Math.Max(endPos, oldLength - copied - BufferSize);
-                int read = Math.Min(BufferSize, oldLength - readPos);
-                stream.SeekTo(readPos);
+                int read = Math.Min(BufferSize, oldLength - pos);
+                stream.SeekTo(pos);
                 stream.ReadBlock(buffer, 0, read);
 
-                stream.SeekTo(readPos + size);
+                stream.SeekTo(pos + size);
                 stream.WriteBlock(buffer, 0, read);
-                copied += read;
+                pos -= read;
             }
+
+            stream.SeekTo(endPos);
+            Fill(stream, fill, size);
+        }
+
+        /// <summary>
+        /// Fills a section of a stream with a repeating byte.
+        /// </summary>
+        /// <param name="writer">The IWriter to fill a section of.</param>
+        /// <param name="b">The byte to fill the section with.</param>
+        /// <param name="size">The size of the section to fill.</param>
+        public static void Fill(IWriter writer, byte b, int size)
+        {
+            if (size == 0)
+                return;
+            if (size < 0)
+                throw new ArgumentException("The size of the data to insert must be >= 0");
+            if (writer.Position == writer.Length)
+                return;
+
+            const int BufferSize = 0x1000;
+            byte[] buffer = new byte[BufferSize];
+            long length = writer.Length;
+            long pos = writer.Position;
+            int filled = 0;
+
+            // Fill the buffer
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = b;
+
+            // Write it
+            while (filled < size)
+            {
+                writer.WriteBlock(buffer, 0, (int)Math.Min(length - pos, BufferSize));
+                filled += BufferSize;
+                pos += BufferSize;
+            }
+        }
+
+        /// <summary>
+        /// Expands an area in a stream to ensure that it is large enough to hold a given amount of data.
+        /// </summary>
+        /// <param name="stream">The stream to expand.</param>
+        /// <param name="startOffset">The start offset of the area that needs to be expanded.</param>
+        /// <param name="originalEndOffset">The original end offset of the area that needs to be expanded.</param>
+        /// <param name="requestedSize">The size of the data that needs to fit in the defined area.</param>
+        /// <param name="pageSize">The size of each page that should be injected into the stream.</param>
+        /// <returns>The number of bytes inserted into the stream at originalEndOffset (or startOffset if it's greater).</returns>
+        public static int MakeFreeSpace(IStream stream, long startOffset, long originalEndOffset, long requestedSize, int pageSize)
+        {
+            originalEndOffset = Math.Max(originalEndOffset, startOffset);
+
+            // Calculate the number of bytes that the requested size overflows the area by,
+            // and then insert pages if necessary
+            int overflow = (int)(startOffset + requestedSize - originalEndOffset);
+            if (overflow > 0)
+                return InsertPages(stream, originalEndOffset, overflow, pageSize);
+            return 0;
+        }
+
+        /// <summary>
+        /// Inserts empty pages into a stream so that a specified amount of data can fit, pushing everything past them back.
+        /// </summary>
+        /// <param name="stream">The stream to insert pages into.</param>
+        /// <param name="offset">The offset to insert the pages at.</param>
+        /// <param name="minSpace">The minimum amount of free space that needs to be available after the pages have been inserted.</param>
+        /// <param name="pageSize">The size of each page to insert.</param>
+        /// <returns>The number of bytes that were inserted into the stream at the specified offset.</returns>
+        /// <seealso cref="Insert"/>
+        public static int InsertPages(IStream stream, long offset, int minSpace, int pageSize)
+        {
+            // Round the minimum space up to the next multiple of the page size
+            minSpace = (minSpace + pageSize - 1) & ~(pageSize - 1);
+
+            // Push the data back by that amount
+            stream.SeekTo(offset);
+            StreamUtil.Insert(stream, minSpace, 0);
+
+            return minSpace;
         }
     }
 }      

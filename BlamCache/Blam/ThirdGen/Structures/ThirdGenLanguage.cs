@@ -9,37 +9,46 @@ using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Util;
 using System.IO;
 
-
 namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
     public class ThirdGenLanguage : ILanguage
     {
+        private ThirdGenLanguageGlobals _languageGlobals;
         private AESKey _encryptionKey;
         private StructureLayout _pointerLayout;
         private IndexOffsetConverter _converter;
         private LocaleSymbolCollection _symbols;
+        private int _pageSize;
 
-        public ThirdGenLanguage(StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
+        public ThirdGenLanguage(ThirdGenLanguageGlobals languageGlobals, StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
         {
+            _languageGlobals = languageGlobals;
             _pointerLayout = buildInfo.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
             _symbols = buildInfo.LocaleSymbols;
             _converter = converter;
+            _pageSize = buildInfo.LocaleAlignment;
             Load(values, converter);
         }
 
         public int StringCount { get; private set; }
         public int LocaleTableSize { get; private set; }
-        public Pointer LocaleIndexTableLocation { get; private set; }
-        public Pointer LocaleDataLocation { get; private set; }
+        public Pointer LocaleIndexTableLocation { get; set; }
+        public Pointer LocaleDataLocation { get; set; }
+        public byte[] IndexTableHash { get; private set; }
+        public byte[] StringDataHash { get; private set; }
 
         public StructureValueCollection Serialize()
         {
             StructureValueCollection result = new StructureValueCollection();
             result.SetNumber("string count", (uint)StringCount);
             result.SetNumber("locale table size", (uint)LocaleTableSize);
-            result.SetNumber("locale table index offset", _converter.PointerToRaw(LocaleIndexTableLocation));
+            result.SetNumber("locale index table offset", _converter.PointerToRaw(LocaleIndexTableLocation));
             result.SetNumber("locale data index offset", _converter.PointerToRaw(LocaleDataLocation));
+            if (IndexTableHash != null)
+                result.SetRaw("index table hash", IndexTableHash);
+            if (StringDataHash != null)
+                result.SetRaw("string data hash", StringDataHash);
             return result;
         }
 
@@ -49,6 +58,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             LocaleTableSize = (int)values.GetNumber("locale table size");
             LocaleIndexTableLocation = new Pointer(values.GetNumber("locale index table offset"), converter);
             LocaleDataLocation = new Pointer(values.GetNumber("locale data index offset"), converter);
+
+            // H3 beta doesn't have hashes
+            if (values.HasRaw("index table hash"))
+                IndexTableHash = values.GetRaw("index table hash");
+            if (values.HasRaw("string data hash"))
+                StringDataHash = values.GetRaw("string data hash");
         }
 
         public LocaleTable LoadStrings(IReader reader)
@@ -68,6 +83,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                     int offset;
                     ReadLocalePointer(reader, out id, out offset);
 
+                    if (offset >= stringReader.Length)
+                        break; // Bad table - bail out so we don't end up in a huge memory-hogging loop
+
                     stringReader.SeekTo(offset);
                     string locale = stringReader.ReadUTF8();
                     result.Strings.Add(new Locale(id, locale));
@@ -79,34 +97,60 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         public void SaveStrings(IStream stream, LocaleTable locales)
         {
+            MemoryStream offsetData = new MemoryStream();
             MemoryStream stringData = new MemoryStream();
+            IWriter offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);
             IWriter stringWriter = new EndianWriter(stringData, Endian.BigEndian);
 
-            // Write the offset table to the file and the string table to the buffer
-            // TODO: Check that the offset table doesn't overflow
-            stream.SeekTo(LocaleIndexTableLocation.AsOffset());
-            foreach (Locale locale in locales.Strings)
+            try
             {
-                WriteLocalePointer(stream, locale.ID, (int)stringWriter.Position);
-                stringWriter.WriteUTF8(locale.Value);
+                // Write the string and offset data to buffers
+                foreach (Locale locale in locales.Strings)
+                {
+                    WriteLocalePointer(offsetWriter, locale.ID, (int)stringWriter.Position);
+                    stringWriter.WriteUTF8(locale.Value);
+                }
+
+                // Round the size of the string data up to the nearest multiple of 0x10 (AES block size)
+                stringData.SetLength((stringData.Position + 0xF) & ~0xF);
+
+                // Update the two locale data hashes if we need to
+                // (the hash arrays are set to null if the build doesn't need them)
+                if (IndexTableHash != null)
+                    IndexTableHash = SHA1.Transform(offsetData.GetBuffer(), 0, (int)offsetData.Length);
+                if (StringDataHash != null)
+                    StringDataHash = SHA1.Transform(stringData.GetBuffer(), 0, (int)stringData.Length);
+
+                // Make sure there's free space for the offset table and then write it to the file
+                LocaleDataLocation += StreamUtil.MakeFreeSpace(stream, LocaleIndexTableLocation.AsOffset(), LocaleDataLocation.AsOffset(), offsetData.Length, _pageSize);
+                stream.SeekTo(LocaleIndexTableLocation.AsOffset());
+                stream.WriteBlock(offsetData.GetBuffer(), 0, (int)offsetData.Length);
+
+                // Encrypt the string data if necessary
+                byte[] strings = stringData.GetBuffer();
+                if (_encryptionKey != null)
+                    strings = AES.Encrypt(strings, 0, (int)stringData.Length, _encryptionKey.Key, _encryptionKey.IV);
+
+                // Make free space for the string data
+                uint oldDataEnd = (uint)((LocaleDataLocation.AsOffset() + LocaleTableSize + _pageSize - 1) & ~(_pageSize - 1)); // Add the old table size and round it up
+                StreamUtil.MakeFreeSpace(stream, LocaleDataLocation.AsOffset(), oldDataEnd, stringData.Length, _pageSize);
+                LocaleTableSize = (int)stringData.Length;
+
+                // Write it to the file
+                stream.SeekTo(LocaleDataLocation.AsOffset());
+                stream.WriteBlock(strings, 0, (int)stringData.Length);
+
+                // Update the string count and recalculate the language table offsets
+                StringCount = locales.Strings.Count;
+
+                int localePointerSize = (int)(offsetData.Length / locales.Strings.Count);
+                _languageGlobals.RecalculateLanguageOffsets(localePointerSize);
             }
-
-            // Round the size of the string data up to the nearest multiple of 0x10 (AES block size)
-            stringData.SetLength((stringData.Length + 0xF) & ~0xF);
-
-            // Encrypt it if necessary
-            byte[] strings = stringData.GetBuffer();
-            if (_encryptionKey != null)
-                strings = AES.Encrypt(strings, _encryptionKey.Key, _encryptionKey.IV);
-
-            // Make free space for the string data
-            uint oldDataEnd = (uint)((LocaleDataLocation.AsOffset() + LocaleTableSize + 0xFFF) & ~0xFFF);
-            MakeFreeSpace(stream, LocaleDataLocation.AsOffset(), oldDataEnd, strings.Length, LocalePageSize);
-            LocaleTableSize = strings.Length;
-
-            // Write it to the file
-            stream.SeekTo(LocaleDataLocation.AsOffset());
-            stream.WriteBlock(strings);
+            finally
+            {
+                offsetWriter.Close();
+                stringWriter.Close();
+            }
         }
 
         private void ReadLocalePointer(IReader reader, out StringID id, out int offset)
@@ -142,46 +186,5 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             // :)
             return _symbols.ReplaceSymbols(locale);
         }
-
-        /// <summary>
-        /// Expands an area in a stream to ensure that it is large enough to hold a given amount of data.
-        /// </summary>
-        /// <param name="stream">The stream to expand.</param>
-        /// <param name="startOffset">The start offset of the area that needs to be expanded.</param>
-        /// <param name="originalEndOffset">The original end offset of the area that needs to be expanded.</param>
-        /// <param name="requestedSize">The size of the data that needs to fit in the defined area.</param>
-        /// <param name="pageSize">The size of each page that should be injected into the stream.</param>
-        /// <returns>The number of bytes inserted into the stream at originalEndOffset.</returns>
-        private static int MakeFreeSpace(IStream stream, long startOffset, long originalEndOffset, long requestedSize, int pageSize)
-        {
-            // Calculate the number of bytes that the requested size overflows the area by,
-            // and then insert pages if necessary
-            int overflow = (int)(startOffset + requestedSize - originalEndOffset);
-            if (overflow > 0)
-                return InsertPages(stream, originalEndOffset, overflow, pageSize);
-            return 0;
-        }
-
-        /// <summary>
-        /// Inserts pages into a stream so that a specified amount of data can fit, pushing everything past them back.
-        /// </summary>
-        /// <param name="stream">The stream to insert pages into.</param>
-        /// <param name="offset">The offset to insert the pages at.</param>
-        /// <param name="minSpace">The minimum amount of free space that needs to be available after the pages have been inserted.</param>
-        /// <param name="pageSize">The size of each page to insert.</param>
-        /// <returns>The number of bytes that were inserted into the stream at the specified offset.</returns>
-        private static int InsertPages(IStream stream, long offset, int minSpace, int pageSize)
-        {
-            // Round the minimum space up to the next multiple of the page size
-            minSpace = (minSpace + pageSize - 1) & ~(pageSize - 1);
-
-            // Push the data back by that amount
-            stream.SeekTo(offset);
-            StreamUtil.Insert(stream, minSpace);
-
-            return minSpace;
-        }
-
-        private const int LocalePageSize = 0x1000;
     }
 }

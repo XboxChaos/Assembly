@@ -81,6 +81,7 @@ namespace ExtryzeDLL.Flexibility
             XAttribute localeSymbolsAttrib = buildElement.Attribute("localeSymbols");
             XAttribute pluginFolderAttrib = buildElement.Attribute("pluginFolder");
             XAttribute scriptDefinitionsAttrib = buildElement.Attribute("scriptDefinitions");
+            XAttribute localeAlignmentAttrib = buildElement.Attribute("localeAlignment");
             if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null)
                 return null;
 
@@ -90,7 +91,8 @@ namespace ExtryzeDLL.Flexibility
             string filenameKey = null;
             string localeSymbols = null;
             string scriptOpcodes = null;
-            int headerSize = int.Parse(headerSizeAttrib.Value.Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+            int localeAlignment = 0x1000;
+            int headerSize = ParseNumber(headerSizeAttrib.Value);
 
             if (filenameKeyAttrib != null)
                 filenameKey = filenameKeyAttrib.Value;
@@ -104,6 +106,8 @@ namespace ExtryzeDLL.Flexibility
                 loadStrings = Convert.ToBoolean(loadStringsAttrib.Value);
             if (scriptDefinitionsAttrib != null)
                 scriptOpcodes = _basePath + @"Scripting\" + scriptDefinitionsAttrib.Value;
+            if (localeAlignmentAttrib != null)
+                localeAlignment = ParseNumber(localeAlignmentAttrib.Value);
 
             // StringID Modifers, this is a bitch
             IStringIDResolver stringIdResolver = null;
@@ -142,10 +146,11 @@ namespace ExtryzeDLL.Flexibility
             }
             else
             {
-                throw new ArgumentException("Build definitions must have either a \"stringidDefinitions\" or a \"stringidModifiers\" attribute");
+                // Use a blank modifier
+                stringIdResolver = new StringIDModifierResolver();
             }
 
-            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes);
+            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, localeAlignment);
             XDocument layoutDocument = XDocument.Load(_basePath + filenameAttrib.Value);
             LoadAllLayouts(layoutDocument, info);
 
@@ -208,6 +213,13 @@ namespace ExtryzeDLL.Flexibility
 
                 info.LocaleSymbols.AddSymbol(codeChar, displayAttrib.Value);
             }
+        }
+
+        private static int ParseNumber(string str)
+        {
+            if (str.StartsWith("0x"))
+                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
+            return int.Parse(str);
         }
     }
 }

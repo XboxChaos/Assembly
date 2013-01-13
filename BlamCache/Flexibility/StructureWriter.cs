@@ -53,6 +53,17 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitBasicField(string name, StructureValueType type, int offset)
         {
+            // Skip over the field if it isn't in the value collection
+            if (type == StructureValueType.Asciiz)
+            {
+                if (!_collection.HasString(name))
+                    return;
+            }
+            else if (!_collection.HasNumber(name))
+            {
+                return;
+            }
+
             SeekWriter(offset);
             switch (type)
             {
@@ -89,6 +100,9 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
         {
+            if (!_collection.HasArray(name))
+                return;
+
             StructureValueCollection[] arrayValue = _collection.GetArray(name);
             for (int i = 0; i < count; i++)
             {
@@ -99,6 +113,9 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitRawField(string name, int offset, int size)
         {
+            if (!_collection.HasRaw(name))
+                return;
+
             SeekWriter(offset);
             _writer.WriteBlock(_collection.GetRaw(name), 0, size);
             _offset += size;

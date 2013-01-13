@@ -35,7 +35,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
     /// </summary>
     public class ThirdGenHeader : ICacheFileInfo
     {
-        private uint _virtualBase;
+        private uint _originalRawTableOffset;
 
         private MetaAddressConverter _addrConverter;
         private IndexOffsetConverter _indexConverter;
@@ -61,7 +61,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         public Pointer MetaBase
         {
-            get { return new Pointer(_virtualBase, _addrConverter); }
+            get { return new Pointer(VirtualBaseAddress, MetaPointerConverter); }
         }
 
         public uint MetaSize { get; set; }
@@ -70,8 +70,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         public Partition[] Partitions { get; private set; }
 
-        public uint RawTableOffset { get; private set; }
-        public uint RawTableSize { get; private set; }
+        public uint RawTableOffset { get; set; }
+        public uint RawTableSize { get; set; }
 
         public Pointer IndexHeaderLocation { get; set; }
         public uint LocaleOffsetMask { get; set; }
@@ -81,15 +81,15 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return _addrConverter.AddressMask; }
         }
 
-        public int StringIDCount { get; private set; }
-        public int StringIDTableSize { get; private set; }
-        public Pointer StringIDIndexTableLocation { get; private set; }
-        public Pointer StringIDDataLocation { get; private set; }
+        public int StringIDCount { get; set; }
+        public int StringIDTableSize { get; set; }
+        public Pointer StringIDIndexTableLocation { get; set; }
+        public Pointer StringIDDataLocation { get; set; }
 
-        public int FileNameCount { get; private set; }
-        public int FileNameTableSize { get; private set; }
-        public Pointer FileNameIndexTableLocation { get; private set; }
-        public Pointer FileNameDataLocation { get; private set; }
+        public int FileNameCount { get; set; }
+        public int FileNameTableSize { get; set; }
+        public Pointer FileNameIndexTableLocation { get; set; }
+        public Pointer FileNameDataLocation { get; set; }
 
         public MetaAddressConverter MetaPointerConverter
         {
@@ -101,6 +101,14 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return _indexConverter; }
         }
 
+        public Pointer LocaleDataLocation { get; set; }
+        public int LocaleDataSize { get; set; }
+
+        public uint StringOffsetMagic { get; set; }
+
+        public uint MetaOffset { get; set; }
+        public uint VirtualBaseAddress { get; set; }
+
         /// <summary>
         /// Serializes the header's values, storing them into a StructureValueCollection.
         /// </summary>
@@ -108,11 +116,15 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         public StructureValueCollection Serialize()
         {
             StructureValueCollection values = new StructureValueCollection();
-            values.SetNumber("virtual base address", _virtualBase);
-            values.SetNumber("raw table offset", RawTableOffset);
+            
+            if (_originalRawTableOffset != 0)
+                values.SetNumber("raw table offset", RawTableOffset);
+            else
+                values.SetNumber("meta offset", MetaOffset);
+
+            values.SetNumber("virtual base address", VirtualBaseAddress);
             values.SetNumber("raw table offset from header", (uint)(RawTableOffset - HeaderSize));
             values.SetNumber("raw table size", RawTableSize);
-            values.SetNumber("meta offset", MetaBase.AsOffset());
             values.SetNumber("locale offset magic", LocaleOffsetMask);
             values.SetNumber("file size", FileSize);
             values.SetNumber("index header address", IndexHeaderLocation.AsAddress());
@@ -130,7 +142,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             values.SetNumber("file index table offset", _stringOffsetConverter.PointerToRaw(FileNameIndexTableLocation));
             values.SetNumber("xdk version", (uint)XDKVersion);
             values.SetArray("partitions", SerializePartitions());
-
+            values.SetNumber("locale data index offset", _indexConverter.PointerToRaw(LocaleDataLocation));
+            values.SetNumber("locale data size", (uint)LocaleDataSize);
             return values;
         }
 
@@ -173,34 +186,40 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
             XDKVersion = (int)values.GetNumber("xdk version");
             Partitions = LoadPartitions(values.GetArray("partitions"));
+
+            LocaleDataLocation = new Pointer(values.GetNumberOrDefault("locale data index offset", (uint)HeaderSize), _indexConverter);
+            LocaleDataSize = (int)values.GetNumberOrDefault("locale data size", 0);
         }
 
         private MetaAddressConverter LoadAddressConverter(StructureValueCollection values)
         {
-            uint metaOffset = 0;
-            _virtualBase = values.GetNumber("virtual base address");
+            VirtualBaseAddress = values.GetNumber("virtual base address");
 
             if (values.HasNumber("raw table offset") && values.HasNumber("raw table size"))
             {
                 // Load raw table info
                 RawTableSize = values.GetNumber("raw table size");
                 RawTableOffset = values.GetNumber("raw table offset");
+                _originalRawTableOffset = RawTableOffset;
 
                 // There are two ways to get the meta offset:
                 // 1. Raw table offset + raw table size
                 // 2. If raw table offset is zero, then the meta offset is directly stored in the header
                 //    (The raw table offset can still be calculated in this case, but can't be used to find the meta the traditional way)
                 if (RawTableOffset != 0)
-                    metaOffset = RawTableOffset + RawTableSize;
+                    MetaOffset = RawTableOffset + RawTableSize;
                 else
                     RawTableOffset = values.GetNumber("raw table offset from header") + (uint)HeaderSize;
             }
-            if (metaOffset == 0 && !values.FindNumber("meta offset", out metaOffset))
+
+            uint temp = MetaOffset;
+            if (MetaOffset == 0 && !values.FindNumber("meta offset", out temp))
             {
                 throw new ArgumentException("The XML layout file is missing information on how to calculate map magic.");
             }
+            MetaOffset = temp;
 
-            return new MetaAddressConverter(_virtualBase, metaOffset);
+            return new MetaAddressConverter(this);
         }
 
         private IndexOffsetConverter LoadIndexOffsetConverter(StructureValueCollection values)
@@ -212,11 +231,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         private HeaderOffsetConverter LoadHeaderOffsetConverter(StructureValueCollection values)
         {
             // Only apply a modifier if the original raw table offset wasn't zero
-            uint stringOffsetMagic = (uint)HeaderSize;
+            StringOffsetMagic = (uint)HeaderSize;
             if (values.HasNumber("raw table offset") && values.GetNumber("raw table offset") > 0)
-                stringOffsetMagic = values.GetNumberOrDefault("string offset magic", (uint)HeaderSize);
+                StringOffsetMagic = values.GetNumberOrDefault("string offset magic", (uint)HeaderSize);
 
-            return new HeaderOffsetConverter(stringOffsetMagic, HeaderSize);
+            return new HeaderOffsetConverter(this);
         }
 
         private Partition[] LoadPartitions(StructureValueCollection[] partitionValues)

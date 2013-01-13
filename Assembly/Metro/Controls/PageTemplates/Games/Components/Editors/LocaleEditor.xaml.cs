@@ -72,12 +72,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             for (int i = 0; i < _currentLocaleTable.Strings.Count; i++)
             {
                 Locale locale = _currentLocaleTable.Strings[i];
-                _locales.Add(new LocaleEntry()
-                    {
-                        Index = i,
-                        Locale = locale.Value,
-                        StringID = _cache.StringIDs.GetString(locale.ID)
-                    });
+                LocaleEntry entry = new LocaleEntry();
+                entry.Index = i;
+                entry.Locale = locale.Value;
+                entry.StringID = _cache.StringIDs.GetString(locale.ID);
+                if (entry.StringID == null)
+                    entry.StringID = locale.ID.ToString();
+                _locales.Add(entry);
             }
 
             Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _localeView; }));
@@ -122,7 +123,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            MetroMessageBox.Show("Not implemented yet, fool.");
+            for (int i = 0; i < _locales.Count; i++)
+                _currentLocaleTable.Strings[i].Value = _locales[i].Locale;
+
+            using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), Endian.BigEndian))
+            {
+                _currentLanguage.SaveStrings(stream, _currentLocaleTable);
+                _cache.SaveChanges(stream);
+            }
+
+            MetroMessageBox.Show("Locales Saved", "Locales saved successfully!");
         }
 
         private void btnReset_Click_1(object sender, RoutedEventArgs e)

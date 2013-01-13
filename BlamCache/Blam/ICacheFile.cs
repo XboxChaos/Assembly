@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam.ThirdGen
 {
@@ -9,6 +10,12 @@ namespace ExtryzeDLL.Blam.ThirdGen
     /// </summary>
     public interface ICacheFile
     {
+        /// <summary>
+        /// Saves any changes that were made to the file header.
+        /// </summary>
+        /// <param name="writer">The stream to write header changes to.</param>
+        void SaveChanges(IWriter writer);
+
         /// <summary>
         /// Information about the cache file (usually obtained from its header).
         /// </summary>

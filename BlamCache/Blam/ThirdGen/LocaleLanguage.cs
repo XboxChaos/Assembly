@@ -22,5 +22,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
         public const int Unknown = 9;
         public const int Portuguese = 10;
         public const int Polish = 11;
+        public const int Russian = 12; // H4 only
+        public const int Danish = 13; // H4 only
+        public const int Finnish = 14; // H4 only
+        public const int Dutch = 15; // H4 only
+        public const int Norwegian = 16; // H4 only
     }
 }

@@ -111,9 +111,9 @@ namespace Assembly
         {
             lbStrings.Items.Clear();
             int language = lbLanguages.SelectedIndex;
-            IList<string> strings = _map.Languages[language].LoadStrings(_reader);
-            foreach (string str in strings)
-                lbStrings.Items.Add(str);
+            LocaleTable strings = _map.Languages[language].LoadStrings(_reader);
+            foreach (Locale str in strings.Strings)
+                lbStrings.Items.Add(str.Value);
         }
     }
 }
