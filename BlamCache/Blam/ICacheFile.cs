@@ -47,6 +47,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
         IList<ILanguage> Languages { get; }
 
         /// <summary>
+        /// The locale groups stored in the file.
+        /// </summary>
+        IList<ILocaleGroup> LocaleGroups { get; }
+
+        /// <summary>
         /// The tag classes stored in the file.
         /// </summary>
         IList<ITagClass> TagClasses { get; }

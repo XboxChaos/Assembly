@@ -41,6 +41,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenLanguageGlobals _languageInfo;
         private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
+        private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
         private BuildInformation _buildInfo;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
@@ -105,6 +106,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _scenario; }
         }
 
+        public IList<ILocaleGroup> LocaleGroups
+        {
+            get { return _localeGroups.AsReadOnly(); }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             _header = LoadHeader(reader, buildInfo, buildString);
@@ -113,6 +119,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
             _tags = LoadTags(reader, buildInfo);
             _languageInfo = LoadLanguageGlobals(reader, buildInfo);
             _scenario = LoadScenario(reader, buildInfo);
+            _localeGroups = LoadLocaleGroups(reader, buildInfo);
 
             BuildLanguageList();
         }
@@ -207,6 +214,25 @@ namespace ExtryzeDLL.Blam.ThirdGen
             return new ThirdGenScenarioMeta(values, reader, _header.MetaPointerConverter, _stringIds, buildInfo);
         }
 
+        private List<ILocaleGroup> LoadLocaleGroups(IReader reader, BuildInformation buildInfo)
+        {
+            List<ILocaleGroup> result = new List<ILocaleGroup>();
+
+            // Locale groups are stored in unic tags
+            StructureLayout layout = buildInfo.GetLayout("unic");
+            foreach (ITag tag in _tags.Tags)
+            {
+                if (tag != null && tag.Class != null && tag.Class.Magic == UnicMagic && tag.MetaLocation.AsAddress() > 0)
+                {
+                    reader.SeekTo(tag.MetaLocation.AsOffset());
+                    StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+                    result.Add(new ThirdGenLocaleGroup(values, tag.Index));
+                }
+            }
+
+            return result;
+        }
+
         private void WriteHeader(IWriter writer)
         {
             StructureValueCollection values = _header.Serialize();
@@ -231,7 +257,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         {
             foreach (ITag tag in _tags.Tags)
             {
-                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic)
+                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic && tag.MetaLocation.AsAddress() > 0)
                     return tag;
             }
             return null;
@@ -240,5 +266,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private static int MatgMagic = CharConstant.FromString("matg");
         private static int PatgMagic = CharConstant.FromString("patg");
         private static int ScnrMagic = CharConstant.FromString("scnr");
+        private static int UnicMagic = CharConstant.FromString("unic");
     }
 }
