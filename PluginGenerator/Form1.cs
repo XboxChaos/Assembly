@@ -119,7 +119,7 @@ namespace PluginGenerator
                 Queue<MetaMap> mapsToProcess = new Queue<MetaMap>();
                 foreach (ITag tag in cacheFile.Tags)
                 {
-                    if (tag.Index.IsValid)
+                    if (tag.MetaLocation.AsAddress() > 0)
                     {
                         MetaMap map = new MetaMap();
                         tagMaps[tag] = map;
@@ -134,7 +134,7 @@ namespace PluginGenerator
                 Dictionary<string, MetaMap> classMaps = new Dictionary<string, MetaMap>();
                 foreach (ITag tag in cacheFile.Tags)
                 {
-                    if (tag.Index.IsValid)
+                    if (tag.MetaLocation.AsAddress() > 0)
                     {
                         MetaMap map = tagMaps[tag];
                         EstimateMapSize(map, tag.MetaLocation.AsAddress(), analyzer.GeneratedMemoryMap, 1);
