@@ -9,5 +9,6 @@ namespace ExtryzeDLL.Patching
     {
         public const int Titl = 0x7469746C;
         public const int Meta = 0x6D657461;
+        public const int Locl = 0x6C6F636C;
     }
 }

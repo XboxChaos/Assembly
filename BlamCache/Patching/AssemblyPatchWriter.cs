@@ -27,6 +27,7 @@ namespace ExtryzeDLL.Patching
         {
             WritePatchInfo(patch, writer);
             WriteMetaChanges(patch, writer);
+            WriteLocaleChanges(patch, writer);
         }
 
         private static void WritePatchInfo(Patch patch, IWriter writer)
@@ -63,6 +64,9 @@ namespace ExtryzeDLL.Patching
 
         private static void WriteMetaChanges(Patch patch, IWriter writer)
         {
+            if (patch.MetaChanges.Count == 0)
+                return;
+
             long startPos = writer.Position;
             writer.WriteInt32(AssemblyPatchBlockID.Meta);
             writer.WriteUInt32(0); // Size filled in later
@@ -94,6 +98,38 @@ namespace ExtryzeDLL.Patching
                 writer.WriteUInt32(change.Address);
                 writer.WriteUInt32((uint)change.Data.Length);
                 writer.WriteBlock(change.Data);
+            }
+
+            // Fill in the block size
+            long endPos = writer.Position;
+            writer.SeekTo(startPos + 4);
+            writer.WriteUInt32((uint)(endPos - startPos));
+            writer.SeekTo(endPos);
+        }
+
+        private static void WriteLocaleChanges(Patch patch, IWriter writer)
+        {
+            if (patch.LanguageChanges.Count == 0)
+                return;
+
+            long startPos = writer.Position;
+            writer.WriteInt32(AssemblyPatchBlockID.Locl);
+            writer.WriteUInt32(0); // Size filled in later
+            writer.WriteByte(0); // Version 0
+
+            // Write change data for each language
+            writer.WriteByte((byte)patch.LanguageChanges.Count);
+            foreach (LanguageChange language in patch.LanguageChanges)
+            {
+                writer.WriteByte(language.LanguageIndex);
+
+                // Write the change data for each string in the language
+                writer.WriteInt32(language.LocaleChanges.Count);
+                foreach (LocaleChange change in language.LocaleChanges)
+                {
+                    writer.WriteUInt16((ushort)change.Index);
+                    writer.WriteUTF8(change.NewValue);
+                }
             }
 
             // Fill in the block size

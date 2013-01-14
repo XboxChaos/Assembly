@@ -10,6 +10,14 @@ namespace ExtryzeDLL.Patching
 {
     public static class MetaComparer
     {
+        /// <summary>
+        /// Compares the tag meta between two cache files and adds the results to a patch.
+        /// </summary>
+        /// <param name="originalFile">The unmodified cache file.</param>
+        /// <param name="originalReader">A stream open on the unmodified cache file.</param>
+        /// <param name="newFile">The modified cache file.</param>
+        /// <param name="newReader">A stream open on the modified cache file.</param>
+        /// <param name="output">The Patch to add results to.</param>
         public static void CompareMeta(ICacheFile originalFile, IReader originalReader, ICacheFile newFile, IReader newReader, Patch output)
         {
             // TODO: Handle files with expanded meta partitions
@@ -29,7 +37,7 @@ namespace ExtryzeDLL.Patching
             newReader.SeekTo(offset);
             while (offset < endOffset)
             {
-                // Read the meta in large blocks
+                // Read the meta in large blocks and then compare the blocks
                 originalReader.ReadBlock(oldBuffer, 0, BufferSize);
                 newReader.ReadBlock(newBuffer, 0, BufferSize);
                 for (int i = 0; i < oldBuffer.Length; i++)

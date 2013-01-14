@@ -60,12 +60,16 @@ namespace PatchCreator
 
             IReader originalReader = new EndianReader(File.OpenRead(unmoddedPath.Text), Endian.BigEndian);
             IReader newReader = new EndianReader(File.OpenRead(moddedPath.Text), Endian.BigEndian);
+            
             ThirdGenVersionInfo version = new ThirdGenVersionInfo(originalReader);
             BuildInfoLoader loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
             BuildInformation buildInfo = loader.LoadBuild(version.BuildString);
             ThirdGenCacheFile originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
             ThirdGenCacheFile newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
+
             MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
+            LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
+
             originalReader.Close();
             newReader.Close();
 
