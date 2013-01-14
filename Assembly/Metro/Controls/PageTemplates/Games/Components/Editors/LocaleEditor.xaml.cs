@@ -29,11 +29,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     {
         private ThirdGenCacheFile _cache;
         private IStreamManager _streamManager;
+        private int _languageIndex;
         private ILanguage _currentLanguage;
         private LocaleTable _currentLocaleTable;
         private List<LocaleEntry> _locales;
         private ICollectionView _localeView;
-        private ObservableCollection<LanguageEntry> languages = new ObservableCollection<LanguageEntry>();
+        private ObservableCollection<LocaleGroup> _groups = new ObservableCollection<LocaleGroup>();
+        private LocaleRange _currentRange;
         private string _filter;
 
         public LocaleEditor(ThirdGenCacheFile cache, IStreamManager streamManager, int index)
@@ -42,6 +44,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             _cache = cache;
             _streamManager = streamManager;
+            _languageIndex = index;
             _currentLanguage = cache.Languages[index];
 
             Thread thrd = new Thread(new ThreadStart(LoadLanguage));
@@ -68,6 +71,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             _locales = new List<LocaleEntry>();
             _localeView = CollectionViewSource.GetDefaultView(_locales);
+            _localeView.Filter = LocaleFilter;
 
             for (int i = 0; i < _currentLocaleTable.Strings.Count; i++)
             {
@@ -81,13 +85,53 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 _locales.Add(entry);
             }
 
+            LoadGroups();
+
             Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _localeView; }));
+        }
+
+        /// <summary>
+        /// Loads the list of locale groups.
+        /// </summary>
+        private void LoadGroups()
+        {
+            // Make a default group that shows everything
+            LocaleRange allLocales = new LocaleRange(0, _locales.Count);
+            _currentRange = allLocales;
+            _groups.Add(new LocaleGroup() { Name = "(show all)", Range = allLocales });
+
+            // Load the groups stored in the cache file
+            foreach (ILocaleGroup group in _cache.LocaleGroups)
+            {
+                string name = _cache.FileNames.FindTagName(group.TagIndex);
+                LocaleRange range = group.Ranges[_languageIndex];
+
+                _groups.Add(new LocaleGroup() { Name = name, Range = range });
+            }
+
+            Dispatcher.Invoke(new Action(delegate
+                {
+                    cbLocaleGroups.ItemsSource = _groups;
+                    cbLocaleGroups.SelectedIndex = 0;
+                }));
         }
 
         private bool LocaleFilter(object item)
         {
             LocaleEntry locale = (LocaleEntry)item;
-            return (locale.Locale.Contains(_filter) || (locale.StringID != null && locale.StringID.Contains(_filter)));
+            if (_currentRange != null)
+            {
+                // Only show locales in the current range
+                if (locale.Index < _currentRange.StartIndex || locale.Index >= _currentRange.StartIndex + _currentRange.Size)
+                    return false;
+            }
+            if (!string.IsNullOrEmpty(_filter))
+            {
+                // Only show locales that match the filter
+                if (!locale.Locale.ToLower().Contains(_filter) && !locale.StringID.ToLower().Contains(_filter))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -96,17 +140,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         /// <param name="filter">The filter string</param>
         private void FilterLanguage(string filter)
         {
-            _filter = filter;
-            if (!string.IsNullOrEmpty(filter))
-            {
-                _localeView.Filter = LocaleFilter;
-                btnReset.IsEnabled = true;
-            }
+            if (filter != null)
+                _filter = filter.ToLower();
             else
-            {
-                _localeView.Filter = null;
-                btnReset.IsEnabled = false;
-            }
+                _filter = null;
+
+            btnReset.IsEnabled = !string.IsNullOrEmpty(filter);
             _localeView.Refresh();
         }
 
@@ -140,17 +179,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             txtFilter.Text = "";
             FilterLanguage(null);
         }
-    }
 
-    public class LocaleEntry
-    {
-        public int Index { get; set; }
-        public string StringID { get; set; }
-        public string Locale { get; set; }
-    }
-    public class LanguageEntry
-    {
-        public int Index { get; set; }
-        public string Language { get; set; }
+        private void cbLocaleGroups_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            LocaleGroup group = cbLocaleGroups.SelectedItem as LocaleGroup;
+            if (group != null)
+            {
+                _currentRange = group.Range;
+                _localeView.Refresh();
+            }
+        }
+
+        class LocaleEntry
+        {
+            public int Index { get; set; }
+            public string StringID { get; set; }
+            public string Locale { get; set; }
+        }
+        class LanguageEntry
+        {
+            public int Index { get; set; }
+            public string Language { get; set; }
+        }
+
+        class LocaleGroup
+        {
+            public string Name { get; set; }
+            public LocaleRange Range { get; set; }
+        }
     }
 }

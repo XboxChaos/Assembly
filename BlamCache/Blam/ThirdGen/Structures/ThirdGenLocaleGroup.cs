@@ -13,6 +13,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
     {
         public ThirdGenLocaleGroup(StructureValueCollection values, DatumIndex tagIndex)
         {
+            TagIndex = tagIndex;
             Load(values);
         }
 
