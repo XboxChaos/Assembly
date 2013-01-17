@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using ExtryzeDLL.Blam.ThirdGen;

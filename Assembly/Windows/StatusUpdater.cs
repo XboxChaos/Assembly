@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
-using Assembly.Backend;
+using Assembly.Helpers;
 
 namespace Assembly.Windows
 {

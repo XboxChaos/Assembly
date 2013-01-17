@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs

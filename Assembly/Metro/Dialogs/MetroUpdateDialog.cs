@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assembly.Backend;
-using Assembly.Backend.Net;
+using Assembly.Helpers;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Metro.Dialogs
 {

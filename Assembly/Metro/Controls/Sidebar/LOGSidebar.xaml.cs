@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
 

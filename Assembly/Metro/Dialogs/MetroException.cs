@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assembly.Backend;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs
 {
@@ -16,7 +16,7 @@ namespace Assembly.Metro.Dialogs
         {
             // Run it though the dictionary, see if it can be made more user-friendlyKK
 
-            ex = Backend.ExceptionDictionary.GetFriendlyException(ex);
+            ex = Helpers.ExceptionDictionary.GetFriendlyException(ex);
 
             Settings.homeWindow.ShowMask();
             ControlDialogs.Exception exceptionDialog = new ControlDialogs.Exception(ex);

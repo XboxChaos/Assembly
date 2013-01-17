@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 
 namespace Assembly.Metro.Controls.PageTemplates

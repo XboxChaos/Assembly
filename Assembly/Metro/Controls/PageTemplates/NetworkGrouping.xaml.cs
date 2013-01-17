@@ -13,13 +13,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using Assembly.Metro.Dialogs;
-using Assembly.Backend.Cryptography;
+using Assembly.Helpers.Cryptography;
 using System.Threading;
-using Assembly.Backend;
+using Assembly.Helpers;
 using System.Web.Script.Serialization;
-using Assembly.Backend.UIX;
+using Assembly.Helpers.UIX;
 using System.Runtime.Serialization;
-using Assembly.Backend.Net;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -80,8 +80,8 @@ namespace Assembly.Metro.Controls.PageTemplates
                     lblSignedInPosts.Text = string.Format("posts: {0:##,###}", response.PostCount.ToString());
 
                     // Validate Avatar
-                    if (!string.IsNullOrEmpty(response.AvatarURL) && response.AvatarURL != "http://uploads.xbchaos.netdna-cdn.com/")
-                            ImageLoader.LoadImageAndFade(imgSignedInAvatar, new Uri(response.AvatarURL), new AnimationHelper(this));
+                    if (!string.IsNullOrEmpty(response.AvatarUrl) && response.AvatarUrl != "http://uploads.xbchaos.netdna-cdn.com/")
+                            ImageLoader.LoadImageAndFade(imgSignedInAvatar, new Uri(response.AvatarUrl), new AnimationHelper(this));
 
                     MetroMessageBox.Show("welcome", "Welcome to network poking, " + response.DisplayName);
                 }));

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Assembly.Backend;
+using Assembly.Helpers;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace AssemblyUpdateManager

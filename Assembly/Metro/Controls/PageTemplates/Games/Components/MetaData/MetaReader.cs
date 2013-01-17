@@ -6,7 +6,7 @@ using System.Text;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
-using Assembly.Backend;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {

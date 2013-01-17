@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Assembly.Metro.Native;
-using Assembly.Backend;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {

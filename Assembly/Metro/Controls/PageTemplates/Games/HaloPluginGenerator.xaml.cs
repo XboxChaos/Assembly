@@ -48,7 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (Directory.Exists(txtInputFolder.Text))
                 fbd.SelectedPath = txtInputFolder.Text;
             else
-                fbd.SelectedPath = Backend.VariousFunctions.GetApplicationLocation();
+                fbd.SelectedPath = Helpers.VariousFunctions.GetApplicationLocation();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 GeneratorMaps.Clear();
@@ -74,7 +74,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (Directory.Exists(txtOutputFolder.Text))
                 fbd.SelectedPath = txtOutputFolder.Text;
             else
-                fbd.SelectedPath = Backend.VariousFunctions.GetApplicationLocation() + "\\plugins\\";
+                fbd.SelectedPath = Helpers.VariousFunctions.GetApplicationLocation() + "\\plugins\\";
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtOutputFolder.Text = fbd.SelectedPath;

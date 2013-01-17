@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assembly.Backend;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs
 {
@@ -62,12 +62,12 @@ namespace Assembly.Metro.Dialogs
         {
             Settings.homeWindow.ShowMask();
             ControlDialogs.MessageBoxOptions msgBox = new ControlDialogs.MessageBoxOptions(title, message, buttons);
-            msgBox.Owner = Backend.Settings.homeWindow;
+            msgBox.Owner = Helpers.Settings.homeWindow;
             msgBox.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             msgBox.ShowDialog();
             Settings.homeWindow.HideMask();
 
-            return Backend.TempStorage.msgBoxButtonStorage;
+            return Helpers.TempStorage.msgBoxButtonStorage;
         }
     }
 }

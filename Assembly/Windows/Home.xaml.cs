@@ -19,7 +19,7 @@ using System.Windows.Threading;
 using Assembly.Metro.Native;
 using Assembly.Metro.Controls.PageTemplates;
 using Assembly.Metro.Dialogs;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using CloseableTabItemDemo;
 using Assembly.Metro.Controls.Sidebar;

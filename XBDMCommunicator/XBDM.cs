@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using ExtryzeDLL.IO;
@@ -10,16 +7,16 @@ using XDevkit;
 
 namespace XBDMCommunicator
 {
-    public class XBDM
+    public class Xbdm
     {
         /// <summary>
         /// Create a new instance of the XBDM Communicator
         /// </summary>
         /// <param name="deviceIdent">The Name of IP of the XBox Console running xbdm.</param>
         /// <param name="openConnection">Open a connection to the XBox Console</param>
-        public XBDM(string deviceIdent, bool openConnection = false)
+        public Xbdm(string deviceIdent, bool openConnection = false)
         {
-            _deviceIdent = deviceIdent;
+            DeviceIdent = deviceIdent;
             _xboxMemoryStream = new XboxMemoryStream(this);
 
             if (openConnection)
@@ -29,20 +26,18 @@ namespace XBDMCommunicator
 
         // Private Modifiers
         private IXboxManager _xboxManager;
-        private XboxMemoryStream _xboxMemoryStream;
+        private readonly XboxMemoryStream _xboxMemoryStream;
         private XboxConsole _xboxConsole;
         private IXboxDebugTarget _xboxDebugTarget;
-        private string _deviceIdent;
-        private string _xboxType;
-        private uint _xboxConnectionCode;
-        private bool _isConnected;
+	    private uint _xboxConnectionCode;
 
 
-        // Public Modifiers
-        public String DeviceIdent { get { return _deviceIdent; } }
-        public String XboxType { get { return _xboxType; } }
-        public Boolean IsConnected { get { return _isConnected; } }
-        public XboxMemoryStream MemoryStream
+	    // Public Modifiers
+	    public string DeviceIdent { get; private set; }
+	    public string XboxType { get; private set; }
+	    public bool IsConnected { get; private set; }
+
+	    public XboxMemoryStream MemoryStream
         { 
             get { return _xboxMemoryStream; }
             //set { _xboxMemoryStream = value; }
@@ -56,9 +51,9 @@ namespace XBDMCommunicator
         /// <param name="deviceIdent">The new XBox XDK Name or IP</param>
         public void UpdateDeviceIdent(string deviceIdent)
         {
-            if (_deviceIdent != deviceIdent)
+            if (DeviceIdent != deviceIdent)
                 Disconnect();
-            _deviceIdent = deviceIdent;
+            DeviceIdent = deviceIdent;
         }
 
         /// <summary>
@@ -67,7 +62,7 @@ namespace XBDMCommunicator
         /// <returns>true if the connection was successful.</returns>
         public bool Connect()
         {
-            if (!_isConnected)
+            if (!IsConnected)
             {
                 try
                 {
@@ -84,10 +79,10 @@ namespace XBDMCommunicator
                     return false;
                 }
 
-                try { _xboxType = _xboxConsole.ConsoleType.ToString(); }
-                catch { _xboxType = "Unable to get."; }
+                try { XboxType = _xboxConsole.ConsoleType.ToString(); }
+                catch { XboxType = "Unable to get."; }
 
-                _isConnected = true;
+                IsConnected = true;
             }
             return true;
         }
@@ -97,16 +92,15 @@ namespace XBDMCommunicator
         /// </summary>
         public void Disconnect()
         {
-            if (_isConnected)
-            {
-                if (_xboxConsole != null)
-                    _xboxConsole.CloseConnection(_xboxConnectionCode);
+	        if (!IsConnected) return;
 
-                _xboxManager = null;
-                _xboxDebugTarget = null;
-                _xboxConsole = null;
-                _isConnected = false;
-            }
+	        if (_xboxConsole != null)
+		        _xboxConsole.CloseConnection(_xboxConnectionCode);
+
+	        _xboxManager = null;
+	        _xboxDebugTarget = null;
+	        _xboxConsole = null;
+	        IsConnected = false;
         }
 
         /// <summary>
@@ -119,7 +113,7 @@ namespace XBDMCommunicator
             if (!Connect())
                 return null;
             
-            string response = "";
+            string response;
             _xboxConsole.SendTextCommand(_xboxConnectionCode, command, out response);
             // Alex: Personally I feel that we should always return the response here and leave it up to the caller to check it
             // -- Aaron
@@ -192,10 +186,10 @@ namespace XBDMCommunicator
         /// </summary>
         /// <param name="savePath">The location to save the image to.</param>
         /// <param name="freezeDuring">Do you want to freeze while the screenshot is being taken.</param>
-        public void GetScreenshot(string savePath, bool freezeDuring = false)
+        public bool GetScreenshot(string savePath, bool freezeDuring = false)
         {
             if (!Connect())
-                return;
+                return false;
 
             // Stop the Console
             if (freezeDuring)
@@ -207,6 +201,8 @@ namespace XBDMCommunicator
             // Start the Console
             if (freezeDuring)
                 Unfreeze();
+
+	        return true;
         }
         
         // Enum Declaration
@@ -215,33 +211,32 @@ namespace XBDMCommunicator
         // Memory IO
         public class XboxMemoryStream : IWriter, IReader
         {
-            public XboxMemoryStream(XBDM xbdm)
+            public XboxMemoryStream(Xbdm xbdm)
             {
-                _xbdm = xbdm;
-                _address = 0;
+	            EOF = false;
+	            _xbdm = xbdm;
+                Position = 0;
             }
 
             // Private Modifiers
-            private XBDM _xbdm;
-            private long _address;
-            private bool _eof = false;
-            private long _length = 0xFFFFFFFF;
+            private readonly Xbdm _xbdm;
+	        private const long _length = 0xFFFFFFFF;
 
-            // IO Functions
+	        // IO Functions
             #region Read
             private byte[] ReadPureBytes(uint length)
             {
                 if (!_xbdm.Connect())
                     return null;
 
-                bool flag = true;
+                var flag = true;
                 if (length > 20)
                     _xbdm._xboxDebugTarget.Stop(out flag);
 
-                uint bytesRead = 0;
-                byte[] output = new byte[length];
-                _xbdm._xboxDebugTarget.GetMemory((uint)_address, length, output, out bytesRead);
-                SeekTo(_address + length);
+	            uint bytesRead;
+                var output = new byte[length];
+                _xbdm._xboxDebugTarget.GetMemory((uint)Position, length, output, out bytesRead);
+                SeekTo(Position + length);
 
                 if (!flag)
                     _xbdm._xboxDebugTarget.Go(out flag);
@@ -331,13 +326,13 @@ namespace XBDMCommunicator
                 if (!_xbdm.Connect())
                     return;
 
-                bool flag = true;
+                var flag = true;
                 if (input.Length > 20)
                     _xbdm._xboxDebugTarget.Stop(out flag);
 
-                uint bytesRead = 0;
-                _xbdm._xboxDebugTarget.SetMemory((uint)_address, (uint)input.Length, input, out bytesRead);
-                SeekTo(_address + input.Length);
+	            uint bytesRead;
+                _xbdm._xboxDebugTarget.SetMemory((uint)Position, (uint)input.Length, input, out bytesRead);
+                SeekTo(Position + input.Length);
 
                 if (!flag)
                     _xbdm._xboxDebugTarget.Go(out flag);
@@ -345,8 +340,8 @@ namespace XBDMCommunicator
 
             public void WriteBlock(byte[] data, int offset, int size)
             {
-                List<byte> input = new List<byte>();
-                for (int i = offset; i < offset + size; i++)
+                var input = new List<byte>();
+                for (var i = offset; i < offset + size; i++)
                 {
                     if (i > data.Length)
                         break;
@@ -363,16 +358,16 @@ namespace XBDMCommunicator
 
             public void WriteByte(byte value)
             {
-                WritePureBytes(new byte[] { value });
+                WritePureBytes(new[] { value });
             }
             public void WriteSByte(sbyte value)
             {
-                WritePureBytes(new byte[] { (byte)value });
+                WritePureBytes(new[] { (byte)value });
             }
 
             public void WriteFloat(float value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+                var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
@@ -380,21 +375,21 @@ namespace XBDMCommunicator
 
             public void WriteInt16(short value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+                var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
             }
             public void WriteInt32(int value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+				var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
             }
             public void WriteInt64(long value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+				var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
@@ -402,21 +397,21 @@ namespace XBDMCommunicator
 
             public void WriteUInt16(ushort value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+				var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
             }
             public void WriteUInt32(uint value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+				var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
             }
             public void WriteUInt64(ulong value)
             {
-                byte[] input = BitConverter.GetBytes(value);
+				var input = BitConverter.GetBytes(value);
                 if (BitConverter.IsLittleEndian)
                     Array.Reverse(input);
                 WritePureBytes(input);
@@ -424,7 +419,7 @@ namespace XBDMCommunicator
 
             public void WriteAscii(string str)
             {
-                byte[] input = Encoding.ASCII.GetBytes(str + char.MinValue);
+				var input = Encoding.ASCII.GetBytes(str + char.MinValue);
 
                 WritePureBytes(input);
             }
@@ -437,12 +432,12 @@ namespace XBDMCommunicator
 
             public void WriteUTF16(string str)
             {
-                byte[] input = Encoding.Unicode.GetBytes(str + char.MinValue);
+				var input = Encoding.Unicode.GetBytes(str + char.MinValue);
 
                 // Make Big Endian
-                for (int i = 0; i < input.Length; i += 2)
+				for (var i = 0; i < input.Length; i += 2)
                 {
-                    byte temp = input[i];
+					var temp = input[i];
                     input[i] = input[i + 1];
                     input[i + 1] = temp;
                 }
@@ -455,7 +450,7 @@ namespace XBDMCommunicator
             /// Gets wether the address is within the Xbox 360's memory
             /// </summary>
             /// <param name="address">The XBox 360 Memory Address</param>
-            private bool IsValidXboxMemoryAddress(long address)
+            private static bool IsValidXboxMemoryAddress(long address)
             {
                 return (address >= 0 && address <= 0xFFFFFFFF);
             }
@@ -463,24 +458,21 @@ namespace XBDMCommunicator
 
             // Public Functions
             public void Close() { }
-            public bool EOF { get { return _eof; } }
-            public long Length { get { return _length; } }
-            public long Position { get { return _address; } }
+	        public bool EOF { get; private set; }
+	        public long Length { get { return _length; } }
+	        public long Position { get; private set; }
 
-            public bool SeekTo(long address)
+	        public bool SeekTo(long address)
             {
-                // Check if seek is valid
-                if (IsValidXboxMemoryAddress(address))
-                {
-                    _address = address;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+	            // Check if seek is valid
+	            if (!IsValidXboxMemoryAddress(address))
+					return false;
+
+	            Position = address;
+	            return true;
             }
-            public void Skip(long count) { _address += count; }
+
+	        public void Skip(long count) { Position += count; }
         }
     }
 }

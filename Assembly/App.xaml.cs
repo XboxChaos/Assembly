@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml;
-using Assembly.Backend;
-using Assembly.Backend.Plugins;
+using Assembly.Helpers;
+using Assembly.Helpers.Plugins;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
 using Microsoft.Shell;
 using Assembly.Windows;
-using Assembly.Backend.Cryptography;
+using Assembly.Helpers.Cryptography;
 
 namespace Assembly
 {
@@ -62,7 +62,7 @@ namespace Assembly
             AssemblyProtocol.UpdateProtocol();
 
             // Create XBDM Instance
-            Settings.xbdm = new XBDM(Settings.XDKNameIP);
+            Settings.xbdm = new Xbdm(Settings.XDKNameIP);
             //try { Settings.xbdm.Connect(); } catch { }
 
             // Create Temporary FilePaths
