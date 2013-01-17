@@ -2,16 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Interop;
 using Microsoft.Win32;
 using System.Windows.Threading;
@@ -33,13 +27,13 @@ namespace Assembly.Windows
     /// <summary>
     /// Interaction logic for Home.xaml
     /// </summary>
-    public partial class Home : Window
+    public partial class Home
     {
         public Home()
         {
             InitializeComponent();
             DwmDropShadow.DropShadowToWindow(this);
-            this.AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(this.CloseTab));
+            AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
             Settings.homeWindow = this;
 
             UpdateTitleText("Empty");
@@ -56,28 +50,23 @@ namespace Assembly.Windows
             XBDMSidebarTimerEvent();
 
             // Set width/height/state from last session
-            if (Settings.applicationSizeHeight != double.NaN)
-                this.Height = Settings.applicationSizeHeight;
-            if (Settings.applicationSizeWidth != double.NaN)
-                this.Width = Settings.applicationSizeWidth;
-            if (Settings.applicationSizeMaximize)
-                this.WindowState = System.Windows.WindowState.Maximized;
-            else
-                this.WindowState = System.Windows.WindowState.Normal;
+            if (!double.IsNaN(Settings.applicationSizeHeight))
+                Height = Settings.applicationSizeHeight;
+            if (!double.IsNaN(Settings.applicationSizeWidth))
+                Width = Settings.applicationSizeWidth;
+            WindowState = Settings.applicationSizeMaximize ? WindowState.Maximized : WindowState.Normal;
             Window_StateChanged(null, null);
 
-            this.AllowDrop = true;
-        }
-        protected override void OnDrop(DragEventArgs e)
-        {
-            base.OnDrop(e);
+            AllowDrop = true;
         }
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
 
-            System.IntPtr handle = (new System.Windows.Interop.WindowInteropHelper(this)).Handle;
-            System.Windows.Interop.HwndSource.FromHwnd(handle).AddHook(new System.Windows.Interop.HwndSourceHook(WindowProc));
+            var handle = (new WindowInteropHelper(this)).Handle;
+	        var hwndSource = HwndSource.FromHwnd(handle);
+	        if (hwndSource != null)
+		        hwndSource.AddHook(WindowProc);
         }
 
         #region Content Management
@@ -94,38 +83,53 @@ namespace Assembly.Windows
         /// <param name="contentType">Type of content to open</param>
         public void OpenContentFile(ContentTypes contentType)
         {
-            if (contentType == ContentTypes.Map)
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "Assembly - Open Blam Cache File";
-                ofd.Filter = "Blam Cache File (*.map)|*.map";
-                ofd.Multiselect = true;
-                if ((bool)ofd.ShowDialog())
-                    foreach(string file in ofd.FileNames)
-                        AddCacheTabModule(ofd.FileName);
-            }
-            else if (contentType == ContentTypes.MapImage)
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "Assembly - Open Blam Map Image File";
-                ofd.Filter = "Blam Map Image File (*.blf)|*.blf";
-                ofd.Multiselect = true;
-                if ((bool)ofd.ShowDialog())
-                    foreach (string file in ofd.FileNames)
-                        AddImageTabModule(ofd.FileName);
-            }
-            else if (contentType == ContentTypes.MapInfo)
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "Assembly - Open Blam Map Info File";
-                ofd.Filter = "Blam Map Info File (*.mapinfo)|*.mapinfo";
-                ofd.Multiselect = true;
-                if ((bool)ofd.ShowDialog())
-                    foreach (string file in ofd.FileNames)
-                        AddInfooTabModule(ofd.FileName);
-            }
+	        switch (contentType)
+			{
+#pragma warning disable 168
+		        case ContentTypes.Map:
+			        {
+				        var ofd = new OpenFileDialog
+					                  {
+						                  Title = "Assembly - Open Blam Cache File",
+						                  Filter = "Blam Cache File (*.map)|*.map",
+						                  Multiselect = true
+					                  };
+				        if ((bool)ofd.ShowDialog())
+							foreach (var file in ofd.FileNames)
+						        AddCacheTabModule(ofd.FileName);
+			        }
+			        break;
+		        case ContentTypes.MapImage:
+			        {
+						var ofd = new OpenFileDialog
+							          {
+								          Title = "Assembly - Open Blam Map Image File",
+								          Filter = "Blam Map Image File (*.blf)|*.blf",
+								          Multiselect = true
+							          };
+				        if ((bool)ofd.ShowDialog())
+							foreach (var file in ofd.FileNames)
+						        AddImageTabModule(ofd.FileName);
+			        }
+			        break;
+		        case ContentTypes.MapInfo:
+			        {
+						var ofd = new OpenFileDialog
+							          {
+								          Title = "Assembly - Open Blam Map Info File",
+								          Filter = "Blam Map Info File (*.mapinfo)|*.mapinfo",
+								          Multiselect = true
+							          };
+				        if ((bool)ofd.ShowDialog())
+							foreach (var file in ofd.FileNames)
+						        AddInfooTabModule(ofd.FileName);
+			        }
+			        break;
+			}
+#pragma warning restore 168
         }
-        #endregion
+
+	    #endregion
 
         #region Tab Manager
         public void ClearTabs()
@@ -133,48 +137,48 @@ namespace Assembly.Windows
             homeTabControl.Items.Clear();
         }
 
-        private void CloseTab(object source, RoutedEventArgs args)
+        private static void CloseTab(object source, RoutedEventArgs args)
         {
-            TabItem tabItem = args.Source as TabItem;
-            if (tabItem != null)
-            {
-                dynamic tabContent = tabItem.Content;
+            var tabItem = args.Source as TabItem;
+	        if (tabItem == null) return;
 
-                if (tabContent.Close())
-                {
-                    TabControl tabControl = tabItem.Parent as TabControl;
-                    if (tabControl != null)
-                        tabControl.Items.Remove(tabItem);
-                }
-            }
+	        dynamic tabContent = tabItem.Content;
+	        if (!tabContent.Close()) return;
+
+			var tabControl = tabItem.Parent as TabControl;
+	        if (tabControl != null)
+		        tabControl.Items.Remove(tabItem);
         }
 
         public void ExternalTabClose(TabItem tab)
         {
             homeTabControl.Items.Remove(tab);
 
-            foreach (TabItem datTab in homeTabControl.Items)
-                if (datTab.Header.ToString() == "Start Page")
-                {
-                    homeTabControl.SelectedItem = datTab;
-                    return;
-                }
+			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => datTab.Header.ToString() == "Start Page"))
+            {
+	            homeTabControl.SelectedItem = datTab;
+	            return;
+            }
 
             if (homeTabControl.Items.Count > 0)
                 homeTabControl.SelectedIndex = homeTabControl.Items.Count - 1;
         }
         public void ExternalTabClose(TabGenre tabGenre)
         {
-            string tabHeader = "";
-            if (tabGenre == TabGenre.StartPage)
-                tabHeader = "Start Page";
-            else if (tabGenre == TabGenre.Settings)
-                tabHeader = "Settings Page";
+			var tabHeader = "";
+            switch (tabGenre)
+            {
+	            case TabGenre.StartPage:
+		            tabHeader = "Start Page";
+		            break;
+	            case TabGenre.Settings:
+		            tabHeader = "Settings Page";
+		            break;
+            }
 
             TabItem toRemove = null;
-            foreach (TabItem tab in homeTabControl.Items)
-                if (tab.Header.ToString() == tabHeader)
-                    toRemove = tab;
+			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => tab.Header.ToString() == tabHeader))
+	            toRemove = tab;
 
             if (toRemove != null)
                 homeTabControl.Items.Remove(toRemove);
@@ -187,19 +191,19 @@ namespace Assembly.Windows
         public void AddCacheTabModule(string cacheLocation)
         {
             // Check the map isn't already open
-            foreach (TabItem tab in homeTabControl.Items)
-                if (cacheLocation == (string)tab.Tag)
-                {
-                    // Show Message Telling user map is already open
-                    MetroMessageBox.Show("Cache Already Open!", "The selected Blam Cache File is already open in Assembly. Let us take you there now.");
-                    homeTabControl.SelectedItem = tab;
-                    return;
-                }
+            foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => cacheLocation == (string)tab.Tag))
+            {
+	            // Show Message Telling user map is already open
+	            MetroMessageBox.Show("Cache Already Open!", "The selected Blam Cache File is already open in Assembly. Let us take you there now.");
+	            homeTabControl.SelectedItem = tab;
+	            return;
+            }
 
-            CloseableTabItem newCacheTab = new CloseableTabItem();
-            newCacheTab.Tag = cacheLocation;
-            newCacheTab.Header = "";
-            //newCacheTab.ToolTip = cacheLocation;
+			var newCacheTab = new CloseableTabItem
+				                  {
+					                  Tag = cacheLocation, 
+									  Header = ""
+				                  };
             newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab);
 
             homeTabControl.Items.Add(newCacheTab);
@@ -211,10 +215,11 @@ namespace Assembly.Windows
         /// <param name="tempImageLocation">Path to the temporary location of the image</param>
         public void AddScrenTabModule(string tempImageLocation)
         {
-            CloseableTabItem newImageTab = new CloseableTabItem();
-            newImageTab.Tag = tempImageLocation;
-            newImageTab.Header = "Screenshot";
-            //newImageTab.ToolTip = imageLocation;
+			var newImageTab = new CloseableTabItem
+				                  {
+					                  Tag = tempImageLocation, 
+									  Header = "Screenshot"
+				                  };
             newImageTab.Content = new HaloScreenshot(tempImageLocation, newImageTab);
 
             homeTabControl.Items.Add(newImageTab);
@@ -227,19 +232,19 @@ namespace Assembly.Windows
         public void AddImageTabModule(string imageLocation)
         {
             // Check the map image isn't already open
-            foreach (TabItem tab in homeTabControl.Items)
-                if (imageLocation == (string)tab.Tag)
-                {
-                    // Show Message Telling user map image is already open
-                    MetroMessageBox.Show("Map Image Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
-                    homeTabControl.SelectedItem = tab;
-                    return;
-                }
+			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => imageLocation == (string)tab.Tag))
+            {
+	            // Show Message Telling user map image is already open
+	            MetroMessageBox.Show("Map Image Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
+	            homeTabControl.SelectedItem = tab;
+	            return;
+            }
 
-            CloseableTabItem newImageTab = new CloseableTabItem();
-            newImageTab.Tag = imageLocation;
-            newImageTab.Header = "";
-            //newImageTab.ToolTip = imageLocation;
+			var newImageTab = new CloseableTabItem
+				                  {
+					                  Tag = imageLocation, 
+									  Header = ""
+				                  };
             newImageTab.Content = new HaloImage(imageLocation, newImageTab);
 
             homeTabControl.Items.Add(newImageTab);
@@ -252,19 +257,20 @@ namespace Assembly.Windows
         public void AddInfooTabModule(string infooLocation)
         {
             // Check the map image isn't already open
-            foreach (TabItem tab in homeTabControl.Items)
-                if (infooLocation == (string)tab.Tag)
-                {
-                    // Show Message Telling user map image is already open
-                    MetroMessageBox.Show("Map Info Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
-                    homeTabControl.SelectedItem = tab;
-                    return;
-                }
+			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => infooLocation == (string)tab.Tag))
+            {
+	            // Show Message Telling user map image is already open
+	            MetroMessageBox.Show("Map Info Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
+	            homeTabControl.SelectedItem = tab;
+	            return;
+            }
 
-            CloseableTabItem newInfooTab = new CloseableTabItem();
-            newInfooTab.Tag = infooLocation;
-            newInfooTab.Header = "";
-            //newInfooTab.ToolTip = infooLocation;
+			var newInfooTab = new CloseableTabItem
+				                  {
+					                  Tag = infooLocation, 
+									  Header = ""
+				                  };
+	        //newInfooTab.ToolTip = infooLocation;
             newInfooTab.Content = new HaloInfo(infooLocation, newInfooTab);
 
             homeTabControl.Items.Add(newInfooTab);
@@ -283,11 +289,13 @@ namespace Assembly.Windows
         }
         public void AddTabModule(TabGenre tabG)
         {
-            CloseableTabItem tab = new CloseableTabItem();
-            tab.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-            tab.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+			var tab = new CloseableTabItem
+				          {
+					          HorizontalAlignment = HorizontalAlignment.Stretch,
+					          VerticalAlignment = VerticalAlignment.Stretch
+				          };
 
-            switch(tabG)
+	        switch(tabG)
             {
                 case TabGenre.StartPage:
                     tab.Header = "Start Page";
@@ -319,12 +327,11 @@ namespace Assembly.Windows
                     break;
             }
 
-            foreach (TabItem tabb in homeTabControl.Items)
-                if (tabb.Header == tab.Header)
-                {
-                    homeTabControl.SelectedItem = tabb;
-                    return;
-                }
+			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => tabb.Header == tab.Header))
+            {
+	            homeTabControl.SelectedItem = tabb;
+	            return;
+            }
 
             homeTabControl.Items.Add(tab);
             homeTabControl.SelectedItem = tab;
@@ -338,7 +345,7 @@ namespace Assembly.Windows
         /// <param name="title">Current Title, Assembly shall add the rest for you.</param>
         public void UpdateTitleText(string title)
         {
-            this.Title = title + " - Assembly α";
+            Title = title + " - Assembly α";
             lblTitle.Text = title + " - Assembly α";
         }
 
@@ -348,7 +355,7 @@ namespace Assembly.Windows
         /// <param name="status">Current Status of Assembly</param>
         public void UpdateStatusText(string status)
         {
-            this.Status.Text = status;
+            Status.Text = status;
 
             statusUpdateTimer.Stop();
             statusUpdateTimer.Interval = new TimeSpan(0, 0, 0, 4);
@@ -357,13 +364,13 @@ namespace Assembly.Windows
         }
         private void statusUpdateCleaner_Clear(object sender, EventArgs e)
         {
-            this.Status.Text = "Ready...";
+            Status.Text = "Ready...";
         }
-        private DispatcherTimer statusUpdateTimer = new DispatcherTimer();
+        private readonly DispatcherTimer statusUpdateTimer = new DispatcherTimer();
         #endregion
 
         #region XBDM Sidebar
-        public XBDMSidebar XBDMSidebar = new XBDMSidebar();
+        public readonly XBDMSidebar XBDMSidebar = new XBDMSidebar();
         private XBDMSidebarLocations _xbdmSidebar = XBDMSidebarLocations.Sidebar;
         private bool _isXBDMSidebarShowing = true;
 
@@ -376,13 +383,13 @@ namespace Assembly.Windows
                 if (_isXBDMSidebarShowing)
                 {
                     // Hide Sidebar
-                    xbdmCoverContent.Visibility = System.Windows.Visibility.Collapsed;
+                    xbdmCoverContent.Visibility = Visibility.Collapsed;
                     _isXBDMSidebarShowing = false;
                 }
                 else
                 {
                     // Show Sidebar
-                    xbdmCoverContent.Visibility = System.Windows.Visibility.Visible;
+                    xbdmCoverContent.Visibility = Visibility.Visible;
                     _isXBDMSidebarShowing = true;
                 }
         }
@@ -400,8 +407,8 @@ namespace Assembly.Windows
                     XBDMSideBarCol.Width = new GridLength(0);
 
                     xbdmSidebarButton.IsEnabled = true;
-                    xbdmSidebarButton.Visibility = System.Windows.Visibility.Visible;
-                    xbdmCoverContent.Visibility = System.Windows.Visibility.Visible;
+                    xbdmSidebarButton.Visibility = Visibility.Visible;
+                    xbdmCoverContent.Visibility = Visibility.Visible;
                     homeTabControl.Margin = new Thickness(0, 0, 30, 0);
 
                     xbdmCoverContent.Children.Clear();
@@ -412,8 +419,8 @@ namespace Assembly.Windows
                     XBDMSideBarCol.Width = new GridLength(275);
 
                     xbdmSidebarButton.IsEnabled = false;
-                    xbdmSidebarButton.Visibility = System.Windows.Visibility.Collapsed;
-                    xbdmCoverContent.Visibility = System.Windows.Visibility.Collapsed;
+                    xbdmSidebarButton.Visibility = Visibility.Collapsed;
+                    xbdmCoverContent.Visibility = Visibility.Collapsed;
                     homeTabControl.Margin = new Thickness(0);
 
                     xbdmCoverContent.Children.Clear();
@@ -427,18 +434,18 @@ namespace Assembly.Windows
         #endregion
 
         #region Opacity Masking
-        public int OpacityIndex = 0;
+	    public int OpacityIndex;
         public void ShowMask()
         {
             OpacityIndex++;
-            OpacityMask.Visibility = System.Windows.Visibility.Visible;
+            OpacityMask.Visibility = Visibility.Visible;
         }
         public void HideMask()
         {
             OpacityIndex--;
 
             if (OpacityIndex == 0) 
-                OpacityMask.Visibility = System.Windows.Visibility.Collapsed;
+                OpacityMask.Visibility = Visibility.Collapsed;
         }
         #endregion
 
@@ -489,10 +496,10 @@ namespace Assembly.Windows
         {
             try
             {
-                if (File.Exists(path))
+	            if (File.Exists(path))
                 {
                     // Magic Check
-                    EndianStream stream = new EndianStream(new FileStream(path, FileMode.Open), Endian.BigEndian);
+					var stream = new EndianStream(new FileStream(path, FileMode.Open), Endian.BigEndian);
                     stream.SeekTo(0);
 
                     switch (stream.ReadAscii(0x04))
@@ -506,21 +513,18 @@ namespace Assembly.Windows
                         case "_blf":
                             // BLF Container, needs more checking
                             stream.Close();
-                            PureBLF blf = new PureBLF(path);
+                            var blf = new PureBLF(path);
                             blf.Close();
                             if (blf.BLFChunks.Count > 2)
                             {
-                                if (blf.BLFChunks[1].ChunkMagic == "levl")
+                                switch (blf.BLFChunks[1].ChunkMagic)
                                 {
-                                    // Load MapInfo
-                                    AddInfooTabModule(path);
-                                    return;
-                                }
-                                else if (blf.BLFChunks[1].ChunkMagic == "mapi")
-                                {
-                                    // Load MapImage BLF
-                                    AddImageTabModule(path);
-                                    return;
+	                                case "levl":
+		                                AddInfooTabModule(path);
+		                                return;
+	                                case "mapi":
+		                                AddImageTabModule(path);
+		                                return;
                                 }
                             }
                             MetroMessageBox.Show("Unsupported BLF Type", "The selected BLF file is not supported in assembly.");
@@ -531,16 +535,16 @@ namespace Assembly.Windows
                             return;
                     }
                 }
-                else
-                    MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
+
+	            MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
             }
             catch (Exception ex) { MetroException.Show(ex); }
         }
         #endregion
 
-        private void homeTabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void homeTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabItem tab = (TabItem)homeTabControl.SelectedItem;
+			var tab = (TabItem)homeTabControl.SelectedItem;
 
             if (tab != null)
                 UpdateTitleText(tab.Header.ToString().Replace("__", "_").Replace(".map", ""));
@@ -564,92 +568,98 @@ namespace Assembly.Windows
 
         private void ResizeDrop_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            double yadjust = this.Height + e.VerticalChange;
-            double xadjust = this.Width + e.HorizontalChange;
+            var yadjust = Height + e.VerticalChange;
+			var xadjust = Width + e.HorizontalChange;
 
-            if (xadjust > this.MinWidth)
-                this.Width = xadjust;
-            if (yadjust > this.MinHeight)
-                this.Height = yadjust;
+            if (xadjust > MinWidth)
+                Width = xadjust;
+            if (yadjust > MinHeight)
+                Height = yadjust;
         }
         private void ResizeRight_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            double xadjust = this.Width + e.HorizontalChange;
+			var xadjust = Width + e.HorizontalChange;
 
-            if (xadjust > this.MinWidth)
-                this.Width = xadjust;
+            if (xadjust > MinWidth)
+                Width = xadjust;
         }
         private void ResizeBottom_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            double yadjust = this.Height + e.VerticalChange;
+            var yadjust = Height + e.VerticalChange;
 
-            if (yadjust > this.MinHeight)
-                this.Height = yadjust;
+            if (yadjust > MinHeight)
+                Height = yadjust;
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            if (this.WindowState == System.Windows.WindowState.Normal)
-            {
-                borderFrame.BorderThickness = new Thickness(1, 1, 1, 23);
-                Settings.applicationSizeMaximize = false;
-                Settings.applicationSizeHeight = this.Height;
-                Settings.applicationSizeWidth = this.Width;
-                Settings.UpdateSettings();
-
-                btnActionRestore.Visibility = System.Windows.Visibility.Collapsed;
-                btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = System.Windows.Visibility.Visible;
-            }
-            else if (this.WindowState == System.Windows.WindowState.Maximized)
-            {
-                borderFrame.BorderThickness = new Thickness(0, 0, 0, 23);
-                Settings.applicationSizeMaximize = true;
-                Settings.UpdateSettings();
-
-                btnActionRestore.Visibility = System.Windows.Visibility.Visible;
-                btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = System.Windows.Visibility.Collapsed;
-            }
-            /*
+	        switch (WindowState)
+	        {
+		        case WindowState.Normal:
+			        borderFrame.BorderThickness = new Thickness(1, 1, 1, 23);
+			        Settings.applicationSizeMaximize = false;
+			        Settings.applicationSizeHeight = Height;
+			        Settings.applicationSizeWidth = Width;
+			        Settings.UpdateSettings();
+			        btnActionRestore.Visibility = Visibility.Collapsed;
+			        btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = Visibility.Visible;
+			        break;
+		        case WindowState.Maximized:
+			        borderFrame.BorderThickness = new Thickness(0, 0, 0, 23);
+			        Settings.applicationSizeMaximize = true;
+			        Settings.UpdateSettings();
+			        btnActionRestore.Visibility = Visibility.Visible;
+			        btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = Visibility.Collapsed;
+			        break;
+	        }
+	        /*
              * ResizeDropVector
              * ResizeDrop
              * ResizeRight
              * ResizeBottom
              */
         }
-        private void headerThumb_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+
+	    private void headerThumb_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (this.WindowState == System.Windows.WindowState.Normal)
-                this.WindowState = System.Windows.WindowState.Maximized;
-            else if (this.WindowState == System.Windows.WindowState.Maximized)
-                this.WindowState = System.Windows.WindowState.Normal;
+	        switch (WindowState)
+	        {
+		        case WindowState.Normal:
+			        WindowState = WindowState.Maximized;
+			        break;
+		        case WindowState.Maximized:
+			        WindowState = WindowState.Normal;
+			        break;
+	        }
         }
-        private void btnActionSupport_Click(object sender, RoutedEventArgs e)
+
+	    private void btnActionSupport_Click(object sender, RoutedEventArgs e)
         {
             // Load support page?
         }
-        private void btnActionMinimize_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnActionMinimize_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
-        private void btnActionRestore_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnActionRestore_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Normal;
+            WindowState = WindowState.Normal;
         }
-        private void btnActionMaxamize_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnActionMaxamize_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Maximized;
+            WindowState = WindowState.Maximized;
         }
-        private void btnActionClose_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnActionClose_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
         #region Maximize Workspace Workarounds
-        private System.IntPtr WindowProc(
-              System.IntPtr hwnd,
+        private static IntPtr WindowProc(
+              IntPtr hwnd,
               int msg,
-              System.IntPtr wParam,
-              System.IntPtr lParam,
+              IntPtr wParam,
+              IntPtr lParam,
               ref bool handled)
         {
             switch (msg)
@@ -660,24 +670,22 @@ namespace Assembly.Windows
                     break;
             }
 
-            return (System.IntPtr)0;
+            return (IntPtr)0;
         }
-        private void WmGetMinMaxInfo(System.IntPtr hwnd, System.IntPtr lParam)
+        private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
         {
-            Assembly.Metro.Native.Monitor_Workarea.MINMAXINFO mmi = (Assembly.Metro.Native.Monitor_Workarea.MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(Assembly.Metro.Native.Monitor_Workarea.MINMAXINFO));
+			var mmi = (Monitor_Workarea.MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(Monitor_Workarea.MINMAXINFO));
 
             // Adjust the maximized size and position to fit the work area of the correct monitor
-            int MONITOR_DEFAULTTONEAREST = 0x00000002;
-            System.IntPtr monitor = Assembly.Metro.Native.Monitor_Workarea.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+            const int MONITOR_DEFAULTTONEAREST = 0x00000002;
+            var monitor = Monitor_Workarea.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 
-            if (monitor != System.IntPtr.Zero)
+            if (monitor != IntPtr.Zero)
             {
-                System.Windows.Forms.Screen scrn = System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(this).Handle);
-
-                Assembly.Metro.Native.Monitor_Workarea.MONITORINFO monitorInfo = new Assembly.Metro.Native.Monitor_Workarea.MONITORINFO();
-                Assembly.Metro.Native.Monitor_Workarea.GetMonitorInfo(monitor, monitorInfo);
-                Assembly.Metro.Native.Monitor_Workarea.RECT rcWorkArea = monitorInfo.rcWork;
-                Assembly.Metro.Native.Monitor_Workarea.RECT rcMonitorArea = monitorInfo.rcMonitor;
+				var monitorInfo = new Monitor_Workarea.MONITORINFO();
+                Monitor_Workarea.GetMonitorInfo(monitor, monitorInfo);
+				var rcWorkArea = monitorInfo.rcWork;
+				var rcMonitorArea = monitorInfo.rcMonitor;
                 mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left);
                 mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
                 mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left);
@@ -706,17 +714,17 @@ namespace Assembly.Windows
         private void menuMemoryManager_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.MemoryManager); }
         private void menuPatches_Click(object sender, RoutedEventArgs e)                { AddTabModule(TabGenre.Patches); }
         private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.NetworkPoking); }
-        private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)     { AddTabModule(TabGenre.PluginGenerator); }
+        private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)		{ AddTabModule(TabGenre.PluginGenerator); }
         
         private void menuHelpAbout_Click(object sender, RoutedEventArgs e)              { MetroAbout.Show(); }
-        private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)            { Thread thrd = new Thread(new ThreadStart(Updater.BeginUpdateProcess)); thrd.Start(); }
+		private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)			{ var thrd = new Thread(Updater.BeginUpdateProcess); thrd.Start(); }
 
         private void menuCloseApplication_Click(object sender, RoutedEventArgs e)       { Application.Current.Shutdown(); }
 
 
         private void Home_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            App app = (App)Application.Current;
+            //var app = (App)Application.Current;
         }
 
         private void Home_PreviewKeyDown(object sender, KeyEventArgs e)
