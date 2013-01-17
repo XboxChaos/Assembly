@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 
 namespace Assembly.Metro.Native
 {
-    class Monitor_Workarea
+	static class Monitor_Workarea
     {
         /// <summary>
         /// POINT aka POINTAPI
@@ -23,15 +20,6 @@ namespace Assembly.Metro.Native
             /// y coordinate of point.
             /// </summary>
             public int y;
-
-            /// <summary>
-            /// Construct a point of coordinates (x,y).
-            /// </summary>
-            public POINT(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -49,21 +37,13 @@ namespace Assembly.Metro.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class MONITORINFO
         {
-            /// <summary>
-            /// </summary>            
-            public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-
-            /// <summary>
+	        /// <summary>
             /// </summary>            
             public RECT rcMonitor = new RECT();
 
             /// <summary>
             /// </summary>            
             public RECT rcWork = new RECT();
-
-            /// <summary>
-            /// </summary>            
-            public int dwFlags = 0;
         }
 
 
@@ -107,10 +87,10 @@ namespace Assembly.Metro.Native
             /// <summary> Win32 </summary>
             public RECT(RECT rcSrc)
             {
-                this.left = rcSrc.left;
-                this.top = rcSrc.top;
-                this.right = rcSrc.right;
-                this.bottom = rcSrc.bottom;
+                left = rcSrc.left;
+                top = rcSrc.top;
+                right = rcSrc.right;
+                bottom = rcSrc.bottom;
             }
 
             /// <summary> Win32 </summary>

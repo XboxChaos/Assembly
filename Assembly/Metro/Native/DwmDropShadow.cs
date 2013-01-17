@@ -6,7 +6,7 @@ using System.Windows.Interop;
 
 namespace Assembly.Metro.Native
 {
-    public class DwmDropShadow
+    public static class DwmDropShadow
     {
 
         [DllImport("dwmapi.dll", PreserveSig = true)]
@@ -25,17 +25,17 @@ namespace Assembly.Metro.Native
         {
             if (!DropShadow(window))
             {
-                window.SourceInitialized += new EventHandler(window_SourceInitialized);
+                window.SourceInitialized += window_SourceInitialized;
             }
         }
 
         private static void window_SourceInitialized(object sender, EventArgs e)
         {
-            Window window = (Window)sender;
+            var window = (Window)sender;
 
             DropShadow(window);
 
-            window.SourceInitialized -= new EventHandler(window_SourceInitialized);
+            window.SourceInitialized -= window_SourceInitialized;
         }
 
         /// <summary>
@@ -47,20 +47,16 @@ namespace Assembly.Metro.Native
         {
             try
             {
-                WindowInteropHelper helper = new WindowInteropHelper(window);
-                int val = 2;
-                int ret1 = DwmSetWindowAttribute(helper.Handle, 2, ref val, 4);
+				var helper = new WindowInteropHelper(window);
+				var val = 2;
+				var ret1 = DwmSetWindowAttribute(helper.Handle, 2, ref val, 4);
 
-                if (ret1 == 0)
-                {
-                    Margins m = new Margins { Bottom = 0, Left = 0, Right = 0, Top = 0 };
-                    int ret2 = DwmExtendFrameIntoClientArea(helper.Handle, ref m);
-                    return ret2 == 0;
-                }
-                else
-                {
-                    return false;
-                }
+				if (ret1 != 0)
+					return false;
+
+	            var m = new Margins {Bottom = 0, Left = 0, Right = 0, Top = 0};
+	            var ret2 = DwmExtendFrameIntoClientArea(helper.Handle, ref m);
+	            return ret2 == 0;
             }
             catch
             {
