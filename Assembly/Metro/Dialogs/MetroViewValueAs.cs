@@ -8,7 +8,7 @@ using ExtryzeDLL.IO;
 
 namespace Assembly.Metro.Dialogs
 {
-    public class MetroViewValueAs
+    public static class MetroViewValueAs
     {
         /// <summary>
         /// View the selected offset as every meta value type.
@@ -19,10 +19,12 @@ namespace Assembly.Metro.Dialogs
         /// <param name="cacheOffset">The initial offset to display.</param>
         public static void Show(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
-            ViewValueAs valueAs = new ViewValueAs(cacheFile, streamManager, fields, cacheOffset);
-            valueAs.Owner = Settings.homeWindow;
-            valueAs.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            valueAs.Show();
+            var valueAs = new ViewValueAs(cacheFile, streamManager, fields, cacheOffset)
+	                          {
+		                          Owner = Settings.homeWindow, 
+								  WindowStartupLocation = WindowStartupLocation.CenterOwner
+	                          };
+	        valueAs.Show();
         }
     }
 }

@@ -5,29 +5,26 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Xml;
 using Assembly.Helpers;
-using Assembly.Helpers.Plugins;
-using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Native;
 using Assembly.Windows;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
-using ExtryzeDLL.Plugins;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
     /// <summary>
     /// Interaction logic for ViewValueAs.xaml
     /// </summary>
-    public partial class ViewValueAs : Window
+    public partial class ViewValueAs
     {
-        private uint _cacheOffset, _cacheOffsetOriginal;
-        private string _examplePath;
-        private Stream _stream;
-        private MetaReader _reader;
-        private IList<MetaField> _fields;
+	    private uint _cacheOffset;
+	    private readonly uint _cacheOffsetOriginal;
+        private readonly string _examplePath;
+        private readonly Stream _stream;
+        private readonly MetaReader _reader;
+        private readonly IList<MetaField> _fields;
 
         public ViewValueAs(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
@@ -55,9 +52,6 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         {
             if (File.Exists(_examplePath))
             {
-                // Load Example Plugin File
-                XmlReader xml = XmlReader.Create(_examplePath);
-
                 // Load Meta
                 //try
                 {
@@ -72,13 +66,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             else
             {
                 StatusUpdater.Update("Example Plugin doesn't exist... I don't know why you deleted it :(.");
-                this.Close();
+                Close();
             }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -89,21 +83,21 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
         private void ResizeDrop_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            double yadjust = this.Height + e.VerticalChange;
-            double xadjust = this.Width + e.HorizontalChange;
+			var yadjust = Height + e.VerticalChange;
+			var xadjust = Width + e.HorizontalChange;
 
-            if (xadjust > this.MinWidth)
-                this.Width = xadjust;
-            if (yadjust > this.MinHeight)
-                this.Height = yadjust;
+            if (xadjust > MinWidth)
+                Width = xadjust;
+            if (yadjust > MinHeight)
+                Height = yadjust;
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            int offset = -1;
+			int offset;
 
             // Validate Textbox
-            bool success = false;
+	        bool success;
             if (txtOffset.Text.StartsWith("0x") || txtOffset.Text.StartsWith("0X"))
             {
                 // Is Hex
