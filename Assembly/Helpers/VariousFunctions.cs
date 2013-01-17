@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 
@@ -20,11 +19,11 @@ namespace Assembly.Helpers
         /// <param name="directory">The directory to create the file in</param>
         public static string CreateTemporaryFile(string directory)
         {
-            string file = "";
-            Random ran = new Random();
+	        string file;
+            var ran = new Random();
             while (true)
             {
-                string filename = ran.Next(0, 200000).ToString() + ".tmp";
+                var filename = ran.Next(0, 200000) + ".tmp";
                 file = directory + filename;
 
                 if (!File.Exists(file))
@@ -38,31 +37,31 @@ namespace Assembly.Helpers
         /// </summary>
         public static void CleanUpTemporaryFiles()
         {
-            List<FileInfo> files = new List<FileInfo>();
+            var files = new List<FileInfo>();
 
-            DirectoryInfo tmpImg = new DirectoryInfo(GetTemporaryImageLocation());
+            var tmpImg = new DirectoryInfo(GetTemporaryImageLocation());
             files.AddRange(new List<FileInfo>(tmpImg.GetFiles("*.dds")));
-            DirectoryInfo tmpLog = new DirectoryInfo(GetTemporaryErrorLogs());
+            var tmpLog = new DirectoryInfo(GetTemporaryErrorLogs());
             files.AddRange(new List<FileInfo>(tmpLog.GetFiles("*.tmp")));
-            
-            foreach (FileInfo fi in files)
-                try { fi.Delete(); }
-                catch { }
+
+			foreach (var fi in files)
+// ReSharper disable EmptyGeneralCatchClause
+				try { fi.Delete(); } catch (Exception) { }
+// ReSharper restore EmptyGeneralCatchClause
         }
 
         public static void EmptyUpdaterLocations()
         {
-            string tempDir = Path.GetTempPath();
-            string updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
-            string dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
+			var tempDir = Path.GetTempPath();
+			var updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
+			var dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
 
             // Wait for the updater to close
-            Process[] updaterProcesses = Process.GetProcessesByName("AssemblyUpdateManager.exe");
-            foreach (Process process in updaterProcesses)
-            {
-                if (!process.HasExited)
-                    process.WaitForExit();
-            }
+			var updaterProcesses = Process.GetProcessesByName("AssemblyUpdateManager.exe");
+			foreach (var process in updaterProcesses.Where(process => !process.HasExited))
+			{
+				process.WaitForExit();
+			}
 
             if (File.Exists(updaterPath))
                 File.Delete(updaterPath);
@@ -115,11 +114,11 @@ namespace Assembly.Helpers
         /// </summary>
         public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 bitmap.Save(ms, ImageFormat.Png);
                 ms.Position = 0;
-                BitmapImage bi = new BitmapImage();
+				var bi = new BitmapImage();
                 bi.BeginInit();
                 bi.StreamSource = ms;
                 bi.EndInit();
@@ -129,20 +128,17 @@ namespace Assembly.Helpers
         }
 
 
-        public static char[] DisallowedPluginChars = new char[] { ' ', '>', '<', ':', '-', '_', '/', '\\', '&', ';', '!', '?', '|', '*', '"' };
+        public static char[] DisallowedPluginChars = new[] { ' ', '>', '<', ':', '-', '_', '/', '\\', '&', ';', '!', '?', '|', '*', '"' };
         /// <summary>
         /// Remove disallowed chars from the game name
         /// </summary>
         /// <param name="gameName">Game Name from the XML file</param>
         public static string SterilizeGamePluginFolder(string gameName)
         {
-            foreach(char disallowed in DisallowedPluginChars)
-                gameName = gameName.Replace(disallowed.ToString(), "");
-
-            return gameName;
+	        return DisallowedPluginChars.Aggregate(gameName, (current, disallowed) => current.Replace(disallowed.ToString(CultureInfo.InvariantCulture), ""));
         }
 
-        /// <summary>
+	    /// <summary>
         /// Replaces invalid filename characters in a tag class with an underscore (_) so that it can be used as part of a path.
         /// </summary>
         /// <param name="name">The tag class string to replace invalid characters in.</param>
@@ -150,10 +146,10 @@ namespace Assembly.Helpers
         public static string SterilizeTagClassName(string name)
         {
             // http://stackoverflow.com/questions/309485/c-sharp-sanitize-file-name
-            string regex = string.Format(@"(\.+$)|([{0}])", InvalidFileNameChars);
+            var regex = string.Format(@"(\.+$)|([{0}])", InvalidFileNameChars);
             return Regex.Replace(name, regex, "_");
         }
 
-        private static string InvalidFileNameChars = new string(Path.GetInvalidFileNameChars());
+        private static readonly string InvalidFileNameChars = new string(Path.GetInvalidFileNameChars());
     }
 }

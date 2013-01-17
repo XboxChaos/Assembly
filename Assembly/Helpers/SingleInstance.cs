@@ -8,7 +8,9 @@
 // </summary>
 //-----------------------------------------------------------------------
 
+// ReSharper disable CheckNamespace
 namespace Microsoft.Shell
+// ReSharper restore CheckNamespace
 {
     using System;
     using System.Collections;
@@ -21,7 +23,6 @@ namespace Microsoft.Shell
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
-    using System.Xml.Serialization;
     using System.Security;
     using System.Runtime.InteropServices;
     using System.ComponentModel;
@@ -161,10 +162,10 @@ namespace Microsoft.Shell
 
         public static string[] CommandLineToArgvW(string cmdLine)
         {
-            IntPtr argv = IntPtr.Zero;
+            var argv = IntPtr.Zero;
             try
             {
-                int numArgs = 0;
+                int numArgs;
 
                 argv = _CommandLineToArgvW(cmdLine, out numArgs);
                 if (argv == IntPtr.Zero)
@@ -173,9 +174,9 @@ namespace Microsoft.Shell
                 }
                 var result = new string[numArgs];
 
-                for (int i = 0; i < numArgs; i++)
+                for (var i = 0; i < numArgs; i++)
                 {
-                    IntPtr currArg = Marshal.ReadIntPtr(argv, i * Marshal.SizeOf(typeof(IntPtr)));
+					var currArg = Marshal.ReadIntPtr(argv, i * Marshal.SizeOf(typeof(IntPtr)));
                     result[i] = Marshal.PtrToStringUni(currArg);
                 }
 
@@ -184,9 +185,8 @@ namespace Microsoft.Shell
             finally
             {
 
-                IntPtr p = _LocalFree(argv);
+				var p = _LocalFree(argv);
                 // Otherwise LocalFree failed.
-                // Assert.AreEqual(IntPtr.Zero, p);
             }
         }
 

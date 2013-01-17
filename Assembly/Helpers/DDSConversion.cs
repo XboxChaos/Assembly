@@ -7,40 +7,37 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using ExtryzeDLL.IO;
 
 namespace Assembly.Helpers
 {
-    public class DDSConversion
+    public static class DDSConversion
     {
         public static unsafe void GammaCorrect(double gamma, BitmapData imageData)
         {
             gamma = Math.Max(0.1, Math.Min(5.0, gamma));
-            double y = 1.0 / gamma;
-            byte[] table = new byte[0x100]; 
-            for (int x = 0; x < 0x100; x++)
+            var y = 1.0 / gamma;
+			var table = new byte[0x100]; 
+            for (var x = 0; x < 0x100; x++)
             {
                 table[x] = (byte)Math.Min(0xff,
-                    (int)((Math.Pow(((double)x) / 255.0, y) * 255.0) + 0.5));
+                    (int)((Math.Pow((x) / 255.0, y) * 255.0) + 0.5));
             }
 
-            int width = imageData.Width;
-            int height = imageData.Height;
-            int num3 = width * ((imageData.PixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3);
-            int num4 = imageData.Stride - num3;
-            byte* numPtr = (byte*)imageData.Scan0.ToPointer();
-            for (int i = 0; i < height; i++)
+			var width = imageData.Width;
+			var height = imageData.Height;
+			var num3 = width * ((imageData.PixelFormat == PixelFormat.Format8bppIndexed) ? 1 : 3);
+			var num4 = imageData.Stride - num3;
+			var numPtr = (byte*)imageData.Scan0.ToPointer();
+			for (var i = 0; i < height; i++)
             {
-                int num6 = 0;
+				var num6 = 0;
                 while (num6 < num3)
                 {
                     numPtr[0] = table[numPtr[0]];
@@ -53,11 +50,11 @@ namespace Assembly.Helpers
         public static Bitmap ResizeImage(Bitmap Orig)
         {
             // Create a new image
-            Bitmap newImg = new Bitmap(Settings.XDKResizeScreenshotWidth,
+			var newImg = new Bitmap(Settings.XDKResizeScreenshotWidth,
                 Settings.XDKResizeScreenshotHeight);
 
             // Draw our new image
-            using (Graphics g = Graphics.FromImage((Image)newImg))
+			using (var g = Graphics.FromImage(newImg))
                 g.DrawImage(Orig, 0, 0, Settings.XDKResizeScreenshotWidth,
                     Settings.XDKResizeScreenshotHeight);
 
@@ -68,69 +65,67 @@ namespace Assembly.Helpers
         public static BitmapSource Deswizzle(string FilePath)
         {
             //Open the temp dds
-            FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-            EndianStream es = new EndianStream(fs, Endian.LittleEndian);
+			var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+			var es = new EndianStream(fs, Endian.LittleEndian);
 
             //Read the dds header
             es.SeekTo(0x0C);
-            int height = es.ReadInt32();
-            int width = es.ReadInt32();
+			var height = es.ReadInt32();
+			var width = es.ReadInt32();
 
             //Read our random bytes
             es.SeekTo(0x5C);
-            string randomBuf = BitConverter.ToString(es.ReadBlock(12)).Replace("-", "");
+			var randomBuf = BitConverter.ToString(es.ReadBlock(12)).Replace("-", "");
 
             //Read the buffer
             es.SeekTo(0x80);
-            int size = width * height * 4;
-            byte[] buffer = es.ReadBlock(size);
+			var size = width * height * 4;
+			var buffer = es.ReadBlock(size);
             es.Close();
 
             Bitmap bitmap = null;
 
             //A2R10G10B10
-            if (randomBuf == "FF03000000FC0F000000F03F")
+            switch (randomBuf)
             {
-                bitmap = DeswizzleA2R10G10B10(buffer, width, height);
-
-                // Adjust Gamma (Halo is much lighter for some reason..)
-                if (Settings.XDKScreenshotGammaCorrect)
-                {
-                    BitmapData imageData = (bitmap).LockBits(
-                        new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                        ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                    GammaCorrect(Settings.XDKScreenshotGammaModifier, imageData);
-                    bitmap.UnlockBits(imageData);
-                }
+	            case "FF03000000FC0F000000F03F":
+		            bitmap = DeswizzleA2R10G10B10(buffer, width, height);
+		            if (Settings.XDKScreenshotGammaCorrect)
+		            {
+						var imageData = (bitmap).LockBits(
+				            new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+				            ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+			            GammaCorrect(Settings.XDKScreenshotGammaModifier, imageData);
+			            bitmap.UnlockBits(imageData);
+		            }
+		            break;
+	            case "0000FF0000FF0000FF000000":
+		            bitmap = DeswizzleA8R8G8B8(buffer, width, height);
+		            break;
             }
-            //A8R8G8B8?
-            else if (randomBuf == "0000FF0000FF0000FF000000")
-                bitmap = DeswizzleA8R8G8B8(buffer, width, height);
 
-            if (bitmap != null)
-            {
-                // Resize
-                if (Settings.XDKResizeImages)
-                    bitmap = ResizeImage(bitmap);
+	        if (bitmap == null)
+		        return null;
 
-                return loadBitmap(bitmap);
-            }
-            else
-                return null;
+	        // Resize
+	        if (Settings.XDKResizeImages)
+		        bitmap = ResizeImage(bitmap);
+
+	        return loadBitmap(bitmap);
         }
         private static Bitmap DeswizzleA2R10G10B10(byte[] buffer, int width, int height)
         {
             //Loop through and convert each pixle
-            int index = 0;
-            for (int y = 0; y < height; y++)
+			var index = 0;
+			for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+				for (var x = 0; x < width; x++)
                 {
-                    uint argb = BitConverter.ToUInt32(buffer, index);
+					var argb = BitConverter.ToUInt32(buffer, index);
 
-                    uint r = ((argb & 0x3FF00000) >> 22) /*<< 16*/;
-                    uint g = ((argb & 0xFFC00) >> 12) /*<< 8*/;
-                    uint b = (argb & 0x3FF) >> 2;
+					var r = ((argb & 0x3FF00000) >> 22) /*<< 16*/;
+					var g = ((argb & 0xFFC00) >> 12) /*<< 8*/;
+					var b = (argb & 0x3FF) >> 2;
                     //uint final = a | r | g | b;
 
                     buffer[index++] = (byte)b;
@@ -141,13 +136,13 @@ namespace Assembly.Helpers
             }
 
             //Now create a image from the buffer
-            IntPtr ptr = new IntPtr();
+			var ptr = new IntPtr();
             Marshal.FreeHGlobal(ptr);
             ptr = Marshal.AllocHGlobal(buffer.Length);
             RtlMoveMemory(ptr, buffer, buffer.Length);
 
             //Create the final image
-            Bitmap final = new Bitmap(width, height, width * 4,
+			var final = new Bitmap(width, height, width * 4,
                                       PixelFormat.Format32bppArgb, ptr);
 
             //Return our done image
@@ -156,12 +151,12 @@ namespace Assembly.Helpers
         private static Bitmap DeswizzleA8R8G8B8(byte[] buffer, int width, int height)
         {
             //Loop through and convert each pixle
-            int index = 0;
-            for (int y = 0; y < height; y++)
+			var index = 0;
+			for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+				for (var x = 0; x < width; x++)
                 {
-                    uint argb = BitConverter.ToUInt32(buffer, index);
+					BitConverter.ToUInt32(buffer, index);
 
                     uint b = buffer[index];
                     uint g = buffer[index + 1];
@@ -170,18 +165,18 @@ namespace Assembly.Helpers
                     buffer[index++] = (byte)b;
                     buffer[index++] = (byte)g;
                     buffer[index++] = (byte)r;
-                    buffer[index++] = (byte)255; //Set the alpha as 255
+                    buffer[index++] = 255; //Set the alpha as 255
                 }
             }
 
             //Now create a image from the buffer
-            IntPtr ptr = new IntPtr();
+			var ptr = new IntPtr();
             Marshal.FreeHGlobal(ptr);
             ptr = Marshal.AllocHGlobal(buffer.Length);
             RtlMoveMemory(ptr, buffer, buffer.Length);
 
             //Create the final image
-            Bitmap final = new Bitmap(width, height, width * 4,
+			var final = new Bitmap(width, height, width * 4,
                                       PixelFormat.Format32bppArgb, ptr);
 
             //Return our done image
@@ -192,15 +187,15 @@ namespace Assembly.Helpers
         private static extern void RtlMoveMemory(IntPtr src, byte[] temp, int cb);
         [DllImport("gdi32")]
         static extern int DeleteObject(IntPtr o);
-        public static BitmapSource loadBitmap(System.Drawing.Bitmap source)
+        public static BitmapSource loadBitmap(Bitmap source)
         {
-            IntPtr ip = source.GetHbitmap();
-            BitmapSource bs = null;
+			var ip = source.GetHbitmap();
+	        BitmapSource bs;
             try
             {
                 bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip,
                    IntPtr.Zero, Int32Rect.Empty,
-                   System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                   BitmapSizeOptions.FromEmptyOptions());
             }
             finally
             {

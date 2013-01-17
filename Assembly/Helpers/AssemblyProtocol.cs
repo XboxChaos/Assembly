@@ -2,7 +2,7 @@
 
 namespace Assembly.Helpers
 {
-    public class AssemblyProtocol
+    public static class AssemblyProtocol
     {
         public static void UpdateProtocol()
         {

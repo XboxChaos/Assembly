@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
@@ -20,13 +19,13 @@ namespace Assembly.Helpers
 
         public void IniWriteValue(string Section, string Key, string Value)
         {
-            WritePrivateProfileString(Section, Key, Value, this.path);
+            WritePrivateProfileString(Section, Key, Value, path);
         }
 
         public string IniReadValue(string Section, string Key)
         {
-            StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfileString(Section, Key, "", temp, 255, this.path);
+            var temp = new StringBuilder(255);
+			GetPrivateProfileString(Section, Key, "", temp, 255, path);
             return temp.ToString();
 
         }
