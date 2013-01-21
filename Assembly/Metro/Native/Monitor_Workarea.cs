@@ -37,6 +37,13 @@ namespace Assembly.Metro.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public class MONITORINFO
         {
+            public MONITORINFO()
+            {
+                cbSize = (uint)Marshal.SizeOf(typeof(MONITORINFO));
+            }
+
+            public uint cbSize;
+
 	        /// <summary>
             /// </summary>            
             public RECT rcMonitor = new RECT();
@@ -44,6 +51,8 @@ namespace Assembly.Metro.Native
             /// <summary>
             /// </summary>            
             public RECT rcWork = new RECT();
+
+            public uint dwFlags;
         }
 
 
