@@ -156,9 +156,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 for (int j = 0; j < page.Fields.Length; j++)
                 {
                     MetaField pageField = page.Fields[j]; // The field in the page takes precedence over the field in the reflexive's template
-                    if (pageField == null)
+                    if (pageField == null && (_changes == null || i == _oldIndex))
                         pageField = field.Template[j]; // Get it from the template
-                    WriteField(pageField);
+                    if (pageField != null)
+                        WriteField(pageField);
                 }
 
                 // Advance to the next chunk
