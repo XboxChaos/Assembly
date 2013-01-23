@@ -17,6 +17,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private SaveType _type;
         private FieldChangeSet _changes;
 
+        private bool _pokeTemplateFields = true;
+
         public enum SaveType { File, Memory }
 
         /// <summary>
@@ -145,18 +147,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             // Write each page
             int _oldIndex = field.CurrentIndex;
+            bool _oldPokeTemplates = _pokeTemplateFields;
             for (int i = 0; i < field.Length; i++)
             {
                 // If we're saving everything, then change the active page so the values get loaded from the file
                 if (_changes == null && field.CurrentIndex != i)
                     field.CurrentIndex = i;
 
+                // If we're not saving everything, then we can only poke template fields in reflexives
+                // if the current indices all line up
+                if (i != _oldIndex)
+                    _pokeTemplateFields = false;
+
                 // Get each field in the page and write it
                 ReflexivePage page = field.Pages[i];
                 for (int j = 0; j < page.Fields.Length; j++)
                 {
                     MetaField pageField = page.Fields[j]; // The field in the page takes precedence over the field in the reflexive's template
-                    if (pageField == null && (_changes == null || i == _oldIndex))
+                    if (pageField == null && (_changes == null || _pokeTemplateFields))
                         pageField = field.Template[j]; // Get it from the template
                     if (pageField != null)
                         WriteField(pageField);
@@ -164,6 +172,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
                 // Advance to the next chunk
                 _baseOffset += field.EntrySize;
+                _pokeTemplateFields = _oldPokeTemplates;
             }
             if (field.CurrentIndex != _oldIndex)
                 field.CurrentIndex = _oldIndex;
