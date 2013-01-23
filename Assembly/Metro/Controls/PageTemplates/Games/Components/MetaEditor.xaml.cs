@@ -63,6 +63,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
         private Timer _searchTimer;
 
+        private FieldChangeTracker _changeTracker;
+        private FieldChangeSet _fileChanges;
+        private FieldChangeSet _memoryChanges;
+
         public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
@@ -101,14 +105,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _pluginVisitor = new ThirdGenPluginVisitor(_tags, Settings.pluginsShowInvisibles);
                     AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 
-                    _flattener = new ReflexiveFlattener();
-                    _flattener.Flatten(_pluginVisitor.Values);
+                    _changeTracker = new FieldChangeTracker();
+                    _fileChanges = new FieldChangeSet();
+                    _memoryChanges = new FieldChangeSet();
 
                     uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
-                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache);
+                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _fileChanges);
+                    _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+                    _flattener.Flatten(_pluginVisitor.Values);
                     metaReader.ReadFields(_pluginVisitor.Values);
 
                     panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+
+                    // Start monitoring fields for changes
+                    _changeTracker.RegisterChangeSet(_fileChanges);
+                    _changeTracker.RegisterChangeSet(_memoryChanges);
+                    _changeTracker.Attach(_pluginVisitor.Values);
 
                     // Update Meta Toolbar
                     UpdateMetaButtons(true);
@@ -161,12 +173,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
         {
-            if (type == MetaWriter.SaveType.Cache)
+            if (type == MetaWriter.SaveType.File)
             {
                 using (EndianWriter writer = new EndianWriter(_streamManager.OpenWrite(), Endian.BigEndian))
                 {
-                    MetaWriter metaUpdate = new MetaWriter(writer, _cache, type, onlyUpdateChanged);
-                    metaUpdate.Poke(_pluginVisitor.Values);
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, _fileChanges);
+                    metaUpdate.WriteFields(_pluginVisitor.Values);
+                    _fileChanges.MarkAllUnchanged();
                 }
 
                 if (showActionDialog)
@@ -176,8 +189,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             {
                 if (Settings.xbdm.Connect())
                 {
-                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _cache, type, onlyUpdateChanged);
-                    metaUpdate.Poke(_pluginVisitor.Values);
+                    FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
+                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, type, changes);
+                    metaUpdate.WriteFields(_pluginVisitor.Values);
+                    _memoryChanges.MarkAllUnchanged();
 
                     if (showActionDialog)
                     {
@@ -230,7 +245,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         private void btnPluginSave_Click(object sender, RoutedEventArgs e)
         {
-            UpdateMeta(MetaWriter.SaveType.Cache, false);
+            UpdateMeta(MetaWriter.SaveType.File, false);
         }
         
         private void metaEditor_KeyDown(object sender, KeyEventArgs e)
@@ -243,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             {
                 case Key.S:
                     // Save Meta
-                    UpdateMeta(MetaWriter.SaveType.Cache, false);
+                    UpdateMeta(MetaWriter.SaveType.File, false);
                     break;
 
                 case Key.P:

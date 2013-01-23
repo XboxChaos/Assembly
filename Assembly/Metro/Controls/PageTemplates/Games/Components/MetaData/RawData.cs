@@ -10,16 +10,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     /// </summary>
     public class RawData : ValueField
     {
-        private string _value, _originalValue;
-        private int _length, _maxLength;
+        private string _value;
+        private int _length;
 
         public RawData(string name, uint offset, string value, int length, uint pluginLine)
             : base(name, offset, pluginLine)
         {
             _value = value;
-            _originalValue = value;
             _length = length;
-            _maxLength = _length * 2;
         }
 
         public string Value
@@ -31,12 +29,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public int Length
         {
             get { return _length; }
-            set { _length = value; NotifyPropertyChanged("Length"); }
+            set { _length = value; NotifyPropertyChanged("Length"); NotifyPropertyChanged("MaxLength"); }
         }
+
         public int MaxLength
         {
-            get { return _maxLength; }
-            set { _maxLength = value; NotifyPropertyChanged("MaxLength"); }
+            get { return _length * 2; }
         }
 
         public override void Accept(IMetaFieldVisitor visitor)
@@ -44,26 +42,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitRawData(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            RawData result = new RawData(Name, Offset, _value, _length, base.PluginLine);
-            result._originalValue = _originalValue;
-            return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
+            return new RawData(Name, Offset, _value, _length, base.PluginLine);
         }
     }
 }

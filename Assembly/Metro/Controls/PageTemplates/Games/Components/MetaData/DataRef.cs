@@ -7,15 +7,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class DataRef : ValueField
     {
-        private string _value, _originalValue;
-        private int _length, _maxLength;
+        private string _value;
+        private uint _address;
+        private int _maxLength;
 
-        public DataRef(string name, uint offset, string value, uint pluginLine)
+        public DataRef(string name, uint offset, uint address, string value, uint pluginLine)
             : base(name, offset, pluginLine)
         {
             _value = value;
-            _originalValue = value;
-            _maxLength = _length * 2;
+            _maxLength = _value.Length;
         }
 
         public string Value
@@ -24,45 +24,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             set { _value = value; NotifyPropertyChanged("Value"); }
         }
 
-        public int Length
+        public uint Address
         {
-            get { return _length; }
-            set { _length = value; NotifyPropertyChanged("Length"); }
+            get { return _address; }
+            set { _address = value; NotifyPropertyChanged("Address"); }
         }
+
         public int MaxLength
         {
             get { return _maxLength; }
             set { _maxLength = value; NotifyPropertyChanged("MaxLength"); }
         }
 
-        public uint DataMemoryAddress { get; set; }
-        public uint DataCacheOffset { get; set; }
-
         public override void Accept(IMetaFieldVisitor visitor)
         {
             visitor.VisitDataRef(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            DataRef result = new DataRef(Name, Offset, _value, base.PluginLine);
-            result._originalValue = _originalValue;
+            DataRef result = new DataRef(Name, Offset, _address, _value, base.PluginLine);
             return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
         }
     }
 }

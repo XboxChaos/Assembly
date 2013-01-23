@@ -32,22 +32,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitComment(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
             return new CommentData(_name, _text);
-        }
-
-        public override bool HasChanged
-        {
-            get { return false; }
-        }
-
-        public override void Reset()
-        {
-        }
-
-        public override void KeepChanges()
-        {
         }
     }
 }

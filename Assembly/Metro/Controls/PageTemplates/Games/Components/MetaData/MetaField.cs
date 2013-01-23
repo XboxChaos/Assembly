@@ -16,26 +16,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public abstract void Accept(IMetaFieldVisitor visitor);
 
         /// <summary>
-        /// Deeply clones the MetaField. Any fields contained inside of it will
-        /// be cloned as well.
+        /// Clones the field such that the clone will have the same value as the original field when shown in the editor,
+        /// but so that editing the clone's value as shown in the editor will not alter the value of the original field.
         /// </summary>
-        /// <returns>The new clone.</returns>
-        public abstract MetaField DeepClone();
-
-        /// <summary>
-        /// Returns true if the field's value has been altered.
-        /// </summary>
-        public abstract bool HasChanged { get; }
-
-        /// <summary>
-        /// Resets the field's value to its original one.
-        /// </summary>
-        public abstract void Reset();
-
-        /// <summary>
-        /// Marks the value as unchanged, setting its original value to the current one.
-        /// </summary>
-        public abstract void KeepChanges();
+        /// <returns>The cloned field with a value identical to the source field.</returns>
+        public abstract MetaField CloneValue();
 
         /// <summary>
         /// The field's opacity, as a percentage between 0 and 1.

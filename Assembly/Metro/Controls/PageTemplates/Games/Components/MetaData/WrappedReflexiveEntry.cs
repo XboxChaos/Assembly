@@ -29,6 +29,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         void visibleItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // This is necessary in order for the NotifyPropertyChanged on WrappedField to work
             if ((e.Action == NotifyCollectionChangedAction.Replace || e.Action == NotifyCollectionChangedAction.Add) && e.NewStartingIndex == _index)
                 WrappedField = (MetaField)e.NewItems[0];
         }
@@ -55,22 +56,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitReflexiveEntry(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
             return new WrappedReflexiveEntry(_visibleItems, _index, _width, _last);
-        }
-
-        public override bool HasChanged
-        {
-            get { return false; }
-        }
-
-        public override void Reset()
-        {
-        }
-
-        public override void KeepChanges()
-        {
         }
     }
 }

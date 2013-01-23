@@ -17,7 +17,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public class BitfieldData : ValueField
     {
         private SortedList<int, BitData> _bits = new SortedList<int, BitData>();
-        private uint _value, _originalValue;
+        private uint _value;
         private BitfieldType _type;
 
         public BitfieldData(string name, uint offset, BitfieldType type, uint pluginLine)
@@ -64,29 +64,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitBitfield(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
             BitfieldData result = new BitfieldData(Name, Offset, _type, base.PluginLine);
             foreach (KeyValuePair<int, BitData> bit in _bits)
                 result.DefineBit(bit.Key, bit.Value.Name);
             result.Value = _value;
-            result._originalValue = _originalValue;
             return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return Value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = Value;
         }
 
         private void RefreshBits()

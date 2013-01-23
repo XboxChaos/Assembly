@@ -8,7 +8,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public class VectorData : ValueField
     {
         private float _x, _y, _z;
-        private float _originalX, _originalY, _originalZ;
 
         public VectorData(string name, uint offset, float x, float y, float z, uint pluginLine)
             : base(name, offset, pluginLine)
@@ -41,32 +40,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitVector(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            VectorData result = new VectorData(Name, Offset, _x, _y, _z, base.PluginLine);
-            result._originalX = _originalX;
-            result._originalY = _originalY;
-            result._originalZ = _originalZ;
-            return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _x != _originalX || _y != _originalY || _z != _originalZ; }
-        }
-
-        public override void Reset()
-        {
-            X = _originalX;
-            Y = _originalY;
-            Z = _originalZ;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalX = _x;
-            _originalY = _y;
-            _originalZ = _z;
+            return new VectorData(Name, Offset, _x, _y, _z, base.PluginLine);
         }
     }
 }

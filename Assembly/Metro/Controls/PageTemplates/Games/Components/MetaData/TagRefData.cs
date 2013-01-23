@@ -10,8 +10,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class TagRefData : ValueField
     {
-        private TagEntry _value, _originalValue;
-        private TagClass _class, _originalClass;
+        private TagEntry _value;
+        private TagClass _class;
         private TagHierarchy _allTags;
         private bool _withClass;
         private Visibility _showJumpTo;
@@ -21,6 +21,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             _allTags = allTags;
             _withClass = withClass;
+            _showJumpTo = showJumpTo;
         }
 
         public TagEntry Value
@@ -56,31 +57,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitTagRef(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
             TagRefData result = new TagRefData(Name, Offset, _allTags, _showJumpTo, _withClass, base.PluginLine);
             result.Class = _class;
             result.Value = _value;
-            result._originalValue = _originalValue;
-            result._originalClass = _originalClass;
             return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue || _class != _originalClass; }
-        }
-
-        public override void Reset()
-        {
-            Class = _originalClass;
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
-            _originalClass = _class;
         }
     }
 }

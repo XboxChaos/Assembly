@@ -12,14 +12,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public abstract class NumberData<T> : ValueField
     {
         private string _type;
-        private T _value, _originalValue;
+        private T _value;
 
         public NumberData(string name, uint offset, string type, T value, uint pluginLine)
             : base(name, offset, pluginLine)
         {
             _type = type;
             _value = value;
-            _originalValue = value;
         }
 
         public string Type
@@ -32,27 +31,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             get { return _value; }
             set { _value = value; NotifyPropertyChanged("Value"); }
-        }
-
-        public override bool HasChanged
-        {
-            get { return !_value.Equals(_originalValue); }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
-        }
-
-        protected MetaField CloneBase(NumberData<T> data)
-        {
-            data._originalValue = _originalValue;
-            return data;
         }
     }
 
@@ -69,9 +47,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitUint8(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Uint8Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Uint8Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -88,9 +66,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitInt8(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Int8Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Int8Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -107,9 +85,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitUint16(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Uint16Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Uint16Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -126,9 +104,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitInt16(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Int16Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Int16Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -145,9 +123,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitUint32(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Uint32Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Uint32Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -164,9 +142,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitInt32(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Int32Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Int32Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 
@@ -183,9 +161,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitFloat32(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            return CloneBase(new Float32Data(Name, Offset, Type, Value, base.PluginLine));
+            return new Float32Data(Name, Offset, Type, Value, base.PluginLine);
         }
     }
 }
