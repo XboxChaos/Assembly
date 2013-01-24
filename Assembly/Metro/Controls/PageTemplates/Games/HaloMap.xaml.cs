@@ -31,6 +31,7 @@ using System.Collections;
 using Assembly.Windows;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
+using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -568,6 +569,41 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
             }
+        }
+
+        private void DumpClassTagList(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag class
+            MenuItem item = e.Source as MenuItem;
+            if (item == null)
+                return;
+            TagClass tagClass = item.DataContext as TagClass;
+            if (tagClass == null)
+                return;
+
+            // Ask the user where to save the dump
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save Tag List";
+            sfd.Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*";
+            bool? result = sfd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            // Dump all of the tags that belong to the class
+            using (StreamWriter writer = new StreamWriter(sfd.FileName))
+            {
+                foreach (ITag tag in _cacheFile.Tags)
+                {
+                    if (tag != null && tag.Class == tagClass.RawClass)
+                    {
+                        string name = _cacheFile.FileNames.FindTagName(tag);
+                        if (name != null)
+                            writer.WriteLine("{0}={1}", tag.Index, name);
+                    }
+                }
+            }
+
+            MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
         }
     }
 }
