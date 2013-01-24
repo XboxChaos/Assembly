@@ -76,13 +76,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             for (int i = 0; i < _currentLocaleTable.Strings.Count; i++)
             {
                 Locale locale = _currentLocaleTable.Strings[i];
-                LocaleEntry entry = new LocaleEntry();
-                entry.Index = i;
-                entry.Locale = locale.Value;
-                entry.StringID = _cache.StringIDs.GetString(locale.ID);
-                if (entry.StringID == null)
-                    entry.StringID = locale.ID.ToString();
-                _locales.Add(entry);
+                string stringId = _cache.StringIDs.GetString(locale.ID);
+                if (stringId == null)
+                    stringId = locale.ID.ToString();
+
+                _locales.Add(new LocaleEntry(i, stringId, locale.Value));
             }
 
             LoadGroups();
@@ -190,12 +188,38 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        class LocaleEntry
+        class LocaleEntry : PropertyChangeNotifier
         {
-            public int Index { get; set; }
-            public string StringID { get; set; }
-            public string Locale { get; set; }
+            private int _index;
+            private string _stringId;
+            private string _locale;
+
+            public LocaleEntry(int index, string stringId, string locale)
+            {
+                _index = index;
+                _stringId = stringId;
+                _locale = locale;
+            }
+
+            public int Index
+            {
+                get { return _index; }
+                set { _index = value; NotifyPropertyChanged("Index"); }
+            }
+
+            public string StringID
+            {
+                get { return _stringId; }
+                set { _stringId = value; NotifyPropertyChanged("StringID"); }
+            }
+
+            public string Locale
+            {
+                get { return _locale; }
+                set { _locale = value; NotifyPropertyChanged("Locale"); }
+            }
         }
+
         class LanguageEntry
         {
             public int Index { get; set; }
