@@ -141,14 +141,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitRawData(RawData field)
         {
-            if (!FilterString(field, field.Name))
-                FilterString(field, field.Value);
+            // AvalonEdit doesn't let us access the text from a different thread
+            /*if (!FilterString(field, field.Name))
+                FilterString(field, field.Value);*/
+            FilterString(field, field.Name);
         }
 
         public void VisitDataRef(DataRef field)
         {
-            if (!FilterString(field, field.Name))
-                FilterString(field, field.Value);
+            // AvalonEdit doesn't let us access the text from a different thread
+            /*if (!FilterString(field, field.Name))
+                FilterString(field, field.Value);*/
+            FilterString(field, field.Name);
         }
 
         public void VisitTagRef(TagRefData field)

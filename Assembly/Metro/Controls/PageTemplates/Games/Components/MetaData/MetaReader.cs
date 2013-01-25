@@ -185,8 +185,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitRawData(RawData field)
         {
             SeekToOffset(field.Offset);
-            field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Length));
-            field.Length = field.Value.Length;
+            field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 24);
         }
 
         public void VisitDataRef(DataRef field)
@@ -195,10 +194,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             SeekToOffset(field.Offset);
 
             // Read length
-            int length = _reader.ReadInt32(); 
-
-            // Set Max Length (length * 2)
-            field.MaxLength = length * 2;
+            field.Length = _reader.ReadInt32(); 
 
             // Skip 2 unknown int32's
             _reader.ReadBlock(0x08);
@@ -209,16 +205,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Check if memory address is valid
             uint metaStartAddr = _cache.Info.MetaBase.AsAddress();
             uint metaEndAddr = metaStartAddr + _cache.Info.MetaSize;
-            if (length > 0 && field.Address >= metaStartAddr && field.Address + length <= metaEndAddr)
+            if (field.Length > 0 && field.Address >= metaStartAddr && field.Address + field.Length <= metaEndAddr)
             {
                 // Go to position
                 _reader.SeekTo(_cache.MetaPointerConverter.PointerToOffset(field.Address));
 
                 // Read Data
-                byte[] data = _reader.ReadBlock(length);
+                byte[] data = _reader.ReadBlock(field.Length);
 
                 // Convert to hex string
-                field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexString(data);
+                field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexLines(data, 24);
             }
         }
 

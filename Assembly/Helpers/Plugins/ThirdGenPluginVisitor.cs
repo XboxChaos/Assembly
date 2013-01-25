@@ -155,7 +155,7 @@ namespace Assembly.Helpers.Plugins
         public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new DataRef(name, offset, 0, "", pluginLine));
+                AddValue(new DataRef(name, offset, 0, "", 0, pluginLine));
         }
 
         #region Bitfield

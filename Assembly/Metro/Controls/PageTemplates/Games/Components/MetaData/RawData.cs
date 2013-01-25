@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -10,20 +11,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     /// </summary>
     public class RawData : ValueField
     {
-        private string _value;
+        private TextDocument _document;
         private int _length;
 
         public RawData(string name, uint offset, string value, int length, uint pluginLine)
             : base(name, offset, pluginLine)
         {
-            _value = value;
+            _document = new TextDocument(new StringTextSource(value));
             _length = length;
+        }
+
+        public TextDocument Document
+        {
+            get { return _document; }
+            set { _document = value; NotifyPropertyChanged("Document"); }
         }
 
         public string Value
         {
-            get { return _value; }
-            set { _value = value; NotifyPropertyChanged("Value"); }
+            get { return _document.Text; }
+            set { _document.Text = value; NotifyPropertyChanged("Value"); NotifyPropertyChanged("Document"); }
         }
 
         public int Length
@@ -44,7 +51,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new RawData(Name, Offset, _value, _length, base.PluginLine);
+            return new RawData(Name, Offset, _document.Text, _length, base.PluginLine);
         }
     }
 }

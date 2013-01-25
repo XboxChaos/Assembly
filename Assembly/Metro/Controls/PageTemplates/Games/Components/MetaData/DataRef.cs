@@ -2,38 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-    public class DataRef : ValueField
+    public class DataRef : RawData
     {
-        private string _value;
         private uint _address;
-        private int _maxLength;
 
-        public DataRef(string name, uint offset, uint address, string value, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public DataRef(string name, uint offset, uint address, string value, int length, uint pluginLine)
+            : base(name, offset, value, length, pluginLine)
         {
-            _value = value;
-            _maxLength = _value.Length;
-        }
-
-        public string Value
-        {
-            get { return _value; }
-            set { _value = value; NotifyPropertyChanged("Value"); }
+            _address = address;
         }
 
         public uint Address
         {
             get { return _address; }
             set { _address = value; NotifyPropertyChanged("Address"); }
-        }
-
-        public int MaxLength
-        {
-            get { return _maxLength; }
-            set { _maxLength = value; NotifyPropertyChanged("MaxLength"); }
         }
 
         public override void Accept(IMetaFieldVisitor visitor)
@@ -43,7 +29,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            DataRef result = new DataRef(Name, Offset, _address, _value, base.PluginLine);
+            DataRef result = new DataRef(Name, Offset, _address, Value, Length, base.PluginLine);
             return result;
         }
     }

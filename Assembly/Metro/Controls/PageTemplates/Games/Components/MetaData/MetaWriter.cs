@@ -200,13 +200,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitRawData(RawData field)
         {
             SeekToOffset(field.Offset);
-            _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value));
+            _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
         }
 
         public void VisitDataRef(DataRef field)
         {
             SeekToOffset(field.Offset);
-            _writer.WriteInt32(field.Value.Length / 2); // Data size
+            _writer.WriteInt32(field.Length); // Data size
             _writer.Skip(2 * 4); // Skip two unused values
             _writer.WriteUInt32(field.Address); // Address
 
@@ -219,7 +219,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 _writer.SeekTo(offset);
 
                 // Write its data
-                _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value));
+                _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
             }
         }
 
