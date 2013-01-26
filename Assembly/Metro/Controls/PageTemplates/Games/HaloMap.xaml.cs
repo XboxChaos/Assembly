@@ -260,7 +260,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 
             //// Taglist Generation
-            string taglistPath = @"C:\" + _cacheFile.Info.InternalName.ToLower() + ".taglist";
+            /*string taglistPath = @"C:\" + _cacheFile.Info.InternalName.ToLower() + ".taglist";
             List<string> taglist = new List<string>();
             taglist.Add("<scenario=\"" + _cacheFile.Info.ScenarioName + "\">");
             for (int i = 0; i < _cacheFile.Tags.Count; i++)
@@ -270,7 +270,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     taglist.Add(string.Format("\t<tag id=\"{0}\" class=\"{1}\">{2}</tag>", tag.Index.ToString(), ExtryzeDLL.Util.CharConstant.ToString(tag.Class.Magic) ,_cacheFile.FileNames.FindTagName(tag.Index)));
             }
             taglist.Add("</scenario>");
-            File.WriteAllLines(taglistPath, taglist.ToArray<string>());
+            File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
 
 
             Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Tags"); }));
