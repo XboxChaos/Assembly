@@ -30,20 +30,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 MetaField field = changedFields[i];
                 ReflexiveData reflexive = field as ReflexiveData;
-                if (field != null && (changes.HasChanged(field) || reflexive != null))
+                bool changed = changes.HasChanged(field);
+                if (field != null && (changed || reflexive != null))
                 {
                     if (_fields[i] == null)
                     {
                         _fields[i] = field.CloneValue();
                         tracker.AttachTo(_fields[i]);
+                        if (changed)
+                            tracker.MarkChanged(_fields[i]);
                         tracker.MarkUnchanged(field);
-                        tracker.MarkChanged(_fields[i]);
 
                         if (reflexive != null)
-                        {
-                            foreach (ReflexivePage page in reflexive.Pages)
-                                page.Reset();
-                        }
+                            reflexive.ResetPages();
                     }
                     else if (field != _fields[i])
                     {
@@ -87,14 +86,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public class ReflexiveData : ValueField
     {
         private uint _entrySize;
-        private uint _firstEntryOffset = 0;
+        private uint _firstEntryAddr = 0;
         private int _currentIndex = 0;
         private bool _expanded = false;
         private double _width = MinWidth;
         private ObservableCollection<ReflexivePage> _pages = new ObservableCollection<ReflexivePage>();
         private ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
 
-        private const double MinWidth = 500;
+        private const double MinWidth = 525; // The minimum width that a reflexive can have
 
         public ReflexiveData(string name, uint offset, uint entrySize, uint pluginLine)
             : base(name, offset, pluginLine)
@@ -103,12 +102,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _expanded = true;
         }
 
+        /// <summary>
+        /// Recalculates the reflexive's width.
+        /// </summary>
         public void UpdateWidth()
         {
             WidthCalculator calc = new WidthCalculator();
             calc.Add(Template);
             _width = Math.Max(MinWidth, calc.TotalWidth);
             NotifyPropertyChanged("Width");
+        }
+
+        /// <summary>
+        /// Throws out any fields that have been cached by the reflexive.
+        /// </summary>
+        public void ResetPages()
+        {
+            foreach (ReflexivePage page in _pages)
+                page.Reset();
         }
 
         public double Width
@@ -133,10 +144,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             set { _entrySize = value; NotifyPropertyChanged("EntrySize"); }
         }
 
-        public uint FirstEntryOffset
+        public uint FirstEntryAddress
         {
-            get { return _firstEntryOffset; }
-            set { _firstEntryOffset = value; NotifyPropertyChanged("FirstEntryOffset"); }
+            get { return _firstEntryAddr; }
+            set { _firstEntryAddr = value; NotifyPropertyChanged("FirstEntryAddress"); }
         }
 
         public int CurrentIndex
@@ -184,7 +195,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             result._expanded = _expanded;
             result._width = _width;
             result._currentIndex = _currentIndex;
-            result._firstEntryOffset = _firstEntryOffset;
+            result._firstEntryAddr = _firstEntryAddr;
             foreach (MetaField field in _template)
                 result._template.Add(field);
             foreach (ReflexivePage page in _pages)

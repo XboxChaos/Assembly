@@ -33,8 +33,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         private void ReadField(MetaField field)
         {
-            if (_ignoredFields == null || !_ignoredFields.HasChanged(field) || (field is ReflexiveData))
+            if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
                 field.Accept(this);
+
+            ReflexiveData reflexive = field as ReflexiveData;
+            if (reflexive != null)
+                ReadReflexiveChildren(reflexive);
         }
 
         public void ReadFields(IList<MetaField> fields)
@@ -52,7 +56,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
         }
 
-        public void ReadReflexive(ReflexiveData reflexive)
+        public void ReadReflexiveChildren(ReflexiveData reflexive)
         {
             if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
                 return;
@@ -60,8 +64,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             bool opened = OpenReader();
             try
             {
+                // Calculate the base offset to read from
                 uint oldBaseOffset = _baseOffset;
-                _baseOffset = (uint)(reflexive.FirstEntryOffset + reflexive.CurrentIndex * reflexive.EntrySize);
+                uint dataOffset = _cache.MetaPointerConverter.AddressToOffset(reflexive.FirstEntryAddress);
+                _baseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
 
                 ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
                 for (int i = 0; i < page.Fields.Length; i++)
@@ -266,10 +272,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 length = 0;
 
             field.Length = length;
-            if (length > 0)
-                field.FirstEntryOffset = _cache.MetaPointerConverter.AddressToOffset(address);
-
-            ReadReflexive(field);
+            if (length > 0 && address != field.FirstEntryAddress)
+                field.FirstEntryAddress = address;
         }
 
         public void VisitReflexiveEntry(WrappedReflexiveEntry field)

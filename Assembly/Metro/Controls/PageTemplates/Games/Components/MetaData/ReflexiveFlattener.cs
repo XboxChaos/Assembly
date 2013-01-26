@@ -402,15 +402,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 else
                     flattenedField.Contract();
             }
-            else if (!_loading && e.PropertyName == "CurrentIndex")
+            else if (!_loading && (e.PropertyName == "CurrentIndex" || e.PropertyName == "FirstEntryAddress" || e.PropertyName == "EntrySize"))
             {
                 _loading = true;
                 _tracker.Enabled = false;
 
-                RecursiveUnload(flattenedField.LoadedFields);
+                if (e.PropertyName == "FirstEntryAddress")
+                {
+                    // Throw out any cached changes and reset the current index
+                    RecursiveReset(flattenedField.LoadedFields);
+                    if (reflexive.Length > 0)
+                        reflexive.CurrentIndex = 0;
+                    else
+                        reflexive.CurrentIndex = -1;
+                }
+                else
+                {
+                    // Cache any changes made to the current page
+                    RecursiveUnload(flattenedField.LoadedFields);
+                }
+
+                // Load the new page in
                 flattenedField.LoadPage(reflexive, reflexive.CurrentIndex);
                 RecursiveLoad(flattenedField.LoadedFields);
-                _reader.ReadReflexive(reflexive);
+
+                // Read any non-cached fields in the page
+                _reader.ReadReflexiveChildren(reflexive);
 
                 _tracker.Enabled = true;
                 _loading = false;
@@ -453,6 +470,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                     FlattenedReflexive flattened = _flattenInfo[reflexive];
                     RecursiveUnload(flattened.LoadedFields);
                     _flattenInfo[reflexive].UnloadPage();
+                }
+            }
+        }
+
+        private void RecursiveReset(IEnumerable<MetaField> fields)
+        {
+            foreach (MetaField field in fields)
+            {
+                _tracker.MarkUnchanged(field);
+
+                ReflexiveData reflexive = field as ReflexiveData;
+                if (reflexive != null)
+                {
+                    FlattenedReflexive flattened = _flattenInfo[reflexive];
+                    RecursiveReset(flattened.LoadedFields);
+                    reflexive.ResetPages();
                 }
             }
         }

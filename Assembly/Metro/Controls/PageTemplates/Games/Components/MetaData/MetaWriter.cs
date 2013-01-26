@@ -41,8 +41,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         private void WriteField(MetaField field)
         {
-            if (_changes == null || _changes.HasChanged(field) || field is ReflexiveData)
+            if (_changes == null || _changes.HasChanged(field))
                 field.Accept(this);
+
+            ReflexiveData reflexive = field as ReflexiveData;
+            if (reflexive != null)
+                WriteReflexiveChildren(reflexive);
         }
 
         public void VisitBitfield(BitfieldData field)
@@ -131,15 +135,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitReflexive(ReflexiveData field)
         {
-            // TODO: Write length and address
+            SeekToOffset(field.Offset);
+            _writer.WriteInt32(field.Length);
+            _writer.WriteUInt32(field.FirstEntryAddress);
+        }
 
+        public void WriteReflexiveChildren(ReflexiveData field)
+        {
             if (field.CurrentIndex < 0 || !field.HasChildren)
                 return;
 
-            // Get the base offset and convert it to an address if we're writing to memory
-            uint newBaseOffset = field.FirstEntryOffset;
-            if (_type == SaveType.Memory)
-                newBaseOffset = _cache.MetaPointerConverter.OffsetToAddress(newBaseOffset);
+            // Get the base address and convert it to an offset if we're writing to the file
+            uint newBaseOffset = field.FirstEntryAddress;
+            if (_type == SaveType.File)
+                newBaseOffset = _cache.MetaPointerConverter.AddressToOffset(newBaseOffset);
 
             // Save the old base offset and set the base offset to the reflexive's base
             uint oldBaseOffset = _baseOffset;

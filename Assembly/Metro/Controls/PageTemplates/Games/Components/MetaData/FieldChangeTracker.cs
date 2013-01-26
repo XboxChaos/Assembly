@@ -124,7 +124,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _propertyNames.Add("Address"); // Datarefs
             _propertyNames.Add("Length"); // Reflexives
             _propertyNames.Add("EntrySize"); // Reflexives
-            _propertyNames.Add("FirstEntryOffset"); // Reflexives
+            _propertyNames.Add("FirstEntryAddress"); // Reflexives
             _propertyNames.Add("Class"); // Tagrefs
             _propertyNames.Add("X"); // Vectors
             _propertyNames.Add("Y"); // Vectors
