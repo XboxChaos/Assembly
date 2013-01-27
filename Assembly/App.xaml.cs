@@ -4,6 +4,7 @@ using System.Windows;
 using Assembly.Helpers;
 using XBDMCommunicator;
 using Microsoft.Shell;
+using Assembly.Metro.Dialogs;
 
 namespace Assembly
 {
