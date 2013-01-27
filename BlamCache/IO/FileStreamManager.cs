@@ -37,7 +37,7 @@ namespace ExtryzeDLL.IO
         /// <returns>The stream that was opened.</returns>
         public Stream OpenRead()
         {
-            return _file.OpenRead();
+            return _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
         /// <summary>

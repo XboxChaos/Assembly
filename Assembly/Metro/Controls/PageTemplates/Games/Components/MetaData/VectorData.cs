@@ -9,8 +9,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private float _x, _y, _z;
 
-        public VectorData(string name, uint offset, float x, float y, float z, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public VectorData(string name, uint offset, uint address, float x, float y, float z, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _x = x;
             _y = y;
@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new VectorData(Name, Offset, _x, _y, _z, base.PluginLine);
+            return new VectorData(Name, Offset, FieldAddress, _x, _y, _z, base.PluginLine);
         }
     }
 }

@@ -95,8 +95,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         private const double MinWidth = 525; // The minimum width that a reflexive can have
 
-        public ReflexiveData(string name, uint offset, uint entrySize, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public ReflexiveData(string name, uint offset, uint address, uint entrySize, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _entrySize = entrySize;
             _expanded = true;
@@ -191,7 +191,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            ReflexiveData result = new ReflexiveData(Name, Offset, EntrySize, base.PluginLine);
+            ReflexiveData result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, base.PluginLine);
             result._expanded = _expanded;
             result._width = _width;
             result._currentIndex = _currentIndex;

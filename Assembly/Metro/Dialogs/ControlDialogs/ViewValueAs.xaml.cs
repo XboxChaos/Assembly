@@ -21,8 +21,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     {
 	    private uint _cacheOffset;
 	    private readonly uint _cacheOffsetOriginal;
-        private readonly string _examplePath;
-        private readonly Stream _stream;
+        private readonly ICacheFile _cacheFile;
         private readonly MetaReader _reader;
         private readonly IList<MetaField> _fields;
 
@@ -32,17 +31,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
             DwmDropShadow.DropShadowToWindow(this);
 
-            _stream = streamManager.OpenRead();
+            _cacheFile = cacheFile;
             _reader = new MetaReader(streamManager, cacheOffset, cacheFile);
             _fields = fields;
             _cacheOffset = _cacheOffsetOriginal = cacheOffset;
 
             // Set Textbox
             txtOffset.Text = "0x" + _cacheOffset.ToString("X");
-            btnRefresh_Click(null, null);
-
-            // Load Plugin Path
-            _examplePath = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
 
             // Load Meta
             RefreshMeta();
@@ -50,24 +45,8 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
         public void RefreshMeta()
         {
-            if (File.Exists(_examplePath))
-            {
-                // Load Meta
-                //try
-                {
-                    _reader.ReadFields(_fields);
-                    panelMetaComponents.ItemsSource = _fields;
-                }
-                //catch (Exception ex)
-                //{
-                //    MetroException.Show(ex);
-                //}
-            }
-            else
-            {
-                StatusUpdater.Update("Example Plugin doesn't exist... I don't know why you deleted it :(.");
-                Close();
-            }
+            _reader.ReadFields(_fields);
+            panelMetaComponents.ItemsSource = _fields;
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -109,7 +88,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 success = int.TryParse(txtOffset.Text, out offset);
             }
 
-            if (!success || offset < 0 || offset >= _stream.Length)
+            if (!success || offset < _cacheFile.Info.MetaOffset || offset >= _cacheFile.Info.MetaOffset + _cacheFile.Info.MetaSize)
             {
                 MetroMessageBox.Show(
                     "Invalid offset.",
@@ -143,11 +122,6 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             _cacheOffset += 1;
             txtOffset.Text = "0x" + _cacheOffset.ToString("X");
             btnRefresh_Click(null, null);
-        }
-
-        private void ViewValueAs_Closed_1(object sender, EventArgs e)
-        {
-            _stream.Close();
         }
     }
 }

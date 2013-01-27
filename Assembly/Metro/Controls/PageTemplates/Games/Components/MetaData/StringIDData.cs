@@ -9,8 +9,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private int _value;
 
-        public StringIDData(string name, uint offset, int index, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public StringIDData(string name, uint offset, uint address, int index, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _value = index;
         }
@@ -28,7 +28,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new StringIDData(Name, Offset, _value, base.PluginLine);
+            return new StringIDData(Name, Offset, FieldAddress, _value, base.PluginLine);
         }
     }
 }

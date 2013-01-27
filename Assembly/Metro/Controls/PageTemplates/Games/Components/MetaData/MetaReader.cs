@@ -33,9 +33,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         private void ReadField(MetaField field)
         {
+            // Update the field's memory address
+            ValueField valueField = field as ValueField;
+            if (valueField != null)
+                valueField.FieldAddress = _cache.MetaPointerConverter.OffsetToAddress(_baseOffset + valueField.Offset);
+
+            // Read its contents if it has changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
                 field.Accept(this);
 
+            // If it's a reflexive, read its children
             ReflexiveData reflexive = field as ReflexiveData;
             if (reflexive != null)
                 ReadReflexiveChildren(reflexive);
@@ -206,15 +213,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _reader.ReadBlock(0x08);
 
             // Read the memory address
-            field.Address = _reader.ReadUInt32();
+            field.DataAddress = _reader.ReadUInt32();
 
             // Check if memory address is valid
             uint metaStartAddr = _cache.Info.MetaBase.AsAddress();
             uint metaEndAddr = metaStartAddr + _cache.Info.MetaSize;
-            if (field.Length > 0 && field.Address >= metaStartAddr && field.Address + field.Length <= metaEndAddr)
+            if (field.Length > 0 && field.DataAddress >= metaStartAddr && field.DataAddress + field.Length <= metaEndAddr)
             {
                 // Go to position
-                _reader.SeekTo(_cache.MetaPointerConverter.PointerToOffset(field.Address));
+                _reader.SeekTo(_cache.MetaPointerConverter.PointerToOffset(field.DataAddress));
 
                 // Read Data
                 byte[] data = _reader.ReadBlock(field.Length);

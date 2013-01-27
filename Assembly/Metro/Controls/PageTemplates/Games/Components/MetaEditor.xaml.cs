@@ -49,7 +49,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     public partial class MetaEditor : UserControl
     {
         private IStreamManager _streamManager;
-        private IReader _reader;
         private TagEntry _tag;
         private TagHierarchy _tags;
         private BuildInformation _buildInfo;
@@ -66,6 +65,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private FieldChangeTracker _changeTracker;
         private FieldChangeSet _fileChanges;
         private FieldChangeSet _memoryChanges;
+
+        public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
 
         public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
@@ -340,18 +341,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 field.Opacity = .3f;
         }
 
-        private MetaField GetWrappedField(MetaField field)
-        {
-            WrappedReflexiveEntry wrapper = null;
-            while (true)
-            {
-                wrapper = field as WrappedReflexiveEntry;
-                if (wrapper == null)
-                    return field;
-                field = wrapper.WrappedField;
-            }
-        }
-
         private void btnResetSearch_Click_1(object sender, RoutedEventArgs e)
         {
             txtSearch.Text = "";
@@ -547,5 +536,74 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 SelectResult(selectedResult);
         }
         #endregion
+
+        private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            ValueField field = GetValueField(e.Source);
+            e.CanExecute = (field != null);
+        }
+
+        private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ValueField field = GetValueField(e.Source);
+            if (field != null)
+            {
+                IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
+                uint offset = _cache.MetaPointerConverter.AddressToOffset(field.FieldAddress);
+                MetroViewValueAs.Show(_cache, _streamManager, viewValueAsFields, offset);
+            }
+        }
+
+        private static MetaField GetWrappedField(MetaField field)
+        {
+            WrappedReflexiveEntry wrapper = null;
+            while (true)
+            {
+                wrapper = field as WrappedReflexiveEntry;
+                if (wrapper == null)
+                    return field;
+                field = wrapper.WrappedField;
+            }
+        }
+
+        /// <summary>
+        /// Given a source element, retrieves the ValueField it represents.
+        /// </summary>
+        /// <param name="elem">The FrameworkElement to get the ValueField for.</param>
+        /// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
+        private static ValueField GetValueField(object elem)
+        {
+            // Get the FrameworkElement
+            FrameworkElement source = elem as FrameworkElement;
+            if (source == null)
+                return null;
+
+            // Get the field, and if it's a reflexive wrapper,
+            // then get the actual field it's wrapping
+            ValueField field = source.DataContext as ValueField;
+            if (field == null)
+            {
+                WrappedReflexiveEntry wrapper = source.DataContext as WrappedReflexiveEntry;
+                if (wrapper != null)
+                    field = GetWrappedField(wrapper) as ValueField;
+            }
+            return field;
+        }
+
+        /// <summary>
+        /// Loads the example "view value as" plugin.
+        /// </summary>
+        /// <returns>The fields created from the "view value as" plugin.</returns>
+        private IList<MetaField> LoadViewValueAsPlugin()
+        {
+            string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
+            XmlReader reader = XmlReader.Create(path);
+
+            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, true);
+            AssemblyPluginLoader.LoadPlugin(reader, plugin);
+            reader.Close();
+
+            return plugin.Values;
+        }
     }
 }

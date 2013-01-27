@@ -59,6 +59,16 @@
                                                       HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                                                       VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                                       SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                                    <Grid.ContextMenu>
+                                        <ContextMenu Name="metaFieldMenu">
+                                            <ContextMenu.CommandBindings>
+                                                <CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+                                                    CanExecute="ViewValueAsCommand_CanExecute"
+                                                    Executed="ViewValueAsCommand_Executed" />
+                                            </ContextMenu.CommandBindings>
+                                            <MenuItem Header="View Value As..." Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
+                                        </ContextMenu>
+                                    </Grid.ContextMenu>
                                 </Grid>
                                 <ControlTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">

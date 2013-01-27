@@ -14,8 +14,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private TextDocument _document;
         private int _length;
 
-        public RawData(string name, uint offset, string value, int length, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public RawData(string name, uint offset, uint address, string value, int length, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _document = new TextDocument(new StringTextSource(value));
             _length = length;
@@ -51,7 +51,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new RawData(Name, Offset, _document.Text, _length, base.PluginLine);
+            return new RawData(Name, Offset, FieldAddress, _document.Text, _length, base.PluginLine);
         }
     }
 }

@@ -11,12 +11,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public abstract class ValueField : MetaField
     {
         private string _name;
-        private uint _offset, _pluginLine;
+        private uint _offset, _pluginLine, _address;
 
-        public ValueField(string name, uint offset, uint pluginLine)
+        public ValueField(string name, uint offset, uint address, uint pluginLine)
         {
             _name = name;
             _offset = offset;
+            _address = address;
             _pluginLine = pluginLine;
         }
 
@@ -45,6 +46,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             get { return _offset; }
             set { _offset = value; NotifyPropertyChanged("Offset"); }
+        }
+
+        /// <summary>
+        /// The estimated memory address of the field itself.
+        /// Do not rely upon the accuracy of this value, especially when saving or poking.
+        /// </summary>
+        public uint FieldAddress
+        {
+            get { return _address; }
+            set { _address = value; NotifyPropertyChanged("FieldAddress"); }
         }
     }
 }

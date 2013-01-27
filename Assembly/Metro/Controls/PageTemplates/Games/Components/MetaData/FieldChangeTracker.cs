@@ -121,7 +121,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // All right, so this is dependent upon the exact property names,
             // but INotifyPropertyChanged has that problem anyway...
             _propertyNames.Add("Value");
-            _propertyNames.Add("Address"); // Datarefs
+            _propertyNames.Add("DataAddress"); // Datarefs
             _propertyNames.Add("Length"); // Reflexives
             _propertyNames.Add("EntrySize"); // Reflexives
             _propertyNames.Add("FirstEntryAddress"); // Reflexives

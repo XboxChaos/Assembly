@@ -8,18 +8,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class DataRef : RawData
     {
-        private uint _address;
+        private uint _dataAddress;
 
-        public DataRef(string name, uint offset, uint address, string value, int length, uint pluginLine)
-            : base(name, offset, value, length, pluginLine)
+        public DataRef(string name, uint offset, uint address, uint dataAddress, string value, int length, uint pluginLine)
+            : base(name, offset, address, value, length, pluginLine)
         {
-            _address = address;
+            _dataAddress = dataAddress;
         }
 
-        public uint Address
+        public uint DataAddress
         {
-            get { return _address; }
-            set { _address = value; NotifyPropertyChanged("Address"); }
+            get { return _dataAddress; }
+            set { _dataAddress = value; NotifyPropertyChanged("DataAddress"); }
         }
 
         public override void Accept(IMetaFieldVisitor visitor)
@@ -29,7 +29,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            DataRef result = new DataRef(Name, Offset, _address, Value, Length, base.PluginLine);
+            DataRef result = new DataRef(Name, Offset, FieldAddress, _dataAddress, Value, Length, base.PluginLine);
             return result;
         }
     }

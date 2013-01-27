@@ -20,8 +20,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private uint _value;
         private BitfieldType _type;
 
-        public BitfieldData(string name, uint offset, BitfieldType type, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public BitfieldData(string name, uint offset, uint address, BitfieldType type, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _type = type;
         }
@@ -66,7 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            BitfieldData result = new BitfieldData(Name, Offset, _type, base.PluginLine);
+            BitfieldData result = new BitfieldData(Name, Offset, FieldAddress, _type, base.PluginLine);
             foreach (KeyValuePair<int, BitData> bit in _bits)
                 result.DefineBit(bit.Key, bit.Value.Name);
             result.Value = _value;

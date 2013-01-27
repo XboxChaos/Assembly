@@ -60,53 +60,53 @@ namespace Assembly.Helpers.Plugins
         public void VisitUInt8(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Uint8Data(name, offset, "uint8", 0, pluginLine));
+                AddValue(new Uint8Data(name, offset, 0, "uint8", 0, pluginLine));
         }
         public void VisitInt8(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Int8Data(name, offset, "int8", 0, pluginLine));
+                AddValue(new Int8Data(name, offset, 0, "int8", 0, pluginLine));
         }
 
         public void VisitUInt16(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Uint16Data(name, offset, "uint16", 0, pluginLine));
+                AddValue(new Uint16Data(name, offset, 0, "uint16", 0, pluginLine));
         }
         public void VisitInt16(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Int16Data(name, offset, "int16", 0, pluginLine));
+                AddValue(new Int16Data(name, offset, 0, "int16", 0, pluginLine));
         }
 
         public void VisitUInt32(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Uint32Data(name, offset, "uint32", 0, pluginLine));
+                AddValue(new Uint32Data(name, offset, 0, "uint32", 0, pluginLine));
         }
         public void VisitInt32(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Int32Data(name, offset, "int32", 0, pluginLine));
+                AddValue(new Int32Data(name, offset, 0, "int32", 0, pluginLine));
         }
 
         public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Float32Data(name, offset, "float32", 0, pluginLine));
+                AddValue(new Float32Data(name, offset, 0, "float32", 0, pluginLine));
         }
 
         public void VisitUndefined(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new Float32Data(name, offset, "undefined", 0, pluginLine));
+                AddValue(new Float32Data(name, offset, 0, "undefined", 0, pluginLine));
         }
         #endregion
 
         public void VisitVector3(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new VectorData(name, offset, 0, 0, 0, pluginLine));
+                AddValue(new VectorData(name, offset, 0, 0, 0, 0, pluginLine));
         }
 
         public void VisitRange(string name, uint offset, bool visible, string type, double minval, double maxval, double smallchange, double largechange, uint pluginLine)
@@ -128,18 +128,18 @@ namespace Assembly.Helpers.Plugins
         public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new StringIDData(name, offset, 0, pluginLine));
+                AddValue(new StringIDData(name, offset, 0, 0, pluginLine));
         }
         public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new StringData(name, offset, "", length, pluginLine));
+                AddValue(new StringData(name, offset, 0, "", length, pluginLine));
         }
 
         public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new RawData(name, offset, "", size, pluginLine));
+                AddValue(new RawData(name, offset, 0, "", size, pluginLine));
         }
 
         public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
@@ -149,13 +149,13 @@ namespace Assembly.Helpers.Plugins
 			var jumpTo = showJumpTo ?
 		                                Visibility.Visible : Visibility.Hidden;
 
-	        AddValue(new TagRefData(name, offset, _tags, jumpTo, withClass, pluginLine));
+            AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withClass, pluginLine));
         }
 
         public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new DataRef(name, offset, 0, "", 0, pluginLine));
+                AddValue(new DataRef(name, offset, 0, 0, "", 0, pluginLine));
         }
 
         #region Bitfield
@@ -178,7 +178,7 @@ namespace Assembly.Helpers.Plugins
         {
             if (visible || _showInvisibles)
             {
-                _currentBitfield = new BitfieldData(name, offset, type, pluginLine);
+                _currentBitfield = new BitfieldData(name, offset, 0, type, pluginLine);
                 return true;
             }
             return false;
@@ -222,7 +222,7 @@ namespace Assembly.Helpers.Plugins
         {
             if (visible || _showInvisibles)
             {
-                _currentEnum = new EnumData(name, offset, type, 0, pluginLine);
+                _currentEnum = new EnumData(name, offset, 0, type, 0, pluginLine);
                 return true;
             }
             return false;
@@ -251,7 +251,7 @@ namespace Assembly.Helpers.Plugins
         {
             if (visible || _showInvisibles)
             {
-                var data = new ReflexiveData(name, offset, entrySize, pluginLine);
+                var data = new ReflexiveData(name, offset, 0, entrySize, pluginLine);
                 AddValue(data);
 
                 _reflexives.Add(data);

@@ -16,8 +16,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private bool _withClass;
         private Visibility _showJumpTo;
 
-        public TagRefData(string name, uint offset, TagHierarchy allTags, Visibility showJumpTo, bool withClass, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public TagRefData(string name, uint offset, uint address, TagHierarchy allTags, Visibility showJumpTo, bool withClass, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _allTags = allTags;
             _withClass = withClass;
@@ -59,7 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            TagRefData result = new TagRefData(Name, Offset, _allTags, _showJumpTo, _withClass, base.PluginLine);
+            TagRefData result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showJumpTo, _withClass, base.PluginLine);
             result.Class = _class;
             result.Value = _value;
             return result;

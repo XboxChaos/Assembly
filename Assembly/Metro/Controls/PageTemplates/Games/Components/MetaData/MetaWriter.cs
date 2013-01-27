@@ -217,12 +217,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             SeekToOffset(field.Offset);
             _writer.WriteInt32(field.Length); // Data size
             _writer.Skip(2 * 4); // Skip two unused values
-            _writer.WriteUInt32(field.Address); // Address
+            _writer.WriteUInt32(field.DataAddress); // Address
 
-            if (field.Address != 0xFFFFFFFF && field.Address > 0)
+            if (field.DataAddress != 0xFFFFFFFF && field.DataAddress > 0)
             {
                 // Go to the data location
-                uint offset = field.Address;
+                uint offset = field.DataAddress;
                 if (_type == SaveType.File)
                     offset = _cache.MetaPointerConverter.AddressToOffset(offset);
                 _writer.SeekTo(offset);
