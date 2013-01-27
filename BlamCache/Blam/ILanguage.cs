@@ -26,6 +26,7 @@ namespace ExtryzeDLL.Blam
 
         /// <summary>
         /// Saves all of the language's strings back to the file.
+        /// Note that ICacheFile.SaveChanges() may need to be called after this.
         /// </summary>
         /// <param name="stream">The IStream to write strings to.</param>
         /// <param name="locales">The strings to save back.</param>

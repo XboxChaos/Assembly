@@ -10,17 +10,12 @@ namespace ExtryzeDLL.Patching
     {
         public static void WritePatch(Patch patch, IWriter writer)
         {
-            writer.WriteInt32(AssemblyPatchMagic);
-            writer.WriteUInt32(0); // File size filled in later
+            long startPos = WriteBlockHeader(writer, AssemblyPatchMagic);
             writer.WriteByte(0); // No compression
 
             WriteBlocks(patch, writer);
 
-            // Fill in the file size
-            long fileSize = writer.Position;
-            writer.SeekTo(4);
-            writer.WriteUInt32((uint)fileSize - 8);
-            writer.SeekTo(fileSize);
+            EndBlock(writer, startPos);
         }
 
         private static void WriteBlocks(Patch patch, IWriter writer)
@@ -32,19 +27,22 @@ namespace ExtryzeDLL.Patching
 
         private static void WritePatchInfo(Patch patch, IWriter writer)
         {
-            long startPos = writer.Position;
-            writer.WriteInt32(AssemblyPatchBlockID.Titl);
-            writer.WriteUInt32(0); // Size filled in later
+            long startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Titl);
             writer.WriteByte(0); // Version 0
 
+            // Write target map info
             writer.WriteInt32(patch.MapID);
             if (patch.MapInternalName != null)
                 writer.WriteAscii(patch.MapInternalName);
             else
                 writer.WriteByte(0);
+
+            // Write patch info
             writer.WriteUTF16(patch.Name);
             writer.WriteUTF16(patch.Description);
             writer.WriteUTF16(patch.Author);
+
+            // Write screenshot
             if (patch.Screenshot != null)
             {
                 writer.WriteInt32(patch.Screenshot.Length);
@@ -55,11 +53,7 @@ namespace ExtryzeDLL.Patching
                 writer.WriteInt32(0);
             }
 
-            // Fill in the block size
-            long endPos = writer.Position;
-            writer.SeekTo(startPos + 4);
-            writer.WriteUInt32((uint)(endPos - startPos));
-            writer.SeekTo(endPos);
+            EndBlock(writer, startPos);
         }
 
         private static void WriteMetaChanges(Patch patch, IWriter writer)
@@ -67,9 +61,7 @@ namespace ExtryzeDLL.Patching
             if (patch.MetaChanges.Count == 0)
                 return;
 
-            long startPos = writer.Position;
-            writer.WriteInt32(AssemblyPatchBlockID.Meta);
-            writer.WriteUInt32(0); // Size filled in later
+            long startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Meta);
             writer.WriteByte(0); // Version 0
 
             // Filter meta changes by size (as a file size optimization)
@@ -96,15 +88,11 @@ namespace ExtryzeDLL.Patching
             foreach (MetaChange change in otherChanges)
             {
                 writer.WriteUInt32(change.Address);
-                writer.WriteUInt32((uint)change.Data.Length);
+                writer.WriteInt32(change.Data.Length);
                 writer.WriteBlock(change.Data);
             }
 
-            // Fill in the block size
-            long endPos = writer.Position;
-            writer.SeekTo(startPos + 4);
-            writer.WriteUInt32((uint)(endPos - startPos));
-            writer.SeekTo(endPos);
+            EndBlock(writer, startPos);
         }
 
         private static void WriteLocaleChanges(Patch patch, IWriter writer)
@@ -112,9 +100,7 @@ namespace ExtryzeDLL.Patching
             if (patch.LanguageChanges.Count == 0)
                 return;
 
-            long startPos = writer.Position;
-            writer.WriteInt32(AssemblyPatchBlockID.Locl);
-            writer.WriteUInt32(0); // Size filled in later
+            long startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Locl);
             writer.WriteByte(0); // Version 0
 
             // Write change data for each language
@@ -127,15 +113,27 @@ namespace ExtryzeDLL.Patching
                 writer.WriteInt32(language.LocaleChanges.Count);
                 foreach (LocaleChange change in language.LocaleChanges)
                 {
-                    writer.WriteUInt16((ushort)change.Index);
+                    writer.WriteInt32(change.Index);
                     writer.WriteUTF8(change.NewValue);
                 }
             }
 
-            // Fill in the block size
+            EndBlock(writer, startPos);
+        }
+
+        private static long WriteBlockHeader(IWriter writer, int magic)
+        {
+            long startPos = writer.Position;
+            writer.WriteInt32(magic);
+            writer.WriteUInt32(0); // Size filled in later
+            return startPos;
+        }
+
+        private static void EndBlock(IWriter writer, long headerPos)
+        {
             long endPos = writer.Position;
-            writer.SeekTo(startPos + 4);
-            writer.WriteUInt32((uint)(endPos - startPos));
+            writer.SeekTo(headerPos + 4);
+            writer.WriteUInt32((uint)(endPos - headerPos));
             writer.SeekTo(endPos);
         }
 

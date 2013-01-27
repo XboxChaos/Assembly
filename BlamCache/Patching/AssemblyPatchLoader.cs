@@ -11,20 +11,26 @@ namespace ExtryzeDLL.Patching
     {
         public static Patch LoadPatch(IReader reader)
         {
+            // Verify header magic
             int magic = reader.ReadInt32();
             if (magic != AssemblyPatchMagic)
                 throw new InvalidOperationException("Invalid Assembly patch magic");
+
+            // Read the file size
             uint size = reader.ReadUInt32();
+
+            // Read the compression type
             byte compression = reader.ReadByte();
             if (compression > 0)
                 throw new InvalidOperationException("Unrecognized patch compression type");
 
-            return ReadBlocks(reader, 9, size + 8);
+            return ReadBlocks(reader, 9, size);
         }
 
-        private static Patch ReadBlocks(IReader reader, uint offset, uint endOffset)
+        private static Patch ReadBlocks(IReader reader, uint startOffset, uint endOffset)
         {
             Patch result = new Patch();
+            uint offset = startOffset;
             while (offset < endOffset)
             {
                 reader.SeekTo(offset);
@@ -36,8 +42,13 @@ namespace ExtryzeDLL.Patching
                     case AssemblyPatchBlockID.Titl:
                         ReadPatchInfo(reader, result);
                         break;
+
                     case AssemblyPatchBlockID.Meta:
                         ReadMetaChanges(reader, result);
+                        break;
+
+                    case AssemblyPatchBlockID.Locl:
+                        ReadLocaleChanges(reader, result);
                         break;
                 }
 
@@ -67,22 +78,47 @@ namespace ExtryzeDLL.Patching
         {
             byte version = reader.ReadByte();
 
-            // Version 0 (all versions)
-            uint num4ByteChanges = 0;
-            for (uint i = 0; i < num4ByteChanges; i++)
+            // Read four-byte changes
+            uint numFourByteChanges = reader.ReadUInt32();
+            for (uint i = 0; i < numFourByteChanges; i++)
             {
                 uint address = reader.ReadUInt32();
                 byte[] data = reader.ReadBlock(4);
                 output.MetaChanges.Add(new MetaChange(address, data));
             }
 
-            uint numChanges = 0;
+            // Read variable-length changes
+            uint numChanges = reader.ReadUInt32();
             for (uint i = 0; i < numChanges; i++)
             {
                 uint address = reader.ReadUInt32();
-                uint dataSize = reader.ReadUInt32();
-                byte[] data = reader.ReadBlock((int)dataSize);
+                int dataSize = reader.ReadInt32();
+                byte[] data = reader.ReadBlock(dataSize);
                 output.MetaChanges.Add(new MetaChange(address, data));
+            }
+        }
+
+        private static void ReadLocaleChanges(IReader reader, Patch output)
+        {
+            byte version = reader.ReadByte();
+
+            // Read language changes
+            byte numLanguageChanges = reader.ReadByte();
+            for (byte i = 0; i < numLanguageChanges; i++)
+            {
+                byte languageIndex = reader.ReadByte();
+                LanguageChange languageChange = new LanguageChange(languageIndex);
+
+                // Read string changes
+                int numStringChanges = reader.ReadInt32();
+                for (int j = 0; j < numStringChanges; j++)
+                {
+                    int index = reader.ReadInt32();
+                    string newValue = reader.ReadUTF8();
+                    languageChange.LocaleChanges.Add(new LocaleChange(index, newValue));
+                }
+
+                output.LanguageChanges.Add(languageChange);
             }
         }
 

@@ -21,22 +21,22 @@ namespace ExtryzeDLL.Patching
         public static void CompareMeta(ICacheFile originalFile, IReader originalReader, ICacheFile newFile, IReader newReader, Patch output)
         {
             // TODO: Handle files with expanded meta partitions
-            uint address = originalFile.Info.MetaBase.AsAddress();
-            uint offset = originalFile.Info.MetaBase.AsOffset();
-            uint endOffset = offset + originalFile.Info.MetaSize;
+            uint bufferAddress = originalFile.Info.VirtualBaseAddress;
+            uint bufferOffset = originalFile.Info.MetaOffset;
+            uint endOffset = bufferOffset + originalFile.Info.MetaSize;
 
             const int BufferSize = 0x1000;
             byte[] oldBuffer = new byte[BufferSize];
             byte[] newBuffer = new byte[BufferSize];
 
-            int diffStart = 0;
-            uint diffAddress = 0;
-            int diffSize = 0;
-
-            originalReader.SeekTo(offset);
-            newReader.SeekTo(offset);
-            while (offset < endOffset)
+            originalReader.SeekTo(bufferOffset);
+            newReader.SeekTo(bufferOffset);
+            while (bufferOffset < endOffset)
             {
+                int diffStart = 0;
+                uint diffAddress = 0;
+                int diffSize = 0;
+
                 // Read the meta in large blocks and then compare the blocks
                 originalReader.ReadBlock(oldBuffer, 0, BufferSize);
                 newReader.ReadBlock(newBuffer, 0, BufferSize);
@@ -47,27 +47,35 @@ namespace ExtryzeDLL.Patching
                         if (diffSize == 0)
                         {
                             diffStart = i;
-                            diffAddress = (uint)(address + i);
+                            diffAddress = (uint)(bufferAddress + i);
                         }
                         diffSize++;
                     }
                     else if (diffSize > 0)
                     {
-                        // Copy the differing bytes to a buffer
-                        byte[] diff = new byte[diffSize];
-                        Array.Copy(newBuffer, diffStart, diff, 0, diffSize);
-
-                        // Export the change data
-                        MetaChange change = new MetaChange((uint)(address + i), diff);
-                        output.MetaChanges.Add(change);
-
+                        // Found a complete difference region - build data for the change and add it
+                        output.MetaChanges.Add(BuildChange(newBuffer, diffStart, diffAddress, diffSize));
                         diffSize = 0;
                     }
                 }
 
-                offset += BufferSize;
-                address += BufferSize;
+                // Handle differences at the end of the buffer
+                if (diffSize > 0)
+                    output.MetaChanges.Add(BuildChange(newBuffer, diffStart, diffAddress, diffSize));
+
+                // Advance to the next block
+                bufferOffset += BufferSize;
+                bufferAddress += BufferSize;
             }
+        }
+
+        private static MetaChange BuildChange(byte[] diffBuffer, int diffOffset, uint diffAddress, int diffSize)
+        {
+            // Copy the differing bytes to a buffer
+            byte[] diff = new byte[diffSize];
+            Array.Copy(diffBuffer, diffOffset, diff, 0, diffSize);
+
+            return new MetaChange(diffAddress, diff);
         }
     }
 }
