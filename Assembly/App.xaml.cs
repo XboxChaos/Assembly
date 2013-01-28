@@ -48,6 +48,9 @@ namespace Assembly
             // Update Assembly Protocol
             AssemblyProtocol.UpdateProtocol();
 
+            // Create jumplist
+            JumpLists.UpdateJumplists();
+
             // Create XBDM Instance
             Settings.xbdm = new Xbdm(Settings.XDKNameIP);
             //try { Settings.xbdm.Connect(); } catch { }

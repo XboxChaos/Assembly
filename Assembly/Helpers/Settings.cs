@@ -132,9 +132,6 @@ namespace Assembly.Helpers
 				keyApp.SetValue("DefaultMIFEditor", defaultMIF);
 			}
 
-	        // Update Windows 7/8 Jumplists
-            JumpLists.UpdateJumplists();
-
             // Update File Defaults
             FileDefaults.UpdateFileDefaults();
 
@@ -280,6 +277,7 @@ namespace Assembly.Helpers
             }
 
             Settings.UpdateSettings();
+            JumpLists.UpdateJumplists();
         }
 
         public static void RemoveEntry(Settings.RecentFileEntry entry)

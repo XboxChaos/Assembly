@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
-using Microsoft.Win32;
 using System.Windows.Threading;
-
-using Assembly.Metro.Native;
-using Assembly.Metro.Controls.PageTemplates;
-using Assembly.Metro.Dialogs;
 using Assembly.Helpers;
+using Assembly.Metro.Controls.PageTemplates;
 using Assembly.Metro.Controls.PageTemplates.Games;
-using CloseableTabItemDemo;
 using Assembly.Metro.Controls.Sidebar;
-using ExtryzeDLL.IO;
-using System.IO;
+using Assembly.Metro.Dialogs;
+using Assembly.Metro.Native;
+using CloseableTabItemDemo;
 using ExtryzeDLL.Blam.ThirdGen;
-using System.Threading;
+using ExtryzeDLL.IO;
+using Microsoft.Win32;
 
 namespace Assembly.Windows
 {
@@ -59,6 +58,7 @@ namespace Assembly.Windows
 
             AllowDrop = true;
         }
+
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
@@ -67,6 +67,8 @@ namespace Assembly.Windows
 	        var hwndSource = HwndSource.FromHwnd(handle);
 	        if (hwndSource != null)
 		        hwndSource.AddHook(WindowProc);
+
+            WindowMovement.MakeWindowMovable(this, homeHeader);
         }
 
         #region Content Management
@@ -560,12 +562,6 @@ namespace Assembly.Windows
         }
 
         #region More WPF Annoyance
-        private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
-        }
-
         private void ResizeDrop_DragDelta(object sender, DragDeltaEventArgs e)
         {
             var yadjust = Height + e.VerticalChange;
@@ -597,17 +593,11 @@ namespace Assembly.Windows
 	        {
 		        case WindowState.Normal:
 			        borderFrame.BorderThickness = new Thickness(1, 1, 1, 23);
-			        Settings.applicationSizeMaximize = false;
-			        Settings.applicationSizeHeight = Height;
-			        Settings.applicationSizeWidth = Width;
-			        Settings.UpdateSettings();
 			        btnActionRestore.Visibility = Visibility.Collapsed;
 			        btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = Visibility.Visible;
 			        break;
 		        case WindowState.Maximized:
 			        borderFrame.BorderThickness = new Thickness(0, 0, 0, 23);
-			        Settings.applicationSizeMaximize = true;
-			        Settings.UpdateSettings();
 			        btnActionRestore.Visibility = Visibility.Visible;
 			        btnActionMaxamize.Visibility = ResizeDropVector.Visibility = ResizeDrop.Visibility = ResizeRight.Visibility = ResizeBottom.Visibility = Visibility.Collapsed;
 			        break;
@@ -618,19 +608,6 @@ namespace Assembly.Windows
              * ResizeRight
              * ResizeBottom
              */
-        }
-
-	    private void headerThumb_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-	        switch (WindowState)
-	        {
-		        case WindowState.Normal:
-			        WindowState = WindowState.Maximized;
-			        break;
-		        case WindowState.Maximized:
-			        WindowState = WindowState.Normal;
-			        break;
-	        }
         }
 
 	    private void btnActionSupport_Click(object sender, RoutedEventArgs e)
@@ -655,12 +632,7 @@ namespace Assembly.Windows
         }
 
         #region Maximize Workspace Workarounds
-        private static IntPtr WindowProc(
-              IntPtr hwnd,
-              int msg,
-              IntPtr wParam,
-              IntPtr lParam,
-              ref bool handled)
+        private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             switch (msg)
             {
@@ -669,9 +641,9 @@ namespace Assembly.Windows
                     handled = true;
                     break;
             }
-
-            return (IntPtr)0;
+            return IntPtr.Zero;
         }
+
         private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
         {
 			var mmi = (Monitor_Workarea.MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(Monitor_Workarea.MINMAXINFO));
