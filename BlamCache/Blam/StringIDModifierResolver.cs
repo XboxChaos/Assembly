@@ -76,9 +76,9 @@ namespace ExtryzeDLL.Blam
                 if (modify)
                 {
                     if (modifier.IsAddition)
-                        return new StringID(index + modifier.Modifier);
-                    else
                         return new StringID(index - modifier.Modifier);
+                    else
+                        return new StringID(index + modifier.Modifier);
                 }
             }
             return new StringID(index);
