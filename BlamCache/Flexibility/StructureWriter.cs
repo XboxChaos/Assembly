@@ -53,13 +53,18 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitBasicField(string name, StructureValueType type, int offset)
         {
-            // Seeking is SLOW - only seek if we have to
-            if (_offset != _baseOffset + offset)
+            // Skip over the field if it isn't in the value collection
+            if (type == StructureValueType.Asciiz)
             {
-                _offset = _baseOffset + offset;
-                _writer.SeekTo(_offset);
+                if (!_collection.HasString(name))
+                    return;
+            }
+            else if (!_collection.HasNumber(name))
+            {
+                return;
             }
 
+            SeekWriter(offset);
             switch (type)
             {
                 case StructureValueType.Byte:
@@ -95,11 +100,34 @@ namespace ExtryzeDLL.Flexibility
 
         public void VisitArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
         {
+            if (!_collection.HasArray(name))
+                return;
+
             StructureValueCollection[] arrayValue = _collection.GetArray(name);
             for (int i = 0; i < count; i++)
             {
                 _writer.SeekTo(_baseOffset + offset + i * entrySize);
                 WriteStructure(arrayValue[i], entryLayout, _writer);
+            }
+        }
+
+        public void VisitRawField(string name, int offset, int size)
+        {
+            if (!_collection.HasRaw(name))
+                return;
+
+            SeekWriter(offset);
+            _writer.WriteBlock(_collection.GetRaw(name), 0, size);
+            _offset += size;
+        }
+
+        private void SeekWriter(int offset)
+        {
+            // Seeking is SLOW - only seek if we have to
+            if (_offset != _baseOffset + offset)
+            {
+                _offset = _baseOffset + offset;
+                _writer.SeekTo(_offset);
             }
         }
     }

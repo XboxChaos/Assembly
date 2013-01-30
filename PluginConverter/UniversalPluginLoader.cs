@@ -24,7 +24,11 @@ namespace PluginConverter
             if (!reader.ReadToNextSibling("plugin"))
                 throw new ArgumentException("The XML file is missing a <plugin> tag.");
 
-            if (visitor.EnterPlugin(ParseInt(reader.GetAttribute("headersize"))))
+            if (!reader.MoveToAttribute("headersize") && !reader.MoveToAttribute("baseSize"))
+                throw new ArgumentException("The plugin is missing tag size information.");
+            int baseSize = ParseInt(reader.Value);
+
+            if (visitor.EnterPlugin(baseSize))
             {
                 UniversalPluginLoader loader = new UniversalPluginLoader();
                 loader.ReadElements(reader, true, visitor);
@@ -136,7 +140,7 @@ namespace PluginConverter
                 visible = ParseBool(reader.Value);
 
             reader.MoveToElement();
-            switch (elementName)
+            switch (elementName.ToLower())
             {
                 case "uint8":
                 case "byte":
@@ -226,7 +230,7 @@ namespace PluginConverter
                     break;
 
                 case "tagdata":
-                case "dataRef":
+                case "dataref":
                     visitor.VisitDataReference(name, offset, visible, pluginLine);
                     break;
 

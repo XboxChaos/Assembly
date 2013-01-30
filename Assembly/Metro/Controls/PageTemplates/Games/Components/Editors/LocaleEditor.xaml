@@ -7,29 +7,35 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000">
     <Grid>
-        <!--<Border Height="35" VerticalAlignment="Top" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
-            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock Text="Language: " Style="{DynamicResource GenericTextblock}" />
-                <ComboBox x:Name="cbLanguages" ItemsSource="{Binding}" Width="175" Margin="10,0,0,0" SelectionChanged="cbLanguages_SelectionChanged">
-                    <ComboBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" />
-                        </ItemsPanelTemplate>
-                    </ComboBox.ItemsPanel>
+        <Border Height="35" VerticalAlignment="Top" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
+            <Grid Margin="10,0,10,0" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Locale Group: " Style="{DynamicResource GenericTextblock}" />
+                <ComboBox Grid.Column="1" x:Name="cbLocaleGroups" Margin="10,0,0,0" SelectionChanged="cbLocaleGroups_SelectionChanged_1">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Language}" />
+                            <TextBlock Text="{Binding Name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-            </StackPanel>
-        </Border>-->
-        <DataGrid x:Name="lvLocales" ItemsSource="{Binding}" Background="{x:Null}" Margin="0,0,0,35" Padding="0" BorderThickness="0" Foreground="White" VerticalAlignment="Stretch" SelectionChanged="lvLocales_SelectionChanged"
+            </Grid>
+        </Border>
+        <DataGrid x:Name="lvLocales" ItemsSource="{Binding}" Background="{x:Null}" Margin="0,35,0,35" Padding="0" BorderThickness="0" Foreground="White" VerticalAlignment="Stretch" SelectionChanged="lvLocales_SelectionChanged"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-                  CanUserAddRows="False">
+                  CanUserAddRows="False" CanUserResizeColumns="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Index" Binding="{Binding Index}" Width="55" IsReadOnly="True" />
-                <DataGridTextColumn Header="Locale" Binding="{Binding Locale}" Width="*">
+                <DataGridTextColumn Header="StringID" Binding="{Binding StringID}" Width="*" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Locale" Binding="{Binding Locale}" Width="2.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="TextWrapping" Value="Wrap" />
@@ -57,13 +63,16 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="125" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="Filter:" Grid.Column="0" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                     <TextBox x:Name="txtFilter" Grid.Column="1" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" KeyDown="txtFilter_KeyDown"  />
                     
-                    <Button x:Name="btnFilter" Content="Filter" Grid.Column="2" Click="btnFilter_Click" />
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
+                        <Button x:Name="btnFilter" Content="Filter" Click="btnFilter_Click"  Width="60" />
+                        <Button x:Name="btnReset" Content="Reset" Click="btnReset_Click_1" IsEnabled="False" Margin="5,0,0,0" Width="60" />
+                    </StackPanel>
                 </Grid>
                 
                 <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Text="Double-click on a locale to edit it." Style="{DynamicResource GenericTextblock}" />

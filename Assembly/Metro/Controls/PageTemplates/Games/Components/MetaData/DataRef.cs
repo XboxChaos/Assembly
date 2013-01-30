@@ -2,67 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-    public class DataRef : ValueField
+    public class DataRef : RawData
     {
-        private string _value, _originalValue;
-        private int _length, _maxLength;
+        private uint _dataAddress;
 
-        public DataRef(string name, uint offset, string value, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public DataRef(string name, uint offset, uint address, uint dataAddress, string value, int length, uint pluginLine)
+            : base(name, offset, address, value, length, pluginLine)
         {
-            _value = value;
-            _originalValue = value;
-            _maxLength = _length * 2;
+            _dataAddress = dataAddress;
         }
 
-        public string Value
+        public uint DataAddress
         {
-            get { return _value; }
-            set { _value = value; NotifyPropertyChanged("Value"); }
+            get { return _dataAddress; }
+            set { _dataAddress = value; NotifyPropertyChanged("DataAddress"); }
         }
-
-        public int Length
-        {
-            get { return _length; }
-            set { _length = value; NotifyPropertyChanged("Length"); }
-        }
-        public int MaxLength
-        {
-            get { return _maxLength; }
-            set { _maxLength = value; NotifyPropertyChanged("MaxLength"); }
-        }
-
-        public uint DataMemoryAddress { get; set; }
-        public uint DataCacheOffset { get; set; }
 
         public override void Accept(IMetaFieldVisitor visitor)
         {
             visitor.VisitDataRef(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            DataRef result = new DataRef(Name, Offset, _value, base.PluginLine);
-            result._originalValue = _originalValue;
+            DataRef result = new DataRef(Name, Offset, FieldAddress, _dataAddress, Value, Length, base.PluginLine);
             return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
         }
     }
 }

@@ -57,6 +57,17 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
+        /// Adds a raw byte array field to the structure layout.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+        /// <param name="size">The size of the raw data to read.</param>
+        public void AddRawField(string name, int offset, int size)
+        {
+            _fields.Add(new RawField(name, offset, size));
+        }
+
+        /// <summary>
         /// Returns whether or not a field is defined in the layout.
         /// </summary>
         /// <param name="name">The name of the field to search for.</param>
@@ -157,6 +168,38 @@ namespace ExtryzeDLL.Flexibility
             public void Accept(IStructureLayoutVisitor visitor)
             {
                 visitor.VisitArrayField(_name, _offset, _count, _entrySize, _subLayout);
+            }
+        }
+
+        /// <summary>
+        /// Represents a byte array field in a structure.
+        /// </summary>
+        private class RawField : IStructField
+        {
+            private string _name;
+            private int _offset;
+            private int _size;
+
+            /// <summary>
+            /// Constructs a new raw field.
+            /// </summary>
+            /// <param name="name">The name of the field.</param>
+            /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+            /// <param name="size">The size of the raw data to read.</param>
+            public RawField(string name, int offset, int size)
+            {
+                _name = name;
+                _offset = offset;
+                _size = size;
+            }
+
+            /// <summary>
+            /// Accepts an IStructureLayoutVisitor, calling the VisitRawField method on it.
+            /// </summary>
+            /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
+            public void Accept(IStructureLayoutVisitor visitor)
+            {
+                visitor.VisitRawField(_name, _offset, _size);
             }
         }
     }

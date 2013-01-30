@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Assembly.Metro.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
@@ -18,7 +7,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     /// <summary>
     /// Interaction logic for MessageBox.xaml
     /// </summary>
-    public partial class MessageBox : Window
+    public partial class MessageBox
     {
         public MessageBox(string title, string message)
         {
@@ -29,9 +18,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             lblSubInfo.Text = message;
         }
 
-        private void btnOkay_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnOkay_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
         private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {

@@ -25,12 +25,13 @@ using ExtryzeDLL.IO;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Util;
 using CloseableTabItemDemo;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using System.Collections;
 using Assembly.Windows;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
+using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -53,13 +54,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// </summary>
     public partial class HaloMap : UserControl
     {
-        private Stream _fileStream;
-        private EndianStream _stream;
+        private IStreamManager _mapManager;
         private ThirdGenVersionInfo _version;
         private XDocument _supportedBuilds;
         private BuildInfoLoader _layoutLoader;
         private BuildInformation _buildInfo;
-        private ThirdGenCacheFile _cache;
+        private ThirdGenCacheFile _cacheFile;
         private string _cacheLocation;
         private TabItem _tab;
         private List<EmptyClassesObject> _emptyClasses = new List<EmptyClassesObject>();
@@ -78,16 +78,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 
         #region Public Access
-        public Stream FileStream { get { return _fileStream; } set { _fileStream = value; } }
-        public TagHierarchy TagHierarch { get { return _hierarchy; } set { _hierarchy = value; } }
-        public EndianStream Stream { get { return _stream; } set { _stream = value; } }
-        public ThirdGenVersionInfo Version { get { return _version; } set { _version = value; } }
-        public XDocument SupportedBuilds { get { return _supportedBuilds; } set { _supportedBuilds = value; } }
-        public BuildInfoLoader LayoutLoader { get { return _layoutLoader; } set { _layoutLoader = value; } }
-        public BuildInformation BuildInformation { get { return _buildInfo; } set { _buildInfo = value; } }
-        public ThirdGenCacheFile Cache { get { return _cache; } set { _cache = value; } }
-        public string CacheLocation { get { return _cacheLocation; } set { _cacheLocation = value; } }
-        public TabItem Tab { get { return _tab; } set { _tab = value; } }
+        public TagHierarchy TagHierarchy { get { return _hierarchy; } set { _hierarchy = value; } }
+        public ThirdGenCacheFile CacheFile { get { return _cacheFile; } set { _cacheFile = value; } }
         #endregion
 
         /// <summary>
@@ -108,6 +100,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Show UI Pending Stuff
             doingAction.Visibility = Visibility.Visible;
 
+            tabScripts.Visibility = Visibility.Collapsed;
+
             // Read Settings
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
             Settings.SettingsChanged += SettingsChanged;
@@ -119,6 +113,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             initalLoadBackgroundWorker.RunWorkerAsync();
         }
 
+        public bool Close()
+        {
+            return true;
+        }
+
         void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             doingAction.Visibility = Visibility.Hidden;
@@ -128,9 +127,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 Settings.homeWindow.ExternalTabClose(_tab);
 
                 MetroException.Show(e.Error);
-
-                if (_stream != null)
-                    _stream.Close();
             }
         }
 
@@ -141,55 +137,59 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         
         public void InitalizeMap()
         {
-            _fileStream = new FileStream(_cacheLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-            _stream = new EndianStream(_fileStream, Endian.BigEndian);
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
-
-            _version = new ThirdGenVersionInfo(_stream);
-            _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
-            _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
-            _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
-
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Build Definitions"); }));
-
-            if (_buildInfo == null)
+            _mapManager = new FileStreamManager(_cacheLocation);
+            using (Stream fileStream = _mapManager.OpenRead())
             {
+                EndianReader reader = new EndianReader(fileStream, Endian.BigEndian);
+                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
+
+                _version = new ThirdGenVersionInfo(reader);
+                _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
+                _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
+                _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
+
+                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Build Definitions"); }));
+
+                if (_buildInfo == null)
+                {
+                    Dispatcher.Invoke(new Action(delegate
+                        {
+                            if (!_0xabad1dea.IWff.Heman(reader))
+                            {
+                                StatusUpdater.Update("Not a supported cache build");
+                                MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
+                            }
+                            else
+                            {
+                                StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
+                            }
+
+                            Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+                        }));
+                    return;
+                }
                 Dispatcher.Invoke(new Action(delegate
-                    {
-                        if (!_0xabad1dea.IWff.Heman(_stream))
-                        {
-                            StatusUpdater.Update("Not a supported cache build");
-                            MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
-                        }
-                        else
-                        {
-                            StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
-                        }
+                {
+                    if (Settings.startpageHideOnLaunch)
+                        Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
+                }));
 
-                        Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
-                    }));
-                return;
+                // Load the cache file
+                _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
+                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Cache File"); }));
+
+                // Add to Recents
+                Dispatcher.Invoke(new Action(delegate
+                {
+                    RecentFiles.AddNewEntry(System.IO.Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
+                    StatusUpdater.Update("Added To Recents");
+                }));
+
+                LoadHeader();
+                LoadTags();
+                LoadLocales();
+                LoadScripts();
             }
-            Dispatcher.Invoke(new Action(delegate
-            {
-                if (Settings.startpageHideOnLaunch)
-                    Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
-            }));
-
-            // Load Blam Cache
-            _cache = new ThirdGenCacheFile(_stream, _buildInfo, _version.BuildString);
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Cache File"); }));
-
-            // Add to Recents
-            Dispatcher.Invoke(new Action(delegate 
-            {
-                RecentFiles.AddNewEntry(new FileInfo(_cacheLocation).Name, _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
-                StatusUpdater.Update("Added To Recents"); 
-            }));
-
-            LoadHeader();
-            LoadTags();
-            LoadLocales();
         }
         private void LoadHeader()
         {
@@ -197,23 +197,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 FileInfo fi = new FileInfo(_cacheLocation);
                 _tab.Header = fi.Name.Replace("_", "__"); Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
-                lblMapName.Text = _cache.Info.InternalName;
+                lblMapName.Text = _cacheFile.Info.InternalName;
 
                 lblMapHeader.Text = "Map Header;";
                 listMapHeader.Children.Clear();
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Game:", _buildInfo.GameName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Build:", _cache.Info.BuildString.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Type:", _cache.Info.Type.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Internal Name:", _cache.Info.InternalName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Scenario Name:", _cache.Info.ScenarioName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Base:", "0x" + _cache.Info.MetaBase.AsAddress().ToString("X8")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Size:", "0x" + _cache.Info.MetaSize.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("SDK Version:", _cache.Info.XDKVersion.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Offset:", "0x" + _cache.Info.RawTableOffset.ToString("X8")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Size:", "0x" + _cache.Info.RawTableSize.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Header Address:", "0x" + _cache.Info.IndexHeaderLocation.AsAddress().ToString("X8")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Offset Magic:", "0x" + _cache.Info.LocaleOffsetMask.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Map Magic:", "0x" + _cache.Info.AddressMask.ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Build:", _cacheFile.Info.BuildString.ToString()));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Type:", _cacheFile.Info.Type.ToString()));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Internal Name:", _cacheFile.Info.InternalName));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Scenario Name:", _cacheFile.Info.ScenarioName));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.MetaBase.AsAddress().ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Size:", "0x" + _cacheFile.Info.MetaSize.ToString("X")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("SDK Version:", _cacheFile.Info.XDKVersion.ToString()));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Offset:", "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Size:", "0x" + _cacheFile.Info.RawTableSize.ToString("X")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Header Address:", "0x" + _cacheFile.Info.IndexHeaderLocation.AsAddress().ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Offset Magic:", "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Map Magic:", "0x" + _cacheFile.Info.AddressMask.ToString("X8")));
 
                 StatusUpdater.Update("Loaded Header Info");
             }));
@@ -225,9 +225,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Dictionary<ITagClass, TagClass> classWrappers = new Dictionary<ITagClass, TagClass>();
             Dispatcher.Invoke(new Action(() =>
                 {
-                    foreach (ITagClass tagClass in _cache.TagClasses)
+                    foreach (ITagClass tagClass in _cacheFile.TagClasses)
                     {
-                        TagClass wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic));
+                        TagClass wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
                         classes.Add(wrapper);
                         classWrappers[tagClass] = wrapper;
                     }
@@ -237,12 +237,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             // Load all the tags into the treeview (into their class categoies)
             _hierarchy.Entries = new List<TagEntry>();
-            for (int i = 0; i < _cache.Tags.Count; i++)
+            for (int i = 0; i < _cacheFile.Tags.Count; i++)
             {
-                ITag tag = _cache.Tags[i];
+                ITag tag = _cacheFile.Tags[i];
                 if (tag.Index.IsValid)
                 {
-                    string fileName = _cache.FileNames.FindTagName(tag);
+                    string fileName = _cacheFile.FileNames.FindTagName(tag);
                     if (fileName == null || fileName.Trim() == "")
                         fileName = tag.Index.ToString();
 
@@ -260,17 +260,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 
             //// Taglist Generation
-            string taglistPath = @"C:\" + _cache.Info.InternalName.ToLower() + ".taglist";
+            /*string taglistPath = @"C:\" + _cacheFile.Info.InternalName.ToLower() + ".taglist";
             List<string> taglist = new List<string>();
-            taglist.Add("<scenario=\"" + _cache.Info.ScenarioName + "\">");
-            for (int i = 0; i < _cache.Tags.Count; i++)
+            taglist.Add("<scenario=\"" + _cacheFile.Info.ScenarioName + "\">");
+            for (int i = 0; i < _cacheFile.Tags.Count; i++)
             {
-                ITag tag = _cache.Tags[i];
+                ITag tag = _cacheFile.Tags[i];
                 if (tag.Index.IsValid)
-                    taglist.Add(string.Format("\t<tag id=\"{0}\" class=\"{1}\">{2}</tag>", tag.Index.ToString(), ExtryzeDLL.Util.CharConstant.ToString(tag.Class.Magic) ,_cache.FileNames.FindTagName(tag.Index)));
+                    taglist.Add(string.Format("\t<tag id=\"{0}\" class=\"{1}\">{2}</tag>", tag.Index.ToString(), ExtryzeDLL.Util.CharConstant.ToString(tag.Class.Magic) ,_cacheFile.FileNames.FindTagName(tag.Index)));
             }
             taglist.Add("</scenario>");
-            File.WriteAllLines(taglistPath, taglist.ToArray<string>());
+            File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
 
 
             Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Tags"); }));
@@ -298,28 +298,56 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 totalStrings += language.StringCount;
             Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
+            // TODO: Define the language names in an XML file or something
             AddLanguage("English", LocaleLanguage.English);
             AddLanguage("Chinese", LocaleLanguage.Chinese);
+            AddLanguage("Danish", LocaleLanguage.Danish);
+            AddLanguage("Dutch", LocaleLanguage.Dutch);
+            AddLanguage("Finnish", LocaleLanguage.Finnish);
             AddLanguage("French", LocaleLanguage.French);
             AddLanguage("German", LocaleLanguage.German);
             AddLanguage("Italian", LocaleLanguage.Italian);
             AddLanguage("Japanese", LocaleLanguage.Japanese);
             AddLanguage("Korean", LocaleLanguage.Korean);
+            AddLanguage("Norwegian", LocaleLanguage.Norwegian);
             AddLanguage("Polish", LocaleLanguage.Polish);
             AddLanguage("Portuguese", LocaleLanguage.Portuguese);
+            AddLanguage("Russian", LocaleLanguage.Russian);
             AddLanguage("Spanish", LocaleLanguage.Spanish);
             AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
-            AddLanguage("Unknown", LocaleLanguage.Unknown);
+            AddLanguage("Extra", LocaleLanguage.Unknown);
 
-            Dispatcher.Invoke(new Action(delegate { lbLanguages.ItemsSource = _languages; }));
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Initialized Languages"); }));
+            Dispatcher.Invoke(new Action(delegate
+                {
+                    lbLanguages.ItemsSource = _languages;
+                    StatusUpdater.Update("Initialized Languages");
+                }
+            ));
+        }
+
+        private void LoadScripts()
+        {
+            if (_buildInfo.ScriptDefinitionsFilename != null)
+            {
+                // TODO: Actually handle this properly for H4
+                List<string> scripts = new List<string>();
+                scripts.Add(_cacheFile.Info.InternalName + ".hsc");
+
+                Dispatcher.Invoke(new Action(delegate
+                    {
+                        tabScripts.Visibility = Visibility.Visible;
+                        lbScripts.ItemsSource = scripts;
+                        StatusUpdater.Update("Initialized Scripts");
+                    }
+                ));
+            }
         }
 
         private void AddLanguage(string name, int index)
         {
-            if (index >= 0 && index < _cache.Languages.Count)
+            if (index >= 0 && index < _cacheFile.Languages.Count)
             {
-                ILanguage baseLang = _cache.Languages[index];
+                ILanguage baseLang = _cacheFile.Languages[index];
                 if (baseLang.StringCount > 0)
                     _languages.Add(new LanguageEntry(name, index, baseLang));
             }
@@ -334,15 +362,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 if (tabControl != null)
                     tabControl.Items.Remove(tabItem);
             }
-        }
-
-        /// <summary>
-        /// Close the Stream nao
-        /// </summary>
-        public bool Close()
-        {
-            _stream.Close();
-            return true;
         }
 
         private void SettingsChanged(object sender, EventArgs e)
@@ -415,7 +434,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 CloseableTabItem tab = new CloseableTabItem();
                 tab.Header = "StringID Viewer";
-                tab.Content = new Components.Editors.StringEditor(_cache);
+                tab.Content = new Components.Editors.StringEditor(_cacheFile);
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
@@ -489,7 +508,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     {
                         Header = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1).Replace("_", "__"), CharConstant.ToString(tag.RawTag.Class.Magic)),
                         Tag = tag,
-                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cache, _stream)
+                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager)
                     });
                 }
 
@@ -527,16 +546,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 CloseableTabItem tab = new CloseableTabItem();
                 tab.Header = tabName;
-                tab.Content = new Components.Editors.LocaleEditor(_cache, _stream, language.Index);
+                tab.Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index);
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
             }
         }
 
-        private void btnEditorsScript_Click(object sender, RoutedEventArgs e)
+        private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
-            string tabName = _cache.Info.InternalName.Replace("_", "__") + ".hsc";
+            string tabName = _cacheFile.Info.InternalName.Replace("_", "__") + ".hsc";
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);
@@ -545,11 +564,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 CloseableTabItem tab = new CloseableTabItem();
                 tab.Header = tabName;
-                tab.Content = new Components.Editors.ScriptEditor(_cache, _buildInfo.ScriptDefinitionsFilename);
+                tab.Content = new Components.Editors.ScriptEditor(_cacheFile, _buildInfo.ScriptDefinitionsFilename);
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
             }
+        }
+
+        private void DumpClassTagList(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag class
+            MenuItem item = e.Source as MenuItem;
+            if (item == null)
+                return;
+            TagClass tagClass = item.DataContext as TagClass;
+            if (tagClass == null)
+                return;
+
+            // Ask the user where to save the dump
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save Tag List";
+            sfd.Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*";
+            bool? result = sfd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            // Dump all of the tags that belong to the class
+            using (StreamWriter writer = new StreamWriter(sfd.FileName))
+            {
+                foreach (ITag tag in _cacheFile.Tags)
+                {
+                    if (tag != null && tag.Class == tagClass.RawClass)
+                    {
+                        string name = _cacheFile.FileNames.FindTagName(tag);
+                        if (name != null)
+                            writer.WriteLine("{0}={1}", tag.Index, name);
+                    }
+                }
+            }
+
+            MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
         }
     }
 }

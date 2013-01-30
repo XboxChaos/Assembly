@@ -3,14 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" MinHeight="95" MaxHeight="200" Width="580"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d" Height="144" Width="595"
              HorizontalAlignment="Left">
     <UserControl.Resources>
         <local:LowercaseConverter x:Key="lowercase" />
     </UserControl.Resources>
     <Grid>
         <TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,5,0,0" Width="180" TextTrimming="CharacterEllipsis"/>
-        <TextBox x:Name="txtValue" Text="{Binding Value}" Padding="0,0,0,0" MaxLength="{Binding MaxLength}" TextWrapping="Wrap" HorizontalAlignment="Stretch" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch" Margin="200,5,10,5" Height="Auto" />
+        <Border BorderBrush="#595959" BorderThickness="1" Margin="200,5,10,5">
+            <avalonEdit:TextEditor x:Name="txtValue" Document="{Binding Document}" Padding="4,2,2,2" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
+                                   FontFamily="Consolas" FontSize="10pt" Background="#414141" Foreground="White" MouseRightButtonDown="txtValue_MouseRightButtonDown_1">
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="cutItem" Command="Cut" />
+                        <MenuItem Name="copyItem" Command="Copy" />
+                        <MenuItem Name="pasteItem" Command="Paste" />
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+            </avalonEdit:TextEditor>
+        </Border>
     </Grid>
 </UserControl>

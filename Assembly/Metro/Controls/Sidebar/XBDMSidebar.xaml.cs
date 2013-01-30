@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
-using XBDMCommunicator;
 
 namespace Assembly.Metro.Controls.Sidebar
 {
     /// <summary>
     /// Interaction logic for XBDMSidebar.xaml
     /// </summary>
-    public partial class XBDMSidebar : UserControl
+    public partial class XBDMSidebar
     {
         public DispatcherTimer _hideTimer = new DispatcherTimer();
         public bool ControlhasFocus = true;
@@ -67,7 +56,7 @@ namespace Assembly.Metro.Controls.Sidebar
         }
         private void XBDMSidebar_MouseEnter(object sender, MouseEventArgs e)
         {
-            this.Focus();
+            Focus();
 
             Debug.WriteLine("MOUSE ENTERED THE MEMORY POKING SIDEBAR. HOW RUDE.");
         }
@@ -77,10 +66,12 @@ namespace Assembly.Metro.Controls.Sidebar
 
         private void btnScreenshot_Click(object sender, RoutedEventArgs e)
         {
-            string screenshotFileName = VariousFunctions.CreateTemporaryFile(VariousFunctions.GetTemporaryImageLocation());
+            var screenshotFileName = VariousFunctions.CreateTemporaryFile(VariousFunctions.GetTemporaryImageLocation());
 
-            Settings.xbdm.GetScreenshot(screenshotFileName);
-            Settings.homeWindow.AddScrenTabModule(screenshotFileName);
+			if (Settings.xbdm.GetScreenshot(screenshotFileName))
+				Settings.homeWindow.AddScrenTabModule(screenshotFileName);
+			else
+				MetroMessageBox.Show("Not Connected", "You are not connected to a Debug Xbox 360.");
         }
         private void btnFreeze_Click(object sender, RoutedEventArgs e)
         {
@@ -92,11 +83,11 @@ namespace Assembly.Metro.Controls.Sidebar
         }
         private void btnRebootTitle_Click(object sender, RoutedEventArgs e)
         {
-            Settings.xbdm.Reboot(XBDMCommunicator.XBDM.RebootType.Title);
+            Settings.xbdm.Reboot(XBDMCommunicator.Xbdm.RebootType.Title);
         }
         private void btnRebootCold_Click(object sender, RoutedEventArgs e)
         {
-            Settings.xbdm.Reboot(XBDMCommunicator.XBDM.RebootType.Cold);
+            Settings.xbdm.Reboot(XBDMCommunicator.Xbdm.RebootType.Cold);
         }
     }
 }

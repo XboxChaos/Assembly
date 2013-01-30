@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Util;
 
 namespace ExtryzeDLL.Flexibility
@@ -70,7 +71,8 @@ namespace ExtryzeDLL.Flexibility
             XAttribute gameNameAttrib = buildElement.Attribute("name");
             XAttribute localeKeyAttrib = buildElement.Attribute("localeKey");
             XAttribute stringidKeyAttrib = buildElement.Attribute("stringidKey");
-            XAttribute stringidModifiersAttrib = buildElement.Attribute("stringidModifiers");
+            XAttribute stringidModifiersAttrib = buildElement.Attribute("stringidModifiers"); // NOTE: Deprecated - use stringidDefinitions instead!
+            XAttribute stringidDefinitionsAttrib = buildElement.Attribute("stringidDefinitions");
             XAttribute filenameKeyAttrib = buildElement.Attribute("filenameKey");
             XAttribute headerSizeAttrib = buildElement.Attribute("headerSize");
             XAttribute loadStringsAttrib = buildElement.Attribute("loadStrings");
@@ -79,6 +81,7 @@ namespace ExtryzeDLL.Flexibility
             XAttribute localeSymbolsAttrib = buildElement.Attribute("localeSymbols");
             XAttribute pluginFolderAttrib = buildElement.Attribute("pluginFolder");
             XAttribute scriptDefinitionsAttrib = buildElement.Attribute("scriptDefinitions");
+            XAttribute localeAlignmentAttrib = buildElement.Attribute("localeAlignment");
             if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null)
                 return null;
 
@@ -88,7 +91,8 @@ namespace ExtryzeDLL.Flexibility
             string filenameKey = null;
             string localeSymbols = null;
             string scriptOpcodes = null;
-            int headerSize = int.Parse(headerSizeAttrib.Value.Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+            int localeAlignment = 0x1000;
+            int headerSize = ParseNumber(headerSizeAttrib.Value);
 
             if (filenameKeyAttrib != null)
                 filenameKey = filenameKeyAttrib.Value;
@@ -102,15 +106,19 @@ namespace ExtryzeDLL.Flexibility
                 loadStrings = Convert.ToBoolean(loadStringsAttrib.Value);
             if (scriptDefinitionsAttrib != null)
                 scriptOpcodes = _basePath + @"Scripting\" + scriptDefinitionsAttrib.Value;
+            if (localeAlignmentAttrib != null)
+                localeAlignment = ParseNumber(localeAlignmentAttrib.Value);
 
             // StringID Modifers, this is a bitch
-            IList<BuildInformation.StringIDModifier> stringIDModifiers = new List<BuildInformation.StringIDModifier>();
+            IStringIDResolver stringIdResolver = null;
             if (stringidModifiersAttrib != null)
             {
+                StringIDModifierResolver modifierResolver = new StringIDModifierResolver();
+                stringIdResolver = modifierResolver;
+
                 string[] sets = stringidModifiersAttrib.Value.Split('|');
                 foreach (string set in sets)
                 {
-                    BuildInformation.StringIDModifier modifier = new BuildInformation.StringIDModifier();
                     string[] parts = set.Split(',');
                     /*
                      Format:
@@ -120,16 +128,29 @@ namespace ExtryzeDLL.Flexibility
                      * Direction (>/<)
                      */
 
-                    modifier.Identifier = int.Parse(parts[0].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    modifier.Modifier = int.Parse(parts[1].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    modifier.isAddition = parts[2] == "+";
-                    modifier.isGreaterThan = parts[3] == ">";
+                    int identifier = int.Parse(parts[0].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+                    int modifier = int.Parse(parts[1].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
+                    bool isAddition = parts[2] == "+";
+                    bool isGreaterThan = parts[3] == ">";
 
-                    stringIDModifiers.Add(modifier);
+                    modifierResolver.AddModifier(identifier, modifier, isGreaterThan, isAddition);
                 }
             }
+            else if (stringidDefinitionsAttrib != null)
+            {
+                StringIDSetResolver setResolver = new StringIDSetResolver();
+                stringIdResolver = setResolver;
 
-            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIDModifiers, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes);
+                XDocument stringIdDocument = XDocument.Load(_basePath + @"StringIDs\" + stringidDefinitionsAttrib.Value);
+                StringIDSetLoader.LoadAllStringIDSets(stringIdDocument, setResolver);
+            }
+            else
+            {
+                // Use a blank modifier
+                stringIdResolver = new StringIDModifierResolver();
+            }
+
+            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, localeAlignment);
             XDocument layoutDocument = XDocument.Load(_basePath + filenameAttrib.Value);
             LoadAllLayouts(layoutDocument, info);
 
@@ -192,6 +213,13 @@ namespace ExtryzeDLL.Flexibility
 
                 info.LocaleSymbols.AddSymbol(codeChar, displayAttrib.Value);
             }
+        }
+
+        private static int ParseNumber(string str)
+        {
+            if (str.StartsWith("0x"))
+                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
+            return int.Parse(str);
         }
     }
 }

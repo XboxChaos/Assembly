@@ -302,20 +302,18 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                     <Border
-                        Name="Border"
+                        Name="Bd"
                         SnapsToDevicePixels="True"
                         BorderBrush="{x:Null}"
                         BorderThickness="1"
                         Padding="2,2,2,2">
-                        <ContentPresenter
-                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                            Content="{TemplateBinding ContentControl.Content}" />
+                        <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="ComboBoxItem.IsHighlighted" Value="True">
-                            <Setter Property="Background" TargetName="Border" Value="#3f3f46"/>
-                            <Setter Property="BorderBrush" TargetName="Border" Value="#424245"/>
-                            <Setter Property="BorderThickness" TargetName="Border" Value="1"/>
+                            <Setter Property="Background" TargetName="Bd" Value="#3f3f46"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="#424245"/>
+                            <Setter Property="BorderThickness" TargetName="Bd" Value="1"/>
                         </Trigger>
                         <Trigger Property="UIElement.IsEnabled" Value="False">
                             <Setter Property="TextElement.Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
@@ -352,6 +350,7 @@
                 Name="ContentSite"
                 VerticalAlignment="Center"
                 ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+                ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
                 Content="{TemplateBinding ComboBox.SelectionBoxItem}"
                 IsHitTestVisible="False" />
                         <TextBox
@@ -382,10 +381,10 @@
                     BorderThickness="1,1,1,1"
                     Name="DropDownBorder"
                     Background="#1b1b1c"/>
-                <ScrollViewer
+                <ScrollViewer Name="DropDownScrollViewer"
                     Margin="4,6,4,6"
                     SnapsToDevicePixels="True">
-                  <ItemsPresenter
+                  <ItemsPresenter Name="ItemsPresenter"
                       KeyboardNavigation.DirectionalNavigation="Contained" />
                 </ScrollViewer>
               </Grid>

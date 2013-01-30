@@ -30,20 +30,19 @@ namespace ExtryzeDLL.Blam.ThirdGen
     /// </summary>
     public class MetaAddressConverter : PointerConverter
     {
-        private uint _virtualBase, _metaOffset;
+        private ThirdGenHeader _header;
 
         /// <summary>
         /// Constructs a new AddressConverter.
         /// </summary>
-        public MetaAddressConverter(uint virtualBase, uint metaOffset)
+        public MetaAddressConverter(ThirdGenHeader header)
         {
-            _virtualBase = virtualBase;
-            _metaOffset = metaOffset;
+            _header = header;
         }
 
         public uint AddressMask
         {
-            get { return _virtualBase - _metaOffset; }
+            get { return _header.VirtualBaseAddress - _header.MetaOffset; }
         }
 
         public override uint PointerToOffset(uint pointer)

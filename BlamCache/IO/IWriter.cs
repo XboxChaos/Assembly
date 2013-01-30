@@ -20,14 +20,8 @@ using System;
 
 namespace ExtryzeDLL.IO
 {
-    public interface IWriter
+    public interface IWriter : ISeekable
     {
-        void Close();
-        bool EOF { get; }
-        long Length { get; }
-        long Position { get; }
-        bool SeekTo(long offset);
-        void Skip(long count);
         void WriteAscii(string str);
         void WriteBlock(byte[] data);
         void WriteBlock(byte[] data, int offset, int size);
@@ -40,6 +34,7 @@ namespace ExtryzeDLL.IO
         void WriteUInt16(ushort value);
         void WriteUInt32(uint value);
         void WriteUInt64(ulong value);
+        void WriteUTF8(string str);
         void WriteUTF16(string str);
     }
 }      

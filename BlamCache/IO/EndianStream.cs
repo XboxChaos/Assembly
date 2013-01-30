@@ -27,7 +27,7 @@ namespace ExtryzeDLL.IO
     /// <summary>
     /// Encapsulates an EndianReader and EndianWriter to allow for easy bi-directional access to a binary stream.
     /// </summary>
-    public class EndianStream : IDisposable, IReader, IWriter
+    public class EndianStream : IDisposable, IStream
     {
         /// <summary>
         /// Constructs a new EndianStream based off of a Stream object.
@@ -189,6 +189,11 @@ namespace ExtryzeDLL.IO
         public string ReadUTF8(int size)
         {
             return _reader.ReadUTF8(size);
+        }
+
+        public void WriteUTF8(string str)
+        {
+            _writer.WriteUTF8(str);
         }
 
         public string ReadUTF16()

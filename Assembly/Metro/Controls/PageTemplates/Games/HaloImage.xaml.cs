@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
@@ -52,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 _blf = new PureBLF(_blfLocation);
                 
                 List<byte> imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
-                imgChunkData.RemoveRange(0, 0xC);
+                imgChunkData.RemoveRange(0, 0x08);
 
                 Dispatcher.Invoke(new Action(delegate
                 {
@@ -106,7 +106,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     EndianStream stream = new EndianStream(new MemoryStream(newImage), Endian.BigEndian);
 
                     // Check if it's a JIFI
-                    stream.SeekTo(0x06);
+                    stream.SeekTo(0x02);
                     string imageMagic = stream.ReadAscii();
                     if (imageMagic != "JFIF")
                         throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
@@ -159,7 +159,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 if ((bool)sfd.ShowDialog())
                 {
                     List<byte> imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
-                    imageToExtract.RemoveRange(0, 0x0C);
+                    imageToExtract.RemoveRange(0, 0x08);
 
                     File.WriteAllBytes(sfd.FileName, imageToExtract.ToArray<byte>());
 

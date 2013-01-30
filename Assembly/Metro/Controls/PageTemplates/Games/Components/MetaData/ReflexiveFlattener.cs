@@ -20,8 +20,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private List<bool> _fieldVisibility = new List<bool>();
         private ObservableCollection<MetaField> _topLevelFields;
         private List<WrappedReflexiveEntry> _wrappers = new List<WrappedReflexiveEntry>();
+        private FieldChangeTracker _tracker;
+        private FieldChangeSet _changes;
 
-        public FlattenedReflexive(FlattenedReflexive parent, ReflexiveData template, ObservableCollection<MetaField> topLevelFields)
+        public FlattenedReflexive(FlattenedReflexive parent, ReflexiveData template, ObservableCollection<MetaField> topLevelFields, FieldChangeTracker tracker, FieldChangeSet changes)
         {
             _parent = parent;
             _template = template;
@@ -30,6 +32,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             if (template.HasChildren)
                 _lastPage = template.Pages[template.CurrentIndex];
             _topLevelFields = topLevelFields;
+            _tracker = tracker;
+            _changes = changes;
         }
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             _loadedFields.Add(field);
             _fieldVisibility.Add(true);
+            _tracker.AttachTo(field);
 
             WrappedReflexiveEntry wrapper = new WrappedReflexiveEntry(_loadedFields, _wrappers.Count, width, last);
             _wrappers.Add(wrapper);
@@ -121,7 +126,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void UnloadPage()
         {
             if (_lastPage != null)
-                _lastPage.CloneChanges(_loadedFields);
+                _lastPage.CloneChanges(_loadedFields, _tracker, _changes);
             _lastPage = null;
         }
 
@@ -245,10 +250,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private FlattenedReflexive _flatParent = null;
         private ObservableCollection<MetaField> _topLevelFields = null;
         private ObservableCollection<MetaField> _fields;
+        private MetaReader _reader;
+        private FieldChangeTracker _tracker;
+        private FieldChangeSet _changes;
         private int _index;
+        private bool _loading = false;
 
         private Dictionary<ReflexiveData, FlattenedReflexive> _flattenInfo =
             new Dictionary<ReflexiveData, FlattenedReflexive>();
+
+        public ReflexiveFlattener(MetaReader reader, FieldChangeTracker tracker, FieldChangeSet changes)
+        {
+            _reader = reader;
+            _tracker = tracker;
+            _changes = changes;
+        }
 
         public void Flatten(ObservableCollection<MetaField> fields)
         {
@@ -344,7 +360,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitReflexive(ReflexiveData field)
         {
             // Create flatten information for the reflexive and attach event handlers to it
-            FlattenedReflexive flattened = new FlattenedReflexive(_flatParent, field, _topLevelFields);
+            FlattenedReflexive flattened = new FlattenedReflexive(_flatParent, field, _topLevelFields, _tracker, _changes);
             AttachTo(field, flattened);
 
             FlattenedReflexive oldParent = _flatParent;
@@ -386,11 +402,35 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 else
                     flattenedField.Contract();
             }
-            else if (e.PropertyName == "CurrentIndex" || e.PropertyName == "Length")
+            else if (!_loading && (e.PropertyName == "CurrentIndex" || e.PropertyName == "FirstEntryAddress" || e.PropertyName == "EntrySize"))
             {
-                RecursiveUnload(flattenedField.LoadedFields);
+                _loading = true;
+                _tracker.Enabled = false;
+
+                if (e.PropertyName == "FirstEntryAddress")
+                {
+                    // Throw out any cached changes and reset the current index
+                    RecursiveReset(flattenedField.LoadedFields);
+                    if (reflexive.Length > 0)
+                        reflexive.CurrentIndex = 0;
+                    else
+                        reflexive.CurrentIndex = -1;
+                }
+                else
+                {
+                    // Cache any changes made to the current page
+                    RecursiveUnload(flattenedField.LoadedFields);
+                }
+
+                // Load the new page in
                 flattenedField.LoadPage(reflexive, reflexive.CurrentIndex);
                 RecursiveLoad(flattenedField.LoadedFields);
+
+                // Read any non-cached fields in the page
+                _reader.ReadReflexiveChildren(reflexive);
+
+                _tracker.Enabled = true;
+                _loading = false;
             }
         }
 
@@ -430,6 +470,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                     FlattenedReflexive flattened = _flattenInfo[reflexive];
                     RecursiveUnload(flattened.LoadedFields);
                     _flattenInfo[reflexive].UnloadPage();
+                }
+            }
+        }
+
+        private void RecursiveReset(IEnumerable<MetaField> fields)
+        {
+            foreach (MetaField field in fields)
+            {
+                _tracker.MarkUnchanged(field);
+
+                ReflexiveData reflexive = field as ReflexiveData;
+                if (reflexive != null)
+                {
+                    FlattenedReflexive flattened = _flattenInfo[reflexive];
+                    RecursiveReset(flattened.LoadedFields);
+                    reflexive.ResetPages();
                 }
             }
         }

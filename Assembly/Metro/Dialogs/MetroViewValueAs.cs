@@ -1,26 +1,30 @@
-﻿using Assembly.Backend;
-using Assembly.Metro.Dialogs.ControlDialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
+using Assembly.Helpers;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using Assembly.Metro.Dialogs.ControlDialogs;
+using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.IO;
 
 namespace Assembly.Metro.Dialogs
 {
-    public class MetroViewValueAs
+    public static class MetroViewValueAs
     {
         /// <summary>
         /// View the selected offset as every meta value type.
         /// </summary>
-        /// <param name="memoryAddress">The base offset of the value, from memory of the Xbox Console.</param>
-        /// <param name="cacheOffset">The base offset of the value, from the cache file.</param>
-        public static void Show(uint memoryAddress, uint cacheOffset)
+        /// <param name="cacheFile">The cache file which is being read from.</param>
+        /// <param name="streamManager">The stream manager to open the file with.</param>
+        /// <param name="fields">The fields to display in the viewer.</param>
+        /// <param name="cacheOffset">The initial offset to display.</param>
+        public static void Show(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
-            ViewValueAs valueAs = new ViewValueAs(memoryAddress, cacheOffset);
-            valueAs.Owner = Settings.homeWindow;
-            valueAs.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            valueAs.Show();
+            var valueAs = new ViewValueAs(cacheFile, streamManager, fields, cacheOffset)
+	                          {
+		                          Owner = Settings.homeWindow, 
+								  WindowStartupLocation = WindowStartupLocation.CenterOwner
+	                          };
+	        valueAs.Show();
         }
     }
 }

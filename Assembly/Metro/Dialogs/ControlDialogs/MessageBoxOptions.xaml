@@ -5,28 +5,35 @@
         Width="455.5" MaxWidth="550" MinHeight="150" ShowInTaskbar="False">
     <Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
         <Grid>
-            <Image VerticalAlignment="Top" HorizontalAlignment="Left" Width="35" Margin="5,5,0,0" Source="{DynamicResource ExtryzeAccentLogo}" />
-            <TextBlock x:Name="lblTitle" Text="Message Box - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60px" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="36px" />
+            </Grid.RowDefinitions>
+            <Path Grid.Row="0" Fill="{DynamicResource ExtryzeAccentBrush}" Data="F1 M 124.8,4C 122.267,4.53333 116.267,5.73334 111.467,6.53333C 71.7333,13.0667 34.8,40.5333 16.1333,77.3333C 6.26668,96.9333 7.62939e-006,123.867 1.20001,142C 3.33334,174.933 17.2,206.667 39.4667,229.333C 52.4,242.533 62.9333,250 79.0667,257.6C 88.8,262.133 112.4,269.333 117.6,269.333C 119.2,269.333 119.467,262.4 119.467,230.133L 119.467,190.933L 110.533,188.8C 79.7333,181.067 53.8667,155.2 45.3333,124C 42.2667,112.267 42.2667,89.0667 45.3333,77.3333C 51.8667,53.3333 70.1333,30.6667 91.4667,20.2667C 108.4,11.8667 116.667,10.2667 137.467,10.9333C 151.733,11.4667 156.4,12.1334 163.733,14.9333C 177.333,20 187.067,26.2667 197.467,36.6667C 207.733,47.0667 214,56.6667 219.333,70.4C 222.533,78.6667 222.8,80.9333 222.8,100.667C 222.8,120.4 222.533,122.667 219.333,130.933C 214,144.667 207.733,154.267 197.467,164.667C 184.4,177.733 169.467,185.867 151.2,189.867L 147.467,190.667L 147.467,230L 147.467,269.333L 150.667,269.333C 158.133,269.333 181.067,262.267 193.467,256C 221.467,242.133 241.067,222 254.8,192.933C 260,182.133 262.133,174.8 267.467,150.933C 269.2,143.6 269.2,130.933 267.467,123.733C 266.8,120.533 265.2,113.467 264,108C 255.733,70.2667 229.333,36.4 194.8,19.0667C 173.067,8.13336 138.4,0.666687 124.8,4 Z " Margin="6.443,5.656,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="33.557" Stretch="Fill" Width="33.557"/>
+            <Path Grid.Row="0" Fill="{DynamicResource ExtryzeAccentBrush}" Data="F1 M 115.467,41.7331C 97.7333,47.7331 86.2667,57.7331 78.6667,73.8664C 69.4667,93.1997 69.4667,108.8 78.8,127.6C 85.0667,140.266 94.1333,149.333 106.533,155.201C 126.267,164.666 141.467,164.666 160.133,155.466C 172.133,149.6 179.467,142.933 185.467,132.666C 197.6,112.133 198.4,93.9997 188.133,72.9331C 174.933,46.1331 142.933,32.2664 115.467,41.7331 Z " Margin="15,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="16.238" Stretch="Fill" Width="15.537"/>
 
-            <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+            <TextBlock Grid.Row="0" x:Name="lblTitle" Text="Message Box - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
 
-            <TextBlock x:Name="lblSubInfo" TextWrapping="Wrap" FontSize="13" Foreground="White" Margin="33,60,33,40" HorizontalAlignment="Left" 
+            <Thumb 
+                Grid.Row="0"
+				x:Name="headerThumb" 
+				Opacity="0" 
+				Background="{x:Null}" 
+				Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				/>
+            
+            <TextBlock Grid.Row="1" x:Name="lblSubInfo" TextWrapping="Wrap" FontSize="13" Foreground="White" Margin="33,0,33,6" HorizontalAlignment="Left" 
                         Text="There once was a man named xerax... nothing rhymes with xerax :(. fucking yolo and shit." 
                         FontFamily="{DynamicResource MetroFontRegular}"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,25,20,6" VerticalAlignment="Bottom">
+            <Grid Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5" VerticalAlignment="Bottom">
                 <Button x:Name="btnOkay" Margin="0,0,5,0" Content="Okay" Width="53" Click="btnOkay_Click" Visibility="Collapsed"/>
                 <Button x:Name="btnYes" Margin="0,0,5,0" Content="Yes" Width="53" Click="btnYes_Click" Visibility="Collapsed"/>
                 <Button x:Name="btnNo" Margin="0,0,5,0" Content="No" Width="53" Click="btnNo_Click" Visibility="Collapsed"/>
                 <Button x:Name="btnCancel" Margin="0,0,5,0" Content="Cancel" Width="53" Click="btnCancel_Click" Visibility="Collapsed"/>
             </StackPanel>
-
-            <Thumb 
-							x:Name="headerThumb" 
-							Opacity="0" 
-							Background="{x:Null}" 
-							Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
-							/>
         </Grid>
     </Border>
 </Window>

@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CloseableTabItemDemo
 {
@@ -71,14 +61,14 @@ namespace CloseableTabItemDemo
         {
             base.OnApplyTemplate();
 
-            Button closeButton = base.GetTemplateChild("PART_Close") as Button;
+            var closeButton = GetTemplateChild("PART_Close") as Button;
             if (closeButton != null)
-                closeButton.Click += new System.Windows.RoutedEventHandler(closeButton_Click);
+                closeButton.Click += closeButton_Click;
         }
 
-        void closeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
+            RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
         }
     }
 }

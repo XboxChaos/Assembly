@@ -34,8 +34,29 @@ namespace ExtryzeDLL.Util
             return builder.ToString();
         }
 
+        public static string BytesToHexLines(byte[] array, int newlineInterval)
+        {
+            StringBuilder builder = new StringBuilder(array.Length * 2);
+            string chars = "0123456789ABCDEF";
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (i > 0 && i < array.Length - 1 && i % newlineInterval == 0)
+                    builder.AppendLine();
+
+                builder.Append(chars[array[i] >> 4]);
+                builder.Append(chars[array[i] & 0xF]);
+            }
+            return builder.ToString();
+        }
+
         public static byte[] HexStringToBytes(string hex)
         {
+            // Strip whitespace
+            hex = hex.Replace(" ", "");
+            hex = hex.Replace("\n", "");
+            hex = hex.Replace("\r", "");
+            hex = hex.Replace("\t", "");
+
             if (hex.Length % 2 != 0)
                 throw new FormatException("Hex string must be of even length");
 
@@ -52,6 +73,7 @@ namespace ExtryzeDLL.Util
                     value = 0xA + ch - 'a';
                 else
                     throw new FormatException("Not a valid hex string");
+
                 result[i / 2] |= (byte)(value << (4 * (1 - i % 2)));
             }
 

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assembly.Backend;
+﻿using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs
 {
-    public class MetroMessageBox
+    public static class MetroMessageBox
     {
         /// <summary>
         /// Show a Metro Message Box
@@ -16,10 +12,12 @@ namespace Assembly.Metro.Dialogs
         public static void Show(string title, string message)
         {
             Settings.homeWindow.ShowMask();
-            ControlDialogs.MessageBox msgBox = new ControlDialogs.MessageBox(title, message);
-            msgBox.Owner = Settings.homeWindow;
-            msgBox.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            msgBox.ShowDialog();
+			var msgBox = new ControlDialogs.MessageBox(title, message)
+				             {
+					             Owner = Settings.homeWindow, 
+								 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+				             };
+	        msgBox.ShowDialog();
             Settings.homeWindow.HideMask();
         }
         /// <summary>
@@ -28,18 +26,13 @@ namespace Assembly.Metro.Dialogs
         /// <param name="message">The message to be displayed in the Message Box</param>
         public static void Show(string message)
         {
-            Settings.homeWindow.ShowMask();
-            ControlDialogs.MessageBox msgBox = new ControlDialogs.MessageBox("Message Box", message);
-            msgBox.Owner = Backend.Settings.homeWindow;
-            msgBox.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            msgBox.ShowDialog();
-            Settings.homeWindow.HideMask();
+            Show("Assembly - Message Box", message);
         }
 
         /// <summary>
         /// The Results a Metro MessageBox can return
         /// </summary>
-        public enum MessageBoxResults
+        public enum MessageBoxResult
         {
             OK,
             Yes,
@@ -63,16 +56,18 @@ namespace Assembly.Metro.Dialogs
         /// <param name="message">The message to be displayed in the Message Box</param>
         /// <param name="buttons">The buttons to show in the Message Box</param>
         /// <returns>The button the user clicked</returns>
-        public static MessageBoxResults Show(string title, string message, MessageBoxButtons buttons)
+        public static MessageBoxResult Show(string title, string message, MessageBoxButtons buttons)
         {
             Settings.homeWindow.ShowMask();
-            ControlDialogs.MessageBoxOptions msgBox = new ControlDialogs.MessageBoxOptions(title, message, buttons);
-            msgBox.Owner = Backend.Settings.homeWindow;
-            msgBox.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            msgBox.ShowDialog();
+			var msgBox = new ControlDialogs.MessageBoxOptions(title, message, buttons)
+				             {
+					             Owner = Settings.homeWindow,
+					             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+				             };
+	        msgBox.ShowDialog();
             Settings.homeWindow.HideMask();
 
-            return Backend.TempStorage.msgBoxButtonStorage;
+            return TempStorage.msgBoxButtonStorage;
         }
     }
 }

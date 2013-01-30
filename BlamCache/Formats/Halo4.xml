@@ -33,6 +33,8 @@
     <uint32 name="raw table offset from header" offset="0x490" />
 		<uint32 name="raw table size" offset="0x498" />
 		<uint32 name="virtual size" offset="0x4A0" />
+    <uint32 name="locale data index offset" offset="0x4A4" />
+    <uint32 name="locale data size" offset="0x4A8" />
 	</layout>
   
   <!-- Index table header -->
@@ -51,7 +53,7 @@
     <int32 name="magic" offset="0x0" />
     <int32 name="parent magic" offset="0x4" />
     <int32 name="grandparent magic" offset="0x8" />
-    <uint32 name="identifier" offset="0xC" />
+    <uint32 name="stringid" offset="0xC" />
   </layout>
   
   <!-- Tag table entry -->
@@ -62,16 +64,37 @@
   </layout>
 
   <layout for="matg">
-    <array name="languages" offset="0x2BC" entrySize="0x44" count="12">
+    <array name="languages" offset="0x2BC" entrySize="0x44" count="17">
       <uint32 name="string count" offset="0x0" />
       <uint32 name="locale table size" offset="0x4" />
       <uint32 name="locale index table offset" offset="0x8" />
       <uint32 name="locale data index offset" offset="0xC" />
+      <raw name="index table hash" offset="0x10" size="0x14" />
+      <raw name="string data hash" offset="0x24" size="0x14" />
+    </array>
+  </layout>
+
+  <layout for="patg">
+    <array name="languages" offset="0x8" entrySize="0x44" count="17">
+      <uint32 name="string count" offset="0x0" />
+      <uint32 name="locale table size" offset="0x4" />
+      <uint32 name="locale index table offset" offset="0x8" />
+      <uint32 name="locale data index offset" offset="0xC" />
+      <raw name="index table hash" offset="0x10" size="0x14" />
+      <raw name="string data hash" offset="0x24" size="0x14" />
     </array>
   </layout>
 
   <layout for="locale index table entry">
-    <uint32 name="unknown" offset="0x0" />
+    <uint32 name="stringid" offset="0x0" />
     <uint32 name="offset" offset="0x4" />
+  </layout>
+  
+  <!-- unic (multilingual_unicode_string_list) -->
+  <layout for="unic">
+    <array name="language ranges" offset="0x2C" entrySize="0x4" count="17">
+      <int16 name="range start index" offset="0x0" />
+      <int16 name="range size" offset="0x2" />
+    </array>
   </layout>
 </layouts>

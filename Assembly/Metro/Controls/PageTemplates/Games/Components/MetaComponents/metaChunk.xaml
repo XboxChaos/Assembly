@@ -2,18 +2,22 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
              mc:Ignorable="d"
              HorizontalAlignment="Stretch"
              x:Name="metaChunk"
-             d:DesignWidth="500"
-             MinWidth="500">
+             d:DesignWidth="525"
+             MinWidth="525">
     
     <UserControl.Style>
         <Style TargetType="UserControl">
             <Setter Property="Width" Value="{Binding Width}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                    <Setter Property="Width" Value="{Binding ElementName=metaChunk, Path=MinWidth}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasChildren}" Value="False">
                     <Setter Property="Width" Value="{Binding ElementName=metaChunk, Path=MinWidth}" />
                 </DataTrigger>
             </Style.Triggers>
@@ -25,6 +29,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ComponentDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <c:HexValueConverter x:Key="hexConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -57,31 +62,38 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
-                                <Run Text="{Binding Index}" /><Run Text=" - " /><Run Text="{Binding DataContext.Length, ElementName=cbChunkIndex}" />
+                                <Run Text="{Binding Index}" /> - <Run Text="{Binding DataContext.LastChunkIndex, ElementName=cbChunkIndex, Mode=OneWay}" /> (<Run Text="{Binding DataContext.Length, ElementName=cbChunkIndex, Mode=OneWay}" />)
                             </TextBlock>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsVirtualizing="True" />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
                 </ComboBox>
             </Grid>
             <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,30,0,0">
                 <Expander x:Name="InformationExpander" Header="Information" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                    <Grid Background="#FF979797" Height="30">
+                    <Grid Height="30">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="175" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Label Content="Count:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF414141" />
-                                <TextBox x:Name="txtChunkCount" Text="{Binding Length, Mode=OneWay}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"/>
-            
-                                <Label Content="Offset:" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF414141" />
-                                <TextBox x:Name="txtChunkOffset" Text="{Binding FirstEntryOffset, Mode=OneWay}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"/>
+                                <Label Content="Count:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
+                                <TextBox x:Name="txtChunkCount" Text="{Binding Length, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                                <Label Content="Address:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
+                                <TextBox x:Name="txtChunkAddress" Text="{Binding FirstEntryAddress, UpdateSourceTrigger=LostFocus, Converter={StaticResource hexConverter}}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                             </StackPanel>
                             
                             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
-                                <Label Content="Size:" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF414141" />
-                                <TextBox x:Name="txtChunkSize" Text="{Binding EntrySize, Mode=OneWay}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"/>
+                                <Label Content="Entry Size:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
+                                <TextBox x:Name="txtChunkSize" Text="{Binding EntrySize, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                             </StackPanel>
                         </Grid>
                     </Grid>

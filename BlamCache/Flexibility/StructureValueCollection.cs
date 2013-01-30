@@ -31,6 +31,7 @@ namespace ExtryzeDLL.Flexibility
         private Dictionary<string, uint> _numberValues = new Dictionary<string, uint>();
         private Dictionary<string, string> _stringValues = new Dictionary<string, string>();
         private Dictionary<string, StructureValueCollection[]> _arrayValues = new Dictionary<string, StructureValueCollection[]>();
+        private Dictionary<string, byte[]> _rawValues = new Dictionary<string, byte[]>();
 
         public bool HasNumber(string name)
         {
@@ -45,6 +46,11 @@ namespace ExtryzeDLL.Flexibility
         public bool HasArray(string name)
         {
             return _arrayValues.ContainsKey(name);
+        }
+
+        public bool HasRaw(string name)
+        {
+            return _rawValues.ContainsKey(name);
         }
 
         /// <summary>
@@ -81,6 +87,16 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
+        /// Sets the value of a named raw byte array field in a structure.
+        /// </summary>
+        /// <param name="name">The name of the raw field to set.</param>
+        /// <param name="value">The byte array to assign to the field.</param>
+        public void SetRaw(string name, byte[] value)
+        {
+            _rawValues[name] = value;
+        }
+
+        /// <summary>
         /// Finds a numeric field with a given name and retrieves its value if it is found.
         /// </summary>
         /// <param name="name">The name of the numeric field to find.</param>
@@ -111,6 +127,17 @@ namespace ExtryzeDLL.Flexibility
         public bool FindArray(string name, out StructureValueCollection[] value)
         {
             return _arrayValues.TryGetValue(name, out value);
+        }
+
+        /// <summary>
+        /// Finds a raw byte array field with a given name and retrieves its value if it is found.
+        /// </summary>
+        /// <param name="name">The name of the raw field to find.</param>
+        /// <param name="value">The variable to store the field's value to (if the field exists).</param>
+        /// <returns>true if the field was found.</returns>
+        public bool FindRaw(string name, out byte[] value)
+        {
+            return _rawValues.TryGetValue(name, out value);
         }
 
         /// <summary>
@@ -156,6 +183,20 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
+        /// Retrieves the value of a raw byte array field,
+        /// throwing an exception if the field does not exist.
+        /// </summary>
+        /// <param name="name">The name of the raw byte array field to retrieve the value of.</param>
+        /// <returns>The field's value.</returns>
+        /// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+        public byte[] GetRaw(string name)
+        {
+            if (!HasRaw(name))
+                throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+            return _rawValues[name];
+        }
+
+        /// <summary>
         /// Attempts to retrieve the value of a numeric field,
         /// returning a specified default value if it does not exist.
         /// </summary>
@@ -181,21 +222,6 @@ namespace ExtryzeDLL.Flexibility
         {
             string value;
             if (FindString(name, out value))
-                return value;
-            return defaultValue;
-        }
-
-        /// <summary>
-        /// Attempts to retrieve the value of an array field,
-        /// returning a specified default value if it does not exist.
-        /// </summary>
-        /// <param name="name">The name of the array field to retrieve the value of.</param>
-        /// <param name="defaultValue">The value to return if the field is not found.</param>
-        /// <returns>The field's value if it was found, or <paramref name="defaultValue"/> otherwise.</returns>
-        public StructureValueCollection[] GetArrayOrDefault(string name, StructureValueCollection[] defaultValue)
-        {
-            StructureValueCollection[] value;
-            if (FindArray(name, out value))
                 return value;
             return defaultValue;
         }

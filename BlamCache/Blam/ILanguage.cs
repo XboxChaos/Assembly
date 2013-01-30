@@ -6,6 +6,10 @@ using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam
 {
+    /// <summary>
+    /// A set of localized strings in a cache file for a particular language.
+    /// Strings can be loaded and saved on-demand.
+    /// </summary>
     public interface ILanguage
     {
         /// <summary>
@@ -18,6 +22,14 @@ namespace ExtryzeDLL.Blam
         /// </summary>
         /// <param name="reader">The IReader to read the strings from.</param>
         /// <returns>The strings that were read.</returns>
-        List<string> LoadStrings(IReader reader);
+        LocaleTable LoadStrings(IReader reader);
+
+        /// <summary>
+        /// Saves all of the language's strings back to the file.
+        /// Note that ICacheFile.SaveChanges() may need to be called after this.
+        /// </summary>
+        /// <param name="stream">The IStream to write strings to.</param>
+        /// <param name="locales">The strings to save back.</param>
+        void SaveStrings(IStream stream, LocaleTable locales);
     }
 }

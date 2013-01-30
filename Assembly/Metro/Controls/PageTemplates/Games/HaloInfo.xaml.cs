@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Assembly.Backend;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Blam.ThirdGen.BLF;
@@ -39,7 +39,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             new LanguageEntry() { Index = 2, Language = "German", LanguageShort = "de" },
             new LanguageEntry() { Index = 3, Language = "French", LanguageShort = "fr" },
             new LanguageEntry() { Index = 4, Language = "Spanish", LanguageShort = "es" },
-            new LanguageEntry() { Index = 5, Language = "Latin American (Spanish)", LanguageShort = "es" },
+            new LanguageEntry() { Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es" },
             new LanguageEntry() { Index = 6, Language = "Italian", LanguageShort = "it" },
             new LanguageEntry() { Index = 7, Language = "Korean", LanguageShort = "ko" },
             new LanguageEntry() { Index = 8, Language = "Chinese", LanguageShort = "zh-CHS" },

@@ -1,4 +1,4 @@
-﻿using Assembly.Backend;
+﻿using Assembly.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
         public StringIDValue()
         {
             InitializeComponent();
-            cbStringIDs.ItemsSource = Settings.selectedHaloMap.Cache.StringIDs.RawStrings;
+            cbStringIDs.ItemsSource = Settings.selectedHaloMap.CacheFile.StringIDs.RawStrings;
         }
     }
 }

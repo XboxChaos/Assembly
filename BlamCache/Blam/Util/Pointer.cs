@@ -59,14 +59,14 @@ namespace ExtryzeDLL.Blam.Util
             return !p1.Equals(p2);
         }
 
-        public static Pointer operator +(Pointer p, uint i)
+        public static Pointer operator +(Pointer p, int i)
         {
-            return new Pointer(p._value + i, p._converter);
+            return new Pointer((uint)(p._value + i), p._converter);
         }
 
-        public static Pointer operator -(Pointer p, uint i)
+        public static Pointer operator -(Pointer p, int i)
         {
-            return new Pointer(p._value - i, p._converter);
+            return new Pointer((uint)(p._value - i), p._converter);
         }
     }
 }

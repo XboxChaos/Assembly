@@ -20,12 +20,8 @@ using System;
 
 namespace ExtryzeDLL.IO
 {
-    public interface IReader
+    public interface IReader : ISeekable
     {
-        void Close();
-        bool EOF { get; }
-        long Length { get; }
-        long Position { get; }
         string ReadAscii();
         string ReadAscii(int size);
         int ReadBlock(byte[] output, int offset, int size);
@@ -43,7 +39,5 @@ namespace ExtryzeDLL.IO
         string ReadUTF8(int size);
         string ReadUTF16();
         string ReadUTF16(int length);
-        bool SeekTo(long offset);
-        void Skip(long count);
     }
 }      

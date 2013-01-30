@@ -10,31 +10,31 @@ namespace ExtryzeDLL.Blam.ThirdGen
 {
     public class HeaderOffsetConverter : PointerConverter
     {
-        private uint _magic;
+        private ThirdGenHeader _header;
 
-        public HeaderOffsetConverter(uint stringMagicBase, int headerSize)
+        public HeaderOffsetConverter(ThirdGenHeader header)
         {
-            _magic = (uint)(stringMagicBase - headerSize);
+            _header = header;
         }
 
         public override uint PointerToOffset(uint pointer)
         {
-            return pointer - _magic;
+            return pointer - (uint)(_header.StringOffsetMagic - _header.HeaderSize);
         }
 
         public override uint PointerToAddress(uint pointer)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public override uint OffsetToPointer(uint offset)
         {
-            return offset + _magic;
+            return offset + (uint)(_header.StringOffsetMagic - _header.HeaderSize);
         }
 
         public override uint AddressToPointer(uint address)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

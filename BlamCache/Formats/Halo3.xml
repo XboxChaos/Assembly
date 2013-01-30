@@ -31,6 +31,8 @@
     <uint32 name="string offset magic" offset="0x47C" />
     <uint32 name="raw table size" offset="0x488" />
     <uint32 name="virtual size" offset="0x490" />
+    <uint32 name="locale data index offset" offset="0x494" />
+    <uint32 name="locale data size" offset="0x498" />
   </layout>
 
   <!-- Index table header -->
@@ -49,7 +51,7 @@
     <int32 name="magic" offset="0x0" />
     <int32 name="parent magic" offset="0x4" />
     <int32 name="grandparent magic" offset="0x8" />
-    <uint32 name="identifier" offset="0xC" />
+    <uint32 name="stringid" offset="0xC" />
   </layout>
 
   <!-- Tag table entry -->
@@ -65,12 +67,22 @@
       <uint32 name="locale table size" offset="0x4" />
       <uint32 name="locale index table offset" offset="0x8" />
       <uint32 name="locale data index offset" offset="0xC" />
+      <raw name="index table hash" offset="0x10" size="0x14" />
+      <raw name="string data hash" offset="0x24" size="0x14" />
     </array>
   </layout>
 
   <layout for="locale index table entry">
-    <uint32 name="unknown" offset="0x0" />
+    <uint32 name="stringid" offset="0x0" />
     <uint32 name="offset" offset="0x4" />
+  </layout>
+
+  <!-- unic (multilingual_unicode_string_list) -->
+  <layout for="unic">
+    <array name="language ranges" offset="0x20" entrySize="0x4" count="12">
+      <int16 name="range start index" offset="0x0" />
+      <int16 name="range size" offset="0x2" />
+    </array>
   </layout>
 
   <!-- Scenario meta -->

@@ -13,8 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
-using Assembly.Backend;
-using Assembly.Backend.Plugins;
+using Assembly.Helpers;
+using Assembly.Helpers.Plugins;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         #endregion
 
-        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, EndianStream stream)
+        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
 
@@ -53,7 +53,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             tabTagInfo.Content = metaInformation;
 
             // Create Meta Editor Tab
-            MetaEditor metaEditor = new MetaEditor(_buildInfo, _tag, tags, _cache, stream);
+            MetaEditor metaEditor = new MetaEditor(_buildInfo, _tag, tags, _cache, streamManager);
             tabMetaEditor.Content = metaEditor;
 
             // Create Plugin Editor Tab

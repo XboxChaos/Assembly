@@ -26,7 +26,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -50,7 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blam\ILocaleGroup.cs" />
+    <Compile Include="Blam\LocaleRange.cs" />
+    <Compile Include="Blam\LocaleTable.cs" />
     <Compile Include="Blam\IScenario.cs" />
+    <Compile Include="Blam\IStringIDResolver.cs" />
+    <Compile Include="Blam\Locale.cs" />
     <Compile Include="Blam\Scripting\BlamScriptGenerator.cs" />
     <Compile Include="Blam\Scripting\ExpressionType.cs" />
     <Compile Include="Blam\Scripting\IExpression.cs" />
@@ -61,6 +66,8 @@
     <Compile Include="Blam\Scripting\IScriptParameter.cs" />
     <Compile Include="Blam\Scripting\ExpressionTable.cs" />
     <Compile Include="Blam\Scripting\ScriptValueType.cs" />
+    <Compile Include="Blam\StringID.cs" />
+    <Compile Include="Blam\StringIDModifierResolver.cs" />
     <Compile Include="Blam\ThirdGen\Scripting\CachedStringTable.cs" />
     <Compile Include="Blam\ThirdGen\Scripting\StringTableReader.cs" />
     <Compile Include="Blam\ThirdGen\Scripting\ThirdGenExpression.cs" />
@@ -68,14 +75,23 @@
     <Compile Include="Blam\ThirdGen\Scripting\ThirdGenGlobalObject.cs" />
     <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScript.cs" />
     <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScriptParameter.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenLocaleGroup.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenScenarioMeta.cs" />
+    <Compile Include="Blam\ThirdGen\ThirdGenStringIDSource.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenStringTable.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenVersionInfo.cs" />
     <Compile Include="Blam\Util\AESKey.cs" />
     <Compile Include="Blam\Util\PointerConverter.cs" />
     <Compile Include="Blam\Util\Pointer.cs" />
     <Compile Include="Flexibility\LocaleSymbolCollection.cs" />
+    <Compile Include="Blam\StringIDSetResolver.cs" />
+    <Compile Include="Flexibility\StringIDSetLoader.cs" />
+    <Compile Include="Flexibility\StructureLayoutCollection.cs" />
     <Compile Include="Flexibility\XMLOpcodeLookup.cs" />
+    <Compile Include="IO\FileStreamManager.cs" />
+    <Compile Include="IO\ISeekable.cs" />
+    <Compile Include="IO\IStream.cs" />
+    <Compile Include="IO\IStreamManager.cs" />
     <Compile Include="IO\IWritable.cs" />
     <Compile Include="Blam\ThirdGen\BLF\MapInfo.cs" />
     <Compile Include="Blam\ThirdGen\HeaderOffsetConverter.cs" />
@@ -102,6 +118,18 @@
     <Compile Include="IO\IReader.cs" />
     <Compile Include="IO\IWriter.cs" />
     <Compile Include="IO\StreamUtil.cs" />
+    <Compile Include="Patching\AssemblyPatchBlockID.cs" />
+    <Compile Include="Patching\AssemblyPatchLoader.cs" />
+    <Compile Include="Patching\AssemblyPatchWriter.cs" />
+    <Compile Include="Patching\LanguageChange.cs" />
+    <Compile Include="Patching\LocaleChange.cs" />
+    <Compile Include="Patching\LocaleComparer.cs" />
+    <Compile Include="Patching\LocalePatcher.cs" />
+    <Compile Include="Patching\MetaComparer.cs" />
+    <Compile Include="Patching\MetaPatcher.cs" />
+    <Compile Include="Patching\Patch.cs" />
+    <Compile Include="Patching\MetaChange.cs" />
+    <Compile Include="Plugins\AscensionPluginWriter.cs" />
     <Compile Include="Plugins\AssemblyPluginLoader.cs" />
     <Compile Include="Plugins\AssemblyPluginWriter.cs" />
     <Compile Include="Plugins\Generation\MetaAnalyzer.cs" />
@@ -127,26 +155,29 @@
     <Compile Include="Flexibility\BuildInformation.cs" />
     <Compile Include="Flexibility\BuildInfoLoader.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenHeader.cs" />
-    <Compile Include="Blam\ThirdGen\Structures\ThirdGenFileNameSource.cs" />
+    <Compile Include="Blam\ThirdGen\ThirdGenFileNameSource.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagTable.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenLanguage.cs" />
-    <Compile Include="Blam\ThirdGen\Structures\ThirdGenMapGlobalsMeta.cs" />
-    <Compile Include="Blam\ThirdGen\Structures\ThirdGenStringIDSource.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenLanguageGlobals.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagClass.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTag.cs" />
     <Compile Include="Util\ListSearching.cs" />
     <Compile Include="Util\MemoryMap.cs" />
+    <Compile Include="Util\SHA1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Formats\Halo3.xml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo3Beta.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo3ODST.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Halo4.xml">
       <SubType>Designer</SubType>
@@ -172,6 +203,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\StringIDs\Reach.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\SupportedBuilds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -183,7 +218,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -39,6 +39,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,7 +48,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -73,13 +75,36 @@
     <ApplicationIcon>Metro\Images\app_icon_large.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\DLLs\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Expression.Interactions" />
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.12-beta\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.12-beta\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.12-beta\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime">
+      <HintPath>..\packages\Microsoft.Bcl.1.0.11-beta\lib\net40\System.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.1.0.11-beta\lib\net40\System.Threading.Tasks.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity" />
@@ -107,27 +132,37 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Backend\0xabad1dea.cs" />
-    <Compile Include="Backend\AssemblyProtocol.cs" />
-    <Compile Include="Backend\Cryptography\AES.cs" />
-    <Compile Include="Backend\Cryptography\MD5.cs" />
-    <Compile Include="Backend\Cryptography\RSA.cs" />
-    <Compile Include="Backend\Cryptography\SHA1.cs" />
-    <Compile Include="Backend\DDSConversion.cs" />
-    <Compile Include="Backend\ExceptionDictionary.cs" />
-    <Compile Include="Backend\FileDefaults.cs" />
-    <Compile Include="Backend\HoldingVault.cs" />
-    <Compile Include="Backend\INIClass.cs" />
-    <Compile Include="Backend\JumpLists.cs" />
-    <Compile Include="Backend\Plugins\ThirdGenPluginVisitor.cs" />
-    <Compile Include="Backend\ServerConnector.cs" />
-    <Compile Include="Backend\Settings.cs" />
-    <Compile Include="Backend\SingleInstance.cs" />
-    <Compile Include="Backend\Translate.cs" />
-    <Compile Include="Backend\UIX\AnimationHelper.cs" />
-    <Compile Include="Backend\UIX\ImagerLoader.cs" />
-    <Compile Include="Backend\Updater.cs" />
-    <Compile Include="Backend\VariousFunctions.cs" />
+    <Compile Include="Helpers\0xabad1dea.cs" />
+    <Compile Include="Helpers\AssemblyProtocol.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLAttribute.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLTag.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLValue.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\XMLAnalysis.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\XMLCodeCompleter.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\XMLValueCompletionData.cs" />
+    <Compile Include="Helpers\Cryptography\AES.cs" />
+    <Compile Include="Helpers\Cryptography\MD5.cs" />
+    <Compile Include="Helpers\Cryptography\RSA.cs" />
+    <Compile Include="Helpers\Cryptography\SHA1.cs" />
+    <Compile Include="Helpers\DDSConversion.cs" />
+    <Compile Include="Helpers\ExceptionDictionary.cs" />
+    <Compile Include="Helpers\FileDefaults.cs" />
+    <Compile Include="Helpers\HoldingVault.cs" />
+    <Compile Include="Helpers\INIClass.cs" />
+    <Compile Include="Helpers\JumpLists.cs" />
+    <Compile Include="Helpers\Net\HttpExtensions.cs" />
+    <Compile Include="Helpers\Net\SignIn.cs" />
+    <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
+    <Compile Include="Helpers\Net\AssemblyServer.cs" />
+    <Compile Include="Helpers\Net\Imgur.cs" />
+    <Compile Include="Helpers\Net\Updates.cs" />
+    <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Helpers\SingleInstance.cs" />
+    <Compile Include="Helpers\UIX\AnimationHelper.cs" />
+    <Compile Include="Helpers\UIX\ImagerLoader.cs" />
+    <Compile Include="Helpers\Updater.cs" />
+    <Compile Include="Helpers\VariousFunctions.cs" />
+    <Compile Include="Helpers\CodeCompletion\XML\XMLTagCompletionData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
@@ -137,6 +172,8 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\Editors\StringEditor.xaml.cs">
       <DependentUpon>StringEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\HexValueConverter.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\InputBindingsManager.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\AsciiValue.xaml.cs">
       <DependentUpon>AsciiValue.xaml</DependentUpon>
     </Compile>
@@ -154,6 +191,8 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\CommentData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\DataRef.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\EnumData.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\FieldChangeSet.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\FieldChangeTracker.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\IMetaFieldVisitor.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\MetaField.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\MetaFilterer.cs" />
@@ -164,7 +203,6 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ReflexiveFlattener.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\StringIDData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ValueField.cs" />
-    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\FieldVisibility.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaInformation.xaml.cs">
       <DependentUpon>MetaInformation.xaml</DependentUpon>
     </Compile>
@@ -181,6 +219,7 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\RssPage.xaml.cs">
       <DependentUpon>RssPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CodeCompletion\XML\XMLAttributeCompletionData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\HaloScreenshot.xaml.cs">
       <DependentUpon>HaloScreenshot.xaml</DependentUpon>
     </Compile>
@@ -226,9 +265,6 @@
     </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\Exception.xaml.cs">
       <DependentUpon>Exception.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Metro\Dialogs\ControlDialogs\Controls\RevisionBlock.xaml.cs">
-      <DependentUpon>RevisionBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\ViewValueAs.xaml.cs">
       <DependentUpon>ViewValueAs.xaml</DependentUpon>
@@ -335,23 +371,25 @@
       <DependentUpon>MessageBoxOptions.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Dialogs\MetroAbout.cs" />
-    <Compile Include="Metro\Dialogs\MetroMsgBox.cs" />
+    <Compile Include="Metro\Dialogs\MetroMessageBox.cs" />
     <Compile Include="Metro\Dialogs\MetroUpdateDialog.cs" />
     <Compile Include="Metro\Native\DwmDropShadow.cs" />
     <Compile Include="Metro\Native\Monitor_Workarea.cs" />
+    <Compile Include="Metro\Native\WindowMovement.cs" />
+    <Compile Include="SyntaxHighlighting\HighlightLoader.cs" />
     <Compile Include="Windows\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\StatusUpdater.cs" />
-    <Page Include="Backend\0xabad1dea\DingDong.xaml">
+    <Page Include="Helpers\0xabad1dea\DingDong.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Backend\0xabad1dea\Galo.xaml">
+    <Page Include="Helpers\0xabad1dea\Galo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Backend\0xabad1dea\TragicSans.xaml">
+    <Page Include="Helpers\0xabad1dea\TragicSans.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -643,10 +681,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Metro\Dialogs\ControlDialogs\Controls\RevisionBlock.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Metro\Dialogs\ControlDialogs\MessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -712,7 +746,12 @@
     </Compile>
     <EmbeddedResource Include="Update\AssemblyUpdateManager.exe" />
     <EmbeddedResource Include="Update\ICSharpCode.SharpZipLib.dll" />
-    <Resource Include="Backend\0xabad1dea\GodOfAllThingsHolyAndModdy.png" />
+    <EmbeddedResource Include="SyntaxHighlighting\XMLBlue.xshd" />
+    <EmbeddedResource Include="SyntaxHighlighting\XMLGreen.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyntaxHighlighting\XMLPurple.xshd" />
+    <Resource Include="Helpers\0xabad1dea\GodOfAllThingsHolyAndModdy.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -724,6 +763,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <EmbeddedResource Include="SyntaxHighlighting\XMLOrange.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -3831,6 +3875,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.0\Microsoft.Expression.Blend.WPF.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!--<Import Project="..\packages\Microsoft.Bcl.1.0.11-beta\tools\portable-net40+sl4+win8+wp71\Microsoft.Bcl.targets" />-->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

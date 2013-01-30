@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Assembly.Backend
+namespace Assembly.Helpers
 {
     public class INIFile
     {

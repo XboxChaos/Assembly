@@ -16,11 +16,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public class EnumData : ValueField
     {
         private EnumType _type;
-        private int _value, _originalValue;
+        private int _value;
         private EnumValue _selectedValue = null;
 
-        public EnumData(string name, uint offset, EnumType type, int value, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public EnumData(string name, uint offset, uint address, EnumType type, int value, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _type = type;
             _value = value;
@@ -57,10 +57,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitEnum(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            EnumData result = new EnumData(Name, Offset, _type, _value, base.PluginLine);
-            result._originalValue = _originalValue;
+            EnumData result = new EnumData(Name, Offset, FieldAddress, _type, _value, base.PluginLine);
             foreach (EnumValue option in Values)
             {
                 EnumValue copiedValue = new EnumValue(option.Name, option.Value);
@@ -69,21 +68,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                     result._selectedValue = copiedValue;
             }
             return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
         }
     }
 

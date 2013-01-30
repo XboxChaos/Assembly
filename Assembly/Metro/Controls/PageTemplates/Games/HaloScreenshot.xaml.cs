@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ExtryzeDLL.IO;
-using Assembly.Backend;
-using System.Runtime.InteropServices;
+using Assembly.Helpers;
 using System.ComponentModel;
 using Assembly.Metro.Dialogs;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -81,10 +71,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void btnSaveImg_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
-            sfd.Title = "Select where do you want to save the Screenshot";
-            sfd.Filter = "PNG Image (*.png)|*.png";
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var sfd = new System.Windows.Forms.SaveFileDialog
+	                      {
+		                      Title = "Select where do you want to save the Screenshot", 
+							  Filter = "PNG Image (*.png)|*.png"
+	                      };
+	        if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 SaveImage(sfd.FileName);
         }
         private void btnUploadImage_Click(object sender, RoutedEventArgs e)
@@ -93,7 +85,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 doingAction.Visibility = System.Windows.Visibility.Visible;
 
-                BackgroundWorker imageUpload = new BackgroundWorker();
+                var imageUpload = new BackgroundWorker();
                 imageUpload.RunWorkerCompleted += imageUpload_RunWorkerCompleted;
                 imageUpload.DoWork += imageUpload_DoWork;
                 imageUpload.RunWorkerAsync();
@@ -102,32 +94,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 MetroImgurUpload.Show(imageID);
         }
 
-        void imageUpload_DoWork(object sender, DoWorkEventArgs e)
+        async void imageUpload_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-                string filePath = VariousFunctions.CreateTemporaryFile(VariousFunctions.GetTemporaryImageLocation());
+                var filePath = VariousFunctions.CreateTemporaryFile(VariousFunctions.GetTemporaryImageLocation());
                 Dispatcher.Invoke(new Action(delegate
                 {
                     var encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageScreenshot.Source));
-                    using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                    using (var stream = new FileStream(filePath, FileMode.Create))
                         encoder.Save(stream);
                 }));
 
-                string newImageID = ServerConnector.PostImageToImgur(filePath);
+	            var newImageId = Imgur.UploadToImgur(File.ReadAllBytes(filePath)).Result;
+				if (newImageId == null)
+					new Exception("Failed to Upload.");
 
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    imageID = newImageID;
+                    imageID = newImageId;
                 }));
             }
             catch
             {
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    MetroMessageBox.Show("Error", "Unable to upload Image to server. Try again later.");
-                }));
+                Dispatcher.Invoke(new Action(
+	                                  () =>
+	                                  MetroMessageBox.Show("Error", "Unable to upload Image to server. Try again later.")));
             }
         }
         void imageUpload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -136,12 +129,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             if (imageID == null || (imageID.Length < 5 && imageID.Length > 9))
             {
-                if (imageID != null)
-                    MetroMessageBox.Show("Error", imageID);
-                else
-                    MetroMessageBox.Show("Error", "Error uploading image.");
+	            MetroMessageBox.Show("Error", imageID ?? "Error uploading image.");
 
-                imageID = null;
+	            imageID = null;
             }
             else
                 MetroImgurUpload.Show(imageID);

@@ -40,7 +40,13 @@
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.targetGame = new System.Windows.Forms.ComboBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.alterationFmt = new System.Windows.Forms.RadioButton();
+            this.ascensionFmt = new System.Windows.Forms.RadioButton();
+            this.assemblyFmt = new System.Windows.Forms.RadioButton();
+            this.label4 = new System.Windows.Forms.Label();
             this.statusBar.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // originalFolder
@@ -102,11 +108,11 @@
             this.convert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.convert.Enabled = false;
-            this.convert.Location = new System.Drawing.Point(15, 114);
+            this.convert.Location = new System.Drawing.Point(15, 128);
             this.convert.Name = "convert";
             this.convert.Size = new System.Drawing.Size(517, 40);
             this.convert.TabIndex = 6;
-            this.convert.Text = "Convert Plugins to Assembly Format";
+            this.convert.Text = "Convert!";
             this.convert.UseVisualStyleBackColor = true;
             this.convert.Click += new System.EventHandler(this.convert_Click);
             // 
@@ -114,7 +120,7 @@
             // 
             this.convertProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.convertProgress.Location = new System.Drawing.Point(15, 114);
+            this.convertProgress.Location = new System.Drawing.Point(15, 128);
             this.convertProgress.Name = "convertProgress";
             this.convertProgress.Size = new System.Drawing.Size(517, 40);
             this.convertProgress.TabIndex = 7;
@@ -124,7 +130,7 @@
             // 
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabel});
-            this.statusBar.Location = new System.Drawing.Point(0, 173);
+            this.statusBar.Location = new System.Drawing.Point(0, 187);
             this.statusBar.Name = "statusBar";
             this.statusBar.Size = new System.Drawing.Size(544, 22);
             this.statusBar.SizingGrip = false;
@@ -160,11 +166,68 @@
             this.targetGame.Size = new System.Drawing.Size(156, 21);
             this.targetGame.TabIndex = 10;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Controls.Add(this.alterationFmt);
+            this.flowLayoutPanel1.Controls.Add(this.ascensionFmt);
+            this.flowLayoutPanel1.Controls.Add(this.assemblyFmt);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(137, 91);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(395, 29);
+            this.flowLayoutPanel1.TabIndex = 11;
+            // 
+            // alterationFmt
+            // 
+            this.alterationFmt.AutoSize = true;
+            this.alterationFmt.Enabled = false;
+            this.alterationFmt.Location = new System.Drawing.Point(3, 3);
+            this.alterationFmt.Name = "alterationFmt";
+            this.alterationFmt.Size = new System.Drawing.Size(69, 17);
+            this.alterationFmt.TabIndex = 3;
+            this.alterationFmt.Text = "Alteration";
+            this.alterationFmt.UseVisualStyleBackColor = true;
+            // 
+            // ascensionFmt
+            // 
+            this.ascensionFmt.AutoSize = true;
+            this.ascensionFmt.Location = new System.Drawing.Point(78, 3);
+            this.ascensionFmt.Name = "ascensionFmt";
+            this.ascensionFmt.Size = new System.Drawing.Size(74, 17);
+            this.ascensionFmt.TabIndex = 4;
+            this.ascensionFmt.Text = "Ascension";
+            this.ascensionFmt.UseVisualStyleBackColor = true;
+            // 
+            // assemblyFmt
+            // 
+            this.assemblyFmt.AutoSize = true;
+            this.assemblyFmt.Checked = true;
+            this.assemblyFmt.Location = new System.Drawing.Point(158, 3);
+            this.assemblyFmt.Name = "assemblyFmt";
+            this.assemblyFmt.Size = new System.Drawing.Size(69, 17);
+            this.assemblyFmt.TabIndex = 5;
+            this.assemblyFmt.TabStop = true;
+            this.assemblyFmt.Text = "Assembly";
+            this.assemblyFmt.UseVisualStyleBackColor = true;
+            this.assemblyFmt.CheckedChanged += new System.EventHandler(this.assemblyFmt_CheckedChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 96);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(76, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Target Format:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(544, 195);
+            this.ClientSize = new System.Drawing.Size(544, 209);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.targetGame);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.statusBar);
@@ -183,6 +246,8 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -202,6 +267,11 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox targetGame;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.RadioButton alterationFmt;
+        private System.Windows.Forms.RadioButton ascensionFmt;
+        private System.Windows.Forms.RadioButton assemblyFmt;
+        private System.Windows.Forms.Label label4;
     }
 }
 

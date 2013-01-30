@@ -10,8 +10,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
-using Assembly.Backend;
-using Assembly.Backend.Plugins;
+using Assembly.Helpers;
+using Assembly.Helpers.Plugins;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
@@ -48,7 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class MetaEditor : UserControl
     {
-        private EndianStream _stream;
+        private IStreamManager _streamManager;
         private TagEntry _tag;
         private TagHierarchy _tags;
         private BuildInformation _buildInfo;
@@ -62,7 +62,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
         private Timer _searchTimer;
 
-        public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, EndianStream stream)
+        private FieldChangeTracker _changeTracker;
+        private FieldChangeSet _fileChanges;
+        private FieldChangeSet _memoryChanges;
+
+        public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+
+        public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
 
@@ -70,7 +76,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _tags = tags;
             _buildInfo = buildInfo;
             _cache = cache;
-            _stream = stream;
+            _streamManager = streamManager;
             _searchTimer = new Timer(SearchTimer);
 
             // Load Plugin Path
@@ -100,14 +106,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _pluginVisitor = new ThirdGenPluginVisitor(_tags, Settings.pluginsShowInvisibles);
                     AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 
-                    _flattener = new ReflexiveFlattener();
-                    _flattener.Flatten(_pluginVisitor.Values);
+                    _changeTracker = new FieldChangeTracker();
+                    _fileChanges = new FieldChangeSet();
+                    _memoryChanges = new FieldChangeSet();
 
                     uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
-                    MetaReader metaReader = new MetaReader(_stream, baseOffset, _cache);
+                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _fileChanges);
+                    _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+                    _flattener.Flatten(_pluginVisitor.Values);
                     metaReader.ReadFields(_pluginVisitor.Values);
 
                     panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+
+                    // Start monitoring fields for changes
+                    _changeTracker.RegisterChangeSet(_fileChanges);
+                    _changeTracker.RegisterChangeSet(_memoryChanges);
+                    _changeTracker.Attach(_pluginVisitor.Values);
 
                     // Update Meta Toolbar
                     UpdateMetaButtons(true);
@@ -158,12 +172,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 btnPluginRefresh.Visibility         =   System.Windows.Visibility.Visible;
             }
         }
-        private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = false)
+        private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
         {
-            if (type == MetaWriter.SaveType.Cache)
+            if (type == MetaWriter.SaveType.File)
             {
-                MetaWriter metaUpdate = new MetaWriter(_stream, _cache, type, onlyUpdateChanged);
-                metaUpdate.Poke(_pluginVisitor.Values);
+                using (EndianWriter writer = new EndianWriter(_streamManager.OpenWrite(), Endian.BigEndian))
+                {
+#if DEBUG_SAVE_ALL
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, null);
+#else
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, _fileChanges);
+#endif
+                    metaUpdate.WriteFields(_pluginVisitor.Values);
+                    _fileChanges.MarkAllUnchanged();
+                }
 
                 if (showActionDialog)
                     MetroMessageBox.Show("Meta Saved", "The metadata has been saved back to the original file.");
@@ -172,15 +194,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             {
                 if (Settings.xbdm.Connect())
                 {
-                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _cache, type, onlyUpdateChanged);
-                    metaUpdate.Poke(_pluginVisitor.Values);
+                    FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
+                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, type, changes);
+                    metaUpdate.WriteFields(_pluginVisitor.Values);
+                    _memoryChanges.MarkAllUnchanged();
 
                     if (showActionDialog)
                     {
                         if (onlyUpdateChanged)
-                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the Xbox 360 Console.");
+                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to your Xbox 360 console.");
                         else
-                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the Xbox 360 Console.");
+                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to your Xbox 360 console.");
                     }
                 }
                 else
@@ -226,34 +250,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         private void btnPluginSave_Click(object sender, RoutedEventArgs e)
         {
-            UpdateMeta(MetaWriter.SaveType.Cache, false);
+            UpdateMeta(MetaWriter.SaveType.File, false);
         }
         
         private void metaEditor_KeyDown(object sender, KeyEventArgs e)
         {
+            // Require Ctrl to be down
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != ModifierKeys.Control)
+                return;
+
             switch (e.Key)
             {
                 case Key.S:
                     // Save Meta
-                    UpdateMeta(MetaWriter.SaveType.Cache, false);
+                    UpdateMeta(MetaWriter.SaveType.File, false);
                     break;
 
                 case Key.P:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        // Poke Changed
-                        UpdateMeta(MetaWriter.SaveType.Memory, true);
-                    else if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    {
                         // Poke All
                         UpdateMeta(MetaWriter.SaveType.Memory, false);
+                    }
+                    else
+                    {
+                        // Poke Changed
+                        UpdateMeta(MetaWriter.SaveType.Memory, true);
+                    }
                     break;
 
                 case Key.R:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
-                        // Refresh Plugin
-                        RefreshEditor();
-                    else if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    {
                         // Show Plugin Revision Viewer
                         RevisionViewer();
+                    }
+                    else
+                    {
+                        // Refresh Plugin
+                        RefreshEditor();
+                    }
                     break;
             }
         }
@@ -307,18 +343,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 field.Opacity = 1f;
             else
                 field.Opacity = .3f;
-        }
-
-        private MetaField GetWrappedField(MetaField field)
-        {
-            WrappedReflexiveEntry wrapper = null;
-            while (true)
-            {
-                wrapper = field as WrappedReflexiveEntry;
-                if (wrapper == null)
-                    return field;
-                field = wrapper.WrappedField;
-            }
         }
 
         private void btnResetSearch_Click_1(object sender, RoutedEventArgs e)
@@ -516,5 +540,74 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 SelectResult(selectedResult);
         }
         #endregion
+
+        private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            ValueField field = GetValueField(e.Source);
+            e.CanExecute = (field != null);
+        }
+
+        private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            ValueField field = GetValueField(e.Source);
+            if (field != null)
+            {
+                IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
+                uint offset = _cache.MetaPointerConverter.AddressToOffset(field.FieldAddress);
+                MetroViewValueAs.Show(_cache, _streamManager, viewValueAsFields, offset);
+            }
+        }
+
+        private static MetaField GetWrappedField(MetaField field)
+        {
+            WrappedReflexiveEntry wrapper = null;
+            while (true)
+            {
+                wrapper = field as WrappedReflexiveEntry;
+                if (wrapper == null)
+                    return field;
+                field = wrapper.WrappedField;
+            }
+        }
+
+        /// <summary>
+        /// Given a source element, retrieves the ValueField it represents.
+        /// </summary>
+        /// <param name="elem">The FrameworkElement to get the ValueField for.</param>
+        /// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
+        private static ValueField GetValueField(object elem)
+        {
+            // Get the FrameworkElement
+            FrameworkElement source = elem as FrameworkElement;
+            if (source == null)
+                return null;
+
+            // Get the field, and if it's a reflexive wrapper,
+            // then get the actual field it's wrapping
+            ValueField field = source.DataContext as ValueField;
+            if (field == null)
+            {
+                WrappedReflexiveEntry wrapper = source.DataContext as WrappedReflexiveEntry;
+                if (wrapper != null)
+                    field = GetWrappedField(wrapper) as ValueField;
+            }
+            return field;
+        }
+
+        /// <summary>
+        /// Loads the example "view value as" plugin.
+        /// </summary>
+        /// <returns>The fields created from the "view value as" plugin.</returns>
+        private IList<MetaField> LoadViewValueAsPlugin()
+        {
+            string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
+            XmlReader reader = XmlReader.Create(path);
+
+            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, true);
+            AssemblyPluginLoader.LoadPlugin(reader, plugin);
+            reader.Close();
+
+            return plugin.Values;
+        }
     }
 }

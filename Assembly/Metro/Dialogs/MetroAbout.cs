@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assembly.Backend;
+﻿using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs
 {
-    public class MetroAbout
+    public static class MetroAbout
     {
         /// <summary>
         /// Show the About Window
@@ -14,10 +10,9 @@ namespace Assembly.Metro.Dialogs
         public static void Show()
         {
             Settings.homeWindow.ShowMask();
-            ControlDialogs.About about = new ControlDialogs.About();
-            about.Owner = Settings.homeWindow;
-            about.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            about.ShowDialog();
+			var about = new ControlDialogs.About
+				            {Owner = Settings.homeWindow, WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner};
+	        about.ShowDialog();
             Settings.homeWindow.HideMask();
         }
     }

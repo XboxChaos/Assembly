@@ -7,14 +7,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class StringData : ValueField
     {
-        private string _value, _originalValue;
+        private string _value;
         private int _length;
 
-        public StringData(string name, uint offset, string value, int length, uint pluginLine)
-            : base(name, offset, pluginLine)
+        public StringData(string name, uint offset, uint address, string value, int length, uint pluginLine)
+            : base(name, offset, address, pluginLine)
         {
             _value = value;
-            _originalValue = value;
             _length = length;
         }
 
@@ -35,26 +34,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             visitor.VisitString(this);
         }
 
-        public override MetaField DeepClone()
+        public override MetaField CloneValue()
         {
-            StringData result = new StringData(Name, Offset, _value, _length, base.PluginLine);
-            result._originalValue = _originalValue;
-            return result;
-        }
-
-        public override bool HasChanged
-        {
-            get { return _value != _originalValue; }
-        }
-
-        public override void Reset()
-        {
-            Value = _originalValue;
-        }
-
-        public override void KeepChanges()
-        {
-            _originalValue = _value;
+            return new StringData(Name, Offset, FieldAddress, _value, _length, base.PluginLine);
         }
     }
 }
