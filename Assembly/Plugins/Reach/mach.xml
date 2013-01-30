@@ -5,7 +5,6 @@
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Standardized, named a few end bits.</revision>
 	</revisions>
-	<raw name="Standard Object Meta (Advanced)" offset="0x0" visible="false" size="0x178" />
 	<enum16 name="Object Category" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
@@ -25,8 +24,8 @@
 	<int16 name="Unknown" offset="0x2" visible="false" />
 	<bitfield32 name="Flags" offset="0x4" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
-		<bit name="Search Cardinal Direction Lightmaps" index="1" />
-		<bit name="unused" index="2" />
+		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
+		<bit name="Preserves Initial Damage Owner" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
 		<bit name="Extension Of Parent" index="4" />
 		<bit name="Does Not Cause Collision Damage" index="5" />
@@ -35,14 +34,14 @@
 		<bit name="Use Static Massive Lightmap Sample" index="8" />
 		<bit name="Object Scales Attachments" index="9" />
 		<bit name="Inherits Player's Appearance" index="10" />
-		<bit name="Dead Bipeds Can't Localize" index="11" />
-		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
-		<bit name="Effects Created By This Object Do Not" index="13" />
-		<bit name="15" index="14" />
-		<bit name="16" index="15" />
-		<bit name="17" index="16" />
-		<bit name="18" index="17" />
-		<bit name="19" index="18" />
+		<bit name="Non-Physical in Map Editor" index="11" />
+		<bit name="Object Is Always On Ceiling" index="12" />
+		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="13" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="14" />
+		<bit name="Does Not Collide With Camera" index="15" />
+		<bit name="Force Collide With Camera" index="16" />
+		<bit name="Damage Not Blocked By Obsructions" index="17" />
+		<bit name="Does Not Damage Breakable Surfaces" index="18" />
 		<bit name="20" index="19" />
 		<bit name="21" index="20" />
 		<bit name="22" index="21" />
@@ -61,9 +60,9 @@
 	<float32 name="Bounding Offset X" offset="0xC" visible="true" />
 	<float32 name="Bounding Offset Y" offset="0x10" visible="true" />
 	<float32 name="Bounding Offset Z" offset="0x14" visible="true" />
-	<float32 name="Acceleration Scale X" offset="0x18" visible="true" />
-	<float32 name="Acceleration Scale Y" offset="0x1C" visible="true" />
-	<float32 name="Acceleration Scale Z" offset="0x20" visible="true" />
+	<float32 name="Horizontal Acceleration Scale" offset="0x18" visible="true" />
+	<float32 name="Vertical Acceleration Scale" offset="0x1C" visible="true" />
+	<float32 name="Angular Acceleration Scale" offset="0x20" visible="true" />
 	<int8 name="Unknown" offset="0x24" visible="false" />
 	<enum8 name="Lightmap Shadow Mode Size" offset="0x25" visible="true">
 		<option name="Default" value="0x0" />
@@ -76,22 +75,30 @@
 		<option name="Medium" value="0x1" />
 		<option name="Large" value="0x2" />
 	</enum8>
-	<int8 name="Unknown" offset="0x27" visible="false" />
+	<enum8 name="Water Density" offset="0x27" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Least" value="0x1" />
+		<option name="Some" value="0x2" />
+		<option name="Equal" value="0x3" />
+		<option name="More" value="0x4" />
+		<option name="More Still" value="0x5" />
+		<option name="Lots More" value="0x6" />
+	</enum8>
 	<int16 name="Unknown" offset="0x28" visible="false" />
 	<int16 name="Unknown" offset="0x2A" visible="false" />
 	<float32 name="Dynamic Light Sphere Radius" offset="0x2C" visible="true" />
-	<float32 name="Dynamic Light Sphere X" offset="0x30" visible="true" />
-	<float32 name="Dynamic Light Sphere Y" offset="0x34" visible="true" />
-	<float32 name="Dynamic Light Sphere Z" offset="0x38" visible="true" />
-	<int32 name="Unknown" offset="0x3C" visible="false" />
-	<tagRef name="Unicode Strings" offset="0x40" visible="true" />
-	<tagRef name="Unknown" offset="0x50" visible="true" />
+	<float32 name="Dynamic Light Sphere X Offset" offset="0x30" visible="true" />
+	<float32 name="Dynamic Light Sphere Y Offset" offset="0x34" visible="true" />
+	<float32 name="Dynamic Light Sphere Z Offset" offset="0x38" visible="true" />
+	<int32 name="Generic HUD Text" offset="0x3C" visible="false" />
+	<tagRef name="Generic Name List" offset="0x40" visible="true" />
+	<tagRef name="Generic Service Tag List" offset="0x50" visible="true" />
 	<int32 name="Default Variant" offset="0x60" visible="true" />
 	<tagRef name="Object Properties" offset="0x64" visible="true" />
-	<tagRef name="Unknown" offset="0x74" visible="true" />
+	<tagRef name="Crate Object" offset="0x74" visible="true" />
 	<tagRef name="Collision Damage" offset="0x84" visible="true" />
-	<tagRef name="Unknown" offset="0x94" visible="true" />
-	<reflexive name="Personal Gravity" offset="0xA4" visible="false" entrySize="0x28">
+	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
+	<reflexive name="Early Mover Properties" offset="0xA4" visible="true" entrySize="0x28">
 		<int32 name="A Node" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -261,7 +268,6 @@
 			<colorf name="Color Lower Bound" offset="0x4" visible="true" format="rgb" />
 			<colorf name="Color Upper Bound" offset="0x10" visible="true" format="rgb" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-			<int32 name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
 		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x20">
 			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
@@ -351,7 +357,6 @@
 		<tagRef name="Health Pack" offset="0x0" visible="true" />
 	</reflexive>
 	<comment title="DEVICE"></comment>
-	<raw name="Device Meta (Advanced)" offset="0x178" visible="false" size="0x98" />
 	<bitfield32 name="Flags" offset="0x178" visible="true">
 		<bit name="Position Loops" index="0" />
 		<bit name="unused" index="1" />
@@ -377,7 +382,6 @@
 	<tagRef name="Delay Effect" offset="0x1FC" visible="true" />
 	<undefined name="Automatic Activation Radius" offset="0x20C" visible="true" />
 	<comment title="MACHINE"></comment>
-	<raw name="Machine Meta (Advanced)" offset="0x210" visible="false" size="0x20" />
 	<enum16 name="Type" offset="0x210" visible="true">
 		<option name="Door" value="0x0" />
 		<option name="Platform" value="0x1" />
