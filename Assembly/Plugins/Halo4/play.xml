@@ -3,11 +3,8 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<reflexive name="Testo" offset="0x0" visible="true" entrySize="0x10">
-		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
+	<reflexive name="Compression Codecs" offset="0x0" visible="true" entrySize="0x10">
+		<raw name="Guid" offset="0x18" size="0x10" visible="true"/>
 	</reflexive>
 	<reflexive name="Testo" offset="0xC" visible="true" entrySize="0x108">
 		<ascii name="Map Reference" offset="0x0" visible="true" length="0x20" />
@@ -70,38 +67,34 @@
 		<undefined name="00000070" offset="0x100" visible="true" />
 		<undefined name="00000071" offset="0x104" visible="true" />
 	</reflexive>
-	<reflexive name="Testo" offset="0x18" visible="true" entrySize="0x58">
-		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
-		<undefined name="00000009" offset="0x10" visible="true" />
-		<undefined name="00000010" offset="0x14" visible="true" />
-		<undefined name="00000011" offset="0x18" visible="true" />
-		<undefined name="00000012" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="true" />
-		<undefined name="00000014" offset="0x24" visible="true" />
-		<undefined name="00000015" offset="0x28" visible="true" />
-		<undefined name="00000016" offset="0x2C" visible="true" />
-		<undefined name="00000017" offset="0x30" visible="true" />
-		<undefined name="00000018" offset="0x34" visible="true" />
-		<undefined name="00000019" offset="0x38" visible="true" />
-		<undefined name="00000020" offset="0x3C" visible="true" />
-		<undefined name="00000021" offset="0x40" visible="true" />
-		<undefined name="00000022" offset="0x44" visible="true" />
-		<undefined name="00000023" offset="0x48" visible="true" />
-		<undefined name="00000024" offset="0x4C" visible="true" />
-		<undefined name="00000025" offset="0x50" visible="true" />
-		<undefined name="00000026" offset="0x54" visible="true" />
+	<reflexive name="Raw Pages" offset="0x18" visible="true" entrySize="0x58">
+		<int16 name="Salt" offset="0x0" visible="true" />
+		<int8 name="Flags" offset="0x2" visible="true" />
+		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared Cashe Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate.
+		</comment>
+		<int32 name="Block Offset" offset="0x8" visible="true" />
+		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
+		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
+		<int32 name="Crc Checksum" offset="0x14" visible="true" />
+		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true"/>
+		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true"/>
+		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true"/>
+		<int16 name="Unknown" offset="0x54" visible="true" />
+		<int16 name="Unknown" offset="0x56" visible="true" />
 	</reflexive>
 	<undefined name="00000014" offset="0x24" visible="true" />
 	<undefined name="00000015" offset="0x28" visible="true" />
 	<undefined name="00000016" offset="0x2C" visible="true" />
-	<reflexive name="Testo" offset="0x30" visible="true" entrySize="0x18">
-		<int32 name="00000005" offset="0x0" visible="true" />
+	<reflexive name="Asset Index" offset="0x30" visible="true" entrySize="0x18">
+		<int16 name="00000005" offset="0x0" visible="true" />
+		<int16 name="00000005" offset="0x2" visible="true" />
 		<int32 name="00000006" offset="0x4" visible="true" />
 		<int32 name="00000007" offset="0x8" visible="true" />
-		<int32 name="00000008" offset="0xC" visible="true" />
+		<int16 name="Required Page Index" offset="0xC" visible="true" />
+		<int16 name="Optional Page Index" offset="0xE" visible="true" />
 		<int32 name="00000009" offset="0x10" visible="true" />
 		<int32 name="00000010" offset="0x14" visible="true" />
 	</reflexive>
