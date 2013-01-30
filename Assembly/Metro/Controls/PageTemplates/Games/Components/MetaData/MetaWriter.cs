@@ -33,10 +33,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _changes = changes;
         }
 
-        public void WriteFields(IEnumerable<MetaField> fields)
+        public void WriteFields(IList<MetaField> fields)
         {
-            foreach (MetaField field in fields)
-                WriteField(field);
+            for (int i = 0; i < fields.Count; i++)
+                WriteField(fields[i]);
         }
 
         private void WriteField(MetaField field)

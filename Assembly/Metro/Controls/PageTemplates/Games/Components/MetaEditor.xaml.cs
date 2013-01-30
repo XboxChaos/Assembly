@@ -178,7 +178,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             {
                 using (EndianWriter writer = new EndianWriter(_streamManager.OpenWrite(), Endian.BigEndian))
                 {
+#if DEBUG_SAVE_ALL
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, null);
+#else
                     MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, _fileChanges);
+#endif
                     metaUpdate.WriteFields(_pluginVisitor.Values);
                     _fileChanges.MarkAllUnchanged();
                 }

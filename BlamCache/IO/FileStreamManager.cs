@@ -37,7 +37,11 @@ namespace ExtryzeDLL.IO
         /// <returns>The stream that was opened.</returns>
         public Stream OpenRead()
         {
+#if DEBUG_FILE_STREAMS
+            return _file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+#else
             return _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
+#endif
         }
 
         /// <summary>
@@ -46,7 +50,11 @@ namespace ExtryzeDLL.IO
         /// <returns>The stream that was opened.</returns>
         public Stream OpenWrite()
         {
+#if DEBUG_FILE_STREAMS
+            return _file.Open(FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
+#else
             return _file.OpenWrite();
+#endif
         }
 
         /// <summary>
@@ -55,7 +63,11 @@ namespace ExtryzeDLL.IO
         /// <returns>The stream that was opened.</returns>
         public Stream OpenReadWrite()
         {
+#if DEBUG_FILE_STREAMS
+            return _file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+#else
             return _file.Open(FileMode.Open, FileAccess.ReadWrite);
+#endif
         }
     }
 }

@@ -279,7 +279,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 length = 0;
 
             field.Length = length;
-            if (length > 0 && address != field.FirstEntryAddress)
+            if (address != field.FirstEntryAddress)
                 field.FirstEntryAddress = address;
         }
 
