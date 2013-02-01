@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			var ofd = new OpenFileDialog
 			{
 				Title = "Assembly - Select the mod preview image",
-				Filter = "JPEG Image|*.jpg|PNG Image|*.png"
+				Filter = "PNG Image|*.png"
 			};
 			if (ofd.ShowDialog() == DialogResult.OK)
 				txtCreatePatchPreviewImage.Text = ofd.FileName;
@@ -553,7 +553,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 					if (cbApplyPatchBlfExtraction.IsChecked != null && (PatchApplicationPatchExtra.Visibility == Visibility.Visible && (bool)cbApplyPatchBlfExtraction.IsChecked))
 					{
 						var fi = new FileInfo(outputPath);
-						var directoryPath = fi.DirectoryName;
 
 						var blfDirectory = fi.DirectoryName + "\\images\\";
 						var infDirectory = fi.DirectoryName + "\\info\\";
