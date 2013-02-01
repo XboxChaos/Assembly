@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Patching
@@ -17,11 +18,42 @@ namespace ExtryzeDLL.Patching
 
         private static void WriteBlocks(Patch patch, IWriter writer)
         {
+			WriteBlfInfo(patch, writer);
             WritePatchInfo(patch, writer);
             WriteMetaChanges(patch, writer);
             WriteLocaleChanges(patch, writer);
         }
 
+		private static void WriteBlfInfo(Patch patch, IWriter writer)
+		{
+			// Does this mod have custom mapinfo/blf files? 
+			if (patch.CustomBlfContent == null) return;
+
+			var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Blfc);
+			writer.WriteByte(0);
+
+			// Write Targeted Game
+			writer.WriteByte((byte) patch.CustomBlfContent.TargetGame);
+
+			// Write MapInfo Length
+			writer.WriteUInt32(Convert.ToUInt32(patch.CustomBlfContent.MapInfo.Length));
+
+			// Write MapInfo
+			writer.WriteBlock(patch.CustomBlfContent.MapInfo);
+
+			// Write Number of Blf Containers
+			writer.WriteInt16(Convert.ToInt16(patch.CustomBlfContent.BlfContainerEntries.Count));
+
+			// Write Blf Containers
+			foreach (var blfContainerEntry in patch.CustomBlfContent.BlfContainerEntries)
+			{
+				writer.WriteAscii(blfContainerEntry.FileName);
+				writer.WriteUInt32(Convert.ToUInt32(blfContainerEntry.BlfContainer.Length));
+				writer.WriteBlock(blfContainerEntry.BlfContainer);
+			}
+
+			EndBlock(writer, startPos);
+		}
         private static void WritePatchInfo(Patch patch, IWriter writer)
         {
 			var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Titl);
@@ -52,7 +84,6 @@ namespace ExtryzeDLL.Patching
 
             EndBlock(writer, startPos);
         }
-
         private static void WriteMetaChanges(Patch patch, IWriter writer)
         {
             if (patch.MetaChanges.Count == 0)
@@ -91,7 +122,6 @@ namespace ExtryzeDLL.Patching
 
             EndBlock(writer, startPos);
         }
-
         private static void WriteLocaleChanges(Patch patch, IWriter writer)
         {
             if (patch.LanguageChanges.Count == 0)
@@ -125,7 +155,6 @@ namespace ExtryzeDLL.Patching
             writer.WriteUInt32(0); // Size filled in later
             return startPos;
         }
-
         private static void EndBlock(IWriter writer, long headerPos)
         {
 			var endPos = writer.Position;

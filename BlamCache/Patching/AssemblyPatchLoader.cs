@@ -34,7 +34,11 @@ namespace ExtryzeDLL.Patching
 				var size = reader.ReadUInt32();
 
                 switch (blockId)
-                {
+				{
+					case AssemblyPatchBlockID.Blfc:
+						ReadBlfInfo(reader, result);
+						break;
+
                     case AssemblyPatchBlockID.Titl:
                         ReadPatchInfo(reader, result);
                         break;
@@ -54,6 +58,27 @@ namespace ExtryzeDLL.Patching
             return result;
         }
 
+		private static void ReadBlfInfo(IReader reader, Patch output)
+		{
+			// ReSharper disable UnusedVariable
+			var version = reader.ReadByte();
+			// ReSharper restore UnusedVariable
+			
+			// Version 0 (all versions)
+			var targetGame = (TargetGame) reader.ReadByte();
+			var mapInfoLength = reader.ReadUInt32();
+			var mapInfo = reader.ReadBlock((int)mapInfoLength);
+			var blfContainerCount = reader.ReadInt16();
+			output.CustomBlfContent = new BlfContent(mapInfo, targetGame);
+			for(var i = 0; i < blfContainerCount; i++)
+			{
+				var fileName = reader.ReadAscii();
+				var blfContainerLength = reader.ReadUInt32();
+				var blfContainer = reader.ReadBlock((int)blfContainerLength);
+
+				output.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(fileName, blfContainer));
+			}
+		}
         private static void ReadPatchInfo(IReader reader, Patch output)
         {
 // ReSharper disable UnusedVariable
@@ -71,7 +96,6 @@ namespace ExtryzeDLL.Patching
             if (screenshotLength > 0)
                 output.Screenshot = reader.ReadBlock(screenshotLength);
         }
-
         private static void ReadMetaChanges(IReader reader, Patch output)
         {
 // ReSharper disable UnusedVariable
@@ -97,7 +121,6 @@ namespace ExtryzeDLL.Patching
                 output.MetaChanges.Add(new MetaChange(address, data));
             }
         }
-
         private static void ReadLocaleChanges(IReader reader, Patch output)
         {
 // ReSharper disable UnusedVariable

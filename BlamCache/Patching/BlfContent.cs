@@ -1,59 +1,53 @@
-﻿namespace ExtryzeDLL.Patching
+﻿using System.Collections.Generic;
+
+namespace ExtryzeDLL.Patching
 {
-	public abstract class BlfContent
+	public class BlfContent
 	{
-		protected BlfContent(byte[] mapInfo, TargetGame targetGame)
+		public BlfContent(byte[] mapInfo, TargetGame targetGame, IList<BlfContainerEntry> blfContainerEntries)
 		{
 			MapInfo = mapInfo;
 			TargetGame = targetGame;
+			BlfContainerEntries = blfContainerEntries;
+		}
+		public BlfContent(byte[] mapInfo, TargetGame targetGame)
+		{
+			MapInfo = mapInfo;
+			TargetGame = targetGame;
+			BlfContainerEntries = new List<BlfContainerEntry>();
 		}
 
+		/// <summary>
+		/// The custom Mapinfo file.
+		/// </summary>
 		public byte[] MapInfo { get; private set; }
+
+		/// <summary>
+		/// The game the patch is targeted at.
+		/// </summary>
 		public TargetGame TargetGame { get; private set; }
-	}
 
-	public class Halo3BlfContent : BlfContent
+		/// <summary>
+		/// A collection of Blf Conainer Entries
+		/// </summary>
+		public IList<BlfContainerEntry> BlfContainerEntries { get; private set; }
+	}
+	public class BlfContainerEntry
 	{
-		public Halo3BlfContent(byte[] mapInfo, TargetGame targetGame, byte[] blf, byte[] blf_clip, byte[] blf_film, byte[] blf_sm)
-			: base(mapInfo, targetGame)
+		public BlfContainerEntry(string fileName, byte[] blfContainer)
 		{
-			Blf = blf;
-			Blf_Clip = blf_clip;
-			Blf_Film = blf_film;
-			Blf_Sm = blf_sm;
+			FileName = fileName;
+			BlfContainer = blfContainer;
 		}
 
-		public byte[] Blf { get; private set; }
-		public byte[] Blf_Clip { get; private set; }
-		public byte[] Blf_Film { get; private set; }
-		public byte[] Blf_Sm { get; private set; }
-	}
-	public class HaloReachBlfContent : BlfContent
-	{
-		public HaloReachBlfContent(byte[] mapInfo, TargetGame targetGame, byte[] blf, byte[] blf_sm)
-			: base(mapInfo, targetGame)
-		{
-			Blf = blf;
-			Blf_Sm = blf_sm;
-		}
+		/// <summary>
+		/// Blf Container File Name
+		/// </summary>
+		public string FileName { get; private set; }
 
-		public byte[] Blf { get; private set; }
-		public byte[] Blf_Sm { get; private set; }
-	}
-	public class Halo4BlfContent : BlfContent
-	{
-		public Halo4BlfContent(byte[] mapInfo, TargetGame targetGame, byte[] blf, byte[] blf_card, byte[] blf_lobby, byte[] blf_sm)
-			: base(mapInfo, targetGame)
-		{
-			Blf = blf;
-			Blf_Card = blf_card;
-			Blf_Lobby = blf_lobby;
-			Blf_Sm = blf_sm;
-		}
-
-		public byte[] Blf { get; private set; }
-		public byte[] Blf_Card { get; private set; }
-		public byte[] Blf_Lobby { get; private set; }
-		public byte[] Blf_Sm { get; private set; }
+		/// <summary>
+		/// The Blf Container
+		/// </summary>
+		public byte[] BlfContainer { get; private set; }
 	}
 }

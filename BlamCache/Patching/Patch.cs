@@ -50,5 +50,10 @@ namespace ExtryzeDLL.Patching
         /// Changes that should be made to a map's locales.
         /// </summary>
         public IList<LanguageChange> LanguageChanges { get; private set; }
+
+		/// <summary>
+		/// Custom, User-Made Blf Content
+		/// </summary>
+		public BlfContent CustomBlfContent { get; set; }
     }
 }
