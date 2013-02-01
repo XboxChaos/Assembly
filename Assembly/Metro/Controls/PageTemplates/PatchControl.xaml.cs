@@ -189,6 +189,66 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf3.Text = "";
 		}
 
+		// Utilities
+		private bool CheckAllMandatoryFields()
+		{
+			var error = false;
+
+			if (txtCreatePatchUnModdifiedMap.Text == null) return false;
+
+			// Check Un-modified map exists
+			if (String.IsNullOrEmpty(txtCreatePatchUnModdifiedMap.Text) || !File.Exists(txtCreatePatchUnModdifiedMap.Text))
+				error = true;
+
+			// Check Modified map exists
+			if (String.IsNullOrEmpty(txtCreatePatchModdifiedMap.Text) || !File.Exists(txtCreatePatchModdifiedMap.Text))
+				error = true;
+
+			// Check Content Name is entered
+			if (String.IsNullOrEmpty(txtCreatePatchContentName.Text))
+				error = true;
+
+			// Check Content Author is entered
+			if (String.IsNullOrEmpty(txtCreatePatchContentAuthor.Text))
+				error = true;
+
+			// Check Content Desc is entered
+			if (String.IsNullOrEmpty(txtCreatePatchContentDescription.Text))
+				error = true;
+
+			if (error)
+				MetroMessageBox.Show("Unable to make patch", "Mandatory fields are missing, please make sure you've filled out all required fields.");
+
+			return !error;
+		}
+		private bool CheckAllMetaFilesExists()
+		{
+			var error = false;
+
+			if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked || cboxCreatePatchTargetGame.SelectedIndex == 4) return false;
+
+			// Check Map Info exists
+			if (String.IsNullOrEmpty(txtCreatePatchMapInfo.Text) || !File.Exists(txtCreatePatchMapInfo.Text))
+				error = true;
+
+			// Check Blf Container 0
+			if (PatchCreationBlfOption0.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf0.Text) || !File.Exists(txtCreatePatchblf0.Text)))
+				error = true;
+			// Check Blf Container 1
+			if (PatchCreationBlfOption1.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf1.Text) || !File.Exists(txtCreatePatchblf1.Text)))
+				error = true;
+			// Check Blf Container 2
+			if (PatchCreationBlfOption2.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf2.Text) || !File.Exists(txtCreatePatchblf2.Text)))
+				error = true;
+			// Check Blf Container 3
+			if (PatchCreationBlfOption3.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf3.Text) || !File.Exists(txtCreatePatchblf3.Text)))
+				error = true;
+
+			if (error)
+				MetroMessageBox.Show("Unable to make patch", "You are missing blf/mapinfo files.");
+			
+			return !error;
+		}
 
 	    // Patch Creation
 		private void btnCreatePatch_Click(object sender, RoutedEventArgs e)
@@ -197,6 +257,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 			try
 			{
 #endif
+				// Check the user isn't completly retarded
+				if (!CheckAllMandatoryFields())
+					return;
+
+				// Check the user isn't a skid
+				if (!CheckAllMetaFilesExists())
+					return;
+
 				// Paths
 				var cleanMapPath = txtCreatePatchUnModdifiedMap.Text;
 				var moddedMapPath = txtCreatePatchModdifiedMap.Text;
