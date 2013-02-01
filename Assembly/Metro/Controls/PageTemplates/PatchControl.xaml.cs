@@ -11,6 +11,7 @@ using ExtryzeDLL.IO;
 using ExtryzeDLL.Patching;
 using System;
 using Assembly.Metro.Dialogs;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -80,6 +81,67 @@ namespace Assembly.Metro.Controls.PageTemplates
 				txtCreatePatchPreviewImage.Text = ofd.FileName;
 		}
 
+		private void btnCreatePatchMapInfo_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified MapInfo",
+				Filter = "MapInfo File (*.mapinfo)|*.mapinfo"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchMapInfo.Text = ofd.FileName;
+		}
+		private void btnCreatePatchblf0_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified BLF Container",
+				Filter = "BLF Container (*.blf)|*.blf"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchblf0.Text = ofd.FileName;
+		}
+		private void btnCreatePatchblf1_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified BLF Container",
+				Filter = "BLF Container (*.blf)|*.blf"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchblf1.Text = ofd.FileName;
+		}
+		private void btnCreatePatchblf2_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified BLF Container",
+				Filter = "BLF Container (*.blf)|*.blf"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchblf2.Text = ofd.FileName;
+		}
+		private void btnCreatePatchblf3_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified BLF Container",
+				Filter = "BLF Container (*.blf)|*.blf"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchblf3.Text = ofd.FileName;
+		}
+		private void btnCreatePatchblf4_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Modified BLF Container",
+				Filter = "BLF Container (*.blf)|*.blf"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtCreatePatchblf4.Text = ofd.FileName;
+		}
+
 		// Meta Sorting
 		private void cboxCreatePatchTargetGame_SelectionChanged(object sender, SelectionChangedEventArgs e) { PatchCreationMetaOptionsVisibility(); }
 		private void cbCreatePatchHasCustomMeta_Modified(object sender, RoutedEventArgs e) { PatchCreationMetaOptionsVisibility(); }
@@ -126,9 +188,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			// Hide/Show fields
 			PatchCreationBlfOption0.Visibility =
-				PatchCreationBlfOption3.Visibility = 
 				PatchCreationBlfOption1.Visibility =
-				PatchCreationBlfOption2.Visibility = Visibility.Visible;
+				PatchCreationBlfOption2.Visibility =
+				PatchCreationBlfOption3.Visibility =
+				PatchCreationBlfOption4.Visibility = Visibility.Visible;
 
 			// Re-name fields
 			lblCreatePatchTitleblf1.Text = "Modified blf_clip:";
@@ -136,6 +199,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
 				lblCreatePatchTitleblf1.Tag = "blf_film";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
+			lblCreatePatchTitleblf4.Text = "Modified blf_varient:";
 
 			// Reset fields
 			txtCreatePatchMapInfo.Text = "";
@@ -143,6 +207,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
+			txtCreatePatchblf4.Text = "";
 		}
 		private void PrepHaloReach()
 		{
@@ -153,7 +218,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 			PatchCreationBlfOption0.Visibility =
 				PatchCreationBlfOption3.Visibility = Visibility.Visible;
 			PatchCreationBlfOption1.Visibility =
-				PatchCreationBlfOption2.Visibility = Visibility.Collapsed;
+			PatchCreationBlfOption2.Visibility =
+				PatchCreationBlfOption4.Visibility = Visibility.Collapsed;
 
 			// Re-name fields
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
@@ -165,6 +231,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
+			txtCreatePatchblf4.Text = "";
 		}
 		private void PrepHalo4()
 		{
@@ -176,6 +243,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				PatchCreationBlfOption3.Visibility =
 				PatchCreationBlfOption1.Visibility =
 				PatchCreationBlfOption2.Visibility = Visibility.Visible;
+			PatchCreationBlfOption4.Visibility = Visibility.Collapsed;
 
 			// Re-name fields
 			lblCreatePatchTitleblf1.Text = "Modified blf_card:";
@@ -190,6 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
+			txtCreatePatchblf4.Text = "";
 		}
 
 		// Utilities
@@ -232,19 +301,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			// Check Map Info exists
 			if (String.IsNullOrEmpty(txtCreatePatchMapInfo.Text) || !File.Exists(txtCreatePatchMapInfo.Text))
-				error = true;
-
-			// Check Blf Container 0
-			if (PatchCreationBlfOption0.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf0.Text) || !File.Exists(txtCreatePatchblf0.Text)))
-				error = true;
-			// Check Blf Container 1
-			if (PatchCreationBlfOption1.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf1.Text) || !File.Exists(txtCreatePatchblf1.Text)))
-				error = true;
-			// Check Blf Container 2
-			if (PatchCreationBlfOption2.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf2.Text) || !File.Exists(txtCreatePatchblf2.Text)))
-				error = true;
-			// Check Blf Container 3
-			if (PatchCreationBlfOption3.Visibility == Visibility.Visible && (String.IsNullOrEmpty(txtCreatePatchblf3.Text) || !File.Exists(txtCreatePatchblf3.Text)))
 				error = true;
 
 			if (error)
@@ -410,13 +466,26 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 				using (var stream = new MemoryStream(currentPatch.Screenshot))
 				{
-					var decoder = new PngBitmapDecoder(stream,
-					                                   BitmapCreateOptions.PreservePixelFormat,
-					                                   BitmapCacheOption.OnLoad);
+					if (VariousFunctions.IsJpegImage(stream))
+					{
+						var decoder = new JpegBitmapDecoder(stream,
+														   BitmapCreateOptions.PreservePixelFormat,
+														   BitmapCacheOption.OnLoad);
 
-					var bitmapSource = decoder.Frames[0];
-					bitmapSource.Freeze();
-					imgApplyPreview.Source = bitmapSource;
+						var bitmapSource = decoder.Frames[0];
+						bitmapSource.Freeze();
+						imgApplyPreview.Source = bitmapSource;
+					}
+					else
+					{
+						var decoder = new PngBitmapDecoder(stream,
+						                                   BitmapCreateOptions.PreservePixelFormat,
+						                                   BitmapCacheOption.OnLoad);
+
+						var bitmapSource = decoder.Frames[0];
+						bitmapSource.Freeze();
+						imgApplyPreview.Source = bitmapSource;
+					}
 				}
 			}
 			catch(Exception ex)
