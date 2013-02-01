@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -9,7 +8,6 @@ using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Patching;
-using MessageBox = System.Windows.Forms.MessageBox;
 using System;
 using Assembly.Metro.Dialogs;
 
@@ -130,52 +128,62 @@ namespace Assembly.Metro.Controls.PageTemplates
 		}
 
 		// Patch Creation
-
 		private void btnCreatePatch_Click(object sender, RoutedEventArgs e)
 		{
-			// Paths
-			var cleanMapPath = txtCreatePatchUnModdifiedMap.Text;
-			var moddedMapPath = txtCreatePatchModdifiedMap.Text;
-			var outputPath = txtCreatePatchOutputPatch.Text;
-			var previewImage = txtCreatePatchPreviewImage.Text;
-
-			// Details
-			var author = txtCreatePatchContentAuthor.Text;
-			var desc = txtCreatePatchContentDescription.Text;
-			var name = txtCreatePatchContentName.Text;
-
-			// Make dat patch
-			var patch = new Patch
+#if !DEBUG
+			try
 			{
-				Author = author,
-				Description = desc,
-				Name = name,
-				Screenshot = String.IsNullOrEmpty(previewImage) ?
-					null :
-					File.ReadAllBytes(previewImage)
-			};
+#endif
+				// Paths
+				var cleanMapPath = txtCreatePatchUnModdifiedMap.Text;
+				var moddedMapPath = txtCreatePatchModdifiedMap.Text;
+				var outputPath = txtCreatePatchOutputPatch.Text;
+				var previewImage = txtCreatePatchPreviewImage.Text;
 
-			IReader originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
-			IReader newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
+				// Details
+				var author = txtCreatePatchContentAuthor.Text;
+				var desc = txtCreatePatchContentDescription.Text;
+				var name = txtCreatePatchContentName.Text;
 
-			var version = new ThirdGenVersionInfo(originalReader);
-			var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
-			var buildInfo = loader.LoadBuild(version.BuildString);
-			var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
-			var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
+				// Make dat patch
+				var patch = new Patch
+				{
+					Author = author,
+					Description = desc,
+					Name = name,
+					Screenshot = String.IsNullOrEmpty(previewImage) ?
+						null :
+						File.ReadAllBytes(previewImage)
+				};
 
-			patch.MapInternalName = originalFile.Info.InternalName;
-			MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
-			LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
+				IReader originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
+				IReader newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-			originalReader.Close();
-			newReader.Close();
+				var version = new ThirdGenVersionInfo(originalReader);
+				var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
+				var buildInfo = loader.LoadBuild(version.BuildString);
+				var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
+				var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
-			IWriter output = new EndianWriter(File.OpenWrite(outputPath), Endian.BigEndian);
-			AssemblyPatchWriter.WritePatch(patch, output);
-			output.Close();
+				patch.MapInternalName = originalFile.Info.InternalName;
+				MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
+				LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
 
-			MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
+				originalReader.Close();
+				newReader.Close();
+
+				IWriter output = new EndianWriter(File.OpenWrite(outputPath), Endian.BigEndian);
+				AssemblyPatchWriter.WritePatch(patch, output);
+				output.Close();
+
+				MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
+#if !DEBUG
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+#endif
 		}
 		#endregion
 
