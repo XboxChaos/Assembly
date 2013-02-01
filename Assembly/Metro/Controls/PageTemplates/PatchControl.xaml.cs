@@ -36,13 +36,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		#region Patch Creation Functions
 		// Enums
-		public enum TargetGames
-		{
-			Halo3,
-			Halo3ODST,
-			HaloReach,
-			Halo4
-		}
 
 		// File Selectors
 		private void btnCreatePatchUnModdifiedMap_Click(object sender, RoutedEventArgs e)
@@ -110,15 +103,15 @@ namespace Assembly.Metro.Controls.PageTemplates
 			// Set meta visibility depending on Targeted Game
 			switch(cboxCreatePatchTargetGame.SelectedIndex)
 			{
-				case (int)TargetGames.Halo3:
-				case (int)TargetGames.Halo3ODST: PatchCreationH3.Visibility = Visibility.Visible;
+				case (int)TargetGame.Halo3:
+				case (int)TargetGame.Halo3ODST: PatchCreationH3.Visibility = Visibility.Visible;
 					break;
 
-				case (int)TargetGames.HaloReach: 
+				case (int)TargetGame.HaloReach: 
 					PatchCreationHR.Visibility = Visibility.Visible;
 					break;
 
-				case (int)TargetGames.Halo4:
+				case (int)TargetGame.Halo4:
 					PatchCreationH4.Visibility = Visibility.Visible;
 					break;
 

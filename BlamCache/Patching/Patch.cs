@@ -49,6 +49,6 @@ namespace ExtryzeDLL.Patching
         /// <summary>
         /// Changes that should be made to a map's locales.
         /// </summary>
-        public IList<LanguageChange> LanguageChanges { get; private set;  }
+        public IList<LanguageChange> LanguageChanges { get; private set; }
     }
 }
