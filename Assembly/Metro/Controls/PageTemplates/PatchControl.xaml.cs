@@ -36,25 +36,25 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		#region Patch Creation Functions
 		// File Selectors
-		private void btnCreatePatchUnModdifiedMap_Click(object sender, RoutedEventArgs e)
+		private void btnCreatePatchUnModifiedMap_Click(object sender, RoutedEventArgs e)
 		{
 			var ofd = new OpenFileDialog
 				          {
-					          Title = "Assembly - Select a Unmoddified (Clean) Map file",
+					          Title = "Assembly - Select a UnModified (Clean) Map file",
 							  Filter = "Blam Cache File (*.map)|*.map"
 				          };
 			if (ofd.ShowDialog() == DialogResult.OK)
-				txtCreatePatchUnModdifiedMap.Text = ofd.FileName;
+				txtCreatePatchUnModifiedMap.Text = ofd.FileName;
 		}
-		private void btnCreatePatchModdifiedMap_Click(object sender, RoutedEventArgs e)
+		private void btnCreatePatchModifiedMap_Click(object sender, RoutedEventArgs e)
 		{
 			var ofd = new OpenFileDialog
 			{
-				Title = "Assembly - Select a Moddified Map file",
+				Title = "Assembly - Select a Modified Map file",
 				Filter = "Blam Cache File (*.map)|*.map"
 			};
 			if (ofd.ShowDialog() == DialogResult.OK)
-				txtCreatePatchModdifiedMap.Text = ofd.FileName;
+				txtCreatePatchModifiedMap.Text = ofd.FileName;
 		}
 		private void btnCreatePatchOutputPatch_Click(object sender, RoutedEventArgs e)
 		{
@@ -194,14 +194,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			var error = false;
 
-			if (txtCreatePatchUnModdifiedMap.Text == null) return false;
+			if (txtCreatePatchUnModifiedMap.Text == null) return false;
 
 			// Check Un-modified map exists
-			if (String.IsNullOrEmpty(txtCreatePatchUnModdifiedMap.Text) || !File.Exists(txtCreatePatchUnModdifiedMap.Text))
+			if (String.IsNullOrEmpty(txtCreatePatchUnModifiedMap.Text) || !File.Exists(txtCreatePatchUnModifiedMap.Text))
 				error = true;
 
 			// Check Modified map exists
-			if (String.IsNullOrEmpty(txtCreatePatchModdifiedMap.Text) || !File.Exists(txtCreatePatchModdifiedMap.Text))
+			if (String.IsNullOrEmpty(txtCreatePatchModifiedMap.Text) || !File.Exists(txtCreatePatchModifiedMap.Text))
 				error = true;
 
 			// Check Content Name is entered
@@ -266,8 +266,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 					return;
 
 				// Paths
-				var cleanMapPath = txtCreatePatchUnModdifiedMap.Text;
-				var moddedMapPath = txtCreatePatchModdifiedMap.Text;
+				var cleanMapPath = txtCreatePatchUnModifiedMap.Text;
+				var moddedMapPath = txtCreatePatchModifiedMap.Text;
 				var outputPath = txtCreatePatchOutputPatch.Text;
 				var previewImage = txtCreatePatchPreviewImage.Text;
 

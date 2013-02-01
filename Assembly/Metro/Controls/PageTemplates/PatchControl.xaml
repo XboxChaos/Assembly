@@ -7,6 +7,10 @@
              mc:Ignorable="d" 
              Background="#28282b"
              d:DesignWidth="1200" d:DesignHeight="1200">
+	<UserControl.Resources>
+		
+	</UserControl.Resources>
+	
     <Grid>
         <Image Source="/Assembly;component/Metro/Images/super_patcher.png" OpacityMask="#FF7A7A7A" Opacity="0.05" Margin="199,0,0,-60" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="428" Width="510" RenderTransformOrigin="0.5,0.5" >
             <Image.RenderTransform>
@@ -60,16 +64,16 @@
 								<!-- Title -->
 								<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="File Paths;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
 								
-								<!-- Unmoddified map -->
-								<TextBlock Text="Un-Moddified Map:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<TextBox x:Name="txtCreatePatchUnModdifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="1" />
-								<Button x:Name="btnCreatePatchUnModdifiedMap" Content="..." Grid.Column="2" Grid.Row="1" Margin="5,0,0,0" Click="btnCreatePatchUnModdifiedMap_Click" />
+								<!-- UnModified map -->
+								<TextBlock Text="Un-Modified Map:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBox x:Name="txtCreatePatchUnModifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="1" />
+								<Button x:Name="btnCreatePatchUnModifiedMap" Content="..." Grid.Column="2" Grid.Row="1" Margin="5,0,0,0" Click="btnCreatePatchUnModifiedMap_Click" />
 
 
-								<!-- Moddified map -->
-								<TextBlock Text="Moddified Map:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<TextBox x:Name="txtCreatePatchModdifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="2" />
-								<Button x:Name="btnCreatePatchModdifiedMap" Content="..." Grid.Column="2" Grid.Row="2" Margin="5,0,0,0" Click="btnCreatePatchModdifiedMap_Click" />
+								<!-- Modified map -->
+								<TextBlock Text="Modified Map:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBox x:Name="txtCreatePatchModifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="2" />
+								<Button x:Name="btnCreatePatchModifiedMap" Content="..." Grid.Column="2" Grid.Row="2" Margin="5,0,0,0" Click="btnCreatePatchModifiedMap_Click" />
 
 								
 								<!-- Output Patch -->
@@ -98,19 +102,19 @@
 								<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Details;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
 
 								<!-- Mod Name -->
-								<TextBlock Text="Moddified Content Name:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Modified Content Name:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchContentName" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" />
 
 								<!-- Mod Author -->
-								<TextBlock Text="Moddified Content Author:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Modified Content Author:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchContentAuthor" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" />
 
 								<!-- Mod Desc -->
-								<TextBlock Text="Moddified Content Description:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="0,10,0,74" />
+								<TextBlock Text="Modified Content Description:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="0,10,0,74" />
 								<TextBox x:Name="txtCreatePatchContentDescription" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Height="Auto" Margin="0,5"  />
 
 								<!-- Mod Preview -->
-								<TextBlock Text="Moddified Content Preview Image:" Grid.Column="0" Grid.Row="4" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Modified Content Preview Image:" Grid.Column="0" Grid.Row="4" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchPreviewImage" Grid.Column="1" IsReadOnly="True" Grid.Row="4" />
 								<Button x:Name="btnCreatePatchPreviewImage" Content="..." Grid.Column="3" Grid.Row="4" Margin="5,0,0,0" Click="btnCreatePatchPreviewImage_Click" />
 
@@ -215,7 +219,98 @@
 			</TabItem>
 			<TabItem Header="Apply Patch" Style="{StaticResource MetroHeaderTabItemSub}">
 				<Grid>
-					
+					<Grid Margin="0,10,0,0">
+						<ScrollViewer>
+							<StackPanel Margin="0,0,10,0">
+								<Grid x:Name="PatchApplicationFilePaths" Margin="0,15,0,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="220" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="30" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="55" />
+										<RowDefinition Height="35" />
+										<RowDefinition Height="35" />
+										<RowDefinition Height="35" />
+									</Grid.RowDefinitions>
+
+									<!-- Title -->
+									<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="File Paths;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
+
+									<!-- Patch File -->
+									<TextBlock Text="Patch File:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchFile" Grid.Column="1" IsReadOnly="True"  Grid.Row="1" />
+									<Button x:Name="btnApplyPatchFile" Content="..." Grid.Column="2" Grid.Row="1" Margin="5,0,0,0" />
+
+									<!-- Clean Map -->
+									<TextBlock Text="Un-Modified Map:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchUnmodifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="2" />
+									<Button x:Name="btnApplyPatchUnmodifiedMap" Content="..." Grid.Column="2" Grid.Row="2" Margin="5,0,0,0" />
+
+									<!-- Output Map -->
+									<TextBlock Text="Output Map:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchOutputMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="3" />
+									<Button x:Name="btnApplyPatchOutputMap" Content="..." Grid.Column="2" Grid.Row="3" Margin="5,0,0,0" />
+								</Grid>
+
+								<Grid x:Name="PatchApplicationPatchDetails" Margin="0,15,0,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="220" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="30" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="55" />
+										<RowDefinition Height="35" />
+										<RowDefinition Height="35" />
+										<RowDefinition Height="35" />
+									</Grid.RowDefinitions>
+
+									<!-- Title -->
+									<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Patch Details;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
+
+									<!-- Patch Name -->
+									<TextBlock Text="Patch Name:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchName" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" IsReadOnly="True"  />
+
+									<!-- Patch Author -->
+									<TextBlock Text="Patch Author:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchAuthor" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" IsReadOnly="True"  />
+
+									<!-- Patch Description -->
+									<TextBlock Text="Patch Description:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<TextBox x:Name="txtApplyPatchDesc" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" IsReadOnly="True" />
+
+
+								</Grid>
+
+								<Grid x:Name="PatchApplicationPatchExtra" Margin="0,15,0,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="220" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="30" />
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="55" />
+										<RowDefinition Height="80" />
+									</Grid.RowDefinitions>
+
+									<!-- Title -->
+									<TextBlock Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Text="Patch Extras;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
+
+									<!-- Nothing Yet -->
+									<TextBlock Text="Woah cowboy! This patch contains custom .mapinfo/.blf's that 'may' be required for you to play this mod. Would you like to extract them to the same folder as the output map?" TextWrapping="Wrap" Grid.Column="0" Grid.Row="1" Margin="0,0,30,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+									<CheckBox x:Name="cbApplyPatchBlfExtraction" VerticalAlignment="Top" Margin="10,10,0,0" Content="Hell Yeah!" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"  />
+
+
+
+								</Grid>
+
+								<Button x:Name="btnApplyPatch" Content="Create Assembly Patch" Margin="60" />
+							</StackPanel>
+						</ScrollViewer>
+					</Grid>
 				</Grid>
 			</TabItem>
             <TabItem Header="Patch Converter" Style="{StaticResource MetroHeaderTabItemSub}">
