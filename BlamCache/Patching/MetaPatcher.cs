@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
 
@@ -12,15 +9,15 @@ namespace ExtryzeDLL.Patching
     /// </summary>
     public static class MetaPatcher
     {
-        /// <summary>
-        /// Writes a series of meta changes back to a cache file.
-        /// </summary>
-        /// <param name="cacheFile">The cache file to write the changes to.</param>
-        /// <param name="change">The changes to write.</param>
-        /// <param name="output">The stream to write the changes to.</param>
-        public static void WriteChanges(IEnumerable<MetaChange> changes, ICacheFile cacheFile, IWriter output)
+	    /// <summary>
+	    /// Writes a series of meta changes back to a cache file.
+	    /// </summary>
+		/// <param name="changes">The changes to write.</param>
+	    /// <param name="cacheFile">The cache file to write the changes to.</param>
+	    /// <param name="output">The stream to write the changes to.</param>
+	    public static void WriteChanges(IEnumerable<MetaChange> changes, ICacheFile cacheFile, IWriter output)
         {
-            foreach (MetaChange change in changes)
+            foreach (var change in changes)
                 WriteChange(cacheFile, change, output);
         }
 
@@ -39,11 +36,11 @@ namespace ExtryzeDLL.Patching
         /// <summary>
         /// Pokes a series of meta changes back to an Xbox.
         /// </summary>
-        /// <param name="change">The changes to poke.</param>
+        /// <param name="changes">The changes to poke.</param>
         /// <param name="output">The Xbox memory stream to write the changes to.</param>
         public static void PokeChanges(IEnumerable<MetaChange> changes, IWriter output)
         {
-            foreach (MetaChange change in changes)
+            foreach (var change in changes)
                 PokeChange(change, output);
         }
 

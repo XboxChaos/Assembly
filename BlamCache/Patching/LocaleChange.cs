@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ExtryzeDLL.Patching
+﻿namespace ExtryzeDLL.Patching
 {
     /// <summary>
     /// Represents a change that should be made to a locale string in a cache file.

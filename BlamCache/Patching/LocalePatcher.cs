@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
@@ -22,7 +20,7 @@ namespace ExtryzeDLL.Patching
         /// <param name="stream">The stream to write changes to.</param>
         public static void WriteLanguageChanges(IEnumerable<LanguageChange> changes, ICacheFile cacheFile, IStream stream)
         {
-            foreach (LanguageChange change in changes)
+            foreach (var change in changes)
                 WriteLanguageChange(change, cacheFile, stream);
         }
 
@@ -39,8 +37,8 @@ namespace ExtryzeDLL.Patching
                 throw new ArgumentException("Language changes cannot be applied to undefined languages in a cache file");
 
             // Load the language table and apply the changes
-            ILanguage language = cacheFile.Languages[changes.LanguageIndex];
-            LocaleTable table = language.LoadStrings(stream);
+			var language = cacheFile.Languages[changes.LanguageIndex];
+			var table = language.LoadStrings(stream);
             MakeLocaleChanges(changes.LocaleChanges, table);
 
             // Write the table back to the file
@@ -54,7 +52,7 @@ namespace ExtryzeDLL.Patching
         /// <param name="table">The locale table to make the changes on.</param>
         public static void MakeLocaleChanges(IEnumerable<LocaleChange> changes, LocaleTable table)
         {
-            foreach (LocaleChange change in changes)
+			foreach (var change in changes)
                 MakeLocaleChange(change, table);
         }
 
