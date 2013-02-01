@@ -67,8 +67,6 @@ namespace Assembly.Windows
 	        var hwndSource = HwndSource.FromHwnd(handle);
 	        if (hwndSource != null)
 		        hwndSource.AddHook(WindowProc);
-
-            WindowMovement.MakeWindowMovable(this, homeHeader);
         }
 
         #region Content Management
@@ -703,6 +701,7 @@ namespace Assembly.Windows
         {
             _0xabad1dea.TragicSans.KeyDown(e.Key);
         }
+
         private void btnIWff_Click(object sender, RoutedEventArgs e)
         {
             _0xabad1dea.IWff.CleanUp();

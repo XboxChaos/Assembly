@@ -1,9 +1,11 @@
 ﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.ViewValueAs"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="clr-namespace:Assembly.Metro.Native"
         xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
-        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
-        Width="740" Height="580" ShowInTaskbar="False" Title="Meta Value Viewer - Assembly">
+        AllowsTransparency="True" ResizeMode="CanResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
+        Width="740" Height="580" ShowInTaskbar="False" Title="Meta Value Viewer - Assembly"
+        n:WindowMovement.IsDraggable="True">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -73,12 +75,10 @@
                 </ListBox>
 
 
-                <Thumb 
-							x:Name="headerThumb" 
-							Opacity="0" 
-							Background="{x:Null}" 
-							Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Height="48" VerticalAlignment="Top"
-							/>
+                <Grid x:Name="headerThumb" 
+                      Background="Transparent" 
+                      Height="48" VerticalAlignment="Top"
+                      n:WindowMovement.DragsWindow="True" />
             </Grid>
 
             <Grid Margin="-1, -1, -1, -23">

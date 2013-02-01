@@ -3,11 +3,13 @@
         x:Name="UpdaterWindow"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:n="clr-namespace:Assembly.Metro.Native"
         AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="150"
         Width="600"
         ShowInTaskbar="False"
-        Title="Updater">
+        Title="Updater"
+        n:WindowMovement.IsDraggable="True">
     <Window.Resources>
         <Storyboard x:Key="ResizeWindowToUpdate">
             <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="UpdaterWindow" Storyboard.TargetProperty="(FrameworkElement.Height)">
@@ -64,11 +66,12 @@
                 </Border>
                 </Grid>
                 
-                <Thumb 
+                <Grid 
 					x:Name="headerThumb" 
 					Opacity="0" 
-					Background="{x:Null}" 
-					Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+					Background="Transparent" 
+					Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+                    n:WindowMovement.DragsWindow="True"
 					/>
             </Grid>
             <Grid x:Name="updateProgress">

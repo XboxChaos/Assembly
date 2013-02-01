@@ -70,11 +70,5 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             TempStorage.msgBoxButtonStorage = MetroMessageBox.MessageBoxResult.Cancel;
             Close();
         }
-
-        private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
-        }
     }
 }

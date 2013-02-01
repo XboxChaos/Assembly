@@ -25,10 +25,5 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         {
             Application.Current.Shutdown();
         }
-        private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
-        }
     }
 }

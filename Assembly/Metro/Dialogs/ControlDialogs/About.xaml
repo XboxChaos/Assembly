@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="clr-namespace:Assembly.Metro.Native"
         AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True"
-        Width="546" Height="590" ShowInTaskbar="False" Title="Assembly - About">
+        Width="546" Height="590" ShowInTaskbar="False" Title="Assembly - About"
+        n:WindowMovement.IsDraggable="True">
     <Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
         <Grid>
             <Image x:Name="imageOfGodOfAllThingsHolyAndModdy" Visibility="Collapsed" Source="/Assembly;component/Helpers/0xabad1dea/GodOfAllThingsHolyAndModdy.png" Stretch="Fill" />
@@ -22,11 +24,12 @@
             </Path>
             <TextBlock x:Name="lblTitle" Text="About Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
 
-            <Thumb 
+            <Grid 
 				x:Name="headerThumb" 
-				Opacity="0" 
-				Background="{x:Null}" 
-				Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="50" VerticalAlignment="Top"
+				Background="Transparent"
+                Opacity="0"
+				Margin="0,0,0,0" Height="50" VerticalAlignment="Top"
+                n:WindowMovement.DragsWindow="True"
 				/>
             
             <Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnActionClose_Click">
