@@ -17,6 +17,15 @@ namespace Assembly.Metro.Controls.PageTemplates
         public bool Close()
         {
             return !_doingWork;
-        }
-    }
+		}
+
+		#region Patch Creation Functions
+		#endregion
+
+		#region Patch Applying Functions
+		#endregion
+
+		#region Patch Convertion Functions
+		#endregion
+	}
 }
