@@ -39,12 +39,12 @@
                 <!-- cr3dit 2 geamchat12 -->
             </ScrollViewer>
         </Grid>
-        <TabControl HorizontalAlignment="Stretch" Margin="305,30,0,0" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}">
+        <TabControl HorizontalAlignment="Stretch" Margin="325,30,0,0" VerticalAlignment="Stretch" BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}">
 			<TabItem Header="Create Patch" Style="{StaticResource MetroHeaderTabItemSub}">
-				<Grid Margin="20,10,0,0">
+				<Grid Margin="0,10,0,0">
 					<ScrollViewer>
 						<StackPanel Margin="0,0,10,0">
-							<Grid x:Name="PatchCreationFilePaths" Margin="0,25,0,0">
+							<Grid x:Name="PatchCreationFilePaths" Margin="0,15,0,0">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="220" />
 									<ColumnDefinition Width="*" />
@@ -78,7 +78,7 @@
 								<Button x:Name="btnCreatePatchOutputPatch" Content="..." Grid.Column="2" Grid.Row="3" Margin="5,0,0,0" Click="btnCreatePatchOutputPatch_Click" />
 							</Grid>
 
-							<Grid x:Name="PatchCreationDetails" Margin="0,25,0,0">
+							<Grid x:Name="PatchCreationDetails" Margin="0,15,0,0">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="220" />
 									<ColumnDefinition Width="*" />
@@ -130,126 +130,82 @@
 								<CheckBox x:Name="cbCreatePatchHasCustomMeta" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" VerticalAlignment="Center" Checked="cbCreatePatchHasCustomMeta_Modified" Unchecked="cbCreatePatchHasCustomMeta_Modified" />
 							</Grid>
 							
-							<StackPanel x:Name="PatchCreationExtras" Margin="0,25,0,0">
+							<StackPanel Margin="0,15,0,0">
 
 								<!-- Title -->
 								<TextBlock Grid.Row="0" Margin="0,0,0,20" Text="Meta Data;" Foreground="#FF999999" FontFamily="{DynamicResource MetroFontLight}" FontSize="36" />
 
 								<!-- Nothing Yet -->
 								<Grid x:Name="PatchCreationNoMetaSelected" Grid.Row="1" Margin="20,0,0,0" Visibility="Visible">
-									<TextBlock Text="It's lonely in here... Select the 'Has Custom BLF/MapInfo Data' Checkbox, and Target an Supported game." TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" FontSize="16" Foreground="#FF767676" />
+									<TextBlock Text="It's lonely in here... Select the 'Has Custom BLF/MapInfo Data' Checkbox, and Target a Supported Game." TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" FontSize="16" Foreground="#FF767676" />
 								</Grid>
 								
-								<!-- Halo 3 -->
-								<Grid x:Name="PatchCreationH3" Grid.Row="1" Visibility="Collapsed">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="220" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="30" />
-									</Grid.ColumnDefinitions>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-									</Grid.RowDefinitions>
-									
+								<!-- Extras -->
+								<StackPanel x:Name="PatchCreationExtras" Grid.Row="1" Visibility="Collapsed">
 									<!-- Map Info -->
-									<TextBlock Text="Modified MapInfo:" Grid.Column="0" Grid.Row="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH3MapInfo" Grid.Column="1" IsReadOnly="True" Grid.Row="0" />
-									<Button x:Name="btnCreatePatchH3MapInfo"  Grid.Column="3" Grid.Row="0" Content="..." Margin="5,0,0,0" />
+									<Grid Height="35">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="220" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="30" />
+										</Grid.ColumnDefinitions>
+										<TextBlock Text="Modified MapInfo:" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+										<TextBox x:Name="txtCreatePatchMapInfo" Grid.Column="1" IsReadOnly="True" />
+										<Button x:Name="btnCreatePatchMapInfo"  Grid.Column="3" Content="..." Margin="5,0,0,0" />
+									</Grid>
 
 									<!-- BLF -->
-									<TextBlock Text="Modified blf:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH3blf" Grid.Column="1" IsReadOnly="True" Grid.Row="1" />
-									<Button x:Name="btnCreatePatchH3blf"  Grid.Column="3" Grid.Row="1" Content="..." Margin="5,0,0,0" />
+									<Grid x:Name="PatchCreationBlfOption0" Height="35">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="220" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="30" />
+										</Grid.ColumnDefinitions>
+
+										<TextBlock x:Name="lblCreatePatchTitleblf0" Text="Modified blf:" Tag="blf" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+										<TextBox x:Name="txtCreatePatchblf0" Grid.Column="1" IsReadOnly="True" />
+										<Button x:Name="btnCreatePatchblf0"  Grid.Column="3" Content="..." Margin="5,0,0,0" />
+									</Grid>
 
 									<!-- BLF_clip -->
-									<TextBlock Text="Modified blf_clip:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH3blf_clip" Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
-									<Button x:Name="btnCreatePatchH3blf_clip"  Grid.Column="3" Grid.Row="2" Content="..." Margin="5,0,0,0" />
-									
+									<Grid x:Name="PatchCreationBlfOption1" Height="35">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="220" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="30" />
+										</Grid.ColumnDefinitions>
+
+										<TextBlock x:Name="lblCreatePatchTitleblf1" Text="Modified blf_clip:" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+										<TextBox x:Name="txtCreatePatchblf1" Grid.Column="1" IsReadOnly="True" />
+										<Button x:Name="btnCreatePatchblf1"  Grid.Column="3" Content="..." Margin="5,0,0,0" />
+									</Grid>
+
 									<!-- BLF_film -->
-									<TextBlock Text="Modified blf_film:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH3blf_film" Grid.Column="1" IsReadOnly="True" Grid.Row="3" />
-									<Button x:Name="btnCreatePatchH3blf_film"  Grid.Column="3" Grid.Row="3" Content="..." Margin="5,0,0,0" />
+									<Grid x:Name="PatchCreationBlfOption2" Height="35">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="220" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="30" />
+										</Grid.ColumnDefinitions>
+
+										<TextBlock x:Name="lblCreatePatchTitleblf2" Text="Modified blf_film:" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+										<TextBox x:Name="txtCreatePatchblf2" Grid.Column="1" IsReadOnly="True" />
+										<Button x:Name="btnCreatePatchblf2"  Grid.Column="3" Content="..." Margin="5,0,0,0" />
+									</Grid>
 
 									<!-- BLF_sm -->
-									<TextBlock Text="Modified blf_sm:" Grid.Column="0" Grid.Row="4" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH3blf_sm" Grid.Column="1" IsReadOnly="True" Grid.Row="4" />
-									<Button x:Name="btnCreatePatchH3blf_sm" Grid.Column="3" Grid.Row="4" Content="..." Margin="5,0,0,0" />
-								</Grid>
+									<Grid x:Name="PatchCreationBlfOption3" Height="35">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="220" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="30" />
+										</Grid.ColumnDefinitions>
 
-								<!-- Halo:Reach -->
-								<Grid x:Name="PatchCreationHR" Grid.Row="1" Visibility="Collapsed">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="220" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="30" />
-									</Grid.ColumnDefinitions>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-									</Grid.RowDefinitions>
-
-									<!-- Map Info -->
-									<TextBlock Text="Modified MapInfo:" Grid.Column="0" Grid.Row="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchHRMapInfo" Grid.Column="1" IsReadOnly="True" Grid.Row="0" />
-									<Button x:Name="btnCreatePatchHRMapInfo"  Grid.Column="3" Grid.Row="0" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF -->
-									<TextBlock Text="Modified blf:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchHRblf" Grid.Column="1" IsReadOnly="True" Grid.Row="1" />
-									<Button x:Name="btnCreatePatchHRblf"  Grid.Column="3" Grid.Row="1" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF_sm -->
-									<TextBlock Text="Modified blf_sm:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchHRblf_small" Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
-									<Button x:Name="btnCreatePatchHRblf_small" Grid.Column="3" Grid.Row="2" Content="..." Margin="5,0,0,0" />
-								</Grid>
-
-								<!-- Halo 4 -->
-								<Grid x:Name="PatchCreationH4" Grid.Row="1" Visibility="Collapsed">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="220" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="30" />
-									</Grid.ColumnDefinitions>
-									<Grid.RowDefinitions>
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-										<RowDefinition Height="35" />
-									</Grid.RowDefinitions>
-
-									<!-- Map Info -->
-									<TextBlock Text="Modified MapInfo:" Grid.Column="0" Grid.Row="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH4MapInfo" Grid.Column="1" IsReadOnly="True" Grid.Row="0" />
-									<Button x:Name="btnCreatePatchH4MapInfo"  Grid.Column="3" Grid.Row="0" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF -->
-									<TextBlock Text="Modified blf:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH4blf" Grid.Column="1" IsReadOnly="True" Grid.Row="1" />
-									<Button x:Name="btnCreatePatchH4blf"  Grid.Column="3" Grid.Row="1" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF_card -->
-									<TextBlock Text="Modified blf_card:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH4blf_card" Grid.Column="1" IsReadOnly="True" Grid.Row="2" />
-									<Button x:Name="btnCreatePatchH4blf_card"  Grid.Column="3" Grid.Row="2" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF_lobby -->
-									<TextBlock Text="Modified blf_lobby:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH4blf_lobby" Grid.Column="1" IsReadOnly="True" Grid.Row="3" />
-									<Button x:Name="btnCreatePatchH4blf_lobby"  Grid.Column="3" Grid.Row="3" Content="..." Margin="5,0,0,0" />
-
-									<!-- BLF_sm -->
-									<TextBlock Text="Modified blf_sm:" Grid.Column="0" Grid.Row="4" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox x:Name="txtCreatePatchH4blf_sm" Grid.Column="1" IsReadOnly="True" Grid.Row="4" />
-									<Button x:Name="btnCreatePatchH4blf_sm" Grid.Column="3" Grid.Row="4" Content="..." Margin="5,0,0,0" />
-								</Grid>
+										<TextBlock x:Name="lblCreatePatchTitleblf3" Text="Modified blf_sm:" Tag="blf_sm" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+										<TextBox x:Name="txtCreatePatchblf3" Grid.Column="1" IsReadOnly="True" />
+										<Button x:Name="btnCreatePatchblf3" Grid.Column="3" Content="..." Margin="5,0,0,0" />
+									</Grid>
+								</StackPanel>
 							</StackPanel>
 							
 							<Button x:Name="btnCreatePatch" Content="Create Assembly Patch" Margin="60" Click="btnCreatePatch_Click" />

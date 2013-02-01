@@ -35,8 +35,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 		}
 
 		#region Patch Creation Functions
-		// Enums
-
 		// File Selectors
 		private void btnCreatePatchUnModdifiedMap_Click(object sender, RoutedEventArgs e)
 		{
@@ -89,9 +87,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			// Meta Grids Cleanup
 			PatchCreationNoMetaSelected.Visibility = Visibility.Collapsed;
-			PatchCreationH3.Visibility = Visibility.Collapsed;
-			PatchCreationHR.Visibility = Visibility.Collapsed;
-			PatchCreationH4.Visibility = Visibility.Collapsed;
+			PatchCreationExtras.Visibility = Visibility.Collapsed;
 			
 			// Check if custom meta is asked for
 			if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked)
@@ -104,23 +100,97 @@ namespace Assembly.Metro.Controls.PageTemplates
 			switch(cboxCreatePatchTargetGame.SelectedIndex)
 			{
 				case (int)TargetGame.Halo3:
-				case (int)TargetGame.Halo3ODST: PatchCreationH3.Visibility = Visibility.Visible;
+				case (int)TargetGame.Halo3ODST:
+					PrepHalo3();
 					break;
 
 				case (int)TargetGame.HaloReach: 
-					PatchCreationHR.Visibility = Visibility.Visible;
+					PrepHaloReach();
 					break;
 
 				case (int)TargetGame.Halo4:
-					PatchCreationH4.Visibility = Visibility.Visible;
+					PrepHalo4();
 					break;
 
 				default: PatchCreationNoMetaSelected.Visibility = Visibility.Visible;
 					break;
 			}
 		}
+		private void PrepHalo3()
+		{
+			// Un-Hide Extras grid
+			PatchCreationExtras.Visibility = Visibility.Visible;
 
-		// Patch Creation
+			// Hide/Show fields
+			PatchCreationBlfOption0.Visibility =
+				PatchCreationBlfOption3.Visibility = 
+				PatchCreationBlfOption1.Visibility =
+				PatchCreationBlfOption2.Visibility = Visibility.Visible;
+
+			// Re-name fields
+			lblCreatePatchTitleblf1.Text = "Modified blf_clip:";
+				lblCreatePatchTitleblf1.Tag = "blf_clip";
+			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
+				lblCreatePatchTitleblf1.Tag = "blf_film";
+			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
+
+			// Reset fields
+			txtCreatePatchMapInfo.Text = "";
+			txtCreatePatchblf0.Text = "";
+			txtCreatePatchblf1.Text = "";
+			txtCreatePatchblf2.Text = "";
+			txtCreatePatchblf3.Text = "";
+		}
+		private void PrepHaloReach()
+		{
+			// Un-Hide Extras grid
+			PatchCreationExtras.Visibility = Visibility.Visible;
+
+			// Hide/Show fields
+			PatchCreationBlfOption0.Visibility =
+				PatchCreationBlfOption3.Visibility = Visibility.Visible;
+			PatchCreationBlfOption1.Visibility =
+				PatchCreationBlfOption2.Visibility = Visibility.Collapsed;
+
+			// Re-name fields
+			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
+				
+
+			// Reset fields
+			txtCreatePatchMapInfo.Text = "";
+			txtCreatePatchblf0.Text = "";
+			txtCreatePatchblf1.Text = "";
+			txtCreatePatchblf2.Text = "";
+			txtCreatePatchblf3.Text = "";
+		}
+		private void PrepHalo4()
+		{
+			// Un-Hide Extras grid
+			PatchCreationExtras.Visibility = Visibility.Visible;
+
+			// Hide/Show fields
+			PatchCreationBlfOption0.Visibility =
+				PatchCreationBlfOption3.Visibility =
+				PatchCreationBlfOption1.Visibility =
+				PatchCreationBlfOption2.Visibility = Visibility.Visible;
+
+			// Re-name fields
+			lblCreatePatchTitleblf1.Text = "Modified blf_card:";
+				lblCreatePatchTitleblf1.Tag = "blf_card";
+			lblCreatePatchTitleblf2.Text = "Modified blf_lobby:";
+				lblCreatePatchTitleblf1.Tag = "blf_lobby";
+			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
+
+			// Reset fields
+			txtCreatePatchMapInfo.Text = "";
+			txtCreatePatchblf0.Text = "";
+			txtCreatePatchblf1.Text = "";
+			txtCreatePatchblf2.Text = "";
+			txtCreatePatchblf3.Text = "";
+		}
+
+
+	    // Patch Creation
 		private void btnCreatePatch_Click(object sender, RoutedEventArgs e)
 		{
 #if !DEBUG
@@ -159,6 +229,39 @@ namespace Assembly.Metro.Controls.PageTemplates
 				var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
 				patch.MapInternalName = originalFile.Info.InternalName;
+
+				if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex != 4)
+				{
+					var targetGame = (TargetGame)cboxCreatePatchTargetGame.SelectedIndex;
+					var mapInfo = File.ReadAllBytes(txtCreatePatchMapInfo.Text);
+					FileInfo blfFileInfo;
+
+					patch.CustomBlfContent = new BlfContent(mapInfo, targetGame);
+
+					#region Blf Data
+					if (PatchCreationBlfOption0.Visibility == Visibility.Visible)
+					{
+						blfFileInfo = new FileInfo(txtCreatePatchblf0.Text);
+						patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+					}
+					if (PatchCreationBlfOption1.Visibility == Visibility.Visible)
+					{
+						blfFileInfo = new FileInfo(txtCreatePatchblf1.Text);
+						patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+					}
+					if (PatchCreationBlfOption2.Visibility == Visibility.Visible)
+					{
+						blfFileInfo = new FileInfo(txtCreatePatchblf2.Text);
+						patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+					}
+					if (PatchCreationBlfOption3.Visibility == Visibility.Visible)
+					{
+						blfFileInfo = new FileInfo(txtCreatePatchblf3.Text);
+						patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+					}
+					#endregion
+				}
+
 				MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
 				LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
 
