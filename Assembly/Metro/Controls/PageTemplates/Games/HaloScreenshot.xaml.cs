@@ -13,54 +13,49 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// <summary>
     /// Interaction logic for HaloScreenshot.xaml
     /// </summary>
-    public partial class HaloScreenshot : UserControl
+    public partial class HaloScreenshot
     {
-        private TabItem _tabitem;
-        private string datetime_long;
-        private string datetime_shrt;
-        private string imageID;
+        private readonly string _datetime_long;
+        private readonly string _datetime_shrt;
+	    private readonly BitmapSource _bitmapImage;
+        private string _imageID;
 
         public HaloScreenshot(string tempImageLocation, TabItem tabItem)
         {
             InitializeComponent();
 
-            // TabItem Saving
-            _tabitem = tabItem;
-
             // Convert DDS to BitmapImage
-            BitmapSource bitmapImage = DDSConversion.Deswizzle(tempImageLocation);
-
+			_bitmapImage = DDSConversion.Deswizzle(tempImageLocation);
 
             // DateTime Creation
-            DateTime date = DateTime.Now;
-            datetime_long = date.ToString("yyyy-MM-dd,hh-mm-ss");
-            datetime_shrt = date.ToString("hh:mm.ss");
+			var date = DateTime.Now;
+            _datetime_long = date.ToString("yyyy-MM-dd,hh-mm-ss");
+            _datetime_shrt = date.ToString("hh:mm.ss");
 
             // Set Tab Header
-            tabItem.Header = "Screenshot {" + datetime_shrt + "}";
+            tabItem.Header = "Screenshot {" + _datetime_shrt + "}";
 
             // Set Image Name
-            lblImageName.Text = datetime_long + ".png";
+            lblImageName.Text = _datetime_long + ".png";
 
             // Set Image
-            imageScreenshot.Source = bitmapImage;
+            imageScreenshot.Source = _bitmapImage;
 
             // Should I save the image?
-            if (Settings.XDKAutoSave)
-            {
-                if (!Directory.Exists(Settings.XDKScreenshotPath))
-                    Directory.CreateDirectory(Settings.XDKScreenshotPath);
+	        if (!Settings.XDKAutoSave) return;
 
-                string filePath = Settings.XDKScreenshotPath + "\\" + datetime_long + ".png";
-                SaveImage(filePath);
-            }
+	        if (!Directory.Exists(Settings.XDKScreenshotPath))
+		        Directory.CreateDirectory(Settings.XDKScreenshotPath);
+
+			var filePath = Settings.XDKScreenshotPath + "\\" + _datetime_long + ".png";
+	        SaveImage(filePath);
         }
 
         private void SaveImage(string filePath)
         {
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageScreenshot.Source));
-            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+			using (var stream = new FileStream(filePath, FileMode.Create))
                 encoder.Save(stream);
         }
 
@@ -81,9 +76,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void btnUploadImage_Click(object sender, RoutedEventArgs e)
         {
-            if (imageID == null)
+            if (_imageID == null)
             {
-                doingAction.Visibility = System.Windows.Visibility.Visible;
+                doingAction.Visibility = Visibility.Visible;
 
                 var imageUpload = new BackgroundWorker();
                 imageUpload.RunWorkerCompleted += imageUpload_RunWorkerCompleted;
@@ -91,10 +86,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 imageUpload.RunWorkerAsync();
             }
             else
-                MetroImgurUpload.Show(imageID);
+                MetroImgurUpload.Show(_imageID);
         }
+		private void btnClipboardImage_Click(object sender, RoutedEventArgs e)
+		{
+			Clipboard.SetImage(_bitmapImage);
+		}
 
-        async void imageUpload_DoWork(object sender, DoWorkEventArgs e)
+        void imageUpload_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -113,7 +112,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    imageID = newImageId;
+                    _imageID = newImageId;
                 }));
             }
             catch
@@ -125,16 +124,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         void imageUpload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            doingAction.Visibility = System.Windows.Visibility.Collapsed;
+            doingAction.Visibility = Visibility.Collapsed;
 
-            if (imageID == null || (imageID.Length < 5 && imageID.Length > 9))
+            if (_imageID == null || (_imageID.Length < 5 && _imageID.Length > 9))
             {
-	            MetroMessageBox.Show("Error", imageID ?? "Error uploading image.");
+	            MetroMessageBox.Show("Error", _imageID ?? "Error uploading image.");
 
-	            imageID = null;
+	            _imageID = null;
             }
             else
-                MetroImgurUpload.Show(imageID);
+                MetroImgurUpload.Show(_imageID);
         }
     }
 }

@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using ExtryzeDLL.Blam.ThirdGen;
@@ -26,46 +19,54 @@ namespace PatchCreator
 
         private void browseUnmodded_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Open Unmodded Map File";
-            ofd.Filter = "Blam Map Files|*.map";
-            if (ofd.ShowDialog() == DialogResult.OK)
+            var ofd = new OpenFileDialog
+	                      {
+		                      Title = "Open Unmodded Map File",
+							  Filter = "Blam Map Files|*.map"
+	                      };
+	        if (ofd.ShowDialog() == DialogResult.OK)
                 unmoddedPath.Text = ofd.FileName;
         }
 
         private void browseModded_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Open Modded Map File";
-            ofd.Filter = "Blam Map Files|*.map";
-            if (ofd.ShowDialog() == DialogResult.OK)
+            var ofd = new OpenFileDialog
+	                      {
+		                      Title = "Open Modded Map File",
+							  Filter = "Blam Map Files|*.map"
+	                      };
+	        if (ofd.ShowDialog() == DialogResult.OK)
                 moddedPath.Text = ofd.FileName;
         }
 
         private void browseOutput_Click(object sender, EventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Title = "Save Patch File"; 
-            sfd.Filter = "Assembly Patch Files|*.asmp";
-            if (sfd.ShowDialog() == DialogResult.OK)
+			var sfd = new SaveFileDialog
+				          {
+					          Title = "Save Patch File", 
+							  Filter = "Assembly Patch Files|*.asmp"
+				          };
+	        if (sfd.ShowDialog() == DialogResult.OK)
                 outPath.Text = sfd.FileName;
         }
 
         private void makePatch_Click(object sender, EventArgs e)
         {
-            Patch patch = new Patch();
-            patch.Name = patchName.Text;
-            patch.Description = patchDescription.Text;
-            patch.Author = patchAuthor.Text;
+			var patch = new Patch
+				            {
+					            Name = patchName.Text, 
+								Description = patchDescription.Text,
+								Author = patchAuthor.Text
+				            };
 
-            IReader originalReader = new EndianReader(File.OpenRead(unmoddedPath.Text), Endian.BigEndian);
+	        IReader originalReader = new EndianReader(File.OpenRead(unmoddedPath.Text), Endian.BigEndian);
             IReader newReader = new EndianReader(File.OpenRead(moddedPath.Text), Endian.BigEndian);
-            
-            ThirdGenVersionInfo version = new ThirdGenVersionInfo(originalReader);
-            BuildInfoLoader loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
-            BuildInformation buildInfo = loader.LoadBuild(version.BuildString);
-            ThirdGenCacheFile originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
-            ThirdGenCacheFile newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
+
+			var version = new ThirdGenVersionInfo(originalReader);
+			var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
+			var buildInfo = loader.LoadBuild(version.BuildString);
+			var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
+			var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
             patch.MapInternalName = originalFile.Info.InternalName;
             MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
