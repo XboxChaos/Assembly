@@ -63,19 +63,19 @@
 								<!-- Unmoddified map -->
 								<TextBlock Text="Un-Moddified Map:" Grid.Column="0" Grid.Row="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchUnModdifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="1" />
-								<Button x:Name="btnCreatePatchUnModdifiedMap" Content="..." Grid.Column="2" Grid.Row="1" Margin="5,0,0,0" />
+								<Button x:Name="btnCreatePatchUnModdifiedMap" Content="..." Grid.Column="2" Grid.Row="1" Margin="5,0,0,0" Click="btnCreatePatchUnModdifiedMap_Click" />
 
 
 								<!-- Moddified map -->
 								<TextBlock Text="Moddified Map:" Grid.Column="0" Grid.Row="2" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchModdifiedMap" Grid.Column="1" IsReadOnly="True"  Grid.Row="2" />
-								<Button x:Name="btnCreatePatchModdifiedMap" Content="..." Grid.Column="2" Grid.Row="2" Margin="5,0,0,0" />
+								<Button x:Name="btnCreatePatchModdifiedMap" Content="..." Grid.Column="2" Grid.Row="2" Margin="5,0,0,0" Click="btnCreatePatchModdifiedMap_Click" />
 
 								
 								<!-- Output Patch -->
 								<TextBlock Text="Output Patch:" Grid.Column="0" Grid.Row="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchOutputPatch" Grid.Column="1" IsReadOnly="True"  Grid.Row="3" />
-								<Button x:Name="btnCreatePatchOutputPatch" Content="..." Grid.Column="2" Grid.Row="3" Margin="5,0,0,0" />
+								<Button x:Name="btnCreatePatchOutputPatch" Content="..." Grid.Column="2" Grid.Row="3" Margin="5,0,0,0" Click="btnCreatePatchOutputPatch_Click" />
 							</Grid>
 
 							<Grid x:Name="PatchCreationDetails" Margin="0,25,0,0">
@@ -112,11 +112,11 @@
 								<!-- Mod Preview -->
 								<TextBlock Text="Moddified Content Preview Image:" Grid.Column="0" Grid.Row="4" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtCreatePatchPreviewImage" Grid.Column="1" IsReadOnly="True" Grid.Row="4" />
-								<Button x:Name="btnCreatePatchPreviewImage" Content="..." Grid.Column="3" Grid.Row="4" Margin="5,0,0,0" />
+								<Button x:Name="btnCreatePatchPreviewImage" Content="..." Grid.Column="3" Grid.Row="4" Margin="5,0,0,0" Click="btnCreatePatchPreviewImage_Click" />
 
 								<!-- Mod TargetGame -->
 								<TextBlock Text="Target Game:" Grid.Column="0" Grid.Row="5" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<ComboBox x:Name="cboxCreatePatchTargetGame" Text="Target Game:" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center">
+								<ComboBox x:Name="cboxCreatePatchTargetGame" SelectedIndex="4" Text="Target Game:" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" VerticalAlignment="Center" SelectionChanged="cboxCreatePatchTargetGame_SelectionChanged">
 									<ComboBoxItem Content="Halo 3" />
 									<ComboBoxItem Content="Halo 3: ODST" />
 									<ComboBoxItem Content="Halo Reach" />
@@ -127,7 +127,7 @@
 
 								<!-- Mod Extra Metadata -->
 								<TextBlock Text="Has Custom BLF/MapInfo Data:" Grid.Column="0" Grid.Row="6" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<CheckBox x:Name="cbCreatePatchHasCustomMeta" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" VerticalAlignment="Center" />
+								<CheckBox x:Name="cbCreatePatchHasCustomMeta" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" VerticalAlignment="Center" Checked="cbCreatePatchHasCustomMeta_Modified" Unchecked="cbCreatePatchHasCustomMeta_Modified" />
 							</Grid>
 							
 							<StackPanel x:Name="PatchCreationExtras" Margin="0,25,0,0">
@@ -137,7 +137,7 @@
 
 								<!-- Nothing Yet -->
 								<Grid x:Name="PatchCreationNoMetaSelected" Grid.Row="1" Margin="20,0,0,0" Visibility="Visible">
-									<TextBlock Text="It's lonely in here... Select the 'Has Custom BLF/MapInfo Data' Checkbox." Style="{DynamicResource GenericTextblock}" FontSize="16" Foreground="#FF767676" />
+									<TextBlock Text="It's lonely in here... Select the 'Has Custom BLF/MapInfo Data' Checkbox, and Target an Supported game." TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" FontSize="16" Foreground="#FF767676" />
 								</Grid>
 								
 								<!-- Halo 3 -->
@@ -252,7 +252,7 @@
 								</Grid>
 							</StackPanel>
 							
-							<Button x:Name="btnCreatePatch" Content="Create Assembly Patch" Margin="60" />
+							<Button x:Name="btnCreatePatch" Content="Create Assembly Patch" Margin="60" Click="btnCreatePatch_Click" />
 						</StackPanel>
 					</ScrollViewer>
 				</Grid>

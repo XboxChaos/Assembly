@@ -27,7 +27,6 @@ namespace PatchCreator
 	        if (ofd.ShowDialog() == DialogResult.OK)
                 unmoddedPath.Text = ofd.FileName;
         }
-
         private void browseModded_Click(object sender, EventArgs e)
         {
             var ofd = new OpenFileDialog
@@ -38,7 +37,6 @@ namespace PatchCreator
 	        if (ofd.ShowDialog() == DialogResult.OK)
                 moddedPath.Text = ofd.FileName;
         }
-
         private void browseOutput_Click(object sender, EventArgs e)
         {
 			var sfd = new SaveFileDialog
