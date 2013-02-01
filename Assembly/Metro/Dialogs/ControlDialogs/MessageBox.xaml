@@ -1,9 +1,11 @@
 ﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.MessageBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="clr-namespace:Assembly.Metro.Native"
         AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" SizeToContent="WidthAndHeight"
         MaxHeight="400" MinHeight="150" ShowInTaskbar="False"
-        Width="455.5" MaxWidth="550">
+        Width="455.5" MaxWidth="550"
+        n:WindowMovement.IsDraggable="True">
     <Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
     	<Grid>
             <Grid.RowDefinitions>
@@ -24,12 +26,13 @@
             </Path>
             <TextBlock Grid.Row="0"  x:Name="lblTitle" Text="Message Box - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
 
-            <Thumb 
+            <Grid 
                 Grid.Row="0"
 				x:Name="headerThumb" 
 				Opacity="0" 
-				Background="{x:Null}" 
-				Foreground="{x:Null}" DragDelta="headerThumb_DragDelta" Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				Background="Transparent" 
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+                n:WindowMovement.DragsWindow="True"
 				/>
             
             <StackPanel Grid.Row="1" Margin="33,0,33,6" CanVerticallyScroll="True">

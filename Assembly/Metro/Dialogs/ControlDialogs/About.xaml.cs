@@ -17,11 +17,6 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             DwmDropShadow.DropShadowToWindow(this);
         }
 
-        private void headerThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            Left = Left + e.HorizontalChange;
-            Top = Top + e.VerticalChange;
-        }
         private void btnActionClose_Click(object sender, RoutedEventArgs e) { Close(); }
         private void lblZedd_MouseDown(object sender, MouseButtonEventArgs e)
         {
