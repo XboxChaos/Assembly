@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Blam.ThirdGen.Structures;
@@ -29,10 +30,12 @@ namespace Assembly.Metro.Controls.PageTemplates
             InitializeComponent();
         }
         
+// ReSharper disable UnusedMember.Global
         public bool Close()
         {
             return !_doingWork;
 		}
+// ReSharper restore UnusedMember.Global
 
 		#region Patch Creation Functions
 		// File Selectors
@@ -190,7 +193,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 		}
 
 		// Utilities
-		private bool CheckAllMandatoryFields()
+		private bool CheckAllCreateMandatoryFields()
 		{
 			var error = false;
 
@@ -221,11 +224,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			return !error;
 		}
-		private bool CheckAllMetaFilesExists()
+		private bool CheckAllCreateMetaFilesExists()
 		{
 			var error = false;
 
-			if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked || cboxCreatePatchTargetGame.SelectedIndex == 4) return false;
+			if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked || cboxCreatePatchTargetGame.SelectedIndex == 4) return true;
 
 			// Check Map Info exists
 			if (String.IsNullOrEmpty(txtCreatePatchMapInfo.Text) || !File.Exists(txtCreatePatchMapInfo.Text))
@@ -245,7 +248,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				error = true;
 
 			if (error)
-				MetroMessageBox.Show("Unable to make patch", "You are missing blf/mapinfo files.");
+				MetroMessageBox.Show("Unable to make patch", "You are missing required blf/mapinfo files. All listed entries must be filled.");
 			
 			return !error;
 		}
@@ -253,16 +256,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 	    // Patch Creation
 		private void btnCreatePatch_Click(object sender, RoutedEventArgs e)
 		{
-#if !DEBUG
 			try
 			{
-#endif
 				// Check the user isn't completly retarded
-				if (!CheckAllMandatoryFields())
+				if (!CheckAllCreateMandatoryFields())
 					return;
 
 				// Check the user isn't a skid
-				if (!CheckAllMetaFilesExists())
+				if (!CheckAllCreateMetaFilesExists())
 					return;
 
 				// Paths
@@ -302,9 +303,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 				{
 					var targetGame = (TargetGame)cboxCreatePatchTargetGame.SelectedIndex;
 					var mapInfo = File.ReadAllBytes(txtCreatePatchMapInfo.Text);
+					var mapInfoFileInfo = new FileInfo(txtCreatePatchMapInfo.Text);
 					FileInfo blfFileInfo;
 
-					patch.CustomBlfContent = new BlfContent(mapInfo, targetGame);
+					patch.CustomBlfContent = new BlfContent(mapInfoFileInfo.FullName, mapInfo, targetGame);
 
 					#region Blf Data
 					if (PatchCreationBlfOption0.Visibility == Visibility.Visible)
@@ -341,20 +343,180 @@ namespace Assembly.Metro.Controls.PageTemplates
 				output.Close();
 
 				MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
-#if !DEBUG
 			}
 			catch (Exception ex)
 			{
 				MetroException.Show(ex);
 			}
-#endif
 		}
 		#endregion
 
 		#region Patch Applying Functions
-		#endregion
+		// File Selectors
+		private void btnApplyPatchFile_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Patch file",
+				Filter = "Assembly Patch File (*.asmp)|*.asmp"
+			};
+			if (ofd.ShowDialog() != DialogResult.OK) return;
 
-		#region Patch Convertion Functions
-		#endregion
-	}
+			txtApplyPatchFile.Text = ofd.FileName;
+			LoadPatch();
+		}
+		private void btnApplyPatchUnmodifiedMap_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a UnModified (Clean) Map file",
+				Filter = "Blam Cache File (*.map)|*.map"
+			};
+			if (ofd.ShowDialog() == DialogResult.OK)
+				txtApplyPatchUnmodifiedMap.Text = ofd.FileName;
+		}
+		private void btnApplyPatchOutputMap_Click(object sender, RoutedEventArgs e)
+		{
+			var sfd = new SaveFileDialog
+			{
+				Title = "Assembly - Select where to save the Map file",
+				Filter = "Blam Cache File (*.map)|*.map"
+			};
+			if (sfd.ShowDialog() == DialogResult.OK)
+				txtApplyPatchOutputMap.Text = sfd.FileName;
+		}
+
+		// Meta Sorting
+	    private Patch currentPatch;
+	    private void LoadPatch()
+	    {
+			try
+			{
+				// Load into UI
+				currentPatch =
+					AssemblyPatchLoader.LoadPatch(new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.BigEndian));
+				txtApplyPatchAuthor.Text = currentPatch.Author;
+				txtApplyPatchDesc.Text = currentPatch.Description;
+				txtApplyPatchName.Text = currentPatch.Name;
+
+				// Set Visibility
+				PatchApplicationPatchExtra.Visibility =
+					currentPatch.CustomBlfContent != null
+						? Visibility.Visible
+						: Visibility.Collapsed;
+
+				// Set Screenshot
+				if (currentPatch.Screenshot == null) return;
+
+				using (var stream = new MemoryStream(currentPatch.Screenshot))
+				{
+					var decoder = new PngBitmapDecoder(stream,
+					                                   BitmapCreateOptions.PreservePixelFormat,
+					                                   BitmapCacheOption.OnLoad);
+
+					var bitmapSource = decoder.Frames[0];
+					bitmapSource.Freeze();
+					imgApplyPreview.Source = bitmapSource;
+				}
+			}
+			catch(Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+	    }
+
+		// Utilities
+		private bool CheckAllApplyMandatoryFields()
+		{
+			var error = false;
+
+			if (txtApplyPatchFile.Text == null) return false;
+
+			// Check Patch file exists
+			if (String.IsNullOrEmpty(txtApplyPatchFile.Text) || !File.Exists(txtApplyPatchFile.Text))
+				error = true;
+
+			// Check Modified map exists
+			if (String.IsNullOrEmpty(txtApplyPatchUnmodifiedMap.Text) || !File.Exists(txtApplyPatchUnmodifiedMap.Text))
+				error = true;
+
+			// Check Content Name is entered
+			if (String.IsNullOrEmpty(txtApplyPatchOutputMap.Text))
+				error = true;
+
+			if (error)
+				MetroMessageBox.Show("Unable to apply patch", "Mandatory fields are missing, please make sure you've filled out all required fields.");
+
+			return !error;
+		}
+
+	    // Patch Applying
+		private void btnApplyPatch_Click(object sender, RoutedEventArgs e)
+		{
+			try 
+			{
+				// Check the user isn't completly retarded
+				if (!CheckAllApplyMandatoryFields())
+					return;
+
+				// Paths
+				var patchFile = txtApplyPatchFile.Text;
+				var unmoddedMapPath = txtApplyPatchUnmodifiedMap.Text;
+				var outputPath = txtApplyPatchOutputMap.Text;
+				
+				// Copy the original map to the destination path
+				File.Copy(unmoddedMapPath, outputPath, true);
+
+				// Open the destination map
+				using (var stream = new EndianStream(File.Open(patchFile, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
+				{
+					var version = new ThirdGenVersionInfo(stream);
+					var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
+					var buildInfo = loader.LoadBuild(version.BuildString);
+					var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
+
+					// Apply the patch!
+					MetaPatcher.WriteChanges(currentPatch.MetaChanges, cacheFile, stream);
+					LocalePatcher.WriteLanguageChanges(currentPatch.LanguageChanges, cacheFile, stream);
+					cacheFile.SaveChanges(stream);
+
+					// Check for blf snaps
+					if (cbApplyPatchBlfExtraction.IsChecked != null && (PatchApplicationPatchExtra.Visibility == Visibility.Visible && (bool)cbApplyPatchBlfExtraction.IsChecked))
+					{
+						var fi = new FileInfo(outputPath);
+						var directoryPath = fi.DirectoryName;
+
+						var blfDirectory = fi.DirectoryName + "\\images\\";
+						var infDirectory = fi.DirectoryName + "\\info\\";
+						if (Directory.Exists(blfDirectory))
+							Directory.CreateDirectory(blfDirectory);
+						if (Directory.Exists(infDirectory))
+							Directory.CreateDirectory(infDirectory);
+
+						if (File.Exists(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName))
+							File.Delete(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName);
+						File.WriteAllBytes(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName, currentPatch.CustomBlfContent.MapInfo);
+
+						foreach(var blfContainerEntry in currentPatch.CustomBlfContent.BlfContainerEntries)
+						{
+							if (File.Exists(blfContainerEntry + blfContainerEntry.FileName))
+								File.Delete(blfContainerEntry + blfContainerEntry.FileName);
+							File.WriteAllBytes(blfContainerEntry + blfContainerEntry.FileName, blfContainerEntry.BlfContainer);
+						}
+					}
+				}
+
+				MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+		}
+	    #endregion
+
+	    #region Patch Convertion Functions
+
+	    #endregion
+    }
 }

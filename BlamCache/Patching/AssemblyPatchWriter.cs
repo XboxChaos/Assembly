@@ -35,6 +35,9 @@ namespace ExtryzeDLL.Patching
 			// Write Targeted Game
 			writer.WriteByte((byte) patch.CustomBlfContent.TargetGame);
 
+			// Write MapInfo Filename
+			writer.WriteAscii(patch.CustomBlfContent.MapInfoFileName);
+
 			// Write MapInfo Length
 			writer.WriteUInt32(Convert.ToUInt32(patch.CustomBlfContent.MapInfo.Length));
 

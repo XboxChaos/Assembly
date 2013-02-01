@@ -65,11 +65,12 @@ namespace ExtryzeDLL.Patching
 			// ReSharper restore UnusedVariable
 			
 			// Version 0 (all versions)
-			var targetGame = (TargetGame) reader.ReadByte();
+			var targetGame = (TargetGame)reader.ReadByte();
+			var mapInfoFileName = reader.ReadAscii();
 			var mapInfoLength = reader.ReadUInt32();
 			var mapInfo = reader.ReadBlock((int)mapInfoLength);
 			var blfContainerCount = reader.ReadInt16();
-			output.CustomBlfContent = new BlfContent(mapInfo, targetGame);
+			output.CustomBlfContent = new BlfContent(mapInfoFileName, mapInfo, targetGame);
 			for(var i = 0; i < blfContainerCount; i++)
 			{
 				var fileName = reader.ReadAscii();

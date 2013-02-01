@@ -4,18 +4,25 @@ namespace ExtryzeDLL.Patching
 {
 	public class BlfContent
 	{
-		public BlfContent(byte[] mapInfo, TargetGame targetGame, IList<BlfContainerEntry> blfContainerEntries)
+		public BlfContent(string mapInfoFileName, byte[] mapInfo, TargetGame targetGame, IList<BlfContainerEntry> blfContainerEntries)
 		{
+			MapInfoFileName = mapInfoFileName;
 			MapInfo = mapInfo;
 			TargetGame = targetGame;
 			BlfContainerEntries = blfContainerEntries;
 		}
-		public BlfContent(byte[] mapInfo, TargetGame targetGame)
+		public BlfContent(string mapInfoFileName, byte[] mapInfo, TargetGame targetGame)
 		{
+			MapInfoFileName = mapInfoFileName;
 			MapInfo = mapInfo;
 			TargetGame = targetGame;
 			BlfContainerEntries = new List<BlfContainerEntry>();
 		}
+
+		/// <summary>
+		/// The filename of the mapinfo
+		/// </summary>
+		public string MapInfoFileName { get; private set; }
 
 		/// <summary>
 		/// The custom Mapinfo file.
