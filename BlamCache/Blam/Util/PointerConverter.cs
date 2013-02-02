@@ -39,6 +39,16 @@ namespace ExtryzeDLL.Blam.Util
         public abstract uint AddressToPointer(uint address);
 
         /// <summary>
+        /// Gets whether or not the converter supports converting to/from memory addresses.
+        /// </summary>
+        public abstract bool SupportsAddresses { get; }
+
+        /// <summary>
+        /// Gets whether or not the converter supports converting to/from file offsets.
+        /// </summary>
+        public abstract bool SupportsOffsets { get; }
+
+        /// <summary>
         /// Converts a file offset into a memory address.
         /// </summary>
         /// <param name="offset">The file offset to convert.</param>

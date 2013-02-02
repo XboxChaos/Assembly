@@ -11,13 +11,17 @@ using ExtryzeDLL.Blam.Util;
 
 namespace ExtryzeDLL.Blam.ThirdGen
 {
-    public class ThirdGenFileNameSource : IFileNameSource
+    /// <summary>
+    /// A file name table in a cache file which is made up of a string table and an offset table,
+    /// and which runs parallel to the tag table.
+    /// </summary>
+    public class IndexedFileNameSource : IFileNameSource
     {
-        private ThirdGenStringTable _strings;
+        private IndexedStringTable _strings;
 
-        public ThirdGenFileNameSource(IReader reader, int count, int tableSize, Pointer indexTableLocation, Pointer dataLocation, BuildInformation buildInfo)
+        public IndexedFileNameSource(IndexedStringTable strings)
         {
-            _strings = new ThirdGenStringTable(reader, count, tableSize, indexTableLocation, dataLocation, buildInfo.FileNameKey);
+            _strings = strings;
         }
 
         public string FindTagName(DatumIndex tagIndex)

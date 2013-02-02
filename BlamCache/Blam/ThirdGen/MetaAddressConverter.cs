@@ -64,5 +64,15 @@ namespace ExtryzeDLL.Blam.ThirdGen
         {
             return address;
         }
+
+        public override bool SupportsAddresses
+        {
+            get { return true; }
+        }
+
+        public override bool SupportsOffsets
+        {
+            get { return true; }
+        }
     }
 }

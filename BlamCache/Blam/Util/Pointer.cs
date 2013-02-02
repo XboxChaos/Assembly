@@ -22,13 +22,59 @@ namespace ExtryzeDLL.Blam.Util
             _converter = template._converter;
         }
 
+        /// <summary>
+        /// Gets whether or not the pointer is a null pointer.
+        /// </summary>
+        public bool IsNull
+        {
+            get { return (_value == 0 || _converter == null); }
+        }
+
+        /// <summary>
+        /// Gets whether or not the pointer has a file offset associated with it.
+        /// </summary>
+        public bool HasOffset
+        {
+            get { return (_converter == null || _converter.SupportsOffsets); }
+        }
+
+        /// <summary>
+        /// The pointer as a file offset.
+        /// </summary>
+        /// <returns>The pointer's equivalent file offset.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the pointer does not have a file offset associated with it.</exception>
         public uint AsOffset()
         {
+            if (_converter != null && !_converter.SupportsOffsets)
+                throw new InvalidOperationException("The pointer does not have an offset associated with it.");
+
+            if (_converter == null)
+                return 0;
+
             return _converter.PointerToOffset(_value);
         }
 
+        /// <summary>
+        /// Gets whether or not the pointer has a memory address associated with it.
+        /// </summary>
+        public bool HasAddress
+        {
+            get { return (_converter == null || _converter.SupportsAddresses); }
+        }
+
+        /// <summary>
+        /// The pointer as a memory address.
+        /// </summary>
+        /// <returns>The pointer's equivalent memory address.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the pointer does not have a memory address associated with it.</exception>
         public uint AsAddress()
         {
+            if (_converter != null && !_converter.SupportsAddresses)
+                throw new InvalidOperationException("The pointer does not have a memory address associated with it.");
+
+            if (_converter == null)
+                return 0;
+
             return _converter.PointerToAddress(_value);
         }
 

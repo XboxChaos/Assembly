@@ -12,6 +12,7 @@ using ExtryzeDLL.Patching;
 using System;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers;
+using ExtryzeDLL.Blam;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -347,7 +348,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				IReader originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
 				IReader newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-				var version = new ThirdGenVersionInfo(originalReader);
+				var version = new CacheFileVersionInfo(originalReader);
 				var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
 				var buildInfo = loader.LoadBuild(version.BuildString);
 				var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
@@ -538,7 +539,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				// Open the destination map
 				using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
 				{
-					var version = new ThirdGenVersionInfo(stream);
+					var version = new CacheFileVersionInfo(stream);
 					var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
 					var buildInfo = loader.LoadBuild(version.BuildString);
 					var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);

@@ -2,23 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Blam.Util;
 
-namespace ExtryzeDLL.Blam.ThirdGen
+namespace ExtryzeDLL.Blam.SecondGen
 {
-    public class IndexOffsetConverter : PointerConverter
+    /// <summary>
+    /// A PointerConverter which only accepts offsets and applies no conversions to them.
+    /// </summary>
+    public class IdentityOffsetConverter : PointerConverter
     {
-        private ThirdGenHeader _header;
-
-        public IndexOffsetConverter(ThirdGenHeader header)
-        {
-            _header = header;
-        }
-
         public override uint PointerToOffset(uint pointer)
         {
-            return pointer + _header.LocaleOffsetMask;
+            return pointer;
         }
 
         public override uint PointerToAddress(uint pointer)
@@ -28,7 +23,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public override uint OffsetToPointer(uint offset)
         {
-            return offset - _header.LocaleOffsetMask;
+            return offset;
         }
 
         public override uint AddressToPointer(uint address)

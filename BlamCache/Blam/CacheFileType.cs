@@ -31,6 +31,7 @@ namespace ExtryzeDLL.Blam
         SinglePlayer,
         Multiplayer,
         MainMenu,
-        Shared
+        Shared,
+        SinglePlayerShared
     }
 }

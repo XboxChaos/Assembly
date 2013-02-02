@@ -11,8 +11,6 @@ namespace ExtryzeDLL.Blam
     /// <seealso cref="ILanguage"/>
     public class LocaleTable
     {
-        private ILanguage _language;
-
         /// <summary>
         /// Constructs a new LocaleTable.
         /// </summary>
