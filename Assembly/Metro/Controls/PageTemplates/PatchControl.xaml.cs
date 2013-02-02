@@ -522,14 +522,13 @@ namespace Assembly.Metro.Controls.PageTemplates
 	    // Patch Applying
 		private void btnApplyPatch_Click(object sender, RoutedEventArgs e)
 		{
-			try 
-			{
+			//try 
+			//{
 				// Check the user isn't completly retarded
-				if (!CheckAllApplyMandatoryFields())
+				if (!CheckAllApplyMandatoryFields() || currentPatch == null)
 					return;
 
 				// Paths
-				var patchFile = txtApplyPatchFile.Text;
 				var unmoddedMapPath = txtApplyPatchUnmodifiedMap.Text;
 				var outputPath = txtApplyPatchOutputMap.Text;
 				
@@ -537,7 +536,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				File.Copy(unmoddedMapPath, outputPath, true);
 
 				// Open the destination map
-				using (var stream = new EndianStream(File.Open(patchFile, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
+				using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
 				{
 					var version = new ThirdGenVersionInfo(stream);
 					var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
@@ -575,11 +574,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 				}
 
 				MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
-			}
-			catch (Exception ex)
-			{
-				MetroException.Show(ex);
-			}
+			//}
+			//catch (Exception ex)
+			//{
+			//	MetroException.Show(ex);
+			//}
 		}
 	    #endregion
 
