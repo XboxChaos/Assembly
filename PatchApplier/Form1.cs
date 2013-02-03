@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Patching;

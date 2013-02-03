@@ -1,11 +1,11 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Patching;
@@ -455,6 +455,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 				txtApplyPatchAuthor.Text = currentPatch.Author;
 				txtApplyPatchDesc.Text = currentPatch.Description;
 				txtApplyPatchName.Text = currentPatch.Name;
+				txtApplyPatchInternalName.Text = currentPatch.MapInternalName;
+				txtApplyPatchMapID.Text = currentPatch.MapID.ToString(CultureInfo.InvariantCulture);
 
 				// Set Visibility
 				PatchApplicationPatchExtra.Visibility =
@@ -463,7 +465,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 						: Visibility.Collapsed;
 
 				// Set Screenshot
-				if (currentPatch.Screenshot == null) return;
+				if (currentPatch.Screenshot == null)
+				{
+					// Set default
+					var source = new Uri(@"/Assembly;component/Metro/Images/super_patcher.png", UriKind.Relative);
+					imgApplyPreview.Source = new BitmapImage(source);
+
+					return;
+				}
 
 				using (var stream = new MemoryStream(currentPatch.Screenshot))
 				{
@@ -523,8 +532,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 	    // Patch Applying
 		private void btnApplyPatch_Click(object sender, RoutedEventArgs e)
 		{
-			//try 
-			//{
+			try 
+			{
 				// Check the user isn't completly retarded
 				if (!CheckAllApplyMandatoryFields() || currentPatch == null)
 					return;
@@ -575,11 +584,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 				}
 
 				MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
-			//}
-			//catch (Exception ex)
-			//{
-			//	MetroException.Show(ex);
-			//}
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
 		}
 	    #endregion
 
