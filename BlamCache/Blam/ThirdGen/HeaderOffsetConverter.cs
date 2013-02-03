@@ -24,7 +24,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public override uint PointerToAddress(uint pointer)
         {
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
         }
 
         public override uint OffsetToPointer(uint offset)
@@ -34,7 +34,17 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public override uint AddressToPointer(uint address)
         {
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
+        }
+
+        public override bool SupportsAddresses
+        {
+            get { return false; }
+        }
+
+        public override bool SupportsOffsets
+        {
+            get { return true; }
         }
     }
 }

@@ -322,7 +322,7 @@ namespace PluginGenerator
         private ICacheFile LoadMap(string path, out IReader reader)
         {
             reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
-            ThirdGenVersionInfo versionInfo = new ThirdGenVersionInfo(reader);
+            CacheFileVersionInfo versionInfo = new CacheFileVersionInfo(reader);
             BuildInformation buildInfo = _buildLoader.LoadBuild(versionInfo.BuildString);
             return new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString);
         }

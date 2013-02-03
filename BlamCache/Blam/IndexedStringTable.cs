@@ -7,13 +7,16 @@ using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Util;
 
-namespace ExtryzeDLL.Blam.ThirdGen.Structures
+namespace ExtryzeDLL.Blam
 {
-    public class ThirdGenStringTable
+    /// <summary>
+    /// A table of strings associated with a table of string offsets.
+    /// </summary>
+    public class IndexedStringTable
     {
         private List<string> _strings = new List<string>();
 
-        public ThirdGenStringTable(IReader reader, int count, int tableSize, Pointer indexTableLocation, Pointer dataLocation, AESKey key)
+        public IndexedStringTable(IReader reader, int count, int tableSize, Pointer indexTableLocation, Pointer dataLocation, AESKey key)
         {
             int[] offsets = ReadOffsets(reader, indexTableLocation, count);
             IReader stringReader = DecryptData(reader, dataLocation, tableSize, key);

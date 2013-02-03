@@ -44,7 +44,7 @@ namespace ExtryzeDLL.Blam
         int GrandparentMagic { get; set; }
 
         /// <summary>
-        /// The stringID describing the class's purpose.
+        /// The stringID describing the class's purpose, if available.
         /// </summary>
         StringID Description { get; set; }
     }

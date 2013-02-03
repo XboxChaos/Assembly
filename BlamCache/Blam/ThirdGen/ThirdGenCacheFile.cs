@@ -36,8 +36,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
     {
         private ThirdGenHeader _header;
         private ThirdGenTagTable _tags;
-        private ThirdGenStringIDSource _stringIds;
-        private ThirdGenFileNameSource _fileNames;
+        private IndexedStringIDSource _stringIds;
+        private IndexedFileNameSource _fileNames;
         private ThirdGenLanguageGlobals _languageInfo;
         private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
@@ -138,14 +138,14 @@ namespace ExtryzeDLL.Blam.ThirdGen
             return new ThirdGenTagTable(reader, values, _header.MetaPointerConverter, buildInfo);
         }
 
-        private ThirdGenFileNameSource LoadFileNames(IReader reader, BuildInformation buildInfo)
+        private IndexedFileNameSource LoadFileNames(IReader reader, BuildInformation buildInfo)
         {
-            return new ThirdGenFileNameSource(reader, _header.FileNameCount, _header.FileNameTableSize, _header.FileNameIndexTableLocation, _header.FileNameDataLocation, buildInfo);
+            return new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameTableSize, _header.FileNameIndexTableLocation, _header.FileNameDataLocation, buildInfo.FileNameKey));
         }
 
-        private ThirdGenStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
+        private IndexedStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
         {
-            return new ThirdGenStringIDSource(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo);
+            return new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo.StringIDKey), buildInfo.StringIDResolver);
         }
 
         private ThirdGenLanguageGlobals LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)

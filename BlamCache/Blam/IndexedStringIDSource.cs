@@ -10,20 +10,20 @@ using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Util;
 using System.IO;
 
-namespace ExtryzeDLL.Blam.ThirdGen
+namespace ExtryzeDLL.Blam
 {
     /// <summary>
-    /// Loads the stringID table from a cache file and makes it available for outside use.
+    /// A stringID table in a cache file which is made up of a string table and an offset table.
     /// </summary>
-    public class ThirdGenStringIDSource : IStringIDSource
+    public class IndexedStringIDSource : IStringIDSource
     {
-        private ThirdGenStringTable _strings;
-        private BuildInformation _buildInfo;
+        private IndexedStringTable _strings;
+        private IStringIDResolver _resolver;
 
-        public ThirdGenStringIDSource(IReader reader, int count, int tableSize, Pointer indexTableLocation, Pointer dataLocation, BuildInformation buildInfo)
+        public IndexedStringIDSource(IndexedStringTable strings, IStringIDResolver resolver)
         {
-            _buildInfo = buildInfo;
-            _strings = new ThirdGenStringTable(reader, count, tableSize, indexTableLocation, dataLocation, buildInfo.StringIDKey);
+            _strings = strings;
+            _resolver = resolver;
         }
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
         /// <returns>The stringID associated with the index.</returns>
         public int StringIDToIndex(StringID id)
         {
-            if (_buildInfo.StringIDResolver != null)
-                return _buildInfo.StringIDResolver.StringIDToIndex(id);
+            if (_resolver != null)
+                return _resolver.StringIDToIndex(id);
             else
                 return id.Value;
         }
@@ -67,8 +67,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
         /// <returns>The stringID associated with the index.</returns>
         public StringID IndexToStringID(int index)
         {
-            if (_buildInfo.StringIDResolver != null)
-                return _buildInfo.StringIDResolver.IndexToStringID(index);
+            if (_resolver != null)
+                return _resolver.IndexToStringID(index);
             else
                 return new StringID(index);
         }

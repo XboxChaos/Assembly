@@ -32,6 +32,8 @@ using Assembly.Windows;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
 using Microsoft.Win32;
+using ExtryzeDLL.Blam.SecondGen;
+using ExtryzeDLL.Blam.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -55,11 +57,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     public partial class HaloMap : UserControl
     {
         private IStreamManager _mapManager;
-        private ThirdGenVersionInfo _version;
+        private CacheFileVersionInfo _version;
         private XDocument _supportedBuilds;
         private BuildInfoLoader _layoutLoader;
         private BuildInformation _buildInfo;
-        private ThirdGenCacheFile _cacheFile;
+        private ICacheFile _cacheFile;
         private string _cacheLocation;
         private TabItem _tab;
         private List<EmptyClassesObject> _emptyClasses = new List<EmptyClassesObject>();
@@ -79,7 +81,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         #region Public Access
         public TagHierarchy TagHierarchy { get { return _hierarchy; } set { _hierarchy = value; } }
-        public ThirdGenCacheFile CacheFile { get { return _cacheFile; } set { _cacheFile = value; } }
+        public ICacheFile CacheFile { get { return _cacheFile; } set { _cacheFile = value; } }
         #endregion
 
         /// <summary>
@@ -134,16 +136,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             InitalizeMap();
         }
+
+        private static Endian GetEndianness(Stream stream)
+        {
+            // Read the magic value
+            // 'head' = big-endian
+            // 'daeh' = little-endian
+            byte[] buffer = new byte[4];
+            stream.Read(buffer, 0, 4);
+
+            if (buffer[0] == 'h' && buffer[1] == 'e' && buffer[2] == 'a' && buffer[3] == 'd')
+                return Endian.BigEndian;
+            else
+                return Endian.LittleEndian;
+        }
         
         public void InitalizeMap()
         {
             _mapManager = new FileStreamManager(_cacheLocation);
             using (Stream fileStream = _mapManager.OpenRead())
             {
-                EndianReader reader = new EndianReader(fileStream, Endian.BigEndian);
+                EndianReader reader = new EndianReader(fileStream, GetEndianness(fileStream));
                 Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
 
-                _version = new ThirdGenVersionInfo(reader);
+                _version = new CacheFileVersionInfo(reader);
                 _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
                 _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
                 _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
@@ -175,7 +191,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 }));
 
                 // Load the cache file
-                _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
+                switch (_version.Engine)
+                {
+                    case EngineType.SecondGeneration:
+                        _cacheFile = new SecondGenCacheFile(reader, _buildInfo, _version.BuildString);
+                        break;
+
+                    case EngineType.ThirdGeneration:
+                        _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
+                        break;
+                }
                 Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Cache File"); }));
 
                 // Add to Recents
@@ -206,18 +231,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Type:", _cacheFile.Info.Type.ToString()));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Internal Name:", _cacheFile.Info.InternalName));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Scenario Name:", _cacheFile.Info.ScenarioName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.MetaBase.AsAddress().ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Size:", "0x" + _cacheFile.Info.MetaSize.ToString("X")));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("SDK Version:", _cacheFile.Info.XDKVersion.ToString()));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Offset:", "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Size:", "0x" + _cacheFile.Info.RawTableSize.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Header Address:", "0x" + _cacheFile.Info.IndexHeaderLocation.AsAddress().ToString("X8")));
+                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Header Address:", PointerAddressString(_cacheFile.Info.IndexHeaderLocation)));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Offset Magic:", "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")));
                 listMapHeader.Children.Add(new Components.MapHeaderEntry("Map Magic:", "0x" + _cacheFile.Info.AddressMask.ToString("X8")));
 
                 StatusUpdater.Update("Loaded Header Info");
             }));
         }
+
+        private static string PointerAddressString(Pointer pointer)
+        {
+            if (!pointer.HasAddress)
+                return "0x00000000";
+            return "0x" + pointer.AsAddress().ToString("X8");
+        }
+
         private void LoadTags()
         {            
             // Load all the tag classes into data
@@ -240,7 +273,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             for (int i = 0; i < _cacheFile.Tags.Count; i++)
             {
                 ITag tag = _cacheFile.Tags[i];
-                if (tag.Index.IsValid)
+                if (!tag.MetaLocation.IsNull)
                 {
                     string fileName = _cacheFile.FileNames.FindTagName(tag);
                     if (fileName == null || fileName.Trim() == "")

@@ -27,7 +27,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     /// </summary>
     public partial class LocaleEditor : UserControl
     {
-        private ThirdGenCacheFile _cache;
+        private ICacheFile _cache;
         private IStreamManager _streamManager;
         private int _languageIndex;
         private ILanguage _currentLanguage;
@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private LocaleRange _currentRange;
         private string _filter;
 
-        public LocaleEditor(ThirdGenCacheFile cache, IStreamManager streamManager, int index)
+        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index)
         {
             InitializeComponent();
 

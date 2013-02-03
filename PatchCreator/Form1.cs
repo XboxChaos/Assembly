@@ -60,7 +60,7 @@ namespace PatchCreator
 	        IReader originalReader = new EndianReader(File.OpenRead(unmoddedPath.Text), Endian.BigEndian);
             IReader newReader = new EndianReader(File.OpenRead(moddedPath.Text), Endian.BigEndian);
 
-			var version = new ThirdGenVersionInfo(originalReader);
+			var version = new CacheFileVersionInfo(originalReader);
 			var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
 			var buildInfo = loader.LoadBuild(version.BuildString);
 			var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);

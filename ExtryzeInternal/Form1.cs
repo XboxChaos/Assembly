@@ -55,7 +55,7 @@ namespace Assembly
             _reader = new EndianReader(fileStream, Endian.BigEndian);
 
             lbStrings.Items.Clear();
-            ThirdGenVersionInfo version = new ThirdGenVersionInfo(_reader);
+            CacheFileVersionInfo version = new CacheFileVersionInfo(_reader);
             XDocument supportedBuilds = XDocument.Load(@"Formats\SupportedBuilds.xml");
             BuildInfoLoader layoutLoader = new BuildInfoLoader(supportedBuilds, @"Formats\");
             BuildInformation buildInfo = layoutLoader.LoadBuild(version.BuildString);

@@ -74,7 +74,7 @@ namespace PatchApplier
             // Open the destination map
 			using (var stream = new EndianStream(File.Open(outPath.Text, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
             {
-				var version = new ThirdGenVersionInfo(stream);
+				var version = new CacheFileVersionInfo(stream);
 				var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
 				var buildInfo = loader.LoadBuild(version.BuildString);
 				var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);

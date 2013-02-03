@@ -20,9 +20,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     /// </summary>
     public partial class StringEditor : UserControl
     {
-        private ThirdGenCacheFile _cache;
+        private ICacheFile _cache;
 
-        public StringEditor(ThirdGenCacheFile cache)
+        public StringEditor(ICacheFile cache)
         {
             InitializeComponent();
 
