@@ -58,6 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
             // Create Meta Editor Tab
 			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager);
+			_metaEditor.Padding = new Thickness(0);
             tabMetaEditor.Content = _metaEditor;
 
             // Create Plugin Editor Tab
