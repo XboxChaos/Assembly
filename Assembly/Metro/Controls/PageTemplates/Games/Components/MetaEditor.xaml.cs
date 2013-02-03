@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Plugins;
@@ -48,6 +45,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class MetaEditor : UserControl
     {
+	    private MetaContainer _parentMetaContainer;
         private IStreamManager _streamManager;
         private TagEntry _tag;
         private TagHierarchy _tags;
@@ -66,12 +64,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private FieldChangeSet _fileChanges;
         private FieldChangeSet _memoryChanges;
 
-        public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand GoToPlugin = new RoutedCommand();
 
-        public MetaEditor(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
+		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
         {
             InitializeComponent();
 
+	        _parentMetaContainer = parentContainer;
             _tag = tag;
             _tags = tags;
             _buildInfo = buildInfo;
@@ -546,7 +546,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             ValueField field = GetValueField(e.Source);
             e.CanExecute = (field != null);
         }
-
         private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             ValueField field = GetValueField(e.Source);
@@ -556,7 +555,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 uint offset = _cache.MetaPointerConverter.AddressToOffset(field.FieldAddress);
                 MetroViewValueAs.Show(_cache, _streamManager, viewValueAsFields, offset);
             }
-        }
+		}
+		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			var field = GetValueField(e.Source);
+			e.CanExecute = (field != null);
+		}
+		private void GoToPlugin_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			var field = GetValueField(e.Source);
+			if (field == null) return;
+
+			_parentMetaContainer.GoToRawPluginLine((int)field.PluginLine);
+		}
+
 
         private static MetaField GetWrappedField(MetaField field)
         {

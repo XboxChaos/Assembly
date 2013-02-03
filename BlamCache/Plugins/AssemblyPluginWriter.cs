@@ -105,6 +105,10 @@ namespace ExtryzeDLL.Plugins
         {
             WriteBasicValue("vector3", name, offset, visible);
         }
+		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+			WriteBasicValue("degree", name, offset, visible);
+		}
 
         public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
@@ -273,5 +277,5 @@ namespace ExtryzeDLL.Plugins
         {
             return "0x" + num.ToString("X");
         }
-    }
+	}
 }

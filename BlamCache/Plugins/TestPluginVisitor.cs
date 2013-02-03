@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace ExtryzeDLL.Plugins
 {
@@ -87,9 +83,14 @@ namespace ExtryzeDLL.Plugins
             PrintBasicValue("Vector3", name, offset, visible);
         }
 
+		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+			PrintBasicValue("Degree", name, offset, visible);
+		}
+
         public void VisitRange(string name, uint offset, bool visible, string type, double minval, double maxval, double smallchange, double largechange, uint pluginLine)
         {
-            object[] yolo = new object[]
+            var yolo = new object[]
             {
                 #region objectarray
                 name,

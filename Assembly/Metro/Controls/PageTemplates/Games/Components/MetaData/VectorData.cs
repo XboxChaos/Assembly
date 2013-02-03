@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class VectorData : ValueField
     {

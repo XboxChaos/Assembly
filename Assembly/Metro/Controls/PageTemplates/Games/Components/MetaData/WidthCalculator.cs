@@ -133,7 +133,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             AddWidth(_vectorControl.Width);
         }
 
-        private void AddWidth(double width)
+	    public void VisitDegree(DegreeData field)
+	    {
+			AddWidth(_degreeControl.Width);
+	    }
+
+	    private void AddWidth(double width)
         {
             _totalWidth = Math.Max(_totalWidth, width);
         }
@@ -147,6 +152,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private static rawBlock _rawBlock = new rawBlock(); 
         //private static MetaChunk _chunkControl = new MetaChunk();
         private static tagValue _tagControl = new tagValue();
-        private static VectorValue _vectorControl = new VectorValue();
+		private static VectorValue _vectorControl = new VectorValue();
+		private static DegreeValue _degreeControl = new DegreeValue();
     }
 }

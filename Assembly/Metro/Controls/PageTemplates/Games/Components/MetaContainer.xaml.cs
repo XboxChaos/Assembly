@@ -30,6 +30,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private BuildInformation _buildInfo;
         private ICacheFile _cache;
 
+		private MetaInformation _metaInformation;
+		private MetaEditor _metaEditor;
+		private PluginEditor _pluginEditor;
+
         #region Public Access
         public TagEntry TagEntry
         {
@@ -49,17 +53,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             tbMetaEditors.SelectedIndex = (int)Settings.halomapLastSelectedMetaEditor;
 
             // Create Meta Information Tab
-            MetaInformation metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
-            tabTagInfo.Content = metaInformation;
+            _metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			tabTagInfo.Content = _metaInformation;
 
             // Create Meta Editor Tab
-            MetaEditor metaEditor = new MetaEditor(_buildInfo, _tag, tags, _cache, streamManager);
-            tabMetaEditor.Content = metaEditor;
+			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager);
+            tabMetaEditor.Content = _metaEditor;
 
             // Create Plugin Editor Tab
-            PluginEditor pluginEditor = new PluginEditor(_buildInfo, _tag, this, metaEditor);
-            tabPluginEditor.Content = pluginEditor;
+            _pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
+            tabPluginEditor.Content = _pluginEditor;
         }
+
+		public void GoToRawPluginLine(int pluginLine)
+		{
+			tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.PluginEditor;
+			_pluginEditor.GoToLine(pluginLine);
+
+		}
 
         private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

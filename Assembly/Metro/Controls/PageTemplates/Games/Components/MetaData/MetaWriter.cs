@@ -259,7 +259,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _writer.WriteFloat(field.Z);
         }
 
-        private void SeekToOffset(uint offset)
+	    public void VisitDegree(DegreeData field)
+	    {
+		    SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.Radian);
+	    }
+
+	    private void SeekToOffset(uint offset)
         {
             _writer.SeekTo(_baseOffset + offset);
         }

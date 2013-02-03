@@ -107,6 +107,11 @@ namespace ExtryzeDLL.Plugins
             WriteBasicValue("float", name + " Z", offset + 8, visible);
         }
 
+		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+			WriteBasicValue("degree", name, offset, visible);
+		}
+
         public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
             WriteBasicValue("stringid", name, offset, visible);
@@ -246,5 +251,5 @@ namespace ExtryzeDLL.Plugins
             WriteValueStart(element, name, offset, visible);
             _output.WriteEndElement();
         }
-    }
+	}
 }
