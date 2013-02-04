@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -81,6 +82,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             InitializeComponent();
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
+
+			// Setup Context Menus
+			InitalizeContextMenus();
 
             _tab = tab;
             _cacheLocation = cacheLocation;
@@ -347,7 +351,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 }
             ));
         }
-
         private void LoadScripts()
         {
             if (_buildInfo.ScriptDefinitionsFilename == null) return;
@@ -376,7 +379,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 _languages.Add(new LanguageEntry(name, index, baseLang));
         }
         
-        private void CloseTab(object source, RoutedEventArgs args)
+        private static void CloseTab(object source, RoutedEventArgs args)
         {
             var tabItem = args.OriginalSource as TabItem;
             if (tabItem == null) return;
@@ -447,6 +450,129 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         #endregion
 
+		#region ContextMenus
+
+		public ContextMenu BaseContextMenu;
+		public ContextMenu FilesystemContextMenu;
+
+		/// <summary>
+		/// Really hacky, but i didn't want to re-do the TabControl to make it DataBinded...
+		/// </summary>
+		private void InitalizeContextMenus()
+		{
+			// Create Lame Context Menu
+			BaseContextMenu = new ContextMenu();
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)BaseContextMenu.Items[0]).Click += contextMenuClose_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)BaseContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)BaseContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)BaseContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)BaseContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
+
+			// Create Fun Context Menu
+			FilesystemContextMenu = new ContextMenu();
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)FilesystemContextMenu.Items[0]).Click += contextMenuClose_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)FilesystemContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)FilesystemContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)FilesystemContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)FilesystemContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
+			FilesystemContextMenu.Items.Add(new Separator());
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Copy File Path" }); ((MenuItem)FilesystemContextMenu.Items[6]).Click += contextMenuCopyFilePath_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Open Containing Folder" }); ((MenuItem)FilesystemContextMenu.Items[7]).Click += contextMenuOpenContainingFolder_Click;
+		}
+
+		private void contextMenuClose_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			ExternalTabClose(tabitem);
+		}
+		private void contextMenuCloseAll_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var toDelete = contentTabs.Items.OfType<CloseableTabItem>().Cast<TabItem>().ToList();
+
+			ExternalTabsClose(toDelete);
+		}
+		private void contextMenuCloseAllButThis_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+
+			var toDelete = contentTabs.Items.OfType<CloseableTabItem>().Where(tab => !Equals(tab, tabitem)).Cast<TabItem>().ToList();
+
+			ExternalTabsClose(toDelete, false);
+		}
+		private void contextMenuCloseToLeft_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			var selectedIndexOfTab = GetSelectedIndex(tabitem);
+
+			var toDelete = new List<TabItem>();
+			for (var i = 0; i < selectedIndexOfTab; i++)
+				toDelete.Add((TabItem)contentTabs.Items[i]);
+
+			ExternalTabsClose(toDelete, false);
+		}
+		private void contextMenuCloseToRight_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			var selectedIndexOfTab = GetSelectedIndex(tabitem);
+
+			var toDelete = new List<TabItem>();
+			for (var i = selectedIndexOfTab + 1; i < contentTabs.Items.Count; i++)
+				toDelete.Add((TabItem)contentTabs.Items[i]);
+
+			ExternalTabsClose(toDelete, false);
+		}
+
+		private static void contextMenuCopyFilePath_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			if (tabitem != null) Clipboard.SetText(tabitem.Tag.ToString());
+		}
+		private static void contextMenuOpenContainingFolder_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			if (tabitem == null) return;
+
+			var filepathArgument = @"/select, " + tabitem.Tag;
+			Process.Start("explorer.exe", filepathArgument);
+		}
+		#endregion
+
         #region Editors
         private void btnEditorsString_Click(object sender, RoutedEventArgs e)
         {
@@ -474,7 +600,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         /// <returns></returns>
         private bool IsTagOpen(string tabTitle)
         {
-            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Header.ToString().ToLower() == tabTitle.ToLower());
+            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => ((ContentControl)tab.Header).Content.ToString().ToLower() == tabTitle.ToLower());
         }
 
         /// <summary>
@@ -494,7 +620,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             CloseableTabItem tab = null;
 
-            foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => tabb.Header.ToString().ToLower() == tabTitle.ToLower()))
+            foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => ((ContentControl)tabb.Header).Content.ToString().ToLower() == tabTitle.ToLower()))
                 tab = tabb;
 
             if (tab != null)
@@ -521,7 +647,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 {
                     contentTabs.Items.Add(new CloseableTabItem
                     {
-                        Header = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1).Replace("_", "__"), CharConstant.ToString(tag.RawTag.Class.Magic)),
+                        Header = new ContentControl
+						{ 
+							Content = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1), CharConstant.ToString(tag.RawTag.Class.Magic)),
+							ContextMenu = BaseContextMenu
+						},
                         Tag = tag,
                         Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager)
                     });
@@ -529,7 +659,54 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                 SelectTabFromTag(tag);
         }
+
+		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
+		{
+			contentTabs.Items.Remove(tab);
+
+			if (!updateFocus) return;
+
+			foreach (var datTab in contentTabs.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
+			{
+				contentTabs.SelectedItem = datTab;
+				return;
+			}
+
+			if (contentTabs.Items.Count > 0)
+				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
+		}
+		public void ExternalTabsClose(List<TabItem> tab, bool updateFocus = true)
+		{
+			foreach (var tabItem in tab)
+				contentTabs.Items.Remove(tabItem);
+
+			if (!updateFocus) return;
+
+			foreach (var datTab in contentTabs.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
+			{
+				contentTabs.SelectedItem = datTab;
+				return;
+			}
+
+			if (contentTabs.Items.Count > 0)
+				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
+		}
+
+		public int GetSelectedIndex(TabItem selectedTab)
+		{
+			var index = 0;
+			foreach (var tab in contentTabs.Items)
+			{
+				if (Equals(tab, selectedTab))
+					return index;
+
+				index++;
+			}
+
+			throw new Exception();
+		}
         #endregion
+
         private void tvTagList_SelectedTagChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             // Check it's actually a tag, and not a class the user clicked
@@ -560,7 +737,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 var tab = new CloseableTabItem
                               {
-                                  Header = tabName,
+                                  Header = new ContentControl()
+	                                           {
+												   Content = tabName,
+												   ContextMenu = BaseContextMenu
+	                                           },
                                   Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index)
                               };
 
@@ -580,7 +761,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 var tab = new CloseableTabItem
                               {
-                                  Header = tabName,
+								  Header = new ContentControl()
+								  {
+									  Content = tabName,
+									  ContextMenu = BaseContextMenu
+								  },
                                   Content = new Components.Editors.ScriptEditor(_cacheFile, _buildInfo.ScriptDefinitionsFilename)
                               };
 
@@ -588,7 +773,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 contentTabs.SelectedItem = tab;
             }
         }
-
         private void DumpClassTagList(object sender, RoutedEventArgs e)
         {
             // Get the menu item and the tag class
