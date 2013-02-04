@@ -13,7 +13,7 @@ namespace ExtryzeDLL.Plugins
         /// <summary>
         /// Called when a plugin is started to be read.
         /// </summary>
-        /// <param name="baseSize">The size of the class's base metadata.</param>
+        /// <param name="baseSize">The size of the class's base metadata, or 0 if not known.</param>
         /// <returns>False if the contents of the plugin should not be read.</returns>
         bool EnterPlugin(int baseSize);
         
@@ -91,8 +91,17 @@ namespace ExtryzeDLL.Plugins
         /// <param name="name">The name of the string.</param>
         /// <param name="offset">The offset of the string.</param>
         /// <param name="visible">True if the string is visible.</param>
-        /// <param name="length">The length of the string.</param>
-        void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine);
+        /// <param name="size">The size of the string in bytes.</param>
+        void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine);
+
+        /// <summary>
+        /// Called when a UTF16 string is encountered in the plugin.
+        /// </summary>
+        /// <param name="name">The name of the string.</param>
+        /// <param name="offset">The offset of the string.</param>
+        /// <param name="visible">True if the string is visible.</param>
+        /// <param name="size">The size of the string in bytes.</param>
+        void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine);
 
         /// <summary>
         /// Called when a color8, color16, color24, or color32 is encountered in the plugin.

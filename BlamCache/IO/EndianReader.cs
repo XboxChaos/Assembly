@@ -289,21 +289,19 @@ namespace ExtryzeDLL.IO
             return _currentString.ToString();
         }
 
-        public string ReadUTF16(int length)
+        public unsafe string ReadUTF16(int size)
         {
-            _currentString.Clear();
-            int ch = 0;
-            int i;
-            for (i = 0; i < length; i++)
+            sbyte[] chars = new sbyte[size];
+            string result;
+            fixed (sbyte* str = chars)
             {
-                ch = ReadInt16();
-                if (ch == 0)
-                    break;
-                _currentString.Append((char)ch);
+                _stream.Read((byte[])(Array)chars, 0, size);
+                if (_bigEndian)
+                    result = new string(str, 0, size, Encoding.BigEndianUnicode);
+                else
+                    result = new string(str, 0, size, Encoding.Unicode);
             }
-            if (i < length)
-                Skip((length - i - 1) * 2);
-            return _currentString.ToString();
+            return result;
         }
 
         /// <summary>

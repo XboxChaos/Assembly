@@ -13,8 +13,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
         /// <summary>
         /// Saves any changes that were made to the file header.
         /// </summary>
-        /// <param name="writer">The stream to write header changes to.</param>
-        void SaveChanges(IWriter writer);
+        /// <param name="stream">The stream to write header changes to.</param>
+        void SaveChanges(IStream stream);
 
         /// <summary>
         /// Information about the cache file (usually obtained from its header).

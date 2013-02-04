@@ -12,6 +12,11 @@ namespace ExtryzeDLL.IO
     public interface IStreamManager
     {
         /// <summary>
+        /// The suggested endianness to read/write the stream with.
+        /// </summary>
+        Endian SuggestedEndian { get; }
+
+        /// <summary>
         /// Opens the backed object for reading.
         /// </summary>
         /// <returns>The stream that was opened on the object.</returns>

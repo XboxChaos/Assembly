@@ -130,10 +130,17 @@ namespace Assembly.Helpers.Plugins
             if (visible || _showInvisibles)
                 AddValue(new StringIDData(name, offset, 0, 0, pluginLine));
         }
-        public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
+
+        public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new StringData(name, offset, 0, "", length, pluginLine));
+                AddValue(new StringData(name, offset, 0, StringType.ASCII, "", size, pluginLine));
+        }
+
+        public void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
+        {
+            if (visible || _showInvisibles)
+                AddValue(new StringData(name, offset, 0, StringType.UTF16, "", size, pluginLine));
         }
 
         public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)

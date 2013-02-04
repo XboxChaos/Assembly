@@ -111,7 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _memoryChanges = new FieldChangeSet();
 
                     uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
-                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _fileChanges);
+                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
                     _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
                     _flattener.Flatten(_pluginVisitor.Values);
                     metaReader.ReadFields(_pluginVisitor.Values);
@@ -149,19 +149,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             if (pluginExists)
             {
-                gridSearch.Visibility          =   System.Windows.Visibility.Visible;
-
+                gridSearch.Visibility               =   System.Windows.Visibility.Visible;
                 cbShowInvisibles.Visibility         =   System.Windows.Visibility.Visible;
                 btnPluginSave.Visibility            =   System.Windows.Visibility.Visible;
-                btnPluginPokeAll.Visibility         =   System.Windows.Visibility.Visible;
-                btnPluginPokeChanged.Visibility     =   System.Windows.Visibility.Visible;
-                btnPluginRevisionViewer.Visibility  =   System.Windows.Visibility.Visible;
 
+                // Only enable poking if memory addresses are available
+                if (_cache.MetaPointerConverter.SupportsAddresses)
+                {
+                    btnPluginPokeAll.Visibility     =   System.Windows.Visibility.Visible;
+                    btnPluginPokeChanged.Visibility =   System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    btnPluginPokeAll.Visibility     =   System.Windows.Visibility.Collapsed;
+                    btnPluginPokeChanged.Visibility =   System.Windows.Visibility.Collapsed;
+                }
+
+                btnPluginRevisionViewer.Visibility  =   System.Windows.Visibility.Visible;
                 btnPluginRefresh.Visibility         =   System.Windows.Visibility.Visible;
             }
             else
             {
-                gridSearch.Visibility          =   System.Windows.Visibility.Collapsed;
+                gridSearch.Visibility               =   System.Windows.Visibility.Collapsed;
 
                 cbShowInvisibles.Visibility         =   System.Windows.Visibility.Collapsed;
                 btnPluginSave.Visibility            =   System.Windows.Visibility.Collapsed;
@@ -176,14 +185,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             if (type == MetaWriter.SaveType.File)
             {
-                using (EndianWriter writer = new EndianWriter(_streamManager.OpenWrite(), Endian.BigEndian))
+                using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
                 {
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, null);
+                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null);
 #else
-                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, type, _fileChanges);
+                    MetaWriter metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges);
 #endif
                     metaUpdate.WriteFields(_pluginVisitor.Values);
+                    _cache.SaveChanges(stream);
                     _fileChanges.MarkAllUnchanged();
                 }
 
@@ -195,7 +205,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 if (Settings.xbdm.Connect())
                 {
                     FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, type, changes);
+                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, _buildInfo, type, changes);
                     metaUpdate.WriteFields(_pluginVisitor.Values);
                     _memoryChanges.MarkAllUnchanged();
 
@@ -553,8 +563,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             if (field != null)
             {
                 IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
-                uint offset = _cache.MetaPointerConverter.AddressToOffset(field.FieldAddress);
-                MetroViewValueAs.Show(_cache, _streamManager, viewValueAsFields, offset);
+                uint offset = _cache.MetaPointerConverter.PointerToOffset(field.FieldAddress);
+                MetroViewValueAs.Show(_cache, _buildInfo, _streamManager, viewValueAsFields, offset);
             }
         }
 

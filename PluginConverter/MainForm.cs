@@ -109,7 +109,7 @@ namespace PluginConverter
                 worker.ReportProgress(progress, "Converting " + name + "...");
                 progress++;
 
-                if (file.EndsWith(".asc") || file.EndsWith(".alt") || file.EndsWith(".ent") || file.EndsWith(".xml"))
+                if ((file.EndsWith(".asc") || file.EndsWith(".alt") || file.EndsWith(".ent") || file.EndsWith(".xml")) && Path.GetFileNameWithoutExtension(file).Length == 4)
                 {
                     XmlReader reader = null;
                     XmlWriter writer = null;

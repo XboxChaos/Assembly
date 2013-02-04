@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Util;
+using ExtryzeDLL.Flexibility;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -16,6 +17,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private ICacheFile _cache;
         private SaveType _type;
         private FieldChangeSet _changes;
+        private StructureLayout _reflexiveLayout;
+        private StructureLayout _tagRefLayout;
+        private StructureLayout _dataRefLayout;
 
         private bool _pokeTemplateFields = true;
 
@@ -24,13 +28,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         /// <summary>
         /// Save meta to the Blam Cache File
         /// </summary>
-        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, SaveType type, FieldChangeSet changes)
+        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, SaveType type, FieldChangeSet changes)
         {
             _writer = writer;
             _baseOffset = baseOffset;
             _cache = cache;
             _type = type;
             _changes = changes;
+
+            // Load layouts
+            _reflexiveLayout = buildInfo.GetLayout("reflexive");
+            _tagRefLayout = buildInfo.GetLayout("tag reference");
+            _dataRefLayout = buildInfo.GetLayout("data reference");
         }
 
         public void WriteFields(IList<MetaField> fields)
@@ -135,9 +144,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitReflexive(ReflexiveData field)
         {
+            StructureValueCollection values = new StructureValueCollection();
+            values.SetNumber("entry count", (uint)field.Length);
+            values.SetNumber("pointer", field.FirstEntryAddress);
+
             SeekToOffset(field.Offset);
-            _writer.WriteInt32(field.Length);
-            _writer.WriteUInt32(field.FirstEntryAddress);
+            StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
         }
 
         public void WriteReflexiveChildren(ReflexiveData field)
@@ -148,7 +160,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Get the base address and convert it to an offset if we're writing to the file
             uint newBaseOffset = field.FirstEntryAddress;
             if (_type == SaveType.File)
-                newBaseOffset = _cache.MetaPointerConverter.AddressToOffset(newBaseOffset);
+                newBaseOffset = _cache.MetaPointerConverter.PointerToOffset(newBaseOffset);
 
             // Save the old base offset and set the base offset to the reflexive's base
             uint oldBaseOffset = _baseOffset;
@@ -197,7 +209,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitString(StringData field)
         {
             SeekToOffset(field.Offset);
-            _writer.WriteAscii(field.Value);
+            switch (field.Type)
+            {
+                case StringType.ASCII:
+                    _writer.WriteAscii(field.Value);
+                    break;
+
+                case StringType.UTF16:
+                    _writer.WriteUTF16(field.Value);
+                    break;
+            }
         }
 
         public void VisitStringID(StringIDData field)
@@ -214,17 +235,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitDataRef(DataRef field)
         {
+            StructureValueCollection values = new StructureValueCollection();
+            values.SetNumber("size", (uint)field.Length);
+            values.SetNumber("pointer", field.FieldAddress);
+
             SeekToOffset(field.Offset);
-            _writer.WriteInt32(field.Length); // Data size
-            _writer.Skip(2 * 4); // Skip two unused values
-            _writer.WriteUInt32(field.DataAddress); // Address
+            StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
 
             if (field.DataAddress != 0xFFFFFFFF && field.DataAddress > 0)
             {
                 // Go to the data location
                 uint offset = field.DataAddress;
                 if (_type == SaveType.File)
-                    offset = _cache.MetaPointerConverter.AddressToOffset(offset);
+                    offset = _cache.MetaPointerConverter.PointerToOffset(offset);
                 _writer.SeekTo(offset);
 
                 // Write its data
@@ -238,17 +261,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             if (field.WithClass)
             {
-                if (field.Value == null)
-                    _writer.WriteInt32(-1);
+                StructureValueCollection values = new StructureValueCollection();
+                if (field.Value != null)
+                {
+                    values.SetNumber("class magic", (uint)field.Value.RawTag.Class.Magic);
+                    values.SetNumber("datum index", field.Value.RawTag.Index.Value);
+                }
                 else
-                    _writer.WriteInt32(field.Value.RawTag.Class.Magic); // Class magic
-                _writer.Skip(2 * 4); // Skip two unused values
+                {
+                    values.SetNumber("class magic", 0xFFFFFFFF);
+                    values.SetNumber("datum index", 0xFFFFFFFF);
+                }
+                StructureWriter.WriteStructure(values, _tagRefLayout, _writer);
             }
-
-            if (field.Value == null)
-                _writer.WriteUInt32(0xFFFFFFFF);
             else
-                _writer.WriteUInt32(field.Value.RawTag.Index.Value); // Tag datum
+            {
+                if (field.Value == null)
+                    _writer.WriteUInt32(0xFFFFFFFF);
+                else
+                    _writer.WriteUInt32(field.Value.RawTag.Index.Value); // Tag datum
+            }
         }
 
         public void VisitVector(VectorData field)

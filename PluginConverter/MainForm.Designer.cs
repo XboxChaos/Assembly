@@ -156,6 +156,7 @@
             this.targetGame.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.targetGame.FormattingEnabled = true;
             this.targetGame.Items.AddRange(new object[] {
+            "Halo2",
             "Halo3",
             "ODST",
             "ReachBeta",

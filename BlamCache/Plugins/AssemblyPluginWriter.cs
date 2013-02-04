@@ -121,10 +121,17 @@ namespace ExtryzeDLL.Plugins
             _output.WriteEndElement();
         }
 
-        public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
+        public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
         {
             WriteValueStart("ascii", name, offset, visible);
-            _output.WriteAttributeString("length", ToHexString(length));
+            _output.WriteAttributeString("size", ToHexString(size));
+            _output.WriteEndElement();
+        }
+
+        public void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
+        {
+            WriteValueStart("utf16", name, offset, visible);
+            _output.WriteAttributeString("size", ToHexString(size));
             _output.WriteEndElement();
         }
 

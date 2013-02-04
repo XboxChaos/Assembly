@@ -201,9 +201,9 @@ namespace ExtryzeDLL.IO
             return _reader.ReadUTF16();
         }
 
-        public string ReadUTF16(int length)
+        public string ReadUTF16(int size)
         {
-            return _reader.ReadUTF16(length);
+            return _reader.ReadUTF16(size);
         }
 
         public void WriteUTF16(string str)

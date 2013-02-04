@@ -17,19 +17,27 @@ namespace ExtryzeDLL.IO
         /// Constructs a new FileStreamManager.
         /// </summary>
         /// <param name="path">The path to the file which streams should be opened on.</param>
-        public FileStreamManager(string path)
+        /// <param name="endian">The endianness of the file.</param>
+        public FileStreamManager(string path, Endian endian)
+            : this(new FileInfo(path), endian)
         {
-            _file = new FileInfo(path);
         }
 
         /// <summary>
         /// Constructs a new FileStreamManager.
         /// </summary>
         /// <param name="file">Information about the file which streams should be opened on.</param>
-        public FileStreamManager(FileInfo file)
+        /// <param name="endian">The endianness of the file.</param>
+        public FileStreamManager(FileInfo file, Endian endian)
         {
             _file = file;
+            SuggestedEndian = endian;
         }
+
+        /// <summary>
+        /// The suggested endianness to read/write the stream with.
+        /// </summary>
+        public Endian SuggestedEndian { get; private set; }
 
         /// <summary>
         /// Opens the file for reading.

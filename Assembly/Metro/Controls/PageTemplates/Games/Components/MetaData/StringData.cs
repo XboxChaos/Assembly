@@ -5,16 +5,24 @@ using System.Text;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
+    public enum StringType
+    {
+        ASCII,
+        UTF16
+    }
+
     public class StringData : ValueField
     {
         private string _value;
-        private int _length;
+        private int _size;
+        private StringType _type;
 
-        public StringData(string name, uint offset, uint address, string value, int length, uint pluginLine)
+        public StringData(string name, uint offset, uint address, StringType type, string value, int size, uint pluginLine)
             : base(name, offset, address, pluginLine)
         {
             _value = value;
-            _length = length;
+            _size = size;
+            _type = type;
         }
 
         public string Value
@@ -23,10 +31,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             set { _value = value; NotifyPropertyChanged("Value"); }
         }
 
-        public int Length
+        public int Size
         {
-            get { return _length; }
-            set { _length = value; NotifyPropertyChanged("Length"); }
+            get { return _size; }
+            set { _size = value; NotifyPropertyChanged("Size"); NotifyPropertyChanged("MaxLength"); }
+        }
+
+        public int MaxLength
+        {
+            get
+            {
+                switch (_type)
+                {
+                    case StringType.ASCII:
+                        return _size;
+                    case StringType.UTF16:
+                        return _size / 2;
+                    default:
+                        return _size;
+                }
+            }
+        }
+
+        public StringType Type
+        {
+            get { return _type; }
+            set { _type = value; NotifyPropertyChanged("Type"); NotifyPropertyChanged("TypeStr"); }
+        }
+
+        public string TypeStr
+        {
+            get { return _type.ToString().ToLower(); }
         }
 
         public override void Accept(IMetaFieldVisitor visitor)
@@ -36,7 +71,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new StringData(Name, Offset, FieldAddress, _value, _length, base.PluginLine);
+            return new StringData(Name, Offset, FieldAddress, _type, _value, _size, base.PluginLine);
         }
     }
 }

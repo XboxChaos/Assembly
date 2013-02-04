@@ -24,9 +24,9 @@ namespace PluginConverter
             if (!reader.ReadToNextSibling("plugin"))
                 throw new ArgumentException("The XML file is missing a <plugin> tag.");
 
-            if (!reader.MoveToAttribute("headersize") && !reader.MoveToAttribute("baseSize"))
-                throw new ArgumentException("The plugin is missing tag size information.");
-            int baseSize = ParseInt(reader.Value);
+            int baseSize = 0;
+            if (reader.MoveToAttribute("headersize") || reader.MoveToAttribute("baseSize"))
+                baseSize = ParseInt(reader.Value);
 
             if (visitor.EnterPlugin(baseSize))
             {
@@ -163,7 +163,6 @@ namespace PluginConverter
                 case "uint32":
                 case "long":
                 case "true":
-                case "ident":
                     visitor.VisitUInt32(name, offset, visible, pluginLine);
                     break;
                 case "int":
@@ -171,6 +170,7 @@ namespace PluginConverter
                     visitor.VisitInt32(name, offset, visible, pluginLine);
                     break;
                 case "undefined":
+                case "unknown":
                     visitor.VisitUndefined(name, offset, visible, pluginLine);
                     break;
                 case "float":
@@ -186,6 +186,7 @@ namespace PluginConverter
                 case "tag":
                 case "tagid":
                 case "tagref":
+                case "ident":
                     ReadTagRef(reader, name, offset, visible, visitor, pluginLine);
                     break;
 
@@ -196,8 +197,25 @@ namespace PluginConverter
                 case "string32":
                     visitor.VisitAscii(name, offset, visible, 32, pluginLine);
                     break;
+                case "string64":
+                    visitor.VisitAscii(name, offset, visible, 64, pluginLine);
+                    break;
                 case "string256":
                     visitor.VisitAscii(name, offset, visible, 256, pluginLine);
+                    break;
+
+                case "unicode":
+                case "utf16":
+                    ReadUtf16(reader, name, offset, visible, visitor, pluginLine);
+                    break;
+                case "unicode32":
+                    visitor.VisitUtf16(name, offset, visible, 32, pluginLine);
+                    break;
+                case "unicode64":
+                    visitor.VisitUtf16(name, offset, visible, 64, pluginLine);
+                    break;
+                case "unicode256":
+                    visitor.VisitUtf16(name, offset, visible, 256, pluginLine);
                     break;
 
                 case "bitfield8":
@@ -236,6 +254,7 @@ namespace PluginConverter
 
                 case "struct":
                 case "reflexive":
+                case "reflexives":
                     ReadReflexive(reader, name, offset, visible, visitor, pluginLine);
                     break;
 
@@ -284,8 +303,16 @@ namespace PluginConverter
 
             if (reader.MoveToAttribute("author"))
                 author = reader.Value;
+
             if (reader.MoveToAttribute("version"))
-                version = float.Parse(reader.Value);
+            {
+                version = float.Parse(reader.Value.TrimEnd('a', 'b', 'c'));
+
+                // Handle a letter suffix (some Entity plugins use this)
+                char suffix = reader.Value[reader.Value.Length - 1];
+                if (suffix >= 'a' && suffix <= 'c')
+                    version += (suffix - 'a' + 1) * 0.001f;
+            }
             
             reader.MoveToElement();
             description = reader.ReadElementContentAsString();
@@ -309,12 +336,22 @@ namespace PluginConverter
 
         private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            int length = 0;
+            int size = 0;
 
-            if (reader.MoveToAttribute("length"))
-                length = ParseInt(reader.Value);
+            if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
+                size = ParseInt(reader.Value);
 
-            visitor.VisitAscii(name, offset, visible, length, pluginLine);
+            visitor.VisitAscii(name, offset, visible, size, pluginLine);
+        }
+
+        private static void ReadUtf16(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+        {
+            int size = 0;
+
+            if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
+                size = ParseInt(reader.Value);
+
+            visitor.VisitUtf16(name, offset, visible, size, pluginLine);
         }
 
         private static void ReadBits(XmlReader reader, IPluginVisitor visitor)
@@ -405,11 +442,13 @@ namespace PluginConverter
 
         private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            uint entrySize;
+            uint entrySize = 0;
 
-            if (!reader.MoveToAttribute("entrySize") && !reader.MoveToAttribute("size"))
-                throw new ArgumentException("Reflexives must have a size or entrySize attribute." + PositionInfo(reader));
-            entrySize = ParseUInt(reader.Value);
+            if (reader.MoveToAttribute("entrySize") || reader.MoveToAttribute("size"))
+            {
+                if (!string.IsNullOrWhiteSpace(reader.Value))
+                    entrySize = ParseUInt(reader.Value);
+            }
 
             if (visitor.EnterReflexive(name, offset, visible, entrySize, pluginLine))
             {

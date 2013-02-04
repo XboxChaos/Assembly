@@ -143,6 +143,11 @@ namespace ExtryzeDLL.Plugins
             _output.WriteEndElement();
         }
 
+        public void VisitUtf16(string name, uint offset, bool visible, int length, uint pluginLine)
+        {
+            // TODO: does Ascension support this?
+        }
+
         public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
         {
             WriteValueStart("color8", name, offset, visible);

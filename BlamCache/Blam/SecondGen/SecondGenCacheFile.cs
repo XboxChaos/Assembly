@@ -13,6 +13,7 @@ namespace ExtryzeDLL.Blam.SecondGen
     public class SecondGenCacheFile : ICacheFile
     {
         private SecondGenHeader _header;
+        private BuildInformation _buildInfo;
         private MetaOffsetConverter _offsetConverter;
         private SecondGenTagTable _tags;
         private IndexedFileNameSource _fileNames;
@@ -20,12 +21,15 @@ namespace ExtryzeDLL.Blam.SecondGen
 
         public SecondGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
+            _buildInfo = buildInfo;
             Load(reader, buildInfo, buildString);
         }
 
-        public void SaveChanges(IWriter writer)
+        public void SaveChanges(IStream stream)
         {
-            // TODO: Implement this
+            CalculateChecksum(stream);
+            WriteHeader(stream);
+            // TODO: Write the tag table
         }
 
         public ICacheFileInfo Info
@@ -111,6 +115,23 @@ namespace ExtryzeDLL.Blam.SecondGen
         {
             IndexedStringTable strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo.StringIDKey);
             return new IndexedStringIDSource(strings, buildInfo.StringIDResolver);
+        }
+
+        private void CalculateChecksum(IReader reader)
+        {
+            // XOR all of the uint32s in the file after the header
+            uint checksum = 0;
+            reader.SeekTo(_header.HeaderSize);
+            for (var offset = _header.HeaderSize; offset < _header.FileSize; offset += 4)
+                checksum ^= reader.ReadUInt32();
+
+            _header.Checksum = checksum;
+        }
+
+        private void WriteHeader(IWriter writer)
+        {
+            writer.SeekTo(0);
+            StructureWriter.WriteStructure(_header.Serialize(), _buildInfo.GetLayout("header"), writer);
         }
     }
 }

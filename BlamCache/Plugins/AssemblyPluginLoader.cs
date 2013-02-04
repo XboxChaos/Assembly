@@ -20,10 +20,10 @@ namespace ExtryzeDLL.Plugins
             if (!reader.ReadToNextSibling("plugin"))
                 throw new ArgumentException("The XML file is missing a <plugin> tag.");
 
-            if (!reader.MoveToAttribute("baseSize"))
-                throw new ArgumentException("The <plugin> tag is missing the baseSize attribute." + PositionInfo(reader));
+            int baseSize = 0;
+            if (reader.MoveToAttribute("baseSize"))
+                baseSize = ParseInt(reader.Value);
 
-            int baseSize = ParseInt(reader.Value);
             if (visitor.EnterPlugin(baseSize))
             {
                 ReadElements(reader, true, visitor);
@@ -105,7 +105,7 @@ namespace ExtryzeDLL.Plugins
                 visible = ParseBool(reader.Value);
 
             reader.MoveToElement();
-            switch (elementName.ToLower())
+            switch (elementName.ToLower()) // FIXME: Using ToLower() here violates XML standards
             {
                 case "uint8":
                     visitor.VisitUInt8(name, offset, visible, pluginLine);
@@ -144,8 +144,13 @@ namespace ExtryzeDLL.Plugins
                 case "range":
                     ReadRange(reader, name, offset, visible, visitor, pluginLine);
                     break;
+
                 case "ascii":
                     ReadAscii(reader, name, offset, visible, visitor, pluginLine);
+                    break;
+
+                case "utf16":
+                    ReadUtf16(reader, name, offset, visible, visitor, pluginLine);
                     break;
 
                 case "bitfield8":
@@ -273,12 +278,23 @@ namespace ExtryzeDLL.Plugins
 
         private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            int length = 0;
+            // Both "size" and "length" are accepted here because they are the same
+            // with ASCII strings, but "size" should be preferred because it's less ambiguous
+            // and <utf16> only supports "size"
+            int size = 0;
+            if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
+                size = ParseInt(reader.Value);
 
-            if (reader.MoveToAttribute("length"))
-                length = ParseInt(reader.Value);
+            visitor.VisitAscii(name, offset, visible, size, pluginLine);
+        }
 
-            visitor.VisitAscii(name, offset, visible, length, pluginLine);
+        private static void ReadUtf16(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+        {
+            int size = 0;
+            if (reader.MoveToAttribute("size"))
+                size = ParseInt(reader.Value);
+
+            visitor.VisitUtf16(name, offset, visible, size, pluginLine);
         }
 
         private static void ReadBits(XmlReader reader, IPluginVisitor visitor)

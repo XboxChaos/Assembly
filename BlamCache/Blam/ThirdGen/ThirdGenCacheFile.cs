@@ -50,10 +50,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
             Load(reader, buildInfo, buildString);
         }
 
-        public void SaveChanges(IWriter writer)
+        public void SaveChanges(IStream stream)
         {
-            WriteHeader(writer);
-            WriteLanguageInfo(writer);
+            WriteHeader(stream);
+            WriteLanguageInfo(stream);
         }
 
         public ICacheFileInfo Info

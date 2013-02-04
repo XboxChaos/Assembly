@@ -7,6 +7,8 @@ using ExtryzeDLL.Blam;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
 using Assembly.Helpers;
+using ExtryzeDLL.Flexibility;
+using ExtryzeDLL.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -16,19 +18,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private IReader _reader;
         private uint _baseOffset = 0;
         private ICacheFile _cache;
+        private StructureLayout _reflexiveLayout;
+        private StructureLayout _tagRefLayout;
+        private StructureLayout _dataRefLayout;
         private FieldChangeSet _ignoredFields;
 
-        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache)
-            : this(streamManager, baseOffset, cache, null)
+        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
+            : this(streamManager, baseOffset, cache, buildInfo, null)
         {
         }
 
-        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, FieldChangeSet ignore)
+        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
         {
             _streamManager = streamManager;
             _baseOffset = baseOffset;
             _cache = cache;
             _ignoredFields = ignore;
+
+            // Load layouts
+            _reflexiveLayout = buildInfo.GetLayout("reflexive");
+            _tagRefLayout = buildInfo.GetLayout("tag reference");
+            _dataRefLayout = buildInfo.GetLayout("data reference");
         }
 
         private void ReadField(MetaField field)
@@ -36,7 +46,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Update the field's memory address
             ValueField valueField = field as ValueField;
             if (valueField != null)
-                valueField.FieldAddress = _cache.MetaPointerConverter.OffsetToAddress(_baseOffset + valueField.Offset);
+                valueField.FieldAddress = _cache.MetaPointerConverter.OffsetToPointer(_baseOffset + valueField.Offset);
 
             // Read its contents if it has changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
@@ -73,7 +83,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 // Calculate the base offset to read from
                 uint oldBaseOffset = _baseOffset;
-                uint dataOffset = _cache.MetaPointerConverter.AddressToOffset(reflexive.FirstEntryAddress);
+                uint dataOffset = _cache.MetaPointerConverter.PointerToOffset(reflexive.FirstEntryAddress);
                 _baseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
 
                 ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
@@ -183,12 +193,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.Value = _reader.ReadInt32();
         }
 
-
         public void VisitString(StringData field)
         {
             SeekToOffset(field.Offset);
-            field.Value = _reader.ReadAscii(field.Length);
+            switch (field.Type)
+            {
+                case StringType.ASCII:
+                    field.Value = _reader.ReadAscii(field.Size);
+                    break;
+
+                case StringType.UTF16:
+                    field.Value = _reader.ReadUTF16(field.Size);
+                    break;
+            }
         }
+
         public void VisitStringID(StringIDData field)
         {
             SeekToOffset(field.Offset);
@@ -198,50 +217,64 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitRawData(RawData field)
         {
             SeekToOffset(field.Offset);
-            field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 24);
+            field.Value = FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 24);
         }
 
         public void VisitDataRef(DataRef field)
         {
-            // Go to length offset
             SeekToOffset(field.Offset);
+            StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 
-            // Read length
-            field.Length = _reader.ReadInt32(); 
+            int length = (int)values.GetNumber("size");
+            uint pointer = values.GetNumber("pointer");
+            field.DataAddress = pointer;
 
-            // Skip 2 unknown int32's
-            _reader.ReadBlock(0x08);
-
-            // Read the memory address
-            field.DataAddress = _reader.ReadUInt32();
-
-            // Check if memory address is valid
-            uint metaStartAddr = _cache.Info.MetaBase.AsAddress();
-            uint metaEndAddr = metaStartAddr + _cache.Info.MetaSize;
-            if (field.Length > 0 && field.DataAddress >= metaStartAddr && field.DataAddress + field.Length <= metaEndAddr)
+            // Check if the pointer is valid
+            uint offset = _cache.MetaPointerConverter.PointerToOffset(pointer);
+            uint metaStartOff = _cache.Info.MetaOffset;
+            uint metaEndOff = metaStartOff + _cache.Info.MetaSize;
+            if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
             {
+                field.Length = length;
+
                 // Go to position
-                _reader.SeekTo(_cache.MetaPointerConverter.PointerToOffset(field.DataAddress));
+                _reader.SeekTo(offset);
 
                 // Read Data
                 byte[] data = _reader.ReadBlock(field.Length);
 
                 // Convert to hex string
-                field.Value = ExtryzeDLL.Util.FunctionHelpers.BytesToHexLines(data, 24);
+                field.Value = FunctionHelpers.BytesToHexLines(data, 24);
+            }
+            else
+            {
+                field.Length = 0;
             }
         }
 
         public void VisitTagRef(TagRefData field)
         {
-            if (field.WithClass)
-                SeekToOffset(field.Offset + (0x04 * 3));  // Skip class ID + two uint32 unknowns
-            else
-                SeekToOffset(field.Offset);
+            SeekToOffset(field.Offset);
 
-            DatumIndex index = DatumIndex.ReadFrom(_reader);
-            if (index.IsValid && index.Index < field.Tags.Entries.Count)
+            DatumIndex index;
+            if (field.WithClass)
             {
-                TagEntry tag = field.Tags.Entries[index.Index];
+                // Read the datum index based upon the layout
+                StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
+                index = new DatumIndex(values.GetNumber("datum index"));
+            }
+            else
+            {
+                // Just read the datum index at the current position
+                index = DatumIndex.ReadFrom(_reader);
+            }
+            
+            TagEntry tag = null;
+            if (index.IsValid && index.Index < field.Tags.Entries.Count)
+                tag = field.Tags.Entries[index.Index];
+
+            if (tag != null)
+            {
                 field.Class = tag.ParentClass;
                 field.Value = tag;
             }
@@ -269,18 +302,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitReflexive(ReflexiveData field)
         {
             SeekToOffset(field.Offset);
-            int length = _reader.ReadInt32();
-            uint address = _reader.ReadUInt32();
+            StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+            int length = (int)values.GetNumber("entry count");
+            uint pointer = (uint)values.GetNumber("pointer");
 
-            // Make sure the address looks valid
-            uint metaStartAddr = _cache.Info.MetaBase.AsAddress();
-            uint metaEndAddr = metaStartAddr + _cache.Info.MetaSize;
-            if (address < metaStartAddr || address + length * field.EntrySize > metaEndAddr)
+            // Make sure the pointer looks valid
+            uint metaStartOff = _cache.Info.MetaOffset;
+            uint metaEndOff = metaStartOff + _cache.Info.MetaSize;
+            uint offset = _cache.MetaPointerConverter.PointerToOffset(pointer);
+            if (offset < metaStartOff || offset + length * field.EntrySize > metaEndOff)
                 length = 0;
 
             field.Length = length;
-            if (address != field.FirstEntryAddress)
-                field.FirstEntryAddress = address;
+            if (pointer != field.FirstEntryAddress)
+                field.FirstEntryAddress = pointer;
         }
 
         public void VisitReflexiveEntry(WrappedReflexiveEntry field)
@@ -295,7 +330,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             if (_reader == null)
             {
-                _reader = new EndianReader(_streamManager.OpenRead(), Endian.BigEndian);
+                _reader = new EndianReader(_streamManager.OpenRead(), _streamManager.SuggestedEndian);
                 return true;
             }
             return false;

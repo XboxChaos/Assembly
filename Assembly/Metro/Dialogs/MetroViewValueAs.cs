@@ -4,6 +4,7 @@ using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 
 namespace Assembly.Metro.Dialogs
@@ -14,12 +15,13 @@ namespace Assembly.Metro.Dialogs
         /// View the selected offset as every meta value type.
         /// </summary>
         /// <param name="cacheFile">The cache file which is being read from.</param>
+        /// <param name="buildInfo">Build information for the engine.</param>
         /// <param name="streamManager">The stream manager to open the file with.</param>
         /// <param name="fields">The fields to display in the viewer.</param>
         /// <param name="cacheOffset">The initial offset to display.</param>
-        public static void Show(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
+        public static void Show(ICacheFile cacheFile, BuildInformation buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
-            var valueAs = new ViewValueAs(cacheFile, streamManager, fields, cacheOffset)
+            var valueAs = new ViewValueAs(cacheFile, buildInfo, streamManager, fields, cacheOffset)
 	                          {
 		                          Owner = Settings.homeWindow, 
 								  WindowStartupLocation = WindowStartupLocation.CenterOwner

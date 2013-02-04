@@ -153,10 +153,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         
         public void InitalizeMap()
         {
-            _mapManager = new FileStreamManager(_cacheLocation);
-            using (Stream fileStream = _mapManager.OpenRead())
+            using (Stream fileStream = File.OpenRead(_cacheLocation))
             {
-                EndianReader reader = new EndianReader(fileStream, GetEndianness(fileStream));
+                Endian endianness = GetEndianness(fileStream);
+                _mapManager = new FileStreamManager(_cacheLocation, endianness);
+                EndianReader reader = new EndianReader(fileStream, endianness);
                 Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
 
                 _version = new CacheFileVersionInfo(reader);

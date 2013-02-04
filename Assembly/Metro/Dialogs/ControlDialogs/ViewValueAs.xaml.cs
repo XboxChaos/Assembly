@@ -10,6 +10,7 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Native;
 using Assembly.Windows;
 using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
@@ -25,14 +26,14 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         private readonly MetaReader _reader;
         private readonly IList<MetaField> _fields;
 
-        public ViewValueAs(ICacheFile cacheFile, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
+        public ViewValueAs(ICacheFile cacheFile, BuildInformation buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
             InitializeComponent();
 
             DwmDropShadow.DropShadowToWindow(this);
 
             _cacheFile = cacheFile;
-            _reader = new MetaReader(streamManager, cacheOffset, cacheFile);
+            _reader = new MetaReader(streamManager, cacheOffset, cacheFile, buildInfo);
             _fields = fields;
             _cacheOffset = _cacheOffsetOriginal = cacheOffset;
 

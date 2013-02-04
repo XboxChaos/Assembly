@@ -38,6 +38,6 @@ namespace ExtryzeDLL.IO
         string ReadUTF8();
         string ReadUTF8(int size);
         string ReadUTF16();
-        string ReadUTF16(int length);
+        string ReadUTF16(int size);
     }
 }      

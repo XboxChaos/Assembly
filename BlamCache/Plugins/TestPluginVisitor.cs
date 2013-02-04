@@ -192,9 +192,14 @@ namespace ExtryzeDLL.Plugins
             PrintBasicValue("Data reference", name, offset, visible);
         }
 
-        public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
+        public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
         {
-            Debug.WriteLine("Ascii string \"{0}\" at {1}, visible = {2}, length = {3}", name, offset, visible, length);
+            Debug.WriteLine("Ascii string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
+        }
+
+        public void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
+        {
+            Debug.WriteLine("Utf16 string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
         }
 
         public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)

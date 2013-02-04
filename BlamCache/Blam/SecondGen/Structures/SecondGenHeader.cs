@@ -68,6 +68,32 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
         public Pointer FileNameIndexTableLocation { get; set; }
         public Pointer FileNameDataLocation { get; set; }
 
+        public uint Checksum { get; set; }
+
+        public StructureValueCollection Serialize()
+        {
+            StructureValueCollection result = new StructureValueCollection();
+            result.SetNumber("file size", FileSize);
+            result.SetNumber("meta offset", MetaOffset);
+            result.SetNumber("meta size", MetaSize);
+            result.SetNumber("meta offset mask", MetaOffsetMask);
+            result.SetNumber("type", (uint)Type);
+            result.SetNumber("string table count", (uint)StringIDCount);
+            result.SetNumber("string table size", (uint)StringIDTableSize);
+            result.SetNumber("string index table offset", StringIDIndexTableLocation.AsOffset());
+            result.SetNumber("string table offset", StringIDDataLocation.AsOffset());
+            result.SetString("internal name", InternalName);
+            result.SetString("scenario name", ScenarioName);
+            result.SetNumber("file table count", (uint)FileNameCount);
+            result.SetNumber("file table offset", FileNameDataLocation.AsOffset());
+            result.SetNumber("file table size", (uint)FileNameTableSize);
+            result.SetNumber("file index table offset", FileNameIndexTableLocation.AsOffset());
+            result.SetNumber("raw table offset", RawTableOffset);
+            result.SetNumber("raw table size", RawTableSize);
+            result.SetNumber("checksum", Checksum);
+            return result;
+        }
+
         private void Load(StructureValueCollection values)
         {
             FileSize = values.GetNumber("file size");
@@ -92,6 +118,8 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
 
             RawTableOffset = values.GetNumber("raw table offset");
             RawTableSize = values.GetNumber("raw table size");
+
+            Checksum = values.GetNumber("checksum");
 
             // Set up a bogus partition table
             Partitions = new Partition[1];
