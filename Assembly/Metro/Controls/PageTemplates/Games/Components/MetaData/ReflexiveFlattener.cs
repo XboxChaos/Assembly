@@ -357,6 +357,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
         }
 
+		public void VisitColourInt(ColourData field)
+		{
+		}
+
+		public void VisitColourFloat(ColourData field)
+		{
+		}
+
         public void VisitReflexive(ReflexiveData field)
         {
             // Create flatten information for the reflexive and attach event handlers to it
@@ -507,5 +515,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 }
             }
         }
-    }
+	}
 }

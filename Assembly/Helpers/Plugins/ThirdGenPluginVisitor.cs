@@ -123,14 +123,16 @@ namespace Assembly.Helpers.Plugins
         }
         public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
         {
-            //Debug.WriteLine("WOAH KID. I HAVEN'T CODED THIS. GET OUT OF HERE");
+			if (visible || _showInvisibles)
+				AddValue(new ColourData(name, offset, 0, format, "", "int", pluginLine));
         }
         public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
         {
-            //Debug.WriteLine("WOAH KID. I HAVEN'T CODED THIS. GET OUT OF HERE");
+	        if (visible || _showInvisibles)
+				AddValue(new ColourData(name, offset, 0, format, "", "float", pluginLine));
         }
 
-        public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
+	    public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
                 AddValue(new StringIDData(name, offset, 0, 0, pluginLine));

@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
-using Assembly.Helpers;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.Util;
 
@@ -193,6 +189,45 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.Value = _reader.ReadInt32();
         }
 
+		public void VisitColourInt(ColourData field)
+		{
+			SeekToOffset(field.Offset);
+
+			// TODO: this
+			switch(field.Format)
+			{
+				case "argb":
+					break;
+
+				case "rgb":
+				default:
+					break;
+			}
+		}
+		public void VisitColourFloat(ColourData field)
+		{
+			SeekToOffset(field.Offset);
+
+			switch (field.Format)
+			{
+				case "argb":
+					field.Value = string.Format("#{0}{1}{2}{3}",
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"),	// Alpha
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"),	// Red
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"),	// Green
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"));	// Blue
+					break;
+
+				case "rgb":
+				default:
+					field.Value = string.Format("#FF{0}{1}{2}",
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"),	// Red
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"),	// Green
+						((int)(_reader.ReadFloat() * 255)).ToString("X2"));	// Blue
+					break;
+			}
+		}
+
         public void VisitString(StringData field)
         {
             SeekToOffset(field.Offset);
@@ -355,5 +390,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             _reader.SeekTo(_baseOffset + offset);
         }
-    }
+	}
 }

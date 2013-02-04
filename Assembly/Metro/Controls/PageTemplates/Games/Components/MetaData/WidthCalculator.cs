@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -138,6 +135,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_degreeControl.Width);
 	    }
 
+		public void VisitColourInt(ColourData field)
+		{
+			AddWidth(_colourValue.Width);
+		}
+		public void VisitColourFloat(ColourData field)
+		{
+			AddWidth(_colourValue.Width);
+		}
+
+
+
 	    private void AddWidth(double width)
         {
             _totalWidth = Math.Max(_totalWidth, width);
@@ -154,5 +162,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private static tagValue _tagControl = new tagValue();
 		private static VectorValue _vectorControl = new VectorValue();
 		private static DegreeValue _degreeControl = new DegreeValue();
-    }
+	    private static ColourValue _colourValue = new ColourValue();
+	}
 }

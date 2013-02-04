@@ -21,5 +21,7 @@
         void VisitTagRef(TagRefData field);
 		void VisitVector(VectorData field);
 		void VisitDegree(DegreeData field);
+		void VisitColourInt(ColourData field);
+		void VisitColourFloat(ColourData field);
     }
 }

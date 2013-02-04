@@ -100,6 +100,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 FilterNumber(field, field.Value);
         }
 
+		public void VisitColourInt(ColourData field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterString(field, field.Value);
+		}
+
+		public void VisitColourFloat(ColourData field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterString(field, field.Value);
+		}
+
         public void VisitReflexive(ReflexiveData field)
         {
             // Don't enter empty reflexives
@@ -232,5 +244,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             _highlighter(field, _highlightLevel > 0);
         }
-    }
+	}
 }

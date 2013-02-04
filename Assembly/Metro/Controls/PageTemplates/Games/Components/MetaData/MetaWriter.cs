@@ -1,9 +1,5 @@
-﻿using Assembly.Helpers;
-using ExtryzeDLL.IO;
-using System;
+﻿using ExtryzeDLL.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Util;
 using ExtryzeDLL.Flexibility;
@@ -44,16 +40,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void WriteFields(IList<MetaField> fields)
         {
-            for (int i = 0; i < fields.Count; i++)
-                WriteField(fields[i]);
+	        foreach (var t in fields)
+		        WriteField(t);
         }
 
-        private void WriteField(MetaField field)
+	    private void WriteField(MetaField field)
         {
             if (_changes == null || _changes.HasChanged(field))
                 field.Accept(this);
 
-            ReflexiveData reflexive = field as ReflexiveData;
+            var reflexive = field as ReflexiveData;
             if (reflexive != null)
                 WriteReflexiveChildren(reflexive);
         }
@@ -142,9 +138,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _writer.WriteFloat(field.Value);
         }
 
+		public void VisitColourInt(ColourData field)
+		{
+			SeekToOffset(field.Offset);
+
+		}
+		public void VisitColourFloat(ColourData field)
+		{
+			SeekToOffset(field.Offset);
+
+			float red;
+			float green;
+			float blue;
+			switch (field.Format)
+			{
+				case "argb":
+					var alpha = float.Parse(field.Value.Replace("#", "").Remove(2));
+					red = float.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4));
+					green = float.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6));
+					blue = float.Parse(field.Value.Replace("#", "").Remove(0, 6));
+
+					_writer.WriteFloat(alpha);
+					_writer.WriteFloat(red);
+					_writer.WriteFloat(green);
+					_writer.WriteFloat(blue);
+					break;
+
+				//case "rgb":
+				default:
+					red = float.Parse(field.Value.Replace("#", "").Remove(2));
+					green = float.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4));
+					blue = float.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6));
+
+					_writer.WriteFloat(red);
+					_writer.WriteFloat(green);
+					_writer.WriteFloat(blue);
+					break;
+			}
+		}
+
         public void VisitReflexive(ReflexiveData field)
         {
-            StructureValueCollection values = new StructureValueCollection();
+            var values = new StructureValueCollection();
             values.SetNumber("entry count", (uint)field.Length);
             values.SetNumber("pointer", field.FirstEntryAddress);
 
@@ -158,18 +193,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 return;
 
             // Get the base address and convert it to an offset if we're writing to the file
-            uint newBaseOffset = field.FirstEntryAddress;
+            var newBaseOffset = field.FirstEntryAddress;
             if (_type == SaveType.File)
                 newBaseOffset = _cache.MetaPointerConverter.PointerToOffset(newBaseOffset);
 
             // Save the old base offset and set the base offset to the reflexive's base
-            uint oldBaseOffset = _baseOffset;
+			var oldBaseOffset = _baseOffset;
             _baseOffset = newBaseOffset;
 
             // Write each page
-            int _oldIndex = field.CurrentIndex;
-            bool _oldPokeTemplates = _pokeTemplateFields;
-            for (int i = 0; i < field.Length; i++)
+			var _oldIndex = field.CurrentIndex;
+			var _oldPokeTemplates = _pokeTemplateFields;
+			for (var i = 0; i < field.Length; i++)
             {
                 // If we're saving everything, then change the active page so the values get loaded from the file
                 if (_changes == null && field.CurrentIndex != i)
@@ -181,10 +216,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                     _pokeTemplateFields = false;
 
                 // Get each field in the page and write it
-                ReflexivePage page = field.Pages[i];
-                for (int j = 0; j < page.Fields.Length; j++)
+				var page = field.Pages[i];
+				for (var j = 0; j < page.Fields.Length; j++)
                 {
-                    MetaField pageField = page.Fields[j]; // The field in the page takes precedence over the field in the reflexive's template
+					var pageField = page.Fields[j]; // The field in the page takes precedence over the field in the reflexive's template
                     if (pageField == null && (_changes == null || _pokeTemplateFields))
                         pageField = field.Template[j]; // Get it from the template
                     if (pageField != null)
@@ -235,24 +270,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitDataRef(DataRef field)
         {
-            StructureValueCollection values = new StructureValueCollection();
+			var values = new StructureValueCollection();
             values.SetNumber("size", (uint)field.Length);
             values.SetNumber("pointer", field.FieldAddress);
 
             SeekToOffset(field.Offset);
             StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
 
-            if (field.DataAddress != 0xFFFFFFFF && field.DataAddress > 0)
-            {
-                // Go to the data location
-                uint offset = field.DataAddress;
-                if (_type == SaveType.File)
-                    offset = _cache.MetaPointerConverter.PointerToOffset(offset);
-                _writer.SeekTo(offset);
+	        if (field.DataAddress == 0xFFFFFFFF || field.DataAddress <= 0) return;
 
-                // Write its data
-                _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
-            }
+	        // Go to the data location
+			var offset = field.DataAddress;
+	        if (_type == SaveType.File)
+		        offset = _cache.MetaPointerConverter.PointerToOffset(offset);
+	        _writer.SeekTo(offset);
+
+	        // Write its data
+	        _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
         }
 
         public void VisitTagRef(TagRefData field)
@@ -261,7 +295,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             if (field.WithClass)
             {
-                StructureValueCollection values = new StructureValueCollection();
+                var values = new StructureValueCollection();
                 if (field.Value != null)
                 {
                     values.SetNumber("class magic", (uint)field.Value.RawTag.Class.Magic);
@@ -276,10 +310,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
             else
             {
-                if (field.Value == null)
-                    _writer.WriteUInt32(0xFFFFFFFF);
-                else
-                    _writer.WriteUInt32(field.Value.RawTag.Index.Value); // Tag datum
+	            _writer.WriteUInt32(field.Value == null ? 0xFFFFFFFF : field.Value.RawTag.Index.Value);
             }
         }
 
@@ -301,5 +332,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             _writer.SeekTo(_baseOffset + offset);
         }
-    }
+	}
 }
