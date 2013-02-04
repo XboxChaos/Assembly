@@ -54,7 +54,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _blfLocation = infoLocation;
 
             FileInfo fi = new FileInfo(_blfLocation);
-            tab.Header = fi.Name;
+			tab.Header = new ContentControl
+			{
+				Content = fi.Name,
+				ContextMenu = Settings.homeWindow.FilesystemContextMenu
+			};
             lblBLFname.Text = fi.Name;
 
             Thread thrd = new Thread(new ThreadStart(LoadMapInfo));

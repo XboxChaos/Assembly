@@ -33,7 +33,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _datetime_shrt = date.ToString("hh:mm.ss");
 
             // Set Tab Header
-            tabItem.Header = "Screenshot {" + _datetime_shrt + "}";
+
+	        tabItem.Header = new ContentControl
+		                         {
+			                         Content = "Screenshot {" + _datetime_shrt + "}",
+									 ContextMenu = Settings.homeWindow.BaseContextMenu
+		                         };
 
             // Set Image Name
             lblImageName.Text = _datetime_long + ".png";

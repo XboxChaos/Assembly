@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -27,10 +28,137 @@ namespace Assembly.Windows
     /// Interaction logic for Home.xaml
     /// </summary>
     public partial class Home
-    {
-        public Home()
+	{
+		#region ContextMenus
+
+		public ContextMenu BaseContextMenu;
+	    public ContextMenu FilesystemContextMenu;
+
+		/// <summary>
+		/// Really hacky, but i didn't want to re-do the TabControl to make it DataBinded...
+		/// </summary>
+		private void InitalizeContextMenus()
+		{
+			// Create Lame Context Menu
+			BaseContextMenu = new ContextMenu();
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)BaseContextMenu.Items[0]).Click += contextMenuClose_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)BaseContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)BaseContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)BaseContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
+			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)BaseContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
+
+			// Create Fun Context Menu
+			FilesystemContextMenu = new ContextMenu();
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)FilesystemContextMenu.Items[0]).Click += contextMenuClose_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)FilesystemContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)FilesystemContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)FilesystemContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)FilesystemContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
+			FilesystemContextMenu.Items.Add(new Separator());
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Copy File Path" }); ((MenuItem)FilesystemContextMenu.Items[6]).Click += contextMenuCopyFilePath_Click;
+			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Open Containing Folder" }); ((MenuItem)FilesystemContextMenu.Items[7]).Click += contextMenuOpenContainingFolder_Click;
+		}
+
+		private void contextMenuClose_Click(object sender, RoutedEventArgs routedEventArgs)
+	    {
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			ExternalTabClose(tabitem);
+	    }
+		private void contextMenuCloseAll_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var toDelete = homeTabControl.Items.OfType<CloseableTabItem>().Cast<TabItem>().ToList();
+
+			ExternalTabsClose(toDelete);
+		}
+	    private void contextMenuCloseAllButThis_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+
+		    var toDelete = homeTabControl.Items.OfType<CloseableTabItem>().Where(tab => !Equals(tab, tabitem)).Cast<TabItem>().ToList();
+
+			ExternalTabsClose(toDelete, false);
+		}
+		private void contextMenuCloseToLeft_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			var selectedIndexOfTab = GetSelectedIndex(tabitem);
+
+			var toDelete = new List<TabItem>();
+			for(var i = 0; i < selectedIndexOfTab; i++)
+				toDelete.Add((TabItem)homeTabControl.Items[i]);
+
+			ExternalTabsClose(toDelete, false);
+		}
+		private void contextMenuCloseToRight_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			var selectedIndexOfTab = GetSelectedIndex(tabitem);
+
+			var toDelete = new List<TabItem>();
+			for (var i = selectedIndexOfTab + 1; i < homeTabControl.Items.Count; i++)
+				toDelete.Add((TabItem)homeTabControl.Items[i]);
+
+			ExternalTabsClose(toDelete, false);
+		}
+
+		private static void contextMenuCopyFilePath_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			if (tabitem != null) Clipboard.SetText(tabitem.Tag.ToString());
+		}
+		private static void contextMenuOpenContainingFolder_Click(object sender, RoutedEventArgs routedEventArgs)
+		{
+			var target = sender as FrameworkElement;
+			while (target is ContextMenu == false)
+			{
+				Debug.Assert(target != null, "target != null");
+				target = target.Parent as FrameworkElement;
+			}
+			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
+			if (tabitem == null) return;
+
+			var filepathArgument = @"/select, " + tabitem.Tag;
+			Process.Start("explorer.exe", filepathArgument);
+		}
+	    #endregion
+
+		public Home()
         {
             InitializeComponent();
+
+			// Setup Context Menus
+			InitalizeContextMenus();
+
             DwmDropShadow.DropShadowToWindow(this);
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
             Settings.homeWindow = this;
@@ -150,11 +278,13 @@ namespace Assembly.Windows
 		        tabControl.Items.Remove(tabItem);
         }
 
-        public void ExternalTabClose(TabItem tab)
+        public void ExternalTabClose(TabItem tab, bool updateFocus = true)
         {
             homeTabControl.Items.Remove(tab);
 
-			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => datTab.Header.ToString() == "Start Page"))
+			if (!updateFocus) return;
+
+			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
             {
 	            homeTabControl.SelectedItem = datTab;
 	            return;
@@ -163,7 +293,23 @@ namespace Assembly.Windows
             if (homeTabControl.Items.Count > 0)
                 homeTabControl.SelectedIndex = homeTabControl.Items.Count - 1;
         }
-        public void ExternalTabClose(TabGenre tabGenre)
+		public void ExternalTabsClose(List<TabItem> tab, bool updateFocus = true)
+		{
+			foreach (var tabItem in tab)
+				homeTabControl.Items.Remove(tabItem);
+
+			if (!updateFocus) return;
+
+			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
+			{
+				homeTabControl.SelectedItem = datTab;
+				return;
+			}
+
+			if (homeTabControl.Items.Count > 0)
+				homeTabControl.SelectedIndex = homeTabControl.Items.Count - 1;
+		}
+		public void ExternalTabClose(TabGenre tabGenre, bool updateFocus = true)
         {
 			var tabHeader = "";
             switch (tabGenre)
@@ -177,12 +323,26 @@ namespace Assembly.Windows
             }
 
             TabItem toRemove = null;
-			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => tab.Header.ToString() == tabHeader))
+			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => ((ContentControl)tab.Header).Content.ToString() == tabHeader))
 	            toRemove = tab;
 
             if (toRemove != null)
                 homeTabControl.Items.Remove(toRemove);
         }
+
+		public int GetSelectedIndex(TabItem selectedTab)
+		{
+			var index = 0;
+			foreach (var tab in homeTabControl.Items)
+			{
+				if (Equals(tab, selectedTab))
+					return index;
+
+				index++;
+			}
+
+			throw new Exception();
+		}
 
         /// <summary>
         /// Add a new Blam Cache Editor Container
@@ -202,9 +362,13 @@ namespace Assembly.Windows
 			var newCacheTab = new CloseableTabItem
 				                  {
 					                  Tag = cacheLocation, 
-									  Header = ""
+									  Header = new ContentControl
+										           {
+											           Content = "",
+													   ContextMenu = FilesystemContextMenu
+										           }
 				                  };
-            newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab);
+			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab);
 
             homeTabControl.Items.Add(newCacheTab);
             homeTabControl.SelectedItem = newCacheTab;
@@ -218,7 +382,11 @@ namespace Assembly.Windows
 			var newImageTab = new CloseableTabItem
 				                  {
 					                  Tag = tempImageLocation, 
-									  Header = "Screenshot"
+									  Header = new ContentControl
+										           {
+											           Content = "Screenshot",
+													   ContextMenu = BaseContextMenu
+										           }
 				                  };
             newImageTab.Content = new HaloScreenshot(tempImageLocation, newImageTab);
 
@@ -243,7 +411,11 @@ namespace Assembly.Windows
 			var newImageTab = new CloseableTabItem
 				                  {
 					                  Tag = imageLocation, 
-									  Header = ""
+									  Header = new ContentControl
+										           {
+											           Content = "",
+													   ContextMenu = FilesystemContextMenu
+										           }
 				                  };
             newImageTab.Content = new HaloImage(imageLocation, newImageTab);
 
@@ -267,8 +439,12 @@ namespace Assembly.Windows
 
 			var newInfooTab = new CloseableTabItem
 				                  {
-					                  Tag = infooLocation, 
-									  Header = ""
+					                  Tag = infooLocation,
+									  Header = new ContentControl
+									  {
+										  Content = "",
+										  ContextMenu = FilesystemContextMenu
+									  }
 				                  };
 	        //newInfooTab.ToolTip = infooLocation;
             newInfooTab.Content = new HaloInfo(infooLocation, newInfooTab);
@@ -298,36 +474,64 @@ namespace Assembly.Windows
 	        switch(tabG)
             {
                 case TabGenre.StartPage:
-                    tab.Header = "Start Page";
+		            tab.Header = new ContentControl
+			        {
+				        Content = "Start Page",
+				        ContextMenu = BaseContextMenu
+			        };
                     tab.Content = new StartPage();
                     break;
                 case TabGenre.Welcome:
-                    tab.Header = "Welcome";
+					tab.Header = new ContentControl
+					{
+						Content = "Welcome",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new WelcomePage();
                     break;
                 case TabGenre.Settings:
-                    tab.Header = "Settings Page";
+					tab.Header = new ContentControl
+					{
+						Content = "Settings",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new SettingsPage();
                     break;
                 case TabGenre.NetworkPoking:
-                    tab.Header = "Network Poking";
+					tab.Header = new ContentControl
+					{
+						Content = "Network Poking",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new NetworkGrouping();
                     break;
                 case TabGenre.PluginGenerator:
-                    tab.Header = "Plugin Generator";
+					tab.Header = new ContentControl
+					{
+						Content = "Plugin Generator",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new HaloPluginGenerator();
                     break;
                 case TabGenre.Patches:
-                    tab.Header = "Patch Control";
+					tab.Header = new ContentControl
+					{
+						Content = "Patcher",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new PatchControl();
                     break;
                 case TabGenre.MemoryManager:
-                    tab.Header = "Memory Manager";
+					tab.Header = new ContentControl
+					{
+						Content = "Memory Manager",
+						ContextMenu = BaseContextMenu
+					};
                     tab.Content = new MemoryManager();
                     break;
             }
 
-			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => tabb.Header == tab.Header))
+			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
             {
 	            homeTabControl.SelectedItem = tabb;
 	            return;
@@ -547,9 +751,9 @@ namespace Assembly.Windows
 			var tab = (TabItem)homeTabControl.SelectedItem;
 
             if (tab != null)
-                UpdateTitleText(tab.Header.ToString().Replace("__", "_").Replace(".map", ""));
+                UpdateTitleText(((ContentControl)tab.Header).Content.ToString().Replace("__", "_").Replace(".map", ""));
 
-            if (tab != null && tab.Header.ToString() == "Start Page")
+			if (tab != null && ((ContentControl)tab.Header).Content.ToString() == "Start Page")
                 ((StartPage)tab.Content).UpdateRecents();
 
             // Check if the tab is a HaloMap

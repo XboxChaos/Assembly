@@ -1,33 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using System.Collections.ObjectModel;
 
 using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.IO;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Util;
 using CloseableTabItemDemo;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
-using System.Collections;
 using Assembly.Windows;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
@@ -91,7 +80,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         public HaloMap(string cacheLocation, TabItem tab)
         {
             InitializeComponent();
-            this.AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(this.CloseTab));
+            AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
 
             _tab = tab;
             _cacheLocation = cacheLocation;
@@ -108,7 +97,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
             Settings.SettingsChanged += SettingsChanged;
 
-            BackgroundWorker initalLoadBackgroundWorker = new BackgroundWorker();
+            var initalLoadBackgroundWorker = new BackgroundWorker();
             initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
             initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
@@ -123,13 +112,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             doingAction.Visibility = Visibility.Hidden;
-            if (e.Error != null)
-            {
-                // Close Tab
-                Settings.homeWindow.ExternalTabClose(_tab);
+            if (e.Error == null) return;
 
-                MetroException.Show(e.Error);
-            }
+            // Close Tab
+            Settings.homeWindow.ExternalTabClose(_tab);
+            MetroException.Show(e.Error);
         }
 
         void initalLoadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -142,30 +129,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Read the magic value
             // 'head' = big-endian
             // 'daeh' = little-endian
-            byte[] buffer = new byte[4];
+            var buffer = new byte[4];
             stream.Read(buffer, 0, 4);
 
             if (buffer[0] == 'h' && buffer[1] == 'e' && buffer[2] == 'a' && buffer[3] == 'd')
                 return Endian.BigEndian;
-            else
-                return Endian.LittleEndian;
+            return Endian.LittleEndian;
         }
         
         public void InitalizeMap()
         {
-            using (Stream fileStream = File.OpenRead(_cacheLocation))
+            using (var fileStream = File.OpenRead(_cacheLocation))
             {
-                Endian endianness = GetEndianness(fileStream);
-                _mapManager = new FileStreamManager(_cacheLocation, endianness);
-                EndianReader reader = new EndianReader(fileStream, endianness);
-                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Opened File"); }));
+	            var endianness = GetEndianness(fileStream);
+				_mapManager = new FileStreamManager(_cacheLocation, endianness);
+                var reader = new EndianReader(fileStream, endianness);
+                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Opened File")));
 
                 _version = new CacheFileVersionInfo(reader);
                 _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
                 _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
                 _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
 
-                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Build Definitions"); }));
+                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Build Definitions")));
 
                 if (_buildInfo == null)
                 {
@@ -181,14 +167,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                                 StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
                             }
 
-                            Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+                            Settings.homeWindow.ExternalTabClose((TabItem)Parent);
                         }));
                     return;
                 }
                 Dispatcher.Invoke(new Action(delegate
                 {
                     if (Settings.startpageHideOnLaunch)
-                        Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
+                        Settings.homeWindow.ExternalTabClose(Home.TabGenre.StartPage);
                 }));
 
                 // Load the cache file
@@ -202,12 +188,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
                         break;
                 }
-                Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Cache File"); }));
+                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
 
                 // Add to Recents
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    RecentFiles.AddNewEntry(System.IO.Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
+                    RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
                     StatusUpdater.Update("Added To Recents");
                 }));
 
@@ -221,25 +207,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             Dispatcher.Invoke(new Action(delegate
             {
-                FileInfo fi = new FileInfo(_cacheLocation);
-                _tab.Header = fi.Name.Replace("_", "__"); Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
+                var fi = new FileInfo(_cacheLocation);
+                _tab.Header = new ContentControl
+                                  {
+                                      Content = fi.Name,
+                                      ContextMenu = Settings.homeWindow.FilesystemContextMenu
+                                  };
+                Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
                 lblMapName.Text = _cacheFile.Info.InternalName;
 
                 lblMapHeader.Text = "Map Header;";
                 listMapHeader.Children.Clear();
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Game:", _buildInfo.GameName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Build:", _cacheFile.Info.BuildString.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Type:", _cacheFile.Info.Type.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Internal Name:", _cacheFile.Info.InternalName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Scenario Name:", _cacheFile.Info.ScenarioName));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Virtual Size:", "0x" + _cacheFile.Info.MetaSize.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("SDK Version:", _cacheFile.Info.XDKVersion.ToString()));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Offset:", "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Raw Table Size:", "0x" + _cacheFile.Info.RawTableSize.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Header Address:", PointerAddressString(_cacheFile.Info.IndexHeaderLocation)));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Index Offset Magic:", "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")));
-                listMapHeader.Children.Add(new Components.MapHeaderEntry("Map Magic:", "0x" + _cacheFile.Info.AddressMask.ToString("X8")));
+                listMapHeader.Children.Add(new MapHeaderEntry("Game:", _buildInfo.GameName));
+                listMapHeader.Children.Add(new MapHeaderEntry("Build:", _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)));
+                listMapHeader.Children.Add(new MapHeaderEntry("Type:", _cacheFile.Info.Type.ToString()));
+                listMapHeader.Children.Add(new MapHeaderEntry("Internal Name:", _cacheFile.Info.InternalName));
+                listMapHeader.Children.Add(new MapHeaderEntry("Scenario Name:", _cacheFile.Info.ScenarioName));
+                listMapHeader.Children.Add(new MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")));
+                listMapHeader.Children.Add(new MapHeaderEntry("Virtual Size:", "0x" + _cacheFile.Info.MetaSize.ToString("X")));
+                listMapHeader.Children.Add(new MapHeaderEntry("SDK Version:", _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)));
+                listMapHeader.Children.Add(new MapHeaderEntry("Raw Table Offset:", "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")));
+                listMapHeader.Children.Add(new MapHeaderEntry("Raw Table Size:", "0x" + _cacheFile.Info.RawTableSize.ToString("X")));
+                listMapHeader.Children.Add(new MapHeaderEntry("Index Header Address:", PointerAddressString(_cacheFile.Info.IndexHeaderLocation)));
+                listMapHeader.Children.Add(new MapHeaderEntry("Index Offset Magic:", "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")));
+                listMapHeader.Children.Add(new MapHeaderEntry("Map Magic:", "0x" + _cacheFile.Info.AddressMask.ToString("X8")));
 
                 StatusUpdater.Update("Loaded Header Info");
             }));
@@ -255,33 +246,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void LoadTags()
         {            
             // Load all the tag classes into data
-            List<TagClass> classes = new List<TagClass>();
-            Dictionary<ITagClass, TagClass> classWrappers = new Dictionary<ITagClass, TagClass>();
+            var classes = new List<TagClass>();
+            var classWrappers = new Dictionary<ITagClass, TagClass>();
             Dispatcher.Invoke(new Action(() =>
                 {
-                    foreach (ITagClass tagClass in _cacheFile.TagClasses)
+                    foreach (var tagClass in _cacheFile.TagClasses)
                     {
-                        TagClass wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
+                        var wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
                         classes.Add(wrapper);
                         classWrappers[tagClass] = wrapper;
                     }
                 }));
 
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Tag Classes"); }));
+            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tag Classes")));
 
             // Load all the tags into the treeview (into their class categoies)
             _hierarchy.Entries = new List<TagEntry>();
-            for (int i = 0; i < _cacheFile.Tags.Count; i++)
+            foreach (var tag in _cacheFile.Tags)
             {
-                ITag tag = _cacheFile.Tags[i];
                 if (!tag.MetaLocation.IsNull)
                 {
-                    string fileName = _cacheFile.FileNames.FindTagName(tag);
+                    var fileName = _cacheFile.FileNames.FindTagName(tag);
                     if (fileName == null || fileName.Trim() == "")
                         fileName = tag.Index.ToString();
 
-                    TagClass parentClass = classWrappers[tag.Class];
-                    TagEntry entry = new TagEntry(tag, parentClass, fileName);
+                    var parentClass = classWrappers[tag.Class];
+                    var entry = new TagEntry(tag, parentClass, fileName);
                     parentClass.Children.Add(entry);
                     _hierarchy.Entries.Add(entry);
                 }
@@ -290,7 +280,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
             
             foreach (TagClass tagClass in classes)
-                tagClass.Children.Sort((x, y) => string.Compare(x.TagFileName, y.TagFileName, true));
+                tagClass.Children.Sort((x, y) => String.Compare(x.TagFileName, y.TagFileName, StringComparison.OrdinalIgnoreCase));
 
 
             //// Taglist Generation
@@ -307,22 +297,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
 
 
-            Dispatcher.Invoke(new Action(delegate { StatusUpdater.Update("Loaded Tags"); }));
+            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tags")));
 
-            classes.Sort((x, y) => string.Compare(x.TagClassMagic, y.TagClassMagic, true));
-            Dispatcher.Invoke(new Action(() =>
-                {
-                    _tagsComplete = new ObservableCollection<TagClass>(classes);
+            classes.Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
+            Dispatcher.Invoke(new Action(delegate
+                                             {
+                                                 _tagsComplete = new ObservableCollection<TagClass>(classes);
 
-                    // Load un-populated tags
-                    foreach (TagClass tagClass in _tagsComplete)
-                        if (tagClass.Children.Count > 0)
-                            _tagsPopulated.Add(tagClass);
-                    _hierarchy.Classes = _tagsPopulated;
-                }));
+                                                 // Load un-populated tags
+                                                 foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
+                                                     _tagsPopulated.Add(tagClass);
+                                                 _hierarchy.Classes = _tagsPopulated;
+                                             }));
 
             // Add to the treeview
-            Dispatcher.Invoke(new Action(delegate { UpdateEmptyTags((bool)cbShowEmptyTags.IsChecked); }));
+            Dispatcher.Invoke(new Action(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked)));
         }
         private void LoadLocales()
         {
@@ -361,41 +350,40 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void LoadScripts()
         {
-            if (_buildInfo.ScriptDefinitionsFilename != null)
-            {
-                // TODO: Actually handle this properly for H4
-                List<string> scripts = new List<string>();
-                scripts.Add(_cacheFile.Info.InternalName + ".hsc");
+            if (_buildInfo.ScriptDefinitionsFilename == null) return;
 
-                Dispatcher.Invoke(new Action(delegate
-                    {
-                        tabScripts.Visibility = Visibility.Visible;
-                        lbScripts.ItemsSource = scripts;
-                        StatusUpdater.Update("Initialized Scripts");
-                    }
-                ));
-            }
+            // TODO: Actually handle this properly for H4
+            var scripts = new List<string>
+                              {
+                                  _cacheFile.Info.InternalName + ".hsc"
+                              };
+
+            Dispatcher.Invoke(new Action(delegate
+                                             {
+                                                 tabScripts.Visibility = Visibility.Visible;
+                                                 lbScripts.ItemsSource = scripts;
+                                                 StatusUpdater.Update("Initialized Scripts");
+                                             }
+                                  ));
         }
 
         private void AddLanguage(string name, int index)
         {
-            if (index >= 0 && index < _cacheFile.Languages.Count)
-            {
-                ILanguage baseLang = _cacheFile.Languages[index];
-                if (baseLang.StringCount > 0)
-                    _languages.Add(new LanguageEntry(name, index, baseLang));
-            }
+            if (index < 0 || index >= _cacheFile.Languages.Count) return;
+
+            var baseLang = _cacheFile.Languages[index];
+            if (baseLang.StringCount > 0)
+                _languages.Add(new LanguageEntry(name, index, baseLang));
         }
         
         private void CloseTab(object source, RoutedEventArgs args)
         {
-            TabItem tabItem = args.OriginalSource as TabItem;
-            if (tabItem != null)
-            {
-                TabControl tabControl = tabItem.Parent as TabControl;
-                if (tabControl != null)
-                    tabControl.Items.Remove(tabItem);
-            }
+            var tabItem = args.OriginalSource as TabItem;
+            if (tabItem == null) return;
+
+            var tabControl = tabItem.Parent as TabControl;
+            if (tabControl != null)
+                tabControl.Items.Remove(tabItem);
         }
 
         private void SettingsChanged(object sender, EventArgs e)
@@ -409,7 +397,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 UpdateDockPanelLocation();
         }
 
-        private void cbShowEmptyTags_Altered(object sender, System.Windows.RoutedEventArgs e) { UpdateEmptyTags((bool)cbShowEmptyTags.IsChecked); }
+        private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e) { UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool)cbShowEmptyTags.IsChecked); }
         private void UpdateEmptyTags(bool shown)
         {
             // Update Settings
@@ -466,9 +454,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 SelectTabFromTitle("StringID Viewer");
             else
             {
-                CloseableTabItem tab = new CloseableTabItem();
-                tab.Header = "StringID Viewer";
-                tab.Content = new Components.Editors.StringEditor(_cacheFile);
+                var tab = new CloseableTabItem
+                              {
+                                  Header = "StringID Viewer", 
+                                  Content = new Components.Editors.StringEditor(_cacheFile)
+                              };
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
@@ -484,23 +474,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         /// <returns></returns>
         private bool IsTagOpen(string tabTitle)
         {
-            foreach (CloseableTabItem tab in contentTabs.Items)
-                if (tab.Header.ToString().ToLower() == tabTitle.ToLower())
-                    return true;
-
-            return false;
+            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Header.ToString().ToLower() == tabTitle.ToLower());
         }
+
         /// <summary>
         /// Check to see if a tag is already open in the Editor Pane
         /// </summary>
         /// <param name="tag">The tag to search for</param>
         private bool IsTagOpen(TagEntry tag)
         {
-            foreach (CloseableTabItem tab in contentTabs.Items)
-                if (tab.Tag == tag)
-                    return true;
-
-            return false;
+            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Tag == tag);
         }
 
         /// <summary>
@@ -511,9 +494,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             CloseableTabItem tab = null;
 
-            foreach (CloseableTabItem tabb in contentTabs.Items)
-                if (tabb.Header.ToString().ToLower() == tabTitle.ToLower())
-                    tab = tabb;
+            foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => tabb.Header.ToString().ToLower() == tabTitle.ToLower()))
+                tab = tabb;
 
             if (tab != null)
                 contentTabs.SelectedItem = tab;
@@ -526,9 +508,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             CloseableTabItem tab = null;
 
-            foreach (CloseableTabItem tabb in contentTabs.Items)
-                if (tabb.Tag == tag)
-                    tab = tabb;
+            foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => tabb.Tag == tag))
+                tab = tabb;
 
             if (tab != null)
                 contentTabs.SelectedItem = tab;
@@ -538,7 +519,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             if (!IsTagOpen(tag))
                 {
-                    contentTabs.Items.Add(new CloseableTabItem()
+                    contentTabs.Items.Add(new CloseableTabItem
                     {
                         Header = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1).Replace("_", "__"), CharConstant.ToString(tag.RawTag.Class.Magic)),
                         Tag = tag,
@@ -552,35 +533,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void tvTagList_SelectedTagChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             // Check it's actually a tag, and not a class the user clicked
-            if (((TreeView)sender).SelectedItem is TagEntry)
-                OpenTag((TagEntry)((TreeView)sender).SelectedItem);
+            var selectedItem = ((TreeView)sender).SelectedItem as TagEntry;
+            if (selectedItem != null)
+                OpenTag(selectedItem);
         }
 
         private void tvTagList_ItemDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            TreeViewItem item = e.Source as TreeViewItem;
-            if (item != null)
-            {
-                TagEntry entry = item.DataContext as TagEntry;
-                if (entry != null)
-                    OpenTag(entry);
-            }
+            var item = e.Source as TreeViewItem;
+            if (item == null) return;
+            var entry = item.DataContext as TagEntry;
+            if (entry != null)
+                OpenTag(entry);
         }
 
         private void LocaleButtonClick(object sender, RoutedEventArgs e)
         {
-            FrameworkElement element = (FrameworkElement)sender;
-            LanguageEntry language = (LanguageEntry)element.DataContext;
-            string tabName = language.Name + " Locales";
+            var element = (FrameworkElement)sender;
+            var language = (LanguageEntry)element.DataContext;
+            var tabName = language.Name + " Locales";
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);
             }
             else
             {
-                CloseableTabItem tab = new CloseableTabItem();
-                tab.Header = tabName;
-                tab.Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index);
+                var tab = new CloseableTabItem
+                              {
+                                  Header = tabName,
+                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index)
+                              };
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
@@ -589,16 +571,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
-            string tabName = _cacheFile.Info.InternalName.Replace("_", "__") + ".hsc";
+            var tabName = _cacheFile.Info.InternalName.Replace("_", "__") + ".hsc";
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);
             }
             else
             {
-                CloseableTabItem tab = new CloseableTabItem();
-                tab.Header = tabName;
-                tab.Content = new Components.Editors.ScriptEditor(_cacheFile, _buildInfo.ScriptDefinitionsFilename);
+                var tab = new CloseableTabItem
+                              {
+                                  Header = tabName,
+                                  Content = new Components.Editors.ScriptEditor(_cacheFile, _buildInfo.ScriptDefinitionsFilename)
+                              };
 
                 contentTabs.Items.Add(tab);
                 contentTabs.SelectedItem = tab;
@@ -608,32 +592,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void DumpClassTagList(object sender, RoutedEventArgs e)
         {
             // Get the menu item and the tag class
-            MenuItem item = e.Source as MenuItem;
+            var item = e.Source as MenuItem;
             if (item == null)
                 return;
-            TagClass tagClass = item.DataContext as TagClass;
+            var tagClass = item.DataContext as TagClass;
             if (tagClass == null)
                 return;
 
             // Ask the user where to save the dump
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Title = "Save Tag List";
-            sfd.Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*";
-            bool? result = sfd.ShowDialog();
-            if (!result.HasValue || !result.Value)
+            var sfd = new SaveFileDialog
+                          {
+                              Title = "Save Tag List", 
+                              Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*"
+                          };
+            var result = sfd.ShowDialog();
+            if (!result.Value)
                 return;
 
             // Dump all of the tags that belong to the class
-            using (StreamWriter writer = new StreamWriter(sfd.FileName))
+            using (var writer = new StreamWriter(sfd.FileName))
             {
-                foreach (ITag tag in _cacheFile.Tags)
+                foreach (var tag in _cacheFile.Tags)
                 {
-                    if (tag != null && tag.Class == tagClass.RawClass)
-                    {
-                        string name = _cacheFile.FileNames.FindTagName(tag);
-                        if (name != null)
-                            writer.WriteLine("{0}={1}", tag.Index, name);
-                    }
+                    if (tag == null || tag.Class != tagClass.RawClass) continue;
+
+                    var name = _cacheFile.FileNames.FindTagName(tag);
+                    if (name != null)
+                        writer.WriteLine("{0}={1}", tag.Index, name);
                 }
             }
 
