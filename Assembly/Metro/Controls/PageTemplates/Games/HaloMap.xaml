@@ -40,9 +40,22 @@
                             <ScrollViewer Margin="25,130,20,25" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                 <StackPanel>
                                     <TextBlock x:Name="lblMapHeader" FontFamily="{DynamicResource MetroFontSemiLight}" Text="" Foreground="White" FontSize="16" />
-                                    <StackPanel x:Name="listMapHeader" Margin="0,0,0,5">
+									<ItemsControl x:Name="panelHeaderItems" ItemsSource="{Binding}" Margin="0,0,0,5">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<StackPanel Orientation="Horizontal">
+													<TextBlock Text="{Binding Title}" Foreground="White" FontFamily="{DynamicResource MetroFontRegular}"/>
+													<TextBlock Text="{Binding Data }" MouseDown="HeaderValueData_MouseDown" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" FontFamily="{DynamicResource MetroFontRegular}"/>
+												</StackPanel>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
 
-                                    </StackPanel>
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<StackPanel />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+									</ItemsControl>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>

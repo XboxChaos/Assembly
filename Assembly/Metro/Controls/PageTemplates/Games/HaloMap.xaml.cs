@@ -44,7 +44,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// <summary>
     /// Interaction logic for Halo4Map.xaml
     /// </summary>
-    public partial class HaloMap : UserControl
+    public partial class HaloMap : UserControl, INotifyPropertyChanged
     {
         private IStreamManager _mapManager;
         private CacheFileVersionInfo _version;
@@ -68,6 +68,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private ObservableCollection<TagClass> _tagsComplete;
         private ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
         private ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
+
+		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
+		public ObservableCollection<HeaderValue> HeaderDetails
+	    {
+			get { return _headerDetails; }
+			set { _headerDetails = value; NotifyPropertyChanged("HeaderDetails"); }
+	    }
+		public class HeaderValue
+		{
+			public string Title { get; set; }
+			public object Data { get; set; }
+		}
 
         #region Public Access
         public TagHierarchy TagHierarchy { get { return _hierarchy; } set { _hierarchy = value; } }
@@ -221,24 +233,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 lblMapName.Text = _cacheFile.Info.InternalName;
 
                 lblMapHeader.Text = "Map Header;";
-                listMapHeader.Children.Clear();
-                listMapHeader.Children.Add(new MapHeaderEntry("Game:", _buildInfo.GameName));
-                listMapHeader.Children.Add(new MapHeaderEntry("Build:", _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)));
-                listMapHeader.Children.Add(new MapHeaderEntry("Type:", _cacheFile.Info.Type.ToString()));
-                listMapHeader.Children.Add(new MapHeaderEntry("Internal Name:", _cacheFile.Info.InternalName));
-                listMapHeader.Children.Add(new MapHeaderEntry("Scenario Name:", _cacheFile.Info.ScenarioName));
-                listMapHeader.Children.Add(new MapHeaderEntry("Virtual Base:", "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")));
-                listMapHeader.Children.Add(new MapHeaderEntry("Virtual Size:", "0x" + _cacheFile.Info.MetaSize.ToString("X")));
-                listMapHeader.Children.Add(new MapHeaderEntry("SDK Version:", _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)));
-                listMapHeader.Children.Add(new MapHeaderEntry("Raw Table Offset:", "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")));
-                listMapHeader.Children.Add(new MapHeaderEntry("Raw Table Size:", "0x" + _cacheFile.Info.RawTableSize.ToString("X")));
-                listMapHeader.Children.Add(new MapHeaderEntry("Index Header Address:", PointerAddressString(_cacheFile.Info.IndexHeaderLocation)));
-                listMapHeader.Children.Add(new MapHeaderEntry("Index Offset Magic:", "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")));
-                listMapHeader.Children.Add(new MapHeaderEntry("Map Magic:", "0x" + _cacheFile.Info.AddressMask.ToString("X8")));
+				HeaderDetails.Clear();
+				HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
+				HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)});
+				HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Info.Type.ToString()});
+				HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.Info.InternalName});
+                HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.Info.ScenarioName});
+                HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")});
+                HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.Info.MetaSize.ToString("X")});
+                HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",			Data = _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)});
+                HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:",		Data = "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")});
+                HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:",			Data = "0x" + _cacheFile.Info.RawTableSize.ToString("X")});
+                HeaderDetails.Add(new HeaderValue { Title = "Index Header Address:",	Data = PointerAddressString(_cacheFile.Info.IndexHeaderLocation)});
+                HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")});
+				HeaderDetails.Add(new HeaderValue { Title = "Map Magic:", Data = "0x" + _cacheFile.Info.AddressMask.ToString("X8") });
+				Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
                 StatusUpdater.Update("Loaded Header Info");
             }));
         }
+		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
+		}
 
         private static string PointerAddressString(Pointer pointer)
         {
@@ -808,5 +826,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             MetroMessageBox.Show("Dump Successful", "Tag list dumped successfully.");
         }
-    }
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void NotifyPropertyChanged(String info)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(info));
+			}
+		}
+	}
 }
