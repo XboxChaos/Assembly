@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public interface IMetaFieldVisitor
     {
@@ -24,6 +19,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         void VisitRawData(RawData field);
         void VisitDataRef(DataRef field);
         void VisitTagRef(TagRefData field);
-        void VisitVector(VectorData field);
+		void VisitVector(VectorData field);
+		void VisitDegree(DegreeData field);
     }
 }

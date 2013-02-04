@@ -108,6 +108,11 @@ namespace Assembly.Helpers.Plugins
             if (visible || _showInvisibles)
                 AddValue(new VectorData(name, offset, 0, 0, 0, 0, pluginLine));
         }
+		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new DegreeData(name, offset, 0, 0, pluginLine));
+		}
 
         public void VisitRange(string name, uint offset, bool visible, string type, double minval, double maxval, double smallchange, double largechange, uint pluginLine)
         {

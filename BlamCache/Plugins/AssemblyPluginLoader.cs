@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace ExtryzeDLL.Plugins
@@ -92,130 +90,135 @@ namespace ExtryzeDLL.Plugins
         /// <param name="visitor">The IPluginVisitor to call to.</param>
         private static void HandleValueElement(XmlReader reader, string elementName, IPluginVisitor visitor)
         {
-            string name = "Unknown";
+			var name = "Unknown";
             uint offset = 0;
-            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
-            bool visible = true;
+	        var xmlLineInfo = reader as IXmlLineInfo;
+	        if (xmlLineInfo == null) return;
+	        var pluginLine = (uint)xmlLineInfo.LineNumber;
+	        var visible = true;
 
-            if (reader.MoveToAttribute("name"))
-                name = reader.Value;
-            if (reader.MoveToAttribute("offset"))
-                offset = ParseUInt(reader.Value);
-            if (reader.MoveToAttribute("visible"))
-                visible = ParseBool(reader.Value);
+	        if (reader.MoveToAttribute("name"))
+		        name = reader.Value;
+	        if (reader.MoveToAttribute("offset"))
+		        offset = ParseUInt(reader.Value);
+	        if (reader.MoveToAttribute("visible"))
+		        visible = ParseBool(reader.Value);
 
-            reader.MoveToElement();
+	        reader.MoveToElement();
             switch (elementName.ToLower()) // FIXME: Using ToLower() here violates XML standards
-            {
-                case "uint8":
-                    visitor.VisitUInt8(name, offset, visible, pluginLine);
-                    break;
-                case "int8":
-                    visitor.VisitInt8(name, offset, visible, pluginLine);
-                    break;
-                case "uint16":
-                    visitor.VisitUInt16(name, offset, visible, pluginLine);
-                    break;
-                case "int16":
-                    visitor.VisitInt16(name, offset, visible, pluginLine);
-                    break;
-                case "uint32":
-                    visitor.VisitUInt32(name, offset, visible, pluginLine);
-                    break;
-                case "int32":
-                    visitor.VisitInt32(name, offset, visible, pluginLine);
-                    break;
-                case "float32": case "float":
-                    visitor.VisitFloat32(name, offset, visible, pluginLine);
-                    break;
-                case "undefined":
-                    visitor.VisitUndefined(name, offset, visible, pluginLine);
-                    break;
-                case "vector3":
-                    visitor.VisitVector3(name, offset, visible, pluginLine);
-                    break;
-                case "stringid":
-                    visitor.VisitStringID(name, offset, visible, pluginLine);
-                    break;
-                case "tagref":
-                    ReadTagRef(reader, name, offset, visible, visitor, pluginLine);
-                    break;
+	        {
+		        case "uint8":
+			        visitor.VisitUInt8(name, offset, visible, pluginLine);
+			        break;
+		        case "int8":
+			        visitor.VisitInt8(name, offset, visible, pluginLine);
+			        break;
+		        case "uint16":
+			        visitor.VisitUInt16(name, offset, visible, pluginLine);
+			        break;
+		        case "int16":
+			        visitor.VisitInt16(name, offset, visible, pluginLine);
+			        break;
+		        case "uint32":
+			        visitor.VisitUInt32(name, offset, visible, pluginLine);
+			        break;
+		        case "int32":
+			        visitor.VisitInt32(name, offset, visible, pluginLine);
+			        break;
+		        case "float32": case "float":
+			        visitor.VisitFloat32(name, offset, visible, pluginLine);
+			        break;
+		        case "undefined":
+			        visitor.VisitUndefined(name, offset, visible, pluginLine);
+			        break;
+		        case "vector3":
+			        visitor.VisitVector3(name, offset, visible, pluginLine);
+			        break;
+		        case "degree":
+			        visitor.VisitDegree(name, offset, visible, pluginLine);
+			        break;
+		        case "stringid":
+			        visitor.VisitStringID(name, offset, visible, pluginLine);
+			        break;
+		        case "tagref":
+			        ReadTagRef(reader, name, offset, visible, visitor, pluginLine);
+			        break;
 
-                case "range":
-                    ReadRange(reader, name, offset, visible, visitor, pluginLine);
-                    break;
+		        case "range":
+			        ReadRange(reader, name, offset, visible, visitor, pluginLine);
+			        break;
 
-                case "ascii":
-                    ReadAscii(reader, name, offset, visible, visitor, pluginLine);
-                    break;
+		        case "ascii":
+			        ReadAscii(reader, name, offset, visible, visitor, pluginLine);
+			        break;
 
                 case "utf16":
                     ReadUtf16(reader, name, offset, visible, visitor, pluginLine);
                     break;
 
-                case "bitfield8":
-                    if (visitor.EnterBitfield8(name, offset, visible, pluginLine))
-                        ReadBits(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
-                case "bitfield16":
-                    if (visitor.EnterBitfield16(name, offset, visible, pluginLine))
-                        ReadBits(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
-                case "bitfield32":
-                    if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
-                        ReadBits(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
+		        case "bitfield8":
+			        if (visitor.EnterBitfield8(name, offset, visible, pluginLine))
+				        ReadBits(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
+		        case "bitfield16":
+			        if (visitor.EnterBitfield16(name, offset, visible, pluginLine))
+				        ReadBits(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
+		        case "bitfield32":
+			        if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
+				        ReadBits(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
 
-                case "enum8":
-                    if (visitor.EnterEnum8(name, offset, visible, pluginLine))
-                        ReadOptions(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
-                case "enum16":
-                    if (visitor.EnterEnum16(name, offset, visible, pluginLine))
-                        ReadOptions(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
-                case "enum32":
-                    if (visitor.EnterEnum32(name, offset, visible, pluginLine))
-                        ReadOptions(reader, visitor);
-                    else
-                        reader.Skip();
-                    break;
+		        case "enum8":
+			        if (visitor.EnterEnum8(name, offset, visible, pluginLine))
+				        ReadOptions(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
+		        case "enum16":
+			        if (visitor.EnterEnum16(name, offset, visible, pluginLine))
+				        ReadOptions(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
+		        case "enum32":
+			        if (visitor.EnterEnum32(name, offset, visible, pluginLine))
+				        ReadOptions(reader, visitor);
+			        else
+				        reader.Skip();
+			        break;
 
-                case "color8": case "colour8":
-                case "color16": case "colour16":
-                case "color24": case "colour24":
-                case "color32": case "colour32":
-                    visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
-                    break;
-                case "colorf": case "colourf":
-                    visitor.VisitColorF(name, offset, visible, ReadColorFormat(reader), pluginLine);
-                    break;
+		        case "color8": case "colour8":
+		        case "color16": case "colour16":
+		        case "color24": case "colour24":
+		        case "color32": case "colour32":
+			        visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
+			        break;
+		        case "colorf": case "colourf":
+			        visitor.VisitColorF(name, offset, visible, ReadColorFormat(reader), pluginLine);
+			        break;
 
-                case "dataref":
-                    visitor.VisitDataReference(name, offset, visible, pluginLine);
-                    break;
+		        case "dataref":
+			        visitor.VisitDataReference(name, offset, visible, pluginLine);
+			        break;
 
-                case "reflexive":
-                    ReadReflexive(reader, name, offset, visible, visitor, pluginLine);
-                    break;
+		        case "reflexive":
+			        ReadReflexive(reader, name, offset, visible, visitor, pluginLine);
+			        break;
 
-                case "raw":
-                    ReadRaw(reader, name, offset, visible, visitor, pluginLine);
-                    break;
+		        case "raw":
+			        ReadRaw(reader, name, offset, visible, visitor, pluginLine);
+			        break;
 
-                default:
-                    throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));
-            }
+		        default:
+			        throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));
+	        }
         }
 
         private static void ReadRevisions(XmlReader reader, IPluginVisitor visitor)
@@ -227,8 +230,8 @@ namespace ExtryzeDLL.Plugins
 
         private static PluginRevision ReadRevision(XmlReader reader)
         {
-            string author = "", description;
-            int version = 1;
+            string author = "", description = "";
+			var version = 1;
 
             if (reader.MoveToAttribute("author"))
                 author = reader.Value;
@@ -243,11 +246,11 @@ namespace ExtryzeDLL.Plugins
 
         private static void ReadRange(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            double min = 0.0;
-            double max = 0.0;
-            double largeChange = 0.0;
-            double smallChange = 0.0;
-            string type = "int32";
+			var min = 0.0;
+			var max = 0.0;
+			var largeChange = 0.0;
+			var smallChange = 0.0;
+			var type = "int32";
 
             if (reader.MoveToAttribute("min"))
                 min = double.Parse(reader.Value);
@@ -299,7 +302,7 @@ namespace ExtryzeDLL.Plugins
 
         private static void ReadBits(XmlReader reader, IPluginVisitor visitor)
         {
-            XmlReader subtree = reader.ReadSubtree();
+            var subtree = reader.ReadSubtree();
 
             subtree.ReadStartElement();
             while (subtree.ReadToNextSibling("bit"))
@@ -309,20 +312,19 @@ namespace ExtryzeDLL.Plugins
         }
         private static void ReadBit(XmlReader reader, IPluginVisitor visitor)
         {
-            string name = "Unknown";
-            int index = 0;
+            var name = "Unknown";
 
-            if (reader.MoveToAttribute("name"))
+	        if (reader.MoveToAttribute("name"))
                 name = reader.Value;
             if (!reader.MoveToAttribute("index"))
                 throw new ArgumentException("Bit definitions must have an index." + PositionInfo(reader));
-            index = ParseInt(reader.Value);
+			var index = ParseInt(reader.Value);
 
             visitor.VisitBit(name, index);
         }
         private static void ReadOptions(XmlReader reader, IPluginVisitor visitor)
         {
-            XmlReader subtree = reader.ReadSubtree();
+			var subtree = reader.ReadSubtree();
 
             subtree.ReadStartElement();
             while (subtree.ReadToNextSibling("option"))
@@ -332,8 +334,8 @@ namespace ExtryzeDLL.Plugins
         }
         private static void ReadOption(XmlReader reader, IPluginVisitor visitor)
         {
-            string name = "Unknown";
-            int value = 0;
+            var name = "Unknown";
+			var value = 0;
 
             if (reader.MoveToAttribute("name"))
                 name = reader.Value;
@@ -345,34 +347,28 @@ namespace ExtryzeDLL.Plugins
 
         private static string ReadColorFormat(XmlReader reader)
         {
-            string format;
-
-            if (!reader.MoveToAttribute("format"))
+	        if (!reader.MoveToAttribute("format"))
                 throw new ArgumentException("Color tags must have a format attribute." + PositionInfo(reader));
-            format = reader.Value.ToLower();
 
-            for (int i = 0; i < format.Length; i++)
-            {
-                char ch = format[i];
-                if (ch != 'r' && ch != 'g' && ch != 'b' && ch != 'a')
-                    throw new ArgumentException("Invalid color format: \"" + format + "\"" + PositionInfo(reader));
-            }
+			var format = reader.Value.ToLower();
+
+			if (format.Any(ch => ch != 'r' && ch != 'g' && ch != 'b' && ch != 'a'))
+				throw new ArgumentException("Invalid color format: \"" + format + "\"" + PositionInfo(reader));
 
             return format;
         }
 
         private static void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            uint entrySize;
-
-            if (!reader.MoveToAttribute("entrySize"))
+	        if (!reader.MoveToAttribute("entrySize"))
                 throw new ArgumentException("Reflexives must have an entrySize attribute." + PositionInfo(reader));
-            entrySize = ParseUInt(reader.Value);
+
+			var entrySize = ParseUInt(reader.Value);
 
             if (visitor.EnterReflexive(name, offset, visible, entrySize, pluginLine))
             {
                 reader.MoveToElement();
-                XmlReader subtree = reader.ReadSubtree();
+				var subtree = reader.ReadSubtree();
 
                 subtree.ReadStartElement();
                 ReadElements(subtree, false, visitor);
@@ -386,38 +382,30 @@ namespace ExtryzeDLL.Plugins
 
         private static void ReadRaw(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
         {
-            int size;
-
-            if (!reader.MoveToAttribute("size"))
+	        if (!reader.MoveToAttribute("size"))
                 throw new ArgumentException("Raw data blocks must have a size attribute." + PositionInfo(reader));
-            size = ParseInt(reader.Value);
+			var size = ParseInt(reader.Value);
 
             visitor.VisitRawData(name, offset, visible, size, pluginLine);
         }
 
         private static string PositionInfo(XmlReader reader)
         {
-            IXmlLineInfo info = reader as IXmlLineInfo;
-            if (info != null)
-                return string.Format(" Line {0}, position {1}.", info.LineNumber, info.LinePosition);
-            return "";
+			var info = reader as IXmlLineInfo;
+            return info != null ? string.Format(" Line {0}, position {1}.", info.LineNumber, info.LinePosition) : "";
         }
 
         private static int ParseInt(string str)
         {
-            if (str.StartsWith("0x"))
-                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
-            return int.Parse(str);
+	        return str.StartsWith("0x") ? int.Parse(str.Substring(2), NumberStyles.HexNumber) : int.Parse(str);
         }
 
-        private static uint ParseUInt(string str)
-        {
-            if (str.StartsWith("0x"))
-                return uint.Parse(str.Substring(2), NumberStyles.HexNumber);
-            return uint.Parse(str);
-        }
+	    private static uint ParseUInt(string str)
+	    {
+		    return str.StartsWith("0x") ? uint.Parse(str.Substring(2), NumberStyles.HexNumber) : uint.Parse(str);
+	    }
 
-        private static bool ParseBool(string str)
+	    private static bool ParseBool(string str)
         {
             return (str == "1" || str.ToLower() == "true");
         }

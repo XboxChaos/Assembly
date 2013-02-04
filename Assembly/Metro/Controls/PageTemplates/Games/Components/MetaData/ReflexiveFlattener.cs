@@ -460,7 +460,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
         }
 
-        private void RecursiveUnload(IEnumerable<MetaField> fields)
+	    public void VisitDegree(DegreeData field)
+	    {
+	    }
+
+	    private void RecursiveUnload(IEnumerable<MetaField> fields)
         {
             foreach (MetaField field in fields)
             {

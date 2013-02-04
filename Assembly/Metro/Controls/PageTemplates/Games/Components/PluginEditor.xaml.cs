@@ -44,6 +44,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             LoadPlugin();
         }
 
+		public void GoToLine(int line)
+		{
+			var selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
+			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			txtPlugin.ScrollToLine(line);
+		}
+
         void Settings_SettingsChanged(object sender, EventArgs e)
         {
             // Reload the syntax highlighting definition in case the theme changed

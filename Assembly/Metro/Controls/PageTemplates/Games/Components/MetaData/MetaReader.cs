@@ -299,7 +299,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.Z = _reader.ReadFloat();
         }
 
-        public void VisitReflexive(ReflexiveData field)
+	    public void VisitDegree(DegreeData field)
+	    {
+		    SeekToOffset(field.Offset);
+		    field.Radian = _reader.ReadFloat();
+	    }
+
+	    public void VisitReflexive(ReflexiveData field)
         {
             SeekToOffset(field.Offset);
             StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);

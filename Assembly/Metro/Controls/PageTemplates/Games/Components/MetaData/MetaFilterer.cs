@@ -175,8 +175,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 }
             }
         }
+	    public void VisitDegree(DegreeData field)
+	    {
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Degree))
+				{
+					FilterNumber(field, field.Degree);
+				}
+			}
+	    }
 
-        // Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
+	    // Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
         private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
         {
             _topLevelField = _flattener.GetTopLevelWrapper(_currentReflexive, wrapper);
