@@ -147,7 +147,7 @@ namespace Assembly.Windows
 			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
 			if (tabitem == null) return;
 
-			var filepathArgument = @"/select, " + tabitem.Tag;
+			var filepathArgument = "/select, \""  + tabitem.Tag + "\"";
 			Process.Start("explorer.exe", filepathArgument);
 		}
 	    #endregion
