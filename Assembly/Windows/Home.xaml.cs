@@ -761,6 +761,9 @@ namespace Assembly.Windows
                 Settings.selectedHaloMap = (HaloMap)tab.Content;
             else
                 Settings.selectedHaloMap = null;
+
+			if (tab == null)
+				homeTabControl.SelectedIndex = 0;
         }
 
         #region More WPF Annoyance
