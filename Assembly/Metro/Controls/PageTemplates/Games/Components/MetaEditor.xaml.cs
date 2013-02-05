@@ -80,7 +80,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _searchTimer = new Timer(SearchTimer);
 
             // Load Plugin Path
-            string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic));
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
             _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
 
             // Set Invisibility box
