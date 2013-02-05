@@ -158,8 +158,6 @@ namespace XBDMCommunicator
             {
                 case RebootType.Cold:
                     SendStringCommand("reboot");
-                    SendStringCommand("bye");
-                    Disconnect();
                     break;
                 case RebootType.Title:
                     SendStringCommand("reboot");

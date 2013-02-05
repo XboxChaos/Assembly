@@ -1,4 +1,6 @@
-﻿using ExtryzeDLL.IO;
+﻿using System;
+using System.Globalization;
+using ExtryzeDLL.IO;
 using System.Collections.Generic;
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Util;
@@ -142,38 +144,54 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
+			foreach (var formatChar in field.Format.ToCharArray())
+			{
+				switch (formatChar)
+				{
+					case 'a':
+						var alpha = byte.Parse(field.Value.Replace("#", "").Remove(2), NumberStyles.HexNumber);
+						_writer.WriteByte(alpha);
+						break;
+					case 'r':
+						var red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
+						_writer.WriteByte(red);
+						break;
+					case 'g':
+						var green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
+						_writer.WriteByte(green);
+						break;
+					case 'b':
+						var blue = byte.Parse(field.Value.Replace("#", "").Remove(0, 6).Remove(2), NumberStyles.HexNumber);
+						_writer.WriteByte(blue);
+						break;
+				}
+			}
 		}
 		public void VisitColourFloat(ColourData field)
 		{
 			SeekToOffset(field.Offset);
 
-			float red;
-			float green;
-			float blue;
-			switch (field.Format)
+			foreach(var formatChar in field.Format.ToCharArray())
 			{
-				case "argb":
-					var alpha = float.Parse(field.Value.Replace("#", "").Remove(2));
-					red = float.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4));
-					green = float.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6));
-					blue = float.Parse(field.Value.Replace("#", "").Remove(0, 6));
-
-					_writer.WriteFloat(alpha);
-					_writer.WriteFloat(red);
-					_writer.WriteFloat(green);
-					_writer.WriteFloat(blue);
-					break;
-
-				//case "rgb":
-				default:
-					red = float.Parse(field.Value.Replace("#", "").Remove(2));
-					green = float.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4));
-					blue = float.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6));
-
-					_writer.WriteFloat(red);
-					_writer.WriteFloat(green);
-					_writer.WriteFloat(blue);
-					break;
+				switch(formatChar)
+				{
+					case 'a':
+						var alpha = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(2), NumberStyles.HexNumber)) / 255;
+						_writer.WriteFloat(alpha);
+						break;
+					case 'r':
+						var red = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber)) / 255;
+						_writer.WriteFloat(red);
+						break;
+					case 'g':
+						var green = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber)) / 255;
+						_writer.WriteFloat(green);
+						break;
+					case 'b':
+						var blue = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber)) / 255;
+						_writer.WriteFloat(blue);
+						break;
+				}
 			}
 		}
 
