@@ -30,7 +30,6 @@ namespace Assembly.Windows
     public partial class Home
 	{
 		#region ContextMenus
-
 		public ContextMenu BaseContextMenu;
 	    public ContextMenu FilesystemContextMenu;
 
