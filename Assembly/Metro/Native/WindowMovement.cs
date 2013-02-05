@@ -216,8 +216,8 @@ namespace Assembly.Metro.Native
 
                     // Get the cursor position on the screen from lParam
                     int screenPos = lParam.ToInt32();
-                    int x = screenPos & 0xFFFF; // Low word
-                    int y = screenPos >> 16; // High word
+                    int x = (short)(screenPos & 0xFFFF); // Low word
+                    int y = (short)(screenPos >> 16); // High word
 
                     // Get the position relative to the window
                     Point clientPos = _window.PointFromScreen(new Point(x, y));
