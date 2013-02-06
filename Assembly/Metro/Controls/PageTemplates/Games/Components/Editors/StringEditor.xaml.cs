@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {

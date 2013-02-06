@@ -1,5 +1,5 @@
 ﻿using System;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Patching

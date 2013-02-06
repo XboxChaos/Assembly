@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.IO;
 
-namespace ExtryzeDLL.Blam.ThirdGen
+namespace ExtryzeDLL.Blam
 {
     /// <summary>
     /// A .map file containing cached information about a map in the game.

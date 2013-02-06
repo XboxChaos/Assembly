@@ -12,10 +12,11 @@ using Assembly.Helpers.Plugins;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Plugins;
+using ExtryzeDLL.RTE;
 using ExtryzeDLL.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
@@ -55,6 +56,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private ThirdGenPluginVisitor _pluginVisitor;
         private bool hasInitFinished = false;
         private ReflexiveFlattener _flattener;
+        private IRTEProvider _rteProvider;
 
         private ObservableCollection<SearchResult> _searchResults;
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
@@ -67,7 +69,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
 		public static RoutedCommand GoToPlugin = new RoutedCommand();
 
-		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
+		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider)
         {
             InitializeComponent();
 
@@ -77,6 +79,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _buildInfo = buildInfo;
             _cache = cache;
             _streamManager = streamManager;
+            _rteProvider = rteProvider;
             _searchTimer = new Timer(SearchTimer);
 
             // Load Plugin Path
@@ -153,8 +156,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 cbShowInvisibles.Visibility         =   System.Windows.Visibility.Visible;
                 btnPluginSave.Visibility            =   System.Windows.Visibility.Visible;
 
-                // Only enable poking if memory addresses are available
-                if (_cache.MetaPointerConverter.SupportsAddresses)
+                // Only enable poking if RTE support is available
+                if (_rteProvider != null)
                 {
                     btnPluginPokeAll.Visibility     =   System.Windows.Visibility.Visible;
                     btnPluginPokeChanged.Visibility =   System.Windows.Visibility.Visible;
@@ -200,26 +203,38 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 if (showActionDialog)
                     MetroMessageBox.Show("Meta Saved", "The metadata has been saved back to the original file.");
             }
-            else
+            else if (_rteProvider != null)
             {
-                if (Settings.xbdm.Connect())
+                using (IStream metaStream = _rteProvider.GetMetaStream(_cache))
                 {
-                    FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-                    MetaWriter metaUpdate = new MetaWriter(Settings.xbdm.MemoryStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, _buildInfo, type, changes);
-                    metaUpdate.WriteFields(_pluginVisitor.Values);
-                    _memoryChanges.MarkAllUnchanged();
-
-                    if (showActionDialog)
+                    if (metaStream != null)
                     {
-                        if (onlyUpdateChanged)
-                            MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to your Xbox 360 console.");
-                        else
-                            MetroMessageBox.Show("Meta Poked", "The metadata has been poked to your Xbox 360 console.");
+                        FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
+                        MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, _buildInfo, type, changes);
+                        metaUpdate.WriteFields(_pluginVisitor.Values);
+                        _memoryChanges.MarkAllUnchanged();
+
+                        if (showActionDialog)
+                        {
+                            if (onlyUpdateChanged)
+                                MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to your Xbox 360 console.");
+                            else
+                                MetroMessageBox.Show("Meta Poked", "The metadata has been poked to your Xbox 360 console.");
+                        }
                     }
-                }
-                else
-                {
-                    MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+                    else
+                    {
+                        switch (_rteProvider.ConnectionType)
+                        {
+                            case RTEConnectionType.Console:
+                                MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+                                break;
+
+                            case RTEConnectionType.LocalProcess:
+                                MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+                                break;
+                        }
+                    }
                 }
             }
         }

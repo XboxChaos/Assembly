@@ -15,9 +15,10 @@ using System.Windows.Shapes;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Plugins;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
+using ExtryzeDLL.RTE;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -42,7 +43,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         #endregion
 
-        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager)
+        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider)
         {
             InitializeComponent();
 
@@ -57,7 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tabTagInfo.Content = _metaInformation;
 
             // Create Meta Editor Tab
-			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager);
+			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager, rteProvider);
 			_metaEditor.Padding = new Thickness(0);
             tabMetaEditor.Content = _metaEditor;
 

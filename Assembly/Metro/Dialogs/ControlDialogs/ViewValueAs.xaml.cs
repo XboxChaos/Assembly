@@ -9,7 +9,7 @@ using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Native;
 using Assembly.Windows;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 

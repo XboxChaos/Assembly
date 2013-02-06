@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ExtryzeDLL.IO
 {
-    public interface ISeekable
+    public interface ISeekable : IDisposable
     {
         bool SeekTo(long offset);
         void Skip(long count);

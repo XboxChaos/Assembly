@@ -24,6 +24,8 @@ using ExtryzeDLL.Flexibility;
 using Microsoft.Win32;
 using ExtryzeDLL.Blam.SecondGen;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.RTE;
+using XBDMCommunicator;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -68,6 +70,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private ObservableCollection<TagClass> _tagsComplete;
         private ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
         private ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
+
+        private IRTEProvider _rteProvider;
 
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -202,6 +206,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                     case EngineType.ThirdGeneration:
                         _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
+                        _rteProvider = new XBDMRTEProvider(Settings.xbdm);
                         break;
                 }
                 Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
@@ -671,7 +676,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							ContextMenu = BaseContextMenu
 						},
                         Tag = tag,
-                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager)
+                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager, _rteProvider)
                     });
                 }
 

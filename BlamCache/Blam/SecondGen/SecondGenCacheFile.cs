@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.SecondGen.Structures;
-using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;

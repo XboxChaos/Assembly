@@ -1,6 +1,6 @@
 ﻿using ExtryzeDLL.IO;
 using System.Collections.Generic;
-using ExtryzeDLL.Blam.ThirdGen;
+using ExtryzeDLL.Blam;
 using ExtryzeDLL.Util;
 using ExtryzeDLL.Flexibility;
 

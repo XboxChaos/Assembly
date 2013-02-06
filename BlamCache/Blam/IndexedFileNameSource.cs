@@ -9,7 +9,7 @@ using ExtryzeDLL.IO;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.Blam.Util;
 
-namespace ExtryzeDLL.Blam.ThirdGen
+namespace ExtryzeDLL.Blam
 {
     /// <summary>
     /// A file name table in a cache file which is made up of a string table and an offset table,

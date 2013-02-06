@@ -209,7 +209,7 @@ namespace XBDMCommunicator
         public enum RebootType { Cold, Title }
         
         // Memory IO
-        public class XboxMemoryStream : IWriter, IReader
+        public class XboxMemoryStream : IStream
         {
             public XboxMemoryStream(Xbdm xbdm)
             {
@@ -458,6 +458,7 @@ namespace XBDMCommunicator
 
             // Public Functions
             public void Close() { }
+            public void Dispose() { Close(); }
 	        public bool EOF { get; private set; }
 	        public long Length { get { return _length; } }
 	        public long Position { get; private set; }

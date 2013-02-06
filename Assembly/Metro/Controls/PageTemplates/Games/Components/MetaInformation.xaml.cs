@@ -1,4 +1,4 @@
-﻿using ExtryzeDLL.Blam.ThirdGen;
+﻿using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
 using ExtryzeDLL.IO;
 using System;
