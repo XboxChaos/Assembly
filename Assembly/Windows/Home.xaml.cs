@@ -460,7 +460,8 @@ namespace Assembly.Windows
             PluginGenerator,
             Patches,
             MemoryManager,
-            Welcome
+            Welcome,
+			PluginConverter
         }
         public void AddTabModule(TabGenre tabG)
         {
@@ -528,6 +529,14 @@ namespace Assembly.Windows
 					};
                     tab.Content = new MemoryManager();
                     break;
+				case TabGenre.PluginConverter:
+					tab.Header = new ContentControl
+					{
+						Content = "Plugin Converter",
+						ContextMenu = BaseContextMenu
+					};
+                    tab.Content = new HaloPluginConverter();
+		            break;
             }
 
 			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
@@ -891,6 +900,7 @@ namespace Assembly.Windows
         private void menuPatches_Click(object sender, RoutedEventArgs e)                { AddTabModule(TabGenre.Patches); }
         private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.NetworkPoking); }
         private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)		{ AddTabModule(TabGenre.PluginGenerator); }
+		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)		{ AddTabModule(TabGenre.PluginConverter); }
         
         private void menuHelpAbout_Click(object sender, RoutedEventArgs e)              { MetroAbout.Show(); }
 		private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)			{ var thrd = new Thread(Updater.BeginUpdateProcess); thrd.Start(); }
