@@ -194,11 +194,17 @@ namespace ExtryzeDLL.Plugins
 				        reader.Skip();
 			        break;
 
-		        case "color8": case "colour8":
-		        case "color16": case "colour16":
-		        case "color24": case "colour24":
+				//case "color8": case "colour8":
+				//case "color16": case "colour16":
+				case "color":
+				case "colour":
+					visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
+					break;
+				case "color24": case "colour24":
+					visitor.VisitColorInt(name, offset, visible, "rgb", pluginLine);
+			        break;
 		        case "color32": case "colour32":
-			        visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
+			        visitor.VisitColorInt(name, offset, visible, "argb", pluginLine);
 			        break;
 		        case "colorf": case "colourf":
 			        visitor.VisitColorF(name, offset, visible, ReadColorFormat(reader), pluginLine);

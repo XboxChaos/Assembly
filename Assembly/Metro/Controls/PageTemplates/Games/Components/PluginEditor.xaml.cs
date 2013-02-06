@@ -39,8 +39,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
             Settings.SettingsChanged += Settings_SettingsChanged;
 
-            string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic));
-            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", buildInfo.PluginFolder, className);
+	        string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+	        _pluginPath =
+		        string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+							  buildInfo.PluginFolder, className.Trim());
             LoadPlugin();
         }
 

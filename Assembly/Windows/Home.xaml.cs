@@ -30,7 +30,6 @@ namespace Assembly.Windows
     public partial class Home
 	{
 		#region ContextMenus
-
 		public ContextMenu BaseContextMenu;
 	    public ContextMenu FilesystemContextMenu;
 
@@ -147,7 +146,7 @@ namespace Assembly.Windows
 			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
 			if (tabitem == null) return;
 
-			var filepathArgument = @"/select, " + tabitem.Tag;
+			var filepathArgument = "/select, \""  + tabitem.Tag + "\"";
 			Process.Start("explorer.exe", filepathArgument);
 		}
 	    #endregion
@@ -761,6 +760,9 @@ namespace Assembly.Windows
                 Settings.selectedHaloMap = (HaloMap)tab.Content;
             else
                 Settings.selectedHaloMap = null;
+
+			if (tab == null)
+				homeTabControl.SelectedIndex = 0;
         }
 
         #region More WPF Annoyance

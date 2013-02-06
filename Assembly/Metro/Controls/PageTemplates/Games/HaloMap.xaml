@@ -7,12 +7,26 @@
              xmlns:DataBind="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
 			 xmlns:CloseableTab="clr-namespace:CloseableTabItemDemo"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:dd="clr-namespace:DragDropListBox"
 			 xmlns:WP7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
 			 xmlns:MetroTabs="clr-namespace:CloseableTabItemDemo"
              mc:Ignorable="d" 
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
-    <Grid>
+	<UserControl.Resources>
+		<DataTemplate x:Key="Local_TabItemDragTemplate">
+			<Border CornerRadius="0"
+				BorderBrush="Black"
+				BorderThickness="0"
+				Padding="8,2,10,2"
+				Background="{DynamicResource ExtryzeAccentBrush}">
+				<TextBlock FontSize="13.3333" Foreground="White"
+						Text="{Binding Path=Header.Content}" />
+			</Border>
+		</DataTemplate>
+	</UserControl.Resources>
+	
+	<Grid>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="colLeft" Width="0.300*" />
@@ -40,7 +54,7 @@
                             <ScrollViewer Margin="25,130,20,25" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                 <StackPanel>
                                     <TextBlock x:Name="lblMapHeader" FontFamily="{DynamicResource MetroFontSemiLight}" Text="" Foreground="White" FontSize="16" />
-									<ItemsControl x:Name="panelHeaderItems" ItemsSource="{Binding}" Margin="0,0,0,5">
+									<ItemsControl x:Name="panelHeaderItems" ItemsSource="{Binding}" Margin="0,10,0,5">
 										<ItemsControl.ItemTemplate>
 											<DataTemplate>
 												<StackPanel Orientation="Horizontal">
@@ -179,6 +193,7 @@
                             </ListBox>
                         </Grid>
                     </TabItem>
+					
                     <TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
                         <Grid Margin="25,30,25,30">
                             <ListBox x:Name="lbScripts" Margin="0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch" ScrollViewer.CanContentScroll="False">
@@ -236,7 +251,10 @@
             </Grid>
             <GridSplitter Width="2" Background="#FF545456" Foreground="{x:Null}" ResizeDirection="Columns" />
             <Grid x:Name="mainContent" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0">
-            	<TabControl x:Name="contentTabs" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2">
+            	<TabControl x:Name="contentTabs" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2"
+							dd:DragDropHelper.IsDragSource="true"
+							dd:DragDropHelper.IsDropTarget="true"
+							dd:DragDropHelper.DragDropTemplate="{StaticResource Local_TabItemDragTemplate}">
 					
 				</TabControl>
 			</Grid>
