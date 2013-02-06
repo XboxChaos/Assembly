@@ -54,7 +54,7 @@ namespace VoxelSheetConverter
 			txtOutputFloats.Text = "";
 			foreach(var voxel in output.Voxel_Data.Position)
 			{
-				txtOutputFloats.Text += string.Format("{0}{1}{2}",
+				txtOutputFloats.Text += string.Format("{0}{1}{2} - ",
 					FloatToHexString(voxel.x),
 					FloatToHexString(voxel.y), 
 					FloatToHexString(voxel.z));
@@ -65,7 +65,14 @@ namespace VoxelSheetConverter
 		{
 			var floatBytes = BitConverter.GetBytes(val);
 			Array.Reverse(floatBytes);
-			var output = floatBytes.Aggregate("", (current, floatByte) => current + floatByte.ToString("X"));
+			var output = "";
+			foreach (var floatByte in floatBytes)
+			{
+				if (floatByte == 0x00)
+					output += "00";
+				else
+					output = output + floatByte.ToString("X");
+			}
 
 			return output;
 		}
