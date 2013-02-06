@@ -54,7 +54,7 @@ namespace VoxelSheetConverter
 			txtOutputFloats.Text = "";
 			foreach(var voxel in output.Voxel_Data.Position)
 			{
-				txtOutputFloats.Text += string.Format("{0}{1}{2} - ",
+				txtOutputFloats.Text += string.Format("{0}{1}{2}",
 					FloatToHexString(voxel.x),
 					FloatToHexString(voxel.y), 
 					FloatToHexString(voxel.z));
