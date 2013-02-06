@@ -334,6 +334,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 				var desc = txtCreatePatchContentDescription.Text;
 				var name = txtCreatePatchContentName.Text;
 
+				// Delete patch, if it exists
+				if (File.Exists(outputPath))
+					File.Delete(outputPath);
+
 				// Make dat patch
 				var patch = new Patch
 				{
