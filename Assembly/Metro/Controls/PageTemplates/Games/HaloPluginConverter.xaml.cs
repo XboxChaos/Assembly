@@ -206,7 +206,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						writer.Close();
 				}
 			}
-			worker.ReportProgress(progress, "Finished Converting Plugins!");
+			worker.ReportProgress(progress, "");
 		}
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
