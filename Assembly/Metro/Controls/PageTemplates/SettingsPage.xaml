@@ -33,25 +33,23 @@
                         <ComboBoxItem Content="Orange" />
 					</ComboBox>
 				</StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                    <CheckBox x:Name="cbEnableEggs" Content="Enable Easter Eggs :)" Checked="cbEnableEggs_Altered" Unchecked="cbEnableEggs_Altered" />
-                </StackPanel>
-                
-                <TextBlock Text="xbox development kit" Foreground="{DynamicResource ExtryzeAccentBrush}" Margin="0,35,0,5" FontSize="30" FontFamily="{DynamicResource MetroFontSemiLight}" />
+                <StackPanel Margin="0,5,0,0" Orientation="Horizontal"/>
+
+				<TextBlock Text="xbox development kit" Foreground="{DynamicResource ExtryzeAccentBrush}" Margin="0,35,0,5" FontSize="30" FontFamily="{DynamicResource MetroFontSemiLight}" />
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <TextBlock Text="Xbox Name/IP:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <TextBox x:Name="txtXBDMNameIP" Margin="30,0,0,0" Width="250" Text="192.168.1.0" TextChanged="txtXBDMNameIP_TextChanged" />
                 </StackPanel>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <TextBlock Text="Freeze Console:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-                    <CheckBox x:Name="cbXDKFreeze" Margin="26,5,0,0" Width="400" IsChecked="True" Content="Freeze XBox Console while taking screenshots (makes it alot smoother)." />
+					<CheckBox x:Name="cbXDKFreeze" Margin="26,5,0,0" Width="400" IsChecked="True" Content="Freeze XBox Console while taking screenshots (makes it alot smoother)." Checked="cbXDKFreeze_Modified" Unchecked="cbXDKFreeze_Modified" />
                 </StackPanel>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <TextBlock Text="Xbox Screenshots:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Orientation="Vertical" Margin="13,5,0,0">
-                        <CheckBox x:Name="cbXDKAutoSaveScreenshots" IsChecked="True" Content="Auto-Save Screenshots" />
+						<CheckBox x:Name="cbXDKAutoSaveScreenshots" IsChecked="True" Content="Auto-Save Screenshots" Checked="cbXDKAutoSaveScreenshots_Modified" Unchecked="cbXDKAutoSaveScreenshots_Modified" />
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBox x:Name="txtAutoSaveDirectory" Width="400" Text="C:/Halo Stuff/Images/" TextChanged="txtPluginDirectory_TextChanged" />
+                            <TextBox x:Name="txtAutoSaveDirectory" Width="400" Text="C:/Halo Stuff/Images/" TextChanged="txtAutoSaveDirectory_TextChanged" />
                             <Button x:Name="btnAutoSaveScreenshotDirectory" Margin="20,0,0,0" Width="90" Content="Select Folder" Click="btnAutoSaveScreenshotDirectory_Click" />
                         </StackPanel>
                     </StackPanel>
@@ -59,21 +57,21 @@
                 <StackPanel Margin="0,12,0,0" Orientation="Horizontal">
                     <TextBlock Text="Image Resize:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Margin="28,0,0,0">
-                        <CheckBox x:Name="cbXDKScreenshotReszing" IsChecked="True" Margin="9,5,0,0" Content="Resize Screenshots" />
+						<CheckBox x:Name="cbXDKScreenshotReszing" IsChecked="True" Margin="9,5,0,0" Content="Resize Screenshots" Checked="cbXDKScreenshotReszing_Modified" Unchecked="cbXDKScreenshotReszing_Modified" />
                         <StackPanel Orientation="Horizontal" Margin="9,5,0,0">
                             <TextBlock Text="Width:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-                            <TextBox x:Name="txtXDKScreenshotWeight" Text="1280" Width="100" />
+                            <TextBox x:Name="txtXDKScreenshotWeight" Text="1280" Width="100" TextChanged="txtXDKScreenshotWeight_TextChanged" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="9,5,0,0">
                             <TextBlock Text="Height:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-                            <TextBox x:Name="txtXDKScreenshotHeight" Text="720" Width="100" />
+                            <TextBox x:Name="txtXDKScreenshotHeight" Text="720" Width="100" TextChanged="txtXDKScreenshotHeight_TextChanged" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Margin="0,12,0,0" Orientation="Horizontal">
                     <TextBlock Text="Gamma Adjust:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Margin="18,0,0,0">
-                        <CheckBox x:Name="cbXDKScreenGammaAdjust" IsChecked="True" Margin="10,5,0,0" Content="Adjust Gamma" />
+						<CheckBox x:Name="cbXDKScreenGammaAdjust" IsChecked="True" Margin="10,5,0,0" Content="Adjust Gamma" Checked="cbXDKScreenGammaAdjust_Modified" Unchecked="cbXDKScreenGammaAdjust_Modified" />
                         <StackPanel Orientation="Horizontal" Margin="10,5,0,0">
                             <TextBlock x:Name="lblXDKScreenGammaValue" Text="Gamma (0.55):" Foreground="White" Width="90" VerticalAlignment="Center" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                             <Slider x:Name="sliderXDKScreenGammaModifier" 
@@ -103,7 +101,7 @@
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Info Panel Location:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-                        <ComboBox x:Name="cbMapInfoPanel" Margin="33,0,0,0" SelectedIndex="0" Width="250">
+                        <ComboBox x:Name="cbMapInfoPanel" Margin="33,0,0,0" SelectedIndex="0" Width="250" SelectionChanged="cbMapInfoPanel_SelectionChanged">
                             <ComboBoxItem Content="Left" />
                             <ComboBoxItem Content="Right" />
                         </ComboBox>
@@ -114,7 +112,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Meta Editor Options:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Margin="15,5,0,0">
-                        <CheckBox x:Name="cbPluginsShowComments" Margin="0,2,0,0" IsChecked="True" Width="400" Content="Show comments in the meta editor." />
+						<CheckBox x:Name="cbPluginsShowComments" Margin="0,2,0,0" IsChecked="True" Width="400" Content="Show comments in the meta editor." Checked="cbPluginsShowComments_Modified" Unchecked="cbPluginsShowComments_Modified" />
                     </StackPanel>
                 </StackPanel>
                 
@@ -122,9 +120,9 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Recent File Types:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Margin="15,5,0,0">
-                        <CheckBox x:Name="cbStartPageRecentMap" Margin="0,2,0,0" Content=".map files" Checked="cbStartPageRecentMap_Checked" Unchecked="cbStartPageRecentMap_UnChecked"/>
-                        <CheckBox x:Name="cbStartPageRecentBLF" Margin="0,2,0,0" Content=".blf files" Checked="cbStartPageRecentBLF_Checked" Unchecked="cbStartPageRecentBLF_UnChecked"/>
-                        <CheckBox x:Name="cbStartPageRecentMapInfo" Margin="0,2,0,0" Content=".mapinfo files" Checked="cbStartPageRecentMapInfo_Checked" Unchecked="cbStartPageRecentMapInfo_UnChecked"/>
+						<CheckBox x:Name="cbStartPageRecentMap" Margin="0,2,0,0" Content=".map files" Checked="cbStartPageRecentMap_Modified" Unchecked="cbStartPageRecentMap_Modified"/>
+						<CheckBox x:Name="cbStartPageRecentBLF" Margin="0,2,0,0" Content=".blf files" Checked="cbStartPageRecentBLF_Modified" Unchecked="cbStartPageRecentBLF_Modified"/>
+						<CheckBox x:Name="cbStartPageRecentMapInfo" Margin="0,2,0,0" Content=".mapinfo files" Checked="cbStartPageRecentMapInfo_Modified" Unchecked="cbStartPageRecentMapInfo_Modified"/>
                     </StackPanel>
                 </StackPanel>
                 
@@ -132,9 +130,9 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Make Assembly the Default Editor for:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
                     <StackPanel Margin="15,5,0,0">
-                        <CheckBox x:Name="cbDefaultMapEditor" Margin="0,2,0,0" Content=".map files" Checked="cbStartPageRecentMap_Checked" Unchecked="cbStartPageRecentMap_UnChecked"/>
-                        <CheckBox x:Name="cbDefaultBLFEditor" Margin="0,2,0,0" Content=".blf files" Checked="cbStartPageRecentBLF_Checked" Unchecked="cbStartPageRecentBLF_UnChecked"/>
-                        <CheckBox x:Name="cbDefaultMIFEditor" Margin="0,2,0,0" Content=".mapinfo files" Checked="cbStartPageRecentMapInfo_Checked" Unchecked="cbStartPageRecentMapInfo_UnChecked"/>
+                        <CheckBox x:Name="cbDefaultMapEditor" Margin="0,2,0,0" Content=".map files" Checked="cbDefaultMapEditor_Modified" Unchecked="cbDefaultMapEditor_Modified" />
+						<CheckBox x:Name="cbDefaultBLFEditor" Margin="0,2,0,0" Content=".blf files" Checked="cbDefaultBLFEditor_Modified" Unchecked="cbDefaultBLFEditor_Modified" />
+						<CheckBox x:Name="cbDefaultMIFEditor" Margin="0,2,0,0" Content=".mapinfo files" Checked="cbDefaultMIFEditor_Modified" Unchecked="cbDefaultMIFEditor_Modified" />
                     </StackPanel>
                 </StackPanel>
 			</StackPanel>
