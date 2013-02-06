@@ -175,6 +175,7 @@ namespace PluginConverter
                     break;
                 case "float":
                 case "float32":
+				case "degree":
                     visitor.VisitFloat32(name, offset, visible, pluginLine);
                     break;
                 case "vector3":
