@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ExtryzeDLL.Util
 {
     public class MemoryMap
     {
         // Sorted list containing the boundary addresses in the map
-        private List<uint> _addresses = new List<uint>();
-        private List<long> _sourceOffsets = new List<long>();
+        private readonly List<uint> _addresses = new List<uint>();
+        private readonly List<long> _sourceOffsets = new List<long>();
 
         /// <summary>
         /// Adds a "boundary" address to the map.
@@ -31,14 +28,12 @@ namespace ExtryzeDLL.Util
         {
             // Binary-search the address list, and insert the address at the appropriate
             // location to maintain the list's sorting if it isn't already in there
-            int index = _addresses.BinarySearch(address);
-            if (index < 0)
-            {
-                // BinarySearch returns the complement of the next-highest value's index
-                // if the value isn't found
-                _addresses.Insert(~index, address);
-                _sourceOffsets.Insert(~index, sourceOffset);
-            }
+			var index = _addresses.BinarySearch(address);
+	        if (index >= 0) return;
+	        // BinarySearch returns the complement of the next-highest value's index
+	        // if the value isn't found
+	        _addresses.Insert(~index, address);
+	        _sourceOffsets.Insert(~index, sourceOffset);
         }
 
         /// <summary>
@@ -49,7 +44,7 @@ namespace ExtryzeDLL.Util
         public bool RemoveAddress(uint address)
         {
             // Binary-search it, and if it's found (result is >= 0), remove it
-            int index = _addresses.BinarySearch(address);
+			var index = _addresses.BinarySearch(address);
             if (index >= 0)
             {
                 _addresses.RemoveAt(index);
@@ -67,7 +62,7 @@ namespace ExtryzeDLL.Util
         /// <returns></returns>
         public bool BlockCrossesBoundary(uint start, int size)
         {
-            int index = _addresses.BinarySearch(start);
+			var index = _addresses.BinarySearch(start);
             if (index >= 0)
                 index++;
             else
@@ -86,7 +81,7 @@ namespace ExtryzeDLL.Util
         public uint GetNextHighestAddress(uint address)
         {
             // Binary-search the address list
-            int index = _addresses.BinarySearch(address);
+            var index = _addresses.BinarySearch(address);
             if (index >= 0)
             {
                 // The address is in the list, so return the next-highest if there is one

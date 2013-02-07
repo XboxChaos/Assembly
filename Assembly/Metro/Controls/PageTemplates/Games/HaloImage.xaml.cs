@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Blam.ThirdGen;
@@ -24,9 +18,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// <summary>
     /// Interaction logic for HaloImage.xaml
     /// </summary>
-    public partial class HaloImage : UserControl
+    public partial class HaloImage
     {
-        private string _blfLocation;
+        private readonly string _blfLocation;
         private TabItem _tab;
         private PureBLF _blf;
 
@@ -37,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _blfLocation = imageLocation;
             _tab = tab;
 
-            FileInfo fi = new FileInfo(_blfLocation);
+            var fi = new FileInfo(_blfLocation);
 			tab.Header = new ContentControl
 			{
 				Content = fi.Name,
@@ -47,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             lblBLFname.Text = fi.Name;
 
-            Thread thrd = new Thread(new ThreadStart(loadBLF));
+			var thrd = new Thread(new ThreadStart(loadBLF));
             thrd.Start();
         }
 
@@ -56,13 +50,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             try
             {
                 _blf = new PureBLF(_blfLocation);
-                
-                List<byte> imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
+
+				var imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
                 imgChunkData.RemoveRange(0, 0x08);
 
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    BitmapImage image = new BitmapImage();
+					var image = new BitmapImage();
                     image.BeginInit();
                     image.StreamSource = new MemoryStream(imgChunkData.ToArray());
                     image.EndInit();
@@ -87,8 +81,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    MetroMessageBox.Show("Unable to open BLF", ex.Message.ToString());
-                    Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+                    MetroMessageBox.Show("Unable to open BLF", ex.Message.ToString(CultureInfo.InvariantCulture));
+                    Settings.homeWindow.ExternalTabClose((TabItem)Parent);
                 }));
             }
         }
@@ -102,50 +96,51 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             try
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Title = "Opem an image to be injected";
-                ofd.Filter = "JPEG Image (*.jpg)|*.jpg|JPEG Image (*.jpeg)|*.jpeg";
+				var ofd = new OpenFileDialog
+					          {
+								  Title = "Opem an image to be injected", 
+								  Filter = "JPEG Image (*.jpg)|*.jpg|JPEG Image (*.jpeg)|*.jpeg"
+							  };
 
-                if ((bool)ofd.ShowDialog())
-                {
-                    byte[] newImage = File.ReadAllBytes(ofd.FileName);
-                    EndianStream stream = new EndianStream(new MemoryStream(newImage), Endian.BigEndian);
+	            if (!((bool) ofd.ShowDialog())) return;
 
-                    // Check if it's a JIFI
-                    stream.SeekTo(0x02);
-                    string imageMagic = stream.ReadAscii();
-                    if (imageMagic != "JFIF")
-                        throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
+	            var newImage = File.ReadAllBytes(ofd.FileName);
+	            var stream = new EndianStream(new MemoryStream(newImage), Endian.BigEndian);
 
-                    // Check if it's the right size
-                    BitmapImage image = new BitmapImage();
-                    image.BeginInit();
-                    image.StreamSource = new MemoryStream(newImage);
-                    image.EndInit();
+	            // Check if it's a JIFI
+	            stream.SeekTo(0x02);
+	            var imageMagic = stream.ReadAscii();
+	            if (imageMagic != "JFIF")
+		            throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
 
-                    if (image.PixelWidth != ((BitmapImage)imgBLF.Source).PixelWidth || image.PixelHeight != ((BitmapImage)imgBLF.Source).PixelHeight)
-                        throw new Exception(string.Format("Image isn't the right size. It must be {0}x{1}", ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight));
+	            // Check if it's the right size
+	            var image = new BitmapImage();
+	            image.BeginInit();
+	            image.StreamSource = new MemoryStream(newImage);
+	            image.EndInit();
 
-                    // It's the right everything! Let's inject
+	            if (image.PixelWidth != ((BitmapImage)imgBLF.Source).PixelWidth || image.PixelHeight != ((BitmapImage)imgBLF.Source).PixelHeight)
+		            throw new Exception(string.Format("Image isn't the right size. It must be {0}x{1}", ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight));
+
+	            // It's the right everything! Let's inject
 
 
-                    List<byte> newImageChunkData = new List<byte>();
-                    newImageChunkData.AddRange(new byte[] { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 });
-                    byte[] imageLength = BitConverter.GetBytes(newImage.Length);
-                    Array.Reverse(imageLength);
-                    newImageChunkData.AddRange(imageLength);
-                    newImageChunkData.AddRange(newImage);
+	            var newImageChunkData = new List<byte>();
+	            newImageChunkData.AddRange(new byte[] { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 });
+	            var imageLength = BitConverter.GetBytes(newImage.Length);
+	            Array.Reverse(imageLength);
+	            newImageChunkData.AddRange(imageLength);
+	            newImageChunkData.AddRange(newImage);
 
-                    // Write data to chunk file
-                    _blf.BLFChunks[1].ChunkData = newImageChunkData.ToArray<byte>();
+	            // Write data to chunk file
+	            _blf.BLFChunks[1].ChunkData = newImageChunkData.ToArray<byte>();
                     
-                    _blf.RefreshRelativeChunkData();
-                    _blf.UpdateChunkTable();
+	            _blf.RefreshRelativeChunkData();
+	            _blf.UpdateChunkTable();
 
-                    imgBLF.Source = image;
+	            imgBLF.Source = image;
 
-                    MetroMessageBox.Show("Injected!", "The BLF Image has been injected.");
-                }
+	            MetroMessageBox.Show("Injected!", "The BLF Image has been injected.");
             }
             catch (Exception ex)
             {
@@ -157,20 +152,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             try
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Title = "Save the extracted BLF Image";
-                sfd.Filter = "JPEG Image (*.jpg)|*.jpg";
-                sfd.FileName = lblBLFname.Text.Replace(".blf", "");
+				var sfd = new SaveFileDialog
+					          {
+						          Title = "Save the extracted BLF Image",
+						          Filter = "JPEG Image (*.jpg)|*.jpg",
+						          FileName = lblBLFname.Text.Replace(".blf", "")
+					          };
 
-                if ((bool)sfd.ShowDialog())
-                {
-                    List<byte> imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
-                    imageToExtract.RemoveRange(0, 0x08);
+	            if (!((bool) sfd.ShowDialog())) return;
+	            var imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
+	            imageToExtract.RemoveRange(0, 0x08);
 
-                    File.WriteAllBytes(sfd.FileName, imageToExtract.ToArray<byte>());
+	            File.WriteAllBytes(sfd.FileName, imageToExtract.ToArray<byte>());
 
-                    MetroMessageBox.Show("Exracted!", "The BLF Image has been extracted.");
-                }
+	            MetroMessageBox.Show("Exracted!", "The BLF Image has been extracted.");
             }
             catch (Exception ex)
             {

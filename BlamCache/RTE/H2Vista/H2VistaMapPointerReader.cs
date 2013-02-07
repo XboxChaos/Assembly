@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Native;
@@ -15,7 +12,7 @@ namespace ExtryzeDLL.RTE.H2Vista
     /// </summary>
     public class H2VistaMapPointerReader
     {
-        private long _baseAddress;
+        private readonly long _baseAddress;
         private long _mapHeaderAddress;
 
         public H2VistaMapPointerReader(ProcessMemoryStream stream)
@@ -25,7 +22,7 @@ namespace ExtryzeDLL.RTE.H2Vista
             // randomizes its address space
             _baseAddress = (long)stream.BaseProcess.MainModule.BaseAddress;
 
-            EndianReader reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
+			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
             FindMapHeader(reader);
             ReadMapPointers(reader);
             ReadMapHeader(reader);
@@ -132,7 +129,7 @@ namespace ExtryzeDLL.RTE.H2Vista
 
         #region Map Header
         // The magic number that appears at the beginning of the map header
-        private static int MapHeaderMagic = CharConstant.FromString("head");
+        private static readonly int MapHeaderMagic = CharConstant.FromString("head");
 
         // The size of the map header in bytes
         private const int MapHeaderSize = 0x800;

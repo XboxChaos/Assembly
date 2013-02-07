@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 
 namespace ExtryzeDLL.Util
 {
@@ -18,6 +14,6 @@ namespace ExtryzeDLL.Util
             return _sha1.ComputeHash(data, offset, length);
         }
 
-        private static SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
+        private static readonly SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
     }
 }

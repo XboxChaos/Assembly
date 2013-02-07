@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.IO;
 using ExtryzeDLL.Native;
@@ -46,12 +43,12 @@ namespace ExtryzeDLL.RTE.H2Vista
         /// <returns>The stream if it was opened successfully, or null otherwise.</returns>
         public IStream GetMetaStream(ICacheFile cacheFile)
         {
-            Process gameProcess = FindGameProcess();
+            var gameProcess = FindGameProcess();
             if (gameProcess == null)
                 return null;
 
-            ProcessMemoryStream gameMemory = new ProcessMemoryStream(gameProcess);
-            H2VistaMapPointerReader mapInfo = new H2VistaMapPointerReader(gameMemory);
+			var gameMemory = new ProcessMemoryStream(gameProcess);
+			var mapInfo = new H2VistaMapPointerReader(gameMemory);
 
             long metaAddress;
             if (cacheFile.Info.Type != CacheFileType.Shared)
@@ -78,16 +75,14 @@ namespace ExtryzeDLL.RTE.H2Vista
                 }
             }
 
-            OffsetStream metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.Info.VirtualBaseAddress);
+			var metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.Info.VirtualBaseAddress);
             return new EndianStream(metaStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
         }
 
         private Process FindGameProcess()
         {
             var processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(EXEName));
-            if (processes.Length > 0)
-                return processes[0]; // Just take the first process that was found for now...
-            return null;
+            return processes.Length > 0 ? processes[0] : null;
         }
     }
 }
