@@ -3,13 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-			 xmlns:Components="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
              xmlns:DataBind="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
-			 xmlns:CloseableTab="clr-namespace:CloseableTabItemDemo"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:dd="clr-namespace:DragDropListBox"
 			 xmlns:WP7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
-			 xmlns:MetroTabs="clr-namespace:CloseableTabItemDemo"
+			 xmlns:MetroTreeView="clr-namespace:Assembly.Metro.Controls.WPFTreeView"
              mc:Ignorable="d" 
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
@@ -77,9 +75,9 @@
 
                     <TabItem Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
                         <Grid>
-                            <TreeView x:Name="tvTagList" Margin="15, 40, 15, 50" SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" Foreground="White"
+							<MetroTreeView:MetroTreeView x:Name="tvTagList" Margin="15, 40, 15, 50" SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" Foreground="White"
                                       VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
-                                <TreeView.Resources>
+								<MetroTreeView:MetroTreeView.Resources>
                                     <HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}" >
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                             <TextBlock>
@@ -108,13 +106,13 @@
                                             <TextBlock Text="{Binding TagFileName}" />
                                         </StackPanel>
                                     </DataTemplate>
-                                </TreeView.Resources>
-                                <TreeView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+								</MetroTreeView:MetroTreeView.Resources>
+								<MetroTreeView:MetroTreeView.ItemContainerStyle>
+									<Style TargetType="{x:Type MetroTreeView:MetroTreeViewItem}" BasedOn="{StaticResource {x:Type MetroTreeView:MetroTreeViewItem}}">
                                         <EventSetter Event="MouseDoubleClick" Handler="tvTagList_ItemDoubleClick" />
                                     </Style>
-                                </TreeView.ItemContainerStyle>
-                            </TreeView>
+								</MetroTreeView:MetroTreeView.ItemContainerStyle>
+							</MetroTreeView:MetroTreeView>
 
                             <CheckBox x:Name="cbShowEmptyTags" Content="Show unused classes" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25,10,0,20" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered"/>
                         </Grid>
