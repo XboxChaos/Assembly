@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Newtonsoft.Json;
@@ -65,16 +64,7 @@ namespace VoxelSheetConverter
 		{
 			var floatBytes = BitConverter.GetBytes(val);
 			Array.Reverse(floatBytes);
-			var output = "";
-			foreach (var floatByte in floatBytes)
-			{
-				if (floatByte == 0x00)
-					output += "00";
-				else
-					output = output + floatByte.ToString("X");
-			}
-
-			return output;
+			return BitConverter.ToString(floatBytes).Replace("-", string.Empty);
 		}
 	}
 }

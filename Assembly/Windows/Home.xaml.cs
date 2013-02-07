@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates;
 using Assembly.Metro.Controls.PageTemplates.Games;
+using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
 using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
 using Assembly.Metro.Native;
@@ -459,8 +460,11 @@ namespace Assembly.Windows
             NetworkPoking,
             PluginGenerator,
             Patches,
-            MemoryManager,
-            Welcome
+            Welcome,
+			PluginConverter,
+
+			MemoryManager,
+			VoxelConverter
         }
         public void AddTabModule(TabGenre tabG)
         {
@@ -520,14 +524,32 @@ namespace Assembly.Windows
 					};
                     tab.Content = new PatchControl();
                     break;
-                case TabGenre.MemoryManager:
+				case TabGenre.PluginConverter:
+					tab.Header = new ContentControl
+					{
+						Content = "Plugin Converter",
+						ContextMenu = BaseContextMenu
+					};
+                    tab.Content = new HaloPluginConverter();
+		            break;
+
+
+				case TabGenre.MemoryManager:
 					tab.Header = new ContentControl
 					{
 						Content = "Memory Manager",
 						ContextMenu = BaseContextMenu
 					};
-                    tab.Content = new MemoryManager();
-                    break;
+					tab.Content = new MemoryManager();
+					break;
+				case TabGenre.VoxelConverter:
+		            tab.Header = new ContentControl
+					{
+						Content = "Voxel Converter",
+						ContextMenu = BaseContextMenu
+					};
+					tab.Content = new VoxelConverter();
+					break;
             }
 
 			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
@@ -880,42 +902,50 @@ namespace Assembly.Windows
         #endregion
         #endregion
 
-        private void menuOpenCacheFile_Click(object sender, RoutedEventArgs e)          { OpenContentFile(ContentTypes.Map); }
-        private void menuOpenCacheInfomation_Click(object sender, RoutedEventArgs e)    { OpenContentFile(ContentTypes.MapInfo); }
-        private void menuOpenCacheImage_Click(object sender, RoutedEventArgs e)         { OpenContentFile(ContentTypes.MapImage); }
+		// File
+        private void menuOpenCacheFile_Click(object sender, RoutedEventArgs e)				{ OpenContentFile(ContentTypes.Map); }
+        private void menuOpenCacheInfomation_Click(object sender, RoutedEventArgs e)		{ OpenContentFile(ContentTypes.MapInfo); }
+        private void menuOpenCacheImage_Click(object sender, RoutedEventArgs e)				{ OpenContentFile(ContentTypes.MapImage); }
         
-        private void menuOpenSettings_Click(object sender, EventArgs e)                 { AddTabModule(TabGenre.Settings); }
+		// Edit
+        private void menuOpenSettings_Click(object sender, EventArgs e)						{ AddTabModule(TabGenre.Settings); }
 
-        private void menuViewStartPage_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.StartPage); }
-        private void menuMemoryManager_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.MemoryManager); }
-        private void menuPatches_Click(object sender, RoutedEventArgs e)                { AddTabModule(TabGenre.Patches); }
-        private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)          { AddTabModule(TabGenre.NetworkPoking); }
-        private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)		{ AddTabModule(TabGenre.PluginGenerator); }
+		// Tools
+		private void menuMemoryManager_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.MemoryManager); }
+		private void menuToolHalo4VoxelConverter_Click(object sender, RoutedEventArgs e)	{ AddTabModule(TabGenre.VoxelConverter); }
+
+		// View
+        private void menuViewStartPage_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.StartPage); }
+        private void menuPatches_Click(object sender, RoutedEventArgs e)					{ AddTabModule(TabGenre.Patches); }
+        private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.NetworkPoking); }
+        private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginGenerator); }
+		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginConverter); }
         
-        private void menuHelpAbout_Click(object sender, RoutedEventArgs e)              { MetroAbout.Show(); }
-		private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)			{ var thrd = new Thread(Updater.BeginUpdateProcess); thrd.Start(); }
+		// Help
+        private void menuHelpAbout_Click(object sender, RoutedEventArgs e)					{ MetroAbout.Show(); }
+		private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)				{ var thrd = new Thread(Updater.BeginUpdateProcess); thrd.Start(); }
 
-        private void menuCloseApplication_Click(object sender, RoutedEventArgs e)       { Application.Current.Shutdown(); }
+		// Goodbye Sweet Evelyn
+        private void menuCloseApplication_Click(object sender, RoutedEventArgs e)			{ Application.Current.Shutdown(); }
 
 
-        private void Home_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		#region Waste of Space, idk man
+		private void Home_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             //var app = (App)Application.Current;
         }
-
         private void Home_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             _0xabad1dea.TragicSans.KeyDown(e.Key);
         }
-
         private void btnIWff_Click(object sender, RoutedEventArgs e)
         {
             _0xabad1dea.IWff.CleanUp();
         }
-
         private void Window_PreviewDrop_1(object sender, DragEventArgs e)
         {
 
-        }
-    }
+		}
+		#endregion
+	}
 }

@@ -20,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// <summary>
     /// Interaction logic for PluginGenerator.xaml
     /// </summary>
-    public partial class HaloPluginGenerator : UserControl
+    public partial class HaloPluginGenerator
     {
         public ObservableCollection<MapEntry> GeneratorMaps = new ObservableCollection<MapEntry>();
 

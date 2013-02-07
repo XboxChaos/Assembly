@@ -23,7 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates
     /// </summary>
     public partial class SettingsPage : UserControl
     {
-        private bool _settingsChanged = false;
+	    private bool _settingsChanged;
 
         public SettingsPage()
         {
@@ -35,9 +35,6 @@ namespace Assembly.Metro.Controls.PageTemplates
             foreach (Settings.Accents accent in Enum.GetValues(typeof(Settings.Accents)))
                 cbAccentSelector.Items.Add(accent.ToString());
             cbAccentSelector.SelectedIndex = (int)Settings.applicationAccent;
-
-            cbEnableEggs.IsChecked = Settings.applicationEasterEggs;
-            cbEnableEggs_Altered(null, null);
             #endregion
 
             #region XDK
@@ -78,32 +75,53 @@ namespace Assembly.Metro.Controls.PageTemplates
         #region Real Time Accent Updateing
         private void cbAccentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Settings.Accents), ((Settings.Accents)cbAccentSelector.SelectedIndex).ToString()).ToString());
+            var theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Settings.Accents), ((Settings.Accents)cbAccentSelector.SelectedIndex).ToString()).ToString());
             try
             {
-                App.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/" + theme + ".xaml", UriKind.Relative) });
+                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/" + theme + ".xaml", UriKind.Relative) });
             }
             catch
             {
-                App.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/Blue.xaml", UriKind.Relative) });
+                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/Blue.xaml", UriKind.Relative) });
             }
 
-            SettingsChanged();
+	        _settingsChanged = (Settings.applicationAccent != (Settings.Accents)cbAccentSelector.SelectedIndex);
         }
         #endregion
 
         #region Settings Changed
-        public void SettingsChanged() { _settingsChanged = true; }
+        private void txtXBDMNameIP_TextChanged(object sender, TextChangedEventArgs e) { _settingsChanged = (Settings.XDKNameIP != txtXBDMNameIP.Text); }
+		private void cbXDKFreeze_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKScreenshotFreeze != (bool) cbXDKFreeze.IsChecked); }
+		private void cbXDKAutoSaveScreenshots_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKAutoSave != (bool)cbXDKAutoSaveScreenshots.IsChecked); }
+		private void txtAutoSaveDirectory_TextChanged(object sender, TextChangedEventArgs e) { _settingsChanged = (Settings.XDKScreenshotPath != txtAutoSaveDirectory.Text); }
+		private void cbXDKScreenshotReszing_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKResizeImages != (bool)cbXDKScreenshotReszing.IsChecked); }
+		private void txtXDKScreenshotWeight_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			var width = 0;
+			int.TryParse(txtXDKScreenshotWeight.Text, out width);
+			_settingsChanged = (Settings.XDKResizeScreenshotWidth != width);
+		}
+		private void txtXDKScreenshotHeight_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			var height = 0;
+			int.TryParse(txtXDKScreenshotHeight.Text, out height);
+			_settingsChanged = (Settings.XDKResizeScreenshotHeight != height);
+		}
+		private void cbXDKScreenGammaAdjust_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKScreenshotGammaCorrect != (bool)cbXDKScreenGammaAdjust.IsChecked); }
 
-        private void txtXBDMNameIP_TextChanged(object sender, TextChangedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentMap_Checked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentMap_UnChecked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentBLF_Checked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentBLF_UnChecked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentMapInfo_Checked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbStartPageRecentMapInfo_UnChecked(object sender, RoutedEventArgs e) { SettingsChanged(); }
-        private void cbTagSorting_SelectionChanged(object sender, SelectionChangedEventArgs e) { SettingsChanged(); }
-        private void txtPluginDirectory_TextChanged(object sender, TextChangedEventArgs e) { SettingsChanged(); }
+		private void cbMapInfoPanel_SelectionChanged(object sender, SelectionChangedEventArgs e) { _settingsChanged = (Settings.halomapMapInfoDockSide != (Settings.MapInfoDockSide)cbMapInfoPanel.SelectedIndex); }
+
+		private void cbPluginsShowComments_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.pluginsShowComments != (bool)cbPluginsShowComments.IsChecked); }
+
+		private void cbStartPageRecentMap_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsMap != (bool)cbStartPageRecentMap.IsChecked); }
+		private void cbStartPageRecentBLF_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsBLF != (bool)cbStartPageRecentBLF.IsChecked); }
+		private void cbStartPageRecentMapInfo_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsMapInfo != (bool)cbStartPageRecentMapInfo.IsChecked); }
+
+		private void cbDefaultMapEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultMAP != (bool)cbDefaultMapEditor.IsChecked); }
+		private void cbDefaultBLFEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultBLF != (bool)cbDefaultBLFEditor.IsChecked); }
+		private void cbDefaultMIFEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultMIF != (bool)cbDefaultMIFEditor.IsChecked); }
+
+		private void cbTagSorting_SelectionChanged(object sender, SelectionChangedEventArgs e) { _settingsChanged = (Settings.halomapTagSort != (Settings.TagSort)cbTagSorting.SelectedIndex); }
         #endregion
 
         public bool Close()
@@ -120,7 +138,6 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             #region Misc
             Settings.applicationAccent = (Settings.Accents)cbAccentSelector.SelectedIndex;
-            Settings.applicationEasterEggs = (bool)cbEnableEggs.IsChecked;
             #endregion
 
             #region XDK
@@ -164,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Settings.ApplyAccent();
-            Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+            Settings.homeWindow.ExternalTabClose((TabItem)Parent);
         }
 
         private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
@@ -179,14 +196,8 @@ namespace Assembly.Metro.Controls.PageTemplates
         private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             lblXDKScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);
-        }
 
-        private void cbEnableEggs_Altered(object sender, RoutedEventArgs e)
-        {
-            if ((bool)cbEnableEggs.IsChecked)
-                cbEnableEggs.Content = "Enable Easter Eggs ;)";
-            else
-                cbEnableEggs.Content = "Enable Easter Eggs :)";
+	        _settingsChanged = (!Settings.XDKScreenshotGammaModifier.Equals(e.NewValue));
         }
     }
 }
