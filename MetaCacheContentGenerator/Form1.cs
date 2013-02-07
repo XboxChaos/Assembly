@@ -39,11 +39,8 @@ namespace MetaCacheContentGenerator
 		}
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selectedItem = lvList.SelectedItems[0];
-			if (selectedItem != null)
-			{
-				lvList.Items.Remove(selectedItem);
-			}
+			if (lvList.SelectedItems[0] == null) return;
+			lvList.Items.Remove(lvList.SelectedItems[0]);
 		}
 
 		public class MetaContent
