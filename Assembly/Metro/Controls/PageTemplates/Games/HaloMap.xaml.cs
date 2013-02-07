@@ -26,6 +26,7 @@ using ExtryzeDLL.Blam.SecondGen;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.RTE;
 using XBDMCommunicator;
+using ExtryzeDLL.RTE.H2Vista;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -202,6 +203,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 {
                     case EngineType.SecondGeneration:
                         _cacheFile = new SecondGenCacheFile(reader, _buildInfo, _version.BuildString);
+                        _rteProvider = new H2VistaRTEProvider("halo2.exe");
                         break;
 
                     case EngineType.ThirdGeneration:

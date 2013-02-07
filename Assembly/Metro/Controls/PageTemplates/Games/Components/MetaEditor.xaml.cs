@@ -210,7 +210,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     if (metaStream != null)
                     {
                         FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-                        MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsAddress(), _cache, _buildInfo, type, changes);
+                        MetaWriter metaUpdate = new MetaWriter(metaStream, _cache.MetaPointerConverter.PointerToRaw(_tag.RawTag.MetaLocation), _cache, _buildInfo, type, changes);
                         metaUpdate.WriteFields(_pluginVisitor.Values);
                         _memoryChanges.MarkAllUnchanged();
 

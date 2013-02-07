@@ -124,6 +124,8 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
             // Set up a bogus partition table
             Partitions = new Partition[1];
             Partitions[0] = new Partition(MetaBase, MetaSize);
+
+            VirtualBaseAddress = MetaOffsetMask;
         }
     }
 }
