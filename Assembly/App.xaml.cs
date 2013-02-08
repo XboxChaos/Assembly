@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Windows;
 using Assembly.Helpers;
+using Assembly.Helpers.Net;
 using XBDMCommunicator;
 using Microsoft.Shell;
 using Assembly.Metro.Dialogs;
+using System.Threading;
 
 namespace Assembly
 {
@@ -83,10 +85,14 @@ namespace Assembly
                     Settings.UpdateSettings();
                 };
 
+			// Start Caching Blam Cache MetaData
+	        var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
+			metadataCacheThread.Start();
+
 #if !DEBUG
-            Application.Current.DispatcherUnhandledException += (o, args) =>
+            Current.DispatcherUnhandledException += (o, args) =>
                 {
-                    MetroException.Show((Exception)args.Exception);
+                    MetroException.Show(args.Exception);
 
                     args.Handled = true;
                 };

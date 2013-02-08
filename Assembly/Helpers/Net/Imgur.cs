@@ -24,9 +24,6 @@ namespace Assembly.Helpers.Net
 
 				var streamW = new StreamWriter(await request.GetRequestStreamAsync());
 				streamW.Write(stringData);
-#if WINDOWS_PHONE
-                streamW.Close();
-#endif
 
 				var response = await request.GetResponseAsync();
 				if (response != null)

@@ -25,25 +25,26 @@ namespace Assembly.Helpers.Net
         /// </summary>
         [DataMember(Name = "changelogs")]
         public UpdateChangelog[] Changelogs { get; set; }
-    }
 
-    /// <summary>
-    /// Contains information about what was changed in an update.
-    /// </summary>
-    [DataContract]
-    public class UpdateChangelog
-    {
-        /// <summary>
-        /// The version number that the changelog applies to.
-        /// </summary>
-        [DataMember(Name = "version")]
-        public string Version { get; set; }
 
-        /// <summary>
-        /// The contents of the changelog.
-        /// </summary>
-        [DataMember(Name = "changelog")]
-        public string Changelog { get; set; }
+		/// <summary>
+		/// Contains information about what was changed in an update.
+		/// </summary>
+		[DataContract]
+		public class UpdateChangelog
+		{
+			/// <summary>
+			/// The version number that the changelog applies to.
+			/// </summary>
+			[DataMember(Name = "version")]
+			public string Version { get; set; }
+
+			/// <summary>
+			/// The contents of the changelog.
+			/// </summary>
+			[DataMember(Name = "changelog")]
+			public string Changelog { get; set; }
+		}
     }
 
     public static class Updates

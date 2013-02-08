@@ -9,6 +9,7 @@ using System.Web.Script.Serialization;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
 using Assembly.Metro.Controls.PageTemplates.Games;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Helpers
 {
@@ -75,7 +76,6 @@ namespace Assembly.Helpers
 
 	        OnSettingsChanged();
         }
-
         public static void UpdateSettings(bool applyThemeAswell = false)
         {
             // Declare Registry
@@ -197,6 +197,7 @@ namespace Assembly.Helpers
         public static Home homeWindow = null;
         public static HaloMap selectedHaloMap = null;
         public static Xbdm xbdm = null;
+		public static MetaContentModel BlamCacheMetaData = null;
 
         public enum Accents
         {
