@@ -483,16 +483,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             if (_dockSide == Settings.MapInfoDockSide.Left)
             {
-                colLeft.Width = new GridLength(300, GridUnitType.Star);
-                colRight.Width = new GridLength(700, GridUnitType.Star);
+				colLeft.Width = new GridLength(300);
+				colRight.Width = new GridLength(1, GridUnitType.Star);
 
                 sideBar.SetValue(Grid.ColumnProperty, 0);
                 mainContent.SetValue(Grid.ColumnProperty, 1);
             }
             else
             {
-                colRight.Width = new GridLength(300, GridUnitType.Star);
-                colLeft.Width = new GridLength(700, GridUnitType.Star);
+				colRight.Width = new GridLength(300);
+                colLeft.Width = new GridLength(1, GridUnitType.Star);
 
                 sideBar.SetValue(Grid.ColumnProperty, 1);
                 mainContent.SetValue(Grid.ColumnProperty, 0);
