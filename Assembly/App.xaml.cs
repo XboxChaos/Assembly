@@ -5,7 +5,6 @@ using Assembly.Helpers;
 using Assembly.Helpers.Net;
 using XBDMCommunicator;
 using Microsoft.Shell;
-using Assembly.Metro.Dialogs;
 using System.Threading;
 
 namespace Assembly

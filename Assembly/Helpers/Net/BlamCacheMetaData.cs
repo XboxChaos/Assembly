@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.IO;
 using System.Runtime.Serialization;
+using Assembly.Helpers.Caching;
 namespace Assembly.Helpers.Net
 {
 	/// <summary>
@@ -120,10 +121,10 @@ namespace Assembly.Helpers.Net
 			#endregion
 
 			var request = new CacheDataRequest
-				                           {
-											   UnixTimestamp = timestamp,
-											   Type = type
-				                           };
+											{
+												UnixTimestamp = timestamp,
+												Type = type
+											};
 			var response = AssemblyServer.SendRequest<CacheDataRequest, MetaContentResponse>(request);
 
 			if (response != null && response.UpdateCache)
@@ -135,10 +136,10 @@ namespace Assembly.Helpers.Net
 			}
 				
 			// Store cache in application
-			Settings.BlamCacheMetaData = JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
+			CachingManager.BlamCacheMetaData = JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
 
 			// Start background image downloading
-			foreach (var metadataEntry in Settings.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
+			foreach (var metadataEntry in CachingManager.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
 			{
 				var downloadLarge = false;
 				var downloadSmall = false;
