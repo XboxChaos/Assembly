@@ -368,7 +368,7 @@ namespace Assembly.Windows
 													   ContextMenu = FilesystemContextMenu
 										           }
 				                  };
-			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab);
+			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
 
             homeTabControl.Items.Add(newCacheTab);
             homeTabControl.SelectedItem = newCacheTab;

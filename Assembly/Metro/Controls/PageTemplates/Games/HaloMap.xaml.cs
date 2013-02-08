@@ -8,25 +8,28 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.IO;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using System.Collections.ObjectModel;
+using Assembly.Helpers.Caching;
+using Assembly.Helpers.Net;
+using Microsoft.Win32;
+using CloseableTabItemDemo;
 
 using ExtryzeDLL.Blam.ThirdGen;
 using ExtryzeDLL.IO;
 using Assembly.Metro.Dialogs;
 using ExtryzeDLL.Util;
-using CloseableTabItemDemo;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Windows;
 using ExtryzeDLL.Blam;
 using ExtryzeDLL.Flexibility;
-using Microsoft.Win32;
 using ExtryzeDLL.Blam.SecondGen;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.RTE;
-using XBDMCommunicator;
 using ExtryzeDLL.RTE.H2Vista;
+using XBDMCommunicator;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -47,7 +50,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// <summary>
     /// Interaction logic for Halo4Map.xaml
     /// </summary>
-    public partial class HaloMap : UserControl, INotifyPropertyChanged
+    public partial class HaloMap : INotifyPropertyChanged
     {
         private IStreamManager _mapManager;
         private CacheFileVersionInfo _version;
@@ -55,22 +58,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private BuildInfoLoader _layoutLoader;
         private BuildInformation _buildInfo;
         private ICacheFile _cacheFile;
-        private string _cacheLocation;
-        private TabItem _tab;
+        private readonly string _cacheLocation;
+        private readonly TabItem _tab;
+
+/*
         private List<EmptyClassesObject> _emptyClasses = new List<EmptyClassesObject>();
-        private class EmptyClassesObject
+        private abstract class EmptyClassesObject
         {
             public int Index { get; set; }
             public string ClassName { get; set; }
             public TagClass TagClass { get; set; }
         }
+ */
 
-        private Settings.TagSort _tagSorting;
+        private readonly Settings.TagSort _tagSorting;
         private Settings.MapInfoDockSide _dockSide;
         private TagHierarchy _hierarchy = new TagHierarchy();
         private ObservableCollection<TagClass> _tagsComplete;
-        private ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
-        private ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
+        private readonly ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
+        private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 
         private IRTEProvider _rteProvider;
 
@@ -86,16 +92,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			public object Data { get; set; }
 		}
 
+		private MetaContentModel.GameEntry.MetaDataEntry _mapMetaData = new MetaContentModel.GameEntry.MetaDataEntry();
+	    public MetaContentModel.GameEntry.MetaDataEntry MapMetaData
+	    {
+			get { return _mapMetaData; }
+			set { _mapMetaData = value; NotifyPropertyChanged("MapMetaData"); }
+	    }
+
         #region Public Access
         public TagHierarchy TagHierarchy { get { return _hierarchy; } set { _hierarchy = value; } }
         public ICacheFile CacheFile { get { return _cacheFile; } set { _cacheFile = value; } }
         #endregion
 
-        /// <summary>
-        /// New Instance of the Halo Map Location
-        /// </summary>
-        /// <param name="cacheLocation"></param>
-        public HaloMap(string cacheLocation, TabItem tab)
+	    /// <summary>
+	    /// New Instance of the Halo Map Location
+	    /// </summary>
+	    /// <param name="cacheLocation"></param>
+	    /// <param name="tab"></param>
+	    /// <param name="tagSorting"> </param>
+	    public HaloMap(string cacheLocation, TabItem tab, Settings.TagSort tagSorting)
         {
             InitializeComponent();
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
@@ -104,7 +119,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			InitalizeContextMenus();
 
             _tab = tab;
-            _cacheLocation = cacheLocation;
+		    _tagSorting = tagSorting;
+		    _cacheLocation = cacheLocation;
 
             // Update dockpanel location
             UpdateDockPanelLocation();
@@ -165,38 +181,38 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	            var endianness = GetEndianness(fileStream);
 				_mapManager = new FileStreamManager(_cacheLocation, endianness);
                 var reader = new EndianReader(fileStream, endianness);
-                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Opened File")));
+                Dispatcher.Invoke(() => StatusUpdater.Update("Opened File"));
 
                 _version = new CacheFileVersionInfo(reader);
                 _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
                 _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
                 _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
 
-                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Build Definitions")));
+                Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Build Definitions"));
 
                 if (_buildInfo == null)
                 {
-                    Dispatcher.Invoke(new Action(delegate
-                        {
-                            if (!_0xabad1dea.IWff.Heman(reader))
-                            {
-                                StatusUpdater.Update("Not a supported cache build");
-                                MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
-                            }
-                            else
-                            {
-                                StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
-                            }
+                    Dispatcher.Invoke(delegate
+	                                      {
+		                                      if (!_0xabad1dea.IWff.Heman(reader))
+		                                      {
+			                                      StatusUpdater.Update("Not a supported cache build");
+			                                      MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
+		                                      }
+		                                      else
+		                                      {
+			                                      StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
+		                                      }
 
-                            Settings.homeWindow.ExternalTabClose((TabItem)Parent);
-                        }));
+		                                      Settings.homeWindow.ExternalTabClose((TabItem)Parent);
+	                                      });
                     return;
                 }
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    if (Settings.startpageHideOnLaunch)
-                        Settings.homeWindow.ExternalTabClose(Home.TabGenre.StartPage);
-                }));
+                Dispatcher.Invoke(delegate
+	                                  {
+		                                  if (Settings.startpageHideOnLaunch)
+			                                  Settings.homeWindow.ExternalTabClose(Home.TabGenre.StartPage);
+	                                  });
 
                 // Load the cache file
                 switch (_version.Engine)
@@ -211,16 +227,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         _rteProvider = new XBDMRTEProvider(Settings.xbdm);
                         break;
                 }
-                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
+                Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Cache File"));
 
                 // Add to Recents
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
-                    StatusUpdater.Update("Added To Recents");
-                }));
+                Dispatcher.Invoke(delegate
+	                                  {
+		                                  RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
+		                                  StatusUpdater.Update("Added To Recents");
+	                                  });
 
                 LoadHeader();
+	            LoadMetaData();
                 LoadTags();
                 LoadLocales();
                 LoadScripts();
@@ -228,50 +245,59 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void LoadHeader()
         {
-            Dispatcher.Invoke(new Action(delegate
-            {
-                var fi = new FileInfo(_cacheLocation);
-                _tab.Header = new ContentControl
-                                  {
-                                      Content = fi.Name,
-                                      ContextMenu = Settings.homeWindow.FilesystemContextMenu
-                                  };
-                Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
-                lblMapName.Text = _cacheFile.Info.InternalName;
+            Dispatcher.Invoke(delegate
+							{
+								var fi = new FileInfo(_cacheLocation);
+								_tab.Header = new ContentControl
+											{
+												Content = fi.Name,
+												ContextMenu = Settings.homeWindow.FilesystemContextMenu
+											};
+								Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
+								lblMapName.Text = _cacheFile.Info.InternalName;
 
-                lblMapHeader.Text = "Map Header;";
-				HeaderDetails.Clear();
-				HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
-				HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)});
-				HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Info.Type.ToString()});
-				HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.Info.InternalName});
-                HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.Info.ScenarioName});
-                HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")});
-                HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.Info.MetaSize.ToString("X")});
-                HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",			Data = _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)});
-                HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:",		Data = "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")});
-                HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:",			Data = "0x" + _cacheFile.Info.RawTableSize.ToString("X")});
-                HeaderDetails.Add(new HeaderValue { Title = "Index Header Address:",	Data = PointerAddressString(_cacheFile.Info.IndexHeaderLocation)});
-                HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")});
-				HeaderDetails.Add(new HeaderValue { Title = "Map Magic:", Data = "0x" + _cacheFile.Info.AddressMask.ToString("X8") });
-				Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
+								lblMapHeader.Text = "Map Header;";
+								HeaderDetails.Clear();
+								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
+								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)});
+								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Info.Type.ToString()});
+								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.Info.InternalName});
+								HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.Info.ScenarioName});
+								HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")});
+								HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.Info.MetaSize.ToString("X")});
+								HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)});
+								HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:",		Data = "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")});
+								HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:",			Data = "0x" + _cacheFile.Info.RawTableSize.ToString("X")});
+								HeaderDetails.Add(new HeaderValue { Title = "Index Header Address:",	Data = PointerAddressString(_cacheFile.Info.IndexHeaderLocation)});
+								HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")});
+								HeaderDetails.Add(new HeaderValue { Title = "Map Magic:",				Data = "0x" + _cacheFile.Info.AddressMask.ToString("X8") });
+								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
-                StatusUpdater.Update("Loaded Header Info");
-            }));
+								StatusUpdater.Update("Loaded Header Info");
+							});
         }
-		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		private void LoadMetaData()
 		{
-			if (e.ClickCount == 2)
-				Clipboard.SetText(((TextBlock) e.OriginalSource).Text);
+			Dispatcher.Invoke(delegate
+								{
+									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
+																						_cacheFile.Info.InternalName);
+
+									if (gameMetaData == null) return;
+
+									lblMapMetaData.Text = "Map Metadata;";
+									MapMetaData = gameMetaData;
+									panelMapMetadata.DataContext = MapMetaData;
+
+									#region ImageMetaData
+									var source = new BitmapImage();
+									source.BeginInit();
+									source.StreamSource = new MemoryStream(File.ReadAllBytes(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" + gameMetaData.ImageMetaData.Large));
+									source.EndInit();
+									imgMetaDataImage.Source = source;
+									#endregion
+								});
 		}
-
-        private static string PointerAddressString(Pointer pointer)
-        {
-            if (!pointer.HasAddress)
-                return "0x00000000";
-            return "0x" + pointer.AsAddress().ToString("X8");
-        }
-
         private void LoadTags()
         {            
             // Load all the tag classes into data
@@ -394,6 +420,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                                              }
                                   ));
         }
+
+		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock)e.OriginalSource).Text);
+		}
+
+		private static string PointerAddressString(Pointer pointer)
+		{
+			if (!pointer.HasAddress)
+				return "0x00000000";
+			return "0x" + pointer.AsAddress().ToString("X8");
+		}
 
         private void AddLanguage(string name, int index)
         {

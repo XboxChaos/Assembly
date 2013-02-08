@@ -7,7 +7,7 @@ namespace Assembly.Helpers.Caching
 	{
 		public static MetaContentModel BlamCacheMetaData = null;
 
-		public MetaContentModel.GameEntry.MetaDataEntry GetMapMetaData(string gameIdentifier, 
+		public static MetaContentModel.GameEntry.MetaDataEntry GetMapMetaData(string gameIdentifier, 
 			string mapInternalName)
 		{
 			if (BlamCacheMetaData == null || BlamCacheMetaData.Games.Length == 0) return null;
