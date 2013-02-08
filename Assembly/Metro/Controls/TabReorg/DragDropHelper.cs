@@ -135,6 +135,8 @@ namespace DragDropListBox
 		{
 			this.sourceItemsControl = (ItemsControl)sender;
 			Visual visual = e.OriginalSource as Visual;
+            if (visual == null)
+                return;
 
 			this.topWindow = Window.GetWindow(this.sourceItemsControl);
 			this.initialMousePosition = e.GetPosition(this.topWindow);

@@ -10,7 +10,8 @@ namespace ExtryzeDLL.Blam
     /// </summary>
     public struct StringID
     {
-        private short _set;
+        private byte _length;
+        private byte _set;
         private ushort _index;
 
         /// <summary>
@@ -18,8 +19,22 @@ namespace ExtryzeDLL.Blam
         /// </summary>
         /// <param name="set">The set the stringID belongs to.</param>
         /// <param name="index">The index of the stringID within the set.</param>
-        public StringID(short set, ushort index)
+        public StringID(byte set, ushort index)
         {
+            _length = 0;
+            _set = set;
+            _index = index;
+        }
+
+        /// <summary>
+        /// Constructs a new StringID from a length, a set, and an index. (Pre-third-gen games only.)
+        /// </summary>
+        /// <param name="length">The length of the string.</param>
+        /// <param name="set">The set the stringID belongs to.</param>
+        /// <param name="index">The index of the stringID within the set.</param>
+        public StringID(byte length, byte set, ushort index)
+        {
+            _length = length;
             _set = set;
             _index = index;
         }
@@ -30,14 +45,23 @@ namespace ExtryzeDLL.Blam
         /// <param name="value">The 32-bit value of the stringID.</param>
         public StringID(int value)
         {
-            _set = (short)(value >> 16);
-            _index = (ushort)(value & 0xFFFF);
+            _length = (byte)(value >> 24);
+            _set = (byte)(value >> 16);
+            _index = (ushort)value;
+        }
+
+        /// <summary>
+        /// The length of the string that the stringID points to. (Pre-third-gen games only.)
+        /// </summary>
+        public byte Length
+        {
+            get { return _length; }
         }
 
         /// <summary>
         /// The set that the stringID belongs to.
         /// </summary>
-        public short Set
+        public byte Set
         {
             get { return _set; }
         }
@@ -55,7 +79,7 @@ namespace ExtryzeDLL.Blam
         /// </summary>
         public int Value
         {
-            get { return (Set << 16) | Index; }
+            get { return (_length << 24) | (_set << 16) | _index; }
         }
 
         public override bool Equals(object obj)

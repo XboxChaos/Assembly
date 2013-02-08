@@ -212,14 +212,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                         FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
                         MetaWriter metaUpdate = new MetaWriter(metaStream, _cache.MetaPointerConverter.PointerToRaw(_tag.RawTag.MetaLocation), _cache, _buildInfo, type, changes);
                         metaUpdate.WriteFields(_pluginVisitor.Values);
-                        _memoryChanges.MarkAllUnchanged();
 
                         if (showActionDialog)
                         {
                             if (onlyUpdateChanged)
-                                MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to your Xbox 360 console.");
+                                MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the game.");
                             else
-                                MetroMessageBox.Show("Meta Poked", "The metadata has been poked to your Xbox 360 console.");
+                                MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the game.");
                         }
                     }
                     else

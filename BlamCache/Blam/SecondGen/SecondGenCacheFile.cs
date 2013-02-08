@@ -113,7 +113,7 @@ namespace ExtryzeDLL.Blam.SecondGen
         private IndexedStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
         {
             IndexedStringTable strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo.StringIDKey);
-            return new IndexedStringIDSource(strings, buildInfo.StringIDResolver);
+            return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
         }
 
         private void CalculateChecksum(IReader reader)
