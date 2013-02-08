@@ -13,7 +13,7 @@ namespace ExtryzeDLL.Blam
     /// <seealso cref="StringID"/>
     public class StringIDSetResolver : IStringIDResolver
     {
-        private SortedList<short, StringIDSet> _setsByID = new SortedList<short, StringIDSet>();
+        private SortedList<byte, StringIDSet> _setsByID = new SortedList<byte, StringIDSet>();
         private SortedList<int, StringIDSet> _setsByGlobalIndex = new SortedList<int, StringIDSet>();
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace ExtryzeDLL.Blam
         /// <param name="id">The set's ID number.</param>
         /// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
         /// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-        public void RegisterSet(short id, ushort minIndex, int globalIndex)
+        public void RegisterSet(byte id, ushort minIndex, int globalIndex)
         {
             StringIDSet set = new StringIDSet(id, minIndex, globalIndex);
             _setsByID[id] = set;
@@ -36,7 +36,7 @@ namespace ExtryzeDLL.Blam
         /// <returns>The index of the string in the global debug strings array.</returns>
         public int StringIDToIndex(StringID id)
         {
-            int closestSetIndex = ListSearching.BinarySearch<short>(_setsByID.Keys, id.Set);
+            int closestSetIndex = ListSearching.BinarySearch<byte>(_setsByID.Keys, id.Set);
             if (closestSetIndex < 0)
             {
                 // BinarySearch returns the bitwise complement of the index of the next highest value if not found
@@ -97,7 +97,7 @@ namespace ExtryzeDLL.Blam
             /// <param name="id">The set's ID number.</param>
             /// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
             /// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-            public StringIDSet(short id, ushort minIndex, int globalIndex)
+            public StringIDSet(byte id, ushort minIndex, int globalIndex)
             {
                 ID = id;
                 MinIndex = minIndex;
@@ -107,7 +107,7 @@ namespace ExtryzeDLL.Blam
             /// <summary>
             /// The set's ID number.
             /// </summary>
-            public short ID { get; private set; }
+            public byte ID { get; private set; }
 
             /// <summary>
             /// The minimum index that a stringID must have in order to be counted as part of the set.

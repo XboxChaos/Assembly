@@ -36,7 +36,7 @@ namespace ExtryzeDLL.Flexibility
             XAttribute idAttribute = element.Attribute("id");
             if (idAttribute == null)
                 throw new ArgumentException("StringID set tags must have an \"id\" attribute");
-            short id = (short)ParseNumber(idAttribute.Value);
+            byte id = (byte)ParseNumber(idAttribute.Value);
 
             // Get the set's min index from the "min" attribute (optional, defaults to 0)
             ushort min = 0;
