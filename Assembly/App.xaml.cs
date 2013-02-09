@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
+// ReSharper disable RedundantUsingDirective
+using Assembly.Metro.Dialogs;
+// ReSharper restore RedundantUsingDirective
 using XBDMCommunicator;
 using Microsoft.Shell;
 using System.Threading;
