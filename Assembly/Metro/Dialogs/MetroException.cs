@@ -6,7 +6,7 @@ namespace Assembly.Metro.Dialogs
     public static class MetroException
     {
         /// <summary>
-        /// Show the exception error dialog window.
+        /// Because you are the only exception.
         /// </summary>
         /// <param name="ex">The exception to pass into the dialog.</param>
         public static void Show(Exception ex)
