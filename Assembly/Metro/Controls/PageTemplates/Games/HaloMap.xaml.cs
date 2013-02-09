@@ -285,12 +285,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 									if (gameMetaData == null) return;
 
+									panelMapMetadata.Visibility = Visibility.Visible;
 									lblMapMetaData.Text = "Map Metadata;";
 									MapMetaData = gameMetaData;
 									panelMapMetadata.DataContext = MapMetaData;
 
 									#region ImageMetaData
+									if (VariousFunctions.CheckIfFileLocked(
+										new FileInfo(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" +
+										             gameMetaData.ImageMetaData.Large))) return;
+
 									var source = new BitmapImage();
+									imgMetaDataImagePanel.Visibility = Visibility.Visible;
 									source.BeginInit();
 									source.StreamSource = new MemoryStream(File.ReadAllBytes(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" + gameMetaData.ImageMetaData.Large));
 									source.EndInit();
@@ -303,17 +309,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Load all the tag classes into data
             var classes = new List<TagClass>();
             var classWrappers = new Dictionary<ITagClass, TagClass>();
-            Dispatcher.Invoke(new Action(() =>
-                {
-                    foreach (var tagClass in _cacheFile.TagClasses)
-                    {
-                        var wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
-                        classes.Add(wrapper);
-                        classWrappers[tagClass] = wrapper;
-                    }
-                }));
+            Dispatcher.Invoke(() =>
+	                              {
+		                              foreach (var tagClass in _cacheFile.TagClasses)
+		                              {
+			                              var wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
+			                              classes.Add(wrapper);
+			                              classWrappers[tagClass] = wrapper;
+		                              }
+	                              });
 
-            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tag Classes")));
+            Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Tag Classes"));
 
             // Load all the tags into the treeview (into their class categoies)
             _hierarchy.Entries = new List<TagEntry>();
@@ -334,7 +340,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     _hierarchy.Entries.Add(null);
             }
             
-            foreach (TagClass tagClass in classes)
+            foreach (var tagClass in classes)
                 tagClass.Children.Sort((x, y) => String.Compare(x.TagFileName, y.TagFileName, StringComparison.OrdinalIgnoreCase));
 
 
@@ -352,21 +358,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
 
 
-            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tags")));
+            Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Tags"));
 
             classes.Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-            Dispatcher.Invoke(new Action(delegate
-                                             {
-                                                 _tagsComplete = new ObservableCollection<TagClass>(classes);
+            Dispatcher.Invoke(delegate
+	                              {
+		                              _tagsComplete = new ObservableCollection<TagClass>(classes);
 
-                                                 // Load un-populated tags
-                                                 foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
-                                                     _tagsPopulated.Add(tagClass);
-                                                 _hierarchy.Classes = _tagsPopulated;
-                                             }));
+		                              // Load un-populated tags
+		                              foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
+			                              _tagsPopulated.Add(tagClass);
+		                              _hierarchy.Classes = _tagsPopulated;
+	                              });
 
             // Add to the treeview
-            Dispatcher.Invoke(new Action(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked)));
+            Dispatcher.Invoke(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked));
         }
         private void LoadLocales()
         {
@@ -395,12 +401,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
             AddLanguage("Extra", LocaleLanguage.Unknown);
 
-            Dispatcher.Invoke(new Action(delegate
-                {
-                    lbLanguages.ItemsSource = _languages;
-                    StatusUpdater.Update("Initialized Languages");
-                }
-            ));
+            Dispatcher.Invoke(delegate
+	                              {
+		                              lbLanguages.ItemsSource = _languages;
+		                              StatusUpdater.Update("Initialized Languages");
+	                              });
         }
         private void LoadScripts()
         {
@@ -638,22 +643,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		#endregion
 
         #region Editors
-        private void btnEditorsString_Click(object sender, RoutedEventArgs e)
-        {
-            if (IsTagOpen("StringID Viewer"))
-                SelectTabFromTitle("StringID Viewer");
-            else
-            {
-                var tab = new CloseableTabItem
-                              {
-                                  Header = "StringID Viewer", 
-                                  Content = new Components.Editors.StringEditor(_cacheFile)
-                              };
+		//private void btnEditorsString_Click(object sender, RoutedEventArgs e)
+		//{
+		//	if (IsTagOpen("StringID Viewer"))
+		//		SelectTabFromTitle("StringID Viewer");
+		//	else
+		//	{
+		//		var tab = new CloseableTabItem
+		//					  {
+		//						  Header = "StringID Viewer", 
+		//						  Content = new Components.Editors.StringEditor(_cacheFile)
+		//					  };
 
-                contentTabs.Items.Add(tab);
-                contentTabs.SelectedItem = tab;
-            }
-        }
+		//		contentTabs.Items.Add(tab);
+		//		contentTabs.SelectedItem = tab;
+		//	}
+		//}
         #endregion
 
         #region Tab Management
@@ -801,7 +806,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 var tab = new CloseableTabItem
                               {
-                                  Header = new ContentControl()
+                                  Header = new ContentControl
 	                                           {
 												   Content = tabName,
 												   ContextMenu = BaseContextMenu
@@ -825,7 +830,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 var tab = new CloseableTabItem
                               {
-								  Header = new ContentControl()
+								  Header = new ContentControl
 								  {
 									  Content = tabName,
 									  ContextMenu = BaseContextMenu
