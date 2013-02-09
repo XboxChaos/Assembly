@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-             mc:Ignorable="d"
+             xmlns:wp7="clr-namespace:Assembly.Metro.Controls.WP7Controls" mc:Ignorable="d"
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
     <Grid>
@@ -26,9 +26,12 @@
             <Rectangle Fill="#FF363639" Height="1" Width="250" Margin="25,110,25,0" VerticalAlignment="Top" d:LayoutOverrides="Height" />
             <Grid VerticalAlignment="Top" Margin="25,120,00,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <Grid Margin="0,20,0,0">
+                    <Grid Margin="0,20,20,0">
                         <TextBlock TextWrapping="Wrap" Foreground="White" FontSize="13">
-                            yo, yo. Generate them plugins.
+                            Create a new plugin set in Assemblies format.
+							<LineBreak />
+							<LineBreak />
+							<Run Text="Note, this is very very buggy and only works if you have a large ammount of ram (~12GB), and if you're lucky" FontFamily="{DynamicResource MetroFontSemiBold}" />
                         </TextBlock>
                     </Grid>
                 </ScrollViewer>
@@ -142,9 +145,17 @@
                         <TextBox x:Name="txtOutputFolder" Grid.Column="0" />
                         <Button x:Name="btnOutputFolder" Grid.Column="1" Content="..." Width="30" Click="btnOutputFolder_Click" />
                     </Grid>
-                    <Button x:Name="btnGeneratePlugins" Grid.Column="1" Content="Generate Plugins..." Margin="0,20,60,0" HorizontalAlignment="Stretch" Click="btnGeneratePlugins_Click_1" />
+                    <Button x:Name="btnGeneratePlugins" Grid.Column="1" Content="Generate Plugins..." Margin="0,20,60,0" HorizontalAlignment="Stretch" Click="btnGeneratePlugins_Click" />
                 </StackPanel>
             </Grid>
         </Grid>
+		
+		<Grid x:Name="MaskingPage" Visibility="Collapsed">
+			<Rectangle Opacity="0.80" Fill="{DynamicResource HomeOpacityBrush}" />
+			<Grid>
+				<TextBlock x:Name="lblProgressStatus" Text="Generating Plugins... (0%)" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" />
+				<wp7:ProgressionBar VerticalAlignment="Center" Margin="0,25,0,0"/>
+			</Grid>
+		</Grid>
     </Grid>
 </UserControl>
