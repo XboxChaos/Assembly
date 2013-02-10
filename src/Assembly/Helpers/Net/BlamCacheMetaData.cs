@@ -164,7 +164,7 @@ namespace Assembly.Helpers.Net
 
 				if (!downloadLarge && !downloadSmall) continue;
 
-				var imageDirectory = Path.GetDirectoryName(localPath);
+				var imageDirectory = Path.GetDirectoryName(localPath == "" ? localPathSmall : localPath);
 				if (imageDirectory == null) continue;
 
 				if (!Directory.Exists(imageDirectory))
