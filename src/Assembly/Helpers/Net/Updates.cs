@@ -23,7 +23,7 @@ namespace Assembly.Helpers.Net
         /// <summary>
         /// Changelogs for both the current and past versions, sorted in descending order by version number.
         /// </summary>
-        [DataMember(Name = "changelogs")]
+        [DataMember(Name = "change_logs")]
         public UpdateChangelog[] Changelogs { get; set; }
 
 
@@ -42,7 +42,7 @@ namespace Assembly.Helpers.Net
 			/// <summary>
 			/// The contents of the changelog.
 			/// </summary>
-			[DataMember(Name = "changelog")]
+			[DataMember(Name = "change_log")]
 			public string Changelog { get; set; }
 		}
     }
@@ -55,7 +55,7 @@ namespace Assembly.Helpers.Net
         /// <returns>The update information returned by the server, or null if the request failed.</returns>
         public static UpdateInfo GetUpdateInfo()
         {
-            var updateCommand = new ServerRequest("update");
+            var updateCommand = new ServerRequest("update_asm");
             return AssemblyServer.SendRequest<ServerRequest, UpdateInfo>(updateCommand);
         }
     }

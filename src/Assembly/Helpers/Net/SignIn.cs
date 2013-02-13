@@ -10,7 +10,7 @@ namespace Assembly.Helpers.Net
     public class SignInRequest : ServerRequest
     {
         public SignInRequest()
-            : base("signin")
+            : base("sign_in")
         {
         }
 
