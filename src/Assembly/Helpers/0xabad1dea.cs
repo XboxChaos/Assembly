@@ -76,14 +76,14 @@ namespace Assembly.Helpers
                 var realHistory = new string(fakeHistory).ToLower();
                 
                 if (realHistory.EndsWith("comic"))
-                    try { Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Backend/0xabad1dea/TragicSans.xaml", UriKind.Relative) }); }
+                    try { Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Helpers/0xabad1dea/TragicSans.xaml", UriKind.Relative) }); }
                     catch { }
                 else if (realHistory.EndsWith("dingdong"))
-                    try { Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Backend/0xabad1dea/DingDong.xaml", UriKind.Relative) }); }
+                    try { Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Helpers/0xabad1dea/DingDong.xaml", UriKind.Relative) }); }
                     catch { }
                 // This isn't working, does WPF not support Halo fonts? Racist.
                 //else if (realHistory.EndsWith("galoreacharound"))
-                //    try { App.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Backend/0xabad1dea/Galo.xaml", UriKind.Relative) }); }
+                //    try { App.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Helpers/0xabad1dea/Galo.xaml", UriKind.Relative) }); }
                 //    catch { }
                 else if (realHistory.EndsWith("wtfisthis"))
                     try { Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Controls/MetroFonts.xaml", UriKind.Relative) }); }
