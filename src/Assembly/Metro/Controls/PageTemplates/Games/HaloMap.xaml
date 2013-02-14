@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              xmlns:DataBind="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
+			 xmlns:Converters="clr-namespace:Assembly.Helpers.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:dd="clr-namespace:DragDropListBox"
 			 xmlns:WP7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
@@ -12,6 +13,8 @@
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
 	<UserControl.Resources>
+		<Converters:TagDescriptionCleanup x:Key="IValueTagDescriptionCleanup" />
+		
 		<DataTemplate x:Key="Local_TabItemDragTemplate">
 			<Border CornerRadius="0"
 				BorderBrush="Black"
@@ -124,7 +127,9 @@
                                     <HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}" >
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                             <TextBlock>
-                                                <Run Text="{Binding TagClassMagic}" /><Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " /><Run Foreground="{StaticResource TextBrushSecondary}" Text="{Binding Description}" />
+                                                <Run Text="{Binding TagClassMagic}" />
+												<Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " />
+												<Run Foreground="{StaticResource TextBrushSecondary}" Text="{Binding Path=Description, Converter={StaticResource IValueTagDescriptionCleanup}}" />
                                             </TextBlock>
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu>
