@@ -21,7 +21,7 @@ namespace Assembly.Helpers.Net
 		/// The current timestamp of the cached data
 		/// </summary>
 		[DataMember(Name = "timestamp")]
-		public int UnixTimestamp { get; set; }
+		public ulong UnixTimestamp { get; set; }
 
 		/// <summary>
 		/// The type of cached data to pull from the server
@@ -47,7 +47,7 @@ namespace Assembly.Helpers.Net
 		public string Type { get; set; }
 
 		[DataMember(Name = "GeneratedTypestamp")]
-		public int GeneratedTimestamp { get; set; }
+		public ulong GeneratedTimestamp { get; set; }
 
 		[DataMember(Name = "Games")]
 		public GameEntry[] Games { get; set; }
@@ -102,92 +102,108 @@ namespace Assembly.Helpers.Net
 	{
 		public static async void BeginCachingData()
 		{
-			// Look for current cached data
-			var timestamp = 0;
-			var type = "cache_meta_content";
-			#region Get Current Cached Data
 			var blamcacheFolderPath = VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\";
 			var blamcacheFilePath = blamcacheFolderPath + "content.aidf";
 
-			if (!Directory.Exists(blamcacheFolderPath))
-				Directory.CreateDirectory(blamcacheFolderPath);
-
-			if (File.Exists(blamcacheFilePath))
+			try
 			{
-				var cachedData = JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
-				timestamp = cachedData.GeneratedTimestamp;
-				type = cachedData.Type;
+
+				// Look for current cached data
+				ulong timestamp = 0;
+				var type = "cache_meta_content";
+
+				#region Get Current Cached Data
+				if (!Directory.Exists(blamcacheFolderPath))
+					Directory.CreateDirectory(blamcacheFolderPath);
+
+				if (File.Exists(blamcacheFilePath))
+				{
+					var cachedData = JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
+					timestamp = cachedData.GeneratedTimestamp;
+					type = cachedData.Type;
+				}
+
+				#endregion
+				var request = new CacheDataRequest
+								  {
+									  UnixTimestamp = timestamp,
+									  Type = type
+								  };
+				var response = AssemblyServer.SendRequest<CacheDataRequest, MetaContentResponse>(request);
+
+				if (response != null && response.UpdateCache)
+				{
+					var blam_cache =
+						await
+						HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
+
+					// Write new Data
+					File.WriteAllText(blamcacheFilePath, new StreamReader(blam_cache).ReadToEnd());
+				}
+
+				// Store cache in application
+				CachingManager.BlamCacheMetaData =
+					JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
 			}
-			#endregion
+			catch { }
 
-			var request = new CacheDataRequest
-											{
-												UnixTimestamp = timestamp,
-												Type = type
-											};
-			var response = AssemblyServer.SendRequest<CacheDataRequest, MetaContentResponse>(request);
-
-			if (response != null && response.UpdateCache)
-			{
-				var blam_cache = await HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
-
-				// Write new Data
-				File.WriteAllText(blamcacheFilePath, new StreamReader(blam_cache).ReadToEnd());
-			}
-				
-			// Store cache in application
-			CachingManager.BlamCacheMetaData = JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
-
+			if (CachingManager.BlamCacheMetaData == null || CachingManager.BlamCacheMetaData.Games == null) return;
 			// Start background image downloading
 			foreach (var metadataEntry in CachingManager.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
 			{
-				var downloadLarge = false;
-				var downloadSmall = false;
-
-				var serverPath = "";
-				var serverPathSmall = "";
-				var localPath = "";
-				var localPathSmall = "";
-
-				if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Large))
+				try
 				{
-					downloadLarge = true;
-					serverPath = string.Format("http://assembly.xboxchaos.com/api/assets/{0}", metadataEntry.ImageMetaData.Large.Replace("\\", "/"));
-					localPath = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Large);
+					var downloadLarge = false;
+					var downloadSmall = false;
+
+					var serverPath = "";
+					var serverPathSmall = "";
+					var localPath = "";
+					var localPathSmall = "";
+
+					if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Large))
+					{
+						downloadLarge = true;
+						serverPath = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
+						                           metadataEntry.ImageMetaData.Large.Replace("\\", "/"));
+						localPath = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Large);
+					}
+					if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Small))
+					{
+						downloadSmall = true;
+						serverPathSmall = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
+						                                metadataEntry.ImageMetaData.Small.Replace("\\", "/"));
+						localPathSmall = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Small);
+					}
+
+					if (!downloadLarge && !downloadSmall) continue;
+
+					var imageDirectory = Path.GetDirectoryName(localPath == "" ? localPathSmall : localPath);
+					if (imageDirectory == null) continue;
+
+					if (!Directory.Exists(imageDirectory))
+						Directory.CreateDirectory(imageDirectory);
+
+					Stream imageStream;
+					byte[] imageByteArray;
+
+					// Large
+					if (downloadLarge)
+					{
+						imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPath));
+						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
+						File.WriteAllBytes(localPath, imageByteArray);
+					}
+
+					// Small
+					if (downloadSmall)
+					{
+						imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
+						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
+						File.WriteAllBytes(localPathSmall, imageByteArray);
+					}
 				}
-				if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Small))
-				{
-					downloadSmall = true;
-					serverPathSmall = string.Format("http://assembly.xboxchaos.com/api/assets/{0}", metadataEntry.ImageMetaData.Small.Replace("\\", "/"));
-					localPathSmall = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Small);
-				}
-
-				if (!downloadLarge && !downloadSmall) continue;
-
-				var imageDirectory = Path.GetDirectoryName(localPath == "" ? localPathSmall : localPath);
-				if (imageDirectory == null) continue;
-
-				if (!Directory.Exists(imageDirectory))
-					Directory.CreateDirectory(imageDirectory);
-
-				Stream imageStream;
-				byte[] imageByteArray;
-
-				// Large
-				if (downloadLarge)
-				{
-					imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPath));
-					imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
-					File.WriteAllBytes(localPath, imageByteArray);
-				}
-
-				// Small
-				if (downloadSmall)
-				{
-					imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
-					imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
-					File.WriteAllBytes(localPathSmall, imageByteArray);
-				}
+				catch { }
 			}
 		}
 	}
