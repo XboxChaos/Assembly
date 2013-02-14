@@ -21,7 +21,7 @@ namespace Assembly.Helpers.Net
 		/// The current timestamp of the cached data
 		/// </summary>
 		[DataMember(Name = "timestamp")]
-		public ulong UnixTimestamp { get; set; }
+		public int UnixTimestamp { get; set; }
 
 		/// <summary>
 		/// The type of cached data to pull from the server
@@ -46,8 +46,8 @@ namespace Assembly.Helpers.Net
 		[DataMember(Name = "Type")]
 		public string Type { get; set; }
 
-		[DataMember(Name = "GeneratedTypestamp")]
-		public ulong GeneratedTimestamp { get; set; }
+		[DataMember(Name = "GeneratedTimestamp")]
+		public int GeneratedTimestamp { get; set; }
 
 		[DataMember(Name = "Games")]
 		public GameEntry[] Games { get; set; }
@@ -109,7 +109,7 @@ namespace Assembly.Helpers.Net
 			{
 
 				// Look for current cached data
-				ulong timestamp = 0;
+				var timestamp = 0;
 				var type = "cache_meta_content";
 
 				#region Get Current Cached Data
