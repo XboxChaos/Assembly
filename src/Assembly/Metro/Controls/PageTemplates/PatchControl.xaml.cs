@@ -31,6 +31,14 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             InitializeComponent();
         }
+		public PatchControl(string pathPath)
+		{
+			InitializeComponent();
+
+			tabPanel.SelectedIndex = 1;
+			txtApplyPatchFile.Text = pathPath;
+			LoadPatch();
+		}
         
 // ReSharper disable UnusedMember.Global
         public bool Close()

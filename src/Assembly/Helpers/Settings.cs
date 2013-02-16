@@ -72,6 +72,7 @@ namespace Assembly.Helpers
 		        defaultMAP = Convert.ToBoolean(keyApp.GetValue("DefaultMAPEditor", true));
 		        defaultBLF = Convert.ToBoolean(keyApp.GetValue("DefaultBLFEditor", false));
 		        defaultMIF = Convert.ToBoolean(keyApp.GetValue("DefaultMIFEditor", false));
+		        defaultAMP = Convert.ToBoolean(keyApp.GetValue("DefaultAMPEditor", true));
 	        }
 
 	        OnSettingsChanged();
@@ -130,6 +131,7 @@ namespace Assembly.Helpers
 				keyApp.SetValue("DefaultMAPEditor", defaultMAP);
 				keyApp.SetValue("DefaultBLFEditor", defaultBLF);
 				keyApp.SetValue("DefaultMIFEditor", defaultMIF);
+				keyApp.SetValue("DefaultAMPEditor", defaultAMP);
 			}
 
             // Update File Defaults
@@ -192,7 +194,8 @@ namespace Assembly.Helpers
 
         public static bool defaultMAP = true;
         public static bool defaultBLF = false;
-        public static bool defaultMIF = false;
+		public static bool defaultMIF = false;
+		public static bool defaultAMP = false;
 
         public static Home homeWindow = null;
         public static HaloMap selectedHaloMap = null;

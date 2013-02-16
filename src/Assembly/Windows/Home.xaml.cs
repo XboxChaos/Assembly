@@ -452,6 +452,26 @@ namespace Assembly.Windows
             homeTabControl.Items.Add(newInfooTab);
             homeTabControl.SelectedItem = newInfooTab;
         }
+		/// <summary>
+		/// Add a new Patch Control
+		/// </summary>
+		/// <param name="patchLocation">Path to the Patch file</param>
+		public void AddPatchTabModule(string patchLocation = null)
+		{
+			var newInfooTab = new CloseableTabItem
+				                  {
+					                  Tag = patchLocation,
+					                  Header = new ContentControl
+						                           {
+							                           Content = "Patcher",
+							                           ContextMenu = FilesystemContextMenu
+						                           },
+					                  Content = patchLocation == null ? new PatchControl() : new PatchControl(patchLocation)
+				                  };
+
+			homeTabControl.Items.Add(newInfooTab);
+			homeTabControl.SelectedItem = newInfooTab;
+		}
 
         public enum TabGenre
         {
@@ -515,14 +535,6 @@ namespace Assembly.Windows
 						ContextMenu = BaseContextMenu
 					};
                     tab.Content = new HaloPluginGenerator();
-                    break;
-                case TabGenre.Patches:
-					tab.Header = new ContentControl
-					{
-						Content = "Patcher",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new PatchControl();
                     break;
 				case TabGenre.PluginConverter:
 					tab.Header = new ContentControl
@@ -727,13 +739,19 @@ namespace Assembly.Windows
 					var stream = new EndianStream(new FileStream(path, FileMode.Open), Endian.BigEndian);
                     stream.SeekTo(0);
 
-                    switch (stream.ReadAscii(0x04))
+                    switch (stream.ReadAscii(0x04).ToLower())
                     {
                         case "head":
                             // Map File
                             stream.Close();
                             AddCacheTabModule(path);
                             return;
+
+						case "asmp":
+							// Patch File
+							stream.Close();
+							AddPatchTabModule(path);
+							return;
 
                         case "_blf":
                             // BLF Container, needs more checking
@@ -912,11 +930,11 @@ namespace Assembly.Windows
 
 		// Tools
 		private void menuMemoryManager_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.MemoryManager); }
-		private void menuToolHalo4VoxelConverter_Click(object sender, RoutedEventArgs e)	{ AddTabModule(TabGenre.VoxelConverter); }
+		private void menuToolHalo4VoxelConverter_Click(object sender, RoutedEventArgs e)	{ AddTabModule(TabGenre.VoxelConverter); } 
 
 		// View
         private void menuViewStartPage_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.StartPage); }
-        private void menuPatches_Click(object sender, RoutedEventArgs e)					{ AddTabModule(TabGenre.Patches); }
+        private void menuPatches_Click(object sender, RoutedEventArgs e)					{ AddPatchTabModule(); }
         private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.NetworkPoking); }
         private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginGenerator); }
 		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginConverter); }
