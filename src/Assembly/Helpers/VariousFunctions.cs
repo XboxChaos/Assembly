@@ -190,46 +190,5 @@ namespace Assembly.Helpers
         }
 
         private static readonly string InvalidFileNameChars = new string(Path.GetInvalidFileNameChars());
-
-		public static bool IsJpegImage(string filename)
-		{
-			try
-			{
-				var img = Image.FromFile(filename);
-
-				// Two image formats can be compared using the Equals method
-				// See http://msdn.microsoft.com/en-us/library/system.drawing.imaging.imageformat.aspx
-				//
-				return img.RawFormat.Equals(ImageFormat.Jpeg);
-			}
-			catch (OutOfMemoryException)
-			{
-				// Image.FromFile throws an OutOfMemoryException 
-				// if the file does not have a valid image format or
-				// GDI+ does not support the pixel format of the file.
-				//
-				return false;
-			}
-		}
-		public static bool IsJpegImage(Stream fileStream)
-		{
-			try
-			{
-				var img = Image.FromStream(fileStream);
-
-				// Two image formats can be compared using the Equals method
-				// See http://msdn.microsoft.com/en-us/library/system.drawing.imaging.imageformat.aspx
-				//
-				return img.RawFormat.Equals(ImageFormat.Jpeg);
-			}
-			catch (OutOfMemoryException)
-			{
-				// Image.FromFile throws an OutOfMemoryException 
-				// if the file does not have a valid image format or
-				// GDI+ does not support the pixel format of the file.
-				//
-				return false;
-			}
-		}
     }
 }
