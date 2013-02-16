@@ -22,57 +22,45 @@ using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam.ThirdGen
 {
     /// <summary>
     /// Provides methods for converting between memory addresses stored in cache files and file offsets.
     /// </summary>
-    public class MetaAddressConverter : PointerConverter
+    public class MetaAddressConverter : IPointerConverter
     {
-        private ThirdGenHeader _header;
+        private FileSegment _metaSegment;
+        private uint _virtualBase;
 
         /// <summary>
-        /// Constructs a new AddressConverter.
+        /// Constructs a new MetaAddressConverter.
         /// </summary>
-        public MetaAddressConverter(ThirdGenHeader header)
+        /// <param name="metaSegment">The FileSegment where meta is stored.</param>
+        /// <param name="virtualBase">The virtual base address of the meta.</param>
+        public MetaAddressConverter(FileSegment metaSegment, uint virtualBase)
         {
-            _header = header;
+            _metaSegment = metaSegment;
+            _virtualBase = virtualBase;
+            metaSegment.Resized += MetaResized;
         }
 
-        public uint AddressMask
+        void MetaResized(object sender, SegmentResizedEventArgs e)
         {
-            get { return _header.VirtualBaseAddress - _header.MetaOffset; }
+            // The meta segment grows downward in memory,
+            // so change the virtual base inversely
+            _virtualBase -= (uint)(e.NewSize - e.OldSize);
         }
 
-        public override uint PointerToOffset(uint pointer)
+        public int PointerToOffset(uint pointer)
         {
-            return pointer - AddressMask;
+            return (int)(pointer - _virtualBase + _metaSegment.Offset);
         }
 
-        public override uint PointerToAddress(uint pointer)
+        public uint OffsetToPointer(int offset)
         {
-            return pointer;
-        }
-
-        public override uint OffsetToPointer(uint offset)
-        {
-            return offset + AddressMask;
-        }
-
-        public override uint AddressToPointer(uint address)
-        {
-            return address;
-        }
-
-        public override bool SupportsAddresses
-        {
-            get { return true; }
-        }
-
-        public override bool SupportsOffsets
-        {
-            get { return true; }
+            return (uint)(offset - _metaSegment.Offset + _virtualBase);
         }
     }
 }

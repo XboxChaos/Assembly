@@ -11,25 +11,75 @@ namespace ExtryzeDLL.Blam
     public interface ICacheFile
     {
         /// <summary>
-        /// Saves any changes that were made to the file header.
+        /// Saves any changes that were made to the file.
         /// </summary>
-        /// <param name="stream">The stream to write header changes to.</param>
+        /// <param name="stream">The stream to write changes to.</param>
         void SaveChanges(IStream stream);
 
         /// <summary>
-        /// Information about the cache file (usually obtained from its header).
+        /// The size of the file header.
         /// </summary>
-        ICacheFileInfo Info { get; }
+        int HeaderSize { get; }
 
         /// <summary>
-        /// The PointerConverter that can be used to convert pointers to tag meta.
+        /// The size of the cache file.
         /// </summary>
-        PointerConverter MetaPointerConverter { get; }
+        uint FileSize { get; }
 
         /// <summary>
-        /// The PointerConverter that can be used to convert pointers to locale data.
+        /// The purpose of the cache file.
         /// </summary>
-        PointerConverter LocalePointerConverter { get; }
+        CacheFileType Type { get; }
+
+        /// <summary>
+        /// The cache file's internal name.
+        /// </summary>
+        string InternalName { get; }
+
+        /// <summary>
+        /// The name of the cache file's scenario tag (can be null if none).
+        /// </summary>
+        string ScenarioName { get; }
+
+        /// <summary>
+        /// The engine build string that the cache file is intended for.
+        /// </summary>
+        string BuildString { get; }
+
+        /// <summary>
+        /// The XDK version that the cache file was developed with, or 0 if unknown.
+        /// </summary>
+        int XDKVersion { get; set; }
+
+        /// <summary>
+        /// The meta area of the cache file.
+        /// </summary>
+        FileSegmentGroup MetaArea { get; }
+
+        /// <summary>
+        /// The location of the tag table header in the file.
+        /// </summary>
+        SegmentPointer IndexHeaderLocation { get; set; }
+
+        /// <summary>
+        /// The meta partitions in the cache file.
+        /// </summary>
+        Partition[] Partitions { get; }
+
+        /// <summary>
+        /// The raw table in the cache file.
+        /// </summary>
+        FileSegment RawTable { get; }
+
+        /// <summary>
+        /// The locale area of the cache file.
+        /// </summary>
+        FileSegmentGroup LocaleArea { get; }
+
+        /// <summary>
+        /// The debug string area of the cache file.
+        /// </summary>
+        FileSegmentGroup StringArea { get; }
 
         /// <summary>
         /// The tag names in the file.
@@ -65,5 +115,13 @@ namespace ExtryzeDLL.Blam
         /// The file's scenario data.
         /// </summary>
         IScenario Scenario { get; }
+
+        /// <summary>
+        /// A list of segments that the file has been arbitrarily divided into.
+        /// For a given cache file, these segments will always be in the same order.
+        /// This can be used to compare two cache files and determine sizing differences between them.
+        /// Note that some segments may be null if they do not exist.
+        /// </summary>
+        IList<FileSegment> Segments { get; }
     }
 }

@@ -4,31 +4,35 @@ using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Flexibility;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam.SecondGen.Structures
 {
     public class SecondGenTag : ITag
     {
-        public SecondGenTag(StructureValueCollection values, MetaOffsetConverter converter, Dictionary<int, ITagClass> classesById)
+        public SecondGenTag(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
         {
-            Load(values, converter, classesById);
+            Load(values, metaArea, classesById);
         }
 
-        private void Load(StructureValueCollection values, MetaOffsetConverter converter, Dictionary<int, ITagClass> classesById)
+        private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
         {
-            // Load the tag class by looking up the magic value that's stored
-            ITagClass tagClass;
-            int classMagic = (int)values.GetNumber("class magic");
-            if (classesById.TryGetValue(classMagic, out tagClass))
-                Class = tagClass;
+            uint offset = values.GetNumber("offset");
+            if (offset > 0)
+            {
+                // Load the tag class by looking up the magic value that's stored
+                int classMagic = (int)values.GetNumber("class magic");
+                if (classMagic != -1)
+                    Class = classesById[classMagic];
 
-            MetaLocation = new Pointer(values.GetNumber("offset"), converter);
-            Index = new DatumIndex(values.GetNumber("datum index"));
-            DataSize = (int)values.GetNumber("data size");
+                MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
+                Index = new DatumIndex(values.GetNumber("datum index"));
+                DataSize = (int)values.GetNumber("data size");
+            }
         }
 
         public ITagClass Class { get; set; }
-        public Pointer MetaLocation { get; set; }
+        public SegmentPointer MetaLocation { get; set; }
         public DatumIndex Index { get; private set; }
         public int DataSize { get; set; }
     }

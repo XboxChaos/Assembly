@@ -17,9 +17,9 @@ namespace ExtryzeDLL.Patching
         public static void CompareMeta(ICacheFile originalFile, IReader originalReader, ICacheFile newFile, IReader newReader, Patch output)
         {
             // TODO: Handle files with expanded meta partitions
-            var bufferAddress = originalFile.Info.VirtualBaseAddress;
-			var bufferOffset = originalFile.Info.MetaOffset;
-			var endOffset = bufferOffset + originalFile.Info.MetaSize;
+            var bufferAddress = originalFile.MetaArea.BasePointer;
+			var bufferOffset = originalFile.MetaArea.Offset;
+			var endOffset = bufferOffset + originalFile.MetaArea.Size;
 
             const int BufferSize = 0x1000;
             var oldBuffer = new byte[BufferSize];

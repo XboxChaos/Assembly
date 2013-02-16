@@ -118,12 +118,12 @@ namespace ExtryzeDLL.Plugins.Generation
 
         private void RecognizePartitionBoundaries(ICacheFile cacheFile)
         {
-            _minAddress = cacheFile.Info.MetaBase.AsAddress();
-            foreach (Partition partition in cacheFile.Info.Partitions)
-                _memMap.AddAddress(partition.BasePointer.AsAddress(), 0);
+            _minAddress = cacheFile.MetaArea.BasePointer;
+            foreach (Partition partition in cacheFile.Partitions)
+                _memMap.AddAddress(partition.BasePointer.AsPointer(), 0);
 
             // Add the end of meta as well
-            _maxAddress = _minAddress + cacheFile.Info.MetaSize;
+            _maxAddress = (uint)(_minAddress + cacheFile.MetaArea.Size);
             _memMap.AddAddress(_maxAddress, 0);
         }
 
@@ -132,11 +132,11 @@ namespace ExtryzeDLL.Plugins.Generation
             foreach (ITag tag in cacheFile.Tags)
             {
                 if (tag.Index.IsValid)
-                    _memMap.AddAddress(tag.MetaLocation.AsAddress(), 0);
+                    _memMap.AddAddress(tag.MetaLocation.AsPointer(), 0);
             }
 
             // Add the index header as well :P
-            _memMap.AddAddress(cacheFile.Info.IndexHeaderLocation.AsAddress(), 0);
+            _memMap.AddAddress(cacheFile.IndexHeaderLocation.AsPointer(), 0);
         }
 
         private void RecognizeClassIDs(ICacheFile cacheFile)

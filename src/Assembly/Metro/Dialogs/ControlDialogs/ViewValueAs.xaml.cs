@@ -83,7 +83,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 success = int.TryParse(txtOffset.Text, out offset);
             }
 
-            if (!success || offset < _cacheFile.Info.MetaOffset || offset >= _cacheFile.Info.MetaOffset + _cacheFile.Info.MetaSize)
+            if (!success || offset < _cacheFile.MetaArea.Offset || offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size)
             {
                 MetroMessageBox.Show(
                     "Invalid offset.",

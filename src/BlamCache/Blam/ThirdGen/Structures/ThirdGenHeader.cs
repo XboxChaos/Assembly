@@ -33,118 +33,134 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
     /// <summary>
     /// A cache file header whose layout can be changed.
     /// </summary>
-    public class ThirdGenHeader : ICacheFileInfo
+    public class ThirdGenHeader
     {
-        private uint _originalRawTableOffset;
+        private int _originalRawTableOffset;
+        private FileSegment _eofSegment;
 
-        private MetaAddressConverter _addrConverter;
-        private IndexOffsetConverter _indexConverter;
-        private HeaderOffsetConverter _stringOffsetConverter;
-
-        public ThirdGenHeader(StructureValueCollection values, BuildInformation info, string buildString)
+        public ThirdGenHeader(StructureValueCollection values, BuildInformation info, string buildString, FileSegmenter segmenter)
         {
             BuildString = buildString;
             HeaderSize = info.HeaderSize;
-            Load(values);
+            Load(values, segmenter);
         }
 
         public int HeaderSize { get; private set; }
 
-        public uint FileSize { get; set; }
+        public uint FileSize
+        {
+            get { return (uint)_eofSegment.Offset; }
+        }
 
-        public CacheFileType Type { get; set; }
-
-        public string BuildString { get; private set; }
-
+        public CacheFileType Type { get; private set; }
         public string InternalName { get; private set; }
         public string ScenarioName { get; private set; }
-
-        public Pointer MetaBase
-        {
-            get { return new Pointer(VirtualBaseAddress, MetaPointerConverter); }
-        }
-
-        public uint MetaSize { get; set; }
-
+        public string BuildString { get; private set; }
         public int XDKVersion { get; set; }
 
+        public FileSegmentGroup MetaArea { get; private set; }
+        public SegmentPointer IndexHeaderLocation { get; set; }
         public Partition[] Partitions { get; private set; }
 
-        public uint RawTableOffset { get; set; }
-        public uint RawTableSize { get; set; }
+        public FileSegment RawTable { get; private set; }
 
-        public Pointer IndexHeaderLocation { get; set; }
-        public uint LocaleOffsetMask { get; set; }
+        public IPointerConverter LocalePointerConverter { get; private set; }
 
-        public uint AddressMask
-        {
-            get { return _addrConverter.AddressMask; }
-        }
+        public FileSegmentGroup StringArea { get; private set; }
 
         public int StringIDCount { get; set; }
-        public int StringIDTableSize { get; set; }
-        public Pointer StringIDIndexTableLocation { get; set; }
-        public Pointer StringIDDataLocation { get; set; }
+        public FileSegment StringIDIndexTable { get; private set; }
+        public SegmentPointer StringIDIndexTableLocation { get; set; }
+        public FileSegment StringIDData { get; private set; }
+        public SegmentPointer StringIDDataLocation { get; set; }
+
+        public FileSegment StringBlock { get; private set; }
+        public SegmentPointer StringBlockLocation { get; set; }
 
         public int FileNameCount { get; set; }
-        public int FileNameTableSize { get; set; }
-        public Pointer FileNameIndexTableLocation { get; set; }
-        public Pointer FileNameDataLocation { get; set; }
+        public FileSegment FileNameIndexTable { get; private set; }
+        public SegmentPointer FileNameIndexTableLocation { get; set; }
+        public FileSegment FileNameData { get; private set; }
+        public SegmentPointer FileNameDataLocation { get; set; }
 
-        public MetaAddressConverter MetaPointerConverter
-        {
-            get { return _addrConverter; }
-        }
-
-        public IndexOffsetConverter LocalePointerConverter
-        {
-            get { return _indexConverter; }
-        }
-
-        public Pointer LocaleDataLocation { get; set; }
-        public int LocaleDataSize { get; set; }
-
-        public uint StringOffsetMagic { get; set; }
-
-        public uint MetaOffset { get; set; }
-        public uint VirtualBaseAddress { get; set; }
+        public int UnknownCount { get; set; }
+        public FileSegment UnknownTable { get; private set; }
+        public SegmentPointer UnknownTableLocation { get; set; }
+        
+        public IList<FileSegment> Segments { get; private set; }
 
         /// <summary>
         /// Serializes the header's values, storing them into a StructureValueCollection.
         /// </summary>
+        /// <param name="localeArea">The locale area of the cache file. Can be null.</param>
+        /// <param name="localePointerMask">The value to add to locale pointers to translate them to file offsets.</param>
         /// <returns>The resulting StructureValueCollection.</returns>
-        public StructureValueCollection Serialize()
+        public StructureValueCollection Serialize(FileSegmentGroup localeArea)
         {
             StructureValueCollection values = new StructureValueCollection();
-            
-            if (_originalRawTableOffset != 0)
-                values.SetNumber("raw table offset", RawTableOffset);
-            else
-                values.SetNumber("meta offset", MetaOffset);
 
-            values.SetNumber("virtual base address", VirtualBaseAddress);
-            values.SetNumber("raw table offset from header", (uint)(RawTableOffset - HeaderSize));
-            values.SetNumber("raw table size", RawTableSize);
-            values.SetNumber("locale offset magic", LocaleOffsetMask);
-            values.SetNumber("file size", FileSize);
-            values.SetNumber("index header address", IndexHeaderLocation.AsAddress());
-            values.SetNumber("virtual size", MetaSize);
+            if (_originalRawTableOffset != 0)
+            {
+                if (RawTable != null)
+                    values.SetNumber("raw table offset", (uint)RawTable.Offset);
+
+                // I really don't know what these next two values are supposed to mean...anyone got anything?
+                values.SetNumber("eof index offset", LocalePointerConverter.OffsetToPointer((int)FileSize)); // Reach, H4
+                values.SetNumber("eof index offset plus string data size", LocalePointerConverter.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
+            }
+            else
+            {
+                values.SetNumber("meta offset", (uint)MetaArea.Offset);
+            }
+
+            if (RawTable != null)
+                values.SetNumber("raw table size", (uint)RawTable.Size);
+
+            values.SetNumber("virtual base address", MetaArea.BasePointer);
+            values.SetNumber("locale offset magic", (uint)-localeArea.PointerMask);
+            values.SetNumber("file size", (uint)FileSize);
+            values.SetNumber("index header address", IndexHeaderLocation.AsPointer());
+            values.SetNumber("virtual size", (uint)MetaArea.Size);
             values.SetNumber("type", (uint)Type);
+            if (StringBlockLocation != null)
+                values.SetNumber("string block offset", (uint)StringBlockLocation.AsPointer());
             values.SetNumber("string table count", (uint)StringIDCount);
-            values.SetNumber("string table size", (uint)StringIDTableSize);
-            values.SetNumber("string index table offset", _stringOffsetConverter.PointerToRaw(StringIDIndexTableLocation));
-            values.SetNumber("string table offset", _stringOffsetConverter.PointerToRaw(StringIDDataLocation));
+            values.SetNumber("string table size", (uint)StringIDData.Size);
+            values.SetNumber("string index table offset", StringIDIndexTableLocation.AsPointer());
+            values.SetNumber("string table offset", StringIDDataLocation.AsPointer());
+            values.SetNumber("string data size", (uint)StringArea.Size);
+            values.SetNumber("string offset magic", StringArea.BasePointer);
             values.SetString("internal name", InternalName);
             values.SetString("scenario name", ScenarioName);
             values.SetNumber("file table count", (uint)FileNameCount);
-            values.SetNumber("file table offset", _stringOffsetConverter.PointerToRaw(FileNameDataLocation));
-            values.SetNumber("file table size", (uint)FileNameTableSize);
-            values.SetNumber("file index table offset", _stringOffsetConverter.PointerToRaw(FileNameIndexTableLocation));
+            values.SetNumber("file table offset", FileNameDataLocation.AsPointer());
+            values.SetNumber("file table size", (uint)FileNameData.Size);
+            values.SetNumber("file index table offset", FileNameIndexTableLocation.AsPointer());
             values.SetNumber("xdk version", (uint)XDKVersion);
+
+            AdjustPartitions();
             values.SetArray("partitions", SerializePartitions());
-            values.SetNumber("locale data index offset", _indexConverter.PointerToRaw(LocaleDataLocation));
-            values.SetNumber("locale data size", (uint)LocaleDataSize);
+
+            if (localeArea != null)
+            {
+                values.SetNumber("locale data index offset", localeArea.BasePointer);
+                values.SetNumber("locale data size", (uint)localeArea.Size);
+            }
+
+            if (UnknownTableLocation != null)
+            {
+                values.SetNumber("unknown table count", (uint)UnknownCount);
+                values.SetNumber("unknown table offset", UnknownTableLocation.AsPointer());
+            }
             return values;
+        }
+
+        private void AdjustPartitions()
+        {
+            // Find the first partition with a non-null address and change it to the meta area's base address
+            var partition = Partitions.First((p) => p.BasePointer != null);
+            if (partition != null)
+                partition.BasePointer = SegmentPointer.FromPointer(MetaArea.BasePointer, MetaArea);
         }
 
         private StructureValueCollection[] SerializePartitions()
@@ -153,89 +169,157 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             for (int i = 0; i < Partitions.Length; i++)
             {
                 StructureValueCollection values = new StructureValueCollection();
-                values.SetNumber("load address", Partitions[i].BasePointer.AsAddress());
+                values.SetNumber("load address", Partitions[i].BasePointer != null ? Partitions[i].BasePointer.AsPointer() : 0);
                 values.SetNumber("size", Partitions[i].Size);
                 results[i] = values;
             }
             return results;
         }
 
-        private void Load(StructureValueCollection values)
+        private void Load(StructureValueCollection values, FileSegmenter segmenter)
         {
-            _addrConverter = LoadAddressConverter(values);
-            _indexConverter = LoadIndexOffsetConverter(values);
-            _stringOffsetConverter = LoadHeaderOffsetConverter(values);
+            _eofSegment = segmenter.WrapEOF((int)values.GetNumber("file size"));
 
-            FileSize = values.GetNumber("file size");
-            IndexHeaderLocation = new Pointer(values.GetNumber("index header address"), _addrConverter);
-            MetaSize = values.GetNumber("virtual size");
             Type = (CacheFileType)values.GetNumber("type");
-
-            StringIDCount = (int)values.GetNumber("string table count");
-            StringIDTableSize = (int)values.GetNumber("string table size");
-            StringIDIndexTableLocation = new Pointer(values.GetNumber("string index table offset"), _stringOffsetConverter);
-            StringIDDataLocation = new Pointer(values.GetNumber("string table offset"), _stringOffsetConverter);
-
             InternalName = values.GetString("internal name");
             ScenarioName = values.GetString("scenario name");
-
-            FileNameCount = (int)values.GetNumber("file table count");
-            FileNameDataLocation = new Pointer(values.GetNumber("file table offset"), _stringOffsetConverter);
-            FileNameTableSize = (int)values.GetNumber("file table size");
-            FileNameIndexTableLocation = new Pointer(values.GetNumber("file index table offset"), _stringOffsetConverter);
-
             XDKVersion = (int)values.GetNumber("xdk version");
+
+            RawTable = CalculateRawTableSegment(values, segmenter);
+
+            FileSegment metaSegment = CalculateMetaSegment(values, segmenter);
+            uint virtualBase = values.GetNumber("virtual base address");
+            MetaArea = new FileSegmentGroup(new MetaAddressConverter(metaSegment, virtualBase));
+            MetaArea.AddSegment(metaSegment);
+
+            IndexHeaderLocation = SegmentPointer.FromPointer(values.GetNumber("index header address"), MetaArea);
             Partitions = LoadPartitions(values.GetArray("partitions"));
 
-            LocaleDataLocation = new Pointer(values.GetNumberOrDefault("locale data index offset", (uint)HeaderSize), _indexConverter);
-            LocaleDataSize = (int)values.GetNumberOrDefault("locale data size", 0);
+            CalculateStringGroup(values, segmenter);
+            LocalePointerConverter = CalculateLocalePointerConverter(values);
+
+            Segments = new List<FileSegment>();
         }
 
-        private MetaAddressConverter LoadAddressConverter(StructureValueCollection values)
+        private FileSegment CalculateMetaSegment(StructureValueCollection values, FileSegmenter segmenter)
         {
-            VirtualBaseAddress = values.GetNumber("virtual base address");
+            int metaOffset = CalculateMetaOffset(values);
+            int metaSize = (int)values.GetNumber("virtual size");
+            return segmenter.WrapSegment(metaOffset, metaSize, 0x10000, SegmentResizeOrigin.Beginning);
+        }
 
+        private int CalculateMetaOffset(StructureValueCollection values)
+        {
             if (values.HasNumber("raw table offset") && values.HasNumber("raw table size"))
             {
                 // Load raw table info
-                RawTableSize = values.GetNumber("raw table size");
-                RawTableOffset = values.GetNumber("raw table offset");
-                _originalRawTableOffset = RawTableOffset;
+                int rawTableSize = (int)values.GetNumber("raw table size");
+                int rawTableOffset = (int)values.GetNumber("raw table offset");
 
                 // There are two ways to get the meta offset:
                 // 1. Raw table offset + raw table size
                 // 2. If raw table offset is zero, then the meta offset is directly stored in the header
                 //    (The raw table offset can still be calculated in this case, but can't be used to find the meta the traditional way)
-                if (RawTableOffset != 0)
-                    MetaOffset = RawTableOffset + RawTableSize;
-                else
-                    RawTableOffset = values.GetNumber("raw table offset from header") + (uint)HeaderSize;
+                if (rawTableOffset != 0)
+                    return rawTableOffset + rawTableSize;
             }
 
-            uint temp = MetaOffset;
-            if (MetaOffset == 0 && !values.FindNumber("meta offset", out temp))
+            uint offset;
+            if (!values.FindNumber("meta offset", out offset))
+                throw new ArgumentException("The XML layout file is missing information on how to find the meta offset.");
+            return (int)offset;
+        }
+
+        private FileSegment CalculateRawTableSegment(StructureValueCollection values, FileSegmenter segmenter)
+        {
+            // WAT. H3BETA DOESN'T HAVE THIS. WAT.
+            if (values.HasNumber("raw table size") && values.HasNumber("raw table offset"))
             {
-                throw new ArgumentException("The XML layout file is missing information on how to calculate map magic.");
+                // Load the basic values
+                int rawTableSize = (int)values.GetNumber("raw table size");
+                int rawTableOffset = (int)values.GetNumber("raw table offset");
+                _originalRawTableOffset = rawTableOffset;
+
+                // If the original raw table offset was 0, load it from the alternate pointer
+                if (rawTableOffset == 0)
+                    rawTableOffset = (int)values.GetNumber("alternate raw table offset");
+
+                return segmenter.WrapSegment(rawTableOffset, rawTableSize, 0x1000, SegmentResizeOrigin.End);
             }
-            MetaOffset = temp;
-
-            return new MetaAddressConverter(this);
+            else
+            {
+                return null;
+            }
         }
 
-        private IndexOffsetConverter LoadIndexOffsetConverter(StructureValueCollection values)
+        private IPointerConverter CalculateStringPointerConverter(StructureValueCollection values)
         {
-            LocaleOffsetMask = values.GetNumberOrDefault("locale offset magic", 0);
-            return new IndexOffsetConverter(this);
+            // If the original raw table offset isn't zero, then "string offset magic" contains the base pointer to the string area
+            // and the string area is located immediately after the header
+            // Otherwise, pointers are just file offsets
+            uint magic = values.GetNumberOrDefault("string offset magic", 0);
+            if (magic > 0 && values.GetNumberOrDefault("raw table offset", 0) > 0)
+                return new MaskedPointerConverter((uint)(magic - HeaderSize));
+            return new IdentityPointerConverter();
         }
 
-        private HeaderOffsetConverter LoadHeaderOffsetConverter(StructureValueCollection values)
+        private void CalculateStringGroup(StructureValueCollection values, FileSegmenter segmenter)
         {
-            // Only apply a modifier if the original raw table offset wasn't zero
-            StringOffsetMagic = (uint)HeaderSize;
-            if (values.HasNumber("raw table offset") && values.GetNumber("raw table offset") > 0)
-                StringOffsetMagic = values.GetNumberOrDefault("string offset magic", (uint)HeaderSize);
+            IPointerConverter converter = CalculateStringPointerConverter(values);
 
-            return new HeaderOffsetConverter(this);
+            // StringIDs
+            int sidIndexTableOff = converter.PointerToOffset(values.GetNumber("string index table offset"));
+            int sidDataOff = converter.PointerToOffset(values.GetNumber("string table offset"));
+
+            StringIDCount = (int)values.GetNumber("string table count");
+            int sidTableSize = (int)values.GetNumber("string table size");
+            StringIDIndexTable = segmenter.WrapSegment(sidIndexTableOff, StringIDCount * 4, 4, SegmentResizeOrigin.End);
+            StringIDData = segmenter.WrapSegment(sidDataOff, sidTableSize, 1, SegmentResizeOrigin.End);
+
+            // idk what this is, but H3Beta has it
+            if (values.HasNumber("string block offset"))
+            {
+                int sidBlockOff = converter.PointerToOffset(values.GetNumber("string block offset"));
+                StringBlock = segmenter.WrapSegment(sidBlockOff, StringIDCount * 0x80, 0x80, SegmentResizeOrigin.End);
+            }
+
+            // Tag names
+            int nameIndexTableOff = converter.PointerToOffset(values.GetNumber("file index table offset"));
+            int nameDataOff = converter.PointerToOffset(values.GetNumber("file table offset"));
+
+            FileNameCount = (int)values.GetNumber("file table count");
+            int fileTableSize = (int)values.GetNumber("file table size");
+            FileNameIndexTable = segmenter.WrapSegment(nameIndexTableOff, FileNameCount * 4, 4, SegmentResizeOrigin.End);
+            FileNameData = segmenter.WrapSegment(nameDataOff, fileTableSize, 1, SegmentResizeOrigin.End);
+
+            // Some H4-only unknown table
+            if (values.HasNumber("unknown table count") && values.HasNumber("unknown table offset"))
+            {
+                int unknownOff = converter.PointerToOffset(values.GetNumber("unknown table offset"));
+
+                UnknownCount = (int)values.GetNumber("unknown table count");
+                UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount * 0x10, 0x10, SegmentResizeOrigin.End);
+            }
+
+            // Add the segments to the group
+            StringArea = new FileSegmentGroup(converter);
+            StringIDIndexTableLocation = StringArea.AddSegment(StringIDIndexTable);
+            StringIDDataLocation = StringArea.AddSegment(StringIDData);
+            FileNameIndexTableLocation = StringArea.AddSegment(FileNameIndexTable);
+            FileNameDataLocation = StringArea.AddSegment(FileNameData);
+
+            if (UnknownTable != null)
+                UnknownTableLocation = StringArea.AddSegment(UnknownTable);
+            if (StringBlock != null)
+                StringBlockLocation = StringArea.AddSegment(StringBlock);
+        }
+
+        private IPointerConverter CalculateLocalePointerConverter(StructureValueCollection values)
+        {
+            uint mask = values.GetNumberOrDefault("locale offset magic", 0);
+            if (mask != 0)
+                return new MaskedPointerConverter((uint)-mask); // Negate the mask so that converting from offset to pointer adds it
+            return new IdentityPointerConverter(); // Locale pointers are file offsets
         }
 
         private Partition[] LoadPartitions(StructureValueCollection[] partitionValues)
@@ -243,7 +327,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             var result = from partition in partitionValues
                          select new Partition
                          (
-                             new Pointer(partition.GetNumber("load address"), _addrConverter),
+                             partition.GetNumber("load address") != 0 ? SegmentPointer.FromPointer(partition.GetNumber("load address"), MetaArea) : null,
                              partition.GetNumber("size")
                          );
             return result.ToArray();

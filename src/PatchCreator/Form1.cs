@@ -67,7 +67,7 @@ namespace PatchCreator
 			var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
 			var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
-            patch.MapInternalName = originalFile.Info.InternalName;
+            patch.MapInternalName = originalFile.InternalName;
             MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
             LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
 

@@ -213,7 +213,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Get the base address and convert it to an offset if we're writing to the file
             var newBaseOffset = field.FirstEntryAddress;
             if (_type == SaveType.File)
-                newBaseOffset = _cache.MetaPointerConverter.PointerToOffset(newBaseOffset);
+                newBaseOffset = (uint)_cache.MetaArea.PointerToOffset(newBaseOffset);
 
             // Save the old base offset and set the base offset to the reflexive's base
 			var oldBaseOffset = _baseOffset;
@@ -300,7 +300,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	        // Go to the data location
 			var offset = field.DataAddress;
 	        if (_type == SaveType.File)
-		        offset = _cache.MetaPointerConverter.PointerToOffset(offset);
+		        offset = (uint)_cache.MetaArea.PointerToOffset(offset);
 	        _writer.SeekTo(offset);
 
 	        // Write its data

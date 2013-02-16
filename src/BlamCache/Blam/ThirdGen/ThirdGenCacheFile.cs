@@ -34,6 +34,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
     /// </summary>
     public class ThirdGenCacheFile : ICacheFile
     {
+        private FileSegmenter _segmenter;
         private ThirdGenHeader _header;
         private ThirdGenTagTable _tags;
         private IndexedStringIDSource _stringIds;
@@ -42,11 +43,13 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
+        private List<FileSegment> _segments = new List<FileSegment>();
         private BuildInformation _buildInfo;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
             _buildInfo = buildInfo;
+            _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
             Load(reader, buildInfo, buildString);
         }
 
@@ -56,24 +59,66 @@ namespace ExtryzeDLL.Blam.ThirdGen
             WriteLanguageInfo(stream);
         }
 
-        public ICacheFileInfo Info
+        public int HeaderSize
         {
-            get { return _header; }
+            get { return _header.HeaderSize; }
+        }
+
+        public uint FileSize
+        {
+            get { return _header.FileSize; }
+        }
+
+        public CacheFileType Type
+        {
+            get { return _header.Type; }
+        }
+
+        public string InternalName
+        {
+            get { return _header.InternalName; }
+        }
+
+        public string ScenarioName
+        {
+            get { return _header.ScenarioName; }
+        }
+
+        public string BuildString
+        {
+            get { return _header.BuildString; }
+        }
+
+        public int XDKVersion
+        {
+            get { return _header.XDKVersion; }
+            set { _header.XDKVersion = value; }
+        }
+
+        public SegmentPointer IndexHeaderLocation
+        {
+            get { return _header.IndexHeaderLocation; }
+            set { _header.IndexHeaderLocation = value; }
+        }
+
+        public Partition[] Partitions
+        {
+            get { return _header.Partitions; }
+        }
+
+        public FileSegment RawTable
+        {
+            get { return _header.RawTable; }
+        }
+
+        public FileSegmentGroup StringArea
+        {
+            get { return _header.StringArea; }
         }
 
         public ThirdGenHeader FullHeader
         {
             get { return _header; }
-        }
-
-        public PointerConverter MetaPointerConverter
-        {
-            get { return _header.MetaPointerConverter; }
-        }
-
-        public PointerConverter LocalePointerConverter
-        {
-            get { return _header.LocalePointerConverter; }
         }
 
         public IFileNameSource FileNames
@@ -111,44 +156,60 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _localeGroups.AsReadOnly(); }
         }
 
-        private void Load(IReader reader, BuildInformation buildInfo, string buildString)
+        public IList<FileSegment> Segments
         {
-            _header = LoadHeader(reader, buildInfo, buildString);
-            _fileNames = LoadFileNames(reader, buildInfo);
-            _stringIds = LoadStringIDs(reader, buildInfo);
-            _tags = LoadTags(reader, buildInfo);
-            _languageInfo = LoadLanguageGlobals(reader, buildInfo);
-            _scenario = LoadScenario(reader, buildInfo);
-            _localeGroups = LoadLocaleGroups(reader, buildInfo);
-
-            BuildLanguageList();
+            get { return _segments; }
         }
 
-        private ThirdGenHeader LoadHeader(IReader reader, BuildInformation buildInfo, string buildString)
+        public FileSegmentGroup MetaArea
+        {
+            get { return _header.MetaArea; }
+        }
+
+        public FileSegmentGroup LocaleArea
+        {
+            get { return _languageInfo.LocaleArea; }
+        }
+
+        private void Load(IReader reader, BuildInformation buildInfo, string buildString)
+        {
+            LoadHeader(reader, buildInfo, buildString);
+            LoadFileNames(reader, buildInfo);
+            LoadStringIDs(reader, buildInfo);
+            LoadTags(reader, buildInfo);
+            LoadLanguageGlobals(reader, buildInfo);
+            LoadScenario(reader, buildInfo);
+            LoadLocaleGroups(reader, buildInfo);
+
+            BuildLanguageList();
+            BuildSegmentList();
+        }
+
+        private void LoadHeader(IReader reader, BuildInformation buildInfo, string buildString)
         {
             reader.SeekTo(0);
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("header"));
-            return new ThirdGenHeader(values, buildInfo, buildString);
+            _header = new ThirdGenHeader(values, buildInfo, buildString, _segmenter);
         }
 
-        private ThirdGenTagTable LoadTags(IReader reader, BuildInformation buildInfo)
+        private void LoadTags(IReader reader, BuildInformation buildInfo)
         {
             reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("index header"));
-            return new ThirdGenTagTable(reader, values, _header.MetaPointerConverter, buildInfo);
+            _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, buildInfo);
         }
 
-        private IndexedFileNameSource LoadFileNames(IReader reader, BuildInformation buildInfo)
+        private void LoadFileNames(IReader reader, BuildInformation buildInfo)
         {
-            return new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameTableSize, _header.FileNameIndexTableLocation, _header.FileNameDataLocation, buildInfo.FileNameKey));
+            _fileNames = new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.FileNameKey));
         }
 
-        private IndexedStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
+        private void LoadStringIDs(IReader reader, BuildInformation buildInfo)
         {
-            return new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo.StringIDKey), buildInfo.StringIDResolver);
+            _stringIds = new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, buildInfo.StringIDKey), buildInfo.StringIDResolver);
         }
 
-        private ThirdGenLanguageGlobals LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
+        private void LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
         {
             // Find the language data
             ITag languageTag;
@@ -158,21 +219,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
             // Read it
             reader.SeekTo(languageTag.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
-            ThirdGenLanguageGlobals result = new ThirdGenLanguageGlobals(this, values, _header.LocalePointerConverter, buildInfo);
-
-            // If the locale data offset/size is 0, then calculate them
-            if (_header.LocaleDataLocation.AsOffset() == 0 && result.Languages.Count > 0)
-                _header.LocaleDataLocation = result.Languages[0].LocaleIndexTableLocation;
-
-            if (_header.LocaleDataSize == 0 && result.Languages.Count > 0)
-            {
-                ThirdGenLanguage first = result.Languages[0];
-                ThirdGenLanguage last = result.Languages[result.Languages.Count - 1];
-                int size = (int)(last.LocaleDataLocation.AsOffset() + last.LocaleTableSize - first.LocaleIndexTableLocation.AsOffset());
-                _header.LocaleDataSize = (size + buildInfo.LocaleAlignment - 1) & ~(buildInfo.LocaleAlignment - 1);
-            }
-
-            return result;
+            _languageInfo = new ThirdGenLanguageGlobals(values, _segmenter, _header.LocalePointerConverter, buildInfo);
         }
 
         private void FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
@@ -201,41 +248,38 @@ namespace ExtryzeDLL.Blam.ThirdGen
                 _languages.Add(language);
         }
 
-        private ThirdGenScenarioMeta LoadScenario(IReader reader, BuildInformation buildInfo)
+        private void LoadScenario(IReader reader, BuildInformation buildInfo)
         {
             if (!buildInfo.HasLayout("scnr"))
-                return null;
+                return;
             ITag scnr = FindTagByClass(ScnrMagic);
             if (scnr == null)
                 throw new InvalidOperationException("The cache file is missing a scnr tag.");
 
             reader.SeekTo(scnr.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("scnr"));
-            return new ThirdGenScenarioMeta(values, reader, _header.MetaPointerConverter, _stringIds, buildInfo);
+            _scenario = new ThirdGenScenarioMeta(values, reader, MetaArea, _stringIds, buildInfo);
         }
 
-        private List<ILocaleGroup> LoadLocaleGroups(IReader reader, BuildInformation buildInfo)
+        private void LoadLocaleGroups(IReader reader, BuildInformation buildInfo)
         {
-            List<ILocaleGroup> result = new List<ILocaleGroup>();
-
             // Locale groups are stored in unic tags
             StructureLayout layout = buildInfo.GetLayout("unic");
             foreach (ITag tag in _tags.Tags)
             {
-                if (tag != null && tag.Class != null && tag.Class.Magic == UnicMagic && tag.MetaLocation.AsAddress() > 0)
+                if (tag != null && tag.Class != null && tag.Class.Magic == UnicMagic && tag.MetaLocation != null)
                 {
                     reader.SeekTo(tag.MetaLocation.AsOffset());
                     StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                    result.Add(new ThirdGenLocaleGroup(values, tag.Index));
+                    _localeGroups.Add(new ThirdGenLocaleGroup(values, tag.Index));
                 }
             }
-
-            return result;
         }
 
         private void WriteHeader(IWriter writer)
         {
-            StructureValueCollection values = _header.Serialize();
+            // Serialize and write the header
+            StructureValueCollection values = _header.Serialize(_languageInfo.LocaleArea);
             writer.SeekTo(0);
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);
         }
@@ -257,10 +301,15 @@ namespace ExtryzeDLL.Blam.ThirdGen
         {
             foreach (ITag tag in _tags.Tags)
             {
-                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic && tag.MetaLocation.AsAddress() > 0)
+                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic && tag.MetaLocation != null)
                     return tag;
             }
             return null;
+        }
+
+        private void BuildSegmentList()
+        {
+            _segments.AddRange(_header.Segments);
         }
 
         private static int MatgMagic = CharConstant.FromString("matg");

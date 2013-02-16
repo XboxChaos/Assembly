@@ -51,12 +51,12 @@ namespace ExtryzeDLL.RTE.H2Vista
 			var mapInfo = new H2VistaMapPointerReader(gameMemory);
 
             long metaAddress;
-            if (cacheFile.Info.Type != CacheFileType.Shared)
+            if (cacheFile.Type != CacheFileType.Shared)
             {
                 metaAddress = mapInfo.CurrentMetaAddress;
 
                 // The map isn't shared, so make sure the map names match
-                if (mapInfo.MapName != cacheFile.Info.InternalName)
+                if (mapInfo.MapName != cacheFile.InternalName)
                 {
                     gameMemory.Close();
                     return null;
@@ -75,7 +75,7 @@ namespace ExtryzeDLL.RTE.H2Vista
                 }
             }
 
-			var metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.Info.VirtualBaseAddress);
+			var metaStream = new OffsetStream(gameMemory, metaAddress - cacheFile.MetaArea.BasePointer);
             return new EndianStream(metaStream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
         }
 

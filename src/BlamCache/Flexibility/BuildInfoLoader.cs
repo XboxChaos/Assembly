@@ -81,8 +81,8 @@ namespace ExtryzeDLL.Flexibility
             XAttribute localeSymbolsAttrib = buildElement.Attribute("localeSymbols");
             XAttribute pluginFolderAttrib = buildElement.Attribute("pluginFolder");
             XAttribute scriptDefinitionsAttrib = buildElement.Attribute("scriptDefinitions");
-            XAttribute localeAlignmentAttrib = buildElement.Attribute("localeAlignment");
-            if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null)
+            XAttribute segmentAlignmentAttrib = buildElement.Attribute("segmentAlignment");
+            if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null || segmentAlignmentAttrib == null)
                 return null;
 
             bool loadStrings = true;
@@ -91,7 +91,7 @@ namespace ExtryzeDLL.Flexibility
             string filenameKey = null;
             string localeSymbols = null;
             string scriptOpcodes = null;
-            int localeAlignment = 0x1000;
+            int segmentAlignment = 0x1000;
             int headerSize = ParseNumber(headerSizeAttrib.Value);
 
             if (filenameKeyAttrib != null)
@@ -106,8 +106,8 @@ namespace ExtryzeDLL.Flexibility
                 loadStrings = Convert.ToBoolean(loadStringsAttrib.Value);
             if (scriptDefinitionsAttrib != null)
                 scriptOpcodes = _basePath + @"Scripting\" + scriptDefinitionsAttrib.Value;
-            if (localeAlignmentAttrib != null)
-                localeAlignment = ParseNumber(localeAlignmentAttrib.Value);
+            if (segmentAlignmentAttrib != null)
+                segmentAlignment = ParseNumber(segmentAlignmentAttrib.Value);
 
             // StringID Modifers, this is a bitch
             IStringIDResolver stringIdResolver = null;
@@ -150,7 +150,7 @@ namespace ExtryzeDLL.Flexibility
                 stringIdResolver = new StringIDModifierResolver();
             }
 
-            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, localeAlignment);
+            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, segmentAlignment);
             XDocument layoutDocument = XDocument.Load(_basePath + filenameAttrib.Value);
             LoadAllLayouts(layoutDocument, info);
 

@@ -34,9 +34,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         private List<ITagClass> _classes;
         private List<ITag> _tags;
 
-        public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, MetaAddressConverter converter, BuildInformation buildInfo)
+        public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            Load(reader, headerValues, converter, buildInfo);
+            Load(reader, headerValues, metaArea, buildInfo);
         }
 
         public IList<ITagClass> Classes
@@ -49,23 +49,23 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return _tags.AsReadOnly(); }
         }
 
-        private void Load(IReader reader, StructureValueCollection values, MetaAddressConverter converter, BuildInformation buildInfo)
+        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             if (values.GetNumber("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
 
             // Classes
             int numClasses = (int)values.GetNumber("number of classes");
-            Pointer classTableLocation = new Pointer(values.GetNumber("class table address"), converter);
+            SegmentPointer classTableLocation = SegmentPointer.FromPointer(values.GetNumber("class table address"), metaArea);
             _classes = ReadClasses(reader, classTableLocation, numClasses, buildInfo);
 
             // Tags
             int numTags = (int)values.GetNumber("number of tags");
-            Pointer tagTableLocation = new Pointer(values.GetNumber("tag table address"), converter);
-            _tags = ReadTags(reader, tagTableLocation, numTags, buildInfo, converter);
+            SegmentPointer tagTableLocation = SegmentPointer.FromPointer(values.GetNumber("tag table address"), metaArea);
+            _tags = ReadTags(reader, tagTableLocation, numTags, buildInfo, metaArea);
         }
 
-        private List<ITagClass> ReadClasses(IReader reader, Pointer classTableLocation, int numClasses, BuildInformation buildInfo)
+        private List<ITagClass> ReadClasses(IReader reader, SegmentPointer classTableLocation, int numClasses, BuildInformation buildInfo)
         {
             StructureLayout layout = buildInfo.GetLayout("class entry");
 
@@ -79,7 +79,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<ITag> ReadTags(IReader reader, Pointer tagTableLocation, int numTags, BuildInformation buildInfo, MetaAddressConverter converter)
+        private List<ITag> ReadTags(IReader reader, SegmentPointer tagTableLocation, int numTags, BuildInformation buildInfo, FileSegmentGroup metaArea)
         {
             StructureLayout layout = buildInfo.GetLayout("tag entry");
 
@@ -88,7 +88,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             for (int i = 0; i < numTags; i++)
             {
                 StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                result.Add(new ThirdGenTag(values, (ushort)i, converter, _classes));
+                result.Add(new ThirdGenTag(values, (ushort)i, metaArea, _classes));
             }
             return result;
         }

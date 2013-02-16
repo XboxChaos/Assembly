@@ -13,28 +13,27 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
     public class ThirdGenLanguage : ILanguage
     {
-        private ThirdGenLanguageGlobals _languageGlobals;
         private AESKey _encryptionKey;
         private StructureLayout _pointerLayout;
-        private IndexOffsetConverter _converter;
+        private FileSegmentGroup _localeArea;
         private LocaleSymbolCollection _symbols;
-        private int _pageSize;
+        private int _sizeAlign;
 
-        public ThirdGenLanguage(ThirdGenLanguageGlobals languageGlobals, StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
+        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, BuildInformation buildInfo)
         {
-            _languageGlobals = languageGlobals;
             _pointerLayout = buildInfo.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
             _symbols = buildInfo.LocaleSymbols;
-            _converter = converter;
-            _pageSize = buildInfo.LocaleAlignment;
-            Load(values, converter);
+            _localeArea = localeArea;
+            _sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
+            Load(values, segmenter, localeArea);
         }
 
         public int StringCount { get; private set; }
-        public int LocaleTableSize { get; private set; }
-        public Pointer LocaleIndexTableLocation { get; set; }
-        public Pointer LocaleDataLocation { get; set; }
+        public FileSegment LocaleIndexTable { get; private set; }
+        public FileSegment LocaleData { get; private set; }
+        public SegmentPointer LocaleIndexTableLocation { get; set; }
+        public SegmentPointer LocaleDataLocation { get; set; }
         public byte[] IndexTableHash { get; private set; }
         public byte[] StringDataHash { get; private set; }
 
@@ -42,9 +41,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         {
             StructureValueCollection result = new StructureValueCollection();
             result.SetNumber("string count", (uint)StringCount);
-            result.SetNumber("locale table size", (uint)LocaleTableSize);
-            result.SetNumber("locale index table offset", _converter.PointerToRaw(LocaleIndexTableLocation));
-            result.SetNumber("locale data index offset", _converter.PointerToRaw(LocaleDataLocation));
+            result.SetNumber("locale table size", LocaleData != null ? (uint)LocaleData.Size : 0);
+
+            if (LocaleIndexTableLocation != null)
+                result.SetNumber("locale index table offset", LocaleIndexTableLocation.AsPointer());
+            if (LocaleDataLocation != null)
+                result.SetNumber("locale data index offset", LocaleDataLocation.AsPointer());
+
             if (IndexTableHash != null)
                 result.SetRaw("index table hash", IndexTableHash);
             if (StringDataHash != null)
@@ -52,18 +55,28 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private void Load(StructureValueCollection values, IndexOffsetConverter converter)
+        private void Load(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea)
         {
             StringCount = (int)values.GetNumber("string count");
-            LocaleTableSize = (int)values.GetNumber("locale table size");
-            LocaleIndexTableLocation = new Pointer(values.GetNumber("locale index table offset"), converter);
-            LocaleDataLocation = new Pointer(values.GetNumber("locale data index offset"), converter);
+            if (StringCount > 0)
+            {
+                // Index table offset, segment, and pointer
+                int localeIndexTableOffset = localeArea.PointerToOffset(values.GetNumber("locale index table offset"));
+                LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, StringCount * 8, 8, SegmentResizeOrigin.End);
+                LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
-            // H3 beta doesn't have hashes
-            if (values.HasRaw("index table hash"))
-                IndexTableHash = values.GetRaw("index table hash");
-            if (values.HasRaw("string data hash"))
-                StringDataHash = values.GetRaw("string data hash");
+                // Data offset, segment, and pointer
+                int localeDataOffset = localeArea.PointerToOffset(values.GetNumber("locale data index offset"));
+                int localeDataSize = (int)values.GetNumber("locale table size");
+                LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
+                LocaleDataLocation = localeArea.AddSegment(LocaleData);
+
+                // Load hashes if they exist
+                if (values.HasRaw("index table hash"))
+                    IndexTableHash = values.GetRaw("index table hash");
+                if (values.HasRaw("string data hash"))
+                    StringDataHash = values.GetRaw("string data hash");
+            }
         }
 
         public LocaleTable LoadStrings(IReader reader)
@@ -111,40 +124,34 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                     stringWriter.WriteUTF8(locale.Value);
                 }
 
-                // Round the size of the string data up to the nearest multiple of 0x10 (AES block size)
-                stringData.SetLength((stringData.Position + 0xF) & ~0xF);
+                // Round the size of the string data up
+                int dataSize = (int)((stringData.Position + _sizeAlign - 1) & ~(_sizeAlign - 1));
+                stringData.SetLength(dataSize);
 
                 // Update the two locale data hashes if we need to
                 // (the hash arrays are set to null if the build doesn't need them)
                 if (IndexTableHash != null)
                     IndexTableHash = SHA1.Transform(offsetData.GetBuffer(), 0, (int)offsetData.Length);
                 if (StringDataHash != null)
-                    StringDataHash = SHA1.Transform(stringData.GetBuffer(), 0, (int)stringData.Length);
+                    StringDataHash = SHA1.Transform(stringData.GetBuffer(), 0, dataSize);
 
                 // Make sure there's free space for the offset table and then write it to the file
-                LocaleDataLocation += StreamUtil.MakeFreeSpace(stream, LocaleIndexTableLocation.AsOffset(), LocaleDataLocation.AsOffset(), offsetData.Length, _pageSize);
+                LocaleIndexTable.Resize((int)offsetData.Length, stream);
                 stream.SeekTo(LocaleIndexTableLocation.AsOffset());
                 stream.WriteBlock(offsetData.GetBuffer(), 0, (int)offsetData.Length);
 
                 // Encrypt the string data if necessary
                 byte[] strings = stringData.GetBuffer();
                 if (_encryptionKey != null)
-                    strings = AES.Encrypt(strings, 0, (int)stringData.Length, _encryptionKey.Key, _encryptionKey.IV);
+                    strings = AES.Encrypt(strings, 0, dataSize, _encryptionKey.Key, _encryptionKey.IV);
 
-                // Make free space for the string data
-                uint oldDataEnd = (uint)((LocaleDataLocation.AsOffset() + LocaleTableSize + _pageSize - 1) & ~(_pageSize - 1)); // Add the old table size and round it up
-                StreamUtil.MakeFreeSpace(stream, LocaleDataLocation.AsOffset(), oldDataEnd, stringData.Length, _pageSize);
-                LocaleTableSize = (int)stringData.Length;
-
-                // Write it to the file
+                // Make sure there's free space for the string data and then write it to the file
+                LocaleData.Resize(dataSize, stream);
                 stream.SeekTo(LocaleDataLocation.AsOffset());
-                stream.WriteBlock(strings, 0, (int)stringData.Length);
+                stream.WriteBlock(strings, 0, dataSize);
 
                 // Update the string count and recalculate the language table offsets
                 StringCount = locales.Strings.Count;
-
-                int localePointerSize = (int)(offsetData.Length / locales.Strings.Count);
-                _languageGlobals.RecalculateLanguageOffsets(localePointerSize);
             }
             finally
             {
@@ -172,7 +179,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         {
             // Read the string data
             reader.SeekTo(LocaleDataLocation.AsOffset());
-            byte[] stringData = reader.ReadBlock(LocaleTableSize);
+            byte[] stringData = reader.ReadBlock(LocaleData.Size);
 
             // Decrypt it if necessary
             if (_encryptionKey != null)

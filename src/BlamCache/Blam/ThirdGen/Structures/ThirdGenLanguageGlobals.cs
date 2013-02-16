@@ -14,18 +14,21 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
     /// </summary>
     public class ThirdGenLanguageGlobals
     {
-        private ThirdGenCacheFile _cacheFile;
         private List<ThirdGenLanguage> _languages;
-        private IndexOffsetConverter _converter;
         private int _alignment;
 
-        public ThirdGenLanguageGlobals(ThirdGenCacheFile cacheFile, StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
+        public ThirdGenLanguageGlobals(StructureValueCollection values, FileSegmenter segmenter, IPointerConverter localePointerConverter, BuildInformation buildInfo)
         {
-            _cacheFile = cacheFile;
-            _converter = converter;
-            _languages = LoadLanguages(values, converter, buildInfo);
-            _alignment = buildInfo.LocaleAlignment;
+            LocaleArea = new FileSegmentGroup(localePointerConverter);
+
+            _languages = LoadLanguages(values, segmenter, buildInfo);
+            _alignment = buildInfo.SegmentAlignment;
         }
+
+        /// <summary>
+        /// The locale area that was loaded.
+        /// </summary>
+        public FileSegmentGroup LocaleArea { get; private set; }
 
         /// <summary>
         /// Serializes the language data into a StructureValueCollection.
@@ -42,60 +45,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<ThirdGenLanguage> LoadLanguages(StructureValueCollection values, IndexOffsetConverter converter, BuildInformation buildInfo)
+        private List<ThirdGenLanguage> LoadLanguages(StructureValueCollection values, FileSegmenter segmenter, BuildInformation buildInfo)
         {
             StructureValueCollection[] languageSet = values.GetArray("languages");
 
             var result = from language in languageSet
-                         select new ThirdGenLanguage(this, language, converter, buildInfo);
+                         select new ThirdGenLanguage(language, segmenter, LocaleArea, buildInfo);
             return result.ToList<ThirdGenLanguage>();
-        }
-
-        /// <summary>
-        /// Recalculates locale data offsets in case tables have been resized.
-        /// </summary>
-        /// <param name="localePointerSize">The size of a locale pointer in bytes.</param>
-        public void RecalculateLanguageOffsets(int localePointerSize)
-        {
-            // The tables after the first language are aligned to 0x1000-byte boundaries, in order by language,
-            // and the offset table always precedes the string data for each language
-            uint startOffset = _languages[0].LocaleIndexTableLocation.AsOffset();
-            uint currentOffset = startOffset;
-            foreach (ThirdGenLanguage language in _languages)
-            {
-                language.LocaleIndexTableLocation = new Pointer(_converter.OffsetToPointer(currentOffset), _converter);
-                currentOffset += (uint)((language.StringCount * localePointerSize + _alignment - 1) & ~(_alignment - 1));
-
-                language.LocaleDataLocation = new Pointer(_converter.OffsetToPointer(currentOffset), _converter);
-                currentOffset += (uint)((language.LocaleTableSize + _alignment - 1) & ~(_alignment - 1));
-            }
-
-            // Recalculate the size of the locale data
-            int newSize = (int)(currentOffset - startOffset);
-            int sizeChange = newSize - _cacheFile.Info.LocaleDataSize;
-            _cacheFile.Info.FileSize += (uint)sizeChange;
-            _cacheFile.Info.LocaleDataSize = newSize;
-
-            // Adjust the header in case the locale tables aren't at the end of the file
-            ThirdGenHeader header = _cacheFile.FullHeader;
-
-            // -- Tagname offsets
-            if (startOffset <= header.FileNameDataLocation.AsOffset())
-                header.FileNameDataLocation += sizeChange;
-            if (startOffset <= header.FileNameIndexTableLocation.AsOffset())
-                header.FileNameIndexTableLocation += sizeChange;
-            
-            // -- StringID offsets
-            if (startOffset <= header.StringIDDataLocation.AsOffset())
-                header.StringIDDataLocation += sizeChange;
-            if (startOffset <= header.StringIDIndexTableLocation.AsOffset())
-                header.StringIDIndexTableLocation += sizeChange;
-
-            // -- Raw table offset and meta offset
-            if (startOffset <= header.RawTableOffset)
-                header.RawTableOffset += (uint)sizeChange;
-            if (startOffset <= header.MetaOffset)
-                header.MetaOffset += (uint)sizeChange;
         }
 
         /// <summary>

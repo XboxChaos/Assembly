@@ -4,46 +4,29 @@ using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.SecondGen.Structures;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam.SecondGen
 {
-    public class MetaOffsetConverter : PointerConverter
+    public class MetaOffsetConverter : IPointerConverter
     {
-        private SecondGenHeader _header;
+        private FileSegment _metaSegment;
+        private uint _mask;
 
-        public MetaOffsetConverter(SecondGenHeader header)
+        public MetaOffsetConverter(FileSegment metaSegment, uint mask)
         {
-            _header = header;
+            _metaSegment = metaSegment;
+            _mask = mask;
         }
 
-        public override uint PointerToOffset(uint pointer)
+        public int PointerToOffset(uint pointer)
         {
-            return pointer - _header.MetaOffsetMask + _header.MetaOffset;
+            return (int)(pointer - _mask + _metaSegment.Offset);
         }
 
-        public override uint PointerToAddress(uint pointer)
+        public uint OffsetToPointer(int offset)
         {
-            throw new NotSupportedException();
-        }
-
-        public override uint OffsetToPointer(uint offset)
-        {
-            return offset - _header.MetaOffset + _header.MetaOffsetMask;
-        }
-
-        public override uint AddressToPointer(uint address)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override bool SupportsAddresses
-        {
-            get { return false; }
-        }
-
-        public override bool SupportsOffsets
-        {
-            get { return true; }
+            return (uint)(offset - _metaSegment.Offset + _mask);
         }
     }
 }

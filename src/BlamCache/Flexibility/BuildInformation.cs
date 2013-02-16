@@ -24,7 +24,7 @@ namespace ExtryzeDLL.Flexibility
         private Dictionary<string, StructureLayout> _layouts = new Dictionary<string, StructureLayout>();
         private LocaleSymbolCollection _localeSymbols = new LocaleSymbolCollection();
         private IStringIDResolver _stringIDResolver;
-        private int _localeAlignment;
+        private int _segmentAlignment;
 
         public class StructureLocaleSymbol
         {
@@ -33,7 +33,7 @@ namespace ExtryzeDLL.Flexibility
             public string Display { get; set; }
         }
 
-        public BuildInformation(string game, string localeKey, string stringidKey, IStringIDResolver stringIDResolver, string filenameKey, int headerSize, bool loadStrings, string layoutFile, string shortName, string pluginFolder, string scriptDefsFile, int localeAlignment)
+        public BuildInformation(string game, string localeKey, string stringidKey, IStringIDResolver stringIDResolver, string filenameKey, int headerSize, bool loadStrings, string layoutFile, string shortName, string pluginFolder, string scriptDefsFile, int segmentAlignment)
         {
             _gameName = game;
             if (localeKey != null)
@@ -49,7 +49,7 @@ namespace ExtryzeDLL.Flexibility
             _shortName = shortName;
             _pluginFolder = pluginFolder;
             _scriptDefsFile = scriptDefsFile;
-            _localeAlignment = localeAlignment;
+            _segmentAlignment = segmentAlignment;
         }
 
         public void AddLayout(string name, StructureLayout layout)
@@ -127,9 +127,9 @@ namespace ExtryzeDLL.Flexibility
             get { return _scriptDefsFile; }
         }
 
-        public int LocaleAlignment
+        public int SegmentAlignment
         {
-            get { return _localeAlignment; }
+            get { return _segmentAlignment; }
         }
     }
 }

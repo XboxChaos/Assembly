@@ -30,26 +30,29 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
     public class ThirdGenTag : ITag
     {
-        public ThirdGenTag(StructureValueCollection values, ushort index, MetaAddressConverter converter, IList<ITagClass> classList)
+        public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
         {
-            Load(values, index, converter, classList);
+            Load(values, index, metaArea, classList);
         }
 
-        void Load(StructureValueCollection values, ushort index, MetaAddressConverter converter, IList<ITagClass> classList)
+        void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
         {
-            int classIndex = (int)values.GetNumber("class index");
-            if (classIndex >= 0)
+            uint address = values.GetNumber("memory address");
+            if (address != 0 && address != 0xFFFFFFFF)
+            {
+                int classIndex = (int)values.GetNumber("class index");
                 Class = classList[classIndex];
 
-            ushort salt = (ushort)values.GetNumber("datum index salt");
-            Index = new DatumIndex(salt, index);
+                ushort salt = (ushort)values.GetNumber("datum index salt");
+                Index = new DatumIndex(salt, index);
 
-            MetaLocation = new Pointer(values.GetNumber("memory address"), converter);
+                MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+            }
         }
 
         public DatumIndex Index { get; private set; }
         public ITagClass Class { get; set; }
-        public Pointer MetaLocation { get; set; }
+        public SegmentPointer MetaLocation { get; set; }
     }
     
 }

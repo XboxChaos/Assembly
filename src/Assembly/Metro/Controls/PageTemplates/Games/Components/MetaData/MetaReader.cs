@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Update the field's memory address
             ValueField valueField = field as ValueField;
             if (valueField != null)
-                valueField.FieldAddress = _cache.MetaPointerConverter.OffsetToPointer(_baseOffset + valueField.Offset);
+                valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)(_baseOffset + valueField.Offset));
 
             // Read its contents if it has changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
@@ -79,7 +79,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 // Calculate the base offset to read from
                 uint oldBaseOffset = _baseOffset;
-                uint dataOffset = _cache.MetaPointerConverter.PointerToOffset(reflexive.FirstEntryAddress);
+                int dataOffset = _cache.MetaArea.PointerToOffset(reflexive.FirstEntryAddress);
                 _baseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
 
                 ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
@@ -243,9 +243,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.DataAddress = pointer;
 
             // Check if the pointer is valid
-            uint offset = _cache.MetaPointerConverter.PointerToOffset(pointer);
-            uint metaStartOff = _cache.Info.MetaOffset;
-            uint metaEndOff = metaStartOff + _cache.Info.MetaSize;
+            uint offset = (uint)_cache.MetaArea.PointerToOffset(pointer);
+            int metaStartOff = _cache.MetaArea.Offset;
+            int metaEndOff = metaStartOff + _cache.MetaArea.Size;
             if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
             {
                 field.Length = length;
@@ -326,9 +326,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             uint pointer = (uint)values.GetNumber("pointer");
 
             // Make sure the pointer looks valid
-            uint metaStartOff = _cache.Info.MetaOffset;
-            uint metaEndOff = metaStartOff + _cache.Info.MetaSize;
-            uint offset = _cache.MetaPointerConverter.PointerToOffset(pointer);
+            int metaStartOff = _cache.MetaArea.Offset;
+            int metaEndOff = metaStartOff + _cache.MetaArea.Size;
+            int offset = _cache.MetaArea.PointerToOffset(pointer);
             if (offset < metaStartOff || offset + length * field.EntrySize > metaEndOff)
                 length = 0;
 

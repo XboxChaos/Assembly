@@ -12,30 +12,30 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
     public class ThirdGenScenarioMeta : IScenario
     {
-        public ThirdGenScenarioMeta(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, IStringIDSource stringIDs, BuildInformation buildInfo)
+        public ThirdGenScenarioMeta(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, BuildInformation buildInfo)
         {
-            Load(values, reader, addrConverter, stringIDs, buildInfo);
+            Load(values, reader, metaArea, stringIDs, buildInfo);
         }
 
-        public Pointer ScriptExpressionsLocation { get; set; }
-        public Pointer ScriptGlobalsLocation { get; set; }
-        public Pointer ScriptObjectsLocation { get; set; }
-        public Pointer ScriptsLocation { get; set; }
+        public SegmentPointer ScriptExpressionsLocation { get; set; }
+        public SegmentPointer ScriptGlobalsLocation { get; set; }
+        public SegmentPointer ScriptObjectsLocation { get; set; }
+        public SegmentPointer ScriptsLocation { get; set; }
 
         public ExpressionTable ScriptExpressions { get; private set; }
         public List<IGlobal> ScriptGlobals { get; private set; }
         public List<IGlobalObject> ScriptObjects { get; private set; }
         public List<IScript> Scripts { get; private set; }
 
-        private void Load(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, IStringIDSource stringIDs, BuildInformation buildInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, BuildInformation buildInfo)
         {
             StringTableReader stringReader = new StringTableReader();
-            ScriptExpressions = LoadScriptExpressions(values, reader, addrConverter, stringReader, buildInfo.GetLayout("script expression entry"));
-            ScriptObjects = LoadScriptObjects(values, reader, addrConverter, stringIDs, buildInfo.GetLayout("script object entry"));
-            ScriptGlobals = LoadScriptGlobals(values, reader, addrConverter, ScriptExpressions, buildInfo.GetLayout("script global entry"));
-            Scripts = LoadScripts(values, reader, addrConverter, stringIDs, ScriptExpressions, buildInfo.GetLayout("script entry"), buildInfo);
-            
-            CachedStringTable strings = LoadStrings(values, reader, stringReader, addrConverter);
+            ScriptExpressions = LoadScriptExpressions(values, reader, metaArea, stringReader, buildInfo.GetLayout("script expression entry"));
+            ScriptObjects = LoadScriptObjects(values, reader, metaArea, stringIDs, buildInfo.GetLayout("script object entry"));
+            ScriptGlobals = LoadScriptGlobals(values, reader, metaArea, ScriptExpressions, buildInfo.GetLayout("script global entry"));
+            Scripts = LoadScripts(values, reader, metaArea, stringIDs, ScriptExpressions, buildInfo.GetLayout("script entry"), buildInfo);
+
+            CachedStringTable strings = LoadStrings(values, reader, stringReader, metaArea);
             foreach (IExpression expr in ScriptExpressions)
             {
                 // FIXME: hax
@@ -44,10 +44,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             }
         }
 
-        private ExpressionTable LoadScriptExpressions(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, StringTableReader stringReader, StructureLayout entryLayout)
+        private ExpressionTable LoadScriptExpressions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringTableReader stringReader, StructureLayout entryLayout)
         {
             int exprCount = (int)values.GetNumber("number of script expressions");
-            ScriptExpressionsLocation = new Pointer(values.GetNumber("script expression table address"), addrConverter);
+            if (exprCount == 0)
+                return new ExpressionTable();
+
+            ScriptExpressionsLocation = SegmentPointer.FromPointer(values.GetNumber("script expression table address"), metaArea);
 
             ExpressionTable result = new ExpressionTable();
             reader.SeekTo(ScriptExpressionsLocation.AsOffset());
@@ -66,10 +69,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, IStringIDSource stringIDs, StructureLayout entryLayout)
+        private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, StructureLayout entryLayout)
         {
             int objectsCount = (int)values.GetNumber("number of script objects");
-            ScriptObjectsLocation = new Pointer(values.GetNumber("script object table address"), addrConverter);
+            if (objectsCount == 0)
+                return new List<IGlobalObject>();
+
+            ScriptObjectsLocation = SegmentPointer.FromPointer(values.GetNumber("script object table address"), metaArea);
 
             List<IGlobalObject> result = new List<IGlobalObject>();
             reader.SeekTo(ScriptObjectsLocation.AsOffset());
@@ -78,13 +84,17 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                 StructureValueCollection objValues = StructureReader.ReadStructure(reader, entryLayout);
                 result.Add(new ThirdGenGlobalObject(objValues, stringIDs));
             }
+
             return result;
         }
 
-        private List<IGlobal> LoadScriptGlobals(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, ExpressionTable expressions, StructureLayout entryLayout)
+        private List<IGlobal> LoadScriptGlobals(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, ExpressionTable expressions, StructureLayout entryLayout)
         {
             int globalsCount = (int)values.GetNumber("number of script globals");
-            ScriptGlobalsLocation = new Pointer(values.GetNumber("script global table address"), addrConverter);
+            if (globalsCount == 0)
+                return new List<IGlobal>();
+
+            ScriptGlobalsLocation = SegmentPointer.FromPointer(values.GetNumber("script global table address"), metaArea);
 
             List<IGlobal> result = new List<IGlobal>();
             reader.SeekTo(ScriptGlobalsLocation.AsOffset());
@@ -96,28 +106,34 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<IScript> LoadScripts(StructureValueCollection values, IReader reader, MetaAddressConverter addrConverter, IStringIDSource stringIDs, ExpressionTable expressions, StructureLayout entryLayout, BuildInformation buildInfo)
+        private List<IScript> LoadScripts(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, StructureLayout entryLayout, BuildInformation buildInfo)
         {
-            int script = (int)values.GetNumber("number of scripts");
-            ScriptsLocation = new Pointer(values.GetNumber("script table address"), addrConverter);
+            int scriptCount = (int)values.GetNumber("number of scripts");
+            if (scriptCount == 0)
+                return new List<IScript>();
+
+            ScriptsLocation = SegmentPointer.FromPointer(values.GetNumber("script table address"), metaArea);
 
             // Read all of the script entries first, then go back and create the objects
             // ThirdGenScript reads parameters from its constructor - this may or may not need cleaning up to make this more obvious
             reader.SeekTo(ScriptsLocation.AsOffset());
             List<StructureValueCollection> scriptData = new List<StructureValueCollection>();
-            for (int i = 0; i < script; i++)
+            for (int i = 0; i < scriptCount; i++)
                 scriptData.Add(StructureReader.ReadStructure(reader, entryLayout));
 
             List<IScript> result = new List<IScript>();
             foreach (StructureValueCollection scriptValues in scriptData)
-                result.Add(new ThirdGenScript(reader, scriptValues, addrConverter, stringIDs, expressions, buildInfo));
+                result.Add(new ThirdGenScript(reader, scriptValues, metaArea, stringIDs, expressions, buildInfo));
             return result;
         }
 
-        private CachedStringTable LoadStrings(StructureValueCollection values, IReader reader, StringTableReader stringReader, MetaAddressConverter addrConverter)
+        private CachedStringTable LoadStrings(StructureValueCollection values, IReader reader, StringTableReader stringReader, FileSegmentGroup metaArea)
         {
             int stringsSize = (int)values.GetNumber("script string table size");
-            Pointer stringsLocation = new Pointer(values.GetNumber("script string table address"), addrConverter);
+            if (stringsSize == 0)
+                return new CachedStringTable();
+
+            SegmentPointer stringsLocation = SegmentPointer.FromPointer(values.GetNumber("script string table address"), metaArea);
 
             CachedStringTable result = new CachedStringTable();
             stringReader.ReadRequestedStrings(reader, stringsLocation, result);

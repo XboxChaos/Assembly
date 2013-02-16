@@ -31,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 "0x" + tag.RawTag.Index.Value.ToString("X");
 
             lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);
-            lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.HasAddress ? tag.RawTag.MetaLocation.AsAddress() : 0);
+            lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
             lblOffset.Text = string.Format("File Offset: 0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
         }
     }

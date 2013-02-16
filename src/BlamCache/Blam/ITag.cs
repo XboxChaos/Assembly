@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam
 {
@@ -35,9 +36,9 @@ namespace ExtryzeDLL.Blam
         ITagClass Class { get; set; }
 
         /// <summary>
-        /// The pointer to the tag's metadata.
+        /// The pointer to the tag's metadata. Can be null.
         /// </summary>
-        Pointer MetaLocation { get; set; }
+        SegmentPointer MetaLocation { get; set; }
 
         /// <summary>
         /// The tag's datum index.

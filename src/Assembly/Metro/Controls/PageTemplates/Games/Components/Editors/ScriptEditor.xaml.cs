@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             generator.WriteComment("Decompiled with Assembly", code);
             generator.WriteComment("", code);
-            generator.WriteComment("Source scenario: " + _cache.Info.ScenarioName, code);
+            generator.WriteComment("Source scenario: " + _cache.ScenarioName, code);
             generator.WriteComment("Start time: " + startTime.ToString(), code);
             generator.WriteComment("", code);
             generator.WriteComment("Remember that all script code is property of Bungie/343 Industries.", code);

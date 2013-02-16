@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ExtryzeDLL.Blam.Util;
+using ExtryzeDLL.IO;
 
 namespace ExtryzeDLL.Blam
 {
@@ -34,16 +35,16 @@ namespace ExtryzeDLL.Blam
         /// </summary>
         /// <param name="basePointer">The pointer to the start of the partition.</param>
         /// <param name="size">The partition's size.</param>
-        public Partition(Pointer basePointer, uint size)
+        public Partition(SegmentPointer basePointer, uint size)
         {
             BasePointer = basePointer;
             Size = size;
         }
 
         /// <summary>
-        /// The pointer to the start of the partition.
+        /// The pointer to the start of the partition. Can be null if the partition is empty.
         /// </summary>
-        public Pointer BasePointer { get; set; }
+        public SegmentPointer BasePointer { get; set; }
 
         /// <summary>
         /// The size of the partition.

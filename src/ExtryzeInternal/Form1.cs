@@ -67,18 +67,18 @@ namespace Assembly
             _map = new ThirdGenCacheFile(_reader, buildInfo, version.BuildString);
 
             txtGame.Text = buildInfo.GameName;
-            txtBuild.Text = _map.Info.BuildString.ToString();
-            txtType.Text = _map.Info.Type.ToString();
-            txtInternalName.Text = _map.Info.InternalName;
-            txtScenarioName.Text = _map.Info.ScenarioName;
-            txtVirtBase.Text = "0x" + _map.Info.MetaBase.AsAddress().ToString("X8");
-            txtVirtSize.Text = "0x" + _map.Info.MetaSize.ToString("X");
-            txtXdk.Text = _map.Info.XDKVersion.ToString();
-            txtRawTableOffset.Text = "0x" + _map.Info.RawTableOffset.ToString("X8");
-            txtRawTableSize.Text = "0x" + _map.Info.RawTableSize.ToString("X");
-            txtIndexHeaderAddr.Text = "0x" + _map.Info.IndexHeaderLocation.AsAddress().ToString("X8");
-            txtIndexOffsetMagic.Text = "0x" + _map.Info.LocaleOffsetMask;
-            txtMapMagic.Text = "0x" + _map.Info.AddressMask;
+            txtBuild.Text = _map.BuildString.ToString();
+            txtType.Text = _map.Type.ToString();
+            txtInternalName.Text = _map.InternalName;
+            txtScenarioName.Text = _map.ScenarioName;
+            txtVirtBase.Text = "0x" + _map.MetaArea.BasePointer.ToString("X8");
+            txtVirtSize.Text = "0x" + _map.MetaArea.Size.ToString("X");
+            txtXdk.Text = _map.XDKVersion.ToString();
+            txtRawTableOffset.Text = "0x" + _map.RawTable.Offset.ToString("X8");
+            txtRawTableSize.Text = "0x" + _map.RawTable.Offset.ToString("X");
+            txtIndexHeaderAddr.Text = "0x" + _map.IndexHeaderLocation.AsPointer().ToString("X8");
+            txtIndexOffsetMagic.Text = "0x" + _map.LocaleArea.PointerMask.ToString("X8");
+            txtMapMagic.Text = "0x" + _map.MetaArea.OffsetToPointer(0).ToString("X8");
 
             lbClasses.Items.Clear();
             tvTags.Nodes.Clear();

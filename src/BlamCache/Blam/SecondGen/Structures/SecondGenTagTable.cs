@@ -15,9 +15,9 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
         private Dictionary<int, ITagClass> _classesById;
         private List<ITag> _tags;
 
-        public SecondGenTagTable(IReader reader, uint headerOffset, StructureValueCollection headerValues, MetaOffsetConverter converter, BuildInformation buildInfo)
+        public SecondGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            Load(reader, headerOffset, headerValues, converter, buildInfo);
+            Load(reader, headerValues, metaArea, buildInfo);
         }
 
         public IList<ITagClass> Classes
@@ -30,21 +30,21 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
             get { return _tags; }
         }
 
-        private void Load(IReader reader, uint headerOffset, StructureValueCollection headerValues, MetaOffsetConverter converter, BuildInformation buildInfo)
+        private void Load(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             if (headerValues.GetNumber("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
 
             // Classes
             int numClasses = (int)headerValues.GetNumber("number of classes");
-            uint classTableOffset = headerValues.GetNumber("class table offset") + headerOffset; // Offset is relative to the header
+            uint classTableOffset = (uint)(metaArea.Offset + headerValues.GetNumber("class table offset")); // Offset is relative to the header
             _classes = ReadClasses(reader, classTableOffset, numClasses, buildInfo);
             _classesById = BuildClassLookup(_classes);
 
             // Tags
             int numTags = (int)headerValues.GetNumber("number of tags");
-            uint tagTableOffset = headerValues.GetNumber("tag table offset") + headerOffset; // Offset is relative to the header
-            _tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, converter);
+            uint tagTableOffset = (uint)(metaArea.Offset + headerValues.GetNumber("tag table offset")); // Offset is relative to the header
+            _tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, metaArea);
         }
 
         private static List<ITagClass> ReadClasses(IReader reader, uint classTableOffset, int numClasses, BuildInformation buildInfo)
@@ -69,7 +69,7 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
             return result;
         }
 
-        private List<ITag> ReadTags(IReader reader, uint tagTableOffset, int numTags, BuildInformation buildInfo, MetaOffsetConverter converter)
+        private List<ITag> ReadTags(IReader reader, uint tagTableOffset, int numTags, BuildInformation buildInfo, FileSegmentGroup metaArea)
         {
             StructureLayout layout = buildInfo.GetLayout("tag entry");
 
@@ -78,7 +78,7 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
             for (int i = 0; i < numTags; i++)
             {
                 StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                result.Add(new SecondGenTag(values, converter, _classesById));
+                result.Add(new SecondGenTag(values, metaArea, _classesById));
             }
             return result;
         }

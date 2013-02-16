@@ -16,10 +16,10 @@ namespace ExtryzeDLL.Blam
     {
         private List<string> _strings = new List<string>();
 
-        public IndexedStringTable(IReader reader, int count, int tableSize, Pointer indexTableLocation, Pointer dataLocation, AESKey key)
+        public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
         {
-            int[] offsets = ReadOffsets(reader, indexTableLocation, count);
-            IReader stringReader = DecryptData(reader, dataLocation, tableSize, key);
+            int[] offsets = ReadOffsets(reader, indexTable, count);
+            IReader stringReader = DecryptData(reader, data, key);
 
             // Read each string
             stringReader.SeekTo(0);
@@ -35,22 +35,19 @@ namespace ExtryzeDLL.Blam
             get { return _strings; }
         }
 
-        private int[] ReadOffsets(IReader reader, Pointer indexTableLocation, int count)
+        private int[] ReadOffsets(IReader reader, FileSegment indexTable, int count)
         {
-            reader.SeekTo(indexTableLocation.AsOffset());
+            reader.SeekTo(indexTable.Offset);
             int[] offsets = new int[count];
             for (int i = 0; i < count; i++)
                 offsets[i] = reader.ReadInt32();
             return offsets;
         }
 
-        private IReader DecryptData(IReader reader, Pointer dataLocation, int tableSize, AESKey key)
+        private IReader DecryptData(IReader reader, FileSegment dataLocation, AESKey key)
         {
-            // Round the table size to an AES block size
-            tableSize = (tableSize + 0xF) & ~0xF;
-
-            reader.SeekTo(dataLocation.AsOffset());
-            byte[] data = reader.ReadBlock(tableSize);
+            reader.SeekTo(dataLocation.Offset);
+            byte[] data = reader.ReadBlock(AES.AlignSize(dataLocation.Size));
             if (key != null)
                 data = AES.Decrypt(data, key.Key, key.IV);
             return new EndianReader(new MemoryStream(data), Endian.BigEndian);

@@ -119,14 +119,14 @@ namespace PluginGenerator
                 Queue<MetaMap> mapsToProcess = new Queue<MetaMap>();
                 foreach (ITag tag in cacheFile.Tags)
                 {
-                    if (tag.MetaLocation.AsAddress() > 0)
+                    if (tag.MetaLocation != null)
                     {
                         MetaMap map = new MetaMap();
                         tagMaps[tag] = map;
                         mapsToProcess.Enqueue(map);
 
                         reader.SeekTo(tag.MetaLocation.AsOffset());
-                        analyzer.AnalyzeArea(reader, tag.MetaLocation.AsAddress(), map);
+                        analyzer.AnalyzeArea(reader, tag.MetaLocation.AsPointer(), map);
                     }
                 }
                 GenerateSubMaps(mapsToProcess, analyzer, reader, cacheFile);
@@ -134,10 +134,10 @@ namespace PluginGenerator
                 Dictionary<string, MetaMap> classMaps = new Dictionary<string, MetaMap>();
                 foreach (ITag tag in cacheFile.Tags)
                 {
-                    if (tag.MetaLocation.AsAddress() > 0)
+                    if (tag.MetaLocation != null)
                     {
                         MetaMap map = tagMaps[tag];
-                        EstimateMapSize(map, tag.MetaLocation.AsAddress(), analyzer.GeneratedMemoryMap, 1);
+                        EstimateMapSize(map, tag.MetaLocation.AsPointer(), analyzer.GeneratedMemoryMap, 1);
 
                         string magicStr = CharConstant.ToString(tag.Class.Magic);
                         MetaMap oldClassMap;
@@ -265,7 +265,7 @@ namespace PluginGenerator
                         if (!generatedMaps.TryGetValue(guess.Pointer, out subMap))
                         {
                             subMap = new MetaMap();
-                            reader.SeekTo(cacheFile.MetaPointerConverter.AddressToOffset(guess.Pointer));
+                            reader.SeekTo(cacheFile.MetaArea.PointerToOffset(guess.Pointer));
                             analyzer.AnalyzeArea(reader, guess.Pointer, subMap);
                             maps.Enqueue(subMap);
                             generatedMaps[guess.Pointer] = subMap;

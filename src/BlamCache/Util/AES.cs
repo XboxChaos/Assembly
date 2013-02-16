@@ -8,6 +8,21 @@ namespace ExtryzeDLL.Util
 {
     public static class AES
     {
+        /// <summary>
+        /// The size of a single AES block.
+        /// </summary>
+        public const int BlockSize = 0x10;
+
+        /// <summary>
+        /// Aligns a size value to be a multiple of the AES block size (0x10).
+        /// </summary>
+        /// <param name="size">The size to align.</param>
+        /// <returns>The aligned size.</returns>
+        public static int AlignSize(int size)
+        {
+            return (size + BlockSize - 1) & ~(BlockSize - 1);
+        }
+
         public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
             AesCryptoServiceProvider crypto = new AesCryptoServiceProvider();

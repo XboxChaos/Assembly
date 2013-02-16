@@ -366,7 +366,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                 var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
                 var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
-                patch.MapInternalName = originalFile.Info.InternalName;
+                patch.MapInternalName = originalFile.InternalName;
 
                 if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex != 4)
                 {

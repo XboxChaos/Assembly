@@ -29,7 +29,7 @@ namespace ExtryzeDLL.Patching
         /// <param name="output">The stream to write the change to.</param>
         public static void WriteChange(ICacheFile cacheFile, MetaChange change, IWriter output)
         {
-            output.SeekTo(cacheFile.MetaPointerConverter.AddressToOffset(change.Address));
+            output.SeekTo(cacheFile.MetaArea.PointerToOffset(change.Address));
             output.WriteBlock(change.Data);
         }
 

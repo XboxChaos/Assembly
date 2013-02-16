@@ -254,23 +254,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 												ContextMenu = Settings.homeWindow.FilesystemContextMenu
 											};
 								Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
-								lblMapName.Text = _cacheFile.Info.InternalName;
+								lblMapName.Text = _cacheFile.InternalName;
 
 								lblMapHeader.Text = "Map Header;";
 								HeaderDetails.Clear();
 								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
-								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.Info.BuildString.ToString(CultureInfo.InvariantCulture)});
-								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Info.Type.ToString()});
-								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.Info.InternalName});
-								HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.Info.ScenarioName});
-								HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.Info.VirtualBaseAddress.ToString("X8")});
-								HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.Info.MetaSize.ToString("X")});
-								HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.Info.XDKVersion.ToString(CultureInfo.InvariantCulture)});
-								HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:",		Data = "0x" + _cacheFile.Info.RawTableOffset.ToString("X8")});
-								HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:",			Data = "0x" + _cacheFile.Info.RawTableSize.ToString("X")});
-								HeaderDetails.Add(new HeaderValue { Title = "Index Header Address:",	Data = PointerAddressString(_cacheFile.Info.IndexHeaderLocation)});
-								HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.Info.LocaleOffsetMask.ToString("X")});
-								HeaderDetails.Add(new HeaderValue { Title = "Map Magic:",				Data = "0x" + _cacheFile.Info.AddressMask.ToString("X8") });
+								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.BuildString.ToString(CultureInfo.InvariantCulture)});
+								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Type.ToString()});
+								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.InternalName});
+								HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.ScenarioName});
+								HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8")});
+								HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.MetaArea.Size.ToString("X")});
+
+                                if (_cacheFile.XDKVersion > 0)
+								    HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.XDKVersion.ToString(CultureInfo.InvariantCulture)});
+
+                                if (_cacheFile.RawTable != null)
+                                {
+                                    HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:", Data = "0x" + _cacheFile.RawTable.Offset.ToString("X8") });
+                                    HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:", Data = "0x" + _cacheFile.RawTable.Size.ToString("X") });
+                                }
+
+                                HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:",    Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8")});
+
+                                if (_cacheFile.LocaleArea != null)
+								    HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.LocaleArea.PointerMask.ToString("X8")});
+
+								HeaderDetails.Add(new HeaderValue { Title = "Map Magic:",				Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
 								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 								StatusUpdater.Update("Loaded Header Info");
@@ -281,7 +291,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			Dispatcher.Invoke(delegate
 								{
 									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
-																						_cacheFile.Info.InternalName);
+																						_cacheFile.InternalName);
 
 									if (gameMetaData == null) return;
 
@@ -325,7 +335,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _hierarchy.Entries = new List<TagEntry>();
             foreach (var tag in _cacheFile.Tags)
             {
-                if (!tag.MetaLocation.IsNull)
+                if (tag.MetaLocation != null)
                 {
                     var fileName = _cacheFile.FileNames.FindTagName(tag);
                     if (fileName == null || fileName.Trim() == "")
@@ -414,7 +424,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // TODO: Actually handle this properly for H4
             var scripts = new List<string>
                               {
-                                  _cacheFile.Info.InternalName + ".hsc"
+                                  _cacheFile.InternalName + ".hsc"
                               };
 
             Dispatcher.Invoke(new Action(delegate
@@ -430,13 +440,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			if (e.ClickCount == 2)
 				Clipboard.SetText(((TextBlock)e.OriginalSource).Text);
-		}
-
-		private static string PointerAddressString(Pointer pointer)
-		{
-			if (!pointer.HasAddress)
-				return "0x00000000";
-			return "0x" + pointer.AsAddress().ToString("X8");
 		}
 
         private void AddLanguage(string name, int index)
@@ -821,7 +824,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
-            var tabName = _cacheFile.Info.InternalName.Replace("_", "__") + ".hsc";
+            var tabName = _cacheFile.InternalName.Replace("_", "__") + ".hsc";
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);

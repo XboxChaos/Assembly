@@ -113,7 +113,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     _fileChanges = new FieldChangeSet();
                     _memoryChanges = new FieldChangeSet();
 
-                    uint baseOffset = _tag.RawTag.MetaLocation.AsOffset();
+                    uint baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
                     MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
                     _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
                     _flattener.Flatten(_pluginVisitor.Values);
@@ -191,9 +191,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
                 {
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null);
+                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null);
 #else
-                    MetaWriter metaUpdate = new MetaWriter(stream, _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges);
+                    MetaWriter metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges);
 #endif
                     metaUpdate.WriteFields(_pluginVisitor.Values);
                     _cache.SaveChanges(stream);
@@ -210,7 +210,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     if (metaStream != null)
                     {
                         FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-                        MetaWriter metaUpdate = new MetaWriter(metaStream, _cache.MetaPointerConverter.PointerToRaw(_tag.RawTag.MetaLocation), _cache, _buildInfo, type, changes);
+                        MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type, changes);
                         metaUpdate.WriteFields(_pluginVisitor.Values);
 
                         if (showActionDialog)
@@ -576,7 +576,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             if (field != null)
             {
                 IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
-                uint offset = _cache.MetaPointerConverter.PointerToOffset(field.FieldAddress);
+                uint offset = (uint)_cache.MetaArea.PointerToOffset(field.FieldAddress);
                 MetroViewValueAs.Show(_cache, _buildInfo, _streamManager, viewValueAsFields, offset);
             }
 		}

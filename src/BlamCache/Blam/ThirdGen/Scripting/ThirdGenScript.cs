@@ -11,9 +11,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 {
     public class ThirdGenScript : IScript
     {
-        public ThirdGenScript(IReader reader, StructureValueCollection values, MetaAddressConverter addrConverter, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
+        public ThirdGenScript(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
-            Load(reader, values, addrConverter, stringIDs, expressions, buildInfo);
+            Load(reader, values, metaArea, stringIDs, expressions, buildInfo);
         }
 
         public string Name { get; private set; }
@@ -22,7 +22,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
         public short ReturnType { get; private set; }
         public IExpression RootExpression { get; private set; }
 
-        private void Load(IReader reader, StructureValueCollection values, MetaAddressConverter addrConverter, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
+        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
             Name = stringIDs.GetString(new StringID((int)values.GetNumber("name index")));
             ExecutionType = (short)values.GetNumber("execution type");
@@ -33,13 +33,16 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
             if (Name == null)
                 Name = "script_" + rootExpr.Value.ToString("X8");
 
-            Parameters = LoadParameters(reader, values, addrConverter, buildInfo);
+            Parameters = LoadParameters(reader, values, metaArea, buildInfo);
         }
 
-        private IList<IScriptParameter> LoadParameters(IReader reader, StructureValueCollection values, MetaAddressConverter addrConverter, BuildInformation buildInfo)
+        private IList<IScriptParameter> LoadParameters(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             int paramCount = (int)values.GetNumber("number of parameters");
-            Pointer paramListLocation = new Pointer(values.GetNumber("address of parameter list"), addrConverter);
+            if (paramCount == 0)
+                return new List<IScriptParameter>();
+
+            SegmentPointer paramListLocation = SegmentPointer.FromPointer(values.GetNumber("address of parameter list"), metaArea);
 
             StructureLayout layout = buildInfo.GetLayout("script parameter entry");
             List<IScriptParameter> result = new List<IScriptParameter>();

@@ -16,9 +16,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
             _requestedStrings.Add(offset);
         }
 
-        public void ReadRequestedStrings(IReader reader, Pointer baseLocation, CachedStringTable output)
+        public void ReadRequestedStrings(IReader reader, SegmentPointer baseLocation, CachedStringTable output)
         {
-            uint baseOffset = baseLocation.AsOffset();
+            int baseOffset = baseLocation.AsOffset();
 
             int lastEnd = -1;
             foreach (int offset in _requestedStrings)

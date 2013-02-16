@@ -11,9 +11,10 @@ namespace ExtryzeDLL.Blam.SecondGen
 {
     public class SecondGenCacheFile : ICacheFile
     {
+        private FileSegmenter _segmenter;
+        private List<FileSegment> _segments = new List<FileSegment>();
         private SecondGenHeader _header;
         private BuildInformation _buildInfo;
-        private MetaOffsetConverter _offsetConverter;
         private SecondGenTagTable _tags;
         private IndexedFileNameSource _fileNames;
         private IndexedStringIDSource _stringIDs;
@@ -21,6 +22,7 @@ namespace ExtryzeDLL.Blam.SecondGen
         public SecondGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
             _buildInfo = buildInfo;
+            _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
             Load(reader, buildInfo, buildString);
         }
 
@@ -31,19 +33,61 @@ namespace ExtryzeDLL.Blam.SecondGen
             // TODO: Write the tag table
         }
 
-        public ICacheFileInfo Info
+        public int HeaderSize
         {
-            get { return _header; }
+            get { return _header.HeaderSize; }
         }
 
-        public PointerConverter MetaPointerConverter
+        public uint FileSize
         {
-            get { return _offsetConverter; }
+            get { return _header.FileSize; }
         }
 
-        public PointerConverter LocalePointerConverter
+        public CacheFileType Type
         {
-            get { throw new NotImplementedException(); }
+            get { return _header.Type; }
+        }
+
+        public string InternalName
+        {
+            get { return _header.InternalName; }
+        }
+
+        public string ScenarioName
+        {
+            get { return _header.ScenarioName; }
+        }
+
+        public string BuildString
+        {
+            get { return _header.BuildString; }
+        }
+
+        public int XDKVersion
+        {
+            get { return _header.XDKVersion; }
+            set { _header.XDKVersion = value; }
+        }
+
+        public SegmentPointer IndexHeaderLocation
+        {
+            get { return _header.IndexHeaderLocation; }
+            set { _header.IndexHeaderLocation = value; }
+        }
+
+        public Partition[] Partitions
+        {
+            get { return _header.Partitions; }
+        }
+
+        public FileSegment RawTable
+        {
+            get { return _header.RawTable; }
+        }
+
+        public FileSegmentGroup StringArea
+        {
+            get { return _header.StringArea; }
         }
 
         public IFileNameSource FileNames
@@ -81,10 +125,24 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return null; }
         }
 
+        public IList<FileSegment> Segments
+        {
+            get { return _segments; }
+        }
+
+        public FileSegmentGroup MetaArea
+        {
+            get { return _header.MetaArea; }
+        }
+
+        public FileSegmentGroup LocaleArea
+        {
+            get { return _header.LocaleArea; }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             _header = LoadHeader(reader, buildInfo, buildString);
-            _offsetConverter = new MetaOffsetConverter(_header);
             _tags = LoadTagTable(reader, buildInfo);
             _fileNames = LoadFileNames(reader, buildInfo);
             _stringIDs = LoadStringIDs(reader, buildInfo);
@@ -94,25 +152,25 @@ namespace ExtryzeDLL.Blam.SecondGen
         {
             reader.SeekTo(0);
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("header"));
-            return new SecondGenHeader(values, buildInfo, buildString);
+            return new SecondGenHeader(values, buildInfo, buildString, _segmenter);
         }
 
         private SecondGenTagTable LoadTagTable(IReader reader, BuildInformation buildInfo)
         {
-            reader.SeekTo(_header.MetaOffset);
+            reader.SeekTo(MetaArea.Offset);
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("meta header"));
-            return new SecondGenTagTable(reader, _header.MetaOffset, values, _offsetConverter, buildInfo);
+            return new SecondGenTagTable(reader, values, MetaArea, buildInfo);
         }
 
         private IndexedFileNameSource LoadFileNames(IReader reader, BuildInformation buildInfo)
         {
-            IndexedStringTable strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameTableSize, _header.FileNameIndexTableLocation, _header.FileNameDataLocation, buildInfo.FileNameKey);
+            IndexedStringTable strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.FileNameKey);
             return new IndexedFileNameSource(strings);
         }
 
         private IndexedStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
         {
-            IndexedStringTable strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDTableSize, _header.StringIDIndexTableLocation, _header.StringIDDataLocation, buildInfo.StringIDKey);
+            IndexedStringTable strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, buildInfo.StringIDKey);
             return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
         }
 
