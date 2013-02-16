@@ -82,6 +82,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         public LocaleTable LoadStrings(IReader reader)
         {
             LocaleTable result = new LocaleTable(this);
+            if (StringCount == 0)
+                return result;
 
             byte[] stringData = ReadLocaleData(reader);
             using (EndianReader stringReader = new EndianReader(new MemoryStream(stringData), Endian.BigEndian))
