@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 
@@ -21,7 +10,7 @@ namespace Assembly.Metro.Controls.PageTemplates
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : UserControl
+    public partial class SettingsPage
     {
 	    private bool _settingsChanged;
 
@@ -68,7 +57,8 @@ namespace Assembly.Metro.Controls.PageTemplates
             #region Default File Types
             cbDefaultMapEditor.IsChecked = Settings.defaultMAP;
             cbDefaultBLFEditor.IsChecked = Settings.defaultBLF;
-            cbDefaultMIFEditor.IsChecked = Settings.defaultMIF;
+			cbDefaultMIFEditor.IsChecked = Settings.defaultMIF;
+			cbDefaultAMPEditor.IsChecked = Settings.defaultAMP;
             #endregion
         }
 
@@ -107,21 +97,22 @@ namespace Assembly.Metro.Controls.PageTemplates
 			int.TryParse(txtXDKScreenshotHeight.Text, out height);
 			_settingsChanged = (Settings.XDKResizeScreenshotHeight != height);
 		}
-		private void cbXDKScreenGammaAdjust_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKScreenshotGammaCorrect != (bool)cbXDKScreenGammaAdjust.IsChecked); }
+		private void cbXDKScreenGammaAdjust_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.XDKScreenshotGammaCorrect != (bool)cbXDKScreenGammaAdjust.IsChecked); }
 
-		private void cbMapInfoPanel_SelectionChanged(object sender, SelectionChangedEventArgs e) { _settingsChanged = (Settings.halomapMapInfoDockSide != (Settings.MapInfoDockSide)cbMapInfoPanel.SelectedIndex); }
+		private void cbMapInfoPanel_SelectionChanged(object sender, SelectionChangedEventArgs e)	{ _settingsChanged = (Settings.halomapMapInfoDockSide != (Settings.MapInfoDockSide)cbMapInfoPanel.SelectedIndex); }
 
-		private void cbPluginsShowComments_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.pluginsShowComments != (bool)cbPluginsShowComments.IsChecked); }
+		private void cbPluginsShowComments_Modified(object sender, RoutedEventArgs e)		{ _settingsChanged = (Settings.pluginsShowComments != (bool)cbPluginsShowComments.IsChecked); }
 
-		private void cbStartPageRecentMap_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsMap != (bool)cbStartPageRecentMap.IsChecked); }
-		private void cbStartPageRecentBLF_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsBLF != (bool)cbStartPageRecentBLF.IsChecked); }
-		private void cbStartPageRecentMapInfo_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.startpageShowRecentsMapInfo != (bool)cbStartPageRecentMapInfo.IsChecked); }
+		private void cbStartPageRecentMap_Modified(object sender, RoutedEventArgs e)		{ _settingsChanged = (Settings.startpageShowRecentsMap != (bool)cbStartPageRecentMap.IsChecked); }
+		private void cbStartPageRecentBLF_Modified(object sender, RoutedEventArgs e)		{ _settingsChanged = (Settings.startpageShowRecentsBLF != (bool)cbStartPageRecentBLF.IsChecked); }
+		private void cbStartPageRecentMapInfo_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.startpageShowRecentsMapInfo != (bool)cbStartPageRecentMapInfo.IsChecked); }
 
-		private void cbDefaultMapEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultMAP != (bool)cbDefaultMapEditor.IsChecked); }
-		private void cbDefaultBLFEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultBLF != (bool)cbDefaultBLFEditor.IsChecked); }
-		private void cbDefaultMIFEditor_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.defaultMIF != (bool)cbDefaultMIFEditor.IsChecked); }
+		private void cbDefaultMapEditor_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.defaultMAP != (bool)cbDefaultMapEditor.IsChecked); }
+		private void cbDefaultBLFEditor_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.defaultBLF != (bool)cbDefaultBLFEditor.IsChecked); }
+		private void cbDefaultMIFEditor_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.defaultMIF != (bool)cbDefaultMIFEditor.IsChecked); }
+		private void cbDefaultAMPEditor_Modified(object sender, RoutedEventArgs e)	{ _settingsChanged = (Settings.defaultAMP != (bool) cbDefaultAMPEditor.IsChecked); }
 
-		private void cbTagSorting_SelectionChanged(object sender, SelectionChangedEventArgs e) { _settingsChanged = (Settings.halomapTagSort != (Settings.TagSort)cbTagSorting.SelectedIndex); }
+		private void cbTagSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)	{ _settingsChanged = (Settings.halomapTagSort != (Settings.TagSort)cbTagSorting.SelectedIndex); }
         #endregion
 
         public bool Close()
@@ -171,12 +162,13 @@ namespace Assembly.Metro.Controls.PageTemplates
             Settings.defaultMAP = (bool)cbDefaultMapEditor.IsChecked;
             Settings.defaultBLF = (bool)cbDefaultBLFEditor.IsChecked;
             Settings.defaultMIF = (bool)cbDefaultMIFEditor.IsChecked;
+	        Settings.defaultAMP = (bool)cbDefaultAMPEditor.IsChecked;
             #endregion
 
             Settings.UpdateSettings();
 
             if (MetroMessageBox.Show("Saved", "Your settings have been saved successfully. Do you want to close settings now?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
-                Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+                Settings.homeWindow.ExternalTabClose((TabItem)Parent);
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
