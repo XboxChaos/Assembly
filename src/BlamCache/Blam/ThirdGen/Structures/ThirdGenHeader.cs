@@ -164,6 +164,18 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             var partition = Partitions.First((p) => p.BasePointer != null);
             if (partition != null)
                 partition.BasePointer = SegmentPointer.FromPointer(MetaArea.BasePointer, MetaArea);
+
+            // Recalculate the size of each partition
+            int partitionEnd = MetaArea.Offset + MetaArea.Size;
+            for (int i = Partitions.Length - 1; i >= 0; i--)
+            {
+                if (Partitions[i].BasePointer == null)
+                    continue;
+
+                int offset = Partitions[i].BasePointer.AsOffset();
+                Partitions[i].Size = (uint)(partitionEnd - offset);
+                partitionEnd = offset;
+            }
         }
 
         private StructureValueCollection[] SerializePartitions()

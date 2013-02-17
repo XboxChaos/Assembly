@@ -66,7 +66,6 @@ namespace MapExpandDotNet
             Console.WriteLine("- Start address: 0x{0:X} (offset 0x{1:X})", cacheFile.MetaArea.BasePointer - injectSize, cacheFile.MetaArea.Offset);
 
             cacheFile.MetaArea.Resize(cacheFile.MetaArea.Size + injectSize, stream);
-            cacheFile.Partitions.First((p) => p.BasePointer != null).Size += (uint)injectSize;
 
             Console.WriteLine();
             Console.WriteLine("Adjusting the header...");
