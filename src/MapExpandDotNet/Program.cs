@@ -52,7 +52,8 @@ namespace MapExpandDotNet
             for (int i = 0; i < cacheFile.Partitions.Length; i++)
             {
                 var partition = cacheFile.Partitions[i];
-                Console.WriteLine("  - Partition {0} at 0x{1:X}-0x{2:X} (size=0x{3:X})", i, partition.BasePointer.AsPointer(), partition.BasePointer.AsPointer() + partition.Size - 1, partition.Size);
+                if (partition.BasePointer != null)
+                    Console.WriteLine("  - Partition {0} at 0x{1:X}-0x{2:X} (size=0x{3:X})", i, partition.BasePointer.AsPointer(), partition.BasePointer.AsPointer() + partition.Size - 1, partition.Size);
             }
             Console.WriteLine("- Meta pointer mask: 0x{0:X}", cacheFile.MetaArea.PointerMask);
             Console.WriteLine("- Locale pointer mask: 0x{0:X}", (uint)-cacheFile.LocaleArea.PointerMask);

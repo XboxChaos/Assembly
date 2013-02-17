@@ -42,7 +42,7 @@ namespace ExtryzeDLL.IO
             get
             {
                 if (_pointerConverter != null)
-                    return _pointerConverter.OffsetToPointer(Offset);
+                    return OffsetToPointer(Offset);
                 return 0;
             }
         }
@@ -55,7 +55,7 @@ namespace ExtryzeDLL.IO
             get
             {
                 if (_pointerConverter != null)
-                    return _pointerConverter.OffsetToPointer(0);
+                    return OffsetToPointer(0);
                 return 0;
             }
         }
@@ -180,7 +180,11 @@ namespace ExtryzeDLL.IO
         public int PointerToOffset(uint pointer)
         {
             if (_pointerConverter != null)
+            {
+                if (Segments.Count > 0)
+                    return _pointerConverter.PointerToOffset(pointer, Offset);
                 return _pointerConverter.PointerToOffset(pointer);
+            }
             return (int)pointer;
         }
 
@@ -192,7 +196,11 @@ namespace ExtryzeDLL.IO
         public uint OffsetToPointer(int offset)
         {
             if (_pointerConverter != null)
+            {
+                if (Segments.Count > 0)
+                    return _pointerConverter.OffsetToPointer(offset, Offset);
                 return _pointerConverter.OffsetToPointer(offset);
+            }
             return (uint)offset;
         }
 

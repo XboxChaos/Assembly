@@ -278,7 +278,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                                 HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:",    Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8")});
 
                                 if (_cacheFile.LocaleArea != null)
-								    HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + _cacheFile.LocaleArea.PointerMask.ToString("X8")});
+								    HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + ((uint)-_cacheFile.LocaleArea.PointerMask).ToString("X8")});
 
 								HeaderDetails.Add(new HeaderValue { Title = "Map Magic:",				Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
 								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));

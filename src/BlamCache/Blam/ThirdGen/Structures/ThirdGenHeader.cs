@@ -104,9 +104,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                 if (RawTable != null)
                     values.SetNumber("raw table offset", (uint)RawTable.Offset);
 
-                // I really don't know what these next two values are supposed to mean...anyone got anything?
-                values.SetNumber("eof index offset", LocalePointerConverter.OffsetToPointer((int)FileSize)); // Reach, H4
-                values.SetNumber("eof index offset plus string data size", LocalePointerConverter.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
+                if (localeArea != null)
+                {
+                    // I really don't know what these next two values are supposed to mean...anyone got anything?
+                    values.SetNumber("eof index offset", localeArea.OffsetToPointer((int)FileSize)); // Reach, H4
+                    values.SetNumber("eof index offset plus string data size", localeArea.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
+                }
             }
             else
             {
@@ -259,7 +262,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             // Otherwise, pointers are just file offsets
             uint magic = values.GetNumberOrDefault("string offset magic", 0);
             if (magic > 0 && values.GetNumberOrDefault("raw table offset", 0) > 0)
-                return new MaskedPointerConverter((uint)(magic - HeaderSize));
+                return new BasedPointerConverter(magic, HeaderSize);
             return new IdentityPointerConverter();
         }
 
@@ -318,7 +321,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         {
             uint mask = values.GetNumberOrDefault("locale offset magic", 0);
             if (mask != 0)
-                return new MaskedPointerConverter((uint)-mask); // Negate the mask so that converting from offset to pointer adds it
+            {
+                uint basePointer = values.GetNumber("locale data index offset");
+                int baseOffset = (int)(basePointer + mask);
+                return new BasedPointerConverter(basePointer, baseOffset);
+            }
             return new IdentityPointerConverter(); // Locale pointers are file offsets
         }
 

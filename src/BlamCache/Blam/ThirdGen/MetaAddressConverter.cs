@@ -55,12 +55,22 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public int PointerToOffset(uint pointer)
         {
-            return (int)(pointer - _virtualBase + _metaSegment.Offset);
+            return PointerToOffset(pointer, _metaSegment.Offset);
+        }
+
+        public int PointerToOffset(uint pointer, int areaStartOffset)
+        {
+            return (int)(pointer - _virtualBase + areaStartOffset);
         }
 
         public uint OffsetToPointer(int offset)
         {
-            return (uint)(offset - _metaSegment.Offset + _virtualBase);
+            return OffsetToPointer(offset, _metaSegment.Offset);
+        }
+
+        public uint OffsetToPointer(int offset, int areaStartOffset)
+        {
+            return (uint)(offset - areaStartOffset + _virtualBase);
         }
     }
 }
