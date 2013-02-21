@@ -40,6 +40,9 @@ namespace ExtryzeDLL.Flexibility
         {
             StructureWriter structWriter = new StructureWriter(values, layout, writer);
             layout.Accept(structWriter);
+
+            if (layout.Size > 0)
+                structWriter.SeekWriter(layout.Size);
         }
 
         private StructureWriter(StructureValueCollection values, StructureLayout layout, IWriter writer)
@@ -98,7 +101,7 @@ namespace ExtryzeDLL.Flexibility
             }
         }
 
-        public void VisitArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
+        public void VisitArrayField(string name, int offset, int count, StructureLayout entryLayout)
         {
             if (!_collection.HasArray(name))
                 return;
@@ -106,7 +109,7 @@ namespace ExtryzeDLL.Flexibility
             StructureValueCollection[] arrayValue = _collection.GetArray(name);
             for (int i = 0; i < count; i++)
             {
-                _writer.SeekTo(_baseOffset + offset + i * entrySize);
+                _writer.SeekTo(_baseOffset + offset + i * entryLayout.Size);
                 WriteStructure(arrayValue[i], entryLayout, _writer);
             }
         }

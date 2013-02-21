@@ -101,38 +101,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             if (File.Exists(_pluginPath))
             {
                 // Load Plugin File
-                XmlReader xml = XmlReader.Create(_pluginPath);
-
-                // Load Meta from Plugin
-                //try
+                using (XmlReader xml = XmlReader.Create(_pluginPath))
                 {
                     _pluginVisitor = new ThirdGenPluginVisitor(_tags, Settings.pluginsShowInvisibles);
                     AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
-
-                    _changeTracker = new FieldChangeTracker();
-                    _fileChanges = new FieldChangeSet();
-                    _memoryChanges = new FieldChangeSet();
-
-                    uint baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
-                    MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
-                    _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-                    _flattener.Flatten(_pluginVisitor.Values);
-                    metaReader.ReadFields(_pluginVisitor.Values);
-
-                    panelMetaComponents.ItemsSource = _pluginVisitor.Values;
-
-                    // Start monitoring fields for changes
-                    _changeTracker.RegisterChangeSet(_fileChanges);
-                    _changeTracker.RegisterChangeSet(_memoryChanges);
-                    _changeTracker.Attach(_pluginVisitor.Values);
-
-                    // Update Meta Toolbar
-                    UpdateMetaButtons(true);
                 }
-                //catch (Exception ex)
-                //{
-                //    MetroException.Show(ex);
-                //}
+
+                _changeTracker = new FieldChangeTracker();
+                _fileChanges = new FieldChangeSet();
+                _memoryChanges = new FieldChangeSet();
+
+                uint baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
+                MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
+                _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+                _flattener.Flatten(_pluginVisitor.Values);
+                metaReader.ReadFields(_pluginVisitor.Values);
+
+                panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+
+                // Start monitoring fields for changes
+                _changeTracker.RegisterChangeSet(_fileChanges);
+                _changeTracker.RegisterChangeSet(_memoryChanges);
+                _changeTracker.Attach(_pluginVisitor.Values);
+
+                // Update Meta Toolbar
+                UpdateMetaButtons(true);
             }
             else
             {

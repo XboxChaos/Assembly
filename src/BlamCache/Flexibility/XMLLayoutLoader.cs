@@ -35,10 +35,11 @@ namespace ExtryzeDLL.Flexibility
         /// Loads a structure layout based upon an XML container's children.
         /// </summary>
         /// <param name="layoutTag">The collection of structure field tags to parse.</param>
+        /// <param name="size">The size of the structure in bytes.</param>
         /// <returns>The structure layout that was loaded.</returns>
-        public static StructureLayout LoadLayout(XContainer layoutTag)
+        public static StructureLayout LoadLayout(XContainer layoutTag, int size)
         {
-            StructureLayout layout = new StructureLayout();
+            StructureLayout layout = new StructureLayout(size);
             foreach (XElement element in layoutTag.Elements())
                 HandleElement(layout, element);
             return layout;
@@ -90,7 +91,7 @@ namespace ExtryzeDLL.Flexibility
         {
             int count = GetNumericAttribute(element, "count");
             int entrySize = GetNumericAttribute(element, "entrySize");
-            layout.AddArrayField(name, offset, count, entrySize, XMLLayoutLoader.LoadLayout(element));
+            layout.AddArrayField(name, offset, count, XMLLayoutLoader.LoadLayout(element, entrySize));
         }
 
         /// <summary>

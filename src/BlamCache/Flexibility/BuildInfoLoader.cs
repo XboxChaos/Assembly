@@ -183,7 +183,13 @@ namespace ExtryzeDLL.Flexibility
                 XAttribute forAttrib = layout.Attribute("for");
                 if (forAttrib == null)
                     throw new ArgumentException("Layout tags must have a \"for\" attribute");
-                info.AddLayout(forAttrib.Value, XMLLayoutLoader.LoadLayout(layout));
+
+                int size = 0;
+                XAttribute sizeAttrib = layout.Attribute("size");
+                if (sizeAttrib != null)
+                    size = ParseNumber(sizeAttrib.Value);
+
+                info.AddLayout(forAttrib.Value, XMLLayoutLoader.LoadLayout(layout, size));
             }
         }
 

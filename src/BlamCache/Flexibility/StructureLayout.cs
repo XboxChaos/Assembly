@@ -33,6 +33,28 @@ namespace ExtryzeDLL.Flexibility
         private HashSet<string> _fieldNames = new HashSet<string>();
 
         /// <summary>
+        /// Constructs a new StructureLayout with a structure size of 0.
+        /// </summary>
+        public StructureLayout()
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new StructureLayout.
+        /// </summary>
+        /// <param name="size">The size of the structure in bytes.</param>
+        public StructureLayout(int size)
+        {
+            Size = size;
+        }
+
+        /// <summary>
+        /// Gets the size of the structure.
+        /// Defaults to 0 if not specified at construction time.
+        /// </summary>
+        public int Size { get; private set; }
+
+        /// <summary>
         /// Adds a basic field to the structure layout.
         /// </summary>
         /// <param name="name">The name of the field.</param>
@@ -49,11 +71,10 @@ namespace ExtryzeDLL.Flexibility
         /// <param name="name">The name of the array.</param>
         /// <param name="offset">The offset (in bytes) of the array from the beginning of the structure.</param>
         /// <param name="count">The number of entries in the array.</param>
-        /// <param name="entrySize">The size of each entry in the array.</param>
         /// <param name="entryLayout">The layout of each entry in the array.</param>
-        public void AddArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
+        public void AddArrayField(string name, int offset, int count, StructureLayout entryLayout)
         {
-            _fields.Add(new ArrayField(name, offset, count, entrySize, entryLayout));
+            _fields.Add(new ArrayField(name, offset, count, entryLayout));
         }
 
         /// <summary>
@@ -141,7 +162,6 @@ namespace ExtryzeDLL.Flexibility
             private string _name;
             private int _offset;
             private int _count;
-            private int _entrySize;
             private StructureLayout _subLayout;
 
             /// <summary>
@@ -150,14 +170,12 @@ namespace ExtryzeDLL.Flexibility
             /// <param name="name">The name of the array.</param>
             /// <param name="offset">The offset (in bytes) of the array from the beginning of the structure.</param>
             /// <param name="count">The number of entries in the array.</param>
-            /// <param name="entrySize">The size of each entry in the array.</param>
             /// <param name="entryLayout">The layout of each entry in the array.</param>
-            public ArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
+            public ArrayField(string name, int offset, int count, StructureLayout entryLayout)
             {
                 _name = name;
                 _offset = offset;
                 _count = count;
-                _entrySize = entrySize;
                 _subLayout = entryLayout;
             }
 
@@ -167,7 +185,7 @@ namespace ExtryzeDLL.Flexibility
             /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
             public void Accept(IStructureLayoutVisitor visitor)
             {
-                visitor.VisitArrayField(_name, _offset, _count, _entrySize, _subLayout);
+                visitor.VisitArrayField(_name, _offset, _count, _subLayout);
             }
         }
 

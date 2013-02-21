@@ -47,6 +47,9 @@ namespace ExtryzeDLL.Flexibility
         {
             StructureReader structReader = new StructureReader(reader, layout);
             layout.Accept(structReader);
+            if (layout.Size > 0)
+                structReader.SeekReader(layout.Size);
+
             return structReader._collection;
         }
 
@@ -115,14 +118,13 @@ namespace ExtryzeDLL.Flexibility
         /// <param name="name">The name to store the array under.</param>
         /// <param name="offset">The array's offset (in bytes) from the beginning of the structure.</param>
         /// <param name="count">The number of elements to read into the array.</param>
-        /// <param name="entrySize">The size (in bytes) of each element in the array.</param>
         /// <param name="entryLayout">The layout to follow for each entry in the array.</param>
-        public void VisitArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout)
+        public void VisitArrayField(string name, int offset, int count, StructureLayout entryLayout)
         {
             StructureValueCollection[] arrayValue = new StructureValueCollection[count];
             for (int i = 0; i < count; i++)
             {
-                _reader.SeekTo(_baseOffset + offset + i * entrySize);
+                _reader.SeekTo(_baseOffset + offset + i * entryLayout.Size);
                 arrayValue[i] = ReadStructure(_reader, entryLayout);
             }
             _collection.SetArray(name, arrayValue);

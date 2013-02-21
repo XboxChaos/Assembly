@@ -43,9 +43,8 @@ namespace ExtryzeDLL.Flexibility
         /// <param name="name">The name of the array field.</param>
         /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
         /// <param name="count">The number of elements in the array.</param>
-        /// <param name="entrySize">The size (in bytes) of each array element.</param>
         /// <param name="entryLayout">The layout of each element in the array.</param>
-        void VisitArrayField(string name, int offset, int count, int entrySize, StructureLayout entryLayout);
+        void VisitArrayField(string name, int offset, int count, StructureLayout entryLayout);
 
         /// <summary>
         /// Called when a raw byte array structure field is visited.
