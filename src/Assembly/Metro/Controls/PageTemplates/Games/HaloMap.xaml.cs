@@ -263,8 +263,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Type.ToString()});
 								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.InternalName});
 								HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.ScenarioName});
-								HeaderDetails.Add(new HeaderValue { Title = "Virtual Base:",			Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8")});
-								HeaderDetails.Add(new HeaderValue { Title = "Virtual Size:",			Data = "0x" + _cacheFile.MetaArea.Size.ToString("X")});
+                                if (_cacheFile.MetaArea != null)
+                                {
+                                    HeaderDetails.Add(new HeaderValue { Title = "Meta Base:", Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8") });
+                                    HeaderDetails.Add(new HeaderValue { Title = "Meta Size:", Data = "0x" + _cacheFile.MetaArea.Size.ToString("X") });
+                                    HeaderDetails.Add(new HeaderValue { Title = "Map Magic:", Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
+                                    HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:", Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8") });
+                                }
 
                                 if (_cacheFile.XDKVersion > 0)
 								    HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.XDKVersion.ToString(CultureInfo.InvariantCulture)});
@@ -275,12 +280,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                                     HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:", Data = "0x" + _cacheFile.RawTable.Size.ToString("X") });
                                 }
 
-                                HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:",    Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8")});
-
                                 if (_cacheFile.LocaleArea != null)
 								    HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + ((uint)-_cacheFile.LocaleArea.PointerMask).ToString("X8")});
 
-								HeaderDetails.Add(new HeaderValue { Title = "Map Magic:",				Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
 								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 								StatusUpdater.Update("Loaded Header Info");
@@ -315,7 +317,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								});
 		}
         private void LoadTags()
-        {            
+        {
+            if (_cacheFile.TagClasses == null || _cacheFile.Tags == null)
+                return;
+
             // Load all the tag classes into data
             var classes = new List<TagClass>();
             var classWrappers = new Dictionary<ITagClass, TagClass>();
@@ -419,7 +424,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void LoadScripts()
         {
-            if (_buildInfo.ScriptDefinitionsFilename == null) return;
+            if (_buildInfo.ScriptDefinitionsFilename == null || _cacheFile.Scenario == null)
+                return;
 
             // TODO: Actually handle this properly for H4
             var scripts = new List<string>

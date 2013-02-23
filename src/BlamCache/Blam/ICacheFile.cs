@@ -54,11 +54,13 @@ namespace ExtryzeDLL.Blam
 
         /// <summary>
         /// The meta area of the cache file.
+        /// Can be null.
         /// </summary>
         FileSegmentGroup MetaArea { get; }
 
         /// <summary>
         /// The location of the tag table header in the file.
+        /// Can be null.
         /// </summary>
         SegmentPointer IndexHeaderLocation { get; set; }
 
@@ -69,26 +71,31 @@ namespace ExtryzeDLL.Blam
 
         /// <summary>
         /// The raw table in the cache file.
+        /// Can be null.
         /// </summary>
         FileSegment RawTable { get; }
 
         /// <summary>
         /// The locale area of the cache file.
+        /// Can be null.
         /// </summary>
         FileSegmentGroup LocaleArea { get; }
 
         /// <summary>
         /// The debug string area of the cache file.
+        /// Can be null.
         /// </summary>
         FileSegmentGroup StringArea { get; }
 
         /// <summary>
         /// The tag names in the file.
+        /// Can be null.
         /// </summary>
         IFileNameSource FileNames { get; }
 
         /// <summary>
         /// The stringIDs in the file.
+        /// Can be null.
         /// </summary>
         IStringIDSource StringIDs { get; }
 
@@ -114,6 +121,7 @@ namespace ExtryzeDLL.Blam
 
         /// <summary>
         /// The file's scenario data.
+        /// Can be null.
         /// </summary>
         IScenario Scenario { get; }
 

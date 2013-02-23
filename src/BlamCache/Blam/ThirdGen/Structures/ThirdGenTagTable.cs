@@ -34,6 +34,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         private List<ITagClass> _classes;
         private List<ITag> _tags;
 
+        public ThirdGenTagTable()
+        {
+            _classes = new List<ITagClass>();
+            _tags = new List<ITag>();
+        }
+
         public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             Load(reader, headerValues, metaArea, buildInfo);

@@ -172,7 +172,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         public FileSegmentGroup LocaleArea
         {
-            get { return _languageInfo.LocaleArea; }
+            get { return (_languageInfo != null ? _languageInfo.LocaleArea : null); }
         }
 
         public IResourceTable Resources
@@ -205,6 +205,12 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadTags(IReader reader, BuildInformation buildInfo)
         {
+            if (_header.IndexHeaderLocation == null)
+            {
+                _tags = new ThirdGenTagTable();
+                return;
+            }
+
             reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("index header"));
             _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, buildInfo);
@@ -212,12 +218,14 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadFileNames(IReader reader, BuildInformation buildInfo)
         {
-            _fileNames = new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.FileNameKey));
+            if (_header.FileNameCount > 0)
+                _fileNames = new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.FileNameKey));
         }
 
         private void LoadStringIDs(IReader reader, BuildInformation buildInfo)
         {
-            _stringIds = new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, buildInfo.StringIDKey), buildInfo.StringIDResolver);
+            if (_header.StringIDCount > 0)
+                _stringIds = new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, buildInfo.StringIDKey), buildInfo.StringIDResolver);
         }
 
         private void LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
@@ -225,7 +233,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             // Find the language data
             ITag languageTag;
             StructureLayout tagLayout;
-            FindLanguageTable(buildInfo, out languageTag, out tagLayout);
+            if (!FindLanguageTable(buildInfo, out languageTag, out tagLayout))
+                return;
 
             // Read it
             reader.SeekTo(languageTag.MetaLocation.AsOffset());
@@ -233,7 +242,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
             _languageInfo = new ThirdGenLanguageGlobals(values, _segmenter, _header.LocalePointerConverter, buildInfo);
         }
 
-        private void FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
+        private bool FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
         {
             // Check for a PATG tag, and if one isn't found, then use MATG
             tag = null;
@@ -248,15 +257,17 @@ namespace ExtryzeDLL.Blam.ThirdGen
                 tag = FindTagByClass(MatgMagic);
                 layout = buildInfo.GetLayout("matg");
             }
-            if (tag == null || layout == null)
-                throw new InvalidOperationException("The cache file is missing locale information.");
+            return (tag != null && layout != null);
         }
 
         private void BuildLanguageList()
         {
             // hax hax hax
-            foreach (ThirdGenLanguage language in _languageInfo.Languages)
-                _languages.Add(language);
+            if (_languageInfo != null)
+            {
+                foreach (ThirdGenLanguage language in _languageInfo.Languages)
+                    _languages.Add(language);
+            }
         }
 
         private void LoadScenario(IReader reader, BuildInformation buildInfo)
@@ -265,7 +276,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
                 return;
             ITag scnr = FindTagByClass(ScnrMagic);
             if (scnr == null)
-                throw new InvalidOperationException("The cache file is missing a scnr tag.");
+                return;
 
             reader.SeekTo(scnr.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("scnr"));
@@ -274,6 +285,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadLocaleGroups(IReader reader, BuildInformation buildInfo)
         {
+            if (_tags == null)
+                return;
+
             // Locale groups are stored in unic tags
             StructureLayout layout = buildInfo.GetLayout("unic");
             foreach (ITag tag in _tags.Tags)
@@ -333,7 +347,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             // Find the language data
             ITag languageTag;
             StructureLayout tagLayout;
-            FindLanguageTable(_buildInfo, out languageTag, out tagLayout);
+            if (!FindLanguageTable(_buildInfo, out languageTag, out tagLayout))
+                return;
 
             // Write it
             StructureValueCollection values = _languageInfo.Serialize();
@@ -343,6 +358,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private ITag FindTagByClass(int classMagic)
         {
+            if (_tags == null)
+                return null;
+
             foreach (ITag tag in _tags.Tags)
             {
                 if (tag != null && tag.Class != null && tag.Class.Magic == classMagic && tag.MetaLocation != null)
