@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -41,7 +42,7 @@ namespace ExtryzeDLL.IO
         }
 
         /// <summary>
-        /// Copes data between two different streams.
+        /// Copies data between two different streams.
         /// </summary>
         /// <param name="input">The stream to read from.</param>
         /// <param name="output">The stream to copy the read data to.</param>
@@ -54,6 +55,24 @@ namespace ExtryzeDLL.IO
             {
                 int read = input.ReadBlock(buffer, 0, Math.Min(BufferSize, size));
                 output.WriteBlock(buffer, 0, read);
+                size -= BufferSize;
+            }
+        }
+
+        /// <summary>
+        /// Copies data between two different streams.
+        /// </summary>
+        /// <param name="input">The stream to read from.</param>
+        /// <param name="output">The stream to copy the read data to.</param>
+        /// <param name="size">The size of the data to copy.</param>
+        public static void Copy(Stream input, Stream output, int size)
+        {
+            const int BufferSize = 0x1000;
+            byte[] buffer = new byte[BufferSize];
+            while (size > 0)
+            {
+                int read = input.Read(buffer, 0, Math.Min(BufferSize, size));
+                output.Write(buffer, 0, read);
                 size -= BufferSize;
             }
         }
