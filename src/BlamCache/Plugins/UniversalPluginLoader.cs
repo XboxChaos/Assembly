@@ -111,8 +111,9 @@ namespace ExtryzeDLL.Plugins
 				title = reader.Value;
 
 			reader.MoveToElement();
+            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
 			string text = reader.ReadElementContentAsString();
-			visitor.VisitComment(title, text);
+			visitor.VisitComment(title, text, pluginLine);
 		}
 
 		/// <summary>

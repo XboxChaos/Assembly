@@ -51,9 +51,9 @@ namespace Assembly.Helpers.Plugins
         public void LeaveRevisions() { }
         #endregion
 
-        public void VisitComment(string title, string text)
+        public void VisitComment(string title, string text, uint pluginLine)
         {
-            AddValue(new CommentData(title, text));
+            AddValue(new CommentData(title, text, pluginLine));
         }
 
         #region Integers

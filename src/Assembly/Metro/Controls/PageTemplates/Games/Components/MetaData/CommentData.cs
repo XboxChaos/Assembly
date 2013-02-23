@@ -9,10 +9,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private string _name, _text;
 
-        public CommentData(string name, string text)
+        public CommentData(string name, string text, uint pluginLine)
         {
             _name = name;
             _text = text;
+            PluginLine = pluginLine;
         }
 
         public string Name
@@ -34,7 +35,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new CommentData(_name, _text);
+            return new CommentData(_name, _text, PluginLine);
         }
     }
 }

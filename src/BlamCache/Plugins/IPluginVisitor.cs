@@ -44,7 +44,8 @@ namespace ExtryzeDLL.Plugins
         /// </summary>
         /// <param name="title">The comment's title.</param>
         /// <param name="text">The comment's text.</param>
-        void VisitComment(string title, string text);
+        /// <param name="pluginLine">The line the tag originated from.</param>
+        void VisitComment(string title, string text, uint pluginLine);
 
         // These are called whenever basic values are found in the plugin.
         // Parameters should be fairly self-explanatory.

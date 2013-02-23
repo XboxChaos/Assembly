@@ -30,5 +30,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             get { return _opacity; }
             set { _opacity = value; NotifyPropertyChanged("Opacity"); }
         }
+
+        /// <summary>
+        /// The plugin line that the original field belonged to. Can be 0.
+        /// </summary>
+        public uint PluginLine { get; set; }
     }
 }

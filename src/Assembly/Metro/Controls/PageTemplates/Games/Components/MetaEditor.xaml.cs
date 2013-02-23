@@ -575,17 +575,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		}
 		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-			var field = GetValueField(e.Source);
-			e.CanExecute = (field != null);
+			var field = GetWrappedField(e.Source);
+			e.CanExecute = (field != null && field.PluginLine > 0);
 		}
 		private void GoToPlugin_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			var field = GetValueField(e.Source);
+			var field = GetWrappedField(e.Source);
 			if (field == null) return;
 
 			_parentMetaContainer.GoToRawPluginLine((int)field.PluginLine);
 		}
-
 
         private static MetaField GetWrappedField(MetaField field)
         {
@@ -599,6 +598,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             }
         }
 
+        private static MetaField GetWrappedField(object elem)
+        {
+            // Get the FrameworkElement
+            FrameworkElement source = elem as FrameworkElement;
+            if (source == null)
+                return null;
+
+            // Get the field
+            MetaField field = source.DataContext as MetaField;
+            if (field == null)
+                return null;
+
+            return GetWrappedField(field);
+        }
+
         /// <summary>
         /// Given a source element, retrieves the ValueField it represents.
         /// </summary>
@@ -606,21 +620,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         /// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
         private static ValueField GetValueField(object elem)
         {
-            // Get the FrameworkElement
-            FrameworkElement source = elem as FrameworkElement;
-            if (source == null)
-                return null;
-
-            // Get the field, and if it's a reflexive wrapper,
-            // then get the actual field it's wrapping
-            ValueField field = source.DataContext as ValueField;
-            if (field == null)
+            MetaField field = GetWrappedField(elem);
+            ValueField valueField = field as ValueField;
+            if (valueField == null)
             {
-                WrappedReflexiveEntry wrapper = source.DataContext as WrappedReflexiveEntry;
+                WrappedReflexiveEntry wrapper = field as WrappedReflexiveEntry;
                 if (wrapper != null)
-                    field = GetWrappedField(wrapper) as ValueField;
+                    valueField = GetWrappedField(wrapper) as ValueField;
             }
-            return field;
+            return valueField;
         }
 
         /// <summary>

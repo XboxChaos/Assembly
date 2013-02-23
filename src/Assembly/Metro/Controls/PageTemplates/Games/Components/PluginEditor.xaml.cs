@@ -48,9 +48,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		public void GoToLine(int line)
 		{
+            UpdateLayout();
+
 			var selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
+            txtPlugin.ScrollToLine(line);
 			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
-			txtPlugin.ScrollToLine(line);
 		}
 
         void Settings_SettingsChanged(object sender, EventArgs e)

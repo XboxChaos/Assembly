@@ -77,8 +77,9 @@ namespace ExtryzeDLL.Plugins
                 title = reader.Value;
 
             reader.MoveToElement();
+            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
             string text = reader.ReadElementContentAsString();
-            visitor.VisitComment(title, text);
+            visitor.VisitComment(title, text, pluginLine);
         }
 
         /// <summary>
@@ -92,9 +93,7 @@ namespace ExtryzeDLL.Plugins
         {
 			var name = "Unknown";
             uint offset = 0;
-	        var xmlLineInfo = reader as IXmlLineInfo;
-	        if (xmlLineInfo == null) return;
-	        var pluginLine = (uint)xmlLineInfo.LineNumber;
+            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
 	        var visible = true;
 
 	        if (reader.MoveToAttribute("name"))

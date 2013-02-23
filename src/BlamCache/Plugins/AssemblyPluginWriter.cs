@@ -54,7 +54,7 @@ namespace ExtryzeDLL.Plugins
             _output.WriteEndElement();
         }
 
-        public void VisitComment(string title, string text)
+        public void VisitComment(string title, string text, uint pluginLine)
         {
             _output.WriteStartElement("comment");
             _output.WriteAttributeString("title", title);

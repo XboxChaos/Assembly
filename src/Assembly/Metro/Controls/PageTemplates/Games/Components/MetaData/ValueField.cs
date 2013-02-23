@@ -11,14 +11,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     public abstract class ValueField : MetaField
     {
         private string _name;
-        private uint _offset, _pluginLine, _address;
+        private uint _offset, _address;
 
         public ValueField(string name, uint offset, uint address, uint pluginLine)
         {
             _name = name;
             _offset = offset;
             _address = address;
-            _pluginLine = pluginLine;
+            PluginLine = pluginLine;
         }
 
         /// <summary>
@@ -28,15 +28,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             get { return _name; }
             set { _name = value; NotifyPropertyChanged("Name"); }
-        }
-
-        /// <summary>
-        /// The line from the plugin that created the value.
-        /// </summary>
-        public uint PluginLine
-        {
-            get { return _pluginLine; }
-            set { _pluginLine = value; NotifyPropertyChanged("PluginLine"); }
         }
 
         /// <summary>

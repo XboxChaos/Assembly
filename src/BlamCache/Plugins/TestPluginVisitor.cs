@@ -33,7 +33,7 @@ namespace ExtryzeDLL.Plugins
             Debug.Unindent();
         }
 
-        public void VisitComment(string title, string text)
+        public void VisitComment(string title, string text, uint pluginLine)
         {
             Debug.WriteLine("Comment \"{0}\": {1}", title, text);
         }
