@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ExtryzeDLL.Flexibility;
+using ExtryzeDLL.IO;
+
+namespace ExtryzeDLL.Blam.Util
+{
+    /// <summary>
+    /// Utility class for reading reflexives from meta.
+    /// </summary>
+    public static class ReflexiveReader
+    {
+        public static StructureValueCollection[] ReadReflexive(int count, uint address, IReader reader, StructureLayout entryLayout, FileSegmentGroup metaArea)
+        {
+            if (entryLayout.Size == 0)
+                throw new ArgumentException("The entry layout must have a size associated with it.");
+
+            // Handle null pointers
+            if (count <= 0 || !metaArea.ContainsPointer(address))
+                return new StructureValueCollection[0];
+
+            // Convert the address to an offset and seek to it
+            int offset = metaArea.PointerToOffset(address);
+            reader.SeekTo(offset);
+
+            // Read the entries
+            StructureValueCollection[] result = new StructureValueCollection[count];
+            for (int i = 0; i < count; i++)
+                result[i] = StructureReader.ReadStructure(reader, entryLayout);
+
+            return result;
+        }
+    }
+}

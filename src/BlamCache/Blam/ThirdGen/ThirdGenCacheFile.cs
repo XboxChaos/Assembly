@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ExtryzeDLL.Blam.Resources;
+using ExtryzeDLL.Blam.ThirdGen.Resources;
 using ExtryzeDLL.Blam.ThirdGen.Structures;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Flexibility;
@@ -45,6 +47,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
         private List<FileSegment> _segments = new List<FileSegment>();
         private BuildInformation _buildInfo;
+        private ThirdGenResourceLayoutTable _resourceLayout;
+        private ThirdGenResourceGestalt _resources;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
@@ -171,6 +175,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _languageInfo.LocaleArea; }
         }
 
+        public IResourceTable Resources
+        {
+            get { return _resources; }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             LoadHeader(reader, buildInfo, buildString);
@@ -180,6 +189,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             LoadLanguageGlobals(reader, buildInfo);
             LoadScenario(reader, buildInfo);
             LoadLocaleGroups(reader, buildInfo);
+            LoadResourceLayoutTable(reader, buildInfo);
+            LoadResourceGestalt(reader, buildInfo);
 
             BuildLanguageList();
             BuildSegmentList();
@@ -276,6 +287,39 @@ namespace ExtryzeDLL.Blam.ThirdGen
             }
         }
 
+        private void LoadResourceLayoutTable(IReader reader, BuildInformation buildInfo)
+        {
+            StructureLayout layout = buildInfo.GetLayout("resource layout table");
+            if (layout == null)
+                return;
+
+            ITag play = FindTagByClass(PlayMagic);
+            if (play == null)
+                return;
+
+            reader.SeekTo(play.MetaLocation.AsOffset());
+            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+            _resourceLayout = new ThirdGenResourceLayoutTable(values, reader, MetaArea, buildInfo);
+        }
+
+        private void LoadResourceGestalt(IReader reader, BuildInformation buildInfo)
+        {
+            if (_resourceLayout == null)
+                return;
+
+            StructureLayout layout = buildInfo.GetLayout("resource gestalt");
+            if (layout == null)
+                return;
+
+            ITag zone = FindTagByClass(ZoneMagic);
+            if (zone == null)
+                return;
+
+            reader.SeekTo(zone.MetaLocation.AsOffset());
+            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+            _resources = new ThirdGenResourceGestalt(values, reader, MetaArea, buildInfo, _tags, _resourceLayout);
+        }
+
         private void WriteHeader(IWriter writer)
         {
             // Serialize and write the header
@@ -316,5 +360,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private static int PatgMagic = CharConstant.FromString("patg");
         private static int ScnrMagic = CharConstant.FromString("scnr");
         private static int UnicMagic = CharConstant.FromString("unic");
+        private static int PlayMagic = CharConstant.FromString("play");
+        private static int ZoneMagic = CharConstant.FromString("zone");
     }
 }

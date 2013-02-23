@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ExtryzeDLL.Blam.Resources;
 using ExtryzeDLL.Blam.SecondGen.Structures;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.Flexibility;
@@ -138,6 +139,11 @@ namespace ExtryzeDLL.Blam.SecondGen
         public FileSegmentGroup LocaleArea
         {
             get { return _header.LocaleArea; }
+        }
+
+        public IResourceTable Resources
+        {
+            get { return null; }
         }
 
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)

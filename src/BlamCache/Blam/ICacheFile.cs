@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ExtryzeDLL.Blam.Resources;
 using ExtryzeDLL.Blam.Util;
 using ExtryzeDLL.IO;
 
@@ -115,6 +116,12 @@ namespace ExtryzeDLL.Blam
         /// The file's scenario data.
         /// </summary>
         IScenario Scenario { get; }
+
+        /// <summary>
+        /// The resources stored in the cache file.
+        /// Can be null.
+        /// </summary>
+        IResourceTable Resources { get; }
 
         /// <summary>
         /// A list of segments that the file has been arbitrarily divided into.

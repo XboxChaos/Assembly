@@ -162,4 +162,57 @@
     <int16 name="source line" offset="0x14" />
     <uint16 name="unknown" offset="0x16" />
   </layout>
+
+  <!-- zone (cache_file_resource_gestalt) -->
+  <layout for="resource gestalt">
+    <int32 name="number of resources" offset="0x58" />
+    <uint32 name="resource table address" offset="0x5C" />
+  </layout>
+
+  <!-- Reflexive at 0x58 in zone -->
+  <layout for="resource table entry" size="0x40">
+    <int32 name="parent tag class magic" offset="0x0" />
+    <uint32 name="parent tag datum index" offset="0xC" />
+    <uint16 name="datum index salt" offset="0x10" />
+    <sbyte name="resource type index" offset="0x12" />
+    <int16 name="segment index" offset="0x22" />
+  </layout>
+
+  <!-- play (cache_file_resource_layout_table) -->
+  <layout for="resource layout table">
+    <int32 name="number of external cache files" offset="0xC" />
+    <uint32 name="external cache file table address" offset="0x10" />
+
+    <int32 name="number of raw pages" offset="0x18" />
+    <uint32 name="raw page table address" offset="0x1C" />
+
+    <int32 name="number of raw segments" offset="0x30" />
+    <uint32 name="raw segment table address" offset="0x34" />
+  </layout>
+
+  <!-- Reflexive at 0xC in play -->
+  <layout for="external cache file table entry" size="0x108">
+    <asciiz name="map path" offset="0x0" />
+  </layout>
+
+  <!-- Reflexive at 0x18 in play -->
+  <layout for="raw page table entry" size="0x58">
+    <int16 name="shared cache file index" offset="0x4" />
+    <int32 name="compressed block offset" offset="0x8" />
+    <int32 name="compressed block size" offset="0xC" />
+    <int32 name="uncompressed block size" offset="0x10" />
+  </layout>
+
+  <!-- Reflexive at 0x30 in play -->
+  <layout for="raw segment table entry" size="0x10">
+    <int16 name="primary page index" offset="0x0" />
+    <int16 name="secondary page index" offset="0x2" />
+    <int32 name="primary offset" offset="0x4" />
+    <int32 name="secondary offset" offset="0x8" />
+  </layout>
+
+  <!-- mode (render_model) -->
+  <layout for="render model">
+    <uint32 name="resource datum index" offset="0xF8" />
+  </layout>
 </layouts>
