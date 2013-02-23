@@ -95,7 +95,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 											(String.IsNullOrEmpty(txtOutputFolder.Text) || !Directory.Exists(txtOutputFolder.Text)) ||
 											(GeneratorMaps.Count(entry => !entry.IsSelected) == GeneratorMaps.Count)))
 			{
-				MetroMessageBox.Show("Missing required information", "Required information for Plugin Generation is missing...");
+				MetroMessageBox.Show("Missing required information", "Required information for plugin generation is missing...");
 				return;
 			}
 
@@ -109,7 +109,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				btnOutputFolder.IsEnabled =
 				btnGeneratePlugins.IsEnabled = false;
 
-			var generatorMaps = GeneratorMaps;
+            MaskingPage.Visibility = Visibility.Visible;
+
+            var generatorMaps = GeneratorMaps.Where((m) => m.IsSelected).ToList();
 			var outputPath = txtOutputFolder.Text;
 
 			var worker = new BackgroundWorker();
@@ -117,9 +119,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			worker.WorkerReportsProgress = true;
 			worker.ProgressChanged += worker_ProgressChanged;
 			worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-			worker.RunWorkerAsync(GeneratorMaps);
-
-			MaskingPage.Visibility = Visibility.Visible;
+			worker.RunWorkerAsync();
 		}
 		private void EndGeneration()
 		{
@@ -144,15 +144,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
 		{
-			lblProgressStatus.Text = string.Format("Generating Plugins...({0}%)", e.ProgressPercentage);
+			lblProgressStatus.Text = string.Format("Generating Plugins... ({0}%)", e.ProgressPercentage);
 		}
-		void worker_DoWork(object sender, DoWorkEventArgs e, IReadOnlyList<MapEntry> generatorMaps, string outputPath, BackgroundWorker worker)
+		void worker_DoWork(object sender, DoWorkEventArgs e, IList<MapEntry> generatorMaps, string outputPath, BackgroundWorker worker)
 		{
 			var globalMaps = new Dictionary<string, MetaMap>();
 			var startTime = DateTime.Now;
 			var gameIdentifier = "";
 
-			for (var i = 0; i < generatorMaps.Count; i++)
+            for (var i = 0; i < generatorMaps.Count; i++)
 			{
 				var tagMaps = new Dictionary<ITag, MetaMap>();
 
