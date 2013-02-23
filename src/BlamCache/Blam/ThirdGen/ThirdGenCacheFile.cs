@@ -49,6 +49,7 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private BuildInformation _buildInfo;
         private ThirdGenResourceLayoutTable _resourceLayout;
         private ThirdGenResourceGestalt _resources;
+        private ThirdGenResourceMetaLoader _resourceMetaLoader;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
         {
@@ -180,6 +181,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _resources; }
         }
 
+        public IResourceMetaLoader ResourceMetaLoader
+        {
+            get { return _resourceMetaLoader; }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             LoadHeader(reader, buildInfo, buildString);
@@ -214,6 +220,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("index header"));
             _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, buildInfo);
+
+            _resourceMetaLoader = new ThirdGenResourceMetaLoader(buildInfo, _header.MetaArea);
         }
 
         private void LoadFileNames(IReader reader, BuildInformation buildInfo)
@@ -303,9 +311,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadResourceLayoutTable(IReader reader, BuildInformation buildInfo)
         {
-            StructureLayout layout = buildInfo.GetLayout("resource layout table");
-            if (layout == null)
+            if (!buildInfo.HasLayout("resource layout table"))
                 return;
+
+            StructureLayout layout = buildInfo.GetLayout("resource layout table");
 
             ITag play = FindTagByClass(PlayMagic);
             if (play == null)
@@ -318,12 +327,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadResourceGestalt(IReader reader, BuildInformation buildInfo)
         {
-            if (_resourceLayout == null)
+            if (_resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
                 return;
 
             StructureLayout layout = buildInfo.GetLayout("resource gestalt");
-            if (layout == null)
-                return;
 
             ITag zone = FindTagByClass(ZoneMagic);
             if (zone == null)

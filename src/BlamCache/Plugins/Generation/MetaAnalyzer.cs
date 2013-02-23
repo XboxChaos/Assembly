@@ -120,7 +120,10 @@ namespace ExtryzeDLL.Plugins.Generation
         {
             _minAddress = cacheFile.MetaArea.BasePointer;
             foreach (Partition partition in cacheFile.Partitions)
-                _memMap.AddAddress(partition.BasePointer.AsPointer(), 0);
+            {
+                if (partition.BasePointer != null)
+                    _memMap.AddAddress(partition.BasePointer.AsPointer(), 0);
+            }
 
             // Add the end of meta as well
             _maxAddress = (uint)(_minAddress + cacheFile.MetaArea.Size);

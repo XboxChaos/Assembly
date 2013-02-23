@@ -132,6 +132,11 @@ namespace ExtryzeDLL.Blam
         IResourceTable Resources { get; }
 
         /// <summary>
+        /// The IResourceMetaLoader which can be used to load metadata for resources.
+        /// </summary>
+        IResourceMetaLoader ResourceMetaLoader { get; }
+
+        /// <summary>
         /// A list of segments that the file has been arbitrarily divided into.
         /// For a given cache file, these segments will always be in the same order.
         /// This can be used to compare two cache files and determine sizing differences between them.

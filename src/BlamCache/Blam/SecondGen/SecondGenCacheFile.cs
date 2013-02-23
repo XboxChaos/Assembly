@@ -146,6 +146,11 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return null; }
         }
 
+        public IResourceMetaLoader ResourceMetaLoader
+        {
+            get { return new SecondGenResourceMetaLoader(); }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             _header = LoadHeader(reader, buildInfo, buildString);

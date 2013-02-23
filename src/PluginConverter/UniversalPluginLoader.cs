@@ -115,7 +115,8 @@ namespace PluginConverter
 
             reader.MoveToElement();
             string text = reader.ReadElementContentAsString();
-            visitor.VisitComment(title, text);
+            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
+            visitor.VisitComment(title, text, pluginLine);
         }
 
         /// <summary>

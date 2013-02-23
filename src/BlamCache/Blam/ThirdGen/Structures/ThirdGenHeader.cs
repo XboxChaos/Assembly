@@ -364,11 +364,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             // Some H4-only unknown table
             if (values.HasNumber("unknown table count") && values.HasNumber("unknown table offset"))
             {
-                int unknownOff = converter.PointerToOffset(values.GetNumber("unknown table offset"));
-
                 UnknownCount = (int)values.GetNumber("unknown table count");
-                UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount * 0x10, 0x10, SegmentResizeOrigin.End);
-                UnknownTableLocation = StringArea.AddSegment(UnknownTable);
+                if (UnknownCount > 0)
+                {
+                    int unknownOff = converter.PointerToOffset(values.GetNumber("unknown table offset"));
+                    UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount * 0x10, 0x10, SegmentResizeOrigin.End);
+                    UnknownTableLocation = StringArea.AddSegment(UnknownTable);
+                }
             }
         }
 
