@@ -21,10 +21,11 @@ namespace ExtryzeDLL.Flexibility
         private bool _loadStrings;
         private string _layoutFile;
         private string _scriptDefsFile;
-        private Dictionary<string, StructureLayout> _layouts = new Dictionary<string, StructureLayout>();
+        private StructureLayoutCollection _layouts = new StructureLayoutCollection();
         private LocaleSymbolCollection _localeSymbols = new LocaleSymbolCollection();
         private IStringIDResolver _stringIDResolver;
         private int _segmentAlignment;
+        private VertexLayoutCollection _vertexLayouts = new VertexLayoutCollection();
 
         public class StructureLocaleSymbol
         {
@@ -54,22 +55,27 @@ namespace ExtryzeDLL.Flexibility
 
         public void AddLayout(string name, StructureLayout layout)
         {
-            _layouts[name] = layout;
+            _layouts.AddLayout(name, layout);
         }
 
         public StructureLayout GetLayout(string name)
         {
-            return _layouts[name];
+            return _layouts.GetLayout(name);
         }
 
         public bool HasLayout(string name)
         {
-            return _layouts.ContainsKey(name);
+            return _layouts.HasLayout(name);
         }
 
         public LocaleSymbolCollection LocaleSymbols
         {
             get { return _localeSymbols; }
+        }
+
+        public VertexLayoutCollection VertexLayouts
+        {
+            get { return _vertexLayouts; }
         }
 
         public string GameName

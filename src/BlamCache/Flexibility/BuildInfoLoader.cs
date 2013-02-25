@@ -82,6 +82,7 @@ namespace ExtryzeDLL.Flexibility
             XAttribute pluginFolderAttrib = buildElement.Attribute("pluginFolder");
             XAttribute scriptDefinitionsAttrib = buildElement.Attribute("scriptDefinitions");
             XAttribute segmentAlignmentAttrib = buildElement.Attribute("segmentAlignment");
+            XAttribute vertexLayoutsAttrib = buildElement.Attribute("vertexLayouts");
             if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null || segmentAlignmentAttrib == null)
                 return null;
 
@@ -160,6 +161,13 @@ namespace ExtryzeDLL.Flexibility
                 LoadAllLocaleSymbols(localeSymbolDocument, info);
             }
 
+            if (vertexLayoutsAttrib != null)
+            {
+                string vertexLayouts = vertexLayoutsAttrib.Value;
+                XDocument vertexLayoutsDocument = XDocument.Load(_basePath + @"Vertices\" + vertexLayouts);
+                LoadAllVertexLayouts(vertexLayoutsDocument, info);
+            }
+
             return info;
         }
 
@@ -218,6 +226,19 @@ namespace ExtryzeDLL.Flexibility
                 char codeChar = codeString[0];
 
                 info.LocaleSymbols.AddSymbol(codeChar, displayAttrib.Value);
+            }
+        }
+
+        private static void LoadAllVertexLayouts(XDocument vertexLayoutsDocument, BuildInformation info)
+        {
+            XContainer vertexTypesContainer = vertexLayoutsDocument.Element("vertexTypes");
+            if (vertexLayoutsDocument == null)
+                throw new ArgumentException("Invalid vertex layout document");
+
+            foreach (XElement vertex in vertexTypesContainer.Elements("vertex"))
+            {
+                var layout = VertexLayoutLoader.LoadLayout(vertex);
+                info.VertexLayouts.AddLayout(layout);
             }
         }
 

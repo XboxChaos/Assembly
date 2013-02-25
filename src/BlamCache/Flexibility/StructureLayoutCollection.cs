@@ -26,13 +26,14 @@ namespace ExtryzeDLL.Flexibility
         /// Retrieves a layout in the collection by name.
         /// </summary>
         /// <param name="name">The name of the layout to retrieve.</param>
-        /// <returns>The layout if found, or null otherwise.</returns>
+        /// <returns>The layout with the corresponding name.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if the layout is not found.</exception>
         public StructureLayout GetLayout(string name)
         {
             StructureLayout result;
             if (_layouts.TryGetValue(name, out result))
                 return result;
-            return null;
+            throw new KeyNotFoundException("Unable to find a structure layout named \"" + name + "\"");
         }
 
         /// <summary>
