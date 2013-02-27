@@ -52,7 +52,7 @@ namespace ExtryzeDLL.IO
         {
             if (baseGroup.Segments.Count == 0)
                 throw new ArgumentException("Cannot create a SegmentPointer from an empty group");
-
+			
             FileSegment baseSegment = baseGroup.FindSegmentWithPointer(pointer);
             if (baseSegment == null)
                 throw new ArgumentException("Cannot create a SegmentPointer from an invalid pointer");

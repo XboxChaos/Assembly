@@ -149,6 +149,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             doingAction.Visibility = Visibility.Hidden;
+
             if (e.Error == null) return;
 
             // Close Tab
