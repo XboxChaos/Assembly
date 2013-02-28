@@ -34,6 +34,7 @@ namespace ExtryzeDLL.Flexibility
         Int16,    // short
         UInt32,   // uint
         Int32,    // int
-        Asciiz    // Null-terminated ASCII string
+        Asciiz,    // Null-terminated ASCII string
+        Float32
     }
 }

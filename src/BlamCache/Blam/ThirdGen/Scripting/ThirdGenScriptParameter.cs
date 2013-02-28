@@ -20,7 +20,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
         private void Load(StructureValueCollection values)
         {
             Name = values.GetString("name");
-            Type = (short)values.GetNumber("type");
+            Type = (short)values.GetInteger("type");
         }
     }
 }

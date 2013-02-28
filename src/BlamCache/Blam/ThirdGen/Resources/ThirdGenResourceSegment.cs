@@ -21,16 +21,16 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void Load(StructureValueCollection values, ThirdGenResourcePage[] pages)
         {
-            int primaryIndex = (int)values.GetNumber("primary page index");
+            int primaryIndex = (int)values.GetInteger("primary page index");
             if (primaryIndex >= 0)
                 PrimaryPage = pages[primaryIndex];
 
-            int secondaryIndex = (int)values.GetNumber("secondary page index");
+            int secondaryIndex = (int)values.GetInteger("secondary page index");
             if (secondaryIndex >= 0)
                 SecondaryPage = pages[secondaryIndex];
 
-            PrimaryOffset = (int)values.GetNumber("primary offset");
-            SecondaryOffset = (int)values.GetNumber("secondary offset");
+            PrimaryOffset = (int)values.GetInteger("primary offset");
+            SecondaryOffset = (int)values.GetInteger("secondary offset");
         }
     }
 }

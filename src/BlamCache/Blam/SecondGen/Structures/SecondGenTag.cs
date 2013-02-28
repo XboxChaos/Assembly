@@ -17,17 +17,17 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
 
         private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
         {
-            uint offset = values.GetNumber("offset");
+            uint offset = values.GetInteger("offset");
             if (offset > 0)
             {
                 // Load the tag class by looking up the magic value that's stored
-                int classMagic = (int)values.GetNumber("class magic");
+                int classMagic = (int)values.GetInteger("class magic");
                 if (classMagic != -1)
                     Class = classesById[classMagic];
 
                 MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
-                Index = new DatumIndex(values.GetNumber("datum index"));
-                DataSize = (int)values.GetNumber("data size");
+                Index = new DatumIndex(values.GetInteger("datum index"));
+                DataSize = (int)values.GetInteger("data size");
             }
         }
 

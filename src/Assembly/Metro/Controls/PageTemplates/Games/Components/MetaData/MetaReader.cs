@@ -238,8 +238,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             SeekToOffset(field.Offset);
             StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 
-            int length = (int)values.GetNumber("size");
-            uint pointer = values.GetNumber("pointer");
+            int length = (int)values.GetInteger("size");
+            uint pointer = values.GetInteger("pointer");
             field.DataAddress = pointer;
 
             // Check if the pointer is valid
@@ -274,7 +274,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 // Read the datum index based upon the layout
                 StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
-                index = new DatumIndex(values.GetNumber("datum index"));
+                index = new DatumIndex(values.GetInteger("datum index"));
             }
             else
             {
@@ -322,8 +322,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
             SeekToOffset(field.Offset);
             StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
-            int length = (int)values.GetNumber("entry count");
-            uint pointer = (uint)values.GetNumber("pointer");
+            int length = (int)values.GetInteger("entry count");
+            uint pointer = (uint)values.GetInteger("pointer");
 
             // Make sure the pointer looks valid
             int metaStartOff = _cache.MetaArea.Offset;

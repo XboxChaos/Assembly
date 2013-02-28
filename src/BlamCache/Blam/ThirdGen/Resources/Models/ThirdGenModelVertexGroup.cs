@@ -24,11 +24,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values, IModelSubmesh[] submeshes)
         {
-            IndexBufferStart = (int)values.GetNumber("index buffer start");
-            IndexBufferCount = (int)values.GetNumber("index buffer count");
-            VertexBufferCount = (int)values.GetNumber("vertex buffer count");
+            IndexBufferStart = (int)values.GetInteger("index buffer start");
+            IndexBufferCount = (int)values.GetInteger("index buffer count");
+            VertexBufferCount = (int)values.GetInteger("vertex buffer count");
 
-            int submeshIndex = (int)values.GetNumber("parent submesh index");
+            int submeshIndex = (int)values.GetInteger("parent submesh index");
             Submesh = submeshes[submeshIndex];
         }
     }

@@ -46,11 +46,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private ExpressionTable LoadScriptExpressions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringTableReader stringReader, StructureLayout entryLayout)
         {
-            int exprCount = (int)values.GetNumber("number of script expressions");
+            int exprCount = (int)values.GetInteger("number of script expressions");
             if (exprCount == 0)
                 return new ExpressionTable();
 
-            ScriptExpressionsLocation = SegmentPointer.FromPointer(values.GetNumber("script expression table address"), metaArea);
+            ScriptExpressionsLocation = SegmentPointer.FromPointer(values.GetInteger("script expression table address"), metaArea);
 
             ExpressionTable result = new ExpressionTable();
             reader.SeekTo(ScriptExpressionsLocation.AsOffset());
@@ -71,11 +71,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, StructureLayout entryLayout)
         {
-            int objectsCount = (int)values.GetNumber("number of script objects");
+            int objectsCount = (int)values.GetInteger("number of script objects");
             if (objectsCount == 0)
                 return new List<IGlobalObject>();
 
-            ScriptObjectsLocation = SegmentPointer.FromPointer(values.GetNumber("script object table address"), metaArea);
+            ScriptObjectsLocation = SegmentPointer.FromPointer(values.GetInteger("script object table address"), metaArea);
 
             List<IGlobalObject> result = new List<IGlobalObject>();
             reader.SeekTo(ScriptObjectsLocation.AsOffset());
@@ -90,11 +90,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private List<IGlobal> LoadScriptGlobals(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, ExpressionTable expressions, StructureLayout entryLayout)
         {
-            int globalsCount = (int)values.GetNumber("number of script globals");
+            int globalsCount = (int)values.GetInteger("number of script globals");
             if (globalsCount == 0)
                 return new List<IGlobal>();
 
-            ScriptGlobalsLocation = SegmentPointer.FromPointer(values.GetNumber("script global table address"), metaArea);
+            ScriptGlobalsLocation = SegmentPointer.FromPointer(values.GetInteger("script global table address"), metaArea);
 
             List<IGlobal> result = new List<IGlobal>();
             reader.SeekTo(ScriptGlobalsLocation.AsOffset());
@@ -108,11 +108,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private List<IScript> LoadScripts(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, StructureLayout entryLayout, BuildInformation buildInfo)
         {
-            int scriptCount = (int)values.GetNumber("number of scripts");
+            int scriptCount = (int)values.GetInteger("number of scripts");
             if (scriptCount == 0)
                 return new List<IScript>();
 
-            ScriptsLocation = SegmentPointer.FromPointer(values.GetNumber("script table address"), metaArea);
+            ScriptsLocation = SegmentPointer.FromPointer(values.GetInteger("script table address"), metaArea);
 
             // Read all of the script entries first, then go back and create the objects
             // ThirdGenScript reads parameters from its constructor - this may or may not need cleaning up to make this more obvious
@@ -129,11 +129,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private CachedStringTable LoadStrings(StructureValueCollection values, IReader reader, StringTableReader stringReader, FileSegmentGroup metaArea)
         {
-            int stringsSize = (int)values.GetNumber("script string table size");
+            int stringsSize = (int)values.GetInteger("script string table size");
             if (stringsSize == 0)
                 return new CachedStringTable();
 
-            SegmentPointer stringsLocation = SegmentPointer.FromPointer(values.GetNumber("script string table address"), metaArea);
+            SegmentPointer stringsLocation = SegmentPointer.FromPointer(values.GetInteger("script string table address"), metaArea);
 
             CachedStringTable result = new CachedStringTable();
             stringReader.ReadRequestedStrings(reader, stringsLocation, result);

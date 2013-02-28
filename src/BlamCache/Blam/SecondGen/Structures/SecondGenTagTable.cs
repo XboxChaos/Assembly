@@ -32,18 +32,18 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
 
         private void Load(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            if (headerValues.GetNumber("magic") != CharConstant.FromString("tags"))
+            if (headerValues.GetInteger("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
 
             // Classes
-            int numClasses = (int)headerValues.GetNumber("number of classes");
-            uint classTableOffset = (uint)(metaArea.Offset + headerValues.GetNumber("class table offset")); // Offset is relative to the header
+            int numClasses = (int)headerValues.GetInteger("number of classes");
+            uint classTableOffset = (uint)(metaArea.Offset + headerValues.GetInteger("class table offset")); // Offset is relative to the header
             _classes = ReadClasses(reader, classTableOffset, numClasses, buildInfo);
             _classesById = BuildClassLookup(_classes);
 
             // Tags
-            int numTags = (int)headerValues.GetNumber("number of tags");
-            uint tagTableOffset = (uint)(metaArea.Offset + headerValues.GetNumber("tag table offset")); // Offset is relative to the header
+            int numTags = (int)headerValues.GetInteger("number of tags");
+            uint tagTableOffset = (uint)(metaArea.Offset + headerValues.GetInteger("tag table offset")); // Offset is relative to the header
             _tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, metaArea);
         }
 

@@ -15,9 +15,9 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
 
         private void Load(StructureValueCollection values)
         {
-            Magic = (int)values.GetNumber("magic");
-            ParentMagic = (int)values.GetNumber("parent magic");
-            GrandparentMagic = (int)values.GetNumber("grandparent magic");
+            Magic = (int)values.GetInteger("magic");
+            ParentMagic = (int)values.GetInteger("parent magic");
+            GrandparentMagic = (int)values.GetInteger("grandparent magic");
             // No description stringid :(
         }
 

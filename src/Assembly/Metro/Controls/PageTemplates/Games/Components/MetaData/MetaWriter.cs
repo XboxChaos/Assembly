@@ -198,8 +198,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitReflexive(ReflexiveData field)
         {
             var values = new StructureValueCollection();
-            values.SetNumber("entry count", (uint)field.Length);
-            values.SetNumber("pointer", field.FirstEntryAddress);
+            values.SetInteger("entry count", (uint)field.Length);
+            values.SetInteger("pointer", field.FirstEntryAddress);
 
             SeekToOffset(field.Offset);
             StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
@@ -289,8 +289,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitDataRef(DataRef field)
         {
 			var values = new StructureValueCollection();
-            values.SetNumber("size", (uint)field.Length);
-            values.SetNumber("pointer", field.FieldAddress);
+            values.SetInteger("size", (uint)field.Length);
+            values.SetInteger("pointer", field.FieldAddress);
 
             SeekToOffset(field.Offset);
             StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
@@ -316,13 +316,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 var values = new StructureValueCollection();
                 if (field.Value != null)
                 {
-                    values.SetNumber("class magic", (uint)field.Value.RawTag.Class.Magic);
-                    values.SetNumber("datum index", field.Value.RawTag.Index.Value);
+                    values.SetInteger("class magic", (uint)field.Value.RawTag.Class.Magic);
+                    values.SetInteger("datum index", field.Value.RawTag.Index.Value);
                 }
                 else
                 {
-                    values.SetNumber("class magic", 0xFFFFFFFF);
-                    values.SetNumber("datum index", 0xFFFFFFFF);
+                    values.SetInteger("class magic", 0xFFFFFFFF);
+                    values.SetInteger("datum index", 0xFFFFFFFF);
                 }
                 StructureWriter.WriteStructure(values, _tagRefLayout, _writer);
             }

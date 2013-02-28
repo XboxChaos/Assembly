@@ -131,6 +131,8 @@ namespace ExtryzeDLL.Flexibility
                     return StructureValueType.Int32;
                 case "asciiz":
                     return StructureValueType.Asciiz;
+                case "float32":
+                    return StructureValueType.Float32;
                 default:
                     throw new ArgumentException("Unknown value type " + name);
             }

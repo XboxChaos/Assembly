@@ -11,9 +11,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
     {
         public ThirdGenGlobalObject(StructureValueCollection values, IStringIDSource stringIDs)
         {
-            Name = stringIDs.GetString(new StringID((int)values.GetNumber("name index")));
-            Class = (short)values.GetNumber("type");
-            PlacementIndex = (short)values.GetNumber("placement index");
+            Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
+            Class = (short)values.GetInteger("type");
+            PlacementIndex = (short)values.GetInteger("placement index");
         }
 
         public string Name { get; private set; }

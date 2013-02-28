@@ -51,13 +51,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void Load(StructureValueCollection values, ThirdGenCacheFileReference[] externalFiles)
         {
-            int fileIndex = (int)values.GetNumber("shared cache file index");
+            int fileIndex = (int)values.GetInteger("shared cache file index");
             if (fileIndex >= 0 && fileIndex < externalFiles.Length)
                 _externalFile = externalFiles[fileIndex];
 
-            Offset = (int)values.GetNumber("compressed block offset");
-            CompressedSize = (int)values.GetNumber("compressed block size");
-            UncompressedSize = (int)values.GetNumber("uncompressed block size");
+            Offset = (int)values.GetInteger("compressed block offset");
+            CompressedSize = (int)values.GetInteger("compressed block size");
+            UncompressedSize = (int)values.GetInteger("uncompressed block size");
         }
     }
 }

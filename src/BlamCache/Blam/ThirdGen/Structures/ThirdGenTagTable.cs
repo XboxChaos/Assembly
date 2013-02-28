@@ -57,17 +57,17 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            if (values.GetNumber("magic") != CharConstant.FromString("tags"))
+            if (values.GetInteger("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
 
             // Classes
-            int numClasses = (int)values.GetNumber("number of classes");
-            SegmentPointer classTableLocation = SegmentPointer.FromPointer(values.GetNumber("class table address"), metaArea);
+            int numClasses = (int)values.GetInteger("number of classes");
+            SegmentPointer classTableLocation = SegmentPointer.FromPointer(values.GetInteger("class table address"), metaArea);
             _classes = ReadClasses(reader, classTableLocation, numClasses, buildInfo);
 
             // Tags
-            int numTags = (int)values.GetNumber("number of tags");
-            SegmentPointer tagTableLocation = SegmentPointer.FromPointer(values.GetNumber("tag table address"), metaArea);
+            int numTags = (int)values.GetInteger("number of tags");
+            SegmentPointer tagTableLocation = SegmentPointer.FromPointer(values.GetInteger("tag table address"), metaArea);
             _tags = ReadTags(reader, tagTableLocation, numTags, buildInfo, metaArea);
         }
 

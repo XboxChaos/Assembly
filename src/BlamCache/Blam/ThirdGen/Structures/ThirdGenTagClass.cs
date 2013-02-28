@@ -35,10 +35,10 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private void Load(StructureValueCollection values)
         {
-            Magic = (int)values.GetNumber("magic");
-            ParentMagic = (int)values.GetNumber("parent magic");
-            GrandparentMagic = (int)values.GetNumber("grandparent magic");
-            Description = new StringID((int)values.GetNumberOrDefault("stringid", 0));
+            Magic = (int)values.GetInteger("magic");
+            ParentMagic = (int)values.GetInteger("parent magic");
+            GrandparentMagic = (int)values.GetInteger("grandparent magic");
+            Description = new StringID((int)values.GetIntegerOrDefault("stringid", 0));
         }
 
         public int Magic { get; set; }

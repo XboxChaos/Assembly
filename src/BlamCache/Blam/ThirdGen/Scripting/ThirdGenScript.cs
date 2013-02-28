@@ -24,10 +24,10 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 
         private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
-            Name = stringIDs.GetString(new StringID((int)values.GetNumber("name index")));
-            ExecutionType = (short)values.GetNumber("execution type");
-            ReturnType = (short)values.GetNumber("return type");
-            DatumIndex rootExpr = new DatumIndex(values.GetNumber("first expression index"));
+            Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
+            ExecutionType = (short)values.GetInteger("execution type");
+            ReturnType = (short)values.GetInteger("return type");
+            DatumIndex rootExpr = new DatumIndex(values.GetInteger("first expression index"));
             if (rootExpr.IsValid)
                 RootExpression = expressions.FindExpression(rootExpr);
             if (Name == null)
@@ -38,11 +38,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 
         private IList<IScriptParameter> LoadParameters(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int paramCount = (int)values.GetNumber("number of parameters");
+            int paramCount = (int)values.GetInteger("number of parameters");
             if (paramCount == 0)
                 return new List<IScriptParameter>();
 
-            SegmentPointer paramListLocation = SegmentPointer.FromPointer(values.GetNumber("address of parameter list"), metaArea);
+            SegmentPointer paramListLocation = SegmentPointer.FromPointer(values.GetInteger("address of parameter list"), metaArea);
 
             StructureLayout layout = buildInfo.GetLayout("script parameter entry");
             List<IScriptParameter> result = new List<IScriptParameter>();

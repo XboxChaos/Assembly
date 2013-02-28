@@ -40,13 +40,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         public StructureValueCollection Serialize()
         {
             StructureValueCollection result = new StructureValueCollection();
-            result.SetNumber("string count", (uint)StringCount);
-            result.SetNumber("locale table size", LocaleData != null ? (uint)LocaleData.Size : 0);
+            result.SetInteger("string count", (uint)StringCount);
+            result.SetInteger("locale table size", LocaleData != null ? (uint)LocaleData.Size : 0);
 
             if (LocaleIndexTableLocation != null)
-                result.SetNumber("locale index table offset", LocaleIndexTableLocation.AsPointer());
+                result.SetInteger("locale index table offset", LocaleIndexTableLocation.AsPointer());
             if (LocaleDataLocation != null)
-                result.SetNumber("locale data index offset", LocaleDataLocation.AsPointer());
+                result.SetInteger("locale data index offset", LocaleDataLocation.AsPointer());
 
             if (IndexTableHash != null)
                 result.SetRaw("index table hash", IndexTableHash);
@@ -57,17 +57,17 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private void Load(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea)
         {
-            StringCount = (int)values.GetNumber("string count");
+            StringCount = (int)values.GetInteger("string count");
             if (StringCount > 0)
             {
                 // Index table offset, segment, and pointer
-                int localeIndexTableOffset = localeArea.PointerToOffset(values.GetNumber("locale index table offset"));
+                int localeIndexTableOffset = localeArea.PointerToOffset(values.GetInteger("locale index table offset"));
                 LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, StringCount * 8, 8, SegmentResizeOrigin.End);
                 LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
                 // Data offset, segment, and pointer
-                int localeDataOffset = localeArea.PointerToOffset(values.GetNumber("locale data index offset"));
-                int localeDataSize = (int)values.GetNumber("locale table size");
+                int localeDataOffset = localeArea.PointerToOffset(values.GetInteger("locale data index offset"));
+                int localeDataSize = (int)values.GetInteger("locale table size");
                 LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
                 LocaleDataLocation = localeArea.AddSegment(LocaleData);
 
@@ -165,15 +165,15 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         private void ReadLocalePointer(IReader reader, out StringID id, out int offset)
         {
             StructureValueCollection values = StructureReader.ReadStructure(reader, _pointerLayout);
-            id = new StringID((int)values.GetNumber("stringid"));
-            offset = (int)values.GetNumber("offset");
+            id = new StringID((int)values.GetInteger("stringid"));
+            offset = (int)values.GetInteger("offset");
         }
 
         private void WriteLocalePointer(IWriter writer, StringID id, int offset)
         {
             StructureValueCollection values = new StructureValueCollection();
-            values.SetNumber("stringid", (uint)id.Value);
-            values.SetNumber("offset", (uint)offset);
+            values.SetInteger("stringid", (uint)id.Value);
+            values.SetInteger("offset", (uint)offset);
             StructureWriter.WriteStructure(values, _pointerLayout, writer);
         }
 

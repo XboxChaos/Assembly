@@ -28,9 +28,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            VertexFormat = (int)values.GetNumber("vertex format");
-            ExtraElementsPerVertex = (int)values.GetNumber("extra elements per vertex");
-            ExtraElementsType = (ExtraVertexElementType)values.GetNumber("extra element type");
+            VertexFormat = (int)values.GetInteger("vertex format");
+            ExtraElementsPerVertex = (int)values.GetInteger("extra elements per vertex");
+            ExtraElementsType = (ExtraVertexElementType)values.GetInteger("extra element type");
 
             LoadSubmeshes(values, reader, metaArea, buildInfo);
             LoadVertexGroups(values, reader, metaArea, buildInfo, Submeshes);
@@ -38,8 +38,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void LoadSubmeshes(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int count = (int)values.GetNumber("number of submeshes");
-            uint address = values.GetNumber("submesh table address");
+            int count = (int)values.GetInteger("number of submeshes");
+            uint address = values.GetInteger("submesh table address");
             var layout = buildInfo.GetLayout("model submesh");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 
@@ -49,8 +49,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void LoadVertexGroups(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, IModelSubmesh[] submeshes)
         {
-            int count = (int)values.GetNumber("number of vertex groups");
-            uint address = values.GetNumber("vertex group table address");
+            int count = (int)values.GetInteger("number of vertex groups");
+            uint address = values.GetInteger("vertex group table address");
             var layout = buildInfo.GetLayout("model vertex group");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 

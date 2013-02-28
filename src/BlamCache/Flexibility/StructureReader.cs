@@ -81,32 +81,36 @@ namespace ExtryzeDLL.Flexibility
             switch (type)
             {
                 case StructureValueType.Byte:
-                    _collection.SetNumber(name, _reader.ReadByte());
+                    _collection.SetInteger(name, _reader.ReadByte());
                     _offset++;
                     break;
                 case StructureValueType.SByte:
-                    _collection.SetNumber(name, (uint)_reader.ReadSByte());
+                    _collection.SetInteger(name, (uint)_reader.ReadSByte());
                     _offset++;
                     break;
                 case StructureValueType.UInt16:
-                    _collection.SetNumber(name, _reader.ReadUInt16());
+                    _collection.SetInteger(name, _reader.ReadUInt16());
                     _offset += 2;
                     break;
                 case StructureValueType.Int16:
-                    _collection.SetNumber(name, (uint)_reader.ReadInt16());
+                    _collection.SetInteger(name, (uint)_reader.ReadInt16());
                     _offset += 2;
                     break;
                 case StructureValueType.UInt32:
-                    _collection.SetNumber(name, _reader.ReadUInt32());
+                    _collection.SetInteger(name, _reader.ReadUInt32());
                     _offset += 4;
                     break;
                 case StructureValueType.Int32:
-                    _collection.SetNumber(name, (uint)_reader.ReadInt32());
+                    _collection.SetInteger(name, (uint)_reader.ReadInt32());
                     _offset += 4;
                     break;
                 case StructureValueType.Asciiz:
                     _collection.SetString(name, _reader.ReadAscii());
                     _offset = _reader.Position;
+                    break;
+                case StructureValueType.Float32:
+                    _collection.SetFloat(name, _reader.ReadFloat());
+                    _offset += 4;
                     break;
             }
         }

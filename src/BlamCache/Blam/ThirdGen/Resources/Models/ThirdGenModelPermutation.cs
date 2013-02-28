@@ -20,8 +20,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values)
         {
-            Name = new StringID((int)values.GetNumber("name stringid"));
-            ModelSectionIndex = (int)values.GetNumber("model section");
+            Name = new StringID((int)values.GetInteger("name stringid"));
+            ModelSectionIndex = (int)values.GetInteger("model section");
         }
     }
 }

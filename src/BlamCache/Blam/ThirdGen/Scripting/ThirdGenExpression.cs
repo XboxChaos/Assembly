@@ -39,16 +39,16 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 
         private void Load(StructureValueCollection values, ushort index, StringTableReader stringReader)
         {
-            ushort salt = (ushort)values.GetNumber("datum index salt");
+            ushort salt = (ushort)values.GetInteger("datum index salt");
             Index = new DatumIndex(salt, index);
 
-            Opcode = (ushort)values.GetNumber("opcode");
-            ValueType = (short)values.GetNumber("value type");
-            Type = (ExpressionType)values.GetNumber("expression type");
-            _nextIndex = new DatumIndex(values.GetNumber("next expression index"));
-            _stringTableOffset = (int)values.GetNumber("string table offset");
-            Value = values.GetNumber("value");
-            LineNumber = (short)values.GetNumber("source line");
+            Opcode = (ushort)values.GetInteger("opcode");
+            ValueType = (short)values.GetInteger("value type");
+            Type = (ExpressionType)values.GetInteger("expression type");
+            _nextIndex = new DatumIndex(values.GetInteger("next expression index"));
+            _stringTableOffset = (int)values.GetInteger("string table offset");
+            Value = values.GetInteger("value");
+            LineNumber = (short)values.GetInteger("source line");
 
             stringReader.RequestString(_stringTableOffset);
         }

@@ -38,8 +38,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             Ranges = new LocaleRange[rangeValues.Length];
             for (int i = 0; i < rangeValues.Length; i++)
             {
-                int startIndex = (int)rangeValues[i].GetNumber("range start index");
-                int size = (int)rangeValues[i].GetNumber("range size");
+                int startIndex = (int)rangeValues[i].GetInteger("range start index");
+                int size = (int)rangeValues[i].GetInteger("range size");
                 Ranges[i] = new LocaleRange(startIndex, size);
             }
         }

@@ -28,8 +28,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void LoadFileReferences(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int count = (int)values.GetNumber("number of external cache files");
-            uint address = values.GetNumber("external cache file table address");
+            int count = (int)values.GetInteger("number of external cache files");
+            uint address = values.GetInteger("external cache file table address");
             var layout = buildInfo.GetLayout("external cache file table entry");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 
@@ -39,8 +39,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void LoadPageInfo(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenCacheFileReference[] fileReferences)
         {
-            int count = (int)values.GetNumber("number of raw pages");
-            uint address = values.GetNumber("raw page table address");
+            int count = (int)values.GetInteger("number of raw pages");
+            uint address = values.GetInteger("raw page table address");
             var layout = buildInfo.GetLayout("raw page table entry");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 
@@ -50,8 +50,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void LoadSegments(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenResourcePage[] pages)
         {
-            int count = (int)values.GetNumber("number of raw segments");
-            uint address = values.GetNumber("raw segment table address");
+            int count = (int)values.GetInteger("number of raw segments");
+            uint address = values.GetInteger("raw segment table address");
             var layout = buildInfo.GetLayout("raw segment table entry");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 

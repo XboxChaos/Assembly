@@ -22,15 +22,15 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            Name = new StringID((int)values.GetNumber("name stringid"));
+            Name = new StringID((int)values.GetInteger("name stringid"));
 
             LoadPermutations(values, reader, metaArea, buildInfo);
         }
 
         private void LoadPermutations(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int count = (int)values.GetNumber("number of permutations");
-            uint address = values.GetNumber("permutation table address");
+            int count = (int)values.GetInteger("number of permutations");
+            uint address = values.GetInteger("permutation table address");
             var layout = buildInfo.GetLayout("model permutation");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 

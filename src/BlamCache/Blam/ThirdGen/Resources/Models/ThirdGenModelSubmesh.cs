@@ -28,12 +28,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values)
         {
-            ShaderIndex = (int)values.GetNumber("shader index");
-            IndexBufferStart = (int)values.GetNumber("index buffer start");
-            IndexBufferCount = (int)values.GetNumber("index buffer count");
-            VertexGroupStart = (int)values.GetNumber("vertex group start");
-            VertexGroupCount = (int)values.GetNumber("vertex group count");
-            VertexBufferCount = (int)values.GetNumber("vertex buffer count");
+            ShaderIndex = (int)values.GetInteger("shader index");
+            IndexBufferStart = (int)values.GetInteger("index buffer start");
+            IndexBufferCount = (int)values.GetInteger("index buffer count");
+            VertexGroupStart = (int)values.GetInteger("vertex group start");
+            VertexGroupCount = (int)values.GetInteger("vertex group count");
+            VertexBufferCount = (int)values.GetInteger("vertex buffer count");
         }
     }
 }

@@ -37,13 +37,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
         {
-            uint address = values.GetNumber("memory address");
+            uint address = values.GetInteger("memory address");
             if (address != 0 && address != 0xFFFFFFFF)
             {
-                int classIndex = (int)values.GetNumber("class index");
+                int classIndex = (int)values.GetInteger("class index");
                 Class = classList[classIndex];
 
-                ushort salt = (ushort)values.GetNumber("datum index salt");
+                ushort salt = (ushort)values.GetInteger("datum index salt");
                 Index = new DatumIndex(salt, index);
 
                 MetaLocation = SegmentPointer.FromPointer(address, metaArea);

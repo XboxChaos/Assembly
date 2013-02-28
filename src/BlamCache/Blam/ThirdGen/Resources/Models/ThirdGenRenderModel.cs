@@ -24,7 +24,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            ResourceIndex = new DatumIndex(values.GetNumber("resource datum index"));
+            ResourceIndex = new DatumIndex(values.GetInteger("resource datum index"));
 
             LoadRegions(values, reader, metaArea, buildInfo);
             LoadSections(values, reader, metaArea, buildInfo);
@@ -32,8 +32,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void LoadRegions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int count = (int)values.GetNumber("number of regions");
-            uint address = values.GetNumber("region table address");
+            int count = (int)values.GetInteger("number of regions");
+            uint address = values.GetInteger("region table address");
             var layout = buildInfo.GetLayout("model region");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 
@@ -43,8 +43,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         private void LoadSections(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            int count = (int)values.GetNumber("number of sections");
-            uint address = values.GetNumber("section table address");
+            int count = (int)values.GetInteger("number of sections");
+            uint address = values.GetInteger("section table address");
             var layout = buildInfo.GetLayout("model section");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 

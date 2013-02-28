@@ -99,11 +99,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         {
             StructureValueCollection values = new StructureValueCollection();
 
-            values.SetNumber("file size", (uint)FileSize);
-            values.SetNumber("type", (uint)Type);
+            values.SetInteger("file size", (uint)FileSize);
+            values.SetInteger("type", (uint)Type);
             values.SetString("internal name", InternalName);
             values.SetString("scenario name", ScenarioName);
-            values.SetNumber("xdk version", (uint)XDKVersion);
+            values.SetInteger("xdk version", (uint)XDKVersion);
 
             AdjustPartitions();
             values.SetArray("partitions", SerializePartitions());
@@ -111,70 +111,70 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             if (_originalRawTableOffset != 0)
             {
                 if (RawTable != null)
-                    values.SetNumber("raw table offset", (uint)RawTable.Offset);
+                    values.SetInteger("raw table offset", (uint)RawTable.Offset);
 
                 if (localeArea != null)
                 {
                     // I really don't know what these next two values are supposed to mean...anyone got anything?
-                    values.SetNumber("eof index offset", localeArea.OffsetToPointer((int)FileSize)); // Reach, H4
-                    values.SetNumber("eof index offset plus string data size", localeArea.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
+                    values.SetInteger("eof index offset", localeArea.OffsetToPointer((int)FileSize)); // Reach, H4
+                    values.SetInteger("eof index offset plus string data size", localeArea.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
                 }
             }
             else
             {
-                values.SetNumber("meta offset", (uint)MetaArea.Offset);
+                values.SetInteger("meta offset", (uint)MetaArea.Offset);
             }
 
             if (RawTable != null)
-                values.SetNumber("raw table size", (uint)RawTable.Size);
+                values.SetInteger("raw table size", (uint)RawTable.Size);
 
             if (MetaArea != null)
             {
-                values.SetNumber("virtual base address", MetaArea.BasePointer);
-                values.SetNumber("index header address", IndexHeaderLocation.AsPointer());
-                values.SetNumber("virtual size", (uint)MetaArea.Size);
+                values.SetInteger("virtual base address", MetaArea.BasePointer);
+                values.SetInteger("index header address", IndexHeaderLocation.AsPointer());
+                values.SetInteger("virtual size", (uint)MetaArea.Size);
             }
 
             if (StringBlockLocation != null)
-                values.SetNumber("string block offset", (uint)StringBlockLocation.AsPointer());
+                values.SetInteger("string block offset", (uint)StringBlockLocation.AsPointer());
             
-            values.SetNumber("string table count", (uint)StringIDCount);
+            values.SetInteger("string table count", (uint)StringIDCount);
             if (StringIDData != null)
             {
-                values.SetNumber("string table size", (uint)StringIDData.Size);
-                values.SetNumber("string table offset", StringIDDataLocation.AsPointer());
+                values.SetInteger("string table size", (uint)StringIDData.Size);
+                values.SetInteger("string table offset", StringIDDataLocation.AsPointer());
             }
 
             if (StringIDIndexTableLocation != null)
-                values.SetNumber("string index table offset", StringIDIndexTableLocation.AsPointer());
+                values.SetInteger("string index table offset", StringIDIndexTableLocation.AsPointer());
 
             if (StringArea != null)
             {
-                values.SetNumber("string data size", (uint)StringArea.Size);
-                values.SetNumber("string offset magic", StringArea.BasePointer);
+                values.SetInteger("string data size", (uint)StringArea.Size);
+                values.SetInteger("string offset magic", StringArea.BasePointer);
             }
 
-            values.SetNumber("file table count", (uint)FileNameCount);
+            values.SetInteger("file table count", (uint)FileNameCount);
             if (FileNameData != null)
             {
-                values.SetNumber("file table offset", FileNameDataLocation.AsPointer());
-                values.SetNumber("file table size", (uint)FileNameData.Size);
+                values.SetInteger("file table offset", FileNameDataLocation.AsPointer());
+                values.SetInteger("file table size", (uint)FileNameData.Size);
             }
 
             if (FileNameIndexTableLocation != null)
-                values.SetNumber("file index table offset", FileNameIndexTableLocation.AsPointer());
+                values.SetInteger("file index table offset", FileNameIndexTableLocation.AsPointer());
 
             if (localeArea != null)
             {
-                values.SetNumber("locale data index offset", localeArea.BasePointer);
-                values.SetNumber("locale data size", (uint)localeArea.Size);
-                values.SetNumber("locale offset magic", (uint)-localeArea.PointerMask);
+                values.SetInteger("locale data index offset", localeArea.BasePointer);
+                values.SetInteger("locale data size", (uint)localeArea.Size);
+                values.SetInteger("locale offset magic", (uint)-localeArea.PointerMask);
             }
 
             if (UnknownTableLocation != null)
             {
-                values.SetNumber("unknown table count", (uint)UnknownCount);
-                values.SetNumber("unknown table offset", UnknownTableLocation.AsPointer());
+                values.SetInteger("unknown table count", (uint)UnknownCount);
+                values.SetInteger("unknown table offset", UnknownTableLocation.AsPointer());
             }
             return values;
         }
@@ -211,8 +211,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             for (int i = 0; i < Partitions.Length; i++)
             {
                 StructureValueCollection values = new StructureValueCollection();
-                values.SetNumber("load address", Partitions[i].BasePointer != null ? Partitions[i].BasePointer.AsPointer() : 0);
-                values.SetNumber("size", Partitions[i].Size);
+                values.SetInteger("load address", Partitions[i].BasePointer != null ? Partitions[i].BasePointer.AsPointer() : 0);
+                values.SetInteger("size", Partitions[i].Size);
                 results[i] = values;
             }
             return results;
@@ -220,23 +220,23 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private void Load(StructureValueCollection values, FileSegmenter segmenter)
         {
-            _eofSegment = segmenter.WrapEOF((int)values.GetNumber("file size"));
+            _eofSegment = segmenter.WrapEOF((int)values.GetInteger("file size"));
 
-            Type = (CacheFileType)values.GetNumber("type");
+            Type = (CacheFileType)values.GetInteger("type");
             InternalName = values.GetString("internal name");
             ScenarioName = values.GetString("scenario name");
-            XDKVersion = (int)values.GetNumber("xdk version");
+            XDKVersion = (int)values.GetInteger("xdk version");
 
             RawTable = CalculateRawTableSegment(values, segmenter);
 
             FileSegment metaSegment = CalculateMetaSegment(values, segmenter);
             if (metaSegment != null)
             {
-                uint virtualBase = values.GetNumber("virtual base address");
+                uint virtualBase = values.GetInteger("virtual base address");
                 MetaArea = new FileSegmentGroup(new MetaAddressConverter(metaSegment, virtualBase));
                 MetaArea.AddSegment(metaSegment);
 
-                IndexHeaderLocation = SegmentPointer.FromPointer(values.GetNumber("index header address"), MetaArea);
+                IndexHeaderLocation = SegmentPointer.FromPointer(values.GetInteger("index header address"), MetaArea);
                 Partitions = LoadPartitions(values.GetArray("partitions"));
             }
             else
@@ -252,7 +252,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private FileSegment CalculateMetaSegment(StructureValueCollection values, FileSegmenter segmenter)
         {
-            int metaSize = (int)values.GetNumber("virtual size");
+            int metaSize = (int)values.GetInteger("virtual size");
             if (metaSize == 0)
                 return null;
 
@@ -265,11 +265,11 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private int CalculateMetaOffset(StructureValueCollection values)
         {
-            if (values.HasNumber("raw table offset") && values.HasNumber("raw table size"))
+            if (values.HasInteger("raw table offset") && values.HasInteger("raw table size"))
             {
                 // Load raw table info
-                int rawTableSize = (int)values.GetNumber("raw table size");
-                int rawTableOffset = (int)values.GetNumber("raw table offset");
+                int rawTableSize = (int)values.GetInteger("raw table size");
+                int rawTableOffset = (int)values.GetInteger("raw table offset");
 
                 // There are two ways to get the meta offset:
                 // 1. Raw table offset + raw table size
@@ -280,7 +280,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             }
 
             uint offset;
-            if (!values.FindNumber("meta offset", out offset))
+            if (!values.FindInteger("meta offset", out offset))
                 throw new ArgumentException("The XML layout file is missing information on how to find the meta offset.");
             return (int)offset;
         }
@@ -288,16 +288,16 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         private FileSegment CalculateRawTableSegment(StructureValueCollection values, FileSegmenter segmenter)
         {
             // WAT. H3BETA DOESN'T HAVE THIS. WAT.
-            if (values.HasNumber("raw table size") && values.HasNumber("raw table offset"))
+            if (values.HasInteger("raw table size") && values.HasInteger("raw table offset"))
             {
                 // Load the basic values
-                int rawTableSize = (int)values.GetNumber("raw table size");
-                int rawTableOffset = (int)values.GetNumber("raw table offset");
+                int rawTableSize = (int)values.GetInteger("raw table size");
+                int rawTableOffset = (int)values.GetInteger("raw table offset");
                 _originalRawTableOffset = rawTableOffset;
 
                 // If the original raw table offset was 0, load it from the alternate pointer
                 if (rawTableOffset == 0)
-                    rawTableOffset = (int)values.GetNumber("alternate raw table offset");
+                    rawTableOffset = (int)values.GetInteger("alternate raw table offset");
 
                 return segmenter.WrapSegment(rawTableOffset, rawTableSize, 0x1000, SegmentResizeOrigin.End);
             }
@@ -312,8 +312,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             // If the original raw table offset isn't zero, then "string offset magic" contains the base pointer to the string area
             // and the string area is located immediately after the header
             // Otherwise, pointers are just file offsets
-            uint magic = values.GetNumberOrDefault("string offset magic", 0);
-            if (magic > 0 && values.GetNumberOrDefault("raw table offset", 0) > 0)
+            uint magic = values.GetIntegerOrDefault("string offset magic", 0);
+            if (magic > 0 && values.GetIntegerOrDefault("raw table offset", 0) > 0)
                 return new BasedPointerConverter(magic, HeaderSize);
             return new IdentityPointerConverter();
         }
@@ -324,13 +324,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             StringArea = new FileSegmentGroup(converter);
 
             // StringIDs
-            StringIDCount = (int)values.GetNumber("string table count");
+            StringIDCount = (int)values.GetInteger("string table count");
             if (StringIDCount > 0)
             {
-                int sidIndexTableOff = converter.PointerToOffset(values.GetNumber("string index table offset"));
-                int sidDataOff = converter.PointerToOffset(values.GetNumber("string table offset"));
+                int sidIndexTableOff = converter.PointerToOffset(values.GetInteger("string index table offset"));
+                int sidDataOff = converter.PointerToOffset(values.GetInteger("string table offset"));
 
-                int sidTableSize = (int)values.GetNumber("string table size");
+                int sidTableSize = (int)values.GetInteger("string table size");
                 StringIDIndexTable = segmenter.WrapSegment(sidIndexTableOff, StringIDCount * 4, 4, SegmentResizeOrigin.End);
                 StringIDData = segmenter.WrapSegment(sidDataOff, sidTableSize, 1, SegmentResizeOrigin.End);
 
@@ -338,22 +338,22 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
                 StringIDDataLocation = StringArea.AddSegment(StringIDData);
 
                 // idk what this is, but H3Beta has it
-                if (values.HasNumber("string block offset"))
+                if (values.HasInteger("string block offset"))
                 {
-                    int sidBlockOff = converter.PointerToOffset(values.GetNumber("string block offset"));
+                    int sidBlockOff = converter.PointerToOffset(values.GetInteger("string block offset"));
                     StringBlock = segmenter.WrapSegment(sidBlockOff, StringIDCount * 0x80, 0x80, SegmentResizeOrigin.End);
                     StringBlockLocation = StringArea.AddSegment(StringBlock);
                 }
             }
 
             // Tag names
-            FileNameCount = (int)values.GetNumber("file table count");
+            FileNameCount = (int)values.GetInteger("file table count");
             if (FileNameCount > 0)
             {
-                int nameIndexTableOff = converter.PointerToOffset(values.GetNumber("file index table offset"));
-                int nameDataOff = converter.PointerToOffset(values.GetNumber("file table offset"));
+                int nameIndexTableOff = converter.PointerToOffset(values.GetInteger("file index table offset"));
+                int nameDataOff = converter.PointerToOffset(values.GetInteger("file table offset"));
 
-                int fileTableSize = (int)values.GetNumber("file table size");
+                int fileTableSize = (int)values.GetInteger("file table size");
                 FileNameIndexTable = segmenter.WrapSegment(nameIndexTableOff, FileNameCount * 4, 4, SegmentResizeOrigin.End);
                 FileNameData = segmenter.WrapSegment(nameDataOff, fileTableSize, 1, SegmentResizeOrigin.End);
 
@@ -362,12 +362,12 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             }
 
             // Some H4-only unknown table
-            if (values.HasNumber("unknown table count") && values.HasNumber("unknown table offset"))
+            if (values.HasInteger("unknown table count") && values.HasInteger("unknown table offset"))
             {
-                UnknownCount = (int)values.GetNumber("unknown table count");
+                UnknownCount = (int)values.GetInteger("unknown table count");
                 if (UnknownCount > 0)
                 {
-                    int unknownOff = converter.PointerToOffset(values.GetNumber("unknown table offset"));
+                    int unknownOff = converter.PointerToOffset(values.GetInteger("unknown table offset"));
                     UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount * 0x10, 0x10, SegmentResizeOrigin.End);
                     UnknownTableLocation = StringArea.AddSegment(UnknownTable);
                 }
@@ -376,10 +376,10 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private IPointerConverter CalculateLocalePointerConverter(StructureValueCollection values)
         {
-            uint mask = values.GetNumberOrDefault("locale offset magic", 0);
+            uint mask = values.GetIntegerOrDefault("locale offset magic", 0);
             if (mask != 0)
             {
-                uint basePointer = values.GetNumber("locale data index offset");
+                uint basePointer = values.GetInteger("locale data index offset");
                 int baseOffset = (int)(basePointer + mask);
                 return new BasedPointerConverter(basePointer, baseOffset);
             }
@@ -391,8 +391,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             var result = from partition in partitionValues
                          select new Partition
                          (
-                             partition.GetNumber("load address") != 0 ? SegmentPointer.FromPointer(partition.GetNumber("load address"), MetaArea) : null,
-                             partition.GetNumber("size")
+                             partition.GetInteger("load address") != 0 ? SegmentPointer.FromPointer(partition.GetInteger("load address"), MetaArea) : null,
+                             partition.GetInteger("size")
                          );
             return result.ToArray();
         }

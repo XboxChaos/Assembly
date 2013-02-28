@@ -62,7 +62,7 @@ namespace ExtryzeDLL.Flexibility
                 if (!_collection.HasString(name))
                     return;
             }
-            else if (!_collection.HasNumber(name))
+            else if (!_collection.HasInteger(name))
             {
                 return;
             }
@@ -71,32 +71,36 @@ namespace ExtryzeDLL.Flexibility
             switch (type)
             {
                 case StructureValueType.Byte:
-                    _writer.WriteByte((byte)_collection.GetNumber(name));
+                    _writer.WriteByte((byte)_collection.GetInteger(name));
                     _offset++;
                     break;
                 case StructureValueType.SByte:
-                    _writer.WriteSByte((sbyte)_collection.GetNumber(name));
+                    _writer.WriteSByte((sbyte)_collection.GetInteger(name));
                     _offset++;
                     break;
                 case StructureValueType.UInt16:
-                    _writer.WriteUInt16((ushort)_collection.GetNumber(name));
+                    _writer.WriteUInt16((ushort)_collection.GetInteger(name));
                     _offset += 2;
                     break;
                 case StructureValueType.Int16:
-                    _writer.WriteInt16((short)_collection.GetNumber(name));
+                    _writer.WriteInt16((short)_collection.GetInteger(name));
                     _offset += 2;
                     break;
                 case StructureValueType.UInt32:
-                    _writer.WriteUInt32(_collection.GetNumber(name));
+                    _writer.WriteUInt32(_collection.GetInteger(name));
                     _offset += 4;
                     break;
                 case StructureValueType.Int32:
-                    _writer.WriteInt32((int)_collection.GetNumber(name));
+                    _writer.WriteInt32((int)_collection.GetInteger(name));
                     _offset += 4;
                     break;
                 case StructureValueType.Asciiz:
                     _writer.WriteAscii(_collection.GetString(name));
                     _offset = _writer.Position;
+                    break;
+                case StructureValueType.Float32:
+                    _writer.WriteFloat(_collection.GetFloat(name));
+                    _offset += 4;
                     break;
             }
         }

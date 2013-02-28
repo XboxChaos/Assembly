@@ -12,9 +12,9 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
         public ThirdGenGlobal(StructureValueCollection values, ExpressionTable allExpressions)
         {
             Name = values.GetString("name");
-            Type = (short)values.GetNumber("type");
+            Type = (short)values.GetInteger("type");
 
-            DatumIndex valueIndex = new DatumIndex(values.GetNumber("expression index"));
+            DatumIndex valueIndex = new DatumIndex(values.GetInteger("expression index"));
             if (valueIndex.IsValid)
                 Value = allExpressions.FindExpression(valueIndex);
         }

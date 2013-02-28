@@ -46,8 +46,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void LoadResources(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
         {
-            int count = (int)values.GetNumber("number of resources");
-            uint address = values.GetNumber("resource table address");
+            int count = (int)values.GetInteger("number of resources");
+            uint address = values.GetInteger("resource table address");
             var layout = buildInfo.GetLayout("resource table entry");
             var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
 

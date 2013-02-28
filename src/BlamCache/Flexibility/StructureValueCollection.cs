@@ -28,40 +28,82 @@ namespace ExtryzeDLL.Flexibility
     /// </summary>
     public class StructureValueCollection
     {
-        private Dictionary<string, uint> _numberValues = new Dictionary<string, uint>();
+        private Dictionary<string, uint> _intValues = new Dictionary<string, uint>();
+        private Dictionary<string, float> _floatValues = new Dictionary<string, float>();
         private Dictionary<string, string> _stringValues = new Dictionary<string, string>();
         private Dictionary<string, StructureValueCollection[]> _arrayValues = new Dictionary<string, StructureValueCollection[]>();
         private Dictionary<string, byte[]> _rawValues = new Dictionary<string, byte[]>();
 
-        public bool HasNumber(string name)
+        /// <summary>
+        /// Checks if an integer field is present in the value collection.
+        /// </summary>
+        /// <param name="name">The name of the integer field to search for.</param>
+        /// <returns>true if the field is present.</returns>
+        public bool HasInteger(string name)
         {
-            return _numberValues.ContainsKey(name);
+            return _intValues.ContainsKey(name);
         }
 
+        /// <summary>
+        /// Checks if a float field is present in the value collection.
+        /// </summary>
+        /// <param name="name">The name of the float field to search for.</param>
+        /// <returns>true if the field is present.</returns>
+        public bool HasFloat(string name)
+        {
+            return _floatValues.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Checks if a string field is present in the value collection.
+        /// </summary>
+        /// <param name="name">The name of the string field to search for.</param>
+        /// <returns>true if the field is present.</returns>
         public bool HasString(string name)
         {
             return _stringValues.ContainsKey(name);
         }
 
+        /// <summary>
+        /// Checks if an array field is present in the value collection.
+        /// </summary>
+        /// <param name="name">The name of the array field to search for.</param>
+        /// <returns>true if the field is present.</returns>
         public bool HasArray(string name)
         {
             return _arrayValues.ContainsKey(name);
         }
 
+        /// <summary>
+        /// Checks if a raw byte array field is present in the value collection.
+        /// </summary>
+        /// <param name="name">The name of the raw byte array field to search for.</param>
+        /// <returns>true if the field is present.</returns>
         public bool HasRaw(string name)
         {
             return _rawValues.ContainsKey(name);
         }
 
         /// <summary>
-        /// Sets the value of a named numeric field in a structure.
+        /// Sets the value of a named integer field in a structure.
         /// If the field does not exist, it will be created.
         /// </summary>
-        /// <param name="name">The name of the numeric field to set.</param>
+        /// <param name="name">The name of the integer field to set.</param>
         /// <param name="value">The value to assign to the field.</param>
-        public void SetNumber(string name, uint value)
+        public void SetInteger(string name, uint value)
         {
-            _numberValues[name] = value;
+            _intValues[name] = value;
+        }
+
+        /// <summary>
+        /// Sets the value of a named float field in a structure.
+        /// If the field does not exist, it will be created.
+        /// </summary>
+        /// <param name="name">The name of the float field to set.</param>
+        /// <param name="value">The value to assign to the field.</param>
+        public void SetFloat(string name, float value)
+        {
+            _floatValues[name] = value;
         }
 
         /// <summary>
@@ -97,14 +139,25 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
-        /// Finds a numeric field with a given name and retrieves its value if it is found.
+        /// Finds an integer field with a given name and retrieves its value if it is found.
         /// </summary>
-        /// <param name="name">The name of the numeric field to find.</param>
+        /// <param name="name">The name of the integer field to find.</param>
         /// <param name="value">The variable to store the field's value to (if the field exists).</param>
         /// <returns>true if the field was found.</returns>
-        public bool FindNumber(string name, out uint value)
+        public bool FindInteger(string name, out uint value)
         {
-            return _numberValues.TryGetValue(name, out value);
+            return _intValues.TryGetValue(name, out value);
+        }
+
+        /// <summary>
+        /// Finds a float field with a given name and retrieves its value if it is found.
+        /// </summary>
+        /// <param name="name">The name of the float field to find.</param>
+        /// <param name="value">The variable to store the field's value to (if the field exists).</param>
+        /// <returns>true if the field was found.</returns>
+        public bool FindFloat(string name, out float value)
+        {
+            return _floatValues.TryGetValue(name, out value);
         }
 
         /// <summary>
@@ -141,17 +194,31 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
-        /// Retrieves the value of a numeric field,
+        /// Retrieves the value of an integer field,
         /// throwing an exception if the field does not exist.
         /// </summary>
-        /// <param name="name">The name of the numeric field to retrieve the value of.</param>
+        /// <param name="name">The name of the integer field to retrieve the value of.</param>
         /// <returns>The field's value.</returns>
         /// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
-        public uint GetNumber(string name)
+        public uint GetInteger(string name)
         {
-            if (!HasNumber(name))
+            if (!HasInteger(name))
                 throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
-            return _numberValues[name];
+            return _intValues[name];
+        }
+
+        /// <summary>
+        /// Retrieves the value of a float field,
+        /// throwing an exception if the field does not exist.
+        /// </summary>
+        /// <param name="name">The name of the float field to retrieve the value of.</param>
+        /// <returns>The field's value.</returns>
+        /// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+        public float GetFloat(string name)
+        {
+            if (!HasFloat(name))
+                throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+            return _floatValues[name];
         }
 
         /// <summary>
@@ -197,16 +264,31 @@ namespace ExtryzeDLL.Flexibility
         }
 
         /// <summary>
-        /// Attempts to retrieve the value of a numeric field,
+        /// Attempts to retrieve the value of an integer field,
         /// returning a specified default value if it does not exist.
         /// </summary>
-        /// <param name="name">The name of the numeric field to retrieve the value of.</param>
+        /// <param name="name">The name of the integer field to retrieve the value of.</param>
         /// <param name="defaultValue">The value to return if the field is not found.</param>
         /// <returns>The field's value if it was found, or <paramref name="defaultValue"/> otherwise.</returns>
-        public uint GetNumberOrDefault(string name, uint defaultValue)
+        public uint GetIntegerOrDefault(string name, uint defaultValue)
         {
             uint value;
-            if (FindNumber(name, out value))
+            if (FindInteger(name, out value))
+                return value;
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// Attempts to retrieve the value of a float field,
+        /// returning a specified default value if it does not exist.
+        /// </summary>
+        /// <param name="name">The name of the float field to retrieve the value of.</param>
+        /// <param name="defaultValue">The value to return if the field is not found.</param>
+        /// <returns>The field's value if it was found, or <paramref name="defaultValue"/> otherwise.</returns>
+        public float GetFloatOrDefault(string name, float defaultValue)
+        {
+            float value;
+            if (FindFloat(name, out value))
                 return value;
             return defaultValue;
         }

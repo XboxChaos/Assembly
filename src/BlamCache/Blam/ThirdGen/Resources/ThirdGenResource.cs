@@ -61,13 +61,13 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
         private void Load(StructureValueCollection values, ushort index, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
         {
-            Index = new DatumIndex((ushort)values.GetNumber("datum index salt"), index);
+            Index = new DatumIndex((ushort)values.GetInteger("datum index salt"), index);
 
-            DatumIndex tagIndex = new DatumIndex(values.GetNumber("parent tag datum index"));
+            DatumIndex tagIndex = new DatumIndex(values.GetInteger("parent tag datum index"));
             if (tagIndex.IsValid)
                 ParentTag = tags.Tags[tagIndex.Index];
 
-            int segmentIndex = (int)values.GetNumber("segment index");
+            int segmentIndex = (int)values.GetInteger("segment index");
             if (segmentIndex >= 0 && segmentIndex < layoutInfo.Segments.Length)
                 _segment = layoutInfo.Segments[segmentIndex];
         }
