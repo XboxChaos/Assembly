@@ -42,7 +42,7 @@ namespace ExtryzeDLL.Blam.Resources.Models
         private static void ReadVertexBuffers(IReader reader, IRenderModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
         {
             for (int i = 0; i < model.Sections.Length; i++)
-                ReadSectionVertices(reader, model.Sections[i], buildInfo, sectionsToRead[i] ? processor : null);
+                ReadSectionVertices(reader, model.Sections[i], model.BoundingBox, buildInfo, sectionsToRead[i] ? processor : null);
         }
 
         /// <summary>
@@ -51,8 +51,9 @@ namespace ExtryzeDLL.Blam.Resources.Models
         /// <param name="reader">The stream to read the vertex buffer from.</param>
         /// <param name="section">The model section that the vertex buffer belongs to.</param>
         /// <param name="buildInfo">Information about the cache file's target engine.</param>
+        /// <param name="boundingBox">The bounding box for the model section.</param>
         /// <param name="processor">The IModelProcessor to pass the read model data to, or null if the vertex buffer should be skipped over.</param>
-        private static void ReadSectionVertices(IReader reader, IModelSection section, BuildInformation buildInfo, IModelProcessor processor)
+        private static void ReadSectionVertices(IReader reader, IModelSection section, IModelBoundingBox boundingBox, BuildInformation buildInfo, IModelProcessor processor)
         {
             VertexLayout layout = buildInfo.VertexLayouts.GetLayout(section.VertexFormat);
 
@@ -61,7 +62,7 @@ namespace ExtryzeDLL.Blam.Resources.Models
                 if (processor != null)
                     processor.BeginSubmeshVertices(submesh);
 
-                VertexBufferReader.ReadVertices(reader, layout, submesh.VertexBufferCount, processor);
+                VertexBufferReader.ReadVertices(reader, layout, submesh.VertexBufferCount, boundingBox, processor);
 
                 if (processor != null)
                     processor.EndSubmeshVertices(submesh);

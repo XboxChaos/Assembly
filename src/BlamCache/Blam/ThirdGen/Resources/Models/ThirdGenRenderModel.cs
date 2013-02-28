@@ -20,6 +20,8 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         public IModelSection[] Sections { get; private set; }
 
+        public IModelBoundingBox BoundingBox { get; private set; }
+
         public DatumIndex ResourceIndex { get; private set; }
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
@@ -28,6 +30,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
             LoadRegions(values, reader, metaArea, buildInfo);
             LoadSections(values, reader, metaArea, buildInfo);
+            LoadBoundingBox(values, reader, metaArea, buildInfo);
         }
 
         private void LoadRegions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
@@ -50,6 +53,21 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
             Sections = (from entry in entries
                         select new ThirdGenModelSection(entry, reader, metaArea, buildInfo)).ToArray();
+        }
+
+        private void LoadBoundingBox(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        {
+            int count = (int)values.GetInteger("number of bounding boxes");
+            if (count < 1)
+                return;
+
+            uint address = values.GetInteger("bounding box table address");
+            var layout = buildInfo.GetLayout("model bounding box");
+            var entries = ReflexiveReader.ReadReflexive(1, address, reader, layout, metaArea);
+
+            // Just take the first bounding box
+            // Is it even possible for models to have more than one?
+            BoundingBox = new ThirdGenModelBoundingBox(entries.First());
         }
     }
 }

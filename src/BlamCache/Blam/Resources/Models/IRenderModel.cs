@@ -21,6 +21,11 @@ namespace ExtryzeDLL.Blam.Resources.Models
         IModelSection[] Sections { get; }
 
         /// <summary>
+        /// Gets the model's bounding box. Can be null.
+        /// </summary>
+        IModelBoundingBox BoundingBox { get; }
+
+        /// <summary>
         /// Gets the datum index of the model's resource.
         /// </summary>
         /// <seealso cref="IResourceTable"/>

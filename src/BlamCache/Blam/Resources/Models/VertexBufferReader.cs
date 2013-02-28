@@ -18,8 +18,9 @@ namespace ExtryzeDLL.Blam.Resources.Models
         /// <param name="reader">The stream to read from.</param>
         /// <param name="layout">The layout of each vertex to read.</param>
         /// <param name="count">The number of vertices to read.</param>
+        /// <param name="boundingBox">The bounding box to transform vertices with. Can be null.</param>
         /// <param name="processor">The IVertexProcessor to send read vertices to. Can be null.</param>
-        public static void ReadVertices(IReader reader, VertexLayout layout, int count, IVertexProcessor processor)
+        public static void ReadVertices(IReader reader, VertexLayout layout, int count, IModelBoundingBox boundingBox, IVertexProcessor processor)
         {
             for (int i = 0; i < count; i++)
             {
@@ -32,7 +33,7 @@ namespace ExtryzeDLL.Blam.Resources.Models
                     if (element.Stream == 0) // Not sure how multistream vertices work yet
                     {
                         reader.SeekTo(vertexStartPos + element.Offset);
-                        ReadElement(reader, element, processor);
+                        ReadElement(reader, element, boundingBox, processor);
                     }
                 }
 
@@ -72,8 +73,9 @@ namespace ExtryzeDLL.Blam.Resources.Models
         /// </summary>
         /// <param name="reader">The stream to read from. It should be positioned at the start of the element.</param>
         /// <param name="element">The layout of the element to read.</param>
+        /// <param name="boundingBox">The bounding box to transform the element with. Can be null.</param>
         /// <param name="processor">The IVertexProcessor to send the element to.</param>
-        private static void ReadElement(IReader reader, VertexElementLayout element, IVertexProcessor processor)
+        private static void ReadElement(IReader reader, VertexElementLayout element, IModelBoundingBox boundingBox, IVertexProcessor processor)
         {
             // EW EW EW
             // TODO: Implement everything, this is just enough to load some Reach vertices for now...
@@ -182,8 +184,37 @@ namespace ExtryzeDLL.Blam.Resources.Models
                     throw new NotSupportedException("Unsupported vertex element type: " + Enum.GetName(typeof(VertexElementType), element.Type));
             }
 
+            if (boundingBox != null)
+                TransformElement(ref x, ref y, ref z, ref w, element.Usage, boundingBox);
+
             if (processor != null)
                 processor.ProcessVertexElement(x, y, z, w, element);
+        }
+
+        /// <summary>
+        /// Transforms a vertex element based upon a model's bounding box information.
+        /// </summary>
+        /// <param name="x">The X component of the element.</param>
+        /// <param name="y">The Y component of the element.</param>
+        /// <param name="z">The Z component of the element.</param>
+        /// <param name="w">The W component of the element.</param>
+        /// <param name="usage">The usage of the vertex element.</param>
+        /// <param name="boundingBox">The bounding box to transform the element by.</param>
+        private static void TransformElement(ref float x, ref float y, ref float z, ref float w, VertexElementUsage usage, IModelBoundingBox boundingBox)
+        {
+            switch (usage)
+            {
+                case VertexElementUsage.Position:
+                    x = x * (boundingBox.MaxX - boundingBox.MinX) + boundingBox.MinX;
+                    y = y * (boundingBox.MaxY - boundingBox.MinY) + boundingBox.MinY;
+                    z = z * (boundingBox.MaxZ - boundingBox.MinZ) + boundingBox.MinZ;
+                    break;
+
+                case VertexElementUsage.TexCoords:
+                    x = x * (boundingBox.MaxU - boundingBox.MinU) + boundingBox.MinU;
+                    y = y * (boundingBox.MaxV - boundingBox.MinV) + boundingBox.MinV;
+                    break;
+            }
         }
     }
 }
