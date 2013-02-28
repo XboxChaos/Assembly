@@ -22,9 +22,15 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources.Models
 
         public int VertexFormat { get; private set; }
 
+        public int ExtraElementsPerVertex { get; private set; }
+
+        public ExtraVertexElementType ExtraElementsType { get; private set; }
+
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             VertexFormat = (int)values.GetNumber("vertex format");
+            ExtraElementsPerVertex = (int)values.GetNumber("extra elements per vertex");
+            ExtraElementsType = (ExtraVertexElementType)values.GetNumber("extra element type");
 
             LoadSubmeshes(values, reader, metaArea, buildInfo);
             LoadVertexGroups(values, reader, metaArea, buildInfo, Submeshes);

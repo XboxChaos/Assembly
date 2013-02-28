@@ -26,7 +26,7 @@ namespace ExtryzeDLL.Flexibility
         UInt1N,    // 1D unsigned int vector, normalized
         UInt2N,    // 2D unsigned int vector, normalized
         UInt4N,    // 4D unsigned int vector, normalized
-        D3DColor,  // 4 unsigned bytes in the order ARGB
+        D3DColor,  // 4 unsigned bytes in the order ARGB, expanded to (R, G, B, A) and normalized by dividing by 255.0f
         UByte4,    // 4D unsigned byte vector
         Byte4,     // 4D byte vector
         UByte4N,   // 4D unsigned byte vector, normalized
@@ -45,8 +45,8 @@ namespace ExtryzeDLL.Flexibility
         Dec3N,     // 3D 10-bit 10-bit 10-bit vector, normalized by dividing by 511.0f
         UDec4,     // 4D unsigned 10-bit 10-bit 10-bit 2-bit vector
         Dec4,      // 4D 10-bit 10-bit 10-bit 2-bit vector
-        UDec4N,    // 4D unsigned 10-bit 10-bit 10-bit 2-bit vector, normalized by dividing by 1023.0f
-        Dec4N,     // 4D 10-bit 10-bit 10-bit 2-bit vector, normalized by dividing by 511.0f
+        UDec4N,    // 4D unsigned 10-bit 10-bit 10-bit 2-bit vector, normalized by dividing by (1023.0f, 1023.0f, 1023.0f, 3.0f)
+        Dec4N,     // 4D 10-bit 10-bit 10-bit 2-bit vector, normalized by dividing by (511.0f, 511.0f, 511.0f, 1.0f)
         UHenD3,    // 3D unsigned 11-bit 11-bit 10-bit vector
         HenD3,     // 3D 11-bit 11-bit 10-bit vector
         UHenD3N,   // 3D unsigned 11-bit 11-bit 10-bit vector, normalized by dividing by (2047.0f, 2047.0f, 1023.0f)
@@ -125,23 +125,4 @@ namespace ExtryzeDLL.Flexibility
         /// </summary>
         public int UsageIndex { get; private set; }
     }
-
-    /*
-     * float4
-     * float16_2
-     * dhen3n
-     * ushort4n
-     * ushort2n
-     * ubyte4
-     * ubyte4n
-     * float2
-     * d3dcolor
-     * float3
-     * uhend3n
-     * byte4n
-     * ushort2
-     * short4n
-     * float16_4
-     * udec4n
-     */
 }
