@@ -48,7 +48,7 @@ namespace AssemblyUpdateManager
                         fz.ExtractZip(zipPath, Directory.GetCurrentDirectory(), null);
                         break;
                     }
-                    catch (IOException ex)
+                    catch (IOException)
                     {
                         Thread.Sleep(1000);
                         if (i == 4)
