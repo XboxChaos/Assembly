@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 using Assembly.Helpers;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -40,7 +41,22 @@ namespace AssemblyUpdateManager
                 // Extract the update zip
                 FastZip fz = new FastZip();
                 fz.CreateEmptyDirectories = true;
-                fz.ExtractZip(zipPath, Directory.GetCurrentDirectory(), null);
+                for (int i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        fz.ExtractZip(zipPath, Directory.GetCurrentDirectory(), null);
+                        break;
+                    }
+                    catch (IOException ex)
+                    {
+                        Thread.Sleep(1000);
+                        if (i == 4)
+                        {
+                            throw;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
