@@ -13,7 +13,6 @@ namespace ExtryzeDLL.Blam.SecondGen
     public class SecondGenCacheFile : ICacheFile
     {
         private FileSegmenter _segmenter;
-        private List<FileSegment> _segments = new List<FileSegment>();
         private SecondGenHeader _header;
         private BuildInformation _buildInfo;
         private SecondGenTagTable _tags;
@@ -126,9 +125,9 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return null; }
         }
 
-        public IList<FileSegment> Segments
+        public IEnumerable<FileSegment> Segments
         {
-            get { return _segments; }
+            get { return _segmenter.GetWrappers(); }
         }
 
         public FileSegmentGroup MetaArea

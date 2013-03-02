@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using ExtryzeDLL.IO;
+using System.IO;
 
 namespace ExtryzeDLL.Patching
 {
@@ -35,14 +38,19 @@ namespace ExtryzeDLL.Patching
 
                 switch (blockId)
 				{
-					case AssemblyPatchBlockID.Blfc:
-						ReadBlfInfo(reader, result);
-						break;
-
                     case AssemblyPatchBlockID.Titl:
                         ReadPatchInfo(reader, result);
                         break;
 
+                    case AssemblyPatchBlockID.Segm:
+                        ReadSegmentChanges(reader, result);
+                        break;
+
+                    case AssemblyPatchBlockID.Blfc:
+                        ReadBlfInfo(reader, result);
+                        break;
+
+                    #region Deprecated
                     case AssemblyPatchBlockID.Meta:
                         ReadMetaChanges(reader, result);
                         break;
@@ -50,6 +58,7 @@ namespace ExtryzeDLL.Patching
                     case AssemblyPatchBlockID.Locl:
                         ReadLocaleChanges(reader, result);
                         break;
+                    #endregion Deprecated
                 }
 
                 // Skip to the next block
@@ -58,28 +67,6 @@ namespace ExtryzeDLL.Patching
             return result;
         }
 
-		private static void ReadBlfInfo(IReader reader, Patch output)
-		{
-			// ReSharper disable UnusedVariable
-			var version = reader.ReadByte();
-			// ReSharper restore UnusedVariable
-			
-			// Version 0 (all versions)
-			var targetGame = (TargetGame)reader.ReadByte();
-			var mapInfoFileName = reader.ReadAscii();
-			var mapInfoLength = reader.ReadUInt32();
-			var mapInfo = reader.ReadBlock((int)mapInfoLength);
-			var blfContainerCount = reader.ReadInt16();
-			output.CustomBlfContent = new BlfContent(mapInfoFileName, mapInfo, targetGame);
-			for(var i = 0; i < blfContainerCount; i++)
-			{
-				var fileName = reader.ReadAscii();
-				var blfContainerLength = reader.ReadUInt32();
-				var blfContainer = reader.ReadBlock((int)blfContainerLength);
-
-				output.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(fileName, blfContainer));
-			}
-		}
         private static void ReadPatchInfo(IReader reader, Patch output)
         {
 // ReSharper disable UnusedVariable
@@ -96,37 +83,99 @@ namespace ExtryzeDLL.Patching
 			var screenshotLength = reader.ReadInt32();
             if (screenshotLength > 0)
                 output.Screenshot = reader.ReadBlock(screenshotLength);
+
+            // Version 1
+            if (version == 1)
+            {
+                output.MetaPokeBase = reader.ReadUInt32();
+                output.MetaChangesIndex = reader.ReadSByte();
+            }
         }
+
+        private static void ReadSegmentChanges(IReader reader, Patch output)
+        {
+// ReSharper disable UnusedVariable
+            var version = reader.ReadByte();
+// ReSharper restore UnusedVariable
+
+            // Version 0 (all versions)
+            var numChanges = reader.ReadByte();
+            for (var i = 0; i < numChanges; i++)
+            {
+                var oldOffset = reader.ReadUInt32();
+                var oldSize = reader.ReadInt32();
+                var newOffset = reader.ReadUInt32();
+                var newSize = reader.ReadInt32();
+                var resizeAtEnd = Convert.ToBoolean(reader.ReadByte());
+                var segmentChange = new SegmentChange(oldOffset, oldSize, newOffset, newSize, resizeAtEnd);
+                segmentChange.DataChanges.AddRange(ReadDataChanges(reader));
+
+                output.SegmentChanges.Add(segmentChange);
+            }
+        }
+
+        private static List<DataChange> ReadDataChanges(IReader reader)
+        {
+            List<DataChange> result = new List<DataChange>();
+
+            var numFourByteChanges = reader.ReadUInt32();
+            for (var j = 0; j < numFourByteChanges; j++)
+            {
+                var offset = reader.ReadUInt32();
+                var data = reader.ReadBlock(4);
+                result.Add(new DataChange(offset, data));
+            }
+
+            var numOtherChanges = reader.ReadUInt32();
+            for (var j = 0; j < numOtherChanges; j++)
+            {
+                var offset = reader.ReadUInt32();
+                var dataSize = reader.ReadInt32();
+                var data = reader.ReadBlock(dataSize);
+                result.Add(new DataChange(offset, data));
+            }
+
+            return result;
+        }
+
+        private static void ReadBlfInfo(IReader reader, Patch output)
+        {
+            // ReSharper disable UnusedVariable
+            var version = reader.ReadByte();
+            // ReSharper restore UnusedVariable
+
+            // Version 0 (all versions)
+            var targetGame = (TargetGame)reader.ReadByte();
+            var mapInfoFileName = reader.ReadAscii();
+            var mapInfoLength = reader.ReadUInt32();
+            var mapInfo = reader.ReadBlock((int)mapInfoLength);
+            var blfContainerCount = reader.ReadInt16();
+            output.CustomBlfContent = new BlfContent(mapInfoFileName, mapInfo, targetGame);
+            for (var i = 0; i < blfContainerCount; i++)
+            {
+                var fileName = Path.GetFileName(reader.ReadAscii());
+                var blfContainerLength = reader.ReadUInt32();
+                var blfContainer = reader.ReadBlock((int)blfContainerLength);
+
+                output.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(fileName, blfContainer));
+            }
+        }
+
+        #region Deprecated
         private static void ReadMetaChanges(IReader reader, Patch output)
         {
-// ReSharper disable UnusedVariable
+            // ReSharper disable UnusedVariable
 			var version = reader.ReadByte();
-// ReSharper restore UnusedVariable
+            // ReSharper restore UnusedVariable
 
-            // Read four-byte changes
-			var numFourByteChanges = reader.ReadUInt32();
-            for (uint i = 0; i < numFourByteChanges; i++)
-            {
-				var address = reader.ReadUInt32();
-				var data = reader.ReadBlock(4);
-                output.MetaChanges.Add(new MetaChange(address, data));
-            }
-
-            // Read variable-length changes
-			var numChanges = reader.ReadUInt32();
-            for (uint i = 0; i < numChanges; i++)
-            {
-				var address = reader.ReadUInt32();
-				var dataSize = reader.ReadInt32();
-				var data = reader.ReadBlock(dataSize);
-                output.MetaChanges.Add(new MetaChange(address, data));
-            }
+            output.MetaChanges.AddRange(ReadDataChanges(reader));
         }
+
         private static void ReadLocaleChanges(IReader reader, Patch output)
         {
-// ReSharper disable UnusedVariable
+            // ReSharper disable UnusedVariable
 			var version = reader.ReadByte();
-// ReSharper restore UnusedVariable
+            // ReSharper restore UnusedVariable
 
             // Read language changes
 			var numLanguageChanges = reader.ReadByte();
@@ -147,6 +196,7 @@ namespace ExtryzeDLL.Patching
                 output.LanguageChanges.Add(languageChange);
             }
         }
+        #endregion Deprecated
 
         private const int AssemblyPatchMagic = 0x61736D70;
     }

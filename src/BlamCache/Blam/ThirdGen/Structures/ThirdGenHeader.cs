@@ -86,8 +86,6 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         public int UnknownCount { get; set; }
         public FileSegment UnknownTable { get; private set; }
         public SegmentPointer UnknownTableLocation { get; set; }
-        
-        public IList<FileSegment> Segments { get; private set; }
 
         /// <summary>
         /// Serializes the header's values, storing them into a StructureValueCollection.
@@ -220,6 +218,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
         private void Load(StructureValueCollection values, FileSegmenter segmenter)
         {
+            segmenter.DefineSegment(0, HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
             _eofSegment = segmenter.WrapEOF((int)values.GetInteger("file size"));
 
             Type = (CacheFileType)values.GetInteger("type");
@@ -246,8 +245,6 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 
             CalculateStringGroup(values, segmenter);
             LocalePointerConverter = CalculateLocalePointerConverter(values);
-
-            Segments = new List<FileSegment>();
         }
 
         private FileSegment CalculateMetaSegment(StructureValueCollection values, FileSegmenter segmenter)

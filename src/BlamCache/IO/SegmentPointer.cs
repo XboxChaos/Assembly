@@ -13,14 +13,16 @@ namespace ExtryzeDLL.IO
         private FileSegment _baseSegment;
         private FileSegmentGroup _baseGroup;
         private int _baseSegmentDelta;
+        private int _originalBaseSize;
+        private bool _baseBottomResizes;
 
         private SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, int baseSegmentDelta)
         {
             _baseSegment = baseSegment;
             _baseGroup = baseGroup;
             _baseSegmentDelta = baseSegmentDelta;
-
-            _baseSegment.Resized += BaseSegmentResized;
+            _originalBaseSize = baseSegment.Size;
+            _baseBottomResizes = (baseSegment.ResizeOrigin == SegmentResizeOrigin.Beginning);
         }
 
         /// <summary>
@@ -67,6 +69,8 @@ namespace ExtryzeDLL.IO
         /// <returns>The file offset corresponding to the SegmentPointer.</returns>
         public int AsOffset()
         {
+            if (_baseBottomResizes)
+                return _baseSegment.Offset + _baseSegment.Size - _originalBaseSize + _baseSegmentDelta; // Account for data inserted at the beginning
             return _baseSegment.Offset + _baseSegmentDelta;
         }
 
@@ -77,16 +81,6 @@ namespace ExtryzeDLL.IO
         public uint AsPointer()
         {
             return _baseGroup.OffsetToPointer(AsOffset());
-        }
-
-        private void BaseSegmentResized(object sender, SegmentResizedEventArgs e)
-        {
-            if (e.ResizeOrigin == SegmentResizeOrigin.Beginning)
-            {
-                // Data was inserted at the beginning of the base segment,
-                // so increase the offset delta
-                _baseSegmentDelta += e.NewSize - e.OldSize;
-            }
         }
     }
 }

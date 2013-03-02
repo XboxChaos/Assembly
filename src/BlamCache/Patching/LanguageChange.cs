@@ -3,7 +3,7 @@
 namespace ExtryzeDLL.Patching
 {
     /// <summary>
-    /// Represents a set of changes that should be made to a language in a cache file.
+    /// [DEPRECATED] Represents a set of changes that should be made to a language in a cache file.
     /// </summary>
     public class LanguageChange
     {
@@ -21,6 +21,6 @@ namespace ExtryzeDLL.Patching
         /// <summary>
         /// Changes that should be made to locales in the language.
         /// </summary>
-        public IList<LocaleChange> LocaleChanges { get; private set; }
+        public List<LocaleChange> LocaleChanges { get; private set; }
     }
 }

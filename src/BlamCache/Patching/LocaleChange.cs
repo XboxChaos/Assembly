@@ -1,7 +1,7 @@
 ﻿namespace ExtryzeDLL.Patching
 {
     /// <summary>
-    /// Represents a change that should be made to a locale string in a cache file.
+    /// [DEPRECATED] Represents a change that should be made to a locale string in a cache file.
     /// </summary>
     public class LocaleChange
     {

@@ -55,5 +55,18 @@ namespace ExtryzeDLL.IO
         {
             return new FileSegment(segmenter.DefineEOF(offset, alignment), segmenter);
         }
+
+        /// <summary>
+        /// Gets an enumerable collection of FileSegments wrapping the segments in a FileSegmenter.
+        /// </summary>
+        /// <remarks>
+        /// Note that the returned segments will be newly allocated and will not have the same references as other wrapper objects that have been created for the segmenter.
+        /// </remarks>
+        /// <returns>An enumerable collection of FileSegments for the segmenter.</returns>
+        public static IEnumerable<FileSegment> GetWrappers(this FileSegmenter segmenter)
+        {
+            foreach (int segmentId in segmenter.Segments)
+                yield return new FileSegment(segmentId, segmenter);
+        }
     }
 }

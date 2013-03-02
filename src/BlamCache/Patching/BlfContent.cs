@@ -39,6 +39,7 @@ namespace ExtryzeDLL.Patching
 		/// </summary>
 		public IList<BlfContainerEntry> BlfContainerEntries { get; private set; }
 	}
+
 	public class BlfContainerEntry
 	{
 		public BlfContainerEntry(string fileName, byte[] blfContainer)

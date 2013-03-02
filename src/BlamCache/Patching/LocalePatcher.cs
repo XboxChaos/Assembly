@@ -7,7 +7,7 @@ using ExtryzeDLL.IO;
 namespace ExtryzeDLL.Patching
 {
     /// <summary>
-    /// Provides static methods for patching locales in a cache file.
+    /// [DEPRECATED] Provides static methods for patching locales in a cache file.
     /// </summary>
     public static class LocalePatcher
     {

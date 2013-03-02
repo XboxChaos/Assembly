@@ -59,6 +59,14 @@ namespace ExtryzeDLL.IO
         }
 
         /// <summary>
+        /// Gets the resize origin of the segment.
+        /// </summary>
+        public SegmentResizeOrigin ResizeOrigin
+        {
+            get { return _segmenter.GetSegmentResizeOrigin(ID); }
+        }
+
+        /// <summary>
         /// Resizes the segment.
         /// </summary>
         /// <param name="newSize">The minimum amount of space that the segment must occupy.</param>

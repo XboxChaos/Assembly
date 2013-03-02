@@ -45,7 +45,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
         private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
-        private List<FileSegment> _segments = new List<FileSegment>();
         private BuildInformation _buildInfo;
         private ThirdGenResourceLayoutTable _resourceLayout;
         private ThirdGenResourceGestalt _resources;
@@ -161,11 +160,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _localeGroups.AsReadOnly(); }
         }
 
-        public IList<FileSegment> Segments
-        {
-            get { return _segments; }
-        }
-
         public FileSegmentGroup MetaArea
         {
             get { return _header.MetaArea; }
@@ -186,6 +180,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _resourceMetaLoader; }
         }
 
+        public IEnumerable<FileSegment> Segments
+        {
+            get { return _segmenter.GetWrappers(); }
+        }
+
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {
             LoadHeader(reader, buildInfo, buildString);
@@ -197,9 +196,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
             LoadLocaleGroups(reader, buildInfo);
             LoadResourceLayoutTable(reader, buildInfo);
             LoadResourceGestalt(reader, buildInfo);
-
-            BuildLanguageList();
-            BuildSegmentList();
         }
 
         private void LoadHeader(IReader reader, BuildInformation buildInfo, string buildString)
@@ -248,6 +244,8 @@ namespace ExtryzeDLL.Blam.ThirdGen
             reader.SeekTo(languageTag.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
             _languageInfo = new ThirdGenLanguageGlobals(values, _segmenter, _header.LocalePointerConverter, buildInfo);
+
+            BuildLanguageList();
         }
 
         private bool FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
@@ -374,11 +372,6 @@ namespace ExtryzeDLL.Blam.ThirdGen
                     return tag;
             }
             return null;
-        }
-
-        private void BuildSegmentList()
-        {
-            _segments.AddRange(_header.Segments);
         }
 
         private static int MatgMagic = CharConstant.FromString("matg");

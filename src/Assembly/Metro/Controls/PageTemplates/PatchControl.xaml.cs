@@ -30,10 +30,14 @@ namespace Assembly.Metro.Controls.PageTemplates
         public PatchControl()
         {
             InitializeComponent();
+            ApplyPatchControls.Visibility = Visibility.Collapsed;
+            PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
         }
+
         public PatchControl(string pathPath)
         {
             InitializeComponent();
+            PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
 
             tabPanel.SelectedIndex = 1;
             txtApplyPatchFile.Text = pathPath;
@@ -298,7 +302,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                 error = true;
 
             if (error)
-                MetroMessageBox.Show("Unable to make patch", "Mandatory fields are missing, please make sure you've filled out all required fields.");
+                MetroMessageBox.Show("Unable to make patch", "Mandatory fields are missing. Please make sure that you have filled out all required fields.");
 
             return !error;
         }
@@ -342,10 +346,6 @@ namespace Assembly.Metro.Controls.PageTemplates
                 var desc = txtCreatePatchContentDescription.Text;
                 var name = txtCreatePatchContentName.Text;
 
-                // Delete patch, if it exists
-                if (File.Exists(outputPath))
-                    File.Delete(outputPath);
-
                 // Make dat patch
                 var patch = new Patch
                 {
@@ -357,61 +357,67 @@ namespace Assembly.Metro.Controls.PageTemplates
                         File.ReadAllBytes(previewImage)
                 };
 
-                IReader originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
-                IReader newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
-
-                var version = new CacheFileVersionInfo(originalReader);
-                var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
-                var buildInfo = loader.LoadBuild(version.BuildString);
-                var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
-                var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
-
-                patch.MapInternalName = originalFile.InternalName;
-
-                if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex != 4)
+                IReader originalReader = null;
+                IReader newReader = null;
+                try
                 {
-                    var targetGame = (TargetGame)cboxCreatePatchTargetGame.SelectedIndex;
-                    var mapInfo = File.ReadAllBytes(txtCreatePatchMapInfo.Text);
-                    var mapInfoFileInfo = new FileInfo(txtCreatePatchMapInfo.Text);
-                    FileInfo blfFileInfo;
+                    originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
+                    newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-                    patch.CustomBlfContent = new BlfContent(mapInfoFileInfo.FullName, mapInfo, targetGame);
+                    var version = new CacheFileVersionInfo(originalReader);
+                    var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
+                    var buildInfo = loader.LoadBuild(version.BuildString);
+                    var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
+                    var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
 
-                    #region Blf Data
-                    if (PatchCreationBlfOption0.Visibility == Visibility.Visible)
+                    if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex != 4)
                     {
-                        blfFileInfo = new FileInfo(txtCreatePatchblf0.Text);
-                        patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+                        var targetGame = (TargetGame)cboxCreatePatchTargetGame.SelectedIndex;
+                        var mapInfo = File.ReadAllBytes(txtCreatePatchMapInfo.Text);
+                        var mapInfoFileInfo = new FileInfo(txtCreatePatchMapInfo.Text);
+                        FileInfo blfFileInfo;
+
+                        patch.CustomBlfContent = new BlfContent(mapInfoFileInfo.FullName, mapInfo, targetGame);
+
+                        #region Blf Data
+                        if (PatchCreationBlfOption0.Visibility == Visibility.Visible)
+                        {
+                            blfFileInfo = new FileInfo(txtCreatePatchblf0.Text);
+                            patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+                        }
+                        if (PatchCreationBlfOption1.Visibility == Visibility.Visible)
+                        {
+                            blfFileInfo = new FileInfo(txtCreatePatchblf1.Text);
+                            patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+                        }
+                        if (PatchCreationBlfOption2.Visibility == Visibility.Visible)
+                        {
+                            blfFileInfo = new FileInfo(txtCreatePatchblf2.Text);
+                            patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+                        }
+                        if (PatchCreationBlfOption3.Visibility == Visibility.Visible)
+                        {
+                            blfFileInfo = new FileInfo(txtCreatePatchblf3.Text);
+                            patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
+                        }
+                        #endregion
                     }
-                    if (PatchCreationBlfOption1.Visibility == Visibility.Visible)
-                    {
-                        blfFileInfo = new FileInfo(txtCreatePatchblf1.Text);
-                        patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
-                    }
-                    if (PatchCreationBlfOption2.Visibility == Visibility.Visible)
-                    {
-                        blfFileInfo = new FileInfo(txtCreatePatchblf2.Text);
-                        patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
-                    }
-                    if (PatchCreationBlfOption3.Visibility == Visibility.Visible)
-                    {
-                        blfFileInfo = new FileInfo(txtCreatePatchblf3.Text);
-                        patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name, File.ReadAllBytes(blfFileInfo.FullName)));
-                    }
-                    #endregion
+
+                    PatchBuilder.BuildPatch(originalFile, originalReader, newFile, newReader, patch);
+                }
+                finally
+                {
+                    if (originalReader != null)
+                        originalReader.Close();
+                    if (newReader != null)
+                        newReader.Close();
                 }
 
-                MetaComparer.CompareMeta(originalFile, originalReader, newFile, newReader, patch);
-                LocaleComparer.CompareLocales(originalFile, originalReader, newFile, newReader, patch);
-
-                originalReader.Close();
-                newReader.Close();
-
-                IWriter output = new EndianWriter(File.OpenWrite(outputPath), Endian.BigEndian);
+                IWriter output = new EndianWriter(File.Open(outputPath, FileMode.Create, FileAccess.Write), Endian.BigEndian);
                 AssemblyPatchWriter.WritePatch(patch, output);
                 output.Close();
 
-                MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
+                MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy sailing, modder!");
             }
             catch (Exception ex)
             {
@@ -427,7 +433,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Patch file",
-                Filter = "Assembly Patch File (*.asmp)|*.asmp"
+                Filter = "Assembly Patch Files|*.asmp"
             };
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
@@ -438,8 +444,8 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             var ofd = new OpenFileDialog
             {
-                Title = "Assembly - Select a UnModified (Clean) Map file",
-                Filter = "Blam Cache File (*.map)|*.map"
+                Title = "Assembly - Select an Unmodified Map File",
+                Filter = "Blam Cache Files|*.map"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtApplyPatchUnmodifiedMap.Text = ofd.FileName;
@@ -448,8 +454,8 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             var sfd = new SaveFileDialog
             {
-                Title = "Assembly - Select where to save the Map file",
-                Filter = "Blam Cache File (*.map)|*.map"
+                Title = "Assembly - Save Modded Map",
+                Filter = "Blam Cache Files|*.map"
             };
             if (sfd.ShowDialog() == DialogResult.OK)
                 txtApplyPatchOutputMap.Text = sfd.FileName;
@@ -468,13 +474,14 @@ namespace Assembly.Metro.Controls.PageTemplates
                 txtApplyPatchDesc.Text = currentPatch.Description;
                 txtApplyPatchName.Text = currentPatch.Name;
                 txtApplyPatchInternalName.Text = currentPatch.MapInternalName;
-                txtApplyPatchMapID.Text = currentPatch.MapID.ToString(CultureInfo.InvariantCulture);
+                //txtApplyPatchMapID.Text = currentPatch.MapID.ToString(CultureInfo.InvariantCulture);
 
                 // Set Visibility
                 PatchApplicationPatchExtra.Visibility =
                     currentPatch.CustomBlfContent != null
                         ? Visibility.Visible
                         : Visibility.Collapsed;
+                ApplyPatchControls.Visibility = Visibility.Visible;
 
                 // Set Screenshot
                 if (currentPatch.Screenshot == null)
@@ -482,8 +489,6 @@ namespace Assembly.Metro.Controls.PageTemplates
                     // Set default
                     var source = new Uri(@"/Assembly;component/Metro/Images/super_patcher.png", UriKind.Relative);
                     imgApplyPreview.Source = new BitmapImage(source);
-
-                    return;
                 }
                 else
                 {
@@ -520,7 +525,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                 error = true;
 
             if (error)
-                MetroMessageBox.Show("Unable to apply patch", "Mandatory fields are missing, please make sure you've filled out all required fields.");
+                MetroMessageBox.Show("Unable to apply patch", "Mandatory fields are missing. Please make sure that you have filled out all required fields.");
 
             return !error;
         }
@@ -548,38 +553,38 @@ namespace Assembly.Metro.Controls.PageTemplates
                     var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
                     var buildInfo = loader.LoadBuild(version.BuildString);
                     var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
+                    if (currentPatch.MapInternalName != null && cacheFile.InternalName != currentPatch.MapInternalName)
+                    {
+                        MetroMessageBox.Show("Unable to apply patch", "Hold on there! That patch is for " + currentPatch.MapInternalName + ".map, and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");
+                        return;
+                    }
 
                     // Apply the patch!
-                    MetaPatcher.WriteChanges(currentPatch.MetaChanges, cacheFile, stream);
-                    LocalePatcher.WriteLanguageChanges(currentPatch.LanguageChanges, cacheFile, stream);
-                    cacheFile.SaveChanges(stream);
+                    PatchApplier.ApplyPatch(currentPatch, cacheFile, stream);
 
                     // Check for blf snaps
                     if (cbApplyPatchBlfExtraction.IsChecked != null && (PatchApplicationPatchExtra.Visibility == Visibility.Visible && (bool)cbApplyPatchBlfExtraction.IsChecked))
                     {
-                        var fi = new FileInfo(outputPath);
-
-                        var blfDirectory = fi.DirectoryName + "\\images\\";
-                        var infDirectory = fi.DirectoryName + "\\info\\";
-                        if (Directory.Exists(blfDirectory))
+                        var extractDir = Path.GetDirectoryName(outputPath);
+                        var blfDirectory = Path.Combine(extractDir, "images");
+                        var infDirectory = Path.Combine(extractDir, "info");
+                        if (!Directory.Exists(blfDirectory))
                             Directory.CreateDirectory(blfDirectory);
-                        if (Directory.Exists(infDirectory))
+                        if (!Directory.Exists(infDirectory))
                             Directory.CreateDirectory(infDirectory);
 
-                        if (File.Exists(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName))
-                            File.Delete(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName);
-                        File.WriteAllBytes(infDirectory + currentPatch.CustomBlfContent.MapInfoFileName, currentPatch.CustomBlfContent.MapInfo);
+                        var infPath = Path.Combine(infDirectory, Path.GetFileName(currentPatch.CustomBlfContent.MapInfoFileName));
+                        File.WriteAllBytes(infPath, currentPatch.CustomBlfContent.MapInfo);
 
                         foreach (var blfContainerEntry in currentPatch.CustomBlfContent.BlfContainerEntries)
                         {
-                            if (File.Exists(blfContainerEntry + blfContainerEntry.FileName))
-                                File.Delete(blfContainerEntry + blfContainerEntry.FileName);
-                            File.WriteAllBytes(blfContainerEntry + blfContainerEntry.FileName, blfContainerEntry.BlfContainer);
+                            var blfPath = Path.Combine(blfDirectory, Path.GetFileName(blfContainerEntry.FileName));
+                            File.WriteAllBytes(blfPath, blfContainerEntry.BlfContainer);
                         }
                     }
                 }
 
-                MetroMessageBox.Show("Patch Created!", "Your patch has been created in the designated location. Happy Sailing Modder!");
+                MetroMessageBox.Show("Patch Applied!", "Your patch has been applied successfully. Have fun!");
             }
             catch (Exception ex)
             {

@@ -137,11 +137,10 @@ namespace ExtryzeDLL.Blam
         IResourceMetaLoader ResourceMetaLoader { get; }
 
         /// <summary>
-        /// A list of segments that the file has been arbitrarily divided into.
+        /// A collection of segments that the file has been arbitrarily divided into.
         /// For a given cache file, these segments will always be in the same order.
-        /// This can be used to compare two cache files and determine sizing differences between them.
-        /// Note that some segments may be null if they do not exist.
+        /// This could be used to compare two cache files and determine sizing differences between them.
         /// </summary>
-        IList<FileSegment> Segments { get; }
+        IEnumerable<FileSegment> Segments { get; }
     }
 }

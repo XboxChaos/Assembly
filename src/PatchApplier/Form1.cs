@@ -80,9 +80,7 @@ namespace PatchApplier
 				var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
 
                 // Apply the patch!
-                MetaPatcher.WriteChanges(_patch.MetaChanges, cacheFile, stream);
-                LocalePatcher.WriteLanguageChanges(_patch.LanguageChanges, cacheFile, stream);
-                cacheFile.SaveChanges(stream);
+                ExtryzeDLL.Patching.PatchApplier.ApplyPatch(_patch, cacheFile, stream);
             }
 
             MessageBox.Show("Done!");

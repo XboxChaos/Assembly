@@ -191,6 +191,16 @@ namespace ExtryzeDLL.IO
         }
 
         /// <summary>
+        /// Gets the resize origin of a segment.
+        /// </summary>
+        /// <param name="id">The ID of the segment to get the resize origin of.</param>
+        /// <returns>The segment's resize origin.</returns>
+        public SegmentResizeOrigin GetSegmentResizeOrigin(int id)
+        {
+            return GetSegmentFromID(id).ResizeOrigin;
+        }
+
+        /// <summary>
         /// Resizes a segment in the file.
         /// </summary>
         /// <param name="id">The ID of the segment to resize.</param>
@@ -202,8 +212,8 @@ namespace ExtryzeDLL.IO
             InternalSegment segment = GetSegmentFromID(id);
 
             int oldSize = segment.Size;
-            if (newSize < oldSize)
-                throw new NotImplementedException("Segment shrinking is not supported yet.");
+            if (newSize == oldSize)
+                return oldSize;
 
             // Change the size of the segment
             int oldActualSize = segment.ActualSize;
@@ -242,6 +252,14 @@ namespace ExtryzeDLL.IO
 
             OnSegmentResized(new SegmentResizedEventArgs(id, oldSize, segment.Size, segment.ResizeOrigin));
             return segment.Size;
+        }
+
+        /// <summary>
+        /// Gets an enumerable collection of segment IDs for the segmenter.
+        /// </summary>
+        public IEnumerable<int> Segments
+        {
+            get { return Enumerable.Range(0, _segmentsById.Count); }
         }
 
         /// <summary>

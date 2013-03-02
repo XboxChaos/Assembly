@@ -53,8 +53,6 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
         public FileSegment FileNameData { get; set; }
         public SegmentPointer FileNameDataLocation { get; set; }
 
-        public IList<FileSegment> Segments { get; private set; }
-
         public uint Checksum { get; set; }
 
         public StructureValueCollection Serialize()

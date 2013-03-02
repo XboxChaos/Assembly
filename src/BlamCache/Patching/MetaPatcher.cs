@@ -5,7 +5,7 @@ using ExtryzeDLL.IO;
 namespace ExtryzeDLL.Patching
 {
     /// <summary>
-    /// Provides static methods for patching tag meta in a cache file.
+    /// [DEPRECATED] Provides static methods for patching tag meta in a cache file.
     /// </summary>
     public static class MetaPatcher
     {
@@ -15,7 +15,7 @@ namespace ExtryzeDLL.Patching
 		/// <param name="changes">The changes to write.</param>
 	    /// <param name="cacheFile">The cache file to write the changes to.</param>
 	    /// <param name="output">The stream to write the changes to.</param>
-	    public static void WriteChanges(IEnumerable<MetaChange> changes, ICacheFile cacheFile, IWriter output)
+	    public static void WriteChanges(IEnumerable<DataChange> changes, ICacheFile cacheFile, IWriter output)
         {
             foreach (var change in changes)
                 WriteChange(cacheFile, change, output);
@@ -27,31 +27,9 @@ namespace ExtryzeDLL.Patching
         /// <param name="cacheFile">The cache file to write the change to.</param>
         /// <param name="change">The change to write.</param>
         /// <param name="output">The stream to write the change to.</param>
-        public static void WriteChange(ICacheFile cacheFile, MetaChange change, IWriter output)
+        public static void WriteChange(ICacheFile cacheFile, DataChange change, IWriter output)
         {
-            output.SeekTo(cacheFile.MetaArea.PointerToOffset(change.Address));
-            output.WriteBlock(change.Data);
-        }
-
-        /// <summary>
-        /// Pokes a series of meta changes back to an Xbox.
-        /// </summary>
-        /// <param name="changes">The changes to poke.</param>
-        /// <param name="output">The Xbox memory stream to write the changes to.</param>
-        public static void PokeChanges(IEnumerable<MetaChange> changes, IWriter output)
-        {
-            foreach (var change in changes)
-                PokeChange(change, output);
-        }
-
-        /// <summary>
-        /// Pokes a meta change back to an Xbox.
-        /// </summary>
-        /// <param name="change">The change to poke.</param>
-        /// <param name="output">The Xbox memory stream to write the change to.</param>
-        public static void PokeChange(MetaChange change, IWriter output)
-        {
-            output.SeekTo(change.Address);
+            output.SeekTo(cacheFile.MetaArea.PointerToOffset(change.Offset));
             output.WriteBlock(change.Data);
         }
     }
