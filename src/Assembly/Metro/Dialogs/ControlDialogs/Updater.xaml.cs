@@ -122,13 +122,14 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 	        var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var exeDir = Path.GetDirectoryName(exePath);
+            int pid = Process.GetCurrentProcess().Id;
 
             // Run the updater in a windowless setting and pass in the path to the .zip and the current .exe
 	        if (exeDir != null)
 	        {
 		        var updater = new ProcessStartInfo(updaterPath)
 			                      {
-				                      Arguments = string.Format("\"{0}\" \"{1}\"", updateZip, exePath),
+				                      Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", updateZip, exePath, pid),
 				                      CreateNoWindow = true,
 				                      WindowStyle = ProcessWindowStyle.Hidden,
 				                      WorkingDirectory = exeDir
@@ -137,6 +138,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	        }
 
 	        Application.Current.Shutdown();
+            
         }
         #endregion
     }

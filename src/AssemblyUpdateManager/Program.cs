@@ -16,53 +16,45 @@ namespace AssemblyUpdateManager
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 3)
             {
                 Console.Error.WriteLine("Error: not enough arguments");
-                Console.Error.WriteLine("Usage: AssemblyUpdateManager <update zip> <assembly exe>");
+                Console.Error.WriteLine("Usage: AssemblyUpdateManager <update zip> <assembly exe> <parent pid>");
                 return;
             }
             string zipPath = args[0];
             string exePath = args[1];
+            int pid = Convert.ToInt32(args[2]);
 
             try
             {
-                // Kill retail shit
-                Process[] openAssemblys = Process.GetProcessesByName(Path.GetFileName(exePath));
-                foreach (Process process in openAssemblys)
+                // Wait for Assembly to close
+                try
                 {
-                    if (!process.HasExited)
-                        process.Kill();
+                    Process process = Process.GetProcessById(pid);
+                    process.WaitForExit();
+                    process.Close();
                 }
-
-                // Kill dev shit
-                openAssemblys = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exePath) + ".vshost.exe");
-                foreach (Process process in openAssemblys)
-                {
-                    if (!process.HasExited)
-                        process.Kill();
-                }
+                catch { }
 
                 // Extract the update zip
                 FastZip fz = new FastZip();
                 fz.CreateEmptyDirectories = true;
                 fz.ExtractZip(zipPath, Directory.GetCurrentDirectory(), null);
-                File.Delete(zipPath);
             }
             catch (Exception ex)
             {
-                // Write the exception data to a temporary file and run Assembly again, telling it to display it
-                /*string filePath = Path.GetTempFileName();
-                File.WriteAllText(filePath, ex.ToString());
-
-                // The --updateError switch tells Assembly to display an exception message read from the text file
-                Process.Start(exePath, "--updateError \"" + filePath + "\"");*/
-
                 MessageBox.Show(ex.ToString(), "Assembly Update Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            try
+            {
+                File.Delete(zipPath);
+            }
+            catch { }
+
             // Launch "The New iPa... Assembly"
-            Process.Start(exePath, "/fromUpdater " + Process.GetCurrentProcess().Id);
+            Process.Start("Assembly://post-update");
         }
     }
 }
