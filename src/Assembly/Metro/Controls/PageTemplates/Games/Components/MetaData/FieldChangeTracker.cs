@@ -126,6 +126,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _propertyNames.Add("EntrySize"); // Reflexives
             _propertyNames.Add("FirstEntryAddress"); // Reflexives
             _propertyNames.Add("Class"); // Tagrefs
+            _propertyNames.Add("Degree"); // Degrees
+            _propertyNames.Add("Radian"); // Degrees
             _propertyNames.Add("X"); // Vectors
             _propertyNames.Add("Y"); // Vectors
             _propertyNames.Add("Z"); // Vectors
