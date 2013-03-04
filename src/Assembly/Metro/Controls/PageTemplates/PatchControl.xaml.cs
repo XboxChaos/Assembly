@@ -433,7 +433,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Patch file",
-                Filter = "Assembly Patch Files|*.asmp|Ascension Patch Files|*.ascpatch|Alteration Patch Files|*.patchdat"
+                Filter = "Patch Files|*.asmp;*.ascpatch;*.patchdat"
             };
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
@@ -468,56 +468,57 @@ namespace Assembly.Metro.Controls.PageTemplates
             
             try
             {
-                
-                EndianReader endian = new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.LittleEndian);
-                String magic = endian.ReadAscii(4);
-                if(magic.Equals("asmp"))
+                using (EndianReader reader = new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.LittleEndian))
                 {
-                    
-                    // Load into UI
-                    currentPatch =
-                        AssemblyPatchLoader.LoadPatch(new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.BigEndian));
-                    txtApplyPatchAuthor.Text = currentPatch.Author;
-                    txtApplyPatchDesc.Text = currentPatch.Description;
-                    txtApplyPatchName.Text = currentPatch.Name;
-                    txtApplyPatchInternalName.Text = currentPatch.MapInternalName;
-                    //txtApplyPatchMapID.Text = currentPatch.MapID.ToString(CultureInfo.InvariantCulture);
+                    string magic = reader.ReadAscii(4);
+                    reader.SeekTo(0);
 
-                    // Set Visibility
-                    PatchApplicationPatchExtra.Visibility =
-                        currentPatch.CustomBlfContent != null
-                            ? Visibility.Visible
-                            : Visibility.Collapsed;
-                    ApplyPatchControls.Visibility = Visibility.Visible;
-
-                    // Set Screenshot
-                    if (currentPatch.Screenshot == null)
+                    if (magic == "asmp")
                     {
-                        // Set default
-                        var source = new Uri(@"/Assembly;component/Metro/Images/super_patcher.png", UriKind.Relative);
-                        imgApplyPreview.Source = new BitmapImage(source);
+                        // Load into UI
+                        reader.Endianness = Endian.BigEndian;
+                        currentPatch = AssemblyPatchLoader.LoadPatch(reader);
+                        txtApplyPatchAuthor.Text = currentPatch.Author;
+                        txtApplyPatchDesc.Text = currentPatch.Description;
+                        txtApplyPatchName.Text = currentPatch.Name;
+                        txtApplyPatchInternalName.Text = currentPatch.MapInternalName;
+                        //txtApplyPatchMapID.Text = currentPatch.MapID.ToString(CultureInfo.InvariantCulture);
+
+                        // Set Visibility
+                        PatchApplicationPatchExtra.Visibility =
+                            currentPatch.CustomBlfContent != null
+                                ? Visibility.Visible
+                                : Visibility.Collapsed;
+                        ApplyPatchControls.Visibility = Visibility.Visible;
                     }
                     else
                     {
-                        var image = new BitmapImage();
-                        image.BeginInit();
-                        image.StreamSource = new MemoryStream(currentPatch.Screenshot);
-                        image.EndInit();
-                        imgApplyPreview.Source = image;
+                        currentPatch = AscensionPatchLoader.LoadPatch(reader);
+                        txtApplyPatchAuthor.Text = "Ascension/Alteration Patch";
+                        txtApplyPatchDesc.Text = "Ascension/Alteration Patch";
+                        txtApplyPatchName.Text = "Ascension/Alteration Patch";
+                        txtApplyPatchInternalName.Text = "Ascension/Alteration Patch";
+
+                        ApplyPatchControls.Visibility = Visibility.Visible;
+                        PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
+
                     }
+                }
+
+                // Set Screenshot
+                if (currentPatch.Screenshot == null)
+                {
+                    // Set default
+                    var source = new Uri(@"/Assembly;component/Metro/Images/super_patcher.png", UriKind.Relative);
+                    imgApplyPreview.Source = new BitmapImage(source);
                 }
                 else
                 {
-                    currentPatch =
-                        AscensionPatchLoader.LoadPatch(new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.LittleEndian));
-                    txtApplyPatchAuthor.Text = "Ascension/Alteration Patch";
-                    txtApplyPatchDesc.Text = "Ascension/Alteration Patch";
-                    txtApplyPatchName.Text = "Ascension/Alteration Patch";
-                    txtApplyPatchInternalName.Text = "Ascension/Alteration Patch";
-
-                    ApplyPatchControls.Visibility = Visibility.Visible;
-                    PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
-                    
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    image.StreamSource = new MemoryStream(currentPatch.Screenshot);
+                    image.EndInit();
+                    imgApplyPreview.Source = image;
                 }
             }
             catch (Exception ex)
@@ -582,9 +583,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 
                     // Apply the patch!
                     if (currentPatch.MapInternalName == null)
-                    {
-                        currentPatch.MapInternalName = cacheFile.InternalName;
-                    }
+                        currentPatch.MapInternalName = cacheFile.InternalName; // Because Ascension doesn't include this, and ApplyPatch() will complain otherwise
+
                     PatchApplier.ApplyPatch(currentPatch, cacheFile, stream);
 
                     // Check for blf snaps
