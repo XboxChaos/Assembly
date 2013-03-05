@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using Assembly.Metro.Native;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {

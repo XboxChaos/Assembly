@@ -2,12 +2,12 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.Patching;
+using Blamite.Blam;
+using Blamite.Blam.ThirdGen;
+using Blamite.Blam.ThirdGen.Structures;
+using Blamite.Flexibility;
+using Blamite.IO;
+using Blamite.Patching;
 
 namespace PatchCreator
 {

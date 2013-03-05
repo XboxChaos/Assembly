@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6B105AB9-84A0-4774-B319-75E9CAB3DB4B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Blamite</RootNamespace>
+    <AssemblyName>Blamite</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Blam\CacheFileLoader.cs" />
+    <Compile Include="Blam\EngineType.cs" />
+    <Compile Include="Blam\Resources\IResource.cs" />
+    <Compile Include="Blam\Resources\IResourceMetaLoader.cs" />
+    <Compile Include="Blam\Resources\IResourcePage.cs" />
+    <Compile Include="Blam\Resources\IResourceTable.cs" />
+    <Compile Include="Blam\Resources\Models\IModelBoundingBox.cs" />
+    <Compile Include="Blam\Resources\Models\IModelPermutation.cs" />
+    <Compile Include="Blam\Resources\Models\IModelProcessor.cs" />
+    <Compile Include="Blam\Resources\Models\IModelRegion.cs" />
+    <Compile Include="Blam\Resources\Models\IModelSection.cs" />
+    <Compile Include="Blam\Resources\Models\IModelSubmesh.cs" />
+    <Compile Include="Blam\Resources\Models\IModelVertexGroup.cs" />
+    <Compile Include="Blam\Resources\Models\IndexBufferReader.cs" />
+    <Compile Include="Blam\Resources\Models\IRenderModel.cs" />
+    <Compile Include="Blam\Resources\Models\IVertexProcessor.cs" />
+    <Compile Include="Blam\Resources\Models\ModelReader.cs" />
+    <Compile Include="Blam\Resources\Models\VertexBufferReader.cs" />
+    <Compile Include="Blam\Resources\ResourcePageExtractor.cs" />
+    <Compile Include="Blam\SecondGen\MetaOffsetConverter.cs" />
+    <Compile Include="Blam\SecondGen\SecondGenResourceMetaLoader.cs" />
+    <Compile Include="Blam\TagTable.cs" />
+    <Compile Include="Blam\ThirdGen\BasedPointerConverter.cs" />
+    <Compile Include="Blam\ThirdGen\IdentityPointerConverter.cs" />
+    <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelBoundingBox.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelPermutation.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelRegion.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelSection.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelSubmesh.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelVertexGroup.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenRenderModel.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenCacheFileReference.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceMetaLoader.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourcePage.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResource.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceGestalt.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceLayoutTable.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceSegment.cs" />
+    <Compile Include="Blam\Util\ReflexiveReader.cs" />
+    <Compile Include="Flexibility\VertexLayout.cs" />
+    <Compile Include="Flexibility\VertexElementLayout.cs" />
+    <Compile Include="Flexibility\VertexLayoutCollection.cs" />
+    <Compile Include="Flexibility\VertexLayoutLoader.cs" />
+    <Compile Include="IO\FileSegment.cs" />
+    <Compile Include="IO\FileSegmenter.cs" />
+    <Compile Include="Blam\ILocaleGroup.cs" />
+    <Compile Include="Blam\LocaleRange.cs" />
+    <Compile Include="Blam\LocaleTable.cs" />
+    <Compile Include="Blam\IScenario.cs" />
+    <Compile Include="Blam\IStringIDResolver.cs" />
+    <Compile Include="Blam\Locale.cs" />
+    <Compile Include="Blam\Scripting\BlamScriptGenerator.cs" />
+    <Compile Include="Blam\Scripting\ExpressionType.cs" />
+    <Compile Include="Blam\Scripting\IExpression.cs" />
+    <Compile Include="Blam\Scripting\IGlobal.cs" />
+    <Compile Include="Blam\Scripting\IGlobalObject.cs" />
+    <Compile Include="Blam\Scripting\IOpcodeLookup.cs" />
+    <Compile Include="Blam\Scripting\IScript.cs" />
+    <Compile Include="Blam\Scripting\IScriptParameter.cs" />
+    <Compile Include="Blam\Scripting\ExpressionTable.cs" />
+    <Compile Include="Blam\Scripting\ScriptValueType.cs" />
+    <Compile Include="Blam\SecondGen\SecondGenCacheFile.cs" />
+    <Compile Include="Blam\LengthBasedStringIDResolver.cs" />
+    <Compile Include="Blam\SecondGen\Structures\SecondGenHeader.cs" />
+    <Compile Include="Blam\SecondGen\Structures\SecondGenTag.cs" />
+    <Compile Include="Blam\SecondGen\Structures\SecondGenTagClass.cs" />
+    <Compile Include="Blam\SecondGen\Structures\SecondGenTagTable.cs" />
+    <Compile Include="Blam\StringID.cs" />
+    <Compile Include="Blam\StringIDModifierResolver.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\CachedStringTable.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\StringTableReader.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenExpression.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenGlobal.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenGlobalObject.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScript.cs" />
+    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScriptParameter.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenLocaleGroup.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenScenarioMeta.cs" />
+    <Compile Include="Blam\IndexedStringIDSource.cs" />
+    <Compile Include="Blam\IndexedStringTable.cs" />
+    <Compile Include="Blam\CacheFileVersionInfo.cs" />
+    <Compile Include="Blam\Util\AESKey.cs" />
+    <Compile Include="Flexibility\LocaleSymbolCollection.cs" />
+    <Compile Include="Blam\StringIDSetResolver.cs" />
+    <Compile Include="Flexibility\StringIDSetLoader.cs" />
+    <Compile Include="Flexibility\StructureLayoutCollection.cs" />
+    <Compile Include="Flexibility\XMLOpcodeLookup.cs" />
+    <Compile Include="IO\FileSegmenterExtensions.cs" />
+    <Compile Include="IO\FileSegmentGroup.cs" />
+    <Compile Include="IO\FileStreamManager.cs" />
+    <Compile Include="IO\IPointerConverter.cs" />
+    <Compile Include="IO\IBaseStream.cs" />
+    <Compile Include="IO\IStream.cs" />
+    <Compile Include="IO\IStreamManager.cs" />
+    <Compile Include="IO\IWritable.cs" />
+    <Compile Include="Blam\ThirdGen\BLF\MapInfo.cs" />
+    <Compile Include="Blam\ICacheFile.cs" />
+    <Compile Include="Blam\FileNameSource.cs" />
+    <Compile Include="Blam\StringIDSource.cs" />
+    <Compile Include="Blam\ThirdGen\BLF\PureBLF.cs" />
+    <Compile Include="Blam\DatumIndex.cs" />
+    <Compile Include="Blam\CacheFileType.cs" />
+    <Compile Include="Blam\ThirdGen\LocaleLanguage.cs" />
+    <Compile Include="Blam\Partition.cs" />
+    <Compile Include="Blam\ILanguage.cs" />
+    <Compile Include="Blam\ITagClass.cs" />
+    <Compile Include="Blam\ITag.cs" />
+    <Compile Include="Blam\ThirdGen\ThirdGenCacheFile.cs" />
+    <Compile Include="IO\Endian.cs" />
+    <Compile Include="IO\EndianReader.cs" />
+    <Compile Include="IO\EndianStream.cs" />
+    <Compile Include="IO\EndianWriter.cs" />
+    <Compile Include="IO\OffsetStream.cs" />
+    <Compile Include="IO\SegmentPointer.cs" />
+    <Compile Include="IO\TableSystem.cs" />
+    <Compile Include="IO\IReader.cs" />
+    <Compile Include="IO\IWriter.cs" />
+    <Compile Include="IO\StreamUtil.cs" />
+    <Compile Include="Patching\AscensionPatchLoader.cs" />
+    <Compile Include="Patching\AssemblyPatchBlockID.cs" />
+    <Compile Include="Patching\AssemblyPatchLoader.cs" />
+    <Compile Include="Patching\AssemblyPatchWriter.cs" />
+    <Compile Include="Patching\BlfContent.cs" />
+    <Compile Include="Patching\DataPatcher.cs" />
+    <Compile Include="Patching\LanguageChange.cs" />
+    <Compile Include="Patching\LocaleChange.cs" />
+    <Compile Include="Patching\LocalePatcher.cs" />
+    <Compile Include="Patching\DataComparer.cs" />
+    <Compile Include="Patching\MetaPatcher.cs" />
+    <Compile Include="Patching\Patch.cs" />
+    <Compile Include="Patching\PatchApplier.cs" />
+    <Compile Include="Patching\PatchBuilder.cs" />
+    <Compile Include="Patching\SegmentChange.cs" />
+    <Compile Include="Patching\DataChange.cs" />
+    <Compile Include="Patching\SegmentComparer.cs" />
+    <Compile Include="Patching\SegmentPatcher.cs" />
+    <Compile Include="Patching\TargetGame.cs" />
+    <Compile Include="Plugins\AscensionPluginWriter.cs" />
+    <Compile Include="Plugins\AssemblyPluginLoader.cs" />
+    <Compile Include="Plugins\AssemblyPluginWriter.cs" />
+    <Compile Include="Plugins\Generation\MetaAnalyzer.cs" />
+    <Compile Include="Plugins\Generation\MetaMap.cs" />
+    <Compile Include="Plugins\Generation\MetaValueGuess.cs" />
+    <Compile Include="Plugins\Generation\MetaValueType.cs" />
+    <Compile Include="Plugins\IPluginVisitor.cs" />
+    <Compile Include="Plugins\PluginRevision.cs" />
+    <Compile Include="Plugins\TestPluginVisitor.cs" />
+    <Compile Include="Plugins\UniversalPluginLoader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTE\H2Vista\H2VistaMapPointerReader.cs" />
+    <Compile Include="RTE\H2Vista\H2VistaRTEProvider.cs" />
+    <Compile Include="Native\ProcessMemoryStream.cs" />
+    <Compile Include="RTE\IRTEProvider.cs" />
+    <Compile Include="Util\AES.cs" />
+    <Compile Include="Util\CharConstant.cs" />
+    <Compile Include="Util\FileSystem.cs" />
+    <Compile Include="Util\FunctionHelpers.cs" />
+    <Compile Include="Util\Half\Half.cs" />
+    <Compile Include="Util\Half\HalfHelper.cs" />
+    <Compile Include="Util\ini.cs" />
+    <Compile Include="Flexibility\IStructureLayoutVisitor.cs" />
+    <Compile Include="Flexibility\StructureLayout.cs" />
+    <Compile Include="Flexibility\StructureReader.cs" />
+    <Compile Include="Flexibility\StructureValueCollection.cs" />
+    <Compile Include="Flexibility\StructureValueType.cs" />
+    <Compile Include="Flexibility\StructureWriter.cs" />
+    <Compile Include="Flexibility\XMLLayoutLoader.cs" />
+    <Compile Include="Flexibility\BuildInformation.cs" />
+    <Compile Include="Flexibility\BuildInfoLoader.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenHeader.cs" />
+    <Compile Include="Blam\IndexedFileNameSource.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagTable.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenLanguage.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenLanguageGlobals.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagClass.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenTag.cs" />
+    <Compile Include="Util\ListSearching.cs" />
+    <Compile Include="Util\MemoryMap.cs" />
+    <Compile Include="Util\SHA1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Formats\Halo2Vista.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Formats\Halo3.xml">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Formats\Halo3Beta.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Formats\Halo3ODST.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Formats\Halo4.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\LocaleSymbols\Halo3ODST.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\LocaleSymbols\HaloReach.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\LocaleSymbols\HaloReachBeta.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Scripting\Halo3_Xbox_Scripting.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Scripting\HaloReach_Xbox_Scripting.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\StringIDs\Reach.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\SupportedBuilds.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Formats\ReachBeta.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\LocaleSymbols\Halo3.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Vertices\Halo4.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Vertices\Reach.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

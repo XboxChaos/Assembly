@@ -16,19 +16,19 @@ using Assembly.Helpers.Net;
 using Microsoft.Win32;
 using CloseableTabItemDemo;
 
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.IO;
+using Blamite.Blam.ThirdGen;
+using Blamite.IO;
 using Assembly.Metro.Dialogs;
-using ExtryzeDLL.Util;
+using Blamite.Util;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Windows;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.Blam.SecondGen;
-using ExtryzeDLL.Blam.Util;
-using ExtryzeDLL.RTE;
-using ExtryzeDLL.RTE.H2Vista;
+using Blamite.Blam;
+using Blamite.Flexibility;
+using Blamite.Blam.SecondGen;
+using Blamite.Blam.Util;
+using Blamite.RTE;
+using Blamite.RTE.H2Vista;
 using XBDMCommunicator;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games

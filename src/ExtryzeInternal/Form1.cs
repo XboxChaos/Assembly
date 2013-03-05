@@ -21,12 +21,12 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Linq;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.Structures;
-using ExtryzeDLL.Util;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Flexibility;
+using Blamite.IO;
+using Blamite.Blam.ThirdGen;
+using Blamite.Blam.ThirdGen.Structures;
+using Blamite.Util;
+using Blamite.Blam;
+using Blamite.Flexibility;
 using System.Reflection;
 
 namespace Assembly

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace PluginConverter
 {

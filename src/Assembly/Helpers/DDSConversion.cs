@@ -13,7 +13,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using ExtryzeDLL.IO;
+using Blamite.IO;
 
 namespace Assembly.Helpers
 {

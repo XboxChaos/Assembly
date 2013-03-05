@@ -5,14 +5,14 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.Patching;
+using Blamite.Blam.ThirdGen;
+using Blamite.Flexibility;
+using Blamite.IO;
+using Blamite.Patching;
 using System;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers;
-using ExtryzeDLL.Blam;
+using Blamite.Blam;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {

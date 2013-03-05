@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Plugins;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.RTE;
+using Blamite.Blam;
+using Blamite.Flexibility;
+using Blamite.IO;
+using Blamite.RTE;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {

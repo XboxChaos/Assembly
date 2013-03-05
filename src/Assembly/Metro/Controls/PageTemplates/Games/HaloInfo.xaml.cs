@@ -16,9 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.BLF;
-using ExtryzeDLL.IO;
+using Blamite.Blam.ThirdGen;
+using Blamite.Blam.ThirdGen.BLF;
+using Blamite.IO;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

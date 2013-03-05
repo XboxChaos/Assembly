@@ -12,12 +12,12 @@ using Assembly.Helpers.Plugins;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.Plugins;
-using ExtryzeDLL.RTE;
-using ExtryzeDLL.Util;
+using Blamite.Blam;
+using Blamite.Flexibility;
+using Blamite.IO;
+using Blamite.Plugins;
+using Blamite.RTE;
+using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {

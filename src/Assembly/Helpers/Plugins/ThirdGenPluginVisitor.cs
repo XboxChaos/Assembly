@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace Assembly.Helpers.Plugins
 {

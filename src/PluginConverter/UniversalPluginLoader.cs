@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace PluginConverter
 {

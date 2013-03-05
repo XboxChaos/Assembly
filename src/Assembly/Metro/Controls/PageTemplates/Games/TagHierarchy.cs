@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using ExtryzeDLL.Blam;
+using Blamite.Blam;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
-using ExtryzeDLL.IO;
+using Blamite.IO;
 using System.Collections.Generic;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Util;
-using ExtryzeDLL.Flexibility;
+using Blamite.Blam;
+using Blamite.Util;
+using Blamite.Flexibility;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {

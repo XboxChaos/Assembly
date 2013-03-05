@@ -19,8 +19,8 @@ using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
 using Assembly.Metro.Native;
 using CloseableTabItemDemo;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.IO;
+using Blamite.Blam.ThirdGen;
+using Blamite.IO;
 using Microsoft.Win32;
 
 namespace Assembly.Windows

@@ -9,8 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.IO;
+using Blamite.Blam.ThirdGen;
+using Blamite.IO;
 using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games

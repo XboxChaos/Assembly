@@ -7,7 +7,7 @@ using System.IO;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Controls;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

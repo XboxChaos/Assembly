@@ -1,6 +1,6 @@
-﻿using ExtryzeDLL.Blam;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
+﻿using Blamite.Blam;
+using Blamite.Flexibility;
+using Blamite.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
-﻿using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Blam.ThirdGen.BLF;
+﻿using Blamite.Blam.ThirdGen;
+using Blamite.Blam.ThirdGen.BLF;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -2,11 +2,11 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.Patching;
+using Blamite.Blam;
+using Blamite.Blam.ThirdGen;
+using Blamite.Flexibility;
+using Blamite.IO;
+using Blamite.Patching;
 
 namespace PatchApplier
 {
@@ -80,7 +80,7 @@ namespace PatchApplier
 				var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
 
                 // Apply the patch!
-                ExtryzeDLL.Patching.PatchApplier.ApplyPatch(_patch, cacheFile, stream);
+                Blamite.Patching.PatchApplier.ApplyPatch(_patch, cacheFile, stream);
             }
 
             MessageBox.Show("Done!");

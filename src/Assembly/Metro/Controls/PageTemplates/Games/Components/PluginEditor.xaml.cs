@@ -7,8 +7,8 @@ using System.Windows.Input;
 using Assembly.Helpers;
 using Assembly.Helpers.CodeCompletion.XML;
 using Assembly.SyntaxHighlighting;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.Util;
+using Blamite.Flexibility;
+using Blamite.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 

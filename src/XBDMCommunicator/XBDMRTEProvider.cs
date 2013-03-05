@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.IO;
-using ExtryzeDLL.RTE;
+using Blamite.Blam;
+using Blamite.Blam.ThirdGen;
+using Blamite.IO;
+using Blamite.RTE;
 
 namespace XBDMCommunicator
 {

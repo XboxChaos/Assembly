@@ -5,10 +5,10 @@ using System.Threading;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using Assembly.Metro.Dialogs;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Blam.Scripting;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Flexibility;
+using Blamite.Blam;
+using Blamite.Blam.Scripting;
+using Blamite.Blam.ThirdGen;
+using Blamite.Flexibility;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {

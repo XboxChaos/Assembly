@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Assembly.Helpers;
-using ExtryzeDLL.Plugins;
+using Blamite.Plugins;
 
 namespace Assembly.Metro.Dialogs
 {

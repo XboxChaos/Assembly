@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using ExtryzeDLL.Blam;
-using ExtryzeDLL.Blam.ThirdGen;
-using ExtryzeDLL.Flexibility;
-using ExtryzeDLL.IO;
+using Blamite.Blam;
+using Blamite.Blam.ThirdGen;
+using Blamite.Flexibility;
+using Blamite.IO;
 
 namespace MapExpandDotNet
 {
