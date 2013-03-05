@@ -78,6 +78,11 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _header.Type; }
         }
 
+        public EngineType Engine
+        {
+            get { return EngineType.ThirdGeneration; }
+        }
+
         public string InternalName
         {
             get { return _header.InternalName; }

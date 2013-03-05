@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -37,10 +38,20 @@ namespace ExtryzeDLL.Flexibility
         private string _basePath;
 
         /// <summary>
-        /// Constructs a new BuildLayoutLoader, loading an XML document listing the supported builds.
+        /// Constructs a new BuildInfoLoader, loading an XML document listing the supported builds.
+        /// </summary>
+        /// <param name="buildInfo">The path to the XML document listing the supported builds.</param>
+        /// <param name="layoutDirPath">The path to the directory where build layout files are stored.</param>
+        public BuildInfoLoader(string buildInfoPath, string layoutDirPath)
+            : this(XDocument.Load(buildInfoPath), layoutDirPath)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new BuildInfoLoader, loading an XML document listing the supported builds.
         /// </summary>
         /// <param name="buildInfo">The XML document listing the supported builds.</param>
-        /// <param name="layoutDirPath">The path to the directory where build layout files are stored. Must end with a slash.</param>
+        /// <param name="layoutDirPath">The path to the directory where build layout files are stored.</param>
         public BuildInfoLoader(XDocument buildInfo, string layoutDirPath)
         {
             _builds = buildInfo.Element("builds");
@@ -106,7 +117,7 @@ namespace ExtryzeDLL.Flexibility
             if (loadStringsAttrib != null)
                 loadStrings = Convert.ToBoolean(loadStringsAttrib.Value);
             if (scriptDefinitionsAttrib != null)
-                scriptOpcodes = _basePath + @"Scripting\" + scriptDefinitionsAttrib.Value;
+                scriptOpcodes = Path.Combine(_basePath, "Scripting", scriptDefinitionsAttrib.Value);
             if (segmentAlignmentAttrib != null)
                 segmentAlignment = ParseNumber(segmentAlignmentAttrib.Value);
 
@@ -142,7 +153,7 @@ namespace ExtryzeDLL.Flexibility
                 StringIDSetResolver setResolver = new StringIDSetResolver();
                 stringIdResolver = setResolver;
 
-                XDocument stringIdDocument = XDocument.Load(_basePath + @"StringIDs\" + stringidDefinitionsAttrib.Value);
+                XDocument stringIdDocument = XDocument.Load(Path.Combine(_basePath, "StringIDs", stringidDefinitionsAttrib.Value));
                 StringIDSetLoader.LoadAllStringIDSets(stringIdDocument, setResolver);
             }
             else
@@ -152,19 +163,19 @@ namespace ExtryzeDLL.Flexibility
             }
 
             BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, segmentAlignment);
-            XDocument layoutDocument = XDocument.Load(_basePath + filenameAttrib.Value);
+            XDocument layoutDocument = XDocument.Load(Path.Combine(_basePath, filenameAttrib.Value));
             LoadAllLayouts(layoutDocument, info);
 
             if (localeSymbols != null)
             {
-                XDocument localeSymbolDocument = XDocument.Load(_basePath + @"LocaleSymbols\" + localeSymbols);
+                XDocument localeSymbolDocument = XDocument.Load(Path.Combine(_basePath, "LocaleSymbols", localeSymbols));
                 LoadAllLocaleSymbols(localeSymbolDocument, info);
             }
 
             if (vertexLayoutsAttrib != null)
             {
                 string vertexLayouts = vertexLayoutsAttrib.Value;
-                XDocument vertexLayoutsDocument = XDocument.Load(_basePath + @"Vertices\" + vertexLayouts);
+                XDocument vertexLayoutsDocument = XDocument.Load(Path.Combine(_basePath, "Vertices", vertexLayouts));
                 LoadAllVertexLayouts(vertexLayoutsDocument, info);
             }
 

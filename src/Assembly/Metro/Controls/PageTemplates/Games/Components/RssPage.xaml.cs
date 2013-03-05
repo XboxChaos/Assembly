@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -78,11 +79,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                         rssEntry.FriendlyPubDate = rssEntry.PubDate.ToString("dddd, dd MMMM yyyy");
                         rssEntry.GUID = nodeItem["guid"].InnerText;
 
-                        Dispatcher.Invoke(new Action(delegate 
+                        Dispatcher.Invoke(new Action(delegate
                             {
                                 RssItems.Add(rssEntry);
                             }));
                     }
+            }
+            catch (TaskCanceledException)
+            {
             }
             catch
             {

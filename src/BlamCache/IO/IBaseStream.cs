@@ -5,13 +5,14 @@ using System.Text;
 
 namespace ExtryzeDLL.IO
 {
-    public interface ISeekable : IDisposable
+    public interface IBaseStream : IDisposable
     {
         bool SeekTo(long offset);
         void Skip(long count);
         bool EOF { get; }
         long Length { get; }
         long Position { get; }
+        Endian Endianness { get; set; }
 
         void Close();
     }

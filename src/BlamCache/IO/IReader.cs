@@ -20,7 +20,7 @@ using System;
 
 namespace ExtryzeDLL.IO
 {
-    public interface IReader : ISeekable
+    public interface IReader : IBaseStream
     {
         string ReadAscii();
         string ReadAscii(int size);

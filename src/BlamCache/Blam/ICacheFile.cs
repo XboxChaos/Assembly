@@ -33,6 +33,16 @@ namespace ExtryzeDLL.Blam
         CacheFileType Type { get; }
 
         /// <summary>
+        /// The cache file's target engine.
+        /// </summary>
+        EngineType Engine { get; }
+
+        /// <summary>
+        /// The engine version that the cache file is intended for.
+        /// </summary>
+        string BuildString { get; }
+
+        /// <summary>
         /// The cache file's internal name.
         /// </summary>
         string InternalName { get; }
@@ -41,11 +51,6 @@ namespace ExtryzeDLL.Blam
         /// The name of the cache file's scenario tag (can be null if none).
         /// </summary>
         string ScenarioName { get; }
-
-        /// <summary>
-        /// The engine build string that the cache file is intended for.
-        /// </summary>
-        string BuildString { get; }
 
         /// <summary>
         /// The XDK version that the cache file was developed with, or 0 if unknown.

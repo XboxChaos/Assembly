@@ -58,7 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a UnModified (Clean) Map file",
-                Filter = "Blam Cache File (*.map)|*.map"
+                Filter = "Blam Cache Files|*.map"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchUnModifiedMap.Text = ofd.FileName;
@@ -68,7 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified Map file",
-                Filter = "Blam Cache File (*.map)|*.map"
+                Filter = "Blam Cache Files|*.map"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchModifiedMap.Text = ofd.FileName;
@@ -78,7 +78,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var sfd = new SaveFileDialog
             {
                 Title = "Assembly - Select where to save the patch file",
-                Filter = "Assembly Patch File (*.asmp)|*.asmp"
+                Filter = "Assembly Patch Files|*.asmp"
             };
             if (sfd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchOutputPatch.Text = sfd.FileName;
@@ -109,7 +109,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified BLF Container",
-                Filter = "BLF Container (*.blf)|*.blf"
+                Filter = "BLF Containers|*.blf"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchblf0.Text = ofd.FileName;
@@ -119,7 +119,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified BLF Container",
-                Filter = "BLF Container (*.blf)|*.blf"
+                Filter = "BLF Containers|*.blf"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchblf1.Text = ofd.FileName;
@@ -129,7 +129,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified BLF Container",
-                Filter = "BLF Container (*.blf)|*.blf"
+                Filter = "BLF Containers|*.blf"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchblf2.Text = ofd.FileName;
@@ -139,7 +139,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified BLF Container",
-                Filter = "BLF Container (*.blf)|*.blf"
+                Filter = "BLF Containers|*.blf"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchblf3.Text = ofd.FileName;
@@ -149,7 +149,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             var ofd = new OpenFileDialog
             {
                 Title = "Assembly - Select a Modified BLF Container",
-                Filter = "BLF Container (*.blf)|*.blf"
+                Filter = "BLF Containers|*.blf"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
                 txtCreatePatchblf4.Text = ofd.FileName;
@@ -166,6 +166,18 @@ namespace Assembly.Metro.Controls.PageTemplates
             // Meta Grids Cleanup
             PatchCreationNoMetaSelected.Visibility = Visibility.Collapsed;
             PatchCreationExtras.Visibility = Visibility.Collapsed;
+
+            if (cboxCreatePatchTargetGame.SelectedIndex == (int)TargetGame.Halo2Vista)
+            {
+                cbCreatePatchHasCustomMeta.IsEnabled = false;
+                PatchCreationEmbeddedFiles.Visibility = Visibility.Collapsed;
+                return;
+            }
+            else
+            {
+                cbCreatePatchHasCustomMeta.IsEnabled = true;
+                PatchCreationEmbeddedFiles.Visibility = Visibility.Visible;
+            }
 
             // Check if custom meta is asked for
             if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked)
@@ -310,7 +322,7 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             var error = false;
 
-            if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked || cboxCreatePatchTargetGame.SelectedIndex == 4) return true;
+            if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool)cbCreatePatchHasCustomMeta.IsChecked || cboxCreatePatchTargetGame.SelectedIndex >= 4) return true;
 
             // Check Map Info exists
             if (String.IsNullOrEmpty(txtCreatePatchMapInfo.Text) || !File.Exists(txtCreatePatchMapInfo.Text))
@@ -357,20 +369,19 @@ namespace Assembly.Metro.Controls.PageTemplates
                         File.ReadAllBytes(previewImage)
                 };
 
-                IReader originalReader = null;
-                IReader newReader = null;
+                EndianReader originalReader = null;
+                EndianReader newReader = null;
                 try
                 {
                     originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
                     newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-                    var version = new CacheFileVersionInfo(originalReader);
-                    var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
-                    var buildInfo = loader.LoadBuild(version.BuildString);
-                    var originalFile = new ThirdGenCacheFile(originalReader, buildInfo, version.BuildString);
-                    var newFile = new ThirdGenCacheFile(newReader, buildInfo, version.BuildString);
+                    var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
+                    var loader = new BuildInfoLoader(Path.Combine(formatsPath, "SupportedBuilds.xml"), formatsPath);
+                    var originalFile = CacheFileLoader.LoadCacheFile(originalReader, loader);
+                    var newFile = CacheFileLoader.LoadCacheFile(originalReader, loader);
 
-                    if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex != 4)
+                    if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex < 4)
                     {
                         var targetGame = (TargetGame)cboxCreatePatchTargetGame.SelectedIndex;
                         var mapInfo = File.ReadAllBytes(txtCreatePatchMapInfo.Text);
@@ -571,10 +582,9 @@ namespace Assembly.Metro.Controls.PageTemplates
                 // Open the destination map
                 using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
                 {
-                    var version = new CacheFileVersionInfo(stream);
-                    var loader = new BuildInfoLoader(XDocument.Load(@"Formats\SupportedBuilds.xml"), @"Formats\");
-                    var buildInfo = loader.LoadBuild(version.BuildString);
-                    var cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
+                    var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
+                    var loader = new BuildInfoLoader(Path.Combine(formatsPath, "SupportedBuilds.xml"), formatsPath);
+                    var cacheFile = CacheFileLoader.LoadCacheFile(stream, loader);
                     if (currentPatch.MapInternalName != null && cacheFile.InternalName != currentPatch.MapInternalName)
                     {
                         MetroMessageBox.Show("Unable to apply patch", "Hold on there! That patch is for " + currentPatch.MapInternalName + ".map, and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");

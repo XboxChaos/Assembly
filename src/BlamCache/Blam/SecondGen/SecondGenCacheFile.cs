@@ -48,6 +48,11 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return _header.Type; }
         }
 
+        public EngineType Engine
+        {
+            get { return EngineType.SecondGeneration; }
+        }
+
         public string InternalName
         {
             get { return _header.InternalName; }

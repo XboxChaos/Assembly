@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using ExtryzeDLL.IO;
@@ -31,7 +32,6 @@ namespace XBDMCommunicator
         private IXboxDebugTarget _xboxDebugTarget;
 	    private uint _xboxConnectionCode;
 
-
 	    // Public Modifiers
 	    public string DeviceIdent { get; private set; }
 	    public string XboxType { get; private set; }
@@ -42,7 +42,6 @@ namespace XBDMCommunicator
             get { return _xboxMemoryStream; }
             //set { _xboxMemoryStream = value; }
         }
-
 
         // Public Functions
         /// <summary>
@@ -115,8 +114,6 @@ namespace XBDMCommunicator
             
             string response;
             _xboxConsole.SendTextCommand(_xboxConnectionCode, command, out response);
-            // Alex: Personally I feel that we should always return the response here and leave it up to the caller to check it
-            // -- Aaron
             //if (!(response.Contains("202") | response.Contains("203")))
                 return response;
             /*else
@@ -207,271 +204,120 @@ namespace XBDMCommunicator
         public enum RebootType { Cold, Title }
         
         // Memory IO
-        public class XboxMemoryStream : IStream
+        public class XboxMemoryStream : Stream
         {
             public XboxMemoryStream(Xbdm xbdm)
             {
-	            EOF = false;
 	            _xbdm = xbdm;
                 Position = 0;
             }
 
             // Private Modifiers
             private readonly Xbdm _xbdm;
-	        private const long _length = 0xFFFFFFFF;
 
 	        // IO Functions
-            #region Read
-            private byte[] ReadPureBytes(uint length)
+            public override bool CanRead
+            {
+                get { return true; }
+            }
+
+            public override bool CanSeek
+            {
+                get { return true; }
+            }
+
+            public override bool CanWrite
+            {
+                get { return true; }
+            }
+
+            public override long Length
+            {
+                get { return 0x100000000; }
+            }
+
+            public override long Position { get; set; }
+
+            public override void Flush()
+            {
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
             {
                 if (!_xbdm.Connect())
-                    return null;
+                    return 0;
 
-                var flag = true;
-                if (length > 20)
-                    _xbdm._xboxDebugTarget.Stop(out flag);
+                var alreadyStopped = true;
+                if (count > 20)
+                    _xbdm._xboxDebugTarget.Stop(out alreadyStopped);
 
-	            uint bytesRead;
-                var output = new byte[length];
-                _xbdm._xboxDebugTarget.GetMemory((uint)Position, length, output, out bytesRead);
-                SeekTo(Position + length);
+                uint bytesRead;
+                if (offset == 0)
+                {
+                    _xbdm._xboxDebugTarget.GetMemory((uint)Position, (uint)count, buffer, out bytesRead);
+                }
+                else
+                {
+                    // Offset isn't 0, so read into a temp buffer and then copy it into the output
+                    byte[] tempBuffer = new byte[count];
+                    _xbdm._xboxDebugTarget.GetMemory((uint)Position, (uint)count, tempBuffer, out bytesRead);
+                    Buffer.BlockCopy(tempBuffer, 0, buffer, offset, count);
+                }
+                Position += bytesRead;
 
-                if (!flag)
-                    _xbdm._xboxDebugTarget.Go(out flag);
+                if (!alreadyStopped)
+                    _xbdm._xboxDebugTarget.Go(out alreadyStopped);
 
-                return output;
-            }
-            
-            public byte[] ReadBlock(int size)
-            {
-                return ReadPureBytes((uint)size);
-            }
-            public int ReadBlock(byte[] output, int offset, int size)
-            {
-                throw new NotImplementedException();
-            }
-
-            public byte ReadByte()
-            {
-                return ReadPureBytes(1)[0];
-            }
-            public sbyte ReadSByte()
-            {
-                return (sbyte)ReadPureBytes(1)[0];
+                return (int)bytesRead;
             }
 
-            public float ReadFloat()
+            public override long Seek(long offset, SeekOrigin origin)
             {
-                return BitConverter.ToSingle(ReadPureBytes(4), 0);
+                switch (origin)
+                {
+                    case SeekOrigin.Begin:
+                        Position = offset;
+                        break;
+
+                    case SeekOrigin.Current:
+                        Position += offset;
+                        break;
+
+                    case SeekOrigin.End:
+                        Position = 0x100000000 - offset;
+                        break;
+                }
+                return Position;
             }
 
-            public short ReadInt16()
+            public override void SetLength(long value)
             {
-                return BitConverter.ToInt16(ReadPureBytes(2), 0);
-            }
-            public int ReadInt32()
-            {
-                return BitConverter.ToInt32(ReadPureBytes(4), 0);
-            }
-            public long ReadInt64()
-            {
-                return BitConverter.ToInt64(ReadPureBytes(8), 0);
             }
 
-            public ushort ReadUInt16()
-            {
-                return BitConverter.ToUInt16(ReadPureBytes(2), 0);
-            }
-            public uint ReadUInt32()
-            {
-                return BitConverter.ToUInt32(ReadPureBytes(4), 0);
-            }
-            public ulong ReadUInt64()
-            {
-                return BitConverter.ToUInt64(ReadPureBytes(8), 0);
-            }
-
-            public string ReadAscii(int size)
-            {
-                return Encoding.ASCII.GetString(ReadPureBytes((uint)size));
-            }
-            public string ReadAscii()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string ReadUTF8(int size)
-            {
-                return Encoding.UTF8.GetString(ReadPureBytes((uint)size));
-            }
-            public string ReadUTF8()
-            {
-                throw new NotImplementedException();
-            }
-
-            public string ReadUTF16(int size)
-            {
-                return Encoding.Unicode.GetString(ReadPureBytes((uint)size));
-            }
-            public string ReadUTF16()
-            {
-                throw new NotImplementedException();
-            }
-            #endregion
-            #region Write
-            private void WritePureBytes(byte[] input)
+            public override void Write(byte[] buffer, int offset, int count)
             {
                 if (!_xbdm.Connect())
                     return;
 
-                var flag = true;
-                if (input.Length > 20)
-                    _xbdm._xboxDebugTarget.Stop(out flag);
+                var alreadyStopped = true;
+                if (count > 20)
+                    _xbdm._xboxDebugTarget.Stop(out alreadyStopped);
 
-	            uint bytesRead;
-                _xbdm._xboxDebugTarget.SetMemory((uint)Position, (uint)input.Length, input, out bytesRead);
-                SeekTo(Position + input.Length);
-
-                if (!flag)
-                    _xbdm._xboxDebugTarget.Go(out flag);
-            }
-
-            public void WriteBlock(byte[] data, int offset, int size)
-            {
-                var input = new List<byte>();
-                for (var i = offset; i < offset + size; i++)
+                byte[] pokeArray = buffer;
+                if (offset != 0)
                 {
-                    if (i > data.Length)
-                        break;
-
-                    input.Add(data[i]);
+                    // Offset isn't 0, so copy into a second buffer before poking
+                    pokeArray = new byte[count];
+                    Buffer.BlockCopy(buffer, offset, pokeArray, 0, count);
                 }
 
-                WritePureBytes(input.ToArray<byte>());
-            }
-            public void WriteBlock(byte[] data)
-            {
-                WritePureBytes(data);
-            }
+                uint bytesWritten;
+                _xbdm._xboxDebugTarget.SetMemory((uint)Position, (uint)count, pokeArray, out bytesWritten);
+                Position += bytesWritten;
 
-            public void WriteByte(byte value)
-            {
-                WritePureBytes(new[] { value });
+                if (!alreadyStopped)
+                    _xbdm._xboxDebugTarget.Go(out alreadyStopped);
             }
-            public void WriteSByte(sbyte value)
-            {
-                WritePureBytes(new[] { (byte)value });
-            }
-
-            public void WriteFloat(float value)
-            {
-                var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-
-            public void WriteInt16(short value)
-            {
-                var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-            public void WriteInt32(int value)
-            {
-				var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-            public void WriteInt64(long value)
-            {
-				var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-
-            public void WriteUInt16(ushort value)
-            {
-				var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-            public void WriteUInt32(uint value)
-            {
-				var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-            public void WriteUInt64(ulong value)
-            {
-				var input = BitConverter.GetBytes(value);
-                if (BitConverter.IsLittleEndian)
-                    Array.Reverse(input);
-                WritePureBytes(input);
-            }
-
-            public void WriteAscii(string str)
-            {
-				var input = Encoding.ASCII.GetBytes(str + char.MinValue);
-
-                WritePureBytes(input);
-            }
-
-            public void WriteUTF8(string str)
-            {
-                byte[] data = Encoding.UTF8.GetBytes(str);
-                WritePureBytes(data);
-            }
-
-            public void WriteUTF16(string str)
-            {
-				var input = Encoding.Unicode.GetBytes(str + char.MinValue);
-
-                // Make Big Endian
-				for (var i = 0; i < input.Length; i += 2)
-                {
-					var temp = input[i];
-                    input[i] = input[i + 1];
-                    input[i + 1] = temp;
-                }
-                WritePureBytes(input);
-            }
-            #endregion
-
-            // Private Functions
-            /// <summary>
-            /// Gets wether the address is within the Xbox 360's memory
-            /// </summary>
-            /// <param name="address">The XBox 360 Memory Address</param>
-            private static bool IsValidXboxMemoryAddress(long address)
-            {
-                return (address >= 0 && address <= 0xFFFFFFFF);
-            }
-
-
-            // Public Functions
-            public void Close() { }
-            public void Dispose() { Close(); }
-	        public bool EOF { get; private set; }
-	        public long Length { get { return _length; } }
-	        public long Position { get; private set; }
-
-	        public bool SeekTo(long address)
-            {
-	            // Check if seek is valid
-	            if (!IsValidXboxMemoryAddress(address))
-					return false;
-
-	            Position = address;
-	            return true;
-            }
-
-	        public void Skip(long count) { Position += count; }
         }
     }
 }

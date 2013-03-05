@@ -53,8 +53,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     public partial class HaloMap : INotifyPropertyChanged
     {
         private IStreamManager _mapManager;
-        private CacheFileVersionInfo _version;
-        private XDocument _supportedBuilds;
         private BuildInfoLoader _layoutLoader;
         private BuildInformation _buildInfo;
         private ICacheFile _cacheFile;
@@ -161,44 +159,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             InitalizeMap();
         }
-
-        private static Endian GetEndianness(Stream stream)
-        {
-            // Read the magic value
-            // 'head' = big-endian
-            // 'daeh' = little-endian
-            var buffer = new byte[4];
-            stream.Read(buffer, 0, 4);
-
-            if (buffer[0] == 'h' && buffer[1] == 'e' && buffer[2] == 'a' && buffer[3] == 'd')
-                return Endian.BigEndian;
-            return Endian.LittleEndian;
-        }
         
         public void InitalizeMap()
         {
             using (var fileStream = File.OpenRead(_cacheLocation))
             {
-	            var endianness = GetEndianness(fileStream);
-				_mapManager = new FileStreamManager(_cacheLocation, endianness);
-                var reader = new EndianReader(fileStream, endianness);
-                Dispatcher.Invoke(() => StatusUpdater.Update("Opened File"));
-
-                _version = new CacheFileVersionInfo(reader);
-                _supportedBuilds = XDocument.Load(VariousFunctions.GetApplicationLocation() + @"Formats\SupportedBuilds.xml");
-                _layoutLoader = new BuildInfoLoader(_supportedBuilds, VariousFunctions.GetApplicationLocation() + @"Formats\");
-                _buildInfo = _layoutLoader.LoadBuild(_version.BuildString);
-
-                Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Build Definitions"));
-
-                if (_buildInfo == null)
+                var reader = new EndianReader(fileStream, Endian.BigEndian);
+                var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
+                var supportedBuildsPath = Path.Combine(formatsPath, "SupportedBuilds.xml");
+                _layoutLoader = new BuildInfoLoader(supportedBuildsPath, formatsPath);
+                try
+                {
+                    _cacheFile = CacheFileLoader.LoadCacheFile(reader, _layoutLoader, out _buildInfo);
+                }
+                catch (NotSupportedException ex)
                 {
                     Dispatcher.Invoke(delegate
 	                                      {
 		                                      if (!_0xabad1dea.IWff.Heman(reader))
 		                                      {
-			                                      StatusUpdater.Update("Not a supported cache build");
-			                                      MetroMessageBox.Show("Unable to open cache file", "Unsupported blam engine build \"" + _version.BuildString + "\". Why not add support in the 'Formats' folder?");
+			                                      StatusUpdater.Update("Not a supported target engine");
+			                                      MetroMessageBox.Show("Unable to open cache file", ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
 		                                      }
 		                                      else
 		                                      {
@@ -209,25 +190,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	                                      });
                     return;
                 }
+                _mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
+
                 Dispatcher.Invoke(delegate
 	                                  {
 		                                  if (Settings.startpageHideOnLaunch)
 			                                  Settings.homeWindow.ExternalTabClose(Home.TabGenre.StartPage);
 	                                  });
 
-                // Load the cache file
-                switch (_version.Engine)
+                // Set up RTE
+                switch (_cacheFile.Engine)
                 {
                     case EngineType.SecondGeneration:
-                        _cacheFile = new SecondGenCacheFile(reader, _buildInfo, _version.BuildString);
                         _rteProvider = new H2VistaRTEProvider("halo2.exe");
                         break;
 
                     case EngineType.ThirdGeneration:
-                        _cacheFile = new ThirdGenCacheFile(reader, _buildInfo, _version.BuildString);
                         _rteProvider = new XBDMRTEProvider(Settings.xbdm);
                         break;
                 }
+
                 Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Cache File"));
 
                 // Add to Recents

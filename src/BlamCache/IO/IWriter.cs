@@ -20,7 +20,7 @@ using System;
 
 namespace ExtryzeDLL.IO
 {
-    public interface IWriter : ISeekable
+    public interface IWriter : IBaseStream
     {
         void WriteAscii(string str);
         void WriteBlock(byte[] data);

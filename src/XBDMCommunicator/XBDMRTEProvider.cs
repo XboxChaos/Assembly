@@ -45,7 +45,7 @@ namespace XBDMCommunicator
             // Okay, so technically we should be checking to see if the cache file is actually loaded into memory first
             // But that's kinda hard to do...
             if (_xbdm.Connect())
-                return _xbdm.MemoryStream;
+                return new EndianStream(_xbdm.MemoryStream, Endian.BigEndian);
             return null;
         }
     }

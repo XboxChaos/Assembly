@@ -5,6 +5,7 @@
 		Halo3,
 		Halo3ODST,
 		HaloReach,
-		Halo4
+		Halo4,
+        Halo2Vista
 	}
 }
