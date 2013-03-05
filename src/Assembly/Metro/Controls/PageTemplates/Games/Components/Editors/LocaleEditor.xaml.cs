@@ -101,7 +101,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             // Load the groups stored in the cache file
             foreach (ILocaleGroup group in _cache.LocaleGroups)
             {
-                string name = _cache.FileNames.FindTagName(group.TagIndex);
+                string name = _cache.FileNames.GetTagName(group.TagIndex);
                 LocaleRange range = group.Ranges[_languageIndex];
 
                 _groups.Add(new LocaleGroup() { Name = name, Range = range });

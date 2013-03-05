@@ -38,10 +38,10 @@ namespace ExtryzeDLL.Blam
         /// <returns>The stringID associated with the index.</returns>
         public StringID IndexToStringID(int index)
         {
-            if (index < 0 || index >= _strings.Strings.Count)
+            if (index < 0 || index >= _strings.Count)
                 return new StringID(0);
 
-            string str = _strings.Strings[index];
+            string str = _strings[index];
             return new StringID((byte)str.Length, 0, (ushort)index);
         }
     }

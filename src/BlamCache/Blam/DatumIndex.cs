@@ -21,7 +21,7 @@ using ExtryzeDLL.IO;
 namespace ExtryzeDLL.Blam
 {
     /// <summary>
-    /// An immutable struct representing a datum index.
+    /// A value type representing a datum index.
     /// </summary>
     public struct DatumIndex
     {
@@ -106,5 +106,10 @@ namespace ExtryzeDLL.Blam
         {
             get { return (Salt != 0 && Salt != 0xFFFF && Index != 0xFFFF); }
         }
+
+        /// <summary>
+        /// A null (invalid) datum index.
+        /// </summary>
+        public static readonly DatumIndex Null = new DatumIndex(0xFFFFFFFF);
     }
 }

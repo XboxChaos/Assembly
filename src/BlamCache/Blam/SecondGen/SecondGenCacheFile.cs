@@ -90,12 +90,12 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return _header.StringArea; }
         }
 
-        public IFileNameSource FileNames
+        public FileNameSource FileNames
         {
             get { return _fileNames; }
         }
 
-        public IStringIDSource StringIDs
+        public StringIDSource StringIDs
         {
             get { return _stringIDs; }
         }
@@ -115,9 +115,9 @@ namespace ExtryzeDLL.Blam.SecondGen
             get { return _tags.Classes; }
         }
 
-        public IList<ITag> Tags
+        public TagTable Tags
         {
-            get { return _tags.Tags; }
+            get { return _tags; }
         }
 
         public IScenario Scenario

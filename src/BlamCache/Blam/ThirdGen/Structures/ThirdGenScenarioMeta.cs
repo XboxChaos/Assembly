@@ -12,7 +12,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
     public class ThirdGenScenarioMeta : IScenario
     {
-        public ThirdGenScenarioMeta(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, BuildInformation buildInfo)
+        public ThirdGenScenarioMeta(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
         {
             Load(values, reader, metaArea, stringIDs, buildInfo);
         }
@@ -27,7 +27,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
         public List<IGlobalObject> ScriptObjects { get; private set; }
         public List<IScript> Scripts { get; private set; }
 
-        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, BuildInformation buildInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
         {
             StringTableReader stringReader = new StringTableReader();
             ScriptExpressions = LoadScriptExpressions(values, reader, metaArea, stringReader, buildInfo.GetLayout("script expression entry"));
@@ -69,7 +69,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, StructureLayout entryLayout)
+        private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, StructureLayout entryLayout)
         {
             int objectsCount = (int)values.GetInteger("number of script objects");
             if (objectsCount == 0)
@@ -106,7 +106,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<IScript> LoadScripts(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, StructureLayout entryLayout, BuildInformation buildInfo)
+        private List<IScript> LoadScripts(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, ExpressionTable expressions, StructureLayout entryLayout, BuildInformation buildInfo)
         {
             int scriptCount = (int)values.GetInteger("number of scripts");
             if (scriptCount == 0)

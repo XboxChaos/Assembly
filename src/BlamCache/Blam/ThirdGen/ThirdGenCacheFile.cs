@@ -125,12 +125,12 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _header; }
         }
 
-        public IFileNameSource FileNames
+        public FileNameSource FileNames
         {
             get { return _fileNames; }
         }
 
-        public IStringIDSource StringIDs
+        public StringIDSource StringIDs
         {
             get { return _stringIds; }
         }
@@ -145,9 +145,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
             get { return _tags.Classes; }
         }
 
-        public IList<ITag> Tags
+        public TagTable Tags
         {
-            get { return _tags.Tags; }
+            get { return _tags; }
         }
 
         public IScenario Scenario
@@ -234,6 +234,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadLanguageGlobals(IReader reader, BuildInformation buildInfo)
         {
+            if (_tags == null)
+                return;
+
             // Find the language data
             ITag languageTag;
             StructureLayout tagLayout;
@@ -250,17 +253,21 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private bool FindLanguageTable(BuildInformation buildInfo, out ITag tag, out StructureLayout layout)
         {
-            // Check for a PATG tag, and if one isn't found, then use MATG
             tag = null;
             layout = null;
+
+            if (_tags == null)
+                return false;
+
+            // Check for a PATG tag, and if one isn't found, then use MATG
             if (buildInfo.HasLayout("patg"))
             {
-                tag = FindTagByClass(PatgMagic);
+                tag = _tags.FindTagByClass("patg");
                 layout = buildInfo.GetLayout("patg");
             }
             if (tag == null)
             {
-                tag = FindTagByClass(MatgMagic);
+                tag = _tags.FindTagByClass("matg");
                 layout = buildInfo.GetLayout("matg");
             }
             return (tag != null && layout != null);
@@ -278,9 +285,10 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadScenario(IReader reader, BuildInformation buildInfo)
         {
-            if (!buildInfo.HasLayout("scnr"))
+            if (_tags == null || !buildInfo.HasLayout("scnr"))
                 return;
-            ITag scnr = FindTagByClass(ScnrMagic);
+
+            ITag scnr = _tags.FindTagByClass("scnr");
             if (scnr == null)
                 return;
 
@@ -296,9 +304,9 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
             // Locale groups are stored in unic tags
             StructureLayout layout = buildInfo.GetLayout("unic");
-            foreach (ITag tag in _tags.Tags)
+            foreach (ITag tag in _tags.FindTagsByClass("unic"))
             {
-                if (tag != null && tag.Class != null && tag.Class.Magic == UnicMagic && tag.MetaLocation != null)
+                if (tag.MetaLocation != null)
                 {
                     reader.SeekTo(tag.MetaLocation.AsOffset());
                     StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
@@ -309,12 +317,12 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadResourceLayoutTable(IReader reader, BuildInformation buildInfo)
         {
-            if (!buildInfo.HasLayout("resource layout table"))
+            if (_tags == null || !buildInfo.HasLayout("resource layout table"))
                 return;
 
             StructureLayout layout = buildInfo.GetLayout("resource layout table");
 
-            ITag play = FindTagByClass(PlayMagic);
+            ITag play = _tags.FindTagByClass("play");
             if (play == null)
                 return;
 
@@ -325,12 +333,12 @@ namespace ExtryzeDLL.Blam.ThirdGen
 
         private void LoadResourceGestalt(IReader reader, BuildInformation buildInfo)
         {
-            if (_resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
+            if (_tags == null || _resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
                 return;
 
             StructureLayout layout = buildInfo.GetLayout("resource gestalt");
 
-            ITag zone = FindTagByClass(ZoneMagic);
+            ITag zone = _tags.FindTagByClass("zone");
             if (zone == null)
                 return;
 
@@ -360,25 +368,5 @@ namespace ExtryzeDLL.Blam.ThirdGen
             writer.SeekTo(languageTag.MetaLocation.AsOffset());
             StructureWriter.WriteStructure(values, tagLayout, writer);
         }
-
-        private ITag FindTagByClass(int classMagic)
-        {
-            if (_tags == null)
-                return null;
-
-            foreach (ITag tag in _tags.Tags)
-            {
-                if (tag != null && tag.Class != null && tag.Class.Magic == classMagic && tag.MetaLocation != null)
-                    return tag;
-            }
-            return null;
-        }
-
-        private static int MatgMagic = CharConstant.FromString("matg");
-        private static int PatgMagic = CharConstant.FromString("patg");
-        private static int ScnrMagic = CharConstant.FromString("scnr");
-        private static int UnicMagic = CharConstant.FromString("unic");
-        private static int PlayMagic = CharConstant.FromString("play");
-        private static int ZoneMagic = CharConstant.FromString("zone");
     }
 }

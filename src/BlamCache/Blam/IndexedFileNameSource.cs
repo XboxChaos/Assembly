@@ -15,7 +15,7 @@ namespace ExtryzeDLL.Blam
     /// A file name table in a cache file which is made up of a string table and an offset table,
     /// and which runs parallel to the tag table.
     /// </summary>
-    public class IndexedFileNameSource : IFileNameSource
+    public class IndexedFileNameSource : FileNameSource
     {
         private IndexedStringTable _strings;
 
@@ -24,26 +24,21 @@ namespace ExtryzeDLL.Blam
             _strings = strings;
         }
 
-        public string FindTagName(DatumIndex tagIndex)
+        public override string GetTagName(int tagIndex)
         {
-            if (!tagIndex.IsValid || tagIndex.Index >= _strings.Strings.Count)
+            if (tagIndex >= _strings.Count)
                 return null;
-            return _strings.Strings[tagIndex.Index];
+            return _strings[tagIndex];
         }
 
-        public string FindTagName(ITag tag)
+        public override int FindName(string name)
         {
-            return FindTagName(tag.Index);
+            return _strings.IndexOf(name);
         }
 
-        public IEnumerator<string> GetEnumerator()
+        public override IEnumerator<string> GetEnumerator()
         {
-            return _strings.Strings.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _strings.Strings.GetEnumerator();
+            return _strings.GetEnumerator();
         }
     }
 }

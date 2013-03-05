@@ -9,7 +9,7 @@ using ExtryzeDLL.Util;
 
 namespace ExtryzeDLL.Blam.SecondGen.Structures
 {
-    public class SecondGenTagTable
+    public class SecondGenTagTable : TagTable
     {
         private List<ITagClass> _classes;
         private Dictionary<int, ITagClass> _classesById;
@@ -25,9 +25,14 @@ namespace ExtryzeDLL.Blam.SecondGen.Structures
             get { return _classes; }
         }
 
-        public IList<ITag> Tags
+        public override ITag this[int index]
         {
-            get { return _tags; }
+            get { return _tags[index]; }
+        }
+
+        public override IEnumerator<ITag> GetEnumerator()
+        {
+            return _tags.GetEnumerator();
         }
 
         private void Load(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)

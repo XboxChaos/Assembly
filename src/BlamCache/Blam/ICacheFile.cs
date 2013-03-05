@@ -91,13 +91,13 @@ namespace ExtryzeDLL.Blam
         /// The tag names in the file.
         /// Can be null.
         /// </summary>
-        IFileNameSource FileNames { get; }
+        FileNameSource FileNames { get; }
 
         /// <summary>
         /// The stringIDs in the file.
         /// Can be null.
         /// </summary>
-        IStringIDSource StringIDs { get; }
+        StringIDSource StringIDs { get; }
 
         /// <summary>
         /// The languages stored in the file.
@@ -117,7 +117,7 @@ namespace ExtryzeDLL.Blam
         /// <summary>
         /// The tags stored in the file.
         /// </summary>
-        IList<ITag> Tags { get; }
+        TagTable Tags { get; }
 
         /// <summary>
         /// The file's scenario data.

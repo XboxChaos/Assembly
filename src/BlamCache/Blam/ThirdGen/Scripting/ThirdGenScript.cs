@@ -11,7 +11,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 {
     public class ThirdGenScript : IScript
     {
-        public ThirdGenScript(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
+        public ThirdGenScript(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, StringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
             Load(reader, values, metaArea, stringIDs, expressions, buildInfo);
         }
@@ -22,7 +22,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
         public short ReturnType { get; private set; }
         public IExpression RootExpression { get; private set; }
 
-        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, IStringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
+        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, StringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
             Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
             ExecutionType = (short)values.GetInteger("execution type");

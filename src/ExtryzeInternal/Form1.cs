@@ -90,12 +90,11 @@ namespace Assembly
                 classNodes[tagClass] = tvTags.Nodes.Add(className);
             }
 
-            for (int i = 0; i < _map.Tags.Count; i++)
+            foreach (ITag tag in _map.Tags)
             {
-                ITag tag = _map.Tags[i];
-                if (tag.Index.IsValid)
+                if (tag.MetaLocation != null)
                 {
-                    string name = _map.FileNames.FindTagName(tag.Index);
+                    string name = _map.FileNames.GetTagName(tag.Index);
                     if (name == null)
                         name = tag.Index.ToString();
                     classNodes[tag.Class].Nodes.Add(name);

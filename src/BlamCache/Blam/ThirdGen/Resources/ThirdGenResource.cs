@@ -65,7 +65,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Resources
 
             DatumIndex tagIndex = new DatumIndex(values.GetInteger("parent tag datum index"));
             if (tagIndex.IsValid)
-                ParentTag = tags.Tags[tagIndex.Index];
+                ParentTag = tags[tagIndex.Index];
 
             int segmentIndex = (int)values.GetInteger("segment index");
             if (segmentIndex >= 0 && segmentIndex < layoutInfo.Segments.Length)

@@ -134,7 +134,7 @@ namespace ExtryzeDLL.Plugins.Generation
         {
             foreach (ITag tag in cacheFile.Tags)
             {
-                if (tag.Index.IsValid)
+                if (tag.MetaLocation != null)
                     _memMap.AddAddress(tag.MetaLocation.AsPointer(), 0);
             }
 

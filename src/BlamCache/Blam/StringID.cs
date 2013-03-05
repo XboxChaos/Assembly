@@ -106,5 +106,10 @@ namespace ExtryzeDLL.Blam
         {
             return "0x" + Value.ToString("X8");
         }
+
+        /// <summary>
+        /// A null stringID.
+        /// </summary>
+        public static readonly StringID Null = new StringID(0);
     }
 }

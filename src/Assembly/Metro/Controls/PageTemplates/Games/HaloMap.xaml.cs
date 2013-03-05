@@ -343,7 +343,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 if (tag.MetaLocation != null)
                 {
-                    var fileName = _cacheFile.FileNames.FindTagName(tag);
+                    var fileName = _cacheFile.FileNames.GetTagName(tag);
                     if (fileName == null || fileName.Trim() == "")
                         fileName = tag.Index.ToString();
 
@@ -879,7 +879,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 {
                     if (tag == null || tag.Class != tagClass.RawClass) continue;
 
-                    var name = _cacheFile.FileNames.FindTagName(tag);
+                    var name = _cacheFile.FileNames.GetTagName(tag);
                     if (name != null)
                         writer.WriteLine("{0}={1}", tag.Index, name);
                 }

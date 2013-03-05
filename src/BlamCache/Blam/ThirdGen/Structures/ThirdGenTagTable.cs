@@ -29,7 +29,7 @@ using ExtryzeDLL.Blam.Util;
 
 namespace ExtryzeDLL.Blam.ThirdGen.Structures
 {
-    public class ThirdGenTagTable
+    public class ThirdGenTagTable : TagTable
     {
         private List<ITagClass> _classes;
         private List<ITag> _tags;
@@ -50,9 +50,14 @@ namespace ExtryzeDLL.Blam.ThirdGen.Structures
             get { return _classes.AsReadOnly(); }
         }
 
-        public IList<ITag> Tags
+        public override ITag this[int index]
         {
-            get { return _tags.AsReadOnly(); }
+            get { return _tags[index]; }
+        }
+
+        public override IEnumerator<ITag> GetEnumerator()
+        {
+            return _tags.GetEnumerator();
         }
 
         private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)

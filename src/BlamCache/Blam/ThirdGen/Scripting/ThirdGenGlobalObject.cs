@@ -9,7 +9,7 @@ namespace ExtryzeDLL.Blam.ThirdGen.Scripting
 {
     public class ThirdGenGlobalObject : IGlobalObject
     {
-        public ThirdGenGlobalObject(StructureValueCollection values, IStringIDSource stringIDs)
+        public ThirdGenGlobalObject(StructureValueCollection values, StringIDSource stringIDs)
         {
             Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
             Class = (short)values.GetInteger("type");
