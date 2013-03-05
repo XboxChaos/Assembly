@@ -187,7 +187,7 @@ namespace Assembly.Helpers
         public static TagSort halomapTagSort = TagSort.TagClass;
         public static bool halomapShowEmptyClasses = false;
         public static MapInfoDockSide halomapMapInfoDockSide = MapInfoDockSide.Left;
-        public static LastMetaEditorType halomapLastSelectedMetaEditor = LastMetaEditorType.Reflex;
+        public static LastMetaEditorType halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
 
         public static bool pluginsShowInvisibles = false;
         public static bool pluginsShowComments = true;
@@ -228,9 +228,9 @@ namespace Assembly.Helpers
         public enum LastMetaEditorType
         {
             Info,
-            Reflex,
-            Ident,
-            String,
+            //Reflex,
+            //Ident,
+            //String,
             MetaEditor,
             PluginEditor
         }
