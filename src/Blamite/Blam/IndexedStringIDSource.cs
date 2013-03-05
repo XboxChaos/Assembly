@@ -42,7 +42,9 @@ namespace Blamite.Blam
 
         public override string GetString(int index)
         {
-            return _strings[index];
+            if (index >= 0 && index < _strings.Count)
+                return _strings[index];
+            return null;
         }
 
         public override int FindStringIndex(string str)

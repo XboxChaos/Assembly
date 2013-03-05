@@ -26,9 +26,9 @@ namespace Blamite.Blam
 
         public override string GetTagName(int tagIndex)
         {
-            if (tagIndex >= _strings.Count)
-                return null;
-            return _strings[tagIndex];
+            if (tagIndex >= 0 && tagIndex < _strings.Count)
+                return _strings[tagIndex];
+            return null;
         }
 
         public override int FindName(string name)
