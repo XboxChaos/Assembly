@@ -19,7 +19,6 @@ namespace Blamite.Flexibility
         private string _pluginFolder;
         private int _headerSize;
         private bool _loadStrings;
-        private string _layoutFile;
         private string _scriptDefsFile;
         private StructureLayoutCollection _layouts = new StructureLayoutCollection();
         private LocaleSymbolCollection _localeSymbols = new LocaleSymbolCollection();
@@ -34,7 +33,7 @@ namespace Blamite.Flexibility
             public string Display { get; set; }
         }
 
-        public BuildInformation(string game, string localeKey, string stringidKey, IStringIDResolver stringIDResolver, string filenameKey, int headerSize, bool loadStrings, string layoutFile, string shortName, string pluginFolder, string scriptDefsFile, int segmentAlignment)
+        public BuildInformation(string game, string localeKey, string stringidKey, IStringIDResolver stringIDResolver, string filenameKey, int headerSize, bool loadStrings, StructureLayoutCollection layouts, string shortName, string pluginFolder, string scriptDefsFile, int segmentAlignment)
         {
             _gameName = game;
             if (localeKey != null)
@@ -46,7 +45,7 @@ namespace Blamite.Flexibility
                 _filenameKey = new AESKey(filenameKey);
             _headerSize = headerSize;
             _loadStrings = loadStrings;
-            _layoutFile = layoutFile;
+            _layouts = layouts;
             _shortName = shortName;
             _pluginFolder = pluginFolder;
             _scriptDefsFile = scriptDefsFile;
@@ -121,11 +120,6 @@ namespace Blamite.Flexibility
         public bool LoadStrings
         {
             get { return _loadStrings; }
-        }
-
-        public string LayoutFilename
-        {
-            get { return _layoutFile; }
         }
 
         public string ScriptDefinitionsFilename

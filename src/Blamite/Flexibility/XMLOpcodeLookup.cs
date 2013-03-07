@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Globalization;
 using Blamite.Blam.Scripting;
+using Blamite.Util;
 
 namespace Blamite.Flexibility
 {
@@ -24,8 +25,8 @@ namespace Blamite.Flexibility
             var scriptTypes = from element in root.Element("scriptTypes").Descendants("type")
                               select new
                               {
-                                  Opcode = ParseUShortAttrib(element.Attribute("opcode")),
-                                  Name = element.Attribute("name").Value
+                                  Opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode"),
+                                  Name = XMLUtil.GetStringAttribute(element, "name")
                               };
             _scriptTypeNameLookup = scriptTypes.ToDictionary(t => t.Opcode, t => t.Name);
 
@@ -33,18 +34,18 @@ namespace Blamite.Flexibility
             var objectTypes = from element in root.Element("objectTypes").Descendants("type")
                               select new
                               {
-                                  Opcode = (short)ParseUShortAttrib(element.Attribute("opcode")),
-                                  Name = element.Attribute("name").Value
+                                  Opcode = (short)XMLUtil.GetNumericAttribute(element, "opcode"),
+                                  Name = XMLUtil.GetStringAttribute(element, "name")
                               };
             _classLookup = objectTypes.ToDictionary(t => t.Opcode, t => t.Name);
 
             // Value types
             var valueTypes = from element in root.Element("valueTypes").Descendants("type")
                              select new ScriptValueType(
-                                 element.Attribute("name").Value,
-                                 ParseUShortAttrib(element.Attribute("opcode")),
-                                 ParseUShortAttrib(element.Attribute("size")),
-                                 ParseBoolAttrib(element.Attribute("quoted"))
+                                 XMLUtil.GetStringAttribute(element, "name"),
+                                 (ushort)XMLUtil.GetNumericAttribute(element, "opcode"),
+                                 XMLUtil.GetNumericAttribute(element, "size"),
+                                 XMLUtil.GetBoolAttribute(element, "quoted", false)
                              );
             _typeLookup = valueTypes.ToDictionary(t => t.Opcode);
 
@@ -52,8 +53,8 @@ namespace Blamite.Flexibility
             var functions = from element in root.Element("functions").Descendants("function")
                             select new
                             {
-                                Opcode = ParseUShortAttrib(element.Attribute("opcode")),
-                                Name = element.Attribute("name").Value
+                                Opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode"),
+                                Name = XMLUtil.GetStringAttribute(element, "name")
                             };
             _functionLookup = functions.ToDictionary(f => f.Opcode, f => f.Name);
         }
@@ -88,23 +89,6 @@ namespace Blamite.Flexibility
             if (_classLookup.TryGetValue(opcode, out result))
                 return result;
             return null;
-        }
-
-        private static ushort ParseUShortAttrib(XAttribute attrib)
-        {
-            if (attrib == null)
-                return 0;
-            string str = attrib.Value;
-            if (str.StartsWith("0x"))
-                return ushort.Parse(str.Substring(2), NumberStyles.HexNumber);
-            return ushort.Parse(str);
-        }
-
-        private static bool ParseBoolAttrib(XAttribute attrib)
-        {
-            if (attrib == null)
-                return false;
-            return (attrib.Value.ToLower() == "true");
         }
     }
 }

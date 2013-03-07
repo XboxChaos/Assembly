@@ -57,6 +57,7 @@ namespace Blamite.Flexibility
             _builds = buildInfo.Element("builds");
             if (_builds == null)
                 throw new ArgumentException("Invalid build info document");
+
             _basePath = layoutDirPath;
         }
 
@@ -64,71 +65,43 @@ namespace Blamite.Flexibility
         /// Loads all of the structure layouts defined for a specified build.
         /// </summary>
         /// <param name="buildName">The build version to load structure layouts for.</param>
-        /// <returns>The build's information.</returns>
+        /// <returns>The build's information, or null if it was not found.</returns>
         public BuildInformation LoadBuild(string buildName)
         {
-            // Build tags have the format:
-            // <build name="(name of this build of the engine)"
-            //        version="(build version string)" 
-            //        localeKey="(key used to decrypt the locales)" // Optional
-            //        requiresTaglist="bool indication if the build requires a taglist)" // Optional
-            //        headerSize="(size of the header, in hex)"
-            //        filename="(filename containing layouts)" />
-            //
-            // Just find the first build tag whose version matches and load its file.
-            XElement buildElement = _builds.Elements("build").FirstOrDefault(e => e.Attribute("version") != null && e.Attribute("version").Value == buildName);
+            // Find the first build tag whose version matches and load its file.
+            XElement buildElement = _builds.Elements("build").FirstOrDefault(e => XMLUtil.GetStringAttribute(e, "version", "") == buildName);
             if (buildElement == null)
                 return null;
-            XAttribute gameNameAttrib = buildElement.Attribute("name");
-            XAttribute localeKeyAttrib = buildElement.Attribute("localeKey");
-            XAttribute stringidKeyAttrib = buildElement.Attribute("stringidKey");
-            XAttribute stringidModifiersAttrib = buildElement.Attribute("stringidModifiers"); // NOTE: Deprecated - use stringidDefinitions instead!
-            XAttribute stringidDefinitionsAttrib = buildElement.Attribute("stringidDefinitions");
-            XAttribute filenameKeyAttrib = buildElement.Attribute("filenameKey");
-            XAttribute headerSizeAttrib = buildElement.Attribute("headerSize");
-            XAttribute loadStringsAttrib = buildElement.Attribute("loadStrings");
-            XAttribute shortNameAttrib = buildElement.Attribute("shortName");
-            XAttribute filenameAttrib = buildElement.Attribute("filename");
-            XAttribute localeSymbolsAttrib = buildElement.Attribute("localeSymbols");
-            XAttribute pluginFolderAttrib = buildElement.Attribute("pluginFolder");
-            XAttribute scriptDefinitionsAttrib = buildElement.Attribute("scriptDefinitions");
-            XAttribute segmentAlignmentAttrib = buildElement.Attribute("segmentAlignment");
-            XAttribute vertexLayoutsAttrib = buildElement.Attribute("vertexLayouts");
-            if (gameNameAttrib == null || filenameAttrib == null || headerSizeAttrib == null || shortNameAttrib == null || pluginFolderAttrib == null || segmentAlignmentAttrib == null)
-                return null;
 
-            bool loadStrings = true;
-            string localeKey = null;
-            string stringidKey = null;
-            string filenameKey = null;
-            string localeSymbols = null;
-            string scriptOpcodes = null;
-            int segmentAlignment = 0x1000;
-            int headerSize = ParseNumber(headerSizeAttrib.Value);
+            // Read attributes
+            string gameName = XMLUtil.GetStringAttribute(buildElement, "name");
+            string shortName = XMLUtil.GetStringAttribute(buildElement, "shortName");
+            string pluginFolder = XMLUtil.GetStringAttribute(buildElement, "pluginFolder");
+            string layoutsPath = XMLUtil.GetStringAttribute(buildElement, "filename");
+            bool loadStrings = XMLUtil.GetBoolAttribute(buildElement, "loadStrings", true);
+            string localeKey = XMLUtil.GetStringAttribute(buildElement, "localeKey", null);
+            string stringidKey = XMLUtil.GetStringAttribute(buildElement, "stringidKey", null);
+            string filenameKey = XMLUtil.GetStringAttribute(buildElement, "filenameKey", null);
+            string localeSymbolsPath = XMLUtil.GetStringAttribute(buildElement, "localeSymbols", null);
+            string scriptDefinitionsPath = XMLUtil.GetStringAttribute(buildElement, "scriptDefinitions", null);
+            int segmentAlignment = XMLUtil.GetNumericAttribute(buildElement, "segmentAlignment", 0x1000);
+            int headerSize = XMLUtil.GetNumericAttribute(buildElement, "headerSize");
+            string stringidModifiers = XMLUtil.GetStringAttribute(buildElement, "stringidModifiers", null);
+            string stringidDefinitionsPath = XMLUtil.GetStringAttribute(buildElement, "stringidDefinitions", null);
+            string vertexLayoutsPath = XMLUtil.GetStringAttribute(buildElement, "vertexLayouts", null);
 
-            if (filenameKeyAttrib != null)
-                filenameKey = filenameKeyAttrib.Value;
-            if (localeSymbolsAttrib != null)
-                localeSymbols = localeSymbolsAttrib.Value;
-            if (stringidKeyAttrib != null)
-                stringidKey = stringidKeyAttrib.Value;
-            if (localeKeyAttrib != null)
-                localeKey = localeKeyAttrib.Value;
-            if (loadStringsAttrib != null)
-                loadStrings = Convert.ToBoolean(loadStringsAttrib.Value);
-            if (scriptDefinitionsAttrib != null)
-                scriptOpcodes = Path.Combine(_basePath, "Scripting", scriptDefinitionsAttrib.Value);
-            if (segmentAlignmentAttrib != null)
-                segmentAlignment = ParseNumber(segmentAlignmentAttrib.Value);
+            // Load structure layouts
+            layoutsPath = Path.Combine(_basePath, layoutsPath);
+            StructureLayoutCollection layouts = XMLLayoutLoader.LoadLayouts(layoutsPath);
 
             // StringID Modifers, this is a bitch
             IStringIDResolver stringIdResolver = null;
-            if (stringidModifiersAttrib != null)
+            if (stringidModifiers != null)
             {
                 StringIDModifierResolver modifierResolver = new StringIDModifierResolver();
                 stringIdResolver = modifierResolver;
 
-                string[] sets = stringidModifiersAttrib.Value.Split('|');
+                string[] sets = stringidModifiers.Split('|');
                 foreach (string set in sets)
                 {
                     string[] parts = set.Split(',');
@@ -148,13 +121,13 @@ namespace Blamite.Flexibility
                     modifierResolver.AddModifier(identifier, modifier, isGreaterThan, isAddition);
                 }
             }
-            else if (stringidDefinitionsAttrib != null)
+            else if (stringidDefinitionsPath != null)
             {
                 StringIDSetResolver setResolver = new StringIDSetResolver();
                 stringIdResolver = setResolver;
 
-                XDocument stringIdDocument = XDocument.Load(Path.Combine(_basePath, "StringIDs", stringidDefinitionsAttrib.Value));
-                StringIDSetLoader.LoadAllStringIDSets(stringIdDocument, setResolver);
+                stringidDefinitionsPath = Path.Combine(_basePath, "StringIDs", stringidDefinitionsPath);
+                StringIDSetLoader.LoadStringIDSets(stringidDefinitionsPath, setResolver);
             }
             else
             {
@@ -162,102 +135,24 @@ namespace Blamite.Flexibility
                 stringIdResolver = new StringIDModifierResolver();
             }
 
-            BuildInformation info = new BuildInformation(gameNameAttrib.Value, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, filenameAttrib.Value, shortNameAttrib.Value, pluginFolderAttrib.Value, scriptOpcodes, segmentAlignment);
-            XDocument layoutDocument = XDocument.Load(Path.Combine(_basePath, filenameAttrib.Value));
-            LoadAllLayouts(layoutDocument, info);
+            if (scriptDefinitionsPath != null)
+                scriptDefinitionsPath = Path.Combine(_basePath, "Scripting", scriptDefinitionsPath);
 
-            if (localeSymbols != null)
+            BuildInformation info = new BuildInformation(gameName, localeKey, stringidKey, stringIdResolver, filenameKey, headerSize, loadStrings, layouts, shortName, pluginFolder, scriptDefinitionsPath, segmentAlignment);
+
+            if (localeSymbolsPath != null)
             {
-                XDocument localeSymbolDocument = XDocument.Load(Path.Combine(_basePath, "LocaleSymbols", localeSymbols));
-                LoadAllLocaleSymbols(localeSymbolDocument, info);
+                localeSymbolsPath = Path.Combine(_basePath, "LocaleSymbols", localeSymbolsPath);
+                info.LocaleSymbols.AddSymbols(LocaleSymbolLoader.LoadLocaleSymbols(localeSymbolsPath));
             }
 
-            if (vertexLayoutsAttrib != null)
+            if (vertexLayoutsPath != null)
             {
-                string vertexLayouts = vertexLayoutsAttrib.Value;
-                XDocument vertexLayoutsDocument = XDocument.Load(Path.Combine(_basePath, "Vertices", vertexLayouts));
-                LoadAllVertexLayouts(vertexLayoutsDocument, info);
+                vertexLayoutsPath = Path.Combine(_basePath, "Vertices", vertexLayoutsPath);
+                info.VertexLayouts.AddLayouts(VertexLayoutLoader.LoadLayouts(vertexLayoutsPath));
             }
 
             return info;
-        }
-
-        /// <summary>
-        /// Loads all of the structure layouts defined in an XML document.
-        /// </summary>
-        /// <param name="layoutDocument">The XML document containing the structure layouts.</param>
-        /// <param name="info">The BuildInformation object to add the layout to.</param>
-        /// <exception cref="ArgumentException">Thrown if the XML document contains invalid layout information.</exception>
-        private static void LoadAllLayouts(XDocument layoutDocument, BuildInformation info)
-        {
-            // Make sure there is a root <layouts> tag
-            XContainer layoutContainer = layoutDocument.Element("layouts");
-            if (layoutContainer == null)
-                throw new ArgumentException("Invalid layout document");
-
-            // Layout tags have the format:
-            // <layout for="(layout's purpose)">(structure fields)</layout>
-            foreach (XElement layout in layoutContainer.Elements("layout"))
-            {
-                XAttribute forAttrib = layout.Attribute("for");
-                if (forAttrib == null)
-                    throw new ArgumentException("Layout tags must have a \"for\" attribute");
-
-                int size = 0;
-                XAttribute sizeAttrib = layout.Attribute("size");
-                if (sizeAttrib != null)
-                    size = ParseNumber(sizeAttrib.Value);
-
-                info.AddLayout(forAttrib.Value, XMLLayoutLoader.LoadLayout(layout, size));
-            }
-        }
-
-        private static void LoadAllLocaleSymbols(XDocument localeSymbolDocument, BuildInformation info)
-        {
-            // Make sure there is a root <symbols> tag
-            XContainer localeSymbolContainer = localeSymbolDocument.Element("symbols");
-            if (localeSymbolContainer == null)
-                throw new ArgumentException("Invalid symbols document");
-
-            // Symbol tags have the format:
-            // <symbol code="0x(the byte array)" display="(Friendly Name)" />
-            foreach (XElement symbol in localeSymbolContainer.Elements("symbol"))
-            {
-                XAttribute codeAttrib = symbol.Attribute("code");
-                XAttribute displayAttrib = symbol.Attribute("display");
-                if (codeAttrib == null)
-                    throw new ArgumentException("Symbol tags must have a \"code\" attribute");
-                if (displayAttrib == null)
-                    throw new ArgumentException("Symbol tags must have a \"display\" attribute");
-
-                // Convert code to int
-                codeAttrib.Value = codeAttrib.Value.Replace("0x","");
-                byte[] code = FunctionHelpers.HexStringToBytes(codeAttrib.Value);
-                string codeString = Encoding.UTF8.GetString(code);
-                char codeChar = codeString[0];
-
-                info.LocaleSymbols.AddSymbol(codeChar, displayAttrib.Value);
-            }
-        }
-
-        private static void LoadAllVertexLayouts(XDocument vertexLayoutsDocument, BuildInformation info)
-        {
-            XContainer vertexTypesContainer = vertexLayoutsDocument.Element("vertexTypes");
-            if (vertexLayoutsDocument == null)
-                throw new ArgumentException("Invalid vertex layout document");
-
-            foreach (XElement vertex in vertexTypesContainer.Elements("vertex"))
-            {
-                var layout = VertexLayoutLoader.LoadLayout(vertex);
-                info.VertexLayouts.AddLayout(layout);
-            }
-        }
-
-        private static int ParseNumber(string str)
-        {
-            if (str.StartsWith("0x"))
-                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
-            return int.Parse(str);
         }
     }
 }
