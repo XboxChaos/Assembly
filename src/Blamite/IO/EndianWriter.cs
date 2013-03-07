@@ -30,6 +30,10 @@ namespace Blamite.IO
     /// </summary>
     public class EndianWriter : IWriter, IDisposable
     {
+        private Stream _stream;
+        private bool _bigEndian;
+        private byte[] _buffer = new byte[8];
+
         /// <summary>
         /// Constructs a new EndianWriter.
         /// </summary>
@@ -69,7 +73,8 @@ namespace Blamite.IO
         /// <param name="value">The byte to write.</param>
         public void WriteByte(byte value)
         {
-            _stream.WriteByte(value);
+            _buffer[0] = value;
+            _stream.Write(_buffer, 0, 1);
         }
 
         /// <summary>
@@ -78,7 +83,7 @@ namespace Blamite.IO
         /// <param name="value">The signed byte to write.</param>
         public void WriteSByte(sbyte value)
         {
-            _stream.WriteByte((byte)value);
+            WriteByte((byte)value);
         }
 
         /// <summary>
@@ -89,14 +94,15 @@ namespace Blamite.IO
         {
             if (_bigEndian)
             {
-                _stream.WriteByte((byte)(value >> 8));
-                _stream.WriteByte((byte)(value & 0xFF));
+                _buffer[0] = (byte)(value >> 8);
+                _buffer[1] = (byte)(value & 0xFF);
             }
             else
             {
-                _stream.WriteByte((byte)(value & 0xFF));
-                _stream.WriteByte((byte)(value >> 8));
+                _buffer[0] = (byte)(value & 0xFF);
+                _buffer[1] = (byte)(value >> 8);
             }
+            _stream.Write(_buffer, 0, 2);
         }
 
         /// <summary>
@@ -116,18 +122,19 @@ namespace Blamite.IO
         {
             if (_bigEndian)
             {
-                _stream.WriteByte((byte)(value >> 24));
-                _stream.WriteByte((byte)((value >> 16) & 0xFF));
-                _stream.WriteByte((byte)((value >> 8) & 0xFF));
-                _stream.WriteByte((byte)(value & 0xFF));
+                _buffer[0] = (byte)(value >> 24);
+                _buffer[1] = (byte)((value >> 16) & 0xFF);
+                _buffer[2] = (byte)((value >> 8) & 0xFF);
+                _buffer[3] = (byte)(value & 0xFF);
             }
             else
             {
-                _stream.WriteByte((byte)(value & 0xFF));
-                _stream.WriteByte((byte)((value >> 8) & 0xFF));
-                _stream.WriteByte((byte)((value >> 16) & 0xFF));
-                _stream.WriteByte((byte)(value >> 24));
+                _buffer[0] = (byte)(value & 0xFF);
+                _buffer[1] = (byte)((value >> 8) & 0xFF);
+                _buffer[2] = (byte)((value >> 16) & 0xFF);
+                _buffer[3] = (byte)(value >> 24);
             }
+            _stream.Write(_buffer, 0, 4);
         }
 
         /// <summary>
@@ -147,26 +154,27 @@ namespace Blamite.IO
         {
             if (_bigEndian)
             {
-                _stream.WriteByte((byte)(value >> 56));
-                _stream.WriteByte((byte)((value >> 48) & 0xFF));
-                _stream.WriteByte((byte)((value >> 40) & 0xFF));
-                _stream.WriteByte((byte)((value >> 32) & 0xFF));
-                _stream.WriteByte((byte)((value >> 24) & 0xFF));
-                _stream.WriteByte((byte)((value >> 16) & 0xFF));
-                _stream.WriteByte((byte)((value >> 8) & 0xFF));
-                _stream.WriteByte((byte)(value & 0xFF));
+                _buffer[0] = (byte)(value >> 56);
+                _buffer[1] = (byte)((value >> 48) & 0xFF);
+                _buffer[2] = (byte)((value >> 40) & 0xFF);
+                _buffer[3] = (byte)((value >> 32) & 0xFF);
+                _buffer[4] = (byte)((value >> 24) & 0xFF);
+                _buffer[5] = (byte)((value >> 16) & 0xFF);
+                _buffer[6] = (byte)((value >> 8) & 0xFF);
+                _buffer[7] = (byte)(value & 0xFF);
             }
             else
             {
-                _stream.WriteByte((byte)(value & 0xFF));
-                _stream.WriteByte((byte)((value >> 8) & 0xFF));
-                _stream.WriteByte((byte)((value >> 16) & 0xFF));
-                _stream.WriteByte((byte)((value >> 24) & 0xFF));
-                _stream.WriteByte((byte)((value >> 32) & 0xFF));
-                _stream.WriteByte((byte)((value >> 40) & 0xFF));
-                _stream.WriteByte((byte)((value >> 48) & 0xFF));
-                _stream.WriteByte((byte)(value >> 56));
+                _buffer[0] = (byte)(value & 0xFF);
+                _buffer[1] = (byte)((value >> 8) & 0xFF);
+                _buffer[2] = (byte)((value >> 16) & 0xFF);
+                _buffer[3] = (byte)((value >> 24) & 0xFF);
+                _buffer[4] = (byte)((value >> 32) & 0xFF);
+                _buffer[5] = (byte)((value >> 40) & 0xFF);
+                _buffer[6] = (byte)((value >> 48) & 0xFF);
+                _buffer[7] = (byte)(value >> 56);
             }
+            _stream.Write(_buffer, 0, 8);
         }
 
         /// <summary>
@@ -318,8 +326,5 @@ namespace Blamite.IO
         {
             get { return _stream; }
         }
-
-        private Stream _stream;
-        private bool _bigEndian;
     }
 }      
