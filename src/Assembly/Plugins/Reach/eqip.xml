@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Reach" baseSize="0x504">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -92,16 +92,16 @@
 	<float32 name="Dynamic Light Sphere X Offset" offset="0x30" visible="true" />
 	<float32 name="Dynamic Light Sphere Y Offset" offset="0x34" visible="true" />
 	<float32 name="Dynamic Light Sphere Z Offset" offset="0x38" visible="true" />
-	<int32 name="Generic HUD Text" offset="0x3C" visible="false" />
+	<stringid name="Generic HUD Text" offset="0x3C" visible="false" />
 	<tagRef name="Generic Name List" offset="0x40" visible="true" />
 	<tagRef name="Generic Service Tag List" offset="0x50" visible="true" />
-	<int32 name="Default Variant" offset="0x60" visible="true" />
+	<stringid name="Default Variant" offset="0x60" visible="true" />
 	<tagRef name="Object Properties" offset="0x64" visible="true" />
 	<tagRef name="Crate Object" offset="0x74" visible="true" />
 	<tagRef name="Collision Damage" offset="0x84" visible="true" />
 	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
 	<reflexive name="Early Mover Properties" offset="0xA4" visible="true" entrySize="0x28">
-		<int32 name="A Node" offset="0x0" visible="false" />
+		<stringid name="A Node" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -150,7 +150,7 @@
 			<bit name="31" index="30" />
 			<bit name="32" index="31" />
 		</bitfield32>
-		<uint32 name="Type Name (SID)" offset="0x4" visible="true" />
+		<stringid name="Type Name" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="AI Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
@@ -207,13 +207,13 @@
 			<bit name="31" index="30" />
 			<bit name="32" index="31" />
 		</bitfield32>
-		<int32 name="Import Name" offset="0x4" visible="true" />
-		<int32 name="Export Name" offset="0x8" visible="true" />
-		<int32 name="Turn Off With" offset="0xC" visible="true" />
+		<stringid name="Import Name" offset="0x4" visible="true" />
+		<stringid name="Export Name" offset="0x8" visible="true" />
+		<stringid name="Turn Off With" offset="0xC" visible="true" />
 		<int32 name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<dataRef name="Data" offset="0x18" visible="true" />
-		<uint32 name="Scale By (SID)" offset="0x2C" visible="true" />
+		<stringid name="Scale By..." offset="0x2C" visible="true" />
 		<reflexive name="Unknown 2" offset="0x30" visible="false" entrySize="0x18">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<float32 name="Unknown" offset="0x4" visible="false" />
@@ -231,10 +231,10 @@
 	<int16 name="Unknown" offset="0x106" visible="false" />
 	<reflexive name="Attachments" offset="0x108" visible="true" entrySize="0x20">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
-		<int32 name="Marker" offset="0x10" visible="true" />
+		<stringid name="Marker" offset="0x10" visible="true" />
 		<int32 name="Change Color" offset="0x14" visible="true" />
-		<int32 name="Primary Scale/Function" offset="0x18" visible="true" />
-		<int32 name="Secondary Scale/Function" offset="0x1C" visible="true" />
+		<stringid name="Primary Scale/Function" offset="0x18" visible="true" />
+		<stringid name="Secondary Scale/Function" offset="0x1C" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 4" offset="0x114" visible="false" entrySize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -271,15 +271,15 @@
 			<colorf name="Color Upper Bound" offset="0x10" visible="true" format="rgb" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x20">
+		<reflexive name="Functions" offset="0xC" visible="false" entrySize="0x20">
 			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
 			</bitfield32>
 			<colorf name="Color Lower Bound" offset="0x4" visible="true" format="rgb" />
 			<colorf name="Color Upper Bound" offset="0x10" visible="true" format="rgb" />
-			<int32 name="Darken By... (SID)" offset="0x1C" visible="true" />
-			<int32 name="Scale By... (SID)" offset="0x20" visible="true" />
+			<stringid name="Darken By..." offset="0x1C" visible="true" />
+			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resources" offset="0x144" visible="true" entrySize="0x8">
@@ -288,26 +288,37 @@
 		<int32 name="Tag Index" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Gametype Attributes" offset="0x150" visible="true" entrySize="0xBC">
-		<enum16 name="Object Class" offset="0x0" visible="true">
-			<option name="Default" value="0x0" />
-			<option name="Weapon" value="0x1" />
-			<option name="Grenade" value="0x2" />
-			<option name="Powerup" value="0x4" />
-			<option name="Equipment" value="0x5" />
-			<option name="Land Vehicle" value="0x7" />
-			<option name="Tank" value="0x8" />
-			<option name="Air Vehicle" value="0x9" />
-			<option name="Two Way Node" value="0xC" />
-			<option name="Sender Node" value="0xD" />
-			<option name="Receiver Node" value="0xE" />
-			<option name="Spawn Point" value="0xF" />
-			<option name="Spawn Zone" value="0x10" />
-			<option name="MP Emitter" value="0x13" />
-			<option name="Safe Area" value="0x19" />
-			<option name="Kill Area" value="0x1A" />
-			<option name="Loadout Camera" value="0x1B" />
-			<option name="Grid" value="0x200" />
-		</enum16>
+		<int8 name="Unknown" offset="0x0" visible="true" />
+		<enum8 name="Object Class" offset="0x1" visible="true">
+			<option name="ordinary" value="0x0" />
+			<option name="weapon" value="0x1" />
+			<option name="grenade" value="0x2" />
+			<option name="projectile" value="0x3" />
+			<option name="powerup" value="0x4" />
+			<option name="equipment" value="0x5" />
+			<option name="ammo pack" value="0x6" />
+			<option name="light land vehicle" value="0x7" />
+			<option name="heavy land vehicle" value="0x8" />
+			<option name="flying vehicle" value="0x9" />
+			<option name="turret" value="0xA" />
+			<option name="device" value="0xB" />
+			<option name="teleporter 2way" value="0xC" />
+			<option name="teleporter sender" value="0xD" />
+			<option name="teleporter receiver" value="0xE" />
+			<option name="player spawn location" value="0xF" />
+			<option name="player respawn zone" value="0x10" />
+			<option name="secondary objective" value="0x11" />
+			<option name="primary objective" value="0x12" />
+			<option name="named location area" value="0x13" />
+			<option name="danger zone" value="0x14" />
+			<option name="fireteam 1 respawn zone" value="0x15" />
+			<option name="fireteam 2 respawn zone" value="0x16" />
+			<option name="fireteam 3 respawn zone" value="0x17" />
+			<option name="fireteam 4 respawn zone" value="0x18" />
+			<option name="safe volume" value="0x19" />
+			<option name="kill volume" value="0x1A" />
+			<option name="cinematic camera position" value="0x1B" />
+		</enum8>
 		<int16 name="Unknown" offset="0x2" visible="true" />
 		<float32 name="Radius / Width" offset="0x4" visible="true" />
 		<float32 name="Length" offset="0x8" visible="true" />
@@ -321,7 +332,7 @@
 		</enum8>
 		<uint8 name="Unknown" offset="0x15" visible="true" />
 		<int16 name="Default Spawn Time" offset="0x16" visible="true" />
-		<int16 name="Test" offset="0x18" visible="true" />
+		<int16 name="Unknown" offset="0x18" visible="true" />
 		<bitfield16 name="Flags" offset="0x1A" visible="true">
 			<bit name="1" index="0" />
 			<bit name="Phased Physics" index="1" />
@@ -345,7 +356,7 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<tagRef name="Child Object" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<tagRef name="Shader 1" offset="0x3C" visible="true" />
+		<tagRef name="Shape Shader" offset="0x3C" visible="true" />
 		<tagRef name="Shader 2" offset="0x4C" visible="true" />
 		<tagRef name="Unknown" offset="0x5C" visible="true" />
 		<tagRef name="Unknown" offset="0x6C" visible="true" />
@@ -462,7 +473,7 @@
 		<option name="Hold Button" value="0x1" />
 	</enum8>
 	<uint8 name="Unknown" offset="0x27B" visible="false" />
-	<uint32 name="Effect Marker (SID)" offset="0x27C" visible="true" />
+	<stringid name="Effect Marker" offset="0x27C" visible="true" />
 	<float32 name="Main Color Alpha" offset="0x280" visible="true" />
 	<colorf name="Main Color" offset="0x284" visible="true" format="rgb" />
 	<float32 name="Detail Color Alpha" offset="0x290" visible="true" />
@@ -730,9 +741,9 @@
 	<tagRef name="Active Effect" offset="0x414" visible="true" />
 	<tagRef name="Deactivate Effect" offset="0x424" visible="true" />
 	<tagRef name="Unknown" offset="0x434" visible="true" />
-	<uint32 name="Enter Animation (SID)" offset="0x444" visible="true" />
-	<uint32 name="Idle Animation (SID)" offset="0x448" visible="true" />
-	<uint32 name="Exit Animation (SID)" offset="0x44C" visible="true" />
+	<stringid name="Enter Animation" offset="0x444" visible="true" />
+	<stringid name="Idle Animation" offset="0x448" visible="true" />
+	<stringid name="Exit Animation" offset="0x44C" visible="true" />
 	<undefined name="Unknown" offset="0x450" visible="false" />
 	<undefined name="Unknown" offset="0x454" visible="false" />
 </plugin>
