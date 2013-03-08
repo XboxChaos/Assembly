@@ -12,6 +12,13 @@ namespace Blamite.Blam
     public interface ICacheFile
     {
         /// <summary>
+        /// Loads the resource table from the file.
+        /// </summary>
+        /// <param name="reader">The stream to read the resource table from.</param>
+        /// <returns>The resource table that was read, or null if not available or not supported.</returns>
+        IResourceTable LoadResourceTable(IReader reader);
+
+        /// <summary>
         /// Saves any changes that were made to the file.
         /// </summary>
         /// <param name="stream">The stream to write changes to.</param>
@@ -129,12 +136,6 @@ namespace Blamite.Blam
         /// Can be null.
         /// </summary>
         IScenario Scenario { get; }
-
-        /// <summary>
-        /// The resources stored in the cache file.
-        /// Can be null.
-        /// </summary>
-        IResourceTable Resources { get; }
 
         /// <summary>
         /// The IResourceMetaLoader which can be used to load metadata for resources.

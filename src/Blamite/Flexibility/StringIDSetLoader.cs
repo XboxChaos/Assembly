@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Blamite.Blam;
+using Blamite.Util;
 
 namespace Blamite.Flexibility
 {
@@ -14,14 +15,14 @@ namespace Blamite.Flexibility
     public static class StringIDSetLoader
     {
         /// <summary>
-        /// Loads stringID set definitions from an XML container.
+        /// Loads stringID set definitions from an XML document.
         /// </summary>
-        /// <param name="container">The XML container to load set definitions from.</param>
+        /// <param name="container">The XML document to load set definitions from.</param>
         /// <param name="resolver">The StringIDSetResolver to store sets to.</param>
-        public static void LoadAllStringIDSets(XContainer container, StringIDSetResolver resolver)
+        public static void LoadStringIDSets(XDocument document, StringIDSetResolver resolver)
         {
-            // Make sure there is a root <layouts> tag
-            XContainer stringIDContainer = container.Element("stringIDs");
+            // Make sure there is a root <stringIDs> tag
+            XContainer stringIDContainer = document.Element("stringIDs");
             if (stringIDContainer == null)
                 throw new ArgumentException("Invalid stringID definition document");
 
@@ -30,40 +31,24 @@ namespace Blamite.Flexibility
                 ProcessSetElement(element, resolver);
         }
 
-        private static void ProcessSetElement(XElement element, StringIDSetResolver resolver)
+        /// <summary>
+        /// Loads stringID set definitions from an XML document.
+        /// </summary>
+        /// <param name="documentPath">The path to the XML document to load.</param>
+        /// <param name="resolver">The StringIDSetResolver to store sets to.</param>
+        /// <returns>The definitions that were loaded.</returns>
+        public static void LoadStringIDSets(string documentPath, StringIDSetResolver resolver)
         {
-            // Get the set's ID from the "id" attribute
-            XAttribute idAttribute = element.Attribute("id");
-            if (idAttribute == null)
-                throw new ArgumentException("StringID set tags must have an \"id\" attribute");
-            byte id = (byte)ParseNumber(idAttribute.Value);
-
-            // Get the set's min index from the "min" attribute (optional, defaults to 0)
-            ushort min = 0;
-            XAttribute minAttribute = element.Attribute("min");
-            if (minAttribute != null)
-                min = (ushort)ParseNumber(minAttribute.Value);
-
-            // Get the set's global index from the "startIndex" attribute
-            XAttribute startIndexAttribute = element.Attribute("startIndex");
-            if (startIndexAttribute == null)
-                throw new ArgumentException("String id set tags must have a \"startIndex\" attribute");
-            int globalIndex = ParseNumber(startIndexAttribute.Value);
-
-            // Register the set
-            resolver.RegisterSet(id, min, globalIndex);
+            LoadStringIDSets(XDocument.Load(documentPath), resolver);
         }
 
-        /// <summary>
-        /// Parses a number stored in a string. Numbers can be either hexadecimal (starting with "0x") or decimal.
-        /// </summary>
-        /// <param name="str">The number string to store.</param>
-        /// <returns>The parsed number.</returns>
-        private static int ParseNumber(string str)
+        private static void ProcessSetElement(XElement element, StringIDSetResolver resolver)
         {
-            if (str.StartsWith("0x"))
-                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
-            return int.Parse(str);
+            byte id = (byte)XMLUtil.GetNumericAttribute(element, "id");
+            ushort min = (ushort)XMLUtil.GetNumericAttribute(element, "min", 0);
+            int globalIndex = XMLUtil.GetNumericAttribute(element, "startIndex");
+
+            resolver.RegisterSet(id, min, globalIndex);
         }
     }
 }

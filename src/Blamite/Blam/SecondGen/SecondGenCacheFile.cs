@@ -26,6 +26,12 @@ namespace Blamite.Blam.SecondGen
             Load(reader, buildInfo, buildString);
         }
 
+        public IResourceTable LoadResourceTable(IReader reader)
+        {
+            // Not supported yet
+            return null;
+        }
+
         public void SaveChanges(IStream stream)
         {
             CalculateChecksum(stream);
@@ -143,11 +149,6 @@ namespace Blamite.Blam.SecondGen
         public FileSegmentGroup LocaleArea
         {
             get { return _header.LocaleArea; }
-        }
-
-        public IResourceTable Resources
-        {
-            get { return null; }
         }
 
         public IResourceMetaLoader ResourceMetaLoader

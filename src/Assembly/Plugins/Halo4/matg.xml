@@ -181,9 +181,9 @@
 	<tagRef name="AI Globals" offset="0xD4" visible="true" />
 	<reflexive name="Damage Table" offset="0xE4" visible="true" entrySize="0xC">
 		<reflexive name="Damage Groups" offset="0x0" visible="true" entrySize="0x10">
-			<int32 name="Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<reflexive name="Armor Modifiers" offset="0x4" visible="true" entrySize="0x8">
-				<int32 name="Name" offset="0x0" visible="true" />
+				<stringid name="Name" offset="0x0" visible="true" />
 				<undefined name="Damage Multiplier" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
@@ -551,7 +551,11 @@
 				<option name="No Gunner" value="0x7" />
 				<option name="Full Use" value="0x8" />
 			</enum8>
-<int8 name="Unknown" offset="0x15" visible="false" />
+			<enum8 name="Double Jump" offset="0x15" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
 			<enum8 name="Sprint Use" offset="0x16" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Disabled" value="0x1" />
@@ -625,12 +629,36 @@
 				<option name="Disabled" value="0x1" />
 				<option name="Enabled" value="0x2" />
 			</enum8>
-			<int8 name="Unknown" offset="0xE" visible="false" />
-			<int8 name="Unknown" offset="0xF" visible="false" />
-			<int8 name="Unknown" offset="0x10" visible="false" />
-			<int8 name="Unknown" offset="0x11" visible="false" />
-			<int8 name="Unknown" offset="0x12" visible="false" />
-			<int8 name="Unknown" offset="0x13" visible="false" />
+			<enum8 name="Damage Indicator" offset="0xE" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
+			<enum8 name="Vision Mode" offset="0xF" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
+			<enum8 name="Battle Awareness" offset="0x10" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
+			<enum8 name="Threat View" offset="0x11" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
+			<enum8 name="Aural Enhancement" offset="0x12" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
+			<enum8 name="Nemesis" offset="0x13" visible="true">
+				<option name="Default" value="0x0" />
+				<option name="Disabled" value="0x1" />
+				<option name="Enabled" value="0x2" />
+			</enum8>
 		</reflexive>
 	</reflexive>
 	<reflexive name="Difficulty" offset="0x12C" visible="true" entrySize="0x284">
@@ -832,13 +860,13 @@
 		<undefined name="Unknown" offset="0x80" visible="false" />
 	</reflexive>
 	<reflexive name="Soft Barrier Properties" offset="0x144" visible="true" entrySize="0x1C">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Bouncyness" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Biped Give" offset="0x0" visible="true" />
+		<undefined name="Biped Bouncyness" offset="0x4" visible="true" />
+		<undefined name="Biped Bumpiness" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Vehicle Give" offset="0x10" visible="true" />
+		<undefined name="Vehicle Bounciness" offset="0x14" visible="true" />
+		<undefined name="Vehicle Bumpiness" offset="0x18" visible="true" />
 	</reflexive>
 	<reflexive name="Interface Tags" offset="0x150" visible="true" entrySize="0x194">
 		<tagref name="Spinner" offset="0x0" visible="true" />
@@ -928,15 +956,15 @@
 			<undefined name="Unknown" offset="0x4" visible="true" />
 			<undefined name="Unknown" offset="0x8" visible="true" />
 			<undefined name="Unknown" offset="0xC" visible="true" />
-			<undefined name="Sprint Speed Percentage" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
+			<undefined name="Sprint Movement Speed Percentage" offset="0x10" visible="true" />
+			<undefined name="Sprint Look Speed Percentage" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
 			<undefined name="Unknown" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="true" />
 			<undefined name="Unknown" offset="0x24" visible="true" />
 			<undefined name="Unknown" offset="0x28" visible="true" />
 			<undefined name="Unknown" offset="0x2C" visible="true" />
-			<undefined name="Unknown" offset="0x30" visible="true" />
+			<stringid name="Unknown" offset="0x30" visible="true" />
 			<undefined name="00000018" offset="0x34" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -947,18 +975,24 @@
 		<int8 name="00000005" offset="0x3" visible="true" />
 		<tagref name="HUD" offset="0x4" visible="true" />
 		<tagref name="First Person Properties" offset="0x14" visible="true" />
-		<int32 name="00000014" offset="0x24" visible="true" />
+		<stringid name="First Person Variant" offset="0x24" visible="true" />
 		<tagref name="Biped Properties" offset="0x28" visible="true" />
-		<int32 name="00000019" offset="0x38" visible="true" />
-		<reflexive name="Default Armor Perms" offset="0x3C" visible="false" entrySize="0x8">
+		<stringid name="First Person Default Variant" offset="0x38" visible="true" />
+		<reflexive name="Visible in FP?" offset="0x3C" visible="false" entrySize="0x8">
 			<stringid name="Location" offset="0x0" visible="true" />
-			<int32 name="Piece ID" offset="0x4" visible="true" />
+			<int8 name="Visible" offset="0x4" visible="true" />
+			<int8 name="Unknown" offset="0x5" visible="true" />
+			<int8 name="Unknown" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="true" />
 		</reflexive>
-		<tagref name="Biped" offset="0x48" visible="true" />
-		<int32 name="Biped Variant" offset="0x58" visible="true" />
-		<tagref name="Zoom In" offset="0x5C" visible="true" />
-		<tagref name="Zoom Out" offset="0x6C" visible="true" />
-		<int32 name="00000036" offset="0x7C" visible="true" />
+		<tagref name="Third Person Biped" offset="0x48" visible="true" />
+		<stringid name="Third Person Biped Variant" offset="0x58" visible="true" />
+		<tagref name="Zoom In Sound" offset="0x5C" visible="true" />
+		<tagref name="Zoom Out Sound" offset="0x6C" visible="true" />
+		<int8 name="Unknown" offset="0x7C" visible="true" />
+		<int8 name="Unknown" offset="0x7D" visible="true" />
+		<int8 name="Unknown" offset="0x7E" visible="true" />
+		<int8 name="Unknown" offset="0x7F" visible="true" />
 	</reflexive>
 	<reflexive name="Fall Damage" offset="0x18C" visible="true" entrySize="0xC4">
 		<tagref name="Falling" offset="0x0" visible="true" />
@@ -994,12 +1028,12 @@
 		<undefined name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
 	<reflexive name="Material Effects?" offset="0x1A4" visible="false" entrySize="0x1a8">
-		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
+		<stringid name="00000005" offset="0x0" visible="true" />
+		<stringid name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
-		<undefined name="00000009" offset="0x10" visible="true" />
-		<undefined name="00000010" offset="0x14" visible="true" />
+		<stringid name="00000008" offset="0xC" visible="true" />
+		<stringid name="00000009" offset="0x10" visible="true" />
+		<stringid name="00000010" offset="0x14" visible="true" />
 		<undefined name="00000011" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="true" />
 		<undefined name="00000013" offset="0x20" visible="true" />
@@ -1038,36 +1072,24 @@
 		<undefined name="00000104" offset="0x188" visible="true" />
 		<tagref name="00000105" offset="0x18C" visible="true" />
 		<reflexive name="Testo" offset="0x19C" visible="true" entrySize="0xC">
-			<undefined name="00000005" offset="0x0" visible="true" />
-			<undefined name="00000006" offset="0x4" visible="true" />
+			<stringid name="00000005" offset="0x0" visible="true" />
+			<stringid name="00000006" offset="0x4" visible="true" />
 			<undefined name="00000007" offset="0x8" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Armor Colors" offset="0x1B0" visible="true" entrySize="0xC">
-		<undefined name="R" offset="0x0" visible="true" />
-		<undefined name="G" offset="0x4" visible="true" />
-		<undefined name="B" offset="0x8" visible="true" />
+		<colorf name="Color" offset="0x0" visible="true" format="rgb" />
 	</reflexive>
 	<reflexive name="Emblem Colors" offset="0x1BC" visible="true" entrySize="0xC">
-		<undefined name="R" offset="0x0" visible="true" />
-		<undefined name="G" offset="0x4" visible="true" />
-		<undefined name="B" offset="0x8" visible="true" />
+		<colorf name="Color" offset="0x0" visible="true" format="rgb" />
 	</reflexive>
 	<reflexive name="Visor Colors" offset="0x1C8" visible="true" entrySize="0x1C">
-		<int32 name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Main R" offset="0x4" visible="true" />
-		<undefined name="Main G" offset="0x8" visible="true" />
-		<undefined name="Main B" offset="0xC" visible="true" />
-		<undefined name="Secondary R" offset="0x10" visible="true" />
-		<undefined name="Secondary G" offset="0x14" visible="true" />
-		<undefined name="Secondary B" offset="0x18" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" />
+		<colorf name="Main Color" offset="0x4" visible="true" format="rgb" />
+		<colorf name="Secondary Color" offset="0x10" visible="true" format="rgb" />
 	</reflexive>
-	<undefined name="Elite Shine R" offset="0x1d4" visible="true" />
-	<undefined name="Elite Shine G" offset="0x1d8" visible="true" />
-	<undefined name="Elite Shine B" offset="0x1dC" visible="true" />
-	<undefined name="Elite Color R" offset="0x1e0" visible="true" />
-	<undefined name="Elite Color G" offset="0x1e4" visible="true" />
-	<undefined name="Elite Color B" offset="0x1e8" visible="true" />
+	<colorf name="Elite Shine" offset="0x1d4" visible="true" format="rgb" />
+	<colorf name="Elite Color" offset="0x1e0" visible="true" format="rgb" />
 	<tagref name="Forge Globals" offset="0x1eC" visible="true" />
 	<tagref name="Engine Globals" offset="0x1fC" visible="true" />
 	<tagref name="Multiplayer Globals" offset="0x20C" visible="true" />
@@ -1093,7 +1115,7 @@
 		<undefined name="00000019" offset="0x38" visible="false" />
 		<undefined name="00000020" offset="0x3C" visible="false" />
 		<reflexive name="Testo" offset="0x40" visible="false" entrySize="0x1C">
-			<undefined name="00000005" offset="0x0" visible="false" />
+			<stringid name="00000005" offset="0x0" visible="false" />
 			<undefined name="00000006" offset="0x4" visible="false" />
 			<undefined name="00000007" offset="0x8" visible="false" />
 			<undefined name="00000008" offset="0xC" visible="false" />
@@ -1104,7 +1126,7 @@
 	</reflexive>
 	<reflexive name="Testo" offset="0x298" visible="false" entrySize="0x54">
 		<reflexive name="Testo" offset="0x0" visible="true" entrySize="0x8">
-			<undefined name="00000005" offset="0x0" visible="true" />
+			<stringid name="00000005" offset="0x0" visible="true" />
 			<undefined name="00000006" offset="0x4" visible="true" />
 		</reflexive>
 		<reflexive name="Testo" offset="0xc" visible="true" entrySize="0x4">
@@ -1477,16 +1499,16 @@
 	</reflexive>
 	<reflexive name="Testo" offset="0x8aC" visible="false" entrySize="0x20">
 		<dataref name="Unknown" offset="0x0" visible="false" />
-		<undefined name="00000010" offset="0x14" visible="false" />
-		<undefined name="00000011" offset="0x18" visible="false" />
-		<undefined name="00000012" offset="0x1C" visible="false" />
+		<stringid name="00000010" offset="0x14" visible="false" />
+		<stringid name="00000011" offset="0x18" visible="false" />
+		<stringid name="00000012" offset="0x1C" visible="false" />
 	</reflexive>
 	<reflexive name="Material Effects 2" offset="0x8b8" visible="false" entrySize="0x1a8">
-		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
+		<stringid name="00000005" offset="0x0" visible="true" />
+		<stringid name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
-		<undefined name="00000009" offset="0x10" visible="true" />
+		<stringid name="00000008" offset="0xC" visible="true" />
+		<stringid name="00000009" offset="0x10" visible="true" />
 		<undefined name="00000010" offset="0x14" visible="true" />
 		<undefined name="00000011" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="true" />
@@ -1526,25 +1548,25 @@
 		<undefined name="00000104" offset="0x188" visible="true" />
 		<tagref name="00000105" offset="0x18C" visible="true" />
 		<reflexive name="Testo" offset="0x19c" visible="true" entrySize="0xC">
-			<undefined name="00000005" offset="0x0" visible="true" />
-			<undefined name="00000006" offset="0x4" visible="true" />
-			<undefined name="00000007" offset="0x8" visible="true" />
+			<stringid name="00000005" offset="0x0" visible="true" />
+			<stringid name="00000006" offset="0x4" visible="true" />
+			<stringid name="00000007" offset="0x8" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Testooooo" offset="0x8c4" visible="false" entrySize="0x34">
-		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
-		<undefined name="00000009" offset="0x10" visible="true" />
-		<undefined name="00000010" offset="0x14" visible="true" />
-		<undefined name="00000011" offset="0x18" visible="true" />
-		<undefined name="00000012" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="true" />
-		<undefined name="00000014" offset="0x24" visible="true" />
-		<undefined name="00000015" offset="0x28" visible="true" />
-		<undefined name="00000016" offset="0x2C" visible="true" />
-		<undefined name="00000017" offset="0x30" visible="true" />
+		<stringid name="00000005" offset="0x0" visible="true" />
+		<stringid name="00000006" offset="0x4" visible="true" />
+		<stringid name="00000007" offset="0x8" visible="true" />
+		<stringid name="00000008" offset="0xC" visible="true" />
+		<stringid name="00000009" offset="0x10" visible="true" />
+		<stringid name="00000010" offset="0x14" visible="true" />
+		<stringid name="00000011" offset="0x18" visible="true" />
+		<stringid name="00000012" offset="0x1C" visible="true" />
+		<stringid name="00000013" offset="0x20" visible="true" />
+		<stringid name="00000014" offset="0x24" visible="true" />
+		<stringid name="00000015" offset="0x28" visible="true" />
+		<stringid name="00000016" offset="0x2C" visible="true" />
+		<stringid name="00000017" offset="0x30" visible="true" />
 	</reflexive>
 	<tagref name="Narrative Globals" offset="0x8d0" visible="true" />
 	<undefined name="00000386" offset="0x8e0" visible="false" />

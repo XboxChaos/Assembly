@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo3" baseSize="0x8E4">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -121,7 +121,6 @@
 			<int16 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
 	</reflexive>
-	<int32 name="Function Chunk Size" offset="0x54" visible="true" />
 	<reflexive name="Functions" offset="0x54" visible="true" entrySize="0x24">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int32 name="Unknown" offset="0x4" visible="true" />
@@ -134,9 +133,9 @@
 		<int32 name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 5" offset="0x60" visible="false" entrySize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
+		<int32 name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x6C" visible="false" />
 	<undefined name="Unknown" offset="0x70" visible="false" />
@@ -228,7 +227,6 @@
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<stringId name="Variant Type" offset="0x54" visible="true" />
-		<float32 name="Variant Type" offset="0x54" visible="true" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
@@ -1161,17 +1159,34 @@
 	</reflexive>
 	<reflexive name="AI Squads" offset="0x38C" visible="true" entrySize="0x40">
 		<ascii name="Unknown" offset="0x0" visible="true" length="0x20" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<reflexive name="Unknown 50" offset="0x30" visible="true" entrySize="0x60">
+		<int16 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="Unknown" offset="0x22" visible="true" />
+		<enum16 name="Forced Team" offset="0x24" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Player" value="0x1" />
+			<option name="Human" value="0x2" />
+			<option name="Covenant" value="0x3" />
+			<option name="Flood" value="0x4" />
+			<option name="Sentinel" value="0x5" />
+			<option name="Heretic" value="0x6" />
+			<option name="Prophet" value="0x7" />
+		</enum16>
+		<int16 name="Unknown" offset="0x26" visible="true" />
+		<int16 name="Unknown" offset="0x28" visible="true" />
+		<int16 name="Unknown" offset="0x2A" visible="true" />
+		<int16 name="Unknown" offset="0x2C" visible="true" />
+		<int16 name="Unknown" offset="0x2E" visible="true" />
+		<reflexive name="Base" offset="0x30" visible="true" entrySize="0x60">
 			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
+			<int16 name="Unknown" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="true" />
+			<int16 name="Character Index" offset="0x8" visible="true" />
+			<int16 name="Primary Weapon" offset="0xA" visible="true" />
+			<int16 name="Secondary Weapon" offset="0xC" visible="true" />
+			<int16 name="Unknown" offset="0xE" visible="true" />
+			<int16 name="Unknown" offset="0x10" visible="true" />
+			<int16 name="Vehicle" offset="0x12" visible="true" />
+			<stringid name="Vehicle Variant" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
 			<undefined name="Unknown" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="true" />
@@ -1202,21 +1217,34 @@
 			</reflexive>
 			<reflexive name="Unknown 52" offset="0x54" visible="true" entrySize="0x88">
 				<undefined name="Unknown" offset="0x0" visible="true" />
-				<undefined name="Unknown" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="true" />
-				<undefined name="Unknown" offset="0xC" visible="true" />
-				<undefined name="Unknown" offset="0x10" visible="true" />
+				<stringid name="Unknown" offset="0x4" visible="true" />
+				<undefined name="X" offset="0x8" visible="true" />
+				<undefined name="Y" offset="0xC" visible="true" />
+				<undefined name="Z" offset="0x10" visible="true" />
 				<undefined name="Unknown" offset="0x14" visible="true" />
 				<undefined name="Unknown" offset="0x18" visible="true" />
 				<undefined name="Unknown" offset="0x1C" visible="true" />
 				<undefined name="Unknown" offset="0x20" visible="true" />
-				<undefined name="Unknown" offset="0x24" visible="true" />
-				<undefined name="Unknown" offset="0x28" visible="true" />
-				<undefined name="Unknown" offset="0x2C" visible="true" />
-				<undefined name="Unknown" offset="0x30" visible="true" />
-				<undefined name="Unknown" offset="0x34" visible="true" />
-				<undefined name="Unknown" offset="0x38" visible="true" />
-				<undefined name="Unknown" offset="0x3C" visible="true" />
+				<int16 name="Unknown" offset="0x24" visible="true" />
+				<int16 name="Unknown" offset="0x26" visible="true" />
+				<int16 name="Forced Character" offset="0x28" visible="true" />
+				<int16 name="Forced Primary Weapon" offset="0x2A" visible="true" />
+				<int16 name="Forced Secondary Weapon" offset="0x2C" visible="true" />
+				<int16 name="Unknown" offset="0x2E" visible="true" />
+				<int16 name="Forced Vehicle" offset="0x30" visible="true" />
+				<enum16 name="Vehicle Spawn" offset="0x32" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Spawn In Passenger" value="0x1" />
+					<option name="Spawn In Gunner" value="0x2" />
+					<option name="Spawn In Driver" value="0x3" />
+					<option name="Spawn Out Of Vehicle" value="0x4" />
+					<option name="Spawn Vehicle Only" value="0x6" />
+					<option name="Spawn In Passenger" value="0x7" />
+				</enum16>
+				<int16 name="Unknown" offset="0x34" visible="true" />
+				<int16 name="Unknown" offset="0x36" visible="true" />
+				<int32 name="Unknown" offset="0x38" visible="true" />
+				<stringid name="Vehicle Variant" offset="0x3C" visible="true" />
 				<undefined name="Unknown" offset="0x40" visible="true" />
 				<undefined name="Unknown" offset="0x44" visible="true" />
 				<undefined name="Unknown" offset="0x48" visible="true" />
@@ -1423,7 +1451,6 @@
 	<undefined name="Unknown" offset="0x3E8" visible="false" />
 	<undefined name="Unknown" offset="0x3EC" visible="false" />
 	<undefined name="Unknown" offset="0x3F0" visible="false" />
-	<int32 name="# of Script Chunks" offset="0x3F4" visible="true" />
 	<reflexive name="Scripts" offset="0x3F4" visible="true" entrySize="0x34">
 		<ascii name="Script Name" offset="0x0" visible="true" length="0x20" />
 		<enum16 name="Script Type" offset="0x20" visible="true">
@@ -1751,17 +1778,11 @@
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
-	<enum32 name="**Boundless 1**" offset="0x48C" visible="true">
-		<option name="True" value="0x0" />
-	</enum32>
-	<reflexive name="Unknown 62" offset="0x48C" visible="false" entrySize="0x2">
-		<int16 name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Death Barriers 1" offset="0x48C" visible="true" entrySize="0x2">
+		<int16 name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<enum32 name="**Boundless 2**" offset="0x498" visible="true">
-		<option name="True" value="0x0" />
-	</enum32>
-	<reflexive name="Unknown 63" offset="0x498" visible="false" entrySize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Death Barriers 2" offset="0x498" visible="true" entrySize="0x4">
+		<undefined name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 64" offset="0x4A4" visible="false" entrySize="0x18">
 		<undefined name="00000005" offset="0x0" visible="true" />

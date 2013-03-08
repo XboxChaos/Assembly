@@ -30,6 +30,11 @@ namespace Blamite.IO
     /// </summary>
     public class EndianReader : IDisposable, IReader
     {
+        private Stream _stream = null;
+        private byte[] _buffer = new byte[8];
+        private StringBuilder _currentString = new StringBuilder();
+        private bool _bigEndian;
+
         /// <summary>
         /// Constructs a new EndianReader object given a base stream and an initial endianness.
         /// </summary>
@@ -78,7 +83,8 @@ namespace Blamite.IO
         /// </summary>
         public byte ReadByte()
         {
-            return (byte)_stream.ReadByte();
+            _stream.Read(_buffer, 0, 1);
+            return _buffer[0];
         }
 
         /// <summary>
@@ -289,19 +295,19 @@ namespace Blamite.IO
             return _currentString.ToString();
         }
 
-        public unsafe string ReadUTF16(int size)
+        public string ReadUTF16(int size)
         {
-            sbyte[] chars = new sbyte[size];
-            string result;
-            fixed (sbyte* str = chars)
+            _currentString.Clear();
+            int ch;
+            while (_currentString.Length * 2 < size)
             {
-                _stream.Read((byte[])(Array)chars, 0, size);
-                if (_bigEndian)
-                    result = new string(str, 0, size, Encoding.BigEndianUnicode);
-                else
-                    result = new string(str, 0, size, Encoding.Unicode);
+                ch = ReadInt16();
+                if (ch == 0)
+                    break;
+                _currentString.Append((char)ch);
             }
-            return result;
+            Skip(size - _currentString.Length * 2);
+            return _currentString.ToString();
         }
 
         /// <summary>
@@ -368,10 +374,5 @@ namespace Blamite.IO
         {
             get { return _stream; }
         }
-
-        private Stream _stream = null;
-        private byte[] _buffer = new byte[8];
-        private StringBuilder _currentString = new StringBuilder();
-        private bool _bigEndian;
     }
 }      

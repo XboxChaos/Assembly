@@ -4,24 +4,29 @@
 	<revisions>
 		<revision author="-DeToX-" version="1">Created layout of plugin</revision>
 		<revision author="-DeToX-" version="2">Mapped out the Raw Entry Table struct</revision>
+		<revision author="Lord Zedd" version="3">Matching Zonesets</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<reflexive name="Unknown0" offset="0x4" visible="false" entrySize="0x1C">
+	<enum16 name="Map Type" offset="0x0" visible="true">
+		<option name="Campaign/Firefight" value="0x0" />
+		<option name="Multiplayer" value="0x1" />
+		<option name="Main Menu" value="0x2" />
+	</enum16>
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+		<stringid name="Unknown" offset="0x18" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<reflexive name="Unknown1" offset="0x10" visible="false" entrySize="0x14">
+	<reflexive name="Resource Structure Types" offset="0x10" visible="true" entrySize="0x14">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-		<stringId name="Unknown" offset="0x10" visible="false" />
+		<stringId name="Unknown" offset="0x10" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x18" visible="false" />
 	<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -39,7 +44,7 @@
 	<undefined name="Unknown" offset="0x4C" visible="false" />
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<reflexive name="Raw Entry Table" offset="0x58" visible="true" entrySize="0x40">
+	<reflexive name="Asset Index" offset="0x58" visible="true" entrySize="0x40">
 		<tagRef name="Tag item" offset="0x0" visible="true" />
 		<int32 name="Raw ID" offset="0x10" visible="true" />
 		<uint32 name="Offset" offset="0x14" visible="true" />
@@ -57,228 +62,457 @@
 			<undefined name="Unknown" offset="0x4" visible="false" />
 		</reflexive>
 	</reflexive>
-	<undefined name="Unknown" offset="0x64" visible="false" />
-	<undefined name="Unknown" offset="0x68" visible="false" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<reflexive name="Unknown4" offset="0x70" visible="false" entrySize="0x78">
-		<reflexive name="Unknown5" offset="0x0" visible="false" entrySize="0x4">
-			<uint32 name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="General Zonesets" offset="0x64" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<uint32 name="Unknown" offset="0xC" visible="false" />
-		<uint32 name="Unknown" offset="0x10" visible="false" />
-		<uint32 name="Unknown" offset="0x14" visible="false" />
-		<reflexive name="Unknown6" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown7" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<reflexive name="Unknown8" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x78" visible="false" />
+	<reflexive name="Global Zoneset" offset="0x70" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</reflexive>
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</reflexive>
 	<undefined name="Unknown" offset="0x7C" visible="false" />
 	<undefined name="Unknown" offset="0x80" visible="false" />
 	<undefined name="Unknown" offset="0x84" visible="false" />
-	<reflexive name="Unknown9" offset="0x88" visible="false" entrySize="0x78">
-		<reflexive name="Unknown10" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Unattached Zoneset" offset="0x88" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown11" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown12" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown13" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<reflexive name="Unknown14" offset="0x94" visible="false" entrySize="0x69">
-		<reflexive name="Unknown15" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Disc-Forbidden Zoneset" offset="0x94" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown16" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown17" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown18" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<uint8 name="Unknown" offset="0x68" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<reflexive name="Unknown19" offset="0xA0" visible="false" entrySize="0x78">
-		<reflexive name="Unknown20" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Disc-Always-Streaming Zoneset" offset="0xA0" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown21" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown22" offset="0x24" visible="false" entrySize="0x3">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown23" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xA8" visible="false" />
-	<reflexive name="Unknown24" offset="0xAC" visible="false" entrySize="0x78">
-		<reflexive name="Unknown25" offset="0x0" visible="false" entrySize="0x3">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="BSP Zonesets" offset="0xAC" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown26" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown27" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown28" offset="0x60" visible="false" entrySize="0x1">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xB4" visible="false" />
-	<reflexive name="Unknown29" offset="0xB8" visible="false" entrySize="0x78">
-		<reflexive name="Unknown30" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="BSP Zonesets 2" offset="0xB8" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown31" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown32" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown33" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xC0" visible="false" />
-	<reflexive name="Unknown34" offset="0xC4" visible="false" entrySize="0x78">
-		<reflexive name="Unknown35" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="BSP Zonesets 3" offset="0xC4" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown36" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown37" offset="0x24" visible="false" entrySize="0x2">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown38" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xCC" visible="false" />
-	<undefined name="Unknown" offset="0xD0" visible="false" />
-	<undefined name="Unknown" offset="0xD4" visible="false" />
-	<undefined name="Unknown" offset="0xD8" visible="false" />
-	<reflexive name="Unknown39" offset="0xDC" visible="false" entrySize="0x78">
-		<reflexive name="Unknown40" offset="0x0" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Cinematic Zonesets" offset="0xD0" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown41" offset="0x18" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<reflexive name="Unknown42" offset="0x24" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Unknown" offset="0x30" visible="false" />
-		<tagRef name="Unknown" offset="0x40" visible="false" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown43" offset="0x60" visible="false" entrySize="0x4">
-			<tagRef name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<tagRef name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<reflexive name="Custom Zonesets" offset="0xDC" visible="true" entrySize="0x78">
+		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<reflexive name="Unknown Raw Pool" offset="0x18" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Raw Pool 2" offset="0x24" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<stringid name="Pool Name" offset="0x44" visible="true" />
+		<reflexive name="Resource Type Name" offset="0x48" visible="false" entrySize="0x14">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<undefined name="Unknown" offset="0x4" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+		</reflexive>
+		<reflexive name="Tag Pool" offset="0x54" visible="true" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<reflexive name="Unknown Tag Pool" offset="0x60" visible="false" entrySize="0x4">
+			<int32 name="Bitmask Here" offset="0x0" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+	</reflexive>
 	<undefined name="Unknown" offset="0xE8" visible="false" />
 	<undefined name="Unknown" offset="0xEC" visible="false" />
 	<undefined name="Unknown" offset="0xF0" visible="false" />
 	<undefined name="Unknown" offset="0xF4" visible="false" />
 	<undefined name="Unknown" offset="0xF8" visible="false" />
 	<undefined name="Unknown" offset="0xFC" visible="false" />
-	<reflexive name="Unknown44" offset="0x100" visible="false" entrySize="0x24">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<tagRef name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+	<reflexive name="Functions" offset="0x100" visible="true" entrySize="0x24">
+		<stringid name="Name" offset="0x4" visible="true" />
+		<int32 name="Unknown" offset="0x8" visible="true" />
+		<int32 name="Unknown" offset="0xC" visible="true" />
+		<int32 name="Unknown" offset="0x10" visible="true" />
+		<int32 name="Unknown" offset="0x14" visible="true" />
+		<int32 name="Unknown" offset="0x18" visible="true" />
+		<int32 name="Unknown" offset="0x1C" visible="true" />
+		<int32 name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<reflexive name="Unknown45" offset="0x10C" visible="false" entrySize="0x10">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="BSP References" offset="0x10C" visible="true" entrySize="0x10">
+		<tagRef name="BSP" offset="0x0" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x114" visible="false" />
 	<undefined name="Unknown" offset="0x118" visible="false" />
 	<undefined name="Unknown" offset="0x11C" visible="false" />
 	<undefined name="Unknown" offset="0x120" visible="false" />
 	<undefined name="Unknown" offset="0x124" visible="false" />
 	<undefined name="Unknown" offset="0x128" visible="false" />
 	<undefined name="Unknown" offset="0x12C" visible="false" />
-	<uint8 name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x130" visible="false" />
+	<undefined name="Unknown" offset="0x134" visible="false" />
+	<undefined name="Unknown" offset="0x138" visible="false" />
+	<dataref name="Unknown" offset="0x13C" visible="false" />
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<undefined name="Unknown" offset="0x154" visible="false" />
+	<undefined name="Unknown" offset="0x158" visible="false" />
+	<undefined name="Unknown" offset="0x15C" visible="false" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<reflexive name="Unknown 15" offset="0x164" visible="false" entrySize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+	</reflexive>
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
+	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Unknown" offset="0x18C" visible="false" />
+	<undefined name="Unknown" offset="0x190" visible="false" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
+	<undefined name="Unknown" offset="0x1A0" visible="false" />
+	<undefined name="Unknown" offset="0x1A4" visible="false" />
+	<undefined name="Unknown" offset="0x1A8" visible="false" />
+	<undefined name="Unknown" offset="0x1AC" visible="false" />
+	<undefined name="Unknown" offset="0x1B0" visible="false" />
+	<undefined name="Unknown" offset="0x1B4" visible="false" />
+	<undefined name="Unknown" offset="0x1B8" visible="false" />
+	<undefined name="Unknown" offset="0x1BC" visible="false" />
+	<undefined name="Unknown" offset="0x1C0" visible="false" />
+	<undefined name="Unknown" offset="0x1C4" visible="false" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<reflexive name="A" offset="0x1D0" visible="false" entrySize="0x4">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+	</reflexive>
+	<reflexive name="B" offset="0x1DC" visible="false" entrySize="0x8">
+		<int16 name="C Parent Index" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int32 name="A Index" offset="0x4" visible="false" />
+	</reflexive>
+	<reflexive name="C" offset="0x1E8" visible="false" entrySize="0x4">
+		<int16 name="C Parent Index" offset="0x0" visible="false" />
+		<int16 name="B Index" offset="0x2" visible="false" />
+	</reflexive>
+	<reflexive name="D - Tags" offset="0x1F4" visible="false" entrySize="0x8">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="C Index" offset="0x2" visible="false" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Secondary C Index" offset="0x6" visible="false" />
+	</reflexive>
+	<reflexive name="D2 - Tags" offset="0x200" visible="true" entrySize="0xC">
+		<tagref name="Tag" offset="0x0" withClass="true" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="true" />
+		<int32 name="Part" offset="0x8" visible="true" />
+	</reflexive>
+	<undefined name="Unknown" offset="0x20C" visible="false" />
+	<int32 name="Map ID" offset="0x210" visible="true" />
 </plugin>

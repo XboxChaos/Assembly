@@ -24,6 +24,16 @@ namespace Blamite.Flexibility
         }
 
         /// <summary>
+        /// Adds a collection of layouts to the collection.
+        /// </summary>
+        /// <param name="layouts">The layouts to add.</param>
+        public void AddLayouts(IEnumerable<VertexLayout> layouts)
+        {
+            foreach (VertexLayout layout in layouts)
+                AddLayout(layout);
+        }
+
+        /// <summary>
         /// Determines if a layout is present in the collection.
         /// </summary>
         /// <param name="type">The type index of the of layout to search for.</param>

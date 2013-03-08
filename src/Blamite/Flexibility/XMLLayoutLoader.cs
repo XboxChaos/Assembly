@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Flexibility
 {
@@ -32,15 +33,49 @@ namespace Blamite.Flexibility
     public static class XMLLayoutLoader
     {
         /// <summary>
+        /// Loads all of the structure layouts defined in an XML document.
+        /// </summary>
+        /// <param name="layoutDocument">The XML document to load structure layouts from.</param>
+        /// <returns>The layouts that were loaded.</returns>
+        public static StructureLayoutCollection LoadLayouts(XDocument layoutDocument)
+        {
+            // Make sure there is a root <layouts> tag
+            XContainer layoutContainer = layoutDocument.Element("layouts");
+            if (layoutContainer == null)
+                throw new ArgumentException("Invalid layout document");
+
+            // Layout tags have the format:
+            // <layout for="(layout's purpose)">(structure fields)</layout>
+            StructureLayoutCollection result = new StructureLayoutCollection();
+            foreach (XElement layout in layoutContainer.Elements("layout"))
+            {
+                string name = XMLUtil.GetStringAttribute(layout, "for");
+                int size = XMLUtil.GetNumericAttribute(layout, "size", 0);
+                result.AddLayout(name, LoadLayout(layout, size));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Loads all of the structure layouts defined in an XML document.
+        /// </summary>
+        /// <param name="documentPath">The path to the XML document to load.</param>
+        /// <returns>The layouts that were loaded.</returns>
+        public static StructureLayoutCollection LoadLayouts(string documentPath)
+        {
+            return LoadLayouts(XDocument.Load(documentPath));
+        }
+
+        /// <summary>
         /// Loads a structure layout based upon an XML container's children.
         /// </summary>
-        /// <param name="layoutTag">The collection of structure field tags to parse.</param>
+        /// <param name="parentElement">The element containing the value elements to parse.</param>
         /// <param name="size">The size of the structure in bytes.</param>
         /// <returns>The structure layout that was loaded.</returns>
-        public static StructureLayout LoadLayout(XContainer layoutTag, int size)
+        public static StructureLayout LoadLayout(XElement parentElement, int size)
         {
             StructureLayout layout = new StructureLayout(size);
-            foreach (XElement element in layoutTag.Elements())
+            foreach (XElement element in parentElement.Elements())
                 HandleElement(layout, element);
             return layout;
         }
@@ -54,8 +89,8 @@ namespace Blamite.Flexibility
         private static void HandleElement(StructureLayout layout, XElement element)
         {
             // Every structure field at least has a name and an offset
-            string name = GetStringAttribute(element, "name");
-            int offset = GetNumericAttribute(element, "offset");
+            string name = XMLUtil.GetStringAttribute(element, "name");
+            int offset = XMLUtil.GetNumericAttribute(element, "offset");
 
             if (IsArrayElement(element))
                 HandleArrayElement(layout, element, name, offset);
@@ -89,9 +124,9 @@ namespace Blamite.Flexibility
         /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
         private static void HandleArrayElement(StructureLayout layout, XElement element, string name, int offset)
         {
-            int count = GetNumericAttribute(element, "count");
-            int entrySize = GetNumericAttribute(element, "entrySize");
-            layout.AddArrayField(name, offset, count, XMLLayoutLoader.LoadLayout(element, entrySize));
+            int count = XMLUtil.GetNumericAttribute(element, "count");
+            int entrySize = XMLUtil.GetNumericAttribute(element, "entrySize");
+            layout.AddArrayField(name, offset, count, LoadLayout(element, entrySize));
         }
 
         /// <summary>
@@ -104,7 +139,7 @@ namespace Blamite.Flexibility
         /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
         private static void HandleRawElement(StructureLayout layout, XElement element, string name, int offset)
         {
-            int size = GetNumericAttribute(element, "size");
+            int size = XMLUtil.GetNumericAttribute(element, "size");
             layout.AddRawField(name, offset, size);
         }
 
@@ -156,58 +191,6 @@ namespace Blamite.Flexibility
         private static bool IsRawElement(XElement element)
         {
             return (element.Name == "raw");
-        }
-
-        /// <summary>
-        /// Attempts to parse a string, yielding its corresponding integer value.
-        /// The input string may hold a number represented in either decimal or in hexadecimal.
-        /// </summary>
-        /// <param name="numberStr">The string to parse. If it begins with "0x", it will be parsed as hexadecimal.</param>
-        /// <param name="result">The variable to store the parsed value to if parsing succeeds.</param>
-        /// <returns>true if parsing the string succeeded.</returns>
-        private static bool ParseNumber(string numberStr, out int result)
-        {
-            if (numberStr.StartsWith("0x"))
-                return int.TryParse(numberStr.Substring(2), NumberStyles.HexNumber, null, out result);
-            return int.TryParse(numberStr, out result);
-        }
-
-        /// <summary>
-        /// Retrieves the value of a integer attribute on an XML element.
-        /// The attribute's value may be represented in either decimal or hexadecimal.
-        /// An exception will be thrown if the attribute doesn't exist or is invalid.
-        /// </summary>
-        /// <param name="element">The XML element that holds the attribute.</param>
-        /// <param name="name">The name of the attribute to get the value of.</param>
-        /// <returns>The integer value that was parsed.</returns>
-        /// <exception cref="ArgumentException">Thrown if the attribute is missing.</exception>
-        /// <exception cref="FormatException">Thrown if the attribute does not represent an integer.</exception>
-        /// <seealso cref="ParseNumber"/>
-        private static int GetNumericAttribute(XElement element, string name)
-        {
-            XAttribute attribute = element.Attribute(name);
-            if (attribute == null)
-                throw new ArgumentException("An element is missing the required " + name + " attribute.");
-            int result;
-            if (!ParseNumber(attribute.Value, out result))
-                throw new FormatException("An element has an invalid " + name + " attribute: " + attribute.Value);
-            return result;
-        }
-
-        /// <summary>
-        /// Retrieves the value of an attribute on an XML element.
-        /// An exception will be thrown if the attribute doesn't exist.
-        /// </summary>
-        /// <param name="element">The XML element that holds the attribute.</param>
-        /// <param name="name">The name of the attribute to get the value of.</param>
-        /// <returns>The attribute's value.</returns>
-        /// <exception cref="ArgumentException">Thrown if the attribute is missing.</exception>
-        private static string GetStringAttribute(XElement element, string name)
-        {
-            XAttribute attribute = element.Attribute(name);
-            if (attribute == null)
-                throw new ArgumentException("An element is missing the required " + name + " attribute.");
-            return attribute.Value;
         }
     }
 }

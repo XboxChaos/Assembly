@@ -23,6 +23,16 @@ namespace Blamite.Flexibility
         }
 
         /// <summary>
+        /// Adds a collection of layouts to the collection.
+        /// </summary>
+        /// <param name="layouts">The layouts to add.</param>
+        public void AddLayouts(StructureLayoutCollection layouts)
+        {
+            foreach (var layout in layouts._layouts)
+                AddLayout(layout.Key, layout.Value);
+        }
+
+        /// <summary>
         /// Retrieves a layout in the collection by name.
         /// </summary>
         /// <param name="name">The name of the layout to retrieve.</param>
