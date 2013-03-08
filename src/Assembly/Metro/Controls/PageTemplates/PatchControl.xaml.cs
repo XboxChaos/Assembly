@@ -508,7 +508,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                     else
                     {
                         currentPatch = OldPatchLoader.LoadPatch(reader, isAlteration);
-                        txtApplyPatchAuthor.Text = "Ascension/Alteration Patch";
+                        txtApplyPatchAuthor.Text = currentPatch.Author;
                         txtApplyPatchDesc.Text = currentPatch.Description;
                         txtApplyPatchName.Text = "Ascension/Alteration Patch";
                         txtApplyPatchInternalName.Text = "Ascension/Alteration Patch";
