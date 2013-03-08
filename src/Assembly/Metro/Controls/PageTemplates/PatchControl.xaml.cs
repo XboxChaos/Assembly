@@ -41,7 +41,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             tabPanel.SelectedIndex = 1;
             txtApplyPatchFile.Text = pathPath;
-            LoadPatch();
+            bool isAlteration = txtApplyPatchFile.Text.EndsWith(".patchdat");
+            LoadPatch(isAlteration);
         }
 
         // ReSharper disable UnusedMember.Global
@@ -447,9 +448,10 @@ namespace Assembly.Metro.Controls.PageTemplates
                 Filter = "Patch Files|*.asmp;*.ascpatch;*.patchdat"
             };
             if (ofd.ShowDialog() != DialogResult.OK) return;
-
             txtApplyPatchFile.Text = ofd.FileName;
-            LoadPatch();
+            bool isAlteration = txtApplyPatchFile.Text.EndsWith(".patchdat");
+
+            LoadPatch(isAlteration);
         }
         private void btnApplyPatchUnmodifiedMap_Click(object sender, RoutedEventArgs e)
         {
@@ -474,13 +476,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         // Meta Sorting
         private Patch currentPatch;
-        private void LoadPatch()
+        private void LoadPatch(bool isAlteration)
         {
             
             try
             {
                 using (EndianReader reader = new EndianReader(File.OpenRead(txtApplyPatchFile.Text), Endian.LittleEndian))
                 {
+                    
                     string magic = reader.ReadAscii(4);
                     reader.SeekTo(0);
 
@@ -504,9 +507,9 @@ namespace Assembly.Metro.Controls.PageTemplates
                     }
                     else
                     {
-                        currentPatch = AscensionPatchLoader.LoadPatch(reader);
+                        currentPatch = OldPatchLoader.LoadPatch(reader, isAlteration);
                         txtApplyPatchAuthor.Text = "Ascension/Alteration Patch";
-                        txtApplyPatchDesc.Text = "Ascension/Alteration Patch";
+                        txtApplyPatchDesc.Text = currentPatch.Description;
                         txtApplyPatchName.Text = "Ascension/Alteration Patch";
                         txtApplyPatchInternalName.Text = "Ascension/Alteration Patch";
 

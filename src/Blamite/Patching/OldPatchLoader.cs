@@ -6,14 +6,26 @@ using System.Text;
 
 namespace Blamite.Patching
 {
-    public static class AscensionPatchLoader
+    public static class OldPatchLoader
     {
-        public static Patch LoadPatch(IReader reader)
+        public static Patch LoadPatch(IReader reader, bool isAlteration)
         {
-            
-            //create ascension patch object and change segment
+
             Patch patch = new Patch();
             SegmentChange change = new SegmentChange(0, 0, 0, 0, true);
+            patch.Author = "Ascension/Alteration Patch";
+            patch.Description = "Ascension/Alteration Patch";
+            if (isAlteration)
+            {
+                //do shitty alteration stuff
+                byte authorLength = reader.ReadByte();
+                patch.Author = reader.ReadAscii((int)authorLength);
+                byte descLength = reader.ReadByte();
+                patch.Description = reader.ReadAscii((int)descLength);
+                
+            }
+            //create ascension patch object and change segment
+
             while (!reader.EOF)
             {
                 //get valuable info
