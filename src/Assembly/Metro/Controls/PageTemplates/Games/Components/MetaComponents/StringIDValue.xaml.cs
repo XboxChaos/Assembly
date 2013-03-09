@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -24,6 +25,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
         public StringIDValue()
         {
             InitializeComponent();
+        }
+
+        public readonly static DependencyProperty SearchTrieProperty = DependencyProperty.Register("SearchTrie", typeof(Trie), typeof(StringIDValue));
+
+        public Trie SearchTrie
+        {
+            get { return (Trie)GetValue(SearchTrieProperty); }
+            set { SetValue(SearchTrieProperty, value); }
+        }
+
+        private void cbStringIDs_Populating(object sender, PopulatingEventArgs e)
+        {
+            e.Cancel = true;
+
+            cbStringIDs.ItemsSource = SearchTrie.FindPrefix(e.Parameter);
+            cbStringIDs.PopulateComplete();
         }
     }
 }

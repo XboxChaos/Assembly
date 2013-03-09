@@ -19,6 +19,7 @@ using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.RTE;
+using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -30,6 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private TagEntry _tag;
         private BuildInformation _buildInfo;
         private ICacheFile _cache;
+        private Trie _stringIDTrie;
 
 		private MetaInformation _metaInformation;
 		private MetaEditor _metaEditor;
@@ -43,13 +45,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         #endregion
 
-        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider)
+        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
         {
             InitializeComponent();
 
             _tag = tag;
             _buildInfo = buildInfo;
             _cache = cache;
+            _stringIDTrie = stringIDTrie;
 
             tbMetaEditors.SelectedIndex = (int)Settings.halomapLastSelectedMetaEditor;
 
@@ -58,7 +61,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tabTagInfo.Content = _metaInformation;
 
             // Create Meta Editor Tab
-			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager, rteProvider);
+			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager, rteProvider, _stringIDTrie);
 			_metaEditor.Padding = new Thickness(0);
             tabMetaEditor.Content = _metaEditor;
 

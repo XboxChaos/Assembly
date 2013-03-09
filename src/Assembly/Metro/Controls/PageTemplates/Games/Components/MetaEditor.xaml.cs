@@ -57,6 +57,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private bool hasInitFinished = false;
         private ReflexiveFlattener _flattener;
         private IRTEProvider _rteProvider;
+        private Trie _stringIDTrie;
 
         private ObservableCollection<SearchResult> _searchResults;
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
@@ -69,7 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
 		public static RoutedCommand GoToPlugin = new RoutedCommand();
 
-		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider)
+		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
         {
             InitializeComponent();
 
@@ -81,6 +82,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _streamManager = streamManager;
             _rteProvider = rteProvider;
             _searchTimer = new Timer(SearchTimer);
+            _stringIDTrie = stringIDTrie;
 
             // Load Plugin Path
 			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
@@ -103,7 +105,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 // Load Plugin File
                 using (XmlReader xml = XmlReader.Create(_pluginPath))
                 {
-                    _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, Settings.pluginsShowInvisibles);
+                    _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, Settings.pluginsShowInvisibles);
                     AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
                 }
 
@@ -640,7 +642,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
             XmlReader reader = XmlReader.Create(path);
 
-            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, true);
+            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, true);
             AssemblyPluginLoader.LoadPlugin(reader, plugin);
             reader.Close();
 

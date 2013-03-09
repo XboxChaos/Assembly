@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Blamite.Blam;
+using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -10,12 +11,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private StringID _value;
         private StringIDSource _source;
+        private Trie _autocompleteTrie;
 
-        public StringIDData(string name, uint offset, uint address, StringID sid, StringIDSource source, uint pluginLine)
+        public StringIDData(string name, uint offset, uint address, StringID sid, StringIDSource source, Trie autocompleteTrie, uint pluginLine)
             : base(name, offset, address, pluginLine)
         {
             _value = sid;
             _source = source;
+            _autocompleteTrie = autocompleteTrie;
         }
 
         public StringID Value
@@ -36,6 +39,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             set { _source = value; NotifyPropertyChanged("StringSource"); }
         }
 
+        public Trie AutocompleteTrie
+        {
+            get { return _autocompleteTrie; }
+            set { _autocompleteTrie = value; NotifyPropertyChanged("AutocompleteTrie"); }
+        }
+
         public override void Accept(IMetaFieldVisitor visitor)
         {
             visitor.VisitStringID(this);
@@ -43,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new StringIDData(Name, Offset, FieldAddress, _value, _source, base.PluginLine);
+            return new StringIDData(Name, Offset, FieldAddress, _value, _source, _autocompleteTrie, base.PluginLine);
         }
     }
 }

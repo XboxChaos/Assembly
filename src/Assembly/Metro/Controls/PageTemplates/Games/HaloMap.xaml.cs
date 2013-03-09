@@ -58,6 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private ICacheFile _cacheFile;
         private readonly string _cacheLocation;
         private readonly TabItem _tab;
+        private Trie _stringIDTrie;
 
 /*
         private List<EmptyClassesObject> _emptyClasses = new List<EmptyClassesObject>();
@@ -191,6 +192,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     return;
                 }
                 _mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
+
+                // Build SID trie
+                _stringIDTrie = new Trie();
+                _stringIDTrie.AddRange(_cacheFile.StringIDs);
 
                 Dispatcher.Invoke(delegate
 	                                  {
@@ -714,7 +719,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							ContextMenu = BaseContextMenu
 						},
                         Tag = tag,
-                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager, _rteProvider)
+                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager, _rteProvider, _stringIDTrie)
                     });
                 }
 
