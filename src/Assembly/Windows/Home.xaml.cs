@@ -675,14 +675,14 @@ namespace Assembly.Windows
         public void ShowMask()
         {
             OpacityIndex++;
-            OpacityMask.Visibility = Visibility.Visible;
+            OpacityRect.Visibility = Visibility.Visible;
         }
         public void HideMask()
         {
             OpacityIndex--;
 
             if (OpacityIndex == 0) 
-                OpacityMask.Visibility = Visibility.Collapsed;
+                OpacityRect.Visibility = Visibility.Collapsed;
         }
         #endregion
 

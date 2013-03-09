@@ -111,7 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         encoder.Save(stream);
                 }));
 
-	            var newImageId = Imgur.UploadToImgur(File.ReadAllBytes(filePath)).Result;
+	            var newImageId = Imgur.UploadToImgur(File.ReadAllBytes(filePath));
 				if (newImageId == null)
 					new Exception("Failed to Upload.");
 

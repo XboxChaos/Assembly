@@ -175,7 +175,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 }
                 catch (NotSupportedException ex)
                 {
-                    Dispatcher.Invoke(delegate
+                    Dispatcher.Invoke(new Action(delegate
 	                                      {
 		                                      if (!_0xabad1dea.IWff.Heman(reader))
 		                                      {
@@ -188,7 +188,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                      }
 
 		                                      Settings.homeWindow.ExternalTabClose((TabItem)Parent);
-	                                      });
+	                                      }));
                     return;
                 }
                 _mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
@@ -197,11 +197,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 _stringIDTrie = new Trie();
                 _stringIDTrie.AddRange(_cacheFile.StringIDs);
 
-                Dispatcher.Invoke(delegate
+                Dispatcher.Invoke(new Action(delegate
 	                                  {
 		                                  if (Settings.startpageHideOnLaunch)
 			                                  Settings.homeWindow.ExternalTabClose(Home.TabGenre.StartPage);
-	                                  });
+	                                  }));
 
                 // Set up RTE
                 switch (_cacheFile.Engine)
@@ -215,14 +215,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         break;
                 }
 
-                Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Cache File"));
+                Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
 
                 // Add to Recents
-                Dispatcher.Invoke(delegate
+                Dispatcher.Invoke(new Action(delegate
 	                                  {
 		                                  RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
 		                                  StatusUpdater.Update("Added To Recents");
-	                                  });
+	                                  }));
 
                 LoadHeader();
 	            LoadMetaData();
@@ -233,7 +233,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void LoadHeader()
         {
-            Dispatcher.Invoke(delegate
+            Dispatcher.Invoke(new Action(delegate
 							{
 								var fi = new FileInfo(_cacheLocation);
 								_tab.Header = new ContentControl
@@ -274,11 +274,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 								StatusUpdater.Update("Loaded Header Info");
-							});
+							}));
         }
 		private void LoadMetaData()
 		{
-			Dispatcher.Invoke(delegate
+			Dispatcher.Invoke(new Action(delegate
 								{
 									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
 																						_cacheFile.InternalName);
@@ -302,7 +302,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 									source.EndInit();
 									imgMetaDataImage.Source = source;
 									#endregion
-								});
+								}));
 		}
         private void LoadTags()
         {
@@ -312,7 +312,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Load all the tag classes into data
             var classes = new List<TagClass>();
             var classWrappers = new Dictionary<ITagClass, TagClass>();
-            Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(new Action(() =>
 	                              {
 		                              foreach (var tagClass in _cacheFile.TagClasses)
 		                              {
@@ -320,9 +320,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			                              classes.Add(wrapper);
 			                              classWrappers[tagClass] = wrapper;
 		                              }
-	                              });
+	                              }));
 
-            Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Tag Classes"));
+            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tag Classes")));
 
             // Load all the tags into the treeview (into their class categoies)
             _hierarchy.Entries = new List<TagEntry>();
@@ -361,10 +361,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
 
 
-            Dispatcher.Invoke(() => StatusUpdater.Update("Loaded Tags"));
+            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tags")));
 
             classes.Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-            Dispatcher.Invoke(delegate
+            Dispatcher.Invoke(new Action(delegate
 	                              {
 		                              _tagsComplete = new ObservableCollection<TagClass>(classes);
 
@@ -372,10 +372,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                              foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
 			                              _tagsPopulated.Add(tagClass);
 		                              _hierarchy.Classes = _tagsPopulated;
-	                              });
+	                              }));
 
             // Add to the treeview
-            Dispatcher.Invoke(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked));
+            Dispatcher.Invoke(new Action(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked)));
         }
         private void LoadLocales()
         {
@@ -404,11 +404,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
             AddLanguage("Extra", LocaleLanguage.Unknown);
 
-            Dispatcher.Invoke(delegate
+            Dispatcher.Invoke(new Action(delegate
 	                              {
 		                              lbLanguages.ItemsSource = _languages;
 		                              StatusUpdater.Update("Initialized Languages");
-	                              });
+	                              }));
         }
         private void LoadScripts()
         {

@@ -7,14 +7,14 @@ namespace Assembly.Helpers.Net
 {
 	public static class HttpRequests
 	{
-		public static async Task<Stream> SendBasicGetRequest(Uri webUri)
+		public static Stream SendBasicGetRequest(Uri webUri)
 		{
 			try
 			{
 				var request = (HttpWebRequest)WebRequest.Create(webUri);
 				request.Method = HttpMethod.Get;
 
-				var response = await request.GetResponseAsync();
+				var response = request.GetResponse();
 				return response != null ? response.GetResponseStream() : null;
 			}
 			catch (Exception)

@@ -13,7 +13,7 @@ namespace Assembly.Helpers.Net
 		private const string ImgurClientSecret = "bc73c000b63fcb4dde1bed88d3d48c3f0dbd4cdd";
 		private const int MaxUriLength = 32766;
 
-		private async static Task<string> DownloadStringTask(Uri uri, string stringData)
+		private static string DownloadString(Uri uri, string stringData)
 		{
 			try
 			{
@@ -22,10 +22,10 @@ namespace Assembly.Helpers.Net
 				request.Headers["Authorization"] = "Client-ID " + ImgurClientId;
 				request.ContentType = "application/x-www-form-urlencoded";
 
-				var streamW = new StreamWriter(await request.GetRequestStreamAsync());
+				var streamW = new StreamWriter(request.GetRequestStream());
 				streamW.Write(stringData);
 
-				var response = await request.GetResponseAsync();
+				var response = request.GetResponse();
 				if (response != null)
 					using (var sr = new StreamReader(response.GetResponseStream()))
 					{
@@ -40,7 +40,7 @@ namespace Assembly.Helpers.Net
 			}
 		}
 
-		public static async Task<string> UploadToImgur(byte[] imageData)
+		public static string UploadToImgur(byte[] imageData)
 		{
 
 			var base64Img = Convert.ToBase64String(imageData);
@@ -57,7 +57,7 @@ namespace Assembly.Helpers.Net
 			var uploadRequestString = "image=" + base64 +
 				"&type=base64";
 
-			var response = await DownloadStringTask(new Uri("https://api.imgur.com/3/image", UriKind.Absolute), uploadRequestString);
+			var response = DownloadString(new Uri("https://api.imgur.com/3/image", UriKind.Absolute), uploadRequestString);
 			if (response == null || response.Contains("\"error\":"))
 				return null;
 			else

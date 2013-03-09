@@ -221,22 +221,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						               Indent = true, 
 									   IndentChars = "\t"
 					               };
-				var writer = XmlWriter.Create(path, settings);
-				var pluginWriter = new AssemblyPluginWriter(writer, gameIdentifier);
+                using (var writer = XmlWriter.Create(path, settings))
+                {
+                    var pluginWriter = new AssemblyPluginWriter(writer, gameIdentifier);
 
-				var size = map.Value.GetBestSizeEstimate();
-				FoldSubMaps(map.Value);
+                    var size = map.Value.GetBestSizeEstimate();
+                    FoldSubMaps(map.Value);
 
-				pluginWriter.EnterPlugin(size);
+                    pluginWriter.EnterPlugin(size);
 
-				pluginWriter.EnterRevisions();
-				pluginWriter.VisitRevision(new PluginRevision("Assembly", 1, "Generated plugin from scratch."));
-				pluginWriter.LeaveRevisions();
+                    pluginWriter.EnterRevisions();
+                    pluginWriter.VisitRevision(new PluginRevision("Assembly", 1, "Generated plugin from scratch."));
+                    pluginWriter.LeaveRevisions();
 
-				WritePlugin(map.Value, size, pluginWriter);
-				pluginWriter.LeavePlugin();
-
-				writer.Dispose();
+                    WritePlugin(map.Value, size, pluginWriter);
+                    pluginWriter.LeavePlugin();
+                }
 			}
 
 			var endTime = DateTime.Now;

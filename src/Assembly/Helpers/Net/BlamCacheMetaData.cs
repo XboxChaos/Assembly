@@ -100,7 +100,7 @@ namespace Assembly.Helpers.Net
 
 	public class BlamCacheMetaData
 	{
-		public static async void BeginCachingData()
+		public static void BeginCachingData()
 		{
 			var blamcacheFolderPath = VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\";
 			var blamcacheFilePath = blamcacheFolderPath + "content.aidf";
@@ -133,9 +133,7 @@ namespace Assembly.Helpers.Net
 
 				if (response != null && response.UpdateCache)
 				{
-					var blam_cache =
-						await
-						HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
+					var blam_cache = HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
 
 					// Write new Data
 					File.WriteAllText(blamcacheFilePath, new StreamReader(blam_cache).ReadToEnd());
@@ -190,7 +188,7 @@ namespace Assembly.Helpers.Net
 					// Large
 					if (downloadLarge)
 					{
-						imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPath));
+						imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPath));
 						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
 						File.WriteAllBytes(localPath, imageByteArray);
 					}
@@ -198,7 +196,7 @@ namespace Assembly.Helpers.Net
 					// Small
 					if (downloadSmall)
 					{
-						imageStream = await HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
+						imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
 						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
 						File.WriteAllBytes(localPathSmall, imageByteArray);
 					}
