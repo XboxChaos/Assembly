@@ -163,7 +163,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public bool HasChildren
         {
-            get { return Pages.Count > 0; }
+            get { return (Pages.Count > 0 && Template.Count > 0); }
         }
 
         public bool IsExpanded

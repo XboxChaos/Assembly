@@ -428,10 +428,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             ReflexiveData reflexive = field as ReflexiveData;
             if (reflexive != null)
             {
+                // Show wrappers
+                _flattener.EnumWrappers(reflexive, ShowField);
+
+                // Show template fields
                 foreach (MetaField child in reflexive.Template)
                     ShowField(child);
 
-                // Also set the opacity of modified fields
+                // Show modified fields
                 foreach (ReflexivePage page in reflexive.Pages)
                 {
                     foreach (MetaField child in page.Fields)
