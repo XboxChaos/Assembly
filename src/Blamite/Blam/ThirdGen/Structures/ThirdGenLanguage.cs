@@ -104,7 +104,6 @@ namespace Blamite.Blam.ThirdGen.Structures
                     stringReader.SeekTo(offset);
                     string locale = stringReader.ReadUTF8();
                     result.Strings.Add(new Locale(id, locale));
-                    //result.Add(ReplaceSymbols(locale));
                 }
             }
             return result;
@@ -188,12 +187,6 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stringData = AES.Decrypt(stringData, _encryptionKey.Key, _encryptionKey.IV);
 
             return stringData;
-        }
-
-        private string ReplaceSymbols(string locale)
-        {
-            // :)
-            return _symbols.ReplaceSymbols(locale);
         }
     }
 }

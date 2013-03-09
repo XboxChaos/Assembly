@@ -18,6 +18,7 @@ using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
+using Blamite.Flexibility;
 using Blamite.IO;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
@@ -30,6 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private ICacheFile _cache;
         private IStreamManager _streamManager;
         private int _languageIndex;
+        private BuildInformation _buildInfo;
         private ILanguage _currentLanguage;
         private LocaleTable _currentLocaleTable;
         private List<LocaleEntry> _locales;
@@ -38,7 +40,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private LocaleRange _currentRange;
         private string _filter;
 
-        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index)
+        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, BuildInformation buildInfo)
         {
             InitializeComponent();
 
@@ -46,17 +48,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _streamManager = streamManager;
             _languageIndex = index;
             _currentLanguage = cache.Languages[index];
+            _buildInfo = buildInfo;
 
             Thread thrd = new Thread(new ThreadStart(LoadLanguage));
             thrd.SetApartmentState(ApartmentState.STA);
             thrd.Start();
-        }
-
-        private void lvLocales_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-           //LocaleEntry localeEntry = (LocaleEntry)localeEntries.SelectedItem;
-           //if (localeEntry != null)
-           //     _haloMap.txtLocaleSelectedContent.Text = localeEntry.Locale;
         }
 
         /// <summary>
@@ -80,12 +76,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 if (stringId == null)
                     stringId = locale.ID.ToString();
 
-                _locales.Add(new LocaleEntry(i, stringId, locale.Value));
+                string localeStr = ReplaceSymbols(locale.Value);
+                _locales.Add(new LocaleEntry(i, stringId, localeStr));
             }
 
             LoadGroups();
 
             Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _localeView; }));
+        }
+
+        private string ReplaceSymbols(string locale)
+        {
+            return _buildInfo.LocaleSymbols.ReplaceSymbols(locale);
+        }
+
+        private string ReplaceTags(string locale)
+        {
+            return _buildInfo.LocaleSymbols.ReplaceTags(locale);
         }
 
         /// <summary>
@@ -161,7 +168,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < _locales.Count; i++)
-                _currentLocaleTable.Strings[i].Value = _locales[i].Locale;
+                _currentLocaleTable.Strings[i].Value = ReplaceTags(_locales[i].Locale);
 
             using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
             {
