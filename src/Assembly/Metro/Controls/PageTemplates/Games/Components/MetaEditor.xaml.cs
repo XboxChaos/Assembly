@@ -103,7 +103,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                 // Load Plugin File
                 using (XmlReader xml = XmlReader.Create(_pluginPath))
                 {
-                    _pluginVisitor = new ThirdGenPluginVisitor(_tags, Settings.pluginsShowInvisibles);
+                    _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, Settings.pluginsShowInvisibles);
                     AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
                 }
 
@@ -640,7 +640,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
             XmlReader reader = XmlReader.Create(path);
 
-            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, true);
+            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, true);
             AssemblyPluginLoader.LoadPlugin(reader, plugin);
             reader.Close();
 

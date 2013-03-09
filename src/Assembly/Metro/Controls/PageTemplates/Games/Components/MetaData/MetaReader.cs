@@ -224,7 +224,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitStringID(StringIDData field)
         {
             SeekToOffset(field.Offset);
-            field.Value = _cache.StringIDs.StringIDToIndex(new StringID(_reader.ReadInt32()));
+            field.Value = new StringID(_reader.ReadInt32());
         }
 
         public void VisitRawData(RawData field)

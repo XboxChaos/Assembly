@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using Blamite.Blam;
 using Blamite.Plugins;
 
 namespace Assembly.Helpers.Plugins
@@ -19,6 +20,7 @@ namespace Assembly.Helpers.Plugins
     {
         // Private Members
         private readonly TagHierarchy _tags;
+        private readonly StringIDSource _stringIDs;
 
         private readonly List<ReflexiveData> _reflexives = new List<ReflexiveData>();
 	    private ReflexiveData _currentReflexive;
@@ -33,9 +35,10 @@ namespace Assembly.Helpers.Plugins
         public ObservableCollection<MetaField> Values { get; private set; }
         public ObservableCollection<ReflexiveData> Reflexives { get; private set; }
 
-        public ThirdGenPluginVisitor(TagHierarchy tags, bool showInvisibles)
+        public ThirdGenPluginVisitor(TagHierarchy tags, StringIDSource stringIDs, bool showInvisibles)
         {
             _tags = tags;
+            _stringIDs = stringIDs;
 
             Values = new ObservableCollection<MetaField>();
             Reflexives = new ObservableCollection<ReflexiveData>();
@@ -135,7 +138,7 @@ namespace Assembly.Helpers.Plugins
 	    public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new StringIDData(name, offset, 0, 0, pluginLine));
+                AddValue(new StringIDData(name, offset, 0, StringID.Null, _stringIDs, pluginLine));
         }
 
         public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)

@@ -21,17 +21,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
     /// </summary>
     public partial class StringIDValue : UserControl
     {
-        private ObservableCollection<string> _stringIDs = new ObservableCollection<string>();
-
-        public ObservableCollection<string> StringIDs
-        {
-            get { return _stringIDs; }
-        }
-
         public StringIDValue()
         {
             InitializeComponent();
-            cbStringIDs.ItemsSource = Settings.selectedHaloMap.CacheFile.StringIDs;
         }
     }
 }
