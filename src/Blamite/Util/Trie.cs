@@ -6,11 +6,11 @@ using System.Text;
 namespace Blamite.Util
 {
     /// <summary>
-    /// A prefix tree which allows a set of strings to be searched for common prefixes.
+    /// A radix tree which allows a set of strings to be searched for common prefixes.
     /// </summary>
     public class Trie
     {
-        private Node _root = new Node('\0');
+        private Node _root = new Node();
 
         /// <summary>
         /// Adds a string to the trie.
@@ -21,11 +21,7 @@ namespace Blamite.Util
             if (str.Length == 0)
                 return;
 
-            Node currentNode = _root;
-            foreach (char ch in str)
-                currentNode = currentNode.CreateChild(ch);
-
-            currentNode.Value = str;
+            _root.AddChild(str, 0);
         }
 
         /// <summary>
@@ -48,15 +44,10 @@ namespace Blamite.Util
             if (prefix == null || prefix.Length == 0)
                 return new List<string>();
 
-            Node currentNode = _root;
-            foreach (char ch in prefix)
-            {
-                currentNode = currentNode.GetChild(ch);
-                if (currentNode == null)
-                    return new List<string>();
-            }
-
-            return currentNode.FindChildStrings();
+            Node node = _root.FindPrefix(prefix, 0);
+            if (node != null)
+                return node.FindChildStrings();
+            return new List<string>();
         }
 
         /// <summary>
@@ -66,12 +57,10 @@ namespace Blamite.Util
         {
             private Node _firstChild;
             private Node _next;
-            private char _ch;
 
-            public Node(char ch)
-            {
-                _ch = ch;
-            }
+            private string _sequenceStr;
+            private int _sequenceStart;
+            private int _sequenceLen;
 
             /// <summary>
             /// The value of the string at the node.
@@ -80,35 +69,80 @@ namespace Blamite.Util
             public string Value { get; set; }
 
             /// <summary>
-            /// Gets the child node labelled with a character, creating it if it does not exist.
+            /// Creates a child node for part of a string.
             /// </summary>
-            /// <param name="ch">The character of the child node to create.</param>
-            /// <returns>The child node.</returns>
-            public Node CreateChild(char ch)
+            /// <param name="str">The full string.</param>
+            /// <param name="startChar">The zero-based index of the first character in the string which is a part of the node.</param>
+            /// <returns>The node that was created.</returns>
+            public Node AddChild(string str, int startChar)
             {
-                Node result = GetChild(ch);
-                if (result != null)
-                    return result;
+                Node currentChild = _firstChild;
+                while (currentChild != null)
+                {
+                    int commonPrefix = currentChild.FindCommonPrefix(str, startChar);
+                    if (commonPrefix > 0)
+                    {
+                        if (commonPrefix < currentChild._sequenceLen)
+                            currentChild.Split(commonPrefix);
 
-                // Create the node
-                result = new Node(ch);
+                        if (startChar + commonPrefix == str.Length)
+                        {
+                            currentChild.Value = str;
+                            return currentChild;
+                        }
+
+                        return currentChild.AddChild(str, startChar + commonPrefix);
+                    }
+                    currentChild = currentChild._next;
+                }
+
+                Node result = new Node();
+                result._sequenceStr = str;
+                result._sequenceStart = startChar;
+                result._sequenceLen = str.Length - startChar;
+                result.Value = str;
                 result._next = _firstChild;
                 _firstChild = result;
                 return result;
             }
 
             /// <summary>
-            /// Gets the child node labelled with a character.
+            /// Splits this node.
             /// </summary>
-            /// <param name="ch">The character of the child node to retrieve.</param>
-            /// <returns>The child node, or null if it does not exist.</returns>
-            public Node GetChild(char ch)
+            /// <param name="startChar">The zero-based index of the character from the start of this node's substring to split at.</param>
+            public void Split(int startChar)
+            {
+                Node newChild = new Node();
+                newChild._sequenceStr = _sequenceStr;
+                newChild._sequenceStart = _sequenceStart + startChar;
+                newChild._sequenceLen = _sequenceLen - startChar;
+                newChild.Value = Value;
+                newChild._firstChild = _firstChild;
+                _firstChild = newChild;
+
+                _sequenceLen = startChar;
+                Value = null;
+            }
+
+            /// <summary>
+            /// Finds the first Node whose path string starts with a given string.
+            /// </summary>
+            /// <param name="str">The prefix to search for.</param>
+            /// <param name="startChar">The zero-based index of the character in the prefix to start searching at.</param>
+            /// <returns>The Node which was found, or null if there is no path in the tree with the given prefix.</returns>
+            public Node FindPrefix(string str, int startChar)
             {
                 Node currentChild = _firstChild;
                 while (currentChild != null)
                 {
-                    if (currentChild._ch == ch)
-                        return currentChild;
+                    int commonPrefix = currentChild.FindCommonPrefix(str, startChar);
+                    if (commonPrefix > 0)
+                    {
+                        if (startChar + commonPrefix == str.Length)
+                            return currentChild;
+
+                        return currentChild.FindPrefix(str, startChar + commonPrefix);
+                    }
                     currentChild = currentChild._next;
                 }
                 return null;
@@ -120,18 +154,35 @@ namespace Blamite.Util
             /// <returns>A collection of all strings in the trie which are a child of this node.</returns>
             public IEnumerable<string> FindChildStrings()
             {
-                List<string> list = new List<string>();
                 if (Value != null)
-                    list.Add(Value);
+                    yield return Value;
 
-                IEnumerable<string> result = list;
                 Node currentChild = _firstChild;
                 while (currentChild != null)
                 {
-                    result = result.Concat(currentChild.FindChildStrings());
+                    foreach (string str in currentChild.FindChildStrings())
+                        yield return str;
+
                     currentChild = currentChild._next;
                 }
-                return result;
+            }
+
+            /// <summary>
+            /// Determines the number of characters that this node's string has in common with part of another string.
+            /// </summary>
+            /// <param name="str">The full string to compare against.</param>
+            /// <param name="startChar">The zero-based index of the first character in <paramref name="str"/> to start comparing with.</param>
+            /// <returns>The number of characters that the given string has in common with this node's string.</returns>
+            private int FindCommonPrefix(string str, int startChar)
+            {
+                int i = 0;
+                while (i < _sequenceLen && startChar + i < str.Length)
+                {
+                    if (str[startChar + i] != _sequenceStr[_sequenceStart + i])
+                        break;
+                    i++;
+                }
+                return i;
             }
         }
     }
