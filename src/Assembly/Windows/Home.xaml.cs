@@ -22,6 +22,8 @@ using CloseableTabItemDemo;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
+using System.ComponentModel;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Windows
 {
@@ -197,6 +199,31 @@ namespace Assembly.Windows
 		        hwndSource.AddHook(WindowProc);
 
             ProcessCommandLineArgs(Environment.GetCommandLineArgs());
+            StartUpdateCheck();
+        }
+
+        private void StartUpdateCheck()
+        {
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += CheckForUpdates;
+            worker.RunWorkerCompleted += UpdateCheckCompleted;
+            worker.RunWorkerAsync();
+        }
+
+        void CheckForUpdates(object sender, DoWorkEventArgs e)
+        {
+            // Grab JSON Update package from the server
+            e.Result = Updates.GetUpdateInfo();
+        }
+
+        void UpdateCheckCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled || e.Error != null)
+                return;
+
+            var updateInfo = (UpdateInfo)e.Result;
+            if (Updater.UpdateAvailable(updateInfo))
+                MetroUpdateDialog.Show(updateInfo, true);
         }
 
         #region Content Management
