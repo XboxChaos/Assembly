@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Blamite.IO;
+using Assembly.Metro.Dialogs;
 
 namespace Assembly.Helpers
 {
@@ -103,6 +104,17 @@ namespace Assembly.Helpers
 		        return Settings.applicationEasterEggs ? "Morgan Freeman" : "Lord Zedd";
 	        }
         }
+
+		public class GayRats
+		{
+			public static void CheckIfGayRatsExist()
+			{
+				if (!Settings.applicationEasterEggs) return;
+
+				MetroMessageBox.Show("woah!",
+				                     "Yeah, so if you didn't know, Gamecheat13 is a gay rat. And needs to stfu and gtfo about scripts. \n\nJesus man...");
+			}
+		}
 
         public static void CheckServerStatus()
         {

@@ -2,8 +2,10 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
+using System.Windows.Controls.Primitives;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -61,6 +63,9 @@ namespace Assembly.Metro.Controls.PageTemplates
 			cbDefaultMIFEditor.IsChecked = Settings.defaultMIF;
 			cbDefaultAMPEditor.IsChecked = Settings.defaultAMP;
             #endregion
+
+			// Load UI
+			btnTabSelection_Clicked(btnSelectGeneral, null);
         }
 
         #region Real Time Accent Updateing
@@ -118,7 +123,56 @@ namespace Assembly.Metro.Controls.PageTemplates
 		private void cbTagSorting_SelectionChanged(object sender, SelectionChangedEventArgs e)	{ _settingsChanged = (Settings.halomapTagSort != (Settings.TagSort)cbTagSorting.SelectedIndex); }
         #endregion
 
-        public bool Close()
+		#region TabSelection
+		private void btnTabSelection_Clicked(object sender, RoutedEventArgs e)
+		{
+			//if (_isActive) return;
+
+			var button = (ToggleButton) sender;
+			if (button == null || button.IsChecked == null)
+			{
+				_isActive = false;
+				return;
+			}
+			if (_currentTag != button.Tag.ToString())
+			{
+				_isActive = true;
+
+				// Get Current Tab
+				var currentTabTag = _currentTag;
+
+				// Disable all old buttons
+				SetAllToDisbaled();
+
+				// Update UI
+				button.IsChecked = true;
+				_currentTag = button.Tag.ToString();
+
+				// Apply Storyboard
+				var storyboardHide = (Storyboard) TryFindResource(string.Format("Hide{0}Tab", currentTabTag));
+				var storyboardShow = (Storyboard) TryFindResource(string.Format("Show{0}Tab", button.Tag));
+
+				if (storyboardHide != null) storyboardHide.Begin();
+				if (storyboardShow != null) storyboardShow.Begin();
+				if (storyboardShow != null) storyboardShow.Completed += (sender1, eventArgs) => _isActive = false;
+			}
+			else
+				_isActive = false;
+		}
+
+	    private bool _isActive;
+	    private string _currentTag = "";
+		private void SetAllToDisbaled()
+		{
+			btnSelectGeneral.IsChecked = false;
+			btnSelectXboxDev.IsChecked = false;
+			btnSelectMapEdit.IsChecked = false;
+			btnSelectPlugins.IsChecked = false;
+			btnSelectStrtpge.IsChecked = false;
+		}
+		#endregion
+
+		public bool Close()
         {
             if (_settingsChanged)
                 if (MetroMessageBox.Show("Are you sure bro?", "Are you sure you want to exit? Someone told me you have un-saved settings.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.No)
@@ -182,11 +236,13 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
-            fbd.ShowNewFolderButton = true;
-            fbd.SelectedPath = txtAutoSaveDirectory.Text;
-            fbd.Description = "Select the folder you would like to auto-save screenshots in";
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var fbd = new System.Windows.Forms.FolderBrowserDialog
+	                      {
+		                      ShowNewFolderButton = true,
+		                      SelectedPath = txtAutoSaveDirectory.Text,
+		                      Description = "Select the folder you would like to auto-save screenshots in"
+	                      };
+	        if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 txtAutoSaveDirectory.Text = fbd.SelectedPath;
         }
         private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -195,5 +251,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 	        _settingsChanged = (!Settings.XDKScreenshotGammaModifier.Equals(e.NewValue));
         }
+
+		private void lblHeader_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			_0xabad1dea.GayRats.CheckIfGayRatsExist();
+		}
     }
 }
