@@ -30,9 +30,6 @@ namespace Assembly.Metro.Controls.PageTemplates
             cbClosePageOnLoad.IsChecked = Settings.startpageHideOnLaunch;
             cbShowOnStartUp.IsChecked = Settings.startpageShowOnLoad;
 
-            string version = VariousFunctions.GetApplicationVersion();
-            lblTitle.Text = lblTitle.Text.Replace("{version}", version);
-
             // Load RSS feeds
             tutHalo3.Content = new Games.Components.RssPage(HoldingVault.XboxChaosH3Tuts);
             tutHaloReach.Content = new Games.Components.RssPage(HoldingVault.XboxChaosHReachTuts);

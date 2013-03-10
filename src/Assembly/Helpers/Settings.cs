@@ -92,7 +92,7 @@ namespace Assembly.Helpers
 				if (applyThemeAswell)
 					ApplyAccent();
 
-                if (applicationRecents.Count > 10)
+                if (applicationRecents != null && applicationRecents.Count > 10)
                     applicationRecents.RemoveRange(10, applicationRecents.Count - 10);
 
 				keyApp.SetValue("RecentFiles", jss.Serialize(applicationRecents));

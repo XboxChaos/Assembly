@@ -43,6 +43,15 @@ namespace Assembly
         {
             base.OnStartup(e);
 
+#if !DEBUG
+            Current.DispatcherUnhandledException += (o, args) =>
+            {
+                MetroException.Show(args.Exception);
+
+                args.Handled = true;
+            };
+#endif
+
             // For test compiling.
             //AssemblyPluginLoader.LoadPlugin(XmlReader.Create(@"Plugins\Halo3\bipd.asm"), new TestPluginVisitor());
 
@@ -86,15 +95,6 @@ namespace Assembly
 			// Start Caching Blam Cache MetaData
 	        var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
 			metadataCacheThread.Start();
-
-#if !DEBUG
-            Current.DispatcherUnhandledException += (o, args) =>
-                {
-                    MetroException.Show(args.Exception);
-
-                    args.Handled = true;
-                };
-#endif
         }
     }
 }
