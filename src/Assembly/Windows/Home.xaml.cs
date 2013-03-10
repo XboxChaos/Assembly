@@ -179,10 +179,11 @@ namespace Assembly.Windows
             XBDMSidebarTimerEvent();
 
             // Set width/height/state from last session
-            if (!double.IsNaN(Settings.applicationSizeHeight))
+            if (!double.IsNaN(Settings.applicationSizeHeight) && Settings.applicationSizeHeight > MinHeight)
                 Height = Settings.applicationSizeHeight;
-            if (!double.IsNaN(Settings.applicationSizeWidth))
+			if (!double.IsNaN(Settings.applicationSizeWidth) && Settings.applicationSizeWidth > MinWidth)
                 Width = Settings.applicationSizeWidth;
+
             WindowState = Settings.applicationSizeMaximize ? WindowState.Maximized : WindowState.Normal;
             Window_StateChanged(null, null);
 
