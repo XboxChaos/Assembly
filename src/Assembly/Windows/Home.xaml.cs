@@ -199,12 +199,14 @@ namespace Assembly.Windows
 		        hwndSource.AddHook(WindowProc);
 
             ProcessCommandLineArgs(Environment.GetCommandLineArgs());
-            StartUpdateCheck();
+
+			if (Settings.applicationUpdateOnStartup)
+				StartUpdateCheck();
         }
 
         private void StartUpdateCheck()
         {
-            BackgroundWorker worker = new BackgroundWorker();
+            var worker = new BackgroundWorker();
             worker.DoWork += CheckForUpdates;
             worker.RunWorkerCompleted += UpdateCheckCompleted;
             worker.RunWorkerAsync();
