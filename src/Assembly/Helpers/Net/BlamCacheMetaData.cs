@@ -107,7 +107,6 @@ namespace Assembly.Helpers.Net
 
 			try
 			{
-
 				// Look for current cached data
 				var timestamp = 0;
 				var type = "cache_meta_content";
@@ -133,76 +132,78 @@ namespace Assembly.Helpers.Net
 
 				if (response != null && response.UpdateCache)
 				{
-					var blam_cache = HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
+					return;
 
-					// Write new Data
-					File.WriteAllText(blamcacheFilePath, new StreamReader(blam_cache).ReadToEnd());
+					//var blam_cache = HttpRequests.SendBasicGetRequest(new Uri("http://assembly.xboxchaos.com/api/assets/cache_meta_content" + ".aidf"));
+
+					//// Write new Data
+					//File.WriteAllText(blamcacheFilePath, new StreamReader(blam_cache).ReadToEnd());
 				}
 
 				// Store cache in application
 				CachingManager.BlamCacheMetaData =
 					JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
-			}
-			catch { }
+			} catch { }
 
-			if (CachingManager.BlamCacheMetaData == null || CachingManager.BlamCacheMetaData.Games == null) return;
-			// Start background image downloading
-			foreach (var metadataEntry in CachingManager.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
-			{
-				try
-				{
-					var downloadLarge = false;
-					var downloadSmall = false;
+			#region Un needed server code
+			//if (CachingManager.BlamCacheMetaData == null || CachingManager.BlamCacheMetaData.Games == null) return;
+			//// Start background image downloading
+			//foreach (var metadataEntry in CachingManager.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
+			//{
+			//	try
+			//	{
+			//		var downloadLarge = false;
+			//		var downloadSmall = false;
 
-					var serverPath = "";
-					var serverPathSmall = "";
-					var localPath = "";
-					var localPathSmall = "";
+			//		var serverPath = "";
+			//		var serverPathSmall = "";
+			//		var localPath = "";
+			//		var localPathSmall = "";
 
-					if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Large))
-					{
-						downloadLarge = true;
-						serverPath = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
-						                           metadataEntry.ImageMetaData.Large.Replace("\\", "/"));
-						localPath = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Large);
-					}
-					if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Small))
-					{
-						downloadSmall = true;
-						serverPathSmall = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
-						                                metadataEntry.ImageMetaData.Small.Replace("\\", "/"));
-						localPathSmall = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Small);
-					}
+			//		if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Large))
+			//		{
+			//			downloadLarge = true;
+			//			serverPath = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
+			//									   metadataEntry.ImageMetaData.Large.Replace("\\", "/"));
+			//			localPath = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Large);
+			//		}
+			//		if (!File.Exists(blamcacheFolderPath + metadataEntry.ImageMetaData.Small))
+			//		{
+			//			downloadSmall = true;
+			//			serverPathSmall = string.Format("http://assembly.xboxchaos.com/api/assets/{0}",
+			//											metadataEntry.ImageMetaData.Small.Replace("\\", "/"));
+			//			localPathSmall = string.Format("{0}\\{1}", blamcacheFolderPath, metadataEntry.ImageMetaData.Small);
+			//		}
 
-					if (!downloadLarge && !downloadSmall) continue;
+			//		if (!downloadLarge && !downloadSmall) continue;
 
-					var imageDirectory = Path.GetDirectoryName(localPath == "" ? localPathSmall : localPath);
-					if (imageDirectory == null) continue;
+			//		var imageDirectory = Path.GetDirectoryName(localPath == "" ? localPathSmall : localPath);
+			//		if (imageDirectory == null) continue;
 
-					if (!Directory.Exists(imageDirectory))
-						Directory.CreateDirectory(imageDirectory);
+			//		if (!Directory.Exists(imageDirectory))
+			//			Directory.CreateDirectory(imageDirectory);
 
-					Stream imageStream;
-					byte[] imageByteArray;
+			//		Stream imageStream;
+			//		byte[] imageByteArray;
 
-					// Large
-					if (downloadLarge)
-					{
-						imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPath));
-						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
-						File.WriteAllBytes(localPath, imageByteArray);
-					}
+			//		// Large
+			//		if (downloadLarge)
+			//		{
+			//			imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPath));
+			//			imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
+			//			File.WriteAllBytes(localPath, imageByteArray);
+			//		}
 
-					// Small
-					if (downloadSmall)
-					{
-						imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
-						imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
-						File.WriteAllBytes(localPathSmall, imageByteArray);
-					}
-				}
-				catch { }
-			}
+			//		// Small
+			//		if (downloadSmall)
+			//		{
+			//			imageStream = HttpRequests.SendBasicGetRequest(new Uri(serverPathSmall));
+			//			imageByteArray = VariousFunctions.StreamToByteArray(imageStream);
+			//			File.WriteAllBytes(localPathSmall, imageByteArray);
+			//		}
+			//	}
+			//	catch { }
+			#endregion
 		}
 	}
 }
