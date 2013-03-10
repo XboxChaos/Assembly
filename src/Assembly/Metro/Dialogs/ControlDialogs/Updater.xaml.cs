@@ -26,13 +26,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             DwmDropShadow.DropShadowToWindow(this);
 
             _info = info;
-            /*if (!UpdateAvailable())
+            if (!UpdateAvailable())
             {
                 lblAvailable.Text = "Your version of Assembly is up-to-date.";
                 lblAvailable.FontWeight = FontWeights.Normal;
                 updateButtons.Visibility = Visibility.Collapsed;
                 noUpdate.Visibility = Visibility.Visible;
-            }*/
+            }
 
             LoadDataFromFormat();
 
