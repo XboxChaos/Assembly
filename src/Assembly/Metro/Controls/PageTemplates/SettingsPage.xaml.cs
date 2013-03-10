@@ -24,6 +24,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             foreach (Settings.Accents accent in Enum.GetValues(typeof(Settings.Accents)))
                 cbAccentSelector.Items.Add(accent.ToString());
             cbAccentSelector.SelectedIndex = (int)Settings.applicationAccent;
+	        cbCheckUpdatesOnStartup.IsChecked = Settings.applicationUpdateOnStartup;
             #endregion
 
             #region XDK
@@ -80,6 +81,8 @@ namespace Assembly.Metro.Controls.PageTemplates
         #endregion
 
         #region Settings Changed
+		private void cbCheckUpdatesOnStartup_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.applicationUpdateOnStartup != cbCheckUpdatesOnStartup.IsChecked); }
+
         private void txtXBDMNameIP_TextChanged(object sender, TextChangedEventArgs e) { _settingsChanged = (Settings.XDKNameIP != txtXBDMNameIP.Text); }
 		private void cbXDKFreeze_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKScreenshotFreeze != (bool) cbXDKFreeze.IsChecked); }
 		private void cbXDKAutoSaveScreenshots_Modified(object sender, RoutedEventArgs e) { _settingsChanged = (Settings.XDKAutoSave != (bool)cbXDKAutoSaveScreenshots.IsChecked); }
@@ -129,6 +132,7 @@ namespace Assembly.Metro.Controls.PageTemplates
         {
             #region Misc
             Settings.applicationAccent = (Settings.Accents)cbAccentSelector.SelectedIndex;
+	        Settings.applicationUpdateOnStartup = (bool) cbCheckUpdatesOnStartup.IsChecked;
             #endregion
 
             #region XDK

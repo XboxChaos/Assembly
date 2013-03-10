@@ -9,7 +9,6 @@ using System.Web.Script.Serialization;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
 using Assembly.Metro.Controls.PageTemplates.Games;
-using Assembly.Helpers.Net;
 
 namespace Assembly.Helpers
 {
@@ -30,7 +29,8 @@ namespace Assembly.Helpers
 	        if (keyApp != null)
 	        {
 		        applicationAccent = (Accents)keyApp.GetValue("accent", 0);
-		        applicationEasterEggs = Convert.ToBoolean(keyApp.GetValue("easterEggs", true));
+				applicationEasterEggs = Convert.ToBoolean(keyApp.GetValue("easterEggs", true));
+				applicationUpdateOnStartup = Convert.ToBoolean(keyApp.GetValue("CheckUpdatesOnStartup", true));
 				if (applyThemeAswell)
 					ApplyAccent();
 
@@ -88,6 +88,7 @@ namespace Assembly.Helpers
 			{
 				keyApp.SetValue("accent", (int) applicationAccent);
 				keyApp.SetValue("easterEggs", applicationEasterEggs);
+				keyApp.SetValue("CheckUpdatesOnStartup", applicationUpdateOnStartup);
 				if (applyThemeAswell)
 					ApplyAccent();
 
@@ -162,6 +163,7 @@ namespace Assembly.Helpers
             }
         }
         public static Accents applicationAccent = Accents.Blue;
+	    public static bool applicationUpdateOnStartup = true;
         public static bool applicationEasterEggs = true;
 
         public static List<RecentFileEntry> applicationRecents = new List<RecentFileEntry>();

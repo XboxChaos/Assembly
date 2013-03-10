@@ -21,8 +21,14 @@ namespace Assembly.Helpers
                 return;
             }
 
-            // WOAH. UPDATES.
-            Settings.homeWindow.Dispatcher.Invoke(new Action(() => MetroUpdateDialog.Show(info, UpdateAvailable(info))));
+	        var updateAvaiable = UpdateAvailable(info);
+
+	        Settings.homeWindow.Dispatcher.Invoke(updateAvaiable
+		                                              ? (() => MetroUpdateDialog.Show(info, UpdateAvailable(info)))
+		                                              : new Action(
+			                                                () =>
+			                                                MetroMessageBox.Show("No Updates Avaiable",
+			                                                                     "You're running the latest version of Assembly, :D.")));
         }
 
         public static bool UpdateAvailable(UpdateInfo info)
@@ -37,11 +43,12 @@ namespace Assembly.Helpers
             return (serverVersion > localVersion);
         }
 
-        private static int VersionStringToInt(string version)
+		private static Int64 VersionStringToInt(string version)
         {
             version = version.Replace(".", "");
-            int versionInt;
-            return int.TryParse(version, out versionInt) ? versionInt : 0;
+			Int64 versionInt;
+
+	        return Int64.TryParse(version, out versionInt) ? versionInt : 0;
         }
     }
 }
