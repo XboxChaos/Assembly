@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo4" baseSize="0x60">
+<plugin game="Halo4" baseSize="0x68">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
@@ -18,7 +18,7 @@
 		<int32 name="Unknown" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Events" offset="0x34" visible="false" entrySize="0x44">
-		<int32 name="Name" offset="0x0" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int8 name="Unknown" offset="0x6" visible="false" />
@@ -58,9 +58,15 @@
 			<undefined name="Unknown" offset="0x60" visible="false" />
 			<tagref name="00000030" offset="0x64" visible="true" />
 		</reflexive>
-		<undefined name="struct2" offset="0x2C" visible="false" />
-		<undefined name="struct2" offset="0x30" visible="false" />
-		<undefined name="struct2" offset="0x34" visible="false" />
+		<reflexive name="Accelerations" offset="0x2C" visible="true" entrySize="0x1C">
+			<undefined name="00000005" offset="0x0" visible="true" />
+			<undefined name="00000006" offset="0x4" visible="true" />
+			<float32 name="Acceleration" offset="0x8" visible="true" />
+			<float32 name="Inner Cone Angle" offset="0xC" visible="true" />
+			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
+			<undefined name="00000010" offset="0x14" visible="true" />
+			<undefined name="00000011" offset="0x18" visible="true" />
+		</reflexive>
 		<reflexive name="Particles" offset="0x38" visible="true" entrySize="0x7C">
 			<int8 name="00000005" offset="0x0" visible="false" />
 			<int8 name="00000005" offset="0x1" visible="false" />
@@ -93,7 +99,7 @@
 			<undefined name="00000029" offset="0x60" visible="false" />
 			<undefined name="00000030" offset="0x64" visible="false" />
 			<reflexive name="Emitters" offset="0x68" visible="true" entrySize="0x3C4">
-				<int32 name="Name SID" offset="0x0" visible="true" />
+				<stringid name="Name" offset="0x0" visible="true" />
 				<int16 name="00000006" offset="0x4" visible="false" />
 				<int16 name="00000006" offset="0x6" visible="false" />
 				<undefined name="00000007" offset="0x8" visible="false" />
@@ -172,12 +178,24 @@
 					<undefined name="Unknown" offset="0x14" visible="false" />
 				</reflexive>
 				<tagref name="00000123" offset="0x1d4" visible="true" />
-				<undefined name="struct1" offset="0x1e4" visible="false" />
-				<undefined name="struct1" offset="0x1e8" visible="false" />
-				<undefined name="struct1" offset="0x1eC" visible="false" />
-				<undefined name="struct2" offset="0x1f0" visible="false" />
-				<undefined name="struct2" offset="0x1f4" visible="false" />
-				<undefined name="struct2" offset="0x1f8" visible="false" />
+				<reflexive name="Unknown" offset="0x1E4" visible="false" entrySize="0x28">
+					<undefined name="Unknown" offset="0x0" visible="false" />
+					<undefined name="Unknown" offset="0x4" visible="false" />
+					<undefined name="Unknown" offset="0x8" visible="false" />
+					<undefined name="Unknown" offset="0xC" visible="false" />
+					<undefined name="Unknown" offset="0x10" visible="false" />
+					<undefined name="Unknown" offset="0x14" visible="false" />
+					<undefined name="Unknown" offset="0x18" visible="false" />
+					<undefined name="Unknown" offset="0x1C" visible="false" />
+					<undefined name="Unknown" offset="0x20" visible="false" />
+					<undefined name="Unknown" offset="0x24" visible="false" />
+				</reflexive>
+				<reflexive name="Unknown" offset="0x1F0" visible="false" entrySize="0x10">
+					<undefined name="Unknown" offset="0x0" visible="false" />
+					<undefined name="Unknown" offset="0x4" visible="false" />
+					<undefined name="Unknown" offset="0x8" visible="false" />
+					<undefined name="Unknown" offset="0xC" visible="false" />
+				</reflexive>
 				<undefined name="00000133" offset="0x1fC" visible="false" />
 				<dataref name="Unknown" offset="0x200" visible="true" />
 				<undefined name="00000140" offset="0x214" visible="false" />
@@ -260,7 +278,6 @@
 					<undefined name="Unknown" offset="0x3C" visible="true" />
 				</reflexive>
 				<reflexive name="Particle Colors" offset="0x3B8" visible="true" entrySize="0x10">
-					<colorf name="Color" offset="0x0" visible="true" format="rgb" />
 					<float32 name="Red" offset="0x0" visible="true" />
 					<float32 name="Green" offset="0x4" visible="true" />
 					<float32 name="Blue" offset="0x8" visible="true" />
@@ -280,5 +297,9 @@
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
 	<undefined name="Unknown" offset="0x58" visible="false" />
-	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<reflexive name="Unknown" offset="0x5C" visible="false" entrySize="0xC">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+	</reflexive>
 </plugin>
