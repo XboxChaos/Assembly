@@ -21,14 +21,7 @@ namespace Assembly.Helpers
                 return;
             }
 
-	        var updateAvaiable = UpdateAvailable(info);
-
-	        Settings.homeWindow.Dispatcher.Invoke(updateAvaiable
-		                                              ? (() => MetroUpdateDialog.Show(info, UpdateAvailable(info)))
-		                                              : new Action(
-			                                                () =>
-			                                                MetroMessageBox.Show("No Updates Avaiable",
-			                                                                     "You're running the latest version of Assembly, :D.")));
+			Settings.homeWindow.Dispatcher.Invoke(new Action(() => MetroUpdateDialog.Show(info, UpdateAvailable(info))));
         }
 
         public static bool UpdateAvailable(UpdateInfo info)
