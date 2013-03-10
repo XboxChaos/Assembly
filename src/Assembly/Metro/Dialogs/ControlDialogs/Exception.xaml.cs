@@ -38,8 +38,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 			var githubIssueCreate =
 				string.Format("https://github.com/XboxChaos/Assembly/issues/new?title={0}&body={1}&labels={2}",
-				              title, body, labels);
+							  title, body, labels);
 
+			btnReportToGithub.IsEnabled = false;
 			Process.Start(githubIssueCreate);
 		}
     }
