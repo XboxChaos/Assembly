@@ -64,7 +64,7 @@ namespace Assembly.Helpers.Net
         /// <typeparam name="TRequestType">The type of the request object that should be sent. This must inherit from ServerRequest.</typeparam>
         /// <typeparam name="TResultType">The type of the result object that should be returned. This must inherit from ServerResponse.</typeparam>
         /// <param name="commandObj">The command object of type CommandType to send.</param>
-        /// <returns>The server's response.</returns>
+        /// <returns>The server's response, or null if the request failed.</returns>
         public static TResultType SendRequest<TRequestType, TResultType>(TRequestType commandObj)
             where TRequestType : ServerRequest
             where TResultType : ServerResponse
@@ -79,20 +79,42 @@ namespace Assembly.Helpers.Net
             request.Method = "POST";
             request.ContentType = "application/octet-stream";
             request.ContentLength = json.Length;
-			var dataStream = request.GetRequestStream();
-            dataStream.Write(json.GetBuffer(), 0, (int)json.Length);
-            dataStream.Close();
-            json.Close();
+            Stream dataStream = null;
+            try
+            {
+                dataStream = request.GetRequestStream();
+                dataStream.Write(json.GetBuffer(), 0, (int)json.Length);
+            }
+            catch (WebException)
+            {
+                return null;
+            }
+            finally
+            {
+                if (dataStream != null)
+                    dataStream.Close();
+                json.Close();
+            }
 
             // Retrieve the response and open a stream to it
-			var response = request.GetResponse();
-            dataStream = response.GetResponseStream();
+            WebResponse response = null;
+            try
+            {
+                response = request.GetResponse();
+                dataStream = response.GetResponseStream();
+            }
+            catch (WebException)
+            {
+                if (response != null)
+                    response.Close();
+                return null;
+            }
+            if (dataStream == null)
+                return null;
 
             // Deserialize the response
 			var resultSerializer = new DataContractJsonSerializer(typeof(TResultType));
-			if (dataStream == null) return null;
-
-	        var result = resultSerializer.ReadObject(dataStream) as TResultType;
+			var result = resultSerializer.ReadObject(dataStream) as TResultType;
 	        dataStream.Close();
 	        response.Close();
 	        return result;

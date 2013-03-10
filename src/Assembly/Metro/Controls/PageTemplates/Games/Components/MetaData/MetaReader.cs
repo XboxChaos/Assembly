@@ -12,7 +12,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private IStreamManager _streamManager;
         private IReader _reader;
-        private uint _baseOffset = 0;
         private ICacheFile _cache;
         private StructureLayout _reflexiveLayout;
         private StructureLayout _tagRefLayout;
@@ -27,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
         {
             _streamManager = streamManager;
-            _baseOffset = baseOffset;
+            BaseOffset = baseOffset;
             _cache = cache;
             _ignoredFields = ignore;
 
@@ -37,12 +36,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _dataRefLayout = buildInfo.GetLayout("data reference");
         }
 
+        public uint BaseOffset { get; set; }
+
         private void ReadField(MetaField field)
         {
             // Update the field's memory address
             ValueField valueField = field as ValueField;
             if (valueField != null)
-                valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)(_baseOffset + valueField.Offset));
+                valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)(BaseOffset + valueField.Offset));
 
             // Read its contents if it has changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
@@ -78,9 +79,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             try
             {
                 // Calculate the base offset to read from
-                uint oldBaseOffset = _baseOffset;
+                uint oldBaseOffset = BaseOffset;
                 int dataOffset = _cache.MetaArea.PointerToOffset(reflexive.FirstEntryAddress);
-                _baseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
+                BaseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
 
                 ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
                 for (int i = 0; i < page.Fields.Length; i++)
@@ -91,7 +92,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                         ReadField(reflexive.Template[i]);
                 }
 
-                _baseOffset = oldBaseOffset;
+                BaseOffset = oldBaseOffset;
             }
             finally
             {
@@ -193,17 +194,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			field.Value = "#";
+            string colorValue = "#";
 			foreach(var formatChar in field.Format.ToCharArray())
-				field.Value += (_reader.ReadByte().ToString("X2"));
+                colorValue += (_reader.ReadByte().ToString("X2"));
+            field.Value = colorValue;
 		}
+
 		public void VisitColourFloat(ColourData field)
 		{
 			SeekToOffset(field.Offset);
 
-			field.Value = "#";
+            string colorValue = "#";
 			foreach (var formatChar in field.Format.ToCharArray())
-				field.Value += ((int)(_reader.ReadFloat() * 255)).ToString("X2");
+				colorValue += ((int)(_reader.ReadFloat() * 255)).ToString("X2");
+            field.Value = colorValue;
 		}
 
         public void VisitString(StringData field)
@@ -366,7 +370,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         private void SeekToOffset(uint offset)
         {
-            _reader.SeekTo(_baseOffset + offset);
+            _reader.SeekTo(BaseOffset + offset);
         }
 	}
 }

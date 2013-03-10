@@ -7,7 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.Flexibility;
@@ -20,7 +20,6 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     /// </summary>
     public partial class ViewValueAs
     {
-	    private uint _cacheOffset;
 	    private readonly uint _cacheOffsetOriginal;
         private readonly ICacheFile _cacheFile;
         private readonly MetaReader _reader;
@@ -35,19 +34,19 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             _cacheFile = cacheFile;
             _reader = new MetaReader(streamManager, cacheOffset, cacheFile, buildInfo);
             _fields = fields;
-            _cacheOffset = _cacheOffsetOriginal = cacheOffset;
+            _cacheOffsetOriginal = cacheOffset;
 
             // Set Textbox
-            txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+            txtOffset.Text = "0x" + cacheOffset.ToString("X");
 
             // Load Meta
+            panelMetaComponents.ItemsSource = _fields;
             RefreshMeta();
         }
 
         public void RefreshMeta()
         {
             _reader.ReadFields(_fields);
-            panelMetaComponents.ItemsSource = _fields;
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -91,32 +90,34 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 );
             }
 
-            _cacheOffset = (uint)offset;
+            _reader.BaseOffset = (uint)offset;
             RefreshMeta();
         }
+
         private void txtOffset_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 btnRefresh_Click(null, null);
         }
+
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            _cacheOffset = _cacheOffsetOriginal;
-            txtOffset.Text = "0x" + _cacheOffset.ToString("X");
-            btnRefresh_Click(null, null);
+            _reader.BaseOffset = _cacheOffsetOriginal;
+            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+            RefreshMeta();
         }
 
         private void btnDown_Click(object sender, RoutedEventArgs e)
         {
-            _cacheOffset -= 1;
-            txtOffset.Text = "0x" + _cacheOffset.ToString("X");
-            btnRefresh_Click(null, null);
+            _reader.BaseOffset -= 1;
+            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+            RefreshMeta();
         }
         private void btnUp_Click(object sender, RoutedEventArgs e)
         {
-            _cacheOffset += 1;
-            txtOffset.Text = "0x" + _cacheOffset.ToString("X");
-            btnRefresh_Click(null, null);
+            _reader.BaseOffset += 1;
+            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+            RefreshMeta();
         }
     }
 }

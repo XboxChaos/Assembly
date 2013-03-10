@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 using Blamite.Plugins;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
@@ -35,7 +35,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
             _revisions = revisions;
             _pluginClass = pluginClass;
-            _pluginClassDescription = string.Format("Revision list of the Assembly Plugin {0}.", _pluginClass);
+            _pluginClassDescription = string.Format("Revision history for the {0} plugin:", _pluginClass);
 
             DataContext = this;
         }

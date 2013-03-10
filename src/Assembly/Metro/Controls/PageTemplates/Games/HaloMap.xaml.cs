@@ -245,6 +245,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								lblMapName.Text = _cacheFile.InternalName;
 
 								lblMapHeader.Text = "Map Header;";
+                                lblDblClick.Visibility = Visibility.Visible;
 								HeaderDetails.Clear();
 								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
 								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.BuildString.ToString(CultureInfo.InvariantCulture)});
@@ -285,10 +286,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 									if (gameMetaData == null) return;
 
-									panelMapMetadata.Visibility = Visibility.Visible;
 									lblMapMetaData.Text = "Map Metadata;";
 									MapMetaData = gameMetaData;
-									panelMapMetadata.DataContext = MapMetaData;
+                                    lblEnglishName.Text = gameMetaData.EnglishName;
+                                    lblEnglishDesc.Text = gameMetaData.EnglishDesc;
+                                    lblInternalName.Text = gameMetaData.InternalName;
+                                    lblPhysicalName.Text = gameMetaData.PhysicalName;
+                                    panelMapMetadata.Visibility = Visibility.Visible;
 
 									#region ImageMetaData
 									if (VariousFunctions.CheckIfFileLocked(

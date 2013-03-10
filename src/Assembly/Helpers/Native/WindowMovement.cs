@@ -8,7 +8,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace Assembly.Metro.Native
+namespace Assembly.Helpers.Native
 {
     public static class WindowMovement
     {

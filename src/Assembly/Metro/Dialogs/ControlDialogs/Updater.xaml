@@ -1,9 +1,10 @@
 ﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.Updater"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         x:Name="UpdaterWindow"
+        xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:n="clr-namespace:Assembly.Metro.Native"
+        xmlns:n="clr-namespace:Assembly.Helpers.Native"
         AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="150"
         Width="600"
@@ -31,7 +32,20 @@
                     </TransformGroup>
                 </Path.RenderTransform>
             </Path>
-            <TextBlock x:Name="lblTitle" Text="Update Available!" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,0,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+
+            <Grid 
+					x:Name="headerThumb" 
+					Opacity="0" 
+					Background="Transparent" 
+					Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+                    n:WindowMovement.DragsWindow="True"
+					/>
+
+            <Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnIgnoreUpdate_Click">
+                <Vectors:CloseModule Width="34" Height="26"/>
+            </Button>
+            
+            <TextBlock x:Name="lblTitle" IsHitTestVisible="False" Text="Updater - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,34,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
 
             <Grid x:Name="updateInfo" Margin="0,0,0,0" Visibility="Collapsed">
                 <Grid Margin="0,55,0,0">
@@ -43,7 +57,9 @@
                     <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="#FF999999" Margin="0,10,0,10">
                         <Grid>
                             <StackPanel Margin="15,0,10,20">
-                                <TextBlock Text="Current Assembly Version:" Style="{DynamicResource GenericTextblock}" />
+                                <TextBlock x:Name="lblAvailable" Text="A wild update appeared!" Style="{DynamicResource GenericTextblock}" FontWeight="Bold" Margin="0,0,0,20" />
+                                
+                                <TextBlock Text="Current Assembly Version:" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" />
                                 <TextBlock x:Name="lblCurrentVersion" Text="&lt;/current_assembly_version&gt;" Margin="10,2,0,0" Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />
 
                                 <TextBlock Text="Updated Assembly Version:" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
@@ -52,27 +68,22 @@
                                 <!--<TextBlock Text="Updated Assembly Hash (MD5):" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
                                 <TextBlock x:Name="lblServerHash" Text="&lt;/updated_assembly_hash_md5&gt;" Margin="10,2,0,0" Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />-->
                             </StackPanel>
-                            <StackPanel VerticalAlignment="Bottom" Margin="0,0,0,10">
+                            <StackPanel x:Name="updateButtons" VerticalAlignment="Bottom" Margin="0,0,0,10">
                                 <Button x:Name="btnApplyUpdate" Content="Apply Update" Margin="15,10,20,0" Height="30" Click="btnApplyUpdate_Click" />
                                 <Button x:Name="btnIgnoreUpdate" Content="Ignore Update" Margin="15,10,20,0" Height="30" Click="btnIgnoreUpdate_Click" />
+                            </StackPanel>
+                            <StackPanel x:Name="noUpdate" VerticalAlignment="Bottom" Margin="0,0,0,10" Visibility="Collapsed">
+                                <Button x:Name="btnClose" Content="Close" Margin="15,10,20,0" Height="30" Click="btnIgnoreUpdate_Click" />
                             </StackPanel>
                         </Grid>
                     </Border>
                 
-                    <Border Grid.Column="1" Margin="10,20,20,20">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <TextBlock x:Name="lblChangeLog" TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" />
-                    </ScrollViewer>
-                </Border>
+                    <Border Grid.Column="1" Margin="10,10,20,20">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="lblChangeLog" TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" />
+                        </ScrollViewer>
+                    </Border>
                 </Grid>
-                
-                <Grid 
-					x:Name="headerThumb" 
-					Opacity="0" 
-					Background="Transparent" 
-					Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
-                    n:WindowMovement.DragsWindow="True"
-					/>
             </Grid>
             <Grid x:Name="updateProgress">
                 <StackPanel Margin="30,60,0,0" VerticalAlignment="Top" >

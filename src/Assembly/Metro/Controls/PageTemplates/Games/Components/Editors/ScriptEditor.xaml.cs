@@ -9,6 +9,7 @@ using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -107,9 +108,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
         }
 
-        private void btnCompile_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        private void btnExport_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MetroMessageBox.Show("Script compilation. What a joke.");
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save Script As";
+            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
+            if (!(bool)sfd.ShowDialog())
+                return;
+
+            File.WriteAllText(sfd.FileName, txtScript.Text);
+            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
         }
     }
 }

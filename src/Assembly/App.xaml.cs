@@ -20,7 +20,7 @@ namespace Assembly
         #region ISingleInstanceApp Members
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
-	        return Settings.homeWindow == null || Settings.homeWindow.ProcessCommandLineArgs(args);
+            return Settings.homeWindow == null || Settings.homeWindow.ProcessCommandLineArgs(args);
         }
 
 	    #endregion
@@ -59,11 +59,7 @@ namespace Assembly
             Settings.xbdm = new Xbdm(Settings.XDKNameIP);
             //try { Settings.xbdm.Connect(); } catch { }
 
-            // Create Temporary FilePaths
-            VariousFunctions.CreateTemporaryDirectories();
-
             // Try and delete all temp data
-            VariousFunctions.CleanUpTemporaryFiles();
             VariousFunctions.EmptyUpdaterLocations();
 
             // Dubs, checkem

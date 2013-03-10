@@ -108,14 +108,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
                     // Update UI
+                    _startEditing = true;
                     cbLanguages.SelectedIndex = 0;
 
                     if (Settings.startpageHideOnLaunch)
                         Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
 
                     RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "Map Info", Settings.RecentFileType.MapInfo);
-
-                    _startEditing = true;
                 }));
             }
             catch (Exception ex)
@@ -150,15 +149,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
 
         // Update Languages
-        private int oldLanguage = 0;
-        private bool firstUserChange = false;
+        private int oldLanguage = -1;
         private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_mapInfo != null && _startEditing)
             {
-                if (!firstUserChange)
-                    firstUserChange = true;
-                else
+                if (oldLanguage != -1)
                 {
                     // Save values to memory
                     _mapInfo.MapInformation.MapNames[oldLanguage] = txtMapName.Text.Trim();
@@ -169,10 +165,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         _mapInfo.MapInformation.MapNames[oldLanguage] = _mapInfo.MapInformation.MapNames[oldLanguage].Remove(30);
                     if (_mapInfo.MapInformation.MapDescriptions[oldLanguage].Length > 126)
                         _mapInfo.MapInformation.MapDescriptions[oldLanguage] = _mapInfo.MapInformation.MapDescriptions[oldLanguage].Remove(126);
-
-                    // Update oldLanguage int
-                    oldLanguage = cbLanguages.SelectedIndex;
                 }
+
+                // Update oldLanguage int
+                oldLanguage = cbLanguages.SelectedIndex;
 
                 // Update UI
                 txtMapName.Text = _mapInfo.MapInformation.MapNames[oldLanguage];

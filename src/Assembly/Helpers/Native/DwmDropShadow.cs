@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Assembly.Metro.Native
+namespace Assembly.Helpers.Native
 {
     public static class DwmDropShadow
     {

@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+﻿using System;
+using System.Runtime.InteropServices;
+using Assembly.Helpers.Native;
+using Microsoft.Win32;
 
 namespace Assembly.Helpers
 {
@@ -6,29 +9,94 @@ namespace Assembly.Helpers
     {
         public static void UpdateFileDefaults()
         {
-            // Allocation to apptypes
-			var keyAppMap = Registry.CurrentUser.CreateSubKey(@"Software\Classes\assembly.xboxchaos.map\shell\open\command\");
-			var keyAppBLF = Registry.CurrentUser.CreateSubKey(@"Software\Classes\assembly.xboxchaos.blf\shell\open\command\");
-			var keyAppMIF = Registry.CurrentUser.CreateSubKey(@"Software\Classes\assembly.xboxchaos.mif\shell\open\command\");
-			var keyAppAMP = Registry.CurrentUser.CreateSubKey(@"Software\Classes\assembly.xboxchaos.amp\shell\open\command\");
+            string assemblyPath = VariousFunctions.GetApplicationAssemblyLocation();
+            bool changed = false;
 
-            // Assign apptypes
-	        if (keyAppMap != null) keyAppMap.SetValue("", string.Format("\"{0}\"open \"%1\"", VariousFunctions.GetApplicationAssemblyLocation()));
-	        if (keyAppBLF != null) keyAppBLF.SetValue("", string.Format("\"{0}\"open \"%1\"", VariousFunctions.GetApplicationAssemblyLocation()));
-			if (keyAppMIF != null) keyAppMIF.SetValue("", string.Format("\"{0}\"open \"%1\"", VariousFunctions.GetApplicationAssemblyLocation()));
-			if (keyAppAMP != null) keyAppAMP.SetValue("", string.Format("\"{0}\"open \"%1\"", VariousFunctions.GetApplicationAssemblyLocation()));
-
-	        // Re-allocate to file extensions
-            keyAppMap = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.map\");
-            keyAppBLF = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.blf\");
-			keyAppMIF = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.mapinfo\");
-			keyAppAMP = Registry.CurrentUser.CreateSubKey(@"Software\Classes\.asmp\");
+            // Assign open commands
+            changed |= RegisterOpenCommand("assembly.xboxchaos.map", Settings.defaultMAP, "Blam Cache File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+            changed |= RegisterOpenCommand("assembly.xboxchaos.blf", Settings.defaultBLF, "Blam BLF File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+            changed |= RegisterOpenCommand("assembly.xboxchaos.mif", Settings.defaultMIF, "Blam Map Information File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+            changed |= RegisterOpenCommand("assembly.xboxchaos.amp", Settings.defaultAMP, "Assembly Patch File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
 
             // Assign Valid apptypes
-	        if (keyAppMap != null) keyAppMap.SetValue("", Settings.defaultMAP ? "assembly.xboxchaos.map" : "");
-	        if (keyAppBLF != null) keyAppBLF.SetValue("", Settings.defaultBLF ? "assembly.xboxchaos.blf" : "");
-			if (keyAppMIF != null) keyAppMIF.SetValue("", Settings.defaultMIF ? "assembly.xboxchaos.mif" : "");
-			if (keyAppAMP != null) keyAppAMP.SetValue("", Settings.defaultAMP ? "assembly.xboxchaos.amp" : "");
+            changed |= RegisterExtension(".map", Settings.defaultMAP, "assembly.xboxchaos.map", "assembly/map", "");
+            changed |= RegisterExtension(".blf", Settings.defaultBLF, "assembly.xboxchaos.blf", "assembly/blf", "");
+            changed |= RegisterExtension(".mapinfo", Settings.defaultMIF, "assembly.xboxchaos.mif", "assembly/mapinfo", "");
+            changed |= RegisterExtension(".asmp", Settings.defaultAMP, "assembly.xboxchaos.amp", "assembly/patch", "");
+
+            if (changed)
+                ShellChanges.SHChangeNotify(HChangeNotifyEventID.SHCNE_ASSOCCHANGED, HChangeNotifyFlags.SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        private static bool RegisterOpenCommand(string clazz, bool register, string description, string command)
+        {
+            if (string.IsNullOrWhiteSpace(clazz))
+                throw new ArgumentException("Invalid class");
+
+            string pathBase = @"Software\Classes\" + clazz;
+            string path = pathBase + @"\shell\open\command\";
+
+            if (!register)
+                return DeleteKey(Registry.CurrentUser, pathBase);
+
+            // Set description
+            bool changed = false;
+            using (var key = Registry.CurrentUser.CreateSubKey(pathBase))
+            {
+                changed |= SetKeyValue(key, "", description);
+            }
+
+            // Set command
+            using (var key = Registry.CurrentUser.CreateSubKey(path))
+            {
+                changed |= SetKeyValue(key, "", command);
+            }
+            return changed;
+        }
+
+        private static bool RegisterExtension(string ext, bool register, string clazz, string contentType, string perceivedType)
+        {
+            string path = @"Software\Classes\" + ext;
+
+            if (!register)
+                return DeleteKey(Registry.CurrentUser, path);
+
+            bool changed = false;
+            using (var key = Registry.CurrentUser.CreateSubKey(path))
+            {
+                changed |= SetKeyValue(key, "", clazz);
+                changed |= SetKeyValue(key, "Content Type", contentType);
+                changed |= SetKeyValue(key, "PerceivedType", perceivedType);
+            }
+            return changed;
+        }
+
+        private static bool KeyExists(RegistryKey parent, string path)
+        {
+            RegistryKey key = parent.OpenSubKey(path);
+            if (key != null)
+            {
+                key.Close();
+                return true;
+            }
+            return false;
+        }
+
+        private static bool DeleteKey(RegistryKey parent, string path)
+        {
+            if (KeyExists(parent, path))
+            {
+                parent.DeleteSubKeyTree(path);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool SetKeyValue(RegistryKey key, string name, object newValue)
+        {
+            object oldValue = key.GetValue(name);
+            key.SetValue(name, newValue);
+            return (oldValue == null || !oldValue.Equals(newValue));
         }
     }
 }

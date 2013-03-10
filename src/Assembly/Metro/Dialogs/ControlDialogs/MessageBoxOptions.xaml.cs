@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs

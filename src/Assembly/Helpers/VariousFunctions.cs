@@ -14,40 +14,12 @@ namespace Assembly.Helpers
     public static class VariousFunctions
     {
         /// <summary>
-        /// Create a filename of a file that doesn't exist in temporary storage
+        /// Gets the application's version number.
         /// </summary>
-        /// <param name="directory">The directory to create the file in</param>
-        public static string CreateTemporaryFile(string directory)
+        /// <returns>The application's version number.</returns>
+        public static string GetApplicationVersion()
         {
-	        string file;
-            var ran = new Random();
-            while (true)
-            {
-                var filename = ran.Next(0, 200000) + ".tmp";
-                file = directory + filename;
-
-                if (!File.Exists(file))
-                    break;
-            }
-
-            return file;
-        }
-        /// <summary>
-        /// Clean up all temporary files stored by Assembly (Images, Error Logs)
-        /// </summary>
-        public static void CleanUpTemporaryFiles()
-        {
-            var files = new List<FileInfo>();
-
-            var tmpImg = new DirectoryInfo(GetTemporaryImageLocation());
-            files.AddRange(new List<FileInfo>(tmpImg.GetFiles("*.dds")));
-            var tmpLog = new DirectoryInfo(GetTemporaryErrorLogs());
-            files.AddRange(new List<FileInfo>(tmpLog.GetFiles("*.tmp")));
-
-			foreach (var fi in files)
-// ReSharper disable EmptyGeneralCatchClause
-				try { fi.Delete(); } catch (Exception) { }
-// ReSharper restore EmptyGeneralCatchClause
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
         public static void EmptyUpdaterLocations()
@@ -82,31 +54,6 @@ namespace Assembly.Helpers
         public static string GetApplicationAssemblyLocation()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().Location;
-        }
-        /// <summary>
-        /// Get the temporary location to save images
-        /// </summary>
-        public static string GetTemporaryImageLocation()
-        {
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\temp_image_folder\\";
-        }
-        /// <summary>
-        /// Get the temporary location to save error_logs
-        /// </summary>
-        public static string GetTemporaryErrorLogs()
-        {
-            return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\XboxChaos_Assembly\\error_logs\\";
-        }
-        /// <summary>
-        /// Create the temporary Directories
-        /// </summary>
-        public static void CreateTemporaryDirectories()
-        {
-            if (!Directory.Exists(GetTemporaryImageLocation()))
-                Directory.CreateDirectory(GetTemporaryImageLocation());
-
-            if (!Directory.Exists(GetTemporaryErrorLogs()))
-                Directory.CreateDirectory(GetTemporaryErrorLogs());
         }
 
         /// <summary>

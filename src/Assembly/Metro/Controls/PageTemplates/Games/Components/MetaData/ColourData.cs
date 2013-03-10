@@ -23,7 +23,7 @@
 			set { _format = value; NotifyPropertyChanged("Format"); }
 		}
 
-		public string DataType
+        public string DataType
 		{
 			get { return _dataType; }
 			set { _dataType = value; NotifyPropertyChanged("DataType"); }

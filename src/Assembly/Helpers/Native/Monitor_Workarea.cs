@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-namespace Assembly.Metro.Native
+namespace Assembly.Helpers.Native
 {
 	static class Monitor_Workarea
     {

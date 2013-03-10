@@ -17,7 +17,7 @@ using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
 using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 using CloseableTabItemDemo;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
@@ -163,7 +163,7 @@ namespace Assembly.Windows
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
             Settings.homeWindow = this;
 
-            UpdateTitleText("Empty");
+            UpdateTitleText("");
             UpdateStatusText("Ready...");
 
             //Window_StateChanged(null, null);
@@ -195,6 +195,8 @@ namespace Assembly.Windows
 	        var hwndSource = HwndSource.FromHwnd(handle);
 	        if (hwndSource != null)
 		        hwndSource.AddHook(WindowProc);
+
+            ProcessCommandLineArgs(Environment.GetCommandLineArgs());
         }
 
         #region Content Management
@@ -222,9 +224,12 @@ namespace Assembly.Windows
 						                  Filter = "Blam Cache File (*.map)|*.map",
 						                  Multiselect = true
 					                  };
-				        if ((bool)ofd.ShowDialog())
-							foreach (var file in ofd.FileNames)
-						        AddCacheTabModule(ofd.FileName);
+
+                        if ((bool)ofd.ShowDialog())
+                        {
+                            foreach (var file in ofd.FileNames)
+                                AddCacheTabModule(file);
+                        }
 			        }
 			        break;
 		        case ContentTypes.MapImage:
@@ -353,8 +358,6 @@ namespace Assembly.Windows
             // Check the map isn't already open
             foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => cacheLocation == (string)tab.Tag))
             {
-	            // Show Message Telling user map is already open
-	            MetroMessageBox.Show("Cache Already Open!", "The selected Blam Cache File is already open in Assembly. Let us take you there now.");
 	            homeTabControl.SelectedItem = tab;
 	            return;
             }
@@ -582,8 +585,12 @@ namespace Assembly.Windows
         /// <param name="title">Current Title, Assembly shall add the rest for you.</param>
         public void UpdateTitleText(string title)
         {
-            Title = title + " - Assembly α";
-            lblTitle.Text = title + " - Assembly α";
+            string suffix = "Assembly";
+            if (!string.IsNullOrWhiteSpace(title))
+                suffix = " - " + suffix;
+
+            Title = title + suffix;
+            lblTitle.Text = title + suffix;
         }
 
         /// <summary>
@@ -697,32 +704,39 @@ namespace Assembly.Windows
         #region Startup
         public bool ProcessCommandLineArgs(IList<string> args)
         {
-            if (args == null || args.Count < 2)
-                return true;
-
-            if ((args.Count >= 2))
+            if (args != null && args.Count > 1)
             {
+                string[] commandArgs = args.Skip(1).ToArray();
+                if (commandArgs[0].StartsWith("assembly://"))
+                    commandArgs[0] = commandArgs[0].Substring(11).Trim('/');
+                
                 // Decide what to do
-                switch (args[1].ToLower())
+                Activate();
+                switch (commandArgs[0].ToLower())
                 {
-                    case "open": case "assembly://open":
+                    case "open":
                         // Determine type of file, and start it up, yo
-                        if (args.Count >= 2)
-                            StartupDetermineType(args[2]);
+                        if (commandArgs.Length > 1)
+                            StartupDetermineType(commandArgs[1]);
                         break;
 
-                    case "assembly://update/":
+                    case "update":
                         // Show Update
                         menuHelpUpdater_Click(null, null);
                         break;
-                    case "assembly://about/": 
+
+                    case "about": 
                         // Show About
                         menuHelpAbout_Click(null, null);
                         break;
-                    case "assembly://settings/":
+
+                    case "settings":
                         // Show Settings
                         menuOpenSettings_Click(null, null);
                         break;
+
+                    default:
+                        return true;
                 }
             }
 
@@ -801,8 +815,11 @@ namespace Assembly.Windows
             else
                 Settings.selectedHaloMap = null;
 
-			if (tab == null)
-				homeTabControl.SelectedIndex = 0;
+            if (tab == null)
+            {
+                homeTabControl.SelectedIndex = 0;
+                UpdateTitleText("");
+            }
         }
 
         #region More WPF Annoyance

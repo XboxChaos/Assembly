@@ -2,7 +2,7 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Assembly.Helpers;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
@@ -15,6 +15,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         {
             InitializeComponent();
             DwmDropShadow.DropShadowToWindow(this);
+
+            string version = VariousFunctions.GetApplicationVersion();
+            lblTitle.Text = lblTitle.Text.Replace("{version}", version);
         }
 
         private void btnActionClose_Click(object sender, RoutedEventArgs e) { Close(); }

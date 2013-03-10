@@ -91,6 +91,9 @@ namespace Assembly.Helpers
 				if (applyThemeAswell)
 					ApplyAccent();
 
+                if (applicationRecents.Count > 10)
+                    applicationRecents.RemoveRange(10, applicationRecents.Count - 10);
+
 				keyApp.SetValue("RecentFiles", jss.Serialize(applicationRecents));
 				keyApp.SetValue("XBDMSidebarLocation", (int) applicationXBDMSidebarLocation);
 				keyApp.SetValue("SizeWidth", applicationSizeWidth);

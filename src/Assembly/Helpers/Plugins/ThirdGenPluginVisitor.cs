@@ -130,12 +130,12 @@ namespace Assembly.Helpers.Plugins
         public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
         {
 			if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, format, "", "int", pluginLine));
+				AddValue(new ColourData(name, offset, 0, format, "int", "", pluginLine));
         }
         public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
         {
 	        if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, format, "", "float", pluginLine));
+				AddValue(new ColourData(name, offset, 0, format, "float", "", pluginLine));
         }
 
 	    public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)

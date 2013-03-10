@@ -6,8 +6,9 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media.Animation;
+using Assembly.Helpers;
 using Assembly.Helpers.Net;
-using Assembly.Metro.Native;
+using Assembly.Helpers.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
@@ -25,6 +26,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             DwmDropShadow.DropShadowToWindow(this);
 
             _info = info;
+            /*if (!UpdateAvailable())
+            {
+                lblAvailable.Text = "Your version of Assembly is up-to-date.";
+                lblAvailable.FontWeight = FontWeights.Normal;
+                updateButtons.Visibility = Visibility.Collapsed;
+                noUpdate.Visibility = Visibility.Visible;
+            }*/
 
             LoadDataFromFormat();
 
@@ -47,6 +55,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         private void btnApplyUpdate_Click(object sender, RoutedEventArgs e)
         {
             updateInfo.Visibility = Visibility.Collapsed;
+            btnActionClose.Visibility = Visibility.Collapsed;
             updateProgress.Visibility = Visibility.Visible;
             lblTitle.Text = "Installing Update...";
 
@@ -75,6 +84,25 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 lblChangeLog.Inlines.Add(new Run(changelog.Changelog.TrimEnd('\r', '\n')));
                 lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
             }
+        }
+
+        private bool UpdateAvailable()
+        {
+            if (!_info.Successful)
+                return false;
+
+            // Just convert the version strings to ints and compare
+            var serverVersion = VersionStringToInt(_info.LatestVersion);
+            var localVersion = VersionStringToInt(VariousFunctions.GetApplicationVersion());
+
+            return (serverVersion > localVersion);
+        }
+
+        private static int VersionStringToInt(string version)
+        {
+            version = version.Replace(".", "");
+            int versionInt;
+            return int.TryParse(version, out versionInt) ? versionInt : 0;
         }
 
         #region Update Installing

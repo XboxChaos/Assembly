@@ -102,7 +102,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             try
             {
-                var filePath = VariousFunctions.CreateTemporaryFile(VariousFunctions.GetTemporaryImageLocation());
+                var filePath = Path.GetTempFileName();
                 Dispatcher.Invoke(new Action(delegate
                 {
                     var encoder = new PngBitmapEncoder();

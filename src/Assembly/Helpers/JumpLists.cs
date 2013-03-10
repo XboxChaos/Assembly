@@ -18,17 +18,17 @@ namespace Assembly.Helpers
                         break;
 
                     var task = new JumpTask();
-					var iconIndex = 200;
+					var iconIndex = -200;
                     switch (Settings.applicationRecents[i].FileType)
                     {
                         case Settings.RecentFileType.BLF:
-                            iconIndex = 200;
+                            iconIndex = -200;
                             break;
                         case Settings.RecentFileType.Cache:
-                            iconIndex = 201;
+                            iconIndex = -201;
                             break;
                         case Settings.RecentFileType.MapInfo:
-                            iconIndex = 202;
+                            iconIndex = -202;
                             break;
                     }
 

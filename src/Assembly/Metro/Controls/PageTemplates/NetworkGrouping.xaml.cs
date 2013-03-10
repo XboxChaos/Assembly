@@ -62,7 +62,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
                 // Send Signin Package to Server        
                 SignInResponse response = SignIn.AttemptSignIn(credentials.Username, credentials.Password);
-                if (!response.Successful)
+                if (response == null || !response.Successful)
                 {
                     Dispatcher.Invoke(new Action(delegate
                         {
