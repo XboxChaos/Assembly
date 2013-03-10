@@ -4,19 +4,14 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<reflexive name="Resource Types" offset="0x0" visible="false" entrySize="0x18">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Resource Types" offset="0x0" visible="true" entrySize="0x18">
+		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+		<int16 name="Unknown" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="true" />
 		<stringid name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<reflexive name="Resource Structure Types" offset="0xC" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+	<reflexive name="Resource Structure Types" offset="0xC" visible="true" entrySize="0x14">
+		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
 		<stringid name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
 	<reflexive name="External Maps" offset="0x18" visible="true" entrySize="0x100">
@@ -77,7 +72,7 @@
 		<undefined name="Unknown" offset="0xF8" visible="false" />
 		<undefined name="Unknown" offset="0xFC" visible="false" />
 	</reflexive>
-	<reflexive name="Asset Index" offset="0x24" visible="false" entrySize="0x60">
+	<reflexive name="Tag Resources" offset="0x24" visible="false" entrySize="0x60">
 		<tagRef name="Tag Item" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x10" visible="false" />
 		<int16 name="Salt" offset="0x12" visible="false" />
@@ -95,14 +90,18 @@
 		<undefined name="00000020" offset="0x3C" visible="true" />
 		<undefined name="00000021" offset="0x40" visible="true" />
 		<int32 name="00000022" offset="0x44" visible="true" />
-		<reflexive name="Unknown" offset="0x48" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Resource Fixups" offset="0x48" visible="true" entrySize="0x8">
+			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
+Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.
+			</comment>
+			<int32 name="Block Offset" offset="0x0" visible="true" />
+			<int32 name="Address" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x54" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Resource Definition Fixups" offset="0x54" visible="true" entrySize="0x8">
+			<int32 name="Offset" offset="0x0" visible="true" />
+			<int32 name="Resource Type Index" offset="0x4" visible="true" />
 		</reflexive>
+	</reflexive>
 	</reflexive>
 	<reflexive name="General Zonesets" offset="0x30" visible="true" entrySize="0x5C">
 		<reflexive name="Raw Pool" offset="0x0" visible="True" entrySize="0x4">

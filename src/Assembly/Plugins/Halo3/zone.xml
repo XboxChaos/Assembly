@@ -11,22 +11,18 @@
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0x2" visible="false" />
+	<int16 name="Flags" offset="0x2" visible="true" />
 	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x1C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<stringid name="Unknown" offset="0x18" visible="true" />
+		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+		<int16 name="Unknown" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="true" />
+		<int16 name="Unknown" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="true" />
+		<stringid name="Name" offset="0x18" visible="true" />
 	</reflexive>
 	<reflexive name="Resource Structure Types" offset="0x10" visible="true" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<stringId name="Unknown" offset="0x10" visible="true" />
+		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+		<stringid name="Name" offset="0x10" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x18" visible="false" />
 	<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -44,22 +40,27 @@
 	<undefined name="Unknown" offset="0x4C" visible="false" />
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<reflexive name="Asset Index" offset="0x58" visible="true" entrySize="0x40">
-		<tagRef name="Tag item" offset="0x0" visible="true" />
-		<int32 name="Raw ID" offset="0x10" visible="true" />
-		<uint32 name="Offset" offset="0x14" visible="true" />
-		<uint32 name="Size" offset="0x18" visible="true" />
-		<int32 name="Unknown" offset="0x1C" visible="false" />
-		<int16 name="Unknown" offset="0x20" visible="false" />
-		<int16 name="Raw Locations Index" offset="0x22" visible="true" />
-		<int32 name="Always 2000" offset="0x24" visible="false" />
-		<reflexive name="UnknownA1" offset="0x28" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Tag Resources" offset="0x58" visible="true" entrySize="0x40">
+		<tagRef name="Parent Tag" offset="0x0" visible="true" />
+		<uint16 name="Salt" offset="0x10" visible="true" />
+		<uint8 name="Resource Type Index" offset="0x12" visible="true" />
+		<uint8 name="Flags" offset="0x13" visible="true" />
+		<int32 name="Block Offset" offset="0x14" visible="true" />
+		<int32 name="Block Size" offset="0x18" visible="true" />
+		<int32 name="Unknown Offset" offset="0x1C" visible="true" />
+		<int16 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="[play] Segment Index" offset="0x22" visible="true" />
+		<uint32 name="Unknown" offset="0x24" visible="true" />
+		<reflexive name="Resource Fixups" offset="0x28" visible="true" entrySize="0x8">
+			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
+Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.
+			</comment>
+			<int32 name="Block Offset" offset="0x0" visible="true" />
+			<int32 name="Address" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="UnknownA2" offset="0x34" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Resource Definition Fixups" offset="0x34" visible="true" entrySize="0x8">
+			<int32 name="Offset" offset="0x0" visible="true" />
+			<int32 name="Resource Type Index" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="General Zonesets" offset="0x64" visible="true" entrySize="0x78">
