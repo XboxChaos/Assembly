@@ -378,9 +378,9 @@
 		</bitfield16>
 		<int16 name="00000016" offset="0x1E" visible="false" />
 		<undefined name="00000017" offset="0x20" visible="false" />
-		<undefined name="struct here" offset="0x24" visible="false" />
-		<undefined name="struct here" offset="0x28" visible="false" />
-		<undefined name="struct here" offset="0x2C" visible="false" />
+		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="false" />
+		</reflexive>
 		<undefined name="00000017" offset="0x30" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<tagref name="Child Object" offset="0x38" visible="true" />
@@ -395,9 +395,11 @@
 		<tagref name="00000052" offset="0xbC" visible="true" />
 	</reflexive>
 	<tagref name="Simulation" offset="0x190" visible="true" />
-	<undefined name="struct here" offset="0x1a0" visible="false" />
-	<undefined name="struct here" offset="0x1a4" visible="false" />
-	<undefined name="struct here" offset="0x1a8" visible="false" />
+	<reflexive name="Unknown" offset="0x1A0" visible="false" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="false" />
+		<tagRef name="Unknown" offset="0x10" visible="false" />
+		<tagRef name="Unknown" offset="0x20" visible="false" />
+	</reflexive>
 	<reflexive name="Destruction De-rez Effects" offset="0x1ac" visible="true" entrySize="0x10">
 		<tagref name="Dissolver Effect" offset="0x0" visible="true" />
 	</reflexive>
@@ -461,14 +463,14 @@
 	<undefined name="00000188" offset="0x2d4" visible="true" />
 	<undefined name="Timer Rechanger Rate" offset="0x2d8" visible="true" />
 	<undefined name="00000190" offset="0x2dC" visible="true" />
-	<int32 name="Effect Marker" offset="0x2e0" visible="true" />
+	<stringid name="Effect Marker" offset="0x2e0" visible="true" />
 	<undefined name="00000192" offset="0x2e4" visible="true" />
 	<colorf name="Primary Color" offset="0x2E8" visible="true" format="argb" />
 	<colorf name="Secondary Color" offset="0x2F8" visible="true" format="argb" />
 	<undefined name="00000202" offset="0x308" visible="true" />
 	<undefined name="00000203" offset="0x30C" visible="true" />
 	<undefined name="00000204" offset="0x310" visible="true" />
-	<undefined name="00000205" offset="0x314" visible="true" />
+	<stringid name="00000205" offset="0x314" visible="true" />
 	<reflexive name="Camera Properties" offset="0x318" visible="true" entrySize="0x78">
 		<undefined name="00000005" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
@@ -513,15 +515,37 @@
 		<float32 name="Charge Final Subtraction" offset="0x1C" visible="true" />
 		<float32 name="Charge Subtraction Per Sec." offset="0x20" visible="true" />
 		<dataref name="00000014" offset="0x24" visible="true" />
-		<undefined name="00000019" offset="0x38" visible="true" />
-		<int32 name="00000020" offset="0x3C" visible="true" />
-		<undefined name="00000021" offset="0x40" visible="true" />
-		<int16 name="00000022" offset="0x44" visible="true" />
-		<int16 name="00000022" offset="0x46" visible="true" />
+		<!-- <undefined name="00000019" offset="0x38" visible="true" />
+		<int32 name="00000020" offset="0x3C" visible="true" /> -->
+	
+	<int8 name="00000020" offset="0x38" visible="true" />
+	<int8 name="00000020" offset="0x39" visible="true" />
+	<int8 name="00000020" offset="0x3A" visible="true" />
+	<int8 name="00000020" offset="0x3B" visible="true" />
+	<int8 name="00000020" offset="0x3C" visible="true" />
+	<int8 name="00000020" offset="0x3D" visible="true" />
+	<int8 name="00000020" offset="0x3E" visible="true" />
+	<int8 name="00000020" offset="0x3F" visible="true" />
+	<int8 name="00000020" offset="0x40" visible="true" />
+	<int8 name="00000020" offset="0x41" visible="true" />
+	<int8 name="00000020" offset="0x42" visible="true" />
+	<int8 name="00000020" offset="0x43" visible="true" />
+	
+		<!-- <undefined name="00000021" offset="0x40" visible="true" /> -->
+		<enum16 name="Equipment Type" offset="0x44" visible="true">
+			<option name="Grenade" value="0x0" />
+			<option name="Power Up" value="0x1" />
+			<option name="Armor Ability" value="0xFFFFFFFF" />
+		</enum16>
+		<enum8 name="Activation Type" offset="0x46" visible="true">
+			<option name="Tap Button" value="0x0" />
+			<option name="Hold Button" value="0x1" />
+		</enum8>
+		<int8 name="00000005" offset="0x47" visible="true" />
 		<reflexive name="Testo" offset="0x48" visible="true" entrySize="0x4">
 			<undefined name="00000005" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Story Drop" offset="0x54" visible="true" entrySize="0x28">
+		<reflexive name="Story Drop" offset="0x54" visible="true" entrySize="0x34">
 			<undefined name="00000005" offset="0x0" visible="true" />
 			<undefined name="00000006" offset="0x4" visible="true" />
 			<undefined name="00000007" offset="0x8" visible="true" />
@@ -541,38 +565,12 @@
 			<undefined name="00000015" offset="0x28" visible="true" />
 			<undefined name="00000016" offset="0x2C" visible="true" />
 		</reflexive>
-		<reflexive name="Radar Manipulation" offset="0x78" visible="true" entrySize="0x5C">
+		<reflexive name="Radar Manipulation" offset="0x78" visible="true" entrySize="0x14">
 			<int32 name="00000005" offset="0x0" visible="true" />
 			<undefined name="00000006" offset="0x4" visible="true" />
 			<undefined name="Fake Blip Radius" offset="0x8" visible="true" />
 			<int32 name="Number of Fake Blips" offset="0xC" visible="true" />
 			<undefined name="00000009" offset="0x10" visible="true" />
-			<int8 name="00000010" offset="0x14" visible="true" />
-			<int8 name="00000010" offset="0x15" visible="true" />
-			<int8 name="00000010" offset="0x16" visible="true" />
-			<int8 name="00000010" offset="0x17" visible="true" />
-			<undefined name="00000011" offset="0x18" visible="true" />
-			<undefined name="00000012" offset="0x1C" visible="true" />
-			<undefined name="struct here" offset="0x20" visible="true" />
-			<undefined name="struct here" offset="0x24" visible="true" />
-			<undefined name="struct here" offset="0x28" visible="true" />
-			<undefined name="struct here 2" offset="0x2C" visible="true" />
-			<undefined name="struct here 2" offset="0x30" visible="true" />
-			<undefined name="struct here 2" offset="0x34" visible="true" />
-			<undefined name="struct here 3" offset="0x38" visible="true" />
-			<undefined name="struct here 3" offset="0x3C" visible="true" />
-			<undefined name="struct here 3" offset="0x40" visible="true" />
-			<reflexive name="Testo" offset="0x44" visible="true" entrySize="0xC">
-				<int8 name="00000005" offset="0x0" visible="true" />
-				<int8 name="00000005" offset="0x1" visible="true" />
-				<int8 name="00000005" offset="0x2" visible="true" />
-				<int8 name="00000005" offset="0x3" visible="true" />
-				<undefined name="00000006" offset="0x4" visible="true" />
-				<undefined name="00000007" offset="0x8" visible="true" />
-			</reflexive>
-			<undefined name="struct here 5" offset="0x50" visible="true" />
-			<undefined name="struct here 5" offset="0x54" visible="true" />
-			<undefined name="struct here 5" offset="0x58" visible="true" />
 		</reflexive>
 		<undefined name="struct here 6" offset="0x84" visible="true" />
 		<undefined name="struct here 6" offset="0x88" visible="true" />
@@ -602,7 +600,6 @@
 					<undefined name="00000011" offset="0x18" visible="true" />
 				</reflexive>
 				<reflexive name="Unknown" offset="0x24" visible="true" entrySize="0xC">
-					<comment title="size could be totally wrong ~zedd"></comment>
 					<undefined name="00000005" offset="0x0" visible="true" />
 					<undefined name="00000006" offset="0x4" visible="true" />
 					<undefined name="00000007" offset="0x8" visible="true" />
@@ -728,7 +725,7 @@
 		<reflexive name="Unknown" offset="0x168" visible="true" entrySize="0x4">
 			<undefined name="00000005" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Teleporter" offset="0x174" visible="true" entrySize="0x10">
+		<reflexive name="Teleporter" offset="0x174" visible="true" entrySize="0x5C">
 			<int8 name="00000005" offset="0x0" visible="true" />
 			<int8 name="00000005" offset="0x1" visible="true" />
 			<int8 name="00000005" offset="0x2" visible="true" />
@@ -753,7 +750,7 @@
 			<undefined name="struct here" offset="0x54" visible="true" />
 			<undefined name="struct here" offset="0x58" visible="true" />
 		</reflexive>
-		<reflexive name="Auto Turret" offset="0x180" visible="true" entrySize="0x7C">
+		<reflexive name="Auto Turret" offset="0x180" visible="true" entrySize="0x88">
 			<undefined name="00000005" offset="0x0" visible="true" />
 			<tagref name="Turret Object" offset="0x4" visible="true" />
 			<undefined name="00000010" offset="0x14" visible="true" />
@@ -787,7 +784,7 @@
 			<undefined name="00000011" offset="0x18" visible="true" />
 			<tagref name="Properties" offset="0x1C" visible="true" />
 		</reflexive>
-		<reflexive name="Shield Projector Test1" offset="0x198" visible="true" entrySize="0x44">
+		<reflexive name="Shield Projector Test1" offset="0x198" visible="true" entrySize="0x50">
 			<undefined name="00000005" offset="0x0" visible="true" />
 			<undefined name="00000006" offset="0x4" visible="true" />
 			<undefined name="00000007" offset="0x8" visible="true" />
@@ -867,8 +864,8 @@
 	<tagref name="Soundbank" offset="0x374" visible="true" />
 	<reflexive name="Testo" offset="0x384" visible="true" entrySize="0x10">
 		<undefined name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
+		<stringid name="00000006" offset="0x4" visible="true" />
+		<stringid name="00000007" offset="0x8" visible="true" />
 		<undefined name="00000008" offset="0xC" visible="true" />
 	</reflexive>
 	<undefined name="struct here 2" offset="0x390" visible="true" />

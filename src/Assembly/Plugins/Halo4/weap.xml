@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo4" baseSize="0x690">
+<plugin game="Halo4" baseSize="0x698">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
@@ -378,9 +378,9 @@
 		</bitfield16>
 		<int16 name="00000016" offset="0x1E" visible="false" />
 		<undefined name="00000017" offset="0x20" visible="false" />
-		<undefined name="struct here" offset="0x24" visible="false" />
-		<undefined name="struct here" offset="0x28" visible="false" />
-		<undefined name="struct here" offset="0x2C" visible="false" />
+		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="false" />
+		</reflexive>
 		<undefined name="00000017" offset="0x30" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<tagref name="Child Object" offset="0x38" visible="true" />
@@ -395,9 +395,11 @@
 		<tagref name="00000052" offset="0xbC" visible="true" />
 	</reflexive>
 	<tagref name="Simulation" offset="0x190" visible="true" />
-	<undefined name="struct here" offset="0x1a0" visible="false" />
-	<undefined name="struct here" offset="0x1a4" visible="false" />
-	<undefined name="struct here" offset="0x1a8" visible="false" />
+	<reflexive name="Unknown" offset="0x1A0" visible="false" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="false" />
+		<tagRef name="Unknown" offset="0x10" visible="false" />
+		<tagRef name="Unknown" offset="0x20" visible="false" />
+	</reflexive>
 	<reflexive name="Destruction De-rez Effects" offset="0x1ac" visible="true" entrySize="0x10">
 		<tagref name="Dissolver Effect" offset="0x0" visible="true" />
 	</reflexive>
@@ -518,7 +520,7 @@
 	<tagref name="Overheat Damage Effect" offset="0x360" visible="true" />
 	<tagref name="Detonation Effect" offset="0x370" visible="true" />
 	<tagref name="Detonation Damage Effect" offset="0x380" visible="true" />
-	<reflexive name="Melee Damage" offset="0x390" visible="true" entrySize="0x10">
+	<reflexive name="Melee Damage" offset="0x390" visible="true" entrySize="0xC8">
 		<float32 name="Damage Pyramid Angle Yaw" offset="0x0" visible="true" />
 		<float32 name="Damage Pyramid Angle Pitch" offset="0x4" visible="true" />
 		<float32 name="Damage Pyramid Depth" offset="0x8" visible="true" />
@@ -731,9 +733,11 @@
 	<undefined name="00000327" offset="0x4f8" visible="true" />
 	<undefined name="00000328" offset="0x4fC" visible="true" />
 	<undefined name="00000330" offset="0x500" visible="true" />
-	<reflexive name="First Person" offset="0x504" visible="true" entrySize="0x20">
-		<tagRef name="Model" offset="0x0" visible="true" />
-		<tagRef name="Animation" offset="0x10" visible="true" />
+	<reflexive name="First Person" offset="0x504" visible="false" entrySize="0x28">
+		<tagRef name="Unknown" offset="0x0" visible="false" />
+		<tagRef name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
 	</reflexive>
 	<tagref name="HUD" offset="0x510" visible="true" />
 	<tagref name="00000338" offset="0x520" visible="true" />
@@ -899,9 +903,9 @@
 			<option name="Fan" value="0x1" />
 		</enum16>
 		<int16 name="Projectiles per Shot" offset="0x6A" visible="true" />
-		<undefined name="struct here" offset="0x6C" visible="true" />
-		<undefined name="struct here" offset="0x70" visible="true" />
-		<undefined name="struct here" offset="0x74" visible="true" />
+		<reflexive name="Unknown" offset="0x6C" visible="false" entrySize="0x4">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+		</reflexive>
 		<undefined name="00000035" offset="0x78" visible="true" />
 		<undefined name="Error Angle" offset="0x7C" visible="true" />
 		<undefined name="Base Bloom Amount" offset="0x80" visible="true" />
@@ -910,13 +914,8 @@
 		<undefined name="Weapon Switch Bloom Reset Time" offset="0x8C" visible="true" />
 		<undefined name="Zoom Bloom Reset Time" offset="0x90" visible="true" />
 		<undefined name="Jump Bloom Reset Time" offset="0x94" visible="true" />
-		<reflexive name="Bloom Data" offset="0x98" visible="true" entrySize="0x48">
+		<reflexive name="Bloom Data" offset="0x98" visible="true" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x14" visible="true" />
-			<int16 name="Unknown" offset="0x16" visible="true" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
 		<reflexive name="Unknown 13" offset="0xA4" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
@@ -928,21 +927,11 @@
 		<undefined name="struct here 4" offset="0xc0" visible="true" />
 		<undefined name="struct here 4" offset="0xc4" visible="true" />
 		<undefined name="00000055" offset="0xc8" visible="true" />
-		<reflexive name="Unknown 14" offset="0xCC" visible="false" entrySize="0x48">
+		<reflexive name="Unknown 14" offset="0xCC" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x16" visible="false" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 15" offset="0xD8" visible="false" entrySize="0x48">
+		<reflexive name="Unknown 15" offset="0xD8" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x16" visible="false" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
 		<undefined name="struct here 3" offset="0xe4" visible="true" />
 		<undefined name="struct here 3" offset="0xe8" visible="true" />
@@ -1108,7 +1097,7 @@
 	<undefined name="00000399" offset="0x610" visible="true" />
 	<undefined name="Zoom Delay (0,1)" offset="0x614" visible="true" />
 	<undefined name="Melee-Weapon Delay (0,1)" offset="0x618" visible="true" />
-	<undefined name="00000402" offset="0x61C" visible="true" />
+	<undefined name="Ready Animation Speed (0,1)" offset="0x61C" visible="true" />
 	<undefined name="00000403" offset="0x620" visible="true" />
 	<undefined name="00000404" offset="0x624" visible="true" />
 	<stringid name="Holster Marker" offset="0x628" visible="true" />
@@ -1131,4 +1120,12 @@
 	<undefined name="struct here 2" offset="0x684" visible="true" />
 	<undefined name="struct here 2" offset="0x688" visible="true" />
 	<undefined name="struct here 2" offset="0x68C" visible="true" />
+	<reflexive name="Unknown" offset="0x684" visible="false" entrySize="0x1C">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<tagRef name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+	</reflexive>
+	<undefined name="Unknown" offset="0x690" visible="false" />
+	<undefined name="Unknown" offset="0x694" visible="false" />
 </plugin>
