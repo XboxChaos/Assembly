@@ -83,9 +83,9 @@ namespace Assembly
                     Settings.UpdateSettings();
                 };
 
-			// Start Caching Blam Cache MetaData
-	        var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
-			metadataCacheThread.Start();
+			//// Start Caching Blam Cache MetaData
+			//var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
+			//metadataCacheThread.Start();
 
 #if !DEBUG
             Current.DispatcherUnhandledException += (o, args) =>
