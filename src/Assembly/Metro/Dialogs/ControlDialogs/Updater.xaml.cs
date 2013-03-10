@@ -20,13 +20,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         private readonly UpdateInfo _info;
         private string _currentVersion;
 
-        public Updater(UpdateInfo info)
+        public Updater(UpdateInfo info, bool available)
         {
             InitializeComponent();
             DwmDropShadow.DropShadowToWindow(this);
 
             _info = info;
-            if (!UpdateAvailable())
+            if (!available)
             {
                 lblAvailable.Text = "Your version of Assembly is up-to-date.";
                 lblAvailable.FontWeight = FontWeights.Normal;
@@ -84,25 +84,6 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 lblChangeLog.Inlines.Add(new Run(changelog.Changelog.TrimEnd('\r', '\n')));
                 lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
             }
-        }
-
-        private bool UpdateAvailable()
-        {
-            if (!_info.Successful)
-                return false;
-
-            // Just convert the version strings to ints and compare
-            var serverVersion = VersionStringToInt(_info.LatestVersion);
-            var localVersion = VersionStringToInt(VariousFunctions.GetApplicationVersion());
-
-            return (serverVersion > localVersion);
-        }
-
-        private static int VersionStringToInt(string version)
-        {
-            version = version.Replace(".", "");
-            int versionInt;
-            return int.TryParse(version, out versionInt) ? versionInt : 0;
         }
 
         #region Update Installing
