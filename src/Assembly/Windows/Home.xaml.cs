@@ -675,6 +675,9 @@ namespace Assembly.Windows
         /// <param name="location">The location to move it to</param>
         public void SwitchXBDMSidebarLocation(XBDMSidebarLocations location)
         {
+	        Settings.applicationXBDMSidebarLocation = location;
+			Settings.UpdateSettings();
+
             switch (location)
             {
                 case XBDMSidebarLocations.Sidebar:
