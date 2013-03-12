@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
+using Assembly.Windows;
 
 namespace Assembly.Metro.Controls.Sidebar
 {
@@ -16,12 +17,16 @@ namespace Assembly.Metro.Controls.Sidebar
     {
         public DispatcherTimer _hideTimer = new DispatcherTimer();
         public bool ControlhasFocus = true;
+	    private bool onStartup = true;
 
         public XBDMSidebar()
         {
             InitializeComponent();
             _hideTimer.Interval = new TimeSpan(0, 0, 0, 0, 200);
             _hideTimer.Tick +=_hideTimer_Tick;
+
+	        btnPinXBDMSidebar.IsChecked = Settings.applicationXBDMSidebarLocation == Home.XBDMSidebarLocations.Docked;
+	        onStartup = false;
         }
 
         void _hideTimer_Tick(object sender, EventArgs e)
@@ -50,8 +55,8 @@ namespace Assembly.Metro.Controls.Sidebar
             Focus();
         }
 
-        private void btnPinXBDMSidebar_Unchecked(object sender, RoutedEventArgs e) { Settings.homeWindow.SwitchXBDMSidebarLocation(Windows.Home.XBDMSidebarLocations.Sidebar); }
-        private void btnPinXBDMSidebar_Checked(object sender, RoutedEventArgs e) { Settings.homeWindow.SwitchXBDMSidebarLocation(Windows.Home.XBDMSidebarLocations.Docked); }
+        private void btnPinXBDMSidebar_Unchecked(object sender, RoutedEventArgs e) { if (!onStartup) Settings.homeWindow.SwitchXBDMSidebarLocation(Windows.Home.XBDMSidebarLocations.Sidebar); }
+		private void btnPinXBDMSidebar_Checked(object sender, RoutedEventArgs e) { if (!onStartup) Settings.homeWindow.SwitchXBDMSidebarLocation(Windows.Home.XBDMSidebarLocations.Docked); }
 
         private void btnScreenshot_Click(object sender, RoutedEventArgs e)
         {
