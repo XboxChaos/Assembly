@@ -89,6 +89,8 @@ namespace Blamite.Flexibility
         public string GetTagClassName(short opcode)
         {
             string result;
+            if (opcode == -1)
+                return "null";
             if (_classLookup.TryGetValue(opcode, out result))
                 return result;
             return null;

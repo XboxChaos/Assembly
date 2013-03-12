@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Blamite.Blam;
+using Blamite.Flexibility;
 using Blamite.Util;
 
 namespace Blamite.Blam
@@ -13,8 +14,13 @@ namespace Blamite.Blam
     /// <seealso cref="StringID"/>
     public class StringIDSetResolver : IStringIDResolver
     {
-        private SortedList<byte, StringIDSet> _setsByID = new SortedList<byte, StringIDSet>();
+        private SortedList<int, StringIDSet> _setsByID = new SortedList<int, StringIDSet>();
         private SortedList<int, StringIDSet> _setsByGlobalIndex = new SortedList<int, StringIDSet>();
+
+        public StringIDSetResolver(StringIDLayout idLayout)
+        {
+            IDLayout = idLayout;
+        }
 
         /// <summary>
         /// Registers a stringID set to use to translate stringIDs.
@@ -22,7 +28,7 @@ namespace Blamite.Blam
         /// <param name="id">The set's ID number.</param>
         /// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
         /// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-        public void RegisterSet(byte id, ushort minIndex, int globalIndex)
+        public void RegisterSet(int id, int minIndex, int globalIndex)
         {
             StringIDSet set = new StringIDSet(id, minIndex, globalIndex);
             _setsByID[id] = set;
@@ -36,29 +42,30 @@ namespace Blamite.Blam
         /// <returns>The index of the string in the global debug strings array.</returns>
         public int StringIDToIndex(StringID id)
         {
-            int closestSetIndex = ListSearching.BinarySearch<byte>(_setsByID.Keys, id.Set);
+            // Find the index of the first set which is less than the set in the ID
+            int closestSetIndex = ListSearching.BinarySearch<int>(_setsByID.Keys, id.GetSet(IDLayout));
             if (closestSetIndex < 0)
             {
                 // BinarySearch returns the bitwise complement of the index of the next highest value if not found
                 // So, use the set that comes before it...
                 closestSetIndex = ~closestSetIndex - 1;
                 if (closestSetIndex < 0)
-                    return id.Value; // No previous set defined - just return the handle
+                    return (int)id.Value; // No previous set defined - just return the handle
             }
 
             // If the index falls outside the set's min value, then put it into the previous set
-            if (id.Index < _setsByID.Values[closestSetIndex].MinIndex)
+            if (id.GetIndex(IDLayout) < _setsByID.Values[closestSetIndex].MinIndex)
             {
                 closestSetIndex--;
                 if (closestSetIndex < 0)
-                    return id.Value;
+                    return (int)id.Value;
             }
 
             // Calculate the array index by subtracting the value of the first ID in the set
             // and then adding the index in the global array of the set's first string
             StringIDSet set = _setsByID.Values[closestSetIndex];
-            StringID firstId = new StringID(set.ID, set.MinIndex);
-            return id.Value - firstId.Value + set.GlobalIndex;
+            StringID firstId = new StringID(set.ID, set.MinIndex, IDLayout);
+            return (int)(id.Value - firstId.Value + set.GlobalIndex);
         }
 
         /// <summary>
@@ -76,15 +83,20 @@ namespace Blamite.Blam
                 // So negate it and subtract 1 to get the closest global index that comes before it
                 closestSetIndex = ~closestSetIndex - 1;
                 if (closestSetIndex < 0)
-                    return new StringID(index); // No previous set defined - just return the index
+                    return new StringID((uint)index); // No previous set defined - just return the index
             }
 
             // Calculate the StringID by subtracting the set's global array index
             // and then adding the value of the first stringID in the set
             StringIDSet set = _setsByGlobalIndex.Values[closestSetIndex];
-            StringID firstId = new StringID(set.ID, set.MinIndex);
-            return new StringID(index - set.GlobalIndex + firstId.Value);
+            StringID firstId = new StringID(set.ID, set.MinIndex, IDLayout);
+            return new StringID((uint)(index - set.GlobalIndex + firstId.Value));
         }
+
+        /// <summary>
+        /// Gets the layout of stringIDs.
+        /// </summary>
+        public StringIDLayout IDLayout { get; private set; }
 
         /// <summary>
         /// A stringID set definition.
@@ -97,7 +109,7 @@ namespace Blamite.Blam
             /// <param name="id">The set's ID number.</param>
             /// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
             /// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-            public StringIDSet(byte id, ushort minIndex, int globalIndex)
+            public StringIDSet(int id, int minIndex, int globalIndex)
             {
                 ID = id;
                 MinIndex = minIndex;
@@ -107,12 +119,12 @@ namespace Blamite.Blam
             /// <summary>
             /// The set's ID number.
             /// </summary>
-            public byte ID { get; private set; }
+            public int ID { get; private set; }
 
             /// <summary>
             /// The minimum index that a stringID must have in order to be counted as part of the set.
             /// </summary>
-            public ushort MinIndex { get; private set; }
+            public int MinIndex { get; private set; }
 
             /// <summary>
             /// The index of the set's first string in the global stringID table.

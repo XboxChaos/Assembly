@@ -37,7 +37,7 @@ namespace Blamite.Blam
         {
             if (_resolver != null)
                 return _resolver.IndexToStringID(index);
-            return new StringID(index);
+            return new StringID((uint)index);
         }
 
         public override string GetString(int index)
@@ -50,6 +50,11 @@ namespace Blamite.Blam
         public override int FindStringIndex(string str)
         {
             return _strings.IndexOf(str);
+        }
+
+        public override StringIDLayout IDLayout
+        {
+            get { return _resolver.IDLayout; }
         }
 
         public override IEnumerator<string> GetEnumerator()

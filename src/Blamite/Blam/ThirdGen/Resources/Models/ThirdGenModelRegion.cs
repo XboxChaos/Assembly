@@ -22,7 +22,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            Name = new StringID((int)values.GetInteger("name stringid"));
+            Name = new StringID(values.GetInteger("name stringid"));
 
             LoadPermutations(values, reader, metaArea, buildInfo);
         }

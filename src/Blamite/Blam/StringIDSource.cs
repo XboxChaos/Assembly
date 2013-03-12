@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.Flexibility;
 
 namespace Blamite.Blam
 {
@@ -63,6 +64,11 @@ namespace Blamite.Blam
                 return IndexToStringID(index);
             return StringID.Null;
         }
+
+        /// <summary>
+        /// Gets the layout of each stringID.
+        /// </summary>
+        public abstract StringIDLayout IDLayout { get; }
 
         public abstract IEnumerator<string> GetEnumerator();
 

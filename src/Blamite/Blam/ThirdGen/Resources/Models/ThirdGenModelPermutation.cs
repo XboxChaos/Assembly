@@ -20,7 +20,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 
         private void Load(StructureValueCollection values)
         {
-            Name = new StringID((int)values.GetInteger("name stringid"));
+            Name = new StringID(values.GetInteger("name stringid"));
             ModelSectionIndex = (int)values.GetInteger("model section");
         }
     }

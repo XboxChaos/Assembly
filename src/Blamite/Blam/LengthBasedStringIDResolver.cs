@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.Flexibility;
 
 namespace Blamite.Blam
 {
@@ -19,6 +20,7 @@ namespace Blamite.Blam
         public LengthBasedStringIDResolver(IndexedStringTable strings)
         {
             _strings = strings;
+            IDLayout = new StringIDLayout(24, 0, 8); // TODO: is it necessary to make this a build option?
         }
 
         /// <summary>
@@ -28,7 +30,7 @@ namespace Blamite.Blam
         /// <returns>The index of the string in the global debug strings array.</returns>
         public int StringIDToIndex(StringID id)
         {
-            return (int)id.Index;
+            return (int)id.GetIndex(IDLayout);
         }
 
         /// <summary>
@@ -39,10 +41,15 @@ namespace Blamite.Blam
         public StringID IndexToStringID(int index)
         {
             if (index < 0 || index >= _strings.Count)
-                return new StringID(0);
+                return StringID.Null;
 
             string str = _strings[index];
-            return new StringID((byte)str.Length, 0, (ushort)index);
+            return new StringID(str.Length, 0, index, IDLayout);
         }
+
+        /// <summary>
+        /// Gets the layout of stringIDs.
+        /// </summary>
+        public StringIDLayout IDLayout { get; private set; }
     }
 }
