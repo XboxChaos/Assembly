@@ -46,42 +46,40 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private ExpressionTable LoadScriptExpressions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringTableReader stringReader, StructureLayout entryLayout)
         {
-            int exprCount = (int)values.GetInteger("number of script expressions");
+			var exprCount = (int)values.GetInteger("number of script expressions");
             if (exprCount == 0)
                 return new ExpressionTable();
 
             ScriptExpressionsLocation = SegmentPointer.FromPointer(values.GetInteger("script expression table address"), metaArea);
 
-            ExpressionTable result = new ExpressionTable();
+			var result = new ExpressionTable();
             reader.SeekTo(ScriptExpressionsLocation.AsOffset());
-            for (int i = 0; i < exprCount; i++)
+			for (var i = 0; i < exprCount; i++)
             {
-                StructureValueCollection exprValues = StructureReader.ReadStructure(reader, entryLayout);
+				var exprValues = StructureReader.ReadStructure(reader, entryLayout);
                 result.AddExpression(new ThirdGenExpression(exprValues, (ushort)i, stringReader));
             }
 
-            foreach (IExpression expr in result)
-            {
-                // FIXME: hax
-                if (expr != null)
-                    ((ThirdGenExpression)expr).ResolveReferences(result);
-            }
+			foreach (var expr in result.Where(expr => expr != null))
+			{
+				((ThirdGenExpression)expr).ResolveReferences(result);
+			}
             return result;
         }
 
         private List<IGlobalObject> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, StructureLayout entryLayout)
         {
-            int objectsCount = (int)values.GetInteger("number of script objects");
+            var objectsCount = (int)values.GetInteger("number of script objects");
             if (objectsCount == 0)
                 return new List<IGlobalObject>();
 
             ScriptObjectsLocation = SegmentPointer.FromPointer(values.GetInteger("script object table address"), metaArea);
 
-            List<IGlobalObject> result = new List<IGlobalObject>();
+			var result = new List<IGlobalObject>();
             reader.SeekTo(ScriptObjectsLocation.AsOffset());
-            for (int i = 0; i < objectsCount; i++)
+			for (var i = 0; i < objectsCount; i++)
             {
-                StructureValueCollection objValues = StructureReader.ReadStructure(reader, entryLayout);
+				var objValues = StructureReader.ReadStructure(reader, entryLayout);
                 result.Add(new ThirdGenGlobalObject(objValues, stringIDs));
             }
 

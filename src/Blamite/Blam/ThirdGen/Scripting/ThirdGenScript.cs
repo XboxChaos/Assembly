@@ -24,7 +24,7 @@ namespace Blamite.Blam.ThirdGen.Scripting
 
         private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, StringIDSource stringIDs, ExpressionTable expressions, BuildInformation buildInfo)
         {
-            Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
+			Name = values.HasInteger("name index") ? stringIDs.GetString(new StringID((int)values.GetInteger("name index"))) : values.GetString("name");
             ExecutionType = (short)values.GetInteger("execution type");
             ReturnType = (short)values.GetInteger("return type");
             DatumIndex rootExpr = new DatumIndex(values.GetInteger("first expression index"));

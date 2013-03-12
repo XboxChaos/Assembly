@@ -40,13 +40,16 @@ namespace Blamite.Flexibility
             _classLookup = objectTypes.ToDictionary(t => t.Opcode, t => t.Name);
 
             // Value types
-            var valueTypes = from element in root.Element("valueTypes").Descendants("type")
-                             select new ScriptValueType(
-                                 XMLUtil.GetStringAttribute(element, "name"),
-                                 (ushort)XMLUtil.GetNumericAttribute(element, "opcode"),
-                                 XMLUtil.GetNumericAttribute(element, "size"),
-                                 XMLUtil.GetBoolAttribute(element, "quoted", false)
-                             );
+	        var valueTypes = new List<ScriptValueType>();
+			foreach (var element in root.Element("valueTypes").Descendants("type"))
+			{
+				var name = XMLUtil.GetStringAttribute(element, "name");
+				var opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
+				var size = XMLUtil.GetNumericAttribute(element, "size");
+				var quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
+
+				valueTypes.Add(new ScriptValueType(name, opcode, size, quoted));
+			}
             _typeLookup = valueTypes.ToDictionary(t => t.Opcode);
 
             // Functions
