@@ -285,6 +285,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		{
 			var postGenerator = new BlamitePostGenerator(GeneratorViewModel);
 			var generatedPost = postGenerator.Parse();
+
+			MetroPostGeneratorViewer.Show(generatedPost, GeneratorViewModel.ModAuthor);
 		}
 
 		/// <summary>

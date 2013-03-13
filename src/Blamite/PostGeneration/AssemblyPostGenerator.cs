@@ -159,63 +159,63 @@ namespace Blamite.PostGeneration
 		// Alignment
 		private string BBCodeCentre(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[center]{0}[/center]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[center]{0}[/center]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeIndent(string innerContent, int indentCount = 1, bool trailingNewLine = false)
 		{
-			return string.Format("[indent={0}]{1}[/indent]{2}", indentCount, innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[indent={0}]{1}[/indent]{2}", indentCount, innerContent, trailingNewLine ? "\n" : "");
 		}
 
 		// Basic Text Modification
 		private string BBCodeSize(string innerContent, int size = 3, bool trailingNewLine = false)
 		{
-			return string.Format("[size={0}]{1}[/size]{2}", size, innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[size={0}]{1}[/size]{2}", size, innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeColour(string innerContent, string colour = "000000", bool trailingNewLine = false)
 		{
-			return string.Format("[color=#{0}]{1}[/color]{2}", colour, innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[color=#{0}]{1}[/color]{2}", colour, innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeBold(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[b]{0}[/b]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[b]{0}[/b]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeItalic(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[i]{0}[/i]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[i]{0}[/i]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeUnderline(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[u]{0}[/u]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[u]{0}[/u]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeStrikethrough(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[s]{0}[/s]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[s]{0}[/s]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 
 		// Basic BBCode Hyperlinks
 		private string BBCodeUrl(string innerContent, string url, bool trailingNewLine = false)
 		{
-			return string.Format("[url={0}]{1}[/url]{2}", url, innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[url={0}]{1}[/url]{2}", url, innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeImg(string url, bool trailingNewLine = false)
 		{
-			return string.Format("[img]{0}[/img]{1}", url, trailingNewLine ? "\n\r" : "");
+			return string.Format("[img]{0}[/img]{1}", url, trailingNewLine ? "\n" : "");
 		}
 
 		// List BBCode
 		private string BBCodeList(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[list]{0}[/list]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[list]{0}[/list]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 		private string BBCodeListOption(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[*]{0}{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[*]{0}{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 
 		// Media BBCode
 		private string BBCodeMedia(string innerContent, bool trailingNewLine = false)
 		{
-			return string.Format("[media]{0}[/media]{1}", innerContent, trailingNewLine ? "\n\r" : "");
+			return string.Format("[media]{0}[/media]{1}", innerContent, trailingNewLine ? "\n" : "");
 		}
 	}
 }
