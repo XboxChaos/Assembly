@@ -164,7 +164,6 @@ namespace Assembly.Windows
 
             DwmDropShadow.DropShadowToWindow(this);
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
-            Settings.homeWindow = this;
 
             UpdateTitleText("");
             UpdateStatusText("Ready...");
@@ -188,7 +187,8 @@ namespace Assembly.Windows
             WindowState = Settings.applicationSizeMaximize ? WindowState.Maximized : WindowState.Normal;
             Window_StateChanged(null, null);
 
-            AllowDrop = true;
+			AllowDrop = true;
+			Settings.homeWindow = this;
         }
 
         protected override void OnSourceInitialized(EventArgs e)

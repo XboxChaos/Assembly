@@ -15,8 +15,18 @@ namespace Assembly.Metro.Dialogs
 
             ex = ExceptionDictionary.GetFriendlyException(ex);
 
-            var exceptionDialog = new ControlDialogs.Exception(ex);
-	        exceptionDialog.ShowDialog();
+			if (Settings.homeWindow != null)
+				Settings.homeWindow.ShowMask();
+
+            var exceptionDialog = Settings.homeWindow != null ? new ControlDialogs.Exception(ex)
+	                                                                {
+		                                                                Owner = Settings.homeWindow,
+																		WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+	                                                                } : new ControlDialogs.Exception(ex);
+			exceptionDialog.ShowDialog();
+
+			if (Settings.homeWindow != null)
+				Settings.homeWindow.HideMask();
         }
     }
 }

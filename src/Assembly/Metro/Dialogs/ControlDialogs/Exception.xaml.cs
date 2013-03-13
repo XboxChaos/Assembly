@@ -19,6 +19,8 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	        _exception = ex;
 
             lblContent.Text = ex.ToString();
+
+	        Activate();
         }
 
         private void btnContinue_Click(object sender, RoutedEventArgs e)
