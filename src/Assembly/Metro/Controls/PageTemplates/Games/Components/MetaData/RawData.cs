@@ -38,7 +38,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             get { return _length; }
             set { _length = value; NotifyPropertyChanged("Length"); NotifyPropertyChanged("MaxLength"); }
         }
-
         public int MaxLength
         {
             get { return _length * 2; }

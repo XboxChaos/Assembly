@@ -5,14 +5,15 @@
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             mc:Ignorable="d" Height="144" Width="595"
+             xmlns:Components="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components" mc:Ignorable="d" Height="185" Width="595"
              HorizontalAlignment="Left">
     <UserControl.Resources>
         <local:LowercaseConverter x:Key="lowercase" />
+		<Components:HexValueConverter x:Key="IValueHexValueConverter" />
     </UserControl.Resources>
     <Grid>
         <TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,5,0,0" Width="180" TextTrimming="CharacterEllipsis"/>
-        <Border BorderBrush="#595959" BorderThickness="1" Margin="200,5,10,5">
+        <Border BorderBrush="#595959" BorderThickness="1" Margin="200,5,10,0" VerticalAlignment="Top" Height="135">
             <avalonEdit:TextEditor x:Name="txtValue" Document="{Binding Document}" Padding="4,2,2,2" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
                                    FontFamily="Consolas" FontSize="10pt" Background="#414141" Foreground="White" MouseRightButtonDown="txtValue_MouseRightButtonDown_1">
                 <avalonEdit:TextEditor.ContextMenu>
@@ -24,5 +25,18 @@
                 </avalonEdit:TextEditor.ContextMenu>
             </avalonEdit:TextEditor>
         </Border>
-    </Grid>
+
+		<Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="385" Margin="0,0,10,9">
+			<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+				<TextBlock Text="Length: " Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,5,0,0" Width="50" TextTrimming="CharacterEllipsis"/>
+				<TextBox Text="{Binding Length}" Width="138" IsReadOnly="True"/>
+			</StackPanel>
+
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+				<TextBlock Text="Offset: " Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,5,0,0" Width="50" TextTrimming="CharacterEllipsis"/>
+				<TextBox Text="{Binding Path=Offset, Converter={StaticResource IValueHexValueConverter}}" Width="138" IsReadOnly="True"/>
+			</StackPanel>
+		</Grid>
+
+	</Grid>
 </UserControl>
