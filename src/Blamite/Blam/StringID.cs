@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.Flexibility;
 
 namespace Blamite.Blam
 {
@@ -10,76 +11,79 @@ namespace Blamite.Blam
     /// </summary>
     public struct StringID
     {
-        private byte _length;
-        private byte _set;
-        private ushort _index;
+        private uint _value;
 
         /// <summary>
         /// Constructs a new StringID from a set and an index.
         /// </summary>
         /// <param name="set">The set the stringID belongs to.</param>
         /// <param name="index">The index of the stringID within the set.</param>
-        public StringID(byte set, ushort index)
+        /// <param name="layout">The layout of the stringID.</param>
+        public StringID(int set, int index, StringIDLayout layout)
+            : this(0, set, index, layout)
         {
-            _length = 0;
-            _set = set;
-            _index = index;
         }
 
         /// <summary>
-        /// Constructs a new StringID from a length, a set, and an index. (Pre-third-gen games only.)
+        /// Constructs a new StringID from a length, a set, and an index.
         /// </summary>
         /// <param name="length">The length of the string.</param>
         /// <param name="set">The set the stringID belongs to.</param>
         /// <param name="index">The index of the stringID within the set.</param>
-        public StringID(byte length, byte set, ushort index)
+        /// <param name="layout">The layout of the stringID.</param>
+        public StringID(int length, int set, int index, StringIDLayout layout)
         {
-            _length = length;
-            _set = set;
-            _index = index;
+            int shiftedLength = (int)((length & CreateMask(layout.LengthSize)) << layout.LengthStart);
+            int shiftedSet = (int)((set & CreateMask(layout.SetSize)) << layout.SetStart);
+            int shiftedIndex = (int)((index & CreateMask(layout.IndexSize)) << layout.IndexStart);
+            _value = (uint)(shiftedLength | shiftedSet | shiftedIndex);
         }
 
         /// <summary>
-        /// Constructs a new StringID from a value.
+        /// Constructs a new StringID from a 32-bit value.
         /// </summary>
         /// <param name="value">The 32-bit value of the stringID.</param>
-        public StringID(int value)
+        public StringID(uint value)
         {
-            _length = (byte)(value >> 24);
-            _set = (byte)(value >> 16);
-            _index = (ushort)value;
+            _value = value;
         }
 
         /// <summary>
-        /// The length of the string that the stringID points to. (Pre-third-gen games only.)
+        /// Gets the length portion of the stringID. Can be 0 for some games.
         /// </summary>
-        public byte Length
+        /// <param name="layout">The stringID layout to use to parse the length.</param>
+        /// <returns>The length portion of the stringID.</returns>
+        public int GetLength(StringIDLayout layout)
         {
-            get { return _length; }
+            return (int)((Value >> layout.LengthStart) & CreateMask(layout.LengthSize));
         }
 
         /// <summary>
-        /// The set that the stringID belongs to.
+        /// Gets the set that the stringID belongs to.
         /// </summary>
-        public byte Set
+        /// <param name="layout">The stringID layout to use to parse the set.</param>
+        /// <returns>The set portion of the stringID.</returns>
+        public int GetSet(StringIDLayout layout)
         {
-            get { return _set; }
+            return (int)((Value >> layout.SetStart) & CreateMask(layout.SetSize));
         }
 
         /// <summary>
-        /// The index of the string within the set.
+        /// Gets the index of the string within the set.
         /// </summary>
-        public ushort Index
+        /// <param name="layout">The stringID layout to use to parse the index.</param>
+        /// <returns>The index portion of the stringID.</returns>
+        public int GetIndex(StringIDLayout layout)
         {
-            get { return _index; }
+            return (int)((Value >> layout.IndexStart) & CreateMask(layout.IndexSize));
         }
 
         /// <summary>
         /// The value of the stringID as a 32-bit integer.
         /// </summary>
-        public int Value
+        public uint Value
         {
-            get { return (_length << 24) | (_set << 16) | _index; }
+            get { return _value; }
         }
 
         public override bool Equals(object obj)
@@ -89,7 +93,7 @@ namespace Blamite.Blam
 
         public override int GetHashCode()
         {
-            return Value;
+            return (int)Value;
         }
 
         public static bool operator ==(StringID x, StringID y)
@@ -111,5 +115,15 @@ namespace Blamite.Blam
         /// A null stringID.
         /// </summary>
         public static readonly StringID Null = new StringID(0);
+
+        /// <summary>
+        /// Creates a bitmask with a given number of bits set to 1 starting from the LSB.
+        /// </summary>
+        /// <param name="size">The number of 1 bits to include in the mask.</param>
+        /// <returns>The mask that was created.</returns>
+        private static uint CreateMask(int size)
+        {
+            return (0xFFFFFFFF >> (32 - size));
+        }
     }
 }

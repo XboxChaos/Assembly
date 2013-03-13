@@ -86,7 +86,6 @@ namespace Blamite.Flexibility
             string scriptDefinitionsPath = XMLUtil.GetStringAttribute(buildElement, "scriptDefinitions", null);
             int segmentAlignment = XMLUtil.GetNumericAttribute(buildElement, "segmentAlignment", 0x1000);
             int headerSize = XMLUtil.GetNumericAttribute(buildElement, "headerSize");
-            string stringidModifiers = XMLUtil.GetStringAttribute(buildElement, "stringidModifiers", null);
             string stringidDefinitionsPath = XMLUtil.GetStringAttribute(buildElement, "stringidDefinitions", null);
             string vertexLayoutsPath = XMLUtil.GetStringAttribute(buildElement, "vertexLayouts", null);
 
@@ -94,45 +93,12 @@ namespace Blamite.Flexibility
             layoutsPath = Path.Combine(_basePath, layoutsPath);
             StructureLayoutCollection layouts = XMLLayoutLoader.LoadLayouts(layoutsPath);
 
-            // StringID Modifers, this is a bitch
+            // StringID info
             IStringIDResolver stringIdResolver = null;
-            if (stringidModifiers != null)
+            if (stringidDefinitionsPath != null)
             {
-                StringIDModifierResolver modifierResolver = new StringIDModifierResolver();
-                stringIdResolver = modifierResolver;
-
-                string[] sets = stringidModifiers.Split('|');
-                foreach (string set in sets)
-                {
-                    string[] parts = set.Split(',');
-                    /*
-                     Format:
-                     * Identifier
-                     * Modifier
-                     * MathSymbol (+/-)
-                     * Direction (>/<)
-                     */
-
-                    int identifier = int.Parse(parts[0].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    int modifier = int.Parse(parts[1].Replace("0x", ""), NumberStyles.AllowHexSpecifier);
-                    bool isAddition = parts[2] == "+";
-                    bool isGreaterThan = parts[3] == ">";
-
-                    modifierResolver.AddModifier(identifier, modifier, isGreaterThan, isAddition);
-                }
-            }
-            else if (stringidDefinitionsPath != null)
-            {
-                StringIDSetResolver setResolver = new StringIDSetResolver();
-                stringIdResolver = setResolver;
-
                 stringidDefinitionsPath = Path.Combine(_basePath, "StringIDs", stringidDefinitionsPath);
-                StringIDSetLoader.LoadStringIDSets(stringidDefinitionsPath, setResolver);
-            }
-            else
-            {
-                // Use a blank modifier
-                stringIdResolver = new StringIDModifierResolver();
+                stringIdResolver = StringIDSetLoader.LoadStringIDSets(stringidDefinitionsPath);
             }
 
             if (scriptDefinitionsPath != null)

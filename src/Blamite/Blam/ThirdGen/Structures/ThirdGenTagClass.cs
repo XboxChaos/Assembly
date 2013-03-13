@@ -38,7 +38,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             Magic = (int)values.GetInteger("magic");
             ParentMagic = (int)values.GetInteger("parent magic");
             GrandparentMagic = (int)values.GetInteger("grandparent magic");
-            Description = new StringID((int)values.GetIntegerOrDefault("stringid", 0));
+            Description = new StringID(values.GetIntegerOrDefault("stringid", 0));
         }
 
         public int Magic { get; set; }

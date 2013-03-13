@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.Flexibility;
 
 namespace Blamite.Blam
 {
@@ -23,5 +24,10 @@ namespace Blamite.Blam
         /// <param name="index">The index of the string in the global strings array.</param>
         /// <returns>The stringID associated with the index.</returns>
         StringID IndexToStringID(int index);
+
+        /// <summary>
+        /// Gets the layout of stringIDs.
+        /// </summary>
+        StringIDLayout IDLayout { get; }
     }
 }

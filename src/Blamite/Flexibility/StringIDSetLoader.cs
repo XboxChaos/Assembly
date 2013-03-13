@@ -17,35 +17,47 @@ namespace Blamite.Flexibility
         /// <summary>
         /// Loads stringID set definitions from an XML document.
         /// </summary>
-        /// <param name="container">The XML document to load set definitions from.</param>
-        /// <param name="resolver">The StringIDSetResolver to store sets to.</param>
-        public static void LoadStringIDSets(XDocument document, StringIDSetResolver resolver)
+        /// <param name="document">The XML document to load set definitions from.</param>
+        /// <returns>The StringIDSetResolver that was created.</returns>
+        public static StringIDSetResolver LoadStringIDSets(XDocument document)
         {
             // Make sure there is a root <stringIDs> tag
-            XContainer stringIDContainer = document.Element("stringIDs");
-            if (stringIDContainer == null)
+            XElement container = document.Element("stringIDs");
+            if (container == null)
                 throw new ArgumentException("Invalid stringID definition document");
 
+            StringIDLayout idLayout = ProcessIDLayoutInfo(container);
+
             // Process <set> elements
-            foreach (XElement element in stringIDContainer.Elements("set"))
+            StringIDSetResolver resolver = new StringIDSetResolver(idLayout);
+            foreach (XElement element in container.Elements("set"))
                 ProcessSetElement(element, resolver);
+
+            return resolver;
         }
 
         /// <summary>
         /// Loads stringID set definitions from an XML document.
         /// </summary>
         /// <param name="documentPath">The path to the XML document to load.</param>
-        /// <param name="resolver">The StringIDSetResolver to store sets to.</param>
-        /// <returns>The definitions that were loaded.</returns>
-        public static void LoadStringIDSets(string documentPath, StringIDSetResolver resolver)
+        /// <returns>The StringIDSetResolver that was created.</returns>
+        public static StringIDSetResolver LoadStringIDSets(string documentPath)
         {
-            LoadStringIDSets(XDocument.Load(documentPath), resolver);
+            return LoadStringIDSets(XDocument.Load(documentPath));
+        }
+
+        private static StringIDLayout ProcessIDLayoutInfo(XElement element)
+        {
+            int indexBits = XMLUtil.GetNumericAttribute(element, "indexBits", 16);
+            int setBits = XMLUtil.GetNumericAttribute(element, "setBits", 8);
+            int lengthBits = XMLUtil.GetNumericAttribute(element, "lengthBits", 0);
+            return new StringIDLayout(indexBits, setBits, lengthBits);
         }
 
         private static void ProcessSetElement(XElement element, StringIDSetResolver resolver)
         {
-            byte id = (byte)XMLUtil.GetNumericAttribute(element, "id");
-            ushort min = (ushort)XMLUtil.GetNumericAttribute(element, "min", 0);
+            int id = XMLUtil.GetNumericAttribute(element, "id");
+            int min = XMLUtil.GetNumericAttribute(element, "min", 0);
             int globalIndex = XMLUtil.GetNumericAttribute(element, "startIndex");
 
             resolver.RegisterSet(id, min, globalIndex);

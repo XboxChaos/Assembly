@@ -11,7 +11,7 @@ namespace Blamite.Blam.ThirdGen.Scripting
     {
         public ThirdGenGlobalObject(StructureValueCollection values, StringIDSource stringIDs)
         {
-            Name = stringIDs.GetString(new StringID((int)values.GetInteger("name index")));
+            Name = values.HasInteger("name index") ? stringIDs.GetString(new StringID(values.GetInteger("name index"))) : values.GetString("name");
             Class = (short)values.GetInteger("type");
             PlacementIndex = (short)values.GetInteger("placement index");
         }

@@ -164,7 +164,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         private void ReadLocalePointer(IReader reader, out StringID id, out int offset)
         {
             StructureValueCollection values = StructureReader.ReadStructure(reader, _pointerLayout);
-            id = new StringID((int)values.GetInteger("stringid"));
+            id = new StringID(values.GetInteger("stringid"));
             offset = (int)values.GetInteger("offset");
         }
 
