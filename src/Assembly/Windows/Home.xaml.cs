@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates;
 using Assembly.Metro.Controls.PageTemplates.Games;
+using Assembly.Metro.Controls.PageTemplates.Tools;
 using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
 using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
@@ -517,9 +518,10 @@ namespace Assembly.Windows
 			PluginConverter,
 
 			MemoryManager,
-			VoxelConverter
+			VoxelConverter,
+			PostGenerator
         }
-        public void AddTabModule(TabGenre tabG)
+        public void AddTabModule(TabGenre tabG, bool singleInstance = true)
         {
 			var tab = new CloseableTabItem
 				          {
@@ -595,13 +597,22 @@ namespace Assembly.Windows
 					};
 					tab.Content = new VoxelConverter();
 					break;
+				case TabGenre.PostGenerator:
+					tab.Header = new ContentControl
+					{
+						Content = "Post Generator",
+						ContextMenu = BaseContextMenu
+					};
+					tab.Content = new PostGenerator();
+					break;
             }
 
-			foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
-            {
-	            homeTabControl.SelectedItem = tabb;
-	            return;
-            }
+			if (singleInstance)
+				foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
+				{
+					homeTabControl.SelectedItem = tabb;
+					return;
+				}
 
             homeTabControl.Items.Add(tab);
             homeTabControl.SelectedItem = tab;
@@ -986,6 +997,7 @@ namespace Assembly.Windows
         private void menuViewStartPage_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.StartPage); }
         private void menuPatches_Click(object sender, RoutedEventArgs e)					{ AddPatchTabModule(); }
         private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.NetworkPoking); }
+		private void menuPostGenerator_Click(object sender, RoutedEventArgs e) { AddTabModule(TabGenre.PostGenerator, false); }
         private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginGenerator); }
 		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginConverter); }
         

@@ -59,7 +59,7 @@ namespace Assembly.Helpers
         /// <summary>
         /// Convert a Bitmap to a BitmapImage
         /// </summary>
-        public static BitmapImage Bitmap2BitmapImage(Bitmap bitmap)
+        public static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
             using (var ms = new MemoryStream())
             {
@@ -73,6 +73,25 @@ namespace Assembly.Helpers
                 return bi;
             }
         }
+
+		/// <summary>
+		/// Convert a BitmapImage to a Bitmap
+		/// </summary>
+		public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+		{
+			using (var outStream = new MemoryStream())
+			{
+				BitmapEncoder enc = new BmpBitmapEncoder();
+				enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+				enc.Save(outStream);
+				var bitmap = new Bitmap(outStream);
+
+				// return bitmap; <-- leads to problems, stream is closed/closing ...
+				return new Bitmap(bitmap);
+			}
+		}
+
+
 
 		public static byte[] StreamToByteArray(Stream input)
 		{

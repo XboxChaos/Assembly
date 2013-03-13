@@ -47,22 +47,27 @@ namespace Assembly.Helpers
                 numPtr += num4;
             }
         }
-        public static Bitmap ResizeImage(Bitmap Orig)
+        public static Bitmap ResizeImage(Bitmap Orig, int width = -1, int height = -1)
         {
+			// store
+			if (width == -1 || height == -1)
+			{
+				width = Settings.XDKResizeScreenshotWidth;
+				height = Settings.XDKResizeScreenshotHeight;
+			}
+
             // Create a new image
-			var newImg = new Bitmap(Settings.XDKResizeScreenshotWidth,
-                Settings.XDKResizeScreenshotHeight);
+			var newImg = new Bitmap(width, height);
 
             // Draw our new image
 			using (var g = Graphics.FromImage(newImg))
-                g.DrawImage(Orig, 0, 0, Settings.XDKResizeScreenshotWidth,
-                    Settings.XDKResizeScreenshotHeight);
+				g.DrawImage(Orig, 0, 0, width, height);
 
             // Now return our image
             return newImg;
         }
 
-        public static BitmapSource Deswizzle(string FilePath)
+        public static BitmapSource Deswizzle(string FilePath, int resizeWidth = -1, int resizeHeight = -1, bool onlyResizeIfGreater = false, bool dontSettingsResize = false)
         {
             //Open the temp dds
 			var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
@@ -107,9 +112,15 @@ namespace Assembly.Helpers
 	        if (bitmap == null)
 		        return null;
 
-	        // Resize
-	        if (Settings.XDKResizeImages)
-		        bitmap = ResizeImage(bitmap);
+			// Resize
+			if (Settings.XDKResizeImages && !dontSettingsResize)
+				bitmap = ResizeImage(bitmap);
+
+			if (width != -1 && height != -1)
+				if (onlyResizeIfGreater && (bitmap.Width > width && bitmap.Height > height))
+					bitmap = ResizeImage(bitmap, width, height);
+				else
+					bitmap = ResizeImage(bitmap, width, height);
 
 	        return loadBitmap(bitmap);
         }
