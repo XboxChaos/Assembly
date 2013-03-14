@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
     /// <summary>
     /// Interaction logic for metaBlock.xaml
     /// </summary>
-    public partial class rawBlock : UserControl
+    public partial class rawBlock
     {
         public rawBlock()
         {
@@ -38,5 +27,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
             if (position.HasValue)
                 txtValue.TextArea.Caret.Position = position.Value;
         }
+
+		private void txtValue_TextChanged(object sender, System.EventArgs e)
+		{
+			if (DataContext == null) return;
+
+			var rawData = (RawData) DataContext;
+			rawData.Document = txtValue.Document;
+		}
     }
 }

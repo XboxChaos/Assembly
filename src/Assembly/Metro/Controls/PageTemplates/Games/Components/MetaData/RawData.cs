@@ -24,14 +24,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public TextDocument Document
         {
             get { return _document; }
-            set { _document = value; NotifyPropertyChanged("Document"); }
+            set
+            {
+	            _document = value;
+
+				if (value.Text.Length > MaxLength)
+					_document.Text = value.Text.Remove(MaxLength);
+
+				NotifyPropertyChanged("Document");
+            }
         }
 
-        public string Value
-        {
-            get { return _document.Text; }
-            set { _document.Text = value; NotifyPropertyChanged("Value"); NotifyPropertyChanged("Document"); }
-        }
+		public string Value
+		{
+			get { return _document.Text; }
+			set
+			{
+				_document.Text = value;
+
+				if (value.Length > MaxLength)
+					_document.Text = value.Remove(MaxLength);
+
+				NotifyPropertyChanged("Value");
+				NotifyPropertyChanged("Document");
+			}
+		}
 
         public int Length
         {
