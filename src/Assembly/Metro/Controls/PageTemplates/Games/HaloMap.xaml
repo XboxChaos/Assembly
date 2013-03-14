@@ -123,7 +123,27 @@
 
                     <TabItem Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
                         <Grid>
-							<MetroTreeView:MetroTreeView x:Name="tvTagList" Margin="15, 40, 15, 50" SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" Foreground="White"
+							<Grid.RowDefinitions>
+								<RowDefinition Height="90" />
+								<RowDefinition />
+								<RowDefinition Height="50" />
+							</Grid.RowDefinitions>
+							
+							<Grid Grid.Row="0" VerticalAlignment="Bottom" Margin="15,0,15,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="20" />
+									<RowDefinition Height="35" />
+								</Grid.RowDefinitions>
+								
+								<TextBlock Grid.Row="0" Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBox Grid.Row="1" Name="txtTagSearch" Text="{Binding Path=SearchString, Mode=TwoWay}" TextChanged="txtTagSearch_TextChanged" />
+							</Grid>
+							
+							
+							<MetroTreeView:MetroTreeView x:Name="tvTagList" Grid.Row="1" Margin="15, 0, 15, 0" SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" Foreground="White"
                                       VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
 								<MetroTreeView:MetroTreeView.Resources>
                                     <HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}" >
@@ -164,7 +184,7 @@
 								</MetroTreeView:MetroTreeView.ItemContainerStyle>
 							</MetroTreeView:MetroTreeView>
 
-                            <CheckBox x:Name="cbShowEmptyTags" Content="Show unused classes" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25,10,0,20" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered"/>
+                            <CheckBox Grid.Row="2" x:Name="cbShowEmptyTags" Content="Show unused classes" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25,0,0,20" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered"/>
                         </Grid>
                     </TabItem>
                     

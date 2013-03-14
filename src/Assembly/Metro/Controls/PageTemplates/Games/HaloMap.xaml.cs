@@ -477,10 +477,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Settings.halomapShowEmptyClasses = shown;
 
             // Update TreeView
-            tvTagList.DataContext = shown ? _tagsComplete : _tagsPopulated;
+	        txtTagSearch_TextChanged(null, null);
 
-            // Fuck bitches, get money
-            // #xboxscenefame
+	        // Fuck bitches, get money
+	        // #xboxscenefame
         }
 
         private void UpdateDockPanelLocation()
@@ -505,8 +505,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
         }
 
-        #region Content Menu Options
-        void openTag_Click(object sender, RoutedEventArgs e)
+		#region Tag Searching
+		private ObservableCollection<TagClass> _filteredTags = new ObservableCollection<TagClass>();
+	    public ObservableCollection<TagClass> FilteredTags
+	    {
+			get { return _filteredTags; }
+			set { _filteredTags = value; NotifyPropertyChanged("FilteredTags"); }
+	    }
+
+		private void txtTagSearch_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			var searchString = string.Empty;
+			if (sender != null)
+				searchString = ((TextBox) sender).Text;
+
+			if (String.IsNullOrWhiteSpace(searchString))
+			{
+				tvTagList.DataContext = Settings.halomapShowEmptyClasses
+					                        ? _tagsComplete
+					                        : _tagsPopulated;
+
+				return;
+			}
+
+			// Apply Filtered Collection
+			tvTagList.DataContext = FilteredTags;
+			FilteredTags.Clear();
+
+			// filter so hard, #420
+			foreach (var tagClass in _tagsPopulated)
+			{
+				var tagEntries = tagClass.Children.Where(tag => tag.TagFileName.ToLowerInvariant().Contains(searchString)).ToList();
+				if (tagEntries.Count <= 0) continue;
+
+				var newTagClass = tagClass;
+				newTagClass.Children = tagEntries;
+				FilteredTags.Add(newTagClass);
+			}
+		}
+		#endregion
+
+		#region Content Menu Options
+		void openTag_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }

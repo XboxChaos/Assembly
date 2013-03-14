@@ -23,7 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         public string TagClassMagic { get; set; }
         public string Description { get; set; }
         public ITagClass RawClass { get; set; }
-        public List<TagEntry> Children { get; private set; }
+        public List<TagEntry> Children { get; internal set; }
     }
 
     public class TagEntry
@@ -37,6 +37,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         public string TagFileName { get; private set; }
         public ITag RawTag { get; private set; }
-        public TagClass ParentClass { get; private set; }
+		public TagClass ParentClass { get; internal set; }
     }
 }
