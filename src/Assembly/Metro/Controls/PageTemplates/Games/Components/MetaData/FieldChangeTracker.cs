@@ -21,6 +21,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         /// </summary>
         public FieldChangeTracker()
         {
+            Enabled = true;
             RegisterPropertyNames();
         }
 
