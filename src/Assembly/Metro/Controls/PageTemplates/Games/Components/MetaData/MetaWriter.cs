@@ -290,7 +290,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         {
 			var values = new StructureValueCollection();
             values.SetInteger("size", (uint)field.Length);
-            values.SetInteger("pointer", field.FieldAddress);
+            values.SetInteger("pointer", field.DataAddress);
 
             SeekToOffset(field.Offset);
             StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
