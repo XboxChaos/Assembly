@@ -50,6 +50,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public uint DataAddress
+		{
+			get { return FieldAddress; }
+		}
+
         public int Length
         {
             get { return _length; }
