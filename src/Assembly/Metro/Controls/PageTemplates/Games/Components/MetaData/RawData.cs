@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ICSharpCode.AvalonEdit.Document;
+﻿using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -72,7 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new RawData(Name, Offset, FieldAddress, _document.Text, _length, base.PluginLine);
+            return new RawData(Name, Offset, FieldAddress, _document.Text, _length, PluginLine);
         }
     }
 }

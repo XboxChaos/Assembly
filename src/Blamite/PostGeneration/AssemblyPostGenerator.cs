@@ -68,24 +68,24 @@ namespace Blamite.PostGeneration
 
 			// Attributes
 			var attributeList = "";
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeaponEdits ? "Yes" : "No") + " ] Weapon Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeaponBalances ? "Yes" : "No") + " ] Weapon Balances", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeatherEdits ? "Yes" : "No") + " ] Weather Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.TextureEdits ? "Yes" : "No") + " ] Texture Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.ProjectileEdits ? "Yes" : "No") + " ] Projectile Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.MachineEdits ? "Yes" : "No") + " ] Machine Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.SceneryEdits ? "Yes" : "No") + " ] Scenery Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BipdEdits ? "Yes" : "No") + " ] Bipd Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.VehicleEdits ? "Yes" : "No") + " ] Vehicle Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.LighingEdits ? "Yes" : "No") + " ] Lighing Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.JmadEdits ? "Yes" : "No") + " ] Jmad Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.EffectEdits ? "Yes" : "No") + " ] Effect Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.ModelEdits ? "Yes" : "No") + " ] Model Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.PhysicsEdits ? "Yes" : "No") + " ] Physics Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BarrierEdits ? "Yes" : "No") + " ] Barrier Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.AiEdits ? "Yes" : "No") + " ] Ai Edits", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BlfMapinfoEdits ? "Yes" : "No") + " ] Custom Blf/Mapinfos", true);
-			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.OtherEdits ? "Yes" : "No") + " ] Other Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeaponEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Weapon Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeaponBalances ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Weapon Balances", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.WeatherEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Weather Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.TextureEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Texture Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.ProjectileEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Projectile Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.MachineEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Machine Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.SceneryEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Scenery Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BipdEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Bipd Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.VehicleEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Vehicle Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.LighingEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Lighing Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.JmadEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Jmad Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.EffectEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Effect Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.ModelEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Model Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.PhysicsEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Physics Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BarrierEdits ?	BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Barrier Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.AiEdits ?			BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Ai Edits", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.BlfMapinfoEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Custom Blf/Mapinfos", true);
+			attributeList += BBCodeListOption("[ " + BBCodeBold(ViewModel.OtherEdits ?		BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Other Edits", true);
 
 			output += BBCodeList(attributeList, true);
 			#endregion
