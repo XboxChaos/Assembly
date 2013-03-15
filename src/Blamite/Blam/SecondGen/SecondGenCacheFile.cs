@@ -23,6 +23,7 @@ namespace Blamite.Blam.SecondGen
         {
             _buildInfo = buildInfo;
             _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
+            Allocator = new MetaAllocator(this, 0x10000);
             Load(reader, buildInfo, buildString);
         }
 
@@ -155,6 +156,8 @@ namespace Blamite.Blam.SecondGen
         {
             get { return new SecondGenResourceMetaLoader(); }
         }
+
+        public MetaAllocator Allocator { get; private set; }
 
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {

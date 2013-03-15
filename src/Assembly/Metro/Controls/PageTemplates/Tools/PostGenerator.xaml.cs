@@ -104,7 +104,7 @@ using Assembly.Helpers;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using Blamite.PostGeneration;
+using Assembly.Helpers.PostGeneration;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools
 {
@@ -113,13 +113,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 	/// </summary>
 	public partial class PostGenerator
 	{
-		private ViewModel GeneratorViewModel;
+		private ModPostInfo GeneratorViewModel;
 
 		public PostGenerator()
 		{
 			InitializeComponent();
 
-			GeneratorViewModel = new ViewModel();
+			GeneratorViewModel = new ModPostInfo();
 
 			DataContext = GeneratorViewModel;
 		}
@@ -179,7 +179,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Image Stuff
 		private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
 		{
-			var dataContext = (ViewModel.Image) ((Button) sender).DataContext;
+			var dataContext = (ModPostInfo.Image) ((Button) sender).DataContext;
 			GeneratorViewModel.Images.Remove(dataContext);
 		}
 		private void btnAddImage_Click(object sender, RoutedEventArgs e)
@@ -195,7 +195,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					image => image.Url.ToLowerInvariant().Trim() == txtImageToAdd.Text.ToLowerInvariant().Trim());
 
 			if (!existingImages.Any())
-				GeneratorViewModel.Images.Add(new ViewModel.Image
+				GeneratorViewModel.Images.Add(new ModPostInfo.Image
 												  {
 													  Url = txtImageToAdd.Text.Trim()
 												  });
@@ -233,7 +233,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 													var finalString = string.Format("http://i.imgur.com/{0}.png", response);
 
-													Dispatcher.Invoke(new Action(() => GeneratorViewModel.Images.Add(new ViewModel.Image
+													Dispatcher.Invoke(new Action(() => GeneratorViewModel.Images.Add(new ModPostInfo.Image
 																														 {
 																															 Url = finalString
 																														 })));
@@ -254,7 +254,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Thank Stuff
 		private void btnDeleteThank_Click(object sender, RoutedEventArgs e)
 		{
-			var dataContext = (ViewModel.Thank)((Button)sender).DataContext;
+			var dataContext = (ModPostInfo.Thank)((Button)sender).DataContext;
 			GeneratorViewModel.Thanks.Remove(dataContext);
 		}
 		private void btnAddMention_Click(object sender, RoutedEventArgs e)
@@ -270,7 +270,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					thank => thank.Alias.ToLowerInvariant().Trim() == txtThankAlias.Text.ToLowerInvariant().Trim() && thank.Reason.ToLowerInvariant().Trim() == txtThankReason.Text.ToLowerInvariant().Trim());
 
 			if (!existingMentions.Any())
-				GeneratorViewModel.Thanks.Add(new ViewModel.Thank
+				GeneratorViewModel.Thanks.Add(new ModPostInfo.Thank
 				{
 					Alias = txtThankAlias.Text.Trim(),
 					Reason = txtThankReason.Text.Trim(),

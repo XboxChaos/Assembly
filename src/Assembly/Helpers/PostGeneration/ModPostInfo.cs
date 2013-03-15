@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Blamite.PostGeneration
+namespace Assembly.Helpers.PostGeneration
 {
-	public class ViewModel : INotifyPropertyChanged
+	public class ModPostInfo : INotifyPropertyChanged
 	{
 		#region Header
 		private string _modName = "";

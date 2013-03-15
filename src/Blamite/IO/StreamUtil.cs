@@ -78,6 +78,46 @@ namespace Blamite.IO
         }
 
         /// <summary>
+        /// Copies data between two locations in the same stream.
+        /// The source and destination areas may overlap.
+        /// </summary>
+        /// <param name="stream">The stream to copy data in.</param>
+        /// <param name="originalPos">The position of the block of data to copy.</param>
+        /// <param name="targetPos">The position to copy the block to.</param>
+        /// <param name="size">The number of bytes to copy.</param>
+        public static void Copy(IStream stream, long originalPos, long targetPos, long size)
+        {
+            if (size == 0)
+                return;
+            if (size < 0)
+                throw new ArgumentException("The size of the data to copy must be >= 0");
+
+            const int BufferSize = 0x1000;
+            byte[] buffer = new byte[BufferSize];
+            long oldLength = stream.Length;
+            long remaining = size;
+            while (remaining > 0)
+            {
+                int read = (int)Math.Min(BufferSize, remaining);
+
+                if (targetPos > originalPos)
+                    stream.SeekTo(originalPos + remaining - read);
+                else
+                    stream.SeekTo(originalPos + size - remaining);
+
+                stream.ReadBlock(buffer, 0, read);
+
+                if (targetPos > originalPos)
+                    stream.SeekTo(targetPos + remaining - read);
+                else
+                    stream.SeekTo(targetPos + size - remaining);
+
+                stream.WriteBlock(buffer, 0, read);
+                remaining -= read;
+            }
+        }
+
+        /// <summary>
         /// Inserts space into a stream by copying everything back by a certain number of bytes.
         /// </summary>
         /// <param name="stream">The stream to insert space into.</param>
@@ -92,23 +132,10 @@ namespace Blamite.IO
             if (stream.Position == stream.Length)
                 return; // Seeking past the end automatically increases the file size
 
-            const int BufferSize = 0x1000;
-            byte[] buffer = new byte[BufferSize];
-            int endPos = (int)stream.Position;
-            int oldLength = (int)stream.Length;
-            int pos = Math.Max(endPos, oldLength - BufferSize);
-            while (pos >= endPos)
-            {
-                int read = Math.Min(BufferSize, oldLength - pos);
-                stream.SeekTo(pos);
-                stream.ReadBlock(buffer, 0, read);
+            long startPos = stream.Position;
+            Copy(stream, startPos, startPos + size, stream.Length - startPos);
 
-                stream.SeekTo(pos + size);
-                stream.WriteBlock(buffer, 0, read);
-                pos -= read;
-            }
-
-            stream.SeekTo(endPos);
+            stream.SeekTo(startPos);
             Fill(stream, fill, size);
         }
 
@@ -129,19 +156,20 @@ namespace Blamite.IO
 
             const int BufferSize = 0x1000;
             byte[] buffer = new byte[BufferSize];
-            long length = writer.Length;
             long pos = writer.Position;
-            int filled = 0;
+            long endPos = pos + size;
 
             // Fill the buffer
-            for (int i = 0; i < buffer.Length; i++)
-                buffer[i] = b;
+            if (b != 0)
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                    buffer[i] = b;
+            }
 
             // Write it
-            while (filled < size)
+            while (pos < endPos)
             {
-                writer.WriteBlock(buffer, 0, (int)Math.Min(length - pos, BufferSize));
-                filled += BufferSize;
+                writer.WriteBlock(buffer, 0, (int)Math.Min(endPos - pos, BufferSize));
                 pos += BufferSize;
             }
         }
