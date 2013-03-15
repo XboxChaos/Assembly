@@ -532,7 +532,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			tvTagList.DataContext = FilteredTags;
 			FilteredTags.Clear();
 
-			// filter so hard, #420
+			// Check if we're doing a Datum Search
+			uint datumIndex;
+			if (searchString.StartsWith("0x") && uint.TryParse(searchString.Remove(0, 2), NumberStyles.HexNumber, null, out datumIndex))
+			{
+				// Do search
+				foreach (var tagClass in _tagsPopulated)
+				{
+					var tagEntries = tagClass.Children.Where(tag => tag.RawTag.Index.ToString().Remove(0, 2).ToLowerInvariant().Contains(searchString.ToLowerInvariant().Remove(0, 2))).ToList();
+					if (tagEntries.Count <= 0) continue;
+
+					var newTagClass = tagClass;
+					newTagClass.Children = tagEntries;
+					FilteredTags.Add(newTagClass);
+				}
+
+				return;
+			}
+
+			// Check if we're doing a TagClass Search
+			if (searchString.StartsWith("\"") && searchString.EndsWith("\""))
+			{
+				// Do search
+				foreach (var tagClass in _tagsPopulated.Where(tagClass => tagClass.TagClassMagic.ToLowerInvariant().Contains(searchString.ToLowerInvariant().Replace("\"", ""))))
+				{
+					FilteredTags.Add(tagClass);
+				}
+
+				return;
+			}
+
+			// ugh, gotta do a boring search
 			foreach (var tagClass in _tagsPopulated)
 			{
 				var tagEntries = tagClass.Children.Where(tag => tag.TagFileName.ToLowerInvariant().Contains(searchString)).ToList();
