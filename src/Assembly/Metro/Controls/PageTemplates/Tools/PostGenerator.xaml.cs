@@ -103,7 +103,6 @@ using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
-using Assembly.Windows;
 using Assembly.Helpers.PostGeneration;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools
@@ -113,7 +112,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 	/// </summary>
 	public partial class PostGenerator
 	{
-		private ModPostInfo GeneratorViewModel;
+		private readonly ModPostInfo GeneratorViewModel;
 
 		public PostGenerator()
 		{

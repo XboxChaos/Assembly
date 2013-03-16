@@ -1,11 +1,9 @@
-﻿using System.Globalization;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
-using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Patching;
@@ -41,7 +39,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             tabPanel.SelectedIndex = 1;
             txtApplyPatchFile.Text = pathPath;
-            bool isAlteration = txtApplyPatchFile.Text.EndsWith(".patchdat");
+            var isAlteration = txtApplyPatchFile.Text.EndsWith(".patchdat");
             LoadPatch(isAlteration);
         }
 
@@ -634,5 +632,128 @@ namespace Assembly.Metro.Controls.PageTemplates
         #region Patch Convertion Functions
 
         #endregion
-    }
+
+		#region Patch Poking Functions
+		private void btnPokePatchFile_Click(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog
+			{
+				Title = "Assembly - Select a Patch file",
+				Filter = "Patch Files|*.asmp"
+			};
+			if (ofd.ShowDialog() != DialogResult.OK) return;
+			txtPokePatchFile.Text = ofd.FileName;
+
+			LoadPatchToPoke();
+		}
+		private void btnPokePatch_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				// Check the user isn't completly retarded
+				if (currentPatchToPoke == null)
+					return;
+
+				if (Settings.xbdm == null || String.IsNullOrEmpty(Settings.xbdm.DeviceIdent))
+				{
+					MetroMessageBox.Show("No Xbox 360 Console Detected",
+					                     "Make sure your xbox 360 console is turned on, and the IP is entered in the settings.");
+					return;
+				}
+
+				if (currentPatchToPoke.MetaChangesIndex >= 0)
+				{
+					var changes = currentPatchToPoke.SegmentChanges[currentPatchToPoke.MetaChangesIndex];
+					if (changes.OldSize != changes.NewSize)
+					{
+						// can't poke, patch injects meta
+						MetroMessageBox.Show("Unable to Poke Patch",
+						                     "This patch contains meta that has been injected, and can't be poked.");
+						return;
+					}
+
+					foreach (var change in changes.DataChanges)
+					{
+						Settings.xbdm.MemoryStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset, SeekOrigin.Begin);
+						Settings.xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+					}
+				}
+				else if (currentPatchToPoke.MetaChanges.Count > 0)
+				{
+					var continuePoking = true;
+					if (currentPatchToPoke.MetaChanges.Count > 1)
+						continuePoking =
+							(MetroMessageBox.Show("Possible unexpected results ahead!",
+							                      "This patch contains edits to segments other than the meta, ie locales and the file header, it could crash if you continue. \n\nDo you wish to continue?",
+							                      MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes);
+
+					var index = 0;
+					foreach (var change in currentPatchToPoke.MetaChanges.Where(change => index <= 1 || continuePoking))
+					{
+						Settings.xbdm.MemoryStream.Seek(change.Offset, SeekOrigin.Begin);
+						Settings.xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+
+						index++;
+					}
+				}
+
+				MetroMessageBox.Show("Patch Poked!", "Your patch has been poked successfully. Have fun!");
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+		}
+
+		private Patch currentPatchToPoke;
+		private void LoadPatchToPoke()
+		{
+			try
+			{
+				using (var reader = new EndianReader(File.OpenRead(txtPokePatchFile.Text), Endian.LittleEndian))
+				{
+					var magic = reader.ReadAscii(4);
+					reader.SeekTo(0);
+
+					if (magic == "asmp")
+					{
+						// Load into UI
+						reader.Endianness = Endian.BigEndian;
+						currentPatchToPoke = AssemblyPatchLoader.LoadPatch(reader);
+						txtPokePatchAuthor.Text = currentPatchToPoke.Author;
+						txtPokePatchDesc.Text = currentPatchToPoke.Description;
+						txtPokePatchName.Text = currentPatchToPoke.Name;
+						txtPokePatchInternalName.Text = currentPatchToPoke.MapInternalName;
+						//txtPokePatchMapID.Text = currentPatchToPoke.MapID.ToString(CultureInfo.InvariantCulture);
+					}
+					else
+					{
+						MetroMessageBox.Show("You can't poke a patch from Alteration/Ascention. Convert it to a Assembly Patch first");
+						return;
+					}
+				}
+
+				// Set Screenshot
+				if (currentPatchToPoke.Screenshot == null)
+				{
+					// Set default
+					var source = new Uri(@"/Assembly;component/Metro/Images/super_patcher.png", UriKind.Relative);
+					imgPokePreview.Source = new BitmapImage(source);
+				}
+				else
+				{
+					var image = new BitmapImage();
+					image.BeginInit();
+					image.StreamSource = new MemoryStream(currentPatch.Screenshot);
+					image.EndInit();
+					imgPokePreview.Source = image;
+				}
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+		}
+		#endregion
+	}
 }
