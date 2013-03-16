@@ -16,8 +16,8 @@ namespace Assembly.Helpers.Converters
 				outputBoolean = (bool)value;
 
 			return outputBoolean
-					   ? (Brush)Application.Current.FindResource("ExtryzeAccentBrush")
-					   : (Brush)Brushes.White;
+					   ? Application.Current.FindResource("ExtryzeAccentBrush")
+					   : Brushes.White;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

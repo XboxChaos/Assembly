@@ -127,7 +127,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Header Stuff
 		private void btnLaunchPatcher_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.homeWindow.AddTabModule(Home.TabGenre.Patches);
+			Settings.homeWindow.AddPatchTabModule();
 		}
 		private void btnGrabPreviewImageFromXbox_Click(object sender, RoutedEventArgs e)
 		{

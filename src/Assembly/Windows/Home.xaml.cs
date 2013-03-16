@@ -516,7 +516,6 @@ namespace Assembly.Windows
             Settings,
             NetworkPoking,
             PluginGenerator,
-            Patches,
             Welcome,
 			PluginConverter,
 
