@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.Scripting.Analysis;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Microsoft.Win32;
@@ -51,23 +52,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             code.WriteLine();
 
             generator.WriteComment("Globals", code);
-            foreach (IGlobal global in _cache.Scenario.ScriptGlobals)
+            foreach (ScriptGlobal global in _cache.Scenario.ScriptGlobals)
             {
                 code.Write("(global {0} {1} ", opcodes.GetTypeInfo((ushort)global.Type).Name, global.Name);
-                generator.WriteExpression(global.Value, code);
+                generator.WriteExpression(global.Expression, code);
                 code.WriteLine(")");
             }
             code.WriteLine();
 
             generator.WriteComment("Objects", code);
-            foreach (IGlobalObject obj in _cache.Scenario.ScriptObjects)
+            foreach (ScriptObjectReference obj in _cache.Scenario.ScriptObjects)
             {
                 code.WriteLine("(object {0} {1} {2})", opcodes.GetTagClassName(obj.Class), obj.Name, obj.PlacementIndex);
             }
             code.WriteLine();
 
             generator.WriteComment("Scripts", code);
-            foreach (IScript script in _cache.Scenario.Scripts)
+            foreach (Script script in _cache.Scenario.Scripts)
             {
                 code.Write("(script {0} {1} ", opcodes.GetScriptTypeName((ushort)script.ExecutionType), opcodes.GetTypeInfo((ushort)script.ReturnType).Name);
 
@@ -76,7 +77,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     code.Write("({0} (", script.Name);
 
                     bool firstParam = true;
-                    foreach (IScriptParameter param in script.Parameters)
+                    foreach (ScriptParameter param in script.Parameters)
                     {
                         if (!firstParam)
                             code.Write(", ");
@@ -118,6 +119,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             File.WriteAllText(sfd.FileName, txtScript.Text);
             MetroMessageBox.Show("Script Exported", "Script exported successfully.");
+        }
+
+        private void btnCompile_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            MetroMessageBox.Show("go away", "gameleak gtfo");
+            /*LispScriptScanner scanner = new LispScriptScanner();
+            scanner.SetSource(txtScript.Text, 0);
+            scanner.Output = new StreamWriter(@"C:\Users\Aaron\Desktop\script.txt");
+            int tok;
+            do
+            {
+                tok = scanner.yylex();
+            } while (tok > (int)LispScriptTokens.EOF);
+            scanner.Output.Close();*/
         }
     }
 }

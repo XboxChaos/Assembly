@@ -5,7 +5,7 @@ using System.Text;
 using Blamite.Blam.Util;
 using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen.Scripting
+namespace Blamite.Blam.Scripting
 {
     public class StringTableReader
     {
@@ -16,16 +16,15 @@ namespace Blamite.Blam.ThirdGen.Scripting
             _requestedStrings.Add(offset);
         }
 
-        public void ReadRequestedStrings(IReader reader, SegmentPointer baseLocation, CachedStringTable output)
+        public void ReadRequestedStrings(IReader reader, int tableOffset, CachedStringTable output)
         {
-            int baseOffset = baseLocation.AsOffset();
-
             int lastEnd = -1;
             foreach (int offset in _requestedStrings)
             {
                 if (offset <= lastEnd)
                     continue;
-                reader.SeekTo(baseOffset + offset);
+
+                reader.SeekTo(tableOffset + offset);
                 string str = reader.ReadAscii();
                 output.CacheString(offset, str);
                 lastEnd = offset + str.Length;

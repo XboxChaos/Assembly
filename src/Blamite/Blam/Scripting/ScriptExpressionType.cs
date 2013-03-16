@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting
 {
-    public enum ExpressionType : short
+    public enum ScriptExpressionType : short
     {
         Group = 8,
         Expression = 9,

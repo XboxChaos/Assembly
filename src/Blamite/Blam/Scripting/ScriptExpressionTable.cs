@@ -8,12 +8,15 @@ using Blamite.IO;
 
 namespace Blamite.Blam.Scripting
 {
-    public class ExpressionTable : IEnumerable<IExpression>
+    /// <summary>
+    /// A table of expressions in a script.
+    /// </summary>
+    public class ScriptExpressionTable : IEnumerable<ScriptExpression>
     {
-        private List<IExpression> _expressions = new List<IExpression>();
+        private List<ScriptExpression> _expressions = new List<ScriptExpression>();
         private Stack<int> _freeIndices = new Stack<int>();
 
-        public void AddExpression(IExpression expression)
+        public void AddExpression(ScriptExpression expression)
         {
             if (expression.Index.IsValid)
             {
@@ -30,14 +33,20 @@ namespace Blamite.Blam.Scripting
             }
         }
 
-        public IExpression FindExpression(DatumIndex index)
+        public void AddExpressions(IEnumerable<ScriptExpression> expressions)
+        {
+            foreach (var expression in expressions)
+                AddExpression(expression);
+        }
+
+        public ScriptExpression FindExpression(DatumIndex index)
         {
             if (!index.IsValid || index.Index >= _expressions.Count)
                 return null;
             return _expressions[index.Index];
         }
 
-        public IEnumerator<IExpression> GetEnumerator()
+        public IEnumerator<ScriptExpression> GetEnumerator()
         {
             return _expressions.GetEnumerator();
         }

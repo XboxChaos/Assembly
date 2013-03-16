@@ -26,20 +26,20 @@ namespace Blamite.Blam.Scripting
             output.WriteLine("; {0}", comment);
         }
 
-        public void WriteExpression(IExpression expression, IndentedTextWriter output)
+        public void WriteExpression(ScriptExpression expression, IndentedTextWriter output)
         {
             _onNewLine = true;
             GenerateCode(expression, output);
         }
 
-        private void GenerateCode(IExpression expression, IndentedTextWriter output)
+        private void GenerateCode(ScriptExpression expression, IndentedTextWriter output)
         {
             int firstIndentedArg = int.MaxValue;
             bool isFunctionCall = false;
 
-            if (expression.Type == ExpressionType.Expression)
+            if (expression.Type == ScriptExpressionType.Expression)
             {
-                ScriptValueType type = _opcodes.GetTypeInfo((ushort)expression.ValueType);
+                ScriptValueType type = _opcodes.GetTypeInfo((ushort)expression.ReturnType);
                 if (type.Name == "function_name")
                 {
                     isFunctionCall = true;
@@ -70,7 +70,7 @@ namespace Blamite.Blam.Scripting
             int startIndent = output.Indent;
 
             int currentArg = 0;
-            IExpression sibling = expression.Next;
+            ScriptExpression sibling = expression.Next;
             while (sibling != null)
             {
                 if (wroteAnything)
@@ -110,23 +110,23 @@ namespace Blamite.Blam.Scripting
             }
         }
 
-        private bool HandleExpression(IExpression expression, IndentedTextWriter output)
+        private bool HandleExpression(ScriptExpression expression, IndentedTextWriter output)
         {
             switch (expression.Type)
             {
-                case ExpressionType.Expression:
+                case ScriptExpressionType.Expression:
                     return GenerateExpressionCode(expression, output);
 
-                case ExpressionType.GlobalsReference:
+                case ScriptExpressionType.GlobalsReference:
                     return GenerateGlobalsReference(expression, output);
 
-                case ExpressionType.ParameterReference:
+                case ScriptExpressionType.ParameterReference:
                     return GenerateParameterReference(expression, output);
 
-                case ExpressionType.ScriptReference:
+                case ScriptExpressionType.ScriptReference:
                     return GenerateScriptReference(expression, output);
 
-                case ExpressionType.Group:
+                case ScriptExpressionType.Group:
                     return GenerateGroup(expression, output);
 
                 default:
@@ -134,13 +134,13 @@ namespace Blamite.Blam.Scripting
             }
         }
 
-        private bool GenerateExpressionCode(IExpression expression, IndentedTextWriter output)
+        private bool GenerateExpressionCode(ScriptExpression expression, IndentedTextWriter output)
         {
             if (expression.LineNumber == 0)
                 return false;
 
             _onNewLine = false;
-            ScriptValueType type = _opcodes.GetTypeInfo((ushort)expression.ValueType);
+            ScriptValueType type = _opcodes.GetTypeInfo((ushort)expression.ReturnType);
             ScriptValueType actualType = type;
             if (type.Name != "function_name")
             {
@@ -149,8 +149,10 @@ namespace Blamite.Blam.Scripting
 
                 if (actualType.Quoted)
                 {
-                    // Spit out the string and call it a day
-                    output.Write("\"{0}\"", expression.StringValue);
+                    if (expression.Value != 0xFFFFFFFF)
+                        output.Write("\"{0}\"", expression.StringValue);
+                    else
+                        output.Write("none");
                     return true;
                 }
             }
@@ -211,21 +213,21 @@ namespace Blamite.Blam.Scripting
             return true;
         }
 
-        private bool GenerateGlobalsReference(IExpression expression, IndentedTextWriter output)
+        private bool GenerateGlobalsReference(ScriptExpression expression, IndentedTextWriter output)
         {
             _onNewLine = false;
             output.Write(expression.StringValue);
             return true;
         }
 
-        private bool GenerateParameterReference(IExpression expression, IndentedTextWriter output)
+        private bool GenerateParameterReference(ScriptExpression expression, IndentedTextWriter output)
         {
             _onNewLine = false;
             output.Write(expression.StringValue);
             return true;
         }
 
-        private bool GenerateScriptReference(IExpression expression, IndentedTextWriter output)
+        private bool GenerateScriptReference(ScriptExpression expression, IndentedTextWriter output)
         {
             DatumIndex expressionIndex = new DatumIndex(expression.Value);
 
@@ -235,7 +237,7 @@ namespace Blamite.Blam.Scripting
             return true;
         }
 
-        private bool GenerateGroup(IExpression expression, IndentedTextWriter output)
+        private bool GenerateGroup(ScriptExpression expression, IndentedTextWriter output)
         {
             DatumIndex childIndex = new DatumIndex(expression.Value);
             if (!childIndex.IsValid)
@@ -245,7 +247,7 @@ namespace Blamite.Blam.Scripting
             return true;
         }
 
-        private uint GetValue(IExpression expression, ScriptValueType type)
+        private uint GetValue(ScriptExpression expression, ScriptValueType type)
         {
             return expression.Value >> (32 - (type.Size * 8));
         }

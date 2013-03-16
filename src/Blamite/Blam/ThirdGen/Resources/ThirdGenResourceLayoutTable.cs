@@ -31,7 +31,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             int count = (int)values.GetInteger("number of external cache files");
             uint address = values.GetInteger("external cache file table address");
             var layout = buildInfo.GetLayout("external cache file table entry");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             FileReferences = (from entry in entries
                               select new ThirdGenCacheFileReference(entry)).ToArray();
@@ -42,7 +42,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             int count = (int)values.GetInteger("number of raw pages");
             uint address = values.GetInteger("raw page table address");
             var layout = buildInfo.GetLayout("raw page table entry");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Pages = (from entry in entries
                         select new ThirdGenResourcePage(entry, fileReferences)).ToArray();
@@ -53,7 +53,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             int count = (int)values.GetInteger("number of raw segments");
             uint address = values.GetInteger("raw segment table address");
             var layout = buildInfo.GetLayout("raw segment table entry");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Segments = (from entry in entries
                         select new ThirdGenResourceSegment(entry, pages)).ToArray();
