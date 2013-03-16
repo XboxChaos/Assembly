@@ -63,6 +63,7 @@ namespace Assembly.Helpers
 
 		        halomapTagSort = (TagSort)keyApp.GetValue("TagSorting", 0);
 		        halomapShowEmptyClasses = Convert.ToBoolean(keyApp.GetValue("ShowEmptyClasses", false));
+				halomapOnlyShowBookmarkedTags = Convert.ToBoolean(keyApp.GetValue("OnlyShowBookmarkedTags", false));
 		        halomapLastSelectedMetaEditor = (LastMetaEditorType)keyApp.GetValue("LastSelectedMetaEditor", 0);
 		        halomapMapInfoDockSide = (MapInfoDockSide)keyApp.GetValue("MapInfoDockSide", 0);
 
@@ -127,6 +128,7 @@ namespace Assembly.Helpers
 				keyApp.SetValue("MapInfoDockSide", (int) halomapMapInfoDockSide);
 
 				keyApp.SetValue("ShowEmptyClasses", halomapShowEmptyClasses);
+				keyApp.SetValue("OnlyShowBookmarkedTags", halomapOnlyShowBookmarkedTags);
 				keyApp.SetValue("LastSelectedMetaEditor", (int) halomapLastSelectedMetaEditor);
 
 				keyApp.SetValue("ShowInvisibles", pluginsShowInvisibles);
@@ -191,6 +193,7 @@ namespace Assembly.Helpers
 
         public static TagSort halomapTagSort = TagSort.TagClass;
         public static bool halomapShowEmptyClasses = false;
+	    public static bool halomapOnlyShowBookmarkedTags = false;
         public static MapInfoDockSide halomapMapInfoDockSide = MapInfoDockSide.Left;
         public static LastMetaEditorType halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
 
@@ -250,7 +253,9 @@ namespace Assembly.Helpers
 
     public class TempStorage
     {
-        public static MetroMessageBox.MessageBoxResult msgBoxButtonStorage;
+        public static MetroMessageBox.MessageBoxResult MessageBoxButtonStorage;
+
+	    public static KeyValuePair<string, int> TagBookmarkSaver;
     }
 
     public class RecentFiles

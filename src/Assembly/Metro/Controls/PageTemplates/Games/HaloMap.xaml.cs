@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.IO;
@@ -13,7 +14,6 @@ using System.Xml.Linq;
 using System.Collections.ObjectModel;
 using Assembly.Helpers.Caching;
 using Assembly.Helpers.Net;
-using Microsoft.Win32;
 using CloseableTabItemDemo;
 
 using Blamite.Blam.ThirdGen;
@@ -30,6 +30,14 @@ using Blamite.Blam.Util;
 using Blamite.RTE;
 using Blamite.RTE.H2Vista;
 using XBDMCommunicator;
+using Newtonsoft.Json;
+using Clipboard = System.Windows.Clipboard;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MenuItem = System.Windows.Controls.MenuItem;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using TabControl = System.Windows.Controls.TabControl;
+using TextBox = System.Windows.Controls.TextBox;
+using TreeView = System.Windows.Controls.TreeView;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -131,6 +139,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             // Read Settings
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
+		    cbShowBookmarkedTagsOnly.IsChecked = Settings.halomapOnlyShowBookmarkedTags;
             Settings.SettingsChanged += SettingsChanged;
 
             var initalLoadBackgroundWorker = new BackgroundWorker();
@@ -464,6 +473,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (Settings.halomapTagSort != _tagSorting)
             {
                 // TODO: Update the tag sorting
+
             }
 
             if (Settings.halomapMapInfoDockSide != _dockSide)
@@ -505,6 +515,218 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
         }
 
+		#region Tag List
+		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand CommandTagBookmarking = new RoutedCommand();
+		#endregion
+
+		#region Tag Bookmarking
+		private ObservableCollection<TagClass> _tagsBookmarked = new ObservableCollection<TagClass>();
+		public ObservableCollection<TagClass> TagsBookmarked
+	    {
+			get { return _tagsBookmarked; }
+			set { _tagsBookmarked = value; NotifyPropertyChanged("TagsBookmarked"); }
+	    }
+
+		private void CommandTagBookmarking_CanExecute(object sender, RoutedEventArgs e)
+		{
+			var a = e.Source;
+			var b = ((MenuItem)a).DataContext;
+			var c = ((ContextMenu)((MenuItem)e.Source).Parent).DataContext;
+		}
+
+		private void contextBookmark_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag class
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+			var tagEntry = item.DataContext as TagEntry;
+			if (tagEntry == null)
+				return;
+
+			if (tagEntry.IsBookmark)
+			{
+				// Remove from Bookmarks
+				tagEntry.IsBookmark = false;
+
+				// Remove Tag
+				var subTagClass = TagsBookmarked.First(tagClass => tagClass.RawClass == tagEntry.ParentClass.RawClass);
+				subTagClass.Children.Remove(subTagClass.Children.First(subTagEntry => subTagEntry.RawTag == tagEntry.RawTag));
+
+				// Check if we need to remove any classes
+				var removeClassTags = TagsBookmarked.FirstOrDefault(tagClass => tagClass.Children.Count <= 0);
+				TagsBookmarked.Remove(removeClassTags);
+
+				// Update Datacontext
+				NotifyPropertyChanged("TagsBookmarked");
+			}
+			else
+			{
+				// Add to Bookmarks
+				tagEntry.IsBookmark = true;
+
+				// Check if TagClass exists, if it doesn't, add it
+				if (TagsBookmarked.All(tagClass => tagClass.RawClass != tagEntry.ParentClass.RawClass))
+					TagsBookmarked.Add(new TagClass(tagEntry.ParentClass.RawClass, tagEntry.ParentClass.TagClassMagic, tagEntry.ParentClass.Description));
+
+				// Add Tag
+				TagsBookmarked.First(tagClas => tagClas.RawClass == tagEntry.ParentClass.RawClass).Children.Add(tagEntry);
+
+				// Sort
+				TagsBookmarked.ToList().Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
+
+				// Update Datacontext
+				NotifyPropertyChanged("TagsBookmarked");
+			}
+
+		}
+		private void cbShowBookmarkedTagsOnly_Altered(object sender, RoutedEventArgs e)
+		{
+			if (cbShowBookmarkedTagsOnly.IsChecked != null && (bool)cbShowBookmarkedTagsOnly.IsChecked)
+			{
+				Settings.halomapOnlyShowBookmarkedTags = true;
+
+				tvTagList.DataContext = TagsBookmarked;
+			}
+			else
+			{
+				Settings.halomapOnlyShowBookmarkedTags = false;
+
+				tvTagList.DataContext = Settings.halomapShowEmptyClasses ? _tagsComplete : _tagsPopulated;
+			}
+
+			Settings.UpdateSettings();
+		}
+
+		public class BookmarkStorageFormat
+		{
+			public bool StorageUsingTagNames { get; set; }
+
+			public IList<string[]> BookmarkedTagNames { get; set; }
+			public IList<uint> BookmarkedDatumIndices { get; set; }
+		}
+
+		private void contextSaveBookmarks_Click(object sender, RoutedEventArgs e)
+		{
+			if (TagsBookmarked == null || TagsBookmarked.Count <= 0)
+			{
+				MetroMessageBox.Show("No Bookmarked Tags!",
+				                     "If you want to save the current bookmarks, it helps if you bookmark some tags first.");
+				return;
+			}
+
+			// Save these bookmarks
+			var keypair = MetroTagBookmarkSaver.Show();
+
+			if (keypair.Key == null || keypair.Value == -1)
+				return;
+
+			var bookmarkStorage = new BookmarkStorageFormat
+				                      {
+					                      StorageUsingTagNames = (keypair.Value == 1)
+				                      };
+
+			if (bookmarkStorage.StorageUsingTagNames)
+			{
+				bookmarkStorage.BookmarkedTagNames = new List<string[]>();
+				foreach (var tagEntry in TagsBookmarked.SelectMany(tagClass => tagClass.Children))
+					bookmarkStorage.BookmarkedTagNames.Add(new[]
+						                                       {
+							                                       tagEntry.ParentClass.TagClassMagic.ToLowerInvariant(),
+																   tagEntry.TagFileName.ToLowerInvariant()
+						                                       });
+			}
+			else
+			{
+				bookmarkStorage.BookmarkedDatumIndices = new List<uint>();
+				foreach (var tagEntry in TagsBookmarked.SelectMany(tagClass => tagClass.Children))
+					bookmarkStorage.BookmarkedDatumIndices.Add(tagEntry.RawTag.Index.Value);
+			}
+
+			var jsonString = JsonConvert.SerializeObject(bookmarkStorage);
+
+			if (File.Exists(keypair.Key))
+				File.Delete(keypair.Key);
+
+			File.WriteAllText(keypair.Key, jsonString);
+		}
+		private void contextLoadBookmarks_Click(object sender, RoutedEventArgs e)
+		{
+			if (TagsBookmarked != null && TagsBookmarked.Count > 0)
+			{
+				if (MetroMessageBox.Show("You already have bookmarks!", "If you continue, your current bookmarks will be overwritten with the bookmarks you choose. \n\nAre you sure you wish to continue?", MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
+					return;
+			}
+
+			var ofd = new OpenFileDialog
+				          {
+					          Title = "Assembly - Select a Tag Bookmark File",
+					          Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
+				          };
+			if (ofd.ShowDialog() != DialogResult.OK)
+				return;
+
+			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
+
+			TagsBookmarked = new ObservableCollection<TagClass>();
+			if (bookmarkStorage.StorageUsingTagNames)
+			{
+				foreach(var bookmarkedTag in bookmarkStorage.BookmarkedTagNames)
+				{
+					var tag = bookmarkedTag;
+					foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.TagClassMagic == tag[0]))
+					{
+						foreach (var tagEntry in tagClass.Children)
+						{
+							if (tagEntry.TagFileName.ToLowerInvariant() != tag[1])
+								tagEntry.IsBookmark = false;
+							else
+							{
+								// Check boomarked tags has the relevant Tag Class
+								if (TagsBookmarked.All(tagClasss => tagClasss.RawClass != tagClass.RawClass))
+									TagsBookmarked.Add(new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description));
+
+								// Set boomark to true
+								tagEntry.IsBookmark = true;
+
+								// Add Tag Entry
+								TagsBookmarked.First(tagClasss => tagClasss.RawClass == tagClass.RawClass).Children.Add(tagEntry);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				foreach (var tagDatumIndex in bookmarkStorage.BookmarkedDatumIndices)
+				{
+					foreach (var tagClass in _tagsComplete)
+					{
+						var index = tagDatumIndex;
+						foreach (var tagEntry in tagClass.Children)
+						{
+							if (tagEntry.RawTag.Index.Value != index)
+								tagEntry.IsBookmark = false;
+							else
+							{
+								// Check boomarked tags has the relevant Tag Class
+								if (TagsBookmarked.All(tagClasss => tagClasss.RawClass != tagClass.RawClass))
+									TagsBookmarked.Add(new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description));
+
+								// Set boomark to true
+								tagEntry.IsBookmark = true;
+
+								// Add Tag Entry
+								TagsBookmarked.First(tagClasss => tagClasss.RawClass == tagClass.RawClass).Children.Add(tagEntry);
+							}
+						}
+					}
+				}
+			}
+		}
+		#endregion
+
 		#region Tag Searching
 		private ObservableCollection<TagClass> _filteredTags = new ObservableCollection<TagClass>();
 	    public ObservableCollection<TagClass> FilteredTags
@@ -523,10 +745,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				tvTagList.DataContext = Settings.halomapShowEmptyClasses
 					                        ? _tagsComplete
-					                        : _tagsPopulated;
+					                  : Settings.halomapOnlyShowBookmarkedTags 
+										    ? TagsBookmarked
+										    : _tagsPopulated;
 
 				return;
 			}
+
+			// Set Usage type
+			var tagsToSearch = Settings.halomapOnlyShowBookmarkedTags ? TagsBookmarked : _tagsPopulated;
 
 			// Apply Filtered Collection
 			tvTagList.DataContext = FilteredTags;
@@ -537,7 +764,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (searchString.StartsWith("0x") && uint.TryParse(searchString.Remove(0, 2), NumberStyles.HexNumber, null, out datumIndex))
 			{
 				// Do search
-				foreach (var tagClass in _tagsPopulated)
+				foreach (var tagClass in tagsToSearch)
 				{
 					var tagEntries = tagClass.Children.Where(tag => tag.RawTag.Index.ToString().Remove(0, 2).ToLowerInvariant().Contains(searchString.ToLowerInvariant().Remove(0, 2))).ToList();
 					if (tagEntries.Count <= 0) continue;
@@ -554,7 +781,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (searchString.StartsWith("\"") && searchString.EndsWith("\""))
 			{
 				// Do search
-				foreach (var tagClass in _tagsPopulated.Where(tagClass => tagClass.TagClassMagic.ToLowerInvariant().Contains(searchString.ToLowerInvariant().Replace("\"", ""))))
+				foreach (var tagClass in tagsToSearch.Where(tagClass => tagClass.TagClassMagic.ToLowerInvariant().Contains(searchString.ToLowerInvariant().Replace("\"", ""))))
 				{
 					FilteredTags.Add(tagClass);
 				}
@@ -563,7 +790,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 
 			// ugh, gotta do a boring search
-			foreach (var tagClass in _tagsPopulated)
+			foreach (var tagClass in tagsToSearch)
 			{
 				var tagEntries = tagClass.Children.Where(tag => tag.TagFileName.ToLowerInvariant().Contains(searchString)).ToList();
 				if (tagEntries.Count <= 0) continue;
@@ -889,7 +1116,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 contentTabs.SelectedItem = tab;
             }
         }
-
         private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
             var tabName = _cacheFile.InternalName.Replace("_", "__") + ".hsc";

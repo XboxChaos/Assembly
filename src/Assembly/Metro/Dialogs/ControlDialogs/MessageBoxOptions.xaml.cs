@@ -52,22 +52,22 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
         private void btnOkay_Click(object sender, RoutedEventArgs e)
         {
-            TempStorage.msgBoxButtonStorage = MetroMessageBox.MessageBoxResult.OK;
+            TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.OK;
             Close();
         }
         private void btnYes_Click(object sender, RoutedEventArgs e)
         {
-            TempStorage.msgBoxButtonStorage = MetroMessageBox.MessageBoxResult.Yes;
+            TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.Yes;
             Close();
         }
         private void btnNo_Click(object sender, RoutedEventArgs e)
         {
-            TempStorage.msgBoxButtonStorage = MetroMessageBox.MessageBoxResult.No;
+            TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.No;
             Close();
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            TempStorage.msgBoxButtonStorage = MetroMessageBox.MessageBoxResult.Cancel;
+            TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.Cancel;
             Close();
         }
     }

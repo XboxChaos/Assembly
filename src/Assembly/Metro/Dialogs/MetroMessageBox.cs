@@ -67,7 +67,7 @@ namespace Assembly.Metro.Dialogs
 	        msgBox.ShowDialog();
             Settings.homeWindow.HideMask();
 
-            return TempStorage.msgBoxButtonStorage;
+            return TempStorage.MessageBoxButtonStorage;
         }
     }
 }

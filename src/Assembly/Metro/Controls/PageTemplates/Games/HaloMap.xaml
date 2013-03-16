@@ -7,13 +7,14 @@
 			 xmlns:Converters="clr-namespace:Assembly.Helpers.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:dd="clr-namespace:DragDropListBox"
-			 xmlns:WP7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
 			 xmlns:MetroTreeView="clr-namespace:Assembly.Metro.Controls.WPFTreeView"
              mc:Ignorable="d" 
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
 	<UserControl.Resources>
 		<Converters:TagDescriptionCleanup x:Key="IValueTagDescriptionCleanup" />
+		<Converters:TagBookmarkVisibility x:Key="IValueTagBookmarkVisibility" />
+		<Converters:TagBookmarkForeground x:Key="IValueTagBookmarkForeground" />
 		
 		<DataTemplate x:Key="Local_TabItemDragTemplate">
 			<Border CornerRadius="0"
@@ -126,7 +127,7 @@
 							<Grid.RowDefinitions>
 								<RowDefinition Height="80" />
 								<RowDefinition />
-								<RowDefinition Height="50" />
+								<RowDefinition Height="60" />
 							</Grid.RowDefinitions>
 							
 							<Grid Grid.Row="0" VerticalAlignment="Bottom" Margin="15,0,15,0">
@@ -141,7 +142,6 @@
 								<TextBlock Grid.Row="0" Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBox Grid.Row="1" Name="txtTagSearch" Text="{Binding Path=SearchString, Mode=TwoWay}" TextChanged="txtTagSearch_TextChanged" />
 							</Grid>
-							
 							
 							<MetroTreeView:MetroTreeView x:Name="tvTagList" Grid.Row="1" Margin="15, 0, 15, 0" SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}" BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" Foreground="White"
                                       VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
@@ -161,19 +161,24 @@
                                         </StackPanel>
                                     </HierarchicalDataTemplate>
                                     <DataTemplate DataType="{x:Type DataBind:TagEntry}">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                            <!--<StackPanel.ContextMenu>
-                                                 <ContextMenu>
-                                                    <MenuItem Header="Rename Tagname" />
-                                                    <MenuItem Header="Overwrite Meta" />
-                                                    <Separator />
-                                                    <MenuItem Header="Duplicate Tag" />
-                                                    <MenuItem Header="Tag Manipulation" />
-                                                    <Separator />
-                                                    <MenuItem Header="Go to Raw Editor" />
-                                                </ContextMenu> 
-                                            </StackPanel.ContextMenu> -->
-                                            <TextBlock Text="{Binding TagFileName}" />
+										<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+											<StackPanel.ContextMenu>
+												<!--<ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+													<ContextMenu.CommandBindings>
+														<CommandBinding Command="{x:Static DataBind:HaloMap.CommandTagBookmarking }"
+																		CanExecute="CommandTagBookmarking_CanExecute"
+																		/>
+													</ContextMenu.CommandBindings>
+													<MenuItem Header="Bookmark Tag" Foreground="White" Command="{x:Static DataBind:HaloMap.CommandTagBookmarking}" CommandParameter="{Binding}" />
+												</ContextMenu>-->
+												<ContextMenu>
+													<MenuItem x:Name="contextmenuBookmark" Header="Add/Remove Bookmark" Foreground="White" Click="contextBookmark_Click" />
+													<Separator />
+													<MenuItem Header="Save Bookmarks" Click="contextSaveBookmarks_Click" />
+													<MenuItem Header="Load Bookmarks" Click="contextLoadBookmarks_Click" />
+												</ContextMenu>
+											</StackPanel.ContextMenu>
+											<TextBlock Text="{Binding Path=TagFileName, Mode=OneTime}" Visibility="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkVisibility}}" Foreground="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkForeground}}" />
                                         </StackPanel>
                                     </DataTemplate>
 								</MetroTreeView:MetroTreeView.Resources>
@@ -184,8 +189,11 @@
 								</MetroTreeView:MetroTreeView.ItemContainerStyle>
 							</MetroTreeView:MetroTreeView>
 
-                            <CheckBox Grid.Row="2" x:Name="cbShowEmptyTags" Content="Show unused classes" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="25,0,0,20" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered"/>
-                        </Grid>
+							<StackPanel Grid.Row="2" Margin="25,5,0,20">
+								<CheckBox x:Name="cbShowEmptyTags" Content="Show unused classes" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered"/>
+								<CheckBox x:Name="cbShowBookmarkedTagsOnly" Content="Only Show Bookmarked Tags" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Unchecked="cbShowBookmarkedTagsOnly_Altered" Checked="cbShowBookmarkedTagsOnly_Altered"/>
+							</StackPanel>
+						</Grid>
                     </TabItem>
                     
                     <TabItem Header="Locales" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
