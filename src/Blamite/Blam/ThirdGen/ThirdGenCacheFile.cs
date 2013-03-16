@@ -52,6 +52,7 @@ namespace Blamite.Blam.ThirdGen
         {
             _buildInfo = buildInfo;
             _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
+            Allocator = new MetaAllocator(this, 0x10000);
             Load(reader, buildString);
         }
 
@@ -191,6 +192,8 @@ namespace Blamite.Blam.ThirdGen
         {
             get { return _segmenter.GetWrappers(); }
         }
+
+        public MetaAllocator Allocator { get; private set; }
 
         private void Load(IReader reader, string buildString)
         {

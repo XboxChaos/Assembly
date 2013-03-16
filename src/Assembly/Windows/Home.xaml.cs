@@ -37,6 +37,14 @@ namespace Assembly.Windows
 		public ContextMenu BaseContextMenu;
 	    public ContextMenu FilesystemContextMenu;
 
+		void InitalizeContextMenusCloseItems(ItemCollection menuItems)
+		{
+			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close" }) ])).Click += contextMenuClose_Click;
+			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close All" }) ])).Click += contextMenuCloseAll_Click;
+			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close All But This" }) ])).Click += contextMenuCloseAllButThis_Click;
+			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close Tabs To The Left" }) ])).Click += contextMenuCloseToLeft_Click;
+			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close Tabs To The Right" }) ])).Click += contextMenuCloseToRight_Click;
+		}
 		/// <summary>
 		/// Really hacky, but i didn't want to re-do the TabControl to make it DataBinded...
 		/// </summary>
@@ -44,22 +52,16 @@ namespace Assembly.Windows
 		{
 			// Create Lame Context Menu
 			BaseContextMenu = new ContextMenu();
-			BaseContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)BaseContextMenu.Items[0]).Click += contextMenuClose_Click;
-			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)BaseContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
-			BaseContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)BaseContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
-			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)BaseContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
-			BaseContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)BaseContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
+			var menu_items = BaseContextMenu.Items;
+			InitalizeContextMenusCloseItems(menu_items);
 
 			// Create Fun Context Menu
 			FilesystemContextMenu = new ContextMenu();
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close" }); ((MenuItem)FilesystemContextMenu.Items[0]).Click += contextMenuClose_Click;
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All" }); ((MenuItem)FilesystemContextMenu.Items[1]).Click += contextMenuCloseAll_Click;
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close All But This" }); ((MenuItem)FilesystemContextMenu.Items[2]).Click += contextMenuCloseAllButThis_Click;
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Left" }); ((MenuItem)FilesystemContextMenu.Items[3]).Click += contextMenuCloseToLeft_Click;
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Close Tabs To The Right" }); ((MenuItem)FilesystemContextMenu.Items[4]).Click += contextMenuCloseToRight_Click;
-			FilesystemContextMenu.Items.Add(new Separator());
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Copy File Path" }); ((MenuItem)FilesystemContextMenu.Items[6]).Click += contextMenuCopyFilePath_Click;
-			FilesystemContextMenu.Items.Add(new MenuItem { Header = "Open Containing Folder" }); ((MenuItem)FilesystemContextMenu.Items[7]).Click += contextMenuOpenContainingFolder_Click;
+			menu_items = FilesystemContextMenu.Items;
+			InitalizeContextMenusCloseItems(menu_items);
+			menu_items.Add(new Separator());
+			((MenuItem)(menu_items[ menu_items.Add(new MenuItem { Header = "Copy File Path" }) ])).Click += contextMenuCopyFilePath_Click;
+			((MenuItem)(menu_items[ menu_items.Add(new MenuItem { Header = "Open Containing Folder" }) ])).Click += contextMenuOpenContainingFolder_Click;
 		}
 
 		private void contextMenuClose_Click(object sender, RoutedEventArgs routedEventArgs)
@@ -237,60 +239,61 @@ namespace Assembly.Windows
             MapInfo,
             MapImage
         }
+		class ContentFileHandler
+		{
+			public string Title { get; set; }
+			public string Filter { get; set; }
+			public bool AllowMultipleFiles { get; set; }
+			public Action<Home, string> FileHandler;
 
+			public ContentFileHandler(string title, string filter, Action<Home, string> handler, bool allowMultipleFiles = true)
+			{
+				Title = title;
+				Filter = filter;
+				AllowMultipleFiles = allowMultipleFiles;
+				FileHandler = handler;
+			}
+		};
+
+		Dictionary<ContentTypes, ContentFileHandler> contentFileHandlers = new Dictionary<ContentTypes, ContentFileHandler> {
+			{ContentTypes.Map, new ContentFileHandler(
+				"Assembly - Open Blam Cache File",
+				"Blam Cache File (*.map)|*.map", 
+				(home, file)=> home.AddCacheTabModule(file)) },
+			{ContentTypes.MapImage, new ContentFileHandler(
+				"Assembly - Open Blam Map Image File",
+				"Blam Map Image File (*.blf)|*.blf", 
+				(home, file)=> home.AddImageTabModule(file)) },
+			{ContentTypes.MapInfo, new ContentFileHandler(
+				"Assembly - Open Blam Map Info File",
+				"Blam Map Info File (*.mapinfo)|*.mapinfo", 
+				(home, file)=> home.AddInfooTabModule(file)) },
+		};
         /// <summary>
         /// Open a new Blam Engine File
         /// </summary>
         /// <param name="contentType">Type of content to open</param>
         public void OpenContentFile(ContentTypes contentType)
         {
-	        switch (contentType)
+			ContentFileHandler handler;
+			if (contentFileHandlers.TryGetValue(contentType, out handler))
 			{
-#pragma warning disable 168
-		        case ContentTypes.Map:
-			        {
-				        var ofd = new OpenFileDialog
-					                  {
-						                  Title = "Assembly - Open Blam Cache File",
-						                  Filter = "Blam Cache File (*.map)|*.map",
-						                  Multiselect = true
-					                  };
+				var ofd = new OpenFileDialog
+				{
+					Title = handler.Title,
+					Filter = handler.Filter,
+					Multiselect = handler.AllowMultipleFiles,
+				};
 
-                        if ((bool)ofd.ShowDialog())
-                        {
-                            foreach (var file in ofd.FileNames)
-                                AddCacheTabModule(file);
-                        }
-			        }
-			        break;
-		        case ContentTypes.MapImage:
-			        {
-						var ofd = new OpenFileDialog
-							          {
-								          Title = "Assembly - Open Blam Map Image File",
-								          Filter = "Blam Map Image File (*.blf)|*.blf",
-								          Multiselect = true
-							          };
-				        if ((bool)ofd.ShowDialog())
-							foreach (var file in ofd.FileNames)
-						        AddImageTabModule(ofd.FileName);
-			        }
-			        break;
-		        case ContentTypes.MapInfo:
-			        {
-						var ofd = new OpenFileDialog
-							          {
-								          Title = "Assembly - Open Blam Map Info File",
-								          Filter = "Blam Map Info File (*.mapinfo)|*.mapinfo",
-								          Multiselect = true
-							          };
-				        if ((bool)ofd.ShowDialog())
-							foreach (var file in ofd.FileNames)
-						        AddInfooTabModule(ofd.FileName);
-			        }
-			        break;
+				if ((bool)ofd.ShowDialog(this))
+				{
+					if (handler.AllowMultipleFiles)
+						foreach (var file in ofd.FileNames)
+							handler.FileHandler(this, file);
+					else
+						handler.FileHandler(this, ofd.FileName);
+				}
 			}
-#pragma warning restore 168
         }
 
 	    #endregion

@@ -148,5 +148,11 @@ namespace Blamite.Blam
         /// This could be used to compare two cache files and determine sizing differences between them.
         /// </summary>
         IEnumerable<FileSegment> Segments { get; }
+
+        /// <summary>
+        /// The cache file's MetaAllocator, which can be used to allocate free meta in the cache file.
+        /// Note that this object calls SaveChanges() automatically and changes do not need to be manually saved.
+        /// </summary>
+        MetaAllocator Allocator { get; }
     }
 }
