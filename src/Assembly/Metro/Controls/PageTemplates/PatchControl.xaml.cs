@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -740,7 +739,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				{
 					var image = new BitmapImage();
 					image.BeginInit();
-					image.StreamSource = new MemoryStream(currentPatch.Screenshot);
+					image.StreamSource = new MemoryStream(currentPatchToPoke.Screenshot);
 					image.EndInit();
 					imgPokePreview.Source = image;
 				}
