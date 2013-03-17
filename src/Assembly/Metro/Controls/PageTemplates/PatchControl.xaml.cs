@@ -663,6 +663,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 				if (currentPatchToPoke.MetaChangesIndex >= 0)
 				{
+					if (currentPatchToPoke.SegmentChanges.Count > 1)
+						if (MetroMessageBox.Show("Possible unexpected results ahead!",
+													"This patch contains edits to segments other than the meta, ie locales and the file header, it could crash if you continue. \n\nDo you wish to continue?",
+													MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.No)
+							return;
+
 					var changes = currentPatchToPoke.SegmentChanges[currentPatchToPoke.MetaChangesIndex];
 					if (changes.OldSize != changes.NewSize)
 					{
@@ -680,20 +686,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 				}
 				else if (currentPatchToPoke.MetaChanges.Count > 0)
 				{
-					var continuePoking = true;
-					if (currentPatchToPoke.MetaChanges.Count > 1)
-						continuePoking =
-							(MetroMessageBox.Show("Possible unexpected results ahead!",
-							                      "This patch contains edits to segments other than the meta, ie locales and the file header, it could crash if you continue. \n\nDo you wish to continue?",
-							                      MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes);
-
-					var index = 0;
-					foreach (var change in currentPatchToPoke.MetaChanges.Where(change => index <= 1 || continuePoking))
+					foreach (var change in currentPatchToPoke.MetaChanges)
 					{
 						Settings.xbdm.MemoryStream.Seek(change.Offset, SeekOrigin.Begin);
 						Settings.xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
-
-						index++;
 					}
 				}
 
