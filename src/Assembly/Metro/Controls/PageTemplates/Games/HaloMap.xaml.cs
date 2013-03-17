@@ -81,6 +81,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private readonly Settings.TagSort _tagSorting;
         private Settings.MapInfoDockSide _dockSide;
         private TagHierarchy _hierarchy = new TagHierarchy();
+		private TagHierarchy _tmpHierarchy = new TagHierarchy();
+
         private ObservableCollection<TagClass> _tagsComplete;
         private readonly ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
         private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
@@ -385,6 +387,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                              foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
 			                              _tagsPopulated.Add(tagClass);
 		                              _hierarchy.Classes = _tagsPopulated;
+		                              _tmpHierarchy = _hierarchy;
 	                              }));
 
             // Add to the treeview
@@ -487,7 +490,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Settings.halomapShowEmptyClasses = shown;
 
             // Update TreeView
-	        txtTagSearch_TextChanged(null, null);
+	        txtTagSearch_TextChanged();
 
 	        // Fuck bitches, get money
 	        // #xboxscenefame
@@ -595,6 +598,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				tvTagList.DataContext = Settings.halomapShowEmptyClasses ? _tagsComplete : _tagsPopulated;
 			}
+
+			// Apply Searching
+			txtTagSearch_TextChanged();
 
 			Settings.UpdateSettings();
 		}
@@ -735,7 +741,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			set { _filteredTags = value; NotifyPropertyChanged("FilteredTags"); }
 	    }
 
-		private void txtTagSearch_TextChanged(object sender, TextChangedEventArgs e)
+		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
 		{
 			var searchString = string.Empty;
 			if (sender != null)
@@ -756,8 +762,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var tagsToSearch = Settings.halomapOnlyShowBookmarkedTags ? TagsBookmarked : _tagsPopulated;
 
 			// Apply Filtered Collection
+			FilteredTags = new ObservableCollection<TagClass>();
 			tvTagList.DataContext = FilteredTags;
-			FilteredTags.Clear();
 
 			// Check if we're doing a Datum Search
 			uint datumIndex;
@@ -783,7 +789,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				// Do search
 				foreach (var tagClass in tagsToSearch.Where(tagClass => tagClass.TagClassMagic.ToLowerInvariant().Contains(searchString.ToLowerInvariant().Replace("\"", ""))))
 				{
-					FilteredTags.Add(tagClass);
+					var newTagClass = new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description)
+											{
+												Children = new List<TagEntry>()
+											};
+					foreach (var entry in tagClass.Children)
+						newTagClass.Children.Add(new TagEntry(entry.RawTag, newTagClass, entry.TagFileName));
+					FilteredTags.Add(newTagClass);
+					NotifyPropertyChanged("FilteredTags");
 				}
 
 				return;
@@ -795,27 +808,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var tagEntries = tagClass.Children.Where(tag => tag.TagFileName.ToLowerInvariant().Contains(searchString)).ToList();
 				if (tagEntries.Count <= 0) continue;
 
-				var newTagClass = tagClass;
-				newTagClass.Children = tagEntries;
+				var newTagClass = new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description)
+					                  {
+						                  Children = new List<TagEntry>()
+					                  };
+				foreach (var entry in tagEntries)
+					newTagClass.Children.Add(new TagEntry(entry.RawTag, newTagClass, entry.TagFileName));
 				FilteredTags.Add(newTagClass);
 			}
 		}
 		#endregion
-
-		#region Content Menu Options
-		void openTag_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        void openTagNewTab_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        void renameTaglistTag_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
 
 		#region ContextMenus
 
@@ -976,7 +978,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         /// <param name="tag">The tag to search for</param>
         private bool IsTagOpen(TagEntry tag)
         {
-            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Tag == tag);
+            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => ((TagEntry)tab.Tag).RawTag == tag.RawTag);
         }
 
         /// <summary>
@@ -1000,31 +1002,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void SelectTabFromTag(TagEntry tag)
         {
             CloseableTabItem tab = null;
-
-            foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => tabb.Tag == tag))
+			foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => ((TagEntry)tabb.Tag).RawTag == tag.RawTag))
                 tab = tabb;
 
             if (tab != null)
                 contentTabs.SelectedItem = tab;
         }
 
-        public void OpenTag(TagEntry tag)
+        public void CreateTag(TagEntry tag)
         {
             if (!IsTagOpen(tag))
+            {
+                contentTabs.Items.Add(new CloseableTabItem
                 {
-                    contentTabs.Items.Add(new CloseableTabItem
-                    {
-                        Header = new ContentControl
-						{ 
-							Content = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1), CharConstant.ToString(tag.RawTag.Class.Magic)),
-							ContextMenu = BaseContextMenu
-						},
-                        Tag = tag,
-                        Content = new MetaContainer(_buildInfo, tag, _hierarchy, _cacheFile, _mapManager, _rteProvider, _stringIDTrie)
-                    });
-                }
+                    Header = new ContentControl
+					{ 
+						Content = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1), CharConstant.ToString(tag.RawTag.Class.Magic)),
+						ContextMenu = BaseContextMenu
+					},
+                    Tag = tag,
+					Content = new MetaContainer(_buildInfo, tag, _tmpHierarchy, _cacheFile, _mapManager, _rteProvider, _stringIDTrie)
+                });
+            }
 
-                SelectTabFromTag(tag);
+            SelectTabFromTag(tag);
         }
 
 		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
@@ -1079,7 +1080,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Check it's actually a tag, and not a class the user clicked
             var selectedItem = ((TreeView)sender).SelectedItem as TagEntry;
             if (selectedItem != null)
-                OpenTag(selectedItem);
+				CreateTag(selectedItem);
         }
 
         private void tvTagList_ItemDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1088,7 +1089,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (item == null) return;
             var entry = item.DataContext as TagEntry;
             if (entry != null)
-                OpenTag(entry);
+				CreateTag(entry);
         }
 
         private void LocaleButtonClick(object sender, RoutedEventArgs e)

@@ -39,7 +39,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
             if (Settings.selectedHaloMap != null)
             {
                 if (cbTagClass.SelectedIndex > 0)
-                    Settings.selectedHaloMap.OpenTag((TagEntry)cbTagEntry.SelectionBoxItem);
+                    Settings.selectedHaloMap.CreateTag((TagEntry)cbTagEntry.SelectionBoxItem);
             }
         }
 
