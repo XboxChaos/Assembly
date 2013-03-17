@@ -41,7 +41,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
             int count = (int)values.GetInteger("number of submeshes");
             uint address = values.GetInteger("submesh table address");
             var layout = buildInfo.GetLayout("model submesh");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Submeshes = (from entry in entries
                          select new ThirdGenModelSubmesh(entry)).ToArray();
@@ -52,7 +52,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
             int count = (int)values.GetInteger("number of vertex groups");
             uint address = values.GetInteger("vertex group table address");
             var layout = buildInfo.GetLayout("model vertex group");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             VertexGroups = (from entry in entries
                             select new ThirdGenModelVertexGroup(entry, submeshes)).ToArray();

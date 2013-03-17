@@ -38,7 +38,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
             int count = (int)values.GetInteger("number of regions");
             uint address = values.GetInteger("region table address");
             var layout = buildInfo.GetLayout("model region");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Regions = (from entry in entries
                        select new ThirdGenModelRegion(entry, reader, metaArea, buildInfo)).ToArray();
@@ -49,7 +49,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
             int count = (int)values.GetInteger("number of sections");
             uint address = values.GetInteger("section table address");
             var layout = buildInfo.GetLayout("model section");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Sections = (from entry in entries
                         select new ThirdGenModelSection(entry, reader, metaArea, buildInfo)).ToArray();
@@ -63,7 +63,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 
             uint address = values.GetInteger("bounding box table address");
             var layout = buildInfo.GetLayout("model bounding box");
-            var entries = ReflexiveReader.ReadReflexive(1, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, 1, address, layout, metaArea);
 
             // Just take the first bounding box
             // Is it even possible for models to have more than one?

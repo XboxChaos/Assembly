@@ -32,7 +32,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
             int count = (int)values.GetInteger("number of permutations");
             uint address = values.GetInteger("permutation table address");
             var layout = buildInfo.GetLayout("model permutation");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Permutations = (from entry in entries
                             select new ThirdGenModelPermutation(entry)).ToArray();

@@ -90,7 +90,7 @@ namespace Blamite.Flexibility
         {
             string result;
             if (opcode == -1)
-                return "null";
+                return "none";
             if (_classLookup.TryGetValue(opcode, out result))
                 return result;
             return null;

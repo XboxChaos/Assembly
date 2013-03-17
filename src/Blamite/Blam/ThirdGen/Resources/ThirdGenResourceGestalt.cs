@@ -49,7 +49,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             int count = (int)values.GetInteger("number of resources");
             uint address = values.GetInteger("resource table address");
             var layout = buildInfo.GetLayout("resource table entry");
-            var entries = ReflexiveReader.ReadReflexive(count, address, reader, layout, metaArea);
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             _resources = new ThirdGenResource[entries.Length];
             for (ushort i = 0; i < entries.Length; i++)

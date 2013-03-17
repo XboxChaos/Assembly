@@ -106,14 +106,14 @@
     <Compile Include="Blam\IStringIDResolver.cs" />
     <Compile Include="Blam\Locale.cs" />
     <Compile Include="Blam\Scripting\BlamScriptGenerator.cs" />
-    <Compile Include="Blam\Scripting\ExpressionType.cs" />
-    <Compile Include="Blam\Scripting\IExpression.cs" />
-    <Compile Include="Blam\Scripting\IGlobal.cs" />
-    <Compile Include="Blam\Scripting\IGlobalObject.cs" />
+    <Compile Include="Blam\Scripting\ScriptExpressionType.cs" />
+    <Compile Include="Blam\Scripting\ScriptExpression.cs" />
+    <Compile Include="Blam\Scripting\ScriptGlobal.cs" />
+    <Compile Include="Blam\Scripting\ScriptObjectReference.cs" />
     <Compile Include="Blam\Scripting\IOpcodeLookup.cs" />
-    <Compile Include="Blam\Scripting\IScript.cs" />
-    <Compile Include="Blam\Scripting\IScriptParameter.cs" />
-    <Compile Include="Blam\Scripting\ExpressionTable.cs" />
+    <Compile Include="Blam\Scripting\Script.cs" />
+    <Compile Include="Blam\Scripting\ScriptParameter.cs" />
+    <Compile Include="Blam\Scripting\ScriptExpressionTable.cs" />
     <Compile Include="Blam\Scripting\ScriptValueType.cs" />
     <Compile Include="Blam\SecondGen\SecondGenCacheFile.cs" />
     <Compile Include="Blam\LengthBasedStringIDResolver.cs" />
@@ -122,13 +122,8 @@
     <Compile Include="Blam\SecondGen\Structures\SecondGenTagClass.cs" />
     <Compile Include="Blam\SecondGen\Structures\SecondGenTagTable.cs" />
     <Compile Include="Blam\StringID.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\CachedStringTable.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\StringTableReader.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenExpression.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenGlobal.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenGlobalObject.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScript.cs" />
-    <Compile Include="Blam\ThirdGen\Scripting\ThirdGenScriptParameter.cs" />
+    <Compile Include="Blam\Scripting\CachedStringTable.cs" />
+    <Compile Include="Blam\Scripting\StringTableReader.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenLocaleGroup.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenScenarioMeta.cs" />
     <Compile Include="Blam\IndexedStringIDSource.cs" />
@@ -236,6 +231,14 @@
     <Compile Include="Util\XMLUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
+    <Compile Include="Blam\Scripting\Analysis\LispScriptScanner.cs">
+      <DependentUpon>LispScriptScanner.lex</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Blam\Scripting\Analysis\Executables\gplex.exe" />
+    <Content Include="Blam\Scripting\Analysis\Executables\gppg.exe" />
     <Content Include="Formats\Halo2Vista.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -330,4 +333,13 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <CompileDependsOn>GenerateLexers;$(CompileDependsOn)</CompileDependsOn>
+  </PropertyGroup>
+  <Target Name="GenerateLexers" Inputs="@(Lexer)" Outputs="@(Lexer -> '%(RelativeDir)%(Filename).cs')">
+    <Exec Command="Blam\Scripting\Analysis\Executables\gplex.exe /out:@(Lexer -> '%(RelativeDir)%(Filename).cs') %(Lexer.Identity)" />
+    <CreateItem Include="%(Lexer.Filename).cs">
+      <Output TaskParameter="Include" ItemName="FileWrites" />
+    </CreateItem>
+  </Target>
 </Project>

@@ -12,7 +12,7 @@ namespace Blamite.Blam.Util
     /// </summary>
     public static class ReflexiveReader
     {
-        public static StructureValueCollection[] ReadReflexive(int count, uint address, IReader reader, StructureLayout entryLayout, FileSegmentGroup metaArea)
+        public static StructureValueCollection[] ReadReflexive(IReader reader, int count, uint address, StructureLayout entryLayout, FileSegmentGroup metaArea)
         {
             if (entryLayout.Size == 0)
                 throw new ArgumentException("The entry layout must have a size associated with it.");

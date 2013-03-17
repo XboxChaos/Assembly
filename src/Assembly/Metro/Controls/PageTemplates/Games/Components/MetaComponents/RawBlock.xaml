@@ -5,7 +5,6 @@
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-			 xmlns:mvvmTextEditor="clr-namespace:Assembly.Metro.Controls.BindingTextEditor"
              xmlns:Components="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components" mc:Ignorable="d" Height="185" Width="595"
              HorizontalAlignment="Left">
     <UserControl.Resources>
@@ -15,35 +14,16 @@
     <Grid>
         <TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,5,0,0" Width="180" TextTrimming="CharacterEllipsis"/>
         <Border BorderBrush="#595959" BorderThickness="1" Margin="200,5,10,0" VerticalAlignment="Top" Height="135">
-			<avalonEdit:TextEditor	x:Name="txtValue" ShowLineNumbers="False"
-									Document="{Binding Path=Document}" Padding="4,2,2,2" 
-									Background="#414141" Foreground="White" 
-									FontFamily="Consolas" MouseRightButtonDown="txtValue_MouseRightButtonDown_1" TextChanged="txtValue_TextChanged"
-									FontSize="10pt">
-				<avalonEdit:TextEditor.ContextMenu>
-					<ContextMenu>
-						<MenuItem Name="cutItem" Command="Cut" />
-						<MenuItem Name="copyItem" Command="Copy" />
-						<MenuItem Name="pasteItem" Command="Paste" />
-					</ContextMenu>
-				</avalonEdit:TextEditor.ContextMenu>
-			</avalonEdit:TextEditor>
-			
-			<!--<mvvmTextEditor:MvvmTextEditor x:Name="txtValue" Padding="4,2,2,2" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
+            <avalonEdit:TextEditor x:Name="txtValue" Document="{Binding Document}" Padding="4,2,2,2" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
                                    FontFamily="Consolas" FontSize="10pt" Background="#414141" Foreground="White" MouseRightButtonDown="txtValue_MouseRightButtonDown_1">
-				<mvvmTextEditor:MvvmTextEditor.DocumentText>
-					<Binding Path ="Value" Mode="TwoWay" 
-							 UpdateSourceTrigger="PropertyChanged">
-					</Binding>
-				</mvvmTextEditor:MvvmTextEditor.DocumentText>
-				<mvvmTextEditor:MvvmTextEditor.ContextMenu>
+                <avalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>
                         <MenuItem Name="cutItem" Command="Cut" />
                         <MenuItem Name="copyItem" Command="Copy" />
                         <MenuItem Name="pasteItem" Command="Paste" />
                     </ContextMenu>
-				</mvvmTextEditor:MvvmTextEditor.ContextMenu>
-			</mvvmTextEditor:MvvmTextEditor>-->
+                </avalonEdit:TextEditor.ContextMenu>
+            </avalonEdit:TextEditor>
         </Border>
 
 		<Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="385" Margin="0,0,10,9">

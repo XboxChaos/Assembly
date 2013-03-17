@@ -16,7 +16,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _dataAddress = dataAddress;
         }
 
-        public uint DataAddress
+        public new uint DataAddress
         {
             get { return _dataAddress; }
             set { _dataAddress = value; NotifyPropertyChanged("DataAddress"); }
