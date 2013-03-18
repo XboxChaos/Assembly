@@ -8,7 +8,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class MetaReader : IMetaFieldVisitor
     {
-        private IReader _reader;
+		private IStreamManager _streamManager;
+		private IReader _reader;
 		private ICacheFile _cache;
 		private LoadType _type;
         private StructureLayout _reflexiveLayout;
@@ -18,20 +19,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public enum LoadType { File, Memory }
 
-		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
-			: this(reader, baseOffset, cache, buildInfo, null)
+		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
+			: this(streamManager, baseOffset, cache, buildInfo, null)
         {
         }
 
-		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type)
-			: this(reader, baseOffset, cache, buildInfo, null)
+		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type)
+			: this(streamManager, baseOffset, cache, buildInfo, null)
 		{
 			_type = type;
 		}
 
-		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
+		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
         {
-			_reader = reader;
+			_streamManager = streamManager;
             BaseOffset = baseOffset;
             _cache = cache;
             _ignoredFields = ignore;
@@ -49,7 +50,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             // Update the field's memory address
             ValueField valueField = field as ValueField;
             if (valueField != null)
-                valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)(BaseOffset + valueField.Offset));
+            {
+				valueField.FieldAddress = BaseOffset + valueField.Offset;
+				if (_type == LoadType.File)
+					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
+            }
 
             // Read its contents if it has changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
@@ -63,13 +68,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void ReadFields(IList<MetaField> fields)
         {
+			var opened = OpenReader();
             try
             {
-                for (int i = 0; i < fields.Count; i++)
-                    ReadField(fields[i]);
+// ReSharper disable ForCanBeConvertedToForeach
+				for (var i = 0; i < fields.Count; i++)
+					ReadField(fields[i]);
+// ReSharper restore ForCanBeConvertedToForeach
             }
             finally
             {
+				if (opened)
+					CloseReader();
             }
         }
 
@@ -78,6 +88,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
                 return;
 
+			var opened = OpenReader();
             try
             {
                 // Calculate the base offset to read from
@@ -97,6 +108,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
             finally
             {
+				if (opened)
+					CloseReader();
             }
         }
 
@@ -349,6 +362,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitReflexiveEntry(WrappedReflexiveEntry field)
         {
         }
+
+		/// <summary>
+		/// Opens the file for reading and sets _reader to the stream. Must be done before any I/O operations are performed.
+		/// </summary>
+		/// <returns>false if the file was already open.</returns>
+		private bool OpenReader()
+		{
+			if (_reader == null)
+			{
+				_reader = new EndianReader(_streamManager.OpenRead(), _streamManager.SuggestedEndian);
+				return true;
+			}
+			return false;
+		}
+
+		private void CloseReader()
+		{
+			if (_reader != null)
+			{
+				_reader.Close();
+				_reader = null;
+			}
+		}
 
         private void SeekToOffset(uint offset)
         {

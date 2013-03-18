@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using Blamite.Blam;
-using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Blamite.RTE;
 
@@ -12,9 +8,9 @@ namespace XBDMCommunicator
     /// <summary>
     /// An XBDM real-time editing provider.
     /// </summary>
-    public class XBDMRTEProvider : IRTEProvider
+    public class XBDMRTEProvider : IRTEProvider, IStreamManager
     {
-        private Xbdm _xbdm;
+        private readonly Xbdm _xbdm;
 
         /// <summary>
         /// Constructs a new XBDMRTEProvider based off of an Xbdm object.
@@ -42,11 +38,29 @@ namespace XBDMCommunicator
         /// <returns>The stream if it was opened successfully, or null otherwise.</returns>
         public IStream GetMetaStream(ICacheFile cacheFile)
         {
-            // Okay, so technically we should be checking to see if the cache file is actually loaded into memory first
+	        // Okay, so technically we should be checking to see if the cache file is actually loaded into memory first
             // But that's kinda hard to do...
-            if (_xbdm.Connect())
-                return new EndianStream(_xbdm.MemoryStream, Endian.BigEndian);
-            return null;
+	        return _xbdm.Connect() ? new EndianStream(_xbdm.MemoryStream, Endian.BigEndian) : null;
         }
-    }
+
+	    public Endian SuggestedEndian
+		{
+			get { return Endian.BigEndian; }
+		}
+
+		public Stream OpenRead()
+		{
+			return _xbdm.MemoryStream;
+		}
+
+		public Stream OpenWrite()
+		{
+			return _xbdm.MemoryStream;
+		}
+
+		public Stream OpenReadWrite()
+		{
+			return _xbdm.MemoryStream;
+		}
+	}
 }

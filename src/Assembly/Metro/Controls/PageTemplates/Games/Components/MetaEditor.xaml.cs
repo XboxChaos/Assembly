@@ -115,39 +115,35 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				if (type == MetaReader.LoadType.File)
 				{
-					using (var stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
-					{
-						var baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
-						var metaReader = new MetaReader(stream, baseOffset, _cache, _buildInfo, _fileChanges);
-						_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-						_flattener.Flatten(_pluginVisitor.Values);
-						metaReader.ReadFields(_pluginVisitor.Values);
-					}
+					var baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
+					var metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
+					_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+					_flattener.Flatten(_pluginVisitor.Values);
+					metaReader.ReadFields(_pluginVisitor.Values);
 				}
 				else if (_rteProvider != null)
 				{
-					using (var metaStream = _rteProvider.GetMetaStream(_cache))
+					var metaStream = ((IStreamManager) _rteProvider).OpenRead();
+
+					if (metaStream != null)
 					{
-						if (metaStream != null)
+						var metaReader = new MetaReader((IStreamManager)_rteProvider, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type);
+						_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+						_flattener.Flatten(_pluginVisitor.Values);
+						metaReader.ReadFields(_pluginVisitor.Values);
+						_fileChanges.MarkAllUnchanged();
+					}
+					else
+					{
+						switch (_rteProvider.ConnectionType)
 						{
-							var metaReader = new MetaReader(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type);
-							_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-							_flattener.Flatten(_pluginVisitor.Values);
-							metaReader.ReadFields(_pluginVisitor.Values);
-							_fileChanges.MarkAllUnchanged();
-						}
-						else
-						{
-							switch (_rteProvider.ConnectionType)
-							{
-								case RTEConnectionType.ConsoleX360:
-									MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
-									break;
+							case RTEConnectionType.ConsoleX360:
+								MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+								break;
 								
-								case RTEConnectionType.LocalProcess:
-									MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
-									break;
-							}
+							case RTEConnectionType.LocalProcess:
+								MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+								break;
 						}
 					}
 				}

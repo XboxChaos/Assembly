@@ -45,11 +45,8 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         }
         public void RefreshMeta()
         {
-			using (var stream = new EndianStream(_streamManager.OpenRead(), _streamManager.SuggestedEndian))
-			{
-				_reader = new MetaReader(stream, _cacheOffset, _cacheFile, _buildInfo);
-				_reader.ReadFields(_fields);
-			}
+			_reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo);
+			_reader.ReadFields(_fields);
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)

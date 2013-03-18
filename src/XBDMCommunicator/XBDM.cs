@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Blamite.IO;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using Blamite.IO;
 using XDevkit;
 
 namespace XBDMCommunicator
@@ -236,7 +233,7 @@ namespace XBDMCommunicator
                 get { return 0x100000000; }
             }
 
-            public override long Position { get; set; }
+            public override sealed long Position { get; set; }
 
             public override void Flush()
             {
@@ -259,7 +256,7 @@ namespace XBDMCommunicator
                 else
                 {
                     // Offset isn't 0, so read into a temp buffer and then copy it into the output
-                    byte[] tempBuffer = new byte[count];
+                    var tempBuffer = new byte[count];
                     _xbdm._xboxDebugTarget.GetMemory((uint)Position, (uint)count, tempBuffer, out bytesRead);
                     Buffer.BlockCopy(tempBuffer, 0, buffer, offset, count);
                 }
@@ -303,7 +300,7 @@ namespace XBDMCommunicator
                 if (count > 20)
                     _xbdm._xboxDebugTarget.Stop(out alreadyStopped);
 
-                byte[] pokeArray = buffer;
+                var pokeArray = buffer;
                 if (offset != 0)
                 {
                     // Offset isn't 0, so copy into a second buffer before poking

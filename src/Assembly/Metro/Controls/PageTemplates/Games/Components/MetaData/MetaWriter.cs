@@ -171,6 +171,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
+			if (field.Value.Length == 7)
+				field.Value = field.Value.Insert(1, "FF");
+
 			foreach(var formatChar in field.Format.ToCharArray())
 			{
 				switch(formatChar)
