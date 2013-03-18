@@ -10,12 +10,10 @@ using System.Windows.Input;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 using System.Collections.ObjectModel;
 using Assembly.Helpers.Caching;
 using Assembly.Helpers.Net;
 using CloseableTabItemDemo;
-
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Assembly.Metro.Dialogs;
@@ -25,8 +23,6 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.Flexibility;
-using Blamite.Blam.SecondGen;
-using Blamite.Blam.Util;
 using Blamite.RTE;
 using Blamite.RTE.H2Vista;
 using XBDMCommunicator;
@@ -183,6 +179,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 try
                 {
                     _cacheFile = CacheFileLoader.LoadCacheFile(reader, _layoutLoader, out _buildInfo);
+
+#if DEBUG
+	                Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
+		                                                                         {
+			                                                                         Header = new ContentControl
+				                                                                                  {
+					                                                                                  Content = "Debug Tools",
+					                                                                                  ContextMenu = BaseContextMenu
+				                                                                                  },
+			                                                                         Content = new DebugTools(_cacheFile)
+		                                                                         })));
+#endif
                 }
                 catch (NotSupportedException ex)
                 {
@@ -978,7 +986,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         /// <param name="tag">The tag to search for</param>
         private bool IsTagOpen(TagEntry tag)
         {
-            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => ((TagEntry)tab.Tag).RawTag == tag.RawTag);
+            return contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Tag != null && ((TagEntry)tab.Tag).RawTag == tag.RawTag);
         }
 
         /// <summary>
@@ -1002,7 +1010,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void SelectTabFromTag(TagEntry tag)
         {
             CloseableTabItem tab = null;
-			foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => ((TagEntry)tabb.Tag).RawTag == tag.RawTag))
+			foreach (var tabb in contentTabs.Items.Cast<CloseableTabItem>().Where(tabb => tabb.Tag != null && ((TagEntry)tabb.Tag).RawTag == tag.RawTag))
                 tab = tabb;
 
             if (tab != null)
