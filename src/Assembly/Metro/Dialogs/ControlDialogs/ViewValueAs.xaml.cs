@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Helpers.Native;
-using Assembly.Windows;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -20,10 +16,13 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
     /// </summary>
     public partial class ViewValueAs
     {
-	    private readonly uint _cacheOffsetOriginal;
-        private readonly ICacheFile _cacheFile;
-        private readonly MetaReader _reader;
-        private readonly IList<MetaField> _fields;
+	    private uint _cacheOffsetOriginal;
+	    private uint _cacheOffset;
+        private ICacheFile _cacheFile;
+	    private IStreamManager _streamManager;
+	    private BuildInformation _buildInfo;
+        private MetaReader _reader;
+        private IList<MetaField> _fields;
 
         public ViewValueAs(ICacheFile cacheFile, BuildInformation buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
@@ -31,29 +30,32 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
             DwmDropShadow.DropShadowToWindow(this);
 
+	        _buildInfo = buildInfo;
+	        _streamManager = streamManager;
             _cacheFile = cacheFile;
-            _reader = new MetaReader(streamManager, cacheOffset, cacheFile, buildInfo);
             _fields = fields;
-            _cacheOffsetOriginal = cacheOffset;
+			_cacheOffsetOriginal = _cacheOffset = cacheOffset;
 
             // Set Textbox
-            txtOffset.Text = "0x" + cacheOffset.ToString("X");
+			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 
             // Load Meta
             panelMetaComponents.ItemsSource = _fields;
             RefreshMeta();
         }
-
         public void RefreshMeta()
         {
-            _reader.ReadFields(_fields);
+			using (var stream = new EndianStream(_streamManager.OpenRead(), _streamManager.SuggestedEndian))
+			{
+				_reader = new MetaReader(stream, _cacheOffset, _cacheFile, _buildInfo);
+				_reader.ReadFields(_fields);
+			}
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
-
         private void ResizeDrop_DragDelta(object sender, DragDeltaEventArgs e)
         {
 			var yadjust = Height + e.VerticalChange;
@@ -65,7 +67,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
                 Height = yadjust;
         }
 
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        private void btnRefresh_Click(object sender = null, RoutedEventArgs e = null)
         {
 			int offset;
 
@@ -93,30 +95,28 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
             _reader.BaseOffset = (uint)offset;
             RefreshMeta();
         }
-
         private void txtOffset_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-                btnRefresh_Click(null, null);
+                btnRefresh_Click();
         }
 
         private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            _reader.BaseOffset = _cacheOffsetOriginal;
-            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+			_cacheOffset = _cacheOffsetOriginal;
+			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
             RefreshMeta();
         }
-
         private void btnDown_Click(object sender, RoutedEventArgs e)
         {
-            _reader.BaseOffset -= 1;
-            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+			_cacheOffset -= 1;
+			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
             RefreshMeta();
         }
         private void btnUp_Click(object sender, RoutedEventArgs e)
         {
-            _reader.BaseOffset += 1;
-            txtOffset.Text = "0x" + _reader.BaseOffset.ToString("X");
+			_cacheOffset += 1;
+			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
             RefreshMeta();
         }
     }

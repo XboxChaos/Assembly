@@ -153,15 +153,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 						_writer.WriteByte(alpha);
 						break;
 					case 'r':
-						var red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
+						var red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4), NumberStyles.HexNumber);
 						_writer.WriteByte(red);
 						break;
 					case 'g':
-						var green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
+						var green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6), NumberStyles.HexNumber);
 						_writer.WriteByte(green);
 						break;
 					case 'b':
-						var blue = byte.Parse(field.Value.Replace("#", "").Remove(0, 6).Remove(2), NumberStyles.HexNumber);
+						var blue = byte.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber);
 						_writer.WriteByte(blue);
 						break;
 				}

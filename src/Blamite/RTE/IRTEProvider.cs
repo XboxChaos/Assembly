@@ -8,7 +8,7 @@ namespace Blamite.RTE
     /// </summary>
     public enum RTEConnectionType
     {
-        Console,
+        ConsoleX360,
         LocalProcess
     }
 

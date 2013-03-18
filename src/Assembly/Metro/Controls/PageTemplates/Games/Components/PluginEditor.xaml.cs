@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Assembly.Helpers;
 using Assembly.Helpers.CodeCompletion.XML;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.SyntaxHighlighting;
 using Blamite.Flexibility;
 using Blamite.Util;
@@ -64,7 +65,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private void btnPluginSave_Click(object sender, RoutedEventArgs e)
         {
             File.WriteAllText(_pluginPath, txtPlugin.Text);
-            _sibling.RefreshEditor();
+            _sibling.RefreshEditor(MetaReader.LoadType.File);
             _parent.tbMetaEditors.SelectedIndex = 1;//default is 4 with other tabs included in program
         }
 

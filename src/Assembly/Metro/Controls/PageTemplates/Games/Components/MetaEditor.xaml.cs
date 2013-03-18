@@ -85,55 +85,88 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _stringIDTrie = stringIDTrie;
 
             // Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
             _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
 
             // Set Invisibility box
             cbShowInvisibles.IsChecked = Settings.pluginsShowInvisibles;
 
             // Load Meta
-            RefreshEditor();
+            RefreshEditor(MetaReader.LoadType.File);
 
             // Set init finished
             hasInitFinished = true;
         }
 
-        public void RefreshEditor()
+        public void RefreshEditor(MetaReader.LoadType type)
         {
-            if (File.Exists(_pluginPath))
-            {
-                // Load Plugin File
-                using (XmlReader xml = XmlReader.Create(_pluginPath))
-                {
-                    _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, Settings.pluginsShowInvisibles);
-                    AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
-                }
+			if (File.Exists(_pluginPath))
+			{
+				// Load Plugin File
+				using (var xml = XmlReader.Create(_pluginPath))
+				{
+					_pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, Settings.pluginsShowInvisibles);
+					AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
+				}
 
-                _changeTracker = new FieldChangeTracker();
-                _fileChanges = new FieldChangeSet();
-                _memoryChanges = new FieldChangeSet();
+				_changeTracker = new FieldChangeTracker();
+				_fileChanges = new FieldChangeSet();
+				_memoryChanges = new FieldChangeSet();
 
-                uint baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
-                MetaReader metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
-                _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-                _flattener.Flatten(_pluginVisitor.Values);
-                metaReader.ReadFields(_pluginVisitor.Values);
+				if (type == MetaReader.LoadType.File)
+				{
+					using (var stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
+					{
+						var baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
+						var metaReader = new MetaReader(stream, baseOffset, _cache, _buildInfo, _fileChanges);
+						_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+						_flattener.Flatten(_pluginVisitor.Values);
+						metaReader.ReadFields(_pluginVisitor.Values);
+					}
+				}
+				else if (_rteProvider != null)
+				{
+					using (var metaStream = _rteProvider.GetMetaStream(_cache))
+					{
+						if (metaStream != null)
+						{
+							var metaReader = new MetaReader(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type);
+							_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+							_flattener.Flatten(_pluginVisitor.Values);
+							metaReader.ReadFields(_pluginVisitor.Values);
+							_fileChanges.MarkAllUnchanged();
+						}
+						else
+						{
+							switch (_rteProvider.ConnectionType)
+							{
+								case RTEConnectionType.ConsoleX360:
+									MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+									break;
+								
+								case RTEConnectionType.LocalProcess:
+									MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+									break;
+							}
+						}
+					}
+				}
 
-                panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+				panelMetaComponents.ItemsSource = _pluginVisitor.Values;
 
-                // Start monitoring fields for changes
-                _changeTracker.RegisterChangeSet(_fileChanges);
-                _changeTracker.RegisterChangeSet(_memoryChanges);
-                _changeTracker.Attach(_pluginVisitor.Values);
+				// Start monitoring fields for changes
+				_changeTracker.RegisterChangeSet(_fileChanges);
+				_changeTracker.RegisterChangeSet(_memoryChanges);
+				_changeTracker.Attach(_pluginVisitor.Values);
 
-                // Update Meta Toolbar
-                UpdateMetaButtons(true);
-            }
-            else
-            {
-                UpdateMetaButtons(false);
-                StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
-            }
+				// Update Meta Toolbar
+				UpdateMetaButtons(true);
+			}
+			else
+			{
+				UpdateMetaButtons(false);
+				StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
+			}
         }
 
         private void RevisionViewer()
@@ -220,7 +253,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     {
                         switch (_rteProvider.ConnectionType)
                         {
-                            case RTEConnectionType.Console:
+                            case RTEConnectionType.ConsoleX360:
                                 MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
                                 break;
 
@@ -236,8 +269,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
         private void btnPluginRefresh_Click(object sender, RoutedEventArgs e)
         {
-            RefreshEditor();
+            RefreshEditor(MetaReader.LoadType.File);
         }
+		private void btnPluginRefreshFromMemory_Click(object sender, RoutedEventArgs e)
+		{
+			RefreshEditor(MetaReader.LoadType.Memory);
+		}
 
         private void btnPluginRevisionViewer_Click(object sender, RoutedEventArgs e)
         {
@@ -249,7 +286,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             if (hasInitFinished)
             {
                 Settings.pluginsShowInvisibles = (bool)cbShowInvisibles.IsChecked;
-                RefreshEditor();
+                RefreshEditor(MetaReader.LoadType.File);
             }
         }
 
@@ -304,10 +341,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                         // Show Plugin Revision Viewer
                         RevisionViewer();
                     }
+					else if ((Keyboard.Modifiers & ModifierKeys.Alt) != 0)
+					{
+						// Refresh Plugin
+						RefreshEditor(MetaReader.LoadType.Memory);
+					}
                     else
                     {
                         // Refresh Plugin
-                        RefreshEditor();
+                        RefreshEditor(MetaReader.LoadType.File);
                     }
                     break;
             }

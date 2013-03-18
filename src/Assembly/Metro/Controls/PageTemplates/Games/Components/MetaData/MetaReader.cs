@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Blamite.Blam;
-using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Blamite.Flexibility;
 using Blamite.Util;
@@ -10,22 +8,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class MetaReader : IMetaFieldVisitor
     {
-        private IStreamManager _streamManager;
         private IReader _reader;
-        private ICacheFile _cache;
+		private ICacheFile _cache;
+		private LoadType _type;
         private StructureLayout _reflexiveLayout;
         private StructureLayout _tagRefLayout;
         private StructureLayout _dataRefLayout;
         private FieldChangeSet _ignoredFields;
 
-        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
-            : this(streamManager, baseOffset, cache, buildInfo, null)
+		public enum LoadType { File, Memory }
+
+		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
+			: this(reader, baseOffset, cache, buildInfo, null)
         {
         }
 
-        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
+		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type)
+			: this(reader, baseOffset, cache, buildInfo, null)
+		{
+			_type = type;
+		}
+
+		public MetaReader(IReader reader, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
         {
-            _streamManager = streamManager;
+			_reader = reader;
             BaseOffset = baseOffset;
             _cache = cache;
             _ignoredFields = ignore;
@@ -57,7 +63,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void ReadFields(IList<MetaField> fields)
         {
-            bool opened = OpenReader();
             try
             {
                 for (int i = 0; i < fields.Count; i++)
@@ -65,8 +70,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
             finally
             {
-                if (opened)
-                    CloseReader();
             }
         }
 
@@ -75,29 +78,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
                 return;
 
-            bool opened = OpenReader();
             try
             {
                 // Calculate the base offset to read from
-                uint oldBaseOffset = BaseOffset;
-                int dataOffset = _cache.MetaArea.PointerToOffset(reflexive.FirstEntryAddress);
+                var oldBaseOffset = BaseOffset;
+				var dataOffset = reflexive.FirstEntryAddress;
+				if (_type == LoadType.File)
+					dataOffset = (uint)_cache.MetaArea.PointerToOffset(dataOffset);
                 BaseOffset = (uint)(dataOffset + reflexive.CurrentIndex * reflexive.EntrySize);
 
-                ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
-                for (int i = 0; i < page.Fields.Length; i++)
-                {
-                    if (page.Fields[i] != null)
-                        ReadField(page.Fields[i]);
-                    else
-                        ReadField(reflexive.Template[i]);
-                }
+				var page = reflexive.Pages[reflexive.CurrentIndex];
+				for (var i = 0; i < page.Fields.Length; i++)
+				{
+					ReadField(page.Fields[i] ?? reflexive.Template[i]);
+				}
 
-                BaseOffset = oldBaseOffset;
+	            BaseOffset = oldBaseOffset;
             }
             finally
             {
-                if (opened)
-                    CloseReader();
             }
         }
 
@@ -247,7 +246,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.DataAddress = pointer;
 
             // Check if the pointer is valid
-            uint offset = (uint)_cache.MetaArea.PointerToOffset(pointer);
+	        uint offset = field.DataAddress;
+			if (_type == LoadType.File)
+				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
             int metaStartOff = _cache.MetaArea.Offset;
             int metaEndOff = metaStartOff + _cache.MetaArea.Size;
             if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
@@ -325,14 +326,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	    public void VisitReflexive(ReflexiveData field)
         {
             SeekToOffset(field.Offset);
-            StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
-            int length = (int)values.GetInteger("entry count");
-            uint pointer = (uint)values.GetInteger("pointer");
+            var values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+            var length = (int)values.GetInteger("entry count");
+            var pointer = (uint)values.GetInteger("pointer");
 
             // Make sure the pointer looks valid
-            int metaStartOff = _cache.MetaArea.Offset;
-            int metaEndOff = metaStartOff + _cache.MetaArea.Size;
-            int offset = _cache.MetaArea.PointerToOffset(pointer);
+		    var metaStartOff = (uint)_cache.MetaArea.Offset;
+			if (_type == LoadType.Memory)
+				metaStartOff = _cache.MetaArea.OffsetToPointer((int)metaStartOff);
+		    var metaEndOff = (uint)(metaStartOff + _cache.MetaArea.Size);
+		    var offset = pointer;
+			if (_type == LoadType.File)
+				offset = (uint)_cache.MetaArea.PointerToOffset(offset);
             if (offset < metaStartOff || offset + length * field.EntrySize > metaEndOff)
                 length = 0;
 
@@ -343,29 +348,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public void VisitReflexiveEntry(WrappedReflexiveEntry field)
         {
-        }
-
-        /// <summary>
-        /// Opens the file for reading and sets _reader to the stream. Must be done before any I/O operations are performed.
-        /// </summary>
-        /// <returns>false if the file was already open.</returns>
-        private bool OpenReader()
-        {
-            if (_reader == null)
-            {
-                _reader = new EndianReader(_streamManager.OpenRead(), _streamManager.SuggestedEndian);
-                return true;
-            }
-            return false;
-        }
-
-        private void CloseReader()
-        {
-            if (_reader != null)
-            {
-                _reader.Close();
-                _reader = null;
-            }
         }
 
         private void SeekToOffset(uint offset)

@@ -31,7 +31,7 @@ namespace XBDMCommunicator
         /// </summary>
         public RTEConnectionType ConnectionType
         {
-            get { return RTEConnectionType.Console; }
+            get { return RTEConnectionType.ConsoleX360; }
         }
 
         /// <summary>
