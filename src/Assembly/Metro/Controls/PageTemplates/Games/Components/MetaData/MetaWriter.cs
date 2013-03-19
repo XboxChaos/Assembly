@@ -144,6 +144,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
+			if (field.Value.Length == 7)
+				field.Value = field.Value.Insert(1, "FF");
+
 			foreach (var formatChar in field.Format.ToCharArray())
 			{
 				switch (formatChar)
@@ -153,11 +156,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 						_writer.WriteByte(alpha);
 						break;
 					case 'r':
-						var red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(4), NumberStyles.HexNumber);
+						var red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
 						_writer.WriteByte(red);
 						break;
 					case 'g':
-						var green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(6), NumberStyles.HexNumber);
+						var green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
 						_writer.WriteByte(green);
 						break;
 					case 'b':
