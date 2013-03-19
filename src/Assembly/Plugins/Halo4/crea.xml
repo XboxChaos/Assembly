@@ -3,7 +3,7 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<enum16 name="Object Category" offset="0x0" visible="true">
+	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
 		<option name="Weapon" value="0x2" />
@@ -159,7 +159,7 @@
 			<bit name="31" index="30" />
 			<bit name="32" index="31" />
 		</bitfield32>
-		<stringid name="Type Name (SID)" offset="0x4" visible="true" />
+		<stringid name="Type Name" offset="0x4" visible="true" />
 		<uint32 name="Unknown" offset="0x8" visible="true" />
 		<enum16 name="AI Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
@@ -250,7 +250,14 @@
 	<reflexive name="Attachments" offset="0x13c" visible="true" entrySize="0x20">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
-		<int32 name="Change Color" offset="0x14" visible="true" />
+		<enum16 name="Change Color" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale/Function" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale/Function" offset="0x1C" visible="true" />
 	</reflexive>
@@ -349,7 +356,7 @@
 		<float32 name="Bottom" offset="0x10" visible="true" />
 		<enum8 name="Shape" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Sphere?" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -378,8 +385,8 @@
 		</bitfield16>
 		<int16 name="00000016" offset="0x1E" visible="false" />
 		<undefined name="00000017" offset="0x20" visible="false" />
-		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x14">
-			<dataRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x24" visible="true" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
 		<undefined name="00000017" offset="0x30" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
@@ -395,10 +402,10 @@
 		<tagref name="00000052" offset="0xbC" visible="true" />
 	</reflexive>
 	<tagref name="Simulation" offset="0x190" visible="true" />
-	<reflexive name="Unknown" offset="0x1A0" visible="false" entrySize="0x30">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<tagRef name="Unknown" offset="0x10" visible="false" />
-		<tagRef name="Unknown" offset="0x20" visible="false" />
+	<reflexive name="Unknown" offset="0x1A0" visible="true" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="true" />
+		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Destruction De-rez Effects" offset="0x1ac" visible="true" entrySize="0x10">
 		<tagref name="Dissolver Effect" offset="0x0" visible="true" />
@@ -460,8 +467,9 @@
 	<float32 name="Mass" offset="0x22C" visible="true" />
 	<stringId name="Living Material Name" offset="0x230" visible="true" />
 	<stringId name="Dead Material Name" offset="0x234" visible="true" />
-	<stringId name="Unknown" offset="0x238" visible="true" />
-	<reflexive name="Dead Sphere Shapes" offset="0x23C" visible="true" entrySize="0x70">
+	<int16 name="Unknown" offset="0x238" visible="false" />
+	<int16 name="Unknown" offset="0x23A" visible="false" />
+	<reflexive name="Dead Sphere Shapes" offset="0x23C" visible="false" entrySize="0x70">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -491,7 +499,7 @@
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
-	<reflexive name="Pill Shapes" offset="0x248" visible="true" entrySize="0x60">
+	<reflexive name="Pill Shapes" offset="0x248" visible="false" entrySize="0x60">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -517,7 +525,7 @@
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 	</reflexive>
-	<reflexive name="Sphere Shapes" offset="0x254" visible="true" entrySize="0x70">
+	<reflexive name="Sphere Shapes" offset="0x254" visible="false" entrySize="0x70">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -547,43 +555,37 @@
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
-	<reflexive name="Testo1" offset="0x260" visible="true" entrySize="0x70">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<float32 name="Rotation i i" offset="0x2A" visible="true" />
-		<float32 name="Rotation i j" offset="0x2E" visible="true" />
-		<float32 name="Rotation i k" offset="0x32" visible="true" />
-		<float32 name="Rotation j i" offset="0x36" visible="true" />
-		<float32 name="Rotation j j" offset="0x3A" visible="true" />
-		<float32 name="Rotation j k" offset="0x3E" visible="true" />
-		<float32 name="Rotation k i" offset="0x42" visible="true" />
-		<float32 name="Rotation k j" offset="0x46" visible="true" />
-		<float32 name="Rotation k k" offset="0x4A" visible="true" />
-		<float32 name="Translation i" offset="0x4E" visible="true" />
-		<float32 name="Translation j" offset="0x52" visible="true" />
-		<float32 name="Translation  k" offset="0x56" visible="true" />
+	<reflexive name="Testo1" offset="0x260" visible="false" entrySize="0x70">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
-		<float32 name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
-	<reflexive name="Testo2" offset="0x26C" visible="true" entrySize="0x180">
+	<reflexive name="Testo2" offset="0x26C" visible="false" entrySize="0x180">
 		<undefined name="00000005" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />
@@ -681,7 +683,7 @@
 		<undefined name="00000100" offset="0x178" visible="true" />
 		<undefined name="00000101" offset="0x17C" visible="true" />
 	</reflexive>
-	<reflexive name="Testo3" offset="0x278" visible="true" entrySize="0x10">
+	<reflexive name="Testo3" offset="0x278" visible="false" entrySize="0x10">
 		<undefined name="00000005" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />

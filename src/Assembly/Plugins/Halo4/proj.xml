@@ -3,7 +3,7 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<enum16 name="Object Category" offset="0x0" visible="true">
+	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
 		<option name="Weapon" value="0x2" />
@@ -159,7 +159,7 @@
 			<bit name="31" index="30" />
 			<bit name="32" index="31" />
 		</bitfield32>
-		<stringid name="Type Name (SID)" offset="0x4" visible="true" />
+		<stringid name="Type Name" offset="0x4" visible="true" />
 		<uint32 name="Unknown" offset="0x8" visible="true" />
 		<enum16 name="AI Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
@@ -250,7 +250,14 @@
 	<reflexive name="Attachments" offset="0x13c" visible="true" entrySize="0x20">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
-		<int32 name="Change Color" offset="0x14" visible="true" />
+		<enum16 name="Change Color" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale/Function" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale/Function" offset="0x1C" visible="true" />
 	</reflexive>
@@ -349,7 +356,7 @@
 		<float32 name="Bottom" offset="0x10" visible="true" />
 		<enum8 name="Shape" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
-			<option name="Sphere?" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -378,8 +385,8 @@
 		</bitfield16>
 		<int16 name="00000016" offset="0x1E" visible="false" />
 		<undefined name="00000017" offset="0x20" visible="false" />
-		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x14">
-			<dataRef name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x24" visible="true" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
 		<undefined name="00000017" offset="0x30" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
@@ -395,10 +402,10 @@
 		<tagref name="00000052" offset="0xbC" visible="true" />
 	</reflexive>
 	<tagref name="Simulation" offset="0x190" visible="true" />
-	<reflexive name="Unknown" offset="0x1A0" visible="false" entrySize="0x30">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<tagRef name="Unknown" offset="0x10" visible="false" />
-		<tagRef name="Unknown" offset="0x20" visible="false" />
+	<reflexive name="Unknown" offset="0x1A0" visible="true" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="true" />
+		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Destruction De-rez Effects" offset="0x1ac" visible="true" entrySize="0x10">
 		<tagref name="Dissolver Effect" offset="0x0" visible="true" />
@@ -433,7 +440,7 @@
 		<bit name="Robotron Steering" index="9" />
 		<bit name="Faster When Owned By Player" index="10" />
 	</bitfield32>
-	<int32 name="00000137" offset="0x208" visible="true" />
+	<int32 name="00000137" offset="0x208" visible="false" />
 	<enum16 name="Detonation Timer Starts" offset="0x20C" visible="true">
 		<option name="Immediately" value="0x0" />
 		<option name="After first bounce" value="0x1" />
@@ -447,20 +454,20 @@
 		<option name="Shout" value="0x3" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
-	<undefined name="00000139" offset="0x210" visible="true" />
-	<undefined name="00000140" offset="0x214" visible="true" />
+	<undefined name="00000139" offset="0x210" visible="false" />
+	<undefined name="00000140" offset="0x214" visible="false" />
 	<undefined name="Collision Radius" offset="0x218" visible="true" />
 	<undefined name="Grenade Delay" offset="0x21C" visible="true" />
 	<undefined name="Danger Radius" offset="0x220" visible="true" />
-	<undefined name="00000144" offset="0x224" visible="true" />
-	<int16 name="00000145" offset="0x228" visible="true" />
-	<int16 name="00000145" offset="0x22A" visible="true" />
+	<undefined name="00000144" offset="0x224" visible="false" />
+	<int16 name="00000145" offset="0x228" visible="false" />
+	<int16 name="00000145" offset="0x22A" visible="false" />
 	<undefined name="Explosion Delay1" offset="0x22C" visible="true" />
 	<undefined name="Explosion Delay2" offset="0x230" visible="true" />
-	<undefined name="00000148" offset="0x234" visible="true" />
+	<undefined name="00000148" offset="0x234" visible="false" />
 	<undefined name="Maximum Range" offset="0x238" visible="true" />
-	<undefined name="00000150" offset="0x23C" visible="true" />
-	<undefined name="00000151" offset="0x240" visible="true" />
+	<undefined name="00000150" offset="0x23C" visible="false" />
+	<undefined name="00000151" offset="0x240" visible="false" />
 	<undefined name="Charge Time to Allow Explosion" offset="0x244" visible="true" />
 	<enum16 name="Detonation Noise" offset="0x248" visible="true">
 		<option name="Silent" value="0x0" />
@@ -470,11 +477,11 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<int16 name="Super Detonate Proj Count" offset="0x24A" visible="true" />
-	<undefined name="00000154" offset="0x24C" visible="true" />
-	<undefined name="00000155" offset="0x250" visible="true" />
-	<undefined name="00000156" offset="0x254" visible="true" />
+	<undefined name="00000154" offset="0x24C" visible="false" />
+	<undefined name="00000155" offset="0x250" visible="false" />
+	<undefined name="00000156" offset="0x254" visible="false" />
 	<tagref name="00000157" offset="0x258" visible="true" />
-	<undefined name="00000161" offset="0x268" visible="true" />
+	<undefined name="00000161" offset="0x268" visible="false" />
 	<tagref name="Detonation Effect Start" offset="0x26C" visible="true" />
 	<tagref name="Airborne Detonation Effect" offset="0x27C" visible="true" />
 	<tagref name="Detonation Effect" offset="0x28C" visible="true" />
@@ -568,8 +575,8 @@
 		<option name="Flag Sidearm" value="0x60" />
 		<option name="Melee 2" value="0x61" />
 	</enum8>
-	<int8 name="00000198" offset="0x2fD" visible="true" />
-	<int8 name="00000198" offset="0x2fE" visible="true" />
+	<int8 name="00000198" offset="0x2fD" visible="false" />
+	<int8 name="00000198" offset="0x2fE" visible="false" />
 	<enum8 name="Has Attached Super Detonation" offset="0x2FF" visible="true">
 		<option name="No" value="0x0" />
 		<option name="Yes" value="0x1" />
@@ -609,24 +616,24 @@
 	<undefined name="00000256" offset="0x3e0" visible="true" />
 	<undefined name="00000257" offset="0x3e4" visible="true" />
 	<reflexive name="Material Responses" offset="0x3E8" visible="true" entrySize="0x3C">
-		<int16 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
-		<int16 name="Unknown" offset="0xC" visible="false" />
-		<int16 name="Unknown" offset="0xE" visible="false" />
-		<float32 name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<float32 name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
-		<float32 name="Unknown" offset="0x34" visible="false" />
-		<float32 name="Unknown" offset="0x38" visible="false" />
+		<int16 name="Unknown" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="true" />
+		<stringid name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xA" visible="true" />
+		<int16 name="Unknown" offset="0xC" visible="true" />
+		<int16 name="Unknown" offset="0xE" visible="true" />
+		<float32 name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<float32 name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<float32 name="Unknown" offset="0x30" visible="true" />
+		<float32 name="Unknown" offset="0x34" visible="true" />
+		<float32 name="Unknown" offset="0x38" visible="true" />
 	</reflexive>
 	<reflexive name="Impact Responses" offset="0x3F4" visible="true" entrySize="0x34">
 		<stringid name="Unknown" offset="0x0" visible="true" />
@@ -645,12 +652,12 @@
 		<float32 name="Unknown" offset="0x2C" visible="true" />
 		<float32 name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
-	<undefined name="struct here 3" offset="0x400" visible="true" />
-	<undefined name="struct here 3" offset="0x404" visible="true" />
-	<undefined name="struct here 3" offset="0x408" visible="true" />
-	<undefined name="struct here 4" offset="0x40C" visible="true" />
-	<undefined name="struct here 4" offset="0x410" visible="true" />
-	<undefined name="struct here 4" offset="0x414" visible="true" />
+	<undefined name="struct here 3" offset="0x400" visible="false" />
+	<undefined name="struct here 3" offset="0x404" visible="false" />
+	<undefined name="struct here 3" offset="0x408" visible="false" />
+	<undefined name="struct here 4" offset="0x40C" visible="false" />
+	<undefined name="struct here 4" offset="0x410" visible="false" />
+	<undefined name="struct here 4" offset="0x414" visible="false" />
 	<reflexive name="Shotgun Properties" offset="0x418" visible="true" entrySize="0xC">
 		<int16 name="Amount" offset="0x0" visible="true" />
 		<int16 name="Distance" offset="0x2" visible="true" />
@@ -659,9 +666,9 @@
 	</reflexive>
 	<tagref name="00000274" offset="0x424" visible="true" />
 	<tagref name="00000278" offset="0x434" visible="true" />
-	<reflexive name="Unknown" offset="0x444" visible="false" entrySize="0xC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Unknown" offset="0x444" visible="true" entrySize="0xC">
+		<undefined name="Unknown" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
 	</reflexive>
 </plugin>

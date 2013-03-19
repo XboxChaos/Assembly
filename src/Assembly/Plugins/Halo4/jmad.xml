@@ -3,7 +3,7 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<tagref name="00000005" offset="0x0" visible="true" />
+	<tagref name="Parent" offset="0x0" visible="true" />
 	<undefined name="00000009" offset="0x10" visible="true" />
 	<undefined name="00000010" offset="0x14" visible="true" />
 	<undefined name="00000011" offset="0x18" visible="true" />
@@ -38,10 +38,12 @@
 			<undefined name="Unknown" offset="0x4" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Testo" offset="0x60" visible="true" entrySize="0x2C">
-		<stringid name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
+	<reflexive name="Skeleton Nodes" offset="0x60" visible="true" entrySize="0x2C">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x4" visible="true" />
+		<int16 name="Fist Child Node Index" offset="0x6" visible="true" />
+		<int16 name="Parent Node Index" offset="0x8" visible="true" />
+		<int16 name="00000007" offset="0xA" visible="true" />
 		<undefined name="00000008" offset="0xC" visible="true" />
 		<undefined name="00000009" offset="0x10" visible="true" />
 		<undefined name="00000010" offset="0x14" visible="true" />
@@ -51,14 +53,14 @@
 		<undefined name="00000014" offset="0x24" visible="true" />
 		<undefined name="00000015" offset="0x28" visible="true" />
 	</reflexive>
-	<reflexive name="Testo" offset="0x6C" visible="true" entrySize="0x28">
-		<tagref name="00000005" offset="0x0" visible="true" />
+	<reflexive name="Sound References" offset="0x6C" visible="true" entrySize="0x28">
+		<tagref name="Sound" offset="0x0" visible="true" />
 		<undefined name="00000009" offset="0x10" visible="true" />
 		<tagref name="00000010" offset="0x14" visible="true" />
-		<undefined name="00000014" offset="0x24" visible="true" />
+		<stringid name="00000014" offset="0x24" visible="true" />
 	</reflexive>
-	<reflexive name="Testo" offset="0x78" visible="true" entrySize="0x28">
-		<tagref name="00000005" offset="0x0" visible="true" />
+	<reflexive name="Effect References" offset="0x78" visible="true" entrySize="0x28">
+		<tagref name="Effect" offset="0x0" visible="true" />
 		<undefined name="00000009" offset="0x10" visible="true" />
 		<tagref name="00000010" offset="0x14" visible="true" />
 		<undefined name="00000014" offset="0x24" visible="true" />
@@ -75,8 +77,8 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 	</reflexive>
-	<reflexive name="Testo" offset="0x9C" visible="true" entrySize="0x40">
-		<stringid name="00000005" offset="0x0" visible="true" />
+	<reflexive name="Animations" offset="0x9C" visible="true" entrySize="0x40">
+		<stringid name="Animation" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />
 		<undefined name="00000008" offset="0xC" visible="true" />
@@ -164,8 +166,8 @@
 			</reflexive>
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown 9" offset="0xA8" visible="false" entrySize="0x2C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Walking and Looking" offset="0xA8" visible="false" entrySize="0x2C">
+		<stringid name="Animation" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -196,9 +198,9 @@
 	</reflexive>
 	<reflexive name="Testo" offset="0xCC" visible="true" entrySize="0x14">
 		<stringid name="00000005" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="true" />
-		<undefined name="00000007" offset="0x8" visible="true" />
-		<undefined name="00000008" offset="0xC" visible="true" />
+		<stringid name="00000006" offset="0x4" visible="true" />
+		<stringid name="00000007" offset="0x8" visible="true" />
+		<stringid name="00000008" offset="0xC" visible="true" />
 		<undefined name="00000009" offset="0x10" visible="true" />
 	</reflexive>
 	<reflexive name="Testo" offset="0xD8" visible="true" entrySize="0x10">
@@ -290,32 +292,32 @@
 	<undefined name="00000082" offset="0x130" visible="true" />
 	<undefined name="00000083" offset="0x134" visible="true" />
 	<undefined name="00000084" offset="0x138" visible="true" />
-	<reflexive name="Testo" offset="0x13C" visible="true" entrySize="0x30">
+	<reflexive name="Modes" offset="0x13C" visible="true" entrySize="0x30">
 		<stringid name="00000005" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
 		<undefined name="00000007" offset="0x8" visible="true" />
-		<reflexive name="Unknown 19" offset="0xC" visible="false" entrySize="0x38">
+		<reflexive name="Weapon Class" offset="0xC" visible="false" entrySize="0x38">
 			<stringid name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
-			<reflexive name="Unknown 20" offset="0x8" visible="false" entrySize="0x14">
+			<reflexive name="Weapon" offset="0x8" visible="false" entrySize="0x14">
 				<stringid name="Unknown" offset="0x0" visible="false" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
 				<reflexive name="Unknown 21" offset="0x8" visible="false" entrySize="0x48">
 					<stringid name="Unknown" offset="0x0" visible="false" />
 					<undefined name="Unknown" offset="0x4" visible="false" />
 					<undefined name="Unknown" offset="0x8" visible="false" />
-					<reflexive name="Unknown 22" offset="0xC" visible="false" entrySize="0xC">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+					<reflexive name="Actions" offset="0xC" visible="false" entrySize="0xC">
+						<stringid name="Unknown" offset="0x0" visible="false" />
 						<undefined name="Unknown" offset="0x4" visible="false" />
 						<undefined name="Unknown" offset="0x8" visible="false" />
 					</reflexive>
-					<reflexive name="Unknown 23" offset="0x18" visible="false" entrySize="0xC">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+					<reflexive name="Overlays" offset="0x18" visible="false" entrySize="0xC">
+						<stringid name="Unknown" offset="0x0" visible="false" />
 						<undefined name="Unknown" offset="0x4" visible="false" />
 						<undefined name="Unknown" offset="0x8" visible="false" />
 					</reflexive>
 					<reflexive name="Unknown 24" offset="0x24" visible="false" entrySize="0x10">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+						<stringid name="Unknown" offset="0x0" visible="false" />
 						<reflexive name="Unknown 25" offset="0x4" visible="false" entrySize="0xC">
 							<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x2">
 								<int16 name="Unknown" offset="0x0" visible="false" />
@@ -323,10 +325,10 @@
 						</reflexive>
 					</reflexive>
 					<reflexive name="Unknown 25" offset="0x30" visible="false" entrySize="0x10">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+						<stringid name="Unknown" offset="0x0" visible="false" />
 						<reflexive name="Unknown 26" offset="0x4" visible="false" entrySize="0xC">
-							<undefined name="Unknown" offset="0x0" visible="false" />
-							<undefined name="Unknown" offset="0x4" visible="false" />
+							<stringid name="Unknown" offset="0x0" visible="false" />
+							<stringid name="Unknown" offset="0x4" visible="false" />
 							<undefined name="Unknown" offset="0x8" visible="false" />
 						</reflexive>
 					</reflexive>
@@ -368,9 +370,9 @@
 				<undefined name="Unknown" offset="0x20" visible="false" />
 			</reflexive>
 			<reflexive name="Unknown 22" offset="0x2C" visible="false" entrySize="0x10">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+				<stringid name="Unknown" offset="0x0" visible="false" />
 				<reflexive name="Unknown 23" offset="0x4" visible="false" entrySize="0x1C">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+					<stringid name="Unknown" offset="0x0" visible="false" />
 					<reflexive name="Unknown 24" offset="0x4" visible="false" entrySize="0x30">
 						<undefined name="Unknown" offset="0x0" visible="false" />
 						<undefined name="Unknown" offset="0x4" visible="false" />
