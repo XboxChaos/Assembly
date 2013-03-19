@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Input;
 using Blamite.Blam;
 
@@ -29,13 +30,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (convertingToOffset)
 			{
 				action = txtConverterAddress.Text.ToLowerInvariant().StartsWith("0x")
-					         ? uint.Parse(txtConverterAddress.Text.Remove(0, 2))
+					         ? uint.Parse(txtConverterAddress.Text.Remove(0, 2), NumberStyles.HexNumber)
 					         : uint.Parse(txtConverterAddress.Text);
 			}
 			else
 			{
 				action = txtCoverterOffset.Text.ToLowerInvariant().StartsWith("0x")
-							 ? uint.Parse(txtCoverterOffset.Text.Remove(0, 2))
+							 ? uint.Parse(txtCoverterOffset.Text.Remove(0, 2), NumberStyles.HexNumber)
 							 : uint.Parse(txtCoverterOffset.Text);
 			}
 
