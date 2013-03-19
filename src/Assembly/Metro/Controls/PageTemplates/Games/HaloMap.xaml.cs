@@ -75,6 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
  */
 
         private readonly Settings.TagSort _tagSorting;
+	    private Settings.TagOpenMode _tagOpenMode;
         private Settings.MapInfoDockSide _dockSide;
         private TagHierarchy _hierarchy = new TagHierarchy();
 		private TagHierarchy _tmpHierarchy = new TagHierarchy();
@@ -138,6 +139,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Read Settings
             cbShowEmptyTags.IsChecked = Settings.halomapShowEmptyClasses;
 		    cbShowBookmarkedTagsOnly.IsChecked = Settings.halomapOnlyShowBookmarkedTags;
+		    cbTabOpenMode.SelectedIndex = (int) Settings.halomapTagOpenMode;
             Settings.SettingsChanged += SettingsChanged;
 
             var initalLoadBackgroundWorker = new BackgroundWorker();
@@ -489,6 +491,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             if (Settings.halomapMapInfoDockSide != _dockSide)
                 UpdateDockPanelLocation();
+
+			if (Settings.halomapTagOpenMode != _tagOpenMode)
+				UpdateTagOpenMode();
         }
 
         private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e) { UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool)cbShowEmptyTags.IsChecked); }
@@ -1019,21 +1024,73 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         public void CreateTag(TagEntry tag)
         {
-            if (!IsTagOpen(tag))
-            {
-                contentTabs.Items.Add(new CloseableTabItem
-                {
-                    Header = new ContentControl
-					{ 
-						Content = string.Format("{0}.{1}", tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1), CharConstant.ToString(tag.RawTag.Class.Magic)),
+	        TagEntry selectedTag = null;
+			TabItem selectedTab = null;
+
+			if (_tagOpenMode == Settings.TagOpenMode.ExistingTab)
+			{
+				// Get current tab, make sure it is a tag 
+				var currentTab = contentTabs.SelectedItem as CloseableTabItem;
+
+				if (currentTab != null && 
+					currentTab.Tag != null && 
+					currentTab.Content is MetaContainer &&
+					currentTab.Tag is TagEntry)
+				{
+					// Save this
+					selectedTag = (TagEntry) currentTab.Tag;
+					selectedTab = currentTab;
+				}
+				else
+				{
+					foreach (var tab in contentTabs.Items.Cast<CloseableTabItem>().Where(tab => tab.Tag != null && tab.Tag is TagEntry && tab.Content is MetaContainer))
+					{
+						selectedTag = (TagEntry)tab.Tag;
+						selectedTab = tab;
+					}
+				}
+
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+				if (selectedTag != null && selectedTab != null)
+				{
+					var metaContainer = (MetaContainer)selectedTab.Content;
+					metaContainer.LoadNewTagEntry(tag);
+					selectedTab.Header = new ContentControl
+						                     {
+							                     Content =
+								                     string.Format("{0}.{1}",
+								                                   tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
+								                                   CharConstant.ToString(tag.RawTag.Class.Magic)),
+							                     ContextMenu = BaseContextMenu
+						                     };
+					selectedTab.Tag = tag;
+					SelectTabFromTag(tag);
+
+					return;
+				}
+// ReSharper restore ConditionIsAlwaysTrueOrFalse
+			}
+
+			if (!IsTagOpen(tag))
+			{
+				contentTabs.Items.Add(new CloseableTabItem
+				{
+					Header = new ContentControl
+					{
+						Content =
+							string.Format("{0}.{1}",
+										  tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
+										  CharConstant.ToString(tag.RawTag.Class.Magic)),
 						ContextMenu = BaseContextMenu
 					},
-                    Tag = tag,
-					Content = new MetaContainer(_buildInfo, tag, _tmpHierarchy, _cacheFile, _mapManager, _rteProvider, _stringIDTrie)
-                });
-            }
+					Tag = tag,
+					Content =
+						new MetaContainer(_buildInfo, tag, _tmpHierarchy, _cacheFile, _mapManager, _rteProvider,
+										  _stringIDTrie)
+				});
+			}
 
-            SelectTabFromTag(tag);
+			SelectTabFromTag(tag);
         }
 
 		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
@@ -1081,6 +1138,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			throw new Exception();
 		}
+
+		private void UpdateTagOpenMode()
+		{
+			_tagOpenMode = Settings.halomapTagOpenMode;
+
+			cbTabOpenMode.SelectedIndex = (int) _tagOpenMode;
+		}
+		private void cbTabOpenMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (cbTabOpenMode == null || cbTabOpenMode.SelectedIndex < 0) return;
+
+			_tagOpenMode = (Settings.TagOpenMode) cbTabOpenMode.SelectedIndex;
+			Settings.halomapTagOpenMode = _tagOpenMode;
+			Settings.UpdateSettings();
+		}
+
         #endregion
 
         private void tvTagList_SelectedTagChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

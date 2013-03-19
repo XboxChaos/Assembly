@@ -262,6 +262,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             }
         }
 
+		public void LoadNewTagEntry(TagEntry tag)
+		{
+			_tag = tag;
+
+			// Load Plugin Path
+			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+
+			// Set Invisibility box
+			cbShowInvisibles.IsChecked = Settings.pluginsShowInvisibles;
+
+			// Load Meta
+			RefreshEditor(MetaReader.LoadType.File);
+		}
 
         private void btnPluginRefresh_Click(object sender, RoutedEventArgs e)
         {

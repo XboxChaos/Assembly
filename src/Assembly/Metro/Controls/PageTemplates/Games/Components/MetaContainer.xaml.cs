@@ -1,20 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
 using Assembly.Helpers;
-using Assembly.Helpers.Plugins;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -26,12 +12,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// <summary>
     /// Interaction logic for MetaContainer.xaml
     /// </summary>
-    public partial class MetaContainer : UserControl
+    public partial class MetaContainer
     {
         private TagEntry _tag;
         private BuildInformation _buildInfo;
         private ICacheFile _cache;
+	    private IStreamManager _streamManager;
+	    private IRTEProvider _rteProvider;
         private Trie _stringIDTrie;
+	    private TagHierarchy _tags;
 
 		private MetaInformation _metaInformation;
 		private MetaEditor _metaEditor;
@@ -50,8 +39,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             InitializeComponent();
 
             _tag = tag;
+	        _tags = tags;
             _buildInfo = buildInfo;
             _cache = cache;
+	        _streamManager = streamManager;
+	        _rteProvider = rteProvider;
             _stringIDTrie = stringIDTrie;
 
             tbMetaEditors.SelectedIndex = (int)Settings.halomapLastSelectedMetaEditor;
@@ -61,9 +53,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tabTagInfo.Content = _metaInformation;
 
             // Create Meta Editor Tab
-			_metaEditor = new MetaEditor(_buildInfo, _tag, this, tags, _cache, streamManager, rteProvider, _stringIDTrie);
-			_metaEditor.Padding = new Thickness(0);
-            tabMetaEditor.Content = _metaEditor;
+			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie)
+				              {
+					              Padding = new Thickness(0)
+				              };
+	        tabMetaEditor.Content = _metaEditor;
 
             // Create Plugin Editor Tab
             _pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
@@ -75,6 +69,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.PluginEditor;
 			_pluginEditor.GoToLine(pluginLine);
 
+		}
+
+		public void LoadNewTagEntry(TagEntry tag)
+		{
+			TagEntry = tag;
+
+			// Create Meta Information Tab
+			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			tabTagInfo.Content = _metaInformation;
+
+			// Create Meta Editor Tab
+			_metaEditor.LoadNewTagEntry(tag);
+
+			// Create Plugin Editor Tab
+			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
+			tabPluginEditor.Content = _pluginEditor;
 		}
 
         private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)

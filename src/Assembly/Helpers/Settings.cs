@@ -62,6 +62,7 @@ namespace Assembly.Helpers
 		        startpageShowRecentsMapInfo = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMapInfo", true));
 
 		        halomapTagSort = (TagSort)keyApp.GetValue("TagSorting", 0);
+				halomapTagOpenMode = (TagOpenMode)keyApp.GetValue("TagOpeningMode", 0);
 		        halomapShowEmptyClasses = Convert.ToBoolean(keyApp.GetValue("ShowEmptyClasses", false));
 				halomapOnlyShowBookmarkedTags = Convert.ToBoolean(keyApp.GetValue("OnlyShowBookmarkedTags", false));
 		        halomapLastSelectedMetaEditor = (LastMetaEditorType)keyApp.GetValue("LastSelectedMetaEditor", 0);
@@ -124,7 +125,8 @@ namespace Assembly.Helpers
 				keyApp.SetValue("ShowRecentsBLF", startpageShowRecentsBLF);
 				keyApp.SetValue("ShowRecentsMapInfo", startpageShowRecentsMapInfo);
 
-				keyApp.SetValue("TagSorting", (int) halomapTagSort);
+				keyApp.SetValue("TagSorting", (int)halomapTagSort);
+				keyApp.SetValue("TagOpeningMode", (int)halomapTagOpenMode);
 				keyApp.SetValue("MapInfoDockSide", (int) halomapMapInfoDockSide);
 
 				keyApp.SetValue("ShowEmptyClasses", halomapShowEmptyClasses);
@@ -192,6 +194,7 @@ namespace Assembly.Helpers
         public static bool XDKScreenshotFreeze = true;
 
         public static TagSort halomapTagSort = TagSort.TagClass;
+	    public static TagOpenMode halomapTagOpenMode = TagOpenMode.NewTab;
         public static bool halomapShowEmptyClasses = false;
 	    public static bool halomapOnlyShowBookmarkedTags = false;
         public static MapInfoDockSide halomapMapInfoDockSide = MapInfoDockSide.Left;
@@ -209,6 +212,11 @@ namespace Assembly.Helpers
         public static HaloMap selectedHaloMap = null;
         public static Xbdm xbdm = null;
 
+		public enum TagOpenMode
+		{
+			NewTab,
+			ExistingTab
+		}
         public enum Accents
         {
             Blue,
