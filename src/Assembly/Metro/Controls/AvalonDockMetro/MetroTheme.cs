@@ -15,18 +15,16 @@
   **********************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using AvalonDock.Themes;
 
-namespace AvalonDock.Themes
+namespace Assembly.Metro.Controls.AvalonDockMetro
 {
     public class MetroTheme : Theme
     {
         public override Uri GetResourceUri()
         {
             return new Uri(
-                "/AvalonDock.Themes.Metro;component/Theme.xaml", 
+				"/Assembly;component/Metro/Controls/AvalonDockMetro/Theme.xaml", 
                 UriKind.Relative);  
         }
     }
