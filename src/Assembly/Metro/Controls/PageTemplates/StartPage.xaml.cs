@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
-using Assembly.Windows;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
     /// <summary>
     /// Interaction logic for StartPage.xaml
     /// </summary>
-    public partial class StartPage : UserControl
+    public partial class StartPage
     {
         public StartPage()
         {
@@ -56,7 +44,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         public void LoadRecentItem(object sender, RoutedEventArgs e)
         {
-            Settings.RecentFileEntry senderEntry = (Settings.RecentFileEntry)((Button)sender).Tag;
+            var senderEntry = (Settings.RecentFileEntry)((Button)sender).Tag;
 
             if (senderEntry != null)
                 if (!File.Exists(senderEntry.FilePath))
@@ -66,17 +54,23 @@ namespace Assembly.Metro.Controls.PageTemplates
                         RecentFiles.RemoveEntry(senderEntry);
                         UpdateRecents();
                     }
-                    return;
                 }
                 else
-                    if (senderEntry.FileType == Settings.RecentFileType.Cache)
-                        Settings.homeWindow.AddCacheTabModule(senderEntry.FilePath);
-                    else if (senderEntry.FileType == Settings.RecentFileType.BLF)
-                        Settings.homeWindow.AddImageTabModule(senderEntry.FilePath);
-                    else if (senderEntry.FileType == Settings.RecentFileType.MapInfo)
-                        Settings.homeWindow.AddInfooTabModule(senderEntry.FilePath);
-                    else
-                        MetroMessageBox.Show("wut.", "This content type doesn't even exist, how the fuck did you manage that?");
+                    switch (senderEntry.FileType)
+                    {
+	                    case Settings.RecentFileType.Cache:
+		                    Settings.homeWindow.AddCacheTabModule(senderEntry.FilePath);
+		                    break;
+	                    case Settings.RecentFileType.BLF:
+		                    Settings.homeWindow.AddImageTabModule(senderEntry.FilePath);
+		                    break;
+	                    case Settings.RecentFileType.MapInfo:
+		                    Settings.homeWindow.AddInfooTabModule(senderEntry.FilePath);
+		                    break;
+	                    default:
+		                    MetroMessageBox.Show("wut.", "This content type doesn't even exist, how the fuck did you manage that?");
+		                    break;
+                    }
         }
         public void UpdateRecents()
         {
@@ -84,18 +78,20 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             if (Settings.applicationRecents != null)
             {
-                int recentsCount = 0;
-                foreach (Settings.RecentFileEntry entry in Settings.applicationRecents)
+                var recentsCount = 0;
+                foreach (var entry in Settings.applicationRecents)
                 {
                     if (recentsCount > 9)
                         break;
 
-                    Button btnRecent = new Button();
-                    btnRecent.Tag = entry;
-                    btnRecent.Style = (Style)FindResource("TabActiveButtons");
-                    btnRecent.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                    btnRecent.ToolTip = entry.FilePath;
-                    btnRecent.Click += LoadRecentItem;
+                    var btnRecent = new Button
+	                                    {
+		                                    Tag = entry,
+		                                    Style = (Style) FindResource("TabActiveButtons"),
+		                                    HorizontalAlignment = HorizontalAlignment.Stretch,
+		                                    ToolTip = entry.FilePath
+	                                    };
+	                btnRecent.Click += LoadRecentItem;
 
                     if (entry.FileType == Settings.RecentFileType.Cache && Settings.startpageShowRecentsMap)
                     {
@@ -117,7 +113,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                 }
             }
             else if (Settings.applicationRecents == null || Settings.applicationRecents.Count == 0)
-                panelRecents.Children.Add(new TextBlock()
+                panelRecents.Children.Add(new TextBlock
                 {
                     Text = "It's lonely in here, get modding ;)",
                     Style = (Style)FindResource("GenericTextblock"),
@@ -126,16 +122,19 @@ namespace Assembly.Metro.Controls.PageTemplates
         }
 
         #region Settings Modification
+
         private void cbClosePageOnLoad_Update(object sender, RoutedEventArgs e)
         {
-            Settings.startpageHideOnLaunch = (bool)cbClosePageOnLoad.IsChecked;
-            Settings.UpdateSettings();
+	        if (cbClosePageOnLoad.IsChecked != null) Settings.startpageHideOnLaunch = (bool)cbClosePageOnLoad.IsChecked;
+	        Settings.UpdateSettings();
         }
-        private void cbShowOnStartUp_Update(object sender, RoutedEventArgs e)
-        {
-            Settings.startpageShowOnLoad = (bool)cbShowOnStartUp.IsChecked;
-            Settings.UpdateSettings();
-        }
-        #endregion
+
+	    private void cbShowOnStartUp_Update(object sender, RoutedEventArgs e)
+	    {
+		    if (cbShowOnStartUp.IsChecked != null) Settings.startpageShowOnLoad = (bool)cbShowOnStartUp.IsChecked;
+		    Settings.UpdateSettings();
+	    }
+
+	    #endregion
     }
 }

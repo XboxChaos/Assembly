@@ -12,6 +12,7 @@ using Assembly.Metro.Dialogs;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
+using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -21,27 +22,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     public partial class HaloImage
     {
         private readonly string _blfLocation;
-        private TabItem _tab;
         private PureBLF _blf;
 
-        public HaloImage(string imageLocation, TabItem tab)
+        public HaloImage(string imageLocation, LayoutDocument tab)
         {
             InitializeComponent();
 
             _blfLocation = imageLocation;
-            _tab = tab;
 
             var fi = new FileInfo(_blfLocation);
-			tab.Header = new ContentControl
-			{
-				Content = fi.Name,
-				ContextMenu = Settings.homeWindow.FilesystemContextMenu
-			};
-
+	        tab.Title = fi.Name;
 
             lblBLFname.Text = fi.Name;
 
-			var thrd = new Thread(new ThreadStart(loadBLF));
+			var thrd = new Thread(loadBLF);
             thrd.Start();
         }
 
@@ -69,7 +63,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                     // Add BLF Info
                     paneBLFInfo.Children.Insert(0, new Components.MapHeaderEntry("BLF Length:", "0x" + _blf.BLFStream.Length.ToString("X")));
-                    paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString()));
+                    paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
                     if (Settings.startpageHideOnLaunch)
                         Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
@@ -90,7 +84,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         /// <summary>
         /// Close stuff
         /// </summary>
-        public bool Close() { try { _blf.Close(); } catch { } return true; }
+        public bool Close() { try { _blf.Close(); } catch (Exception)
+        { } return true; }
 
         private void btnInjectImage_Click(object sender, RoutedEventArgs e)
         {

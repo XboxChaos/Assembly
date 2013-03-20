@@ -390,6 +390,13 @@ namespace Assembly.Windows
         /// <param name="cacheLocation">Path to the Blam Cache File</param>
         public void AddCacheTabModule(string cacheLocation)
         {
+			// Check Map isn't already open
+			foreach (var tab in documentManager.Children.Where(tab => tab.ContentId == cacheLocation))
+			{
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return;
+			}
+
 	        var newCacheTab = new LayoutDocument
 		                          {
 									  ContentId = cacheLocation,
@@ -398,27 +405,7 @@ namespace Assembly.Windows
 		                          };
 	        newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
 			documentManager.Children.Add(newCacheTab);
-
-	        //// Check the map isn't already open
-	        //foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => cacheLocation == (string)tab.Tag))
-	        //{
-	        //	homeTabControl.SelectedItem = tab;
-	        //	return;
-	        //}
-
-	        //var newCacheTab = new CloseableTabItem
-	        //					  {
-	        //						  Tag = cacheLocation, 
-	        //						  Header = new ContentControl
-	        //									   {
-	        //										   Content = "",
-	        //										   ContextMenu = FilesystemContextMenu
-	        //									   }
-	        //					  };
-	        //newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
-
-	        //homeTabControl.Items.Add(newCacheTab);
-	        //homeTabControl.SelectedItem = newCacheTab;
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
         }
         /// <summary>
         /// Add a new XBox Screenshot Editor Container
@@ -426,19 +413,15 @@ namespace Assembly.Windows
         /// <param name="tempImageLocation">Path to the temporary location of the image</param>
         public void AddScrenTabModule(string tempImageLocation)
         {
-			var newImageTab = new CloseableTabItem
-				                  {
-					                  Tag = tempImageLocation, 
-									  Header = new ContentControl
-										           {
-											           Content = "Screenshot",
-													   ContextMenu = BaseContextMenu
-										           }
-				                  };
-            newImageTab.Content = new HaloScreenshot(tempImageLocation, newImageTab);
-
-            homeTabControl.Items.Add(newImageTab);
-            homeTabControl.SelectedItem = newImageTab;
+			var newScreenshotTab = new LayoutDocument
+			{
+				ContentId = tempImageLocation,
+				Title = "Screenshot",
+				ToolTip = tempImageLocation
+			};
+	        newScreenshotTab.Content = new HaloScreenshot(tempImageLocation, newScreenshotTab);
+			documentManager.Children.Add(newScreenshotTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newScreenshotTab);
         }
         /// <summary>
         /// Add a new BLF Editor Container
@@ -446,28 +429,22 @@ namespace Assembly.Windows
         /// <param name="imageLocation">Path to the BLF file</param>
         public void AddImageTabModule(string imageLocation)
         {
-            // Check the map image isn't already open
-			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => imageLocation == (string)tab.Tag))
-            {
-	            // Show Message Telling user map image is already open
-	            MetroMessageBox.Show("Map Image Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
-	            homeTabControl.SelectedItem = tab;
-	            return;
-            }
+			// Check Map isn't already open
+			foreach (var tab in documentManager.Children.Where(tab => tab.ContentId == imageLocation))
+			{
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return;
+			}
 
-			var newImageTab = new CloseableTabItem
-				                  {
-					                  Tag = imageLocation, 
-									  Header = new ContentControl
-										           {
-											           Content = "",
-													   ContextMenu = FilesystemContextMenu
-										           }
-				                  };
-            newImageTab.Content = new HaloImage(imageLocation, newImageTab);
-
-            homeTabControl.Items.Add(newImageTab);
-            homeTabControl.SelectedItem = newImageTab;
+			var newMapImageTab = new LayoutDocument
+			{
+				ContentId = imageLocation,
+				Title = "Image",
+				ToolTip = imageLocation
+			};
+			newMapImageTab.Content = new HaloImage(imageLocation, newMapImageTab);
+			documentManager.Children.Add(newMapImageTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newMapImageTab);
         }
         /// <summary>
         /// Add a new MapInfo Editor Container
@@ -475,29 +452,22 @@ namespace Assembly.Windows
         /// <param name="infooLocation">Path to the MapInfo file</param>
         public void AddInfooTabModule(string infooLocation)
         {
-            // Check the map image isn't already open
-			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => infooLocation == (string)tab.Tag))
-            {
-	            // Show Message Telling user map image is already open
-	            MetroMessageBox.Show("Map Info Already Open!", "The selected Blam Engine File is already open in Assembly. Let us take you there now.");
-	            homeTabControl.SelectedItem = tab;
-	            return;
-            }
+			// Check Map isn't already open
+			foreach (var tab in documentManager.Children.Where(tab => tab.ContentId == infooLocation))
+			{
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return;
+			}
 
-			var newInfooTab = new CloseableTabItem
-				                  {
-					                  Tag = infooLocation,
-									  Header = new ContentControl
-									  {
-										  Content = "",
-										  ContextMenu = FilesystemContextMenu
-									  }
-				                  };
-	        //newInfooTab.ToolTip = infooLocation;
-            newInfooTab.Content = new HaloInfo(infooLocation, newInfooTab);
-
-            homeTabControl.Items.Add(newInfooTab);
-            homeTabControl.SelectedItem = newInfooTab;
+			var newMapImageTab = new LayoutDocument
+			{
+				ContentId = infooLocation,
+				Title = "Image",
+				ToolTip = infooLocation
+			};
+			newMapImageTab.Content = new HaloInfo(infooLocation, newMapImageTab);
+			documentManager.Children.Add(newMapImageTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newMapImageTab);
         }
 		/// <summary>
 		/// Add a new Patch Control
@@ -505,6 +475,14 @@ namespace Assembly.Windows
 		/// <param name="patchLocation">Path to the Patch file</param>
 		public void AddPatchTabModule(string patchLocation = null)
 		{
+			var newPatchTab = new LayoutDocument
+				                  {
+					                  Title = "",
+									  Content = (patchLocation != null) ? new PatchControl(patchLocation) : new PatchControl()
+				                  };
+			documentManager.Children.Add(newPatchTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
+
 			var newInfooTab = new CloseableTabItem
 				                  {
 					                  Tag = patchLocation,
@@ -535,99 +513,59 @@ namespace Assembly.Windows
         }
         public void AddTabModule(TabGenre tabG, bool singleInstance = true)
         {
-			var tab = new CloseableTabItem
-				          {
-					          HorizontalAlignment = HorizontalAlignment.Stretch,
-					          VerticalAlignment = VerticalAlignment.Stretch
-				          };
+			var tab = new LayoutDocument();
 
-	        switch(tabG)
-            {
-                case TabGenre.StartPage:
-		            tab.Header = new ContentControl
-			        {
-				        Content = "Start Page",
-				        ContextMenu = BaseContextMenu
-			        };
-                    tab.Content = new StartPage();
-                    break;
-                case TabGenre.Welcome:
-					tab.Header = new ContentControl
-					{
-						Content = "Welcome",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new WelcomePage();
-                    break;
-                case TabGenre.Settings:
-					tab.Header = new ContentControl
-					{
-						Content = "Settings",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new SettingsPage();
-                    break;
-                case TabGenre.NetworkPoking:
-					tab.Header = new ContentControl
-					{
-						Content = "Network Poking",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new NetworkGrouping();
-                    break;
-                case TabGenre.PluginGenerator:
-					tab.Header = new ContentControl
-					{
-						Content = "Plugin Generator",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new HaloPluginGenerator();
-                    break;
+			switch (tabG)
+			{
+				case TabGenre.StartPage:
+					tab.Title = "Start Page";
+					tab.Content = new StartPage();
+					break;
+				case TabGenre.Welcome:
+					tab.Title = "Welcome";
+					tab.Content = new WelcomePage();
+					break;
+				case TabGenre.Settings:
+					tab.Title = "Settings";
+					tab.Content = new SettingsPage();
+					break;
+				case TabGenre.NetworkPoking:
+					tab.Title = "Network Poking";
+					tab.Content = new NetworkGrouping();
+					break;
+				case TabGenre.PluginGenerator:
+					tab.Title = "Plugin Generator";
+					tab.Content = new HaloPluginGenerator();
+					break;
 				case TabGenre.PluginConverter:
-					tab.Header = new ContentControl
-					{
-						Content = "Plugin Converter",
-						ContextMenu = BaseContextMenu
-					};
-                    tab.Content = new HaloPluginConverter();
-		            break;
+					tab.Title = "Plugin Converter";
+					tab.Content = new HaloPluginConverter();
+					break;
 
 
 				case TabGenre.MemoryManager:
-					tab.Header = new ContentControl
-					{
-						Content = "Memory Manager",
-						ContextMenu = BaseContextMenu
-					};
+					tab.Title = "Memory Manager";
 					tab.Content = new MemoryManager();
 					break;
 				case TabGenre.VoxelConverter:
-		            tab.Header = new ContentControl
-					{
-						Content = "Voxel Converter",
-						ContextMenu = BaseContextMenu
-					};
+					tab.Title = "Voxel Converter";
 					tab.Content = new VoxelConverter();
 					break;
 				case TabGenre.PostGenerator:
-					tab.Header = new ContentControl
-					{
-						Content = "Post Generator",
-						ContextMenu = BaseContextMenu
-					};
+					tab.Title = "Post Generator";
 					tab.Content = new PostGenerator();
 					break;
-            }
+			}
 
 			if (singleInstance)
-				foreach (var tabb in homeTabControl.Items.Cast<TabItem>().Where(tabb => ((ContentControl)tabb.Header).Content == ((ContentControl)tab.Header).Content))
+				foreach (var tabb in documentManager.Children.Where(tabb => tabb.Title == tab.Title))
 				{
-					homeTabControl.SelectedItem = tabb;
+					documentManager.SelectedContentIndex = documentManager.IndexOfChild(tabb);
 					return;
 				}
 
-            homeTabControl.Items.Add(tab);
-            homeTabControl.SelectedItem = tab;
+			documentManager.Children.Add(tab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
         }
         #endregion
 
@@ -877,6 +815,36 @@ namespace Assembly.Windows
                 UpdateTitleText("");
             }
         }
+
+	    private int _lastDocumentIndex = -1;
+		private void dockManager_ActiveContentChanged(object sender, EventArgs e)
+		{
+			if (documentManager.SelectedContentIndex != _lastDocumentIndex)
+			{
+				// Selection Changed, lets do dis
+				var tab = (LayoutDocument)documentManager.SelectedContent;
+
+				if (tab != null)
+					UpdateTitleText(tab.Title.Replace("__", "_").Replace(".map", ""));
+
+				if (tab != null && tab.Title == "Start Page")
+					((StartPage)tab.Content).UpdateRecents();
+
+				// Check if the tab is a HaloMap
+				if (tab != null && tab.Content != null && tab.Content is HaloMap)
+					Settings.selectedHaloMap = (HaloMap)tab.Content;
+				else
+					Settings.selectedHaloMap = null;
+
+				if (tab == null)
+				{
+					documentManager.SelectedContentIndex = 0;
+					UpdateTitleText("");
+				}
+
+				_lastDocumentIndex = documentManager.SelectedContentIndex;
+			}
+		}
 
         #region More WPF Annoyance
         private void ResizeDrop_DragDelta(object sender, DragDeltaEventArgs e)

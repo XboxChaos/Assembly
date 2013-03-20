@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using System.ComponentModel;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers.Net;
+using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -20,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	    private readonly BitmapSource _bitmapImage;
         private string _imageID;
 
-        public HaloScreenshot(string tempImageLocation, TabItem tabItem)
+        public HaloScreenshot(string tempImageLocation, LayoutDocument tabItem)
         {
             InitializeComponent();
 
@@ -33,12 +33,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _datetime_shrt = date.ToString("hh:mm.ss");
 
             // Set Tab Header
-
-	        tabItem.Header = new ContentControl
-		                         {
-			                         Content = "Screenshot {" + _datetime_shrt + "}",
-									 ContextMenu = Settings.homeWindow.BaseContextMenu
-		                         };
+	        tabItem.Title = "Screenshot {" + _datetime_shrt + "}";
 
             // Set Image Name
             lblImageName.Text = _datetime_long + ".png";

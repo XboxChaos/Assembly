@@ -1,67 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.ThirdGen;
 using Blamite.Blam.ThirdGen.BLF;
-using Blamite.IO;
+using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
     /// <summary>
     /// Interaction logic for HaloInfo.xaml
     /// </summary>
-    public partial class HaloInfo : UserControl
+    public partial class HaloInfo
     {
-        private string _blfLocation;
-        private TabItem _tab;
+        private readonly string _blfLocation;
         private PureBLF _blf;
         private MapInfo _mapInfo;
-        private bool _startEditing = false;
-        private ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>()
+        private bool _startEditing;
+        private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>
         {
-            new LanguageEntry() { Index = 0, Language = "English", LanguageShort = "en" },
-            new LanguageEntry() { Index = 1, Language = "Japanese", LanguageShort = "ja" },
-            new LanguageEntry() { Index = 2, Language = "German", LanguageShort = "de" },
-            new LanguageEntry() { Index = 3, Language = "French", LanguageShort = "fr" },
-            new LanguageEntry() { Index = 4, Language = "Spanish", LanguageShort = "es" },
-            new LanguageEntry() { Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es" },
-            new LanguageEntry() { Index = 6, Language = "Italian", LanguageShort = "it" },
-            new LanguageEntry() { Index = 7, Language = "Korean", LanguageShort = "ko" },
-            new LanguageEntry() { Index = 8, Language = "Chinese", LanguageShort = "zh-CHS" },
-            new LanguageEntry() { Index = 9, Language = "Portuguese", LanguageShort = "pt" }
+            new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
+            new LanguageEntry { Index = 1, Language = "Japanese", LanguageShort = "ja" },
+            new LanguageEntry { Index = 2, Language = "German", LanguageShort = "de" },
+            new LanguageEntry { Index = 3, Language = "French", LanguageShort = "fr" },
+            new LanguageEntry { Index = 4, Language = "Spanish", LanguageShort = "es" },
+            new LanguageEntry { Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es" },
+            new LanguageEntry { Index = 6, Language = "Italian", LanguageShort = "it" },
+            new LanguageEntry { Index = 7, Language = "Korean", LanguageShort = "ko" },
+            new LanguageEntry { Index = 8, Language = "Chinese", LanguageShort = "zh-CHS" },
+            new LanguageEntry { Index = 9, Language = "Portuguese", LanguageShort = "pt" }
         };
 
-        public HaloInfo(string infoLocation, TabItem tab)
+        public HaloInfo(string infoLocation, LayoutDocument tab)
         {
             InitializeComponent();
-
-            _tab = tab;
             _blfLocation = infoLocation;
 
-            FileInfo fi = new FileInfo(_blfLocation);
-			tab.Header = new ContentControl
-			{
-				Content = fi.Name,
-				ContextMenu = Settings.homeWindow.FilesystemContextMenu
-			};
+            var fi = new FileInfo(_blfLocation);
+	        tab.Title = fi.Name;
             lblBLFname.Text = fi.Name;
 
-            Thread thrd = new Thread(new ThreadStart(LoadMapInfo));
+			var thrd = new Thread(LoadMapInfo);
             thrd.SetApartmentState(ApartmentState.STA);
             thrd.Start();
         }
@@ -82,7 +67,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 {
                     // Add BLF Info
                     paneBLFInfo.Children.Insert(0, new Components.MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X8")));
-                    paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString()));
+                    paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
                     // Load Languages
                     LoadLanguages(_mapInfo.MapInformation.Game);
@@ -103,7 +88,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                             txtGameName.Text = "Halo 4";
                             break;
                     }
-                    txtMapID.Text = _mapInfo.MapInformation.MapID.ToString();
+                    txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
                     lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
                     txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
@@ -121,8 +106,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             {
                 Dispatcher.Invoke(new Action(delegate
                 {
-                    MetroMessageBox.Show("Unable to open MapInfo", ex.Message.ToString());
-                    Settings.homeWindow.ExternalTabClose((TabItem)this.Parent);
+                    MetroMessageBox.Show("Unable to open MapInfo", ex.Message);
+                    Settings.homeWindow.ExternalTabClose((TabItem)Parent);
                 }));
             }
         }
@@ -134,8 +119,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         // Validate MapID
         private void txtMapID_TextChanged(object sender, TextChangedEventArgs e)
-        { 
-            Int32 tmp32 = 0;
+        {
+	        Int32 tmp32;
             if (Int32.TryParse(txtMapID.Text, out tmp32))
                 txtMapID.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
             else
@@ -180,7 +165,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             // Update MapID
-            if (txtMapID.BorderBrush != (Brush)FindResource("ExtryzeAccentBrush"))
+            if (!Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
                 _mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
 
             // Update Internal Name
@@ -197,19 +182,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             _mapInfo.UpdateMapInfo();
 
             // Check if MapID was invalid, if so tell user.
-            if (txtMapID.BorderBrush == (Brush)FindResource("ExtryzeAccentBrush"))
+            if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
                 MetroMessageBox.Show("MapID Not Saved", "The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
         }
 
         private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
         {
-            if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
-            {
-                foreach (LanguageEntry entry in cbLanguages.Items)
-                {
+			//if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
+			//{
+			//	foreach (LanguageEntry entry in cbLanguages.Items)
+			//	{
 
-                }
-            }
+			//	}
+			//}
         }
 
         // Load Languages
