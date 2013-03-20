@@ -35,7 +35,6 @@ namespace Assembly.Helpers
 					ApplyAccent();
 
 		        applicationRecents = jss.Deserialize<List<RecentFileEntry>>(keyApp.GetValue("RecentFiles", "").ToString());
-		        applicationXBDMSidebarLocation = (Home.XBDMSidebarLocations)keyApp.GetValue("XBDMSidebarLocation", 0);
 		        applicationSizeWidth = Convert.ToSingle(keyApp.GetValue("SizeWidth", 1100));
 		        applicationSizeHeight = Convert.ToSingle(keyApp.GetValue("SizeHeight", 600));
 		        applicationSizeMaximize = Convert.ToBoolean(keyApp.GetValue("SizeMaxamize", false));
@@ -98,7 +97,6 @@ namespace Assembly.Helpers
                     applicationRecents.RemoveRange(10, applicationRecents.Count - 10);
 
 				keyApp.SetValue("RecentFiles", jss.Serialize(applicationRecents));
-				keyApp.SetValue("XBDMSidebarLocation", (int) applicationXBDMSidebarLocation);
 				keyApp.SetValue("SizeWidth", applicationSizeWidth);
 				keyApp.SetValue("SizeHeight", applicationSizeHeight);
 				keyApp.SetValue("SizeMaxamize", applicationSizeMaximize);
@@ -171,7 +169,6 @@ namespace Assembly.Helpers
         public static bool applicationEasterEggs = true;
 
         public static List<RecentFileEntry> applicationRecents = new List<RecentFileEntry>();
-        public static Home.XBDMSidebarLocations applicationXBDMSidebarLocation = Home.XBDMSidebarLocations.Sidebar;
 
         public static double applicationSizeWidth = 1100;
         public static double applicationSizeHeight = 600;

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -16,11 +14,9 @@ using Assembly.Metro.Controls.PageTemplates;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Tools;
 using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
-using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers.Native;
 using AvalonDock.Layout;
-using CloseableTabItemDemo;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
@@ -34,139 +30,11 @@ namespace Assembly.Windows
     /// </summary>
     public partial class Home
 	{
-		#region ContextMenus
-		public ContextMenu BaseContextMenu;
-	    public ContextMenu FilesystemContextMenu;
-
-		void InitalizeContextMenusCloseItems(ItemCollection menuItems)
-		{
-			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close" }) ])).Click += contextMenuClose_Click;
-			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close All" }) ])).Click += contextMenuCloseAll_Click;
-			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close All But This" }) ])).Click += contextMenuCloseAllButThis_Click;
-			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close Tabs To The Left" }) ])).Click += contextMenuCloseToLeft_Click;
-			((MenuItem)(menuItems[ menuItems.Add(new MenuItem { Header = "Close Tabs To The Right" }) ])).Click += contextMenuCloseToRight_Click;
-		}
-		/// <summary>
-		/// Really hacky, but i didn't want to re-do the TabControl to make it DataBinded...
-		/// </summary>
-		private void InitalizeContextMenus()
-		{
-			// Create Lame Context Menu
-			BaseContextMenu = new ContextMenu();
-			var menu_items = BaseContextMenu.Items;
-			InitalizeContextMenusCloseItems(menu_items);
-
-			// Create Fun Context Menu
-			FilesystemContextMenu = new ContextMenu();
-			menu_items = FilesystemContextMenu.Items;
-			InitalizeContextMenusCloseItems(menu_items);
-			menu_items.Add(new Separator());
-			((MenuItem)(menu_items[ menu_items.Add(new MenuItem { Header = "Copy File Path" }) ])).Click += contextMenuCopyFilePath_Click;
-			((MenuItem)(menu_items[ menu_items.Add(new MenuItem { Header = "Open Containing Folder" }) ])).Click += contextMenuOpenContainingFolder_Click;
-		}
-
-		private void contextMenuClose_Click(object sender, RoutedEventArgs routedEventArgs)
-	    {
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-			ExternalTabClose(tabitem);
-	    }
-		private void contextMenuCloseAll_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var toDelete = homeTabControl.Items.OfType<CloseableTabItem>().Cast<TabItem>().ToList();
-
-			ExternalTabsClose(toDelete);
-		}
-	    private void contextMenuCloseAllButThis_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-
-		    var toDelete = homeTabControl.Items.OfType<CloseableTabItem>().Where(tab => !Equals(tab, tabitem)).Cast<TabItem>().ToList();
-
-			ExternalTabsClose(toDelete, false);
-		}
-		private void contextMenuCloseToLeft_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-			var selectedIndexOfTab = GetSelectedIndex(tabitem);
-
-			var toDelete = new List<TabItem>();
-			for(var i = 0; i < selectedIndexOfTab; i++)
-				toDelete.Add((TabItem)homeTabControl.Items[i]);
-
-			ExternalTabsClose(toDelete, false);
-		}
-		private void contextMenuCloseToRight_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-			var selectedIndexOfTab = GetSelectedIndex(tabitem);
-
-			var toDelete = new List<TabItem>();
-			for (var i = selectedIndexOfTab + 1; i < homeTabControl.Items.Count; i++)
-				toDelete.Add((TabItem)homeTabControl.Items[i]);
-
-			ExternalTabsClose(toDelete, false);
-		}
-
-		private static void contextMenuCopyFilePath_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-			if (tabitem != null) Clipboard.SetText(tabitem.Tag.ToString());
-		}
-		private static void contextMenuOpenContainingFolder_Click(object sender, RoutedEventArgs routedEventArgs)
-		{
-			var target = sender as FrameworkElement;
-			while (target is ContextMenu == false)
-			{
-				Debug.Assert(target != null, "target != null");
-				target = target.Parent as FrameworkElement;
-			}
-			var tabitem = ((ContentControl)(target as ContextMenu).PlacementTarget).Parent as CloseableTabItem;
-			if (tabitem == null) return;
-
-			var filepathArgument = "/select, \""  + tabitem.Tag + "\"";
-			Process.Start("explorer.exe", filepathArgument);
-		}
-	    #endregion
-
 		public Home()
         {
             InitializeComponent();
 
-			// Setup Context Menus
-			InitalizeContextMenus();
-
             DwmDropShadow.DropShadowToWindow(this);
-            AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
 
             UpdateTitleText("");
             UpdateStatusText("Ready...");
@@ -178,8 +46,8 @@ namespace Assembly.Windows
                 AddTabModule(TabGenre.StartPage);
 
             // Do sidebar Loading stuff
-            SwitchXBDMSidebarLocation(Settings.applicationXBDMSidebarLocation);
-            XBDMSidebarTimerEvent();
+			//SwitchXBDMSidebarLocation(Settings.applicationXBDMSidebarLocation);
+			//XBDMSidebarTimerEvent();
 
             // Set width/height/state from last session
             if (!double.IsNaN(Settings.applicationSizeHeight) && Settings.applicationSizeHeight > MinHeight)
@@ -300,89 +168,38 @@ namespace Assembly.Windows
 	    #endregion
 
         #region Tab Manager
+		public void ExternalTabClose(TabGenre tabGenre)
+		{
+			var tabHeader = "";
+			switch (tabGenre)
+			{
+				case TabGenre.StartPage:
+					tabHeader = "Start Page";
+					break;
+				case TabGenre.Settings:
+					tabHeader = "Settings Page";
+					break;
+			}
+
+			LayoutDocument toRemove = null;
+			foreach (var tab in documentManager.Children.Where(tab => tab.Title == tabHeader && tab is LayoutDocument))
+				toRemove = (LayoutDocument)tab;
+
+			if (toRemove != null)
+				documentManager.Children.Remove(toRemove);
+		}
+		public void ExternalTabClose(LayoutDocument tab)
+		{
+			documentManager.Children.Remove(tab);
+			
+			if (documentManager.Children.Count > 0)
+				documentManager.SelectedContentIndex = documentManager.Children.Count - 1;
+		}
+
         public void ClearTabs()
         {
-            homeTabControl.Items.Clear();
+            documentManager.Children.Clear();
         }
-
-        private static void CloseTab(object source, RoutedEventArgs args)
-        {
-            var tabItem = args.Source as TabItem;
-	        if (tabItem == null) return;
-
-	        dynamic tabContent = tabItem.Content;
-	        if (!tabContent.Close()) return;
-
-			var tabControl = tabItem.Parent as TabControl;
-	        if (tabControl != null)
-		        tabControl.Items.Remove(tabItem);
-        }
-
-        public void ExternalTabClose(TabItem tab, bool updateFocus = true)
-        {
-            homeTabControl.Items.Remove(tab);
-
-			if (!updateFocus) return;
-
-			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
-            {
-	            homeTabControl.SelectedItem = datTab;
-	            return;
-            }
-
-            if (homeTabControl.Items.Count > 0)
-                homeTabControl.SelectedIndex = homeTabControl.Items.Count - 1;
-        }
-		public void ExternalTabsClose(List<TabItem> tab, bool updateFocus = true)
-		{
-			foreach (var tabItem in tab)
-				homeTabControl.Items.Remove(tabItem);
-
-			if (!updateFocus) return;
-
-			foreach (var datTab in homeTabControl.Items.Cast<TabItem>().Where(datTab => ((ContentControl)datTab.Header).Content.ToString() == "Start Page"))
-			{
-				homeTabControl.SelectedItem = datTab;
-				return;
-			}
-
-			if (homeTabControl.Items.Count > 0)
-				homeTabControl.SelectedIndex = homeTabControl.Items.Count - 1;
-		}
-		public void ExternalTabClose(TabGenre tabGenre, bool updateFocus = true)
-        {
-			var tabHeader = "";
-            switch (tabGenre)
-            {
-	            case TabGenre.StartPage:
-		            tabHeader = "Start Page";
-		            break;
-	            case TabGenre.Settings:
-		            tabHeader = "Settings Page";
-		            break;
-            }
-
-            TabItem toRemove = null;
-			foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => ((ContentControl)tab.Header).Content.ToString() == tabHeader))
-	            toRemove = tab;
-
-            if (toRemove != null)
-                homeTabControl.Items.Remove(toRemove);
-        }
-
-		public int GetSelectedIndex(TabItem selectedTab)
-		{
-			var index = 0;
-			foreach (var tab in homeTabControl.Items)
-			{
-				if (Equals(tab, selectedTab))
-					return index;
-
-				index++;
-			}
-
-			throw new Exception();
-		}
 
         /// <summary>
         /// Add a new Blam Cache Editor Container
@@ -482,20 +299,6 @@ namespace Assembly.Windows
 				                  };
 			documentManager.Children.Add(newPatchTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
-
-			var newInfooTab = new CloseableTabItem
-				                  {
-					                  Tag = patchLocation,
-					                  Header = new ContentControl
-						                           {
-							                           Content = "Patcher",
-							                           ContextMenu = FilesystemContextMenu
-						                           },
-					                  Content = patchLocation == null ? new PatchControl() : new PatchControl(patchLocation)
-				                  };
-
-			homeTabControl.Items.Add(newInfooTab);
-			homeTabControl.SelectedItem = newInfooTab;
 		}
 
         public enum TabGenre
@@ -602,73 +405,6 @@ namespace Assembly.Windows
             Status.Text = "Ready...";
         }
         private readonly DispatcherTimer statusUpdateTimer = new DispatcherTimer();
-        #endregion
-
-        #region XBDM Sidebar
-        public readonly XBDMSidebar XBDMSidebar = new XBDMSidebar();
-        private XBDMSidebarLocations _xbdmSidebar = XBDMSidebarLocations.Sidebar;
-        private bool _isXBDMSidebarShowing = true;
-
-        /// <summary>
-        /// Show the XBDM Sidebar, I will check it is in a valid phase to show.
-        /// </summary>
-        public void XBDMSidebarTimerEvent()
-        {
-            if (_xbdmSidebar == XBDMSidebarLocations.Sidebar)
-                if (_isXBDMSidebarShowing)
-                {
-                    // Hide Sidebar
-                    xbdmCoverContent.Visibility = Visibility.Collapsed;
-                    _isXBDMSidebarShowing = false;
-                }
-                else
-                {
-                    // Show Sidebar
-                    xbdmCoverContent.Visibility = Visibility.Visible;
-                    _isXBDMSidebarShowing = true;
-                }
-        }
-
-        public enum XBDMSidebarLocations { Sidebar, Docked }
-        /// <summary>
-        /// Switch where the XBDM Sidebar is located
-        /// </summary>
-        /// <param name="location">The location to move it to</param>
-        public void SwitchXBDMSidebarLocation(XBDMSidebarLocations location)
-        {
-	        Settings.applicationXBDMSidebarLocation = location;
-			Settings.UpdateSettings();
-
-            switch (location)
-            {
-                case XBDMSidebarLocations.Sidebar:
-                    XBDMSideBarCol.Width = new GridLength(0);
-
-                    xbdmSidebarButton.IsEnabled = true;
-                    xbdmSidebarButton.Visibility = Visibility.Visible;
-                    xbdmCoverContent.Visibility = Visibility.Visible;
-                    homeTabControl.Margin = new Thickness(0, 0, 30, 0);
-
-                    xbdmCoverContent.Children.Clear();
-                    xbdmContent.Children.Clear();
-                    xbdmCoverContent.Children.Add(XBDMSidebar);
-                    break;
-                case XBDMSidebarLocations.Docked:
-                    XBDMSideBarCol.Width = new GridLength(275);
-
-                    xbdmSidebarButton.IsEnabled = false;
-                    xbdmSidebarButton.Visibility = Visibility.Collapsed;
-                    xbdmCoverContent.Visibility = Visibility.Collapsed;
-                    homeTabControl.Margin = new Thickness(0);
-
-                    xbdmCoverContent.Children.Clear();
-                    xbdmContent.Children.Clear();
-                    xbdmContent.Children.Add(XBDMSidebar);
-                    break;
-            }
-
-            _xbdmSidebar = location;
-        }
         #endregion
 
         #region Opacity Masking
@@ -793,36 +529,13 @@ namespace Assembly.Windows
         }
         #endregion
 
-        private void homeTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-			var tab = (TabItem)homeTabControl.SelectedItem;
-
-            if (tab != null)
-                UpdateTitleText(((ContentControl)tab.Header).Content.ToString().Replace("__", "_").Replace(".map", ""));
-
-			if (tab != null && ((ContentControl)tab.Header).Content.ToString() == "Start Page")
-                ((StartPage)tab.Content).UpdateRecents();
-
-            // Check if the tab is a HaloMap
-            if (tab != null && tab.Content != null && tab.Content is HaloMap)
-                Settings.selectedHaloMap = (HaloMap)tab.Content;
-            else
-                Settings.selectedHaloMap = null;
-
-            if (tab == null)
-            {
-                homeTabControl.SelectedIndex = 0;
-                UpdateTitleText("");
-            }
-        }
-
 	    private int _lastDocumentIndex = -1;
 		private void dockManager_ActiveContentChanged(object sender, EventArgs e)
 		{
 			if (documentManager.SelectedContentIndex != _lastDocumentIndex)
 			{
 				// Selection Changed, lets do dis
-				var tab = (LayoutDocument)documentManager.SelectedContent;
+				var tab = documentManager.SelectedContent;
 
 				if (tab != null)
 					UpdateTitleText(tab.Title.Replace("__", "_").Replace(".map", ""));
@@ -977,7 +690,7 @@ namespace Assembly.Windows
         private void menuViewStartPage_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.StartPage); }
         private void menuPatches_Click(object sender, RoutedEventArgs e)					{ AddPatchTabModule(); }
         private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.NetworkPoking); }
-		private void menuPostGenerator_Click(object sender, RoutedEventArgs e) { AddTabModule(TabGenre.PostGenerator, false); }
+		private void menuPostGenerator_Click(object sender, RoutedEventArgs e)				{ AddTabModule(TabGenre.PostGenerator, false); }
         private void menuPluginGeneration_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginGenerator); }
 		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)			{ AddTabModule(TabGenre.PluginConverter); }
         

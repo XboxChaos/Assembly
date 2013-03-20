@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
@@ -76,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 Dispatcher.Invoke(new Action(delegate
                 {
                     MetroMessageBox.Show("Unable to open BLF", ex.Message.ToString(CultureInfo.InvariantCulture));
-                    Settings.homeWindow.ExternalTabClose((TabItem)Parent);
+                    Settings.homeWindow.ExternalTabClose((LayoutDocument) Parent);
                 }));
             }
         }

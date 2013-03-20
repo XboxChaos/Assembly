@@ -209,7 +209,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			                                      StatusUpdater.Update("HEYYEYAAEYAAAEYAEYAA");
 		                                      }
 
-		                                      Settings.homeWindow.ExternalTabClose((TabItem)Parent);
+											  Settings.homeWindow.ExternalTabClose((LayoutDocument)Parent);
 	                                      }));
                     return;
                 }

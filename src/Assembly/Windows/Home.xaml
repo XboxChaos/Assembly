@@ -95,13 +95,8 @@
                     </Menu>
                 </Grid>
 				<Grid x:Name="homeContent" Margin="0, 62, 0, 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition x:Name="XBDMSideBarCol" Width="0" /> <!-- Set to 275, for sidebar docking -->
-                    </Grid.ColumnDefinitions>
-                    
-                    <Grid Grid.Column="0" x:Name="tabContent">
-						<avalonDock:DockingManager Grid.Row="1" x:Name="dockManager" ActiveContentChanged="dockManager_ActiveContentChanged" AllowMixedOrientation="True" Margin="0,0,30,0" Background="Transparent">
+                    <Grid x:Name="tabContent">
+						<avalonDock:DockingManager Grid.Row="1" x:Name="dockManager" ActiveContentChanged="dockManager_ActiveContentChanged" AllowMixedOrientation="True" Background="Transparent">
 							<avalonDock:DockingManager.Theme>
 								<avalonDockThemes:MetroTheme />
 							</avalonDock:DockingManager.Theme>
@@ -111,40 +106,16 @@
 										<avalonDock:LayoutDocumentPane x:Name="documentManager">
 										</avalonDock:LayoutDocumentPane>
 									</avalonDock:LayoutDocumentPaneGroup>
-									<avalonDock:LayoutAnchorablePaneGroup DockWidth="150">
+									<avalonDock:LayoutAnchorablePaneGroup DockWidth="275">
 										<avalonDock:LayoutAnchorablePane>
-											<avalonDock:LayoutAnchorable ContentId="toolWindow1" Title="Tool Window 1">
-												<StackPanel>
-													<TextBox Text="{Binding TestTimer, Mode=OneWay, StringFormat='Tool Window 1 Attached to Timer ->\{0\}'}"/>
-												</StackPanel>
-											</avalonDock:LayoutAnchorable>
-											<avalonDock:LayoutAnchorable ContentId="toolWindow2" Title="Tool Window 2">
-												<TextBlock Text="{Binding FocusedElement}"/>
+											<avalonDock:LayoutAnchorable ContentId="xbdm" Title="Xbox Memory" CanFloat="True" CanClose="False" CanAutoHide="True" CanHide="False">
+												<Sidebar:XBDMSidebar />
 											</avalonDock:LayoutAnchorable>
 										</avalonDock:LayoutAnchorablePane>
 									</avalonDock:LayoutAnchorablePaneGroup>
 								</avalonDock:LayoutPanel>
 							</avalonDock:LayoutRoot>
 						</avalonDock:DockingManager>
-
-						<TabControl x:Name="homeTabControl"
-									Visibility="Collapsed" Background="{x:Null}" Margin="0,0,25,0" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Padding="2" SelectionChanged="homeTabControl_SelectionChanged">
-
-							<CloseableTab:CloseableTabItem Header="Start Page" />
-							<CloseableTab:CloseableTabItem Header="deadlock.map" />
-							<CloseableTab:CloseableTabItem Header="cyberdyne.map" />
-							<CloseableTab:CloseableTabItem Header="z00__testchamber.map" />
-                        </TabControl>
-                        
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="30" Margin="0,0,0,0">
-                            <StackPanel x:Name="SidebarButtons" Orientation="Vertical">
-                                <Sidebar:XBDMSidebarButton x:Name="xbdmSidebarButton" />
-                            </StackPanel>
-                        </Grid>
-                        
-                        <Grid x:Name="xbdmCoverContent" HorizontalAlignment="Right" Grid.Column="0" VerticalAlignment="Stretch" Margin="0,0,30,0" Width="275">
-                            
-                        </Grid>
                     </Grid>
                     <Grid x:Name="xbdmContent"  HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Stretch">
                         

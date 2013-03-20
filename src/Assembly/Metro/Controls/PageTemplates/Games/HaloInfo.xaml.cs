@@ -107,7 +107,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 Dispatcher.Invoke(new Action(delegate
                 {
                     MetroMessageBox.Show("Unable to open MapInfo", ex.Message);
-                    Settings.homeWindow.ExternalTabClose((TabItem)Parent);
+                    Settings.homeWindow.ExternalTabClose((LayoutDocument)Parent);
                 }));
             }
         }
