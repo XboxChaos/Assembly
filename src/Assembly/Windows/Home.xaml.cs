@@ -19,6 +19,7 @@ using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
 using Assembly.Metro.Controls.Sidebar;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers.Native;
+using AvalonDock.Layout;
 using CloseableTabItemDemo;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
@@ -389,26 +390,35 @@ namespace Assembly.Windows
         /// <param name="cacheLocation">Path to the Blam Cache File</param>
         public void AddCacheTabModule(string cacheLocation)
         {
-            // Check the map isn't already open
-            foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => cacheLocation == (string)tab.Tag))
-            {
-	            homeTabControl.SelectedItem = tab;
-	            return;
-            }
+	        var newCacheTab = new LayoutDocument
+		                          {
+									  ContentId = cacheLocation,
+									  Title = "",
+									  ToolTip = cacheLocation
+		                          };
+	        newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
+			documentManager.Children.Add(newCacheTab);
 
-			var newCacheTab = new CloseableTabItem
-				                  {
-					                  Tag = cacheLocation, 
-									  Header = new ContentControl
-										           {
-											           Content = "",
-													   ContextMenu = FilesystemContextMenu
-										           }
-				                  };
-			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
+	        //// Check the map isn't already open
+	        //foreach (var tab in homeTabControl.Items.Cast<TabItem>().Where(tab => cacheLocation == (string)tab.Tag))
+	        //{
+	        //	homeTabControl.SelectedItem = tab;
+	        //	return;
+	        //}
 
-            homeTabControl.Items.Add(newCacheTab);
-            homeTabControl.SelectedItem = newCacheTab;
+	        //var newCacheTab = new CloseableTabItem
+	        //					  {
+	        //						  Tag = cacheLocation, 
+	        //						  Header = new ContentControl
+	        //									   {
+	        //										   Content = "",
+	        //										   ContextMenu = FilesystemContextMenu
+	        //									   }
+	        //					  };
+	        //newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
+
+	        //homeTabControl.Items.Add(newCacheTab);
+	        //homeTabControl.SelectedItem = newCacheTab;
         }
         /// <summary>
         /// Add a new XBox Screenshot Editor Container

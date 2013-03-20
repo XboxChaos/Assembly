@@ -6,6 +6,7 @@
         xmlns:Sidebar="clr-namespace:Assembly.Metro.Controls.Sidebar"
         xmlns:n="clr-namespace:Assembly.Helpers.Native"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Assembly.Windows.Home"
+		xmlns:avalonDock="http://avalondock.codeplex.com"
 		xmlns:dd="clr-namespace:DragDropListBox"
         Title="Home Window - Assembly" 
         d:DesignHeight="700" d:DesignWidth="1200"
@@ -99,7 +100,42 @@
                     </Grid.ColumnDefinitions>
                     
                     <Grid Grid.Column="0" x:Name="tabContent">
-						<TabControl x:Name="homeTabControl" Background="{x:Null}" Margin="0,0,25,0" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Padding="2" SelectionChanged="homeTabControl_SelectionChanged">
+						<avalonDock:DockingManager Grid.Row="1" x:Name="dockManager" AllowMixedOrientation="True" Margin="0,0,30,0" Background="Transparent">
+							<avalonDock:DockingManager.Theme>
+								<avalonDock:MetroTheme />
+							</avalonDock:DockingManager.Theme>
+							<avalonDock:LayoutRoot>
+								<avalonDock:LayoutPanel Orientation="Horizontal">
+									<avalonDock:LayoutDocumentPaneGroup>
+										<avalonDock:LayoutDocumentPane x:Name="documentManager">
+											<avalonDock:LayoutDocument ContentId="document1" Title="Document 1">
+												<StackPanel>
+													<TextBox Text="Document 1 Content"/>
+												</StackPanel>
+											</avalonDock:LayoutDocument>
+											<avalonDock:LayoutDocument ContentId="document2" Title="Document 2">
+												<TextBox Text="{Binding TestTimer, Mode=OneWay, StringFormat='Document 2 Attached to Timer ->\{0\}'}"/>
+											</avalonDock:LayoutDocument>
+										</avalonDock:LayoutDocumentPane>
+									</avalonDock:LayoutDocumentPaneGroup>
+									<avalonDock:LayoutAnchorablePaneGroup DockWidth="150">
+										<avalonDock:LayoutAnchorablePane>
+											<avalonDock:LayoutAnchorable ContentId="toolWindow1" Title="Tool Window 1">
+												<StackPanel>
+													<TextBox Text="{Binding TestTimer, Mode=OneWay, StringFormat='Tool Window 1 Attached to Timer ->\{0\}'}"/>
+												</StackPanel>
+											</avalonDock:LayoutAnchorable>
+											<avalonDock:LayoutAnchorable ContentId="toolWindow2" Title="Tool Window 2">
+												<TextBlock Text="{Binding FocusedElement}"/>
+											</avalonDock:LayoutAnchorable>
+										</avalonDock:LayoutAnchorablePane>
+									</avalonDock:LayoutAnchorablePaneGroup>
+								</avalonDock:LayoutPanel>
+							</avalonDock:LayoutRoot>
+						</avalonDock:DockingManager>
+
+						<TabControl x:Name="homeTabControl"
+									Visibility="Collapsed" Background="{x:Null}" Margin="0,0,25,0" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Foreground="White" BorderThickness="0,2,0,0" Padding="2" SelectionChanged="homeTabControl_SelectionChanged">
 
 							<CloseableTab:CloseableTabItem Header="Start Page" />
 							<CloseableTab:CloseableTabItem Header="deadlock.map" />

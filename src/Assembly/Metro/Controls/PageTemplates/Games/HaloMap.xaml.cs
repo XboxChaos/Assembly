@@ -34,6 +34,7 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using TabControl = System.Windows.Controls.TabControl;
 using TextBox = System.Windows.Controls.TextBox;
 using TreeView = System.Windows.Controls.TreeView;
+using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -61,7 +62,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private BuildInformation _buildInfo;
         private ICacheFile _cacheFile;
         private readonly string _cacheLocation;
-        private readonly TabItem _tab;
+		private readonly LayoutDocument _tab;
         private Trie _stringIDTrie;
 
 /*
@@ -116,7 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	    /// <param name="cacheLocation"></param>
 	    /// <param name="tab"></param>
 	    /// <param name="tagSorting"> </param>
-	    public HaloMap(string cacheLocation, TabItem tab, Settings.TagSort tagSorting)
+		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting)
         {
             InitializeComponent();
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
@@ -161,7 +162,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (e.Error == null) return;
 
             // Close Tab
-            Settings.homeWindow.ExternalTabClose(_tab);
+            //Settings.homeWindow.ExternalTabClose(_tab);
             MetroException.Show(e.Error);
         }
 
@@ -257,11 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Dispatcher.Invoke(new Action(delegate
 							{
 								var fi = new FileInfo(_cacheLocation);
-								_tab.Header = new ContentControl
-											{
-												Content = fi.Name,
-												ContextMenu = Settings.homeWindow.FilesystemContextMenu
-											};
+								_tab.Title = fi.Name;
 								Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
 								lblMapName.Text = _cacheFile.InternalName;
 
