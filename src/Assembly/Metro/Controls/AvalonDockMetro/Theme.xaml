@@ -20,11 +20,9 @@
     xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=AvalonDock"
     xmlns:avalonDock="clr-namespace:AvalonDock;assembly=AvalonDock"
 	xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.AvalonDockMetro.Vectors"
-    xmlns:avalonDockLayout="clr-namespace:AvalonDock.Layout;assembly=AvalonDock"
     xmlns:avalonDockControls="clr-namespace:AvalonDock.Controls;assembly=AvalonDock"
     xmlns:avalonDockConverters="clr-namespace:AvalonDock.Converters;assembly=AvalonDock"
-    xmlns:avalonDockProperties="clr-namespace:AvalonDock.Properties;assembly=AvalonDock"
-    >
+    xmlns:avalonDockProperties="clr-namespace:AvalonDock.Properties;assembly=AvalonDock" >
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Brushes.xaml"/>
@@ -206,21 +204,20 @@
 					<Setter Property="Foreground" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}"/>
 					<Setter Property="ToolTip" Value="{Binding ToolTip}"/>
 					<Setter Property="Padding" Value="4"/>
-					<Setter Property="Margin" Value="2,0,2,0"/>
+					<Setter Property="Margin" Value="0,0,4,0"/>
 					<Setter Property="Template">
 						<Setter.Value>
 							<ControlTemplate TargetType="{x:Type TabItem}">
 								<Grid SnapsToDevicePixels="true"
-                                       Margin="0,4,4,4">
+                                       Margin="0,0,0,0">
 									<Border x:Name="Bd" 
                                           BorderBrush="{TemplateBinding BorderBrush}"
-   				                          BorderThickness="0,3,0,0" 
-							              Background="{TemplateBinding Background}" 
-							              Padding="{TemplateBinding Padding}">
+   				                          BorderThickness="0,0,0,2" 
+							              Background="{TemplateBinding Background}">
 									</Border>
 									<ContentPresenter 
 								            x:Name="Content" 
-                                            Margin="2"
+                                            Margin="8,1,2,1"
 								            ContentSource="Header" 
                                             HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" 
                                             VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
@@ -228,20 +225,16 @@
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 								</Grid>
 								<ControlTemplate.Triggers>
-									<Trigger Property="Selector.IsSelected"
-								            Value="true">
-										<Setter Property="BorderBrush"
-									        Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}" />
-										<Setter Property="Panel.ZIndex" 
-                                            Value="1" />
+									<Trigger Property="Selector.IsSelected" Value="true">
+										<Setter Property="BorderBrush" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}" />
+										<Setter Property="Panel.ZIndex" Value="1" />
 									</Trigger>
 
 									<DataTrigger Binding="{Binding IsActive}" Value="True">
-										<Setter Property="BorderBrush"
-									        Value="{DynamicResource ExtryzeAccentBrush}" />
-										<Setter Property="Foreground" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}"/>
-										<Setter Property="Panel.ZIndex" 
-                                            Value="1" />
+										<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" />
+										<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" />
+										<Setter Property="Foreground" Value="White"/>
+										<Setter Property="Panel.ZIndex" Value="1" />
 									</DataTrigger>
 
 									<MultiTrigger>
@@ -250,6 +243,7 @@
 											<Condition Property="Selector.IsSelected" Value="false"/>
 										</MultiTrigger.Conditions>
 										<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
+										<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
 										<Setter Property="Foreground" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}"/>
 										<Setter Property="Panel.ZIndex" Value="0" />
 									</MultiTrigger>
@@ -473,7 +467,8 @@
                                 Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
                                 ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_BtnClose_Hint}"
                                     >
-								<Image x:Name="PART_ImgHidePin" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose.png"/>
+								<Path x:Name="PART_ImgHidePin" Fill="White" Data="F1 M 0,32.505L 13.4025,19.1025L 0,5.69249L 5.67,-7.62939e-006L 19.08,13.41L 32.505,-7.62939e-006L 38.205,5.67L 24.7725,19.1025L 38.205,32.535L 32.505,38.205L 19.08,24.795L 5.67,38.205L 0,32.505 Z"
+									  Stretch="Fill"/>
 							</Button>
 
 						</Grid>
@@ -492,8 +487,8 @@
 						</DataTrigger>
 						<DataTrigger Binding="{Binding Model.IsActive, RelativeSource={RelativeSource Mode=Self}}" Value="True">
 							<Setter Property="Source" TargetName="PART_ImgAutoHidePin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinAutoHide_Dark.png"/>
-							<Setter Property="Source" TargetName="PART_ImgHidePin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Dark.png"/>
 							<Setter Property="Source" TargetName="PART_ImgMenuPin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Dark.png"/>
+							<Setter Property="Opacity" TargetName="PART_ImgHidePin" Value="0.7"/>
 						</DataTrigger>
 						<Trigger Property="IsMouseOver" SourceName="MenuDropDownButton" Value="True">
 							<Setter Property="Source" TargetName="PART_ImgMenuPin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Black.png"/>
@@ -505,7 +500,7 @@
 							<Setter Property="Source" TargetName="PART_ImgAutoHidePin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinAutoHide_Black.png"/>
 						</Trigger>
 						<Trigger Property="IsMouseOver" SourceName="PART_HidePin" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgHidePin" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Black.png"/>
+							<Setter Property="Opacity" TargetName="PART_ImgHidePin" Value="0.9"/>
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -887,7 +882,7 @@
 					<avalonDockControls:DropDownControlArea 
                             DropDownContextMenu="{Binding Root.Manager.DocumentContextMenu}"
                             DropDownContextMenuDataContext="{Binding LayoutItem, RelativeSource={RelativeSource TemplatedParent}}" >
-						<Border Background="{TemplateBinding Background}"
+						<Border Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="0,2,0,1">
@@ -900,6 +895,7 @@
 								<ContentPresenter Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" 
                                               ContentTemplate="{Binding DocumentHeaderTemplate, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type avalonDock:DockingManager}, Mode=FindAncestor}}"
                                               ContentTemplateSelector="{Binding DocumentHeaderTemplateSelector, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type avalonDock:DockingManager}, Mode=FindAncestor}}"/>
+								
 								<!-- Close button should be moved out to the container style -->
 								<Button 
                                     x:Name="DocumentCloseButton" 
@@ -908,11 +904,12 @@
                                     HorizontalAlignment="Center"
                                     Grid.Column="1" 
                                     Margin="5,0,0,0" 
+									Height="16" Width="16"
                                     Visibility="Hidden" 
                                     Command="{Binding Path=LayoutItem.CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                     ToolTip="{x:Static avalonDockProperties:Resources.Document_Close}">
-									<Image x:Name="PART_ImgPinClose" 
-                                           Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose.png"/>
+									<Path x:Name="PART_ImgPinClose" Height="8" Width="8"
+										  Stretch="Fill" StrokeThickness="0.5" Stroke="White" Fill="White" Data="F1 M 2.28484e-007,1.33331L 1.33333,0L 4.00001,2.66669L 6.66667,6.10352e-005L 8,1.33331L 5.33334,4L 8,6.66669L 6.66667,8L 4,5.33331L 1.33333,8L 1.086e-007,6.66669L 2.66667,4L 2.28484e-007,1.33331 Z " HorizontalAlignment="Center" VerticalAlignment="Center"/>
 								</Button>
 							</Grid>
 						</Border>
@@ -923,20 +920,20 @@
 						</DataTrigger>
 						<DataTrigger Binding="{Binding Path=IsLastFocusedDocument}" Value="true">
 							<Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton"  />
-							<Setter Property="Source" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Dark.png" TargetName="PART_ImgPinClose"  />
 						</DataTrigger>
 						<DataTrigger Binding="{Binding Path=IsActive}" Value="true">
 							<Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton"  />
-							<Setter Property="Source" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Dark.png" TargetName="PART_ImgPinClose"  />
 						</DataTrigger>
 						<Trigger Property="IsMouseOver" Value="True">
 							<Setter Property="Visibility" Value="Visible" TargetName="DocumentCloseButton"  />
+							<Setter Property="Background" TargetName="DocumentCloseButton" Value="{DynamicResource ExtryzeAccentBrush}"/>
 						</Trigger>
 						<DataTrigger Binding="{Binding Path=CanClose}" Value="false">
 							<Setter Property="Visibility" Value="Collapsed" TargetName="DocumentCloseButton"  />
 						</DataTrigger>
+						
 						<Trigger Property="IsMouseOver" SourceName="DocumentCloseButton" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinClose" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Black.png"/>
+							<Setter Property="Background" TargetName="DocumentCloseButton" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
 						</Trigger>
 
 					</ControlTemplate.Triggers>
@@ -1116,7 +1113,7 @@
                                             Command="{Binding Path=RootDocumentLayoutItem.CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Document_Close}"
                                             Grid.Column="3">
-											<Image x:Name="PART_ImgPinClose" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose.png" Width="13" />
+											
 										</Button>
 									</Grid>
 								</Border>
@@ -1154,9 +1151,6 @@
 						</Trigger>
 						<Trigger Property="IsMouseOver" SourceName="PART_PinRestore" Value="True">
 							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Black.png"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" SourceName="PART_PinClose" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinClose" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Black.png"/>
 						</Trigger>
 
 					</ControlTemplate.Triggers>
@@ -1274,7 +1268,6 @@
                                             Command="{Binding HideWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_BtnClose_Hint}"
                                             Grid.Column="3">
-											<Image x:Name="PART_ImgPinClose" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose.png" Width="13"/>
 										</Button>
 									</Grid>
 								</Border>
@@ -1290,7 +1283,6 @@
 						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.SinglePane.SelectedContent.IsActive}" Value="True">
 							<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="Header"/>
 							<Setter Property="TextElement.Foreground" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor1}" TargetName="Header"/>
-							<Setter Property="Source" TargetName="PART_ImgPinClose" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Dark.png"/>
 							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Dark.png"/>
 							<Setter Property="Source" TargetName="PART_ImgPinMaximize" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize_Dark.png"/>
 							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Dark.png"/>
@@ -1306,9 +1298,6 @@
 						</Trigger>
 						<Trigger Property="IsMouseOver" SourceName="PART_PinRestore" Value="True">
 							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Black.png"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" SourceName="PART_PinClose" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinClose" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinClose_Black.png"/>
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
