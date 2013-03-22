@@ -1,11 +1,4 @@
-﻿/*
- * TODO LOG:
- *      - ColourF
- *      - ColourInt
- * 
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -172,10 +165,10 @@ namespace Assembly.Helpers.Plugins
             AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withClass, pluginLine));
         }
 
-        public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
+        public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new DataRef(name, offset, 0, 0, "", 0, pluginLine));
+                AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine));
         }
 
         #region Bitfield

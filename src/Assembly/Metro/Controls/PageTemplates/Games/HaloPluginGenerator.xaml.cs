@@ -255,7 +255,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.DataReference:
 							if (offset <= size - 0x14)
 							{
-								writer.VisitDataReference("Unknown", (uint)offset, false, 0);
+								writer.VisitDataReference("Unknown", (uint)offset, "bytes", false, 0);
 								offset += 0x10;
 								continue;
 							}

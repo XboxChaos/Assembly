@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Xml;
 
 namespace Blamite.Plugins
 {
     public class AssemblyPluginWriter : IPluginVisitor
     {
-        private XmlWriter _output;
-        private string _game;
+        private readonly XmlWriter _output;
+        private readonly string _game;
 
         public AssemblyPluginWriter(XmlWriter output, string game)
         {
@@ -44,7 +40,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement("revision");
             _output.WriteAttributeString("author", revision.Researcher);
-            _output.WriteAttributeString("version", revision.Version.ToString());
+            _output.WriteAttributeString("version", revision.Version.ToString(CultureInfo.InvariantCulture));
             _output.WriteString(revision.Description);
             _output.WriteEndElement();
         }
@@ -139,9 +135,11 @@ namespace Blamite.Plugins
             _output.WriteEndElement();
         }
 
-        public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
+        public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
         {
-            WriteBasicValue("dataRef", name, offset, visible);
+			WriteValueStart("dataRef", name, offset, visible);
+			_output.WriteAttributeString("format", format);
+			_output.WriteEndElement();
         }
 
         public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
@@ -154,14 +152,21 @@ namespace Blamite.Plugins
         public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
         {
             string element;
-            if (format.Length == 1)
-                element = "color8";
-            else if (format.Length == 2)
-                element = "color16";
-            else if (format.Length == 3)
-                element = "color24";
-            else
-                element = "color32";
+            switch (format.Length)
+            {
+	            case 1:
+		            element = "color8";
+		            break;
+	            case 2:
+		            element = "color16";
+		            break;
+	            case 3:
+		            element = "color24";
+		            break;
+	            default:
+		            element = "color32";
+		            break;
+            }
 
             WriteValueStart(element, name, offset, visible);
             _output.WriteAttributeString("format", format);
@@ -197,7 +202,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement("bit");
             _output.WriteAttributeString("name", name);
-            _output.WriteAttributeString("index", index.ToString());
+            _output.WriteAttributeString("index", index.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
         public void LeaveBitfield()
@@ -254,10 +259,10 @@ namespace Blamite.Plugins
 
             WriteValueStart("range", name, offset, visible);
             _output.WriteAttributeString("type", type);
-            _output.WriteAttributeString("min", min.ToString());
-            _output.WriteAttributeString("max", max.ToString());
-            _output.WriteAttributeString("smallChange", smallChange.ToString());
-            _output.WriteAttributeString("largeChange", largeChange.ToString());
+            _output.WriteAttributeString("min", min.ToString(CultureInfo.InvariantCulture));
+            _output.WriteAttributeString("max", max.ToString(CultureInfo.InvariantCulture));
+            _output.WriteAttributeString("smallChange", smallChange.ToString(CultureInfo.InvariantCulture));
+            _output.WriteAttributeString("largeChange", largeChange.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
 

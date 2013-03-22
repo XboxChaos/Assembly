@@ -188,9 +188,9 @@ namespace Blamite.Plugins
             Debug.Unindent();
         }
 
-        public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
+        public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
         {
-            PrintBasicValue("Data reference", name, offset, visible);
+			Debug.WriteLine("Data reference \"{0}\" at {1}, format = {2}, visible = {3}", name, offset, format, visible);
         }
 
         public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)

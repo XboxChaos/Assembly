@@ -248,7 +248,7 @@ namespace Blamite.Plugins
 
 				case "tagdata":
 				case "dataref":
-					visitor.VisitDataReference(name, offset, visible, pluginLine);
+					visitor.VisitDataReference(name, offset, ReadDataRef(reader), visible, pluginLine);
 					break;
 
 				case "struct":
@@ -293,6 +293,21 @@ namespace Blamite.Plugins
 			reader.ReadStartElement();
 			while (reader.ReadToFollowing("revision"))
 				ReadRevision(reader);
+		}
+
+		private static string ReadDataRef(XmlReader reader)
+		{
+			var format = "bytes";
+
+			if (reader.MoveToAttribute("format"))
+				format = reader.Value;
+
+			if (format != "bytes" &&
+				format != "unicode" &&
+				format != "asciiz")
+				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
+
+			return format;
 		}
 
 		private void ReadRevision(XmlReader reader)

@@ -10,14 +10,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     class MetaWriter : IMetaFieldVisitor
     {
-        private IWriter _writer;
+        private readonly IWriter _writer;
         private uint _baseOffset;
-        private ICacheFile _cache;
-        private SaveType _type;
-        private FieldChangeSet _changes;
-        private StructureLayout _reflexiveLayout;
-        private StructureLayout _tagRefLayout;
-        private StructureLayout _dataRefLayout;
+        private readonly ICacheFile _cache;
+        private readonly SaveType _type;
+        private readonly FieldChangeSet _changes;
+        private readonly StructureLayout _reflexiveLayout;
+        private readonly StructureLayout _tagRefLayout;
+        private readonly StructureLayout _dataRefLayout;
 
         private bool _pokeTemplateFields = true;
 
@@ -254,7 +254,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 _baseOffset += field.EntrySize;
                 _pokeTemplateFields = _oldPokeTemplates;
             }
-            if (field.CurrentIndex != _oldIndex)
+            if (!Equals(field.CurrentIndex, _oldIndex))
                 field.CurrentIndex = _oldIndex;
 
             // Restore the old base offset
@@ -310,7 +310,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	        _writer.SeekTo(offset);
 
 	        // Write its data
-	        _writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
+			switch (field.Format)
+			{
+				default:
+					_writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
+					break;
+				case "unicode":
+					_writer.WriteUTF16(field.Value);
+					break;
+				case "asciiz":
+					_writer.WriteAscii(field.Value);
+					break;
+			}
         }
 
         public void VisitTagRef(TagRefData field)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Blamite.Plugins
+﻿namespace Blamite.Plugins
 {
     /// <summary>
     /// An interface for a class which handles data read from plugins.
@@ -62,7 +57,7 @@ namespace Blamite.Plugins
 		void VisitDegree(string name, uint offset, bool visible, uint pluginLine);
         void VisitStringID(string name, uint offset, bool visible, uint pluginLine);
         void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine);
-        void VisitDataReference(string name, uint offset, bool visible, uint pluginLine);
+        void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine);
 
         /// <summary>
         /// Called when a raw data block is encountered in the plugin.
@@ -70,7 +65,8 @@ namespace Blamite.Plugins
         /// <param name="name">The block's name.</param>
         /// <param name="offset">The block's offset.</param>
         /// <param name="visible">True if the block is visible.</param>
-        /// <param name="size">The size of the block.</param>
+		/// <param name="size">The size of the block.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine);
 
         /// <summary>
@@ -83,18 +79,20 @@ namespace Blamite.Plugins
         /// <param name="min">The minimum possible value.</param>
         /// <param name="max">The maximum possible value.</param>
         /// <param name="smallChange">The amount to change the value between small tick marks.</param>
-        /// <param name="largeChange">The amount to change the value between large tick marks.</param>
+		/// <param name="largeChange">The amount to change the value between large tick marks.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         void VisitRange(string name, uint offset, bool visible, string type, double min, double max,
             double smallChange, double largeChange, uint pluginLine);
 
-        /// <summary>
-        /// Called when an ASCII string is encountered in the plugin.
-        /// </summary>
-        /// <param name="name">The name of the string.</param>
-        /// <param name="offset">The offset of the string.</param>
-        /// <param name="visible">True if the string is visible.</param>
-        /// <param name="size">The size of the string in bytes.</param>
-        void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine);
+	    /// <summary>
+	    /// Called when an ASCII string is encountered in the plugin.
+	    /// </summary>
+	    /// <param name="name">The name of the string.</param>
+	    /// <param name="offset">The offset of the string.</param>
+	    /// <param name="visible">True if the string is visible.</param>
+	    /// <param name="size">The size of the string in bytes.</param>
+	    /// <param name="pluginLine">The line in the plugin this entry is found.</param>
+	    void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine);
 
         /// <summary>
         /// Called when a UTF16 string is encountered in the plugin.
@@ -102,7 +100,8 @@ namespace Blamite.Plugins
         /// <param name="name">The name of the string.</param>
         /// <param name="offset">The offset of the string.</param>
         /// <param name="visible">True if the string is visible.</param>
-        /// <param name="size">The size of the string in bytes.</param>
+		/// <param name="size">The size of the string in bytes.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine);
 
         /// <summary>
@@ -113,7 +112,8 @@ namespace Blamite.Plugins
         /// <param name="visible">True if the color entry is visible.</param>
         /// <param name="format">The format of the color, expressed as a string
         /// containing the characters 'r', 'g', 'b', and 'a'. It is guaranteed
-        /// to be valid.</param>
+		/// to be valid.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine);
 
         /// <summary>
@@ -124,7 +124,8 @@ namespace Blamite.Plugins
         /// <param name="visible">True if the color entry is visible.</param>
         /// <param name="format">The format of the color, expressed as a string
         /// containing the characters 'r', 'g', 'b', and 'a'. It is guaranteed
-        /// to be valid.</param>
+		/// to be valid.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine);
 
         // These are called whenever a bitfield is found in the plugin.
@@ -171,7 +172,8 @@ namespace Blamite.Plugins
         /// <param name="name">The reflexive's name.</param>
         /// <param name="offset">The offset of the reflexive's size and pointer.</param>
         /// <param name="visible">True if the reflexive is visible.</param>
-        /// <param name="entrySize">The size of each entry in the reflexive.</param>
+		/// <param name="entrySize">The size of each entry in the reflexive.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
         /// <returns>False if the entries in the reflexive should be skipped over.</returns>
         bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine);
 

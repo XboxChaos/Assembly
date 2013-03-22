@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Xml;
 
 namespace Blamite.Plugins
 {
     public class AscensionPluginWriter : IPluginVisitor
     {
-        private XmlWriter _output;
-        private string _className;
+        private readonly XmlWriter _output;
+        private readonly string _className;
 
         public AscensionPluginWriter(XmlWriter output, string className)
         {
@@ -22,7 +19,7 @@ namespace Blamite.Plugins
             _output.WriteStartDocument();
             _output.WriteStartElement("plugin");
             _output.WriteAttributeString("class", _className);
-            _output.WriteAttributeString("headersize", baseSize.ToString());
+            _output.WriteAttributeString("headersize", baseSize.ToString(CultureInfo.InvariantCulture));
             _output.WriteComment(" Automatically generated plugin ");
             return true;
         }
@@ -42,7 +39,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement("revision");
             _output.WriteAttributeString("author", revision.Researcher);
-            _output.WriteAttributeString("version", revision.Version.ToString());
+            _output.WriteAttributeString("version", revision.Version.ToString(CultureInfo.InvariantCulture));
             _output.WriteString(revision.Description);
             _output.WriteEndElement();
         }
@@ -125,15 +122,17 @@ namespace Blamite.Plugins
                 WriteBasicValue("tagref", name, offset, visible);
         }
 
-        public void VisitDataReference(string name, uint offset, bool visible, uint pluginLine)
+        public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
         {
-            WriteBasicValue("tagdata", name, offset, visible);
+			WriteValueStart("tagdata", name, offset, visible);
+			_output.WriteAttributeString("format", format);
+			_output.WriteEndElement();
         }
 
         public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
         {
             WriteValueStart("bytearray", name, offset, visible);
-            _output.WriteAttributeString("length", size.ToString());
+            _output.WriteAttributeString("length", size.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
 
@@ -144,7 +143,7 @@ namespace Blamite.Plugins
         public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
         {
             WriteValueStart("string", name, offset, visible);
-            _output.WriteAttributeString("length", length.ToString());
+            _output.WriteAttributeString("length", length.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
 
@@ -191,7 +190,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement("option");
             _output.WriteAttributeString("name", name);
-            _output.WriteAttributeString("value", index.ToString());
+            _output.WriteAttributeString("value", index.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
 
@@ -222,7 +221,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement("option");
             _output.WriteAttributeString("name", name);
-            _output.WriteAttributeString("value", value.ToString());
+            _output.WriteAttributeString("value", value.ToString(CultureInfo.InvariantCulture));
             _output.WriteEndElement();
         }
 
@@ -234,7 +233,7 @@ namespace Blamite.Plugins
         public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
         {
             WriteValueStart("struct", name, offset, visible);
-            _output.WriteAttributeString("size", entrySize.ToString());
+            _output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));
             return true;
         }
 
@@ -247,7 +246,7 @@ namespace Blamite.Plugins
         {
             _output.WriteStartElement(element);
             _output.WriteAttributeString("name", name);
-            _output.WriteAttributeString("offset", offset.ToString());
+            _output.WriteAttributeString("offset", offset.ToString(CultureInfo.InvariantCulture));
             _output.WriteAttributeString("visible", visible.ToString());
         }
 

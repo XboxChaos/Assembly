@@ -9,6 +9,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private TextDocument _document;
         private int _length;
+	    private string _format;
 
         public RawData(string name, uint offset, uint address, string value, int length, uint pluginLine)
             : base(name, offset, address, pluginLine)
@@ -17,11 +18,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _length = length;
         }
 
+		public RawData(string name, uint offset, string format, uint address, string value, int length, uint pluginLine)
+			: base(name, offset, address, pluginLine)
+		{
+			_document = new TextDocument(new StringTextSource(value));
+			_length = length;
+			_format = format;
+		}
+
         public TextDocument Document
         {
             get { return _document; }
             set { _document = value; NotifyPropertyChanged("Document"); }
         }
+
+	    public string Format
+	    {
+			get { return _format; }
+			set { _format = value; NotifyPropertyChanged("Format"); }
+	    }
 
         public string Value
         {
@@ -41,7 +56,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         }
         public int MaxLength
         {
-            get { return _length * 2; }
+			get { return _format == "bytes" ? _length * 2 : _length; }
         }
 
         public override void Accept(IMetaFieldVisitor visitor)

@@ -48,7 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private void ReadField(MetaField field)
         {
             // Update the field's memory address
-            ValueField valueField = field as ValueField;
+            var valueField = field as ValueField;
             if (valueField != null)
             {
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
@@ -61,7 +61,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 field.Accept(this);
 
             // If it's a reflexive, read its children
-            ReflexiveData reflexive = field as ReflexiveData;
+			var reflexive = field as ReflexiveData;
             if (reflexive != null)
                 ReadReflexiveChildren(reflexive);
         }
@@ -252,30 +252,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitDataRef(DataRef field)
         {
             SeekToOffset(field.Offset);
-            StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
+            var values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 
-            int length = (int)values.GetInteger("size");
-            uint pointer = values.GetInteger("pointer");
+            var length = (int)values.GetInteger("size");
+            var pointer = values.GetInteger("pointer");
             field.DataAddress = pointer;
 
             // Check if the pointer is valid
-	        uint offset = field.DataAddress;
+	        var offset = field.DataAddress;
 			if (_type == LoadType.File)
 				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
-            int metaStartOff = _cache.MetaArea.Offset;
-            int metaEndOff = metaStartOff + _cache.MetaArea.Size;
+            var metaStartOff = _cache.MetaArea.Offset;
+            var metaEndOff = metaStartOff + _cache.MetaArea.Size;
             if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
             {
                 field.Length = length;
 
                 // Go to position
                 _reader.SeekTo(offset);
-
-                // Read Data
-                byte[] data = _reader.ReadBlock(field.Length);
-
-                // Convert to hex string
-                field.Value = FunctionHelpers.BytesToHexLines(data, 24);
+				switch(field.Format)
+				{
+					default:
+						var data = _reader.ReadBlock(field.Length);
+						field.Value = FunctionHelpers.BytesToHexLines(data, 24);
+						break;
+					case "unicode":
+						field.Value = _reader.ReadUTF16(field.Length);
+						break;
+					case "asciiz":
+						field.Value = _reader.ReadAscii(field.Length);
+						break;
+				}
             }
             else
             {

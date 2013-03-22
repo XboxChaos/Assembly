@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ICSharpCode.AvalonEdit.Document;
-
-namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class DataRef : RawData
     {
         private uint _dataAddress;
+	    private string _format;
 
-        public DataRef(string name, uint offset, uint address, uint dataAddress, string value, int length, uint pluginLine)
-            : base(name, offset, address, value, length, pluginLine)
+        public DataRef(string name, uint offset, string format, uint address, uint dataAddress, string value, int length, uint pluginLine)
+            : base(name, offset, format, address, value, length, pluginLine)
         {
             _dataAddress = dataAddress;
+	        _format = format;
         }
+
+	    public new string Format
+	    {
+			get { return _format; }
+			set { _format = value; NotifyPropertyChanged("Format"); }
+	    }
 
         public new uint DataAddress
         {
@@ -29,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            DataRef result = new DataRef(Name, Offset, FieldAddress, _dataAddress, Value, Length, base.PluginLine);
+            var result = new DataRef(Name, Offset, Format, FieldAddress, _dataAddress, Value, Length, PluginLine);
             return result;
         }
     }
