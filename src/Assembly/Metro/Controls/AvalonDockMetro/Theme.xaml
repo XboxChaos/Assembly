@@ -422,7 +422,7 @@
 								<ContentPresenter 
                                     x:Name="Header"     
 									SnapsToDevicePixels="True"       
-                                    Margin="4,0,0,0"
+                                    Margin="4,0,4,0"
                                     TextElement.Foreground="White"
                                     Content="{Binding Model, RelativeSource={RelativeSource TemplatedParent}}" 
                                     ContentTemplate="{Binding Model.Root.Manager.AnchorableTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
@@ -511,16 +511,14 @@
 						</DataTrigger>
 
 						<Trigger Property="IsMouseOver" SourceName="MenuDropDownButton" Value="True">
-							<Setter Property="Background" TargetName="MenuDropDownButton" Value="#44FFFFFF" />
-							<Setter Property="Fill" TargetName="ArrowPathData" Value="{DynamicResource ExtryzeAccentBrush}" />
+							<Setter Property="Background" TargetName="MenuDropDownButton" Value="#33FFFFFF" />
 						</Trigger>
 						<Trigger Property="IsChecked" SourceName="MenuDropDownButton" Value="True">
 							<Setter Property="Background" TargetName="MenuDropDownButton" Value="{DynamicResource ExtryzeAccentBrush}" />
-							<Setter Property="Fill" TargetName="ArrowPathData" Value="#44FFFFFF" />
 						</Trigger>
 						
 						<Trigger Property="IsMouseOver" SourceName="PART_AutoHidePin" Value="True">
-							<Setter Property="Background" TargetName="AutoHidePin" Value="#44FFFFFF" />
+							<Setter Property="Background" TargetName="AutoHidePin" Value="#33FFFFFF" />
 						</Trigger>
 						<!--<Trigger Property="IsChecked" SourceName="PART_AutoHidePin" Value="True">
 							<Setter Property="Background" TargetName="AutoHidePin" Value="{DynamicResource ExtryzeAccentBrush}" />
@@ -1054,7 +1052,7 @@
 				<ControlTemplate TargetType="{x:Type avalonDockControls:LayoutDocumentFloatingWindowControl}">
 					<Grid>
 						<Border x:Name="WindowBorder" 
-                                Background="{TemplateBinding Background}"
+                                Background="#2d2d30"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="1">
 							<Grid>
@@ -1067,7 +1065,7 @@
 									<ColumnDefinition/>
 								</Grid.ColumnDefinitions>
 
-								<Border x:Name="bd" Width="5" VerticalAlignment="Stretch" Background="{DynamicResource AvalonDock_ThemeMetro_BaseColor5}"/>
+								<Border x:Name="bd" Width="5" VerticalAlignment="Stretch" Background="#2d2d30"/>
 
 								<Border x:Name="Header"
                                         Padding="2,0,2,0"
@@ -1080,6 +1078,7 @@
 											<ColumnDefinition Width="Auto"/>
 										</Grid.ColumnDefinitions>
 										<ContentPresenter
+											TextElement.Foreground="White"
                                             Content="{Binding Model.RootDocument, RelativeSource={RelativeSource TemplatedParent}}" 
                                             ContentTemplate="{Binding Model.Root.Manager.DocumentTitleTemplate, RelativeSource={RelativeSource TemplatedParent}}"
                                             ContentTemplateSelector="{Binding Model.Root.Manager.DocumentTitleTemplateSelector, RelativeSource={RelativeSource TemplatedParent}}"/>
@@ -1091,6 +1090,7 @@
                                             Style="{StaticResource AvalonDock_ThemeMetro_ToolButtonStyle}"
                                             Focusable="False"
                                             Grid.Column="1"
+											Width="18" Height="18"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -1098,33 +1098,56 @@
                                             DropDownContextMenu="{Binding Model.Root.Manager.DocumentContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
                                             DropDownContextMenuDataContext="{Binding Path=RootDocumentLayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Document_CxMenu_Hint}">
-											<Image x:Name="PART_ImgPinMenu" Stretch="None" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu.png" Width="13"/>
+											<Path x:Name="ArrowPathData" Data="M 0,4 L 8,4 4,0 Z" Fill="White" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,6,0,0">
+												<Path.RenderTransform>
+													<TransformGroup>
+														<RotateTransform Angle="180"/>
+													</TransformGroup>
+												</Path.RenderTransform>
+											</Path>
 										</avalonDockControls:DropDownButton>
 
 										<Button 
                                             x:Name="PART_PinMaximize"
                                             shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                             Focusable="False"
+											Width="18" Height="18"
                                             Visibility="{Binding IsMaximized, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseBoolToVisibilityConverter}}"
                                             Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
                                             Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
                                             CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Window_Maximize}"
                                             Grid.Column="2">
-											<Image x:Name="PART_ImgPinMaximize" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize.png" Width="13" />
+											<Grid>
+												<Grid Width="9" Height="8" VerticalAlignment="Center">
+													<!-- Top -->
+													<Rectangle Width="9" Height="2" Fill="White" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+
+													<!-- Left -->
+													<Rectangle Width="1" Height="5" Fill="White" Margin="0,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+
+													<!-- Right -->
+													<Rectangle Width="1" Height="5" Fill="White" Margin="8,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+
+													<!-- Top -->
+													<Rectangle Width="9" Height="1" Fill="White" Margin="0,7,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+												</Grid>
+											</Grid>
 										</Button>
 
 										<Button 
                                             x:Name="PART_PinRestore"
                                             shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                             Focusable="False"
+											Width="18" Height="18"
+											Margin="0,4,4,0"
                                             Visibility="{Binding IsMaximized, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"
                                             Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
                                             Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
                                             CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Window_Restore}"
                                             Grid.Column="2">
-											<Image x:Name="PART_ImgPinRestore" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore.png" Width="13" />
+											<Image x:Name="PART_ImgPinRestore" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore.png" VerticalAlignment="Center" HorizontalAlignment="Center" Width="13" />
 										</Button>
 
 										<Button 
@@ -1157,25 +1180,22 @@
                                 TargetName="Header"
                                 Property="Background"
 								Value="{DynamicResource ExtryzeAccentBrush}" />
-							<Setter 
-                                TargetName="Header"
-                                Property="TextElement.Foreground"
-								Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor1}" />
 						</DataTrigger>
 
 						<Trigger Property="IsMouseOver" SourceName="ContextMenuDropdownButton" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Black.png"/>
+							<Setter Property="Background" TargetName="ContextMenuDropdownButton" Value="#33FFFFFF"/>
 						</Trigger>
 						<Trigger Property="IsChecked" SourceName="ContextMenuDropdownButton" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Black.png"/>
+							<Setter Property="Background" TargetName="ContextMenuDropdownButton" Value="{DynamicResource ExtryzeAccentSecondary}"/>
 						</Trigger>
+						
 						<Trigger Property="IsMouseOver" SourceName="PART_PinMaximize" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMaximize" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize_Black.png"/>
+							<Setter Property="Background" TargetName="PART_PinMaximize" Value="#33FFFFFF"/>
 						</Trigger>
+						
 						<Trigger Property="IsMouseOver" SourceName="PART_PinRestore" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Black.png"/>
+							<Setter Property="Background" TargetName="PART_PinRestore" Value="#33FFFFFF"/>
 						</Trigger>
-
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
 
@@ -1209,7 +1229,7 @@
 								</Grid.RowDefinitions>
 								<Border x:Name="Header" 
                                         Padding="2,0,2,0"
-                                        TextElement.Foreground="{DynamicResource AvalonDock_ThemeMetro_BaseColor2}"
+                                        TextElement.Foreground="White"
                                         Background="{DynamicResource AvalonDock_ThemeMetro_BaseColor1}">
 									<Grid>
 										<Grid.ColumnDefinitions>
@@ -1238,6 +1258,7 @@
                                             Style="{StaticResource AvalonDock_ThemeMetro_ToolButtonStyle}"
                                             Focusable="False"
                                             Grid.Column="1"
+											Width="18" Height="18"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -1245,52 +1266,25 @@
                                             DropDownContextMenu="{Binding Model.Root.Manager.AnchorableContextMenu, RelativeSource={RelativeSource TemplatedParent}}"
                                             DropDownContextMenuDataContext="{Binding Path=SingleContentLayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
                                             ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}">
-											<Image x:Name="PART_ImgPinMenu" Stretch="None" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu.png" Width="13"/>
+											<Path x:Name="ArrowPathData" Data="M 0,4 L 8,4 4,0 Z" Fill="White" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,6,0,0">
+												<Path.RenderTransform>
+													<TransformGroup>
+														<RotateTransform Angle="180"/>
+													</TransformGroup>
+												</Path.RenderTransform>
+											</Path>
 										</avalonDockControls:DropDownButton>
-
-										<Button 
-                                            x:Name="PART_PinMaximize"
-                                            shell:WindowChrome.IsHitTestVisibleInChrome="True"
-                                            Focusable="False"
-                                            Visibility="{Binding IsMaximized, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                            Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            VerticalContentAlignment="Center"
-                                            HorizontalContentAlignment="Center"
-                                            Command="{x:Static shell:SystemCommands.MaximizeWindowCommand}"
-                                            CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                                            ToolTip="{x:Static avalonDockProperties:Resources.Window_Maximize}"
-                                            Grid.Column="2">
-											<Image x:Name="PART_ImgPinMaximize" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize.png" Width="13"/>
-										</Button>
-
-										<Button 
-                                            x:Name="PART_PinRestore"
-                                            shell:WindowChrome.IsHitTestVisibleInChrome="True"
-                                            Focusable="False"
-                                            Visibility="{Binding IsMaximized, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"
-                                            Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
-                                            CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                                            ToolTip="{x:Static avalonDockProperties:Resources.Window_Restore}"
-                                            Grid.Column="2">
-											<Image  x:Name="PART_ImgPinRestore" Source="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore.png" Width="13"/>
-										</Button>
 
 										<Button 
                                             x:Name="PART_PinClose"
                                             shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                             Focusable="False"
                                             Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
                                             Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                            Command="{Binding HideWindowCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                            ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_BtnClose_Hint}"
+                                            Command="{Binding Path=RootDocumentLayoutItem.CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                                            ToolTip="{x:Static avalonDockProperties:Resources.Document_Close}"
                                             Grid.Column="3">
+
 										</Button>
 									</Grid>
 								</Border>
@@ -1305,22 +1299,13 @@
 						</Trigger>
 						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.SinglePane.SelectedContent.IsActive}" Value="True">
 							<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="Header"/>
-							<Setter Property="TextElement.Foreground" Value="{DynamicResource AvalonDock_ThemeMetro_BaseColor1}" TargetName="Header"/>
-							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Dark.png"/>
-							<Setter Property="Source" TargetName="PART_ImgPinMaximize" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize_Dark.png"/>
-							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Dark.png"/>
 						</DataTrigger>
+
 						<Trigger Property="IsMouseOver" SourceName="SinglePaneContextMenu" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Black.png"/>
+							<Setter Property="Background" TargetName="SinglePaneContextMenu" Value="#33FFFFFF"/>
 						</Trigger>
 						<Trigger Property="IsChecked" SourceName="SinglePaneContextMenu" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMenu" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMenu_Black.png"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" SourceName="PART_PinMaximize" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinMaximize" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinMaximize_Black.png"/>
-						</Trigger>
-						<Trigger Property="IsMouseOver" SourceName="PART_PinRestore" Value="True">
-							<Setter Property="Source" TargetName="PART_ImgPinRestore" Value="/Assembly;component/Metro/Controls/AvalonDockMetro/Images/PinRestore_Black.png"/>
+							<Setter Property="Background" TargetName="SinglePaneContextMenu" Value="{DynamicResource ExtryzeAccentSecondary}"/>
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
