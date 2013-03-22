@@ -162,7 +162,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (e.Error == null) return;
 
             // Close Tab
-            //Settings.homeWindow.ExternalTabClose(_tab);
+            Settings.homeWindow.ExternalTabClose(_tab);
             MetroException.Show(e.Error);
         }
 

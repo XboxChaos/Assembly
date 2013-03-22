@@ -6,6 +6,7 @@ using System.Windows.Media.Animation;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using System.Windows.Controls.Primitives;
+using Assembly.Windows;
 using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates
@@ -227,12 +228,12 @@ namespace Assembly.Metro.Controls.PageTemplates
             Settings.UpdateSettings();
 
             if (MetroMessageBox.Show("Saved", "Your settings have been saved successfully. Do you want to close settings now?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
-				Settings.homeWindow.ExternalTabClose((LayoutDocument)Parent);
+				Settings.homeWindow.ExternalTabClose(Home.TabGenre.Settings);
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Settings.ApplyAccent();
-			Settings.homeWindow.ExternalTabClose((LayoutDocument)Parent);
+	        Settings.homeWindow.ExternalTabClose(Home.TabGenre.Settings);
         }
 
         private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
