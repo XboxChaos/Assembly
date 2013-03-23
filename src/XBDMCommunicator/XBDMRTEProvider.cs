@@ -8,7 +8,7 @@ namespace XBDMCommunicator
     /// <summary>
     /// An XBDM real-time editing provider.
     /// </summary>
-    public class XBDMRTEProvider : IRTEProvider, IStreamManager
+    public class XBDMRTEProvider : IRTEProvider
     {
         private readonly Xbdm _xbdm;
 
@@ -23,7 +23,6 @@ namespace XBDMCommunicator
 
         /// <summary>
         /// The type of connection that the provider will establish.
-        /// Always RTEConnectionType.Console.
         /// </summary>
         public RTEConnectionType ConnectionType
         {
@@ -42,25 +41,5 @@ namespace XBDMCommunicator
             // But that's kinda hard to do...
 	        return _xbdm.Connect() ? new EndianStream(_xbdm.MemoryStream, Endian.BigEndian) : null;
         }
-
-	    public Endian SuggestedEndian
-		{
-			get { return Endian.BigEndian; }
-		}
-
-		public Stream OpenRead()
-		{
-			return _xbdm.MemoryStream;
-		}
-
-		public Stream OpenWrite()
-		{
-			return _xbdm.MemoryStream;
-		}
-
-		public Stream OpenReadWrite()
-		{
-			return _xbdm.MemoryStream;
-		}
 	}
 }

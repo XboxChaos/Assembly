@@ -45,7 +45,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
         }
         public void RefreshMeta()
         {
-			_reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo);
+            _reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo, MetaReader.LoadType.File, null);
 			_reader.ReadFields(_fields);
         }
 

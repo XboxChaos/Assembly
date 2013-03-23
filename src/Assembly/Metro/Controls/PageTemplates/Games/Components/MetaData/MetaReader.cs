@@ -19,23 +19,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public enum LoadType { File, Memory }
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo)
-			: this(streamManager, baseOffset, cache, buildInfo, null)
-        {
-        }
-
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type)
-			: this(streamManager, baseOffset, cache, buildInfo, null)
-		{
-			_type = type;
-		}
-
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, FieldChangeSet ignore)
+        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type, FieldChangeSet ignore)
         {
 			_streamManager = streamManager;
             BaseOffset = baseOffset;
             _cache = cache;
             _ignoredFields = ignore;
+            _type = type;
 
             // Load layouts
             _reflexiveLayout = buildInfo.GetLayout("reflexive");
@@ -69,6 +59,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void ReadFields(IList<MetaField> fields)
         {
 			var opened = OpenReader();
+            if (_reader == null)
+                return;
+
             try
             {
 // ReSharper disable ForCanBeConvertedToForeach
@@ -89,6 +82,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 return;
 
 			var opened = OpenReader();
+            if (_reader == null)
+                return;
+
             try
             {
                 // Calculate the base offset to read from
@@ -378,7 +374,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (_reader == null)
 			{
-				_reader = new EndianReader(_streamManager.OpenRead(), _streamManager.SuggestedEndian);
+				_reader = _streamManager.OpenRead();
 				return true;
 			}
 			return false;

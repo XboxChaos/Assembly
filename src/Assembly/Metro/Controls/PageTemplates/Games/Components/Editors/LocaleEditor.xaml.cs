@@ -60,10 +60,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         /// </summary>
         private void LoadLanguage()
         {
-            using (EndianReader reader = new EndianReader(_streamManager.OpenRead(), _streamManager.SuggestedEndian))
-            {
+            using (var reader = _streamManager.OpenRead())
                 _currentLocaleTable = _currentLanguage.LoadStrings(reader);
-            }
 
             _locales = new List<LocaleEntry>();
             _localeView = CollectionViewSource.GetDefaultView(_locales);
@@ -170,7 +168,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             for (int i = 0; i < _locales.Count; i++)
                 _currentLocaleTable.Strings[i].Value = ReplaceTags(_locales[i].Locale);
 
-            using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
+            using (var stream = _streamManager.OpenReadWrite())
             {
                 _currentLanguage.SaveStrings(stream, _currentLocaleTable);
                 _cache.SaveChanges(stream);
