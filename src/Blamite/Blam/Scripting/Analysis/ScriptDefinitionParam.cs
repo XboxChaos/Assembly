@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Blamite.Blam.Scripting.Analysis
     /// <summary>
     /// A parameter in a script definition.
     /// </summary>
+    [DebuggerDisplay("Parameter {Type} {Name}")]
     public class ScriptDefinitionParam
     {
         /// <summary>

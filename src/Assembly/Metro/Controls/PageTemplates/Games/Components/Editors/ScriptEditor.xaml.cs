@@ -126,13 +126,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             MetroMessageBox.Show("go away", "gameleak gtfo");
             /*LispScriptScanner scanner = new LispScriptScanner();
             scanner.SetSource(txtScript.Text, 0);
-            scanner.Output = new StreamWriter(@"C:\Users\Aaron\Desktop\script.txt");
-            int tok;
-            do
-            {
-                tok = scanner.yylex();
-            } while (tok > (int)LispScriptTokens.EOF);
-            scanner.Output.Close();*/
+            LispScriptParser parser = new LispScriptParser(scanner);
+            parser.Parse();*/
+            // You have to stick a breakpoint here to look at the parsed nodes :P
         }
     }
 }

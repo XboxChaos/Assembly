@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Blamite.Blam.Scripting.Analysis
     /// <summary>
     /// A node representing a function call.
     /// </summary>
+    [DebuggerDisplay("Call {FunctionName}[{Arguments.Count}]")]
     public class FunctionCallNode : IScriptNode
     {
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Blamite.Blam.Scripting.Analysis
     /// <summary>
     /// A script node representing a global object definition.
     /// </summary>
+    [DebuggerDisplay("Object {TagClass} {Name} {PaletteIndex}")]
     public class ObjectDefinitionNode : IScriptNode
     {
         /// <summary>

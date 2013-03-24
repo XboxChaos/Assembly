@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -34,6 +35,7 @@ namespace Blamite.Blam.Scripting.Analysis
     /// <summary>
     /// A script node representing a constant.
     /// </summary>
+    [DebuggerDisplay("Constant {Type} {FloatValue} {StringValue} {BooleanValue}")]
     public class ConstantNode : IScriptNode
     {
         /// <summary>
