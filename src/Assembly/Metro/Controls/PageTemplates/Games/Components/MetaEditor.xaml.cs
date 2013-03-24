@@ -47,7 +47,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     public partial class MetaEditor : UserControl
     {
 	    private MetaContainer _parentMetaContainer;
-        private IStreamManager _streamManager;
+        private IStreamManager _fileManager;
         private TagEntry _tag;
         private TagHierarchy _tags;
         private BuildInformation _buildInfo;
@@ -79,7 +79,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _tags = tags;
             _buildInfo = buildInfo;
             _cache = cache;
-            _streamManager = streamManager;
+            _fileManager = streamManager;
             _rteProvider = rteProvider;
             _searchTimer = new Timer(SearchTimer);
             _stringIDTrie = stringIDTrie;
@@ -100,69 +100,66 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
         public void RefreshEditor(MetaReader.LoadType type)
         {
-			if (File.Exists(_pluginPath))
-			{
-				// Load Plugin File
-				using (var xml = XmlReader.Create(_pluginPath))
-				{
-					_pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, Settings.pluginsShowInvisibles);
-					AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
-				}
-
-				_changeTracker = new FieldChangeTracker();
-				_fileChanges = new FieldChangeSet();
-				_memoryChanges = new FieldChangeSet();
-
-				if (type == MetaReader.LoadType.File)
-				{
-					var baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
-					var metaReader = new MetaReader(_streamManager, baseOffset, _cache, _buildInfo, _fileChanges);
-					_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-					_flattener.Flatten(_pluginVisitor.Values);
-					metaReader.ReadFields(_pluginVisitor.Values);
-				}
-				else if (_rteProvider != null)
-				{
-					var metaStream = ((IStreamManager) _rteProvider).OpenRead();
-
-					if (metaStream != null)
-					{
-						var metaReader = new MetaReader((IStreamManager)_rteProvider, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type);
-						_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-						_flattener.Flatten(_pluginVisitor.Values);
-						metaReader.ReadFields(_pluginVisitor.Values);
-						_fileChanges.MarkAllUnchanged();
-					}
-					else
-					{
-						switch (_rteProvider.ConnectionType)
-						{
-							case RTEConnectionType.ConsoleX360:
-								MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
-								break;
-								
-							case RTEConnectionType.LocalProcess:
-								MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
-								break;
-						}
-					}
-				}
-
-				panelMetaComponents.ItemsSource = _pluginVisitor.Values;
-
-				// Start monitoring fields for changes
-				_changeTracker.RegisterChangeSet(_fileChanges);
-				_changeTracker.RegisterChangeSet(_memoryChanges);
-				_changeTracker.Attach(_pluginVisitor.Values);
-
-				// Update Meta Toolbar
-				UpdateMetaButtons(true);
-			}
-			else
-			{
-				UpdateMetaButtons(false);
+			if (!File.Exists(_pluginPath))
+            {
+                UpdateMetaButtons(false);
 				StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
-			}
+                return;
+            }
+
+			// Set the stream manager and base offset to use based upon the LoadType
+            IStreamManager streamManager = null;
+            uint baseOffset = 0;
+            switch (type)
+            {
+                case MetaReader.LoadType.File:
+                    streamManager = _fileManager;
+                    baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
+                    break;
+
+                case MetaReader.LoadType.Memory:
+                    if (_rteProvider == null)
+                        goto default;
+
+                    if (_rteProvider.GetMetaStream(_cache) == null)
+                    {
+                        ShowConnectionError();
+                        return;
+                    }
+
+                    streamManager = new RTEStreamManager(_rteProvider, _cache);
+                    baseOffset = _tag.RawTag.MetaLocation.AsPointer();
+                    break;
+
+                default:
+                    MetroMessageBox.Show("Not Supported", "That feature is not supported for this game.");
+                    return;
+            }
+
+            // Load Plugin File
+            using (var xml = XmlReader.Create(_pluginPath))
+            {
+                _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, Settings.pluginsShowInvisibles);
+                AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
+            }
+
+            _changeTracker = new FieldChangeTracker();
+            _fileChanges = new FieldChangeSet();
+            _memoryChanges = new FieldChangeSet();
+
+            var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
+            _flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+            _flattener.Flatten(_pluginVisitor.Values);
+            metaReader.ReadFields(_pluginVisitor.Values);
+			panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+
+			// Start monitoring fields for changes
+			_changeTracker.RegisterChangeSet(_fileChanges);
+			_changeTracker.RegisterChangeSet(_memoryChanges);
+			_changeTracker.Attach(_pluginVisitor.Values);
+
+			// Update Meta Toolbar
+			UpdateMetaButtons(true);
         }
 
         private void RevisionViewer()
@@ -176,20 +173,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             if (pluginExists)
             {
-                gridSearch.Visibility               =   System.Windows.Visibility.Visible;
-                cbShowInvisibles.Visibility         =   System.Windows.Visibility.Visible;
-                btnPluginSave.Visibility            =   System.Windows.Visibility.Visible;
+                gridSearch.Visibility       =   System.Windows.Visibility.Visible;
+                cbShowInvisibles.Visibility =   System.Windows.Visibility.Visible;
+                btnPluginSave.Visibility    =   System.Windows.Visibility.Visible;
 
                 // Only enable poking if RTE support is available
                 if (_rteProvider != null)
                 {
-                    btnPluginPokeAll.Visibility     =   System.Windows.Visibility.Visible;
-                    btnPluginPokeChanged.Visibility =   System.Windows.Visibility.Visible;
+                    btnPluginPokeAll.Visibility           =   System.Windows.Visibility.Visible;
+                    btnPluginPokeChanged.Visibility       =   System.Windows.Visibility.Visible;
+                    btnPluginRefreshFromMemory.Visibility =   System.Windows.Visibility.Visible;
                 }
                 else
                 {
-                    btnPluginPokeAll.Visibility     =   System.Windows.Visibility.Collapsed;
-                    btnPluginPokeChanged.Visibility =   System.Windows.Visibility.Collapsed;
+                    btnPluginPokeAll.Visibility           =   System.Windows.Visibility.Collapsed;
+                    btnPluginPokeChanged.Visibility       =   System.Windows.Visibility.Collapsed;
+                    btnPluginRefreshFromMemory.Visibility =   System.Windows.Visibility.Collapsed;
                 }
 
                 btnPluginRevisionViewer.Visibility  =   System.Windows.Visibility.Visible;
@@ -197,22 +196,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             }
             else
             {
-                gridSearch.Visibility               =   System.Windows.Visibility.Collapsed;
+                gridSearch.Visibility                 =   System.Windows.Visibility.Collapsed;
 
-                cbShowInvisibles.Visibility         =   System.Windows.Visibility.Collapsed;
-                btnPluginSave.Visibility            =   System.Windows.Visibility.Collapsed;
-                btnPluginPokeAll.Visibility         =   System.Windows.Visibility.Collapsed;
-                btnPluginPokeChanged.Visibility     =   System.Windows.Visibility.Collapsed;
-                btnPluginRevisionViewer.Visibility  =   System.Windows.Visibility.Collapsed;
+                cbShowInvisibles.Visibility           =   System.Windows.Visibility.Collapsed;
+                btnPluginSave.Visibility              =   System.Windows.Visibility.Collapsed;
+                btnPluginPokeAll.Visibility           =   System.Windows.Visibility.Collapsed;
+                btnPluginPokeChanged.Visibility       =   System.Windows.Visibility.Collapsed;
+                btnPluginRevisionViewer.Visibility    =   System.Windows.Visibility.Collapsed;
+                btnPluginRefreshFromMemory.Visibility =   System.Windows.Visibility.Collapsed;
 
-                btnPluginRefresh.Visibility         =   System.Windows.Visibility.Visible;
+                btnPluginRefresh.Visibility           =   System.Windows.Visibility.Visible;
             }
         }
         private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
         {
             if (type == MetaWriter.SaveType.File)
             {
-                using (EndianStream stream = new EndianStream(_streamManager.OpenReadWrite(), _streamManager.SuggestedEndian))
+                using (IStream stream = _fileManager.OpenReadWrite())
                 {
 #if DEBUG_SAVE_ALL
                     MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null);
@@ -247,21 +247,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     }
                     else
                     {
-                        switch (_rteProvider.ConnectionType)
-                        {
-                            case RTEConnectionType.ConsoleX360:
-                                MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
-                                break;
-
-                            case RTEConnectionType.LocalProcess:
-                                MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
-                                break;
-                        }
+                        ShowConnectionError();
                     }
                 }
             }
         }
 
+        private void ShowConnectionError()
+        {
+            switch (_rteProvider.ConnectionType)
+            {
+                case RTEConnectionType.ConsoleX360:
+                    MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+                    break;
+
+                case RTEConnectionType.LocalProcess:
+                    MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+                    break;
+            }
+        }
 		public void LoadNewTagEntry(TagEntry tag)
 		{
 			_tag = tag;
@@ -628,7 +632,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             {
                 IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
                 uint offset = (uint)_cache.MetaArea.PointerToOffset(field.FieldAddress);
-                MetroViewValueAs.Show(_cache, _buildInfo, _streamManager, viewValueAsFields, offset);
+                MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
             }
 		}
 		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)

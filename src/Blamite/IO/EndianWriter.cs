@@ -25,8 +25,7 @@ using System.IO;
 namespace Blamite.IO
 {
     /// <summary>
-    /// Writes binary data to a stream.
-    /// The endianness can be dynamically changed.
+    /// A stream which can be written to and whose endianness can be changed.
     /// </summary>
     public class EndianWriter : IWriter, IDisposable
     {
@@ -35,9 +34,10 @@ namespace Blamite.IO
         private byte[] _buffer = new byte[8];
 
         /// <summary>
-        /// Constructs a new EndianWriter.
+        /// Initializes a new instance of the <see cref="EndianWriter"/> class.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
+        /// <param name="endianness">The initial endianness to use when writing to the stream.</param>
         public EndianWriter(Stream stream, Endian endianness)
         {
             _stream = stream;
@@ -45,7 +45,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// The endianness to use when writing to the stream.
+        /// Gets or sets the endianness used when reading/writing to/from the stream.
         /// </summary>
         public Endian Endianness
         {
@@ -60,7 +60,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Closes the underlying stream.
+        /// Closes the stream, releasing any I/O resources it has acquired.
         /// </summary>
         public void Close()
         {
@@ -68,7 +68,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a byte to the underlying stream.
+        /// Writes a byte to the stream.
         /// </summary>
         /// <param name="value">The byte to write.</param>
         public void WriteByte(byte value)
@@ -78,7 +78,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a signed byte to the underlying stream.
+        /// Writes a signed byte to the stream.
         /// </summary>
         /// <param name="value">The signed byte to write.</param>
         public void WriteSByte(sbyte value)
@@ -87,9 +87,9 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes an unsigned 16-bit integer to the underlying stream.
+        /// Writes an unsigned 16-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The unsigned 16-bit integer to write.</param>
         public void WriteUInt16(ushort value)
         {
             if (_bigEndian)
@@ -106,18 +106,18 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a signed 16-bit integer to the underlying stream.
+        /// Writes a signed 16-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The signed 16-bit integer to write.</param>
         public void WriteInt16(short value)
         {
             WriteUInt16((ushort)value);
         }
 
         /// <summary>
-        /// Writes an unsigned 32-bit integer to the underlying stream.
+        /// Writes an unsigned 32-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The unsigned 32-bit integer to write.</param>
         public void WriteUInt32(uint value)
         {
             if (_bigEndian)
@@ -138,18 +138,18 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a signed 32-bit integer to the underlying stream.
+        /// Writes a signed 32-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The signed 32-bit integer to write.</param>
         public void WriteInt32(int value)
         {
             WriteUInt32((uint)value);
         }
 
         /// <summary>
-        /// Writes an unsigned 64-bit integer to the underlying stream.
+        /// Writes an unsigned 64-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The unsigned 64-bit integer to write.</param>
         public void WriteUInt64(ulong value)
         {
             if (_bigEndian)
@@ -178,18 +178,18 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes an signed 64-bit integer to the underlying stream.
+        /// Writes a signed 64-bit integer to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The signed 64-bit integer to write.</param>
         public void WriteInt64(long value)
         {
             WriteUInt64((ulong)value);
         }
 
         /// <summary>
-        /// Writes a 32-bit float value to the underlying stream.
+        /// Writes a 32-bit floating-point value to the stream.
         /// </summary>
-        /// <param name="value">The value to write.</param>
+        /// <param name="value">The 32-bit floating-point value to write.</param>
         public void WriteFloat(float value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
@@ -207,9 +207,9 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a null-terminated ASCII string to the underlying stream.
+        /// Writes an ASCII string to the stream, followed by a null terminator.
         /// </summary>
-        /// <param name="str">The string to write.</param>
+        /// <param name="str">The ASCII string to write.</param>
         public void WriteAscii(string str)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(str);
@@ -218,9 +218,9 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a null-terminated UTF-8 encoded string to the underlying stream.
+        /// Writes a UTF-8 string to the stream, followed by a null terminator.
         /// </summary>
-        /// <param name="str">The string to write.</param>
+        /// <param name="str">The UTF-8 string to write.</param>
         public void WriteUTF8(string str)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(str);
@@ -229,9 +229,9 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes a null-terminated UTF-16 encoded string to the underlying stream.
+        /// Writes a UTF-16 string to the stream, followed by a null terminator.
         /// </summary>
-        /// <param name="str">The string to write.</param>
+        /// <param name="str">The UTF-16 string to write.</param>
         public void WriteUTF16(string str)
         {
             foreach (char ch in str)
@@ -240,30 +240,32 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Writes an array of bytes to the underlying stream.
+        /// Writes an array of bytes to the stream.
         /// </summary>
-        /// <param name="data">The array of bytes to write.</param>
+        /// <param name="data">The bytes to write.</param>
         public void WriteBlock(byte[] data)
         {
             _stream.Write(data, 0, data.Length);
         }
 
         /// <summary>
-        /// Writes part of an array of bytes to the underlying stream.
+        /// Writes an array of bytes to the stream.
         /// </summary>
-        /// <param name="data">The byte array to read from.</param>
-        /// <param name="offset">The offset in the array to start reading from.</param>
-        /// <param name="size">The maximum number of bytes to write.</param>
+        /// <param name="data">The bytes to write.</param>
+        /// <param name="offset">The starting index in the array to write.</param>
+        /// <param name="size">The number of bytes to write.</param>
         public void WriteBlock(byte[] data, int offset, int size)
         {
             _stream.Write(data, offset, size);
         }
 
         /// <summary>
-        /// Changes the position of the underlying stream.
+        /// Seeks to an offset in the stream.
         /// </summary>
-        /// <param name="offset">The new offset.</param>
-        /// <returns>true on success.</returns>
+        /// <param name="offset">The offset to move the stream pointer to.</param>
+        /// <returns>
+        /// true if the seek was successful.
+        /// </returns>
         public bool SeekTo(long offset)
         {
             if (offset < 0)
@@ -273,7 +275,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Skips over a number of bytes in the underlying stream.
+        /// Skips over a number of bytes in the stream.
         /// </summary>
         /// <param name="count">The number of bytes to skip.</param>
         public void Skip(long count)
@@ -281,13 +283,16 @@ namespace Blamite.IO
             _stream.Seek(count, SeekOrigin.Current);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             _stream.Dispose();
         }
 
         /// <summary>
-        /// Returns whether or not we are at the end of the stream.
+        /// Gets whether or not the stream pointer is at the end of the stream.
         /// </summary>
         public bool EOF
         {
@@ -298,7 +303,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Returns the current position of the reader.
+        /// Gets the current position of the stream pointer.
         /// </summary>
         public long Position
         {
@@ -309,7 +314,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Returns the total length of the stream.
+        /// Gets the length of the stream in bytes.
         /// </summary>
         public long Length
         {
@@ -320,7 +325,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// The stream that this EndianWriter is based off of.
+        /// Gets the base Stream object the stream was constructed from.
         /// </summary>
         public Stream BaseStream
         {

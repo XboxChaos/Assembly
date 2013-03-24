@@ -3,39 +3,46 @@
 %scannertype LispScriptScanner
 %scanbasetype LispScriptScanBase
 %tokentype LispScriptTokens
-%option stack noparser unicode
+%option stack unicode
 
 eol (\n|\r\n?)
-keyword [A-Za-z0-9!#_<>=\+\-\*\\]+
+name [A-Za-z0-9!#_<>=\+\-\*\\]+
 open \(
 close \)
 quote \"
 digit [0-9]
-float {digit}*\.?{digit}+
+float \-?{digit}*\.?{digit}+
 comment ;
 comma ,
 whitespace [ \t\r\n]
 
 %x COMMENT
+%x AFTEROPEN
+
 %%
 
-{whitespace}*     /* ignore */
-{open}            Output.WriteLine("(");
-{close}           Output.WriteLine(")");
-{comma}           Output.WriteLine("SEPARATOR");
-true              Output.WriteLine("TRUE");
-false             Output.WriteLine("FALSE");
-global            Output.WriteLine("GLOBAL");
-object            Output.WriteLine("OBJECT");
-script            Output.WriteLine("SCRIPT");
-{float}           Output.WriteLine("FLOAT {0}", yytext);
-{quote}.*{quote}  Output.WriteLine("STRING \"{0}\"", yytext.Substring(1, yytext.Length - 2));
-{comment}         yy_push_state(COMMENT);
-{keyword}         Output.WriteLine("KEYWORD {0}", yytext);
+<AFTEROPEN> {
+    global  BEGIN(INITIAL); return (int)LispScriptTokens.GLOBAL;
+    object  BEGIN(INITIAL); return (int)LispScriptTokens.OBJECT;
+    script  BEGIN(INITIAL); return (int)LispScriptTokens.SCRIPT;
+}
+
+<INITIAL,AFTEROPEN> {
+    {whitespace}*        /* ignore */
+    {open}               BEGIN(AFTEROPEN); return (int)'(';
+    {close}              BEGIN(INITIAL); return (int)')';
+    {comma}              BEGIN(INITIAL); return (int)',';
+    true                 BEGIN(INITIAL); yylval.BooleanValue = true; return (int)LispScriptTokens.BOOLEAN;
+    false                BEGIN(INITIAL); yylval.BooleanValue = false; return (int)LispScriptTokens.BOOLEAN;
+    none                 BEGIN(INITIAL); return (int)LispScriptTokens.NONE;
+    {float}              BEGIN(INITIAL); yylval.FloatValue = float.Parse(yytext); return (int)LispScriptTokens.FLOAT;
+    {quote}[^"]*{quote}  BEGIN(INITIAL); yylval.StringValue = yytext.Substring(1, yytext.Length - 2); return (int)LispScriptTokens.STRING;
+    {comment}            BEGIN(INITIAL); yy_push_state(COMMENT);
+    {name}               BEGIN(INITIAL); yylval.StringValue = yytext; return (int)LispScriptTokens.NAME;
+}
 
 <COMMENT> {
 	{eol}  yy_pop_state();
 }
 
 %%
-	public StreamWriter Output { get; set; }

@@ -8,26 +8,21 @@ namespace Blamite.IO
     public interface IStreamManager
     {
         /// <summary>
-        /// The suggested endianness to read/write the stream with.
-        /// </summary>
-        Endian SuggestedEndian { get; }
-
-        /// <summary>
         /// Opens the backed object for reading.
         /// </summary>
         /// <returns>The stream that was opened on the object.</returns>
-        Stream OpenRead();
+        IReader OpenRead();
 
         /// <summary>
         /// Opens the backed object for writing.
         /// </summary>
         /// <returns>The stream that was opened on the object.</returns>
-        Stream OpenWrite();
+        IWriter OpenWrite();
 
         /// <summary>
         /// Opens the backed object for reading and writing.
         /// </summary>
         /// <returns>The stream that was opened on the object.</returns>
-        Stream OpenReadWrite();
+        IStream OpenReadWrite();
     }
 }

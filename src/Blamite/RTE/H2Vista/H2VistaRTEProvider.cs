@@ -10,7 +10,7 @@ namespace Blamite.RTE.H2Vista
     /// <summary>
     /// A real-time editing provider which connects to Halo 2 Vista.
     /// </summary>
-    public class H2VistaRTEProvider : IRTEProvider, IStreamManager
+    public class H2VistaRTEProvider : IRTEProvider
     {
         /// <summary>
         /// Constructs a new H2VistaRTEProvider.
@@ -84,28 +84,5 @@ namespace Blamite.RTE.H2Vista
             var processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(EXEName));
             return processes.Length > 0 ? processes[0] : null;
         }
-
-		public Endian SuggestedEndian
-		{
-			get { return Endian.LittleEndian; }
-		}
-
-		public Stream OpenRead()
-		{
-			var gameProcess = FindGameProcess();
-			return gameProcess == null ? null : new ProcessMemoryStream(gameProcess);
-		}
-
-		public Stream OpenWrite()
-		{
-			var gameProcess = FindGameProcess();
-			return gameProcess == null ? null : new ProcessMemoryStream(gameProcess);
-		}
-
-		public Stream OpenReadWrite()
-		{
-			var gameProcess = FindGameProcess();
-			return gameProcess == null ? null : new ProcessMemoryStream(gameProcess);
-		}
 	}
 }

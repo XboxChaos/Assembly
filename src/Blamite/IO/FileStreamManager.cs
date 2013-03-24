@@ -12,6 +12,7 @@ namespace Blamite.IO
     public class FileStreamManager : IStreamManager
     {
         private FileInfo _file;
+        private Endian _endian;
 
         /// <summary>
         /// Constructs a new FileStreamManager.
@@ -31,51 +32,34 @@ namespace Blamite.IO
         public FileStreamManager(FileInfo file, Endian endian)
         {
             _file = file;
-            SuggestedEndian = endian;
+            _endian = endian;
         }
-
-        /// <summary>
-        /// The suggested endianness to read/write the stream with.
-        /// </summary>
-        public Endian SuggestedEndian { get; private set; }
 
         /// <summary>
         /// Opens the file for reading.
         /// </summary>
         /// <returns>The stream that was opened.</returns>
-        public Stream OpenRead()
+        public IReader OpenRead()
         {
-#if DEBUG_FILE_STREAMS
-            return _file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-#else
-            return _file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-#endif
+            return new EndianReader(_file.Open(FileMode.Open, FileAccess.Read, FileShare.Read), _endian);
         }
 
         /// <summary>
         /// Opens the file for writing.
         /// </summary>
         /// <returns>The stream that was opened.</returns>
-        public Stream OpenWrite()
+        public IWriter OpenWrite()
         {
-#if DEBUG_FILE_STREAMS
-            return _file.Open(FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
-#else
-            return _file.OpenWrite();
-#endif
+            return new EndianWriter(_file.OpenWrite(), _endian);
         }
 
         /// <summary>
         /// Opens the file for reading and writing.
         /// </summary>
         /// <returns>The stream that was opened.</returns>
-        public Stream OpenReadWrite()
+        public IStream OpenReadWrite()
         {
-#if DEBUG_FILE_STREAMS
-            return _file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-#else
-            return _file.Open(FileMode.Open, FileAccess.ReadWrite);
-#endif
+            return new EndianStream(_file.Open(FileMode.Open, FileAccess.ReadWrite), _endian);
         }
     }
 }

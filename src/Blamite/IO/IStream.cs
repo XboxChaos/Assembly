@@ -6,7 +6,7 @@ using System.Text;
 namespace Blamite.IO
 {
     /// <summary>
-    /// A stream which can be both read from and written to.
+    /// Interface for a stream which can be both read from and written to.
     /// </summary>
     public interface IStream : IReader, IWriter
     {

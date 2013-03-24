@@ -26,7 +26,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -70,6 +70,16 @@
     <Compile Include="Blam\Resources\Models\ModelReader.cs" />
     <Compile Include="Blam\Resources\Models\VertexBufferReader.cs" />
     <Compile Include="Blam\Resources\ResourcePageExtractor.cs" />
+    <Compile Include="Blam\Scripting\Analysis\ConstantNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\FunctionCallNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\IScriptNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\IScriptNodeVisitor.cs" />
+    <Compile Include="Blam\Scripting\Analysis\ObjectDefinitionNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionParam.cs" />
+    <Compile Include="Blam\Scripting\Analysis\GlobalDefinitionNode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\ShiftReduceParserCode.cs" />
+    <Compile Include="Blam\Scripting\Analysis\VariableReferenceNode.cs" />
     <Compile Include="Blam\SecondGen\MetaOffsetConverter.cs" />
     <Compile Include="Blam\SecondGen\SecondGenResourceMetaLoader.cs" />
     <Compile Include="Blam\TagTable.cs" />
@@ -202,6 +212,7 @@
     <Compile Include="RTE\H2Vista\H2VistaRTEProvider.cs" />
     <Compile Include="Native\ProcessMemoryStream.cs" />
     <Compile Include="RTE\IRTEProvider.cs" />
+    <Compile Include="RTE\RTEStreamManager.cs" />
     <Compile Include="Util\AES.cs" />
     <Compile Include="Util\CharConstant.cs" />
     <Compile Include="Util\FileSystem.cs" />
@@ -235,6 +246,12 @@
     <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
     <Compile Include="Blam\Scripting\Analysis\LispScriptScanner.cs">
       <DependentUpon>LispScriptScanner.lex</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Parser Include="Blam\Scripting\Analysis\LispScriptParser.y" />
+    <Compile Include="Blam\Scripting\Analysis\LispScriptParser.cs">
+      <DependentUpon>LispScriptParser.y</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -328,7 +345,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -339,10 +355,17 @@
   -->
   <PropertyGroup>
     <CompileDependsOn>GenerateLexers;$(CompileDependsOn)</CompileDependsOn>
+    <CompileDependsOn>GenerateParsers;$(CompileDependsOn)</CompileDependsOn>
   </PropertyGroup>
   <Target Name="GenerateLexers" Inputs="@(Lexer)" Outputs="@(Lexer -> '%(RelativeDir)%(Filename).cs')">
     <Exec Command="Blam\Scripting\Analysis\Executables\gplex.exe /out:@(Lexer -> '%(RelativeDir)%(Filename).cs') %(Lexer.Identity)" />
     <CreateItem Include="%(Lexer.Filename).cs">
+      <Output TaskParameter="Include" ItemName="FileWrites" />
+    </CreateItem>
+  </Target>
+  <Target Name="GenerateParsers" Inputs="@(Parser)" Outputs="@(Parser -> '%(RelativeDir)%(Filename).cs')">
+    <Exec Command="Blam\Scripting\Analysis\Executables\gppg.exe /gplex /out:@(Parser -> '%(RelativeDir)%(Filename).cs') %(Parser.Identity)" />
+    <CreateItem Include="%(Parser.Filename).cs">
       <Output TaskParameter="Include" ItemName="FileWrites" />
     </CreateItem>
   </Target>

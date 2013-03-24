@@ -25,8 +25,7 @@ using System.IO;
 namespace Blamite.IO
 {
     /// <summary>
-    /// Reads big-endian data from a stream.
-    /// Designed to support the various types that Bungie uses.
+    /// A stream which can be read from and whose endianness can be changed.
     /// </summary>
     public class EndianReader : IDisposable, IReader
     {
@@ -36,10 +35,10 @@ namespace Blamite.IO
         private bool _bigEndian;
 
         /// <summary>
-        /// Constructs a new EndianReader object given a base stream and an initial endianness.
+        /// Initializes a new instance of the <see cref="EndianReader"/> class.
         /// </summary>
-        /// <param name="baseStream">The stream that data should be read from.</param>
-        /// <param name="endianness">The endianness that should be used.</param>
+        /// <param name="stream">The stream to read from.</param>
+        /// <param name="endianness">The initial endianness to use when reading from the stream.</param>
         public EndianReader(Stream stream, Endian endianness)
         {
             _stream = stream;
@@ -47,7 +46,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// The endianness to use when reading from the stream.
+        /// Gets or sets the endianness used when reading/writing to/from the stream.
         /// </summary>
         public Endian Endianness
         {
@@ -62,7 +61,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Closes this EndianReader and the underlying stream.
+        /// Closes the stream, releasing any I/O resources it has acquired.
         /// </summary>
         public void Close()
         {
@@ -70,8 +69,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Disposes of this stream.
-        /// <seealso cref="Close"/>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -79,8 +77,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a byte from the underlying stream and advances its position by 1.
+        /// Reads a byte from the stream.
         /// </summary>
+        /// <returns>
+        /// The byte that was read.
+        /// </returns>
         public byte ReadByte()
         {
             _stream.Read(_buffer, 0, 1);
@@ -88,16 +89,22 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a signed byte from the underlying stream and advances its position by 1.
+        /// Reads a signed byte from the stream.
         /// </summary>
+        /// <returns>
+        /// The signed byte that was read.
+        /// </returns>
         public sbyte ReadSByte()
         {
             return (sbyte)ReadByte();
         }
 
         /// <summary>
-        /// Reads a 16-bit unsigned integer from the underlying stream and advances its position by 2.
+        /// Reads a 16-bit unsigned integer from the stream.
         /// </summary>
+        /// <returns>
+        /// The 16-bit unsigned integer that was read.
+        /// </returns>
         public ushort ReadUInt16()
         {
             _stream.Read(_buffer, 0, 2);
@@ -108,16 +115,22 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a 16-bit signed integer from the underlying stream and advances its position by 2.
+        /// Reads a 16-bit signed integer from the stream.
         /// </summary>
+        /// <returns>
+        /// The 16-bit signed integer that was read.
+        /// </returns>
         public short ReadInt16()
         {
             return (short)ReadUInt16();
         }
 
         /// <summary>
-        /// Reads a 32-bit unsigned integer from the underlying stream and advances its position by 4.
+        /// Reads a 32-bit unsigned integer from the stream.
         /// </summary>
+        /// <returns>
+        /// The 32-bit unsigned integer that was read.
+        /// </returns>
         public uint ReadUInt32()
         {
             _stream.Read(_buffer, 0, 4);
@@ -128,17 +141,22 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a 32-bit signed integer from the underlying stream and advances its position by 4.
+        /// Reads a 32-bit signed integer from the stream.
         /// </summary>
+        /// <returns>
+        /// The 32-bit signed integer that was read.
+        /// </returns>
         public int ReadInt32()
         {
             return (int)ReadUInt32();
         }
 
         /// <summary>
-        /// Reads a 64-bit unsigned integer from the underlying stream and advances its position by 8.
+        /// Reads a 64-bit unsigned integer from the stream.
         /// </summary>
-        /// <returns>The value that was read</returns>
+        /// <returns>
+        /// The 64-bit unsigned integer that was read.
+        /// </returns>
         public ulong ReadUInt64()
         {
             /*_stream.Read(_buffer, 0, 8);
@@ -153,9 +171,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a 64-bit signed integer from the underlying stream and advances its position by 8.
+        /// Reads a 64-bit signed integer from the stream.
         /// </summary>
-        /// <returns>The value that was read</returns>
+        /// <returns>
+        /// The 64-bit signed integer that was read.
+        /// </returns>
         public long ReadInt64()
         {
             /*_stream.Read(_buffer, 0, 8);
@@ -165,9 +185,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a 32-bit float from the underlying stream and advances its position by 4.
+        /// Reads a 32-bit floating-point value from the stream.
         /// </summary>
-        /// <returns>The float value that was read.</returns>
+        /// <returns>
+        /// The 32-bit floating-point value that was read.
+        /// </returns>
         public float ReadFloat()
         {
             _stream.Read(_buffer, 0, 4);
@@ -186,10 +208,12 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Changes the position of the underlying stream.
+        /// Seeks to an offset in the stream.
         /// </summary>
-        /// <param name="offset">The new offset.</param>
-        /// <returns>true on success.</returns>
+        /// <param name="offset">The offset to move the stream pointer to.</param>
+        /// <returns>
+        /// true if the seek was successful.
+        /// </returns>
         public bool SeekTo(long offset)
         {
             if (offset < 0)
@@ -199,7 +223,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Skips over a number of bytes in the underlying stream.
+        /// Skips over a number of bytes in the stream.
         /// </summary>
         /// <param name="count">The number of bytes to skip.</param>
         public void Skip(long count)
@@ -208,9 +232,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a null-terminated ASCII string.
+        /// Reads a null-terminated ASCII string from the stream.
         /// </summary>
-        /// <returns>The string that was read.</returns>
+        /// <returns>
+        /// The ASCII string that was read.
+        /// </returns>
         public string ReadAscii()
         {
             _currentString.Clear();
@@ -226,11 +252,12 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads an ASCII string of a specific size. Null terminators will be taken into account.
-        /// The position of the underlying stream will be advanced by the string size.
+        /// Reads a fixed-size null-terminated ASCII string from the stream.
         /// </summary>
-        /// <param name="size">The size of the string to be read.</param>
-        /// <returns>The string that was read.</returns>
+        /// <param name="size">The size of the string to read, including the null terminator.</param>
+        /// <returns>
+        /// The ASCII string that was read, with any 0 padding bytes stripped.
+        /// </returns>
         public unsafe string ReadAscii(int size)
         {
             sbyte[] chars = new sbyte[size];
@@ -244,9 +271,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Read a null-terminated UTF8 string.
+        /// Reads a null-terminated UTF-8 string from the stream.
         /// </summary>
-        /// <returns>Returns the string that was read.</returns>
+        /// <returns>
+        /// The null-terminated UTF-8 string that was read.
+        /// </returns>
         public unsafe string ReadUTF8()
         {
             List<sbyte> chars = new List<sbyte>();
@@ -265,6 +294,13 @@ namespace Blamite.IO
                 return new string(prt, 0, chars.Count, Encoding.UTF8);
         }
 
+        /// <summary>
+        /// Reads a fixed-size null-terminated UTF-8 string from the stream.
+        /// </summary>
+        /// <param name="size">The size in bytes of the string to read, including the null terminator.</param>
+        /// <returns>
+        /// The UTF-8 string that was read, with any padding bytes stripped.
+        /// </returns>
         public unsafe string ReadUTF8(int size)
         {
             sbyte[] chars = new sbyte[size];
@@ -278,9 +314,11 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a null-terminated UTF16-encoded string.
+        /// Reads a null-terminated UTF-16 string from the stream.
         /// </summary>
-        /// <returns>The string that was read.</returns>
+        /// <returns>
+        /// The UTF-16 string that was read.
+        /// </returns>
         public string ReadUTF16()
         {
             _currentString.Clear();
@@ -295,6 +333,13 @@ namespace Blamite.IO
             return _currentString.ToString();
         }
 
+        /// <summary>
+        /// Reads a fixed-size null-terminated UTF-16 string from the stream.
+        /// </summary>
+        /// <param name="size">The size in bytes of the string to read, including the null terminator.</param>
+        /// <returns>
+        /// The UTF-16 string that was read, with any padding bytes stripped.
+        /// </returns>
         public string ReadUTF16(int size)
         {
             _currentString.Clear();
@@ -311,10 +356,12 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a block of data from the stream and returns it.
+        /// Reads an array of bytes from the stream.
         /// </summary>
-        /// <param name="size">The number of bytes to read</param>
-        /// <returns>The bytes that were read</returns>
+        /// <param name="size">The number of bytes to read.</param>
+        /// <returns>
+        /// The bytes that were read.
+        /// </returns>
         public byte[] ReadBlock(int size)
         {
             byte[] result = new byte[size];
@@ -323,19 +370,21 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Reads a block of data from the stream into an existing array.
+        /// Reads an array of bytes from the stream.
         /// </summary>
-        /// <param name="output">The array to read data into</param>
-        /// <param name="offset">The array index to start reading to</param>
-        /// <param name="size">The number of bytes to read</param>
-        /// <returns>The number of bytes actually read</returns>
+        /// <param name="output">The array to store the read bytes to.</param>
+        /// <param name="offset">The starting index in the array to read to.</param>
+        /// <param name="size">The number of bytes to read.</param>
+        /// <returns>
+        /// The number of bytes that were actually read.
+        /// </returns>
         public int ReadBlock(byte[] output, int offset, int size)
         {
             return _stream.Read(output, offset, size);
         }
 
         /// <summary>
-        /// Returns whether or not we are at the end of the stream.
+        /// Gets whether or not the stream pointer is at the end of the stream.
         /// </summary>
         public bool EOF
         {
@@ -346,7 +395,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Returns the current position of the reader.
+        /// Gets the current position of the stream pointer.
         /// </summary>
         public long Position
         {
@@ -357,7 +406,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// Returns the total length of the stream.
+        /// Gets the length of the stream in bytes.
         /// </summary>
         public long Length
         {
@@ -368,7 +417,7 @@ namespace Blamite.IO
         }
 
         /// <summary>
-        /// The stream that this EndianReader is based off of.
+        /// Gets the base Stream object the stream was constructed from.
         /// </summary>
         public Stream BaseStream
         {
