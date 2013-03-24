@@ -12,14 +12,16 @@ namespace Blamite.Blam.Scripting
         private ushort _opcode;
         private int _size;
         private bool _quoted;
+        private string _tag;
         private List<string> _enumValues = new List<string>();
 
-        public ScriptValueType(string name, ushort opcode, int size, bool quoted)
+        public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag)
         {
             _name = name;
             _opcode = opcode;
             _size = size;
             _quoted = quoted;
+            _tag = tag;
         }
 
         public void AddEnumValue(string name)
@@ -52,6 +54,11 @@ namespace Blamite.Blam.Scripting
         public bool Quoted
         {
             get { return _quoted; }
+        }
+
+        public string TagClass
+        {
+            get { return _tag; }
         }
     }
 }

@@ -37,8 +37,9 @@ namespace Blamite.Flexibility
 				var opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
 				var size = XMLUtil.GetNumericAttribute(element, "size");
 				var quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
+                var tag = XMLUtil.GetStringAttribute(element, "tag", null);
 
-				valueTypes.Add(new ScriptValueType(name, opcode, size, quoted));
+				valueTypes.Add(new ScriptValueType(name, opcode, size, quoted, tag));
 			}
             _typeLookup = valueTypes.ToDictionary(t => t.Opcode);
 
