@@ -2,7 +2,7 @@
 <plugin game="ODST" baseSize="0x468">
 	<!-- Automatically generated plugin -->
 	<revisions>
-		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">poopoo</revision>
 	</revisions>
 	<bitfield32 name="Flags" offset="0x0" visible="true">
@@ -48,8 +48,8 @@
 	<tagRef name="Object Properties" offset="0x34" visible="true" />
 	<tagRef name="Unknown" offset="0x44" visible="true" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
-	<reflexive name="Unknown 0" offset="0x64" visible="false" entrySize="0x28">
-		<int32 name="Hull" offset="0x0" visible="false" />
+	<reflexive name="Early Mover Properties" offset="0x64" visible="false" entrySize="0x28">
+		<stringid name="Name" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -101,8 +101,8 @@
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
 		<int32 name="Min Value" offset="0x10" visible="true" />
-		<int32 name="Tagdata Size" offset="0x14" visible="true" />
-		<uint32 name="Tagdata Offset" offset="0x20" visible="true" />
+		<dataRef name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
 	<int16 name="Unknown" offset="0xBA" visible="false" />
@@ -110,9 +110,10 @@
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<tagRef name="Attachment" offset="0x4" visible="true" />
 		<stringId name="Marker" offset="0x14" visible="true" />
-		<stringId name="Change Color" offset="0x18" visible="true" />
-		<stringId name="Primary Scale/Function" offset="0x1C" visible="true" />
-		<stringId name="Secondary Scale/Function" offset="0x20" visible="true" />
+		<int16 name="Change Color" offset="0x18" visible="true" />
+		<int16 name="Unknown" offset="0x1A" visible="false" />
+		<stringId name="Primary Scale" offset="0x1C" visible="true" />
+		<stringId name="Secondary Scale" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
 		<tagRef name="Antennae" offset="0x0" visible="true" />
@@ -120,12 +121,8 @@
 	<reflexive name="Change Colours" offset="0xD4" visible="false" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="false" entrySize="0x20">
 			<undefined name="Weight" offset="0x0" visible="false" />
-			<undefined name="Colour Lower Bound: R" offset="0x4" visible="false" />
-			<undefined name="Colour Lower Bound: G" offset="0x8" visible="false" />
-			<undefined name="Colour Lower Bound: B" offset="0xC" visible="false" />
-			<undefined name="Colour Upper Bound: R" offset="0x10" visible="false" />
-			<undefined name="Colour Upper Bound: G" offset="0x14" visible="false" />
-			<undefined name="Colour Upper Bound: B" offset="0x18" visible="false" />
+			<colourf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colourf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
 		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x20">
@@ -133,14 +130,10 @@
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
 			</bitfield32>
-			<undefined name="Colour Lower Bound: R" offset="0x4" visible="true" />
-			<undefined name="Colour Lower Bound: G" offset="0x8" visible="true" />
-			<undefined name="Colour Lower Bound: B" offset="0xC" visible="true" />
-			<undefined name="Colour Upper Bound: R" offset="0x10" visible="true" />
-			<undefined name="Colour Upper Bound: G" offset="0x14" visible="true" />
-			<undefined name="Colour Upper Bound: B" offset="0x18" visible="true" />
-			<float32 name="Darken By... (SID)" offset="0x1C" visible="true" />
-			<int32 name="Scale By... (SID)" offset="0x20" visible="true" />
+			<colourf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colourf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
+			<stringid name="Darken By..." offset="0x1C" visible="true" />
+			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x8">
@@ -148,7 +141,7 @@
 		<int16 name="Resource Index" offset="0x2" visible="true" />
 		<int32 name="Tag Index" offset="0x4" visible="true" />
 	</reflexive>
-	<reflexive name="Gametype Attributes?" offset="0xEC" visible="true" entrySize="0xC4">
+	<reflexive name="Gametype Attributes" offset="0xEC" visible="true" entrySize="0xC4">
 		<enum16 name="Effect" offset="0x0" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Two Way Node" value="0x9" />
@@ -176,8 +169,8 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<tagRef name="Attachment" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x40" visible="true" />
-		<tagRef name="Halogram Shader" offset="0x44" visible="true" />
-		<tagRef name="Halogram Shader" offset="0x54" visible="true" />
+		<tagRef name="Hologram Shader" offset="0x44" visible="true" />
+		<tagRef name="Hologram Shader" offset="0x54" visible="true" />
 		<tagRef name="Unknown" offset="0x64" visible="true" />
 		<tagRef name="Unknown" offset="0x74" visible="true" />
 		<tagRef name="Unknown" offset="0x84" visible="true" />
@@ -238,11 +231,13 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<reflexive name="Unknown 5" offset="0x10C" visible="false" entrySize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<tagRef name="Integrated Light Toggle" offset="0x118" visible="true" />
-	<float32 name="Field of View (radians)" offset="0x128" visible="true" />
+	<degree name="Field of View" offset="0x128" visible="true" />
 	<float32 name="Camera Stiffness(?)" offset="0x12C" visible="true" />
 	<float32 name="Camera Stiffness(?)" offset="0x130" visible="true" />
 	<stringId name="Camera Marker Name" offset="0x134" visible="true" />
@@ -256,7 +251,7 @@
 	<undefined name="Unknown" offset="0x154" visible="false" />
 	<undefined name="Unknown" offset="0x158" visible="false" />
 	<undefined name="Unknown" offset="0x15C" visible="false" />
-	<reflexive name="Unknown 7" offset="0x160" visible="false" entrySize="0x4C">
+	<reflexive name="Unknown" offset="0x160" visible="false" entrySize="0x4C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -328,9 +323,9 @@
 	<reflexive name="HUD Interface" offset="0x274" visible="true" entrySize="0x10">
 		<tagRef name="HUD" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Dialogue Variants" offset="0x280" visible="true" entrySize="0x26">
-		<int16 name="Variant Number" offset="0x0" visible="true" />
-		<tagRef name="Dialogue" offset="0x16" visible="true" />
+	<reflexive name="Dialogue Variants" offset="0x280" visible="true" entrySize="0x14">
+		<undefined name="Unknown" offset="0x0" visible="true" />
+		<tagRef name="Dialogue" offset="0x4" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x28C" visible="false" />
 	<undefined name="Unknown" offset="0x290" visible="false" />
@@ -499,7 +494,7 @@
 		<bit name="Unknown30" index="30" />
 		<bit name="Hydrolics" index="31" />
 	</bitfield32>
-	<reflexive name="Scorpion Motion Properties" offset="0x32C" visible="true" entrySize="0x58">
+	<reflexive name="Unknown" offset="0x32C" visible="false" entrySize="0x58">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -513,7 +508,7 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<float32 name="maximum vehicle speed" offset="0x30" visible="true" />
-		<reflexive name="Unknown14" offset="0x34" visible="true" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x34" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -532,14 +527,11 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<tagRef name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 	</reflexive>
-	<reflexive name="Human Motion Properties" offset="0x338" visible="true" entrySize="0x40">
+	<reflexive name="Unknown" offset="0x338" visible="false" entrySize="0x40">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown (turning related)" offset="0x4" visible="true" />
 		<float32 name="Maximum Left Turn" offset="0x8" visible="true" />
@@ -547,7 +539,7 @@
 		<float32 name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Horse Power?" offset="0x14" visible="true" />
 		<float32 name="Vehicle Speed" offset="0x18" visible="true" />
-		<reflexive name="Unknown 14" offset="0x1C" visible="true" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x1C" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -566,9 +558,9 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
+		<tagRef name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</reflexive>
 	<reflexive name="Dropship Motion Properties" offset="0x344" visible="true" entrySize="0x4C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -651,7 +643,13 @@
 	<reflexive name="Turret Properties" offset="0x368" visible="true" entrySize="0x4">
 		<undefined name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="TESTO" offset="0x374" visible="false" entrySize="0x4C">
+	<undefined name="Unknown" offset="0x374" visible="false" />
+	<undefined name="Unknown" offset="0x378" visible="false" />
+	<undefined name="Unknown" offset="0x37C" visible="false" />
+	<undefined name="Unknown" offset="0x380" visible="false" />
+	<undefined name="Unknown" offset="0x384" visible="false" />
+	<undefined name="Unknown" offset="0x388" visible="false" />
+	<reflexive name="Unknown" offset="0x38C" visible="false" entrySize="0x70">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -659,59 +657,7 @@
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-	</reflexive>
-	<reflexive name="Hornet Motion Properties" offset="0x380" visible="true" entrySize="0x74">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-	</reflexive>
-	<reflexive name="Unknown 18" offset="0x38C" visible="false" entrySize="0x70">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<reflexive name="Unknown 19" offset="0x1C" visible="false" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x1C" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -730,10 +676,7 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<tagRef name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -749,20 +692,9 @@
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 20" offset="0x398" visible="true" entrySize="0x30">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-	</reflexive>
+	<undefined name="Unknown" offset="0x398" visible="false" />
+	<undefined name="Unknown" offset="0x39C" visible="false" />
+	<undefined name="Unknown" offset="0x3A0" visible="false" />
 	<undefined name="Unknown" offset="0x3A4" visible="false" />
 	<float32 name="Reaction Strength" offset="0x3A8" visible="true" />
 	<float32 name="Human Vehicle Weight" offset="0x3AC" visible="true" />
@@ -832,6 +764,11 @@
 		<float32 name="E-Brake Moving Friction" offset="0x1C" visible="true" />
 		<float32 name="E-Brake Friction" offset="0x20" visible="true" />
 		<float32 name="E-Brake Moving Friction Vel Diff" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
 		<stringId name="Collision Global Material Name" offset="0x3C" visible="true" />
 		<enum16 name="Model State Destroyed" offset="0x40" visible="true">
 			<option name="Default" value="0x0" />
@@ -844,7 +781,7 @@
 		<stringId name="Region" offset="0x44" visible="true" />
 		<stringId name="Unknown" offset="0x48" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 21" offset="0x3F8" visible="false" entrySize="0x330">
+	<reflexive name="Unknown" offset="0x3F8" visible="false" entrySize="0x330">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -1060,7 +997,7 @@
 	<float32 name="Flip Time" offset="0x420" visible="true" />
 	<stringId name="Flip Over Message" offset="0x424" visible="true" />
 	<tagRef name="Suspension Sound" offset="0x428" visible="true" />
-	<tagRef name="Unknown" offset="0x438" visible="true" />
-	<tagRef name="Unknown" offset="0x448" visible="true" />
-	<tagRef name="Unknown" offset="0x458" visible="true" />
+	<tagRef name="Unknown" offset="0x438" visible="false" />
+	<tagRef name="Unknown" offset="0x448" visible="false" />
+	<tagRef name="Unknown" offset="0x458" visible="false" />
 </plugin>

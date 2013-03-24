@@ -2,7 +2,7 @@
 <plugin game="Halo3" baseSize="0x44C">
 	<!-- Automatically generated plugin -->
 	<revisions>
-		<revision author="-DeToX-" version="1">Created layout of plugin</revision>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="-DeToX-" version="2">Named some values...</revision>
 		<revision author="Veegie" version="3">Named most values...</revision>
 		<revision author="-DeToX-" version="4">Removed Veegie's garbage values, fixed seats reflexive and added seats intraflexives.</revision>
@@ -52,10 +52,8 @@
 	<tagRef name="Object Properties" offset="0x34" visible="true" />
 	<tagRef name="Unknown" offset="0x44" visible="true" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
-	<int32 name="Bounding Offset Z" offset="0x64" visible="true" />
-	<int32 name="Acceleration Scale" offset="0x68" visible="true" />
-	<reflexive name="Unknown 0" offset="0x64" visible="false" entrySize="0x28">
-		<int32 name="Hull" offset="0x0" visible="false" />
+	<reflexive name="Early Mover Properties" offset="0x64" visible="false" entrySize="0x28">
+		<stringid name="Name" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -108,17 +106,18 @@
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
 		<int32 name="Min Value" offset="0x10" visible="true" />
-		<int32 name="Tagdata Size" offset="0x14" visible="true" />
-		<uint32 name="Tagdata Offset" offset="0x20" visible="true" />
+		<dataRef name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
 	<int16 name="Unknown" offset="0xBA" visible="false" />
 	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x20">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
-		<stringid name="Marker" offset="0x10" visible="true" />
-		<stringid name="Change Color" offset="0x14" visible="true" />
-		<stringid name="Primary Scale/Function" offset="0x18" visible="true" />
-		<stringid name="Secondary Scale/Function" offset="0x1C" visible="true" />
+		<stringId name="Marker" offset="0x10" visible="true" />
+		<int16 name="Change Color" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<stringId name="Primary Scale/Function" offset="0x18" visible="true" />
+		<stringId name="Secondary Scale/Function" offset="0x1C" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
 		<tagRef name="Antennae" offset="0x0" visible="true" />
@@ -126,12 +125,8 @@
 	<reflexive name="Change Colours" offset="0xD4" visible="true" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
 			<undefined name="Weight" offset="0x0" visible="true" />
-			<undefined name="Colour Lower Bound: R" offset="0x4" visible="true" />
-			<undefined name="Colour Lower Bound: G" offset="0x8" visible="true" />
-			<undefined name="Colour Lower Bound: B" offset="0xC" visible="true" />
-			<undefined name="Colour Upper Bound: R" offset="0x10" visible="true" />
-			<undefined name="Colour Upper Bound: G" offset="0x14" visible="true" />
-			<undefined name="Colour Upper Bound: B" offset="0x18" visible="true" />
+			<colourf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colourf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
 		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x20">
@@ -139,14 +134,10 @@
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
 			</bitfield32>
-			<undefined name="Colour Lower Bound: R" offset="0x4" visible="true" />
-			<undefined name="Colour Lower Bound: G" offset="0x8" visible="true" />
-			<undefined name="Colour Lower Bound: B" offset="0xC" visible="true" />
-			<undefined name="Colour Upper Bound: R" offset="0x10" visible="true" />
-			<undefined name="Colour Upper Bound: G" offset="0x14" visible="true" />
-			<undefined name="Colour Upper Bound: B" offset="0x18" visible="true" />
-			<float32 name="Darken By... (SID)" offset="0x1C" visible="true" />
-			<int32 name="Scale By... (SID)" offset="0x20" visible="true" />
+			<colourf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colourf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
+			<stringid name="Darken By..." offset="0x1C" visible="true" />
+			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x8">
@@ -154,7 +145,7 @@
 		<int16 name="Resource Index" offset="0x2" visible="true" />
 		<int32 name="Tag Index" offset="0x4" visible="true" />
 	</reflexive>
-	<reflexive name="Gametype Attributes?" offset="0xEC" visible="true" entrySize="0xC4">
+	<reflexive name="Gametype Attributes" offset="0xEC" visible="true" entrySize="0xC4">
 		<enum16 name="Effect" offset="0x0" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Two Way Node" value="0x9" />
@@ -182,8 +173,8 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<tagRef name="Attachment" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x40" visible="true" />
-		<tagRef name="Halogram Shader" offset="0x44" visible="true" />
-		<tagRef name="Halogram Shader" offset="0x54" visible="true" />
+		<tagRef name="Hologram Shader" offset="0x44" visible="true" />
+		<tagRef name="Hologram Shader" offset="0x54" visible="true" />
 		<tagRef name="Unknown" offset="0x64" visible="true" />
 		<tagRef name="Unknown" offset="0x74" visible="true" />
 		<tagRef name="Unknown" offset="0x84" visible="true" />
@@ -240,14 +231,14 @@
 		<option name="Shout" value="0x3" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
-	<reflexive name="Unknown7" offset="0x100" visible="true" entrySize="0x8">
+	<reflexive name="Unknown7" offset="0x100" visible="false" entrySize="0x8">
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<int16 name="Unknown" offset="0x4" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<tagRef name="Integrated Light Toggle" offset="0x10C" visible="true" />
-	<float32 name="Field of View (radians)" offset="0x11C" visible="true" />
+	<degree name="Field of View" offset="0x11C" visible="true" />
 	<float32 name="Camera Stiffness(?)" offset="0x120" visible="true" />
 	<float32 name="Camera Stiffness(?)" offset="0x124" visible="true" />
 	<stringId name="Camera Marker Name" offset="0x128" visible="true" />
@@ -258,10 +249,10 @@
 	<reflexive name="Camera Tracks" offset="0x13C" visible="true" entrySize="0x10">
 		<tagRef name="Camera" offset="0x0" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x148" visible="true" />
-	<undefined name="Unknown" offset="0x14C" visible="true" />
-	<undefined name="Unknown" offset="0x150" visible="true" />
-	<reflexive name="Unknown" offset="0x154" visible="true" entrySize="0x4C">
+	<undefined name="Unknown" offset="0x148" visible="false" />
+	<undefined name="Unknown" offset="0x14C" visible="false" />
+	<undefined name="Unknown" offset="0x150" visible="false" />
+	<reflexive name="Unknown" offset="0x154" visible="false" entrySize="0x4C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -282,25 +273,22 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x158" visible="true" />
-	<undefined name="Unknown" offset="0x15C" visible="true" />
-	<undefined name="Unknown" offset="0x160" visible="true" />
-	<undefined name="Unknown" offset="0x164" visible="true" />
-	<undefined name="Unknown" offset="0x168" visible="true" />
-	<undefined name="Unknown" offset="0x16C" visible="true" />
-	<undefined name="Unknown" offset="0x170" visible="true" />
-	<undefined name="Unknown" offset="0x174" visible="true" />
-	<undefined name="Unknown" offset="0x178" visible="true" />
-	<undefined name="Unknown" offset="0x17C" visible="true" />
-	<undefined name="Unknown" offset="0x180" visible="true" />
-	<undefined name="Unknown" offset="0x184" visible="true" />
+	<undefined name="Unknown" offset="0x160" visible="false" />
+	<undefined name="Unknown" offset="0x164" visible="false" />
+	<undefined name="Unknown" offset="0x168" visible="false" />
+	<undefined name="Unknown" offset="0x16C" visible="false" />
+	<undefined name="Unknown" offset="0x170" visible="false" />
+	<undefined name="Unknown" offset="0x174" visible="false" />
+	<undefined name="Unknown" offset="0x178" visible="false" />
+	<undefined name="Unknown" offset="0x17C" visible="false" />
+	<undefined name="Unknown" offset="0x180" visible="false" />
+	<undefined name="Unknown" offset="0x184" visible="false" />
 	<undefined name="Unknown" offset="0x188" visible="false" />
 	<undefined name="Unknown" offset="0x18C" visible="false" />
 	<undefined name="Unknown" offset="0x190" visible="false" />
-	<undefined name="Unknown" offset="0x194" visible="true" />
-	<undefined name="Unknown" offset="0x196" visible="true" />
-	<undefined name="Unknown" offset="0x198" visible="true" />
-	<undefined name="Unknown" offset="0x19C" visible="true" />
+	<undefined name="Unknown" offset="0x194" visible="false" />
+	<undefined name="Unknown" offset="0x198" visible="false" />
+	<undefined name="Unknown" offset="0x19C" visible="false" />
 	<tagRef name="Spawned Actor" offset="0x1A0" visible="true" />
 	<int16 name="Actor Count (min)" offset="0x1B0" visible="true" />
 	<int16 name="Actor Count (max)" offset="0x1B2" visible="true" />
@@ -336,8 +324,8 @@
 	<reflexive name="HUD Interface" offset="0x268" visible="true" entrySize="0x10">
 		<tagRef name="HUD" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Dialogue Variants" offset="0x274" visible="true" entrySize="0x26">
-		<int16 name="Variant Number" offset="0x0" visible="true" />
+	<reflexive name="Dialogue Variants" offset="0x274" visible="true" entrySize="0x14">
+		<undefined name="Variant Number" offset="0x0" visible="true" />
 		<tagRef name="Dialogue" offset="0x16" visible="true" />
 	</reflexive>
 	<undefined name="Grenade Velocity(World Units p.s.)" offset="0x280" visible="true" />
@@ -377,7 +365,7 @@
 		</bitfield32>
 		<stringId name="Animation Label" offset="0x4" visible="true" />
 		<stringId name="Sitting Postion Marker" offset="0x8" visible="true" />
-		<stringId name="Entry Marker(s) Name" offset="0xC" visible="true" />
+		<stringId name="Entry Marker" offset="0xC" visible="true" />
 		<float32 name="Unknown" offset="0x10" visible="false" />
 		<stringId name="Boarding Grenade Marker" offset="0x14" visible="true" />
 		<stringId name="Boarding Grenade String" offset="0x18" visible="true" />
@@ -517,7 +505,7 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<float32 name="maximum vehicle speed" offset="0x30" visible="true" />
-		<reflexive name="Unknown14" offset="0x34" visible="true" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x34" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -536,10 +524,7 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<tagRef name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 	</reflexive>
@@ -551,7 +536,7 @@
 		<float32 name="Turn Rate" offset="0x10" visible="true" />
 		<float32 name="Horse Power?" offset="0x14" visible="true" />
 		<float32 name="Vehicle Speed" offset="0x18" visible="true" />
-		<reflexive name="Unknown 14" offset="0x1C" visible="true" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x1C" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -570,9 +555,9 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<tagRef name="Unknown" offset="0x28" visible="true" />
-		<float32 name="Unknown" offset="0x38" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="true" />
+		<tagRef name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</reflexive>
 	<reflexive name="Dropship Motion Properties" offset="0x328" visible="true" entrySize="0x4C">
 		<float32 name="Unknown" offset="0x0" visible="true" />
@@ -655,27 +640,9 @@
 	<reflexive name="Turret Properties" offset="0x34C" visible="true" entrySize="0x4">
 		<undefined name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="TESTO" offset="0x358" visible="false" entrySize="0x4C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-	</reflexive>
+	<undefined name="Unknown" offset="0x358" visible="false" />
+	<undefined name="Unknown" offset="0x35C" visible="false" />
+	<undefined name="Unknown" offset="0x360" visible="false" />
 	<reflexive name="Hornet Motion Properties" offset="0x364" visible="true" entrySize="0x74">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
@@ -707,7 +674,7 @@
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 		<undefined name="Unknown" offset="0x70" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 19" offset="0x370" visible="true" entrySize="0x70">
+	<reflexive name="Unknown" offset="0x370" visible="false" entrySize="0x70">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -715,7 +682,7 @@
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<reflexive name="Unknown 20" offset="0x1C" visible="true" entrySize="0x44">
+		<reflexive name="Unknown" offset="0x1C" visible="false" entrySize="0x44">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -734,10 +701,7 @@
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<tagRef name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -753,7 +717,7 @@
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 20" offset="0x37C" visible="true" entrySize="0x30">
+	<reflexive name="Unknown" offset="0x37C" visible="false" entrySize="0x30">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -867,13 +831,13 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<float32 name="Unknown" offset="0x30" visible="false" />
-		<float32 name="Unknown" offset="0x34" visible="false" />
-		<float32 name="Unknown" offset="0x38" visible="false" />
-		<float32 name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
@@ -891,163 +855,186 @@
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<float32 name="Sphere 0 i" offset="0x90" visible="true" />
-		<float32 name="Sphere 0 j" offset="0x94" visible="true" />
-		<float32 name="Sphere 0 k" offset="0x98" visible="true" />
-		<float32 name="Sphere 1 i" offset="0x9C" visible="true" />
-		<float32 name="Sphere 1 j" offset="0xA0" visible="true" />
-		<float32 name="Sphere 1 k" offset="0xA4" visible="true" />
-		<float32 name="Sphere 2 i" offset="0xA8" visible="true" />
-		<float32 name="Sphere 2 j" offset="0xAC" visible="true" />
-		<float32 name="Sphere 2 k" offset="0xB0" visible="true" />
-		<float32 name="Sphere 3 i" offset="0xB4" visible="true" />
-		<float32 name="Sphere 3 j" offset="0xB8" visible="true" />
-		<float32 name="Sphere 3 k" offset="0xBC" visible="true" />
-		<float32 name="Sphere 4 i" offset="0xC0" visible="true" />
-		<float32 name="Sphere 4 j" offset="0xC4" visible="true" />
-		<float32 name="Sphere 4 k" offset="0xC8" visible="true" />
-		<float32 name="Sphere 5 i" offset="0xCC" visible="true" />
-		<float32 name="Sphere 5 j" offset="0xD0" visible="true" />
-		<float32 name="Sphere 5 k" offset="0xD4" visible="true" />
-		<float32 name="Sphere 6 i" offset="0xD8" visible="true" />
-		<float32 name="Sphere 6 j" offset="0xDC" visible="true" />
-		<float32 name="Sphere 6 k" offset="0xE0" visible="true" />
-		<float32 name="Sphere 7 i" offset="0xE4" visible="true" />
-		<float32 name="Sphere 7 j" offset="0xE8" visible="true" />
-		<float32 name="Sphere 7 k" offset="0xEC" visible="true" />
-		<float32 name="Sphere 8 i" offset="0xF0" visible="true" />
-		<float32 name="Sphere 8 j" offset="0xF4" visible="true" />
-		<float32 name="Sphere 8 k" offset="0xF8" visible="true" />
-		<float32 name="Sphere 9 i" offset="0xFC" visible="true" />
-		<float32 name="Sphere 9 j" offset="0x100" visible="true" />
-		<float32 name="Sphere 9 k" offset="0x104" visible="true" />
-		<float32 name="Sphere 10 i" offset="0x108" visible="true" />
-		<float32 name="Sphere 10 j" offset="0x10C" visible="true" />
-		<float32 name="Sphere 10 k" offset="0x110" visible="true" />
-		<int16 name="Size" offset="0x114" visible="true" />
-		<int16 name="Count" offset="0x116" visible="true" />
-		<int32 name="Num Of Spheres" offset="0x118" visible="true" />
-		<float32 name="Sphere 1 i" offset="0x11C" visible="true" />
-		<float32 name="Sphere 1 j" offset="0x120" visible="true" />
-		<float32 name="Sphere 1 k" offset="0x124" visible="true" />
-		<float32 name="Sphere 2 i" offset="0x128" visible="true" />
-		<float32 name="Sphere 2 j" offset="0x12C" visible="true" />
-		<float32 name="Sphere 2 k" offset="0x130" visible="true" />
-		<float32 name="Sphere 3 i" offset="0x134" visible="true" />
-		<float32 name="Sphere 3 j" offset="0x138" visible="true" />
-		<float32 name="Sphere 3 k" offset="0x13C" visible="true" />
-		<float32 name="Sphere 4 i" offset="0x140" visible="true" />
-		<float32 name="Sphere 4 j" offset="0x144" visible="true" />
-		<float32 name="Sphere 4 k" offset="0x148" visible="true" />
-		<float32 name="Sphere 5 i" offset="0x14C" visible="true" />
-		<float32 name="Sphere 5 j" offset="0x150" visible="true" />
-		<float32 name="Sphere 5 k" offset="0x154" visible="true" />
-		<float32 name="Sphere 6 i" offset="0x158" visible="true" />
-		<float32 name="Sphere 6 j" offset="0x15C" visible="true" />
-		<float32 name="Sphere 6 k" offset="0x160" visible="true" />
-		<float32 name="Sphere 7 i" offset="0x164" visible="true" />
-		<float32 name="Sphere 7 j" offset="0x168" visible="true" />
-		<float32 name="Sphere 7 k" offset="0x16C" visible="true" />
-		<float32 name="Sphere 8 i" offset="0x170" visible="true" />
-		<float32 name="Sphere 8 j" offset="0x174" visible="true" />
-		<float32 name="Sphere 8 k" offset="0x178" visible="true" />
-		<float32 name="Sphere 9 i" offset="0x17C" visible="true" />
-		<float32 name="Sphere 9 j" offset="0x180" visible="true" />
-		<float32 name="Sphere 9 k" offset="0x184" visible="true" />
-		<float32 name="Sphere 10 i" offset="0x188" visible="true" />
-		<float32 name="Sphere 10 j" offset="0x18C" visible="true" />
-		<float32 name="Sphere 10 k" offset="0x190" visible="true" />
-		<int16 name="Size" offset="0x194" visible="true" />
-		<int16 name="Count" offset="0x196" visible="true" />
-		<int32 name="Num Of Spheres" offset="0x198" visible="true" />
-		<float32 name="Sphere 1 i" offset="0x19C" visible="true" />
-		<float32 name="Sphere 1 j" offset="0x1A0" visible="true" />
-		<float32 name="Sphere 1 k" offset="0x1A4" visible="true" />
-		<float32 name="Sphere 2 i" offset="0x1A8" visible="true" />
-		<float32 name="Sphere 2 j" offset="0x1AC" visible="true" />
-		<float32 name="Sphere 2 k" offset="0x1B0" visible="true" />
-		<float32 name="Sphere 3 i" offset="0x1B4" visible="true" />
-		<float32 name="Sphere 3 j" offset="0x1B8" visible="true" />
-		<float32 name="Sphere 3 k" offset="0x1BC" visible="true" />
-		<float32 name="Sphere 4 i" offset="0x1C0" visible="true" />
-		<float32 name="Sphere 4 j" offset="0x1C4" visible="true" />
-		<float32 name="Sphere 4 k" offset="0x1C8" visible="true" />
-		<float32 name="Sphere 5 i" offset="0x1CC" visible="true" />
-		<float32 name="Sphere 5 j" offset="0x1D0" visible="true" />
-		<float32 name="Sphere 5 k" offset="0x1D4" visible="true" />
-		<float32 name="Sphere 6 i" offset="0x1D8" visible="true" />
-		<float32 name="Sphere 6 j" offset="0x1DC" visible="true" />
-		<float32 name="Sphere 6 k" offset="0x1E0" visible="true" />
-		<float32 name="Sphere 7 i" offset="0x1E4" visible="true" />
-		<float32 name="Sphere 7 j" offset="0x1E8" visible="true" />
-		<float32 name="Sphere 7 k" offset="0x1EC" visible="true" />
-		<float32 name="Sphere 8 i" offset="0x1F0" visible="true" />
-		<float32 name="Sphere 8 j" offset="0x1F4" visible="true" />
-		<float32 name="Sphere 8 k" offset="0x1F8" visible="true" />
-		<float32 name="Sphere 9 i" offset="0x1FC" visible="true" />
-		<float32 name="Sphere 9 j" offset="0x200" visible="true" />
-		<float32 name="Sphere 9 k" offset="0x204" visible="true" />
-		<float32 name="Sphere 10 i" offset="0x208" visible="true" />
-		<float32 name="Sphere 10 j" offset="0x20C" visible="true" />
-		<float32 name="Sphere 10 k" offset="0x210" visible="true" />
-		<int16 name="Size" offset="0x214" visible="true" />
-		<int16 name="Count" offset="0x216" visible="true" />
-		<int32 name="Num Of Spheres" offset="0x218" visible="true" />
-		<float32 name="Nigga1" offset="0x21C" visible="true" />
-		<float32 name="Nigga2" offset="0x220" visible="true" />
-		<float32 name="Nigga3" offset="0x224" visible="true" />
-		<float32 name="Nigga4" offset="0x228" visible="true" />
-		<float32 name="Nigga5" offset="0x22C" visible="true" />
-		<float32 name="Nigga6" offset="0x230" visible="true" />
-		<int16 name="Size" offset="0x234" visible="true" />
-		<int16 name="Count" offset="0x236" visible="true" />
-		<int32 name="Num Of Spheres" offset="0x238" visible="true" />
-		<float32 name="Sphere 0 " offset="0x23C" visible="true" />
-		<float32 name="Sphere 0 " offset="0x240" visible="true" />
-		<float32 name="Sphere 0 " offset="0x244" visible="true" />
-		<float32 name="Sphere 1 " offset="0x248" visible="true" />
-		<float32 name="Sphere 1 " offset="0x24C" visible="true" />
-		<float32 name="Sphere 1 " offset="0x250" visible="true" />
-		<float32 name="Sphere 2 " offset="0x254" visible="true" />
-		<float32 name="Sphere 2 " offset="0x258" visible="true" />
-		<float32 name="Sphere 2 " offset="0x25C" visible="true" />
-		<float32 name="Sphere 3 " offset="0x260" visible="true" />
-		<float32 name="Sphere 3 " offset="0x264" visible="true" />
-		<float32 name="Sphere 3 " offset="0x268" visible="true" />
-		<float32 name="Sphere 4 " offset="0x26C" visible="true" />
-		<float32 name="Sphere 4 " offset="0x270" visible="true" />
-		<float32 name="Sphere 4 " offset="0x274" visible="true" />
-		<float32 name="Sphere 5 " offset="0x278" visible="true" />
-		<float32 name="Sphere 5 " offset="0x27C" visible="true" />
-		<float32 name="Sphere 5 " offset="0x280" visible="true" />
-		<float32 name="Sphere 6 " offset="0x284" visible="true" />
-		<float32 name="Sphere 6 " offset="0x288" visible="true" />
-		<float32 name="Sphere 6 " offset="0x28C" visible="true" />
-		<float32 name="Sphere 7 " offset="0x290" visible="true" />
-		<float32 name="Sphere 7 " offset="0x294" visible="true" />
-		<float32 name="Sphere 7 " offset="0x298" visible="true" />
-		<float32 name="Sphere 8 " offset="0x29C" visible="true" />
-		<float32 name="Sphere 8 " offset="0x2A0" visible="true" />
-		<float32 name="Sphere 8 " offset="0x2A4" visible="true" />
-		<float32 name="Sphere 9 " offset="0x2A8" visible="true" />
-		<float32 name="Sphere 9 " offset="0x2AC" visible="true" />
-		<float32 name="Sphere 9 " offset="0x2B0" visible="true" />
-		<float32 name="Sphere 10 " offset="0x2B4" visible="true" />
-		<float32 name="Sphere 11 " offset="0x2B8" visible="true" />
-		<float32 name="Sphere 12 " offset="0x2BC" visible="true" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<undefined name="Unknown" offset="0xA4" visible="false" />
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<undefined name="Unknown" offset="0xC4" visible="false" />
+		<undefined name="Unknown" offset="0xC8" visible="false" />
+		<undefined name="Unknown" offset="0xCC" visible="false" />
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<undefined name="Unknown" offset="0xE0" visible="false" />
+		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<undefined name="Unknown" offset="0xE8" visible="false" />
+		<undefined name="Unknown" offset="0xEC" visible="false" />
+		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<undefined name="Unknown" offset="0xF4" visible="false" />
+		<undefined name="Unknown" offset="0xF8" visible="false" />
+		<undefined name="Unknown" offset="0xFC" visible="false" />
+		<undefined name="Unknown" offset="0x100" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
+		<undefined name="Unknown" offset="0x108" visible="false" />
+		<undefined name="Unknown" offset="0x10C" visible="false" />
+		<undefined name="Unknown" offset="0x110" visible="false" />
+		<undefined name="Unknown" offset="0x114" visible="false" />
+		<undefined name="Unknown" offset="0x118" visible="false" />
+		<undefined name="Unknown" offset="0x11C" visible="false" />
+		<undefined name="Unknown" offset="0x120" visible="false" />
+		<undefined name="Unknown" offset="0x124" visible="false" />
+		<undefined name="Unknown" offset="0x128" visible="false" />
+		<undefined name="Unknown" offset="0x12C" visible="false" />
+		<undefined name="Unknown" offset="0x130" visible="false" />
+		<undefined name="Unknown" offset="0x134" visible="false" />
+		<undefined name="Unknown" offset="0x138" visible="false" />
+		<undefined name="Unknown" offset="0x13C" visible="false" />
+		<undefined name="Unknown" offset="0x140" visible="false" />
+		<undefined name="Unknown" offset="0x144" visible="false" />
+		<undefined name="Unknown" offset="0x148" visible="false" />
+		<undefined name="Unknown" offset="0x14C" visible="false" />
+		<undefined name="Unknown" offset="0x150" visible="false" />
+		<undefined name="Unknown" offset="0x154" visible="false" />
+		<undefined name="Unknown" offset="0x158" visible="false" />
+		<undefined name="Unknown" offset="0x15C" visible="false" />
+		<undefined name="Unknown" offset="0x160" visible="false" />
+		<undefined name="Unknown" offset="0x164" visible="false" />
+		<undefined name="Unknown" offset="0x168" visible="false" />
+		<undefined name="Unknown" offset="0x16C" visible="false" />
+		<undefined name="Unknown" offset="0x170" visible="false" />
+		<undefined name="Unknown" offset="0x174" visible="false" />
+		<undefined name="Unknown" offset="0x178" visible="false" />
+		<undefined name="Unknown" offset="0x17C" visible="false" />
+		<undefined name="Unknown" offset="0x180" visible="false" />
+		<undefined name="Unknown" offset="0x184" visible="false" />
+		<undefined name="Unknown" offset="0x188" visible="false" />
+		<undefined name="Unknown" offset="0x18C" visible="false" />
+		<undefined name="Unknown" offset="0x190" visible="false" />
+		<undefined name="Unknown" offset="0x194" visible="false" />
+		<undefined name="Unknown" offset="0x198" visible="false" />
+		<undefined name="Unknown" offset="0x19C" visible="false" />
+		<undefined name="Unknown" offset="0x1A0" visible="false" />
+		<undefined name="Unknown" offset="0x1A4" visible="false" />
+		<undefined name="Unknown" offset="0x1A8" visible="false" />
+		<undefined name="Unknown" offset="0x1AC" visible="false" />
+		<undefined name="Unknown" offset="0x1B0" visible="false" />
+		<undefined name="Unknown" offset="0x1B4" visible="false" />
+		<undefined name="Unknown" offset="0x1B8" visible="false" />
+		<undefined name="Unknown" offset="0x1BC" visible="false" />
+		<undefined name="Unknown" offset="0x1C0" visible="false" />
+		<undefined name="Unknown" offset="0x1C4" visible="false" />
+		<undefined name="Unknown" offset="0x1C8" visible="false" />
+		<undefined name="Unknown" offset="0x1CC" visible="false" />
+		<undefined name="Unknown" offset="0x1D0" visible="false" />
+		<undefined name="Unknown" offset="0x1D4" visible="false" />
+		<undefined name="Unknown" offset="0x1D8" visible="false" />
+		<undefined name="Unknown" offset="0x1DC" visible="false" />
+		<undefined name="Unknown" offset="0x1E0" visible="false" />
+		<undefined name="Unknown" offset="0x1E4" visible="false" />
+		<undefined name="Unknown" offset="0x1E8" visible="false" />
+		<undefined name="Unknown" offset="0x1EC" visible="false" />
+		<undefined name="Unknown" offset="0x1F0" visible="false" />
+		<undefined name="Unknown" offset="0x1F4" visible="false" />
+		<undefined name="Unknown" offset="0x1F8" visible="false" />
+		<undefined name="Unknown" offset="0x1FC" visible="false" />
+		<undefined name="Unknown" offset="0x200" visible="false" />
+		<undefined name="Unknown" offset="0x204" visible="false" />
+		<undefined name="Unknown" offset="0x208" visible="false" />
+		<undefined name="Unknown" offset="0x20C" visible="false" />
+		<undefined name="Unknown" offset="0x210" visible="false" />
+		<undefined name="Unknown" offset="0x214" visible="false" />
+		<undefined name="Unknown" offset="0x218" visible="false" />
+		<undefined name="Unknown" offset="0x21C" visible="false" />
+		<undefined name="Unknown" offset="0x220" visible="false" />
+		<undefined name="Unknown" offset="0x224" visible="false" />
+		<undefined name="Unknown" offset="0x228" visible="false" />
+		<undefined name="Unknown" offset="0x22C" visible="false" />
+		<undefined name="Unknown" offset="0x230" visible="false" />
+		<undefined name="Unknown" offset="0x234" visible="false" />
+		<undefined name="Unknown" offset="0x238" visible="false" />
+		<undefined name="Unknown" offset="0x23C" visible="false" />
+		<undefined name="Unknown" offset="0x240" visible="false" />
+		<undefined name="Unknown" offset="0x244" visible="false" />
+		<undefined name="Unknown" offset="0x248" visible="false" />
+		<undefined name="Unknown" offset="0x24C" visible="false" />
+		<undefined name="Unknown" offset="0x250" visible="false" />
+		<undefined name="Unknown" offset="0x254" visible="false" />
+		<undefined name="Unknown" offset="0x258" visible="false" />
+		<undefined name="Unknown" offset="0x25C" visible="false" />
+		<undefined name="Unknown" offset="0x260" visible="false" />
+		<undefined name="Unknown" offset="0x264" visible="false" />
+		<undefined name="Unknown" offset="0x268" visible="false" />
+		<undefined name="Unknown" offset="0x26C" visible="false" />
+		<undefined name="Unknown" offset="0x270" visible="false" />
+		<undefined name="Unknown" offset="0x274" visible="false" />
+		<undefined name="Unknown" offset="0x278" visible="false" />
+		<undefined name="Unknown" offset="0x27C" visible="false" />
+		<undefined name="Unknown" offset="0x280" visible="false" />
+		<undefined name="Unknown" offset="0x284" visible="false" />
+		<undefined name="Unknown" offset="0x288" visible="false" />
+		<undefined name="Unknown" offset="0x28C" visible="false" />
+		<undefined name="Unknown" offset="0x290" visible="false" />
+		<undefined name="Unknown" offset="0x294" visible="false" />
+		<undefined name="Unknown" offset="0x298" visible="false" />
+		<undefined name="Unknown" offset="0x29C" visible="false" />
+		<undefined name="Unknown" offset="0x2A0" visible="false" />
+		<undefined name="Unknown" offset="0x2A4" visible="false" />
+		<undefined name="Unknown" offset="0x2A8" visible="false" />
+		<undefined name="Unknown" offset="0x2AC" visible="false" />
+		<undefined name="Unknown" offset="0x2B0" visible="false" />
+		<undefined name="Unknown" offset="0x2B4" visible="false" />
+		<undefined name="Unknown" offset="0x2B8" visible="false" />
+		<undefined name="Unknown" offset="0x2BC" visible="false" />
+		<undefined name="Unknown" offset="0x2C0" visible="false" />
+		<undefined name="Unknown" offset="0x2C4" visible="false" />
+		<undefined name="Unknown" offset="0x2C8" visible="false" />
+		<undefined name="Unknown" offset="0x2CC" visible="false" />
+		<undefined name="Unknown" offset="0x2D0" visible="false" />
+		<undefined name="Unknown" offset="0x2D4" visible="false" />
+		<undefined name="Unknown" offset="0x2D8" visible="false" />
+		<undefined name="Unknown" offset="0x2DC" visible="false" />
+		<undefined name="Unknown" offset="0x2E0" visible="false" />
+		<undefined name="Unknown" offset="0x2E4" visible="false" />
+		<undefined name="Unknown" offset="0x2E8" visible="false" />
+		<undefined name="Unknown" offset="0x2EC" visible="false" />
+		<undefined name="Unknown" offset="0x2F0" visible="false" />
+		<undefined name="Unknown" offset="0x2F4" visible="false" />
+		<undefined name="Unknown" offset="0x2F8" visible="false" />
+		<undefined name="Unknown" offset="0x2FC" visible="false" />
+		<undefined name="Unknown" offset="0x300" visible="false" />
+		<undefined name="Unknown" offset="0x304" visible="false" />
+		<undefined name="Unknown" offset="0x308" visible="false" />
+		<undefined name="Unknown" offset="0x30C" visible="false" />
+		<undefined name="Unknown" offset="0x310" visible="false" />
+		<undefined name="Unknown" offset="0x314" visible="false" />
+		<undefined name="Unknown" offset="0x318" visible="false" />
+		<undefined name="Unknown" offset="0x31C" visible="false" />
+		<undefined name="Unknown" offset="0x320" visible="false" />
+		<undefined name="Unknown" offset="0x324" visible="false" />
+		<undefined name="Unknown" offset="0x328" visible="false" />
+		<undefined name="Unknown" offset="0x32C" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x3E4" visible="false" />
 	<undefined name="Unknown" offset="0x3E8" visible="false" />
-	<float32 name="Unknown" offset="0x3EC" visible="false" />
-	<float32 name="Unknown" offset="0x3F0" visible="false" />
+	<undefined name="Unknown" offset="0x3EC" visible="false" />
+	<undefined name="Unknown" offset="0x3F0" visible="false" />
 	<undefined name="Unknown" offset="0x3F4" visible="false" />
-	<float32 name="Unknown" offset="0x3F8" visible="false" />
-	<float32 name="Unknown" offset="0x3FC" visible="false" />
-	<float32 name="Unknown" offset="0x400" visible="false" />
+	<undefined name="Unknown" offset="0x3F8" visible="false" />
+	<undefined name="Unknown" offset="0x3FC" visible="false" />
+	<undefined name="Unknown" offset="0x400" visible="false" />
 	<float32 name="Flip Time" offset="0x404" visible="true" />
 	<stringId name="Flip Over Message" offset="0x408" visible="true" />
 	<tagRef name="Suspension Sound" offset="0x40C" visible="true" />
-	<tagRef name="Unknown" offset="0x41C" visible="true" />
-	<tagRef name="Unknown" offset="0x42C" visible="true" />
-	<tagRef name="Unknown" offset="0x43C" visible="true" />
+	<tagRef name="Unknown" offset="0x41C" visible="false" />
+	<tagRef name="Unknown" offset="0x42C" visible="false" />
+	<tagRef name="Unknown" offset="0x43C" visible="false" />
 </plugin>
