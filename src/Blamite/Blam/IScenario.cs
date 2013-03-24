@@ -12,7 +12,6 @@ namespace Blamite.Blam
     {
         ScriptExpressionTable ScriptExpressions { get; }
         List<ScriptGlobal> ScriptGlobals { get; }
-        List<ScriptObjectReference> ScriptObjects { get; }
         List<Script> Scripts { get; }
     }
 }

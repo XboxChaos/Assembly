@@ -16,7 +16,7 @@
 
 %start declarations
 
-%token GLOBAL, OBJECT, SCRIPT
+%token GLOBAL, SCRIPT
 %token <StringValue> NAME
 %token <FloatValue> FLOAT
 %token <StringValue> STRING
@@ -24,7 +24,7 @@
 %token NONE
 
 %type <StringValue> scriptname
-%type <Node> declaration, globaldecl, objectdecl, scriptdecl
+%type <Node> declaration, globaldecl, scriptdecl
 %type <Node> expression, constant, functioncall, variable
 %type <NodeList> expressions
 %type <Parameter> parameter
@@ -38,20 +38,11 @@ declarations : /* empty */
              ;
 
 declaration : globaldecl
-            | objectdecl
             | scriptdecl
             ;
 
 globaldecl : '(' GLOBAL NAME NAME expression ')'
                { $$ = new GlobalDefinitionNode($4, $3, $5); }
-           ;
-
-objectdecl : '(' OBJECT NAME NAME FLOAT ')'
-               { $$ = new ObjectDefinitionNode($4, $3, (int)$5); }
-           | '(' OBJECT NONE NAME ')'
-               { $$ = new ObjectDefinitionNode($4, "none", -1); }
-           | '(' OBJECT NONE NAME FLOAT ')'
-               { $$ = new ObjectDefinitionNode($4, "none", (int)$5); }
            ;
 
 scriptname : NAME
@@ -83,9 +74,6 @@ parameters : parameter
 
 parameter : NAME NAME
               { $$ = new ScriptDefinitionParam($2, $1); }
-          | OBJECT NAME
-              /* hack: object is a keyword but a valid parameter type */
-              { $$ = new ScriptDefinitionParam($2, "object"); }
           ;
 
 expressions : expression

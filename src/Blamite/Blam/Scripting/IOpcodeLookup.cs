@@ -8,7 +8,6 @@ namespace Blamite.Blam.Scripting
 {
     public interface IOpcodeLookup
     {
-        string GetTagClassName(short opcode);
         string GetScriptTypeName(ushort opcode);
         ScriptValueType GetTypeInfo(ushort opcode);
         string GetFunctionName(ushort opcode);

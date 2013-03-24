@@ -60,13 +60,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
             code.WriteLine();
 
-            generator.WriteComment("Objects", code);
-            foreach (ScriptObjectReference obj in _cache.Scenario.ScriptObjects)
-            {
-                code.WriteLine("(object {0} {1} {2})", opcodes.GetTagClassName(obj.Class), obj.Name, obj.PlacementIndex);
-            }
-            code.WriteLine();
-
             generator.WriteComment("Scripts", code);
             foreach (Script script in _cache.Scenario.Scripts)
             {

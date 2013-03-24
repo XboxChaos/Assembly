@@ -23,7 +23,6 @@ whitespace [ \t\r\n]
 
 <AFTEROPEN> {
     global  BEGIN(INITIAL); return (int)LispScriptTokens.GLOBAL;
-    object  BEGIN(INITIAL); return (int)LispScriptTokens.OBJECT;
     script  BEGIN(INITIAL); return (int)LispScriptTokens.SCRIPT;
 }
 

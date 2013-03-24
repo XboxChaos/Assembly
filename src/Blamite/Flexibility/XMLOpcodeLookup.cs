@@ -15,7 +15,6 @@ namespace Blamite.Flexibility
         private Dictionary<ushort, string> _scriptTypeNameLookup;
         private Dictionary<ushort, ScriptValueType> _typeLookup;
         private Dictionary<ushort, string> _functionLookup;
-        private Dictionary<short, string> _classLookup;
 
         public XMLOpcodeLookup(XDocument document)
         {
@@ -29,15 +28,6 @@ namespace Blamite.Flexibility
                                   Name = XMLUtil.GetStringAttribute(element, "name")
                               };
             _scriptTypeNameLookup = scriptTypes.ToDictionary(t => t.Opcode, t => t.Name);
-
-            // Object types
-            var objectTypes = from element in root.Element("objectTypes").Descendants("type")
-                              select new
-                              {
-                                  Opcode = (short)XMLUtil.GetNumericAttribute(element, "opcode"),
-                                  Name = XMLUtil.GetStringAttribute(element, "name")
-                              };
-            _classLookup = objectTypes.ToDictionary(t => t.Opcode, t => t.Name);
 
             // Value types
 	        var valueTypes = new List<ScriptValueType>();
@@ -82,16 +72,6 @@ namespace Blamite.Flexibility
         {
             string result;
             if (_functionLookup.TryGetValue(opcode, out result))
-                return result;
-            return null;
-        }
-
-        public string GetTagClassName(short opcode)
-        {
-            string result;
-            if (opcode == -1)
-                return "none";
-            if (_classLookup.TryGetValue(opcode, out result))
                 return result;
             return null;
         }

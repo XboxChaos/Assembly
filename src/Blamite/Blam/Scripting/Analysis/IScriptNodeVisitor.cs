@@ -8,7 +8,6 @@ namespace Blamite.Blam.Scripting.Analysis
     public interface IScriptNodeVisitor
     {
         void VisitGlobalDefinition(GlobalDefinitionNode node);
-        void VisitObjectDefinition(ObjectDefinitionNode node);
         void VisitScriptDefinition(ScriptDefinitionNode node);
         void VisitFunctionCall(FunctionCallNode node);
         void VisitConstant(ConstantNode node);

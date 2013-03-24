@@ -200,6 +200,10 @@ namespace Blamite.Blam.Scripting
                     {
                         output.Write(enumValue);
                     }
+                    else if (expression.Value == 0xFFFFFFFF)
+                    {
+                        output.Write("none");
+                    }
                     else
                     {
                         enumValue = expression.StringValue;

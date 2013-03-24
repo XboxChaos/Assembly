@@ -16,14 +16,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         public ScriptExpressionTable ScriptExpressions { get; private set; }
         public List<ScriptGlobal> ScriptGlobals { get; private set; }
-        public List<ScriptObjectReference> ScriptObjects { get; private set; }
         public List<Script> Scripts { get; private set; }
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
         {
 			var stringReader = new StringTableReader();
             ScriptExpressions = LoadScriptExpressions(values, reader, metaArea, stringReader, buildInfo.GetLayout("script expression entry"));
-            ScriptObjects = LoadScriptObjects(values, reader, metaArea, stringIDs, buildInfo.GetLayout("script object entry"));
             ScriptGlobals = LoadScriptGlobals(values, reader, metaArea, ScriptExpressions, buildInfo.GetLayout("script global entry"));
             Scripts = LoadScripts(values, reader, metaArea, stringIDs, ScriptExpressions, buildInfo.GetLayout("script entry"), buildInfo);
 
@@ -47,14 +45,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 				expr.ResolveReferences(result);
 
             return result;
-        }
-
-        private List<ScriptObjectReference> LoadScriptObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, StructureLayout entryLayout)
-        {
-			var count = (int)values.GetInteger("number of script objects");
-			var address = values.GetInteger("script object table address");
-            var entries = ReflexiveReader.ReadReflexive(reader, count, address, entryLayout, metaArea);
-            return entries.Select(e => new ScriptObjectReference(e, stringIDs)).ToList();
         }
 
         private List<ScriptGlobal> LoadScriptGlobals(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, ScriptExpressionTable expressions, StructureLayout entryLayout)
