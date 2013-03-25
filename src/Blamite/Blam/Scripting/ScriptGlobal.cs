@@ -15,9 +15,9 @@ namespace Blamite.Blam.Scripting
         {
         }
 
-        internal ScriptGlobal(StructureValueCollection values, ScriptExpressionTable allExpressions)
+        internal ScriptGlobal(StructureValueCollection values)
         {
-            Load(values, allExpressions);
+            Load(values);
         }
 
         /// <summary>
@@ -31,18 +31,15 @@ namespace Blamite.Blam.Scripting
         public short Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the expression which determines the variable's default value.
+        /// Gets or sets the datum index of the expression which determines the variable's default value.
         /// </summary>
-        public ScriptExpression Expression { get; set; }
+        public DatumIndex ExpressionIndex { get; set; }
 
-        private void Load(StructureValueCollection values, ScriptExpressionTable allExpressions)
+        private void Load(StructureValueCollection values)
         {
             Name = values.GetString("name");
             Type = (short)values.GetInteger("type");
-
-            DatumIndex valueIndex = new DatumIndex(values.GetInteger("expression index"));
-            if (valueIndex.IsValid)
-                Expression = allExpressions.FindExpression(valueIndex);
+            ExpressionIndex = new DatumIndex(values.GetInteger("expression index"));
         }
     }
 }

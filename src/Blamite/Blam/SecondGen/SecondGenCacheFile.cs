@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Scripting;
 using Blamite.Blam.SecondGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
@@ -132,11 +133,6 @@ namespace Blamite.Blam.SecondGen
             get { return _tags; }
         }
 
-        public IScenario Scenario
-        {
-            get { return null; }
-        }
-
         public IEnumerable<FileSegment> Segments
         {
             get { return _segmenter.GetWrappers(); }
@@ -158,6 +154,11 @@ namespace Blamite.Blam.SecondGen
         }
 
         public MetaAllocator Allocator { get; private set; }
+
+        public IScriptFile[] ScriptFiles
+        {
+            get { return new IScriptFile[0]; }
+        }
 
         private void Load(IReader reader, BuildInformation buildInfo, string buildString)
         {

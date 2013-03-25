@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
 using Blamite.IO;
 
@@ -132,12 +133,6 @@ namespace Blamite.Blam
         TagTable Tags { get; }
 
         /// <summary>
-        /// The file's scenario data.
-        /// Can be null.
-        /// </summary>
-        IScenario Scenario { get; }
-
-        /// <summary>
         /// The IResourceMetaLoader which can be used to load metadata for resources.
         /// </summary>
         IResourceMetaLoader ResourceMetaLoader { get; }
@@ -154,5 +149,10 @@ namespace Blamite.Blam
         /// Note that this object calls SaveChanges() automatically and changes do not need to be manually saved.
         /// </summary>
         MetaAllocator Allocator { get; }
+
+        /// <summary>
+        /// The script files stored in the file.
+        /// </summary>
+        IScriptFile[] ScriptFiles { get; }
     }
 }

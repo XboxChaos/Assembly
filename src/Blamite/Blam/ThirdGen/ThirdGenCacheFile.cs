@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Scripting;
 using Blamite.Blam.ThirdGen.Resources;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
@@ -42,7 +43,6 @@ namespace Blamite.Blam.ThirdGen
         private IndexedStringIDSource _stringIds;
         private IndexedFileNameSource _fileNames;
         private ThirdGenLanguageGlobals _languageInfo;
-        private ThirdGenScenarioMeta _scenario;
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
         private BuildInformation _buildInfo;
@@ -163,11 +163,6 @@ namespace Blamite.Blam.ThirdGen
             get { return _tags; }
         }
 
-        public IScenario Scenario
-        {
-            get { return _scenario; }
-        }
-
         public IList<ILocaleGroup> LocaleGroups
         {
             get { return _localeGroups.AsReadOnly(); }
@@ -195,6 +190,8 @@ namespace Blamite.Blam.ThirdGen
 
         public MetaAllocator Allocator { get; private set; }
 
+        public IScriptFile[] ScriptFiles { get; private set; }
+
         private void Load(IReader reader, string buildString)
         {
             LoadHeader(reader, buildString);
@@ -202,7 +199,7 @@ namespace Blamite.Blam.ThirdGen
             LoadStringIDs(reader);
             LoadTags(reader);
             LoadLanguageGlobals(reader);
-            LoadScenario(reader);
+            LoadScriptFiles(reader);
             LoadLocaleGroups(reader);
         }
 
@@ -291,20 +288,6 @@ namespace Blamite.Blam.ThirdGen
             }
         }
 
-        private void LoadScenario(IReader reader)
-        {
-            if (_tags == null || !_buildInfo.HasLayout("scnr"))
-                return;
-
-            ITag scnr = _tags.FindTagByClass("scnr");
-            if (scnr == null)
-                return;
-
-            reader.SeekTo(scnr.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.GetLayout("scnr"));
-            _scenario = new ThirdGenScenarioMeta(values, reader, MetaArea, _stringIds, _buildInfo);
-        }
-
         private void LoadLocaleGroups(IReader reader)
         {
             if (_tags == null)
@@ -353,6 +336,22 @@ namespace Blamite.Blam.ThirdGen
             reader.SeekTo(zone.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
             return new ThirdGenResourceGestalt(values, reader, MetaArea, _buildInfo, _tags, resourceLayout);
+        }
+
+        private void LoadScriptFiles(IReader reader)
+        {
+            // Scripts are just loaded from scnr for now...
+            if (_tags != null && _buildInfo.HasLayout("scnr"))
+            {
+                ITag scnr = _tags.FindTagByClass("scnr");
+                if (scnr != null)
+                {
+                    ScriptFiles = new IScriptFile[1];
+                    ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo);
+                    return;
+                }
+            }
+            ScriptFiles = new IScriptFile[0];
         }
 
         private void WriteHeader(IWriter writer)

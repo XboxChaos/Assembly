@@ -10,6 +10,7 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Analysis;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.IO;
 using Microsoft.Win32;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
@@ -19,32 +20,40 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     /// </summary>
     public partial class ScriptEditor : UserControl
     {
-        private ICacheFile _cache;
+        private IScriptFile _scriptFile;
         private string _scriptDefsFile;
 
-        public ScriptEditor(ICacheFile cache, string scriptDefsFile)
+        public ScriptEditor(IScriptFile scriptFile, IStreamManager streamManager, string scriptDefsFile)
         {
-            _cache = cache;
+            _scriptFile = scriptFile;
             _scriptDefsFile = scriptDefsFile;
             InitializeComponent();
 
-            Thread thrd = new Thread(new ThreadStart(DecompileScripts));
+            Thread thrd = new Thread(DecompileScripts);
             thrd.SetApartmentState(ApartmentState.STA);
-            thrd.Start();
+            thrd.Start(streamManager);
         }
 
-        private void DecompileScripts()
+        private void DecompileScripts(object streamManager)
         {
+            DateTime startTime = DateTime.Now;
+
+            ScriptTable scripts;
+            using (var reader = ((IStreamManager)streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+                if (scripts == null)
+                    return;
+            }
+
             XDocument scriptDefs = XDocument.Load(_scriptDefsFile);
             XMLOpcodeLookup opcodes = new XMLOpcodeLookup(scriptDefs);
-            BlamScriptGenerator generator = new BlamScriptGenerator(_cache.Scenario, opcodes);
+            BlamScriptGenerator generator = new BlamScriptGenerator(scripts, opcodes);
             IndentedTextWriter code = new IndentedTextWriter(new StringWriter());
-
-            DateTime startTime = DateTime.Now;
 
             generator.WriteComment("Decompiled with Assembly", code);
             generator.WriteComment("", code);
-            generator.WriteComment("Source scenario: " + _cache.ScenarioName, code);
+            generator.WriteComment("Source file: " + _scriptFile.Name, code);
             generator.WriteComment("Start time: " + startTime.ToString(), code);
             generator.WriteComment("", code);
             generator.WriteComment("Remember that all script code is property of Bungie/343 Industries.", code);
@@ -52,16 +61,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             code.WriteLine();
 
             generator.WriteComment("Globals", code);
-            foreach (ScriptGlobal global in _cache.Scenario.ScriptGlobals)
+            foreach (ScriptGlobal global in scripts.Globals)
             {
                 code.Write("(global {0} {1} ", opcodes.GetTypeInfo((ushort)global.Type).Name, global.Name);
-                generator.WriteExpression(global.Expression, code);
+                generator.WriteExpression(global.ExpressionIndex, code);
                 code.WriteLine(")");
             }
             code.WriteLine();
 
             generator.WriteComment("Scripts", code);
-            foreach (Script script in _cache.Scenario.Scripts)
+            foreach (Script script in scripts.Scripts)
             {
                 code.Write("(script {0} {1} ", opcodes.GetScriptTypeName((ushort)script.ExecutionType), opcodes.GetTypeInfo((ushort)script.ReturnType).Name);
 
@@ -87,7 +96,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
                 code.Indent++;
                 code.WriteLine();
-                generator.WriteExpression(script.RootExpression, code);
+                generator.WriteExpression(script.RootExpressionIndex, code);
                 code.Indent--;
 
                 code.WriteLine();

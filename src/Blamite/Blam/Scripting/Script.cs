@@ -18,9 +18,9 @@ namespace Blamite.Blam.Scripting
             Parameters = new List<ScriptParameter>();
         }
 
-        internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, ScriptExpressionTable expressions, BuildInformation buildInfo)
+        internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
         {
-            Load(values, reader, metaArea, stringIDs, expressions, buildInfo);
+            Load(values, reader, metaArea, stringIDs, buildInfo);
         }
 
         /// <summary>
@@ -44,20 +44,18 @@ namespace Blamite.Blam.Scripting
         public short ReturnType { get; set; }
 
         /// <summary>
-        /// Gets or sets the first expression to execute in the script.
+        /// Gets or sets the datum index of the first expression to execute in the script.
         /// </summary>
-        public ScriptExpression RootExpression { get; set; }
+        public DatumIndex RootExpressionIndex { get; set; }
 
-        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, ScriptExpressionTable expressions, BuildInformation buildInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
         {
             Name = values.HasInteger("name index") ? stringIDs.GetString(new StringID(values.GetInteger("name index"))) : values.GetString("name");
             ExecutionType = (short)values.GetInteger("execution type");
             ReturnType = (short)values.GetInteger("return type");
-            DatumIndex rootExpr = new DatumIndex(values.GetInteger("first expression index"));
-            if (rootExpr.IsValid)
-                RootExpression = expressions.FindExpression(rootExpr);
+            RootExpressionIndex = new DatumIndex(values.GetInteger("first expression index"));
             if (Name == null)
-                Name = "script_" + rootExpr.Value.ToString("X8");
+                Name = "script_" + RootExpressionIndex.Value.ToString("X8");
 
             Parameters = LoadParameters(reader, values, metaArea, buildInfo);
         }

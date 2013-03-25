@@ -35,6 +35,7 @@ using TabControl = System.Windows.Controls.TabControl;
 using TextBox = System.Windows.Controls.TextBox;
 using TreeView = System.Windows.Controls.TreeView;
 using AvalonDock.Layout;
+using Blamite.Blam.Scripting;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -435,19 +436,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void LoadScripts()
         {
-            if (_buildInfo.ScriptDefinitionsFilename == null || _cacheFile.Scenario == null)
+            if (_buildInfo.ScriptDefinitionsFilename == null || _cacheFile.ScriptFiles.Length == 0)
                 return;
-
-            // TODO: Actually handle this properly for H4
-            var scripts = new List<string>
-                              {
-                                  _cacheFile.InternalName + ".hsc"
-                              };
 
             Dispatcher.Invoke(new Action(delegate
                                              {
                                                  tabScripts.Visibility = Visibility.Visible;
-                                                 lbScripts.ItemsSource = scripts;
+                                                 lbScripts.ItemsSource = _cacheFile.ScriptFiles;
                                                  StatusUpdater.Update("Initialized Scripts");
                                              }
                                   ));
@@ -1197,7 +1192,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void ScriptButtonClick(object sender, RoutedEventArgs e)
         {
-            var tabName = _cacheFile.InternalName.Replace("_", "__") + ".hsc";
+            FrameworkElement elem = e.Source as FrameworkElement;
+            IScriptFile script = elem.DataContext as IScriptFile;
+
+            var tabName = script.Name;
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);
@@ -1211,7 +1209,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 									  Content = tabName,
 									  ContextMenu = BaseContextMenu
 								  },
-                                  Content = new Components.Editors.ScriptEditor(_cacheFile, _buildInfo.ScriptDefinitionsFilename)
+                                  Content = new Components.Editors.ScriptEditor(script, _mapManager, _buildInfo.ScriptDefinitionsFilename)
                               };
 
                 contentTabs.Items.Add(tab);

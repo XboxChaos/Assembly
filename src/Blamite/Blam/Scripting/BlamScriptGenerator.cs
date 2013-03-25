@@ -11,13 +11,13 @@ namespace Blamite.Blam.Scripting
     public class BlamScriptGenerator
     {
         private IOpcodeLookup _opcodes;
-        private IScenario _scenario;
+        private ScriptTable _scripts;
         private bool _nextFunctionIsScript = false;
         private bool _onNewLine = true;
 
-        public BlamScriptGenerator(IScenario scenario, IOpcodeLookup opcodes)
+        public BlamScriptGenerator(ScriptTable scripts, IOpcodeLookup opcodes)
         {
-            _scenario = scenario;
+            _scripts = scripts;
             _opcodes = opcodes;
         }
 
@@ -30,6 +30,11 @@ namespace Blamite.Blam.Scripting
         {
             _onNewLine = true;
             GenerateCode(expression, output);
+        }
+
+        public void WriteExpression(DatumIndex expressionIndex, IndentedTextWriter output)
+        {
+            WriteExpression(_scripts.Expressions.FindExpression(expressionIndex), output);
         }
 
         private void GenerateCode(ScriptExpression expression, IndentedTextWriter output)
@@ -46,19 +51,22 @@ namespace Blamite.Blam.Scripting
 
                     if (!_nextFunctionIsScript)
                     {
-                        string func = _opcodes.GetFunctionName(expression.Opcode);
-                        if (func.StartsWith("begin"))
+                        ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
+                        if (info != null)
                         {
-                            firstIndentedArg = 0;
-                            if (expression.LineNumber > 0 && !_onNewLine)
+                            if (info.Name.StartsWith("begin"))
                             {
-                                output.Indent++;
-                                output.WriteLine();
+                                firstIndentedArg = 0;
+                                if (expression.LineNumber > 0 && !_onNewLine)
+                                {
+                                    output.Indent++;
+                                    output.WriteLine();
+                                }
                             }
-                        }
-                        else if (func == "if")
-                        {
-                            firstIndentedArg = 1;
+                            else if (info.Name == "if")
+                            {
+                                firstIndentedArg = 1;
+                            }
                         }
                     }
                     if (expression.LineNumber > 0)
@@ -185,14 +193,26 @@ namespace Blamite.Blam.Scripting
                 case "function_name":
                     if (_nextFunctionIsScript)
                     {
-                        output.Write(_scenario.Scripts[(int)expression.Opcode].Name);
+                        output.Write(_scripts.Scripts[(int)expression.Opcode].Name);
                         _nextFunctionIsScript = false;
                     }
                     else
                     {
-                        string name = _opcodes.GetFunctionName(expression.Opcode);
-                        output.Write(name);
+                        ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
+                        if (info == null)
+                            throw new InvalidOperationException("Unrecognized function opcode 0x" + expression.Opcode.ToString("X"));
+
+                        output.Write(info.Name);
                     }
+                    break;
+                case "unit_seat_mapping":
+                    // This isn't the technical way of doing this,
+                    // but since seat mapping names aren't stored anywhere,
+                    // it would be tricky to resolve them unless we just use an index for now
+                    if (expression.Value != 0xFFFFFFFF)
+                        output.Write(expression.Value & 0xFFFF);
+                    else
+                        output.Write("none");
                     break;
                 default:
                     string enumValue = actualType.GetEnumValue(value);
@@ -236,7 +256,7 @@ namespace Blamite.Blam.Scripting
             DatumIndex expressionIndex = new DatumIndex(expression.Value);
 
             _nextFunctionIsScript = true;
-            GenerateCode(_scenario.ScriptExpressions.FindExpression(expressionIndex), output);
+            GenerateCode(_scripts.Expressions.FindExpression(expressionIndex), output);
             _nextFunctionIsScript = false;
             return true;
         }
@@ -247,7 +267,7 @@ namespace Blamite.Blam.Scripting
             if (!childIndex.IsValid)
                 throw new InvalidOperationException("Group expression has no child");
 
-            GenerateCode(_scenario.ScriptExpressions.FindExpression(childIndex), output);
+            GenerateCode(_scripts.Expressions.FindExpression(childIndex), output);
             return true;
         }
 

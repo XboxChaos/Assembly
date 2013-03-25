@@ -9,7 +9,12 @@ namespace Blamite.Blam.Scripting
     public interface IOpcodeLookup
     {
         string GetScriptTypeName(ushort opcode);
+        ushort GetScriptTypeOpcode(string name);
+
         ScriptValueType GetTypeInfo(ushort opcode);
-        string GetFunctionName(ushort opcode);
+        ScriptValueType GetTypeInfo(string name);
+
+        ScriptFunctionInfo GetFunctionInfo(ushort opcode);
+        List<ScriptFunctionInfo> GetFunctionInfo(string name);
     }
 }
