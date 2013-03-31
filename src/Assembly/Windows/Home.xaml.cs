@@ -294,7 +294,7 @@ namespace Assembly.Windows
 		{
 			var newPatchTab = new LayoutDocument
 				                  {
-					                  Title = "",
+					                  Title = "Patcher",
 									  Content = (patchLocation != null) ? new PatchControl(patchLocation) : new PatchControl()
 				                  };
 			documentManager.Children.Add(newPatchTab);
