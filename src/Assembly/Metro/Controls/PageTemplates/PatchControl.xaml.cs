@@ -377,7 +377,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                     var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
                     var loader = new BuildInfoLoader(Path.Combine(formatsPath, "SupportedBuilds.xml"), formatsPath);
                     var originalFile = CacheFileLoader.LoadCacheFile(originalReader, loader);
-                    var newFile = CacheFileLoader.LoadCacheFile(originalReader, loader);
+                    var newFile = CacheFileLoader.LoadCacheFile(newReader, loader);
 
                     if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex < 4)
                     {
