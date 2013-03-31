@@ -177,7 +177,7 @@ namespace Assembly.Windows
 					tabHeader = "Start Page";
 					break;
 				case TabGenre.Settings:
-					tabHeader = "Settings Page";
+					tabHeader = "Settings";
 					break;
 			}
 
