@@ -220,6 +220,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     MetaWriter metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges);
 #endif
                     metaUpdate.WriteFields(_pluginVisitor.Values);
+                    var resources = _cache.Resources.LoadResourceTable(stream);
+                    _cache.Resources.SaveResourceTable(resources, stream);
                     _cache.SaveChanges(stream);
                     _fileChanges.MarkAllUnchanged();
                 }

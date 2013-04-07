@@ -4,6 +4,7 @@
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Named some Variant stuff, and whatever else I might have did, probably not much.</revision>
+    <revision author="AMD" version="3">Corrected some names, cleaned a few things up</revision>
 	</revisions>
 	<enum8 name="Invincibility Enum 1" offset="0xD0" visible="true">
 		<option name="True" value="0xFF" />
@@ -43,11 +44,11 @@
 		<int8 name="Unknown" offset="0xC" visible="true" />
 		<int8 name="Unknown" offset="0x10" visible="true" />
 		<reflexive name="Regions" offset="0x14" visible="true" entrySize="0x18">
-			<stringid name="Type" offset="0x0" visible="false" />
-			<int8 name="Parent Variant #" offset="0x4" visible="true" />
-			<reflexive name="Permutation" offset="0x8" visible="true" entrySize="0x24">
-				<stringid name="Name" offset="0x0" visible="true" />
-				<int8 name="Chunk #" offset="0x4" visible="true" />
+			<stringId name="Region Name" offset="0x0" visible="false" />
+			<int8 name="Model Region Index" offset="0x4" visible="true" />
+			<reflexive name="Active Permutations" offset="0x8" visible="true" entrySize="0x24">
+				<stringId name="Permuation Name" offset="0x0" visible="true" />
+				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="false" entrySize="0xC">
 					<int32 name="Unknown" offset="0x0" visible="true" />
@@ -87,10 +88,10 @@
 		<int16 name="Unknown" offset="0x10" visible="true" />
 	</reflexive>
 	<reflexive name="Materials" offset="0xB4" visible="true" entrySize="0x14">
-		<stringid name="Material Name" offset="0x0" visible="true" />
+		<stringId name="Material Name" offset="0x0" visible="true" />
 		<int32 name="Material Type" offset="0x4" visible="true" />
 		<int16 name="Damage Section" offset="0x8" visible="true" />
-		<stringid name="Global Material Name" offset="0xC" visible="true" />
+		<stringId name="Global Material Name" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
 	<reflexive name="Health/Damage" offset="0xC0" visible="true" entrySize="0x10C">
@@ -353,12 +354,11 @@
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 	</reflexive>
-	<reflexive name="Variants" offset="0x120" visible="true" entrySize="0x14">
-		<int32 name="Type (raw)" offset="0x0" visible="true" />
+	<reflexive name="Regions" offset="0x120" visible="true" entrySize="0x14">
+		<stringId name="Region Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="false" />
-		<reflexive name="Objects" offset="0x8" visible="true" entrySize="0x8">
-			<int32 name="Object" offset="0x0" visible="true" />
-			<stringId name="Object (as string)" offset="0x0" visible="true" />
+		<reflexive name="Permutations" offset="0x8" visible="true" entrySize="0x8">
+			<stringId name="Permutation Name" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x4" visible="false" />
 		</reflexive>
 	</reflexive>

@@ -98,7 +98,13 @@ namespace Blamite.Blam.Util
 
             int index = ListSearching.BinarySearch(_freeAreasByAddr.Keys, address);
             if (index >= 0)
-                throw new InvalidOperationException("Address is already free");
+            {
+                // Address is already free, but if the size doesn't overlap anything, then allow it
+                FreeArea freedArea = _freeAreasByAddr.Values[index];
+                if (freedArea.Address + freedArea.Size < address + size)
+                    throw new InvalidOperationException("Part of the block is already free");
+                return freedArea;
+            }
 
             // Get pointers to the previous and next free blocks
             index = ~index; // Get index of first largest area
@@ -106,8 +112,10 @@ namespace Blamite.Blam.Util
             if (index > 0)
             {
                 previous = _freeAreasByAddr.Values[index - 1];
-                if (previous.Address + previous.Size > address)
-                    throw new InvalidOperationException("Address is already free");
+                if (previous.Address + previous.Size >= address + size)
+                    return previous;
+                else if (previous.Address + previous.Size > address && previous.Address + previous.Size < address + size)
+                    throw new InvalidOperationException("Part of the block is already free");
             }
             if (index < _freeAreasByAddr.Count)
             {

@@ -273,6 +273,9 @@
   <layout for="resource gestalt">
     <int32 name="number of resources" offset="0x58" />
     <uint32 name="resource table address" offset="0x5C" />
+
+    <int32 name="resource info buffer size" offset="0x13C" />
+    <uint32 name="resource info buffer address" offset="0x148" />
   </layout>
 
   <!-- Reflexive at 0x58 in zone -->
@@ -281,7 +284,29 @@
     <uint32 name="parent tag datum index" offset="0xC" />
     <uint16 name="datum index salt" offset="0x10" />
     <sbyte name="resource type index" offset="0x12" />
+    <byte name="flags" offset="0x13" />
+    <int32 name="resource info offset" offset="0x14" />
+    <int32 name="resource info size" offset="0x18" />
+    <int32 name="unknown 1" offset="0x1C" />
+    <int32 name="unknown 2" offset="0x20" />
     <int16 name="segment index" offset="0x22" />
+    <uint32 name="unknown 3" offset="0x24" />
+    <int32 name="number of resource fixups" offset="0x28" />
+    <uint32 name="resource fixup table address" offset="0x2C" />
+    <int32 name="number of definition fixups" offset="0x34" />
+    <uint32 name="definition fixup table address" offset="0x38" />
+  </layout>
+
+  <!-- Reflexive at 0x28 in resource table entry -->
+  <layout for="resource fixup entry" size="0x8">
+    <int32 name="offset" offset="0x0" />
+    <uint32 name="address" offset="0x4" />
+  </layout>
+
+  <!-- Reflexive at 0x34 in resource table entry -->
+  <layout for="definition fixup entry" size="0x8">
+    <int32 name="offset" offset="0x0" />
+    <int32 name="type index" offset="0x4" />
   </layout>
 
   <!-- play (cache_file_resource_layout_table) -->
@@ -303,10 +328,19 @@
 
   <!-- Reflexive at 0x18 in play -->
   <layout for="raw page table entry" size="0x58">
+    <byte name="flags" offset="0x2" />
+    <sbyte name="compression codec index" offset="0x3" />
     <int16 name="shared cache file index" offset="0x4" />
+    <int16 name="unknown 1" offset="0x6" />
     <int32 name="compressed block offset" offset="0x8" />
     <int32 name="compressed block size" offset="0xC" />
     <int32 name="uncompressed block size" offset="0x10" />
+    <uint32 name="checksum" offset="0x14" />
+    <raw name="hash 1" offset="0x18" size="0x14" />
+    <raw name="hash 2" offset="0x2C" size="0x14" />
+    <raw name="hash 3" offset="0x40" size="0x14" />
+    <int16 name="unknown 2" offset="0x54" />
+    <int16 name="unknown 3" offset="0x56" />
   </layout>
 
   <!-- Reflexive at 0x30 in play -->
@@ -315,6 +349,8 @@
     <int16 name="secondary page index" offset="0x2" />
     <int32 name="primary offset" offset="0x4" />
     <int32 name="secondary offset" offset="0x8" />
+    <int16 name="primary unknown" offset="0xC" />
+    <int16 name="secondary unknown" offset="0xE" />
   </layout>
 
   <!-- mode (render_model) -->

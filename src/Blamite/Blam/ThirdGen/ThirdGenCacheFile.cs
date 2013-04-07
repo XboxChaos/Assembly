@@ -46,6 +46,7 @@ namespace Blamite.Blam.ThirdGen
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
         private BuildInformation _buildInfo;
+        private IResourceManager _resources;
         private ThirdGenResourceMetaLoader _resourceMetaLoader;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
@@ -54,15 +55,6 @@ namespace Blamite.Blam.ThirdGen
             _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
             Allocator = new MetaAllocator(this, 0x10000);
             Load(reader, buildString);
-        }
-
-        public IResourceTable LoadResourceTable(IReader reader)
-        {
-            ThirdGenResourceLayoutTable layout = LoadResourceLayoutTable(reader);
-            if (layout == null)
-                return null;
-
-            return LoadResourceGestalt(reader, layout);
         }
 
         public void SaveChanges(IStream stream)
@@ -158,6 +150,11 @@ namespace Blamite.Blam.ThirdGen
             get { return _tags.Classes; }
         }
 
+        public IResourceManager Resources
+        {
+            get { return _resources; }
+        }
+
         public TagTable Tags
         {
             get { return _tags; }
@@ -201,6 +198,7 @@ namespace Blamite.Blam.ThirdGen
             LoadLanguageGlobals(reader);
             LoadScriptFiles(reader);
             LoadLocaleGroups(reader);
+            LoadResourceManager();
         }
 
         private void LoadHeader(IReader reader, string buildString)
@@ -306,36 +304,13 @@ namespace Blamite.Blam.ThirdGen
             }
         }
 
-        private ThirdGenResourceLayoutTable LoadResourceLayoutTable(IReader reader)
+        private void LoadResourceManager()
         {
-            if (_tags == null || !_buildInfo.HasLayout("resource layout table"))
-                return null;
-
-            StructureLayout layout = _buildInfo.GetLayout("resource layout table");
-
-            ITag play = _tags.FindTagByClass("play");
-            if (play == null)
-                return null;
-
-            reader.SeekTo(play.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-            return new ThirdGenResourceLayoutTable(values, reader, MetaArea, _buildInfo);
-        }
-
-        private ThirdGenResourceGestalt LoadResourceGestalt(IReader reader, ThirdGenResourceLayoutTable resourceLayout)
-        {
-            if (_tags == null || resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
-                return null;
-
-            StructureLayout layout = _buildInfo.GetLayout("resource gestalt");
-
-            ITag zone = _tags.FindTagByClass("zone");
-            if (zone == null)
-                return null;
-
-            reader.SeekTo(zone.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-            return new ThirdGenResourceGestalt(values, reader, MetaArea, _buildInfo, _tags, resourceLayout);
+            ITag zoneTag = _tags.FindTagByClass("zone");
+            ITag playTag = _tags.FindTagByClass("play");
+            ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(zoneTag, MetaArea, Allocator, _buildInfo);
+            ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+            _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags);
         }
 
         private void LoadScriptFiles(IReader reader)

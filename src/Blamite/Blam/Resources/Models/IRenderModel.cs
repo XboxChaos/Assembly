@@ -28,7 +28,7 @@ namespace Blamite.Blam.Resources.Models
         /// <summary>
         /// Gets the datum index of the model's resource.
         /// </summary>
-        /// <seealso cref="IResourceTable"/>
+        /// <seealso cref="IResourceManager"/>
         DatumIndex ResourceIndex { get; }
     }
 }
