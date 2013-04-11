@@ -59,6 +59,7 @@ namespace Blamite.Blam.ThirdGen
 
         public void SaveChanges(IStream stream)
         {
+            _tags.SaveChanges(stream);
             WriteHeader(stream);
             WriteLanguageInfo(stream);
         }
@@ -216,10 +217,7 @@ namespace Blamite.Blam.ThirdGen
                 return;
             }
 
-            reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.GetLayout("index header"));
-            _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, _buildInfo);
-
+            _tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo);
             _resourceMetaLoader = new ThirdGenResourceMetaLoader(_buildInfo, _header.MetaArea);
         }
 

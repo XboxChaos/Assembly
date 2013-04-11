@@ -2,24 +2,61 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.IO;
 using Blamite.Util;
 
 namespace Blamite.Blam
 {
+    /// <summary>
+    /// A tag table in a cache file.
+    /// </summary>
     public abstract class TagTable : IEnumerable<ITag>
     {
+        /// <summary>
+        /// Adds a tag to the table and allocates space for its base data.
+        /// </summary>
+        /// <param name="classMagic">The magic number (ID) of the tag's class.</param>
+        /// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
+        /// <param name="stream">The stream to write to.</param>
+        /// <returns>The tag that was added.</returns>
+        public abstract ITag AddTag(int classMagic, int baseSize, IStream stream);
+
+        /// <summary>
+        /// Adds a tag to the table and allocates space for its base data.
+        /// </summary>
+        /// <param name="tagClass">The tag's class.</param>
+        /// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
+        /// <param name="stream">The stream to write to.</param>
+        /// <returns>The tag that was added.</returns>
+        public ITag AddTag(ITagClass tagClass, int baseSize, IStream stream)
+        {
+            return AddTag(tagClass.Magic, baseSize, stream);
+        }
+
+        /// <summary>
+        /// Adds a tag to the table and allocates space for its base data.
+        /// </summary>
+        /// <param name="className">The case-sensitive four-letter string representation of the name of the tag's class.</param>
+        /// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
+        /// <param name="stream">The stream to write to.</param>
+        /// <returns>The tag that was added.</returns>
+        public ITag AddTag(string className, int baseSize, IStream stream)
+        {
+            return AddTag(CharConstant.FromString(className), baseSize, stream);
+        }
+
         /// <summary>
         /// Gets the tag at a given index.
         /// </summary>
         /// <param name="index">The index of the tag to retrieve.</param>
-        /// <returns>The tag at the given index. Can be null.</returns>
+        /// <returns>The tag at the given index.</returns>
         public abstract ITag this[int index] { get; }
 
         /// <summary>
         /// Gets the tag with a given datum index.
         /// </summary>
         /// <param name="index">The datum index of the tag to retrieve.</param>
-        /// <returns>The tag with the corresponding datum index. Can be null.</returns>
+        /// <returns>The tag with the corresponding datum index.</returns>
         public ITag this[DatumIndex index]
         {
             get
@@ -119,8 +156,20 @@ namespace Blamite.Blam
             return null;
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
         public abstract IEnumerator<ITag> GetEnumerator();
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

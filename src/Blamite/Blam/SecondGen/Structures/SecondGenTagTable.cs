@@ -35,6 +35,11 @@ namespace Blamite.Blam.SecondGen.Structures
             return _tags.GetEnumerator();
         }
 
+        public override ITag AddTag(int classMagic, int baseSize, IStream stream)
+        {
+            throw new NotImplementedException("Adding tags is not supported for second-generation cache files");
+        }
+
         private void Load(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             if (headerValues.GetInteger("magic") != CharConstant.FromString("tags"))

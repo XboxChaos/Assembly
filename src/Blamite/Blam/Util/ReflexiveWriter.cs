@@ -85,14 +85,17 @@ namespace Blamite.Blam.Util
                 return 0;
             }
 
-            // Reallocate the reflexive
-            uint newAddress;
-            int oldSize = oldCount * layout.Size;
-            int newSize = newCount * layout.Size;
-            if (oldCount > 0 && oldAddress != 0)
-                newAddress = allocator.Reallocate(oldAddress, oldSize, newSize, stream);
-            else
-                newAddress = allocator.Allocate(newSize, stream);
+            uint newAddress = oldAddress;
+            if (newCount != oldCount)
+            {
+                // Reallocate the reflexive
+                int oldSize = oldCount * layout.Size;
+                int newSize = newCount * layout.Size;
+                if (oldCount > 0 && oldAddress != 0)
+                    newAddress = allocator.Reallocate(oldAddress, oldSize, newSize, stream);
+                else
+                    newAddress = allocator.Allocate(newSize, stream);
+            }
 
             // Write the new values
             WriteReflexive(entries.Take(newCount), newAddress, layout, metaArea, stream);

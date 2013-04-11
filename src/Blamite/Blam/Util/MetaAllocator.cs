@@ -190,7 +190,6 @@ namespace Blamite.Blam.Util
             // Round the size up to the next multiple of the page size and expand the meta area
             int roundedSize = (minSize + _pageSize - 1) & ~(_pageSize - 1);
             _cacheFile.MetaArea.Resize(_cacheFile.MetaArea.Size + roundedSize, stream);
-            _cacheFile.SaveChanges(stream);
 
             // Free the newly-allocated area
             return FreeBlock(_cacheFile.MetaArea.BasePointer, roundedSize);
