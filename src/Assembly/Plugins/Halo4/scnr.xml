@@ -222,12 +222,12 @@
 		<undefined name="struct here" offset="0x144" visible="false" />
 		<undefined name="struct here" offset="0x148" visible="false" />
 		<tagref name="Zoneset Resource" offset="0x14C" visible="true" />
-		<float32 name="Unknown" offset="0x15C" visible="false" />
-		<float32 name="Unknown" offset="0x160" visible="false" />
-		<float32 name="Unknown" offset="0x164" visible="false" />
-		<float32 name="Unknown" offset="0x168" visible="false" />
-		<float32 name="00000097" offset="0x16C" visible="false" />
-		<float32 name="00000098" offset="0x170" visible="false" />
+		<float32 name="World Bounds X (min)" offset="0x15C" visible="true" />
+		<float32 name="World Bounds Y (min)" offset="0x160" visible="true" />
+		<float32 name="World Bounds Z (min)" offset="0x164" visible="true" />
+		<float32 name="World Bounds X (max)" offset="0x168" visible="true" />
+		<float32 name="World Bounds Y (max)" offset="0x16C" visible="true" />
+		<float32 name="World Bounds Z (max)" offset="0x170" visible="true" />
 		<reflexive name="Testo" offset="0x174" visible="true" entrySize="0x10">
 			<tagref name="00000005" offset="0x0" visible="true" />
 		</reflexive>
@@ -331,16 +331,23 @@
 	<reflexive name="Object Names" offset="0x158" visible="true" entrySize="0x8">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="Null" value="0xFFFFFFFF" />
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
 			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
 			<option name="Scenery" value="0x6" />
 			<option name="Machine" value="0x7" />
 			<option name="Control" value="0x8" />
-			<option name="Sound Scenery" value="0x9" />
-			<option name="Obstacle" value="0xA" />
-			<option name="Effect Scenery" value="0xD" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
 		</enum16>
 		<int16 name="Placement Index" offset="0x6" visible="true" />
 	</reflexive>
@@ -357,6 +364,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -486,6 +516,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -610,6 +663,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -735,6 +811,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -849,6 +948,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -962,6 +1084,37 @@
 		<float32 name="Inital Value" offset="0x20" visible="true" />
 		<bitfield32 name="Flags" offset="0x24" visible="true">
 			<bit name="Only Use Once" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<int16 name="Unknown" offset="0x28" visible="false" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
@@ -979,6 +1132,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1105,6 +1281,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1176,6 +1375,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1300,6 +1522,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1422,6 +1667,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1503,6 +1771,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1617,6 +1908,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -1698,25 +2012,26 @@
 		<tagref name="00000017" offset="0x30" visible="true" />
 	</reflexive>
 	<reflexive name="Sandbox Palette" offset="0x2D8" visible="true" entrySize="0x14">
-		<stringId name="Parent Class" offset="0x0" visible="true" />
-		<enum8 name="Visability" offset="0x4" visible="true">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<enum8 name="Root Item Visibility" offset="0x4" visible="true">
 			<option name="True" value="0x0" />
 			<option name="False" value="0x1" />
 		</enum8>
 		<reflexive name="Entries" offset="0x8" visible="true" entrySize="0x18">
-			<stringId name="Sub Class" offset="0x0" visible="true" />
-			<reflexive name="Variants" offset="0x4" visible="true" entrySize="0x48">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<reflexive name="Entry Variants" offset="0x4" visible="true" entrySize="0x48">
 				<stringId name="Name" offset="0x0" visible="true" />
-				<tagRef name="Object" offset="0x4" visible="true" />
-				<stringid name="Variant" offset="0x14" visible="true" />
-				<reflexive name="Resources" offset="0x18" visible="false" entrySize="0x4">
-					<tagref name="Resource" offset="0x0" withClass="false" visible="false" />
+				<tagRef name="Assigned Object" offset="0x4" visible="true" />
+				<stringid name="Assigned Object Variant" offset="0x14" visible="true" />
+				<reflexive name="Related Tags" offset="0x18" visible="true" entrySize="0x4">
+					<tagref name="Tag" offset="0x0" withClass="False" visible="true" />
 				</reflexive>
-				<reflexive name="Resources 2" offset="0x24" visible="false" entrySize="0x4">
-					<tagref name="Resource" offset="0x0" withClass="false" visible="false" />
+				<reflexive name="Self - Unknown" offset="0x24" visible="true" entrySize="0x4">
+					<tagref name="Self" offset="0x0" withClass="False" visible="true" />
 				</reflexive>
-				<reflexive name="Resources 3" offset="0x30" visible="false" entrySize="0x4">
-					<tagref name="Resource" offset="0x0" withClass="false" visible="false" />
+				<reflexive name="Related Resource Datums" offset="0x30" visible="true" entrySize="0x4">
+					<uint16 name="[zone] Asset Salt" offset="0x0" visible="true" />
+					<uint16 name="[zone] Asset Index" offset="0x2" visible="true" />
 				</reflexive>
 				<reflexive name="Testo" offset="0x3C" visible="false" entrySize="0x10">
 					<undefined name="00000005" offset="0x0" visible="false" />
@@ -1786,7 +2101,8 @@
 	</reflexive>
 	<reflexive name="Trigger Volumes" offset="0x330" visible="true" entrySize="0x84">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="00000006" offset="0x4" visible="false" />
+		<int16 name="00000006" offset="0x4" visible="false" />
+		<int16 name="00000006" offset="0x6" visible="false" />
 		<undefined name="00000007" offset="0x8" visible="false" />
 		<undefined name="00000008" offset="0xC" visible="false" />
 		<undefined name="00000009" offset="0x10" visible="false" />
@@ -1985,7 +2301,31 @@
 			<bit name="Initially Braindead" index="4" />
 			<bit name="3D Firirng Positions" index="5" />
 			<bit name="Manual BSP Index Specified" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
 			<bit name="MP Respawn Enabled" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<enum16 name="Forced Team" offset="0x24" visible="true">
 			<option name="None - Inherit From Biped" value="0x0" />
@@ -2743,6 +3083,29 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
@@ -3205,7 +3568,7 @@
 		<undefined name="X" offset="0x4" visible="false" />
 		<undefined name="Y" offset="0x8" visible="false" />
 		<undefined name="Z" offset="0xC" visible="false" />
-		<stringid name="00000009" offset="0x10" visible="false" />
+		<undefined name="00000009" offset="0x10" visible="false" />
 		<undefined name="00000010" offset="0x14" visible="false" />
 		<undefined name="00000011" offset="0x18" visible="false" />
 		<undefined name="00000012" offset="0x1C" visible="false" />

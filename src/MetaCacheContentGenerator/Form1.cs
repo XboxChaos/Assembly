@@ -135,7 +135,7 @@ namespace MetaCacheContentGenerator
 
 					var extraSuffix = "";
 					if (gameTarget.StartsWith("Halo4"))
-						extraSuffix = "_card";
+						extraSuffix = "_lobby";
 
 					var blfFile1 = new PureBLF(string.Format("{0}\\{1}{2}.blf", item.BlfPath, mapInfo.MapInformation.PhysicalName, extraSuffix));
 					var blfFile = new List<byte>(blfFile1.BLFChunks[1].ChunkData);

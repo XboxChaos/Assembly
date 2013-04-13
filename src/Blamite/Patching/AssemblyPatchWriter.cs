@@ -9,30 +9,27 @@ namespace Blamite.Patching
     {
         public static void WritePatch(Patch patch, IWriter writer)
         {
-			var startPos = WriteBlockHeader(writer, AssemblyPatchMagic);
-            writer.WriteByte(0); // No compression
-
-            WriteBlocks(patch, writer);
-
-            EndBlock(writer, startPos);
+			ContainerWriter container = new ContainerWriter(writer);
+			container.StartBlock("asmp", 0);
+			WriteBlocks(patch, container, writer);
+			container.EndBlock();
         }
 
-        private static void WriteBlocks(Patch patch, IWriter writer)
+        private static void WriteBlocks(Patch patch, ContainerWriter container, IWriter writer)
         {
-            WritePatchInfo(patch, writer);
-            WriteSegmentChanges(patch, writer);
-            WriteBlfInfo(patch, writer);
+            WritePatchInfo(patch, container, writer);
+            WriteSegmentChanges(patch, container, writer);
+            WriteBlfInfo(patch, container, writer);
 
             #region Deprecated
-            WriteMetaChanges(patch, writer);
-            WriteLocaleChanges(patch, writer);
+            WriteMetaChanges(patch, container, writer);
+            WriteLocaleChanges(patch, container, writer);
             #endregion Deprecated
         }
 
-        private static void WritePatchInfo(Patch patch, IWriter writer)
+		private static void WritePatchInfo(Patch patch, ContainerWriter container, IWriter writer)
         {
-			var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Titl);
-            writer.WriteByte(1); // Version 1
+			container.StartBlock("titl", 1); // Version 1
 
             // Write target map info
             writer.WriteInt32(patch.MapID);
@@ -61,16 +58,15 @@ namespace Blamite.Patching
             writer.WriteUInt32(patch.MetaPokeBase);
             writer.WriteSByte((sbyte)patch.MetaChangesIndex);
 
-            EndBlock(writer, startPos);
+			container.EndBlock();
         }
 
-        private static void WriteSegmentChanges(Patch patch, IWriter writer)
+		private static void WriteSegmentChanges(Patch patch, ContainerWriter container, IWriter writer)
         {
             if (patch.SegmentChanges.Count == 0)
                 return;
 
-            var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Segm);
-            writer.WriteByte(0); // Version 0
+			container.StartBlock("segm", 0); // Version 0
 
             writer.WriteByte((byte)patch.SegmentChanges.Count);
             foreach (var segment in patch.SegmentChanges)
@@ -84,7 +80,7 @@ namespace Blamite.Patching
                 WriteDataChanges(segment.DataChanges, writer);
             }
 
-            EndBlock(writer, startPos);
+			container.EndBlock();
         }
 
         private static void WriteDataChanges(IList<DataChange> changes, IWriter writer)
@@ -110,13 +106,12 @@ namespace Blamite.Patching
             }
         }
 
-        private static void WriteBlfInfo(Patch patch, IWriter writer)
+		private static void WriteBlfInfo(Patch patch, ContainerWriter container, IWriter writer)
         {
             if (patch.CustomBlfContent == null)
                 return;
 
-            var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Blfc);
-            writer.WriteByte(0); // Version 0
+			container.StartBlock("blfc", 0); // Version 0
 
             writer.WriteByte((byte)patch.CustomBlfContent.TargetGame);
             
@@ -146,17 +141,16 @@ namespace Blamite.Patching
                 writer.WriteBlock(blfContainerEntry.BlfContainer);
             }
 
-            EndBlock(writer, startPos);
+			container.EndBlock();
         }
 
         #region Deprecated
-        private static void WriteMetaChanges(Patch patch, IWriter writer)
+		private static void WriteMetaChanges(Patch patch, ContainerWriter container, IWriter writer)
         {
             if (patch.MetaChanges.Count == 0)
                 return;
 
-			var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Meta);
-            writer.WriteByte(0); // Version 0
+			container.StartBlock("meta", 0); // Version 0
 
             var fourByteChanges = patch.MetaChanges.Where((c) => c.Data.Length == 4).ToList();
             var otherChanges = patch.MetaChanges.Where((c) => c.Data.Length != 4).ToList();
@@ -178,16 +172,15 @@ namespace Blamite.Patching
                 writer.WriteBlock(change.Data);
             }
 
-            EndBlock(writer, startPos);
+			container.EndBlock();
         }
 
-        private static void WriteLocaleChanges(Patch patch, IWriter writer)
+		private static void WriteLocaleChanges(Patch patch, ContainerWriter container, IWriter writer)
         {
             if (patch.LanguageChanges.Count == 0)
                 return;
 
-			var startPos = WriteBlockHeader(writer, AssemblyPatchBlockID.Locl);
-            writer.WriteByte(0); // Version 0
+			container.StartBlock("locl", 0); // Version 0
 
             // Write change data for each language
             writer.WriteByte((byte)patch.LanguageChanges.Count);
@@ -204,26 +197,8 @@ namespace Blamite.Patching
                 }
             }
 
-            EndBlock(writer, startPos);
+			container.EndBlock();
         }
         #endregion Deprecated
-
-        private static long WriteBlockHeader(IWriter writer, int magic)
-        {
-			var startPos = writer.Position;
-            writer.WriteInt32(magic);
-            writer.WriteUInt32(0); // Size filled in later
-            return startPos;
-        }
-
-        private static void EndBlock(IWriter writer, long headerPos)
-        {
-			var endPos = writer.Position;
-            writer.SeekTo(headerPos + 4);
-            writer.WriteUInt32((uint)(endPos - headerPos));
-            writer.SeekTo(endPos);
-        }
-
-        private const int AssemblyPatchMagic = 0x61736D70;
     }
 }

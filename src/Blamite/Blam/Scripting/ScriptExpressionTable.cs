@@ -14,7 +14,7 @@ namespace Blamite.Blam.Scripting
     public class ScriptExpressionTable : IEnumerable<ScriptExpression>
     {
         private List<ScriptExpression> _expressions = new List<ScriptExpression>();
-        private Stack<int> _freeIndices = new Stack<int>();
+        //private Stack<int> _freeIndices = new Stack<int>();
 
         public void AddExpression(ScriptExpression expression)
         {

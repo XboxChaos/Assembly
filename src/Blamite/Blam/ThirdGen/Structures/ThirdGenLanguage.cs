@@ -15,16 +15,12 @@ namespace Blamite.Blam.ThirdGen.Structures
     {
         private AESKey _encryptionKey;
         private StructureLayout _pointerLayout;
-        private FileSegmentGroup _localeArea;
-        private LocaleSymbolCollection _symbols;
         private int _sizeAlign;
 
         public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, BuildInformation buildInfo)
         {
             _pointerLayout = buildInfo.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
-            _symbols = buildInfo.LocaleSymbols;
-            _localeArea = localeArea;
             _sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
             Load(values, segmenter, localeArea);
         }

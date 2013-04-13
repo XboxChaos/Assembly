@@ -31,24 +31,22 @@ namespace Blamite.Flexibility
     public class StructureWriter : IStructureLayoutVisitor
     {
         private IWriter _writer;                         // The stream to write to
-        private StructureLayout _layout;                 // The structure layout to follow
         private long _offset;                            // The offset that the writer is currently at
         private long _baseOffset;                        // The offset that the writer was at when writing began
         private StructureValueCollection _collection;    // The values that are being written
 
         public static void WriteStructure(StructureValueCollection values, StructureLayout layout, IWriter writer)
         {
-            StructureWriter structWriter = new StructureWriter(values, layout, writer);
+            StructureWriter structWriter = new StructureWriter(values, writer);
             layout.Accept(structWriter);
 
             if (layout.Size > 0)
                 structWriter.SeekWriter(layout.Size);
         }
 
-        private StructureWriter(StructureValueCollection values, StructureLayout layout, IWriter writer)
+        private StructureWriter(StructureValueCollection values, IWriter writer)
         {
             _writer = writer;
-            _layout = layout;
             _baseOffset = writer.Position;
             _offset = _baseOffset;
             _collection = values;
