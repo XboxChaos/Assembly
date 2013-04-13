@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="ODST" baseSize="0x834">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -9,7 +9,7 @@
 	<undefined name="Unknown" offset="0x4" visible="false" />
 	<int32 name="Map ID" offset="0x8" visible="true" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
+	<float32 name="Sandbox Budget" offset="0x10" visible="true" />
 	<reflexive name="Scenario BSPs" offset="0x14" visible="true" entrySize="0x6C">
 		<tagRef name="Structure BSP" offset="0x0" visible="true" />
 		<tagRef name="Scenario Design" offset="0x10" visible="true" />
@@ -168,18 +168,22 @@
 	<reflexive name="Script Objects" offset="0xD8" visible="true" entrySize="0x24">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<enum16 name="Type" offset="0x20" visible="true">
+			<option name="Null" value="0xFFFFFFFF" />
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
-			<option name="Unknown3" value="0x3" />
-			<option name="Unknown4" value="0x4" />
-			<option name="Unknown5" value="0x5" />
-			<option name="Scenery" value="0x6" />
-			<option name="Machine" value="0x7" />
-			<option name="Control" value="0x8" />
-			<option name="Unknown9" value="0x9" />
+			<option name="Equipment" value="0x3" />
+			<option name="ARG Device" value="0x4" />
+			<option name="Terminal" value="0x5" />
+			<option name="Projectile" value="0x6" />
+			<option name="Scenery" value="0x7" />
+			<option name="Machine" value="0x8" />
+			<option name="Control" value="0x9" />
 			<option name="Sound Scenery" value="0xA" />
-			<option name="Obstacle" value="0xB" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
 		</enum16>
 		<int16 name="Placement Index" offset="0x22" visible="true" />
 	</reflexive>
@@ -196,13 +200,37 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown 9" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -238,7 +266,6 @@
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<stringId name="Variant Type" offset="0x54" visible="true" />
-		<float32 name="Variant Type" offset="0x54" visible="true" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
@@ -292,13 +319,37 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown 10" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -351,13 +402,37 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown 12" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -378,7 +453,6 @@
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<int16 name="Unknown" offset="0x50" visible="false" />
 		<stringId name="Variant Type" offset="0x54" visible="true" />
-		<float32 name="Variant Type" offset="0x54" visible="true" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
@@ -389,6 +463,35 @@
 			<bit name="blown up" index="0" />
 			<bit name="unknown" index="1" />
 			<bit name="Undrivable until blown up" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
@@ -438,13 +541,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown 14" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -513,13 +639,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown 16" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -587,6 +736,37 @@
 		<float32 name="Inital Value" offset="0x20" visible="true" />
 		<bitfield32 name="Flags" offset="0x24" visible="true">
 			<bit name="Only Use Once" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<undefined name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
@@ -603,13 +783,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -661,13 +864,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -715,13 +941,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -785,13 +1034,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -840,13 +1112,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -892,13 +1187,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -949,13 +1267,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -994,13 +1335,36 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name to Env Object" index="7" />
 			<bit name="Create At Rest" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -1043,7 +1407,6 @@
 	<reflexive name="Forge Vehicles" offset="0x228" visible="true" entrySize="0x30">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
 		<stringId name="Loaded Name" offset="0x10" visible="true" />
-		<float32 name="Loaded Name" offset="0x10" visible="true" />
 		<int32 name="Max Allowed" offset="0x14" visible="true" />
 		<float32 name="Cost" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -1280,9 +1643,9 @@
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 	</reflexive>
 	<reflexive name="Decal Palette" offset="0x39C" visible="true" entrySize="0x6">
@@ -1327,7 +1690,6 @@
 			<float32 name="Unknown" offset="0x24" visible="true" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<stringId name="Formation Type" offset="0x2C" visible="true" />
-			<int32 name="Formation Type" offset="0x2C" visible="true" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<int16 name="Unknown" offset="0x34" visible="false" />
 			<int16 name="Unknown" offset="0x36" visible="false" />
@@ -1384,7 +1746,6 @@
 			<undefined name="Unknown" offset="0x40" visible="false" />
 			<undefined name="Unknown" offset="0x44" visible="false" />
 			<stringId name="Vehicle Variant" offset="0x48" visible="true" />
-			<int32 name="Vehicle Variant" offset="0x48" visible="true" />
 			<float32 name="Unknown" offset="0x4C" visible="false" />
 			<int16 name="Unknown" offset="0x50" visible="false" />
 			<int16 name="Unknown" offset="0x52" visible="false" />
@@ -1450,7 +1811,6 @@
 			<int16 name="Unknown" offset="0x44" visible="false" />
 			<int16 name="Vehicle Palette Chunk" offset="0x46" visible="true" />
 			<stringId name="Vehicle Variant" offset="0x48" visible="true" />
-			<int32 name="Vehicle Variant" offset="0x48" visible="true" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<undefined name="Unknown" offset="0x50" visible="false" />
 			<undefined name="Unknown" offset="0x54" visible="false" />
@@ -1501,7 +1861,6 @@
 			<int16 name="Unknown" offset="0x44" visible="false" />
 			<int16 name="Vehicle Palette Chunk" offset="0x46" visible="true" />
 			<stringId name="Vehicle Variant" offset="0x48" visible="true" />
-			<int32 name="Vehicle Variant" offset="0x48" visible="true" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<undefined name="Unknown" offset="0x50" visible="false" />
 			<undefined name="Unknown" offset="0x54" visible="false" />
@@ -2204,9 +2563,9 @@
 		<float32 name="Position X" offset="0x8" visible="true" />
 		<float32 name="Position Y" offset="0xC" visible="true" />
 		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<degree name="Yaw" offset="0x14" visible="true" />
+		<degree name="Pitch" offset="0x18" visible="true" />
+		<degree name="Roll" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="false" />
