@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Caching;
 using Assembly.Helpers.Models;
@@ -25,11 +25,14 @@ using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.Injection;
 using Blamite.IO;
+using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.RTE.H2Vista;
 using Blamite.Util;
 using CloseableTabItemDemo;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
 using Clipboard = System.Windows.Clipboard;
@@ -706,8 +709,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					          Title = "Assembly - Select a Tag Bookmark File",
 					          Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
 				          };
-			if (ofd.ShowDialog() != DialogResult.OK)
-				return;
+            bool? result = ofd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
 
 			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
 
@@ -1253,6 +1257,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             var item = e.Source as MenuItem;
             if (item == null)
                 return;
+
             var tagClass = item.DataContext as TagClass;
             if (tagClass == null)
                 return;
@@ -1264,7 +1269,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                               Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*"
                           };
             var result = sfd.ShowDialog();
-            if (!result.Value)
+            if (!result.HasValue || !result.Value)
                 return;
 
             // Dump all of the tags that belong to the class
@@ -1291,5 +1296,75 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
+
+        private void contextExtract_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag
+            var item = e.Source as MenuItem;
+            if (item == null)
+                return;
+
+            var tag = item.DataContext as TagEntry;
+            if (tag == null)
+                return;
+
+            // Ask where to save the extracted tag collection
+            var sfd = new SaveFileDialog
+            {
+                Title = "Save Tag Set",
+                Filter = "Tag Container Files|*.tagc"
+            };
+            bool? result = sfd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            // Make a tag container
+            var container = new TagContainer();
+
+            // Recursively extract tags
+            var tagsToProcess = new Queue<ITag>();
+            var tagsProcessed = new HashSet<ITag>();
+            tagsToProcess.Enqueue(tag.RawTag);
+
+            while (tagsToProcess.Count > 0)
+            {
+                var currentTag = tagsToProcess.Dequeue();
+                if (tagsProcessed.Contains(currentTag))
+                    continue;
+
+                // Get the plugin path
+                var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+                var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+
+                // Extract dem data blocks
+                DataBlockBuilder blockBuilder;
+                using (var reader = _mapManager.OpenRead())
+                {
+                    blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile.MetaArea, _buildInfo);
+                    using (var pluginReader = XmlReader.Create(pluginPath))
+                        AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
+                }
+
+                foreach (var block in blockBuilder.DataBlocks)
+                    container.AddDataBlock(block);
+
+                // Add data for the tag that was extracted
+                string tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
+                var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic, tagName);
+                container.AddTag(extractedTag);
+
+                // Mark the tag as processed and then enqueue all of its child tags
+                tagsProcessed.Add(currentTag);
+                foreach (var referenced in blockBuilder.ReferencedTags)
+                    tagsToProcess.Enqueue(_cacheFile.Tags[referenced]);
+            }
+
+            // Write it to a file
+            using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), Endian.BigEndian))
+                TagContainerWriter.WriteTagContainer(container, writer);
+
+            // YAY!
+            MetroMessageBox.Show("Extraction Successful", "Extracted " + container.Tags.Count + " tag(s), " + container.DataBlocks.Count + " data block(s), " + container.ResourcePages.Count + " resource page pointer(s), and " + container.Resources.Count + " resource pointer(s).");
+        }
 	}
 }
