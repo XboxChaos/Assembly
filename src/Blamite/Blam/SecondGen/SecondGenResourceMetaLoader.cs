@@ -20,5 +20,15 @@ namespace Blamite.Blam.SecondGen
         {
             throw new NotImplementedException();
         }
+
+        public bool SupportsScenarioBSPs
+        {
+            get { return false; }
+        }
+
+        public Resources.BSP.IScenarioBSP LoadScenarioBSPMeta(ITag sbspTag, IReader reader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

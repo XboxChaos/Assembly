@@ -21,6 +21,7 @@ using Assembly.Windows;
 using AvalonDock.Layout;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.ThirdGen;
@@ -246,33 +247,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 
                 Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
-                
-                /*ITag dice = _cacheFile.Tags[0x1894];
-                IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
-                ResourceTable resources = _cacheFile.Resources.LoadResourceTable(reader);
-                Resource diceResource = resources.Resources[diceModel.ResourceIndex.Index];
-                ICacheFile resourceFile = _cacheFile;
-                Stream resourceStream = fileStream;
-                if (diceResource.Location.PrimaryPage.FilePath != null)
-                {
-                    resourceStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(_cacheLocation), Path.GetFileName(diceResource.Location.PrimaryPage.FilePath)));
-                    resourceFile = CacheFileLoader.LoadCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _layoutLoader);
-                }
-                ResourcePageExtractor extractor = new ResourcePageExtractor(resourceFile);
-                string path = Path.GetTempFileName();
-                FileStream pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-                extractor.ExtractPage(diceResource.Location.PrimaryPage, resourceStream, pageStream);
-                if (resourceStream != fileStream)
-                    resourceStream.Close();
-                IReader pageReader = new EndianReader(pageStream, Endian.BigEndian);
-                pageReader.SeekTo(diceResource.Location.PrimaryOffset);
-                ObjExporter exporter = new ObjExporter("C:\\Users\\Aaron\\Desktop\\test.obj");
-                System.Collections.BitArray sections = new System.Collections.BitArray(diceModel.Sections.Length, true);
-                //sections[3] = true;
-                //sections[1] = true;
-                ModelReader.ReadModelData(pageReader, diceModel, sections, _buildInfo, exporter);
-                exporter.Close();
-                pageReader.Close();*/
 
                 // Add to Recents
                 Dispatcher.Invoke(new Action(delegate

@@ -14,13 +14,13 @@ namespace Blamite.Blam.Resources.Models
         /// Called when the data for a model is about to be read.
         /// </summary>
         /// <param name="model">The model which will be read.</param>
-        void BeginModel(IRenderModel model);
+        void BeginModel(IModel model);
 
         /// <summary>
         /// Called after the data for a model has been read.
         /// </summary>
         /// <param name="model">The model which was read.</param>
-        void EndModel(IRenderModel model);
+        void EndModel(IModel model);
 
         /// <summary>
         /// Called when the vertices for a submesh are about to be read.

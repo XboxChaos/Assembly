@@ -21,7 +21,7 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="sectionsToRead">A BitArray controlling which sections to read. Indices which are set to to true will be read.</param>
         /// <param name="buildInfo">Information about the cache file's target engine.</param>
         /// <param name="processor">The IModelProcessor to pass the read model data to.</param>
-        public static void ReadModelData(IReader reader, IRenderModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
+        public static void ReadModelData(IReader reader, IModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
         {
             processor.BeginModel(model);
 
@@ -39,10 +39,10 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="sectionsToRead">A BitArray controlling which sections to read. Indices which are set to to true will be read.</param>
         /// <param name="buildInfo">Information about the cache file's target engine.</param>
         /// <param name="processor">The IModelProcessor to pass the read model data to.</param>
-        private static void ReadVertexBuffers(IReader reader, IRenderModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
+        private static void ReadVertexBuffers(IReader reader, IModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
         {
             for (int i = 0; i < model.Sections.Length; i++)
-                ReadSectionVertices(reader, model.Sections[i], model.BoundingBox, buildInfo, sectionsToRead[i] ? processor : null);
+                ReadSectionVertices(reader, model.Sections[i], model.BoundingBoxes[0], buildInfo, sectionsToRead[i] ? processor : null);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="sectionsToRead">A BitArray controlling which sections to read. Indices which are set to to true will be read.</param>
         /// <param name="buildInfo">Information about the cache file's target engine.</param>
         /// <param name="processor">The IModelProcessor to pass the read model data to.</param>
-        private static void ReadIndexBuffers(IReader reader, IRenderModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
+        private static void ReadIndexBuffers(IReader reader, IModel model, BitArray sectionsToRead, BuildInformation buildInfo, IModelProcessor processor)
         {
             int baseIndex = 0;
             for (int i = 0; i < model.Sections.Length; i++)

@@ -25,11 +25,11 @@ namespace Assembly.Helpers.Models
             _output = new StreamWriter(File.Open(outPath, FileMode.Create, FileAccess.Write));
         }
 
-        public void BeginModel(IRenderModel model)
+        public void BeginModel(IModel model)
         {
         }
 
-        public void EndModel(IRenderModel model)
+        public void EndModel(IModel model)
         {
         }
 
