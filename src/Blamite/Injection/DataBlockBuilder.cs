@@ -41,6 +41,7 @@ namespace Blamite.Injection
 
             DataBlocks = new List<DataBlock>();
             ReferencedTags = new HashSet<DatumIndex>();
+            ReferencedResources = new HashSet<DatumIndex>();
         }
 
         /// <summary>
@@ -52,6 +53,11 @@ namespace Blamite.Injection
         /// Gets a set of tags referenced by the scanned tag.
         /// </summary>
         public HashSet<DatumIndex> ReferencedTags { get; private set; }
+
+        /// <summary>
+        /// Gets a set of resources referenced by the scanned tag.
+        /// </summary>
+        public HashSet<DatumIndex> ReferencedResources { get; private set; }
 
         public bool EnterPlugin(int baseSize)
         {
@@ -99,18 +105,40 @@ namespace Blamite.Injection
 
         public void VisitUInt16(string name, uint offset, bool visible, uint pluginLine)
         {
+            // haxhaxhaxhax
+            // TODO: Fix this if/when cross-tag references are added to plugins
+            string lowerName = name.ToLower();
+            if (lowerName.Contains("asset salt")
+                || lowerName.Contains("resource salt")
+                || lowerName.Contains("asset datum salt")
+                || lowerName.Contains("resource datum salt"))
+            {
+                ReadResourceFixup(offset);
+            }
         }
 
         public void VisitInt16(string name, uint offset, bool visible, uint pluginLine)
         {
+            VisitUInt16(name, offset, visible, pluginLine);
         }
 
         public void VisitUInt32(string name, uint offset, bool visible, uint pluginLine)
         {
+            // haxhaxhaxhax
+            // TODO: Fix this if/when cross-tag references are added to plugins
+            string lowerName = name.ToLower();
+            if (lowerName.Contains("asset index")
+                || lowerName.Contains("resource index")
+                || lowerName.Contains("asset datum")
+                || lowerName.Contains("resource datum"))
+            {
+                ReadResourceFixup(offset);
+            }
         }
 
         public void VisitInt32(string name, uint offset, bool visible, uint pluginLine)
         {
+            VisitUInt32(name, offset, visible, pluginLine);
         }
 
         public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine)
@@ -172,14 +200,8 @@ namespace Blamite.Injection
 
             if (size > 0 && _metaArea.ContainsPointer(pointer))
             {
-                // Read the data and create a DataBlock for it
-                _reader.SeekTo(_metaArea.PointerToOffset(pointer));
-                byte[] data = _reader.ReadBlock(size);
-
-                var block = new DataBlock(pointer, data);
-                DataBlocks.Add(block);
-
-                // Now create a fixup for the block
+                // Read the block and create a fixup for it
+                var block = ReadDataBlock(pointer, size);
                 var fixup = new DataBlockAddressFixup(pointer, (int)offset + _dataRefLayout.GetFieldOffset("pointer"));
                 _blockStack.Peek().AddressFixups.Add(fixup);
             }
@@ -265,13 +287,8 @@ namespace Blamite.Injection
 
             if (count > 0 && _metaArea.ContainsPointer(pointer))
             {
-                // Read the data and create a DataBlock for it
-                _reader.SeekTo(_metaArea.PointerToOffset(pointer));
                 int size = (int)(count * entrySize);
-                byte[] data = _reader.ReadBlock(size);
-
-                var block = new DataBlock(pointer, data);
-                DataBlocks.Add(block);
+                var block = ReadDataBlock(pointer, size);
 
                 // Now create a fixup for the block
                 var fixup = new DataBlockAddressFixup(pointer, (int)offset + _reflexiveLayout.GetFieldOffset("pointer"));
@@ -293,6 +310,28 @@ namespace Blamite.Injection
             // Pop the block stack and pop our location
             _blockStack.Pop();
             _baseLocation = _locationStack.Pop();
+        }
+
+        private void ReadResourceFixup(uint offset)
+        {
+            _reader.SeekTo(_baseLocation.AsOffset() + offset);
+            DatumIndex index = new DatumIndex(_reader.ReadUInt32());
+            if (index.IsValid)
+            {
+                var fixup = new DataBlockResourceFixup(index, (int)offset);
+                _blockStack.Peek().ResourceFixups.Add(fixup);
+                ReferencedResources.Add(index);
+            }
+        }
+
+        private DataBlock ReadDataBlock(uint pointer, int size)
+        {
+            _reader.SeekTo(_metaArea.PointerToOffset(pointer));
+            byte[] data = _reader.ReadBlock(size);
+
+            var block = new DataBlock(pointer, data);
+            DataBlocks.Add(block);
+            return block;
         }
     }
 }

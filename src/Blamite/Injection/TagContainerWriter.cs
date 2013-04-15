@@ -82,7 +82,7 @@ namespace Blamite.Injection
 
                 writer.WriteInt32(page.Index);
                 writer.WriteByte(page.Flags);
-                writer.WriteAscii(page.FilePath);
+                writer.WriteAscii(page.FilePath ?? "");
                 writer.WriteInt32(page.Offset);
                 writer.WriteInt32(page.UncompressedSize);
                 writer.WriteByte((byte)page.CompressionMethod);
@@ -113,10 +113,10 @@ namespace Blamite.Injection
                 if (resource.Location != null)
                 {
                     writer.WriteByte(1);
-                    writer.WriteInt32(resource.Location.PrimaryPage.Index);
+                    writer.WriteInt32((resource.Location.PrimaryPage != null) ? resource.Location.PrimaryPage.Index : -1);
                     writer.WriteInt32(resource.Location.PrimaryOffset);
                     writer.WriteInt32(resource.Location.PrimaryUnknown);
-                    writer.WriteInt32(resource.Location.SecondaryPage.Index);
+                    writer.WriteInt32((resource.Location.SecondaryPage != null) ? resource.Location.SecondaryPage.Index : -1);
                     writer.WriteInt32(resource.Location.SecondaryOffset);
                     writer.WriteInt32(resource.Location.SecondaryUnknown);
                 }

@@ -1298,39 +1298,75 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             // Recursively extract tags
             var tagsToProcess = new Queue<ITag>();
             var tagsProcessed = new HashSet<ITag>();
+            var resourcesToProcess = new Queue<DatumIndex>();
+            var resourcesProcessed = new HashSet<DatumIndex>();
+            var resourcePagesProcessed = new HashSet<ResourcePage>();
             tagsToProcess.Enqueue(tag.RawTag);
 
-            while (tagsToProcess.Count > 0)
+            ResourceTable resources = null;
+            using (var reader = _mapManager.OpenRead())
             {
-                var currentTag = tagsToProcess.Dequeue();
-                if (tagsProcessed.Contains(currentTag))
-                    continue;
-
-                // Get the plugin path
-                var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
-                var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
-
-                // Extract dem data blocks
-                DataBlockBuilder blockBuilder;
-                using (var reader = _mapManager.OpenRead())
+                while (tagsToProcess.Count > 0)
                 {
-                    blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile.MetaArea, _buildInfo);
+                    var currentTag = tagsToProcess.Dequeue();
+                    if (tagsProcessed.Contains(currentTag))
+                        continue;
+
+                    // Get the plugin path
+                    var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+                    var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+
+                    // Extract dem data blocks
+                    var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile.MetaArea, _buildInfo);
                     using (var pluginReader = XmlReader.Create(pluginPath))
                         AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
+
+                    foreach (var block in blockBuilder.DataBlocks)
+                        container.AddDataBlock(block);
+
+                    // Add data for the tag that was extracted
+                    string tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
+                    var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic, tagName);
+                    container.AddTag(extractedTag);
+
+                    // Mark the tag as processed and then enqueue all of its child tags and resources
+                    tagsProcessed.Add(currentTag);
+                    foreach (var tagRef in blockBuilder.ReferencedTags)
+                        tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
+                    foreach (var resource in blockBuilder.ReferencedResources)
+                        resourcesToProcess.Enqueue(resource);
                 }
 
-                foreach (var block in blockBuilder.DataBlocks)
-                    container.AddDataBlock(block);
+                // Load the resource table in if necessary
+                if (resourcesToProcess.Count > 0)
+                    resources = _cacheFile.Resources.LoadResourceTable(reader);
+            }
 
-                // Add data for the tag that was extracted
-                string tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
-                var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic, tagName);
-                container.AddTag(extractedTag);
+            // Extract resource info
+            while (resourcesToProcess.Count > 0)
+            {
+                var index = resourcesToProcess.Dequeue();
+                if (resourcesProcessed.Contains(index))
+                    continue;
 
-                // Mark the tag as processed and then enqueue all of its child tags
-                tagsProcessed.Add(currentTag);
-                foreach (var referenced in blockBuilder.ReferencedTags)
-                    tagsToProcess.Enqueue(_cacheFile.Tags[referenced]);
+                // Add the resource
+                var resource = resources.Resources[index.Index];
+                container.AddResource(resource);
+
+                // Add data for its pages
+                if (resource.Location != null)
+                {
+                    if (resource.Location.PrimaryPage != null && !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+                    {
+                        container.AddResourcePage(resource.Location.PrimaryPage);
+                        resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+                    }
+                    if (resource.Location.SecondaryPage != null && !resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+                    {
+                        container.AddResourcePage(resource.Location.SecondaryPage);
+                        resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+                    }
+                }
             }
 
             // Write it to a file
