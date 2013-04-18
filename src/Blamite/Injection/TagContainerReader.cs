@@ -148,13 +148,15 @@ namespace Blamite.Injection
 
         private static ExtractedResourceInfo ReadResource(IReader reader, byte version)
         {
-            if (version > 0)
+            if (version != 1)
                 throw new InvalidOperationException("Unrecognized \"rsrc\" block version");
 
             var originalIndex = new DatumIndex(reader.ReadUInt32());
             var resource = new ExtractedResourceInfo(originalIndex);
             resource.Flags = reader.ReadUInt32();
-            resource.Type = reader.ReadInt32();
+            resource.Type = reader.ReadAscii();
+            if (string.IsNullOrEmpty(resource.Type))
+                resource.Type = null;
             resource.Info = ReadByteArray(reader);
             resource.OriginalParentTagIndex = new DatumIndex(reader.ReadUInt32());
             byte hasLocation = reader.ReadByte();

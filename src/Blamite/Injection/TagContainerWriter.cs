@@ -113,11 +113,14 @@ namespace Blamite.Injection
         {
             foreach (var resource in tags.Resources)
             {
-                container.StartBlock("rsrc", 0);
+                container.StartBlock("rsrc", 1);
 
                 writer.WriteUInt32(resource.OriginalIndex.Value);
                 writer.WriteUInt32(resource.Flags);
-                writer.WriteInt32(resource.Type);
+                if (resource.Type != null)
+                    writer.WriteAscii(resource.Type);
+                else
+                    writer.WriteByte(0);
                 WriteByteArray(resource.Info, writer);
                 writer.WriteUInt32(resource.OriginalParentTagIndex.Value);
                 if (resource.Location != null)

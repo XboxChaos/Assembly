@@ -102,9 +102,9 @@ namespace Blamite.Blam.Resources
         public uint Flags { get; set; }
 
         /// <summary>
-        /// Gets or sets the resource type index.
+        /// Gets or sets the name of the resource's type.
         /// </summary>
-        public int Type { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
         /// Gets or sets the info buffer for the resource.

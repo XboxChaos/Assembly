@@ -6,22 +6,50 @@ using Blamite.Blam.Resources;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Blam.ThirdGen.Resources
 {
+    public class ThirdGenResourceType
+    {
+        public ThirdGenResourceType(StructureValueCollection values, StringIDSource stringIDs)
+        {
+            Load(values, stringIDs);
+        }
+
+        /// <summary>
+        /// Gets the GUID of the resource type.
+        /// </summary>
+        public byte[] Guid { get; private set; }
+
+        /// <summary>
+        /// Gets the name of the resource type.
+        /// </summary>
+        public string Name { get; private set; }
+
+        private void Load(StructureValueCollection values, StringIDSource stringIDs)
+        {
+            Guid = values.GetRaw("guid");
+            Name = stringIDs.GetString(new StringID(values.GetInteger("name stringid")));
+        }
+    }
+
     public class ThirdGenResourceGestalt
     {
         private ITag _tag;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
         private BuildInformation _buildInfo;
+        private ThirdGenResourceType[] _resourceTypes;
 
-        public ThirdGenResourceGestalt(ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
+        public ThirdGenResourceGestalt(IReader reader, ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator, StringIDSource stringIDs, BuildInformation buildInfo)
         {
             _tag = zoneTag;
             _metaArea = metaArea;
             _allocator = allocator;
             _buildInfo = buildInfo;
+
+            Load(reader, stringIDs);
         }
 
         public IEnumerable<Resource> LoadResources(IReader reader, TagTable tags, IList<ResourcePointer> pointers)
@@ -45,13 +73,14 @@ namespace Blamite.Blam.ThirdGen.Resources
 
             // Serialize each resource entry
             // This can't be lazily evaluated because allocations might cause the stream to expand
-            uint infoOffset = 0;
+            int infoOffset = 0;
             var pointers = new List<ResourcePointer>();
             var entries = new List<StructureValueCollection>();
             var fixupCache = new ReflexiveCache<ResourceFixup>();
             var defFixupCache = new ReflexiveCache<ResourceDefinitionFixup>();
             foreach (var resource in resources)
             {
+                infoOffset = AlignInfoBlockOffset(resource, infoOffset);
                 var entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1, (resource.Info != null) ? infoOffset : 0, stream);
                 entries.Add(entry);
 
@@ -61,7 +90,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 
                 // Update info offset and pointer info
                 if (resource.Info != null)
-                    infoOffset += (uint)resource.Info.Length;
+                    infoOffset += resource.Info.Length;
                 if (resource.Location != null)
                     pointers.Add(resource.Location);
             }
@@ -92,6 +121,21 @@ namespace Blamite.Blam.ThirdGen.Resources
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("resource gestalt"), writer);
         }
 
+        private void Load(IReader reader, StringIDSource stringIDs)
+        {
+            var values = LoadTag(reader);
+            LoadResourceTypes(values, reader, stringIDs);
+        }
+
+        private void LoadResourceTypes(StructureValueCollection values, IReader reader, StringIDSource stringIDs)
+        {
+            int count = (int)values.GetInteger("number of resource types");
+            uint address = values.GetInteger("resource type table address");
+            var layout = _buildInfo.GetLayout("resource type entry");
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+            _resourceTypes = entries.Select(e => new ThirdGenResourceType(e, stringIDs)).ToArray();
+        }
+
         private byte[] LoadResourceInfoBuffer(StructureValueCollection values, IReader reader)
         {
             int size = (int)values.GetInteger("resource info buffer size");
@@ -109,13 +153,17 @@ namespace Blamite.Blam.ThirdGen.Resources
             // Add up all of the sizes to compute the total buffer size
             int size = 0;
             foreach (var resource in resources.Where(r => r.Info != null))
+            {
+                size = AlignInfoBlockOffset(resource, size);
                 size += resource.Info.Length;
+            }
 
             // Now copy each info block into the buffer
             int offset = 0;
             byte[] result = new byte[size];
             foreach (var resource in resources.Where(r => r.Info != null))
             {
+                offset = AlignInfoBlockOffset(resource, offset);
                 Buffer.BlockCopy(resource.Info, 0, result, offset, resource.Info.Length);
                 offset += resource.Info.Length;
             }
@@ -135,7 +183,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             uint newAddress = 0;
             if (buffer.Length > 0)
             {
-                newAddress = _allocator.Allocate(buffer.Length, stream);
+                newAddress = _allocator.Allocate(buffer.Length, 0x10, stream);
                 stream.SeekTo(_metaArea.PointerToOffset(newAddress));
                 stream.WriteBlock(buffer);
             }
@@ -153,7 +201,9 @@ namespace Blamite.Blam.ThirdGen.Resources
             result.ParentTag = parentTag.IsValid ? tags[parentTag] : null;
             ushort salt = (ushort)values.GetInteger("datum index salt");
             result.Index = new DatumIndex(salt, (ushort)index);
-            result.Type = (int)values.GetInteger("resource type index");
+            int typeIndex = (int)values.GetInteger("resource type index");
+            if (typeIndex >= 0 && typeIndex < _resourceTypes.Length)
+                result.Type = _resourceTypes[typeIndex].Name;
             result.Flags = values.GetInteger("flags");
 
             int infoOffset = (int)values.GetInteger("resource info offset");
@@ -176,7 +226,7 @@ namespace Blamite.Blam.ThirdGen.Resources
             return result;
         }
 
-        private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, uint infoOffset, IStream stream)
+        private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, int infoOffset, IStream stream)
         {
             StructureValueCollection result = new StructureValueCollection();
             if (resource.ParentTag != null)
@@ -190,9 +240,9 @@ namespace Blamite.Blam.ThirdGen.Resources
                 result.SetInteger("parent tag datum index", 0xFFFFFFFF);
             }
             result.SetInteger("datum index salt", (uint)resource.Index.Salt);
-            result.SetInteger("resource type index", (uint)resource.Type);
+            result.SetInteger("resource type index", (uint)FindResourceType(resource.Type));
             result.SetInteger("flags", resource.Flags);
-            result.SetInteger("resource info offset", infoOffset);
+            result.SetInteger("resource info offset", (uint)infoOffset);
             result.SetInteger("resource info size", (resource.Info != null) ? (uint)resource.Info.Length : 0);
             result.SetInteger("unknown 1", (uint)resource.Unknown1);
             result.SetInteger("unknown 2", (uint)resource.Unknown2);
@@ -329,6 +379,26 @@ namespace Blamite.Blam.ThirdGen.Resources
             int size = count * layout.Size;
             if (address >= 0 && size > 0)
                 _allocator.Free(address, size);
+        }
+
+        private int AlignInfoBlockOffset(Resource resource, int offset)
+        {
+            if ((resource.Flags & 4) != 0) // hax
+                return (offset + 0xF) & ~0xF;
+            return offset;
+        }
+
+        private int FindResourceType(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return -1;
+
+            for (int i = 0; i < _resourceTypes.Length; i++)
+            {
+                if (_resourceTypes[i].Name == name)
+                    return i;
+            }
+            throw new InvalidOperationException("Invalid resource type \"" + name + "\"");
         }
     }
 }

@@ -34,8 +34,20 @@ namespace Blamite.Blam.Util
         /// <returns>The memory address of the allocated area.</returns>
         public uint Allocate(int size, IStream stream)
         {
+            return Allocate(size, 1, stream);
+        }
+
+        /// <summary>
+        /// Allocates a free block of memory in the cache file's meta area.
+        /// </summary>
+        /// <param name="size">The size of the memory block to allocate.</param>
+        /// <param name="align">The power of two to align the block to.</param>
+        /// <param name="stream">The stream to write cache file changes to.</param>
+        /// <returns></returns>
+        public uint Allocate(int size, uint align, IStream stream)
+        {
             // Find the smallest block that fits, or if nothing is found, expand the meta area
-            FreeArea block = FindSmallestBlock(size);
+            FreeArea block = FindSmallestBlock(size, align);
             if (block == null)
                 block = Expand(size, stream);
 
@@ -46,10 +58,16 @@ namespace Blamite.Blam.Util
                 return block.Address;
             }
 
-            // Too large - change the block's start address to be after the allocation and return its old address
+            // Too large - adjust the block's start address
             uint oldAddress = block.Address;
             ChangeStartAddress(block, (uint)(block.Address + size));
-            return oldAddress;
+
+            // Add a block at the beginning if we had to align
+            uint alignedAddress = (oldAddress + align - 1) & ~(align - 1);
+            if (alignedAddress > oldAddress)
+                Free(oldAddress, (int)(alignedAddress - oldAddress));
+            
+            return alignedAddress;
         }
 
         /// <summary>
@@ -169,7 +187,7 @@ namespace Blamite.Blam.Util
             return area;
         }
 
-        private FreeArea FindSmallestBlock(int minSize)
+        private FreeArea FindSmallestBlock(int minSize, uint align)
         {
             if (minSize <= 0)
                 throw new ArgumentException("Invalid block size");
@@ -177,9 +195,18 @@ namespace Blamite.Blam.Util
             int index = ListSearching.BinarySearch<FreeArea, int>(_freeAreasBySize, minSize, (a) => a.Size);
             if (index < 0)
                 index = ~index; // Get the index of the next largest block
-            if (index >= _freeAreasBySize.Count)
-                return null;
-            return _freeAreasBySize[index];
+
+            // Search until a block is found where the data can be aligned in
+            while (index < _freeAreasBySize.Count)
+            {
+                var area = _freeAreasBySize[index];
+                uint alignedAddress = (area.Address + align - 1) & ~(align - 1);
+                if (alignedAddress + minSize <= area.Address + area.Size)
+                    return area;
+
+                index++;
+            }
+            return null;
         }
 
         private FreeArea Expand(int minSize, IStream stream)

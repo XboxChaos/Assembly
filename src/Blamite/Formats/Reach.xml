@@ -271,11 +271,20 @@
 
   <!-- zone (cache_file_resource_gestalt) -->
   <layout for="resource gestalt">
+    <int32 name="number of resource types" offset="0x4" />
+    <uint32 name="resource type table address" offset="0x8" />
+    
     <int32 name="number of resources" offset="0x58" />
     <uint32 name="resource table address" offset="0x5C" />
 
     <int32 name="resource info buffer size" offset="0x13C" />
     <uint32 name="resource info buffer address" offset="0x148" />
+  </layout>
+
+  <!-- Reflexive at 0x4 in zone -->
+  <layout for="resource type entry" size="0x1C">
+    <raw name="guid" offset="0x0" size="0x10" />
+    <uint32 name="name stringid" offset="0x18" />
   </layout>
 
   <!-- Reflexive at 0x58 in zone -->

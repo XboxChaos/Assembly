@@ -199,7 +199,7 @@ namespace Blamite.Blam.ThirdGen
             LoadLanguageGlobals(reader);
             LoadScriptFiles(reader);
             LoadLocaleGroups(reader);
-            LoadResourceManager();
+            LoadResourceManager(reader);
         }
 
         private void LoadHeader(IReader reader, string buildString)
@@ -302,11 +302,11 @@ namespace Blamite.Blam.ThirdGen
             }
         }
 
-        private void LoadResourceManager()
+        private void LoadResourceManager(IReader reader)
         {
             ITag zoneTag = _tags.FindTagByClass("zone");
             ITag playTag = _tags.FindTagByClass("play");
-            ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(zoneTag, MetaArea, Allocator, _buildInfo);
+            ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
             ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
             _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags);
         }
