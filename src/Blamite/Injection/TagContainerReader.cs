@@ -56,13 +56,14 @@ namespace Blamite.Injection
 
         private static DataBlock ReadDataBlock(IReader reader, byte version)
         {
-            if (version > 0)
+            if (version > 2)
                 throw new InvalidOperationException("Unrecognized \"data\" block version");
 
             // Block data
             uint originalAddress = reader.ReadUInt32();
+            int entryCount = (version >= 1) ? reader.ReadInt32() : 1;
             byte[] data = ReadByteArray(reader);
-            var block = new DataBlock(originalAddress, data);
+            var block = new DataBlock(originalAddress, entryCount, data);
 
             // Address fixups
             int numAddressFixups = reader.ReadInt32();
@@ -91,6 +92,18 @@ namespace Blamite.Injection
                 block.ResourceFixups.Add(new DataBlockResourceFixup(datum, writeOffset));
             }
 
+            if (version >= 2)
+            {
+                // StringID fixups
+                int numSIDFixups = reader.ReadInt32();
+                for (int i = 0; i < numSIDFixups; i++)
+                {
+                    string str = reader.ReadAscii();
+                    int writeOffset = reader.ReadInt32();
+                    block.StringIDFixups.Add(new DataBlockStringIDFixup(str, writeOffset));
+                }
+            }
+
             return block;
         }
 
@@ -108,11 +121,13 @@ namespace Blamite.Injection
 
         private static ResourcePage ReadResourcePage(IReader reader, byte version)
         {
-            if (version > 0)
+            if (version > 1)
                 throw new InvalidOperationException("Unrecognized \"rspg\" block version");
 
             var page = new ResourcePage();
             page.Index = reader.ReadInt32();
+            if (version > 0)
+                page.Salt = reader.ReadUInt16();
             page.Flags = reader.ReadByte();
             page.FilePath = reader.ReadAscii();
             if (page.FilePath.Length == 0)

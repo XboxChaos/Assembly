@@ -15,26 +15,26 @@ namespace Blamite.Injection
     public class DataBlockBuilder : IPluginVisitor
     {
         private IReader _reader;
-        private SegmentPointer _baseLocation;
-        private FileSegmentGroup _metaArea;
+        private ICacheFile _cacheFile;
+        private SegmentPointer _tagLocation;
         private StructureLayout _tagRefLayout;
         private StructureLayout _reflexiveLayout;
         private StructureLayout _dataRefLayout;
-        private Stack<DataBlock> _blockStack = new Stack<DataBlock>();
-        private Stack<SegmentPointer> _locationStack = new Stack<SegmentPointer>();
+        private List<DataBlock> _reflexiveBlocks;
+        private Stack<List<DataBlock>> _blockStack = new Stack<List<DataBlock>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataBlockBuilder" /> class.
         /// </summary>
         /// <param name="reader">The stream to read from.</param>
         /// <param name="tagLocation">The location of the tag to load data blocks for.</param>
-        /// <param name="metaArea">The meta area of the cache file.</param>
+        /// <param name="cacheFile">The cache file.</param>
         /// <param name="buildInfo">The build info for the cache file.</param>
-        public DataBlockBuilder(IReader reader, SegmentPointer tagLocation, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        public DataBlockBuilder(IReader reader, SegmentPointer tagLocation, ICacheFile cacheFile, BuildInformation buildInfo)
         {
             _reader = reader;
-            _baseLocation = tagLocation;
-            _metaArea = metaArea;
+            _tagLocation = tagLocation;
+            _cacheFile = cacheFile;
             _tagRefLayout = buildInfo.GetLayout("tag reference");
             _reflexiveLayout = buildInfo.GetLayout("reflexive");
             _dataRefLayout = buildInfo.GetLayout("data reference");
@@ -62,13 +62,16 @@ namespace Blamite.Injection
         public bool EnterPlugin(int baseSize)
         {
             // Read the tag data in based off the base size
-            _reader.SeekTo(_baseLocation.AsOffset());
+            _reader.SeekTo(_tagLocation.AsOffset());
             byte[] data = _reader.ReadBlock(baseSize);
 
             // Create a block for it and push it onto the block stack
-            var block = new DataBlock(_baseLocation.AsPointer(), data);
+            var block = new DataBlock(_tagLocation.AsPointer(), 1, data);
             DataBlocks.Add(block);
-            _blockStack.Push(block);
+
+            var blockList = new List<DataBlock>();
+            blockList.Add(block);
+            _blockStack.Push(blockList);
 
             return true;
         }
@@ -113,7 +116,7 @@ namespace Blamite.Injection
                 || lowerName.Contains("asset datum salt")
                 || lowerName.Contains("resource datum salt"))
             {
-                ReadResourceFixup(offset);
+                ReadReferences(offset, (b, o) => ReadResourceFixup(b, o));
             }
         }
 
@@ -132,7 +135,7 @@ namespace Blamite.Injection
                 || lowerName.Contains("asset datum")
                 || lowerName.Contains("resource datum"))
             {
-                ReadResourceFixup(offset);
+                ReadReferences(offset, (b, o) => ReadResourceFixup(b, o));
             }
         }
 
@@ -159,52 +162,17 @@ namespace Blamite.Injection
 
         public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
+            ReadReferences(offset, (b, o) => ReadStringID(b, o));
         }
 
         public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
         {
-            _reader.SeekTo(_baseLocation.AsOffset() + offset);
-
-            DatumIndex index;
-            int fixupOffset;
-            if (withClass)
-            {
-                // Class info - do a flexible structure read to get the index
-                var values = StructureReader.ReadStructure(_reader, _tagRefLayout);
-                index = new DatumIndex(values.GetInteger("datum index"));
-                fixupOffset = (int)offset + _tagRefLayout.GetFieldOffset("datum index");
-            }
-            else
-            {
-                // No tag class - the datum index is at the offset
-                index = new DatumIndex(_reader.ReadUInt32());
-                fixupOffset = (int)offset;
-            }
-
-            if (index != DatumIndex.Null)
-            {
-                // Add the tagref fixup to the block
-                var fixup = new DataBlockTagFixup(index, fixupOffset);
-                _blockStack.Peek().TagFixups.Add(fixup);
-                ReferencedTags.Add(index);
-            }
+            ReadReferences(offset, (b, o) => ReadTagReference(b, o, withClass));
         }
 
         public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
         {
-            // Read the size and pointer
-            _reader.SeekTo(_baseLocation.AsOffset() + offset);
-            var values = StructureReader.ReadStructure(_reader, _dataRefLayout);
-            int size = (int)values.GetInteger("size");
-            uint pointer = (uint)values.GetInteger("pointer");
-
-            if (size > 0 && _metaArea.ContainsPointer(pointer))
-            {
-                // Read the block and create a fixup for it
-                var block = ReadDataBlock(pointer, size);
-                var fixup = new DataBlockAddressFixup(pointer, (int)offset + _dataRefLayout.GetFieldOffset("pointer"));
-                _blockStack.Peek().AddressFixups.Add(fixup);
-            }
+            ReadReferences(offset, (b, o) => ReadDataReference(b, o));
         }
 
         public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
@@ -279,59 +247,144 @@ namespace Blamite.Injection
 
         public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
         {
-            // Read the count and pointer
-            _reader.SeekTo(_baseLocation.AsOffset() + offset);
-            var values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
-            int count = (int)values.GetInteger("entry count");
-            uint pointer = values.GetInteger("pointer");
-
-            if (count > 0 && _metaArea.ContainsPointer(pointer))
+            _reflexiveBlocks = new List<DataBlock>();
+            ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize));
+            if (_reflexiveBlocks.Count > 0)
             {
-                int size = (int)(count * entrySize);
-                var block = ReadDataBlock(pointer, size);
-
-                // Now create a fixup for the block
-                var fixup = new DataBlockAddressFixup(pointer, (int)offset + _reflexiveLayout.GetFieldOffset("pointer"));
-                _blockStack.Peek().AddressFixups.Add(fixup);
-
-                // Push it onto the block stack and recurse into it
-                _blockStack.Push(block);
-                _locationStack.Push(_baseLocation);
-                _baseLocation = SegmentPointer.FromPointer(pointer, _metaArea);
+                _blockStack.Push(_reflexiveBlocks);
                 return true;
             }
-
-            // Null reflexive - don't recurse
             return false;
         }
 
         public void LeaveReflexive()
         {
-            // Pop the block stack and pop our location
+            // Pop the block stack
             _blockStack.Pop();
-            _baseLocation = _locationStack.Pop();
         }
 
-        private void ReadResourceFixup(uint offset)
+        private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
         {
-            _reader.SeekTo(_baseLocation.AsOffset() + offset);
+            var blocks = _blockStack.Peek();
+            foreach (var block in blocks)
+            {
+                uint currentOffset = offset;
+                for (int i = 0; i < block.EntryCount; i++)
+                {
+                    processor(block, currentOffset);
+                    currentOffset += (uint)block.EntrySize;
+                }
+            }
+        }
+
+        private void ReadStringID(DataBlock block, uint offset)
+        {
+            SeekToOffset(block, offset);
+            StringID sid = new StringID(_reader.ReadUInt32());
+            if (sid != StringID.Null)
+            {
+                string str = _cacheFile.StringIDs.GetString(sid);
+                if (str != null)
+                {
+                    var fixup = new DataBlockStringIDFixup(str, (int)offset);
+                    block.StringIDFixups.Add(fixup);
+                }
+            }
+        }
+
+        private void ReadResourceFixup(DataBlock block, uint offset)
+        {
+            SeekToOffset(block, offset);
             DatumIndex index = new DatumIndex(_reader.ReadUInt32());
             if (index.IsValid)
             {
                 var fixup = new DataBlockResourceFixup(index, (int)offset);
-                _blockStack.Peek().ResourceFixups.Add(fixup);
+                block.ResourceFixups.Add(fixup);
                 ReferencedResources.Add(index);
             }
         }
 
-        private DataBlock ReadDataBlock(uint pointer, int size)
+        private DataBlock ReadDataBlock(uint pointer, int entrySize, int entryCount)
         {
-            _reader.SeekTo(_metaArea.PointerToOffset(pointer));
-            byte[] data = _reader.ReadBlock(size);
+            _reader.SeekTo(_cacheFile.MetaArea.PointerToOffset(pointer));
+            byte[] data = _reader.ReadBlock(entrySize * entryCount);
 
-            var block = new DataBlock(pointer, data);
+            var block = new DataBlock(pointer, entryCount, data);
             DataBlocks.Add(block);
             return block;
+        }
+
+        private void ReadTagReference(DataBlock block, uint offset, bool withClass)
+        {
+            SeekToOffset(block, offset);
+
+            DatumIndex index;
+            int fixupOffset;
+            if (withClass)
+            {
+                // Class info - do a flexible structure read to get the index
+                var values = StructureReader.ReadStructure(_reader, _tagRefLayout);
+                index = new DatumIndex(values.GetInteger("datum index"));
+                fixupOffset = (int)offset + _tagRefLayout.GetFieldOffset("datum index");
+            }
+            else
+            {
+                // No tag class - the datum index is at the offset
+                index = new DatumIndex(_reader.ReadUInt32());
+                fixupOffset = (int)offset;
+            }
+
+            if (index != DatumIndex.Null)
+            {
+                // Add the tagref fixup to the block
+                var fixup = new DataBlockTagFixup(index, fixupOffset);
+                block.TagFixups.Add(fixup);
+                ReferencedTags.Add(index);
+            }
+        }
+
+        private void ReadDataReference(DataBlock block, uint offset)
+        {
+            // Read the size and pointer
+            SeekToOffset(block, offset);
+            var values = StructureReader.ReadStructure(_reader, _dataRefLayout);
+            int size = (int)values.GetInteger("size");
+            uint pointer = (uint)values.GetInteger("pointer");
+
+            if (size > 0 && _cacheFile.MetaArea.ContainsPointer(pointer))
+            {
+                // Read the block and create a fixup for it
+                ReadDataBlock(pointer, size, 1);
+                var fixup = new DataBlockAddressFixup(pointer, (int)offset + _dataRefLayout.GetFieldOffset("pointer"));
+                block.AddressFixups.Add(fixup);
+            }
+        }
+
+        private void ReadReflexive(DataBlock block, uint offset, uint entrySize)
+        {
+            // Read the count and pointer
+            SeekToOffset(block, offset);
+            var values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+            int count = (int)values.GetInteger("entry count");
+            uint pointer = values.GetInteger("pointer");
+
+            if (count > 0 && _cacheFile.MetaArea.ContainsPointer(pointer))
+            {
+                var newBlock = ReadDataBlock(pointer, (int)entrySize, count);
+
+                // Now create a fixup for the block
+                var fixup = new DataBlockAddressFixup(pointer, (int)offset + _reflexiveLayout.GetFieldOffset("pointer"));
+                block.AddressFixups.Add(fixup);
+
+                // Add it to _reflexiveBlocks so it'll be recursed into
+                _reflexiveBlocks.Add(newBlock);
+            }
+        }
+
+        private void SeekToOffset(DataBlock block, uint offset)
+        {
+            int baseOffset = _cacheFile.MetaArea.PointerToOffset(block.OriginalAddress);
+            _reader.SeekTo(baseOffset + offset);
         }
     }
 }

@@ -105,6 +105,7 @@ namespace Blamite.Blam.ThirdGen.Resources
         {
             ResourcePage result = new ResourcePage();
             result.Index = index;
+            result.Salt = (ushort)values.GetInteger("salt");
             result.Flags = (byte)values.GetInteger("flags");
             result.CompressionMethod = ((int)values.GetInteger("compression codec index") != -1) ? ResourcePageCompression.Deflate : ResourcePageCompression.None; // FIXME: hax/laziness
             int externalFile = (int)values.GetInteger("shared cache file index");
@@ -125,6 +126,7 @@ namespace Blamite.Blam.ThirdGen.Resources
         private StructureValueCollection SerializePage(ResourcePage page, ThirdGenCacheFileReference[] externalFiles)
         {
             StructureValueCollection result = new StructureValueCollection();
+            result.SetInteger("salt", (uint)page.Salt);
             result.SetInteger("flags", (uint)page.Flags);
             result.SetInteger("compression codec index", (page.CompressionMethod != ResourcePageCompression.None) ? 0 : 0xFFFFFFFF);
             result.SetInteger("shared cache file index", (page.FilePath != null) ? (uint)FindExternalFile(externalFiles, page.FilePath) : 0xFFFFFFFF);

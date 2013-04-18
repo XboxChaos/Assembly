@@ -20,6 +20,8 @@ namespace Blamite.Blam.Resources
     /// </summary>
     public class ResourcePage
     {
+        public ushort Salt { get; set; }
+
         /// <summary>
         /// Gets or sets the page's index.
         /// </summary>

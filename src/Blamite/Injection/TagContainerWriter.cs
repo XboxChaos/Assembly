@@ -25,10 +25,11 @@ namespace Blamite.Injection
         {
             foreach (var dataBlock in tags.DataBlocks)
             {
-                container.StartBlock("data", 0);
+                container.StartBlock("data", 2);
 
                 // Main data
                 writer.WriteUInt32(dataBlock.OriginalAddress);
+                writer.WriteInt32(dataBlock.EntryCount);
                 WriteByteArray(dataBlock.Data, writer);
 
                 // Address fixups
@@ -55,6 +56,14 @@ namespace Blamite.Injection
                     writer.WriteInt32(resourceRef.WriteOffset);
                 }
 
+                // StringID fixups
+                writer.WriteInt32(dataBlock.StringIDFixups.Count);
+                foreach (var sid in dataBlock.StringIDFixups)
+                {
+                    writer.WriteAscii(sid.OriginalString);
+                    writer.WriteInt32(sid.WriteOffset);
+                }
+
                 container.EndBlock();
             }
         }
@@ -78,9 +87,10 @@ namespace Blamite.Injection
         {
             foreach (var page in tags.ResourcePages)
             {
-                container.StartBlock("rspg", 0);
+                container.StartBlock("rspg", 1);
 
                 writer.WriteInt32(page.Index);
+                writer.WriteUInt16(page.Salt);
                 writer.WriteByte(page.Flags);
                 writer.WriteAscii(page.FilePath ?? "");
                 writer.WriteInt32(page.Offset);

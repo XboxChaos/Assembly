@@ -260,7 +260,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
             var metaStartOff = _cache.MetaArea.Offset;
             var metaEndOff = metaStartOff + _cache.MetaArea.Size;
-            if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
+            if (offset + length > offset && offset >= metaStartOff && offset + length <= metaEndOff)
             {
                 field.Length = length;
 

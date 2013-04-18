@@ -146,7 +146,7 @@ namespace Blamite.Blam
         /// Finds the first tag which has a given name.
         /// </summary>
         /// <param name="name">The case-sensitive tag name to search for.</param>
-        /// <param name="names">The FileNameSource containing tag names.</param>
+        /// <param name="names">The <see cref="FileNameSource"/> containing tag names.</param>
         /// <returns>The first tag which has the given name, or null if nothing was found.</returns>
         public ITag FindTagByName(string name, FileNameSource names)
         {
@@ -154,6 +154,47 @@ namespace Blamite.Blam
             if (index != -1)
                 return this[index];
             return null;
+        }
+
+        /// <summary>
+        /// Finds the first tag in a class which has a given name.
+        /// </summary>
+        /// <param name="name">The case-sensitive tag name to search for.</param>
+        /// <param name="classMagic">The magic number (ID) of the tag class to search in.</param>
+        /// <param name="names">The <see cref="FileNameSource"/> containing tag names.</param>
+        /// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
+        public ITag FindTagByName(string name, int classMagic, FileNameSource names)
+        {
+            foreach (var tag in FindTagsByClass(classMagic))
+            {
+                if (names.GetTagName(tag) == name)
+                    return tag;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the first tag in a class which has a given name.
+        /// </summary>
+        /// <param name="name">The case-sensitive tag name to search for.</param>
+        /// <param name="className">The case-sensitive four-letter string representation of the name of the class to search in (e.g. "bipd").</param>
+        /// <param name="names">The <see cref="FileNameSource"/> containing tag names.</param>
+        /// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
+        public ITag FindTagByName(string name, string className, FileNameSource names)
+        {
+            return FindTagByName(name, CharConstant.FromString(className), names);
+        }
+
+        /// <summary>
+        /// Finds the first tag in a class which has a given name.
+        /// </summary>
+        /// <param name="name">The case-sensitive tag name to search for.</param>
+        /// <param name="tagClass">The tag class to search in.</param>
+        /// <param name="names">The <see cref="FileNameSource"/> containing tag names.</param>
+        /// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
+        public ITag FindTagByName(string name, ITagClass tagClass, FileNameSource names)
+        {
+            return FindTagByName(name, tagClass.Magic, names);
         }
 
         /// <summary>

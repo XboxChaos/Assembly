@@ -356,7 +356,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tag Classes")));
 
             // Load all the tags into the treeview (into their class categoies)
-            _hierarchy.Entries = new List<TagEntry>();
+            _hierarchy.Entries.Clear();
+            _tagsPopulated.Clear();
             foreach (var tag in _cacheFile.Tags)
             {
                 if (tag.MetaLocation != null)
@@ -1317,7 +1318,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
 
                     // Extract dem data blocks
-                    var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile.MetaArea, _buildInfo);
+                    var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile, _buildInfo);
                     using (var pluginReader = XmlReader.Create(pluginPath))
                         AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
@@ -1392,7 +1393,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
                 container = TagContainerReader.ReadTagContainer(reader);
 
-            MetroMessageBox.Show("Sorry", "Actually injecting the tag container isn't implemented yet.");
+            var injector = new TagContainerInjector(_cacheFile, container);
+            using (var stream = _mapManager.OpenReadWrite())
+            {
+                foreach (var tag in container.Tags)
+                    injector.InjectTag(tag, stream);
+
+                injector.SaveChanges(stream);
+            }
+
+            LoadTags();
+            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), and " + injector.InjectedResources.Count + " resource pointer(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
         }
 	}
 }
