@@ -1351,7 +1351,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                 // Add the resource
                 var resource = resources.Resources[index.Index];
-                container.AddResource(resource);
+                container.AddResource(new ExtractedResourceInfo(resource));
 
                 // Add data for its pages
                 if (resource.Location != null)
@@ -1375,6 +1375,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             // YAY!
             MetroMessageBox.Show("Extraction Successful", "Extracted " + container.Tags.Count + " tag(s), " + container.DataBlocks.Count + " data block(s), " + container.ResourcePages.Count + " resource page pointer(s), and " + container.Resources.Count + " resource pointer(s).");
+        }
+
+        private void btnImport_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Title = "Open Tag Container",
+                Filter = "Tag Container Files|*.tagc"
+            };
+            bool? result = ofd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            TagContainer container;
+            using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
+                container = TagContainerReader.ReadTagContainer(reader);
+
+            MetroMessageBox.Show("Sorry", "Actually injecting the tag container isn't implemented yet.");
         }
 	}
 }

@@ -105,18 +105,18 @@ namespace Blamite.Injection
             {
                 container.StartBlock("rsrc", 0);
 
-                writer.WriteUInt32(resource.Index.Value);
+                writer.WriteUInt32(resource.OriginalIndex.Value);
                 writer.WriteUInt32(resource.Flags);
                 writer.WriteInt32(resource.Type);
                 WriteByteArray(resource.Info, writer);
-                writer.WriteUInt32((resource.ParentTag != null) ? resource.ParentTag.Index.Value : 0xFFFFFFFF);
+                writer.WriteUInt32(resource.OriginalParentTagIndex.Value);
                 if (resource.Location != null)
                 {
                     writer.WriteByte(1);
-                    writer.WriteInt32((resource.Location.PrimaryPage != null) ? resource.Location.PrimaryPage.Index : -1);
+                    writer.WriteInt32(resource.Location.OriginalPrimaryPageIndex);
                     writer.WriteInt32(resource.Location.PrimaryOffset);
                     writer.WriteInt32(resource.Location.PrimaryUnknown);
-                    writer.WriteInt32((resource.Location.SecondaryPage != null) ? resource.Location.SecondaryPage.Index : -1);
+                    writer.WriteInt32(resource.Location.OriginalSecondaryPageIndex);
                     writer.WriteInt32(resource.Location.SecondaryOffset);
                     writer.WriteInt32(resource.Location.SecondaryUnknown);
                 }

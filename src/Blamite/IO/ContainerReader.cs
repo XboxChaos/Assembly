@@ -21,6 +21,7 @@ namespace Blamite.IO
 		{
 			_reader = reader;
 			_blockEnds.Push(reader.Length);
+            _currentBlockEnd = _reader.Position;
 		}
 
 		/// <summary>
@@ -30,13 +31,12 @@ namespace Blamite.IO
 		/// <returns><c>true</c> if another block was available, or <c>false</c> otherwise.</returns>
 		public bool NextBlock()
 		{
-			// If we're at the end of the parent block, then we're done here
-			if (_blockEnds.Count > 0 && _reader.Position + BlockHeaderSize > _blockEnds.Peek())
-				return false;
+            // If we're at the end of the parent block, then we're done here
+            if (_blockEnds.Count > 0 && _currentBlockEnd + BlockHeaderSize > _blockEnds.Peek())
+                return false;
 
-			// Skip to the end of the current block
-			if (_currentBlockEnd >= 0)
-				_reader.SeekTo(_currentBlockEnd);
+            // Skip to the end of the current block
+            _reader.SeekTo(_currentBlockEnd);
 
 			// Read a new block header
 			BlockID = _reader.ReadUInt32();
@@ -54,7 +54,7 @@ namespace Blamite.IO
 		public void EnterBlock()
 		{
 			_blockEnds.Push(_currentBlockEnd);
-			_currentBlockEnd = -1;
+			_currentBlockEnd = _reader.Position;
 		}
 
 		/// <summary>

@@ -16,7 +16,7 @@ namespace Blamite.Injection
         private Dictionary<uint, DataBlock> _dataBlocksByAddress = new Dictionary<uint, DataBlock>();
         private Dictionary<DatumIndex, ExtractedTag> _tagsByIndex = new Dictionary<DatumIndex, ExtractedTag>();
         private Dictionary<int, ResourcePage> _pagesByIndex = new Dictionary<int, ResourcePage>();
-        private Dictionary<DatumIndex, Resource> _resourcesByIndex = new Dictionary<DatumIndex, Resource>();
+        private Dictionary<DatumIndex, ExtractedResourceInfo> _resourcesByIndex = new Dictionary<DatumIndex, ExtractedResourceInfo>();
 
         /// <summary>
         /// Adds a data block to the container.
@@ -49,9 +49,9 @@ namespace Blamite.Injection
         /// Adds information about a resource to the container.
         /// </summary>
         /// <param name="resource">The resource to add.</param>
-        public void AddResource(Resource resource)
+        public void AddResource(ExtractedResourceInfo resource)
         {
-            _resourcesByIndex[resource.Index] = resource;
+            _resourcesByIndex[resource.OriginalIndex] = resource;
         }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace Blamite.Injection
         /// Finds the resource which has a specified original datum index.
         /// </summary>
         /// <param name="originalIndex">The original datum index of the resource to find.</param>
-        /// <returns>The <see cref="Resource"/> with the original datum index if found, or <c>null</c> otherwise.</returns>
-        public Resource FindResource(DatumIndex originalIndex)
+        /// <returns>The <see cref="ExtractedResourceInfo"/> with the original datum index if found, or <c>null</c> otherwise.</returns>
+        public ExtractedResourceInfo FindResource(DatumIndex originalIndex)
         {
             return Find(_resourcesByIndex, originalIndex);
         }
@@ -121,7 +121,7 @@ namespace Blamite.Injection
         /// <summary>
         /// Gets a collection of all resource information objects in the container.
         /// </summary>
-        public ICollection<Resource> Resources
+        public ICollection<ExtractedResourceInfo> Resources
         {
             get { return _resourcesByIndex.Values; }
         }
