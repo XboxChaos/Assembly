@@ -245,7 +245,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         break;
                 }
 
-
                 Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
 
                 // Add to Recents

@@ -24,5 +24,12 @@ namespace Blamite.Blam.Resources
         /// <param name="table">The resource table to save.</param>
         /// <param name="stream">The stream to save to.</param>
         void SaveResourceTable(ResourceTable table, IStream stream);
+
+        /// <summary>
+        /// Loads the zone set table from the cache file.
+        /// </summary>
+        /// <param name="reader">The stream to read from.</param>
+        /// <returns>The loaded zone set table, or <c>null</c> if loading failed.</returns>
+        IZoneSetTable LoadZoneSets(IReader reader);
     }
 }

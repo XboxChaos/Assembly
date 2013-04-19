@@ -8,7 +8,7 @@ using Blamite.Blam.Util;
 using Blamite.Flexibility;
 using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen.Resources
+namespace Blamite.Blam.ThirdGen.Structures
 {
     public class ThirdGenResourceLayoutTable
     {

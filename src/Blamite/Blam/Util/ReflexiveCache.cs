@@ -19,7 +19,7 @@ namespace Blamite.Blam.Util
         /// </summary>
         /// <param name="address">The address of the reflexive.</param>
         /// <param name="entries">The entries in the reflexive.</param>
-        public void Add(uint address, IList<EntryType> entries)
+        public void Add(uint address, ICollection<EntryType> entries)
         {
             List<CachedReflexive> reflexives;
             if (!_reflexivesBySize.TryGetValue(entries.Count, out reflexives))
@@ -38,7 +38,7 @@ namespace Blamite.Blam.Util
         /// <param name="reflexive">The reflexive to search for.</param>
         /// <param name="address">The variable to store the reflexive's address to on success.</param>
         /// <returns>true if the reflexive was cached and its address was retrieved.</returns>
-        public bool TryGetAddress(IList<EntryType> reflexive, out uint address)
+        public bool TryGetAddress(ICollection<EntryType> reflexive, out uint address)
         {
             address = 0;
 
@@ -50,16 +50,7 @@ namespace Blamite.Blam.Util
             // Compare the entries of each reflexive
             foreach (CachedReflexive cached in reflexives)
             {
-                bool matches = true;
-                for (int i = 0; i < reflexive.Count; i++)
-                {
-                    if (!cached.Entries[i].Equals(reflexive[i]))
-                    {
-                        matches = false;
-                        break;
-                    }
-                }
-                if (matches)
+                if (cached.Entries.SequenceEqual(reflexive))
                 {
                     address = cached.Address;
                     return true;
@@ -78,7 +69,7 @@ namespace Blamite.Blam.Util
             /// </summary>
             /// <param name="address">The address of the reflexive.</param>
             /// <param name="entries">The entries in the reflexive.</param>
-            public CachedReflexive(uint address, IList<EntryType> entries)
+            public CachedReflexive(uint address, ICollection<EntryType> entries)
             {
                 Address = address;
                 Entries = entries;
@@ -92,7 +83,7 @@ namespace Blamite.Blam.Util
             /// <summary>
             /// Gets the entries in the cached reflexive.
             /// </summary>
-            public IList<EntryType> Entries { get; private set; }
+            public ICollection<EntryType> Entries { get; private set; }
         }
     }
 }

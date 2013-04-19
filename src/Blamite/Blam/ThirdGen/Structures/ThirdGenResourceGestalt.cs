@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Util;
 
-namespace Blamite.Blam.ThirdGen.Resources
+namespace Blamite.Blam.ThirdGen.Structures
 {
     public class ThirdGenResourceType
     {
@@ -109,13 +110,13 @@ namespace Blamite.Blam.ThirdGen.Resources
             return pointers;
         }
 
-        private StructureValueCollection LoadTag(IReader reader)
+        public StructureValueCollection LoadTag(IReader reader)
         {
             reader.SeekTo(_tag.MetaLocation.AsOffset());
             return StructureReader.ReadStructure(reader, _buildInfo.GetLayout("resource gestalt"));
         }
 
-        private void SaveTag(StructureValueCollection values, IWriter writer)
+        public void SaveTag(StructureValueCollection values, IWriter writer)
         {
             writer.SeekTo(_tag.MetaLocation.AsOffset());
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("resource gestalt"), writer);

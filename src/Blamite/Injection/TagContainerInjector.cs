@@ -14,6 +14,7 @@ namespace Blamite.Injection
         private ICacheFile _cacheFile;
         private TagContainer _container;
         private ResourceTable _resources;
+        private IZoneSetTable _zoneSets;
 
         private Dictionary<DataBlock, uint> _dataBlockAddresses = new Dictionary<DataBlock, uint>();
         private Dictionary<ExtractedTag, DatumIndex> _tagIndices = new Dictionary<ExtractedTag, DatumIndex>();
@@ -53,6 +54,11 @@ namespace Blamite.Injection
                 _cacheFile.Resources.SaveResourceTable(_resources, stream);
                 _resources = null;
             }
+            if (_zoneSets != null)
+            {
+                _zoneSets.SaveChanges(stream);
+                _zoneSets = null;
+            }
             _cacheFile.SaveChanges(stream);
         }
 
@@ -76,7 +82,13 @@ namespace Blamite.Injection
             var newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
             _tagIndices[tag] = newTag.Index;
 
+            // Write the data
             WriteDataBlock(tagData, newTag.MetaLocation, stream);
+
+            // Make the tag load
+            LoadZoneSets(stream);
+            _zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+
             return newTag.Index;
         }
 
@@ -189,6 +201,11 @@ namespace Blamite.Injection
 
             // Add it
             _resources.Resources.Add(newResource);
+
+            // Make it load
+            LoadZoneSets(stream);
+            _zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
+
             return newIndex;
         }
 
@@ -272,6 +289,12 @@ namespace Blamite.Injection
         {
             if (_resources == null)
                 _resources = _cacheFile.Resources.LoadResourceTable(reader);
+        }
+
+        private void LoadZoneSets(IReader reader)
+        {
+            if (_zoneSets == null)
+                _zoneSets = _cacheFile.Resources.LoadZoneSets(reader);
         }
     }
 }

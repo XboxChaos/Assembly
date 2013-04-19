@@ -308,7 +308,7 @@ namespace Blamite.Blam.ThirdGen
             ITag playTag = _tags.FindTagByClass("play");
             ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
             ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
-            _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags);
+            _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
         }
 
         private void LoadScriptFiles(IReader reader)
