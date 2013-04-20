@@ -104,7 +104,7 @@ namespace Blamite.Blam
         /// </summary>
         public bool IsValid
         {
-            get { return (Salt != 0xFFFF && Index != 0xFFFF); }
+            get { return (Salt != 0xFFFF || Index != 0xFFFF); }
         }
 
         /// <summary>

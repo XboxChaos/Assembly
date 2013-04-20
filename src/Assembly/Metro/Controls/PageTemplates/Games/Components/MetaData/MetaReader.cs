@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.IO;
@@ -309,7 +310,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             if (tag != null)
             {
-                field.Class = tag.ParentClass;
+                field.Class = field.Tags.Classes.FirstOrDefault(c => c.RawClass == tag.RawTag.Class);
                 field.Value = tag;
             }
             else

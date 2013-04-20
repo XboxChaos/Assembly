@@ -153,13 +153,14 @@ namespace Blamite.Injection
             if (_resourceIndices.TryGetValue(resource, out newIndex))
                 return newIndex;
 
-            // BS a new datum index for it (0x4152 = 'AR') and associate it
+            // Create a new datum index for it (0x4152 = 'AR') and associate it
             LoadResourceTable(stream);
             newIndex = new DatumIndex(0x4152, (ushort)_resources.Resources.Count);
             _resourceIndices[resource] = newIndex;
 
             // Create a native resource for it
             var newResource = new Resource();
+            _resources.Resources.Add(newResource);
             newResource.Index = newIndex;
             newResource.Flags = resource.Flags;
             newResource.Type = resource.Type;
@@ -198,9 +199,6 @@ namespace Blamite.Injection
             newResource.Unknown1 = resource.Unknown1;
             newResource.Unknown2 = resource.Unknown2;
             newResource.Unknown3 = resource.Unknown3;
-
-            // Add it
-            _resources.Resources.Add(newResource);
 
             // Make it load
             LoadZoneSets(stream);
