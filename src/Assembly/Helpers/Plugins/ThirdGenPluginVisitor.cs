@@ -5,6 +5,7 @@ using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Blamite.Blam;
+using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Util;
 
@@ -20,6 +21,7 @@ namespace Assembly.Helpers.Plugins
         private readonly List<ReflexiveData> _reflexives = new List<ReflexiveData>();
 	    private ReflexiveData _currentReflexive;
         private readonly bool _showInvisibles;
+        private readonly FileSegmentGroup _metaArea;
 
 	    private EnumData _currentEnum;
 	    private BitfieldData _currentBitfield;
@@ -30,11 +32,12 @@ namespace Assembly.Helpers.Plugins
         public ObservableCollection<MetaField> Values { get; private set; }
         public ObservableCollection<ReflexiveData> Reflexives { get; private set; }
 
-        public ThirdGenPluginVisitor(TagHierarchy tags, StringIDSource stringIDs, Trie stringIDTrie, bool showInvisibles)
+        public ThirdGenPluginVisitor(TagHierarchy tags, StringIDSource stringIDs, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles)
         {
             _tags = tags;
             _stringIDs = stringIDs;
             _stringIDTrie = stringIDTrie;
+            _metaArea = metaArea;
 
             Values = new ObservableCollection<MetaField>();
             Reflexives = new ObservableCollection<ReflexiveData>();
@@ -264,7 +267,7 @@ namespace Assembly.Helpers.Plugins
         {
             if (visible || _showInvisibles)
             {
-                var data = new ReflexiveData(name, offset, 0, entrySize, pluginLine);
+                var data = new ReflexiveData(name, offset, 0, entrySize, pluginLine, _metaArea);
                 AddValue(data);
 
                 _reflexives.Add(data);

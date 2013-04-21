@@ -347,15 +347,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             var pointer = (uint)values.GetInteger("pointer");
 
             // Make sure the pointer looks valid
-		    var metaStartOff = (uint)_cache.MetaArea.Offset;
-			if (_type == LoadType.Memory)
-				metaStartOff = _cache.MetaArea.OffsetToPointer((int)metaStartOff);
-		    var metaEndOff = (uint)(metaStartOff + _cache.MetaArea.Size);
-		    var offset = pointer;
-			if (_type == LoadType.File)
-				offset = (uint)_cache.MetaArea.PointerToOffset(offset);
-            if (offset < metaStartOff || offset + length * field.EntrySize > metaEndOff)
+            var metaEnd = _cache.MetaArea.BasePointer + _cache.MetaArea.Size;
+            if (!_cache.MetaArea.ContainsPointer(pointer) || pointer + length * field.EntrySize > metaEnd)
+            {
                 length = 0;
+                pointer = 0;
+            }
 
             field.Length = length;
             if (pointer != field.FirstEntryAddress)
