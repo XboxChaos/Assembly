@@ -49,11 +49,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return FieldAddress; }
 		}
 
+        public string DataAddressHex
+        {
+            get { return "0x" + DataAddress.ToString("X"); }
+        }
+
         public int Length
         {
             get { return _length; }
             set { _length = value; NotifyPropertyChanged("Length"); NotifyPropertyChanged("MaxLength"); }
         }
+
         public int MaxLength
         {
 			get { return _format == "bytes" ? _length * 2 : _length; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -157,6 +158,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
                 _firstEntryAddr = value;
                 NotifyPropertyChanged("FirstEntryAddress");
+                NotifyPropertyChanged("FirstEntryAddressHex");
+            }
+        }
+
+        public string FirstEntryAddressHex
+        {
+            get { return "0x" + FirstEntryAddress.ToString("X"); }
+            set
+            {
+                if (value.StartsWith("0x"))
+                    value = value.Substring(2);
+                FirstEntryAddress = uint.Parse(value, NumberStyles.HexNumber);
             }
         }
 
