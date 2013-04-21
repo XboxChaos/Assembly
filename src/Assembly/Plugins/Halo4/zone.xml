@@ -61,12 +61,12 @@
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<reflexive name="Asset Index" offset="0x58" visible="true" entrySize="0x44">
+	<reflexive name="Tag Resources" offset="0x58" visible="true" entrySize="0x44">
 		<tagRef name="Item" offset="0x0" visible="true" />
 		<uint16 name="Salt" offset="0x10" visible="true" />
 		<uint8 name="Resource Type Index" offset="0x12" visible="true" />
 		<uint8 name="Flags" offset="0x13" visible="true" />
-		<int32 name="Block Size" offset="0x14" visible="true" />
+		<int32 name="Fixup Information Length" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="true" />
 		<int16 name="[play] Segment Index" offset="0x1A" visible="true" />
 		<uint32 name="00000012" offset="0x1C" visible="true" />
@@ -81,16 +81,86 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<int32 name="Offset" offset="0x0" visible="true" />
 			<int32 name="Resource Type Index" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Fixup Block Location" offset="0x38" visible="true" entrySize="0x4">
+		<reflexive name="Fixup Information Location" offset="0x38" visible="true" entrySize="0x4">
 			<int32 name="Offset" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
+	<comment title="Active Pool Members">Pools are divided up into 32-bit groups per chunk.
+Each bit corresponds to either a chunk in "Tag Resources" above (Raw Pools), or a tag in the overall tag listing (Tag Pools).
+If a bit is enabled then that member will be loaded.
+	</comment>
 	<reflexive name="General Zonesets" offset="0x64" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -110,11 +180,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -124,11 +260,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Global Zoneset" offset="0x70" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -148,11 +350,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -163,11 +431,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 	</reflexive>
 	<int32 name="Unknown Zoneset Here" offset="0x7C" visible="false" />
 	<reflexive name="Unattached Zoneset" offset="0x88" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -187,11 +521,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -201,11 +601,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Disc-Forbidden Zoneset" offset="0x94" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -225,11 +691,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -239,11 +771,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Disc-Always-Streaming Zoneset" offset="0xA0" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -263,11 +861,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -277,11 +941,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="BSP Zonesets" offset="0xAC" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -301,11 +1031,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -315,11 +1111,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="BSP Zonesets 2" offset="0xB8" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -339,11 +1201,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -353,11 +1281,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="BSP Zonesets 3" offset="0xC4" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -377,11 +1371,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -391,11 +1451,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Cinematic Zonesets" offset="0xD0" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -415,11 +1541,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -429,11 +1621,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Required Map Variants Zoneset" offset="0xDC" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -453,11 +1711,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -467,11 +1791,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Sandbox Map Variants Zoneset" offset="0xE8" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -491,11 +1881,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -505,11 +1961,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<undefined name="00000040" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Custom Zonesets" offset="0xF4" visible="true" entrySize="0x90">
-		<reflexive name="Raw Pool" offset="0x0" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Raw Pool" offset="0xC" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<stringid name="Set Name" offset="0x18" visible="true" />
 		<undefined name="00000012" offset="0x1C" visible="false" />
@@ -529,11 +2051,77 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<int32 name="struct here" offset="0x40" visible="false" />
 		<int32 name="struct here 2" offset="0x4C" visible="false" />
-		<reflexive name="Tag Pool" offset="0x58" visible="true" entrySize="0x4">
-			<int32 name="Bitmask Here" offset="0x0" visible="true" />
+		<reflexive name="Required Tag Pool" offset="0x58" visible="true" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown Tag Pool" offset="0x64" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Optional Tag Pool" offset="0x64" visible="false" entrySize="0x4">
+			<bitfield32 name="Active Members" offset="0x0" visible="true">
+				<bit name="0" index="0" />
+				<bit name="1" index="1" />
+				<bit name="2" index="2" />
+				<bit name="3" index="3" />
+				<bit name="4" index="4" />
+				<bit name="5" index="5" />
+				<bit name="6" index="6" />
+				<bit name="7" index="7" />
+				<bit name="8" index="8" />
+				<bit name="9" index="9" />
+				<bit name="10" index="10" />
+				<bit name="11" index="11" />
+				<bit name="12" index="12" />
+				<bit name="13" index="13" />
+				<bit name="14" index="14" />
+				<bit name="15" index="15" />
+				<bit name="16" index="16" />
+				<bit name="17" index="17" />
+				<bit name="18" index="18" />
+				<bit name="19" index="19" />
+				<bit name="20" index="20" />
+				<bit name="21" index="21" />
+				<bit name="22" index="22" />
+				<bit name="23" index="23" />
+				<bit name="24" index="24" />
+				<bit name="25" index="25" />
+				<bit name="26" index="26" />
+				<bit name="27" index="27" />
+				<bit name="28" index="28" />
+				<bit name="29" index="29" />
+				<bit name="30" index="30" />
+				<bit name="31" index="31" />
+			</bitfield32>
 		</reflexive>
 		<int32 name="struct here" offset="0x70" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
@@ -562,7 +2150,7 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 	<int32 name="struct here" offset="0x130" visible="true" />
 	<int32 name="struct here 2" offset="0x13C" visible="true" />
 	<int32 name="struct here 3" offset="0x148" visible="true" />
-	<dataref name="Unknown" offset="0x154" visible="true" />
+	<dataref name="Fixup Information" offset="0x154" visible="true" />
 	<undefined name="00000096" offset="0x168" visible="true" />
 	<undefined name="00000097" offset="0x16C" visible="true" />
 	<undefined name="00000098" offset="0x170" visible="true" />
