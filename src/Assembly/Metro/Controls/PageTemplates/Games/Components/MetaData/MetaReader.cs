@@ -253,20 +253,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             var length = (int)values.GetInteger("size");
             var pointer = values.GetInteger("pointer");
-            field.DataAddress = pointer;
 
-            // Check if the pointer is valid
-	        var offset = field.DataAddress;
-			if (_type == LoadType.File)
-				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
-            var metaStartOff = _cache.MetaArea.Offset;
-            var metaEndOff = metaStartOff + _cache.MetaArea.Size;
-            if (offset + length > offset && offset >= metaStartOff && offset + length <= metaEndOff)
+            if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
             {
+                field.DataAddress = pointer;
                 field.Length = length;
 
                 // Go to position
-                _reader.SeekTo(offset);
+                if (_type == LoadType.Memory)
+                    _reader.SeekTo(pointer);
+                else
+                    _reader.SeekTo(_cache.MetaArea.PointerToOffset(pointer));
+
 				switch(field.Format)
 				{
 					default:
@@ -283,6 +281,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
             else
             {
+                field.DataAddress = 0;
                 field.Length = 0;
             }
         }
@@ -348,14 +347,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             var pointer = (uint)values.GetInteger("pointer");
 
             // Make sure the pointer looks valid
-		    var metaStartOff = (uint)_cache.MetaArea.Offset;
-			if (_type == LoadType.Memory)
-				metaStartOff = _cache.MetaArea.OffsetToPointer((int)metaStartOff);
-		    var metaEndOff = (uint)(metaStartOff + _cache.MetaArea.Size);
-		    var offset = pointer;
-			if (_type == LoadType.File)
-				offset = (uint)_cache.MetaArea.PointerToOffset(offset);
-            if (offset < metaStartOff || offset + length * field.EntrySize > metaEndOff)
+            if (length <= 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int)(length * field.EntrySize)))
                 length = 0;
 
             field.Length = length;

@@ -68,6 +68,11 @@ namespace Blamite.Blam
         }
 
         /// <summary>
+        /// Gets the number of tags in the table.
+        /// </summary>
+        public abstract int Count { get; }
+
+        /// <summary>
         /// Finds the first tag which belongs to a given class.
         /// Tags which inherit from the class will be included as well.
         /// </summary>
@@ -195,6 +200,35 @@ namespace Blamite.Blam
         public ITag FindTagByName(string name, ITagClass tagClass, FileNameSource names)
         {
             return FindTagByName(name, tagClass.Magic, names);
+        }
+
+        /// <summary>
+        /// Checks a datum index to see if it actually points to a tag.
+        /// </summary>
+        /// <param name="index">The datum index to check.</param>
+        /// <returns>true if the datum index points to a valid tag.</returns>
+        public bool IsValidIndex(DatumIndex index)
+        {
+            if (!index.IsValid || index.Index >= Count)
+                return false;
+
+            var tag = this[index];
+            return (tag != null && tag.Index == index);
+        }
+
+        /// <summary>
+        /// Checks a datum index and class ID to see if they actually point to a tag.
+        /// </summary>
+        /// <param name="index">The datum index to check.</param>
+        /// <param name="classMagic">The magic number (ID) of the tag class which the tag should belong to.</param>
+        /// <returns>true if the datum index points to a valid tag and its class ID matches.</returns>
+        public bool IsValidIndex(DatumIndex index, int classMagic)
+        {
+            if (!IsValidIndex(index))
+                return false;
+
+            var tag = this[index];
+            return (tag.Class != null && tag.Class.Magic == classMagic);
         }
 
         /// <summary>

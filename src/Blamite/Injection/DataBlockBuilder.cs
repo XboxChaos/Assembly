@@ -320,21 +320,25 @@ namespace Blamite.Injection
 
             DatumIndex index;
             int fixupOffset;
+            bool valid;
             if (withClass)
             {
                 // Class info - do a flexible structure read to get the index
                 var values = StructureReader.ReadStructure(_reader, _tagRefLayout);
+                int classMagic = (int)values.GetInteger("class magic");
                 index = new DatumIndex(values.GetInteger("datum index"));
                 fixupOffset = (int)offset + _tagRefLayout.GetFieldOffset("datum index");
+                valid = _cacheFile.Tags.IsValidIndex(index, classMagic);
             }
             else
             {
                 // No tag class - the datum index is at the offset
                 index = new DatumIndex(_reader.ReadUInt32());
                 fixupOffset = (int)offset;
+                valid = _cacheFile.Tags.IsValidIndex(index);
             }
 
-            if (index != DatumIndex.Null)
+            if (valid)
             {
                 // Add the tagref fixup to the block
                 var fixup = new DataBlockTagFixup(index, fixupOffset);
@@ -351,7 +355,7 @@ namespace Blamite.Injection
             int size = (int)values.GetInteger("size");
             uint pointer = (uint)values.GetInteger("pointer");
 
-            if (size > 0 && _cacheFile.MetaArea.ContainsPointer(pointer))
+            if (size > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, size))
             {
                 // Read the block and create a fixup for it
                 ReadDataBlock(pointer, size, 1);
@@ -368,7 +372,7 @@ namespace Blamite.Injection
             int count = (int)values.GetInteger("entry count");
             uint pointer = values.GetInteger("pointer");
 
-            if (count > 0 && _cacheFile.MetaArea.ContainsPointer(pointer))
+            if (count > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, (int)(count * entrySize)))
             {
                 var newBlock = ReadDataBlock(pointer, (int)entrySize, count);
 

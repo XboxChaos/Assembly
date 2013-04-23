@@ -30,6 +30,11 @@ namespace Blamite.Blam.SecondGen.Structures
             get { return _tags[index]; }
         }
 
+        public override int Count
+        {
+            get { return _tags.Count; }
+        }
+
         public override IEnumerator<ITag> GetEnumerator()
         {
             return _tags.GetEnumerator();

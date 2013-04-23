@@ -75,6 +75,14 @@ namespace Blamite.Blam.ThirdGen.Structures
         }
 
         /// <summary>
+        /// Gets the number of tags in the table.
+        /// </summary>
+        public override int Count
+        {
+            get { return _tags.Count; }
+        }
+
+        /// <summary>
         /// Adds a tag to the table and allocates space for its base data.
         /// </summary>
         /// <param name="classMagic">The magic number (ID) of the tag's class.</param>
