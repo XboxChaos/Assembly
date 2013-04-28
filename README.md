@@ -1,9 +1,11 @@
 # Assembly #
 ## Multi-Generation Blam Engine Research Tool ##
 
-__Assembly is currently in the ALPHA stage. Some features may not work correctly. However, you are encouraged to submit bug reports through our issue tracker: [https://github.com/XboxChaos/Assembly/issues/new](https://github.com/XboxChaos/Assembly/issues/new "Assembly Issue Tracker").__
+__Assembly is currently a released tool available for download from SourceForge [here](http://www.sourceforge.net/projects/assembly).__
 
-__Also, an Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
+__Some features may have bugs. You are encouraged to submit bug reports through our issue tracker: [https://github.com/XboxChaos/Assembly/issues/new](https://github.com/XboxChaos/Assembly/issues/new "Assembly Issue Tracker").__
+
+__An Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
 
 
 Assembly is a free, open-source Halo cache file (.map) editor that was built from the ground up. It allows users to create and distribute creative patches for game content.
