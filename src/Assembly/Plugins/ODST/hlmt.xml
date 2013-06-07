@@ -143,11 +143,11 @@
 		</reflexive>
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x88" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Materials" offset="0x88" visible="false" entrySize="0x14">
+		<stringid name="Name" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<stringid name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
 	<reflexive name="Health/Damage Properties" offset="0x94" visible="true" entrySize="0x100">
@@ -280,8 +280,22 @@
 		<float32 name="Stun Time" offset="0x30" visible="true" />
 		<float32 name="Recharge Time" offset="0x34" visible="true" />
 		<float32 name="Recharge Fraction" offset="0x38" visible="true" />
-		<tagRef name="Shield Damaged FP Shader" offset="0x5C" visible="true" />
-		<tagRef name="Shield Damaged Shader" offset="0x6C" visible="true" />
+		<undefined name="00000020" offset="0x3C" visible="true" />
+		<undefined name="00000021" offset="0x40" visible="true" />
+		<undefined name="00000022" offset="0x44" visible="true" />
+		<undefined name="00000023" offset="0x48" visible="true" />
+		<undefined name="00000024" offset="0x4C" visible="true" />
+		<undefined name="00000025" offset="0x50" visible="true" />
+		<undefined name="00000026" offset="0x54" visible="true" />
+		<undefined name="00000027" offset="0x58" visible="true" />
+		<undefined name="00000028" offset="0x5C" visible="true" />
+		<undefined name="00000029" offset="0x60" visible="true" />
+		<undefined name="00000030" offset="0x64" visible="true" />
+		<undefined name="00000031" offset="0x68" visible="true" />
+		<undefined name="00000032" offset="0x6C" visible="true" />
+		<undefined name="00000033" offset="0x70" visible="true" />
+		<undefined name="00000034" offset="0x74" visible="true" />
+		<undefined name="00000035" offset="0x78" visible="true" />
 		<float32 name="Max Shielf Vitality" offset="0x7C" visible="true" />
 		<stringid name="Global Shield Material Name" offset="0x80" visible="true" />
 		<float32 name="Min Stun Damage" offset="0x84" visible="true" />
@@ -329,74 +343,28 @@
 			</bitfield32>
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 			<reflexive name="Instant Responses" offset="0xC" visible="true" entrySize="0x88">
-				<enum16 name="Response Type" offset="0x0" visible="true">
-					<option name="Receives All Damage" value="0x0" />
-					<option name="Receives Area Effect Damage" value="0x1" />
-					<option name="Receives Local Damage" value="0x2" />
-				</enum16>
-				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
-					<option name="None" value="0x0" />
-					<option name="Destroy One Of Group" value="0x1" />
-					<option name="Destroy Entire Group" value="0x2" />
-					<option name="Loosen One Of Group" value="0x3" />
-					<option name="Loosen Entire Group" value="0x4" />
-				</enum16>
-				<bitfield32 name="Flags" offset="0x4" visible="true">
-					<bit name="Kills Object" index="0" />
-					<bit name="Inhibits Melee Attack" index="1" />
-					<bit name="Inhibits Weapon Attack" index="2" />
-					<bit name="Inhibits Walking" index="3" />
-					<bit name="Forces Drop Weapon" index="4" />
-					<bit name="Kills Weapon Primary Trigger" index="5" />
-					<bit name="Kills Weapon Secondary Trigger" index="6" />
-					<bit name="Light Damage Left Turn" index="7" />
-					<bit name="Major Damage Left Turn" index="8" />
-					<bit name="Light Damage Right Turn" index="9" />
-					<bit name="Major Damage Right Turn" index="10" />
-					<bit name="Light Damage Engine" index="11" />
-					<bit name="Major Damage Engine" index="12" />
-					<bit name="Kills Object (No Player Solo)" index="13" />
-					<bit name="Causes Detonation" index="14" />
-					<bit name="Destory All Group Constraints" index="15" />
-					<bit name="Kills Variant Objects" index="16" />
-					<bit name="Force Unattached Effects" index="17" />
-					<bit name="Fires Under Threshold" index="18" />
-					<bit name="Triggers Special Death" index="19" />
-					<bit name="Only On Special Death" index="20" />
-					<bit name="Only NOT on Special Death" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
-				</bitfield32>
-				<float32 name="Damage Threshold" offset="0x8" visible="true" />
-				<tagRef name="Transition Effect" offset="0x4" visible="true" />
-				<tagRef name="Transition Damage Effect" offset="0xC" visible="true" />
-				<stringid name="Region" offset="0x1C" visible="true" />
-				<enum16 name="New State" offset="0x20" visible="true">
-					<option name="Default" value="0x0" />
-					<option name="Minor Damage" value="0x1" />
-					<option name="Medium Damage" value="0x2" />
-					<option name="Major Damage" value="0x3" />
-					<option name="Destroyed" value="0x4" />
-				</enum16>
-				<int16 name="Runtime Region Index" offset="0x22" visible="true" />
-				<stringid name="Effect Marker Name" offset="0x24" visible="true" />
-				<stringid name="Damage Effect Marker Name" offset="0x28" visible="true" />
-				<float32 name="Response Delay" offset="0x2C" visible="true" />
-				<tagRef name="Delay Effect" offset="0x28" visible="true" />
-				<stringid name="Delay Effect Marker Name" offset="0x38" visible="true" />
-				<stringid name="Contraint/Group Name" offset="0x3C" visible="true" />
-				<stringid name="Ejecting Seat Label" offset="0x40" visible="true" />
-				<float32 name="Skip Fraction" offset="0x44" visible="true" />
-				<stringid name="Destroyed Child Object Marker Name" offset="0x48" visible="true" />
-				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" />
+				<undefined name="00000005" offset="0x0" visible="true" />
+				<undefined name="00000006" offset="0x4" visible="true" />
+				<undefined name="00000007" offset="0x8" visible="true" />
+				<undefined name="00000008" offset="0xC" visible="true" />
+				<tagref name="00000009" offset="0x10" visible="true" />
+				<tagref name="00000013" offset="0x20" visible="true" />
+				<tagref name="00000017" offset="0x30" visible="true" />
+				<undefined name="00000021" offset="0x40" visible="true" />
+				<undefined name="00000022" offset="0x44" visible="true" />
+				<undefined name="00000023" offset="0x48" visible="true" />
+				<undefined name="00000024" offset="0x4C" visible="true" />
+				<undefined name="00000025" offset="0x50" visible="true" />
+				<undefined name="00000026" offset="0x54" visible="true" />
+				<undefined name="00000027" offset="0x58" visible="true" />
+				<undefined name="00000028" offset="0x5C" visible="true" />
+				<undefined name="00000029" offset="0x60" visible="true" />
+				<tagref name="00000030" offset="0x64" visible="true" />
+				<undefined name="00000034" offset="0x74" visible="true" />
+				<undefined name="00000035" offset="0x78" visible="true" />
+				<undefined name="00000036" offset="0x7C" visible="true" />
+				<undefined name="00000037" offset="0x80" visible="true" />
+				<undefined name="00000038" offset="0x84" visible="true" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -498,7 +466,7 @@
 		<stringid name="Type" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+			<stringid name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 		</reflexive>
 	</reflexive>
@@ -561,7 +529,7 @@
 	<undefined name="Unknown" offset="0x154" visible="false" />
 	<undefined name="Unknown" offset="0x158" visible="false" />
 	<reflexive name="Unknown" offset="0x15C" visible="false" entrySize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<stringid name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x168" visible="false" entrySize="0x8">

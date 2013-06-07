@@ -31,7 +31,7 @@
 	<undefined name="00000037" offset="0x80" visible="false" />
 	<undefined name="00000038" offset="0x84" visible="false" />
 	<undefined name="Sandbox Budget" offset="0x88" visible="true" />
-	<undefined name="00000040" offset="0x8C" visible="false" />
+	<stringid name="00000040" offset="0x8C" visible="false" />
 	<tagref name="Performance Throttle Profile" offset="0x90" visible="true" />
 	<reflexive name="Structure BSP" offset="0xA0" visible="true" entrySize="0x150">
 		<tagref name="BSP" offset="0x0" visible="true" />
@@ -46,8 +46,8 @@
 		<int16 name="00000022" offset="0x46" visible="false" />
 		<tagref name="Cube Map" offset="0x48" visible="true" />
 		<tagref name="00000027" offset="0x58" visible="true" />
-		<tagref name="AULP" offset="0x68" visible="true" />
-		<tagref name="00000035" offset="0x78" visible="true" />
+		<tagref name="Primary Light Probe" offset="0x68" visible="true" />
+		<tagref name="Secondary Light Probe" offset="0x78" visible="true" />
 		<undefined name="00000039" offset="0x88" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="00000041" offset="0x90" visible="false" />
@@ -64,7 +64,7 @@
 		<int8 name="00000050" offset="0xb6" visible="false" />
 		<int8 name="00000050" offset="0xb7" visible="false" />
 		<undefined name="00000051" offset="0xb8" visible="false" />
-		<undefined name="00000052" offset="0xbC" visible="false" />
+		<undefined name="Shadow Fade" offset="0xbC" visible="false" />
 		<undefined name="00000053" offset="0xc0" visible="false" />
 		<undefined name="00000054" offset="0xc4" visible="false" />
 		<undefined name="00000055" offset="0xc8" visible="false" />
@@ -114,33 +114,41 @@
 		<undefined name="00000010" offset="0x14" visible="false" />
 		<undefined name="00000011" offset="0x18" visible="false" />
 		<tagref name="00000012" offset="0x1C" visible="true" />
-		<undefined name="00000016" offset="0x2C" visible="false" />
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int16 name="00000016" offset="0x2C" visible="false" />
+		<int16 name="00000016" offset="0x2E" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown 3" offset="0xE4" visible="false" entrySize="0x2C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<reflexive name="Unknown 4" offset="0x8" visible="false" entrySize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown 5" offset="0x14" visible="false" entrySize="0x24">
 			<reflexive name="Unknown 6" offset="0x0" visible="false" entrySize="0xC">
 				<reflexive name="Unknown 7" offset="0x0" visible="false" entrySize="0xC">
 					<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0x4">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+						<int16 name="Unknown" offset="0x0" visible="false" />
+						<int16 name="Unknown" offset="0x2" visible="false" />
 					</reflexive>
 				</reflexive>
 			</reflexive>
 			<reflexive name="Unknown 7" offset="0xC" visible="false" entrySize="0xC">
 				<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0xC">
 					<reflexive name="Unknown 9" offset="0x0" visible="false" entrySize="0x4">
-						<undefined name="Unknown" offset="0x0" visible="false" />
+						<int16 name="Unknown" offset="0x0" visible="false" />
+						<int16 name="Unknown" offset="0x2" visible="false" />
 					</reflexive>
 				</reflexive>
 			</reflexive>
 			<reflexive name="Unknown 8" offset="0x18" visible="false" entrySize="0x24">
 				<reflexive name="Unknown 9" offset="0x0" visible="false" entrySize="0x4">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+					<int16 name="Unknown" offset="0x0" visible="false" />
+					<int16 name="Unknown" offset="0x2" visible="false" />
 				</reflexive>
 				<reflexive name="Unknown 9 and a half" offset="0xC" visible="false" entrySize="0x4">
 					<undefined name="Unknown" offset="0x0" visible="false" />
@@ -232,9 +240,9 @@
 			<tagref name="00000005" offset="0x0" visible="true" />
 		</reflexive>
 		<tagref name="Dialog Sound Bank" offset="0x180" visible="true" />
-		<undefined name="00000106" offset="0x190" visible="false" />
-		<undefined name="00000107" offset="0x194" visible="false" />
-		<undefined name="00000108" offset="0x198" visible="false" />
+		<float32 name="00000106" offset="0x190" visible="false" />
+		<float32 name="00000107" offset="0x194" visible="false" />
+		<float32 name="00000108" offset="0x198" visible="false" />
 		<undefined name="00000109" offset="0x19C" visible="false" />
 	</reflexive>
 	<int32 name="struct here 5" offset="0x108" visible="false" />
@@ -394,7 +402,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -404,7 +412,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -415,29 +426,70 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
-		<undefined name="00000045" offset="0xa0" visible="false" />
-		<undefined name="00000046" offset="0xa4" visible="false" />
-		<undefined name="00000047" offset="0xa8" visible="false" />
-		<undefined name="00000048" offset="0xaC" visible="false" />
-		<undefined name="00000049" offset="0xb0" visible="false" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
+		<bitfield8 name="Active Change Colors" offset="0xA0" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0xA1" visible="false" />
+		<int8 name="Unknown" offset="0xA2" visible="false" />
+		<int8 name="Unknown" offset="0xA3" visible="false" />
+		<colour32 name="Primary Color" offset="0xA4" format="argb" visible="true" />
+		<colour32 name="Secondary Color" offset="0xA8" format="argb" visible="true" />
+		<colour32 name="Tertiary Color" offset="0xAC" format="argb" visible="true" />
+		<colour32 name="Quaternary Color" offset="0xB0" format="argb" visible="true" />
 		<undefined name="00000050" offset="0xb4" visible="false" />
 		<undefined name="struct here" offset="0xb8" visible="false" />
 		<undefined name="struct here" offset="0xbC" visible="false" />
@@ -465,27 +517,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x14B" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<int8 name="X00000089" offset="0x14C" visible="false" />
-		<int8 name="00000089" offset="0x14D" visible="false" />
-		<int8 name="00000089" offset="0x14E" visible="false" />
-		<int8 name="00000089" offset="0x14F" visible="false" />
-		<int8 name="X00000090" offset="0x150" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x14B" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x14C" visible="false" />
+		<int8 name="Unknown" offset="0x14D" visible="false" />
+		<int8 name="Unknown" offset="0x14E" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x14F" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x150" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x151" visible="true" />
 		<int8 name="User Data" offset="0x152" visible="true" />
-		<int8 name="00000090" offset="0x153" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x153" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x154" visible="true" />
 		<float32 name="Shape Length" offset="0x158" visible="true" />
 		<float32 name="Shape Top" offset="0x15C" visible="true" />
 		<float32 name="Shape Bottom" offset="0x160" visible="true" />
 		<enum8 name="Shape" offset="0x164" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -546,9 +611,9 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
-			<stringid name="Unknown" offset="0x0" visible="false" />
+			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
 				<uint8 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
@@ -556,7 +621,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -567,31 +635,105 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
 		<stringid name="Variant" offset="0x9C" visible="true" />
-	<int32 name="00000045" offset="0xa0" visible="true" />
-	<int32 name="00000046" offset="0xa4" visible="true" />
-	<int32 name="00000047" offset="0xa8" visible="true" />
-	<int32 name="00000048" offset="0xaC" visible="true" />
-	<int32 name="00000049" offset="0xb0" visible="true" />
-	<int32 name="00000050" offset="0xb4" visible="true" />
-	<int32 name="00000051" offset="0xb8" visible="true" />
+		<bitfield8 name="Active Change Colors" offset="0xA0" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0xA1" visible="false" />
+		<int8 name="Unknown" offset="0xA2" visible="false" />
+		<int8 name="Unknown" offset="0xA3" visible="false" />
+		<colour32 name="Primary Color" offset="0xA4" format="argb" visible="true" />
+		<colour32 name="Secondary Color" offset="0xA8" format="argb" visible="true" />
+		<colour32 name="Tertiary Color" offset="0xAC" format="argb" visible="true" />
+		<colour32 name="Quaternary Color" offset="0xB0" format="argb" visible="true" />
+		<float32 name="Body Vitality Percentage" offset="0xB4" visible="true" />
+		<bitfield32 name="Flags" offset="0xB8" visible="true">
+			<bit name="Dead" index="0" />
+			<bit name="Closed" index="1" />
+			<bit name="Not Enterable by Player" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
 		<ascii name="Custom Label 1" offset="0xBC" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xDC" visible="true" length="0x20" />
 		<ascii name="Custom Label 3" offset="0xFC" visible="true" length="0x20" />
@@ -613,24 +755,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x13F" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000086" offset="0x140" visible="false" />
-		<int8 name="Unknown" offset="0x144" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x13F" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x140" visible="false" />
+		<int8 name="Unknown" offset="0x141" visible="false" />
+		<int8 name="Unknown" offset="0x142" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x143" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x144" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x145" visible="true" />
 		<int8 name="User Data" offset="0x146" visible="true" />
-		<int8 name="Unknown" offset="0x147" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x147" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x148" visible="true" />
 		<float32 name="Shape Length" offset="0x14C" visible="true" />
 		<float32 name="Shape Top" offset="0x150" visible="true" />
 		<float32 name="Shape Bottom" offset="0x154" visible="true" />
 		<enum8 name="Shape" offset="0x158" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -643,7 +801,8 @@
 		<int8 name="00000094" offset="0x161" visible="false" />
 		<int8 name="00000094" offset="0x162" visible="false" />
 		<int8 name="00000094" offset="0x163" visible="false" />
-		<undefined name="00000095" offset="0x164" visible="false" />
+		<int16 name="00000095" offset="0x164" visible="false" />
+		<int16 name="00000095" offset="0x166" visible="false" />
 		<undefined name="00000096" offset="0x168" visible="false" />
 		<undefined name="00000097" offset="0x16C" visible="false" />
 	</reflexive>
@@ -693,7 +852,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -703,7 +862,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -714,31 +876,105 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
-		<int32 name="00000045" offset="0xa0" visible="false" />
-		<int32 name="00000046" offset="0xa4" visible="false" />
-		<int32 name="00000047" offset="0xa8" visible="false" />
-		<int32 name="00000048" offset="0xaC" visible="false" />
-		<int32 name="00000049" offset="0xb0" visible="false" />
-		<int32 name="00000050" offset="0xb4" visible="false" />
-		<int32 name="00000051" offset="0xb8" visible="false" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
+		<bitfield8 name="Active Change Colors" offset="0xA0" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0xA1" visible="false" />
+		<int8 name="Unknown" offset="0xA2" visible="false" />
+		<int8 name="Unknown" offset="0xA3" visible="false" />
+		<colour32 name="Primary Color" offset="0xA4" format="argb" visible="true" />
+		<colour32 name="Secondary Color" offset="0xA8" format="argb" visible="true" />
+		<colour32 name="Tertiary Color" offset="0xAC" format="argb" visible="true" />
+		<colour32 name="Quaternary Color" offset="0xB0" format="argb" visible="true" />
+		<float32 name="Body Vitality Percentage" offset="0xB4" visible="true" />
+		<bitfield32 name="Flags" offset="0xB8" visible="true">
+			<bit name="Dead" index="0" />
+			<bit name="Closed" index="1" />
+			<bit name="Not Enterable by Player" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
 		<ascii name="Custom Label 1" offset="0xBC" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xDC" visible="true" length="0x20" />
 		<ascii name="Custom Label 3" offset="0xFC" visible="true" length="0x20" />
@@ -760,24 +996,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x13F" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000086" offset="0x140" visible="false" />
-		<int8 name="Unknown" offset="0x144" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x13F" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x140" visible="false" />
+		<int8 name="Unknown" offset="0x141" visible="false" />
+		<int8 name="Unknown" offset="0x142" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x143" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x144" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x145" visible="true" />
 		<int8 name="User Data" offset="0x146" visible="true" />
-		<int8 name="Unknown" offset="0x147" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x147" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x148" visible="true" />
 		<float32 name="Shape Length" offset="0x14C" visible="true" />
 		<float32 name="Shape Top" offset="0x150" visible="true" />
 		<float32 name="Shape Bottom" offset="0x154" visible="true" />
 		<enum8 name="Shape" offset="0x158" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -787,13 +1039,14 @@
 		<int16 name="Spawn Time" offset="0x15C" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x15E" visible="true" />
 		<undefined name="00000094" offset="0x160" visible="false" />
-		<undefined name="00000095" offset="0x164" visible="false" />
+		<int16 name="00000095" offset="0x164" visible="false" />
+		<int16 name="00000095" offset="0x166" visible="false" />
 		<undefined name="00000096" offset="0x168" visible="false" />
 		<undefined name="00000097" offset="0x16C" visible="false" />
 		<undefined name="00000098" offset="0x170" visible="false" />
-		<undefined name="00000099" offset="0x174" visible="false" />
-		<undefined name="00000100" offset="0x178" visible="false" />
-		<undefined name="00000101" offset="0x17C" visible="false" />
+		<undefined name="struct here" offset="0x174" visible="false" />
+		<undefined name="struct here" offset="0x178" visible="false" />
+		<undefined name="struct here" offset="0x17C" visible="false" />
 	</reflexive>
 	<reflexive name="Vehicle Palette" offset="0x1A0" visible="true" entrySize="0x10">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
@@ -841,7 +1094,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -851,7 +1104,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -862,24 +1118,53 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<int32 name="Unknown" offset="0x9C" visible="true" />
 		<ascii name="Custom Label 1" offset="0xA0" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xC0" visible="true" length="0x20" />
 		<ascii name="Custom Label 3" offset="0xE0" visible="true" length="0x20" />
@@ -901,24 +1186,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x123" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000079" offset="0x124" visible="false" />
-		<int8 name="Unknown" offset="0x128" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x123" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x124" visible="false" />
+		<int8 name="Unknown" offset="0x125" visible="false" />
+		<int8 name="Unknown" offset="0x126" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x127" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x128" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x129" visible="true" />
 		<int8 name="User Data" offset="0x12A" visible="true" />
-		<int8 name="Unknown" offset="0x12B" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x12B" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x12C" visible="true" />
 		<float32 name="Shape Length" offset="0x130" visible="true" />
 		<float32 name="Shape Top" offset="0x134" visible="true" />
 		<float32 name="Shape Bottom" offset="0x138" visible="true" />
 		<enum8 name="Shape" offset="0x13C" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -928,7 +1229,8 @@
 		<int16 name="Spawn Time" offset="0x140" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x142" visible="true" />
 		<undefined name="00000087" offset="0x144" visible="false" />
-		<undefined name="00000088" offset="0x148" visible="false" />
+		<int16 name="00000088" offset="0x148" visible="false" />
+		<int16 name="00000088" offset="0x14A" visible="false" />
 		<undefined name="00000089" offset="0x14C" visible="false" />
 		<undefined name="00000090" offset="0x150" visible="false" />
 	</reflexive>
@@ -978,7 +1280,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -988,7 +1290,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -999,30 +1304,72 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
-		<undefined name="00000045" offset="0xa0" visible="false" />
-		<undefined name="00000046" offset="0xa4" visible="false" />
-		<undefined name="00000047" offset="0xa8" visible="false" />
-		<undefined name="00000048" offset="0xaC" visible="false" />
-		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
+		<bitfield8 name="Active Change Colors" offset="0xA0" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0xA1" visible="false" />
+		<int8 name="Unknown" offset="0xA2" visible="false" />
+		<int8 name="Unknown" offset="0xA3" visible="false" />
+		<colour32 name="Primary Color" offset="0xA4" format="argb" visible="true" />
+		<colour32 name="Secondary Color" offset="0xA8" format="argb" visible="true" />
+		<colour32 name="Tertiary Color" offset="0xAC" format="argb" visible="true" />
+		<colour32 name="Quaternary Color" offset="0xB0" format="argb" visible="true" />
+		<int16 name="Rounds Left (Will Round Down)" offset="0x70" visible="true" />
+		<int16 name="00000050" offset="0xb6" visible="false" />
 		<undefined name="00000051" offset="0xb8" visible="false" />
 		<ascii name="Custom Label 1" offset="0xBC" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xDC" visible="true" length="0x20" />
@@ -1045,24 +1392,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x13F" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000086" offset="0x140" visible="false" />
-		<int8 name="Unknown" offset="0x144" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x13F" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x140" visible="false" />
+		<int8 name="Unknown" offset="0x141" visible="false" />
+		<int8 name="Unknown" offset="0x142" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x143" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x144" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x145" visible="true" />
 		<int8 name="User Data" offset="0x146" visible="true" />
-		<int8 name="Unknown" offset="0x147" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x147" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x148" visible="true" />
 		<float32 name="Shape Length" offset="0x14C" visible="true" />
 		<float32 name="Shape Top" offset="0x150" visible="true" />
 		<float32 name="Shape Bottom" offset="0x154" visible="true" />
 		<enum8 name="Shape" offset="0x158" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -1071,10 +1434,11 @@
 		<int8 name="Unknown" offset="0x15B" visible="false" />
 		<int16 name="Spawn Time" offset="0x15C" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x15E" visible="true" />
-		<undefined name="00000094" offset="0x160" visible="false" />
-		<undefined name="00000095" offset="0x164" visible="false" />
-		<undefined name="00000096" offset="0x168" visible="false" />
-		<undefined name="00000097" offset="0x16C" visible="false" />
+		<int32 name="00000094" offset="0x160" visible="false" />
+		<int16 name="00000095" offset="0x164" visible="false" />
+		<int16 name="00000095" offset="0x166" visible="false" />
+		<int32 name="00000096" offset="0x168" visible="false" />
+		<int32 name="00000097" offset="0x16C" visible="false" />
 	</reflexive>
 	<reflexive name="Weapon Palette" offset="0x1D0" visible="true" entrySize="0x10">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
@@ -1162,7 +1526,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1172,7 +1536,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1183,36 +1550,68 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
 		<undefined name="00000045" offset="0xa0" visible="false" />
 		<undefined name="00000046" offset="0xa4" visible="false" />
 		<undefined name="00000047" offset="0xa8" visible="false" />
 		<undefined name="00000048" offset="0xaC" visible="false" />
 		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
-		<undefined name="00000051" offset="0xb8" visible="false" />
-		<undefined name="00000052" offset="0xbC" visible="false" />
-		<undefined name="00000053" offset="0xc0" visible="false" />
-		<undefined name="00000054" offset="0xc4" visible="false" />
-		<undefined name="00000055" offset="0xc8" visible="false" />
-		<undefined name="00000056" offset="0xcC" visible="false" />
+		<int32 name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000051" offset="0xb8" visible="false" />
+		<int16 name="00000051" offset="0xbA" visible="false" />
+		<int16 name="00000052" offset="0xbC" visible="false" />
+		<int16 name="00000052" offset="0xbE" visible="false" />
+		<undefined name="struct here" offset="0xc0" visible="false" />
+		<undefined name="struct here" offset="0xc4" visible="false" />
+		<undefined name="struct here" offset="0xc8" visible="false" />
+		<int16 name="00000056" offset="0xcC" visible="false" />
+		<int16 name="00000056" offset="0xcE" visible="false" />
 		<ascii name="Custom Label 1" offset="0xD0" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xF0" visible="true" length="0x20" />
 		<ascii name="Custom Label 3" offset="0x110" visible="true" length="0x20" />
@@ -1234,24 +1633,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x153" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000091" offset="0x154" visible="false" />
-		<int8 name="Unknown" offset="0x158" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x153" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x154" visible="false" />
+		<int8 name="Unknown" offset="0x155" visible="false" />
+		<int8 name="Unknown" offset="0x156" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x157" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x158" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x159" visible="true" />
 		<int8 name="User Data" offset="0x15A" visible="true" />
-		<int8 name="Unknown" offset="0x15B" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x15B" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x15C" visible="true" />
 		<float32 name="Shape Length" offset="0x160" visible="true" />
 		<float32 name="Shape Top" offset="0x164" visible="true" />
 		<float32 name="Shape Bottom" offset="0x168" visible="true" />
 		<enum8 name="Shape" offset="0x16C" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -1261,7 +1676,8 @@
 		<int16 name="Spawn Time" offset="0x170" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x172" visible="true" />
 		<undefined name="00000099" offset="0x174" visible="false" />
-		<undefined name="00000100" offset="0x178" visible="false" />
+		<int16 name="00000100" offset="0x178" visible="false" />
+		<int16 name="00000100" offset="0x17A" visible="false" />
 		<undefined name="00000101" offset="0x17C" visible="false" />
 		<undefined name="00000102" offset="0x180" visible="false" />
 	</reflexive>
@@ -1311,7 +1727,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1321,7 +1737,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1332,30 +1751,60 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
 		<undefined name="00000045" offset="0xa0" visible="false" />
 		<undefined name="00000046" offset="0xa4" visible="false" />
 		<undefined name="00000047" offset="0xa8" visible="false" />
 		<undefined name="00000048" offset="0xaC" visible="false" />
 		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb6" visible="false" />
 		<undefined name="00000051" offset="0xb8" visible="false" />
 		<undefined name="00000052" offset="0xbC" visible="false" />
 	</reflexive>
@@ -1405,7 +1854,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1415,7 +1864,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1426,31 +1878,62 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
 		<undefined name="00000045" offset="0xa0" visible="false" />
 		<undefined name="00000046" offset="0xa4" visible="false" />
 		<undefined name="00000047" offset="0xa8" visible="false" />
 		<undefined name="00000048" offset="0xaC" visible="false" />
 		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
-		<undefined name="00000051" offset="0xb8" visible="false" />
+		<int16 name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb6" visible="false" />
+		<int16 name="00000051" offset="0xb8" visible="false" />
+		<int16 name="00000051" offset="0xbA" visible="false" />
 		<undefined name="00000052" offset="0xbC" visible="false" />
 		<undefined name="00000053" offset="0xc0" visible="false" />
 		<undefined name="00000054" offset="0xc4" visible="false" />
@@ -1475,24 +1958,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x14B" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000089" offset="0x14C" visible="false" />
-		<int8 name="Unknown" offset="0x150" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x14B" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x14C" visible="false" />
+		<int8 name="Unknown" offset="0x14D" visible="false" />
+		<int8 name="Unknown" offset="0x14E" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x14F" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x150" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x151" visible="true" />
 		<int8 name="User Data" offset="0x152" visible="true" />
-		<int8 name="Unknown" offset="0x153" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x153" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x154" visible="true" />
 		<float32 name="Shape Length" offset="0x158" visible="true" />
 		<float32 name="Shape Top" offset="0x15C" visible="true" />
 		<float32 name="Shape Bottom" offset="0x160" visible="true" />
 		<enum8 name="Shape" offset="0x164" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -1502,7 +2001,8 @@
 		<int16 name="Spawn Time" offset="0x168" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x16A" visible="true" />
 		<undefined name="00000097" offset="0x16C" visible="false" />
-		<undefined name="00000098" offset="0x170" visible="false" />
+		<int16 name="00000098" offset="0x170" visible="false" />
+		<int16 name="00000098" offset="0x172" visible="false" />
 		<undefined name="00000099" offset="0x174" visible="false" />
 		<undefined name="00000100" offset="0x178" visible="false" />
 	</reflexive>
@@ -1552,7 +2052,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1562,7 +2062,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1573,30 +2076,60 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
 		<undefined name="00000045" offset="0xa0" visible="false" />
 		<undefined name="00000046" offset="0xa4" visible="false" />
 		<undefined name="00000047" offset="0xa8" visible="false" />
 		<undefined name="00000048" offset="0xaC" visible="false" />
 		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb6" visible="false" />
 		<undefined name="00000051" offset="0xb8" visible="false" />
 		<undefined name="00000052" offset="0xbC" visible="false" />
 		<ascii name="Custom Label 1" offset="0xC0" visible="true" length="0x20" />
@@ -1620,24 +2153,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x143" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000087" offset="0x144" visible="false" />
-		<int8 name="Unknown" offset="0x148" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x143" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x144" visible="false" />
+		<int8 name="Unknown" offset="0x145" visible="false" />
+		<int8 name="Unknown" offset="0x146" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x147" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x148" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x149" visible="true" />
 		<int8 name="User Data" offset="0x14A" visible="true" />
-		<int8 name="Unknown" offset="0x14B" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x14B" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x14C" visible="true" />
 		<float32 name="Shape Length" offset="0x150" visible="true" />
 		<float32 name="Shape Top" offset="0x154" visible="true" />
 		<float32 name="Shape Bottom" offset="0x158" visible="true" />
 		<enum8 name="Shape" offset="0x15C" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -1647,7 +2196,8 @@
 		<int16 name="Spawn Time" offset="0x160" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x162" visible="true" />
 		<undefined name="00000095" offset="0x164" visible="false" />
-		<undefined name="00000096" offset="0x168" visible="false" />
+		<int16 name="00000096" offset="0x168" visible="false" />
+		<int16 name="00000096" offset="0x16A" visible="false" />
 		<undefined name="00000097" offset="0x16C" visible="false" />
 		<undefined name="00000098" offset="0x170" visible="false" />
 	</reflexive>
@@ -1697,7 +2247,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1707,7 +2257,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1718,24 +2271,54 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<int16 name="Unknown" offset="0x9C" visible="true" />
+		<int16 name="Unknown" offset="0x9E" visible="true" />
 		<undefined name="00000045" offset="0xa0" visible="false" />
 		<undefined name="00000046" offset="0xa4" visible="false" />
 		<undefined name="00000047" offset="0xa8" visible="false" />
@@ -1801,7 +2384,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1811,7 +2394,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1822,24 +2408,53 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
 		<ascii name="Custom Label 1" offset="0xA0" visible="true" length="0x20" />
 		<ascii name="Custom Label 2" offset="0xC0" visible="true" length="0x20" />
 		<ascii name="Custom Label 3" offset="0xE0" visible="true" length="0x20" />
@@ -1861,24 +2476,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x123" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000079" offset="0x124" visible="false" />
-		<int8 name="Unknown" offset="0x128" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x123" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x124" visible="false" />
+		<int8 name="Unknown" offset="0x125" visible="false" />
+		<int8 name="Unknown" offset="0x126" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x127" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x128" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x129" visible="true" />
 		<int8 name="User Data" offset="0x12A" visible="true" />
-		<int8 name="Unknown" offset="0x12B" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x12B" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x12C" visible="true" />
 		<float32 name="Shape Length" offset="0x130" visible="true" />
 		<float32 name="Shape Top" offset="0x134" visible="true" />
 		<float32 name="Shape Bottom" offset="0x138" visible="true" />
 		<enum8 name="Shape" offset="0x13C" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -1888,7 +2519,8 @@
 		<int16 name="Spawn Time" offset="0x140" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x142" visible="true" />
 		<undefined name="00000087" offset="0x144" visible="false" />
-		<undefined name="00000088" offset="0x148" visible="false" />
+		<int16 name="00000088" offset="0x148" visible="false" />
+		<int16 name="00000088" offset="0x14A" visible="false" />
 		<undefined name="00000089" offset="0x14C" visible="false" />
 		<undefined name="00000090" offset="0x150" visible="false" />
 	</reflexive>
@@ -1938,7 +2570,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -1948,7 +2580,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -1959,31 +2594,60 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
-	<undefined name="00000045" offset="0xa0" visible="true" />
-	<undefined name="00000046" offset="0xa4" visible="true" />
-	<undefined name="00000047" offset="0xa8" visible="true" />
-	<undefined name="00000048" offset="0xaC" visible="true" />
-	<undefined name="00000049" offset="0xb0" visible="true" />
-	<undefined name="00000050" offset="0xb4" visible="true" />
-	<undefined name="00000051" offset="0xb8" visible="true" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
+		<undefined name="00000045" offset="0xa0" visible="true" />
+		<undefined name="00000046" offset="0xa4" visible="true" />
+		<undefined name="00000047" offset="0xa8" visible="true" />
+		<undefined name="00000048" offset="0xaC" visible="true" />
+		<undefined name="00000049" offset="0xb0" visible="true" />
+		<undefined name="00000050" offset="0xb4" visible="true" />
+		<undefined name="00000051" offset="0xb8" visible="true" />
 	</reflexive>
 	<reflexive name="Spawner Palette" offset="0x29C" visible="true" entrySize="0x10">
 		<tagRef name="Effect Scenery" offset="0x0" visible="true" />
@@ -2002,13 +2666,10 @@
 	<reflexive name="Cutscene Light Cones" offset="0x2cc" visible="true" entrySize="0x40">
 		<int32 name="Cutscene Placement Flag Index" offset="0x0" visible="true" />
 		<tagref name="Light Cone" offset="0x4" visible="true" />
-		<float32 name="00000010" offset="0x14" visible="true" />
-		<float32 name="00000011" offset="0x18" visible="true" />
-		<float32 name="00000012" offset="0x1C" visible="true" />
-		<float32 name="00000013" offset="0x20" visible="true" />
-		<float32 name="00000014" offset="0x24" visible="true" />
-		<float32 name="00000015" offset="0x28" visible="true" />
-		<float32 name="00000016" offset="0x2C" visible="true" />
+		<colourf name="Color" offset="0x14" format="argb" visible="true" />
+		<float32 name="Width" offset="0x24" visible="true" />
+		<float32 name="Height" offset="0x28" visible="true" />
+		<float32 name="Sharpness" offset="0x2C" visible="true" />
 		<tagref name="00000017" offset="0x30" visible="true" />
 	</reflexive>
 	<reflexive name="Sandbox Palette" offset="0x2D8" visible="true" entrySize="0x14">
@@ -2051,8 +2712,11 @@
 			<int32 name="Spawn Cost" offset="0x14" visible="true" />
 		</reflexive>
 	</reflexive>
-	<tagref name="00000192" offset="0x2e4" visible="false" />
-	<undefined name="00000196" offset="0x2f4" visible="false" />
+	<tagref name="Object Type List" offset="0x2e4" visible="false" />
+	<int8 name="00000196" offset="0x2f4" visible="false" />
+	<int8 name="00000196" offset="0x2f5" visible="false" />
+	<int8 name="00000196" offset="0x2f6" visible="false" />
+	<int8 name="00000196" offset="0x2f7" visible="false" />
 	<int32 name="struct here" offset="0x2f8" visible="false" />
 	<undefined name="struct here" offset="0x2fC" visible="false" />
 	<undefined name="struct here" offset="0x300" visible="false" />
@@ -2061,7 +2725,8 @@
 	<reflexive name="Soft Ceilings" offset="0x30C" visible="false" entrySize="0xC">
 		<int32 name="00000005" offset="0x0" visible="false" />
 		<stringid name="00000006" offset="0x4" visible="false" />
-		<undefined name="00000007" offset="0x8" visible="false" />
+		<int16 name="00000007" offset="0x8" visible="false" />
+		<int16 name="00000007" offset="0xA" visible="false" />
 	</reflexive>
 	<reflexive name="Starting Profiles" offset="0x318" visible="true" entrySize="0x7C">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
@@ -2083,7 +2748,8 @@
 		<tagRef name="Starting Equipment" offset="0x60" visible="true" />
 		<undefined name="00000033" offset="0x70" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
 	</reflexive>
 	<reflexive name="Player Spawns" offset="0x324" visible="true" entrySize="0x24">
 		<undefined name="X" offset="0x0" visible="true" />
@@ -2093,9 +2759,9 @@
 		<int16 name="00000008" offset="0xE" visible="false" />
 		<int16 name="00000009" offset="0x10" visible="false" />
 		<int16 name="00000009" offset="0x12" visible="false" />
-		<undefined name="00000010" offset="0x14" visible="false" />
-		<undefined name="00000011" offset="0x18" visible="false" />
-		<undefined name="00000012" offset="0x1C" visible="false" />
+		<degree name="Look X" offset="0x14" visible="true" />
+		<degree name="Look Y" offset="0x18" visible="true" />
+		<int32 name="00000012" offset="0x1C" visible="false" />
 		<int16 name="00000013" offset="0x20" visible="false" />
 		<int16 name="00000013" offset="0x22" visible="false" />
 	</reflexive>
@@ -2104,18 +2770,19 @@
 		<int16 name="00000006" offset="0x4" visible="false" />
 		<int16 name="00000006" offset="0x6" visible="false" />
 		<undefined name="00000007" offset="0x8" visible="false" />
-		<undefined name="00000008" offset="0xC" visible="false" />
-		<undefined name="00000009" offset="0x10" visible="false" />
-		<undefined name="00000010" offset="0x14" visible="false" />
-		<undefined name="00000011" offset="0x18" visible="false" />
-		<undefined name="00000012" offset="0x1C" visible="false" />
-		<undefined name="00000013" offset="0x20" visible="false" />
-		<undefined name="00000014" offset="0x24" visible="false" />
-		<undefined name="X" offset="0x28" visible="true" />
-		<undefined name="Y" offset="0x2C" visible="true" />
-		<undefined name="Z" offset="0x30" visible="true" />
-		<undefined name="00000018" offset="0x34" visible="false" />
-		<undefined name="00000019" offset="0x38" visible="false" />
+		<int16 name="00000008" offset="0xC" visible="false" />
+		<int16 name="00000008" offset="0xE" visible="false" />
+		<float32 name="00000009" offset="0x10" visible="false" />
+		<float32 name="00000010" offset="0x14" visible="false" />
+		<float32 name="00000011" offset="0x18" visible="false" />
+		<float32 name="00000012" offset="0x1C" visible="false" />
+		<float32 name="00000013" offset="0x20" visible="false" />
+		<float32 name="00000014" offset="0x24" visible="false" />
+		<float32 name="X" offset="0x28" visible="true" />
+		<float32 name="Y" offset="0x2C" visible="true" />
+		<float32 name="Z" offset="0x30" visible="true" />
+		<int32 name="00000018" offset="0x34" visible="false" />
+		<int32 name="00000019" offset="0x38" visible="false" />
 		<undefined name="X Extent" offset="0x3C" visible="true" />
 		<undefined name="Y Extent" offset="0x40" visible="true" />
 		<undefined name="Z Extent" offset="0x44" visible="true" />
@@ -2164,13 +2831,14 @@
 		<undefined name="00000034" offset="0x74" visible="false" />
 		<undefined name="00000035" offset="0x78" visible="false" />
 		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000037" offset="0x82" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown 35" offset="0x33C" visible="false" entrySize="0x40">
 		<reflexive name="Unknown 36" offset="0x0" visible="false" entrySize="0xC">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
+			<float32 name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Unknown" offset="0x8" visible="false" />
 		</reflexive>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
@@ -2182,7 +2850,8 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<int16 name="Unknown" offset="0x34" visible="false" />
+		<int16 name="Unknown" offset="0x36" visible="false" />
 		<undefined name="00000019" offset="0x38" visible="false" />
 		<undefined name="00000020" offset="0x3C" visible="false" />
 	</reflexive>
@@ -2228,7 +2897,8 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<int16 name="Unknown" offset="0x38" visible="false" />
+		<int16 name="Unknown" offset="0x3A" visible="false" />
 	</reflexive>
 	<int32 name="struct here 8" offset="0x360" visible="false" />
 	<undefined name="struct here 8" offset="0x364" visible="false" />
@@ -2237,8 +2907,10 @@
 	<undefined name="struct here 9" offset="0x370" visible="false" />
 	<undefined name="struct here 9" offset="0x374" visible="false" />
 	<reflexive name="Testo" offset="0x378" visible="false" entrySize="0x8">
-		<undefined name="00000005" offset="0x0" visible="false" />
-		<undefined name="00000006" offset="0x4" visible="false" />
+		<int16 name="00000005" offset="0x0" visible="false" />
+		<int16 name="00000005" offset="0x2" visible="false" />
+		<int16 name="00000006" offset="0x4" visible="false" />
+		<int16 name="00000006" offset="0x6" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x384" visible="false" entrySize="0x18">
 		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x14">
@@ -2394,8 +3066,8 @@
 				<option name="Frag" value="0x1" />
 				<option name="Plasma" value="0x2" />
 			</enum16>
-			<int32 name="Forced Vehicle Variant" offset="0x3C" visible="true" />
-			<int32 name="Forced Biped Variant" offset="0x40" visible="true" />
+			<stringid name="Forced Vehicle Variant" offset="0x3C" visible="true" />
+			<stringid name="Forced Biped Variant" offset="0x40" visible="true" />
 			<int32 name="00000022" offset="0x44" visible="true" />
 			<undefined name="00000023" offset="0x48" visible="true" />
 			<undefined name="00000024" offset="0x4C" visible="true" />
@@ -2403,7 +3075,7 @@
 			<int16 name="00000025" offset="0x52" visible="true" />
 			<int16 name="00000026" offset="0x54" visible="true" />
 			<int16 name="00000026" offset="0x56" visible="true" />
-			<int32 name="00000027" offset="0x58" visible="true" />
+			<stringid name="00000027" offset="0x58" visible="true" />
 			<int16 name="00000028" offset="0x5C" visible="true" />
 			<int16 name="00000028" offset="0x5E" visible="true" />
 			<undefined name="00000029" offset="0x60" visible="true" />
@@ -2425,24 +3097,28 @@
 			<int16 name="00000035" offset="0x7A" visible="true" />
 		</reflexive>
 		<undefined name="Unknown" offset="0x48" visible="false" />
-		<int32 name="Squad Template ID" offset="0x4C" visible="true" />
-		<int32 name="Squad Template Ident" offset="0x50" visible="true" />
+		<stringid name="Squad Template" offset="0x4C" visible="true" />
+		<tagref name="Squad Template Tag" offset="0x50" withClass="false" visible="true" />
 		<reflexive name="Squad Attributes A" offset="0x54" visible="true" entrySize="0x64">
-			<int32 name="Squad Attribute ID" offset="0x0" visible="true" />
-			<undefined name="00000006" offset="0x4" visible="false" />
+			<stringid name="Squad Attribute" offset="0x0" visible="true" />
+			<int16 name="00000006" offset="0x4" visible="false" />
+			<int16 name="00000006" offset="0x6" visible="false" />
 			<int16 name="# Spawned" offset="0x8" visible="true" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<reflexive name="Character" offset="0xC" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Weapon" offset="0x18" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Dual Wielded Weapon" offset="0x24" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Equipment?" offset="0x30" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
@@ -2450,7 +3126,7 @@
 			</reflexive>
 			<int16 name="Unknown" offset="0x3C" visible="false" />
 			<int16 name="Vehicle Palette Chunk" offset="0x3E" visible="true" />
-			<int32 name="Vehicle Variant" offset="0x40" visible="true" />
+			<stringid name="Vehicle Variant" offset="0x40" visible="true" />
 			<undefined name="00000022" offset="0x44" visible="false" />
 			<undefined name="00000023" offset="0x48" visible="false" />
 			<undefined name="00000024" offset="0x4C" visible="false" />
@@ -2461,21 +3137,25 @@
 			<undefined name="struct here" offset="0x60" visible="false" />
 		</reflexive>
 		<reflexive name="Squad Attributes B" offset="0x60" visible="true" entrySize="0x64">
-			<int32 name="Squad Attribute ID" offset="0x0" visible="true" />
-			<undefined name="00000006" offset="0x4" visible="false" />
+			<stringid name="Squad Attribute" offset="0x0" visible="true" />
+			<int16 name="00000006" offset="0x4" visible="false" />
+			<int16 name="00000006" offset="0x6" visible="false" />
 			<int16 name="# Spawned" offset="0x8" visible="true" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<reflexive name="Character" offset="0xC" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Weapon" offset="0x18" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Dual Wielded Weapon" offset="0x24" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x6" visible="false" />
 			</reflexive>
 			<reflexive name="Equipment?" offset="0x30" visible="true" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
@@ -2483,7 +3163,7 @@
 			</reflexive>
 			<int16 name="Unknown" offset="0x3C" visible="false" />
 			<int16 name="Vehicle Palette Chunk" offset="0x3E" visible="true" />
-			<int32 name="Vehicle Variant" offset="0x40" visible="true" />
+			<stringid name="Vehicle Variant" offset="0x40" visible="true" />
 			<undefined name="00000022" offset="0x44" visible="false" />
 			<undefined name="00000023" offset="0x48" visible="false" />
 			<undefined name="00000024" offset="0x4C" visible="false" />
@@ -2816,17 +3496,17 @@
 	<int32 name="struct here 4" offset="0x48C" visible="false" />
 	<undefined name="struct here 4" offset="0x490" visible="false" />
 	<undefined name="struct here 4" offset="0x494" visible="false" />
-	<tagref name="Script Container" offset="0x498" visible="true" />
+	<tagref name="Scripts" offset="0x498" visible="true" />
 	<int32 name="struct here" offset="0x4a8" visible="false" />
 	<undefined name="struct here" offset="0x4aC" visible="false" />
 	<undefined name="struct here" offset="0x4b0" visible="false" />
-	<tagref name="Global Script" offset="0x4b4" visible="true" />
+	<tagref name="Script Container" offset="0x4b4" visible="true" />
 	<reflexive name="Scripting Data" offset="0x4c4" visible="true" entrySize="0x90">
 		<reflexive name="Point Sets" offset="0x0" visible="true" entrySize="0x3C">
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 			<reflexive name="Testo" offset="0x20" visible="true" entrySize="0x40">
 				<ascii name="Name" offset="0x0" visible="true" length="0x20" />
-				<undefined name="00000013" offset="0x20" visible="false" />
+				<stringid name="00000013" offset="0x20" visible="false" />
 				<undefined name="00000014" offset="0x24" visible="false" />
 				<undefined name="00000015" offset="0x28" visible="false" />
 				<undefined name="00000016" offset="0x2C" visible="false" />
@@ -2882,7 +3562,7 @@
 		<float32 name="Z" offset="0x10" visible="true" />
 		<float32 name="Face X" offset="0x14" visible="true" />
 		<float32 name="Face Y" offset="0x18" visible="true" />
-		<int32 name="Unknown" offset="0x1C" visible="false" />
+		<float32 name="Unknown" offset="0x1C" visible="false" />
 		<int16 name="00000013" offset="0x20" visible="false" />
 		<int16 name="00000013" offset="0x22" visible="false" />
 	</reflexive>
@@ -2921,14 +3601,8 @@
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 		<int8 name="Text Color Alpha" offset="0x1C" visible="true" />
 		<color24 name="Text Color" offset="0x1D" visible="true" format="rgb" />
-		<uint8 name="Text Color R" offset="0x1D" visible="true" />
-		<uint8 name="Text Color G" offset="0x1E" visible="true" />
-		<uint8 name="Text Color B" offset="0x1F" visible="true" />
 		<uint8 name="Shadow Color Alpha" offset="0x20" visible="true" />
 		<color24 name="Shadow Color" offset="0x21" visible="true" format="rgb" />
-		<uint8 name="Shadow Color R" offset="0x21" visible="true" />
-		<uint8 name="Shadow Color G" offset="0x22" visible="true" />
-		<uint8 name="Shadow Color B" offset="0x23" visible="true" />
 		<float32 name="Fade In Time" offset="0x24" visible="true" />
 		<float32 name="Uptime" offset="0x28" visible="true" />
 		<float32 name="Fade Out Time" offset="0x2C" visible="true" />
@@ -2936,14 +3610,20 @@
 	</reflexive>
 	<tagref name="00000326" offset="0x4f4" visible="false" />
 	<tagref name="Strings" offset="0x504" visible="true" />
-	<reflexive name="Death Barriers 1" offset="0x514" visible="false" entrySize="0x4">
-		<int16 name="00000005" offset="0x0" visible="false" />
-		<int8 name="00000005" offset="0x2" visible="false" />
+	<reflexive name="Death Barriers 1 (Kills)" offset="0x514" visible="true" entrySize="0x4">
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
+		<enum8 name="Kind" offset="0x2" visible="true">
+			<option name="Hard" value="0x0" />
+			<option name="Soft" value="0x1" />
+		</enum8>
 		<int8 name="00000005" offset="0x3" visible="false" />
 	</reflexive>
-	<reflexive name="Death Barriers 2" offset="0x520" visible="false" entrySize="0x4">
-		<int16 name="00000005" offset="0x0" visible="false" />
-		<int8 name="00000005" offset="0x2" visible="false" />
+	<reflexive name="Death Barriers 2 (Safes)" offset="0x520" visible="true" entrySize="0x4">
+		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
+		<enum8 name="Kind" offset="0x0" visible="true">
+			<option name="Hard" value="0x0" />
+			<option name="Soft" value="0x1" />
+		</enum8>
 		<int8 name="00000005" offset="0x3" visible="false" />
 	</reflexive>
 	<undefined name="struct here 3" offset="0x52C" visible="false" />
@@ -2959,7 +3639,8 @@
 	<reflexive name="Testo" offset="0x550" visible="false" entrySize="0x2">
 		<int16 name="00000005" offset="0x0" visible="false" />
 	</reflexive>
-	<undefined name="00000353" offset="0x55C" visible="false" />
+	<int16 name="00000353" offset="0x55C" visible="false" />
+	<int16 name="00000353" offset="0x55E" visible="false" />
 	<undefined name="struct here" offset="0x560" visible="false" />
 	<undefined name="struct here" offset="0x564" visible="false" />
 	<undefined name="struct here" offset="0x568" visible="false" />
@@ -3019,11 +3700,9 @@
 			<int16 name="Unknown" offset="0x0" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x30" visible="false" entrySize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+		<reflexive name="Unknown" offset="0x30" visible="false" entrySize="0x4">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown 55" offset="0x3C" visible="false" entrySize="0x4">
 			<int16 name="Unknown" offset="0x0" visible="false" />
@@ -3113,7 +3792,7 @@
 		<float32 name="Yaw" offset="0x14" visible="true" />
 		<float32 name="Pitch" offset="0x18" visible="true" />
 		<float32 name="Roll" offset="0x1C" visible="true" />
-		<undefined name="00000013" offset="0x20" visible="false" />
+		<float32 name="NonPhysics Scale" offset="0x20" visible="true" />
 		<reflexive name="Testo" offset="0x24" visible="false" entrySize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<reflexive name="Unknown 18" offset="0x4" visible="false" entrySize="0x1">
@@ -3123,7 +3802,10 @@
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 		</reflexive>
-		<undefined name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x30" visible="false" />
+		<int8 name="00000017" offset="0x31" visible="false" />
+		<int8 name="00000017" offset="0x32" visible="false" />
+		<int8 name="00000017" offset="0x33" visible="false" />
 		<undefined name="00000018" offset="0x34" visible="false" />
 		<undefined name="struct here" offset="0x38" visible="false" />
 		<undefined name="struct here" offset="0x3C" visible="false" />
@@ -3134,30 +3816,72 @@
 		<undefined name="struct here 3" offset="0x50" visible="false" />
 		<undefined name="struct here 3" offset="0x54" visible="false" />
 		<undefined name="struct here 3" offset="0x58" visible="false" />
-		<undefined name="00000028" offset="0x5C" visible="false" />
-		<undefined name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000028" offset="0x5C" visible="false" />
+		<int8 name="00000028" offset="0x5D" visible="false" />
+		<int8 name="00000028" offset="0x5E" visible="false" />
+		<int8 name="00000028" offset="0x5F" visible="false" />
+		<int8 name="00000029" offset="0x60" visible="false" />
+		<int8 name="00000029" offset="0x61" visible="false" />
+		<int8 name="00000029" offset="0x62" visible="false" />
+		<int8 name="00000029" offset="0x63" visible="false" />
 		<undefined name="00000030" offset="0x64" visible="false" />
-		<undefined name="00000031" offset="0x68" visible="false" />
-		<undefined name="00000032" offset="0x6C" visible="false" />
-		<undefined name="00000033" offset="0x70" visible="false" />
+		<stringid name="00000031" offset="0x68" visible="false" />
+		<uint32 name="00000032" offset="0x6C" visible="false" />
+		<int16 name="Unknown" offset="0x70" visible="false" />
+		<enum8 name="Object Type" offset="0x72" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Dispenser" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Block" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+			<option name="Spawner" value="0xF" />
+		</enum8>
+		<int8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="00000034" offset="0x74" visible="false" />
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<undefined name="00000036" offset="0x7C" visible="false" />
-		<undefined name="00000037" offset="0x80" visible="false" />
+		<int16 name="00000035" offset="0x78" visible="false" />
+		<int16 name="00000035" offset="0x7A" visible="false" />
+		<int16 name="00000036" offset="0x7C" visible="false" />
+		<int16 name="00000036" offset="0x7E" visible="false" />
+		<stringid name="00000037" offset="0x80" visible="true" />
 		<undefined name="00000038" offset="0x84" visible="false" />
-		<int16 name="00000039" offset="0x88" visible="false" />
-		<int16 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x88" visible="false" />
+		<int8 name="00000039" offset="0x89" visible="false" />
+		<int8 name="00000039" offset="0x8A" visible="false" />
+		<int8 name="00000039" offset="0x8B" visible="false" />
 		<undefined name="00000040" offset="0x8C" visible="false" />
 		<undefined name="struct here" offset="0x90" visible="false" />
 		<undefined name="struct here" offset="0x94" visible="false" />
 		<undefined name="struct here" offset="0x98" visible="false" />
-		<int32 name="Variant" offset="0x9C" visible="true" />
-		<undefined name="00000045" offset="0xa0" visible="false" />
-		<undefined name="00000046" offset="0xa4" visible="false" />
-		<undefined name="00000047" offset="0xa8" visible="false" />
-		<undefined name="00000048" offset="0xaC" visible="false" />
-		<undefined name="00000049" offset="0xb0" visible="false" />
-		<undefined name="00000050" offset="0xb4" visible="false" />
+		<stringid name="Variant" offset="0x9C" visible="true" />
+		<bitfield8 name="Active Change Colors" offset="0xA0" visible="true">
+			<bit name="Primary" index="0" />
+			<bit name="Secondary" index="1" />
+			<bit name="Tertiary" index="2" />
+			<bit name="Quaternary" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0xA1" visible="false" />
+		<int8 name="Unknown" offset="0xA2" visible="false" />
+		<int8 name="Unknown" offset="0xA3" visible="false" />
+		<colour32 name="Primary Color" offset="0xA4" format="argb" visible="true" />
+		<colour32 name="Secondary Color" offset="0xA8" format="argb" visible="true" />
+		<colour32 name="Tertiary Color" offset="0xAC" format="argb" visible="true" />
+		<colour32 name="Quaternary Color" offset="0xB0" format="argb" visible="true" />
+		<int16 name="00000050" offset="0xb4" visible="false" />
+		<int16 name="00000050" offset="0xb6" visible="false" />
 		<undefined name="struct here" offset="0xb8" visible="false" />
 		<undefined name="struct here" offset="0xbC" visible="false" />
 		<undefined name="struct here" offset="0xc0" visible="false" />
@@ -3182,24 +3906,40 @@
 			<option name="Cyan/8" value="0x7" />
 			<option name="Neutral" value="0x8" />
 		</enum8>
-		<enum8 name="Place At Start/Gametype-Specific" offset="0x147" visible="true">
-			<option name="True/False" value="0x0" />
-			<option name="False/False" value="0x2" />
-			<option name="True/True" value="0x4" />
-			<option name="False/True" value="0x6" />
-		</enum8>
-		<undefined name="00000088" offset="0x148" visible="false" />
-		<int8 name="Unknown" offset="0x14C" visible="false" />
+		<bitfield8 name="Sandbox Flags" offset="0x147" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Not Placed At Start" index="1" />
+			<bit name="Is Gametype-Specific" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x148" visible="false" />
+		<int8 name="Unknown" offset="0x149" visible="false" />
+		<int8 name="Unknown" offset="0x14A" visible="false" />
+		<uint8 name="Teleporter Channel" offset="0x14B" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x14C" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Spawn Sequence" offset="0x14D" visible="true" />
 		<int8 name="User Data" offset="0x14E" visible="true" />
-		<int8 name="Unknown" offset="0x14F" visible="false" />
+		<int8 name="Trait Zone Channel" offset="0x14F" visible="true" />
 		<float32 name="Shape Width/Radius" offset="0x150" visible="true" />
 		<float32 name="Shape Length" offset="0x154" visible="true" />
 		<float32 name="Shape Top" offset="0x158" visible="true" />
 		<float32 name="Shape Bottom" offset="0x15C" visible="true" />
 		<enum8 name="Shape" offset="0x160" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -3209,29 +3949,30 @@
 		<int16 name="Spawn Time" offset="0x164" visible="true" />
 		<int16 name="Spawn Time Modifier?" offset="0x166" visible="true" />
 		<undefined name="00000096" offset="0x168" visible="false" />
-		<undefined name="00000097" offset="0x16C" visible="false" />
+		<int16 name="00000097" offset="0x16C" visible="false" />
+		<int16 name="00000097" offset="0x16E" visible="false" />
 		<undefined name="00000098" offset="0x170" visible="false" />
 		<undefined name="00000099" offset="0x174" visible="false" />
 	</reflexive>
 	<reflexive name="Obstacle Palette" offset="0x65C" visible="true" entrySize="0x10">
 		<tagRef name="Obstacle" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Flocks" offset="0x668" visible="true" entrySize="0x10">
+	<reflexive name="Flocks Palette" offset="0x668" visible="true" entrySize="0x10">
 		<tagRef name="Flock" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Testo" offset="0x674" visible="false" entrySize="0x54">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Flocks Placement" offset="0x674" visible="false" entrySize="0x54">
+		<stringid name="Name" offset="0x0" visible="false" />
+		<int16 name="Palette Index" offset="0x4" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
-		<reflexive name="Unknown 57" offset="0x10" visible="false" entrySize="0x28">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Sources" offset="0x10" visible="false" entrySize="0x28">
+			<stringid name="Source" offset="0x0" visible="false" />
 			<int32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
+			<float32 name="X" offset="0x8" visible="false" />
+			<float32 name="Y" offset="0xC" visible="false" />
+			<float32 name="Z" offset="0x10" visible="false" />
 			<float32 name="Unknown" offset="0x14" visible="false" />
 			<float32 name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -3239,12 +3980,12 @@
 			<int16 name="Unknown" offset="0x24" visible="false" />
 			<int16 name="Unknown" offset="0x26" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 58" offset="0x1C" visible="false" entrySize="0x20">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Destinations" offset="0x1C" visible="false" entrySize="0x20">
+			<stringid name="Name" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
+			<float32 name="X" offset="0x8" visible="false" />
+			<float32 name="Y" offset="0xC" visible="false" />
+			<float32 name="Z" offset="0x10" visible="false" />
 			<float32 name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<int16 name="Unknown" offset="0x1C" visible="false" />
@@ -3267,7 +4008,7 @@
 
 	</reflexive>
 	<tagref name="Subtitles" offset="0x680" visible="true" />
-	<reflexive name="First Time Sounds" offset="0x690" visible="false" entrySize="0x8">
+	<reflexive name="Audio Cues" offset="0x690" visible="false" entrySize="0x8">
 		<tagref name="Sound" offset="0x0" withClass="false" visible="true" />
 		<stringid name="Name" offset="0x4" visible="false" />
 	</reflexive>
@@ -3325,7 +4066,7 @@
 		<undefined name="00000072" offset="0x108" visible="false" />
 		<undefined name="00000073" offset="0x10C" visible="false" />
 	</reflexive>
-	<tagref name="00000446" offset="0x6cC" visible="true" />
+	<tagref name="Map Strings" offset="0x6cC" visible="true" />
 	<undefined name="00000450" offset="0x6dC" visible="false" />
 	<reflexive name="Testo" offset="0x6E0" visible="true" entrySize="0x10">
 		<tagref name="00000005" offset="0x0" visible="true" />
@@ -3342,8 +4083,8 @@
 	<tagref name="Atmosphere Fog" offset="0x758" visible="true" />
 	<tagref name="Faux Lightmap" offset="0x768" visible="true" />
 	<tagref name="Default Performance Template" offset="0x778" visible="true" />
-	<reflexive name="Testo" offset="0x788" visible="false" entrySize="0x24">
-		<undefined name="00000005" offset="0x0" visible="false" />
+	<reflexive name="Objectives" offset="0x788" visible="false" entrySize="0x24">
+		<stringid name="00000005" offset="0x0" visible="false" />
 		<undefined name="00000006" offset="0x4" visible="false" />
 		<undefined name="00000007" offset="0x8" visible="false" />
 		<undefined name="00000008" offset="0xC" visible="false" />
@@ -3500,30 +4241,30 @@
 		<reflexive name="Testo" offset="0x88" visible="false" entrySize="0x2">
 			<int16 name="00000005" offset="0x0" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x94" visible="false" entrySize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x94" visible="false" entrySize="0x2">
+			<int16 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="00000045" offset="0xa0" visible="false" />
-		<undefined name="00000046" offset="0xa4" visible="false" />
-		<undefined name="00000047" offset="0xa8" visible="false" />
+		<reflexive name="Testo" offset="0xA0" visible="false" entrySize="0x2">
+			<int16 name="00000005" offset="0x0" visible="false" />
+		</reflexive>
 		<reflexive name="Unknown" offset="0xAC" visible="false" entrySize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
 		<reflexive name="Testo" offset="0xB8" visible="false" entrySize="0x2">
 			<int16 name="00000005" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="00000054" offset="0xc4" visible="false" />
-		<undefined name="00000055" offset="0xc8" visible="false" />
-		<undefined name="00000056" offset="0xcC" visible="false" />
+		<reflexive name="Testo" offset="0xC4" visible="false" entrySize="0x2">
+			<int16 name="00000005" offset="0x0" visible="false" />
+		</reflexive>
 		<undefined name="00000057" offset="0xd0" visible="false" />
 		<undefined name="00000058" offset="0xd4" visible="false" />
 		<undefined name="00000059" offset="0xd8" visible="false" />
 		<reflexive name="Testo" offset="0xDC" visible="false" entrySize="0x2">
 			<int16 name="00000005" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="00000063" offset="0xe8" visible="false" />
-		<undefined name="00000064" offset="0xeC" visible="false" />
-		<undefined name="00000065" offset="0xf0" visible="false" />
+		<reflexive name="Testo" offset="0xE8" visible="false" entrySize="0x2">
+			<int16 name="00000005" offset="0x0" visible="false" />
+		</reflexive>
 	</reflexive>
 	<reflexive name="Unknown 61" offset="0x7A0" visible="false" entrySize="0x4">
 		<int16 name="Unknown" offset="0x0" visible="false" />
@@ -3654,11 +4395,12 @@
 	</reflexive>
 	<reflexive name="Vignettes" offset="0x854" visible="true" entrySize="0x118">
 		<stringid name="00000005" offset="0x0" visible="false" />
-		<undefined name="00000006" offset="0x4" visible="false" />
+		<stringid name="00000006" offset="0x4" visible="false" />
 		<undefined name="00000007" offset="0x8" visible="false" />
 		<undefined name="00000008" offset="0xC" visible="false" />
 		<undefined name="00000009" offset="0x10" visible="false" />
-		<int32 name="00000010" offset="0x14" visible="false" />
+		<int16 name="00000010" offset="0x14" visible="false" />
+		<int16 name="00000010" offset="0x16" visible="false" />
 		<undefined name="00000011" offset="0x18" visible="false" />
 		<ascii name="Blah" offset="0x1C" length="0x20" visible="true" />
 		<ascii name="Blah" offset="0x3C" length="0x20" visible="true" />
@@ -3676,7 +4418,7 @@
 			<stringid name="Name" offset="0x4" visible="false" />
 			<tagref name="Object" offset="0x8" visible="true" />
 			<stringid name="Object Name" offset="0x18" visible="false" />
-			<int32 name="Placement Index" offset="0x1C" visible="false" />
+			<int32 name="Unknown" offset="0x1C" visible="false" />
 			<int8 name="00000013" offset="0x20" visible="false" />
 			<int8 name="00000013" offset="0x21" visible="false" />
 			<int8 name="00000013" offset="0x22" visible="false" />
@@ -3800,7 +4542,7 @@
 	<tagref name="Mission HUD" offset="0x87C" visible="true" />
 	<tagref name="Required Resources" offset="0x88C" visible="true" />
 	<tagref name="Variant Globals" offset="0x89C" visible="true" />
-	<tagref name="00000373" offset="0x8aC" visible="true" />
+	<tagref name="Invalid Raster Bitmap" offset="0x8aC" visible="true" />
 	<undefined name="00000377" offset="0x8bC" visible="false" />
 	<undefined name="00000378" offset="0x8c0" visible="false" />
 	<undefined name="00000379" offset="0x8c4" visible="false" />
@@ -3809,17 +4551,11 @@
 	<int32 name="00000385" offset="0x8dC" visible="false" />
 	<undefined name="00000386" offset="0x8e0" visible="false" />
 	<undefined name="00000387" offset="0x8e4" visible="false" />
-	<ascii name="Inital Drop Name" offset="0x8E8" length="20" visible="true" />
+	<ascii name="Inital Drop Name" offset="0x8E8" length="0x20" visible="true" />
 	<undefined name="00000601" offset="0x908" visible="false" />
 	<undefined name="00000602" offset="0x90C" visible="false" />
-	<undefined name="00000603" offset="0x910" visible="false" />
-	<undefined name="00000604" offset="0x914" visible="false" />
-	<undefined name="00000605" offset="0x918" visible="false" />
-	<undefined name="00000606" offset="0x91C" visible="false" />
-	<undefined name="00000607" offset="0x920" visible="false" />
-	<undefined name="00000608" offset="0x924" visible="false" />
-	<undefined name="00000609" offset="0x928" visible="false" />
-	<undefined name="00000610" offset="0x92C" visible="false" />
+	<ascii name="Random Drop Name (1st char)" offset="0x910" length="0x1" visible="true" />
+	<ascii name="Random Drop Name (Rest)" offset="0x911" length="0x1F" visible="true" />
 	<ascii name="Player Ordnance Name" offset="0x930" length="0x20" visible="true" />
 	<undefined name="00000619" offset="0x950" visible="false" />
 	<undefined name="00000620" offset="0x954" visible="false" />

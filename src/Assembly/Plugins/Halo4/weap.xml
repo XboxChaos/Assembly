@@ -69,13 +69,12 @@
 	<undefined name="Horizontal Acceleration Scale" offset="0x30" visible="true" />
 	<undefined name="Vertical Acceleration Scale" offset="0x34" visible="true" />
 	<undefined name="Angular Acceleration Scale" offset="0x38" visible="true" />
-	<int8 name="Unknown" offset="0x3C" visible="false" />
-	<enum8 name="Lightmap Shadow Mode" offset="0x3D" visible="true">
+	<enum16 name="Lightmap Shadow Mode" offset="0x3C" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
 		<option name="Always" value="0x2" />
 		<option name="Unknown" value="0x3" />
-	</enum8>
+	</enum16>
 	<enum8 name="Sweetener Size" offset="0x3E" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
@@ -707,7 +706,7 @@
 		<option name="Collision" value="0x4A" />
 		<option name="Melee" value="0x4B" />
 		<option name="Explosion" value="0x4C" />
-		<option name="Blirthday Party Explosion" value="0x4E" />
+		<option name="Birthday Party Explosion" value="0x4E" />
 		<option name="Flag" value="0x4F" />
 		<option name="Bomb" value="0x50" />
 		<option name="Bomb Explosion" value="0x51" />
@@ -722,7 +721,7 @@
 		<option name="Pelican Chaingun" value="0x5E" />
 		<option name="Mantis" value="0x5F" />
 		<option name="Flag Sidearm" value="0x60" />
-		<option name="Melee 2" value="0x61" />
+		<option name="Flood Talon" value="0x61" />
 	</enum8>
 	<int8 name="00000243" offset="0x3aD" visible="false" />
 	<int16 name="Zoom Levels" offset="0x3aE" visible="true" />
@@ -738,11 +737,11 @@
 	<degree name="Auto Aim Angle" offset="0x3d4" visible="true" />
 	<undefined name="Auto Aim Range Long" offset="0x3d8" visible="true" />
 	<undefined name="Auto Aim Range Short" offset="0x3dC" visible="true" />
-	<undefined name="00000256" offset="0x3e0" visible="false" />
+	<undefined name="Auto Aim Safe Radius" offset="0x3e0" visible="true" />
 	<degree name="Magnetism Angle" offset="0x3e4" visible="true" />
 	<undefined name="Magnetism Range Long" offset="0x3e8" visible="true" />
 	<undefined name="Magnetism Range Short" offset="0x3eC" visible="true" />
-	<undefined name="00000260" offset="0x3f0" visible="false" />
+	<undefined name="Magnetism Safe Radius" offset="0x3f0" visible="true" />
 	<degree name="Deviation Angle" offset="0x3f4" visible="true" />
 	<undefined name="00000262" offset="0x3f8" visible="false" />
 	<undefined name="00000263" offset="0x3fC" visible="false" />
@@ -760,11 +759,11 @@
 		<degree name="Auto Aim Angle" offset="0x8" visible="true" />
 		<undefined name="Auto Aim Range Long" offset="0xC" visible="true" />
 		<undefined name="Auto Aim Range Short" offset="0x10" visible="true" />
-		<undefined name="00000010" offset="0x14" visible="false" />
+		<undefined name="Auto Aim Safe Radius" offset="0x14" visible="true" />
 		<degree name="Magnetism Angle" offset="0x18" visible="true" />
 		<undefined name="Magnetism Range Long" offset="0x1C" visible="true" />
 		<undefined name="Magnetism Range Short" offset="0x20" visible="true" />
-		<undefined name="00000014" offset="0x24" visible="false" />
+		<undefined name="Magnetism Safe Radius" offset="0x24" visible="true" />
 		<degree name="Deviation Angle" offset="0x28" visible="true" />
 		<undefined name="00000016" offset="0x2C" visible="false" />
 		<undefined name="00000017" offset="0x30" visible="false" />
@@ -857,12 +856,12 @@
 	<undefined name="00000328" offset="0x4fC" visible="false" />
 	<undefined name="00000330" offset="0x500" visible="false" />
 	<reflexive name="First Person" offset="0x504" visible="true" entrySize="0x28">
-		<tagRef name="Unknown" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
+		<tagRef name="Model" offset="0x0" visible="true" />
+		<tagRef name="Animation" offset="0x10" visible="true" />
+		<undefined name="FP Model FOV" offset="0x20" visible="true" />
+		<undefined name="FP Model Blur" offset="0x24" visible="true" />
 	</reflexive>
-	<tagref name="HUD" offset="0x510" visible="true" />
+	<tagref name="HUD UI" offset="0x510" visible="true" />
 	<tagref name="00000338" offset="0x520" visible="true" />
 	<reflexive name="Predicted Resources" offset="0x530" visible="true" entrySize="0x10">
 		<tagRef name="Resource" offset="0x0" visible="true" />
@@ -1079,7 +1078,7 @@
 		<int16 name="Rounds Per Shot" offset="0x3A" visible="true" />
 		<int16 name="Minimum Rounds Loaded" offset="0x3C" visible="true" />
 		<int16 name="Rounds Between Tracers" offset="0x3E" visible="true" />
-		<int32 name="Optional Barrel" offset="0x40" visible="true" />
+		<stringid name="Optional Barrel" offset="0x40" visible="true" />
 		<enum16 name="Prediction Type" offset="0x44" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Continuous" value="0x1" />
@@ -1108,8 +1107,8 @@
 		<reflexive name="Unknown" offset="0x6C" visible="false" entrySize="0x4">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
-		<undefined name="00000035" offset="0x78" visible="false" />
-		<degree name="Error Angle" offset="0x7C" visible="true" />
+		<degree name="Error Angle Lower Bound" offset="0x78" visible="true" />
+		<degree name="Error Angle Upper Bound" offset="0x7C" visible="true" />
 		<undefined name="Base Bloom Amount" offset="0x80" visible="true" />
 		<undefined name="Bloom Increase Per-Shot" offset="0x84" visible="true" />
 		<undefined name="Reload Bloom Reset Time" offset="0x88" visible="true" />
@@ -1214,7 +1213,7 @@
 			<option name="Collision" value="0x4A" />
 			<option name="Melee" value="0x4B" />
 			<option name="Explosion" value="0x4C" />
-			<option name="Blirthday Party Explosion" value="0x4E" />
+			<option name="Birthday Party Explosion" value="0x4E" />
 			<option name="Flag" value="0x4F" />
 			<option name="Bomb" value="0x50" />
 			<option name="Bomb Explosion" value="0x51" />
@@ -1229,7 +1228,7 @@
 			<option name="Pelican Chaingun" value="0x5E" />
 			<option name="Mantis" value="0x5F" />
 			<option name="Flag Sidearm" value="0x60" />
-			<option name="Melee 2" value="0x61" />
+			<option name="Flood Talon" value="0x61" />
 		</enum8>
 		<int8 name="00000073" offset="0x10D" visible="false" />
 		<int16 name="00000073" offset="0x10E" visible="false" />
@@ -1247,8 +1246,8 @@
 		<undefined name="00000097" offset="0x16C" visible="true" />
 		<undefined name="Firing Effect Reset Speed" offset="0x170" visible="true" />
 		<undefined name="00000099" offset="0x174" visible="true" />
-		<undefined name="00000100" offset="0x178" visible="true" />
-		<undefined name="00000101" offset="0x17C" visible="true" />
+		<undefined name="Spin-Up Acceleration Rate" offset="0x178" visible="true" />
+		<undefined name="Spin-Up Deceleration Rate" offset="0x17C" visible="true" />
 		<undefined name="Bloom Reset Speed" offset="0x180" visible="true" />
 		<reflexive name="Firing Effects" offset="0x184" visible="true" entrySize="0xf4">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" />
@@ -1260,7 +1259,7 @@
 			<tagref name="00000022" offset="0x44" visible="true" />
 			<tagref name="Firing Response" offset="0x54" visible="true" />
 			<tagref name="00000030" offset="0x64" visible="true" />
-			<tagref name="Missfire Response" offset="0x74" visible="true" />
+			<tagref name="Misfire Response" offset="0x74" visible="true" />
 			<tagref name="Empty Response" offset="0x84" visible="true" />
 			<tagref name="00000042" offset="0x94" visible="true" />
 			<tagref name="00000046" offset="0xa4" visible="true" />

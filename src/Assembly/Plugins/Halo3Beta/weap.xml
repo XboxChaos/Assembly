@@ -44,12 +44,12 @@
 	<float32 name="Bounding Offset Y" offset="0xC" visible="true" />
 	<float32 name="Bounding Offset Z" offset="0x10" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
-	<int8 name="Unknown" offset="0x18" visible="false" />
-	<enum8 name="Lightmap Shadow Mode Size" offset="0x19" visible="true">
+	<enum16 name="Lightmap Shadow Mode Size" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
 		<option name="Always" value="0x2" />
-	</enum8>
+		<option name="Unknown" value="0x3" />
+	</enum16>
 	<enum8 name="Sweetener Size" offset="0x1A" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
@@ -171,7 +171,8 @@
 	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x20">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
 		<stringId name="Marker" offset="0x10" visible="true" />
-		<stringId name="Change Color" offset="0x14" visible="true" />
+		<int16 name="Change Color" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringId name="Primary Scale/Function" offset="0x18" visible="true" />
 		<stringId name="Secondary Scale/Function" offset="0x1C" visible="true" />
 	</reflexive>
@@ -392,15 +393,15 @@
 	<tagRef name="Unknown" offset="0x22C" visible="true" />
 	<tagRef name="Unknown" offset="0x23C" visible="true" />
 	<tagRef name="Unknown" offset="0x24C" visible="true" />
-	<float32 name="Damage Pyramid Angles (y)" offset="0x25C" visible="true" />
-	<float32 name="Damage Pyramid Angles (p)" offset="0x260" visible="true" />
+	<degree name="Damage Pyramid Angles Yaw" offset="0x25C" visible="true" />
+	<degree name="Damage Pyramid Angles Pitch" offset="0x260" visible="true" />
 	<float32 name="Damage Pyramid Depth" offset="0x264" visible="true" />
-	<tagRef name="Melee Damage" offset="0x268" visible="true" />
-	<tagRef name="Trigger Melee" offset="0x278" visible="true" />
-	<tagRef name="Melee Damage" offset="0x288" visible="true" />
-	<tagRef name="Trigger Melee" offset="0x298" visible="true" />
-	<tagRef name="Smash Melee Response" offset="0x2A8" visible="true" />
-	<tagRef name="Trigger Melee" offset="0x2B8" visible="true" />
+	<tagRef name="1st Hit Damage" offset="0x268" visible="true" />
+	<tagRef name="1st Hit Response" offset="0x278" visible="true" />
+	<tagRef name="2nd Hit Damage" offset="0x288" visible="true" />
+	<tagRef name="2nd Hit Response" offset="0x298" visible="true" />
+	<tagRef name="3rd Hit Damage" offset="0x2A8" visible="true" />
+	<tagRef name="3rd Hit Response" offset="0x2B8" visible="true" />
 	<tagRef name="Unknown" offset="0x2C8" visible="true" />
 	<tagRef name="Unknown" offset="0x2D8" visible="true" />
 	<tagRef name="Unknown" offset="0x2E8" visible="true" />
@@ -410,10 +411,10 @@
 	<int16 name="Zoom Levels" offset="0x30A" visible="true" />
 	<float32 name="Min Zoom" offset="0x30C" visible="true" />
 	<float32 name="Max Zoom" offset="0x310" visible="true" />
-	<float32 name="Auto Aim Angle (Radians)" offset="0x314" visible="true" />
+	<degree name="Auto Aim Angle" offset="0x314" visible="true" />
 	<float32 name="Auto Aim Range Long" offset="0x318" visible="true" />
 	<float32 name="Auto Aim Range Short" offset="0x31C" visible="true" />
-	<float32 name="Magnetism Angle (Radians)" offset="0x320" visible="true" />
+	<degree name="Magnetism Angle" offset="0x320" visible="true" />
 	<float32 name="Magnetism Range Long" offset="0x324" visible="true" />
 	<float32 name="Magnetism Range Short" offset="0x328" visible="true" />
 	<undefined name="Unknown" offset="0x32C" visible="false" />
@@ -422,14 +423,14 @@
 	<undefined name="Unknown" offset="0x338" visible="false" />
 	<undefined name="Unknown" offset="0x33C" visible="false" />
 	<undefined name="Unknown" offset="0x340" visible="false" />
-	<enum16 name="Movement Modifier" offset="0x344" visible="true">
+	<enum16 name="Movement Penalty Condition" offset="0x344" visible="true">
 		<option name="Always" value="0x0" />
 		<option name="Zoomed Only" value="0x1" />
 		<option name="Zoomed or Reload Only" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x346" visible="false" />
-	<float32 name="Movement Reduction X" offset="0x348" visible="true" />
-	<float32 name="Movement Reduction Y" offset="0x34C" visible="true" />
+	<float32 name="Movement Penalty X" offset="0x348" visible="true" />
+	<float32 name="Movement Penalty Y" offset="0x34C" visible="true" />
 	<float32 name="AI Scariness" offset="0x350" visible="true" />
 	<undefined name="Power-On Time" offset="0x354" visible="true" />
 	<undefined name="Power-Off Time" offset="0x358" visible="true" />
@@ -476,10 +477,10 @@
 	</reflexive>
 	<reflexive name="Magazines" offset="0x410" visible="true" entrySize="0x80">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<int16 name="rounds recharged" offset="0x4" visible="true" />
-		<int16 name="rounds total initial" offset="0x6" visible="true" />
-		<int16 name="rounds total maximum" offset="0x8" visible="true" />
-		<int16 name="rounds reloaded" offset="0xA" visible="true" />
+		<int16 name="Rounds Recharged" offset="0x4" visible="true" />
+		<int16 name="Rounds Total Initial" offset="0x6" visible="true" />
+		<int16 name="Rounds Total Maximum" offset="0x8" visible="true" />
+		<int16 name="Rounds Reloaded" offset="0xA" visible="true" />
 		<int16 name="Max Rounds Held" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0xE" visible="true" />
 		<float32 name="Reload Time In Seconds" offset="0x10" visible="true" />
@@ -643,7 +644,7 @@
 		<float32 name="Fire Recovery Time (seconds)" offset="0x20" visible="true" />
 		<float32 name="Soft Recovery Fraction" offset="0x24" visible="true" />
 		<int16 name="Magazine" offset="0x28" visible="true" />
-		<int16 name="Rounds per Shot" offset="0x2A" visible="true" />
+		<int16 name="Rounds Per Shot" offset="0x2A" visible="true" />
 		<int16 name="Minimum Rounds Loaded" offset="0x2C" visible="true" />
 		<int16 name="Rounds Between Tracers" offset="0x2E" visible="true" />
 		<stringid name="Optional Barrel Marker Name" offset="0x30" visible="true" />
@@ -679,7 +680,7 @@
 			<option name="Fan" value="0x1" />
 		</enum16>
 		<int16 name="Projectiles per Shot" offset="0x76" visible="true" />
-		<float32 name="Distributation Angle (radians)" offset="0x7C" visible="true" />
+		<float32 name="Distribution Angle (radians)" offset="0x7C" visible="true" />
 		<float32 name="Unknwon" offset="0x80" visible="true" />
 		<float32 name="Unknown" offset="0x84" visible="true" />
 		<reflexive name="Charge Levels" offset="0x88" visible="true" entrySize="0xC">
@@ -715,9 +716,9 @@
 		<reflexive name="Firing Effects" offset="0x114" visible="true" entrySize="0x94">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" />
-			<tagRef name="Firing Effect" offset="0x4" visible="true" />
-			<tagRef name="Misfire Effect?" offset="0x14" visible="true" />
-			<tagRef name="Unknown" offset="0x24" visible="false" />
+			<tagRef name="Firing" offset="0x4" visible="true" />
+			<tagRef name="Misfire" offset="0x14" visible="true" />
+			<tagRef name="Empty" offset="0x24" visible="true" />
 			<tagRef name="Unknown" offset="0x34" visible="false" />
 			<tagRef name="Unknown" offset="0x44" visible="false" />
 			<tagRef name="Unknown" offset="0x54" visible="false" />
@@ -737,11 +738,11 @@
 	<tagRef name="Depleted Weapon" offset="0x46C" visible="true" />
 	<tagRef name="Depleted  Effect" offset="0x47C" visible="true" />
 	<undefined name="Unknown" offset="0x48C" visible="false" />
-	<float32 name="FP Position (x)" offset="0x490" visible="true" />
-	<float32 name="FP Position (y)" offset="0x494" visible="true" />
-	<float32 name="FP Position (z)" offset="0x498" visible="true" />
-	<undefined name="Scope Size (i)" offset="0x49C" visible="true" />
-	<undefined name="Scope Size (j)" offset="0x4A0" visible="true" />
+	<degree name="FP Offset I" offset="0x490" visible="true" />
+	<degree name="FP Offset J" offset="0x494" visible="true" />
+	<degree name="FP Offset K" offset="0x498" visible="true" />
+	<degree name="FP Scope Size I" offset="0x49C" visible="true" />
+	<degree name="FP Scope Size J" offset="0x4A0" visible="true" />
 	<undefined name="Unknown" offset="0x4A4" visible="false" />
 	<undefined name="Unknown" offset="0x4A8" visible="false" />
 	<float32 name="Zoom FoV Transition Time (DpS^2)" offset="0x4AC" visible="true" />

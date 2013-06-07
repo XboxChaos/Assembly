@@ -66,13 +66,12 @@
 	<float32 name="Horizontal Acceleration Scale" offset="0x18" visible="true" />
 	<float32 name="Vertical Acceleration Scale" offset="0x1C" visible="true" />
 	<float32 name="Angular Acceleration Scale" offset="0x20" visible="true" />
-	<int8 name="Unknown" offset="0x24" visible="false" />
-	<enum8 name="Lightmap Shadow Mode Size" offset="0x25" visible="true">
+	<enum16 name="Lightmap Shadow Mode Size" offset="0x24" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
 		<option name="Always" value="0x2" />
 		<option name="Unknown" value="0x3" />
-	</enum8>
+	</enum16>
 	<enum8 name="Sweetener Size" offset="0x26" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
@@ -629,11 +628,11 @@
 	<degree name="Auto Aim Angle" offset="0x308" visible="true" />
 	<float32 name="Auto Aim Range Long" offset="0x30C" visible="true" />
 	<float32 name="Auto Aim Range Short" offset="0x310" visible="true" />
-	<undefined name="Unknown" offset="0x314" visible="false" />
+	<float32 name="Auto Aim Safe Radius" offset="0x314" visible="false" />
 	<degree name="Magnetism Angle" offset="0x318" visible="true" />
 	<float32 name="Magnetism Range Long" offset="0x31C" visible="true" />
 	<float32 name="Magnetism Range Short" offset="0x320" visible="true" />
-	<float32 name="Unknown" offset="0x324" visible="true" />
+	<float32 name="Magnetism Safe Radius" offset="0x324" visible="true" />
 	<degree name="Deviation Angle" offset="0x328" visible="true" />
 	<undefined name="Unknown" offset="0x32C" visible="false" />
 	<undefined name="Unknown" offset="0x330" visible="false" />
@@ -655,14 +654,14 @@
 	<undefined name="Unknown" offset="0x354" visible="false" />
 	<undefined name="Unknown" offset="0x358" visible="false" />
 	<undefined name="Unknown" offset="0x35C" visible="false" />
-	<enum16 name="Movement Modifier" offset="0x360" visible="true">
+	<enum16 name="Movement Penalty Condition" offset="0x360" visible="true">
 		<option name="Always" value="0x0" />
 		<option name="Zoomed Only" value="0x1" />
 		<option name="Zoomed or Reload Only" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x362" visible="false" />
-	<float32 name="Movement Reduction X" offset="0x364" visible="true" />
-	<float32 name="Movement Reduction Y" offset="0x368" visible="true" />
+	<float32 name="Movement Penalty X" offset="0x364" visible="true" />
+	<float32 name="Movement Penalty Y" offset="0x368" visible="true" />
 	<float32 name="AI Scariness" offset="0x36C" visible="true" />
 	<float32 name="Weapon Power-On Time" offset="0x370" visible="true" />
 	<float32 name="Weapon Power-Off Time" offset="0x374" visible="true" />
@@ -700,7 +699,7 @@
 		<tagRef name="Model" offset="0x0" visible="true" />
 		<tagRef name="Animation" offset="0x10" visible="true" />
 	</reflexive>
-	<tagRef name="Hud UI" offset="0x408" visible="true" />
+	<tagRef name="HUD UI" offset="0x408" visible="true" />
 	<tagRef name="Unknown" offset="0x418" visible="true" />
 	<reflexive name="Predicted Resources" offset="0x41C" visible="false" entrySize="0x10">
 		<tagRef name="Resource" offset="0x0" visible="false" />
@@ -913,7 +912,7 @@
 		<int16 name="Rounds Per Shot" offset="0x3A" visible="true" />
 		<int16 name="Minimum Rounds Loaded" offset="0x3C" visible="true" />
 		<int16 name="Rounds Between Tracers" offset="0x3E" visible="true" />
-		<int32 name="Optional Barrel" offset="0x40" visible="true" />
+		<stringid name="Optional Barrel" offset="0x40" visible="true" />
 		<enum16 name="Prediction Type" offset="0x44" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Continuous" value="0x1" />
@@ -939,21 +938,16 @@
 			<option name="Fan" value="0x1" />
 		</enum16>
 		<int16 name="Projectiles per Shot" offset="0x6A" visible="true" />
-		<float32 name="Unknown" offset="0x6C" visible="false" />
-		<degree name="Error Angle" offset="0x70" visible="true" />
+		<degree name="Error Angle Lower Bound" offset="0x6C" visible="true" />
+		<degree name="Error Angle Upper Bound" offset="0x70" visible="true" />
 		<float32 name="Base Bloom Amount" offset="0x74" visible="true" />
 		<float32 name="Bloom Increment Per-Shot" offset="0x78" visible="true" />
 		<float32 name="Reload Bloom Reset Time" offset="0x7C" visible="true" />
 		<float32 name="Weapon Switch Bloom Reset Time" offset="0x80" visible="true" />
 		<float32 name="Zoom Bloom Reset Time" offset="0x84" visible="true" />
 		<float32 name="Jump Bloom Reset Time" offset="0x88" visible="true" />
-		<reflexive name="Bloom Data" offset="0x8C" visible="true" entrySize="0x48">
+		<reflexive name="Bloom Data" offset="0x8C" visible="true" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x14" visible="true" />
-			<int16 name="Unknown" offset="0x16" visible="true" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
 		<reflexive name="Unknown 13" offset="0x98" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
@@ -965,21 +959,11 @@
 		<undefined name="struct" offset="0xB4" visible="false" />
 		<undefined name="struct" offset="0xB8" visible="false" />
 		<undefined name="Unknown" offset="0xBC" visible="false" />
-		<reflexive name="Unknown 14" offset="0xC0" visible="false" entrySize="0x48">
+		<reflexive name="Unknown 14" offset="0xC0" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x16" visible="false" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 15" offset="0xCC" visible="false" entrySize="0x48">
+		<reflexive name="Unknown 15" offset="0xCC" visible="false" entrySize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Unknown" offset="0x16" visible="false" />
-			<tagRef name="Unknown" offset="0x18" visible="true" />
-			<tagRef name="Unknown" offset="0x28" visible="true" />
-			<tagRef name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
 		<undefined name="Unknown" offset="0xD8" visible="false" />
 		<undefined name="Unknown" offset="0xDC" visible="false" />
@@ -1075,8 +1059,8 @@
 		<undefined name="Unknown" offset="0x160" visible="false" />
 		<float32 name="Firing Effect Reset Speed" offset="0x164" visible="true" />
 		<float32 name="Unknown" offset="0x168" visible="false" />
-		<float32 name="Unknown" offset="0x16C" visible="false" />
-		<float32 name="Unknown" offset="0x170" visible="false" />
+		<float32 name="Spin-Up Acceleration Rate" offset="0x16C" visible="true" />
+		<float32 name="Spin-Up Deceleration Rate" offset="0x170" visible="true" />
 		<float32 name="Bloom Reset Speed" offset="0x174" visible="true" />
 		<reflexive name="Firing Effects" offset="0x178" visible="true" entrySize="0xC4">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" />
@@ -1106,7 +1090,7 @@
 	<tagRef name="Depleted Properties" offset="0x490" visible="true" />
 	<tagRef name="Depleted Weapon" offset="0x4A0" visible="true" />
 	<tagRef name="Depleted Material Effects" offset="0x4B0" visible="true" />
-	<float32 name="Hammer Energy Per Use" offset="0x4C0" visible="false" />
+	<float32 name="Hammer Energy Per Use" offset="0x4C0" visible="true" />
 	<float32 name="Unknown" offset="0x4C4" visible="false" />
 	<undefined name="Unknown" offset="0x4C8" visible="false" />
 	<degree name="FP Offset I" offset="0x4CC" visible="true" />
