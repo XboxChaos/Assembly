@@ -89,7 +89,7 @@
 	<float32 name="Dynamic Light Sphere X Offset" offset="0x30" visible="true" />
 	<float32 name="Dynamic Light Sphere Y Offset" offset="0x34" visible="true" />
 	<float32 name="Dynamic Light Sphere Z Offset" offset="0x38" visible="true" />
-	<stringid name="Generic HUD Text" offset="0x3C" visible="false" />
+	<stringid name="Generic HUD Text" offset="0x3C" visible="true" />
 	<tagRef name="Generic Name List" offset="0x40" visible="true" />
 	<tagRef name="Generic Service Tag List" offset="0x50" visible="true" />
 	<stringid name="Default Variant" offset="0x60" visible="true" />
@@ -98,16 +98,16 @@
 	<tagRef name="Collision Damage" offset="0x84" visible="true" />
 	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
 	<reflexive name="Early Mover Properties" offset="0xA4" visible="true" entrySize="0x28">
-		<stringid name="A Node" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+		<stringid name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
 	</reflexive>
 	<tagRef name="Creation Effect" offset="0xB0" visible="true" />
 	<tagRef name="Material Effect" offset="0xC0" visible="true" />
@@ -207,10 +207,10 @@
 		<stringid name="Import Name" offset="0x4" visible="true" />
 		<stringid name="Export Name" offset="0x8" visible="true" />
 		<stringid name="Turn Off With" offset="0xC" visible="true" />
-		<int32 name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<stringid  name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Data" offset="0x18" visible="true" />
-		<stringid name="Scale By..." offset="0x2C" visible="true" />
+		<stringid name="Scale By" offset="0x2C" visible="true" />
 		<reflexive name="Unknown 2" offset="0x30" visible="false" entrySize="0x18">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<float32 name="Unknown" offset="0x4" visible="false" />
@@ -219,10 +219,10 @@
 			<float32 name="Unknown" offset="0x10" visible="false" />
 			<float32 name="Unknown" offset="0x14" visible="false" />
 		</reflexive>
-		<int32 name="Unknown" offset="0x3C" visible="false" />
+		<int32 name="'Function Related' Index" offset="0x3C" visible="true" />
 	</reflexive>
-	<reflexive name="Function Related" offset="0xF8" visible="false" entrySize="0x4">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Function Related" offset="0xF8" visible="true" entrySize="0x4">
+		<int32 name="Function Index" offset="0x0" visible="true" />
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0x104" visible="true" />
 	<int16 name="Unknown" offset="0x106" visible="false" />
@@ -255,14 +255,14 @@
 		</reflexive>
 	</reflexive>
 	<reflexive name="Jet Wash" offset="0x120" visible="true" entrySize="0x24">
-		<int32 name="Unknown" offset="0x0" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" />
 		<float32 name="Unknown" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="true" />
 		<float32 name="Unknown" offset="0x10" visible="true" />
-		<float32 name="Unknown" offset="0x14" visible="true" />
-		<float32 name="Unknown" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="true" />
+		<degree name="Unknown" offset="0x14" visible="true" />
+		<degree name="Unknown" offset="0x18" visible="true" />
+		<degree name="Unknown" offset="0x1C" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0x12C" visible="true" entrySize="0x10">
@@ -319,11 +319,11 @@
 	<reflexive name="Predicted Resources" offset="0x144" visible="true" entrySize="0x8">
 		<int16 name="Type" offset="0x0" visible="true" />
 		<int16 name="Resource Index" offset="0x2" visible="true" />
-		<int32 name="Tag Index" offset="0x4" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
 	</reflexive>
-	<reflexive name="Gametype Attributes" offset="0x150" visible="true" entrySize="0xBC">
+	<reflexive name="Object Attributes" offset="0x150" visible="true" entrySize="0xBC">
 		<int8 name="Unknown" offset="0x0" visible="true" />
-		<enum8 name="Object Class" offset="0x1" visible="true">
+		<enum8 name="Type" offset="0x1" visible="true">
 			<option name="ordinary" value="0x0" />
 			<option name="weapon" value="0x1" />
 			<option name="grenade" value="0x2" />
@@ -353,14 +353,24 @@
 			<option name="kill volume" value="0x1A" />
 			<option name="cinematic camera position" value="0x1B" />
 		</enum8>
-		<int16 name="Unknown" offset="0x2" visible="true" />
+		<bitfield8 name="Teleporter Flags" offset="0x2" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x3" visible="true" />
 		<float32 name="Radius / Width" offset="0x4" visible="true" />
 		<float32 name="Length" offset="0x8" visible="true" />
 		<float32 name="Top" offset="0xC" visible="true" />
 		<float32 name="Bottom" offset="0x10" visible="true" />
 		<enum8 name="Shape" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
-			<option name="None/Armor Ability" value="0x1" />
+			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
@@ -394,7 +404,7 @@
 		<tagRef name="Shader 2" offset="0x4C" visible="true" />
 		<tagRef name="Unknown" offset="0x5C" visible="true" />
 		<tagRef name="Unknown" offset="0x6C" visible="true" />
-		<tagRef name="Unknown" offset="0x7C" visible="true" />
+		<tagRef name="Secondary Shader" offset="0x7C" visible="true" />
 		<tagRef name="Unknown" offset="0x8C" visible="true" />
 		<tagRef name="Unknown" offset="0x9C" visible="true" />
 		<tagRef name="Unknown" offset="0xAC" visible="true" />
@@ -443,15 +453,15 @@
 		<option name="Player" value="0x1" />
 		<option name="Human" value="0x2" />
 		<option name="Covenant" value="0x3" />
-		<option name="Attach Everyone" value="0x5" />
+		<option name="Attack Everyone" value="0x5" />
 	</enum16>
 	<enum16 name="Motion Sensor Blip Size" offset="0x17E" visible="true">
 		<option name="Medium" value="0x0" />
 		<option name="Small" value="0x1" />
 		<option name="Large" value="0x2" />
 	</enum16>
-	<float32 name="Turning Velocity Max" offset="0x180" visible="true" />
-	<float32 name="Turning Acceleration Max" offset="0x184" visible="true" />
+	<degree name="Turning Velocity Max" offset="0x180" visible="true" />
+	<degree name="Turning Acceleration Max" offset="0x184" visible="true" />
 	<float32 name="Casual Turing Modifer" offset="0x188" visible="true" />
 	<float32 name="Autoaim Width" offset="0x18C" visible="true" />
 	<bitfield32 name="Flags" offset="0x190" visible="true">
@@ -494,109 +504,92 @@
 	<float32 name="Mass" offset="0x1A0" visible="true" />
 	<stringId name="Living Material Name" offset="0x1A4" visible="true" />
 	<stringId name="Dead Material Name" offset="0x1A8" visible="true" />
-	<stringId name="Unknown" offset="0x1AC" visible="true" />
+	<int16 name="Living Global Material Index" offset="0x1AC" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0x1AE" visible="true" />
 	<reflexive name="Dead Sphere Shapes" offset="0x1B0" visible="true" entrySize="0x70">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<degree name="Rotation i i" offset="0x2A" visible="true" />
-		<degree name="Rotation i j" offset="0x2E" visible="true" />
-		<degree name="Rotation i k" offset="0x32" visible="true" />
-		<degree name="Rotation j i" offset="0x36" visible="true" />
-		<degree name="Rotation j j" offset="0x3A" visible="true" />
-		<degree name="Rotation j k" offset="0x3E" visible="true" />
-		<degree name="Rotation k i" offset="0x42" visible="true" />
-		<degree name="Rotation k j" offset="0x46" visible="true" />
-		<degree name="Rotation k k" offset="0x4A" visible="true" />
-		<degree name="Translation i" offset="0x4E" visible="true" />
-		<degree name="Translation j" offset="0x52" visible="true" />
-		<degree name="Translation  k" offset="0x56" visible="true" />
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
-		<float32 name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
 	<reflexive name="Pill Shapes" offset="0x1BC" visible="true" entrySize="0x60">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<degree name="Bottom i" offset="0x2A" visible="true" />
-		<degree name="Bottom j" offset="0x2E" visible="true" />
-		<degree name="Bottom k" offset="0x32" visible="true" />
-		<degree name="Top i" offset="0x36" visible="true" />
-		<degree name="Top j" offset="0x3A" visible="true" />
-		<degree name="Top k" offset="0x3E" visible="true" />
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Unknown" offset="0x48" visible="false" />
-		<float32 name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
-		<float32 name="Unknown" offset="0x58" visible="false" />
-		<float32 name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
 	</reflexive>
 	<reflexive name="Sphere Shapes" offset="0x1C8" visible="true" entrySize="0x70">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
-		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
-		<float32 name="Friction" offset="0xC" visible="true" />
-		<float32 name="Restitution" offset="0x10" visible="true" />
-		<float32 name="Volume" offset="0x14" visible="true" />
-		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<degree name="Rotation i i" offset="0x2A" visible="true" />
-		<degree name="Rotation i j" offset="0x2E" visible="true" />
-		<degree name="Rotation i k" offset="0x32" visible="true" />
-		<degree name="Rotation j i" offset="0x36" visible="true" />
-		<degree name="Rotation j j" offset="0x3A" visible="true" />
-		<degree name="Rotation j k" offset="0x3E" visible="true" />
-		<degree name="Rotation k i" offset="0x42" visible="true" />
-		<degree name="Rotation k j" offset="0x46" visible="true" />
-		<degree name="Rotation k k" offset="0x4A" visible="true" />
-		<degree name="Translation i" offset="0x4E" visible="true" />
-		<degree name="Translation j" offset="0x52" visible="true" />
-		<degree name="Translation  k" offset="0x56" visible="true" />
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
-		<float32 name="Unknown" offset="0x68" visible="false" />
+		<undefined name="Unknown" offset="0x68" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 	</reflexive>
 	<degree name="Max Slope Angle" offset="0x1D4" visible="true" />
@@ -636,7 +629,7 @@
 	<undefined name="Unknown" offset="0x274" visible="false" />
 	<undefined name="Unknown" offset="0x278" visible="false" />
 	<undefined name="Unknown" offset="0x27C" visible="false" />
-	<tagRef name="Unknown" offset="0x280" visible="true" />
+	<tagRef name="Weapon Effect" offset="0x280" visible="true" />
 	<undefined name="Unknown" offset="0x290" visible="false" />
 	<undefined name="Unknown" offset="0x294" visible="false" />
 	<undefined name="Unknown" offset="0x298" visible="false" />
@@ -650,5 +643,5 @@
 	<tagRef name="Unknown" offset="0x2C4" visible="true" />
 	<undefined name="Unknown" offset="0x2D4" visible="false" />
 	<undefined name="Unknown" offset="0x2D8" visible="false" />
-	<tagRef name="Unknown" offset="0x2DC" visible="true" />
+	<tagRef name="Destruction Effect" offset="0x2DC" visible="true" />
 </plugin>

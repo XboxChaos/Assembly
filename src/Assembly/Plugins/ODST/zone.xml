@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="ODST" baseSize="0x214">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -6,11 +6,13 @@
 		<revision author="-DeToX-" version="2">Mapped out the Raw Entry Table struct</revision>
 		<revision author="Lord Zedd" version="3">Matching Zonesets</revision>
 	</revisions>
-	<enum16 name="Map Type" offset="0x0" visible="true">
-		<option name="Campaign/Firefight" value="0x0" />
+	<enum8 name="Map Type" offset="0x0" visible="true">
+		<option name="Campaign" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
-	</enum16>
+	</enum8>
+	<int8 name="Unknown" offset="0x1" visible="false" />
+	<int16 name="Unknown" offset="0x2" visible="false" />
 	<int16 name="Flags" offset="0x2" visible="true" />
 	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x1C">
 		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
@@ -24,21 +26,41 @@
 		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
 		<stringid name="Name" offset="0x10" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<undefined name="Unknown" offset="0x20" visible="false" />
-	<undefined name="Unknown" offset="0x24" visible="false" />
-	<undefined name="Unknown" offset="0x28" visible="false" />
-	<undefined name="Unknown" offset="0x2C" visible="false" />
-	<undefined name="Unknown" offset="0x30" visible="false" />
-	<undefined name="Unknown" offset="0x34" visible="false" />
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
-	<undefined name="Unknown" offset="0x54" visible="false" />
+	<reflexive name="Compression Codecs" offset="0x1C" visible="true" entrySize="0x10">
+		<raw name="Guid" offset="0x18" size="0x10" visible="true"/>
+	</reflexive>
+	<undefined name="External Caches?" offset="0x28" visible="false" />
+	<undefined name="External Caches?" offset="0x2C" visible="false" />
+	<undefined name="External Caches?" offset="0x30" visible="false" />
+	<reflexive name="Raw Pages" offset="0x34" visible="true" entrySize="0x58">
+		<int16 name="Salt" offset="0x0" visible="true" />
+		<int8 name="Flags" offset="0x2" visible="true" />
+		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate.
+		</comment>
+		<int32 name="Block Offset" offset="0x8" visible="true" />
+		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
+		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
+		<int32 name="CRC Checksum" offset="0x14" visible="true" />
+		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true"/>
+		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true"/>
+		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true"/>
+		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
+		<int16 name="Unknown" offset="0x56" visible="true" />
+	</reflexive>
+	<undefined name="Sizes?" offset="0x40" visible="false" />
+	<undefined name="Sizes?" offset="0x44" visible="false" />
+	<undefined name="Sizes?" offset="0x48" visible="false" />
+	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x10">
+		<int16 name="Required Page Index" offset="0x0" visible="true" />
+		<int16 name="Optional Page Index" offset="0x2" visible="true" />
+		<int32 name="Required Segment Offset" offset="0x4" visible="true" />
+		<int32 name="Optional Segment Offset" offset="0x8" visible="true" />
+		<int16 name="Size DatumIndex 1" offset="0xC" visible="true" />
+		<int16 name="Size DatumIndex 2" offset="0xE" visible="true" />
+	</reflexive>
 	<reflexive name="Tag Resources" offset="0x58" visible="true" entrySize="0x40">
 		<tagRef name="Parent Tag" offset="0x0" visible="true" />
 		<uint16 name="Salt" offset="0x10" visible="true" />

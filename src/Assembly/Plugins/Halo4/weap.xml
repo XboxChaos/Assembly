@@ -28,39 +28,39 @@
 	<undefined name="00000013" offset="0x10" visible="false" />
 	<undefined name="00000014" offset="0x14" visible="false" />
 	<undefined name="00000015" offset="0x18" visible="false" />
-	<bitfield32 name="Flags" offset="0x1c" visible="true">
+	<bitfield32 name="Flags" offset="0x1C" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
-		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
-		<bit name="Preserves Initial Damage Owner" index="2" />
-		<bit name="Not A Pathfinding Obstacle" index="3" />
-		<bit name="Extension Of Parent" index="4" />
-		<bit name="Does Not Cause Collision Damage" index="5" />
-		<bit name="7" index="6" />
-		<bit name="8" index="7" />
-		<bit name="9" index="8" />
-		<bit name="10" index="9" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Not A Pathfinding Obstacle" index="7" />
+		<bit name="Extension Of Parent" index="8" />
+		<bit name="Does Not Cause Collision Damage" index="9" />
 		<bit name="Early Mover" index="10" />
 		<bit name="Early Mover Localized Physics" index="11" />
-		<bit name="Use Static Massive Lightmap Sample" index="12" />
-		<bit name="Object Scales Attachments" index="13" />
-		<bit name="Inherits Player's Appearance" index="14" />
-		<bit name="Non-Physical in Map Editor" index="15" />
-		<bit name="Object Is Always On Ceiling" index="16" />
-		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="17" />
-		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="18" />
-		<bit name="Does Not Collide With Camera" index="19" />
-		<bit name="Force Collide With Camera" index="20" />
-		<bit name="Damage Not Blocked By Obsructions" index="21" />
-		<bit name="Does Not Damage Breakable Surfaces" index="22" />
-		<bit name="24" index="23" />
-		<bit name="25" index="24" />
-		<bit name="26" index="25" />
-		<bit name="27" index="26" />
-		<bit name="28" index="27" />
-		<bit name="29" index="28" />
-		<bit name="30" index="29" />
-		<bit name="31" index="30" />
-		<bit name="32" index="31" />
+		<bit name="Object Scales Attachments" index="12" />
+		<bit name="Inherits Player's Appearance" index="13" />
+		<bit name="Non-Physical in Map Editor" index="14" />
+		<bit name="Object Is Always On Ceiling" index="15" />
+		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="16" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="17" />
+		<bit name="Does Not Collide With Camera" index="18" />
+		<bit name="Force Collide With Camera" index="19" />
+		<bit name="Damage Not Blocked By Obsructions" index="20" />
+		<bit name="Does Not Damage Breakable Surfaces" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<undefined name="Bounding Radius" offset="0x20" visible="true" />
 	<undefined name="Bounding Offset X" offset="0x24" visible="true" />
@@ -218,10 +218,10 @@
 		<stringid name="Import Name" offset="0x4" visible="true" />
 		<stringid name="Export Name" offset="0x8" visible="true" />
 		<stringid name="Turn Off With" offset="0xC" visible="true" />
-		<int32 name="Unknown" offset="0x10" visible="true" />
-		<uint32 name="Unknown" offset="0x14" visible="true" />
+		<stringid  name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Data" offset="0x18" visible="true" />
-		<stringid name="Scale By..." offset="0x2C" visible="true" />
+		<stringid name="Scale By" offset="0x2C" visible="true" />
 		<reflexive name="Unknown 2" offset="0x30" visible="true" entrySize="0x18">
 			<int32 name="Unknown" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="true" />
@@ -280,9 +280,9 @@
 		<uint32 name="Unknown" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<degree name="Unknown" offset="0x14" visible="true" />
+		<degree name="Unknown" offset="0x18" visible="true" />
+		<degree name="Unknown" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0x160" visible="true" entrySize="0x10">
@@ -336,11 +336,14 @@
 			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
-	<undefined name="struct here 6" offset="0x178" visible="false" />
-	<undefined name="struct here 6" offset="0x17C" visible="false" />
-	<undefined name="struct here 6" offset="0x180" visible="false" />
-	<reflexive name="Multiplayer Properties" offset="0x184" visible="true" entrySize="0xcc">
-		<enum16 name="Object Profile" offset="0x0" visible="true">
+	<reflexive name="Predicted Resources" offset="0x178" visible="true" entrySize="0x8">
+		<int16 name="Type" offset="0x0" visible="true" />
+		<int16 name="Resource Index" offset="0x2" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
+	</reflexive>
+	<reflexive name="Object Attributes" offset="0x184" visible="true" entrySize="0xCC">
+		<int8 name="00000000" offset="0x0" visible="false" />
+		<enum8 name="Type" offset="0x1" visible="true">
 			<option name="ordinary" value="0x0" />
 			<option name="weapon" value="0x1" />
 			<option name="grenade" value="0x2" />
@@ -377,8 +380,18 @@
 			<option name="random ordnance drop point" value="0x21" />
 			<option name="objective ordnance drop point" value="0x22" />
 			<option name="personal ordnance drop point" value="0x23" />
-		</enum16>
-		<int16 name="00000009" offset="0x2" visible="false" />
+		</enum8>
+		<bitfield8 name="Teleporter Flags" offset="0x2" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="00000009" offset="0x3" visible="false" />
 		<float32 name="Radius / Width" offset="0x4" visible="true" />
 		<float32 name="Length" offset="0x8" visible="true" />
 		<float32 name="Top" offset="0xC" visible="true" />
@@ -395,7 +408,7 @@
 		<int16 name="Spawn Time" offset="0x18" visible="true" />
 		<int16 name="Unknown Time" offset="0x1A" visible="true" />
 		<bitfield16 name="Flags" offset="0x1C" visible="true">
-			<bit name="1" index="0" />
+			<bit name="Editor Object" index="0" />
 			<bit name="Phased Physics" index="1" />
 			<bit name="3" index="2" />
 			<bit name="4" index="3" />
@@ -558,25 +571,7 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
-	<bitfield16 name="More Flags 1" offset="0x2D4" visible="true">
-		<bit name="Thrown Instead of Dropped" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Resets When Dropped" index="2" />
-		<bit name="Can Melee During Hold Event" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Uses Melee Energy" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10(Freezes When Shot)" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Cannot Be Swapped In" index="14" />
-		<bit name="Bit 15" index="15" />
-	</bitfield16>
-	<bitfield16 name="More Flags 2" offset="0x2D6" visible="true">
+	<bitfield32 name="More Flags" offset="0x2D4" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -593,9 +588,25 @@
 		<bit name="Bit 13" index="13" />
 		<bit name="Cannot Be Swapped Out" index="14" />
 		<bit name="Bit 15" index="15" />
-	</bitfield16>
-	<undefined name="Unknown" offset="0x2d8" visible="true" />
-	<undefined name="00000190" offset="0x2dC" visible="true" />
+		<bit name="Thrown Instead of Dropped" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Resets When Dropped" index="18" />
+		<bit name="Can Melee During Hold Event" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Uses Melee Energy" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26(Freezes When Shot)" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Cannot Be Swapped In" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<int32 name="Unknown" offset="0x2d8" visible="true" />
+	<int32 name="00000190" offset="0x2dC" visible="true" />
 	<undefined name="Turn On Time" offset="0x2e0" visible="true" />
 	<tagref name="00000192" offset="0x2e4" visible="true" />
 	<undefined name="00000196" offset="0x2f4" visible="true" />
@@ -822,7 +833,7 @@
 	<tagref name="Zoom In Sound" offset="0x4bC" visible="true" />
 	<tagref name="Zoom Out Sound" offset="0x4cC" visible="true" />
 	<undefined name="Camo Ding" offset="0x4dC" visible="true" />
-	<undefined name="00000321" offset="0x4e0" visible="false" />
+	<stringid name="Hand?" offset="0x4e0" visible="false" />
 	<stringid name="Weapon Class" offset="0x4e4" visible="true" />
 	<stringid name="Weapon Name" offset="0x4e8" visible="true" />
 	<enum8 name="Forerunner Class" offset="0x4EC" visible="true">
@@ -872,7 +883,7 @@
 			<bit name="Wastes Rounds When Reloaded" index="1" />
 			<bit name="Every Round Must Be Chambered" index="2" />
 			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
+			<bit name="Reload Uses No Clips" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
@@ -901,7 +912,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<int16 name="Rounds Recharged" offset="0x4" visible="true" />
+		<int16 name="Rounds Recharged Per Second" offset="0x4" visible="true" />
 		<int16 name="Initial Rounds" offset="0x6" visible="true" />
 		<int16 name="Initial Max Rounds (Unused?)" offset="0x8" visible="true" />
 		<int16 name="Clip Size" offset="0xA" visible="true" />

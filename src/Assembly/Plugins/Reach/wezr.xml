@@ -18,21 +18,21 @@
 			<int8 name="Immune to Headshots" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 			<int8 name="Immune to Assassinations" offset="0x8" visible="true" />
-			<int8 name="Unknown" offset="0x9" visible="false" />
+			<int8 name="Deathless" offset="0x9" visible="false" />
 			<int8 name="Unknown" offset="0xA" visible="false" />
 			<int8 name="Unknown" offset="0xB" visible="false" />
 		</reflexive>
 		<reflexive name="Weapons and Damage" offset="0x10" visible="true" entrySize="0x18">
 			<int8 name="Damage Modifier" offset="0x0" visible="true" />
 			<int8 name="Melee Modifier" offset="0x1" visible="true" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Grenade Regeneration" offset="0x2" visible="true" />
 			<int8 name="Weapon Pickup" offset="0x3" visible="true" />
 			<int8 name="Grenade Count" offset="0x4" visible="true" />
 			<int8 name="Infinite Ammo" offset="0x5" visible="true" />
 			<int8 name="Equipment Usage" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
-			<int8 name="Unknown" offset="0x8" visible="false" />
-			<int8 name="Unknown" offset="0x8" visible="false" />
+			<int8 name="Infinite Equipment" offset="0x8" visible="true" />
+			<int8 name="Unknown" offset="0x9" visible="false" />
 			<int8 name="Unknown" offset="0xA" visible="false" />
 			<int8 name="Unknown" offset="0xB" visible="false" />
 			<stringId name="Primary Weapon" offset="0xC" visible="true" />
@@ -46,11 +46,11 @@
 			<int8 name="Unknown" offset="0x3" visible="false" />
 			<int32 name="Jump Height" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Appearence" offset="0x28" visible="true" entrySize="0x8">
+		<reflexive name="Appearance" offset="0x28" visible="true" entrySize="0x8">
 			<int8 name="Active Camo" offset="0x0" visible="true" />
 			<int8 name="Waypoint" offset="0x1" visible="true" />
 			<int8 name="Visible Name" offset="0x2" visible="true" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int8 name="Aura" offset="0x3" visible="true" />
 			<int8 name="Forced Color" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
 			<int8 name="Unknown" offset="0x6" visible="false" />
@@ -63,11 +63,20 @@
 			<int8 name="Unknown" offset="0x3" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown 1" offset="0x10" visible="false" entrySize="0x10">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+	<reflexive name="AI Trait Profiles" offset="0x10" visible="true" entrySize="0x10">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Vision" offset="0x4" visible="true" />
+		<int8 name="Hearing" offset="0x5" visible="true" />
+		<int8 name="Luck" offset="0x6" visible="true" />
+		<int8 name="Shootiness" offset="0x7" visible="true" />
+		<int8 name="Grenades" offset="0x8" visible="true" />
+		<int8 name="Equipment Drop" offset="0x9" visible="true" />
+		<int8 name="Assassination Immunity" offset="0xA" visible="true" />
+		<int8 name="Headshot Immunity" offset="0xB" visible="true" />
+		<int8 name="Damage Resistance" offset="0xC" visible="true" />
+		<int8 name="Damage Modifier" offset="0xD" visible="true" />
+		<int8 name="Unknown" offset="0xE" visible="false" />
+		<int8 name="Unknown" offset="0xF" visible="false" />
 	</reflexive>
 	<reflexive name="Sandbox Variants" offset="0x1C" visible="true" entrySize="0x5C">
 		<stringid name="Variant Name" offset="0x0" visible="true" />
@@ -76,14 +85,14 @@
 			<bitfield8 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
-				<bit name="Round Resets *Everything Else*" index="2" />
+				<bit name="Round Resets Map" index="2" />
 				<bit name="Bit 3" index="3" />
 				<bit name="Bit 4" index="4" />
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
 			</bitfield8>
-			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Early Victory Win Count" offset="0x1" visible="true" />
 			<int8 name="Time Limit" offset="0x2" visible="true" />
 			<int8 name="Number of Rounds" offset="0x3" visible="true" />
 			<int8 name="Unknown" offset="0x4" visible="false" />
@@ -111,13 +120,13 @@
 				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
 			<int8 name="Suicide Penalty" offset="0x5" visible="true" />
 			<int8 name="Betrayal Penalty" offset="0x6" visible="true" />
 			<int8 name="Respawn Time Growth" offset="0x7" visible="true" />
 			<stringid name="Respawn Trait Profile" offset="0x8" visible="true" />
-			<int8 name="Unknown" offset="0xC" visible="false" />
+			<int8 name="Loadout Selection Time" offset="0xC" visible="true" />
 			<int8 name="Respawn Trait Duration" offset="0xD" visible="true" />
 			<int8 name="Unknown" offset="0xE" visible="false" />
 			<int8 name="Unknown" offset="0xF" visible="false" />
@@ -126,7 +135,7 @@
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Observers Enabled" index="0" />
 				<bit name="Team Changing Enabled" index="1" />
-				<bit name="Bit 2" index="2" />
+				<bit name="Balanced Team Changing" index="2" />
 				<bit name="Friendly Fire Enabled" index="3" />
 				<bit name="Betrayal Booting Enabled" index="4" />
 				<bit name="Bit 5" index="5" />
@@ -376,65 +385,52 @@
 			<colour32 name="UI Color" offset="0xA0" format="argb" visible="true" />
 		</reflexive>
 		<reflexive name="Loadouts" offset="0x44" visible="true" entrySize="0x10">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			<int8 name="Flags" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
 			<reflexive name="Sets" offset="0x4" visible="true" entrySize="0x4">
 				<stringid name="Set Name" offset="0x0" visible="true" />
 			</reflexive>
 		</reflexive>
 		<int16 name="Unknown" offset="0x50" visible="false" />
-		<int16 name="Unknown" offset="0x52" visible="false" />
-		<int16 name="Unknown" offset="0x54" visible="false" />
-		<int16 name="Unknown" offset="0x56" visible="false" />
+		<bitfield16 name="Flags" offset="0x52" visible="true">
+			<bit name="Unknown 1" index="0" />
+			<bit name="Unknown 2" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
+		<int16 name="Edit Mode" offset="0x54" visible="true" />
+		<int16 name="Respawn Time" offset="0x56" visible="true" />
 		<stringid name="Editor Trait Profile" offset="0x58" visible="true" />
 	</reflexive>
-	<reflexive name="Survival Variants" offset="0x28" visible="false" entrySize="0xB8">
+	<reflexive name="Survival Variants" offset="0x28" visible="true" entrySize="0xB8">
 		<stringid name="Variant Name" offset="0x0" visible="true" />
 		<stringid name="Variant Description" offset="0x4" visible="true" />
 		<reflexive name="General Settings" offset="0x8" visible="true" entrySize="0x8">
 			<bitfield8 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
-				<bit name="Round Resets *Everything Else*" index="2" />
+				<bit name="Round Resets Map" index="2" />
 				<bit name="Bit 3" index="3" />
 				<bit name="Bit 4" index="4" />
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
 			</bitfield8>
-			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Early Victory Win Count" offset="0x1" visible="true" />
 			<int8 name="Time Limit" offset="0x2" visible="true" />
 			<int8 name="Number of Rounds" offset="0x3" visible="true" />
 			<int8 name="Unknown" offset="0x4" visible="false" />
@@ -462,13 +458,13 @@
 				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
 			<int8 name="Suicide Penalty" offset="0x5" visible="true" />
 			<int8 name="Betrayal Penalty" offset="0x6" visible="true" />
 			<int8 name="Respawn Time Growth" offset="0x7" visible="true" />
 			<stringid name="Respawn Trait Profile" offset="0x8" visible="true" />
-			<int8 name="Unknown" offset="0xC" visible="false" />
+			<int8 name="Loadout Selection Time" offset="0xC" visible="true" />
 			<int8 name="Respawn Trait Duration" offset="0xD" visible="true" />
 			<int8 name="Unknown" offset="0xE" visible="false" />
 			<int8 name="Unknown" offset="0xF" visible="false" />
@@ -477,7 +473,7 @@
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Observers Enabled" index="0" />
 				<bit name="Team Changing Enabled" index="1" />
-				<bit name="Bit 2" index="2" />
+				<bit name="Balanced Team Changing" index="2" />
 				<bit name="Friendly Fire Enabled" index="3" />
 				<bit name="Betrayal Booting Enabled" index="4" />
 				<bit name="Bit 5" index="5" />
@@ -727,48 +723,18 @@
 			<colour32 name="UI Color" offset="0xA0" format="argb" visible="true" />
 		</reflexive>
 		<reflexive name="Loadouts" offset="0x44" visible="true" entrySize="0x10">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			<int8 name="Flags" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
 			<reflexive name="Sets" offset="0x4" visible="true" entrySize="0x4">
 				<stringid name="Set Name" offset="0x0" visible="true" />
 			</reflexive>
 		</reflexive>
 		<bitfield8 name="Scenario Flags" offset="0x50" visible="true">
 			<bit name="Hazards" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
+			<bit name="One Generator To Lose" index="1" />
+			<bit name="Random Generator Order" index="2" />
 			<bit name="Weapon Drops" index="3" />
 			<bit name="Ammo Crates" index="4" />
 			<bit name="Bit 5" index="5" />
@@ -790,12 +756,12 @@
 		<int16 name="Generator Count" offset="0x62" visible="true" />
 		<stringid name="Spartan Trait Profile" offset="0x64" visible="true" />
 		<stringid name="Elite Trait Profile" offset="0x68" visible="true" />
-		<stringid name="Unknown" offset="0x6C" visible="false" />
+		<stringid name="AI Trait Profile" offset="0x6C" visible="false" />
 		<reflexive name="Elite Respawn Settings" offset="0x70" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
 				<bit name="Sync Respawn With Team" index="0" />
-				<bit name="Quick Repawn Enabled" index="1" />
-				<bit name="Instant Respawn Disabled" index="2" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
 				<bit name="Respawn On Kill" index="3" />
 				<bit name="Bit 4" index="4" />
 				<bit name="Bit 5" index="5" />
@@ -811,19 +777,19 @@
 				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
 			<int8 name="Suicide Penalty" offset="0x5" visible="true" />
 			<int8 name="Betrayal Penalty" offset="0x6" visible="true" />
 			<int8 name="Respawn Time Growth" offset="0x7" visible="true" />
 			<stringid name="Respawn Trait Profile" offset="0x8" visible="true" />
-			<int8 name="Unknown" offset="0xC" visible="false" />
+			<int8 name="Loadout Selection Time" offset="0xC" visible="true" />
 			<int8 name="Respawn Trait Duration" offset="0xD" visible="true" />
 			<int8 name="Unknown" offset="0xE" visible="false" />
 			<int8 name="Unknown" offset="0xF" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x7C" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x7C" visible="false" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
 		<reflexive name="Rounds" offset="0x88" visible="true" entrySize="0x34">
 			<bitfield32 name="Round Skulls" offset="0x0" visible="true">
@@ -952,10 +918,15 @@
 		<reflexive name="Bonus Round Squads" offset="0xA0" visible="true" entrySize="0x4">
 			<stringid name="Enemy" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 13" offset="0xAC" visible="false" entrySize="0xC">
-			<stringid name="Unknown" offset="0x0" visible="false" />
-			<stringid name="Unknown" offset="0x4" visible="false" />
-			<stringid name="Unknown" offset="0x8" visible="false" />
+		<comment title="Custom Skulls">
+Chunk 0 - Red
+Chunk 1 - Yellow
+Chunk 2 - Blue
+		</comment>
+		<reflexive name="Custom Skull Traits" offset="0xAC" visible="true" entrySize="0xC">
+			<stringid name="Spartan Player Trait Profile" offset="0x0" visible="true" />
+			<stringid name="Elite Player Trait Profile" offset="0x4" visible="true" />
+			<stringid name="AI Trait Profile" offset="0x8" visible="true" />
 		</reflexive>
 	</reflexive>
 	<undefined name="Unknown" offset="0x34" visible="false" />

@@ -2684,13 +2684,14 @@
 				<stringId name="Name" offset="0x0" visible="true" />
 				<tagRef name="Assigned Object" offset="0x4" visible="true" />
 				<stringid name="Assigned Object Variant" offset="0x14" visible="true" />
-				<reflexive name="Related Tags" offset="0x18" visible="true" entrySize="0x4">
+				<comment title="Zoneset Information">When in non-Forge, non-essential objects need to be individually added to the zoneset during load. The following blocks tell the engine what to add.</comment>
+				<reflexive name="Tag Family Members To Add" offset="0x18" visible="true" entrySize="0x4">
 					<tagref name="Tag" offset="0x0" withClass="False" visible="true" />
 				</reflexive>
-				<reflexive name="Self - Unknown" offset="0x24" visible="true" entrySize="0x4">
+				<reflexive name="Immediate Tag To Add" offset="0x24" visible="true" entrySize="0x4">
 					<tagref name="Self" offset="0x0" withClass="False" visible="true" />
 				</reflexive>
-				<reflexive name="Related Resource Datums" offset="0x30" visible="true" entrySize="0x4">
+				<reflexive name="Raw Family Datums To Add" offset="0x30" visible="true" entrySize="0x4">
 					<uint16 name="[zone] Asset Salt" offset="0x0" visible="true" />
 					<uint16 name="[zone] Asset Index" offset="0x2" visible="true" />
 				</reflexive>
@@ -4064,7 +4065,7 @@
 		<ascii name="Unknown" offset="0x4" visible="true" length="0x100" />
 		<undefined name="00000071" offset="0x104" visible="false" />
 		<undefined name="00000072" offset="0x108" visible="false" />
-		<undefined name="00000073" offset="0x10C" visible="false" />
+		<int32 name="00000073" offset="0x10C" visible="false" />
 	</reflexive>
 	<tagref name="Map Strings" offset="0x6cC" visible="true" />
 	<undefined name="00000450" offset="0x6dC" visible="false" />
@@ -4527,7 +4528,7 @@
 			<ascii name="Easier To Read Version:" offset="0x0" length="0x256" visible="true" />
 		</reflexive>
 	</reflexive>
-	<tagref name="00000354" offset="0x860" visible="true" />
+	<tagref name="Location Names" offset="0x860" visible="true" />
 	<reflexive name="Unknown" offset="0x870" visible="false" entrySize="0x24">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
