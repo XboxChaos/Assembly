@@ -9,6 +9,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     {
         private TextDocument _document;
         private int _length;
+        private uint _dataAddress;
 	    private string _format;
 
         public RawData(string name, uint offset, uint address, string value, int length, uint pluginLine)
@@ -46,7 +47,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public uint DataAddress
 		{
-			get { return FieldAddress; }
+            get { return _dataAddress; }
+            set { _dataAddress = value; NotifyPropertyChanged("DataAddress"); NotifyPropertyChanged("DataAddressHex"); }
 		}
 
         public string DataAddressHex

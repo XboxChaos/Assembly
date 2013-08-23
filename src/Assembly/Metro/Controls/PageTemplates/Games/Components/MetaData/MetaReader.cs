@@ -242,6 +242,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitRawData(RawData field)
         {
             SeekToOffset(field.Offset);
+            field.DataAddress = field.FieldAddress;
             field.Value = FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 24);
         }
 
@@ -255,30 +256,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             field.DataAddress = pointer;
 
             // Check if the pointer is valid
-	        var offset = field.DataAddress;
-			if (_type == LoadType.File)
-				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
-            var metaStartOff = _cache.MetaArea.Offset;
-            var metaEndOff = metaStartOff + _cache.MetaArea.Size;
-            if (length > 0 && offset >= metaStartOff && offset + field.Length <= metaEndOff)
+            if (length > 0 && _cache.MetaArea.ContainsPointer(pointer))
             {
                 field.Length = length;
 
                 // Go to position
+                var offset = pointer;
+                if (_type == LoadType.File)
+                    offset = (uint)_cache.MetaArea.PointerToOffset(offset);
                 _reader.SeekTo(offset);
-				switch(field.Format)
-				{
-					default:
-						var data = _reader.ReadBlock(field.Length);
-						field.Value = FunctionHelpers.BytesToHexLines(data, 24);
-						break;
-					case "unicode":
-						field.Value = _reader.ReadUTF16(field.Length);
-						break;
-					case "asciiz":
-						field.Value = _reader.ReadAscii(field.Length);
-						break;
-				}
+
+                switch (field.Format)
+                {
+                    default:
+                        var data = _reader.ReadBlock(field.Length);
+                        field.Value = FunctionHelpers.BytesToHexLines(data, 24);
+                        break;
+                    case "unicode":
+                        field.Value = _reader.ReadUTF16(field.Length);
+                        break;
+                    case "asciiz":
+                        field.Value = _reader.ReadAscii(field.Length);
+                        break;
+                }
             }
             else
             {
