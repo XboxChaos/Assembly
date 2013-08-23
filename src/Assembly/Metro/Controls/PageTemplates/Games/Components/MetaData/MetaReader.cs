@@ -150,8 +150,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             EnumValue selected = null;
             foreach (EnumValue option in field.Values)
             {
-                if (option.Value == field.Value)
-                    selected = option;
+                // Typecast the field value and the option value based upon the enum type
+                switch (field.Type)
+                {
+                    case EnumType.Enum8:
+                        if ((sbyte)option.Value == (sbyte)field.Value)
+                            selected = option;
+                        break;
+                    case EnumType.Enum16:
+                        if ((short)option.Value == (short)field.Value)
+                            selected = option;
+                        break;
+                    case EnumType.Enum32:
+                        if (option.Value == field.Value)
+                            selected = option;
+                        break;
+                }
+                if (selected != null)
+                    break;
             }
             if (selected == null)
             {

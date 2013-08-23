@@ -416,7 +416,11 @@ namespace Blamite.Plugins
 
         private static int ParseInt(string str)
         {
-	        return str.StartsWith("0x") ? int.Parse(str.Substring(2), NumberStyles.HexNumber) : int.Parse(str);
+            if (str.StartsWith("0x"))
+                return int.Parse(str.Substring(2), NumberStyles.HexNumber);
+            if (str.StartsWith("-0x"))
+                return -int.Parse(str.Substring(3), NumberStyles.HexNumber);
+	        return int.Parse(str);
         }
 
 	    private static uint ParseUInt(string str)
