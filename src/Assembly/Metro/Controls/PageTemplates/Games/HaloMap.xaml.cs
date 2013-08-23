@@ -1,41 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.ComponentModel;
-using System.IO;
 using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
+using Assembly.Helpers;
 using Assembly.Helpers.Caching;
 using Assembly.Helpers.Net;
-using CloseableTabItemDemo;
-using Blamite.Blam.ThirdGen;
-using Blamite.IO;
-using Assembly.Metro.Dialogs;
-using Blamite.Util;
-using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
+using Assembly.Metro.Dialogs;
 using Assembly.Windows;
+using AvalonDock.Layout;
 using Blamite.Blam;
+using Blamite.Blam.Scripting;
+using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.IO;
 using Blamite.RTE;
 using Blamite.RTE.H2Vista;
-using XBDMCommunicator;
+using Blamite.Util;
+using CloseableTabItemDemo;
+using Microsoft.Win32;
 using Newtonsoft.Json;
-using Clipboard = System.Windows.Clipboard;
-using ContextMenu = System.Windows.Controls.ContextMenu;
-using MenuItem = System.Windows.Controls.MenuItem;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using TabControl = System.Windows.Controls.TabControl;
-using TextBox = System.Windows.Controls.TextBox;
-using TreeView = System.Windows.Controls.TreeView;
-using AvalonDock.Layout;
-using Blamite.Blam.Scripting;
+using XBDMCommunicator;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -218,7 +211,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                 // Build SID trie
                 _stringIDTrie = new Trie();
-                _stringIDTrie.AddRange(_cacheFile.StringIDs);
+                if (_cacheFile.StringIDs != null)
+                    _stringIDTrie.AddRange(_cacheFile.StringIDs);
 
                 Dispatcher.Invoke(new Action(delegate
 	                                  {
@@ -675,7 +669,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					          Title = "Assembly - Select a Tag Bookmark File",
 					          Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
 				          };
-			if (ofd.ShowDialog() != DialogResult.OK)
+			if (!(bool)ofd.ShowDialog())
 				return;
 
 			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
