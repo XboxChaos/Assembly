@@ -86,13 +86,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             if (!reflexive.HasChildren)
                 return;
 
+            if (index >= 0 && index < reflexive.Length && reflexive.Pages[index] == _lastPage)
+                return;
+
             UnloadPage();
-            if (index < 0)
+            if (index < 0 || index >= reflexive.Length)
             {
                 _lastPage = null;
                 return;
             }
-
+            
             _lastPage = reflexive.Pages[index];
             for (int i = 0; i < _lastPage.Fields.Length; i++)
             {
@@ -432,10 +435,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
                 // Load the new page in
                 flattenedField.LoadPage(reflexive, reflexive.CurrentIndex);
-                RecursiveLoad(flattenedField.LoadedFields);
 
                 // Read any non-cached fields in the page
                 _reader.ReadReflexiveChildren(reflexive);
+                RecursiveLoad(flattenedField.LoadedFields);
 
                 _tracker.Enabled = true;
                 _loading = false;

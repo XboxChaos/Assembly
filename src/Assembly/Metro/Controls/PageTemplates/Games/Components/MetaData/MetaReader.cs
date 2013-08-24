@@ -46,7 +46,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
             }
 
-            // Read its contents if it has changed (or if change detection is disabled)
+            // Read its contents if it hasn't changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
                 field.Accept(this);
 
