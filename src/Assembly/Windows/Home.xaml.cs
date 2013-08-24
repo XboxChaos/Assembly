@@ -542,12 +542,6 @@ namespace Assembly.Windows
 				if (tab != null && tab.Title == "Start Page")
 					((StartPage)tab.Content).UpdateRecents();
 
-				// Check if the tab is a HaloMap
-				if (tab != null && tab.Content != null && tab.Content is HaloMap)
-					Settings.selectedHaloMap = (HaloMap)tab.Content;
-				else
-					Settings.selectedHaloMap = null;
-
 				if (tab == null)
 				{
 					documentManager.SelectedContentIndex = 0;

@@ -18,6 +18,10 @@
             <TextBlock Text="{Binding TagFileName}" />
         </DataTemplate>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:tagValue.JumpToCommand}"
+                        CanExecute="CanExecuteJumpToCommand" />
+    </UserControl.CommandBindings>
     <Grid>
         <StackPanel Orientation="Horizontal">
             <TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}" Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0" TextTrimming="CharacterEllipsis"/>
@@ -36,7 +40,8 @@
                       SelectedItem="{Binding Value, Mode=TwoWay}"
                       SelectionChanged="cbTagEntry_SelectionChanged"/>
 
-            <Button x:Name="btnJumpToTag" Content="Jump To" Margin="10,0,0,0" Width="75" Click="btnJumpToTag_Click" Visibility="{Binding ShowJumpTo}" />
+            <Button x:Name="btnJumpToTag" Content="Jump To" Margin="10,0,0,0" Width="75" Visibility="{Binding ShowJumpTo}"
+                    Command="{x:Static local:tagValue.JumpToCommand}" CommandParameter="{Binding Value}" CommandTarget="{Binding ElementName=control}"/>
         </StackPanel>
     </Grid>
 </UserControl>

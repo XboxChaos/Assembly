@@ -21,6 +21,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
     /// </summary>
     public partial class tagValue : UserControl
     {
+        public static RoutedCommand JumpToCommand = new RoutedCommand();
+
         public tagValue()
         {
             InitializeComponent();
@@ -33,20 +35,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
             btnJumpToTag.IsEnabled = enable;
         }
 
-        private void btnJumpToTag_Click(object sender, RoutedEventArgs e)
-        {
-            // Jump to tag
-            if (Settings.selectedHaloMap != null)
-            {
-                if (cbTagClass.SelectedIndex > 0)
-                    Settings.selectedHaloMap.CreateTag((TagEntry)cbTagEntry.SelectionBoxItem);
-            }
-        }
-
         private void cbTagEntry_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbTagEntry.SelectedIndex < 0 && cbTagClass.SelectedIndex > 0)
                 cbTagEntry.SelectedIndex = 0;
+        }
+
+        private void CanExecuteJumpToCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            // hack so that the button is enabled by default
+            e.CanExecute = true;
         }
     }
 

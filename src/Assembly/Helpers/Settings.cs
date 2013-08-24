@@ -206,7 +206,6 @@ namespace Assembly.Helpers
 		public static bool defaultAMP = false;
 
         public static Home homeWindow = null;
-        public static HaloMap selectedHaloMap = null;
         public static Xbdm xbdm = null;
 
 		public enum TagOpenMode

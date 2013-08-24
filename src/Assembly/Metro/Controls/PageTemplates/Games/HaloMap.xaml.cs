@@ -1254,5 +1254,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
+
+        private void ExecutedJumpToCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            var tag = e.Parameter as TagEntry;
+            if (tag != null)
+                CreateTag(tag);
+        }
 	}
 }
