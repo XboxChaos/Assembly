@@ -321,7 +321,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             
             TagEntry tag = null;
             if (index.IsValid && index.Index < field.Tags.Entries.Count)
+            {
                 tag = field.Tags.Entries[index.Index];
+                if (tag.RawTag.Index != index)
+                    tag = null;
+            }
 
             if (tag != null)
             {
