@@ -95,6 +95,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
         }
 
+		private EndianStream skipExifData(EndianStream image)
+        {
+            byte[] _header = new byte[2];
+            _header[0] = (byte)image.ReadByte();
+            _header[1] = (byte)image.ReadByte();
+
+            while(_header[0] == 0xFF && (_header[1] >= 0xE0 && _header[1] <= 0xEF))
+            {
+                int _length = image.ReadByte();
+                _length = _length << 8;
+                _length |= image.ReadByte();
+
+                for (int i = 0; i < _length -2 ; i++) 
+                {
+                    image.ReadByte();
+                }
+                _header[0] = (byte) image.ReadByte();
+                _header[1] = (byte) image.ReadByte();
+            }
+            return image;
+        }
+
+
         /// <summary>
         /// Close stuff
         /// </summary>
@@ -123,10 +146,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 if (soi != 0xFF || marker != 0xD8)
 		            throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
 
+				// remove exlif data
+				stream = skipExifData(stream);
+
 	            // Check if it's the right size
 	            var image = new BitmapImage();
 	            image.BeginInit();
-	            image.StreamSource = new MemoryStream(newImage);
+				stream.SeekTo(0x00);
+				image.StreamSource = new MemoryStream(stream.ReadBlock((int)stream.Length));
 	            image.EndInit();
 
 	            if (image.PixelWidth != ((BitmapImage)imgBLF.Source).PixelWidth || image.PixelHeight != ((BitmapImage)imgBLF.Source).PixelHeight)
@@ -135,15 +162,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	            // It's the right everything! Let's inject
 	            var newImageChunkData = new List<byte>();
 	            newImageChunkData.AddRange(new byte[] { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 });
-	            var imageLength = BitConverter.GetBytes(newImage.Length);
+				var imageLength = BitConverter.GetBytes(stream.Length);
 	            Array.Reverse(imageLength);
 	            newImageChunkData.AddRange(imageLength);
-	            newImageChunkData.AddRange(newImage);
+				stream.SeekTo(0x00);
+				newImageChunkData.AddRange(stream.ReadBlock((int)stream.Length));
 
 	            // Write data to chunk file
-				_blf.BLFChunks[1].ChunkLength = newImage.Length;
+				_blf.BLFChunks[1].ChunkLength = (int)stream.Length;
 	            _blf.BLFChunks[1].ChunkData = newImageChunkData.ToArray<byte>();
                     
+				// update blf, and set image
 	            _blf.UpdateChunkTable();
 				_blf.Close();
 
