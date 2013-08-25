@@ -145,6 +145,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void btnExtractImage_Click(object sender, RoutedEventArgs e)
         {
+            byte[] _header = new byte[] {255, 216};
             try
             {
 				var sfd = new SaveFileDialog
@@ -155,8 +156,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					          };
 
 	            if (!((bool) sfd.ShowDialog())) return;
-	            var imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
-	            imageToExtract.RemoveRange(0, 0x08);
+				var imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
+				int location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _header);
+				
+				if (location != -1)
+                    imageToExtract.RemoveRange(0, location);
 
 	            File.WriteAllBytes(sfd.FileName, imageToExtract.ToArray<byte>());
 
