@@ -46,7 +46,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 _blf = new PureBLF(_blfLocation);
 
 				var imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
-                imgChunkData.RemoveRange(0, 0x08);
+
+				// determine png vs jpg and then locate the header of the image
+				// strip out all content prior to that for viewing
+				int location = -1;
+				if (_blf.BLFChunks[1].ImageType == "jpg")
+				{
+					location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _blf.JpgHeader, 100);
+				}
+				else if (_blf.BLFChunks[1].ImageType == "png")
+				{
+					location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _blf.PngHeader, 100);
+				}
+
+				if (location != -1)
+					imgChunkData.RemoveRange(0, location);
 
                 Dispatcher.Invoke(new Action(delegate
                 {
@@ -119,8 +133,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		            throw new Exception(string.Format("Image isn't the right size. It must be {0}x{1}", ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight));
 
 	            // It's the right everything! Let's inject
-
-
 	            var newImageChunkData = new List<byte>();
 	            newImageChunkData.AddRange(new byte[] { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 });
 	            var imageLength = BitConverter.GetBytes(newImage.Length);
@@ -129,10 +141,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	            newImageChunkData.AddRange(newImage);
 
 	            // Write data to chunk file
+				_blf.BLFChunks[1].ChunkLength = newImage.Length;
 	            _blf.BLFChunks[1].ChunkData = newImageChunkData.ToArray<byte>();
                     
-	            _blf.RefreshRelativeChunkData();
 	            _blf.UpdateChunkTable();
+				_blf.Close();
 
 	            imgBLF.Source = image;
 
