@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Blam.ThirdGen
 {
@@ -17,6 +18,7 @@ namespace Blamite.Blam.ThirdGen
         {
             get { return _blfStream.BaseStream; }
         }
+
         public IList<BLFChunk> BLFChunks
         {
             get { return _blfChunks; }
@@ -34,6 +36,7 @@ namespace Blamite.Blam.ThirdGen
             public Int32 ChunkFlags { get; set; }
 
             public byte[] ChunkData { get; set; }
+			public string ImageType { get; set; }
         }
         #endregion
 
@@ -86,6 +89,9 @@ namespace Blamite.Blam.ThirdGen
                     chunk.ChunkFlags = _blfStream.ReadInt32();
 
                     chunk.ChunkData = _blfStream.ReadBlock(chunk.ChunkLength - 0x0C);
+
+					if (chunk.ChunkMagic.Equals("mapi"))
+						chunk.ImageType = determineImageType(chunk.ChunkData);
 
                     _blfChunks.Add(chunk);
                 }
@@ -165,6 +171,7 @@ namespace Blamite.Blam.ThirdGen
 
             RefreshRelativeChunkData();
         }
+
         /// <summary>
         /// Add new a BLF chunk to the chunk table
         /// </summary>
@@ -196,6 +203,28 @@ namespace Blamite.Blam.ThirdGen
             else
                 return false;
         }
+
+		private string determineImageType(byte[] chunk)
+		{
+			byte[] _jpg = new byte[] {255, 216}; // 0xFF 0xD8
+			byte[] _png = new byte[] {137, 80, 78, 71}; // 0x89 0x50 0x4E 0x47
+
+			int _position;
+
+			// look for pattern of _jpg image in leading 40 bytes
+			_position = ByteListArray.Locate(chunk, _jpg, 40);
+
+			if (_position != -1)
+			{
+				return "jpg";
+			}
+			else if ((_position = ByteListArray.Locate(chunk, _png, 40)) != -1)
+			{
+				return "png";
+			}
+			return "unknown";
+		}
+
         public void Close()
         {
             _blfStream.Close();

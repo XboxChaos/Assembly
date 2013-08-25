@@ -10,6 +10,7 @@ using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
+using Blamite.Util;
 using Microsoft.Win32;
 using AvalonDock.Layout;
 
@@ -157,7 +158,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 	            if (!((bool) sfd.ShowDialog())) return;
 				var imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
-				int location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _header);
+				int location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _header, 100);
 				
 				if (location != -1)
                     imageToExtract.RemoveRange(0, location);
