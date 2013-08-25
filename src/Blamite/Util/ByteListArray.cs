@@ -23,21 +23,21 @@ using System.Text;
 
 namespace Blamite.Util
 {
-	/// <summary>
-	/// Provides methods for locating patterns among byte arrays
-	/// strings.
-	/// </summary>
+    /// <summary>
+    /// Provides methods for locating patterns among byte arrays
+    /// strings.
+    /// </summary>
     public static class ByteListArray
     {
         static readonly int Empty = -1;
 
-		/// <summary>
-		/// Locates position of candidate in byte array and returns int based position
-		/// </summary>
-		/// <param name="self">The byte array to search.</param>
-		/// <param name="candidate">The byte array pattern to find.</param>
-		/// <param name="max">The max depth the function, until failing. </param>
-		/// <returns>The corresponding position value of candidate, or -1 in failure.</returns>
+        /// <summary>
+        /// Locates position of candidate in byte array and returns int based position
+        /// </summary>
+        /// <param name="self">The byte array to search.</param>
+        /// <param name="candidate">The byte array pattern to find.</param>
+        /// <param name="max">The max depth the function, until failing. </param>
+        /// <returns>The corresponding position value of candidate, or -1 in failure.</returns>
         public static int Locate(this byte[] self, byte[] candidate, int max = 100)
         {
             if (IsEmptyLocate(self, candidate))
@@ -47,8 +47,8 @@ namespace Blamite.Util
 
             for (int i = 0; i < self.Length; i++)
             {
-				if (i > max)
-					return Empty;
+                if (i > max)
+                    return Empty;
 
                 if (IsMatch(self, i, candidate))
                 {

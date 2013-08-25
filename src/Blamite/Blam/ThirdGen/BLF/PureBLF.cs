@@ -10,8 +10,8 @@ namespace Blamite.Blam.ThirdGen
 {
     public class PureBLF
     {
-		public byte[] JpgHeader = new byte[] { 255, 216 }; // 0xFF 0xD8
-		public byte[] PngHeader = new byte[] { 137, 80, 78, 71 }; // 0x89 0x50 0x4E 0x47
+        public byte[] JpgHeader = new byte[] { 255, 216 }; // 0xFF 0xD8
+        public byte[] PngHeader = new byte[] { 137, 80, 78, 71 }; // 0x89 0x50 0x4E 0x47
 
         private EndianStream _blfStream;
         private IList<BLFChunk> _blfChunks;
@@ -39,7 +39,7 @@ namespace Blamite.Blam.ThirdGen
             public Int32 ChunkFlags { get; set; }
 
             public byte[] ChunkData { get; set; }
-			public string ImageType { get; set; }
+            public string ImageType { get; set; }
         }
         #endregion
 
@@ -93,8 +93,8 @@ namespace Blamite.Blam.ThirdGen
 
                     chunk.ChunkData = _blfStream.ReadBlock(chunk.ChunkLength - 0x0C);
 
-					if (chunk.ChunkMagic.Equals("mapi"))
-						chunk.ImageType = determineImageType(chunk.ChunkData);
+                    if (chunk.ChunkMagic.Equals("mapi"))
+                        chunk.ImageType = determineImageType(chunk.ChunkData);
 
                     _blfChunks.Add(chunk);
                 }
@@ -207,23 +207,23 @@ namespace Blamite.Blam.ThirdGen
                 return false;
         }
 
-		private string determineImageType(byte[] chunk)
-		{
-			int _position;
+        private string determineImageType(byte[] chunk)
+        {
+            int _position;
 
-			// look for pattern of _jpg image in leading 40 bytes
-			_position = ByteListArray.Locate(chunk, JpgHeader, 40);
+            // look for pattern of _jpg image in leading 40 bytes
+            _position = ByteListArray.Locate(chunk, JpgHeader, 40);
 
-			if (_position != -1)
-			{
-				return "jpg";
-			}
-			else if ((_position = ByteListArray.Locate(chunk, PngHeader, 40)) != -1)
-			{
-				return "png";
-			}
-			return "unknown";
-		}
+            if (_position != -1)
+            {
+                return "jpg";
+            }
+            else if ((_position = ByteListArray.Locate(chunk, PngHeader, 40)) != -1)
+            {
+                return "png";
+            }
+            return "unknown";
+        }
 
         public void Close()
         {
