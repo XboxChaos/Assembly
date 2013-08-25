@@ -1,7 +1,7 @@
 # Assembly #
 ## Multi-Generation Blam Engine Research Tool ##
 
-__Assembly is currently a released tool available for download from SourceForge [here](http://www.sourceforge.net/projects/assembly).__
+__Downloads are now made available through [GitHub's release system](https://github.com/XboxChaos/Assembly/releases). The SourceForge page will remain up for some time, but will not be updated anymore.__
 
 __Some features may have bugs. You are encouraged to submit bug reports through our issue tracker: [https://github.com/XboxChaos/Assembly/issues/new](https://github.com/XboxChaos/Assembly/issues/new "Assembly Issue Tracker").__
 
