@@ -101,10 +101,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	            var newImage = File.ReadAllBytes(ofd.FileName);
 	            var stream = new EndianStream(new MemoryStream(newImage), Endian.BigEndian);
 
-	            // Check if it's a JIFI
-	            stream.SeekTo(0x02);
-	            var imageMagic = stream.ReadAscii();
-	            if (imageMagic != "JFIF")
+                // Check if it's a JFIF
+                var soi = stream.ReadByte();
+                var marker = stream.ReadByte();
+
+                if (soi != 0xFF || marker != 0xD8)
 		            throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
 
 	            // Check if it's the right size
