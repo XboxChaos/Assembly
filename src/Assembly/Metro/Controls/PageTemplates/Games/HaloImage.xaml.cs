@@ -146,7 +146,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
         private void btnExtractImage_Click(object sender, RoutedEventArgs e)
         {
-            byte[] _header = new byte[] {255, 216};
             try
             {
 				var sfd = new SaveFileDialog
@@ -158,7 +157,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 	            if (!((bool) sfd.ShowDialog())) return;
 				var imageToExtract = new List<byte>(_blf.BLFChunks[1].ChunkData);
-				int location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _header, 100);
+
+				// determine png vs jpg and then locate the header of the image
+				// strip out all content prior to that for extraction
+				int location = -1;
+				if (_blf.BLFChunks[1].ImageType == "jpg")
+				{
+					location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _blf.JpgHeader, 100);
+				}
+				else if (_blf.BLFChunks[1].ImageType == "png")
+				{
+					location = ByteListArray.Locate(_blf.BLFChunks[1].ChunkData, _blf.PngHeader, 100);
+				}
 				
 				if (location != -1)
                     imageToExtract.RemoveRange(0, location);

@@ -10,6 +10,9 @@ namespace Blamite.Blam.ThirdGen
 {
     public class PureBLF
     {
+		public byte[] JpgHeader = new byte[] { 255, 216 }; // 0xFF 0xD8
+		public byte[] PngHeader = new byte[] { 137, 80, 78, 71 }; // 0x89 0x50 0x4E 0x47
+
         private EndianStream _blfStream;
         private IList<BLFChunk> _blfChunks;
 
@@ -206,19 +209,16 @@ namespace Blamite.Blam.ThirdGen
 
 		private string determineImageType(byte[] chunk)
 		{
-			byte[] _jpg = new byte[] {255, 216}; // 0xFF 0xD8
-			byte[] _png = new byte[] {137, 80, 78, 71}; // 0x89 0x50 0x4E 0x47
-
 			int _position;
 
 			// look for pattern of _jpg image in leading 40 bytes
-			_position = ByteListArray.Locate(chunk, _jpg, 40);
+			_position = ByteListArray.Locate(chunk, JpgHeader, 40);
 
 			if (_position != -1)
 			{
 				return "jpg";
 			}
-			else if ((_position = ByteListArray.Locate(chunk, _png, 40)) != -1)
+			else if ((_position = ByteListArray.Locate(chunk, PngHeader, 40)) != -1)
 			{
 				return "png";
 			}
