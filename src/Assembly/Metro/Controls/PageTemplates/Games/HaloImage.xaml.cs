@@ -117,7 +117,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             return image;
         }
 
-
         /// <summary>
         /// Close stuff
         /// </summary>
@@ -161,7 +160,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 	            // It's the right everything! Let's inject
 	            var newImageChunkData = new List<byte>();
-	            newImageChunkData.AddRange(new byte[] { 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00 });
 				var imageLength = BitConverter.GetBytes(stream.Length);
 	            Array.Reverse(imageLength);
 	            newImageChunkData.AddRange(imageLength);
