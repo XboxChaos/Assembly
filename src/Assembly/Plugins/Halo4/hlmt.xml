@@ -4,14 +4,20 @@
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
 	<tagRef name="Model" offset="0x0" visible="true" />
-	<tagRef name="Collision" offset="0x10" visible="true" />
-	<tagRef name="JMAD" offset="0x20" visible="true" />
-	<tagRef name="Physics" offset="0x30" visible="true" />
-	<tagRef name="IMPO" offset="0x40" visible="true" />
-	<int32 name="Unknown" offset="0x50" visible="false" />
-	<int32 name="Unknown" offset="0x54" visible="false" />
+	<tagRef name="Collision Model" offset="0x10" visible="true" />
+	<tagRef name="Animation" offset="0x20" visible="true" />
+	<tagRef name="Physics Model" offset="0x30" visible="true" />
+	<tagRef name="Imposter Model" offset="0x40" visible="true" />
+	<int8 name="Unknown" offset="0x50" visible="false" />
+	<int8 name="Unknown" offset="0x51" visible="false" />
+	<int8 name="Unknown" offset="0x52" visible="false" />
+	<int8 name="Unknown" offset="0x53" visible="false" />
+	<int8 name="Unknown" offset="0x54" visible="false" />
+	<int8 name="Unknown" offset="0x55" visible="false" />
+	<int8 name="Unknown" offset="0x56" visible="false" />
+	<int8 name="Unknown" offset="0x57" visible="false" />
 	<tagRef name="Lightmap" offset="0x58" visible="true" />
-	<undefined name="00000031" offset="0x68" visible="false" />
+	<int32 name="00000031" offset="0x68" visible="false" />
 	<undefined name="00000032" offset="0x6C" visible="false" />
 	<undefined name="00000033" offset="0x70" visible="false" />
 	<undefined name="00000034" offset="0x74" visible="false" />
@@ -20,19 +26,12 @@
 	<undefined name="00000037" offset="0x80" visible="false" />
 	<undefined name="00000038" offset="0x84" visible="false" />
 	<undefined name="00000039" offset="0x88" visible="false" />
-	<undefined name="L1" offset="0x8C" visible="true" />
-	<undefined name="L2" offset="0x90" visible="true" />
-	<undefined name="L3" offset="0x94" visible="true" />
-	<undefined name="L4" offset="0x98" visible="true" />
-	<undefined name="L5" offset="0x9C" visible="true" />
-	<enum16 name="Shadow Fade Distance" offset="0xA0" visible="true">
-		<option name="Fade At Super High" value="0x0" />
-		<option name="Fade At High" value="0x1" />
-		<option name="Fade At Medium" value="0x2" />
-		<option name="Fade At Low" value="0x3" />
-		<option name="Fade Never" value="0x4" />
-	</enum16>
-	<int16 name="Unknown" offset="0xA2" visible="false" />
+	<float32 name="Reduce To L1 (super low)" offset="0x8C" visible="true" />
+	<float32 name="Reduce To L2 (low)" offset="0x90" visible="true" />
+	<float32 name="Reduce To L3 (medium)" offset="0x94" visible="true" />
+	<float32 name="Reduce To L4 (high)" offset="0x98" visible="true" />
+	<float32 name="Reduce To L5 (super high)" offset="0x9C" visible="true" />
+	<undefined name="00000046" offset="0xa0" visible="false" />
 	<undefined name="00000046" offset="0xa4" visible="false" />
 	<undefined name="00000047" offset="0xa8" visible="false" />
 	<undefined name="00000048" offset="0xaC" visible="false" />
@@ -105,11 +104,14 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
 	<reflexive name="Materials" offset="0xE8" visible="true" entrySize="0x14">
-		<stringid name="Material Name" offset="0x0" visible="true" />
-		<int32 name="Material Type" offset="0x4" visible="true" />
-		<int16 name="Damage Section" offset="0x8" visible="true" />
-		<stringid name="Global Material Name" offset="0xC" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int16 name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Material Name" offset="0xC" visible="true" />
+		<int16 name="Global Material Index" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
 	<reflexive name="New Damage Info" offset="0xf4" visible="false" entrySize="0x10C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
@@ -471,18 +473,10 @@
 		<undefined name="struct here" offset="0x108" visible="false" />
 	</reflexive>
 	<undefined name="00000070" offset="0x100" visible="true" />
-	<enum8 name="Invincibility Enum 1" offset="0x104" visible="true">
-		<option name="True" value="0xFF" />
-	</enum8>
-	<int8 name="00000072" offset="0x105" visible="false" />
-	<int8 name="00000072" offset="0x106" visible="false" />
-	<int8 name="00000072" offset="0x107" visible="false" />
+	<float32 name="Base Vitality" offset="0x104" visible="true" />
 	<undefined name="00000072" offset="0x108" visible="false" />
 	<undefined name="00000073" offset="0x10C" visible="false" />
 	<undefined name="00000074" offset="0x110" visible="false" />
-	<enum8 name="Invincibility Enum 2" offset="0x114" visible="true">
-		<option name="True" value="0xFF" />
-	</enum8>
 	<reflexive name="Targets" offset="0x114" visible="false" entrySize="0xB4">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
@@ -521,7 +515,7 @@
 			<undefined name="Unknown" offset="0x48" visible="false" />
 			<tagRef name="Unknown" offset="0x4C" visible="false" />
 			<reflexive name="Unknown" offset="0x5C" visible="false" entrySize="0x8">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+				<stringid name="Unknown" offset="0x0" visible="false" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
 			</reflexive>
 			<reflexive name="Unknown" offset="0x68" visible="false" entrySize="0x10">
@@ -548,7 +542,7 @@
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+			<stringid name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown 10" offset="0x9C" visible="false" entrySize="0x20">
 			<tagRef name="Unknown" offset="0x0" visible="false" />
@@ -601,7 +595,10 @@
 	</reflexive>
 	<reflexive name="Variants" offset="0x154" visible="true" entrySize="0x14">
 		<stringid name="Type" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int8 name="Unknown" offset="0x4" visible="false" />
+		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int8 name="Unknown" offset="0x6" visible="false" />
+		<int8 name="Unknown" offset="0x7" visible="false" />
 		<reflexive name="Objects" offset="0x8" visible="true" entrySize="0x8">
 			<stringId name="Object" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x4" visible="false" />
@@ -616,10 +613,10 @@
 		<float32 name="X" offset="0xC" visible="true" />
 		<float32 name="Y" offset="0x10" visible="true" />
 		<float32 name="Z" offset="0x14" visible="true" />
-		<degree name="i" offset="0x18" visible="true" />
-		<degree name="j" offset="0x1C" visible="true" />
-		<degree name="k" offset="0x20" visible="true" />
-		<degree name="w" offset="0x24" visible="true" />
+		<float32 name="i" offset="0x18" visible="true" />
+		<float32 name="j" offset="0x1C" visible="true" />
+		<float32 name="k" offset="0x20" visible="true" />
+		<float32 name="w" offset="0x24" visible="true" />
 		<float32 name="Scale" offset="0x28" visible="true" />
 		<float32 name="X Skew-x" offset="0x2C" visible="true" />
 		<float32 name="Y Skew-x" offset="0x30" visible="true" />

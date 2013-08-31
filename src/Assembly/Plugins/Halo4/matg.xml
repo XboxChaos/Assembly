@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="Halo4" baseSize="0xB00">
+<plugin game="Halo4" baseSize="0xA00">
 	<revisions>
 		<revision author="Lord Zedd" version="1">yo</revision>
 	</revisions>
@@ -55,7 +55,7 @@
 		<tagRef name="Global FX" offset="0x10" visible="true" />
 		<tagRef name="Mix" offset="0x20" visible="true" />
 		<tagRef name="Dialog Constants" offset="0x30" visible="true" />
-		<tagRef name="SGP" offset="0x40" visible="true" />
+		<tagRef name="Global Propagation" offset="0x40" visible="true" />
 		<tagRef name="Initial Bank" offset="0x50" visible="true" />
 		<tagRef name="Test Bank" offset="0x60" visible="true" />
 		<tagRef name="Sync Bank" offset="0x70" visible="true" />
@@ -63,7 +63,7 @@
 		<tagref name="MP Global Bank" offset="0x90" visible="true" />
 		<reflexive name="External Banks" offset="0xA0" visible="true" entrySize="0x24">
 			<undefined name="00000005" offset="0x0" visible="true" />
-			<ascii name="00000006" offset="0x4" length="0x20" visible="true" />
+			<ascii name="Path" offset="0x4" length="0x20" visible="true" />
 		</reflexive>
 		<reflexive name="Fireteam" offset="0xAC" visible="true" entrySize="0x10">
 			<tagref name="Sound" offset="0x0" visible="true" />
@@ -287,7 +287,7 @@
 		<undefined name="Gravity Scale" offset="0x40" visible="false" />
 		<int32 name="Minimum Autoleveling Ticks" offset="0x44" visible="false" />
 		<degree name="Minimum Angle For Vehicle Flip" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<float32 name="Minimum Action Hold Time" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
@@ -428,9 +428,6 @@
 				<option name="Default" value="0x0" />
 				<option name="Disabled" value="0x1" />
 				<option name="Enabled" value="0x2" />
-				<option name="Enabled3" value="0x3" />
-				<option name="Enabled4" value="0x4" />
-				<option name="Enabled5" value="0x5" />
 			</enum8>
 			<enum8 name="Powerup Cancellation" offset="0x3C" visible="true">
 				<option name="Default" value="0x0" />
@@ -978,7 +975,7 @@
 	</reflexive>
 	<reflexive name="Soft Barrier Properties" offset="0x144" visible="true" entrySize="0x1C">
 		<undefined name="Biped Give" offset="0x0" visible="true" />
-		<undefined name="Biped Bouncyness" offset="0x4" visible="true" />
+		<undefined name="Biped Bounciness" offset="0x4" visible="true" />
 		<undefined name="Biped Bumpiness" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="true" />
 		<undefined name="Vehicle Give" offset="0x10" visible="true" />
@@ -1052,8 +1049,8 @@
 			<undefined name="Sprint Look Speed Percentage" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
 			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="true" />
+			<degree name="Unknown" offset="0x20" visible="true" />
+			<degree name="Unknown" offset="0x24" visible="true" />
 			<undefined name="Unknown" offset="0x28" visible="true" />
 			<undefined name="Unknown" offset="0x2C" visible="true" />
 			<stringid name="Unknown" offset="0x30" visible="true" />
@@ -1208,12 +1205,8 @@
 		<undefined name="00000020" offset="0x3C" visible="false" />
 		<reflexive name="Testo" offset="0x40" visible="false" entrySize="0x1C">
 			<stringid name="00000005" offset="0x0" visible="false" />
-			<undefined name="00000006" offset="0x4" visible="false" />
-			<undefined name="00000007" offset="0x8" visible="false" />
-			<undefined name="00000008" offset="0xC" visible="false" />
-			<undefined name="00000009" offset="0x10" visible="false" />
-			<undefined name="00000010" offset="0x14" visible="false" />
-			<undefined name="00000011" offset="0x18" visible="false" />
+			<colorf name="Color" offset="0x4" visible="true" format="rgb" />
+			<colorf name="Color" offset="0x10" visible="true" format="rgb" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Testo" offset="0x298" visible="false" entrySize="0x38">
@@ -1234,308 +1227,189 @@
 		<undefined name="00000018" offset="0x34" visible="true" />
 	</reflexive>
 	<tagref name="Medal Globals" offset="0x2a4" visible="true" />
-	<undefined name="00000180" offset="0x2b4" visible="false" />
-	<undefined name="00000181" offset="0x2b8" visible="false" />
-	<int32 name="English Locale Count" offset="0x2bC" visible="false" />
-	<int32 name="English Locale Table Size" offset="0x2c0" visible="false" />
-	<int32 name="English Locale Index Table Offset" offset="0x2c4" visible="false" />
-	<int32 name="English Locale Data Index Offset" offset="0x2c8" visible="false" />
-	<int32 name="00000186" offset="0x2cC" visible="false" />
-	<int32 name="00000187" offset="0x2d0" visible="false" />
-	<int32 name="00000188" offset="0x2d4" visible="false" />
-	<int32 name="00000189" offset="0x2d8" visible="false" />
-	<int32 name="00000190" offset="0x2dC" visible="false" />
-	<int32 name="00000191" offset="0x2e0" visible="false" />
-	<int32 name="00000192" offset="0x2e4" visible="false" />
-	<int32 name="00000193" offset="0x2e8" visible="false" />
-	<int32 name="00000194" offset="0x2eC" visible="false" />
-	<int32 name="00000195" offset="0x2f0" visible="false" />
-	<undefined name="00000196" offset="0x2f4" visible="false" />
-	<undefined name="00000197" offset="0x2f8" visible="false" />
-	<undefined name="00000198" offset="0x2fC" visible="false" />
-	<undefined name="00000200" offset="0x300" visible="false" />
-	<undefined name="00000201" offset="0x304" visible="false" />
-	<undefined name="00000202" offset="0x308" visible="false" />
-	<undefined name="00000203" offset="0x30C" visible="false" />
-	<undefined name="00000204" offset="0x310" visible="false" />
-	<undefined name="00000205" offset="0x314" visible="false" />
-	<undefined name="00000206" offset="0x318" visible="false" />
-	<undefined name="00000207" offset="0x31C" visible="false" />
-	<undefined name="00000208" offset="0x320" visible="false" />
-	<undefined name="00000209" offset="0x324" visible="false" />
-	<undefined name="00000210" offset="0x328" visible="false" />
-	<undefined name="00000211" offset="0x32C" visible="false" />
-	<undefined name="00000212" offset="0x330" visible="false" />
-	<undefined name="00000213" offset="0x334" visible="false" />
-	<undefined name="00000214" offset="0x338" visible="false" />
-	<undefined name="00000215" offset="0x33C" visible="false" />
-	<undefined name="00000216" offset="0x340" visible="false" />
-	<undefined name="00000217" offset="0x344" visible="false" />
-	<undefined name="00000218" offset="0x348" visible="false" />
-	<undefined name="00000219" offset="0x34C" visible="false" />
-	<undefined name="00000220" offset="0x350" visible="false" />
-	<undefined name="00000221" offset="0x354" visible="false" />
-	<undefined name="00000222" offset="0x358" visible="false" />
-	<undefined name="00000223" offset="0x35C" visible="false" />
-	<undefined name="00000224" offset="0x360" visible="false" />
-	<undefined name="00000225" offset="0x364" visible="false" />
-	<undefined name="00000226" offset="0x368" visible="false" />
-	<undefined name="00000227" offset="0x36C" visible="false" />
-	<undefined name="00000228" offset="0x370" visible="false" />
-	<undefined name="00000229" offset="0x374" visible="false" />
-	<undefined name="00000230" offset="0x378" visible="false" />
-	<undefined name="00000231" offset="0x37C" visible="false" />
-	<undefined name="00000232" offset="0x380" visible="false" />
-	<undefined name="00000233" offset="0x384" visible="false" />
-	<undefined name="00000234" offset="0x388" visible="false" />
-	<undefined name="00000235" offset="0x38C" visible="false" />
-	<undefined name="00000236" offset="0x390" visible="false" />
-	<undefined name="00000237" offset="0x394" visible="false" />
-	<undefined name="00000238" offset="0x398" visible="false" />
-	<undefined name="00000239" offset="0x39C" visible="false" />
-	<undefined name="00000240" offset="0x3a0" visible="false" />
-	<undefined name="00000241" offset="0x3a4" visible="false" />
-	<undefined name="00000242" offset="0x3a8" visible="false" />
-	<undefined name="00000243" offset="0x3aC" visible="false" />
-	<undefined name="00000244" offset="0x3b0" visible="false" />
-	<undefined name="00000245" offset="0x3b4" visible="false" />
-	<undefined name="00000246" offset="0x3b8" visible="false" />
-	<undefined name="00000247" offset="0x3bC" visible="false" />
-	<undefined name="00000248" offset="0x3c0" visible="false" />
-	<undefined name="00000249" offset="0x3c4" visible="false" />
-	<undefined name="00000250" offset="0x3c8" visible="false" />
-	<undefined name="00000251" offset="0x3cC" visible="false" />
-	<undefined name="00000252" offset="0x3d0" visible="false" />
-	<undefined name="00000253" offset="0x3d4" visible="false" />
-	<undefined name="00000254" offset="0x3d8" visible="false" />
-	<undefined name="00000255" offset="0x3dC" visible="false" />
-	<undefined name="00000256" offset="0x3e0" visible="false" />
-	<undefined name="00000257" offset="0x3e4" visible="false" />
-	<undefined name="00000258" offset="0x3e8" visible="false" />
-	<undefined name="00000259" offset="0x3eC" visible="false" />
-	<undefined name="00000260" offset="0x3f0" visible="false" />
-	<undefined name="00000261" offset="0x3f4" visible="false" />
-	<undefined name="00000262" offset="0x3f8" visible="false" />
-	<undefined name="00000263" offset="0x3fC" visible="false" />
-	<undefined name="00000265" offset="0x400" visible="false" />
-	<undefined name="00000266" offset="0x404" visible="false" />
-	<undefined name="00000267" offset="0x408" visible="false" />
-	<undefined name="00000268" offset="0x40C" visible="false" />
-	<undefined name="00000269" offset="0x410" visible="false" />
-	<undefined name="00000270" offset="0x414" visible="false" />
-	<undefined name="00000271" offset="0x418" visible="false" />
-	<undefined name="00000272" offset="0x41C" visible="false" />
-	<undefined name="00000273" offset="0x420" visible="false" />
-	<undefined name="00000274" offset="0x424" visible="false" />
-	<undefined name="00000275" offset="0x428" visible="false" />
-	<undefined name="00000276" offset="0x42C" visible="false" />
-	<undefined name="00000277" offset="0x430" visible="false" />
-	<undefined name="00000278" offset="0x434" visible="false" />
-	<undefined name="00000279" offset="0x438" visible="false" />
-	<undefined name="00000280" offset="0x43C" visible="false" />
-	<undefined name="00000281" offset="0x440" visible="false" />
-	<undefined name="00000282" offset="0x444" visible="false" />
-	<undefined name="00000283" offset="0x448" visible="false" />
-	<undefined name="00000284" offset="0x44C" visible="false" />
-	<undefined name="00000285" offset="0x450" visible="false" />
-	<undefined name="00000286" offset="0x454" visible="false" />
-	<undefined name="00000287" offset="0x458" visible="false" />
-	<undefined name="00000288" offset="0x45C" visible="false" />
-	<undefined name="00000289" offset="0x460" visible="false" />
-	<undefined name="00000290" offset="0x464" visible="false" />
-	<undefined name="00000291" offset="0x468" visible="false" />
-	<undefined name="00000292" offset="0x46C" visible="false" />
-	<undefined name="00000293" offset="0x470" visible="false" />
-	<undefined name="00000294" offset="0x474" visible="false" />
-	<undefined name="00000295" offset="0x478" visible="false" />
-	<undefined name="00000296" offset="0x47C" visible="false" />
-	<undefined name="00000297" offset="0x480" visible="false" />
-	<undefined name="00000298" offset="0x484" visible="false" />
-	<undefined name="00000299" offset="0x488" visible="false" />
-	<undefined name="00000300" offset="0x48C" visible="false" />
-	<undefined name="00000301" offset="0x490" visible="false" />
-	<undefined name="00000302" offset="0x494" visible="false" />
-	<undefined name="00000303" offset="0x498" visible="false" />
-	<undefined name="00000304" offset="0x49C" visible="false" />
-	<undefined name="00000305" offset="0x4a0" visible="false" />
-	<undefined name="00000306" offset="0x4a4" visible="false" />
-	<undefined name="00000307" offset="0x4a8" visible="false" />
-	<undefined name="00000308" offset="0x4aC" visible="false" />
-	<undefined name="00000309" offset="0x4b0" visible="false" />
-	<undefined name="00000310" offset="0x4b4" visible="false" />
-	<undefined name="00000311" offset="0x4b8" visible="false" />
-	<undefined name="00000312" offset="0x4bC" visible="false" />
-	<undefined name="00000313" offset="0x4c0" visible="false" />
-	<undefined name="00000314" offset="0x4c4" visible="false" />
-	<undefined name="00000315" offset="0x4c8" visible="false" />
-	<undefined name="00000316" offset="0x4cC" visible="false" />
-	<undefined name="00000317" offset="0x4d0" visible="false" />
-	<undefined name="00000318" offset="0x4d4" visible="false" />
-	<undefined name="00000319" offset="0x4d8" visible="false" />
-	<undefined name="00000320" offset="0x4dC" visible="false" />
-	<undefined name="00000321" offset="0x4e0" visible="false" />
-	<undefined name="00000322" offset="0x4e4" visible="false" />
-	<undefined name="00000323" offset="0x4e8" visible="false" />
-	<undefined name="00000324" offset="0x4eC" visible="false" />
-	<undefined name="00000325" offset="0x4f0" visible="false" />
-	<undefined name="00000326" offset="0x4f4" visible="false" />
-	<undefined name="00000327" offset="0x4f8" visible="false" />
-	<undefined name="00000328" offset="0x4fC" visible="false" />
-	<undefined name="00000330" offset="0x500" visible="false" />
-	<undefined name="00000331" offset="0x504" visible="false" />
-	<undefined name="00000332" offset="0x508" visible="false" />
-	<undefined name="00000333" offset="0x50C" visible="false" />
-	<undefined name="00000334" offset="0x510" visible="false" />
-	<undefined name="00000335" offset="0x514" visible="false" />
-	<undefined name="00000336" offset="0x518" visible="false" />
-	<undefined name="00000337" offset="0x51C" visible="false" />
-	<undefined name="00000338" offset="0x520" visible="false" />
-	<undefined name="00000339" offset="0x524" visible="false" />
-	<undefined name="00000340" offset="0x528" visible="false" />
-	<undefined name="00000341" offset="0x52C" visible="false" />
-	<undefined name="00000342" offset="0x530" visible="false" />
-	<undefined name="00000343" offset="0x534" visible="false" />
-	<undefined name="00000344" offset="0x538" visible="false" />
-	<undefined name="00000345" offset="0x53C" visible="false" />
-	<undefined name="00000346" offset="0x540" visible="false" />
-	<undefined name="00000347" offset="0x544" visible="false" />
-	<undefined name="00000348" offset="0x548" visible="false" />
-	<undefined name="00000349" offset="0x54C" visible="false" />
-	<undefined name="00000350" offset="0x550" visible="false" />
-	<undefined name="00000351" offset="0x554" visible="false" />
-	<undefined name="00000352" offset="0x558" visible="false" />
-	<undefined name="00000353" offset="0x55C" visible="false" />
-	<undefined name="00000354" offset="0x560" visible="false" />
-	<undefined name="00000355" offset="0x564" visible="false" />
-	<undefined name="00000356" offset="0x568" visible="false" />
-	<undefined name="00000357" offset="0x56C" visible="false" />
-	<undefined name="00000358" offset="0x570" visible="false" />
-	<undefined name="00000359" offset="0x574" visible="false" />
-	<undefined name="00000360" offset="0x578" visible="false" />
-	<undefined name="00000361" offset="0x57C" visible="false" />
-	<undefined name="00000362" offset="0x580" visible="false" />
-	<undefined name="00000363" offset="0x584" visible="false" />
-	<undefined name="00000364" offset="0x588" visible="false" />
-	<undefined name="00000365" offset="0x58C" visible="false" />
-	<undefined name="00000366" offset="0x590" visible="false" />
-	<undefined name="00000367" offset="0x594" visible="false" />
-	<undefined name="00000368" offset="0x598" visible="false" />
-	<undefined name="00000369" offset="0x59C" visible="false" />
-	<undefined name="00000370" offset="0x5a0" visible="false" />
-	<undefined name="00000371" offset="0x5a4" visible="false" />
-	<undefined name="00000372" offset="0x5a8" visible="false" />
-	<undefined name="00000373" offset="0x5aC" visible="false" />
-	<undefined name="00000374" offset="0x5b0" visible="false" />
-	<undefined name="00000375" offset="0x5b4" visible="false" />
-	<undefined name="00000376" offset="0x5b8" visible="false" />
-	<undefined name="00000377" offset="0x5bC" visible="false" />
-	<undefined name="00000378" offset="0x5c0" visible="false" />
-	<undefined name="00000379" offset="0x5c4" visible="false" />
-	<undefined name="00000380" offset="0x5c8" visible="false" />
-	<undefined name="00000381" offset="0x5cC" visible="false" />
-	<undefined name="00000382" offset="0x5d0" visible="false" />
-	<undefined name="00000383" offset="0x5d4" visible="false" />
-	<undefined name="00000384" offset="0x5d8" visible="false" />
-	<undefined name="00000385" offset="0x5dC" visible="false" />
-	<undefined name="00000386" offset="0x5e0" visible="false" />
-	<undefined name="00000387" offset="0x5e4" visible="false" />
-	<undefined name="00000388" offset="0x5e8" visible="false" />
-	<undefined name="00000389" offset="0x5eC" visible="false" />
-	<undefined name="00000390" offset="0x5f0" visible="false" />
-	<undefined name="00000391" offset="0x5f4" visible="false" />
-	<undefined name="00000392" offset="0x5f8" visible="false" />
-	<undefined name="00000393" offset="0x5fC" visible="false" />
-	<undefined name="00000395" offset="0x600" visible="false" />
-	<undefined name="00000396" offset="0x604" visible="false" />
-	<undefined name="00000397" offset="0x608" visible="false" />
-	<undefined name="00000398" offset="0x60C" visible="false" />
-	<undefined name="00000399" offset="0x610" visible="false" />
-	<undefined name="00000400" offset="0x614" visible="false" />
-	<undefined name="00000401" offset="0x618" visible="false" />
-	<undefined name="00000402" offset="0x61C" visible="false" />
-	<undefined name="00000403" offset="0x620" visible="false" />
-	<undefined name="00000404" offset="0x624" visible="false" />
-	<undefined name="00000405" offset="0x628" visible="false" />
-	<undefined name="00000406" offset="0x62C" visible="false" />
-	<undefined name="00000407" offset="0x630" visible="false" />
-	<undefined name="00000408" offset="0x634" visible="false" />
-	<undefined name="00000409" offset="0x638" visible="false" />
-	<undefined name="00000410" offset="0x63C" visible="false" />
-	<undefined name="00000411" offset="0x640" visible="false" />
-	<undefined name="00000412" offset="0x644" visible="false" />
-	<undefined name="00000413" offset="0x648" visible="false" />
-	<undefined name="00000414" offset="0x64C" visible="false" />
-	<undefined name="00000415" offset="0x650" visible="false" />
-	<undefined name="00000416" offset="0x654" visible="false" />
-	<undefined name="00000417" offset="0x658" visible="false" />
-	<undefined name="00000418" offset="0x65C" visible="false" />
-	<undefined name="00000419" offset="0x660" visible="false" />
-	<undefined name="00000420" offset="0x664" visible="false" />
-	<undefined name="00000421" offset="0x668" visible="false" />
-	<undefined name="00000422" offset="0x66C" visible="false" />
-	<undefined name="00000423" offset="0x670" visible="false" />
-	<undefined name="00000424" offset="0x674" visible="false" />
-	<undefined name="00000425" offset="0x678" visible="false" />
-	<undefined name="00000426" offset="0x67C" visible="false" />
-	<undefined name="00000427" offset="0x680" visible="false" />
-	<undefined name="00000428" offset="0x684" visible="false" />
-	<undefined name="00000429" offset="0x688" visible="false" />
-	<undefined name="00000430" offset="0x68C" visible="false" />
-	<undefined name="00000431" offset="0x690" visible="false" />
-	<undefined name="00000432" offset="0x694" visible="false" />
-	<undefined name="00000433" offset="0x698" visible="false" />
-	<undefined name="00000434" offset="0x69C" visible="false" />
-	<undefined name="00000435" offset="0x6a0" visible="false" />
-	<undefined name="00000436" offset="0x6a4" visible="false" />
-	<undefined name="00000437" offset="0x6a8" visible="false" />
-	<undefined name="00000438" offset="0x6aC" visible="false" />
-	<undefined name="00000439" offset="0x6b0" visible="false" />
-	<undefined name="00000440" offset="0x6b4" visible="false" />
-	<undefined name="00000441" offset="0x6b8" visible="false" />
-	<undefined name="00000442" offset="0x6bC" visible="false" />
-	<undefined name="00000443" offset="0x6c0" visible="false" />
-	<undefined name="00000444" offset="0x6c4" visible="false" />
-	<undefined name="00000445" offset="0x6c8" visible="false" />
-	<undefined name="00000446" offset="0x6cC" visible="false" />
-	<undefined name="00000447" offset="0x6d0" visible="false" />
-	<undefined name="00000448" offset="0x6d4" visible="false" />
-	<undefined name="00000449" offset="0x6d8" visible="false" />
-	<undefined name="00000450" offset="0x6dC" visible="false" />
-	<undefined name="00000451" offset="0x6e0" visible="false" />
-	<undefined name="00000452" offset="0x6e4" visible="false" />
-	<undefined name="00000453" offset="0x6e8" visible="false" />
-	<undefined name="00000454" offset="0x6eC" visible="false" />
-	<undefined name="00000455" offset="0x6f0" visible="false" />
-	<undefined name="00000456" offset="0x6f4" visible="false" />
-	<undefined name="00000457" offset="0x6f8" visible="false" />
-	<undefined name="00000458" offset="0x6fC" visible="false" />
-	<undefined name="00000395" offset="0x700" visible="false" />
-	<undefined name="00000396" offset="0x704" visible="false" />
-	<undefined name="00000397" offset="0x708" visible="false" />
-	<undefined name="00000398" offset="0x70C" visible="false" />
-	<undefined name="00000399" offset="0x710" visible="false" />
-	<undefined name="00000400" offset="0x714" visible="false" />
-	<undefined name="00000401" offset="0x718" visible="false" />
-	<undefined name="00000402" offset="0x71C" visible="false" />
-	<undefined name="00000403" offset="0x720" visible="false" />
-	<undefined name="00000404" offset="0x724" visible="false" />
-	<undefined name="00000405" offset="0x728" visible="false" />
-	<undefined name="00000406" offset="0x72C" visible="false" />
-	<undefined name="00000407" offset="0x730" visible="false" />
-	<undefined name="00000408" offset="0x734" visible="false" />
+	<comment title="English Locales" />
+	<uint32 name="Unknown" offset="0x2B4" visible="false" />
+	<uint32 name="Unknown" offset="0x2B8" visible="false" />
+	<uint32 name="String Count" offset="0x2BC" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x2C0" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x2C4" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x2C8" visible="true" />
+	<raw name="Index Table Hash" offset="0x2CC" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x2E0" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x2F4" visible="false" />
+	<comment title="Japanese Locales" />
+	<uint32 name="Unknown" offset="0x2F8" visible="false" />
+	<uint32 name="Unknown" offset="0x2FC" visible="false" />
+	<uint32 name="String Count" offset="0x300" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x304" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x308" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x30C" visible="true" />
+	<raw name="Index Table Hash" offset="0x310" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x324" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x338" visible="false" />
+	<comment title="German Locales" />
+	<uint32 name="Unknown" offset="0x33C" visible="false" />
+	<uint32 name="Unknown" offset="0x340" visible="false" />
+	<uint32 name="String Count" offset="0x344" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x348" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x34C" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x350" visible="true" />
+	<raw name="Index Table Hash" offset="0x354" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x368" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x37C" visible="false" />
+	<comment title="French Locales" />
+	<uint32 name="Unknown" offset="0x380" visible="false" />
+	<uint32 name="Unknown" offset="0x384" visible="false" />
+	<uint32 name="String Count" offset="0x388" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x38C" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x390" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x394" visible="true" />
+	<raw name="Index Table Hash" offset="0x398" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x3AC" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x3C0" visible="false" />
+	<comment title="Spanish Locales" />
+	<uint32 name="Unknown" offset="0x3C4" visible="false" />
+	<uint32 name="Unknown" offset="0x3C8" visible="false" />
+	<uint32 name="String Count" offset="0x3CC" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x3D0" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x3D4" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x3D8" visible="true" />
+	<raw name="Index Table Hash" offset="0x3DC" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x3F0" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x404" visible="false" />
+	<comment title="Latin American Spanish Locales" />
+	<uint32 name="Unknown" offset="0x408" visible="false" />
+	<uint32 name="Unknown" offset="0x40C" visible="false" />
+	<uint32 name="String Count" offset="0x410" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x414" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x418" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x41C" visible="true" />
+	<raw name="Index Table Hash" offset="0x420" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x434" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x448" visible="false" />
+	<comment title="Italian Locales" />
+	<uint32 name="Unknown" offset="0x44C" visible="false" />
+	<uint32 name="Unknown" offset="0x450" visible="false" />
+	<uint32 name="String Count" offset="0x454" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x458" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x45C" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x460" visible="true" />
+	<raw name="Index Table Hash" offset="0x464" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x478" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x48C" visible="false" />
+	<comment title="Korean Locales" />
+	<uint32 name="Unknown" offset="0x490" visible="false" />
+	<uint32 name="Unknown" offset="0x494" visible="false" />
+	<uint32 name="String Count" offset="0x498" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x49C" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x4A0" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x4A4" visible="true" />
+	<raw name="Index Table Hash" offset="0x4A8" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x4BC" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x4D0" visible="false" />
+	<comment title="Chinese Traditional Locales" />
+	<uint32 name="Unknown" offset="0x4D4" visible="false" />
+	<uint32 name="Unknown" offset="0x4D8" visible="false" />
+	<uint32 name="String Count" offset="0x4DC" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x4E0" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x4E4" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x4E4" visible="true" />
+	<raw name="Index Table Hash" offset="0x4E8" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x4FC" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x514" visible="false" />
+	<comment title="Chinese Simplified Locales" />
+	<uint32 name="Unknown" offset="0x518" visible="false" />
+	<uint32 name="Unknown" offset="0x51C" visible="false" />
+	<uint32 name="String Count" offset="0x520" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x524" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x528" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x52C" visible="true" />
+	<raw name="Index Table Hash" offset="0x530" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x544" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x558" visible="false" />
+	<comment title="Portuguese Locales" />
+	<uint32 name="Unknown" offset="0x55C" visible="false" />
+	<uint32 name="Unknown" offset="0x560" visible="false" />
+	<uint32 name="String Count" offset="0x564" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x568" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x56C" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x570" visible="true" />
+	<raw name="Index Table Hash" offset="0x574" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x588" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x59C" visible="false" />
+	<comment title="Polish Locales" />
+	<uint32 name="Unknown" offset="0x5A0" visible="false" />
+	<uint32 name="Unknown" offset="0x5A4" visible="false" />
+	<uint32 name="String Count" offset="0x5A8" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x5AC" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x5B0" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x5B4" visible="true" />
+	<raw name="Index Table Hash" offset="0x5B8" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x5CC" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x5E0" visible="false" />
+	<comment title="Russian Locales" />
+	<uint32 name="Unknown" offset="0x5E4" visible="false" />
+	<uint32 name="Unknown" offset="0x5E8" visible="false" />
+	<uint32 name="String Count" offset="0x5EC" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x5F0" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x5F4" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x5F8" visible="true" />
+	<raw name="Index Table Hash" offset="0x5FC" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x610" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x624" visible="false" />
+	<comment title="Danish Locales" />
+	<uint32 name="Unknown" offset="0x628" visible="false" />
+	<uint32 name="Unknown" offset="0x62C" visible="false" />
+	<uint32 name="String Count" offset="0x630" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x634" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x638" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x63C" visible="true" />
+	<raw name="Index Table Hash" offset="0x640" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x654" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x668" visible="false" />
+	<comment title="Finnish Locales" />
+	<uint32 name="Unknown" offset="0x66C" visible="false" />
+	<uint32 name="Unknown" offset="0x670" visible="false" />
+	<uint32 name="String Count" offset="0x674" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x678" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x67C" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x680" visible="true" />
+	<raw name="Index Table Hash" offset="0x684" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x698" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x6AC" visible="false" />
+	<comment title="Dutch Locales" />
+	<uint32 name="Unknown" offset="0x6B0" visible="false" />
+	<uint32 name="Unknown" offset="0x6B4" visible="false" />
+	<uint32 name="String Count" offset="0x6B8" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x6BC" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x6C0" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x6C4" visible="true" />
+	<raw name="Index Table Hash" offset="0x6C8" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x6DC" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x6F0" visible="false" />
+	<comment title="Norwegian Locales" />
+	<uint32 name="Unknown" offset="0x6F4" visible="false" />
+	<uint32 name="Unknown" offset="0x6F8" visible="false" />
+	<uint32 name="String Count" offset="0x6FC" visible="true" />
+	<uint32 name="Locale Table Size" offset="0x700" visible="true" />
+	<uint32 name="Locale Index Table Offset" offset="0x704" visible="true" />
+	<uint32 name="Locale Data Index Offset" offset="0x708" visible="true" />
+	<raw name="Index Table Hash" offset="0x70C" size="0x14" visible="true" />
+	<raw name="String Table Hash" offset="0x720" size="0x14" visible="true" />
+	<uint32 name="Unknown" offset="0x734" visible="false" />
 	<tagref name="Rasterizer Globals" offset="0x738" visible="true" />
 	<tagref name="Default Camera Effect" offset="0x748" visible="true" />
 	<tagref name="Default Wind" offset="0x758" visible="true" />
 	<tagref name="Weather Globals" offset="0x768" visible="true" />
 	<tagref name="Collision Damage" offset="0x778" visible="true" />
 	<tagref name="Global Collision" offset="0x788" visible="true" />
-	<undefined name="00000433" offset="0x798" visible="false" />
-	<undefined name="00000434" offset="0x79C" visible="false" />
-	<undefined name="00000435" offset="0x7a0" visible="false" />
+	<stringid name="Unknown Material" offset="0x798" visible="true" />
+	<stringid name="Unknown Material 2" offset="0x79C" visible="true" />
+	<int16 name="Unknown Global Material Index" offset="0x7A0" visible="true" />
+	<int16 name="Unknown 2 Global Material Index" offset="0x7A2" visible="true" />
 	<tagref name="Effect Globals" offset="0x7a4" visible="true" />
 	<tagref name="Havok Collision" offset="0x7b4" visible="true" />
 	<tagref name="Grounded Friction" offset="0x7c4" visible="true" />
-	<undefined name="00000434" offset="0x7d4" visible="false" />
 	<reflexive name="Testo" offset="0x7d4" visible="false" entrySize="0xA0">
 		<undefined name="00000005" offset="0x0" visible="true" />
 		<undefined name="00000006" offset="0x4" visible="true" />
@@ -1568,7 +1442,7 @@
 	<tagref name="Results Globals" offset="0x840" visible="true" />
 	<tagref name="Achievement Globals" offset="0x850" visible="true" />
 	<tagref name="Avatar Award Globals" offset="0x860" visible="true" />
-	<tagref name="GPTD Globals" offset="0x870" visible="true" />
+	<tagref name="Performance Throttle Globals" offset="0x870" visible="true" />
 	<tagref name="Armor Mod Globals" offset="0x880" visible="true" />
 	<tagref name="Progression Globals" offset="0x890" visible="true" />
 	<reflexive name="Testo" offset="0x8a0" visible="false" entrySize="0x24">
@@ -1723,68 +1597,4 @@
 	<undefined name="00000660" offset="0x9f4" visible="false" />
 	<undefined name="00000661" offset="0x9f8" visible="false" />
 	<undefined name="00000662" offset="0x9fC" visible="false" />
-	<undefined name="00000664" offset="0xA00" visible="false" />
-	<undefined name="00000665" offset="0xA04" visible="false" />
-	<undefined name="00000666" offset="0xA08" visible="false" />
-	<undefined name="00000667" offset="0xA0C" visible="false" />
-	<undefined name="00000668" offset="0xA10" visible="false" />
-	<undefined name="00000669" offset="0xA14" visible="false" />
-	<undefined name="00000670" offset="0xA18" visible="false" />
-	<undefined name="00000671" offset="0xA1C" visible="false" />
-	<undefined name="00000672" offset="0xA20" visible="false" />
-	<undefined name="00000673" offset="0xA24" visible="false" />
-	<undefined name="00000674" offset="0xA28" visible="false" />
-	<undefined name="00000675" offset="0xA2C" visible="false" />
-	<undefined name="00000676" offset="0xA30" visible="false" />
-	<undefined name="00000677" offset="0xA34" visible="false" />
-	<undefined name="00000678" offset="0xA38" visible="false" />
-	<undefined name="00000679" offset="0xA3C" visible="false" />
-	<undefined name="00000680" offset="0xA40" visible="false" />
-	<undefined name="00000681" offset="0xA44" visible="false" />
-	<undefined name="00000682" offset="0xA48" visible="false" />
-	<undefined name="00000683" offset="0xA4C" visible="false" />
-	<undefined name="00000684" offset="0xA50" visible="false" />
-	<undefined name="00000685" offset="0xA54" visible="false" />
-	<undefined name="00000686" offset="0xA58" visible="false" />
-	<undefined name="00000687" offset="0xA5C" visible="false" />
-	<undefined name="00000688" offset="0xA60" visible="false" />
-	<undefined name="00000689" offset="0xA64" visible="false" />
-	<undefined name="00000690" offset="0xA68" visible="false" />
-	<undefined name="00000691" offset="0xA6C" visible="false" />
-	<undefined name="00000692" offset="0xA70" visible="false" />
-	<undefined name="00000693" offset="0xA74" visible="false" />
-	<undefined name="00000694" offset="0xA78" visible="false" />
-	<undefined name="00000695" offset="0xA7C" visible="false" />
-	<undefined name="00000696" offset="0xA80" visible="false" />
-	<undefined name="00000697" offset="0xA84" visible="false" />
-	<undefined name="00000698" offset="0xA88" visible="false" />
-	<undefined name="00000699" offset="0xA8C" visible="false" />
-	<undefined name="00000700" offset="0xA90" visible="false" />
-	<undefined name="00000701" offset="0xA94" visible="false" />
-	<undefined name="00000702" offset="0xA98" visible="false" />
-	<undefined name="00000703" offset="0xA9C" visible="false" />
-	<undefined name="00000704" offset="0xAa0" visible="false" />
-	<undefined name="00000705" offset="0xAa4" visible="false" />
-	<undefined name="00000706" offset="0xAa8" visible="false" />
-	<undefined name="00000707" offset="0xAaC" visible="false" />
-	<undefined name="00000708" offset="0xAb0" visible="false" />
-	<undefined name="00000709" offset="0xAb4" visible="false" />
-	<undefined name="00000710" offset="0xAb8" visible="false" />
-	<undefined name="00000711" offset="0xAbC" visible="false" />
-	<undefined name="00000712" offset="0xAc0" visible="false" />
-	<undefined name="00000713" offset="0xAc4" visible="false" />
-	<undefined name="00000714" offset="0xAc8" visible="false" />
-	<undefined name="00000715" offset="0xAcC" visible="false" />
-	<undefined name="00000716" offset="0xAd0" visible="false" />
-	<undefined name="00000717" offset="0xAd4" visible="false" />
-	<undefined name="00000718" offset="0xAd8" visible="false" />
-	<undefined name="00000719" offset="0xAdC" visible="false" />
-	<undefined name="00000720" offset="0xAe0" visible="false" />
-	<undefined name="00000721" offset="0xAe4" visible="false" />
-	<undefined name="00000722" offset="0xAe8" visible="false" />
-	<undefined name="00000723" offset="0xAeC" visible="false" />
-	<undefined name="00000724" offset="0xAf0" visible="false" />
-	<undefined name="00000725" offset="0xAf4" visible="false" />
-	<undefined name="00000726" offset="0xAf8" visible="false" />
-	<undefined name="00000727" offset="0xAfC" visible="false" />
 </plugin>

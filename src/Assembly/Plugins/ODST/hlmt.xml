@@ -4,15 +4,15 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
-	<tagRef name="Unknown" offset="0x0" visible="false" />
-	<tagRef name="Unknown" offset="0x10" visible="false" />
-	<tagRef name="Unknown" offset="0x20" visible="false" />
-	<tagRef name="Unknown" offset="0x30" visible="false" />
-	<float32 name="Reduce To L1" offset="0x40" visible="true" />
-	<float32 name="Reduce To L2" offset="0x44" visible="true" />
-	<float32 name="Reduce To L3" offset="0x48" visible="true" />
-	<float32 name="Reduce To L4" offset="0x4C" visible="true" />
-	<float32 name="Reduce To L5" offset="0x50" visible="true" />
+	<tagRef name="Model" offset="0x0" visible="true" />
+	<tagRef name="Collision Model" offset="0x10" visible="true" />
+	<tagRef name="Animation" offset="0x20" visible="true" />
+	<tagRef name="Physics Model" offset="0x30" visible="true" />
+	<float32 name="Reduce To L1 (super low)" offset="0x40" visible="true" />
+	<float32 name="Reduce To L2 (low)" offset="0x44" visible="true" />
+	<float32 name="Reduce To L3 (medium)" offset="0x48" visible="true" />
+	<float32 name="Reduce To L4 (high)" offset="0x4C" visible="true" />
+	<float32 name="Reduce To L5 (super high)" offset="0x50" visible="true" />
 	<tagRef name="Unknown" offset="0x54" visible="false" />
 	<reflexive name="Variants" offset="0x64" visible="true" entrySize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -143,12 +143,15 @@
 		</reflexive>
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<reflexive name="Materials" offset="0x88" visible="false" entrySize="0x14">
-		<stringid name="Name" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<stringid name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Materials" offset="0x88" visible="true" entrySize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int16 name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<stringid name="Material Name" offset="0xC" visible="true" />
+		<int16 name="Global Material Index" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
 	<reflexive name="Health/Damage Properties" offset="0x94" visible="true" entrySize="0x100">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
@@ -296,7 +299,7 @@
 		<undefined name="00000033" offset="0x70" visible="true" />
 		<undefined name="00000034" offset="0x74" visible="true" />
 		<undefined name="00000035" offset="0x78" visible="true" />
-		<float32 name="Max Shielf Vitality" offset="0x7C" visible="true" />
+		<float32 name="Max Shield Vitality" offset="0x7C" visible="true" />
 		<stringid name="Global Shield Material Name" offset="0x80" visible="true" />
 		<float32 name="Min Stun Damage" offset="0x84" visible="true" />
 		<float32 name="Stun Time" offset="0x88" visible="true" />
