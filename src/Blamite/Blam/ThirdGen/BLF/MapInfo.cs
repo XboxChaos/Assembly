@@ -32,6 +32,7 @@ namespace Blamite.Blam.ThirdGen.BLF
             Halo3 = 0x4D500003,
             Halo3ODST = 0x98C00003,
             HaloReach = 0xCC980007,
+            HaloReachBetas = 0xCC880005,
             Halo4NetworkTest = 0xCC980008,
             Halo4 = 0x1DD80009
         }
@@ -189,7 +190,7 @@ namespace Blamite.Blam.ThirdGen.BLF
         {
             switch (gameIdent)
             {
-                case GameIdentifier.Halo3: case GameIdentifier.Halo3ODST: case GameIdentifier.HaloReach:
+                case GameIdentifier.Halo3: case GameIdentifier.Halo3ODST: case GameIdentifier.HaloReach: case GameIdentifier.HaloReachBetas:
                     languageCount = 10;
                     break;
                 case GameIdentifier.Halo4: case GameIdentifier.Halo4NetworkTest:
