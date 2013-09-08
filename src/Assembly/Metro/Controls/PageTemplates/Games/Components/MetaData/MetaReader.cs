@@ -47,7 +47,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
             }
 
-            // Read its contents if it has changed (or if change detection is disabled)
+            // Read its contents if it hasn't changed (or if change detection is disabled)
             if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
                 field.Accept(this);
 
@@ -151,8 +151,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             EnumValue selected = null;
             foreach (EnumValue option in field.Values)
             {
-                if (option.Value == field.Value)
-                    selected = option;
+                // Typecast the field value and the option value based upon the enum type
+                switch (field.Type)
+                {
+                    case EnumType.Enum8:
+                        if ((sbyte)option.Value == (sbyte)field.Value)
+                            selected = option;
+                        break;
+                    case EnumType.Enum16:
+                        if ((short)option.Value == (short)field.Value)
+                            selected = option;
+                        break;
+                    case EnumType.Enum32:
+                        if (option.Value == field.Value)
+                            selected = option;
+                        break;
+                }
+                if (selected != null)
+                    break;
             }
             if (selected == null)
             {
@@ -243,6 +259,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitRawData(RawData field)
         {
             SeekToOffset(field.Offset);
+            field.DataAddress = field.FieldAddress;
             field.Value = FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 24);
         }
 
@@ -265,19 +282,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
                 else
                     _reader.SeekTo(_cache.MetaArea.PointerToOffset(pointer));
 
-				switch(field.Format)
-				{
-					default:
-						var data = _reader.ReadBlock(field.Length);
-						field.Value = FunctionHelpers.BytesToHexLines(data, 24);
-						break;
-					case "unicode":
-						field.Value = _reader.ReadUTF16(field.Length);
-						break;
-					case "asciiz":
-						field.Value = _reader.ReadAscii(field.Length);
-						break;
-				}
+                switch (field.Format)
+                {
+                    default:
+                        var data = _reader.ReadBlock(field.Length);
+                        field.Value = FunctionHelpers.BytesToHexLines(data, 24);
+                        break;
+                    case "unicode":
+                        field.Value = _reader.ReadUTF16(field.Length);
+                        break;
+                    case "asciiz":
+                        field.Value = _reader.ReadAscii(field.Length);
+                        break;
+                }
             }
             else
             {
@@ -305,7 +322,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             
             TagEntry tag = null;
             if (index.IsValid && index.Index < field.Tags.Entries.Count)
+            {
                 tag = field.Tags.Entries[index.Index];
+                if (tag.RawTag.Index != index)
+                    tag = null;
+            }
 
             if (tag != null)
             {
@@ -348,7 +369,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             // Make sure the pointer looks valid
             if (length <= 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int)(length * field.EntrySize)))
+            {
                 length = 0;
+                pointer = 0;
+            }
 
             field.Length = length;
             if (pointer != field.FirstEntryAddress)

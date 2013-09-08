@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using Blamite.IO;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -90,15 +92,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private int _currentIndex = 0;
         private bool _expanded = false;
         private double _width = MinWidth;
+        private FileSegmentGroup _metaArea;
         private ObservableCollection<ReflexivePage> _pages = new ObservableCollection<ReflexivePage>();
         private ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
 
         private const double MinWidth = 525; // The minimum width that a reflexive can have
 
-        public ReflexiveData(string name, uint offset, uint address, uint entrySize, uint pluginLine)
+        public ReflexiveData(string name, uint offset, uint address, uint entrySize, uint pluginLine, FileSegmentGroup metaArea)
             : base(name, offset, address, pluginLine)
         {
             _entrySize = entrySize;
+            _metaArea = metaArea;
             _expanded = true;
         }
 
@@ -147,7 +151,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public uint FirstEntryAddress
         {
             get { return _firstEntryAddr; }
-            set { _firstEntryAddr = value; NotifyPropertyChanged("FirstEntryAddress"); }
+            set
+            {
+                if (value != 0 && !_metaArea.ContainsPointer(value))
+                    throw new ArgumentException("Invalid pointer");
+
+                _firstEntryAddr = value;
+                NotifyPropertyChanged("FirstEntryAddress");
+                NotifyPropertyChanged("FirstEntryAddressHex");
+            }
+        }
+
+        public string FirstEntryAddressHex
+        {
+            get { return "0x" + FirstEntryAddress.ToString("X"); }
+            set
+            {
+                if (value.StartsWith("0x"))
+                    value = value.Substring(2);
+                FirstEntryAddress = uint.Parse(value, NumberStyles.HexNumber);
+            }
         }
 
         public int CurrentIndex
@@ -191,7 +214,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            ReflexiveData result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, base.PluginLine);
+            ReflexiveData result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, base.PluginLine, _metaArea);
             result._expanded = _expanded;
             result._width = _width;
             result._currentIndex = _currentIndex;

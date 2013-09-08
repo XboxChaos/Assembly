@@ -480,26 +480,25 @@ namespace Assembly.Windows
 	            if (File.Exists(path))
                 {
                     // Magic Check
-					var stream = new EndianStream(new FileStream(path, FileMode.Open), Endian.BigEndian);
-                    stream.SeekTo(0);
+                    string magic;
+					using (var stream = new EndianReader(File.OpenRead(path), Endian.BigEndian))
+                        magic = stream.ReadAscii(0x04).ToLower();
 
-                    switch (stream.ReadAscii(0x04).ToLower())
+                    switch (magic)
                     {
                         case "head":
+                        case "daeh":
                             // Map File
-                            stream.Close();
                             AddCacheTabModule(path);
                             return;
 
 						case "asmp":
 							// Patch File
-							stream.Close();
 							AddPatchTabModule(path);
 							return;
 
                         case "_blf":
                             // BLF Container, needs more checking
-                            stream.Close();
                             var blf = new PureBLF(path);
                             blf.Close();
                             if (blf.BLFChunks.Count > 2)
@@ -542,12 +541,6 @@ namespace Assembly.Windows
 
 				if (tab != null && tab.Title == "Start Page")
 					((StartPage)tab.Content).UpdateRecents();
-
-				// Check if the tab is a HaloMap
-				if (tab != null && tab.Content != null && tab.Content is HaloMap)
-					Settings.selectedHaloMap = (HaloMap)tab.Content;
-				else
-					Settings.selectedHaloMap = null;
 
 				if (tab == null)
 				{

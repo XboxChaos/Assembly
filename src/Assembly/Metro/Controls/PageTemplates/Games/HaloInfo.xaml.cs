@@ -84,6 +84,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         case MapInfo.GameIdentifier.HaloReach:
                             txtGameName.Text = "Halo Reach";
                             break;
+                        case MapInfo.GameIdentifier.HaloReachBetas:
+                            txtGameName.Text = "Halo Reach Pre/Beta";
+                            break;
                         case MapInfo.GameIdentifier.Halo4:
                             txtGameName.Text = "Halo 4";
                             break;

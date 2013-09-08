@@ -7,10 +7,17 @@
 		<revision author="SnipeStyle" version="3">Updated plugin according to Kornman00´s Opensauce project.</revision>
 	</revisions>
 	<reflexive name="Compression Codecs" offset="0x0" visible="true" entrySize="0x10">
-		<raw name="Guid" offset="0x18" size="0x10" visible="true"/>
+		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
 	</reflexive>
-	<reflexive name="Shared Caches" offset="0xC" visible="true" entrySize="0x108">
-		<ascii name="Map Path" offset="0x0" visible="true" length="0x20" />
+	<reflexive name="External Cache References" offset="0xC" visible="true" entrySize="0x108">
+		<ascii name="Map Path" offset="0x0" visible="true" length="0x12" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<uint8 name="Unknown*" offset="0x1C" visible="true" />
+		<uint8 name="Unknown*" offset="0x1D" visible="true" />
+		<uint8 name="Unknown" offset="0x1E" visible="false" />
+		<uint8 name="Unknown" offset="0x1F" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
@@ -21,7 +28,10 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
+		<uint8 name="Unknown*" offset="0x48" visible="true" />
+		<uint8 name="Unknown*" offset="0x49" visible="true" />
+		<uint8 name="Unknown" offset="0x4A" visible="false" />
+		<uint8 name="Unknown" offset="0x4B" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
@@ -29,9 +39,15 @@
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
 		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
+		<uint8 name="Unknown*" offset="0x68" visible="true" />
+		<uint8 name="Unknown" offset="0x69" visible="false" />
+		<uint8 name="Unknown" offset="0x6A" visible="false" />
+		<uint8 name="Unknown" offset="0x6B" visible="false" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
+		<uint8 name="Unknown*" offset="0x70" visible="true" />
+		<uint8 name="Unknown*" offset="0x71" visible="true" />
+		<uint8 name="Unknown" offset="0x72" visible="false" />
+		<uint8 name="Unknown" offset="0x73" visible="false" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
@@ -58,19 +74,24 @@
 		<undefined name="Unknown" offset="0xD0" visible="false" />
 		<undefined name="Unknown" offset="0xD4" visible="false" />
 		<undefined name="Unknown" offset="0xD8" visible="false" />
-		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<uint8 name="Unknown*" offset="0xDC" visible="true" />
+		<uint8 name="Unknown" offset="0xDD" visible="false" />
+		<uint8 name="Unknown" offset="0xDE" visible="false" />
+		<uint8 name="Unknown" offset="0xDF" visible="false" />
 		<undefined name="Unknown" offset="0xE0" visible="false" />
 		<undefined name="Unknown" offset="0xE4" visible="false" />
 		<undefined name="Unknown" offset="0xE8" visible="false" />
 		<undefined name="Unknown" offset="0xEC" visible="false" />
-		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<uint8 name="Unknown*" offset="0xF0" visible="true" />
+		<uint8 name="Unknown" offset="0xF1" visible="false" />
+		<uint8 name="Unknown" offset="0xF2" visible="false" />
+		<uint8 name="Unknown" offset="0xF3" visible="false" />
 		<undefined name="Unknown" offset="0xF4" visible="false" />
 		<undefined name="Unknown" offset="0xF8" visible="false" />
 		<undefined name="Unknown" offset="0xFC" visible="false" />
 		<int16 name="Unknown" offset="0x100" visible="true" />
-		<int16 name="Unknown" offset="0x102" visible="true" />
-		<int16 name="Unknown" offset="0x104" visible="true" />
-		<int16 name="Unknown" offset="0x106" visible="true" />
+		<int16 name="Unknown" offset="0x102" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
 	</reflexive>
 	<reflexive name="Raw Pages" offset="0x18" visible="true" entrySize="0x58">
 		<int16 name="Salt" offset="0x0" visible="true" />
@@ -87,16 +108,14 @@
 		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true"/>
 		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true"/>
 		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true"/>
-		<int16 name="Unknown" offset="0x54" visible="true" />
+		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown Sizes" offset="0x24" visible="true" entrySize="0x10">
-		<int32 name="Size" offset="0x0" visible="true" />
-		<reflexive name="Sizes" offset="0x4" visible="true" entrySize="0x10">
+	<reflexive name="Raw Sizes" offset="0x24" visible="true" entrySize="0x10">
+		<int32 name="Unknown" offset="0x0" visible="true" />
+		<reflexive name="Unknown" offset="0x4" visible="true" entrySize="0x8">
 			<int32 name="Unknown" offset="0x0" visible="true" />
 			<int32 name="Unknown" offset="0x4" visible="true" />
-			<int32 name="Unknown" offset="0x8" visible="true" />
-			<int32 name="Unknown" offset="0xC" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Segments" offset="0x30" visible="true" entrySize="0x10">

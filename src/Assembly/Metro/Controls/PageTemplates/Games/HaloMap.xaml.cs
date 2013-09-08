@@ -36,13 +36,6 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
-using Clipboard = System.Windows.Clipboard;
-using ContextMenu = System.Windows.Controls.ContextMenu;
-using MenuItem = System.Windows.Controls.MenuItem;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using TabControl = System.Windows.Controls.TabControl;
-using TextBox = System.Windows.Controls.TextBox;
-using TreeView = System.Windows.Controls.TreeView;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -210,7 +203,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
                 // Build SID trie
                 _stringIDTrie = new Trie();
-                _stringIDTrie.AddRange(_cacheFile.StringIDs);
+                if (_cacheFile.StringIDs != null)
+                    _stringIDTrie.AddRange(_cacheFile.StringIDs);
 
                 Dispatcher.Invoke(new Action(delegate
 	                                  {
@@ -660,8 +654,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					          Title = "Assembly - Select a Tag Bookmark File",
 					          Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
 				          };
-            bool? result = ofd.ShowDialog();
-            if (!result.HasValue || !result.Value)
+			if (!(bool)ofd.ShowDialog())
                 return;
 
 			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
@@ -1116,6 +1109,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
+		
+        private void ExecutedJumpToCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            var tag = e.Parameter as TagEntry;
+            if (tag != null)
+                CreateTag(tag);
+        }
 
         private void contextExtract_Click(object sender, RoutedEventArgs e)
         {

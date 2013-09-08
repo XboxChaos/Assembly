@@ -6,7 +6,7 @@ namespace Assembly.Helpers
     {
         public static void UpdateProtocol()
         {
-            var keyProtoBase = Registry.ClassesRoot.CreateSubKey("assembly\\");
+            var keyProtoBase = Registry.CurrentUser.CreateSubKey("Software\\Classes\\assembly\\");
 	        if (keyProtoBase != null)
 	        {
 		        keyProtoBase.SetValue("", "URL:Assembly Application Manager");
@@ -16,16 +16,16 @@ namespace Assembly.Helpers
 		        keyProtoBase.SetValue("URL Protocol", "");
 	        }
 
-	        var keyProtoDefaultIcon = Registry.ClassesRoot.CreateSubKey("assembly\\DefaultIcon\\");
+	        var keyProtoDefaultIcon = keyProtoBase.CreateSubKey("DefaultIcon\\");
 	        if (keyProtoDefaultIcon != null)
 		        keyProtoDefaultIcon.SetValue("", VariousFunctions.GetApplicationLocation() + "AssemblyIconLibrary.dll,100");
 
 #pragma warning disable 168
-	        var keyProtoExtensions = Registry.ClassesRoot.CreateSubKey("assembly\\Extensions\\");
-			var keyProtoShell = Registry.ClassesRoot.CreateSubKey("assembly\\shell\\");
-			var keyProtoShellOpen = Registry.ClassesRoot.CreateSubKey("assembly\\shell\\open\\");
+	        var keyProtoExtensions = keyProtoBase.CreateSubKey("Extensions\\");
+            var keyProtoShell = keyProtoBase.CreateSubKey("shell\\");
+            var keyProtoShellOpen = keyProtoBase.CreateSubKey("shell\\open\\");
 #pragma warning restore 168
-			var keyProtoShellOpenCommand = Registry.ClassesRoot.CreateSubKey("assembly\\shell\\open\\command\\");
+            var keyProtoShellOpenCommand = keyProtoBase.CreateSubKey("shell\\open\\command\\");
 	        if (keyProtoShellOpenCommand != null)
 		        keyProtoShellOpenCommand.SetValue("", string.Format("\"{0}\" %1", VariousFunctions.GetApplicationAssemblyLocation()));
         }
