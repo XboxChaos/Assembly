@@ -45,10 +45,10 @@ namespace Blamite.Blam.ThirdGen
         private ThirdGenLanguageGlobals _languageInfo;
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private ThirdGenResourceMetaLoader _resourceMetaLoader;
 
-        public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
+        public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
         {
             _buildInfo = buildInfo;
             _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
@@ -206,7 +206,7 @@ namespace Blamite.Blam.ThirdGen
         private void LoadHeader(IReader reader, string buildString)
         {
             reader.SeekTo(0);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.GetLayout("header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
             _header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter);
         }
 
@@ -219,7 +219,7 @@ namespace Blamite.Blam.ThirdGen
             }
 
             reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.GetLayout("index header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("index header"));
             _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, _buildInfo);
 
             _resourceMetaLoader = new ThirdGenResourceMetaLoader(_buildInfo, _header.MetaArea);
@@ -228,13 +228,19 @@ namespace Blamite.Blam.ThirdGen
         private void LoadFileNames(IReader reader)
         {
             if (_header.FileNameCount > 0)
-                _fileNames = new IndexedFileNameSource(new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, _buildInfo.FileNameKey));
+            {
+                var stringTable = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, _buildInfo.TagNameKey);
+                _fileNames = new IndexedFileNameSource(stringTable);
+            }
         }
 
         private void LoadStringIDs(IReader reader)
         {
             if (_header.StringIDCount > 0)
-                _stringIds = new IndexedStringIDSource(new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, _buildInfo.StringIDKey), _buildInfo.StringIDResolver);
+            {
+                var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, _buildInfo.StringIDKey);
+                _stringIds = new IndexedStringIDSource(stringTable, _buildInfo.StringIDs);
+            }
         }
 
         private void LoadLanguageGlobals(IReader reader)
@@ -265,15 +271,15 @@ namespace Blamite.Blam.ThirdGen
                 return false;
 
             // Check for a PATG tag, and if one isn't found, then use MATG
-            if (_buildInfo.HasLayout("patg"))
+            if (_buildInfo.Layouts.HasLayout("patg"))
             {
                 tag = _tags.FindTagByClass("patg");
-                layout = _buildInfo.GetLayout("patg");
+                layout = _buildInfo.Layouts.GetLayout("patg");
             }
             if (tag == null)
             {
                 tag = _tags.FindTagByClass("matg");
-                layout = _buildInfo.GetLayout("matg");
+                layout = _buildInfo.Layouts.GetLayout("matg");
             }
             return (tag != null && layout != null);
         }
@@ -294,7 +300,7 @@ namespace Blamite.Blam.ThirdGen
                 return;
 
             // Locale groups are stored in unic tags
-            StructureLayout layout = _buildInfo.GetLayout("unic");
+            StructureLayout layout = _buildInfo.Layouts.GetLayout("unic");
             foreach (ITag tag in _tags.FindTagsByClass("unic"))
             {
                 if (tag.MetaLocation != null)
@@ -308,10 +314,10 @@ namespace Blamite.Blam.ThirdGen
 
         private ThirdGenResourceLayoutTable LoadResourceLayoutTable(IReader reader)
         {
-            if (_tags == null || !_buildInfo.HasLayout("resource layout table"))
+            if (_tags == null || !_buildInfo.Layouts.HasLayout("resource layout table"))
                 return null;
 
-            StructureLayout layout = _buildInfo.GetLayout("resource layout table");
+            StructureLayout layout = _buildInfo.Layouts.GetLayout("resource layout table");
 
             ITag play = _tags.FindTagByClass("play");
             if (play == null)
@@ -324,10 +330,10 @@ namespace Blamite.Blam.ThirdGen
 
         private ThirdGenResourceGestalt LoadResourceGestalt(IReader reader, ThirdGenResourceLayoutTable resourceLayout)
         {
-            if (_tags == null || resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
+            if (_tags == null || resourceLayout == null || !_buildInfo.Layouts.HasLayout("resource gestalt"))
                 return null;
 
-            StructureLayout layout = _buildInfo.GetLayout("resource gestalt");
+            StructureLayout layout = _buildInfo.Layouts.GetLayout("resource gestalt");
 
             ITag zone = _tags.FindTagByClass("zone");
             if (zone == null)
@@ -341,7 +347,7 @@ namespace Blamite.Blam.ThirdGen
         private void LoadScriptFiles(IReader reader)
         {
             // Scripts are just loaded from scnr for now...
-            if (_tags != null && _buildInfo.HasLayout("scnr"))
+            if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
             {
                 ITag scnr = _tags.FindTagByClass("scnr");
                 if (scnr != null)
@@ -359,7 +365,7 @@ namespace Blamite.Blam.ThirdGen
             // Serialize and write the header
             StructureValueCollection values = _header.Serialize(_languageInfo.LocaleArea);
             writer.SeekTo(0);
-            StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);
+            StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("header"), writer);
         }
 
         private void WriteLanguageInfo(IWriter writer)

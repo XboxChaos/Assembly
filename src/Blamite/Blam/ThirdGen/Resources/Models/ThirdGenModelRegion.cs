@@ -11,7 +11,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 {
     public class ThirdGenModelRegion : IModelRegion
     {
-        public ThirdGenModelRegion(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        public ThirdGenModelRegion(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             Load(values, reader, metaArea, buildInfo);
         }
@@ -20,18 +20,18 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 
         public IModelPermutation[] Permutations { get; private set; }
 
-        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             Name = new StringID(values.GetInteger("name stringid"));
 
             LoadPermutations(values, reader, metaArea, buildInfo);
         }
 
-        private void LoadPermutations(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        private void LoadPermutations(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             int count = (int)values.GetInteger("number of permutations");
             uint address = values.GetInteger("permutation table address");
-            var layout = buildInfo.GetLayout("model permutation");
+            var layout = buildInfo.Layouts.GetLayout("model permutation");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             Permutations = (from entry in entries

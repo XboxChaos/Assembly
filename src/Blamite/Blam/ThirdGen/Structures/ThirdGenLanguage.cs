@@ -19,9 +19,9 @@ namespace Blamite.Blam.ThirdGen.Structures
         private LocaleSymbolCollection _symbols;
         private int _sizeAlign;
 
-        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, BuildInformation buildInfo)
+        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, EngineDescription buildInfo)
         {
-            _pointerLayout = buildInfo.GetLayout("locale index table entry");
+            _pointerLayout = buildInfo.Layouts.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
             _symbols = buildInfo.LocaleSymbols;
             _localeArea = localeArea;

@@ -20,13 +20,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     /// </summary>
     public partial class ScriptEditor : UserControl
     {
+        private EngineDescription _buildInfo;
         private IScriptFile _scriptFile;
-        private string _scriptDefsFile;
 
-        public ScriptEditor(IScriptFile scriptFile, IStreamManager streamManager, string scriptDefsFile)
+        public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager)
         {
+            _buildInfo = buildInfo;
             _scriptFile = scriptFile;
-            _scriptDefsFile = scriptDefsFile;
             InitializeComponent();
 
             Thread thrd = new Thread(DecompileScripts);
@@ -46,8 +46,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     return;
             }
 
-            XDocument scriptDefs = XDocument.Load(_scriptDefsFile);
-            XMLOpcodeLookup opcodes = new XMLOpcodeLookup(scriptDefs);
+            OpcodeLookup opcodes = _buildInfo.ScriptInfo;
             BlamScriptGenerator generator = new BlamScriptGenerator(scripts, opcodes);
             IndentedTextWriter code = new IndentedTextWriter(new StringWriter());
 

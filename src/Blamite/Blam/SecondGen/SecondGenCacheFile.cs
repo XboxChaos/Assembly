@@ -15,12 +15,12 @@ namespace Blamite.Blam.SecondGen
     {
         private FileSegmenter _segmenter;
         private SecondGenHeader _header;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private SecondGenTagTable _tags;
         private IndexedFileNameSource _fileNames;
         private IndexedStringIDSource _stringIDs;
 
-        public SecondGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
+        public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
         {
             _buildInfo = buildInfo;
             _segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
@@ -160,7 +160,7 @@ namespace Blamite.Blam.SecondGen
             get { return new IScriptFile[0]; }
         }
 
-        private void Load(IReader reader, BuildInformation buildInfo, string buildString)
+        private void Load(IReader reader, EngineDescription buildInfo, string buildString)
         {
             _header = LoadHeader(reader, buildInfo, buildString);
             _tags = LoadTagTable(reader, buildInfo);
@@ -168,27 +168,27 @@ namespace Blamite.Blam.SecondGen
             _stringIDs = LoadStringIDs(reader, buildInfo);
         }
 
-        private SecondGenHeader LoadHeader(IReader reader, BuildInformation buildInfo, string buildString)
+        private SecondGenHeader LoadHeader(IReader reader, EngineDescription buildInfo, string buildString)
         {
             reader.SeekTo(0);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("header"));
             return new SecondGenHeader(values, buildInfo, buildString, _segmenter);
         }
 
-        private SecondGenTagTable LoadTagTable(IReader reader, BuildInformation buildInfo)
+        private SecondGenTagTable LoadTagTable(IReader reader, EngineDescription buildInfo)
         {
             reader.SeekTo(MetaArea.Offset);
-            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.GetLayout("meta header"));
+            StructureValueCollection values = StructureReader.ReadStructure(reader, buildInfo.Layouts.GetLayout("meta header"));
             return new SecondGenTagTable(reader, values, MetaArea, buildInfo);
         }
 
-        private IndexedFileNameSource LoadFileNames(IReader reader, BuildInformation buildInfo)
+        private IndexedFileNameSource LoadFileNames(IReader reader, EngineDescription buildInfo)
         {
-            IndexedStringTable strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.FileNameKey);
+            IndexedStringTable strings = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, buildInfo.TagNameKey);
             return new IndexedFileNameSource(strings);
         }
 
-        private IndexedStringIDSource LoadStringIDs(IReader reader, BuildInformation buildInfo)
+        private IndexedStringIDSource LoadStringIDs(IReader reader, EngineDescription buildInfo)
         {
             IndexedStringTable strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData, buildInfo.StringIDKey);
             return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
@@ -208,7 +208,7 @@ namespace Blamite.Blam.SecondGen
         private void WriteHeader(IWriter writer)
         {
             writer.SeekTo(0);
-            StructureWriter.WriteStructure(_header.Serialize(), _buildInfo.GetLayout("header"), writer);
+            StructureWriter.WriteStructure(_header.Serialize(), _buildInfo.Layouts.GetLayout("header"), writer);
         }
     }
 }

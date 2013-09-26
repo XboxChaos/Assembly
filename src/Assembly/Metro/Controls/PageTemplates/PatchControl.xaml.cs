@@ -10,6 +10,7 @@ using System;
 using Assembly.Metro.Dialogs;
 using Assembly.Helpers;
 using Blamite.Blam;
+using Blamite.Flexibility.Settings;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -374,10 +375,8 @@ namespace Assembly.Metro.Controls.PageTemplates
                     originalReader = new EndianReader(File.OpenRead(cleanMapPath), Endian.BigEndian);
                     newReader = new EndianReader(File.OpenRead(moddedMapPath), Endian.BigEndian);
 
-                    var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
-                    var loader = new BuildInfoLoader(Path.Combine(formatsPath, "SupportedBuilds.xml"), formatsPath);
-                    var originalFile = CacheFileLoader.LoadCacheFile(originalReader, loader);
-                    var newFile = CacheFileLoader.LoadCacheFile(newReader, loader);
+                    var originalFile = CacheFileLoader.LoadCacheFile(originalReader, Settings.DefaultDatabase);
+                    var newFile = CacheFileLoader.LoadCacheFile(newReader, Settings.DefaultDatabase);
 
                     if (cbCreatePatchHasCustomMeta.IsChecked != null && (bool)cbCreatePatchHasCustomMeta.IsChecked && cboxCreatePatchTargetGame.SelectedIndex < 4)
                     {
@@ -582,9 +581,8 @@ namespace Assembly.Metro.Controls.PageTemplates
                 // Open the destination map
                 using (var stream = new EndianStream(File.Open(outputPath, FileMode.Open, FileAccess.ReadWrite), Endian.BigEndian))
                 {
-                    var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
-                    var loader = new BuildInfoLoader(Path.Combine(formatsPath, "SupportedBuilds.xml"), formatsPath);
-                    var cacheFile = CacheFileLoader.LoadCacheFile(stream, loader);
+                    var engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+                    var cacheFile = CacheFileLoader.LoadCacheFile(stream, engineDb);
                     if (currentPatch.MapInternalName != null && cacheFile.InternalName != currentPatch.MapInternalName)
                     {
                         MetroMessageBox.Show("Unable to apply patch", "Hold on there! That patch is for " + currentPatch.MapInternalName + ".map, and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");

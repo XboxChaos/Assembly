@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.Flexibility.Settings;
 using Blamite.IO;
 
 namespace StringDump
@@ -32,13 +33,13 @@ namespace StringDump
             string mapPath = ofd.FileName;
             string dumpPath = sfd.FileName;
 
-            BuildInfoLoader loader = new BuildInfoLoader(@"Formats\SupportedBuilds.xml", "Formats");
+            var engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
             ICacheFile cacheFile;
             LocaleTable locales;
             using (IReader reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
             {
                 Console.WriteLine("Loading cache file...");
-                cacheFile = CacheFileLoader.LoadCacheFile(reader, loader);
+                cacheFile = CacheFileLoader.LoadCacheFile(reader, engineDb);
 
                 Console.WriteLine("Loading locales...");
                 locales = cacheFile.Languages[LocaleLanguage.English].LoadStrings(reader);

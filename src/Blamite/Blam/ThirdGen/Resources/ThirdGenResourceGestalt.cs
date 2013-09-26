@@ -14,7 +14,7 @@ namespace Blamite.Blam.ThirdGen.Resources
     {
         private ThirdGenResource[] _resources;
 
-        public ThirdGenResourceGestalt(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
+        public ThirdGenResourceGestalt(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
         {
             Load(values, reader, metaArea, buildInfo, tags, layoutInfo);
         }
@@ -39,16 +39,16 @@ namespace Blamite.Blam.ThirdGen.Resources
             return _resources.GetEnumerator();
         }
 
-        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
         {
             LoadResources(values, reader, metaArea, buildInfo, tags, layoutInfo);
         }
 
-        private void LoadResources(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
+        private void LoadResources(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo, ThirdGenTagTable tags, ThirdGenResourceLayoutTable layoutInfo)
         {
             int count = (int)values.GetInteger("number of resources");
             uint address = values.GetInteger("resource table address");
-            var layout = buildInfo.GetLayout("resource table entry");
+            var layout = buildInfo.Layouts.GetLayout("resource table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
             _resources = new ThirdGenResource[entries.Length];

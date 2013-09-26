@@ -9,6 +9,8 @@ using System.Web.Script.Serialization;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
 using Assembly.Metro.Controls.PageTemplates.Games;
+using Blamite.Flexibility;
+using Blamite.Flexibility.Settings;
 
 namespace Assembly.Helpers
 {
@@ -207,6 +209,8 @@ namespace Assembly.Helpers
 
         public static Home homeWindow = null;
         public static Xbdm xbdm = null;
+
+        public static EngineDatabase DefaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 
 		public enum TagOpenMode
 		{

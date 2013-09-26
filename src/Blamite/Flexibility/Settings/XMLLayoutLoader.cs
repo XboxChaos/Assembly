@@ -1,37 +1,34 @@
-﻿/* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
- * 
- * This file is part of ExtryzeDLL.
- * 
- * Extryze is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Extryze is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Blamite.IO;
 using Blamite.Util;
 
-namespace Blamite.Flexibility
+namespace Blamite.Flexibility.Settings
 {
     /// <summary>
     /// Provides a means of loading a structure layout from an XML file.
     /// </summary>
-    public static class XMLLayoutLoader
+    public class XMLLayoutLoader : IComplexSettingLoader
     {
+        /// <summary>
+        /// Loads setting data from a path.
+        /// </summary>
+        /// <param name="path">The path to load from.</param>
+        /// <returns>
+        /// The loaded setting data.
+        /// </returns>
+        public object LoadSetting(string path)
+        {
+            if (Directory.Exists(path))
+                return LoadLayoutsFromDirectory(path);
+            return LoadLayouts(path);
+        }
+
         /// <summary>
         /// Loads all of the structure layouts defined in an XML document.
         /// </summary>
@@ -64,6 +61,22 @@ namespace Blamite.Flexibility
         public static StructureLayoutCollection LoadLayouts(string documentPath)
         {
             return LoadLayouts(XDocument.Load(documentPath));
+        }
+
+        /// <summary>
+        /// Loads all of the layout XML files in a directory.
+        /// </summary>
+        /// <param name="dirPath">The path to the directory to load XML files from.</param>
+        /// <returns>The layouts that were loaded.</returns>
+        public static StructureLayoutCollection LoadLayoutsFromDirectory(string dirPath)
+        {
+            var result = new StructureLayoutCollection();
+            foreach (var file in Directory.EnumerateFiles(dirPath, "*.xml"))
+            {
+                var layouts = LoadLayouts(file);
+                result.Import(layouts);
+            }
+            return result;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Text;
 using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.Flexibility.Settings;
 using Blamite.IO;
 
 namespace Blamite.Blam
@@ -18,26 +19,26 @@ namespace Blamite.Blam
         /// Loads a cache file from a stream.
         /// </summary>
         /// <param name="reader">The stream to read from.</param>
-        /// <param name="infoLoader">The BuildInfoLoader responsible for loading build information for the cache file.</param>
+        /// <param name="engineDb">The engine database to use to process the cache file.</param>
         /// <returns>The cache file that was loaded.</returns>
         /// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
         /// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-        public static ICacheFile LoadCacheFile(IReader reader, BuildInfoLoader infoLoader)
+        public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb)
         {
-            BuildInformation tempInfo;
-            return LoadCacheFile(reader, infoLoader, out tempInfo);
+            EngineDescription tempDesc;
+            return LoadCacheFile(reader, engineDb, out tempDesc);
         }
 
         /// <summary>
         /// Loads a cache file from a stream.
         /// </summary>
         /// <param name="reader">The stream to read from.</param>
-        /// <param name="infoLoader">The BuildInfoLoader responsible for loading build information for the cache file.</param>
-        /// <param name="buildInfo">The variable to store build information to.</param>
+        /// <param name="engineDb">The engine database to use to process the cache file.</param>
+        /// <param name="engineInfo">On output, this will contain the cache file's engine description.</param>
         /// <returns>The cache file that was loaded.</returns>
         /// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
         /// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-        public static ICacheFile LoadCacheFile(IReader reader, BuildInfoLoader infoLoader, out BuildInformation buildInfo)
+        public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
         {
             // Set the reader's endianness based upon the file's header magic
             reader.SeekTo(0);
@@ -50,18 +51,18 @@ namespace Blamite.Blam
                 throw new NotSupportedException("Engine not supported");
 
             // Load build info
-            buildInfo = infoLoader.LoadBuild(version.BuildString);
-            if (buildInfo == null)
+            engineInfo = engineDb.FindEngineByVersion(version.BuildString);
+            if (engineInfo == null)
                 throw new NotSupportedException("Engine version \"" + version.BuildString + "\" not supported");
 
             // Load the cache file depending upon the engine version
             switch (version.Engine)
             {
                 case EngineType.SecondGeneration:
-                    return new SecondGenCacheFile(reader, buildInfo, version.BuildString);
+                    return new SecondGenCacheFile(reader, engineInfo, version.BuildString);
 
                 case EngineType.ThirdGeneration:
-                    return new ThirdGenCacheFile(reader, buildInfo, version.BuildString);
+                    return new ThirdGenCacheFile(reader, engineInfo, version.BuildString);
 
                 default:
                     throw new NotSupportedException("Engine not supported");

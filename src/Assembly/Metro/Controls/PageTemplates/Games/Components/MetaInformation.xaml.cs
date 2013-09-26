@@ -22,7 +22,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     /// </summary>
     public partial class MetaInformation : UserControl
     {
-        public MetaInformation(BuildInformation buildInfo, TagEntry tag, ICacheFile cache)
+        public MetaInformation(EngineDescription buildInfo, TagEntry tag, ICacheFile cache)
         {
             InitializeComponent();
 

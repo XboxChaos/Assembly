@@ -26,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private XMLCodeCompleter _completer = new XMLCodeCompleter();
         private CompletionWindow _completionWindow;
 
-        public PluginEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
+        public PluginEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
         {
             InitializeComponent();
 
@@ -43,7 +43,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	        string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
 	        _pluginPath =
 		        string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-							  buildInfo.PluginFolder, className.Trim());
+							  buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
             LoadPlugin();
         }
 

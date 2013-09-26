@@ -19,7 +19,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public enum LoadType { File, Memory }
 
-        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, LoadType type, FieldChangeSet ignore)
+        public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, LoadType type, FieldChangeSet ignore)
         {
 			_streamManager = streamManager;
             BaseOffset = baseOffset;
@@ -28,9 +28,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _type = type;
 
             // Load layouts
-            _reflexiveLayout = buildInfo.GetLayout("reflexive");
-            _tagRefLayout = buildInfo.GetLayout("tag reference");
-            _dataRefLayout = buildInfo.GetLayout("data reference");
+            _reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+            _tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
+            _dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
         }
 
         public uint BaseOffset { get; set; }
@@ -323,7 +323,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             if (index.IsValid && index.Index < field.Tags.Entries.Count)
             {
                 tag = field.Tags.Entries[index.Index];
-                if (tag.RawTag.Index != index)
+                if (tag == null || tag.RawTag == null || tag.RawTag.Index != index)
                     tag = null;
             }
 

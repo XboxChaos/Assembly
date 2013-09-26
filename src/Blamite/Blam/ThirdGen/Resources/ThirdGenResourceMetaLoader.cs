@@ -13,10 +13,10 @@ namespace Blamite.Blam.ThirdGen.Resources
 {
     public class ThirdGenResourceMetaLoader : IResourceMetaLoader
     {
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private FileSegmentGroup _metaArea;
 
-        public ThirdGenResourceMetaLoader(BuildInformation buildInfo, FileSegmentGroup metaArea)
+        public ThirdGenResourceMetaLoader(EngineDescription buildInfo, FileSegmentGroup metaArea)
         {
             _buildInfo = buildInfo;
             _metaArea = metaArea;
@@ -24,7 +24,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 
         public bool SupportsRenderModels
         {
-            get { return _buildInfo.HasLayout("render model"); }
+            get { return _buildInfo.Layouts.HasLayout("render model"); }
         }
 
         public IRenderModel LoadRenderModelMeta(ITag modeTag, IReader reader)
@@ -36,7 +36,7 @@ namespace Blamite.Blam.ThirdGen.Resources
                 throw new NotSupportedException("Render model metadata loading is not supported for the cache file's engine.");
 
             reader.SeekTo(modeTag.MetaLocation.AsOffset());
-            var layout = _buildInfo.GetLayout("render model");
+            var layout = _buildInfo.Layouts.GetLayout("render model");
             var values = StructureReader.ReadStructure(reader, layout);
             return new ThirdGenRenderModel(values, reader, _metaArea, _buildInfo);
         }

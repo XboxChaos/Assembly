@@ -50,7 +50,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private IStreamManager _fileManager;
         private TagEntry _tag;
         private TagHierarchy _tags;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private ICacheFile _cache;
         private string _pluginPath;
         private ThirdGenPluginVisitor _pluginVisitor;
@@ -70,7 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
 		public static RoutedCommand GoToPlugin = new RoutedCommand();
 
-		public MetaEditor(BuildInformation buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+        public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
         {
             InitializeComponent();
 
@@ -86,7 +86,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
             // Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
-            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+            _pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.Settings.GetSetting<string>("plugins"), className);
 
             // Set Invisibility box
             cbShowInvisibles.IsChecked = Settings.pluginsShowInvisibles;
@@ -272,7 +272,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.Settings.GetSetting<string>("plugins"), className);
 
 			// Set Invisibility box
 			cbShowInvisibles.IsChecked = Settings.pluginsShowInvisibles;

@@ -52,8 +52,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     public partial class HaloMap : INotifyPropertyChanged
     {
         private IStreamManager _mapManager;
-        private BuildInfoLoader _layoutLoader;
-        private BuildInformation _buildInfo;
+        private EngineDatabase _engineDb;
+        private EngineDescription _buildInfo;
         private ICacheFile _cacheFile;
         private readonly string _cacheLocation;
 		private readonly LayoutDocument _tab;
@@ -111,7 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	    /// <param name="cacheLocation"></param>
 	    /// <param name="tab"></param>
 	    /// <param name="tagSorting"> </param>
-		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting)
+		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting, EngineDatabase engineDb)
         {
             InitializeComponent();
             AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
@@ -119,6 +119,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Setup Context Menus
 			InitalizeContextMenus();
 
+            _engineDb = engineDb;
             _tab = tab;
 		    _tagSorting = tagSorting;
 		    _cacheLocation = cacheLocation;
@@ -170,12 +171,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             using (var fileStream = File.OpenRead(_cacheLocation))
             {
                 var reader = new EndianReader(fileStream, Endian.BigEndian);
-                var formatsPath = Path.Combine(VariousFunctions.GetApplicationLocation(), "Formats");
-                var supportedBuildsPath = Path.Combine(formatsPath, "SupportedBuilds.xml");
-                _layoutLoader = new BuildInfoLoader(supportedBuildsPath, formatsPath);
                 try
                 {
-                    _cacheFile = CacheFileLoader.LoadCacheFile(reader, _layoutLoader, out _buildInfo);
+                    _cacheFile = CacheFileLoader.LoadCacheFile(reader, Settings.DefaultDatabase, out _buildInfo);
 
 #if DEBUG
 	                Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
@@ -237,7 +235,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 // Add to Recents
                 Dispatcher.Invoke(new Action(delegate
 	                                  {
-		                                  RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.ShortName, Settings.RecentFileType.Cache);
+		                                  RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation, _buildInfo.Settings.GetSetting<string>("shortName"), Settings.RecentFileType.Cache);
 		                                  StatusUpdater.Update("Added To Recents");
 	                                  }));
 
@@ -260,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								lblMapHeader.Text = "Map Header;";
                                 lblDblClick.Visibility = Visibility.Visible;
 								HeaderDetails.Clear();
-								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
+								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.Name });
 								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.BuildString.ToString(CultureInfo.InvariantCulture)});
 								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Type.ToString()});
 								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.InternalName});
@@ -294,7 +292,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			Dispatcher.Invoke(new Action(delegate
 								{
-									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
+									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.Settings.GetSetting<string>("shortName"),
 																						_cacheFile.InternalName);
 
 									if (gameMetaData == null) return;
@@ -430,7 +428,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         }
         private void LoadScripts()
         {
-            if (_buildInfo.ScriptDefinitionsFilename == null || _cacheFile.ScriptFiles.Length == 0)
+            if (_buildInfo.ScriptInfo == null || _cacheFile.ScriptFiles.Length == 0)
                 return;
 
             Dispatcher.Invoke(new Action(delegate
@@ -1203,7 +1201,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 									  Content = tabName,
 									  ContextMenu = BaseContextMenu
 								  },
-                                  Content = new Components.Editors.ScriptEditor(script, _mapManager, _buildInfo.ScriptDefinitionsFilename)
+                                  Content = new Components.Editors.ScriptEditor(_buildInfo, script, _mapManager)
                               };
 
                 contentTabs.Items.Add(tab);

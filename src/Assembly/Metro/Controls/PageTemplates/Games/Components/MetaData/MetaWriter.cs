@@ -26,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         /// <summary>
         /// Save meta to the Blam Cache File
         /// </summary>
-        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, SaveType type, FieldChangeSet changes)
+        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type, FieldChangeSet changes)
         {
             _writer = writer;
             _baseOffset = baseOffset;
@@ -35,9 +35,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             _changes = changes;
 
             // Load layouts
-            _reflexiveLayout = buildInfo.GetLayout("reflexive");
-            _tagRefLayout = buildInfo.GetLayout("tag reference");
-            _dataRefLayout = buildInfo.GetLayout("data reference");
+            _reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+            _tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
+            _dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
         }
 
         public void WriteFields(IList<MetaField> fields)

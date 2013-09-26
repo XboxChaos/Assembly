@@ -10,12 +10,12 @@ namespace Blamite.Blam.Scripting
     // This code sucks...
     public class BlamScriptGenerator
     {
-        private IOpcodeLookup _opcodes;
+        private OpcodeLookup _opcodes;
         private ScriptTable _scripts;
         private bool _nextFunctionIsScript = false;
         private bool _onNewLine = true;
 
-        public BlamScriptGenerator(ScriptTable scripts, IOpcodeLookup opcodes)
+        public BlamScriptGenerator(ScriptTable scripts, OpcodeLookup opcodes)
         {
             _scripts = scripts;
             _opcodes = opcodes;

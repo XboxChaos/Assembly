@@ -20,11 +20,11 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	    private uint _cacheOffset;
         private ICacheFile _cacheFile;
 	    private IStreamManager _streamManager;
-	    private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private MetaReader _reader;
         private IList<MetaField> _fields;
 
-        public ViewValueAs(ICacheFile cacheFile, BuildInformation buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
+        public ViewValueAs(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
             InitializeComponent();
 

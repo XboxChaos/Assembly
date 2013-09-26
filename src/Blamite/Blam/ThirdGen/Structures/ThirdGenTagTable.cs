@@ -40,7 +40,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             _tags = new List<ITag>();
         }
 
-        public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             Load(reader, headerValues, metaArea, buildInfo);
         }
@@ -60,7 +60,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             return _tags.GetEnumerator();
         }
 
-        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             if (values.GetInteger("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
@@ -76,9 +76,9 @@ namespace Blamite.Blam.ThirdGen.Structures
             _tags = ReadTags(reader, tagTableLocation, numTags, buildInfo, metaArea);
         }
 
-        private List<ITagClass> ReadClasses(IReader reader, SegmentPointer classTableLocation, int numClasses, BuildInformation buildInfo)
+        private List<ITagClass> ReadClasses(IReader reader, SegmentPointer classTableLocation, int numClasses, EngineDescription buildInfo)
         {
-            StructureLayout layout = buildInfo.GetLayout("class entry");
+            StructureLayout layout = buildInfo.Layouts.GetLayout("class entry");
 
             List<ITagClass> result = new List<ITagClass>();
             reader.SeekTo(classTableLocation.AsOffset());
@@ -90,9 +90,9 @@ namespace Blamite.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<ITag> ReadTags(IReader reader, SegmentPointer tagTableLocation, int numTags, BuildInformation buildInfo, FileSegmentGroup metaArea)
+        private List<ITag> ReadTags(IReader reader, SegmentPointer tagTableLocation, int numTags, EngineDescription buildInfo, FileSegmentGroup metaArea)
         {
-            StructureLayout layout = buildInfo.GetLayout("tag entry");
+            StructureLayout layout = buildInfo.Layouts.GetLayout("tag entry");
 
             List<ITag> result = new List<ITag>();
             reader.SeekTo(tagTableLocation.AsOffset());

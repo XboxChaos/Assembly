@@ -31,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private ICacheFile _cache;
         private IStreamManager _streamManager;
         private int _languageIndex;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private ILanguage _currentLanguage;
         private LocaleTable _currentLocaleTable;
         private List<LocaleEntry> _locales;
@@ -40,7 +40,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private LocaleRange _currentRange;
         private string _filter;
 
-        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, BuildInformation buildInfo)
+        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, EngineDescription buildInfo)
         {
             InitializeComponent();
 
