@@ -70,7 +70,7 @@ namespace Assembly.Helpers
         public static BitmapSource Deswizzle(string FilePath, int resizeWidth = -1, int resizeHeight = -1, bool onlyResizeIfGreater = false, bool dontSettingsResize = false)
         {
             //Open the temp dds
-			var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+			var fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite);
 			var es = new EndianStream(fs, Endian.LittleEndian);
 
             //Read the dds header
