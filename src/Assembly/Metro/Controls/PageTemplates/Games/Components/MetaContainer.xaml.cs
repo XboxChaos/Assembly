@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Assembly.Helpers;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -62,7 +63,49 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             // Create Plugin Editor Tab
             _pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
             tabPluginEditor.Content = _pluginEditor;
-        }
+
+			// Create Raw Tabs
+			#region Models
+			//if (_cache.ResourceMetaLoader.SupportsRenderModels && _tag.RawTag.Class.Magic == CharConstant.FromString("mode"))
+			//{
+			//	tabSound.Visibility = Visibility.Visible;
+			//	tabSound.Content = new SoundEditor(_tag, _cache, _streamManager);
+			//}
+			//else
+			//{
+			//	tabSound.Visibility = Visibility.Collapsed;
+			//	if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Model)
+			//		tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
+			//}
+			#endregion
+			#region BSP
+			if (true && _tag.RawTag.Class.Magic == CharConstant.FromString("sbsp")) // add some manual check here akarias, since you code isn't in blamite
+			{
+				tabBspEditor.Visibility = Visibility.Visible;
+				tabBspEditor.Content = new BspEditor(_tag, _cache, _streamManager);
+			}
+			else
+			{
+				tabBspEditor.Visibility = Visibility.Collapsed;
+				if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
+					tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
+			}
+			#endregion
+			#region Sound
+			//if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
+			//{
+			//	tabSound.Visibility = Visibility.Visible;
+			//	tabSound.Content = new SoundEditor(_tag, _cache, _streamManager);
+			//}
+			//else
+			//{
+			//	tabSound.Visibility = Visibility.Collapsed;
+			//	if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Sound)
+			//		tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
+			//}
+			#endregion
+
+		}
 
 		public void GoToRawPluginLine(int pluginLine)
 		{

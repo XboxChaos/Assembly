@@ -244,7 +244,10 @@ namespace Assembly.Helpers
             //Ident,
             //String,
             MetaEditor,
-            PluginEditor
+            PluginEditor,
+			Sound,
+			Model,
+			Bsp
         }
         public class RecentFileEntry
         {
