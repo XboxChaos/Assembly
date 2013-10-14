@@ -41,6 +41,48 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,12 +97,15 @@
     <Compile Include="Blam\EngineType.cs" />
     <Compile Include="Blam\Resources\BSP\IScenarioBSP.cs" />
     <Compile Include="Blam\Resources\IZoneSet.cs" />
+    <Compile Include="Blam\Resources\Models\BoundingBoxCalculator.cs" />
     <Compile Include="Blam\Resources\Models\IModel.cs" />
+    <Compile Include="Blam\Resources\Models\IndexBufferWriter.cs" />
+    <Compile Include="Blam\Resources\Models\VertexBufferWriter.cs" />
     <Compile Include="Blam\Resources\Resource.cs" />
     <Compile Include="Blam\Resources\IResourceMetaLoader.cs" />
     <Compile Include="Blam\Resources\ResourcePage.cs" />
     <Compile Include="Blam\Resources\IResourceManager.cs" />
-    <Compile Include="Blam\Resources\Models\IModelBoundingBox.cs" />
+    <Compile Include="Blam\Resources\Models\BoundingBox.cs" />
     <Compile Include="Blam\Resources\Models\IModelPermutation.cs" />
     <Compile Include="Blam\Resources\Models\IModelProcessor.cs" />
     <Compile Include="Blam\Resources\Models\IModelRegion.cs" />
@@ -99,9 +144,9 @@
     <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
     <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenInteropSection.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenZoneSetTable.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenResourceLayoutTable.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelBoundingBox.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelPermutation.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelRegion.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelSection.cs" />
@@ -368,7 +413,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

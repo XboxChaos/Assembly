@@ -186,6 +186,26 @@ namespace Blamite.Blam.ThirdGen
             get { return _segmenter.GetWrappers(); }
         }
 
+        public FileSegment StringIDIndexTable
+        {
+            get { return _header.StringIDIndexTable; }
+        }
+
+        public FileSegment StringIDDataTable
+        {
+            get { return _header.StringIDData; }
+        }
+
+        public FileSegment FileNameIndexTable
+        {
+            get { return _header.FileNameIndexTable; }
+        }
+
+        public FileSegment FileNameDataTable
+        {
+            get { return _header.FileNameData; }
+        }
+
         public MetaAllocator Allocator { get; private set; }
 
         public IScriptFile[] ScriptFiles { get; private set; }
@@ -306,9 +326,12 @@ namespace Blamite.Blam.ThirdGen
         {
             ITag zoneTag = _tags.FindTagByClass("zone");
             ITag playTag = _tags.FindTagByClass("play");
-            ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
-            ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
-            _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+            if (zoneTag != null && playTag != null && _buildInfo.HasLayout("resource gestalt") && _buildInfo.HasLayout("resource layout table"))
+            {
+                ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+                ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+                _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+            }
         }
 
         private void LoadScriptFiles(IReader reader)

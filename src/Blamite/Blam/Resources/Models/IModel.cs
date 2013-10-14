@@ -18,7 +18,7 @@ namespace Blamite.Blam.Resources.Models
         /// <summary>
         /// Gets the model's bounding boxes. Can be null.
         /// </summary>
-        IModelBoundingBox[] BoundingBoxes { get; }
+        BoundingBox[] BoundingBoxes { get; }
 
         /// <summary>
         /// Gets the datum index of the model's resource.

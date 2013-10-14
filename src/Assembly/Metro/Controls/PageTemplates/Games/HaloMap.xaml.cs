@@ -233,6 +233,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                  StatusUpdater.Update("Added To Recents");
 	                                  }));
 
+                /*ITag dice = _cacheFile.Tags[0x0102];
+                IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
+                var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
+                Resource diceResource = resourceTable.Resources[diceModel.ModelResourceIndex.Index];
+                ICacheFile resourceFile = _cacheFile;
+                Stream resourceStream = fileStream;
+                if (diceResource.Location.PrimaryPage.FilePath != null)
+                {
+                    resourceStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(_cacheLocation), Path.GetFileName(diceResource.Location.PrimaryPage.FilePath)));
+                    resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cacheFile.BuildString);
+                }
+                ResourcePageExtractor extractor = new ResourcePageExtractor(resourceFile);
+                string path = Path.GetTempFileName();
+                FileStream pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+                extractor.ExtractPage(diceResource.Location.PrimaryPage, resourceStream, pageStream);
+                if (resourceStream != fileStream)
+                    resourceStream.Close();
+                IReader pageReader = new EndianReader(pageStream, Endian.BigEndian);
+                pageReader.SeekTo(diceResource.Location.PrimaryOffset);
+                ObjExporter exporter = new ObjExporter("C:\\Users\\Aaron\\Desktop\\test.obj");
+                System.Collections.BitArray sections = new System.Collections.BitArray(diceModel.Sections.Length, true);
+                //sections[3] = true;
+                //sections[1] = true;
+                ModelReader.ReadModelData(pageReader, diceModel, sections, _buildInfo, exporter);
+                exporter.Close();
+                pageReader.Close();*/
+
                 LoadHeader();
 	            LoadMetaData();
                 LoadTags();
