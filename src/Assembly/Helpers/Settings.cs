@@ -259,8 +259,6 @@ namespace Assembly.Helpers
         public static MetroMessageBox.MessageBoxResult MessageBoxButtonStorage;
 
 	    public static KeyValuePair<string, int> TagBookmarkSaver;
-
-	    public static string MessageBoxInputStorage;
     }
 
     public class RecentFiles

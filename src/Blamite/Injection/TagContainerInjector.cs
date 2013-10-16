@@ -81,6 +81,7 @@ namespace Blamite.Injection
             var tagData = _container.FindDataBlock(tag.OriginalAddress);
             var newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
             _tagIndices[tag] = newTag.Index;
+            _cacheFile.FileNames.SetTagName(newTag, tag.Name);
 
             // Write the data
             WriteDataBlock(tagData, newTag.MetaLocation, stream);

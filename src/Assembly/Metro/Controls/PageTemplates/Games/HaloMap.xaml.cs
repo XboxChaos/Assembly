@@ -1144,6 +1144,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 CreateTag(tag);
         }
 
+        private void contextRename_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag
+            var item = e.Source as MenuItem;
+            if (item == null)
+                return;
+
+            var tag = item.DataContext as TagEntry;
+            if (tag == null)
+                return;
+
+            // Ask for the new name
+            var newName = MetroInputBox.Show("Rename Tag", "Please enter a new name for the tag.\r\nNote: this will update the cache file and possibly expand its tag name data.", tag.TagFileName, "Enter a tag name.");
+            if (newName == null || newName == tag.TagFileName)
+                return;
+
+            // Set the name
+            _cacheFile.FileNames.SetTagName(tag.RawTag, newName);
+            tag.TagFileName = newName;
+
+            // Update the cache file
+            using (var stream = _mapManager.OpenReadWrite())
+                _cacheFile.SaveChanges(stream);
+
+            StatusUpdater.Update("Tag Renamed Successfully");
+        }
+
         private void contextExtract_Click(object sender, RoutedEventArgs e)
         {
             // Get the menu item and the tag

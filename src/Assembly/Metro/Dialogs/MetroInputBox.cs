@@ -16,7 +16,7 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, "", null, "");
 			dialog.ShowDialog();
 
-			return TempStorage.MessageBoxInputStorage;
+			return dialog.Result;
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, "", null, defaultText);
 			dialog.ShowDialog();
 
-			return TempStorage.MessageBoxInputStorage;
+            return dialog.Result;
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, placeholder, null, defaultText);
 			dialog.ShowDialog();
 
-			return TempStorage.MessageBoxInputStorage;
+            return dialog.Result;
 		}
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, placeholder, regexMatch, defaultText);
 			dialog.ShowDialog();
 
-			return TempStorage.MessageBoxInputStorage;
+            return dialog.Result;
 		}
 
 	}

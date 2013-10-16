@@ -32,8 +32,16 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			txtInput.Text = defaultText;
 			_regexMatch = regexMatch;
 
-			txtInput_LostFocus(txtInput, null);
+            // Note to Alex: this is going to fuck with how you implemented the placeholder text,
+            // but I think the textbox should be focused by default
+            // Maybe you can make the placeholder text always show if length == 0?
+            txtInput.Focus();
+            txtInput.Select(txtInput.Text.Length, 0);
+
+			//txtInput_LostFocus(txtInput, null);
         }
+
+        public string Result { get; private set; }
 
 		private void txtInput_GotFocus(object sender, RoutedEventArgs e)
 		{
@@ -81,7 +89,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				}
 			}
 
-			TempStorage.MessageBoxInputStorage = txtInput.Text;
+			Result = txtInput.Text;
 			Close();
 		}
     }
