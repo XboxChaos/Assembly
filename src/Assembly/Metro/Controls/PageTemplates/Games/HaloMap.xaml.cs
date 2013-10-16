@@ -1301,8 +1301,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 injector.SaveChanges(stream);
             }
 
+            // Fix the SID trie
+            foreach (var sid in injector.InjectedStringIDs)
+                _stringIDTrie.Add(_cacheFile.StringIDs.GetString(sid));
+
             LoadTags();
-            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), and " + injector.InjectedResources.Count + " resource pointer(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), " + injector.InjectedResources.Count + " resource pointer(s), and " + injector.InjectedStringIDs.Count + " stringID(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
         }
 	}
 }

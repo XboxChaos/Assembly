@@ -353,8 +353,11 @@ namespace Blamite.Blam.ThirdGen
 
         private void WriteHeader(IWriter writer)
         {
-            // Serialize and write the header
+            // Update tagname and stringid info (so. ugly.)
             _header.FileNameCount = _fileNames.Count;
+            _header.StringIDCount = _stringIds.Count;
+
+            // Serialize and write the header            
             StructureValueCollection values = _header.Serialize(_languageInfo.LocaleArea);
             writer.SeekTo(0);
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);

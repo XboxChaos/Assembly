@@ -12,6 +12,11 @@ namespace Blamite.Blam
     public abstract class StringIDSource : IEnumerable<string>
     {
         /// <summary>
+        /// Gets the total number of stringIDs in the cache file.
+        /// </summary>
+        public abstract int Count { get; }
+
+        /// <summary>
         /// Translates a stringID read from the file into an index in the table.
         /// </summary>
         /// <param name="id">The StringID to translate.</param>
@@ -66,12 +71,51 @@ namespace Blamite.Blam
         }
 
         /// <summary>
+        /// Adds a string and returns its corresponding stringID.
+        /// </summary>
+        /// <param name="str">The string to add.</param>
+        /// <returns>The added string's stringID.</returns>
+        public abstract StringID AddString(string str);
+
+        /// <summary>
+        /// Sets a stringID's corresponding string.
+        /// </summary>
+        /// <param name="index">The index of the string to set.</param>
+        /// <param name="str">The new value of the string.</param>
+        public abstract void SetString(int index, string str);
+
+        /// <summary>
+        /// Sets a stringID's corresponding string.
+        /// </summary>
+        /// <param name="id">The stringID of the string to set.</param>
+        /// <param name="str">The new value of the string.</param>
+        public void SetString(StringID id, string str)
+        {
+            int index = StringIDToIndex(id);
+            if (index == -1)
+                throw new ArgumentException("StringID does not exist");
+            SetString(index, str);
+        }
+
+        /// <summary>
         /// Gets the layout of each stringID.
         /// </summary>
         public abstract StringIDLayout IDLayout { get; }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
         public abstract IEnumerator<string> GetEnumerator();
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

@@ -20,6 +20,7 @@ namespace Blamite.Injection
         private Dictionary<ExtractedTag, DatumIndex> _tagIndices = new Dictionary<ExtractedTag, DatumIndex>();
         private Dictionary<ResourcePage, int> _pageIndices = new Dictionary<ResourcePage, int>();
         private Dictionary<ExtractedResourceInfo, DatumIndex> _resourceIndices = new Dictionary<ExtractedResourceInfo, DatumIndex>();
+        private List<StringID> _injectedStrings = new List<StringID>();
 
         public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
         {
@@ -45,6 +46,11 @@ namespace Blamite.Injection
         public ICollection<ExtractedResourceInfo> InjectedResources
         {
             get { return _resourceIndices.Keys; }
+        }
+
+        public ICollection<StringID> InjectedStringIDs
+        {
+            get { return _injectedStrings.AsReadOnly(); }
         }
 
         public void SaveChanges(IStream stream)
@@ -232,6 +238,7 @@ namespace Blamite.Injection
                 FixBlockReferences(block, bufferWriter, stream);
                 FixTagReferences(block, bufferWriter, stream);
                 FixResourceReferences(block, bufferWriter, stream);
+                FixStringIDReferences(block, bufferWriter);
 
                 // Write the buffer to the file
                 stream.SeekTo(location.AsOffset());
@@ -273,14 +280,16 @@ namespace Blamite.Injection
         {
             foreach (var fixup in block.StringIDFixups)
             {
-                // Try to find the string, and if it's not found, just skip over it
-                // TODO: Actually inject it if it isn't found
+                // Try to find the string, and if it's not found, inject it
                 StringID newSID = _cacheFile.StringIDs.FindStringID(fixup.OriginalString);
-                if (newSID != StringID.Null)
+                if (newSID == StringID.Null)
                 {
-                    buffer.SeekTo(fixup.WriteOffset);
-                    buffer.WriteUInt32(newSID.Value);
+                    newSID = _cacheFile.StringIDs.AddString(fixup.OriginalString);
+                    _injectedStrings.Add(newSID);
                 }
+
+                buffer.SeekTo(fixup.WriteOffset);
+                buffer.WriteUInt32(newSID.Value);
             }
         }
 
