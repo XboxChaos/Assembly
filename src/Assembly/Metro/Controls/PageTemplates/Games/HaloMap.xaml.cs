@@ -1156,19 +1156,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 return;
 
             // Ask for the new name
-            var newName = MetroInputBox.Show("Rename Tag", "Please enter a new name for the tag.\r\nNote: this will update the cache file and possibly expand its tag name data.", tag.TagFileName, "Enter a tag name.");
+            var newName = MetroInputBox.Show("Rename Tag", "Please enter a new name for the tag.\r\n\t\nThis will not update the cache file until you click the \"Save Tag Names\" button at the bottom.", tag.TagFileName, "Enter a tag name.");
             if (newName == null || newName == tag.TagFileName)
                 return;
 
             // Set the name
-            _cacheFile.FileNames.SetTagName(tag.RawTag, newName);
             tag.TagFileName = newName;
 
-            // Update the cache file
-            using (var stream = _mapManager.OpenReadWrite())
-                _cacheFile.SaveChanges(stream);
-
-            StatusUpdater.Update("Tag Renamed Successfully");
+            StatusUpdater.Update("Tag Renamed");
         }
 
         private void contextExtract_Click(object sender, RoutedEventArgs e)
@@ -1307,6 +1302,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
             LoadTags();
             MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), " + injector.InjectedResources.Count + " resource pointer(s), and " + injector.InjectedStringIDs.Count + " stringID(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+        }
+
+        private void btnSaveNames_Click(object sender, RoutedEventArgs e)
+        {
+            // Store the names back to the cache file
+            foreach (var tag in _allTags.Entries.Where(t => t != null))
+                _cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+
+            // Save it
+            using (var stream = _mapManager.OpenReadWrite())
+                _cacheFile.SaveChanges(stream);
+
+            MetroMessageBox.Show("Success!", "Tag names saved successfully.");
         }
 	}
 }
