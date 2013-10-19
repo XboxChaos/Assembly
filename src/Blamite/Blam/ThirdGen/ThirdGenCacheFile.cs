@@ -61,6 +61,7 @@ namespace Blamite.Blam.ThirdGen
         {
             _tags.SaveChanges(stream);
             _fileNames.SaveChanges(stream);
+            _stringIds.SaveChanges(stream);
             WriteHeader(stream);
             WriteLanguageInfo(stream);
         }

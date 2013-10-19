@@ -77,5 +77,10 @@ namespace Blamite.Blam
         {
             _strings[index] = str;
         }
+
+        internal void SaveChanges(IStream stream)
+        {
+            _strings.SaveChanges(stream);
+        }
     }
 }
