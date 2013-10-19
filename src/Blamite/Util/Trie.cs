@@ -35,6 +35,16 @@ namespace Blamite.Util
         }
 
         /// <summary>
+        /// Determines whether or not a string exists in the trie.
+        /// </summary>
+        /// <param name="str">The string to find.</param>
+        /// <returns><c>true</c> if the string exists in the trie.</returns>
+        public bool Contains(string str)
+        {
+            return FindPrefix(str).Any(s => s == str);
+        }
+
+        /// <summary>
         /// Finds all of the strings in the trie which start with a given prefix.
         /// </summary>
         /// <param name="prefix">The case-sensitive prefix to search for.</param>

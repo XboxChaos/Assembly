@@ -34,13 +34,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
             get { return (Trie)GetValue(SearchTrieProperty); }
             set { SetValue(SearchTrieProperty, value); }
         }
-
-        private void cbStringIDs_Populating(object sender, PopulatingEventArgs e)
-        {
-            e.Cancel = true;
-
-            cbStringIDs.ItemsSource = SearchTrie.FindPrefix(e.Parameter);
-            cbStringIDs.PopulateComplete();
-        }
     }
 }

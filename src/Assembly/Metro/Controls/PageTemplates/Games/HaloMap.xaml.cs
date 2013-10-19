@@ -1058,7 +1058,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 												   Content = tabName,
 												   ContextMenu = BaseContextMenu
 	                                           },
-                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index, _buildInfo)
+                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index, _stringIDTrie, _buildInfo)
                               };
 
                 contentTabs.Items.Add(tab);
