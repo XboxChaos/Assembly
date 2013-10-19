@@ -20,7 +20,7 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="count">The number of vertices to read.</param>
         /// <param name="boundingBox">The bounding box to transform vertices with. Can be null.</param>
         /// <param name="processor">The IVertexProcessor to send read vertices to. Can be null.</param>
-        public static void ReadVertices(IReader reader, VertexLayout layout, int count, IModelBoundingBox boundingBox, IVertexProcessor processor)
+        public static void ReadVertices(IReader reader, VertexLayout layout, int count, BoundingBox boundingBox, IVertexProcessor processor)
         {
             for (int i = 0; i < count; i++)
             {
@@ -75,7 +75,7 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="element">The layout of the element to read.</param>
         /// <param name="boundingBox">The bounding box to transform the element with. Can be null.</param>
         /// <param name="processor">The IVertexProcessor to send the element to.</param>
-        private static void ReadElement(IReader reader, VertexElementLayout element, IModelBoundingBox boundingBox, IVertexProcessor processor)
+        private static void ReadElement(IReader reader, VertexElementLayout element, BoundingBox boundingBox, IVertexProcessor processor)
         {
             // EW EW EW
             // TODO: Implement everything, this is just enough to load some Reach vertices for now...
@@ -167,9 +167,9 @@ namespace Blamite.Blam.Resources.Models
 
                 case VertexElementType.DHen3N:
                     value = reader.ReadUInt32();
-                    x = (((int)((value << 21) & 0xFFE00000)) >> 21) / 1023.0f;
-                    y = (((int)((value << 10) & 0xFFE00000)) >> 21) / 1023.0f;
-                    z = (((int)(value & 0xFFC00000)) >> 22) / 511.0f;
+                    x = (((int)((value << 22) & 0xFFC00000)) >> 22) / 511.0f;
+                    y = (((int)((value << 11) & 0xFFE00000)) >> 21) / 1023.0f;
+                    z = (((int)(value & 0xFFE00000)) >> 21) / 1023.0f;
                     break;
 
                 case VertexElementType.UDec4N:
@@ -200,7 +200,7 @@ namespace Blamite.Blam.Resources.Models
         /// <param name="w">The W component of the element.</param>
         /// <param name="usage">The usage of the vertex element.</param>
         /// <param name="boundingBox">The bounding box to transform the element by.</param>
-        private static void TransformElement(ref float x, ref float y, ref float z, ref float w, VertexElementUsage usage, IModelBoundingBox boundingBox)
+        private static void TransformElement(ref float x, ref float y, ref float z, ref float w, VertexElementUsage usage, BoundingBox boundingBox)
         {
             switch (usage)
             {

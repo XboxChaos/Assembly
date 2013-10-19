@@ -60,6 +60,7 @@ namespace Blamite.Blam.ThirdGen
         public void SaveChanges(IStream stream)
         {
             _tags.SaveChanges(stream);
+            _fileNames.SaveChanges(stream);
             WriteHeader(stream);
             WriteLanguageInfo(stream);
         }
@@ -186,6 +187,26 @@ namespace Blamite.Blam.ThirdGen
             get { return _segmenter.GetWrappers(); }
         }
 
+        public FileSegment StringIDIndexTable
+        {
+            get { return _header.StringIDIndexTable; }
+        }
+
+        public FileSegment StringIDDataTable
+        {
+            get { return _header.StringIDData; }
+        }
+
+        public FileSegment FileNameIndexTable
+        {
+            get { return _header.FileNameIndexTable; }
+        }
+
+        public FileSegment FileNameDataTable
+        {
+            get { return _header.FileNameData; }
+        }
+
         public MetaAllocator Allocator { get; private set; }
 
         public IScriptFile[] ScriptFiles { get; private set; }
@@ -306,9 +327,12 @@ namespace Blamite.Blam.ThirdGen
         {
             ITag zoneTag = _tags.FindTagByClass("zone");
             ITag playTag = _tags.FindTagByClass("play");
-            ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
-            ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
-            _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+            if (zoneTag != null && playTag != null && _buildInfo.HasLayout("resource gestalt") && _buildInfo.HasLayout("resource layout table"))
+            {
+                ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+                ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+                _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+            }
         }
 
         private void LoadScriptFiles(IReader reader)
@@ -329,7 +353,11 @@ namespace Blamite.Blam.ThirdGen
 
         private void WriteHeader(IWriter writer)
         {
-            // Serialize and write the header
+            // Update tagname and stringid info (so. ugly.)
+            _header.FileNameCount = _fileNames.Count;
+            _header.StringIDCount = _stringIds.Count;
+
+            // Serialize and write the header            
             StructureValueCollection values = _header.Serialize(_languageInfo.LocaleArea);
             writer.SeekTo(0);
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);

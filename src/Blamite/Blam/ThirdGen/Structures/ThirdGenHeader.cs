@@ -1,21 +1,3 @@
-/* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
- * 
- * This file is part of ExtryzeDLL.
- * 
- * Extryze is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Extryze is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +17,6 @@ namespace Blamite.Blam.ThirdGen.Structures
     /// </summary>
     public class ThirdGenHeader
     {
-        private int _originalRawTableOffset;
         private FileSegment _eofSegment;
 
         public ThirdGenHeader(StructureValueCollection values, BuildInformation info, string buildString, FileSegmenter segmenter)
@@ -64,7 +45,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         public FileSegment RawTable { get; private set; }
 
-        public IPointerConverter LocalePointerConverter { get; private set; }
+        public BasedPointerConverter DebugPointerConverter { get; private set; }
+        public BasedPointerConverter ResourcePointerConverter { get; private set; }
+        public BasedPointerConverter TagBufferPointerConverter { get; private set; }
+        public BasedPointerConverter LocalePointerConverter { get; private set; }
 
         public FileSegmentGroup StringArea { get; private set; }
 
@@ -87,6 +71,9 @@ namespace Blamite.Blam.ThirdGen.Structures
         public FileSegment UnknownTable { get; private set; }
         public SegmentPointer UnknownTableLocation { get; set; }
 
+        public uint[] SectionOffsetMasks { get; private set; }
+        public ThirdGenInteropSection[] Sections { get; private set; }
+
         /// <summary>
         /// Serializes the header's values, storing them into a StructureValueCollection.
         /// </summary>
@@ -106,25 +93,17 @@ namespace Blamite.Blam.ThirdGen.Structures
             AdjustPartitions();
             values.SetArray("partitions", SerializePartitions());
 
-            if (_originalRawTableOffset != 0)
-            {
-                if (RawTable != null)
-                    values.SetInteger("raw table offset", (uint)RawTable.Offset);
+            RebuildInteropData(localeArea);
 
-                if (localeArea != null)
+            values.SetArray("offset masks", SectionOffsetMasks.Select(m =>
                 {
-                    // I really don't know what these next two values are supposed to mean...anyone got anything?
-                    values.SetInteger("eof index offset", localeArea.OffsetToPointer((int)FileSize)); // Reach, H4
-                    values.SetInteger("eof index offset plus string data size", localeArea.OffsetToPointer((int)(FileSize + StringArea.Size))); // H3
-                }
-            }
-            else
-            {
-                values.SetInteger("meta offset", (uint)MetaArea.Offset);
-            }
+                    var result = new StructureValueCollection();
+                    result.SetInteger("mask", m);
+                    return result;
+                }).ToArray());
 
-            if (RawTable != null)
-                values.SetInteger("raw table size", (uint)RawTable.Size);
+            values.SetArray("sections", Sections.Select(s => s.Serialize()).ToArray());
+            values.SetInteger("tag buffer offset", Sections[(int)ThirdGenInteropSectionType.Tag].VirtualAddress);
 
             if (MetaArea != null)
             {
@@ -147,10 +126,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 values.SetInteger("string index table offset", StringIDIndexTableLocation.AsPointer());
 
             if (StringArea != null)
-            {
                 values.SetInteger("string data size", (uint)StringArea.Size);
-                values.SetInteger("string offset magic", StringArea.BasePointer);
-            }
 
             values.SetInteger("file table count", (uint)FileNameCount);
             if (FileNameData != null)
@@ -166,7 +142,6 @@ namespace Blamite.Blam.ThirdGen.Structures
             {
                 values.SetInteger("locale data index offset", localeArea.BasePointer);
                 values.SetInteger("locale data size", (uint)localeArea.Size);
-                values.SetInteger("locale offset magic", (uint)-localeArea.PointerMask);
             }
 
             if (UnknownTableLocation != null)
@@ -216,19 +191,69 @@ namespace Blamite.Blam.ThirdGen.Structures
             return results;
         }
 
+        /// <summary>
+        /// Rebuilds the interop data table in a cache file.
+        /// </summary>
+        /// <param name="localeArea">The localization area of the file.</param>
+        private void RebuildInteropData(FileSegmentGroup localeArea)
+        {
+            var debugSection = Sections[(int)ThirdGenInteropSectionType.Debug];
+            var rsrcSection = Sections[(int)ThirdGenInteropSectionType.Resource];
+            var tagSection = Sections[(int)ThirdGenInteropSectionType.Tag];
+            var localeSection = Sections[(int)ThirdGenInteropSectionType.Localization];
+
+            // Recompute base addresses
+            // Section addresses are usually in the following order: resource, locale, tag, debug.
+            // Each address can immediately follow after the previous non-null section,
+            // even though this isn't the case in some of the official files (because of removed debug data).
+            //
+            // TODO: This could possibly be made into a for loop and cleaned up if the pointer converters are stored in an array.
+            // I just want to get this working for now.
+            rsrcSection.VirtualAddress = 0; // This is always zero
+            rsrcSection.Size = (ResourcePointerConverter != null) ? (uint)RawTable.Size : 0;
+            localeSection.VirtualAddress = (LocalePointerConverter != null) ? rsrcSection.VirtualAddress + rsrcSection.Size : 0;
+            localeSection.Size = (LocalePointerConverter != null) ? (uint)localeArea.Size : 0;
+            tagSection.VirtualAddress = (TagBufferPointerConverter != null) ? rsrcSection.VirtualAddress + rsrcSection.Size + localeSection.Size : 0;
+            tagSection.Size = (TagBufferPointerConverter != null) ? (uint)MetaArea.Size : 0;
+            debugSection.VirtualAddress = (DebugPointerConverter != null) ? rsrcSection.VirtualAddress + rsrcSection.Size + localeSection.Size + tagSection.Size : 0;
+            debugSection.Size = (DebugPointerConverter != null) ? (uint)StringArea.Size : 0;
+
+            // If the offset mask for the debug section wasn't originally zero, then we have to subtract the first partition size from the debug base address
+            // Not entirely sure why this is the case, but that's what the official files do
+            if (debugSection.VirtualAddress != 0 && SectionOffsetMasks[(int)ThirdGenInteropSectionType.Debug] != 0)
+                debugSection.VirtualAddress -= Partitions[0].Size;
+
+            // Recompute offset masks
+            SectionOffsetMasks[(int)ThirdGenInteropSectionType.Debug] = (debugSection.Size > 0) ? (uint)(StringArea.Offset - debugSection.VirtualAddress) : 0;
+            SectionOffsetMasks[(int)ThirdGenInteropSectionType.Resource] = (rsrcSection.Size > 0) ? (uint)(RawTable.Offset - rsrcSection.VirtualAddress) : 0;
+            SectionOffsetMasks[(int)ThirdGenInteropSectionType.Tag] = (tagSection.Size > 0) ? (uint)(MetaArea.Offset - tagSection.VirtualAddress) : 0;
+            SectionOffsetMasks[(int)ThirdGenInteropSectionType.Localization] = (localeSection.Size > 0) ? (uint)(localeArea.Offset - localeSection.VirtualAddress) : 0;
+
+            // Update pointer converters
+            if (DebugPointerConverter != null)
+                DebugPointerConverter.BasePointer = debugSection.VirtualAddress;
+            if (ResourcePointerConverter != null)
+                ResourcePointerConverter.BasePointer = rsrcSection.VirtualAddress;
+            if (TagBufferPointerConverter != null)
+                TagBufferPointerConverter.BasePointer = tagSection.VirtualAddress;
+            if (LocalePointerConverter != null)
+                LocalePointerConverter.BasePointer = localeSection.VirtualAddress;
+        }
+
         private void Load(StructureValueCollection values, FileSegmenter segmenter)
         {
             segmenter.DefineSegment(0, HeaderSize, 1, SegmentResizeOrigin.Beginning); // Define a segment for the header
             _eofSegment = segmenter.WrapEOF((int)values.GetInteger("file size"));
+
+            LoadInteropData(values);
+            RawTable = CalculateRawTableSegment(segmenter);
 
             Type = (CacheFileType)values.GetInteger("type");
             InternalName = values.GetString("internal name");
             ScenarioName = values.GetString("scenario name");
             XDKVersion = (int)values.GetInteger("xdk version");
 
-            RawTable = CalculateRawTableSegment(values, segmenter);
-
-            FileSegment metaSegment = CalculateMetaSegment(values, segmenter);
+            FileSegment metaSegment = CalculateTagDataSegment(values, segmenter);
             if (metaSegment != null)
             {
                 uint virtualBase = values.GetInteger("virtual base address");
@@ -244,88 +269,65 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             CalculateStringGroup(values, segmenter);
-            LocalePointerConverter = CalculateLocalePointerConverter(values);
         }
 
-        private FileSegment CalculateMetaSegment(StructureValueCollection values, FileSegmenter segmenter)
+        private void LoadInteropData(StructureValueCollection headerValues)
         {
-            int metaSize = (int)values.GetInteger("virtual size");
-            if (metaSize == 0)
+            // TODO: fix this shit for the h3beta
+            SectionOffsetMasks = headerValues.GetArray("offset masks").Select(v => v.GetInteger("mask")).ToArray();
+            Sections = headerValues.GetArray("sections").Select(v => new ThirdGenInteropSection(v)).ToArray();
+
+            DebugPointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Debug);
+            ResourcePointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Resource);
+            TagBufferPointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Tag);
+            LocalePointerConverter = MakePointerConverter(ThirdGenInteropSectionType.Localization);
+        }
+
+        private BasedPointerConverter MakePointerConverter(ThirdGenInteropSectionType section)
+        {
+            if (Sections[(int)section].Size == 0)
                 return null;
 
-            int metaOffset = CalculateMetaOffset(values);
-            if (metaOffset == 0)
-                return null;
-
-            return segmenter.WrapSegment(metaOffset, metaSize, 0x10000, SegmentResizeOrigin.Beginning);
+            var baseAddress = Sections[(int)section].VirtualAddress;
+            var mask = SectionOffsetMasks[(int)section];
+            return new BasedPointerConverter(baseAddress, (int)(baseAddress + mask));
         }
 
-        private int CalculateMetaOffset(StructureValueCollection values)
+        private FileSegment CalculateRawTableSegment(FileSegmenter segmenter)
         {
-            if (values.HasInteger("raw table offset") && values.HasInteger("raw table size"))
+            if (ResourcePointerConverter != null)
             {
-                // Load raw table info
-                int rawTableSize = (int)values.GetInteger("raw table size");
-                int rawTableOffset = (int)values.GetInteger("raw table offset");
-
-                // There are two ways to get the meta offset:
-                // 1. Raw table offset + raw table size
-                // 2. If raw table offset is zero, then the meta offset is directly stored in the header
-                //    (The raw table offset can still be calculated in this case, but can't be used to find the meta the traditional way)
-                if (rawTableOffset != 0)
-                    return rawTableOffset + rawTableSize;
-            }
-
-            uint offset;
-            if (!values.FindInteger("meta offset", out offset))
-                throw new ArgumentException("The XML layout file is missing information on how to find the meta offset.");
-            return (int)offset;
-        }
-
-        private FileSegment CalculateRawTableSegment(StructureValueCollection values, FileSegmenter segmenter)
-        {
-            // WAT. H3BETA DOESN'T HAVE THIS. WAT.
-            if (values.HasInteger("raw table size") && values.HasInteger("raw table offset"))
-            {
-                // Load the basic values
-                int rawTableSize = (int)values.GetInteger("raw table size");
-                int rawTableOffset = (int)values.GetInteger("raw table offset");
-                _originalRawTableOffset = rawTableOffset;
-
-                // If the original raw table offset was 0, load it from the alternate pointer
-                if (rawTableOffset == 0)
-                    rawTableOffset = (int)values.GetInteger("alternate raw table offset");
-
+                var rawTableOffset = ResourcePointerConverter.PointerToOffset(ResourcePointerConverter.BasePointer);
+                var rawTableSize = (int)Sections[(int)ThirdGenInteropSectionType.Resource].Size;
                 return segmenter.WrapSegment(rawTableOffset, rawTableSize, 0x1000, SegmentResizeOrigin.End);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
-        private IPointerConverter CalculateStringPointerConverter(StructureValueCollection values)
+        private FileSegment CalculateTagDataSegment(StructureValueCollection values, FileSegmenter segmenter)
         {
-            // If the original raw table offset isn't zero, then "string offset magic" contains the base pointer to the string area
-            // and the string area is located immediately after the header
-            // Otherwise, pointers are just file offsets
-            uint magic = values.GetIntegerOrDefault("string offset magic", 0);
-            if (magic > 0 && values.GetIntegerOrDefault("raw table offset", 0) > 0)
-                return new BasedPointerConverter(magic, HeaderSize);
-            return new IdentityPointerConverter();
+            if (TagBufferPointerConverter != null)
+            {
+                var tagDataOffset = TagBufferPointerConverter.PointerToOffset(TagBufferPointerConverter.BasePointer);
+                var tagDataSize = (int)values.GetInteger("virtual size");
+                return segmenter.WrapSegment(tagDataOffset, tagDataSize, 0x10000, SegmentResizeOrigin.Beginning);
+            }
+            return null;
         }
 
         private void CalculateStringGroup(StructureValueCollection values, FileSegmenter segmenter)
         {
-            IPointerConverter converter = CalculateStringPointerConverter(values);
-            StringArea = new FileSegmentGroup(converter);
+            if (DebugPointerConverter == null)
+                return;
+
+            StringArea = new FileSegmentGroup(DebugPointerConverter);
 
             // StringIDs
             StringIDCount = (int)values.GetInteger("string table count");
             if (StringIDCount > 0)
             {
-                int sidIndexTableOff = converter.PointerToOffset(values.GetInteger("string index table offset"));
-                int sidDataOff = converter.PointerToOffset(values.GetInteger("string table offset"));
+                int sidIndexTableOff = DebugPointerConverter.PointerToOffset(values.GetInteger("string index table offset"));
+                int sidDataOff = DebugPointerConverter.PointerToOffset(values.GetInteger("string table offset"));
 
                 int sidTableSize = (int)values.GetInteger("string table size");
                 StringIDIndexTable = segmenter.WrapSegment(sidIndexTableOff, StringIDCount * 4, 4, SegmentResizeOrigin.End);
@@ -337,7 +339,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 // idk what this is, but H3Beta has it
                 if (values.HasInteger("string block offset"))
                 {
-                    int sidBlockOff = converter.PointerToOffset(values.GetInteger("string block offset"));
+                    int sidBlockOff = DebugPointerConverter.PointerToOffset(values.GetInteger("string block offset"));
                     StringBlock = segmenter.WrapSegment(sidBlockOff, StringIDCount * 0x80, 0x80, SegmentResizeOrigin.End);
                     StringBlockLocation = StringArea.AddSegment(StringBlock);
                 }
@@ -347,8 +349,8 @@ namespace Blamite.Blam.ThirdGen.Structures
             FileNameCount = (int)values.GetInteger("file table count");
             if (FileNameCount > 0)
             {
-                int nameIndexTableOff = converter.PointerToOffset(values.GetInteger("file index table offset"));
-                int nameDataOff = converter.PointerToOffset(values.GetInteger("file table offset"));
+                int nameIndexTableOff = DebugPointerConverter.PointerToOffset(values.GetInteger("file index table offset"));
+                int nameDataOff = DebugPointerConverter.PointerToOffset(values.GetInteger("file table offset"));
 
                 int fileTableSize = (int)values.GetInteger("file table size");
                 FileNameIndexTable = segmenter.WrapSegment(nameIndexTableOff, FileNameCount * 4, 4, SegmentResizeOrigin.End);
@@ -364,23 +366,11 @@ namespace Blamite.Blam.ThirdGen.Structures
                 UnknownCount = (int)values.GetInteger("unknown table count");
                 if (UnknownCount > 0)
                 {
-                    int unknownOff = converter.PointerToOffset(values.GetInteger("unknown table offset"));
+                    int unknownOff = DebugPointerConverter.PointerToOffset(values.GetInteger("unknown table offset"));
                     UnknownTable = segmenter.WrapSegment(unknownOff, UnknownCount * 0x10, 0x10, SegmentResizeOrigin.End);
                     UnknownTableLocation = StringArea.AddSegment(UnknownTable);
                 }
             }
-        }
-
-        private IPointerConverter CalculateLocalePointerConverter(StructureValueCollection values)
-        {
-            uint mask = values.GetIntegerOrDefault("locale offset magic", 0);
-            if (mask != 0)
-            {
-                uint basePointer = values.GetInteger("locale data index offset");
-                int baseOffset = (int)(basePointer + mask);
-                return new BasedPointerConverter(basePointer, baseOffset);
-            }
-            return new IdentityPointerConverter(); // Locale pointers are file offsets
         }
 
         private Partition[] LoadPartitions(StructureValueCollection[] partitionValues)

@@ -20,7 +20,7 @@ namespace Blamite.Blam.ThirdGen.Resources.BSP
 
         public IModelSection[] Sections { get; private set; }
 
-        public IModelBoundingBox[] BoundingBoxes { get; private set; }
+        public BoundingBox[] BoundingBoxes { get; private set; }
 
         public DatumIndex ModelResourceIndex { get; private set; }
 
@@ -51,7 +51,7 @@ namespace Blamite.Blam.ThirdGen.Resources.BSP
             var entries = ReflexiveReader.ReadReflexive(reader, 1, address, layout, metaArea);
 
             BoundingBoxes = (from entry in entries
-                             select new ThirdGenModelBoundingBox(entry)).ToArray();
+                             select BoundingBox.Deserialize(entry)).ToArray();
         }
     }
 }

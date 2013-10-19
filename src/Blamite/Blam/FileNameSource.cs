@@ -41,14 +41,55 @@ namespace Blamite.Blam
         }
 
         /// <summary>
+        /// Sets the name of a tag based upon its index in the tag table.
+        /// </summary>
+        /// <param name="tagIndex">The index of the tag to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        public abstract void SetTagName(int tagIndex, string name);
+
+        /// <summary>
+        /// Sets the name of a tag based upon its datum index.
+        /// </summary>
+        /// <param name="tagIndex">The datum index of the tag to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        public void SetTagName(DatumIndex tagIndex, string name)
+        {
+            if (!tagIndex.IsValid)
+                throw new ArgumentNullException("Invalid tag datum index");
+            SetTagName(tagIndex.Index, name);
+        }
+
+        /// <summary>
+        /// Sets the name of a tag.
+        /// </summary>
+        /// <param name="tag">The tag to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        public void SetTagName(ITag tag, string name)
+        {
+            SetTagName(tag.Index, name);
+        }
+
+        /// <summary>
         /// Finds the index of the first tag which has a given name.
         /// </summary>
         /// <param name="name">The tag name to search for.</param>
         /// <returns>The index in the tag table of the first tag with the given name, or -1 if not found.</returns>
         public abstract int FindName(string name);
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
         public abstract IEnumerator<string> GetEnumerator();
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

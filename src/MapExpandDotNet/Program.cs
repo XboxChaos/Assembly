@@ -16,15 +16,24 @@ namespace MapExpandDotNet
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 2 && args.Length != 3)
             {
-                Console.WriteLine("Usage: mapexpand <map file> <page count>");
-                Console.WriteLine("Pages are multiples of 0x10000 bytes.");
+                Console.WriteLine("Usage: mapexpand <map file> [section] <page count>");
+                Console.WriteLine();
+                Console.WriteLine("Available sections:");
+                Console.WriteLine("  stringidindex");
+                Console.WriteLine("  stringiddata");
+                Console.WriteLine("  tagnameindex");
+                Console.WriteLine("  tagnamedata");
+                Console.WriteLine("  resource");
+                Console.WriteLine("  tag");
+                Console.WriteLine();
+                Console.WriteLine("Section defaults to \"tag\" if not specified.");
                 return;
             }
 
             int pageCount;
-            if (!int.TryParse(args[1], out pageCount) || pageCount <= 0)
+            if (!int.TryParse(args[args.Length - 1], out pageCount) || pageCount <= 0)
             {
                 Console.WriteLine("The page count must be a positive integer.");
                 return;
@@ -44,38 +53,74 @@ namespace MapExpandDotNet
             BuildInformation buildInfo = infoLoader.LoadBuild(version.BuildString);
             ThirdGenCacheFile cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
 
+            var area = cacheFile.MetaArea;
+            var section = cacheFile.MetaArea.Segments[0];
+            int pageSize = 0x10000;
+            if (args.Length == 3)
+            {
+                switch (args[1])
+                {
+                    case "stringidindex":
+                        area = cacheFile.StringArea;
+                        section = cacheFile.StringIDIndexTable;
+                        pageSize = 0x1000;
+                        break;
+                    case "stringiddata":
+                        area = cacheFile.StringArea;
+                        section = cacheFile.StringIDDataTable;
+                        pageSize = 0x1000;
+                        break;
+                    case "tagnameindex":
+                        area = cacheFile.StringArea;
+                        section = cacheFile.FileNameIndexTable;
+                        pageSize = 0x1000;
+                        break;
+                    case "tagnamedata":
+                        area = cacheFile.StringArea;
+                        section = cacheFile.FileNameDataTable;
+                        pageSize = 0x1000;
+                        break;
+                    case "resource":
+                        area = null;
+                        section = cacheFile.RawTable;
+                        pageSize = 0x1000;
+                        break;
+                    case "tag":
+                        area = cacheFile.MetaArea;
+                        section = cacheFile.MetaArea.Segments[0];
+                        pageSize = 0x10000;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid section name: \"{0}\"", args[1]);
+                        return;
+                }
+            }
+
             Console.WriteLine("- Engine version: {0}", version.BuildString);
             Console.WriteLine("- Internal name: {0}", cacheFile.InternalName);
             Console.WriteLine("- Scenario name: {0}", cacheFile.ScenarioName);
-            Console.WriteLine("- File size: 0x{0:X}", cacheFile.FileSize);
-            Console.WriteLine("- Virtual size: 0x{0:X}", cacheFile.MetaArea.Size);
-            for (int i = 0; i < cacheFile.Partitions.Length; i++)
-            {
-                var partition = cacheFile.Partitions[i];
-                if (partition.BasePointer != null)
-                    Console.WriteLine("  - Partition {0} at 0x{1:X}-0x{2:X} (size=0x{3:X})", i, partition.BasePointer.AsPointer(), partition.BasePointer.AsPointer() + partition.Size - 1, partition.Size);
-            }
-            Console.WriteLine("- Meta pointer mask: 0x{0:X}", cacheFile.MetaArea.PointerMask);
-            Console.WriteLine("- Locale pointer mask: 0x{0:X}", (uint)-cacheFile.LocaleArea.PointerMask);
-            Console.WriteLine("- String pointer mask: 0x{0:X}", cacheFile.StringArea.PointerMask);
             Console.WriteLine();
 
             Console.WriteLine("Injecting empty pages...");
 
-            int injectSize = pageCount * 0x10000;
-            Console.WriteLine("- Start address: 0x{0:X} (offset 0x{1:X})", cacheFile.MetaArea.BasePointer - injectSize, cacheFile.MetaArea.Offset);
+            int injectSize = pageCount * pageSize;
+            section.Resize(section.Size + injectSize, stream);
 
-            cacheFile.MetaArea.Resize(cacheFile.MetaArea.Size + injectSize, stream);
-
-            Console.WriteLine();
             Console.WriteLine("Adjusting the header...");
 
             cacheFile.SaveChanges(stream);
+            stream.Close();
 
             Console.WriteLine();
-            Console.WriteLine("Successfully injected 0x{0:X} bytes at 0x{1:X} (offset 0x{2:X}).", injectSize, cacheFile.MetaArea.BasePointer, cacheFile.MetaArea.Offset);
 
-            stream.Close();
+            var offset = section.Offset;
+            if (section.ResizeOrigin == SegmentResizeOrigin.End)
+                offset += section.ActualSize - injectSize;
+
+            if (area != null)
+                Console.WriteLine("Successfully injected 0x{0:X} bytes at 0x{1:X} (offset 0x{2:X}).", injectSize, area.BasePointer, offset);
+            else
+                Console.WriteLine("Successfully injected 0x{0:X} bytes at offset 0x{1:X}.", injectSize, offset);
         }
     }
 }

@@ -152,6 +152,26 @@ namespace Blamite.Blam.SecondGen
             get { return new SecondGenResourceMetaLoader(); }
         }
 
+        public FileSegment StringIDIndexTable
+        {
+            get { return _header.StringIDIndexTable; }
+        }
+
+        public FileSegment StringIDDataTable
+        {
+            get { return _header.StringIDData; }
+        }
+
+        public FileSegment FileNameIndexTable
+        {
+            get { return _header.FileNameIndexTable; }
+        }
+
+        public FileSegment FileNameDataTable
+        {
+            get { return _header.FileNameData; }
+        }
+
         public MetaAllocator Allocator { get; private set; }
 
         public IScriptFile[] ScriptFiles

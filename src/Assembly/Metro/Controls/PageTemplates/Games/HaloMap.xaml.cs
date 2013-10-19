@@ -233,6 +233,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                  StatusUpdater.Update("Added To Recents");
 	                                  }));
 
+                /*ITag dice = _cacheFile.Tags[0x0102];
+                IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
+                var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
+                Resource diceResource = resourceTable.Resources[diceModel.ModelResourceIndex.Index];
+                ICacheFile resourceFile = _cacheFile;
+                Stream resourceStream = fileStream;
+                if (diceResource.Location.PrimaryPage.FilePath != null)
+                {
+                    resourceStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(_cacheLocation), Path.GetFileName(diceResource.Location.PrimaryPage.FilePath)));
+                    resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cacheFile.BuildString);
+                }
+                ResourcePageExtractor extractor = new ResourcePageExtractor(resourceFile);
+                string path = Path.GetTempFileName();
+                FileStream pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+                extractor.ExtractPage(diceResource.Location.PrimaryPage, resourceStream, pageStream);
+                if (resourceStream != fileStream)
+                    resourceStream.Close();
+                IReader pageReader = new EndianReader(pageStream, Endian.BigEndian);
+                pageReader.SeekTo(diceResource.Location.PrimaryOffset);
+                ObjExporter exporter = new ObjExporter("C:\\Users\\Aaron\\Desktop\\test.obj");
+                System.Collections.BitArray sections = new System.Collections.BitArray(diceModel.Sections.Length, true);
+                //sections[3] = true;
+                //sections[1] = true;
+                ModelReader.ReadModelData(pageReader, diceModel, sections, _buildInfo, exporter);
+                exporter.Close();
+                pageReader.Close();*/
+
                 LoadHeader();
 	            LoadMetaData();
                 LoadTags();
@@ -1117,6 +1144,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 CreateTag(tag);
         }
 
+        private void contextRename_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag
+            var item = e.Source as MenuItem;
+            if (item == null)
+                return;
+
+            var tag = item.DataContext as TagEntry;
+            if (tag == null)
+                return;
+
+            // Ask for the new name
+            var newName = MetroInputBox.Show("Rename Tag", "Please enter a new name for the tag.\r\n\t\nThis will not update the cache file until you click the \"Save Tag Names\" button at the bottom.", tag.TagFileName, "Enter a tag name.");
+            if (newName == null || newName == tag.TagFileName)
+                return;
+
+            // Set the name
+            tag.TagFileName = newName;
+
+            StatusUpdater.Update("Tag Renamed");
+        }
+
         private void contextExtract_Click(object sender, RoutedEventArgs e)
         {
             // Get the menu item and the tag
@@ -1247,8 +1296,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                 injector.SaveChanges(stream);
             }
 
+            // Fix the SID trie
+            foreach (var sid in injector.InjectedStringIDs)
+                _stringIDTrie.Add(_cacheFile.StringIDs.GetString(sid));
+
             LoadTags();
-            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), and " + injector.InjectedResources.Count + " resource pointer(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), " + injector.InjectedResources.Count + " resource pointer(s), and " + injector.InjectedStringIDs.Count + " stringID(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+        }
+
+        private void btnSaveNames_Click(object sender, RoutedEventArgs e)
+        {
+            // Store the names back to the cache file
+            foreach (var tag in _allTags.Entries.Where(t => t != null))
+                _cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+
+            // Save it
+            using (var stream = _mapManager.OpenReadWrite())
+                _cacheFile.SaveChanges(stream);
+
+            MetroMessageBox.Show("Success!", "Tag names saved successfully.");
         }
 	}
 }

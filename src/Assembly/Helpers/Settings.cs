@@ -8,7 +8,6 @@ using Microsoft.Win32;
 using System.Web.Script.Serialization;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
-using Assembly.Metro.Controls.PageTemplates.Games;
 
 namespace Assembly.Helpers
 {

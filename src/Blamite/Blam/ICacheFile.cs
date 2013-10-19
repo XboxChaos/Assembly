@@ -94,6 +94,30 @@ namespace Blamite.Blam
         FileSegmentGroup StringArea { get; }
 
         /// <summary>
+        /// The string ID index area of the cache file.
+        /// Can be null.
+        /// </summary>
+        FileSegment StringIDIndexTable { get; }
+
+        /// <summary>
+        /// The string ID data area of the cache file.
+        /// Can be null.
+        /// </summary>
+        FileSegment StringIDDataTable { get; }
+
+        /// <summary>
+        /// The tag name index area of the cache file.
+        /// Can be null.
+        /// </summary>
+        FileSegment FileNameIndexTable { get; }
+
+        /// <summary>
+        /// The tag name data area of the cache file.
+        /// Can be null.
+        /// </summary>
+        FileSegment FileNameDataTable { get; }
+
+        /// <summary>
         /// The tag names in the file.
         /// Can be null.
         /// </summary>

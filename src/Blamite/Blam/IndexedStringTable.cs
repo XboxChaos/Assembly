@@ -15,9 +15,16 @@ namespace Blamite.Blam
     public class IndexedStringTable : IEnumerable<string>
     {
         private List<string> _strings = new List<string>();
+        private AESKey _key;
+        private FileSegment _indexTable;
+        private FileSegment _data;
 
         public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
         {
+            _key = key;
+            _indexTable = indexTable;
+            _data = data;
+
             int[] offsets = ReadOffsets(reader, indexTable, count);
             IReader stringReader = DecryptData(reader, data, key);
 
@@ -39,13 +46,33 @@ namespace Blamite.Blam
         }
 
         /// <summary>
-        /// Gets the string at an index.
+        /// Gets or sets the string at an index.
         /// </summary>
-        /// <param name="index">The index of the string to retrieve.</param>
+        /// <param name="index">The index of the string to get or set.</param>
         /// <returns>The string at the given index.</returns>
         public string this[int index]
         {
             get { return _strings[index]; }
+            set { _strings[index] = value; }
+        }
+
+        /// <summary>
+        /// Adds a string to the table.
+        /// </summary>
+        /// <param name="str">The string to add.</param>
+        public void Add(string str)
+        {
+            _strings.Add(str);
+        }
+
+        /// <summary>
+        /// Expands the table to be at least a certain length by adding null strings to the end.
+        /// </summary>
+        /// <param name="length">The minimum length that the table must have.</param>
+        public void Expand(int length)
+        {
+            while (_strings.Count < length)
+                _strings.Add(null);
         }
 
         /// <summary>
@@ -57,6 +84,16 @@ namespace Blamite.Blam
         {
             // TODO: Change this to use a Dictionary or something if the O(n) runtime complexity is too inefficient
             return _strings.IndexOf(str);
+        }
+
+        /// <summary>
+        /// Saves changes made to the string table.
+        /// </summary>
+        /// <param name="stream">The stream to manipulate.</param>
+        public void SaveChanges(IStream stream)
+        {
+            SaveOffsets(stream);
+            SaveData(stream);
         }
 
         public IEnumerator<string> GetEnumerator()
@@ -76,6 +113,62 @@ namespace Blamite.Blam
             for (int i = 0; i < count; i++)
                 offsets[i] = reader.ReadInt32();
             return offsets;
+        }
+
+        private void SaveOffsets(IStream stream)
+        {
+            // I'm assuming here that the official cache files don't intern strings
+            // Doing that might be a possibility even if they don't, but, meh
+            _indexTable.Resize(_strings.Count * 4, stream);
+            stream.SeekTo(_indexTable.Offset);
+            var currentOffset = 0;
+            foreach (var str in _strings)
+            {
+                if (str != null)
+                {
+                    stream.WriteInt32(currentOffset);
+                    currentOffset += str.Length + 1; // + 1 is for the null terminator
+                }
+                else
+                {
+                    stream.WriteInt32(0);
+                }
+            }
+        }
+
+        private void SaveData(IStream stream)
+        {
+            // Create a memory buffer and write the strings there
+            var buffer = new MemoryStream();
+            var bufferWriter = new EndianWriter(buffer, stream.Endianness);
+            try
+            {
+                // Write the strings to the buffer
+                foreach (var str in _strings)
+                {
+                    if (str != null)
+                        bufferWriter.WriteAscii(str);
+                }
+                
+                // Align the buffer's length if encryption is necessary
+                if (_key != null)
+                    buffer.SetLength(AES.AlignSize((int)buffer.Length));
+
+                var data = buffer.GetBuffer();
+
+                // Encrypt the buffer if necessary
+                if (_key != null)
+                    data = AES.Encrypt(data, 0, (int)buffer.Length, _key.Key, _key.IV);
+
+                // Resize the data area and write it in
+                _data.Resize((int)buffer.Length, stream);
+                stream.SeekTo(_data.Offset);
+                stream.WriteBlock(data, 0, (int)buffer.Length);
+            }
+            finally
+            {
+                bufferWriter.Close();
+            }
         }
 
         private IReader DecryptData(IReader reader, FileSegment dataLocation, AESKey key)
