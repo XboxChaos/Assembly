@@ -212,7 +212,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             if (type == MetaWriter.SaveType.File)
             {
-                if (!ConfirmNewStringIDs())
+                if (!ConfirmNewStringIds())
                     return;
 
                 using (IStream stream = _fileManager.OpenReadWrite())
@@ -712,7 +712,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             return plugin.Values;
         }
 
-        private bool ConfirmNewStringIDs()
+        private bool ConfirmNewStringIds()
         {
             var newStrings = new List<string>();
             foreach (var field in _fileChanges)
