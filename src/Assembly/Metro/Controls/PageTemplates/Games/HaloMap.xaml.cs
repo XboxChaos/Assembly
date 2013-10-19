@@ -181,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                                                         })));
 #endif
                 }
-                catch
+                catch (Exception ex)
                 {
                     Dispatcher.Invoke(new Action(delegate
 	                                      {
