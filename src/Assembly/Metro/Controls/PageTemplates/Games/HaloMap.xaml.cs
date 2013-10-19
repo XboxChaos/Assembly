@@ -181,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                                                         })));
 #endif
                 }
-                catch (NotSupportedException ex)
+                catch
                 {
                     Dispatcher.Invoke(new Action(delegate
 	                                      {
