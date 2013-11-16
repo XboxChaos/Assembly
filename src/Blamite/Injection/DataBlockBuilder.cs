@@ -30,14 +30,14 @@ namespace Blamite.Injection
         /// <param name="tagLocation">The location of the tag to load data blocks for.</param>
         /// <param name="cacheFile">The cache file.</param>
         /// <param name="buildInfo">The build info for the cache file.</param>
-        public DataBlockBuilder(IReader reader, SegmentPointer tagLocation, ICacheFile cacheFile, BuildInformation buildInfo)
+        public DataBlockBuilder(IReader reader, SegmentPointer tagLocation, ICacheFile cacheFile, EngineDescription buildInfo)
         {
             _reader = reader;
             _tagLocation = tagLocation;
             _cacheFile = cacheFile;
-            _tagRefLayout = buildInfo.GetLayout("tag reference");
-            _reflexiveLayout = buildInfo.GetLayout("reflexive");
-            _dataRefLayout = buildInfo.GetLayout("data reference");
+            _tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
+            _reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+            _dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 
             DataBlocks = new List<DataBlock>();
             ReferencedTags = new HashSet<DatumIndex>();

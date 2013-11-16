@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.Flexibility.Settings;
 using Blamite.IO;
 
 namespace MapExpandDotNet
@@ -49,8 +50,8 @@ namespace MapExpandDotNet
                 return;
             }
 
-            BuildInfoLoader infoLoader = new BuildInfoLoader(XDocument.Load("Formats/SupportedBuilds.xml"), "Formats/");
-            BuildInformation buildInfo = infoLoader.LoadBuild(version.BuildString);
+            EngineDatabase database = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+            EngineDescription buildInfo = database.FindEngineByVersion(version.BuildString);
             ThirdGenCacheFile cacheFile = new ThirdGenCacheFile(stream, buildInfo, version.BuildString);
 
             var area = cacheFile.MetaArea;

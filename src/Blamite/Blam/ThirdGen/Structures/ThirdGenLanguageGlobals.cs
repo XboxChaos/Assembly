@@ -16,7 +16,7 @@ namespace Blamite.Blam.ThirdGen.Structures
     {
         private List<ThirdGenLanguage> _languages;
 
-        public ThirdGenLanguageGlobals(StructureValueCollection values, FileSegmenter segmenter, IPointerConverter localePointerConverter, BuildInformation buildInfo)
+        public ThirdGenLanguageGlobals(StructureValueCollection values, FileSegmenter segmenter, IPointerConverter localePointerConverter, EngineDescription buildInfo)
         {
             LocaleArea = new FileSegmentGroup(localePointerConverter);
             _languages = LoadLanguages(values, segmenter, buildInfo);
@@ -42,7 +42,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             return result;
         }
 
-        private List<ThirdGenLanguage> LoadLanguages(StructureValueCollection values, FileSegmenter segmenter, BuildInformation buildInfo)
+        private List<ThirdGenLanguage> LoadLanguages(StructureValueCollection values, FileSegmenter segmenter, EngineDescription buildInfo)
         {
             StructureValueCollection[] languageSet = values.GetArray("languages");
 

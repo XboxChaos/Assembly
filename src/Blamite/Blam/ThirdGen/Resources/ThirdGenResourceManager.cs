@@ -20,7 +20,7 @@ namespace Blamite.Blam.ThirdGen.Resources
         private TagTable _tags;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ThirdGenResourceManager"/> class.
@@ -31,7 +31,7 @@ namespace Blamite.Blam.ThirdGen.Resources
         /// <param name="metaArea">The cache file's meta area.</param>
         /// <param name="allocator">The cache file's tag data allocator.</param>
         /// <param name="buildInfo">The cache file's build information.</param>
-        public ThirdGenResourceManager(ThirdGenResourceGestalt gestalt, ThirdGenResourceLayoutTable layoutTable, TagTable tags, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
+        public ThirdGenResourceManager(ThirdGenResourceGestalt gestalt, ThirdGenResourceLayoutTable layoutTable, TagTable tags, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
         {
             _gestalt = gestalt;
             _layoutTable = layoutTable;

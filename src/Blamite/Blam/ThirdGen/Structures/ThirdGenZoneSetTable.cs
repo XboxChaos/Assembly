@@ -14,9 +14,9 @@ namespace Blamite.Blam.ThirdGen.Structures
         private ThirdGenResourceGestalt _gestalt;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
 
-        public ThirdGenZoneSetTable(ThirdGenResourceGestalt gestalt, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
+        public ThirdGenZoneSetTable(ThirdGenResourceGestalt gestalt, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
         {
             _gestalt = gestalt;
             _metaArea = metaArea;
@@ -96,7 +96,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)tagValues.GetInteger(countName);
             uint address = tagValues.GetInteger(addressName);
-            var layout = _buildInfo.GetLayout("zone set definition");
+            var layout = _buildInfo.Layouts.GetLayout("zone set definition");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select(e => new ThirdGenZoneSet(e, reader, _metaArea));
         }
@@ -113,7 +113,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 throw new InvalidOperationException("Zone set count does not match");
 
             uint address = tagValues.GetInteger(addressName);
-            var layout = _buildInfo.GetLayout("zone set definition");
+            var layout = _buildInfo.Layouts.GetLayout("zone set definition");
             var entries = sets.Select(set => ((ThirdGenZoneSet)set).Serialize(stream, _allocator, cache)).ToList();
             ReflexiveWriter.WriteReflexive(entries, address, layout, _metaArea, stream);
         }
@@ -136,7 +136,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)tagValues.GetInteger(countName);
             uint address = tagValues.GetInteger(addressName);
-            var layout = _buildInfo.GetLayout("zone set definition");
+            var layout = _buildInfo.Layouts.GetLayout("zone set definition");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             foreach (var entry in entries)
                 ThirdGenZoneSet.Free(entry, _allocator);

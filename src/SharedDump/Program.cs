@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.Flexibility;
+using Blamite.Flexibility.Settings;
 using Blamite.IO;
 using Blamite.Util;
 
@@ -26,24 +27,24 @@ namespace SharedDump
 			// Locate the Formats folder and SupportedBuilds.xml
 			var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			var formatsDir = Path.Combine(exeDir, "Formats");
-			var supportedBuildsPath = Path.Combine(formatsDir, "SupportedBuilds.xml");
-			var loader = new BuildInfoLoader(supportedBuildsPath, formatsDir);
+			var supportedBuildsPath = Path.Combine(formatsDir, "Engines.xml");
+            var db = XMLEngineDatabaseLoader.LoadDatabase(supportedBuildsPath);
 
 			// Dump each map file
 			foreach (var arg in args)
 			{
 				Console.WriteLine("{0}...", arg);
-				DumpSharedResources(arg, loader);
+				DumpSharedResources(arg, db);
 			}
 		}
 
-		static void DumpSharedResources(string mapPath, BuildInfoLoader loader)
+		static void DumpSharedResources(string mapPath, EngineDatabase db)
 		{
 			ICacheFile cacheFile;
 			ResourceTable resources;
 			using (var reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 			{
-				cacheFile = CacheFileLoader.LoadCacheFile(reader, loader);
+				cacheFile = CacheFileLoader.LoadCacheFile(reader, db);
 				resources = cacheFile.Resources.LoadResourceTable(reader);
 			}
 

@@ -12,7 +12,7 @@ namespace Blamite.Blam.SecondGen.Structures
     {
         private FileSegment _eofSegment;
 
-        public SecondGenHeader(StructureValueCollection values, BuildInformation info, string buildString, FileSegmenter segmenter)
+        public SecondGenHeader(StructureValueCollection values, EngineDescription info, string buildString, FileSegmenter segmenter)
         {
             BuildString = buildString;
             HeaderSize = info.HeaderSize;

@@ -40,10 +40,10 @@ namespace Blamite.Blam.ThirdGen.Structures
         private ITag _tag;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private ThirdGenResourceType[] _resourceTypes;
 
-        public ThirdGenResourceGestalt(IReader reader, ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator, StringIDSource stringIDs, BuildInformation buildInfo)
+        public ThirdGenResourceGestalt(IReader reader, ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator, StringIDSource stringIDs, EngineDescription buildInfo)
         {
             _tag = zoneTag;
             _metaArea = metaArea;
@@ -60,7 +60,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
             int count = (int)values.GetInteger("number of resources");
             uint address = values.GetInteger("resource table address");
-            var layout = _buildInfo.GetLayout("resource table entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select((e, i) => LoadResource(e, i, tags, pointers, infoBuffer, reader));
         }
@@ -97,7 +97,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             // Write the reflexive and update the tag values
-            var layout = _buildInfo.GetLayout("resource table entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource table entry");
             uint newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
             values.SetInteger("number of resources", (uint)entries.Count);
             values.SetInteger("resource table address", newAddress);
@@ -113,13 +113,13 @@ namespace Blamite.Blam.ThirdGen.Structures
         public StructureValueCollection LoadTag(IReader reader)
         {
             reader.SeekTo(_tag.MetaLocation.AsOffset());
-            return StructureReader.ReadStructure(reader, _buildInfo.GetLayout("resource gestalt"));
+            return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource gestalt"));
         }
 
         public void SaveTag(StructureValueCollection values, IWriter writer)
         {
             writer.SeekTo(_tag.MetaLocation.AsOffset());
-            StructureWriter.WriteStructure(values, _buildInfo.GetLayout("resource gestalt"), writer);
+            StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource gestalt"), writer);
         }
 
         private void Load(IReader reader, StringIDSource stringIDs)
@@ -132,7 +132,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of resource types");
             uint address = values.GetInteger("resource type table address");
-            var layout = _buildInfo.GetLayout("resource type entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource type entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             _resourceTypes = entries.Select(e => new ThirdGenResourceType(e, stringIDs)).ToArray();
         }
@@ -256,7 +256,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of resource fixups");
             uint address = values.GetInteger("resource fixup table address");
-            var layout = _buildInfo.GetLayout("resource fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select(e => new ResourceFixup()
             {
@@ -269,7 +269,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int oldCount = (int)values.GetIntegerOrDefault("number of resource fixups", 0);
             uint oldAddress = values.GetIntegerOrDefault("resource fixup table address", 0);
-            var layout = _buildInfo.GetLayout("resource fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
 
             uint newAddress;
             if (!cache.TryGetAddress(fixups, out newAddress))
@@ -301,7 +301,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of definition fixups");
             uint address = values.GetInteger("definition fixup table address");
-            var layout = _buildInfo.GetLayout("definition fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select(e => new ResourceDefinitionFixup()
             {
@@ -322,7 +322,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int oldCount = (int)values.GetIntegerOrDefault("number of definition fixups", 0);
             uint oldAddress = values.GetIntegerOrDefault("definition fixup table address", 0);
-            var layout = _buildInfo.GetLayout("definition fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
 
             uint newAddress;
             if (!cache.TryGetAddress(fixups, out newAddress))
@@ -346,7 +346,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of resources");
             uint address = values.GetInteger("resource table address");
-            var layout = _buildInfo.GetLayout("resource table entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             foreach (var entry in entries)
                 FreeResource(entry);
@@ -366,7 +366,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of resource fixups");
             uint address = values.GetInteger("resource fixup table address");
-            var layout = _buildInfo.GetLayout("resource fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
             int size = count * layout.Size;
             if (address >= 0 && size > 0)
                 _allocator.Free(address, size);
@@ -376,7 +376,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)values.GetInteger("number of definition fixups");
             uint address = values.GetInteger("definition fixup table address");
-            var layout = _buildInfo.GetLayout("definition fixup entry");
+            var layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
             int size = count * layout.Size;
             if (address >= 0 && size > 0)
                 _allocator.Free(address, size);

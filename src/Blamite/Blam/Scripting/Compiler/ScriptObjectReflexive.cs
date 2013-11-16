@@ -49,16 +49,16 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="stringIDs">The string ID source for the cache file.</param>
         /// <param name="buildInfo">The build info for the cache file.</param>
         /// <returns>The objects that were read.</returns>
-        public ScriptObject[] ReadObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
+        public ScriptObject[] ReadObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, EngineDescription buildInfo)
         {
             int count = (int)values.GetInteger(_countEntryName);
             uint address = (uint)values.GetInteger(_addressEntryName);
-            var layout = buildInfo.GetLayout(_layoutName);
+            var layout = buildInfo.Layouts.GetLayout(_layoutName);
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
             return entries.Select(e => ReadScriptObject(e, reader, metaArea, stringIDs, buildInfo)).ToArray();
         }
 
-        private ScriptObject ReadScriptObject(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
+        private ScriptObject ReadScriptObject(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, EngineDescription buildInfo)
         {
             string name = GetObjectName(values, stringIDs);
             ScriptObject result = new ScriptObject(name);

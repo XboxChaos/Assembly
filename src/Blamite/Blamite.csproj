@@ -161,12 +161,17 @@
     <Compile Include="Blam\Util\ReflexiveCache.cs" />
     <Compile Include="Blam\Util\ReflexiveReader.cs" />
     <Compile Include="Blam\Util\ReflexiveWriter.cs" />
-    <Compile Include="Flexibility\LocaleSymbolLoader.cs" />
+    <Compile Include="Flexibility\Settings\XMLLocaleSymbolLoader.cs" />
+    <Compile Include="Flexibility\EngineDatabase.cs" />
+    <Compile Include="Flexibility\EngineDescription.cs" />
+    <Compile Include="Flexibility\Settings\IComplexSettingLoader.cs" />
+    <Compile Include="Flexibility\Settings\SettingsGroup.cs" />
+    <Compile Include="Flexibility\Settings\XMLEngineDatabaseLoader.cs" />
+    <Compile Include="Flexibility\Settings\XMLSettingsGroupLoader.cs" />
     <Compile Include="Flexibility\StringIDLayout.cs" />
     <Compile Include="Flexibility\VertexLayout.cs" />
     <Compile Include="Flexibility\VertexElementLayout.cs" />
     <Compile Include="Flexibility\VertexLayoutCollection.cs" />
-    <Compile Include="Flexibility\VertexLayoutLoader.cs" />
     <Compile Include="Injection\DataBlock.cs" />
     <Compile Include="Injection\DataBlockBuilder.cs" />
     <Compile Include="Injection\ExtractedResourceInfo.cs" />
@@ -175,6 +180,7 @@
     <Compile Include="Injection\TagContainerReader.cs" />
     <Compile Include="Injection\TagContainerWriter.cs" />
     <Compile Include="Injection\TagContainerInjector.cs" />
+    <Compile Include="Flexibility\Settings\XMLVertexLayoutLoader.cs" />
     <Compile Include="IO\FileSegment.cs" />
     <Compile Include="IO\FileSegmenter.cs" />
     <Compile Include="Blam\ILocaleGroup.cs" />
@@ -186,7 +192,7 @@
     <Compile Include="Blam\Scripting\ScriptExpressionType.cs" />
     <Compile Include="Blam\Scripting\ScriptExpression.cs" />
     <Compile Include="Blam\Scripting\ScriptGlobal.cs" />
-    <Compile Include="Blam\Scripting\IOpcodeLookup.cs" />
+    <Compile Include="Blam\Scripting\OpcodeLookup.cs" />
     <Compile Include="Blam\Scripting\Script.cs" />
     <Compile Include="Blam\Scripting\ScriptParameter.cs" />
     <Compile Include="Blam\Scripting\ScriptExpressionTable.cs" />
@@ -207,9 +213,9 @@
     <Compile Include="Blam\Util\AESKey.cs" />
     <Compile Include="Flexibility\LocaleSymbolCollection.cs" />
     <Compile Include="Blam\StringIDSetResolver.cs" />
-    <Compile Include="Flexibility\StringIDSetLoader.cs" />
+    <Compile Include="Flexibility\Settings\XMLStringIDSetLoader.cs" />
     <Compile Include="Flexibility\StructureLayoutCollection.cs" />
-    <Compile Include="Flexibility\XMLOpcodeLookup.cs" />
+    <Compile Include="Flexibility\Settings\XMLOpcodeLookup.cs" />
     <Compile Include="IO\FileSegmenterExtensions.cs" />
     <Compile Include="IO\FileSegmentGroup.cs" />
     <Compile Include="IO\FileStreamManager.cs" />
@@ -288,9 +294,7 @@
     <Compile Include="Flexibility\StructureValueCollection.cs" />
     <Compile Include="Flexibility\StructureValueType.cs" />
     <Compile Include="Flexibility\StructureWriter.cs" />
-    <Compile Include="Flexibility\XMLLayoutLoader.cs" />
-    <Compile Include="Flexibility\BuildInformation.cs" />
-    <Compile Include="Flexibility\BuildInfoLoader.cs" />
+    <Compile Include="Flexibility\Settings\XMLLayoutLoader.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenHeader.cs" />
     <Compile Include="Blam\IndexedFileNameSource.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagTable.cs" />
@@ -302,6 +306,7 @@
     <Compile Include="Util\MemoryMap.cs" />
     <Compile Include="Util\SHA1.cs" />
     <Compile Include="Util\Trie.cs" />
+    <Compile Include="Util\TypeUtil.cs" />
     <Compile Include="Util\XMLUtil.cs" />
     <Compile Include="IO\ContainerWriter.cs" />
     <Compile Include="IO\ContainerReader.cs" />
@@ -321,94 +326,98 @@
   <ItemGroup>
     <Content Include="Blam\Scripting\Analysis\Executables\gplex.exe" />
     <Content Include="Blam\Scripting\Analysis\Executables\gppg.exe" />
-    <Content Include="Formats\Halo2Vista.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\Halo3.xml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\Halo3Beta.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\Halo3ODST.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\Halo4.xml">
-      <SubType>Designer</SubType>
+    <Content Include="Formats\Engines.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\Halo3Beta.xml">
+    <Content Include="Formats\Halo2Vista\Layouts\H2V_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\Halo3ODST.xml">
+    <Content Include="Formats\Halo3Beta\H3B_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\Halo4.xml">
+    <Content Include="Formats\Halo3Beta\H3B_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\HaloReach.xml">
+    <Content Include="Formats\Halo3Beta\Layouts\H3B_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\HaloReachBeta.xml">
+    <Content Include="Formats\Halo3\H3_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Reach.xml">
-      <SubType>Designer</SubType>
+    <Content Include="Formats\Halo3\H3_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Scripting\Halo3ODST_Xbox_Scripting.xml">
+    <Content Include="Formats\Halo3\H3_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Scripting\Halo3_Xbox_Scripting.xml">
+    <Content Include="Formats\Halo3\Layouts\H3_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Scripting\HaloReach_Xbox_Scripting.xml">
-      <SubType>Designer</SubType>
+    <Content Include="Formats\Halo3\Layouts\H3_Layouts_Resources.xml" />
+    <Content Include="Formats\Halo3\Layouts\H3_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\Halo3.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\StringIDs\Halo3Beta.xml">
+    <Content Include="Formats\Halo4\H4_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\Halo3ODST.xml">
+    <Content Include="Formats\Halo4\H4_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\Halo4.xml">
+    <Content Include="Formats\Halo4\H4_VertexBuffer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\Reach.xml">
-      <SubType>Designer</SubType>
+    <Content Include="Formats\Halo4\Layouts\H4_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\ReachBeta.xml">
+    <Content Include="Formats\ODST\Layouts\ODST_Layouts_Core.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\StringIDs\ReachDemo.xml">
+    <Content Include="Formats\ODST\Layouts\ODST_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\SupportedBuilds.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Formats\ReachBeta.xml">
+    <Content Include="Formats\ODST\ODST_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\LocaleSymbols\Halo3.xml">
+    <Content Include="Formats\ODST\ODST_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Vertices\Halo4.xml">
+    <Content Include="Formats\ODST\ODST_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Formats\Vertices\Reach.xml">
-      <SubType>Designer</SubType>
+    <Content Include="Formats\ReachBeta\Layouts\ReachBeta_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachBeta\ReachBeta_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachBeta\ReachBeta_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Layouts\Reach_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Layouts\Reach_Layouts_Models.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Layouts\Reach_Layouts_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Layouts\Reach_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\ReachDemo_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Reach_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Reach_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Reach_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Reach\Reach_VertexBuffer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

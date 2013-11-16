@@ -19,7 +19,7 @@ namespace Assembly.Metro.Dialogs
         /// <param name="streamManager">The stream manager to open the file with.</param>
         /// <param name="fields">The fields to display in the viewer.</param>
         /// <param name="cacheOffset">The initial offset to display.</param>
-        public static void Show(ICacheFile cacheFile, BuildInformation buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
+        public static void Show(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
         {
             var valueAs = new ViewValueAs(cacheFile, buildInfo, streamManager, fields, cacheOffset)
 	                          {

@@ -16,7 +16,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
     public partial class MetaContainer
     {
         private TagEntry _tag;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
         private ICacheFile _cache;
 	    private IStreamManager _streamManager;
 	    private IRTEProvider _rteProvider;
@@ -35,7 +35,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         }
         #endregion
 
-        public MetaContainer(BuildInformation buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+        public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
         {
             InitializeComponent();
 

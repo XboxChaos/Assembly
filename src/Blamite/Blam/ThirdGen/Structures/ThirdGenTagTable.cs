@@ -37,7 +37,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         private SegmentPointer _indexHeaderLocation;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
 
         private List<ITag> _tags;
 
@@ -46,7 +46,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             _tags = new List<ITag>();
         }
 
-        public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
+        public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
         {
             _indexHeaderLocation = indexHeaderLocation;
             _metaArea = metaArea;
@@ -137,7 +137,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int oldCount = (int)headerValues.GetInteger("number of tags");
             uint oldAddress = headerValues.GetInteger("tag table address");
-            var layout = _buildInfo.GetLayout("tag entry");
+            var layout = _buildInfo.Layouts.GetLayout("tag entry");
             var entries = _tags.Select(t => ((ThirdGenTag)t).Serialize(Classes)); // hax, _tags is a list of ITag objects so we have to upcast
             uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea, _allocator, stream);
 
@@ -161,7 +161,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 return null;
 
             reader.SeekTo(_indexHeaderLocation.AsOffset());
-            var headerLayout = _buildInfo.GetLayout("index header");
+            var headerLayout = _buildInfo.Layouts.GetLayout("index header");
             var result = StructureReader.ReadStructure(reader, headerLayout);
             if (result.GetInteger("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
@@ -174,7 +174,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             if (_indexHeaderLocation != null)
             {
                 writer.SeekTo(_indexHeaderLocation.AsOffset());
-                var headerLayout = _buildInfo.GetLayout("index header");
+                var headerLayout = _buildInfo.Layouts.GetLayout("index header");
                 StructureWriter.WriteStructure(headerValues, headerLayout, writer);
             }
         }
@@ -183,7 +183,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)headerValues.GetInteger("number of classes");
             uint address = headerValues.GetInteger("class table address");
-            var layout = _buildInfo.GetLayout("class entry");
+            var layout = _buildInfo.Layouts.GetLayout("class entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
         }
@@ -192,7 +192,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             int count = (int)headerValues.GetInteger("number of tags");
             uint address = headerValues.GetInteger("tag table address");
-            var layout = _buildInfo.GetLayout("tag entry");
+            var layout = _buildInfo.Layouts.GetLayout("tag entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select<StructureValueCollection, ITag>((e, i) => new ThirdGenTag(e, (ushort)i, _metaArea, classes)).ToList();
         }

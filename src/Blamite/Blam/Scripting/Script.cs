@@ -18,7 +18,7 @@ namespace Blamite.Blam.Scripting
             Parameters = new List<ScriptParameter>();
         }
 
-        internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
+        internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, EngineDescription buildInfo)
         {
             Load(values, reader, metaArea, stringIDs, buildInfo);
         }
@@ -48,7 +48,7 @@ namespace Blamite.Blam.Scripting
         /// </summary>
         public DatumIndex RootExpressionIndex { get; set; }
 
-        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, BuildInformation buildInfo)
+        private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs, EngineDescription buildInfo)
         {
             Name = values.HasInteger("name index") ? stringIDs.GetString(new StringID(values.GetInteger("name index"))) : values.GetString("name");
             ExecutionType = (short)values.GetInteger("execution type");
@@ -60,11 +60,11 @@ namespace Blamite.Blam.Scripting
             Parameters = LoadParameters(reader, values, metaArea, buildInfo);
         }
 
-        private IList<ScriptParameter> LoadParameters(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        private IList<ScriptParameter> LoadParameters(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, EngineDescription buildInfo)
         {
             int count = (int)values.GetInteger("number of parameters");
             uint address = values.GetInteger("address of parameter list");
-            var layout = buildInfo.GetLayout("script parameter entry");
+            var layout = buildInfo.Layouts.GetLayout("script parameter entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
             return entries.Select(e => new ScriptParameter(e)).ToList();
         }

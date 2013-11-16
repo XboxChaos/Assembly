@@ -220,7 +220,7 @@ namespace Assembly.Windows
 									  Title = "",
 									  ToolTip = cacheLocation
 		                          };
-	        newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort);
+	        newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, Settings.halomapTagSort, Settings.DefaultDatabase);
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
         }

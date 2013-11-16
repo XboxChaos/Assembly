@@ -55,5 +55,15 @@ namespace Blamite.Flexibility
         {
             return _layouts.ContainsKey(name);
         }
+
+        /// <summary>
+        /// Imports layouts from another layout collection.
+        /// </summary>
+        /// <param name="other">The collection to import layouts from.</param>
+        public void Import(StructureLayoutCollection other)
+        {
+            foreach (var layout in other._layouts)
+                AddLayout(layout.Key, layout.Value);
+        }
     }
 }

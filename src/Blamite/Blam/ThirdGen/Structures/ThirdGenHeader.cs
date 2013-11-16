@@ -19,7 +19,7 @@ namespace Blamite.Blam.ThirdGen.Structures
     {
         private FileSegment _eofSegment;
 
-        public ThirdGenHeader(StructureValueCollection values, BuildInformation info, string buildString, FileSegmenter segmenter)
+        public ThirdGenHeader(StructureValueCollection values, EngineDescription info, string buildString, FileSegmenter segmenter)
         {
             BuildString = buildString;
             HeaderSize = info.HeaderSize;

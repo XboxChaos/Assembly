@@ -7,13 +7,25 @@ using System.Xml.Linq;
 using Blamite.Blam;
 using Blamite.Util;
 
-namespace Blamite.Flexibility
+namespace Blamite.Flexibility.Settings
 {
     /// <summary>
     /// Loads stringID set definitions from XML data.
     /// </summary>
-    public static class StringIDSetLoader
+    public class XMLStringIDSetLoader : IComplexSettingLoader
     {
+        /// <summary>
+        /// Loads setting data from a path.
+        /// </summary>
+        /// <param name="path">The path to load from.</param>
+        /// <returns>
+        /// The loaded setting data.
+        /// </returns>
+        public object LoadSetting(string path)
+        {
+            return LoadStringIDSets(path);
+        }
+
         /// <summary>
         /// Loads stringID set definitions from an XML document.
         /// </summary>

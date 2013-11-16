@@ -15,9 +15,9 @@ namespace Blamite.Blam.ThirdGen.Structures
         private ITag _tag;
         private FileSegmentGroup _metaArea;
         private MetaAllocator _allocator;
-        private BuildInformation _buildInfo;
+        private EngineDescription _buildInfo;
 
-        public ThirdGenResourceLayoutTable(ITag playTag, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
+        public ThirdGenResourceLayoutTable(ITag playTag, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
         {
             _tag = playTag;
             _metaArea = metaArea;
@@ -32,7 +32,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
             int count = (int)values.GetInteger("number of raw pages");
             uint address = values.GetInteger("raw page table address");
-            var layout = _buildInfo.GetLayout("raw page table entry");
+            var layout = _buildInfo.Layouts.GetLayout("raw page table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select((e, i) => LoadPage(e, i, files));
         }
@@ -42,7 +42,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             var values = LoadTag(stream);
             var files = LoadExternalFiles(values, stream);
             
-            var layout = _buildInfo.GetLayout("raw page table entry");
+            var layout = _buildInfo.Layouts.GetLayout("raw page table entry");
             int oldCount = (int)values.GetInteger("number of raw pages");
             uint oldAddress = values.GetInteger("raw page table address");
             var entries = pages.Select(p => SerializePage(p, files));
@@ -59,7 +59,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             var values = LoadTag(reader);
             int count = (int)values.GetInteger("number of raw segments");
             uint address = values.GetInteger("raw segment table address");
-            var layout = _buildInfo.GetLayout("raw segment table entry");
+            var layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select(e => LoadPointer(e, pages));
         }
@@ -68,7 +68,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             var values = LoadTag(stream);
 
-            var layout = _buildInfo.GetLayout("raw segment table entry");
+            var layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
             int oldCount = (int)values.GetInteger("number of raw segments");
             uint oldAddress = values.GetInteger("raw segment table address");
             var entries = pointers.Select(p => SerializePointer(p));
@@ -83,20 +83,20 @@ namespace Blamite.Blam.ThirdGen.Structures
         private StructureValueCollection LoadTag(IReader reader)
         {
             reader.SeekTo(_tag.MetaLocation.AsOffset());
-            return StructureReader.ReadStructure(reader, _buildInfo.GetLayout("resource layout table"));
+            return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
         }
 
         private void SaveTag(StructureValueCollection values, IWriter writer)
         {
             writer.SeekTo(_tag.MetaLocation.AsOffset());
-            StructureWriter.WriteStructure(values, _buildInfo.GetLayout("resource layout table"), writer);
+            StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
         }
 
         private ThirdGenCacheFileReference[] LoadExternalFiles(StructureValueCollection values, IReader reader)
         {
             int count = (int)values.GetInteger("number of external cache files");
             uint address = values.GetInteger("external cache file table address");
-            var layout = _buildInfo.GetLayout("external cache file table entry");
+            var layout = _buildInfo.Layouts.GetLayout("external cache file table entry");
             var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
             return entries.Select(e => new ThirdGenCacheFileReference(e)).ToArray();
         }

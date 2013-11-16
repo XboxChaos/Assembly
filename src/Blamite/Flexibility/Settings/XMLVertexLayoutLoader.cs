@@ -6,10 +6,25 @@ using System.Text;
 using System.Xml.Linq;
 using Blamite.Util;
 
-namespace Blamite.Flexibility
+namespace Blamite.Flexibility.Settings
 {
-    public static class VertexLayoutLoader
+    /// <summary>
+    /// Loads vertex layouts defined in an XML document.
+    /// </summary>
+    public class XMLVertexLayoutLoader : IComplexSettingLoader
     {
+        /// <summary>
+        /// Loads setting data from a path.
+        /// </summary>
+        /// <param name="path">The path to load from.</param>
+        /// <returns>
+        /// The loaded setting data.
+        /// </returns>
+        public object LoadSetting(string path)
+        {
+            return LoadLayouts(path);
+        }
+
         /// <summary>
         /// Loads all of the vertex layouts defined in an XML document.
         /// </summary>

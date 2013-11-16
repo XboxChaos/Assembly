@@ -17,9 +17,9 @@ namespace Blamite.Blam.ThirdGen.Structures
         private StructureLayout _pointerLayout;
         private int _sizeAlign;
 
-        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, BuildInformation buildInfo)
+        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, EngineDescription buildInfo)
         {
-            _pointerLayout = buildInfo.GetLayout("locale index table entry");
+            _pointerLayout = buildInfo.Layouts.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
             _sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
             Load(values, segmenter, localeArea);

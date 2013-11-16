@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
@@ -23,7 +24,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
     /// </summary>
     public partial class HaloPluginGenerator
     {
-		private BuildInfoLoader _buildLoader;
         public ObservableCollection<MapEntry> GeneratorMaps = new ObservableCollection<MapEntry>();
 		private bool _isWorking;
 
@@ -31,9 +31,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             InitializeComponent();
             DataContext = GeneratorMaps;
-
-			var supportedBuilds = XDocument.Load(@"Formats\SupportedBuilds.xml");
-            _buildLoader = new BuildInfoLoader(supportedBuilds, @"Formats\");
         }
 
         public class MapEntry
@@ -161,7 +158,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var cacheFile = cacheData.Key;
 				var analyzer = new MetaAnalyzer(cacheFile);
 				if (gameIdentifier == "")
-					gameIdentifier = cacheData.Value.ShortName;
+					gameIdentifier = cacheData.Value.Settings.GetSetting<string>("shortName");
 
 				var mapsToProcess = new Queue<MetaMap>();
 				foreach (var tag in cacheFile.Tags)
@@ -355,14 +352,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				//}
 			}
 		}
-		private KeyValuePair<ICacheFile, BuildInformation> LoadMap(string path, out IReader reader)
+		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
 		{
 			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
 			var versionInfo = new CacheFileVersionInfo(reader);
-			var buildInfo = _buildLoader.LoadBuild(versionInfo.BuildString);
+            var buildInfo = Settings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
 
 			return
-				new KeyValuePair<ICacheFile, BuildInformation>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),
+				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),
 				                                               buildInfo);
 		}
     }

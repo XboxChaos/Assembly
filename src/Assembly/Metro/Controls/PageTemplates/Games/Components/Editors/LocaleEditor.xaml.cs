@@ -32,7 +32,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private ICacheFile _cache;
         private IStreamManager _streamManager;
         private int _languageIndex;
-        private BuildInformation _buildInfo;
+        private LocaleSymbolCollection _symbols;
         private ILanguage _currentLanguage;
         private LocaleTable _currentLocaleTable;
         private List<LocaleEntry> _locales;
@@ -41,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private LocaleRange _currentRange;
         private string _filter;
 
-        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, Trie stringIdTrie, BuildInformation buildInfo)
+        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, Trie stringIdTrie, LocaleSymbolCollection symbols)
         {
             InitializeComponent();
 
@@ -49,7 +49,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _streamManager = streamManager;
             _languageIndex = index;
             _currentLanguage = cache.Languages[index];
-            _buildInfo = buildInfo;
+            _symbols = symbols;
             StringIDTrie = stringIdTrie;
 
             Thread thrd = new Thread(new ThreadStart(LoadLanguage));
@@ -89,12 +89,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private string ReplaceSymbols(string locale)
         {
-            return _buildInfo.LocaleSymbols.ReplaceSymbols(locale);
+            return (_symbols != null) ? _symbols.ReplaceSymbols(locale) : locale;
         }
 
         private string ReplaceTags(string locale)
         {
-            return _buildInfo.LocaleSymbols.ReplaceTags(locale);
+            return (_symbols != null) ? _symbols.ReplaceTags(locale) : locale;
         }
 
         /// <summary>
