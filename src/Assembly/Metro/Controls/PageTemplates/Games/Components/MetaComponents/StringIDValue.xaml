@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+             xmlns:c="clr-namespace:Assembly.Metro.Controls"
              mc:Ignorable="d" Height="35" Width="580">
     <UserControl.Resources>
         <ItemsPanelTemplate x:Key="VirtualPanel">
@@ -13,7 +14,7 @@
     <Grid>
         <StackPanel Orientation="Horizontal">
             <TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}" Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0" TextTrimming="CharacterEllipsis"/>
-            <i:AutoCompleteBox x:Name="cbStringIDs" Text="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding StringSource}" MinimumPopulateDelay="200" IsTextCompletionEnabled="False" Width="200" VerticalAlignment="Center" Margin="20,0,0,0" Height="24" Populating="cbStringIDs_Populating" />
+            <c:StringIDInput x:Name="cbStringIDs" Text="{Binding Value}" SearchTrie="{Binding AutocompleteTrie}" Width="200" VerticalAlignment="Center" Margin="20,0,0,0" />
             <TextBlock Text="StringID" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Width="150" Margin="20,0,0,0" />
         </StackPanel>
     </Grid>

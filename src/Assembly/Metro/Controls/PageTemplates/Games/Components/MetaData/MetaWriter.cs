@@ -18,6 +18,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         private readonly StructureLayout _reflexiveLayout;
         private readonly StructureLayout _tagRefLayout;
         private readonly StructureLayout _dataRefLayout;
+        private readonly Trie _stringIdTrie;
 
         private bool _pokeTemplateFields = true;
 
@@ -26,13 +27,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         /// <summary>
         /// Save meta to the Blam Cache File
         /// </summary>
-        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, SaveType type, FieldChangeSet changes)
+        public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, BuildInformation buildInfo, SaveType type, FieldChangeSet changes, Trie stringIdTrie)
         {
             _writer = writer;
             _baseOffset = baseOffset;
             _cache = cache;
             _type = type;
             _changes = changes;
+            _stringIdTrie = stringIdTrie;
 
             // Load layouts
             _reflexiveLayout = buildInfo.GetLayout("reflexive");
@@ -283,7 +285,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitStringID(StringIDData field)
         {
             SeekToOffset(field.Offset);
-            _writer.WriteUInt32(field.Value.Value);
+            if (_stringIdTrie.Contains(field.Value))
+            {
+                var sid = _cache.StringIDs.FindStringID(field.Value);
+                _writer.WriteUInt32(sid.Value);
+            }
+            else if (_type == SaveType.File)
+            {
+                var sid = _cache.StringIDs.AddString(field.Value);
+                _stringIdTrie.Add(field.Value);
+                _writer.WriteUInt32(sid.Value);
+            }
+            else
+            {
+                _writer.WriteUInt32(StringID.Null.Value);
+            }
         }
 
         public void VisitRawData(RawData field)

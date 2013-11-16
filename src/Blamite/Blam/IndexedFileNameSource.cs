@@ -24,11 +24,22 @@ namespace Blamite.Blam
             _strings = strings;
         }
 
+        public int Count
+        {
+            get { return _strings.Count; }
+        }
+
         public override string GetTagName(int tagIndex)
         {
             if (tagIndex >= 0 && tagIndex < _strings.Count)
                 return _strings[tagIndex];
             return null;
+        }
+
+        public override void SetTagName(int tagIndex, string name)
+        {
+            _strings.Expand(tagIndex + 1);
+            _strings[tagIndex] = name;
         }
 
         public override int FindName(string name)
@@ -39,6 +50,11 @@ namespace Blamite.Blam
         public override IEnumerator<string> GetEnumerator()
         {
             return _strings.GetEnumerator();
+        }
+
+        internal void SaveChanges(IStream stream)
+        {
+            _strings.SaveChanges(stream);
         }
     }
 }

@@ -126,13 +126,46 @@ namespace Blamite.IO
         }
 
         /// <summary>
+        /// Returns whether or not a block of data defined by a pointer and a size is completely inside the group.
+        /// </summary>
+        /// <param name="pointer">The pointer to the start of the block.</param>
+        /// <param name="size">The size of the block in bytes.</param>
+        /// <returns>true if the block falls completely inside the group.</returns>
+        public bool ContainsBlockPointer(uint pointer, int size)
+        {
+            if (Segments.Count == 0)
+                return false;
+
+            uint basePointer = BasePointer;
+            return ((uint)(pointer + size) >= pointer && pointer >= basePointer && pointer + size <= basePointer + Size);
+        }
+
+        /// <summary>
         /// Returns whether or not a given offset falls inside the group.
         /// </summary>
         /// <param name="pointer">The offset to test.</param>
         /// <returns>true if the offset falls inside a segment in the group.</returns>
         public bool ContainsOffset(int offset)
         {
+            if (Segments.Count == 0)
+                return false;
+
             return (offset >= Offset && offset < Offset + Size);
+        }
+
+        /// <summary>
+        /// Returns whether or not a block of data defined by a file offset and a size is completely inside the group.
+        /// </summary>
+        /// <param name="offset">The file offset of the start of the block.</param>
+        /// <param name="size">The size of the block in bytes.</param>
+        /// <returns>true if the block falls completely inside the group.</returns>
+        public bool ContainsBlockOffset(int offset, int size)
+        {
+            if (Segments.Count == 0)
+                return false;
+
+            int groupOffset = Offset;
+            return ((int)(offset + size) >= offset && offset >= groupOffset && offset + size <= groupOffset + Size);
         }
 
         /// <summary>

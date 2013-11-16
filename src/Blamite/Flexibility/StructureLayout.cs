@@ -30,7 +30,7 @@ namespace Blamite.Flexibility
     public class StructureLayout
     {
         private List<IStructField> _fields = new List<IStructField>();
-        private HashSet<string> _fieldNames = new HashSet<string>();
+        private Dictionary<string, IStructField> _fieldsByName = new Dictionary<string, IStructField>();
 
         /// <summary>
         /// Constructs a new StructureLayout with a structure size of 0.
@@ -62,7 +62,9 @@ namespace Blamite.Flexibility
         /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
         public void AddBasicField(string name, StructureValueType type, int offset)
         {
-            _fields.Add(new BasicField(name, type, offset));
+            var field = new BasicField(name, type, offset);
+            _fields.Add(field);
+            _fieldsByName[name] = field;
         }
 
         /// <summary>
@@ -74,7 +76,9 @@ namespace Blamite.Flexibility
         /// <param name="entryLayout">The layout of each entry in the array.</param>
         public void AddArrayField(string name, int offset, int count, StructureLayout entryLayout)
         {
-            _fields.Add(new ArrayField(name, offset, count, entryLayout));
+            var field = new ArrayField(name, offset, count, entryLayout);
+            _fields.Add(field);
+            _fieldsByName[name] = field;
         }
 
         /// <summary>
@@ -85,17 +89,29 @@ namespace Blamite.Flexibility
         /// <param name="size">The size of the raw data to read.</param>
         public void AddRawField(string name, int offset, int size)
         {
-            _fields.Add(new RawField(name, offset, size));
+            var field = new RawField(name, offset, size);
+            _fields.Add(field);
+            _fieldsByName[name] = field;
         }
 
         /// <summary>
         /// Returns whether or not a field is defined in the layout.
         /// </summary>
         /// <param name="name">The name of the field to search for.</param>
-        /// <returns>True if the field is defined</returns>
+        /// <returns><c>true</c> if the field is defined, or <c>false</c> otherwise.</returns>
         public bool HasField(string name)
         {
-            return _fieldNames.Contains(name);
+            return _fieldsByName.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Gets the offset of the field with a given name.
+        /// </summary>
+        /// <param name="name">The name of the field to get the offset of.</param>
+        /// <returns>The offset of the field from the start of the structure.</returns>
+        public int GetFieldOffset(string name)
+        {
+            return _fieldsByName[name].Offset;
         }
 
         /// <summary>
@@ -116,6 +132,16 @@ namespace Blamite.Flexibility
         private interface IStructField
         {
             /// <summary>
+            /// Gets the name of the field.
+            /// </summary>
+            string Name { get; }
+
+            /// <summary>
+            /// Gets the offset of the field.
+            /// </summary>
+            int Offset { get; }
+
+            /// <summary>
             /// Depending on the type of the field, calls a corresponding method defined in the visitor object.
             /// </summary>
             /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
@@ -127,9 +153,7 @@ namespace Blamite.Flexibility
         /// </summary>
         private class BasicField : IStructField
         {
-            private string _name;
             private StructureValueType _type;
-            private int _offset;
 
             /// <summary>
             /// Constructs a new basic field.
@@ -139,10 +163,13 @@ namespace Blamite.Flexibility
             /// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
             public BasicField(string name, StructureValueType type, int offset)
             {
-                _name = name;
+                Name = name;
                 _type = type;
-                _offset = offset;
+                Offset = offset;
             }
+
+            public string Name { get; private set; }
+            public int Offset { get; private set; }
 
             /// <summary>
             /// Accepts an IStructureLayoutVisitor, calling the VisitBasicField method on it.
@@ -150,7 +177,7 @@ namespace Blamite.Flexibility
             /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
             public void Accept(IStructureLayoutVisitor visitor)
             {
-                visitor.VisitBasicField(_name, _type, _offset);
+                visitor.VisitBasicField(Name, _type, Offset);
             }
         }
 
@@ -159,8 +186,6 @@ namespace Blamite.Flexibility
         /// </summary>
         private class ArrayField : IStructField
         {
-            private string _name;
-            private int _offset;
             private int _count;
             private StructureLayout _subLayout;
 
@@ -173,11 +198,14 @@ namespace Blamite.Flexibility
             /// <param name="entryLayout">The layout of each entry in the array.</param>
             public ArrayField(string name, int offset, int count, StructureLayout entryLayout)
             {
-                _name = name;
-                _offset = offset;
+                Name = name;
+                Offset = offset;
                 _count = count;
                 _subLayout = entryLayout;
             }
+
+            public string Name { get; private set; }
+            public int Offset { get; private set; }
 
             /// <summary>
             /// Accepts an IStructureLayoutVisitor, calling the VisitArrayField method on it.
@@ -185,7 +213,7 @@ namespace Blamite.Flexibility
             /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
             public void Accept(IStructureLayoutVisitor visitor)
             {
-                visitor.VisitArrayField(_name, _offset, _count, _subLayout);
+                visitor.VisitArrayField(Name, Offset, _count, _subLayout);
             }
         }
 
@@ -194,8 +222,6 @@ namespace Blamite.Flexibility
         /// </summary>
         private class RawField : IStructField
         {
-            private string _name;
-            private int _offset;
             private int _size;
 
             /// <summary>
@@ -206,10 +232,13 @@ namespace Blamite.Flexibility
             /// <param name="size">The size of the raw data to read.</param>
             public RawField(string name, int offset, int size)
             {
-                _name = name;
-                _offset = offset;
+                Name = name;
+                Offset = offset;
                 _size = size;
             }
+
+            public string Name { get; private set; }
+            public int Offset { get; private set; }
 
             /// <summary>
             /// Accepts an IStructureLayoutVisitor, calling the VisitRawField method on it.
@@ -217,7 +246,7 @@ namespace Blamite.Flexibility
             /// <param name="visitor">The IStructureLayoutVisitor to accept.</param>
             public void Accept(IStructureLayoutVisitor visitor)
             {
-                visitor.VisitRawField(_name, _offset, _size);
+                visitor.VisitRawField(Name, Offset, _size);
             }
         }
     }

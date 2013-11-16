@@ -26,6 +26,11 @@ namespace Blamite.Blam
             _resolver = resolver;
         }
 
+        public override int Count
+        {
+            get { return _strings.Count; }
+        }
+
         public override int StringIDToIndex(StringID id)
         {
             if (_resolver != null)
@@ -60,6 +65,22 @@ namespace Blamite.Blam
         public override IEnumerator<string> GetEnumerator()
         {
             return _strings.GetEnumerator();
+        }
+
+        public override StringID AddString(string str)
+        {
+            _strings.Add(str);
+            return IndexToStringID(_strings.Count - 1);
+        }
+
+        public override void SetString(int index, string str)
+        {
+            _strings[index] = str;
+        }
+
+        internal void SaveChanges(IStream stream)
+        {
+            _strings.SaveChanges(stream);
         }
     }
 }

@@ -20,17 +20,17 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 
         public IModelSection[] Sections { get; private set; }
 
-        public IModelBoundingBox BoundingBox { get; private set; }
+        public BoundingBox[] BoundingBoxes { get; private set; }
 
-        public DatumIndex ResourceIndex { get; private set; }
+        public DatumIndex ModelResourceIndex { get; private set; }
 
         private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
-            ResourceIndex = new DatumIndex(values.GetInteger("resource datum index"));
+            ModelResourceIndex = new DatumIndex(values.GetInteger("resource datum index"));
 
             LoadRegions(values, reader, metaArea, buildInfo);
             LoadSections(values, reader, metaArea, buildInfo);
-            LoadBoundingBox(values, reader, metaArea, buildInfo);
+            LoadBoundingBoxes(values, reader, metaArea, buildInfo);
         }
 
         private void LoadRegions(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
@@ -55,19 +55,15 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
                         select new ThirdGenModelSection(entry, reader, metaArea, buildInfo)).ToArray();
         }
 
-        private void LoadBoundingBox(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        private void LoadBoundingBoxes(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, BuildInformation buildInfo)
         {
             int count = (int)values.GetInteger("number of bounding boxes");
-            if (count < 1)
-                return;
-
             uint address = values.GetInteger("bounding box table address");
             var layout = buildInfo.GetLayout("model bounding box");
             var entries = ReflexiveReader.ReadReflexive(reader, 1, address, layout, metaArea);
 
-            // Just take the first bounding box
-            // Is it even possible for models to have more than one?
-            BoundingBox = new ThirdGenModelBoundingBox(entries.First());
+            BoundingBoxes = (from entry in entries
+                             select BoundingBox.Deserialize(entry)).ToArray();
         }
     }
 }

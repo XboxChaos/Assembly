@@ -9,7 +9,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Blamite</RootNamespace>
     <AssemblyName>Blamite</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>
     </SccProjectName>
@@ -19,27 +18,70 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <TargetFrameworkProfile />
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,11 +95,17 @@
   <ItemGroup>
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\EngineType.cs" />
-    <Compile Include="Blam\Resources\IResource.cs" />
+    <Compile Include="Blam\Resources\BSP\IScenarioBSP.cs" />
+    <Compile Include="Blam\Resources\IZoneSet.cs" />
+    <Compile Include="Blam\Resources\Models\BoundingBoxCalculator.cs" />
+    <Compile Include="Blam\Resources\Models\IModel.cs" />
+    <Compile Include="Blam\Resources\Models\IndexBufferWriter.cs" />
+    <Compile Include="Blam\Resources\Models\VertexBufferWriter.cs" />
+    <Compile Include="Blam\Resources\Resource.cs" />
     <Compile Include="Blam\Resources\IResourceMetaLoader.cs" />
-    <Compile Include="Blam\Resources\IResourcePage.cs" />
-    <Compile Include="Blam\Resources\IResourceTable.cs" />
-    <Compile Include="Blam\Resources\Models\IModelBoundingBox.cs" />
+    <Compile Include="Blam\Resources\ResourcePage.cs" />
+    <Compile Include="Blam\Resources\IResourceManager.cs" />
+    <Compile Include="Blam\Resources\Models\BoundingBox.cs" />
     <Compile Include="Blam\Resources\Models\IModelPermutation.cs" />
     <Compile Include="Blam\Resources\Models\IModelProcessor.cs" />
     <Compile Include="Blam\Resources\Models\IModelRegion.cs" />
@@ -70,6 +118,9 @@
     <Compile Include="Blam\Resources\Models\ModelReader.cs" />
     <Compile Include="Blam\Resources\Models\VertexBufferReader.cs" />
     <Compile Include="Blam\Resources\ResourcePageExtractor.cs" />
+    <Compile Include="Blam\Resources\ResourcePointer.cs" />
+    <Compile Include="Blam\Resources\ResourceTable.cs" />
+    <Compile Include="Blam\Resources\IZoneSetTable.cs" />
     <Compile Include="Blam\Scripting\Analysis\ConstantNode.cs" />
     <Compile Include="Blam\Scripting\Analysis\FunctionCallNode.cs" />
     <Compile Include="Blam\Scripting\Analysis\IScriptNode.cs" />
@@ -89,31 +140,41 @@
     <Compile Include="Blam\SecondGen\SecondGenResourceMetaLoader.cs" />
     <Compile Include="Blam\TagTable.cs" />
     <Compile Include="Blam\ThirdGen\BasedPointerConverter.cs" />
-    <Compile Include="Blam\ThirdGen\IdentityPointerConverter.cs" />
     <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelBoundingBox.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenInteropSection.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenZoneSetTable.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenResourceLayoutTable.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelPermutation.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelRegion.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelSection.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelSubmesh.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenModelVertexGroup.cs" />
     <Compile Include="Blam\ThirdGen\Resources\Models\ThirdGenRenderModel.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenCacheFileReference.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenCacheFileReference.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenResourceGestalt.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceMetaLoader.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourcePage.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResource.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceGestalt.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceLayoutTable.cs" />
-    <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceSegment.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenScenarioScriptFile.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenZoneSet.cs" />
     <Compile Include="Blam\Util\MetaAllocator.cs" />
+    <Compile Include="Blam\Util\ReflexiveCache.cs" />
     <Compile Include="Blam\Util\ReflexiveReader.cs" />
+    <Compile Include="Blam\Util\ReflexiveWriter.cs" />
     <Compile Include="Flexibility\LocaleSymbolLoader.cs" />
     <Compile Include="Flexibility\StringIDLayout.cs" />
     <Compile Include="Flexibility\VertexLayout.cs" />
     <Compile Include="Flexibility\VertexElementLayout.cs" />
     <Compile Include="Flexibility\VertexLayoutCollection.cs" />
     <Compile Include="Flexibility\VertexLayoutLoader.cs" />
+    <Compile Include="Injection\DataBlock.cs" />
+    <Compile Include="Injection\DataBlockBuilder.cs" />
+    <Compile Include="Injection\ExtractedResourceInfo.cs" />
+    <Compile Include="Injection\ExtractedTag.cs" />
+    <Compile Include="Injection\TagContainer.cs" />
+    <Compile Include="Injection\TagContainerReader.cs" />
+    <Compile Include="Injection\TagContainerWriter.cs" />
+    <Compile Include="Injection\TagContainerInjector.cs" />
     <Compile Include="IO\FileSegment.cs" />
     <Compile Include="IO\FileSegmenter.cs" />
     <Compile Include="Blam\ILocaleGroup.cs" />
@@ -181,7 +242,6 @@
     <Compile Include="IO\IWriter.cs" />
     <Compile Include="IO\StreamUtil.cs" />
     <Compile Include="Patching\OldPatchLoader.cs" />
-    <Compile Include="Patching\AssemblyPatchBlockID.cs" />
     <Compile Include="Patching\AssemblyPatchLoader.cs" />
     <Compile Include="Patching\AssemblyPatchWriter.cs" />
     <Compile Include="Patching\BlfContent.cs" />
@@ -222,7 +282,6 @@
     <Compile Include="Util\FunctionHelpers.cs" />
     <Compile Include="Util\Half\Half.cs" />
     <Compile Include="Util\Half\HalfHelper.cs" />
-    <Compile Include="Util\ini.cs" />
     <Compile Include="Flexibility\IStructureLayoutVisitor.cs" />
     <Compile Include="Flexibility\StructureLayout.cs" />
     <Compile Include="Flexibility\StructureReader.cs" />
@@ -244,6 +303,8 @@
     <Compile Include="Util\SHA1.cs" />
     <Compile Include="Util\Trie.cs" />
     <Compile Include="Util\XMLUtil.cs" />
+    <Compile Include="IO\ContainerWriter.cs" />
+    <Compile Include="IO\ContainerReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
@@ -351,7 +412,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

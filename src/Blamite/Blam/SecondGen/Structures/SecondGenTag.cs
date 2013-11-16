@@ -19,16 +19,15 @@ namespace Blamite.Blam.SecondGen.Structures
         {
             uint offset = values.GetInteger("offset");
             if (offset > 0)
-            {
-                // Load the tag class by looking up the magic value that's stored
-                int classMagic = (int)values.GetInteger("class magic");
-                if (classMagic != -1)
-                    Class = classesById[classMagic];
-
                 MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
-                Index = new DatumIndex(values.GetInteger("datum index"));
-                DataSize = (int)values.GetInteger("data size");
-            }
+
+            // Load the tag class by looking up the magic value that's stored
+            int classMagic = (int)values.GetInteger("class magic");
+            if (classMagic != -1)
+                Class = classesById[classMagic];
+
+            Index = new DatumIndex(values.GetInteger("datum index"));
+            DataSize = (int)values.GetInteger("data size");
         }
 
         public ITagClass Class { get; set; }

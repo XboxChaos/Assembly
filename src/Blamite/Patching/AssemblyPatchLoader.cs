@@ -10,69 +10,54 @@ namespace Blamite.Patching
     {
         public static Patch LoadPatch(IReader reader)
         {
-            // Verify header magic
-			var magic = reader.ReadInt32();
-            if (magic != AssemblyPatchMagic)
-                throw new InvalidOperationException("Invalid Assembly patch magic");
+            ContainerReader container = new ContainerReader(reader);
+            if (!container.NextBlock() || container.BlockName != "asmp")
+                throw new InvalidOperationException("Invalid assembly patch");
+            if (container.BlockVersion > 0)
+                throw new InvalidOperationException("Unrecognized patch version");
 
-            // Read the file size
-			var size = reader.ReadUInt32();
-
-            // Read the compression type
-			var compression = reader.ReadByte();
-            if (compression > 0)
-                throw new InvalidOperationException("Unrecognized patch compression type");
-
-            return ReadBlocks(reader, 9, size);
+            container.EnterBlock();
+            Patch patch = ReadBlocks(reader, container);
+            container.LeaveBlock();
+            
+            return patch;
         }
 
-        private static Patch ReadBlocks(IReader reader, uint startOffset, uint endOffset)
+        private static Patch ReadBlocks(IReader reader, ContainerReader container)
         {
 			var result = new Patch();
-			var offset = startOffset;
-            while (offset < endOffset)
+            while (container.NextBlock())
             {
-                reader.SeekTo(offset);
-				var blockId = reader.ReadInt32();
-				var size = reader.ReadUInt32();
-
-                switch (blockId)
+                switch (container.BlockName)
 				{
-                    case AssemblyPatchBlockID.Titl:
-                        ReadPatchInfo(reader, result);
+                    case "titl":
+                        ReadPatchInfo(reader, container.BlockVersion, result);
                         break;
 
-                    case AssemblyPatchBlockID.Segm:
+                    case "segm":
                         ReadSegmentChanges(reader, result);
                         break;
 
-                    case AssemblyPatchBlockID.Blfc:
+                    case "blfc":
                         ReadBlfInfo(reader, result);
                         break;
 
                     #region Deprecated
-                    case AssemblyPatchBlockID.Meta:
+                    case "meta":
                         ReadMetaChanges(reader, result);
                         break;
 
-                    case AssemblyPatchBlockID.Locl:
+                    case "locl":
                         ReadLocaleChanges(reader, result);
                         break;
                     #endregion Deprecated
                 }
-
-                // Skip to the next block
-                offset += size;
             }
             return result;
         }
 
-        private static void ReadPatchInfo(IReader reader, Patch output)
+        private static void ReadPatchInfo(IReader reader, byte version, Patch output)
         {
-// ReSharper disable UnusedVariable
-			var version = reader.ReadByte();
-// ReSharper restore UnusedVariable
-
             // Version 0 (all versions)
             output.MapID = reader.ReadInt32();
             output.MapInternalName = reader.ReadAscii();
@@ -94,10 +79,6 @@ namespace Blamite.Patching
 
         private static void ReadSegmentChanges(IReader reader, Patch output)
         {
-// ReSharper disable UnusedVariable
-            var version = reader.ReadByte();
-// ReSharper restore UnusedVariable
-
             // Version 0 (all versions)
             var numChanges = reader.ReadByte();
             for (var i = 0; i < numChanges; i++)
@@ -140,10 +121,6 @@ namespace Blamite.Patching
 
         private static void ReadBlfInfo(IReader reader, Patch output)
         {
-            // ReSharper disable UnusedVariable
-            var version = reader.ReadByte();
-            // ReSharper restore UnusedVariable
-
             // Version 0 (all versions)
             var targetGame = (TargetGame)reader.ReadByte();
             var mapInfoFileName = reader.ReadAscii();
@@ -164,19 +141,11 @@ namespace Blamite.Patching
         #region Deprecated
         private static void ReadMetaChanges(IReader reader, Patch output)
         {
-            // ReSharper disable UnusedVariable
-			var version = reader.ReadByte();
-            // ReSharper restore UnusedVariable
-
             output.MetaChanges.AddRange(ReadDataChanges(reader));
         }
 
         private static void ReadLocaleChanges(IReader reader, Patch output)
         {
-            // ReSharper disable UnusedVariable
-			var version = reader.ReadByte();
-            // ReSharper restore UnusedVariable
-
             // Read language changes
 			var numLanguageChanges = reader.ReadByte();
             for (byte i = 0; i < numLanguageChanges; i++)
@@ -197,7 +166,5 @@ namespace Blamite.Patching
             }
         }
         #endregion Deprecated
-
-        private const int AssemblyPatchMagic = 0x61736D70;
     }
 }

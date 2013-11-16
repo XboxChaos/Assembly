@@ -15,14 +15,11 @@ namespace Blamite.Blam.ThirdGen.Structures
     public class ThirdGenLanguageGlobals
     {
         private List<ThirdGenLanguage> _languages;
-        private int _alignment;
 
         public ThirdGenLanguageGlobals(StructureValueCollection values, FileSegmenter segmenter, IPointerConverter localePointerConverter, BuildInformation buildInfo)
         {
             LocaleArea = new FileSegmentGroup(localePointerConverter);
-
             _languages = LoadLanguages(values, segmenter, buildInfo);
-            _alignment = buildInfo.SegmentAlignment;
         }
 
         /// <summary>

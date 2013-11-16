@@ -46,6 +46,7 @@ namespace Blamite.Blam.ThirdGen
         private List<ILanguage> _languages = new List<ILanguage>();
         private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
         private BuildInformation _buildInfo;
+        private IResourceManager _resources;
         private ThirdGenResourceMetaLoader _resourceMetaLoader;
 
         public ThirdGenCacheFile(IReader reader, BuildInformation buildInfo, string buildString)
@@ -56,17 +57,11 @@ namespace Blamite.Blam.ThirdGen
             Load(reader, buildString);
         }
 
-        public IResourceTable LoadResourceTable(IReader reader)
-        {
-            ThirdGenResourceLayoutTable layout = LoadResourceLayoutTable(reader);
-            if (layout == null)
-                return null;
-
-            return LoadResourceGestalt(reader, layout);
-        }
-
         public void SaveChanges(IStream stream)
         {
+            _tags.SaveChanges(stream);
+            _fileNames.SaveChanges(stream);
+            _stringIds.SaveChanges(stream);
             WriteHeader(stream);
             WriteLanguageInfo(stream);
         }
@@ -158,6 +153,11 @@ namespace Blamite.Blam.ThirdGen
             get { return _tags.Classes; }
         }
 
+        public IResourceManager Resources
+        {
+            get { return _resources; }
+        }
+
         public TagTable Tags
         {
             get { return _tags; }
@@ -188,6 +188,26 @@ namespace Blamite.Blam.ThirdGen
             get { return _segmenter.GetWrappers(); }
         }
 
+        public FileSegment StringIDIndexTable
+        {
+            get { return _header.StringIDIndexTable; }
+        }
+
+        public FileSegment StringIDDataTable
+        {
+            get { return _header.StringIDData; }
+        }
+
+        public FileSegment FileNameIndexTable
+        {
+            get { return _header.FileNameIndexTable; }
+        }
+
+        public FileSegment FileNameDataTable
+        {
+            get { return _header.FileNameData; }
+        }
+
         public MetaAllocator Allocator { get; private set; }
 
         public IScriptFile[] ScriptFiles { get; private set; }
@@ -201,6 +221,7 @@ namespace Blamite.Blam.ThirdGen
             LoadLanguageGlobals(reader);
             LoadScriptFiles(reader);
             LoadLocaleGroups(reader);
+            LoadResourceManager(reader);
         }
 
         private void LoadHeader(IReader reader, string buildString)
@@ -218,10 +239,7 @@ namespace Blamite.Blam.ThirdGen
                 return;
             }
 
-            reader.SeekTo(_header.IndexHeaderLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.GetLayout("index header"));
-            _tags = new ThirdGenTagTable(reader, values, _header.MetaArea, _buildInfo);
-
+            _tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo);
             _resourceMetaLoader = new ThirdGenResourceMetaLoader(_buildInfo, _header.MetaArea);
         }
 
@@ -306,36 +324,16 @@ namespace Blamite.Blam.ThirdGen
             }
         }
 
-        private ThirdGenResourceLayoutTable LoadResourceLayoutTable(IReader reader)
+        private void LoadResourceManager(IReader reader)
         {
-            if (_tags == null || !_buildInfo.HasLayout("resource layout table"))
-                return null;
-
-            StructureLayout layout = _buildInfo.GetLayout("resource layout table");
-
-            ITag play = _tags.FindTagByClass("play");
-            if (play == null)
-                return null;
-
-            reader.SeekTo(play.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-            return new ThirdGenResourceLayoutTable(values, reader, MetaArea, _buildInfo);
-        }
-
-        private ThirdGenResourceGestalt LoadResourceGestalt(IReader reader, ThirdGenResourceLayoutTable resourceLayout)
-        {
-            if (_tags == null || resourceLayout == null || !_buildInfo.HasLayout("resource gestalt"))
-                return null;
-
-            StructureLayout layout = _buildInfo.GetLayout("resource gestalt");
-
-            ITag zone = _tags.FindTagByClass("zone");
-            if (zone == null)
-                return null;
-
-            reader.SeekTo(zone.MetaLocation.AsOffset());
-            StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-            return new ThirdGenResourceGestalt(values, reader, MetaArea, _buildInfo, _tags, resourceLayout);
+            ITag zoneTag = _tags.FindTagByClass("zone");
+            ITag playTag = _tags.FindTagByClass("play");
+            if (zoneTag != null && playTag != null && _buildInfo.HasLayout("resource gestalt") && _buildInfo.HasLayout("resource layout table"))
+            {
+                ThirdGenResourceGestalt gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+                ThirdGenResourceLayoutTable layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+                _resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+            }
         }
 
         private void LoadScriptFiles(IReader reader)
@@ -356,7 +354,11 @@ namespace Blamite.Blam.ThirdGen
 
         private void WriteHeader(IWriter writer)
         {
-            // Serialize and write the header
+            // Update tagname and stringid info (so. ugly.)
+            _header.FileNameCount = _fileNames.Count;
+            _header.StringIDCount = _stringIds.Count;
+
+            // Serialize and write the header            
             StructureValueCollection values = _header.Serialize(_languageInfo.LocaleArea);
             writer.SeekTo(0);
             StructureWriter.WriteStructure(values, _buildInfo.GetLayout("header"), writer);

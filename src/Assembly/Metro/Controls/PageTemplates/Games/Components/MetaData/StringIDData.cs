@@ -9,34 +9,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
     public class StringIDData : ValueField
     {
-        private StringID _value;
-        private StringIDSource _source;
+        private string _value;
         private Trie _autocompleteTrie;
 
-        public StringIDData(string name, uint offset, uint address, StringID sid, StringIDSource source, Trie autocompleteTrie, uint pluginLine)
+        public StringIDData(string name, uint offset, uint address, string val, Trie autocompleteTrie, uint pluginLine)
             : base(name, offset, address, pluginLine)
         {
-            _value = sid;
-            _source = source;
+            _value = val;
             _autocompleteTrie = autocompleteTrie;
         }
 
-        public StringID Value
+        public string Value
         {
             get { return _value; }
-            set { _value = value; NotifyPropertyChanged("Value"); NotifyPropertyChanged("StringValue"); }
-        }
-
-        public string StringValue
-        {
-            get { return _source.GetString(Value); }
-            set { Value = _source.FindStringID(value); NotifyPropertyChanged("StringValue"); }
-        }
-
-        public StringIDSource StringSource
-        {
-            get { return _source; }
-            set { _source = value; NotifyPropertyChanged("StringSource"); }
+            set { _value = value; NotifyPropertyChanged("Value"); }
         }
 
         public Trie AutocompleteTrie
@@ -52,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
         public override MetaField CloneValue()
         {
-            return new StringIDData(Name, Offset, FieldAddress, _value, _source, _autocompleteTrie, base.PluginLine);
+            return new StringIDData(Name, Offset, FieldAddress, _value, _autocompleteTrie, base.PluginLine);
         }
     }
 }

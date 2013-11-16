@@ -20,6 +20,7 @@ using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -40,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private LocaleRange _currentRange;
         private string _filter;
 
-        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, BuildInformation buildInfo)
+        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, Trie stringIdTrie, BuildInformation buildInfo)
         {
             InitializeComponent();
 
@@ -49,11 +50,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _languageIndex = index;
             _currentLanguage = cache.Languages[index];
             _buildInfo = buildInfo;
+            StringIDTrie = stringIdTrie;
 
             Thread thrd = new Thread(new ThreadStart(LoadLanguage));
             thrd.SetApartmentState(ApartmentState.STA);
             thrd.Start();
         }
+
+        public Trie StringIDTrie { get; private set; }
 
         /// <summary>
         /// Load a language into the listview
@@ -165,8 +169,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
+            var newStringIds = _locales
+                .Select(l => l.StringID)
+                .Where(s => !StringIDTrie.Contains(s))
+                .ToList();
+            
+            if (newStringIds.Count > 0 && !MetroMessageBoxList.Show("New StringIDs", "The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStringIds))
+                return;
+
             for (int i = 0; i < _locales.Count; i++)
+            {
+                // Only update the stringID if it changed
+                if (_locales[i].StringID != _cache.StringIDs.GetString(_currentLocaleTable.Strings[i].ID))
+                {
+                    if (!StringIDTrie.Contains(_locales[i].StringID))
+                    {
+                        // Add a new stringID
+                        var id = _cache.StringIDs.AddString(_locales[i].StringID);
+                        StringIDTrie.Add(_locales[i].StringID);
+                        _currentLocaleTable.Strings[i].ID = id;
+                    }
+                    else
+                    {
+                        // Use an existing one
+                        _currentLocaleTable.Strings[i].ID = _cache.StringIDs.FindStringID(_locales[i].StringID);
+                    }
+                }
                 _currentLocaleTable.Strings[i].Value = ReplaceTags(_locales[i].Locale);
+            }
 
             using (var stream = _streamManager.OpenReadWrite())
             {

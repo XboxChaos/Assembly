@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.IO;
@@ -252,7 +253,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void VisitStringID(StringIDData field)
         {
             SeekToOffset(field.Offset);
-            field.Value = new StringID(_reader.ReadUInt32());
+            field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
         }
 
         public void VisitRawData(RawData field)
@@ -269,18 +270,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             var length = (int)values.GetInteger("size");
             var pointer = values.GetInteger("pointer");
-            field.DataAddress = pointer;
 
-            // Check if the pointer is valid
-            if (length > 0 && _cache.MetaArea.ContainsPointer(pointer))
+            if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
             {
+                field.DataAddress = pointer;
                 field.Length = length;
 
                 // Go to position
-                var offset = pointer;
-                if (_type == LoadType.File)
-                    offset = (uint)_cache.MetaArea.PointerToOffset(offset);
-                _reader.SeekTo(offset);
+                if (_type == LoadType.Memory)
+                    _reader.SeekTo(pointer);
+                else
+                    _reader.SeekTo(_cache.MetaArea.PointerToOffset(pointer));
 
                 switch (field.Format)
                 {
@@ -298,6 +298,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             }
             else
             {
+                field.DataAddress = 0;
                 field.Length = 0;
             }
         }
@@ -329,7 +330,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
             if (tag != null)
             {
-                field.Class = tag.ParentClass;
+                field.Class = field.Tags.Classes.FirstOrDefault(c => c.RawClass == tag.RawTag.Class);
                 field.Value = tag;
             }
             else
@@ -367,8 +368,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             var pointer = (uint)values.GetInteger("pointer");
 
             // Make sure the pointer looks valid
-            var metaEnd = _cache.MetaArea.BasePointer + _cache.MetaArea.Size;
-            if (!_cache.MetaArea.ContainsPointer(pointer) || pointer + length * field.EntrySize > metaEnd)
+            if (length <= 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int)(length * field.EntrySize)))
             {
                 length = 0;
                 pointer = 0;

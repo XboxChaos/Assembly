@@ -57,7 +57,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         private bool hasInitFinished = false;
         private ReflexiveFlattener _flattener;
         private IRTEProvider _rteProvider;
-        private Trie _stringIDTrie;
+        private Trie _stringIdTrie;
 
         private ObservableCollection<SearchResult> _searchResults;
         private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
@@ -82,7 +82,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             _fileManager = streamManager;
             _rteProvider = rteProvider;
             _searchTimer = new Timer(SearchTimer);
-            _stringIDTrie = stringIDTrie;
+            _stringIdTrie = stringIDTrie;
 
             // Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
@@ -139,7 +139,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             // Load Plugin File
             using (var xml = XmlReader.Create(_pluginPath))
             {
-                _pluginVisitor = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, _cache.MetaArea, Settings.pluginsShowInvisibles);
+                _pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, Settings.pluginsShowInvisibles);
                 AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
             }
 
@@ -212,12 +212,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             if (type == MetaWriter.SaveType.File)
             {
+                if (!ConfirmNewStringIds())
+                    return;
+
                 using (IStream stream = _fileManager.OpenReadWrite())
                 {
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null);
+                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-                    MetaWriter metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges);
+                    MetaWriter metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges, _stringIdTrie);
 #endif
                     metaUpdate.WriteFields(_pluginVisitor.Values);
                     _cache.SaveChanges(stream);
@@ -234,7 +237,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
                     if (metaStream != null)
                     {
                         FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-                        MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type, changes);
+                        MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type, changes, _stringIdTrie);
                         metaUpdate.WriteFields(_pluginVisitor.Values);
 
                         if (showActionDialog)
@@ -702,11 +705,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
             XmlReader reader = XmlReader.Create(path);
 
-            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _cache.StringIDs, _stringIDTrie, _cache.MetaArea, true);
+            ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, true);
             AssemblyPluginLoader.LoadPlugin(reader, plugin);
             reader.Close();
 
             return plugin.Values;
+        }
+
+        private bool ConfirmNewStringIds()
+        {
+            var newStrings = new List<string>();
+            foreach (var field in _fileChanges)
+            {
+                var stringIdField = field as StringIDData;
+                if (stringIdField != null)
+                {
+                    if (!_stringIdTrie.Contains(stringIdField.Value))
+                        newStrings.Add(stringIdField.Value);
+                }
+            }
+            if (newStrings.Count > 0)
+                return MetroMessageBoxList.Show("New StringIDs", "The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
+            return true;
         }
     }
 }

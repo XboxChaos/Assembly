@@ -34,8 +34,20 @@ namespace Blamite.Blam.Util
         /// <returns>The memory address of the allocated area.</returns>
         public uint Allocate(int size, IStream stream)
         {
+            return Allocate(size, 1, stream);
+        }
+
+        /// <summary>
+        /// Allocates a free block of memory in the cache file's meta area.
+        /// </summary>
+        /// <param name="size">The size of the memory block to allocate.</param>
+        /// <param name="align">The power of two to align the block to.</param>
+        /// <param name="stream">The stream to write cache file changes to.</param>
+        /// <returns></returns>
+        public uint Allocate(int size, uint align, IStream stream)
+        {
             // Find the smallest block that fits, or if nothing is found, expand the meta area
-            FreeArea block = FindSmallestBlock(size);
+            FreeArea block = FindSmallestBlock(size, align);
             if (block == null)
                 block = Expand(size, stream);
 
@@ -46,10 +58,16 @@ namespace Blamite.Blam.Util
                 return block.Address;
             }
 
-            // Too large - change the block's start address to be after the allocation and return its old address
+            // Too large - adjust the block's start address
             uint oldAddress = block.Address;
             ChangeStartAddress(block, (uint)(block.Address + size));
-            return oldAddress;
+
+            // Add a block at the beginning if we had to align
+            uint alignedAddress = (oldAddress + align - 1) & ~(align - 1);
+            if (alignedAddress > oldAddress)
+                Free(oldAddress, (int)(alignedAddress - oldAddress));
+            
+            return alignedAddress;
         }
 
         /// <summary>
@@ -98,7 +116,13 @@ namespace Blamite.Blam.Util
 
             int index = ListSearching.BinarySearch(_freeAreasByAddr.Keys, address);
             if (index >= 0)
-                throw new InvalidOperationException("Address is already free");
+            {
+                // Address is already free, but if the size doesn't overlap anything, then allow it
+                FreeArea freedArea = _freeAreasByAddr.Values[index];
+                if (freedArea.Address + freedArea.Size < address + size)
+                    throw new InvalidOperationException("Part of the block is already free");
+                return freedArea;
+            }
 
             // Get pointers to the previous and next free blocks
             index = ~index; // Get index of first largest area
@@ -106,8 +130,10 @@ namespace Blamite.Blam.Util
             if (index > 0)
             {
                 previous = _freeAreasByAddr.Values[index - 1];
-                if (previous.Address + previous.Size > address)
-                    throw new InvalidOperationException("Address is already free");
+                if (previous.Address + previous.Size >= address + size)
+                    return previous;
+                else if (previous.Address + previous.Size > address && previous.Address + previous.Size < address + size)
+                    throw new InvalidOperationException("Part of the block is already free");
             }
             if (index < _freeAreasByAddr.Count)
             {
@@ -161,7 +187,7 @@ namespace Blamite.Blam.Util
             return area;
         }
 
-        private FreeArea FindSmallestBlock(int minSize)
+        private FreeArea FindSmallestBlock(int minSize, uint align)
         {
             if (minSize <= 0)
                 throw new ArgumentException("Invalid block size");
@@ -169,9 +195,18 @@ namespace Blamite.Blam.Util
             int index = ListSearching.BinarySearch<FreeArea, int>(_freeAreasBySize, minSize, (a) => a.Size);
             if (index < 0)
                 index = ~index; // Get the index of the next largest block
-            if (index >= _freeAreasBySize.Count)
-                return null;
-            return _freeAreasBySize[index];
+
+            // Search until a block is found where the data can be aligned in
+            while (index < _freeAreasBySize.Count)
+            {
+                var area = _freeAreasBySize[index];
+                uint alignedAddress = (area.Address + align - 1) & ~(align - 1);
+                if (alignedAddress + minSize <= area.Address + area.Size)
+                    return area;
+
+                index++;
+            }
+            return null;
         }
 
         private FreeArea Expand(int minSize, IStream stream)
@@ -182,7 +217,6 @@ namespace Blamite.Blam.Util
             // Round the size up to the next multiple of the page size and expand the meta area
             int roundedSize = (minSize + _pageSize - 1) & ~(_pageSize - 1);
             _cacheFile.MetaArea.Resize(_cacheFile.MetaArea.Size + roundedSize, stream);
-            _cacheFile.SaveChanges(stream);
 
             // Free the newly-allocated area
             return FreeBlock(_cacheFile.MetaArea.BasePointer, roundedSize);

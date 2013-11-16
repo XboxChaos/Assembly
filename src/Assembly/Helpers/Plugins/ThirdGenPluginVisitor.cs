@@ -15,7 +15,6 @@ namespace Assembly.Helpers.Plugins
     {
         // Private Members
         private readonly TagHierarchy _tags;
-        private readonly StringIDSource _stringIDs;
         private readonly Trie _stringIDTrie;
 
         private readonly List<ReflexiveData> _reflexives = new List<ReflexiveData>();
@@ -32,10 +31,9 @@ namespace Assembly.Helpers.Plugins
         public ObservableCollection<MetaField> Values { get; private set; }
         public ObservableCollection<ReflexiveData> Reflexives { get; private set; }
 
-        public ThirdGenPluginVisitor(TagHierarchy tags, StringIDSource stringIDs, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles)
+        public ThirdGenPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles)
         {
             _tags = tags;
-            _stringIDs = stringIDs;
             _stringIDTrie = stringIDTrie;
             _metaArea = metaArea;
 
@@ -137,7 +135,7 @@ namespace Assembly.Helpers.Plugins
 	    public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
         {
             if (visible || _showInvisibles)
-                AddValue(new StringIDData(name, offset, 0, StringID.Null, _stringIDs, _stringIDTrie, pluginLine));
+                AddValue(new StringIDData(name, offset, 0, "", _stringIDTrie, pluginLine));
         }
 
         public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)

@@ -31,7 +31,6 @@ namespace Blamite.Flexibility
     public class StructureReader : IStructureLayoutVisitor
     {
         private IReader _reader;                         // The stream to read from
-        private StructureLayout _layout;                 // The structure layout to follow
         private long _offset;                            // The offset that the reader is currently at
         private long _baseOffset;                        // The offset that the reader was at when reading began
         private StructureValueCollection _collection;    // The values that have been read so far
@@ -45,7 +44,7 @@ namespace Blamite.Flexibility
         /// <seealso cref="StructureLayout"/>
         public static StructureValueCollection ReadStructure(IReader reader, StructureLayout layout)
         {
-            StructureReader structReader = new StructureReader(reader, layout);
+            StructureReader structReader = new StructureReader(reader);
             layout.Accept(structReader);
             if (layout.Size > 0)
                 structReader.SeekReader(layout.Size);
@@ -57,11 +56,9 @@ namespace Blamite.Flexibility
         /// (private) Constructs a new StructureReader.
         /// </summary>
         /// <param name="reader">The IReader to read from.</param>
-        /// <param name="layout">The structure layout to follow.</param>
-        private StructureReader(IReader reader, StructureLayout layout)
+        private StructureReader(IReader reader)
         {
             _reader = reader;
-            _layout = layout;
             _baseOffset = reader.Position;
             _offset = _baseOffset;
             _collection = new StructureValueCollection();

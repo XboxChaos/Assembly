@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Blamite.Flexibility;
 
-namespace Blamite.Blam.ThirdGen.Resources
+namespace Blamite.Blam.ThirdGen.Structures
 {
     public class ThirdGenCacheFileReference
     {

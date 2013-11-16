@@ -106,11 +106,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 	public class TagEntry : INotifyPropertyChanged
     {
-        public TagEntry(ITag baseTag, TagClass parent, string name)
+        public TagEntry(ITag baseTag, string className, string name)
         {
             RawTag = baseTag;
+            ClassName = className;
             TagFileName = name;
-            ParentClass = parent;
         }
 
 		private bool _isBookmark = false;
@@ -123,6 +123,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				NotifyPropertyChanged("IsBookmark");
 			}
 		}
+
+        private string _className = string.Empty;
+        public string ClassName
+        {
+            get { return _className; }
+            internal set
+            {
+                _className = value;
+                NotifyPropertyChanged("ClassName");
+            }
+        }
 
 		private string _tagFileName = string.Empty;
 		public string TagFileName
@@ -143,17 +154,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				_rawTag = value;
 				NotifyPropertyChanged("RawTag");
-			}
-		}
-
-		private TagClass _parentTagClass;
-		public TagClass ParentClass
-		{
-			get { return _parentTagClass; }
-			internal set
-			{
-				_parentTagClass = value;
-				NotifyPropertyChanged("ParentClass");
 			}
 		}
 

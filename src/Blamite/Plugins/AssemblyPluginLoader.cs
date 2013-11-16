@@ -41,10 +41,17 @@ namespace Blamite.Plugins
 
         private static void HandleTopLevelElement(XmlReader reader, IPluginVisitor visitor)
         {
-            if (reader.Name == "revisions" && visitor.EnterRevisions())
+            if (reader.Name == "revisions")
             {
-                ReadRevisions(reader.ReadSubtree(), visitor);
-                visitor.LeaveRevisions();
+                if (visitor.EnterRevisions())
+                {
+                    ReadRevisions(reader.ReadSubtree(), visitor);
+                    visitor.LeaveRevisions();
+                }
+                else
+                {
+                    reader.Skip();
+                }
             }
             else
             {

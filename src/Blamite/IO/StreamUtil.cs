@@ -94,7 +94,6 @@ namespace Blamite.IO
 
             const int BufferSize = 0x1000;
             byte[] buffer = new byte[BufferSize];
-            long oldLength = stream.Length;
             long remaining = size;
             while (remaining > 0)
             {

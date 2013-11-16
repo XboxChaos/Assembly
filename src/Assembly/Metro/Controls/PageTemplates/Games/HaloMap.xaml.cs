@@ -10,18 +10,25 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Caching;
+using Assembly.Helpers.Models;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using AvalonDock.Layout;
 using Blamite.Blam;
+using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.BSP;
+using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
+using Blamite.Injection;
 using Blamite.IO;
+using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.RTE.H2Vista;
 using Blamite.Util;
@@ -59,24 +66,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private readonly LayoutDocument _tab;
         private Trie _stringIDTrie;
 
-/*
-        private List<EmptyClassesObject> _emptyClasses = new List<EmptyClassesObject>();
-        private abstract class EmptyClassesObject
-        {
-            public int Index { get; set; }
-            public string ClassName { get; set; }
-            public TagClass TagClass { get; set; }
-        }
- */
-
         private readonly Settings.TagSort _tagSorting;
 	    private Settings.TagOpenMode _tagOpenMode;
         private Settings.MapInfoDockSide _dockSide;
-        private TagHierarchy _hierarchy = new TagHierarchy();
-		private TagHierarchy _tmpHierarchy = new TagHierarchy();
+        private List<TagEntry> _tagEntries = new List<TagEntry>();
+        private TagHierarchy _visibleTags = new TagHierarchy();
+		private TagHierarchy _allTags = new TagHierarchy();
 
-        private ObservableCollection<TagClass> _tagsComplete;
-        private readonly ObservableCollection<TagClass> _tagsPopulated = new ObservableCollection<TagClass>();
         private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 
         private IRTEProvider _rteProvider;
@@ -87,6 +83,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			get { return _headerDetails; }
 			set { _headerDetails = value; NotifyPropertyChanged("HeaderDetails"); }
 	    }
+
 		public class HeaderValue
 		{
 			public string Title { get; set; }
@@ -99,11 +96,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			get { return _mapMetaData; }
 			set { _mapMetaData = value; NotifyPropertyChanged("MapMetaData"); }
 	    }
-
-        #region Public Access
-        public TagHierarchy TagHierarchy { get { return _hierarchy; } set { _hierarchy = value; } }
-        public ICacheFile CacheFile { get { return _cacheFile; } set { _cacheFile = value; } }
-        #endregion
 
 	    /// <summary>
 	    /// New Instance of the Halo Map Location
@@ -189,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                                                         })));
 #endif
                 }
-                catch (NotSupportedException ex)
+                catch (Exception ex)
                 {
                     Dispatcher.Invoke(new Action(delegate
 	                                      {
@@ -241,6 +233,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		                                  StatusUpdater.Update("Added To Recents");
 	                                  }));
 
+                /*ITag dice = _cacheFile.Tags[0x0102];
+                IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
+                var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
+                Resource diceResource = resourceTable.Resources[diceModel.ModelResourceIndex.Index];
+                ICacheFile resourceFile = _cacheFile;
+                Stream resourceStream = fileStream;
+                if (diceResource.Location.PrimaryPage.FilePath != null)
+                {
+                    resourceStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(_cacheLocation), Path.GetFileName(diceResource.Location.PrimaryPage.FilePath)));
+                    resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cacheFile.BuildString);
+                }
+                ResourcePageExtractor extractor = new ResourcePageExtractor(resourceFile);
+                string path = Path.GetTempFileName();
+                FileStream pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+                extractor.ExtractPage(diceResource.Location.PrimaryPage, resourceStream, pageStream);
+                if (resourceStream != fileStream)
+                    resourceStream.Close();
+                IReader pageReader = new EndianReader(pageStream, Endian.BigEndian);
+                pageReader.SeekTo(diceResource.Location.PrimaryOffset);
+                ObjExporter exporter = new ObjExporter("C:\\Users\\Aaron\\Desktop\\test.obj");
+                System.Collections.BitArray sections = new System.Collections.BitArray(diceModel.Sections.Length, true);
+                //sections[3] = true;
+                //sections[1] = true;
+                ModelReader.ReadModelData(pageReader, diceModel, sections, _buildInfo, exporter);
+                exporter.Close();
+                pageReader.Close();*/
+
                 LoadHeader();
 	            LoadMetaData();
                 LoadTags();
@@ -251,150 +270,192 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         private void LoadHeader()
         {
             Dispatcher.Invoke(new Action(delegate
-							{
-								var fi = new FileInfo(_cacheLocation);
-								_tab.Title = fi.Name;
-								Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
-								lblMapName.Text = _cacheFile.InternalName;
+                {
+					var fi = new FileInfo(_cacheLocation);
+					_tab.Title = fi.Name;
+					Settings.homeWindow.UpdateTitleText(fi.Name.Replace(fi.Extension, ""));
+					lblMapName.Text = _cacheFile.InternalName;
 
-								lblMapHeader.Text = "Map Header;";
-                                lblDblClick.Visibility = Visibility.Visible;
-								HeaderDetails.Clear();
-								HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
-								HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.BuildString.ToString(CultureInfo.InvariantCulture)});
-								HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Type.ToString()});
-								HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.InternalName});
-								HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.ScenarioName});
-                                if (_cacheFile.MetaArea != null)
-                                {
-                                    HeaderDetails.Add(new HeaderValue { Title = "Meta Base:", Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8") });
-                                    HeaderDetails.Add(new HeaderValue { Title = "Meta Size:", Data = "0x" + _cacheFile.MetaArea.Size.ToString("X") });
-                                    HeaderDetails.Add(new HeaderValue { Title = "Map Magic:", Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
-                                    HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:", Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8") });
-                                }
+					lblMapHeader.Text = "Map Header;";
+                    lblDblClick.Visibility = Visibility.Visible;
+					HeaderDetails.Clear();
+					HeaderDetails.Add(new HeaderValue { Title = "Game:",					Data = _buildInfo.GameName });
+					HeaderDetails.Add(new HeaderValue { Title = "Build:",					Data = _cacheFile.BuildString.ToString(CultureInfo.InvariantCulture)});
+					HeaderDetails.Add(new HeaderValue { Title = "Type:",					Data = _cacheFile.Type.ToString()});
+					HeaderDetails.Add(new HeaderValue { Title = "Internal Name:",			Data = _cacheFile.InternalName});
+					HeaderDetails.Add(new HeaderValue { Title = "Scenario Name:",			Data = _cacheFile.ScenarioName});
+                    if (_cacheFile.MetaArea != null)
+                    {
+                        HeaderDetails.Add(new HeaderValue { Title = "Meta Base:", Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8") });
+                        HeaderDetails.Add(new HeaderValue { Title = "Meta Size:", Data = "0x" + _cacheFile.MetaArea.Size.ToString("X") });
+                        HeaderDetails.Add(new HeaderValue { Title = "Map Magic:", Data = "0x" + _cacheFile.MetaArea.OffsetToPointer(0).ToString("X8") });
+                        HeaderDetails.Add(new HeaderValue { Title = "Index Header Pointer:", Data = "0x" + _cacheFile.IndexHeaderLocation.AsPointer().ToString("X8") });
+                    }
 
-                                if (_cacheFile.XDKVersion > 0)
-								    HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.XDKVersion.ToString(CultureInfo.InvariantCulture)});
+                    if (_cacheFile.XDKVersion > 0)
+						HeaderDetails.Add(new HeaderValue { Title = "SDK Version:",				Data = _cacheFile.XDKVersion.ToString(CultureInfo.InvariantCulture)});
 
-                                if (_cacheFile.RawTable != null)
-                                {
-                                    HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:", Data = "0x" + _cacheFile.RawTable.Offset.ToString("X8") });
-                                    HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:", Data = "0x" + _cacheFile.RawTable.Size.ToString("X") });
-                                }
+                    if (_cacheFile.RawTable != null)
+                    {
+                        HeaderDetails.Add(new HeaderValue { Title = "Raw Table Offset:", Data = "0x" + _cacheFile.RawTable.Offset.ToString("X8") });
+                        HeaderDetails.Add(new HeaderValue { Title = "Raw Table Size:", Data = "0x" + _cacheFile.RawTable.Size.ToString("X") });
+                    }
 
-                                if (_cacheFile.LocaleArea != null)
-								    HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + ((uint)-_cacheFile.LocaleArea.PointerMask).ToString("X8")});
+                    if (_cacheFile.LocaleArea != null)
+						HeaderDetails.Add(new HeaderValue { Title = "Index Offset Magic:",		Data = "0x" + ((uint)-_cacheFile.LocaleArea.PointerMask).ToString("X8")});
 
-								Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
+					Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
-								StatusUpdater.Update("Loaded Header Info");
-							}));
+					StatusUpdater.Update("Loaded Header Info");
+				}));
         }
+
 		private void LoadMetaData()
 		{
 			Dispatcher.Invoke(new Action(delegate
-								{
-									var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
-																						_cacheFile.InternalName);
+                {
+					var gameMetaData = CachingManager.GetMapMetaData(_buildInfo.ShortName,
+																		_cacheFile.InternalName);
 
-									if (gameMetaData == null) return;
+					if (gameMetaData == null) return;
 
-									lblMapMetaData.Text = "Map Metadata;";
-									MapMetaData = gameMetaData;
-                                    lblEnglishName.Text = gameMetaData.EnglishName;
-                                    lblEnglishDesc.Text = gameMetaData.EnglishDesc;
-                                    lblInternalName.Text = gameMetaData.InternalName;
-                                    lblPhysicalName.Text = gameMetaData.PhysicalName;
-                                    panelMapMetadata.Visibility = Visibility.Visible;
+					lblMapMetaData.Text = "Map Metadata;";
+					MapMetaData = gameMetaData;
+                    lblEnglishName.Text = gameMetaData.EnglishName;
+                    lblEnglishDesc.Text = gameMetaData.EnglishDesc;
+                    lblInternalName.Text = gameMetaData.InternalName;
+                    lblPhysicalName.Text = gameMetaData.PhysicalName;
+                    panelMapMetadata.Visibility = Visibility.Visible;
 
-									#region ImageMetaData
-									if (VariousFunctions.CheckIfFileLocked(
-										new FileInfo(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" +
-										             gameMetaData.ImageMetaData.Large))) return;
+					#region ImageMetaData
+					if (VariousFunctions.CheckIfFileLocked(
+						new FileInfo(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" +
+										gameMetaData.ImageMetaData.Large))) return;
 
-									var source = new BitmapImage();
-									imgMetaDataImagePanel.Visibility = Visibility.Visible;
-									source.BeginInit();
-									source.StreamSource = new MemoryStream(File.ReadAllBytes(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" + gameMetaData.ImageMetaData.Large));
-									source.EndInit();
-									imgMetaDataImage.Source = source;
-									#endregion
-								}));
+					var source = new BitmapImage();
+					imgMetaDataImagePanel.Visibility = Visibility.Visible;
+					source.BeginInit();
+					source.StreamSource = new MemoryStream(File.ReadAllBytes(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" + gameMetaData.ImageMetaData.Large));
+					source.EndInit();
+					imgMetaDataImage.Source = source;
+					#endregion
+				}));
 		}
+
         private void LoadTags()
         {
             if (_cacheFile.TagClasses == null || _cacheFile.Tags == null)
                 return;
 
-            // Load all the tag classes into data
-            var classes = new List<TagClass>();
-            var classWrappers = new Dictionary<ITagClass, TagClass>();
-            Dispatcher.Invoke(new Action(() =>
-	                              {
-		                              foreach (var tagClass in _cacheFile.TagClasses)
-		                              {
-			                              var wrapper = new TagClass(tagClass, CharConstant.ToString(tagClass.Magic), _cacheFile.StringIDs.GetString(tagClass.Description));
-			                              classes.Add(wrapper);
-			                              classWrappers[tagClass] = wrapper;
-		                              }
-	                              }));
+            _tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
+            _allTags = BuildTagHierarchy(
+                c => c.Children.Count > 0,
+                t => true);
 
-            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tag Classes")));
-
-            // Load all the tags into the treeview (into their class categoies)
-            _hierarchy.Entries = new List<TagEntry>();
-            foreach (var tag in _cacheFile.Tags)
-            {
-                if (tag.MetaLocation != null)
-                {
-                    var fileName = _cacheFile.FileNames.GetTagName(tag);
-                    if (fileName == null || fileName.Trim() == "")
-                        fileName = tag.Index.ToString();
-
-                    var parentClass = classWrappers[tag.Class];
-                    var entry = new TagEntry(tag, parentClass, fileName);
-                    parentClass.Children.Add(entry);
-                    _hierarchy.Entries.Add(entry);
-                }
-                else
-                    _hierarchy.Entries.Add(null);
-            }
-            
-            foreach (var tagClass in classes)
-                tagClass.Children.Sort((x, y) => String.Compare(x.TagFileName, y.TagFileName, StringComparison.OrdinalIgnoreCase));
-
-
-            //// Taglist Generation
-            /*string taglistPath = @"C:\" + _cacheFile.Info.InternalName.ToLower() + ".taglist";
-            List<string> taglist = new List<string>();
-            taglist.Add("<scenario=\"" + _cacheFile.Info.ScenarioName + "\">");
-            for (int i = 0; i < _cacheFile.Tags.Count; i++)
-            {
-                ITag tag = _cacheFile.Tags[i];
-                if (tag.Index.IsValid)
-                    taglist.Add(string.Format("\t<tag id=\"{0}\" class=\"{1}\">{2}</tag>", tag.Index.ToString(), ExtryzeDLL.Util.CharConstant.ToString(tag.Class.Magic) ,_cacheFile.FileNames.FindTagName(tag.Index)));
-            }
-            taglist.Add("</scenario>");
-            File.WriteAllLines(taglistPath, taglist.ToArray<string>());*/
-
-
-            Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Tags")));
-
-            classes.Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-            Dispatcher.Invoke(new Action(delegate
-	                              {
-		                              _tagsComplete = new ObservableCollection<TagClass>(classes);
-
-		                              // Load un-populated tags
-		                              foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.Children.Count > 0))
-			                              _tagsPopulated.Add(tagClass);
-		                              _hierarchy.Classes = _tagsPopulated;
-		                              _tmpHierarchy = _hierarchy;
-	                              }));
-
-            // Add to the treeview
-            Dispatcher.Invoke(new Action(() => UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool) cbShowEmptyTags.IsChecked)));
+            UpdateTagFilter();
         }
+
+        #region Tag Searching
+        private void UpdateTagFilter()
+        {
+            if (_cacheFile == null)
+                return;
+
+            string filter = "";
+            Dispatcher.Invoke(new Action(delegate { filter = txtTagSearch.Text.ToLower(); }));
+            
+            _visibleTags = BuildTagHierarchy(
+                c => FilterClass(c, filter),
+                t => FilterTag(t, filter));
+
+            Dispatcher.Invoke(new Action(delegate { tvTagList.DataContext = _visibleTags.Classes; }));
+        }
+
+        private TagEntry WrapTag(ITag tag)
+        {
+            if (tag == null || tag.Class == null || tag.MetaLocation == null)
+                return null;
+
+            var className = CharConstant.ToString(tag.Class.Magic);
+            var name = _cacheFile.FileNames.GetTagName(tag);
+            if (string.IsNullOrWhiteSpace(name))
+                name = tag.Index.ToString();
+
+            return new TagEntry(tag, className, name);
+        }
+
+        private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
+        {
+            UpdateTagFilter();
+        }
+        
+        private bool FilterClass(TagClass tagClass, string filter)
+        {
+            bool emptyFilter = string.IsNullOrWhiteSpace(filter);
+            if (tagClass.Children.Count == 0 && (!Settings.halomapShowEmptyClasses || !emptyFilter || Settings.halomapOnlyShowBookmarkedTags))
+                return false;
+            return true;
+        }
+
+        private bool FilterTag(TagEntry tag, string filter)
+        {
+            if (Settings.halomapOnlyShowBookmarkedTags && !tag.IsBookmark)
+                return false;
+            if (string.IsNullOrWhiteSpace(filter))
+                return true;
+
+            if (filter.StartsWith("0x"))
+            {
+                // Datum search
+                var searchHex = filter.Substring(2);
+                if (tag.RawTag.Index.ToString().ToLower().Substring(2).Contains(searchHex))
+                    return true;
+            }
+
+            // Name search
+            return tag.TagFileName.ToLower().Contains(filter) || tag.ClassName.ToLower().Contains(filter);
+        }
+        #endregion
+
+        private TagHierarchy BuildTagHierarchy(Func<TagClass, bool> classFilter, Func<TagEntry, bool> tagFilter)
+        {
+            // Build a dictionary of tag classes
+            var classWrappers = new Dictionary<ITagClass, TagClass>();
+            foreach (var tagClass in _cacheFile.TagClasses)
+            {
+                var name = CharConstant.ToString(tagClass.Magic);
+                var description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+                var wrapper = new TagClass(tagClass, name, description);
+                classWrappers[tagClass] = wrapper;
+            }
+
+            // Now add tags which match the filter to their respective classes
+            var result = new TagHierarchy();
+            result.Entries = _tagEntries;
+
+            foreach (var tag in _tagEntries.Where(t => t != null))
+            {
+                var parentClass = classWrappers[tag.RawTag.Class];
+                if (tagFilter(tag))
+                    parentClass.Children.Add(tag);
+            }
+
+            // Build a sorted list of classes, and then sort each tag in them
+            var classList = classWrappers.Values.Where(classFilter).ToList();
+            classList.Sort((a, b) => string.Compare(a.TagClassMagic, b.TagClassMagic, true));
+            foreach (var tagClass in classList)
+                tagClass.Children.Sort((a, b) => string.Compare(a.TagFileName, b.TagFileName, true));
+
+            // Done!
+            Dispatcher.Invoke(new Action(delegate
+                {
+                    // Give the dispatcher ownership of the ObservableCollection
+                    result.Classes = new ObservableCollection<TagClass>(classList);
+                }));
+
+            return result;
+        }
+
         private void LoadLocales()
         {
             //Dispatcher.Invoke(new Action(delegate { cbLocaleLanguages.Items.Clear(); }));
@@ -482,14 +543,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				UpdateTagOpenMode();
         }
 
-        private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e) { UpdateEmptyTags(cbShowEmptyTags.IsChecked != null && (bool)cbShowEmptyTags.IsChecked); }
+        private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e)
+        {
+            UpdateEmptyTags(cbShowEmptyTags.IsChecked ?? false);
+        }
+
         private void UpdateEmptyTags(bool shown)
         {
             // Update Settings
             Settings.halomapShowEmptyClasses = shown;
 
             // Update TreeView
-	        txtTagSearch_TextChanged();
+            UpdateTagFilter();
 
 	        // Fuck bitches, get money
 	        // #xboxscenefame
@@ -523,13 +588,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		#endregion
 
 		#region Tag Bookmarking
-		private ObservableCollection<TagClass> _tagsBookmarked = new ObservableCollection<TagClass>();
-		public ObservableCollection<TagClass> TagsBookmarked
-	    {
-			get { return _tagsBookmarked; }
-			set { _tagsBookmarked = value; NotifyPropertyChanged("TagsBookmarked"); }
-	    }
-
 		private void CommandTagBookmarking_CanExecute(object sender, RoutedEventArgs e)
 		{
 			var a = e.Source;
@@ -547,60 +605,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tagEntry == null)
 				return;
 
-			if (tagEntry.IsBookmark)
-			{
-				// Remove from Bookmarks
-				tagEntry.IsBookmark = false;
-
-				// Remove Tag
-				var subTagClass = TagsBookmarked.First(tagClass => tagClass.RawClass == tagEntry.ParentClass.RawClass);
-				subTagClass.Children.Remove(subTagClass.Children.First(subTagEntry => subTagEntry.RawTag == tagEntry.RawTag));
-
-				// Check if we need to remove any classes
-				var removeClassTags = TagsBookmarked.FirstOrDefault(tagClass => tagClass.Children.Count <= 0);
-				TagsBookmarked.Remove(removeClassTags);
-
-				// Update Datacontext
-				NotifyPropertyChanged("TagsBookmarked");
-			}
-			else
-			{
-				// Add to Bookmarks
-				tagEntry.IsBookmark = true;
-
-				// Check if TagClass exists, if it doesn't, add it
-				if (TagsBookmarked.All(tagClass => tagClass.RawClass != tagEntry.ParentClass.RawClass))
-					TagsBookmarked.Add(new TagClass(tagEntry.ParentClass.RawClass, tagEntry.ParentClass.TagClassMagic, tagEntry.ParentClass.Description));
-
-				// Add Tag
-				TagsBookmarked.First(tagClas => tagClas.RawClass == tagEntry.ParentClass.RawClass).Children.Add(tagEntry);
-
-				// Sort
-				TagsBookmarked.ToList().Sort((x, y) => String.Compare(x.TagClassMagic, y.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-
-				// Update Datacontext
-				NotifyPropertyChanged("TagsBookmarked");
-			}
-
+			// Toggle its bookmarked status and update the tag tree if necessary
+            tagEntry.IsBookmark = !tagEntry.IsBookmark;
+			if (Settings.halomapOnlyShowBookmarkedTags)
+                UpdateTagFilter();
 		}
+
 		private void cbShowBookmarkedTagsOnly_Altered(object sender, RoutedEventArgs e)
 		{
-			if (cbShowBookmarkedTagsOnly.IsChecked != null && (bool)cbShowBookmarkedTagsOnly.IsChecked)
-			{
-				Settings.halomapOnlyShowBookmarkedTags = true;
-
-				tvTagList.DataContext = TagsBookmarked;
-			}
-			else
-			{
-				Settings.halomapOnlyShowBookmarkedTags = false;
-
-				tvTagList.DataContext = Settings.halomapShowEmptyClasses ? _tagsComplete : _tagsPopulated;
-			}
-
-			// Apply Searching
-			txtTagSearch_TextChanged();
-
+            Settings.halomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked ?? false;
+            UpdateTagFilter();
 			Settings.UpdateSettings();
 		}
 
@@ -614,7 +628,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void contextSaveBookmarks_Click(object sender, RoutedEventArgs e)
 		{
-			if (TagsBookmarked == null || TagsBookmarked.Count <= 0)
+            var bookmarkedTags = _allTags.Entries.Where(t => t != null && t.IsBookmark).ToList();
+            if (bookmarkedTags.Count == 0)
 			{
 				MetroMessageBox.Show("No Bookmarked Tags!",
 				                     "If you want to save the current bookmarks, it helps if you bookmark some tags first.");
@@ -634,19 +649,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (bookmarkStorage.StorageUsingTagNames)
 			{
-				bookmarkStorage.BookmarkedTagNames = new List<string[]>();
-				foreach (var tagEntry in TagsBookmarked.SelectMany(tagClass => tagClass.Children))
-					bookmarkStorage.BookmarkedTagNames.Add(new[]
-						                                       {
-							                                       tagEntry.ParentClass.TagClassMagic.ToLowerInvariant(),
-																   tagEntry.TagFileName.ToLowerInvariant()
-						                                       });
+				bookmarkStorage.BookmarkedTagNames = bookmarkedTags.Select(t => new[]
+                {
+					CharConstant.ToString(t.RawTag.Class.Magic),
+					t.TagFileName.ToLowerInvariant()
+				}).ToList();
 			}
 			else
 			{
-				bookmarkStorage.BookmarkedDatumIndices = new List<uint>();
-				foreach (var tagEntry in TagsBookmarked.SelectMany(tagClass => tagClass.Children))
-					bookmarkStorage.BookmarkedDatumIndices.Add(tagEntry.RawTag.Index.Value);
+                bookmarkStorage.BookmarkedDatumIndices = bookmarkedTags.Select(t => t.RawTag.Index.Value).ToList();
 			}
 
 			var jsonString = JsonConvert.SerializeObject(bookmarkStorage);
@@ -656,9 +667,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			File.WriteAllText(keypair.Key, jsonString);
 		}
+
 		private void contextLoadBookmarks_Click(object sender, RoutedEventArgs e)
 		{
-			if (TagsBookmarked != null && TagsBookmarked.Count > 0)
+			if (_tagEntries.Any(t => t != null && t.IsBookmark))
 			{
 				if (MetroMessageBox.Show("You already have bookmarks!", "If you continue, your current bookmarks will be overwritten with the bookmarks you choose. \n\nAre you sure you wish to continue?", MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
 					return;
@@ -670,151 +682,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					          Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
 				          };
 			if (!(bool)ofd.ShowDialog())
-				return;
+                return;
 
 			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
+            foreach (var tag in _tagEntries.Where(t => t != null))
+            {
+                var className = CharConstant.ToString(tag.RawTag.Class.Magic);
+                if (bookmarkStorage.StorageUsingTagNames)
+                    tag.IsBookmark = bookmarkStorage.BookmarkedTagNames.Any(pair => pair[0] == className && pair[1] == tag.TagFileName);
+                else
+                    tag.IsBookmark = bookmarkStorage.BookmarkedDatumIndices.Contains(tag.RawTag.Index.Value);
+            }
 
-			TagsBookmarked = new ObservableCollection<TagClass>();
-			if (bookmarkStorage.StorageUsingTagNames)
-			{
-				foreach(var bookmarkedTag in bookmarkStorage.BookmarkedTagNames)
-				{
-					var tag = bookmarkedTag;
-					foreach (var tagClass in _tagsComplete.Where(tagClass => tagClass.TagClassMagic == tag[0]))
-					{
-						foreach (var tagEntry in tagClass.Children)
-						{
-							if (tagEntry.TagFileName.ToLowerInvariant() != tag[1])
-								tagEntry.IsBookmark = false;
-							else
-							{
-								// Check boomarked tags has the relevant Tag Class
-								if (TagsBookmarked.All(tagClasss => tagClasss.RawClass != tagClass.RawClass))
-									TagsBookmarked.Add(new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description));
-
-								// Set boomark to true
-								tagEntry.IsBookmark = true;
-
-								// Add Tag Entry
-								TagsBookmarked.First(tagClasss => tagClasss.RawClass == tagClass.RawClass).Children.Add(tagEntry);
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				foreach (var tagDatumIndex in bookmarkStorage.BookmarkedDatumIndices)
-				{
-					foreach (var tagClass in _tagsComplete)
-					{
-						var index = tagDatumIndex;
-						foreach (var tagEntry in tagClass.Children)
-						{
-							if (tagEntry.RawTag.Index.Value != index)
-								tagEntry.IsBookmark = false;
-							else
-							{
-								// Check boomarked tags has the relevant Tag Class
-								if (TagsBookmarked.All(tagClasss => tagClasss.RawClass != tagClass.RawClass))
-									TagsBookmarked.Add(new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description));
-
-								// Set boomark to true
-								tagEntry.IsBookmark = true;
-
-								// Add Tag Entry
-								TagsBookmarked.First(tagClasss => tagClasss.RawClass == tagClass.RawClass).Children.Add(tagEntry);
-							}
-						}
-					}
-				}
-			}
-		}
-		#endregion
-
-		#region Tag Searching
-		private ObservableCollection<TagClass> _filteredTags = new ObservableCollection<TagClass>();
-	    public ObservableCollection<TagClass> FilteredTags
-	    {
-			get { return _filteredTags; }
-			set { _filteredTags = value; NotifyPropertyChanged("FilteredTags"); }
-	    }
-
-		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
-		{
-			var searchString = string.Empty;
-			if (sender != null)
-				searchString = ((TextBox) sender).Text;
-
-			if (String.IsNullOrWhiteSpace(searchString))
-			{
-				tvTagList.DataContext = Settings.halomapShowEmptyClasses
-					                        ? _tagsComplete
-					                  : Settings.halomapOnlyShowBookmarkedTags 
-										    ? TagsBookmarked
-										    : _tagsPopulated;
-
-				return;
-			}
-
-			// Set Usage type
-			var tagsToSearch = Settings.halomapOnlyShowBookmarkedTags ? TagsBookmarked : _tagsPopulated;
-
-			// Apply Filtered Collection
-			FilteredTags = new ObservableCollection<TagClass>();
-			tvTagList.DataContext = FilteredTags;
-
-			// Check if we're doing a Datum Search
-			uint datumIndex;
-			if (searchString.StartsWith("0x") && uint.TryParse(searchString.Remove(0, 2), NumberStyles.HexNumber, null, out datumIndex))
-			{
-				// Do search
-				foreach (var tagClass in tagsToSearch)
-				{
-					var tagEntries = tagClass.Children.Where(tag => tag.RawTag.Index.ToString().Remove(0, 2).ToLowerInvariant().Contains(searchString.ToLowerInvariant().Remove(0, 2))).ToList();
-					if (tagEntries.Count <= 0) continue;
-
-					var newTagClass = tagClass;
-					newTagClass.Children = tagEntries;
-					FilteredTags.Add(newTagClass);
-				}
-
-				return;
-			}
-
-			// Check if we're doing a TagClass Search
-			if (searchString.StartsWith("\"") && searchString.EndsWith("\""))
-			{
-				// Do search
-				foreach (var tagClass in tagsToSearch.Where(tagClass => tagClass.TagClassMagic.ToLowerInvariant().Contains(searchString.ToLowerInvariant().Replace("\"", ""))))
-				{
-					var newTagClass = new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description)
-											{
-												Children = new List<TagEntry>()
-											};
-					foreach (var entry in tagClass.Children)
-						newTagClass.Children.Add(new TagEntry(entry.RawTag, newTagClass, entry.TagFileName));
-					FilteredTags.Add(newTagClass);
-					NotifyPropertyChanged("FilteredTags");
-				}
-
-				return;
-			}
-
-			// ugh, gotta do a boring search
-			foreach (var tagClass in tagsToSearch)
-			{
-				var tagEntries = tagClass.Children.Where(tag => tag.TagFileName.ToLowerInvariant().Contains(searchString)).ToList();
-				if (tagEntries.Count <= 0) continue;
-
-				var newTagClass = new TagClass(tagClass.RawClass, tagClass.TagClassMagic, tagClass.Description)
-					                  {
-						                  Children = new List<TagEntry>()
-					                  };
-				foreach (var entry in tagEntries)
-					newTagClass.Children.Add(new TagEntry(entry.RawTag, newTagClass, entry.TagFileName));
-				FilteredTags.Add(newTagClass);
-			}
+            if (Settings.halomapOnlyShowBookmarkedTags)
+                UpdateTagFilter();
 		}
 		#endregion
 
@@ -1071,7 +952,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					},
 					Tag = tag,
 					Content =
-						new MetaContainer(_buildInfo, tag, _tmpHierarchy, _cacheFile, _mapManager, _rteProvider,
+						new MetaContainer(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
 										  _stringIDTrie)
 				});
 			}
@@ -1177,7 +1058,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 												   Content = tabName,
 												   ContextMenu = BaseContextMenu
 	                                           },
-                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index, _buildInfo)
+                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index, _stringIDTrie, _buildInfo)
                               };
 
                 contentTabs.Items.Add(tab);
@@ -1216,6 +1097,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             var item = e.Source as MenuItem;
             if (item == null)
                 return;
+
             var tagClass = item.DataContext as TagClass;
             if (tagClass == null)
                 return;
@@ -1227,7 +1109,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                               Filter = "Text Files|*.txt|Tag Lists|*.taglist|All Files|*.*"
                           };
             var result = sfd.ShowDialog();
-            if (!result.Value)
+            if (!result.HasValue || !result.Value)
                 return;
 
             // Dump all of the tags that belong to the class
@@ -1254,12 +1136,185 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
-
+		
         private void ExecutedJumpToCommand(object sender, ExecutedRoutedEventArgs e)
         {
             var tag = e.Parameter as TagEntry;
             if (tag != null)
                 CreateTag(tag);
+        }
+
+        private void contextRename_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag
+            var item = e.Source as MenuItem;
+            if (item == null)
+                return;
+
+            var tag = item.DataContext as TagEntry;
+            if (tag == null)
+                return;
+
+            // Ask for the new name
+            var newName = MetroInputBox.Show("Rename Tag", "Please enter a new name for the tag.\r\n\t\nThis will not update the cache file until you click the \"Save Tag Names\" button at the bottom.", tag.TagFileName, "Enter a tag name.");
+            if (newName == null || newName == tag.TagFileName)
+                return;
+
+            // Set the name
+            tag.TagFileName = newName;
+
+            StatusUpdater.Update("Tag Renamed");
+        }
+
+        private void contextExtract_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the menu item and the tag
+            var item = e.Source as MenuItem;
+            if (item == null)
+                return;
+
+            var tag = item.DataContext as TagEntry;
+            if (tag == null)
+                return;
+
+            // Ask where to save the extracted tag collection
+            var sfd = new SaveFileDialog
+            {
+                Title = "Save Tag Set",
+                Filter = "Tag Container Files|*.tagc"
+            };
+            bool? result = sfd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            // Make a tag container
+            var container = new TagContainer();
+
+            // Recursively extract tags
+            var tagsToProcess = new Queue<ITag>();
+            var tagsProcessed = new HashSet<ITag>();
+            var resourcesToProcess = new Queue<DatumIndex>();
+            var resourcesProcessed = new HashSet<DatumIndex>();
+            var resourcePagesProcessed = new HashSet<ResourcePage>();
+            tagsToProcess.Enqueue(tag.RawTag);
+
+            ResourceTable resources = null;
+            using (var reader = _mapManager.OpenRead())
+            {
+                while (tagsToProcess.Count > 0)
+                {
+                    var currentTag = tagsToProcess.Dequeue();
+                    if (tagsProcessed.Contains(currentTag))
+                        continue;
+
+                    // Get the plugin path
+                    var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+                    var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.PluginFolder, className);
+
+                    // Extract dem data blocks
+                    var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile, _buildInfo);
+                    using (var pluginReader = XmlReader.Create(pluginPath))
+                        AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
+
+                    foreach (var block in blockBuilder.DataBlocks)
+                        container.AddDataBlock(block);
+
+                    // Add data for the tag that was extracted
+                    string tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
+                    var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic, tagName);
+                    container.AddTag(extractedTag);
+
+                    // Mark the tag as processed and then enqueue all of its child tags and resources
+                    tagsProcessed.Add(currentTag);
+                    foreach (var tagRef in blockBuilder.ReferencedTags)
+                        tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
+                    foreach (var resource in blockBuilder.ReferencedResources)
+                        resourcesToProcess.Enqueue(resource);
+                }
+
+                // Load the resource table in if necessary
+                if (resourcesToProcess.Count > 0)
+                    resources = _cacheFile.Resources.LoadResourceTable(reader);
+            }
+
+            // Extract resource info
+            while (resourcesToProcess.Count > 0)
+            {
+                var index = resourcesToProcess.Dequeue();
+                if (resourcesProcessed.Contains(index))
+                    continue;
+
+                // Add the resource
+                var resource = resources.Resources[index.Index];
+                container.AddResource(new ExtractedResourceInfo(resource));
+
+                // Add data for its pages
+                if (resource.Location != null)
+                {
+                    if (resource.Location.PrimaryPage != null && !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+                    {
+                        container.AddResourcePage(resource.Location.PrimaryPage);
+                        resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+                    }
+                    if (resource.Location.SecondaryPage != null && !resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+                    {
+                        container.AddResourcePage(resource.Location.SecondaryPage);
+                        resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+                    }
+                }
+            }
+
+            // Write it to a file
+            using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), Endian.BigEndian))
+                TagContainerWriter.WriteTagContainer(container, writer);
+
+            // YAY!
+            MetroMessageBox.Show("Extraction Successful", "Extracted " + container.Tags.Count + " tag(s), " + container.DataBlocks.Count + " data block(s), " + container.ResourcePages.Count + " resource page pointer(s), and " + container.Resources.Count + " resource pointer(s).");
+        }
+
+        private void btnImport_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Title = "Open Tag Container",
+                Filter = "Tag Container Files|*.tagc"
+            };
+            bool? result = ofd.ShowDialog();
+            if (!result.HasValue || !result.Value)
+                return;
+
+            TagContainer container;
+            using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
+                container = TagContainerReader.ReadTagContainer(reader);
+
+            var injector = new TagContainerInjector(_cacheFile, container);
+            using (var stream = _mapManager.OpenReadWrite())
+            {
+                foreach (var tag in container.Tags)
+                    injector.InjectTag(tag, stream);
+
+                injector.SaveChanges(stream);
+            }
+
+            // Fix the SID trie
+            foreach (var sid in injector.InjectedStringIDs)
+                _stringIDTrie.Add(_cacheFile.StringIDs.GetString(sid));
+
+            LoadTags();
+            MetroMessageBox.Show("Import Successful", "Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " + injector.InjectedPages.Count + " resource page pointer(s), " + injector.InjectedResources.Count + " resource pointer(s), and " + injector.InjectedStringIDs.Count + " stringID(s).\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+        }
+
+        private void btnSaveNames_Click(object sender, RoutedEventArgs e)
+        {
+            // Store the names back to the cache file
+            foreach (var tag in _allTags.Entries.Where(t => t != null))
+                _cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+
+            // Save it
+            using (var stream = _mapManager.OpenReadWrite())
+                _cacheFile.SaveChanges(stream);
+
+            MetroMessageBox.Show("Success!", "Tag names saved successfully.");
         }
 	}
 }

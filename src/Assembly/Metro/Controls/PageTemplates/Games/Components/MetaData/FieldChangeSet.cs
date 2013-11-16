@@ -9,7 +9,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
     /// A set of fields that have been changed.
     /// </summary>
     /// <seealso cref="FieldChangeTracker"/>
-    public class FieldChangeSet
+    public class FieldChangeSet : IEnumerable<MetaField>
     {
         private HashSet<MetaField> _fields = new HashSet<MetaField>();
 
@@ -47,6 +47,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
         public void MarkAllUnchanged()
         {
             _fields.Clear();
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<MetaField> GetEnumerator()
+        {
+            return _fields.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _fields.GetEnumerator();
         }
     }
 }

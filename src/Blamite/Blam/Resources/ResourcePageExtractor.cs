@@ -30,7 +30,7 @@ namespace Blamite.Blam.Resources
         /// <param name="page">The page to decompress and extract.</param>
         /// <param name="inStream">The Stream open on the extractor's cache file to read the page from.</param>
         /// <param name="outStream">The Stream to write the extracted page to.</param>
-        public void ExtractPage(IResourcePage page, Stream inStream, Stream outStream)
+        public void ExtractPage(ResourcePage page, Stream inStream, Stream outStream)
         {
             inStream.Position = _rawTable.Offset + page.Offset;
 

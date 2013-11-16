@@ -28,12 +28,6 @@ namespace Blamite.Blam.SecondGen
             Load(reader, buildInfo, buildString);
         }
 
-        public IResourceTable LoadResourceTable(IReader reader)
-        {
-            // Not supported yet
-            return null;
-        }
-
         public void SaveChanges(IStream stream)
         {
             CalculateChecksum(stream);
@@ -148,9 +142,34 @@ namespace Blamite.Blam.SecondGen
             get { return _header.LocaleArea; }
         }
 
+        public IResourceManager Resources
+        {
+            get { return null; }
+        }
+
         public IResourceMetaLoader ResourceMetaLoader
         {
             get { return new SecondGenResourceMetaLoader(); }
+        }
+
+        public FileSegment StringIDIndexTable
+        {
+            get { return _header.StringIDIndexTable; }
+        }
+
+        public FileSegment StringIDDataTable
+        {
+            get { return _header.StringIDData; }
+        }
+
+        public FileSegment FileNameIndexTable
+        {
+            get { return _header.FileNameIndexTable; }
+        }
+
+        public FileSegment FileNameDataTable
+        {
+            get { return _header.FileNameData; }
         }
 
         public MetaAllocator Allocator { get; private set; }

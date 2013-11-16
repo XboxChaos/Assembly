@@ -29,79 +29,172 @@ using Blamite.Blam.Util;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
+    /// <summary>
+    /// The tag + class table in a third-generation cache file.
+    /// </summary>
     public class ThirdGenTagTable : TagTable
     {
-        private List<ITagClass> _classes;
+        private SegmentPointer _indexHeaderLocation;
+        private FileSegmentGroup _metaArea;
+        private MetaAllocator _allocator;
+        private BuildInformation _buildInfo;
+
         private List<ITag> _tags;
 
         public ThirdGenTagTable()
         {
-            _classes = new List<ITagClass>();
             _tags = new List<ITag>();
         }
 
-        public ThirdGenTagTable(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea, MetaAllocator allocator, BuildInformation buildInfo)
         {
-            Load(reader, headerValues, metaArea, buildInfo);
+            _indexHeaderLocation = indexHeaderLocation;
+            _metaArea = metaArea;
+            _allocator = allocator;
+            _buildInfo = buildInfo;
+
+            Load(reader);
         }
 
-        public IList<ITagClass> Classes
-        {
-            get { return _classes.AsReadOnly(); }
-        }
+        /// <summary>
+        /// Gets a read-only list of available tag classes.
+        /// </summary>
+        /// <value>
+        /// Available tag classes.
+        /// </value>
+        public IList<ITagClass> Classes { get; private set; }
 
+        /// <summary>
+        /// Gets the tag at a given index.
+        /// </summary>
+        /// <param name="index">The index of the tag to retrieve.</param>
+        /// <returns>The tag at the given index.</returns>
         public override ITag this[int index]
         {
             get { return _tags[index]; }
         }
 
+        /// <summary>
+        /// Gets the number of tags in the table.
+        /// </summary>
+        public override int Count
+        {
+            get { return _tags.Count; }
+        }
+
+        /// <summary>
+        /// Adds a tag to the table and allocates space for its base data.
+        /// </summary>
+        /// <param name="classMagic">The magic number (ID) of the tag's class.</param>
+        /// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
+        /// <param name="stream">The stream to write to.</param>
+        /// <returns>
+        /// The tag that was allocated.
+        /// </returns>
+        public override ITag AddTag(int classMagic, int baseSize, IStream stream)
+        {
+            if (_indexHeaderLocation == null)
+                throw new InvalidOperationException("Tags cannot be added to a shared map");
+
+            ITagClass tagClass = Classes.FirstOrDefault(c => (c.Magic == classMagic));
+            if (tagClass == null)
+                throw new InvalidOperationException("Invalid tag class");
+
+            uint address = _allocator.Allocate(baseSize, stream);
+            DatumIndex index = new DatumIndex(0x4153, (ushort)_tags.Count); // 0x4153 = 'AS' because the salt doesn't matter
+            ThirdGenTag result = new ThirdGenTag(index, tagClass, SegmentPointer.FromPointer(address, _metaArea));
+            _tags.Add(result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
         public override IEnumerator<ITag> GetEnumerator()
         {
             return _tags.GetEnumerator();
         }
 
-        private void Load(IReader reader, StructureValueCollection values, FileSegmentGroup metaArea, BuildInformation buildInfo)
+        /// <summary>
+        /// Saves changes to the tag table.
+        /// </summary>
+        /// <param name="stream">The stream to write changes to.</param>
+        public void SaveChanges(IStream stream)
         {
-            if (values.GetInteger("magic") != CharConstant.FromString("tags"))
+            var headerValues = LoadHeader(stream);
+            if (headerValues == null)
+                return;
+
+            SaveTags(headerValues, stream);
+            SaveHeader(headerValues, stream);
+        }
+
+        private void SaveTags(StructureValueCollection headerValues, IStream stream)
+        {
+            int oldCount = (int)headerValues.GetInteger("number of tags");
+            uint oldAddress = headerValues.GetInteger("tag table address");
+            var layout = _buildInfo.GetLayout("tag entry");
+            var entries = _tags.Select(t => ((ThirdGenTag)t).Serialize(Classes)); // hax, _tags is a list of ITag objects so we have to upcast
+            uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea, _allocator, stream);
+
+            headerValues.SetInteger("number of tags", (uint)_tags.Count);
+            headerValues.SetInteger("tag table address", newAddress);
+        }
+
+        private void Load(IReader reader)
+        {
+            var headerValues = LoadHeader(reader);
+            if (headerValues == null)
+                return;
+
+            Classes = LoadClasses(reader, headerValues).AsReadOnly();
+            _tags = LoadTags(reader, headerValues, Classes);
+        }
+
+        private StructureValueCollection LoadHeader(IReader reader)
+        {
+            if (_indexHeaderLocation == null)
+                return null;
+
+            reader.SeekTo(_indexHeaderLocation.AsOffset());
+            var headerLayout = _buildInfo.GetLayout("index header");
+            var result = StructureReader.ReadStructure(reader, headerLayout);
+            if (result.GetInteger("magic") != CharConstant.FromString("tags"))
                 throw new ArgumentException("Invalid index table header magic");
 
-            // Classes
-            int numClasses = (int)values.GetInteger("number of classes");
-            SegmentPointer classTableLocation = SegmentPointer.FromPointer(values.GetInteger("class table address"), metaArea);
-            _classes = ReadClasses(reader, classTableLocation, numClasses, buildInfo);
-
-            // Tags
-            int numTags = (int)values.GetInteger("number of tags");
-            SegmentPointer tagTableLocation = SegmentPointer.FromPointer(values.GetInteger("tag table address"), metaArea);
-            _tags = ReadTags(reader, tagTableLocation, numTags, buildInfo, metaArea);
-        }
-
-        private List<ITagClass> ReadClasses(IReader reader, SegmentPointer classTableLocation, int numClasses, BuildInformation buildInfo)
-        {
-            StructureLayout layout = buildInfo.GetLayout("class entry");
-
-            List<ITagClass> result = new List<ITagClass>();
-            reader.SeekTo(classTableLocation.AsOffset());
-            for (int i = 0; i < numClasses; i++)
-            {
-                StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                result.Add(new ThirdGenTagClass(values));
-            }
             return result;
         }
 
-        private List<ITag> ReadTags(IReader reader, SegmentPointer tagTableLocation, int numTags, BuildInformation buildInfo, FileSegmentGroup metaArea)
+        private void SaveHeader(StructureValueCollection headerValues, IWriter writer)
         {
-            StructureLayout layout = buildInfo.GetLayout("tag entry");
-
-            List<ITag> result = new List<ITag>();
-            reader.SeekTo(tagTableLocation.AsOffset());
-            for (int i = 0; i < numTags; i++)
+            if (_indexHeaderLocation != null)
             {
-                StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                result.Add(new ThirdGenTag(values, (ushort)i, metaArea, _classes));
+                writer.SeekTo(_indexHeaderLocation.AsOffset());
+                var headerLayout = _buildInfo.GetLayout("index header");
+                StructureWriter.WriteStructure(headerValues, headerLayout, writer);
             }
-            return result;
+        }
+
+        private List<ITagClass> LoadClasses(IReader reader, StructureValueCollection headerValues)
+        {
+            int count = (int)headerValues.GetInteger("number of classes");
+            uint address = headerValues.GetInteger("class table address");
+            var layout = _buildInfo.GetLayout("class entry");
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+            return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
+        }
+
+        private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagClass> classes)
+        {
+            int count = (int)headerValues.GetInteger("number of tags");
+            uint address = headerValues.GetInteger("tag table address");
+            var layout = _buildInfo.GetLayout("tag entry");
+            var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+            return entries.Select<StructureValueCollection, ITag>((e, i) => new ThirdGenTag(e, (ushort)i, _metaArea, classes)).ToList();
         }
     }
 }

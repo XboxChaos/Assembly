@@ -30,24 +30,42 @@ namespace Blamite.Blam.ThirdGen.Structures
 {
     public class ThirdGenTag : ITag
     {
+        public ThirdGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer metaLocation)
+        {
+            Index = index;
+            Class = tagClass;
+            MetaLocation = metaLocation;
+        }
+
         public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
         {
             Load(values, index, metaArea, classList);
+        }
+
+        public StructureValueCollection Serialize(IList<ITagClass> classList)
+        {
+            StructureValueCollection result = new StructureValueCollection();
+            result.SetInteger("memory address", (MetaLocation != null) ? MetaLocation.AsPointer() : 0);
+            result.SetInteger("class index", (Class != null) ? (uint)classList.IndexOf(Class) : 0xFFFFFFFF);
+            result.SetInteger("datum index salt", Index.Salt);
+            return result;
         }
 
         void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
         {
             uint address = values.GetInteger("memory address");
             if (address != 0 && address != 0xFFFFFFFF)
-            {
-                int classIndex = (int)values.GetInteger("class index");
+                MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+
+            int classIndex = (int)values.GetInteger("class index");
+            if (classIndex >= 0 && classIndex < classList.Count)
                 Class = classList[classIndex];
 
-                ushort salt = (ushort)values.GetInteger("datum index salt");
+            ushort salt = (ushort)values.GetInteger("datum index salt");
+            if (salt != 0xFFFF)
                 Index = new DatumIndex(salt, index);
-
-                MetaLocation = SegmentPointer.FromPointer(address, metaArea);
-            }
+            else
+                Index = DatumIndex.Null;
         }
 
         public DatumIndex Index { get; private set; }

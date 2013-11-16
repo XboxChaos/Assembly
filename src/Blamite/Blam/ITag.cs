@@ -31,7 +31,7 @@ namespace Blamite.Blam
     public interface ITag
     {
         /// <summary>
-        /// The tag's class.
+        /// The tag's class. Can be null.
         /// </summary>
         ITagClass Class { get; set; }
 
