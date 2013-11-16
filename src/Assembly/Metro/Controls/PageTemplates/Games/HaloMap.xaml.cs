@@ -345,6 +345,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             if (_cacheFile.TagClasses == null || _cacheFile.Tags == null)
                 return;
 
+            // Only allow tag importing if resource data is available
+            if (_cacheFile.Resources == null)
+                Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
+
             _tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
             _allTags = BuildTagHierarchy(
                 c => c.Children.Count > 0,
