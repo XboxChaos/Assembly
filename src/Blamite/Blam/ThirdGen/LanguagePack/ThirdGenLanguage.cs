@@ -8,23 +8,26 @@ using Blamite.Flexibility;
 using Blamite.Blam.Util;
 using Blamite.Util;
 using System.IO;
+using Blamite.Blam.LanguagePack;
 
-namespace Blamite.Blam.ThirdGen.Structures
+namespace Blamite.Blam.ThirdGen.LanguagePack
 {
-    public class ThirdGenLanguage : ILanguage
+    public class ThirdGenLanguage
     {
         private AESKey _encryptionKey;
         private StructureLayout _pointerLayout;
         private int _sizeAlign;
 
-        public ThirdGenLanguage(StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, EngineDescription buildInfo)
+        public ThirdGenLanguage(GameLanguage language, StructureValueCollection values, FileSegmenter segmenter, FileSegmentGroup localeArea, EngineDescription buildInfo)
         {
+            Language = language;
             _pointerLayout = buildInfo.Layouts.GetLayout("locale index table entry");
             _encryptionKey = buildInfo.LocaleKey;
             _sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
             Load(values, segmenter, localeArea);
         }
 
+        public GameLanguage Language { get; private set; }
         public int StringCount { get; private set; }
         public FileSegment LocaleIndexTable { get; private set; }
         public FileSegment LocaleData { get; private set; }
@@ -35,7 +38,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         public StructureValueCollection Serialize()
         {
-            StructureValueCollection result = new StructureValueCollection();
+            var result = new StructureValueCollection();
             result.SetInteger("string count", (uint)StringCount);
             result.SetInteger("locale table size", LocaleData != null ? (uint)LocaleData.Size : 0);
 
@@ -48,6 +51,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 result.SetRaw("index table hash", IndexTableHash);
             if (StringDataHash != null)
                 result.SetRaw("string data hash", StringDataHash);
+
             return result;
         }
 
@@ -57,13 +61,13 @@ namespace Blamite.Blam.ThirdGen.Structures
             if (StringCount > 0)
             {
                 // Index table offset, segment, and pointer
-                int localeIndexTableOffset = localeArea.PointerToOffset(values.GetInteger("locale index table offset"));
+                var localeIndexTableOffset = localeArea.PointerToOffset(values.GetInteger("locale index table offset"));
                 LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, StringCount * 8, 8, SegmentResizeOrigin.End);
                 LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
                 // Data offset, segment, and pointer
-                int localeDataOffset = localeArea.PointerToOffset(values.GetInteger("locale data index offset"));
-                int localeDataSize = (int)values.GetInteger("locale table size");
+                var localeDataOffset = localeArea.PointerToOffset(values.GetInteger("locale data index offset"));
+                var localeDataSize = (int)values.GetInteger("locale table size");
                 LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
                 LocaleDataLocation = localeArea.AddSegment(LocaleData);
 
@@ -75,14 +79,14 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
         }
 
-        public LocaleTable LoadStrings(IReader reader)
+        public List<LocalizedString> LoadStrings(IReader reader)
         {
-            LocaleTable result = new LocaleTable(this);
+            var result = new List<LocalizedString>();
             if (StringCount == 0)
                 return result;
 
             byte[] stringData = ReadLocaleData(reader);
-            using (EndianReader stringReader = new EndianReader(new MemoryStream(stringData), Endian.BigEndian))
+            using (var stringReader = new EndianReader(new MemoryStream(stringData), Endian.BigEndian))
             {
                 reader.SeekTo(LocaleIndexTableLocation.AsOffset());
 
@@ -99,30 +103,30 @@ namespace Blamite.Blam.ThirdGen.Structures
 
                     stringReader.SeekTo(offset);
                     string locale = stringReader.ReadUTF8();
-                    result.Strings.Add(new Locale(id, locale));
+                    result.Add(new LocalizedString(id, locale));
                 }
             }
             return result;
         }
 
-        public void SaveStrings(IStream stream, LocaleTable locales)
+        public void SaveStrings(IStream stream, List<LocalizedString> locales)
         {
-            MemoryStream offsetData = new MemoryStream();
-            MemoryStream stringData = new MemoryStream();
-            IWriter offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);
-            IWriter stringWriter = new EndianWriter(stringData, Endian.BigEndian);
+            var offsetData = new MemoryStream();
+            var stringData = new MemoryStream();
+            var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);
+            var stringWriter = new EndianWriter(stringData, Endian.BigEndian);
 
             try
             {
                 // Write the string and offset data to buffers
-                foreach (Locale locale in locales.Strings)
+                foreach (var locale in locales)
                 {
-                    WriteLocalePointer(offsetWriter, locale.ID, (int)stringWriter.Position);
+                    WriteLocalePointer(offsetWriter, locale.Key, (int)stringWriter.Position);
                     stringWriter.WriteUTF8(locale.Value);
                 }
 
                 // Round the size of the string data up
-                int dataSize = (int)((stringData.Position + _sizeAlign - 1) & ~(_sizeAlign - 1));
+                var dataSize = (int)((stringData.Position + _sizeAlign - 1) & ~(_sizeAlign - 1));
                 stringData.SetLength(dataSize);
 
                 // Update the two locale data hashes if we need to
@@ -138,7 +142,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stream.WriteBlock(offsetData.GetBuffer(), 0, (int)offsetData.Length);
 
                 // Encrypt the string data if necessary
-                byte[] strings = stringData.GetBuffer();
+                var strings = stringData.GetBuffer();
                 if (_encryptionKey != null)
                     strings = AES.Encrypt(strings, 0, dataSize, _encryptionKey.Key, _encryptionKey.IV);
 
@@ -148,7 +152,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stream.WriteBlock(strings, 0, dataSize);
 
                 // Update the string count and recalculate the language table offsets
-                StringCount = locales.Strings.Count;
+                StringCount = locales.Count;
             }
             finally
             {
@@ -159,14 +163,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void ReadLocalePointer(IReader reader, out StringID id, out int offset)
         {
-            StructureValueCollection values = StructureReader.ReadStructure(reader, _pointerLayout);
+            var values = StructureReader.ReadStructure(reader, _pointerLayout);
             id = new StringID(values.GetInteger("stringid"));
             offset = (int)values.GetInteger("offset");
         }
 
         private void WriteLocalePointer(IWriter writer, StringID id, int offset)
         {
-            StructureValueCollection values = new StructureValueCollection();
+            var values = new StructureValueCollection();
             values.SetInteger("stringid", (uint)id.Value);
             values.SetInteger("offset", (uint)offset);
             StructureWriter.WriteStructure(values, _pointerLayout, writer);
@@ -176,7 +180,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             // Read the string data
             reader.SeekTo(LocaleDataLocation.AsOffset());
-            byte[] stringData = reader.ReadBlock(LocaleData.Size);
+            var stringData = reader.ReadBlock(LocaleData.Size);
 
             // Decrypt it if necessary
             if (_encryptionKey != null)

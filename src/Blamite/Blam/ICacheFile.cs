@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
@@ -130,14 +131,9 @@ namespace Blamite.Blam
         StringIDSource StringIDs { get; }
 
         /// <summary>
-        /// The languages stored in the file.
+        /// The cache file's language pack loader.
         /// </summary>
-        IList<ILanguage> Languages { get; }
-
-        /// <summary>
-        /// The locale groups stored in the file.
-        /// </summary>
-        IList<ILocaleGroup> LocaleGroups { get; }
+        ILanguagePackLoader Languages { get; }
 
         /// <summary>
         /// The tag classes stored in the file.

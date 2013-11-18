@@ -20,6 +20,7 @@ using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using AvalonDock.Layout;
 using Blamite.Blam;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
@@ -41,16 +42,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 {
     class LanguageEntry
     {
-        public LanguageEntry(string name, int index, ILanguage baseEntry)
+        public LanguageEntry(string name, GameLanguage lang)
         {
             Name = name;
-            Base = baseEntry;
-            Index = index;
+            Language = lang;
         }
 
         public string Name { get; private set; }
-        public int Index { get; private set; }
-        public ILanguage Base { get; private set; }
+        public GameLanguage Language { get; private set; }
     }
 
     /// <summary>
@@ -467,23 +466,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
 
             // TODO: Define the language names in an XML file or something
-            AddLanguage("English", LocaleLanguage.English);
-            AddLanguage("Chinese", LocaleLanguage.Chinese);
-            AddLanguage("Danish", LocaleLanguage.Danish);
-            AddLanguage("Dutch", LocaleLanguage.Dutch);
-            AddLanguage("Finnish", LocaleLanguage.Finnish);
-            AddLanguage("French", LocaleLanguage.French);
-            AddLanguage("German", LocaleLanguage.German);
-            AddLanguage("Italian", LocaleLanguage.Italian);
-            AddLanguage("Japanese", LocaleLanguage.Japanese);
-            AddLanguage("Korean", LocaleLanguage.Korean);
-            AddLanguage("Norwegian", LocaleLanguage.Norwegian);
-            AddLanguage("Polish", LocaleLanguage.Polish);
-            AddLanguage("Portuguese", LocaleLanguage.Portuguese);
-            AddLanguage("Russian", LocaleLanguage.Russian);
-            AddLanguage("Spanish", LocaleLanguage.Spanish);
-            AddLanguage("Spanish (Latin American)", LocaleLanguage.LatinAmericanSpanish);
-            AddLanguage("Extra", LocaleLanguage.Unknown);
+            AddLanguage("English", GameLanguage.English);
+            AddLanguage("Chinese", GameLanguage.Chinese);
+            AddLanguage("Danish", GameLanguage.Danish);
+            AddLanguage("Dutch", GameLanguage.Dutch);
+            AddLanguage("Finnish", GameLanguage.Finnish);
+            AddLanguage("French", GameLanguage.French);
+            AddLanguage("German", GameLanguage.German);
+            AddLanguage("Italian", GameLanguage.Italian);
+            AddLanguage("Japanese", GameLanguage.Japanese);
+            AddLanguage("Korean", GameLanguage.Korean);
+            AddLanguage("Norwegian", GameLanguage.Norwegian);
+            AddLanguage("Polish", GameLanguage.Polish);
+            AddLanguage("Portuguese", GameLanguage.Portuguese);
+            AddLanguage("Russian", GameLanguage.Russian);
+            AddLanguage("Spanish", GameLanguage.Spanish);
+            AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+            AddLanguage("Extra", GameLanguage.Unknown);
 
             Dispatcher.Invoke(new Action(delegate
 	                              {
@@ -511,13 +510,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Clipboard.SetText(((TextBlock)e.OriginalSource).Text);
 		}
 
-        private void AddLanguage(string name, int index)
+        private void AddLanguage(string name, GameLanguage lang)
         {
-            if (index < 0 || index >= _cacheFile.Languages.Count) return;
+            if (!_cacheFile.Languages.AvailableLanguages.Contains(lang))
+                return;
 
-            var baseLang = _cacheFile.Languages[index];
-            if (baseLang.StringCount > 0)
-                _languages.Add(new LanguageEntry(name, index, baseLang));
+            _languages.Add(new LanguageEntry(name, lang));
         }
         
         private static void CloseTab(object source, RoutedEventArgs args)
@@ -1046,7 +1044,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
         {
             var element = (FrameworkElement)sender;
             var language = (LanguageEntry)element.DataContext;
-            var tabName = language.Name + " Locales";
+            var tabName = language.Name + " Strings";
             if (IsTagOpen(tabName))
             {
                 SelectTabFromTitle(tabName);
@@ -1060,7 +1058,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 												   Content = tabName,
 												   ContextMenu = BaseContextMenu
 	                                           },
-                                  Content = new Components.Editors.LocaleEditor(_cacheFile, _mapManager, language.Index, _stringIDTrie, _buildInfo.LocaleSymbols)
+                                  Content = new Components.Editors.LocaleEditor(language.Language, _cacheFile, _mapManager, _stringIDTrie, _buildInfo.LocaleSymbols)
                               };
 
                 contentTabs.Items.Add(tab);

@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -31,240 +32,540 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
     {
         private ICacheFile _cache;
         private IStreamManager _streamManager;
-        private int _languageIndex;
         private LocaleSymbolCollection _symbols;
-        private ILanguage _currentLanguage;
-        private LocaleTable _currentLocaleTable;
-        private List<LocaleEntry> _locales;
-        private ICollectionView _localeView;
-        private ObservableCollection<LocaleGroup> _groups = new ObservableCollection<LocaleGroup>();
-        private LocaleRange _currentRange;
-        private string _filter;
+        private GameLanguage _currentLanguage;
+        private ILanguagePack _currentPack;
+        private LocalizedStringList _currentGroup;
+        private List<StringEntry> _strings;
+        private LocalizedStringTableView _stringView;
+        private List<NamedStringList> _groups = new List<NamedStringList>();
+        private string _searchText;
 
-        public LocaleEditor(ICacheFile cache, IStreamManager streamManager, int index, Trie stringIdTrie, LocaleSymbolCollection symbols)
+        public static RoutedCommand DeleteStringCommand = new RoutedCommand();
+        public static RoutedCommand GoToGroupCommand = new RoutedCommand();
+
+        public LocaleEditor(GameLanguage language, ICacheFile cache, IStreamManager streamManager, Trie stringIdTrie, LocaleSymbolCollection symbols)
         {
             InitializeComponent();
 
+            _currentLanguage = language;
             _cache = cache;
             _streamManager = streamManager;
-            _languageIndex = index;
-            _currentLanguage = cache.Languages[index];
             _symbols = symbols;
             StringIDTrie = stringIdTrie;
 
-            Thread thrd = new Thread(new ThreadStart(LoadLanguage));
+            // Thread the loading routine
+            Thread thrd = new Thread(new ThreadStart(LoadAll));
             thrd.SetApartmentState(ApartmentState.STA);
             thrd.Start();
         }
 
+        /// <summary>
+        /// Gets the stringID trie to use for autocompletion.
+        /// </summary>
         public Trie StringIDTrie { get; private set; }
 
+        #region Helpers
         /// <summary>
-        /// Load a language into the listview
+        /// Loads the list of locale groups.
         /// </summary>
-        private void LoadLanguage()
+        private void LoadGroups()
+        {
+            // Wrap the groups stored in the cache file and sort them
+            foreach (var group in _currentPack.StringLists)
+            {
+                var name = _cache.FileNames.GetTagName(group.SourceTag);
+                _groups.Add(new NamedStringList() { Name = name, Base = group });
+            }
+            _groups.Sort((g1, g2) => g1.Name.CompareTo(g2.Name));
+
+            // Create a group for everything
+            _groups.Insert(0, new NamedStringList() { Name = "(all strings)", Base = null });
+
+            // Select the "everything" group
+            Dispatcher.Invoke(new Action(delegate
+            {
+                cbLocaleGroups.ItemsSource = _groups;
+                cbLocaleGroups.SelectedIndex = 0;
+            }));
+        }
+
+        /// <summary>
+        /// Loads the list of strings.
+        /// </summary>
+        private void LoadStrings()
+        {
+            _strings = new List<StringEntry>(_currentPack.StringLists.SelectMany(l => WrapStrings(l)));
+            _stringView = new LocalizedStringTableView(_strings);
+            _stringView.Filter = FilterString;
+        }
+
+        /// <summary>
+        /// Loads everything.
+        /// </summary>
+        private void LoadAll()
         {
             using (var reader = _streamManager.OpenRead())
-                _currentLocaleTable = _currentLanguage.LoadStrings(reader);
+                _currentPack = _cache.Languages.LoadLanguage(_currentLanguage, reader);
 
-            _locales = new List<LocaleEntry>();
-            _localeView = CollectionViewSource.GetDefaultView(_locales);
-            _localeView.Filter = LocaleFilter;
-
-            for (int i = 0; i < _currentLocaleTable.Strings.Count; i++)
-            {
-                Locale locale = _currentLocaleTable.Strings[i];
-                string stringId = _cache.StringIDs.GetString(locale.ID);
-                if (stringId == null)
-                    stringId = locale.ID.ToString();
-
-                string localeStr = ReplaceSymbols(locale.Value);
-                _locales.Add(new LocaleEntry(i, stringId, localeStr));
-            }
-
+            LoadStrings();
             LoadGroups();
 
-            Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _localeView; }));
+            Dispatcher.Invoke(new Action( delegate { lvLocales.DataContext = _stringView; }));
         }
 
-        private string ReplaceSymbols(string locale)
+        /// <summary>
+        /// Wraps the strings in a <see cref="LocalizedStringList"/>.
+        /// </summary>
+        /// <param name="list">The list to wrap.</param>
+        /// <returns>The wrapped strings.</returns>
+        private IEnumerable<StringEntry> WrapStrings(LocalizedStringList list)
         {
-            return (_symbols != null) ? _symbols.ReplaceSymbols(locale) : locale;
+            return list.Strings.Select(s =>
+                {
+                    var stringIdName = _cache.StringIDs.GetString(s.Key) ?? s.Key.ToString();
+                    var adjustedStr = ReplaceSymbols(s.Value);
+                    var entry = new StringEntry(stringIdName, adjustedStr, list, s);
+                    return entry;
+                });
         }
 
+        /// <summary>
+        /// Replaces special characters in a string.
+        /// </summary>
+        /// <param name="str">The string to replace special characters in.</param>
+        /// <returns>The new string.</returns>
+        private string ReplaceSymbols(string str)
+        {
+            return (_symbols != null) ? _symbols.ReplaceSymbols(str) : str;
+        }
+
+        /// <summary>
+        /// Replaces tags in a string with special characters.
+        /// </summary>
+        /// <param name="locale">The string to replace tags in.</param>
+        /// <returns>The new string.</returns>
         private string ReplaceTags(string locale)
         {
             return (_symbols != null) ? _symbols.ReplaceTags(locale) : locale;
         }
 
         /// <summary>
-        /// Loads the list of locale groups.
+        /// Filter function for the string view.
         /// </summary>
-        private void LoadGroups()
+        /// <param name="item">The item to filter.</param>
+        /// <returns><c>true</c> if the item should be made visible.</returns>
+        private bool FilterString(object item)
         {
-            // Make a default group that shows everything
-            LocaleRange allLocales = new LocaleRange(0, _locales.Count);
-            _currentRange = allLocales;
-            _groups.Add(new LocaleGroup() { Name = "(show all)", Range = allLocales });
-
-            // Load the groups stored in the cache file
-            foreach (ILocaleGroup group in _cache.LocaleGroups)
+            var entry = (StringEntry)item;
+            if (_currentGroup != null && entry.Group != _currentGroup)
             {
-                string name = _cache.FileNames.GetTagName(group.TagIndex);
-                LocaleRange range = group.Ranges[_languageIndex];
-
-                _groups.Add(new LocaleGroup() { Name = name, Range = range });
+                // Only show locales in the current group
+                return false;
             }
-
-            Dispatcher.Invoke(new Action(delegate
-                {
-                    cbLocaleGroups.ItemsSource = _groups;
-                    cbLocaleGroups.SelectedIndex = 0;
-                }));
-        }
-
-        private bool LocaleFilter(object item)
-        {
-            LocaleEntry locale = (LocaleEntry)item;
-            if (_currentRange != null)
+            if (!string.IsNullOrEmpty(_searchText))
             {
-                // Only show locales in the current range
-                if (locale.Index < _currentRange.StartIndex || locale.Index >= _currentRange.StartIndex + _currentRange.Size)
-                    return false;
-            }
-            if (!string.IsNullOrEmpty(_filter))
-            {
-                // Only show locales that match the filter
-                if (!locale.Locale.ToLower().Contains(_filter) && !locale.StringID.ToLower().Contains(_filter))
+                // Only show strings that match the filter
+                if (!entry.Value.ToLower().Contains(_searchText) && !entry.StringID.ToLower().Contains(_searchText))
                     return false;
             }
             return true;
         }
 
         /// <summary>
-        /// Filter the currently selected language
+        /// Sets the text to search for in locales to determine their visibility.
         /// </summary>
-        /// <param name="filter">The filter string</param>
-        private void FilterLanguage(string filter)
+        /// <param name="filter">The text to search for, or <c>null</c> to show everything.</param>
+        private void SetSearchText(string filter)
         {
             if (filter != null)
-                _filter = filter.ToLower();
+                _searchText = filter.ToLower();
             else
-                _filter = null;
+                _searchText = null;
 
             btnReset.IsEnabled = !string.IsNullOrEmpty(filter);
-            _localeView.Refresh();
+            _stringView.Refresh();
+            ShowCurrentItem();
         }
 
+        /// <summary>
+        /// Resolves the stringID for a string entry, creating a new stringID if it doesn't exist.
+        /// </summary>
+        /// <param name="entry">The entry to resolve a stringID for.</param>
+        /// <returns>The resolved stringID.</returns>
+        private StringID ResolveStringID(StringEntry entry)
+        {
+            if (entry.StringID == "")
+            {
+                return StringID.Null;
+            }
+            if (entry.Base != null)
+            {
+                // If the stringID didn't change, then re-use it
+                var oldKeyStr = _cache.StringIDs.GetString(entry.Base.Key);
+                if (oldKeyStr == entry.StringID)
+                    return entry.Base.Key;
+            }
+            if (StringIDTrie.Contains(entry.StringID))
+            {
+                // String already exists in the cache file
+                return _cache.StringIDs.FindStringID(entry.StringID);
+            }
+            else
+            {
+                // Create a new string
+                StringIDTrie.Add(entry.StringID);
+                return _cache.StringIDs.AddString(entry.StringID);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the user intended to add stringIDs that aren't in the cache file.
+        /// </summary>
+        /// <returns><c>true</c> if the user intended to add all of the strings.</returns>
+        private bool VerifyAddedStringIDs()
+        {
+            var newStringIds = _strings
+                .Select(l => l.StringID)
+                .Where(s => s != "" && !StringIDTrie.Contains(s))
+                .ToList();
+
+            if (newStringIds.Count > 0 && !MetroMessageBoxList.Show("Language Pack Editor", "The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStringIds))
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Saves all strings back to the cache file
+        /// </summary>
+        private void SaveStrings()
+        {
+            foreach (var entry in _strings)
+            {
+                var key = ResolveStringID(entry);
+                var val = ReplaceTags(entry.Value);
+                if (entry.Base == null)
+                {
+                    // Create a new entry for the string
+                    entry.Base = new LocalizedString(key, val);
+                    entry.Group.Strings.Add(entry.Base);
+                }
+                else
+                {
+                    // Update the old entry
+                    entry.Base.Key = key;
+                    entry.Base.Value = val;
+                }
+            }
+            using (var stream = _streamManager.OpenReadWrite())
+            {
+                _currentPack.SaveChanges(stream);
+                _cache.SaveChanges(stream);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new string to the table.
+        /// </summary>
+        /// <returns>The added entry.</returns>
+        private StringEntry NewEntry()
+        {
+            // The view has to be cast to IEditableCollectionView here so that the explicitly-implemented methods are called
+            // Otherwise, the ListCollectionView methods will disallow this
+            var entry = ((IEditableCollectionView)_stringView).AddNew() as StringEntry;
+            ((IEditableCollectionView)_stringView).CommitNew();
+            return entry;
+        }
+
+        /// <summary>
+        /// Begins editing a string entry.
+        /// </summary>
+        /// <param name="entry">The entry to begin editing.</param>
+        private void StartEditing(StringEntry entry)
+        {
+            var cell = new DataGridCellInfo(entry, stringIdColumn);
+            lvLocales.ScrollIntoView(entry);
+            lvLocales.Focus();
+            lvLocales.CurrentCell = cell;
+            lvLocales.BeginEdit();
+        }
+
+        /// <summary>
+        /// Scrolls the currently-selected item (if any) into view.
+        /// </summary>
+        private void ShowCurrentItem()
+        {
+            if (lvLocales.SelectedItem != null)
+                lvLocales.ScrollIntoView(lvLocales.SelectedItem);
+        }
+        #endregion
+
+        #region Event Handlers
         private void txtFilter_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return || e.Key == Key.Enter)
-                FilterLanguage(txtFilter.Text);
+                SetSearchText(txtFilter.Text);
         }
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
-            FilterLanguage(txtFilter.Text);
+            SetSearchText(txtFilter.Text);
         }
 
         private void btnSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            var newStringIds = _locales
-                .Select(l => l.StringID)
-                .Where(s => !StringIDTrie.Contains(s))
-                .ToList();
-            
-            if (newStringIds.Count > 0 && !MetroMessageBoxList.Show("New StringIDs", "The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStringIds))
+            if (!VerifyAddedStringIDs())
                 return;
 
-            for (int i = 0; i < _locales.Count; i++)
-            {
-                // Only update the stringID if it changed
-                if (_locales[i].StringID != _cache.StringIDs.GetString(_currentLocaleTable.Strings[i].ID))
-                {
-                    if (!StringIDTrie.Contains(_locales[i].StringID))
-                    {
-                        // Add a new stringID
-                        var id = _cache.StringIDs.AddString(_locales[i].StringID);
-                        StringIDTrie.Add(_locales[i].StringID);
-                        _currentLocaleTable.Strings[i].ID = id;
-                    }
-                    else
-                    {
-                        // Use an existing one
-                        _currentLocaleTable.Strings[i].ID = _cache.StringIDs.FindStringID(_locales[i].StringID);
-                    }
-                }
-                _currentLocaleTable.Strings[i].Value = ReplaceTags(_locales[i].Locale);
-            }
-
-            using (var stream = _streamManager.OpenReadWrite())
-            {
-                _currentLanguage.SaveStrings(stream, _currentLocaleTable);
-                _cache.SaveChanges(stream);
-            }
-
-            MetroMessageBox.Show("Locales Saved", "Locales saved successfully!");
+            // Disable everything and save in the background so the UI doesn't lag
+            var worker = new BackgroundWorker();
+            worker.DoWork += DoSave;
+            worker.RunWorkerCompleted += SaveCompleted;
+            IsEnabled = false;
+            worker.RunWorkerAsync();
         }
 
-        private void btnReset_Click_1(object sender, RoutedEventArgs e)
+        void DoSave(object sender, DoWorkEventArgs e)
+        {
+            SaveStrings();
+        }
+
+        private void SaveCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsEnabled = true;
+            if (e.Error == null)
+                MetroMessageBox.Show("Language Pack Editor", "Strings saved successfully!");
+            else
+                MetroException.Show(e.Error);
+        }
+
+        private void btnReset_Click(object sender, RoutedEventArgs e)
         {
             txtFilter.Text = "";
-            FilterLanguage(null);
+            SetSearchText(null);
         }
 
         private void cbLocaleGroups_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-            LocaleGroup group = cbLocaleGroups.SelectedItem as LocaleGroup;
+            var group = cbLocaleGroups.SelectedItem as NamedStringList;
             if (group != null)
             {
-                _currentRange = group.Range;
-                _localeView.Refresh();
+                _currentGroup = group.Base;
+                _stringView.CurrentGroup = group.Base;
+                _stringView.Refresh();
+                lvLocales.CanUserAddRows = (group.Base != null);
+                ShowCurrentItem();
             }
         }
 
-        class LocaleEntry : PropertyChangeNotifier
+        private void btnAddNew_Click_1(object sender, RoutedEventArgs e)
         {
-            private int _index;
+            if (_currentGroup == null)
+            {
+                MetroMessageBox.Show("Language Pack Editor", "You must select a specific string list first in order to add a new string.");
+                return;
+            }
+
+            var entry = NewEntry();
+            StartEditing(entry);
+        }
+        #endregion
+
+        #region Commands
+        /// <summary>
+        /// Gets the <see cref="StringEntry"/> that a command originated from.
+        /// </summary>
+        /// <param name="commandSource">The command's source.</param>
+        /// <returns>The entry that the command originated from, or <c>null</c> if not available.</returns>
+        private StringEntry GetSourceEntry(object commandSource)
+        {
+            var elem = commandSource as FrameworkElement;
+            if (elem != null)
+            {
+                var entry = elem.DataContext as StringEntry;
+                if (entry != null)
+                    return entry;
+            }
+            return null;
+        }
+
+        private void StringMenuCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = (GetSourceEntry(e.Source) != null);
+        }
+
+        private void DeleteStringCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var entry = GetSourceEntry(e.Source);
+            if (entry != null)
+                ((IEditableCollectionView)_stringView).Remove(entry);
+        }
+
+        private void GoToGroupCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var entry = GetSourceEntry(e.Source);
+            if (entry != null)
+                cbLocaleGroups.SelectedItem = _groups.FirstOrDefault(g => g.Base == entry.Group);
+        }
+        #endregion
+
+        #region Private Classes
+        /// <summary>
+        /// A localized string entry.
+        /// </summary>
+        class StringEntry : PropertyChangeNotifier
+        {
             private string _stringId;
-            private string _locale;
+            private string _val;
 
-            public LocaleEntry(int index, string stringId, string locale)
+            public StringEntry(string stringId, string val, LocalizedStringList group, LocalizedString baseString)
             {
-                _index = index;
                 _stringId = stringId;
-                _locale = locale;
+                _val = val;
+                Group = group;
+                Base = baseString;
             }
 
-            public int Index
-            {
-                get { return _index; }
-                set { _index = value; NotifyPropertyChanged("Index"); }
-            }
-
+            /// <summary>
+            /// Gets or sets the entry's stringID as a string.
+            /// </summary>
             public string StringID
             {
                 get { return _stringId; }
                 set { _stringId = value; NotifyPropertyChanged("StringID"); }
             }
 
-            public string Locale
+            /// <summary>
+            /// Gets or sets the entry's string value.
+            /// </summary>
+            public string Value
             {
-                get { return _locale; }
-                set { _locale = value; NotifyPropertyChanged("Locale"); }
+                get { return _val; }
+                set { _val = value; NotifyPropertyChanged("Locale"); }
+            }
+
+            /// <summary>
+            /// Gets or sets the group that the string belongs to.
+            /// </summary>
+            public LocalizedStringList Group { get; set; }
+
+            /// <summary>
+            /// Gets or sets the base <see cref="LocalizedString"/> that the entry was created from.
+            /// </summary>
+            public LocalizedString Base { get; set; }
+        }
+
+        /// <summary>
+        /// A string list with a name associated with it.
+        /// </summary>
+        class NamedStringList
+        {
+            /// <summary>
+            /// Gets or sets the name of the string list.
+            /// </summary>
+            public string Name { get; set; }
+
+            /// <summary>
+            /// Gets or sets the base list.
+            /// </summary>
+            public LocalizedStringList Base { get; set; }
+        }
+
+        /// <summary>
+        /// Implementation of <see cref="ListCollectionView"/> for localized string lists.
+        /// </summary>
+        class LocalizedStringTableView : ListCollectionView, IEditableCollectionView, IEditableCollectionViewAddNewItem
+        {
+            public LocalizedStringTableView(System.Collections.IList list)
+                : base(list)
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the group that new strings should be added to.
+            /// </summary>
+            public LocalizedStringList CurrentGroup { get; set; }
+
+            /// <summary>
+            /// Starts an add transaction and returns the pending new item.
+            /// </summary>
+            /// <returns>
+            /// The pending new item.
+            /// </returns>
+            object IEditableCollectionView.AddNew()
+            {
+                if (CurrentGroup == null)
+                    throw new InvalidOperationException("CurrentGroup is null");
+
+                var result = new StringEntry("", "", CurrentGroup, null);
+                return AddNewItem(result);
+            }
+
+            /// <summary>
+            /// Removes the specified item from the collection.
+            /// </summary>
+            /// <param name="item">The item to remove.</param>
+            void IEditableCollectionView.Remove(object item)
+            {
+                ((IEditableCollectionView)this).RemoveAt(IndexOf(item));                
+            }
+
+            /// <summary>
+            /// Removes the item at the specified position from the collection.
+            /// </summary>
+            /// <param name="index">The zero-based index of the item to remove.</param>
+            void IEditableCollectionView.RemoveAt(int index)
+            {
+                var entry = GetItemAt(index) as StringEntry;
+                base.RemoveAt(index);
+
+                // Remove the entry from its group
+                if (entry.Base != null)
+                {
+                    entry.Group.Strings.Remove(entry.Base);
+                    entry.Base = null;
+                    entry.Group = null;
+                }
+            }
+
+            /// <summary>
+            /// Gets a value that indicates whether a specified object can be added to the collection.
+            /// </summary>
+            /// <returns>true if a specified object can be added to the collection; otherwise, false.</returns>
+            bool IEditableCollectionViewAddNewItem.CanAddNewItem
+            {
+                // New items can be added as long as a group is set
+                get { return CurrentGroup != null; }
+            }
+
+            /// <summary>
+            /// Gets a value that indicates whether a new item can be added to the collection.
+            /// </summary>
+            /// <returns>true if a new item can be added to the collection; otherwise, false.</returns>
+            bool IEditableCollectionView.CanAddNew
+            {
+                // New items can be added as long as a group is set
+                get { return CurrentGroup != null; }
+            }
+
+            /// <summary>
+            /// Gets a value that indicates whether the collection view can discard pending changes and restore the original values of an edited object.
+            /// </summary>
+            /// <returns>true if the collection view can discard pending changes and restore the original values of an edited object; otherwise, false.</returns>
+            bool IEditableCollectionView.CanCancelEdit
+            {
+                get { return true; }
+            }
+
+            /// <summary>
+            /// Gets a value that indicates whether an item can be removed from the collection.
+            /// </summary>
+            /// <returns>true if an item can be removed from the collection; otherwise, false.</returns>
+            bool IEditableCollectionView.CanRemove
+            {
+                get { return true; }
             }
         }
-
-        class LanguageEntry
-        {
-            public int Index { get; set; }
-            public string Language { get; set; }
-        }
-
-        class LocaleGroup
-        {
-            public string Name { get; set; }
-            public LocaleRange Range { get; set; }
-        }
+        #endregion
     }
 }

@@ -6,20 +6,19 @@ using Blamite.Blam.ThirdGen.Structures;
 using Blamite.IO;
 using Blamite.Flexibility;
 using Blamite.Blam.Util;
+using Blamite.Blam.LanguagePack;
 
-namespace Blamite.Blam.ThirdGen.Structures
+namespace Blamite.Blam.ThirdGen.LanguagePack
 {
     /// <summary>
     /// Loads language data from MATG and PATG tags.
     /// </summary>
     public class ThirdGenLanguageGlobals
     {
-        private List<ThirdGenLanguage> _languages;
-
         public ThirdGenLanguageGlobals(StructureValueCollection values, FileSegmenter segmenter, IPointerConverter localePointerConverter, EngineDescription buildInfo)
         {
             LocaleArea = new FileSegmentGroup(localePointerConverter);
-            _languages = LoadLanguages(values, segmenter, buildInfo);
+            Languages = LoadLanguages(values, segmenter, buildInfo);
         }
 
         /// <summary>
@@ -33,11 +32,11 @@ namespace Blamite.Blam.ThirdGen.Structures
         /// <returns>The StructureValueCollection that was created from the language table.</returns>
         public StructureValueCollection Serialize()
         {
-            StructureValueCollection[] languageSet = new StructureValueCollection[_languages.Count];
-            for (int i = 0; i < _languages.Count; i++)
-                languageSet[i] = _languages[i].Serialize();
+            var languageSet = new StructureValueCollection[Languages.Count];
+            for (int i = 0; i < Languages.Count; i++)
+                languageSet[i] = Languages[i].Serialize();
 
-            StructureValueCollection result = new StructureValueCollection();
+            var result = new StructureValueCollection();
             result.SetArray("languages", languageSet);
             return result;
         }
@@ -46,17 +45,13 @@ namespace Blamite.Blam.ThirdGen.Structures
         {
             StructureValueCollection[] languageSet = values.GetArray("languages");
 
-            var result = from language in languageSet
-                         select new ThirdGenLanguage(language, segmenter, LocaleArea, buildInfo);
+            var result = languageSet.Select((l, i) => new ThirdGenLanguage((GameLanguage)i, l, segmenter, LocaleArea, buildInfo));
             return result.ToList<ThirdGenLanguage>();
         }
 
         /// <summary>
         /// The languages that were loaded.
         /// </summary>
-        public IList<ThirdGenLanguage> Languages
-        {
-            get { return _languages.AsReadOnly(); }
-        }
+        public List<ThirdGenLanguage> Languages { get; private set; }
     }
 }

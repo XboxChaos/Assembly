@@ -65,5 +65,13 @@ namespace Assembly.Metro.Controls
                 textbox.PopulateComplete();
             }
         }
+
+        private void textbox_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            // This is a hack that makes focus work properly for AutoCompleteBox controls
+            var internalTextBox = textbox.Template.FindName("Text", textbox) as UIElement;
+            if (internalTextBox != null)
+                internalTextBox.Focus();
+        }
     }
 }

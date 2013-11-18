@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.SecondGen.Structures;
@@ -107,16 +108,6 @@ namespace Blamite.Blam.SecondGen
             get { return _stringIDs; }
         }
 
-        public IList<ILanguage> Languages
-        {
-            get { return new List<ILanguage>(); }
-        }
-
-        public IList<ILocaleGroup> LocaleGroups
-        {
-            get { return new List<ILocaleGroup>(); }
-        }
-
         public IList<ITagClass> TagClasses
         {
             get { return _tags.Classes; }
@@ -140,6 +131,11 @@ namespace Blamite.Blam.SecondGen
         public FileSegmentGroup LocaleArea
         {
             get { return _header.LocaleArea; }
+        }
+
+        public ILanguagePackLoader Languages
+        {
+            get { return null; }
         }
 
         public IResourceManager Resources

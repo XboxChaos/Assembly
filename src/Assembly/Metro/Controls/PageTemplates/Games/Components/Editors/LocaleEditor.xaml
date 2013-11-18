@@ -25,23 +25,45 @@
                 </ComboBox>
             </Grid>
         </Border>
-        <DataGrid x:Name="lvLocales" ItemsSource="{Binding}" Background="{x:Null}" Margin="0,35,0,35" Padding="0" BorderThickness="0" Foreground="White" VerticalAlignment="Stretch"
+        <DataGrid x:Name="lvLocales" ItemsSource="{Binding}" Background="{x:Null}" Margin="0,35,0,35" Padding="0" BorderThickness="0" VerticalAlignment="Stretch"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-                  CanUserAddRows="False" CanUserResizeColumns="True">
+                  CanUserAddRows="True" CanUserResizeColumns="True">
+            <DataGrid.Resources>
+                <ContextMenu x:Key="StringContextMenu">
+                    <ContextMenu.CommandBindings>
+                        <CommandBinding Command="{x:Static Editors:LocaleEditor.DeleteStringCommand}"
+                                        CanExecute="StringMenuCommand_CanExecute"
+                                        Executed="DeleteStringCommand_Executed" />
+                        <CommandBinding Command="{x:Static Editors:LocaleEditor.GoToGroupCommand}"
+                                        CanExecute="StringMenuCommand_CanExecute"
+                                        Executed="GoToGroupCommand_Executed" />
+                    </ContextMenu.CommandBindings>
+                    <MenuItem Header="View String List" Command="{x:Static Editors:LocaleEditor.GoToGroupCommand}" />
+                    <MenuItem Header="Delete" Command="{x:Static Editors:LocaleEditor.DeleteStringCommand}" />
+                </ContextMenu>
+            </DataGrid.Resources>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                    <Setter Property="ContextMenu" Value="{StaticResource StringContextMenu}" />
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="StringID" Width="*">
+                <!--<DataGridTextColumn Header="Index" Binding="{Binding Index}" IsReadOnly="True" />-->
+                <DataGridTemplateColumn x:Name="stringIdColumn" Header="StringID" Width="*" SortMemberPath="StringID">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding StringID}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding StringID}" TextWrapping="Wrap" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <c:StringIDInput Text="{Binding StringID}" SearchTrie="{Binding StringIDTrie, ElementName=editor}" />
+                            <c:StringIDInput x:Name="stringId" Text="{Binding StringID}" SearchTrie="{Binding StringIDTrie, ElementName=editor}"
+                                             VerticalAlignment="Center"
+                                             FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Locale" Binding="{Binding Locale}" Width="3*">
+                <DataGridTextColumn x:Name="localeColumn" Header="Value" Binding="{Binding Value}" Width="3*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="TextWrapping" Value="Wrap" />
@@ -59,29 +81,23 @@
         <Border Height="35" VerticalAlignment="Bottom" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="210" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnSaveAll" Grid.Column="0" Content="Save All" Width="72" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Click="btnSaveAll_Click" />
+                <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0">
+                    <Button x:Name="btnSaveAll" Content="Save All" Width="72" VerticalAlignment="Center" HorizontalAlignment="Left" Click="btnSaveAll_Click" />
+                    <Button x:Name="btnAddNew" Content="Add New" Width="72" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0" Click="btnAddNew_Click_1" />
+                    <TextBlock Text="Filter:" Grid.Column="0" Margin="10,0,0,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                </StackPanel>
 
-                <!-- I tried real-time searching (with a text-changed, so laggy)  -->
-                <Grid Grid.Column="0" Margin="100,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="125" />
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Text="Filter:" Grid.Column="0" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                    <TextBox x:Name="txtFilter" Grid.Column="1" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" KeyDown="txtFilter_KeyDown"  />
+                <TextBox x:Name="txtFilter" Grid.Column="1" Margin="10,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" KeyDown="txtFilter_KeyDown"  />
                     
                     <StackPanel Orientation="Horizontal" Grid.Column="2">
                         <Button x:Name="btnFilter" Content="Filter" Click="btnFilter_Click"  Width="60" />
-                        <Button x:Name="btnReset" Content="Reset" Click="btnReset_Click_1" IsEnabled="False" Margin="5,0,0,0" Width="60" />
-                    </StackPanel>
-                </Grid>
-                
-                <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Text="Double-click on a string to edit it." Style="{DynamicResource GenericTextblock}" />
+                        <Button x:Name="btnReset" Content="Reset" Click="btnReset_Click" IsEnabled="False" Margin="5,0,0,0" Width="60" />
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0,10,0" Text="Double-click on a string to edit it." Style="{DynamicResource GenericTextblock}" />
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

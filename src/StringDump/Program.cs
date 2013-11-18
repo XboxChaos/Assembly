@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Blamite.Blam;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Blamite.Flexibility.Settings;
@@ -35,14 +36,14 @@ namespace StringDump
 
             var engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
             ICacheFile cacheFile;
-            LocaleTable locales;
+            ILanguagePack locales;
             using (IReader reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
             {
                 Console.WriteLine("Loading cache file...");
                 cacheFile = CacheFileLoader.LoadCacheFile(reader, engineDb);
 
                 Console.WriteLine("Loading locales...");
-                locales = cacheFile.Languages[LocaleLanguage.English].LoadStrings(reader);
+                locales = cacheFile.Languages.LoadLanguage(GameLanguage.English, reader);
             }
 
             StreamWriter output = new StreamWriter(dumpPath);
@@ -50,23 +51,19 @@ namespace StringDump
             output.WriteLine();
 
             // Sort locales by stringID
-            List<Locale> localesById = new List<Locale>();
-            foreach (Locale str in locales.Strings)
-            {
-                if (str != null)
-                    localesById.Add(str);
-            }
-            localesById.Sort((x, y) => x.ID.Value.CompareTo(y.ID.Value));
+            List<LocalizedString> localesById = new List<LocalizedString>();
+            localesById.AddRange(locales.StringLists.SelectMany(l => l.Strings).Where(s => s != null && s.Value != null));
+            localesById.Sort((x, y) => x.Key.Value.CompareTo(y.Key.Value));
 
             // Dump locales
             Console.WriteLine("Dumping locales...");
             output.WriteLine("---------------");
             output.WriteLine("English Locales");
             output.WriteLine("---------------");
-            foreach (Locale str in localesById)
+            foreach (LocalizedString str in localesById)
             {
                 if (str != null)
-                    output.WriteLine("{0} = \"{1}\"", str.ID, str.Value);
+                    output.WriteLine("{0} = \"{1}\"", str.Key, str.Value);
             }
             output.WriteLine();
 

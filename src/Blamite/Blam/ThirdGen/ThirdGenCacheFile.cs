@@ -21,8 +21,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.ThirdGen.LanguagePack;
 using Blamite.Blam.ThirdGen.Resources;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
@@ -43,8 +45,7 @@ namespace Blamite.Blam.ThirdGen
         private IndexedStringIDSource _stringIds;
         private IndexedFileNameSource _fileNames;
         private ThirdGenLanguageGlobals _languageInfo;
-        private List<ILanguage> _languages = new List<ILanguage>();
-        private List<ILocaleGroup> _localeGroups = new List<ILocaleGroup>();
+        private ThirdGenLanguagePackLoader _languageLoader;
         private EngineDescription _buildInfo;
         private IResourceManager _resources;
         private ThirdGenResourceMetaLoader _resourceMetaLoader;
@@ -143,11 +144,6 @@ namespace Blamite.Blam.ThirdGen
             get { return _stringIds; }
         }
 
-        public IList<ILanguage> Languages
-        {
-            get { return _languages.AsReadOnly(); }
-        }
-
         public IList<ITagClass> TagClasses
         {
             get { return _tags.Classes; }
@@ -163,11 +159,6 @@ namespace Blamite.Blam.ThirdGen
             get { return _tags; }
         }
 
-        public IList<ILocaleGroup> LocaleGroups
-        {
-            get { return _localeGroups.AsReadOnly(); }
-        }
-
         public FileSegmentGroup MetaArea
         {
             get { return _header.MetaArea; }
@@ -176,6 +167,11 @@ namespace Blamite.Blam.ThirdGen
         public FileSegmentGroup LocaleArea
         {
             get { return (_languageInfo != null ? _languageInfo.LocaleArea : null); }
+        }
+
+        public ILanguagePackLoader Languages
+        {
+            get { return _languageLoader; }
         }
 
         public IResourceMetaLoader ResourceMetaLoader
@@ -220,7 +216,6 @@ namespace Blamite.Blam.ThirdGen
             LoadTags(reader);
             LoadLanguageGlobals(reader);
             LoadScriptFiles(reader);
-            LoadLocaleGroups(reader);
             LoadResourceManager(reader);
         }
 
@@ -276,8 +271,7 @@ namespace Blamite.Blam.ThirdGen
             reader.SeekTo(languageTag.MetaLocation.AsOffset());
             StructureValueCollection values = StructureReader.ReadStructure(reader, tagLayout);
             _languageInfo = new ThirdGenLanguageGlobals(values, _segmenter, _header.LocalePointerConverter, _buildInfo);
-
-            BuildLanguageList();
+            _languageLoader = new ThirdGenLanguagePackLoader(this, _languageInfo, _buildInfo, reader);
         }
 
         private bool FindLanguageTable(out ITag tag, out StructureLayout layout)
@@ -300,34 +294,6 @@ namespace Blamite.Blam.ThirdGen
                 layout = _buildInfo.Layouts.GetLayout("matg");
             }
             return (tag != null && layout != null);
-        }
-
-        private void BuildLanguageList()
-        {
-            // hax hax hax
-            if (_languageInfo != null)
-            {
-                foreach (ThirdGenLanguage language in _languageInfo.Languages)
-                    _languages.Add(language);
-            }
-        }
-
-        private void LoadLocaleGroups(IReader reader)
-        {
-            if (_tags == null)
-                return;
-
-            // Locale groups are stored in unic tags
-            StructureLayout layout = _buildInfo.Layouts.GetLayout("unic");
-            foreach (ITag tag in _tags.FindTagsByClass("unic"))
-            {
-                if (tag.MetaLocation != null)
-                {
-                    reader.SeekTo(tag.MetaLocation.AsOffset());
-                    StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
-                    _localeGroups.Add(new ThirdGenLocaleGroup(values, tag.Index));
-                }
-            }
         }
 
         private void LoadResourceManager(IReader reader)

@@ -215,10 +215,10 @@
 						</Grid>
                     </TabItem>
                     
-                    <TabItem Header="Locales" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
+                    <TabItem Header="Strings" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15" VerticalAlignment="Bottom">
                         <Grid Margin="25,30,25,30">
-                            <TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Languages;" Foreground="White" FontSize="16" />
-                            <ListBox x:Name="lbLanguages" Margin="0,25,0,0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch" ScrollViewer.CanContentScroll="False">
+                            <TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Localized Strings;" Foreground="White" FontSize="16" />
+                            <ListBox x:Name="lbLanguages" Margin="0,30,0,0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch" ScrollViewer.CanContentScroll="False">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Button Name="PART_Button" Height="Auto" HorizontalAlignment="Stretch" Click="LocaleButtonClick">
@@ -229,41 +229,22 @@
                                                     </Border>
                                                 </ControlTemplate>
                                             </Button.Template>
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Name}" FontSize="20">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
-                                                            <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
-                                                            <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
-                                                                        <Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
-                                                                    </MultiDataTrigger.Conditions>
-                                                                    <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
-                                                                </MultiDataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                                <TextBlock FontSize="12">
-                                                    <Run Text="{Binding Base.StringCount, Mode=OneWay}"/><Run Text=" strings"/>
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
-                                                            <Setter Property="Foreground" Value="{DynamicResource TextBrushSecondary}" />
-                                                            <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
-                                                                        <Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
-                                                                    </MultiDataTrigger.Conditions>
-                                                                    <Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
-                                                                </MultiDataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontSize="20">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
+                                                                    <Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Button>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>

@@ -33,7 +33,8 @@ namespace Blamite.Patching
         /// <param name="stream">The stream to write changes to.</param>
         public static void WriteLanguageChange(LanguageChange changes, ICacheFile cacheFile, IStream stream)
         {
-            if (changes.LanguageIndex >= cacheFile.Languages.Count)
+            throw new NotImplementedException("Legacy locale patching is not supported at the moment");
+            /*if (changes.LanguageIndex >= cacheFile.Languages.Count)
                 throw new ArgumentException("Language changes cannot be applied to undefined languages in a cache file");
 
             // Load the language table and apply the changes
@@ -42,31 +43,7 @@ namespace Blamite.Patching
             MakeLocaleChanges(changes.LocaleChanges, table);
 
             // Write the table back to the file
-            language.SaveStrings(stream, table);
-        }
-
-        /// <summary>
-        /// Makes changes to a language's locales.
-        /// </summary>
-        /// <param name="changes">The changes to make to the language.</param>
-        /// <param name="table">The locale table to make the changes on.</param>
-        public static void MakeLocaleChanges(IEnumerable<LocaleChange> changes, LocaleTable table)
-        {
-			foreach (var change in changes)
-                MakeLocaleChange(change, table);
-        }
-
-        /// <summary>
-        /// Makes a change to a locale table.
-        /// </summary>
-        /// <param name="change">The locale change to make.</param>
-        /// <param name="table">The locale table to make the change on.</param>
-        public static void MakeLocaleChange(LocaleChange change, LocaleTable table)
-        {
-            if (change.Index < 0 || change.Index >= table.Strings.Count)
-                throw new ArgumentException("Locale changes cannot be applied beyond the boundaries of the locale table");
-
-            table.Strings[change.Index].Value = change.NewValue;
+            language.SaveStrings(stream, table);*/
         }
     }
 }
