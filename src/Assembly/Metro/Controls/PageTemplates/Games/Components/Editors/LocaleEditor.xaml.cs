@@ -369,6 +369,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             var entry = NewEntry();
             StartEditing(entry);
         }
+
+        private void stringId_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Hack to make the stringID textbox get focus
+            var control = (FrameworkElement)sender;
+            control.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
         #endregion
 
         #region Commands
