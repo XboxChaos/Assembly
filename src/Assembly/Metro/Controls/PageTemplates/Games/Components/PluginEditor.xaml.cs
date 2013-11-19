@@ -66,7 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
         {
             File.WriteAllText(_pluginPath, txtPlugin.Text);
             _sibling.RefreshEditor(MetaReader.LoadType.File);
-            _parent.tbMetaEditors.SelectedIndex = 1;//default is 4 with other tabs included in program
+            _parent.ShowMetaEditor();
         }
 
         private void btnLoadFromDisk_Click_1(object sender, RoutedEventArgs e)

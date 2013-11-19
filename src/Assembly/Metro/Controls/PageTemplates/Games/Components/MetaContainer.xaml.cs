@@ -79,12 +79,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			//}
 			#endregion
 			#region BSP
-			if (true && _tag.RawTag.Class.Magic == CharConstant.FromString("sbsp")) // add some manual check here akarias, since you code isn't in blamite
+			/*if (true && _tag.RawTag.Class.Magic == CharConstant.FromString("sbsp")) // add some manual check here akarias, since you code isn't in blamite
 			{
 				tabBspEditor.Visibility = Visibility.Visible;
 				tabBspEditor.Content = new BspEditor(_tag, _cache, _streamManager);
 			}
-			else
+			else*/
 			{
 				tabBspEditor.Visibility = Visibility.Collapsed;
 				if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
@@ -109,10 +109,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		public void GoToRawPluginLine(int pluginLine)
 		{
-			tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.PluginEditor;
-			_pluginEditor.GoToLine(pluginLine);
-
+			tbMetaEditors.SelectedItem = tabPluginEditor;
+            _pluginEditor.GoToLine(pluginLine);
 		}
+
+        public void ShowMetaEditor()
+        {
+            tbMetaEditors.SelectedItem = tabMetaEditor;
+        }
 
 		public void LoadNewTagEntry(TagEntry tag)
 		{

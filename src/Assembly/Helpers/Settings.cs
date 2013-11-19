@@ -243,9 +243,6 @@ namespace Assembly.Helpers
         public enum LastMetaEditorType
         {
             Info,
-            //Reflex,
-            //Ident,
-            //String,
             MetaEditor,
             PluginEditor,
 			Sound,
