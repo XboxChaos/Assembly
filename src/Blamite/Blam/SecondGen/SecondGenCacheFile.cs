@@ -20,6 +20,7 @@ namespace Blamite.Blam.SecondGen
         private SecondGenTagTable _tags;
         private IndexedFileNameSource _fileNames;
         private IndexedStringIDSource _stringIDs;
+        private ILanguagePackLoader _languageLoader = new DummyLanguagePackLoader();
 
         public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
         {
@@ -135,7 +136,7 @@ namespace Blamite.Blam.SecondGen
 
         public ILanguagePackLoader Languages
         {
-            get { return null; }
+            get { return _languageLoader; }
         }
 
         public IResourceManager Resources
