@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:games="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
-             mc:Ignorable="d" Height="35" Width="785"
+             mc:Ignorable="d" Height="28" Width="785"
              HorizontalAlignment="Left"
              x:Name="control">
     <UserControl.Resources>
@@ -25,7 +25,7 @@
     <Grid>
         <StackPanel Orientation="Horizontal">
             <TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}" Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0" TextTrimming="CharacterEllipsis"/>
-            <ComboBox x:Name="cbTagClass" Width="80" VerticalAlignment="Center" Margin="20,0,0,0" SelectionChanged="cbTagClass_SelectionChanged"
+            <ComboBox x:Name="cbTagClass" Width="65" VerticalAlignment="Center" Margin="20,0,0,0" SelectionChanged="cbTagClass_SelectionChanged"
                       ItemsSource="{DynamicResource classList}" SelectedIndex="{Binding Class, Mode=TwoWay, Converter={StaticResource classToIndexConverter}}">
                 <ComboBox.Resources>
                     <CompositeCollection x:Key="classList">
@@ -35,12 +35,12 @@
                 </ComboBox.Resources>
             </ComboBox>
             
-            <ComboBox x:Name="cbTagEntry" Width="400" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,0,0,0"
+            <ComboBox x:Name="cbTagEntry" Width="450" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,0,0"
                       ItemsSource="{Binding Class, Converter={StaticResource classItemsRetriever}, Mode=OneWay}"
                       SelectedItem="{Binding Value, Mode=TwoWay}"
                       SelectionChanged="cbTagEntry_SelectionChanged"/>
 
-            <Button x:Name="btnJumpToTag" Content="Jump To" Margin="10,0,0,0" Width="75" Visibility="{Binding ShowJumpTo}"
+            <Button x:Name="btnJumpToTag" Content="Jump To" FontSize="12" Margin="5,0,0,0" Height="22" Width="56" Visibility="{Binding ShowJumpTo}"
                     Command="{x:Static local:tagValue.JumpToCommand}" CommandParameter="{Binding Value}" CommandTarget="{Binding ElementName=control}"/>
         </StackPanel>
     </Grid>
