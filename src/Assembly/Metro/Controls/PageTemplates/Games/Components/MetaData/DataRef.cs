@@ -19,5 +19,10 @@
             var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine);
             return result;
         }
+
+        public string Kind
+        {
+            get { return "dataref " + Format; }
+        }
     }
 }
