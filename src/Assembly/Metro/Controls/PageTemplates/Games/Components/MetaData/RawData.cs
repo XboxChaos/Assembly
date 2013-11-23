@@ -33,6 +33,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             set { _document = value; NotifyPropertyChanged("Document"); }
         }
 
+        public string Kind
+        {
+            get { return "byte array"; }
+        }
+
 	    public string Format
 	    {
 			get { return _format; }

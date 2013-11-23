@@ -32,19 +32,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="10,10,10,10">
+    <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderThickness" Value="1,1,1,0" />
-                <Setter Property="Margin" Value="0,10,0,0" />
+                <Setter Property="Margin" Value="0,4,0,0" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsExpanded}" Value="False">
                         <Setter Property="BorderThickness" Value="1" />
-                        <Setter Property="Margin" Value="0,10,0,10" />
+                        <Setter Property="Margin" Value="0,4,0,4" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding HasChildren}" Value="False">
                         <Setter Property="BorderThickness" Value="1" />
-                        <Setter Property="Margin" Value="0,10,0,10" />
+                        <Setter Property="Margin" Value="0,4,0,4" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -56,8 +56,8 @@
                     <ColumnDefinition Width="110" />
                 </Grid.ColumnDefinitions>
             
-                <Label Grid.Column="0" x:Name="lblChunkName" Content="{Binding Name}" HorizontalAlignment="Stretch" Height="24" VerticalAlignment="Top" Margin="0,0,5,0" Foreground="#FF999999" Background="#FF474747" Padding="5,3"/>
-                <ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="24" Margin="5,0,0,0" VerticalAlignment="Top" ItemsSource="{Binding Pages}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding HasChildren}">
+                <Label Grid.Column="0" x:Name="lblChunkName" Content="{Binding Name}" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Top" Margin="0,0,0,0" Foreground="#FF999999" Background="#FF474747" Padding="5,3" FontSize="12"/>
+                <ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" Margin="5,0,0,0" VerticalAlignment="Top" ItemsSource="{Binding Pages}" SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding HasChildren}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock>
@@ -72,9 +72,9 @@
                     </ComboBox.ItemsPanel>
                 </ComboBox>
             </Grid>
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,30,0,0">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0">
                 <Expander x:Name="InformationExpander" Header="Information" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                    <Grid Height="30">
+                    <Grid Height="28">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -82,23 +82,23 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Label Content="Count:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
-                                <TextBox x:Name="txtChunkCount" Text="{Binding Length, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                <TextBox x:Name="txtChunkCount" Text="{Binding Length, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80" Foreground="#FF999999" Padding="0,0,0,0"
                                          c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                                <Label Content="Address:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
-                                <TextBox x:Name="txtChunkAddress" Text="{Binding FirstEntryAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                <Label Content="Address:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
+                                <TextBox x:Name="txtChunkAddress" Text="{Binding FirstEntryAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}" HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80" Foreground="#FF999999" Padding="0,0,0,0"
                                          c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                             </StackPanel>
                             
                             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
                                 <Label Content="Entry Size:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Background="{x:Null}" Foreground="#FF999999" />
-                                <TextBox x:Name="txtChunkSize" Text="{Binding EntrySize, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="24" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="85" Foreground="#FF999999" Padding="0,0,0,0"
+                                <TextBox x:Name="txtChunkSize" Text="{Binding EntrySize, UpdateSourceTrigger=LostFocus}" HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="80" Foreground="#FF999999" Padding="0,0,0,0"
                                          c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                             </StackPanel>
                         </Grid>
                     </Grid>
                 </Expander>
             
-                <Expander Header="Contents" Margin="0,10,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" />
+                <Expander Header="Contents" Margin="0,4,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" />
             </StackPanel>
         </Grid>
     </Border>

@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" Width="680"
-             Height="175"
+             Height="146"
              HorizontalAlignment="Left">
     <UserControl.Resources>
         <Style x:Key="BitfieldItemStyle" TargetType="{x:Type ListBoxItem}">
             <Setter Property="Margin" Value="0"/>
+            <Setter Property="Height" Value="17"/>
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Background" Value="Transparent" />
@@ -19,7 +20,7 @@
                             <Border x:Name="BorderOutline" BorderThickness="2,1,1,1" />
                             <Border x:Name="BorderInline" BorderThickness="0" />
                             <Grid Background="Black" Opacity="0" />
-                            <ContentPresenter Margin="4,2" />
+                            <ContentPresenter VerticalAlignment="Center" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <MultiTrigger>
@@ -51,13 +52,13 @@
         <Style x:Key="MetroBitCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
             <Setter Property="Foreground" Value="#999999"/>
             <Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}"/>
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="12" />
         </Style>
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}" Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Top" Margin="0,6,0,0" TextTrimming="CharacterEllipsis"/>
-            <ListBox x:Name="bitfieldEntries" Style="{StaticResource MetroBitField}" ItemsSource="{Binding Path=Bits}" Margin="20,5,0,5" Width="300" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}" BorderBrush="#FF3C3C3C" Foreground="{x:Null}">
+            <TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}" Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Top" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+            <ListBox x:Name="bitfieldEntries" Style="{StaticResource MetroBitField}" ItemsSource="{Binding Path=Bits}" Width="350" Margin="20,3,0,3"  ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}" BorderBrush="#FF3C3C3C" Foreground="{x:Null}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <CheckBox x:Name="cbBitChecked" Content="{Binding Name}" IsChecked="{Binding IsSet}" Style="{StaticResource MetroBitCheckBox}" Margin="5,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch" />
@@ -70,7 +71,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <TextBlock x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" Width="150" Margin="20,6,0,0" />
+            <TextBlock x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" Width="125" Margin="20,3,0,0" />
         </StackPanel>
     </Grid>
 </UserControl>
