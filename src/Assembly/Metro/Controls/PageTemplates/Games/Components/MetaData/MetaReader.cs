@@ -300,6 +300,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
             {
                 field.DataAddress = 0;
                 field.Length = 0;
+                field.Value = "";
             }
         }
 
