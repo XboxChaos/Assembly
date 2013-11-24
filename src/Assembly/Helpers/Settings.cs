@@ -45,9 +45,7 @@ namespace Assembly.Helpers
 				var jsonData = JsonConvert.SerializeObject(_assemblySettings);
 
 				// Get File Path
-				if (!File.Exists("AssemblyApp.AssemblyStorage.AssemblySettings.ason"))
-					File.Create("AssemblyApp.AssemblyStorage.AssemblySettings.ason");
-				File.WriteAllText("AssemblyApp.AssemblyStorage.AssemblySettings.ason", jsonData);
+				File.WriteAllText("AssemblySettings.ason", jsonData);
 
 				// Update Accent
 				_assemblySettings.UpdateAssemblyAccent();
@@ -66,16 +64,16 @@ namespace Assembly.Helpers
 
 			// Get File Path
 			string jsonString = null;
-			if (File.Exists("AssemblyApp.AssemblyStorage.AssemblySettings.ason"))
-				jsonString = File.ReadAllText("AssemblyApp.AssemblyStorage.AssemblySettings.ason");
+			if (File.Exists("AssemblySettings.ason"))
+				jsonString = File.ReadAllText("AssemblySettings.ason");
 
-			AssemblySettings = jsonString == null ? new Settings() : JsonConvert.DeserializeObject<Settings>(jsonString);
+			if (jsonString == null)
+				_assemblySettings = new Settings();
+			else
+				_assemblySettings = JsonConvert.DeserializeObject<Settings>(jsonString) ?? new Settings();
 
 			// Update Accent
-			AssemblySettings.UpdateAssemblyAccent();
-
-			// Update File Defaults
-			FileDefaults.UpdateFileDefaults();
+			_assemblySettings.UpdateAssemblyAccent();
 
 			#endregion
 		}
@@ -262,7 +260,7 @@ namespace Assembly.Helpers
 					Xbdm.UpdateDeviceIdent(value);
 			}
 		}
-		private string _xdkNameIp = "";
+		private string _xdkNameIp = "192.168.0.1";
 
 		/// <summary>
 		/// 
