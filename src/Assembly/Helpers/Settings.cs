@@ -42,7 +42,7 @@ namespace Assembly.Helpers
 				SetField(ref _assemblySettings, value, "AssemblySettings");
 
 				// Write Changes
-				var jsonData = JsonConvert.SerializeObject(_assemblySettings);
+				var jsonData = JsonConvert.SerializeObject(value);
 
 				// Get File Path
 				File.WriteAllText("AssemblySettings.ason", jsonData);
@@ -67,10 +67,18 @@ namespace Assembly.Helpers
 			if (File.Exists("AssemblySettings.ason"))
 				jsonString = File.ReadAllText("AssemblySettings.ason");
 
-			if (jsonString == null)
+			try
+			{
+
+				if (jsonString == null)
+					_assemblySettings = new Settings();
+				else
+					_assemblySettings = JsonConvert.DeserializeObject<Settings>(jsonString) ?? new Settings();
+			}
+			catch(JsonSerializationException)
+			{
 				_assemblySettings = new Settings();
-			else
-				_assemblySettings = JsonConvert.DeserializeObject<Settings>(jsonString) ?? new Settings();
+			}
 
 			// Update Accent
 			_assemblySettings.UpdateAssemblyAccent();
@@ -591,6 +599,11 @@ namespace Assembly.Helpers
 
 			field = value;
 			OnPropertyChanged(propertyName);
+
+			// Write Changes
+			var jsonData = JsonConvert.SerializeObject(this);
+			File.WriteAllText("AssemblySettings.ason", jsonData);
+
 			return true;
 		}
 
