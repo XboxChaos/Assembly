@@ -1,9 +1,5 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Media.Animation;
-using Assembly.Helpers;
 using System.Windows.Controls.Primitives;
 
 namespace Assembly.Metro.Controls.PageTemplates
@@ -21,23 +17,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 			DataContext = App.AssemblyStorage.AssemblySettings;
 
 			// Load UI
-			btnTabSelection_Clicked(btnSelectGeneral, null);
+			btnTabSelection_Clicked(BtnSelectGeneral, null);
 		}
-
-		#region Real Time Accent Updateing
-		private void cbAccentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			var theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Settings.Accents), ((Settings.Accents)cbAccentSelector.SelectedIndex).ToString()).ToString());
-			try
-			{
-				Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/" + theme + ".xaml", UriKind.Relative) });
-			}
-			catch
-			{
-				Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/Blue.xaml", UriKind.Relative) });
-			}
-		}
-		#endregion
 
 		#region TabSelection
 		private void btnTabSelection_Clicked(object sender, RoutedEventArgs e)
@@ -68,33 +49,37 @@ namespace Assembly.Metro.Controls.PageTemplates
 		private string _currentTag = "";
 		private void SetAllToDisbaled()
 		{
-			btnSelectGeneral.IsChecked = false;
-			btnSelectXboxDev.IsChecked = false;
-			btnSelectMapEdit.IsChecked = false;
-			btnSelectPlugins.IsChecked = false;
-			btnSelectStrtpge.IsChecked = false;
+			BtnSelectGeneral.IsChecked = false;
+			BtnSelectXboxDev.IsChecked = false;
+			BtnSelectMapEdit.IsChecked = false;
+			BtnSelectPlugins.IsChecked = false;
+			BtnSelectStrtpge.IsChecked = false;
 		}
 		#endregion
 
-		public bool Close()
-		{
-			return true;
-		}
+		#region Inline Helpers
 
 		private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
 		{
 			var fbd = new System.Windows.Forms.FolderBrowserDialog
-						  {
-							  ShowNewFolderButton = true,
-							  SelectedPath = txtAutoSaveDirectory.Text,
-							  Description = "Select the folder you would like to auto-save screenshots in"
-						  };
+			{
+				ShowNewFolderButton = true,
+				SelectedPath = txtAutoSaveDirectory.Text,
+				Description = "Select the folder you would like to auto-save screenshots in"
+			};
 			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				txtAutoSaveDirectory.Text = fbd.SelectedPath;
 		}
 		private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			lblXDKScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);
+			LblXdkScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);
+		}
+
+		#endregion
+
+		public bool Close()
+		{
+			return true;
 		}
 	}
 }

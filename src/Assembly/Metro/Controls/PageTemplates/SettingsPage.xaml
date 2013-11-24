@@ -191,10 +191,10 @@
 			<ColumnDefinition Width="230" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		
 		<Image Source="/Assembly;component/Metro/Images/settings_logo.png" OpacityMask="#FF7A7A7A" Opacity="0.05"
 		       HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="420" Width="421.527"
 		       d:LayoutOverrides="HorizontalAlignment" Margin="-84,0,0,-52" />
-
 		<Grid Grid.Column="0" Background="#2d2d30">
 			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Settings" Foreground="White"
 			           FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
@@ -213,24 +213,25 @@
 			<StackPanel Margin="25,114,25,0">
 				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" d:LayoutOverrides="Height" />
 
-				<ToggleButton x:Name="btnSelectGeneral" Content="General" Margin="0,40,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="BtnSelectGeneral" Content="General" Margin="0,40,0,0" HorizontalAlignment="Left"
 				              Style="{DynamicResource ToggleTabChoser}"
 				              Tag="General" Click="btnTabSelection_Clicked" />
-				<ToggleButton x:Name="btnSelectXboxDev" Content="Xbox 360 Development" Margin="0,0,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="BtnSelectXboxDev" Content="Xbox 360 Development" Margin="0,0,0,0" HorizontalAlignment="Left"
 				              Style="{DynamicResource ToggleTabChoser}"
 				              Tag="XboxDev" Click="btnTabSelection_Clicked" />
-				<ToggleButton x:Name="btnSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="BtnSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
 				              Style="{DynamicResource ToggleTabChoser}"
 				              Tag="MapEdit" Click="btnTabSelection_Clicked" />
-				<ToggleButton x:Name="btnSelectPlugins" Content="Plugins" Margin="0,0,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="BtnSelectPlugins" Content="Plugins" Margin="0,0,0,0" HorizontalAlignment="Left"
 				              Style="{DynamicResource ToggleTabChoser}"
 				              Tag="Plugins" Click="btnTabSelection_Clicked" />
-				<ToggleButton x:Name="btnSelectStrtpge" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
+				<ToggleButton x:Name="BtnSelectStrtpge" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
 				              Style="{DynamicResource ToggleTabChoser}"
 				              Tag="Strtpge" Click="btnTabSelection_Clicked" />
 			</StackPanel>
 
 		</Grid>
+		
 		<GridSplitter Width="2" Background="#FF545456" Foreground="{x:Null}" ResizeDirection="Columns" IsEnabled="False" />
 
 		<Grid x:Name="settingsGeneral" Margin="30,0,0,0" Grid.Column="1" Visibility="Visible">
@@ -344,14 +345,14 @@
 			<TextBlock Grid.Column="1" Grid.Row="3"
 			           Text="Xbox Name/IP:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
 			<TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
-			         x:Name="txtXBDMNameIP" Width="250" Text="{Binding Path=XdkNameIp, Mode=TwoWay}" />
+			         Width="250" Text="{Binding Path=XdkNameIp, Mode=TwoWay}" />
 
 			<!-- Freeze Console on Screen capture -->
 			<TextBlock Grid.Column="1" Grid.Row="5"
 			           Text="Freeze Console:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbXDKFreeze" Margin="0,0,0,0" Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
+			          Margin="0,0,0,0" Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
 			          Content="Freeze console while taking screenshots (makes screenshots smoother)" />
 
 			<!-- Xbox Screenshots -->
@@ -359,12 +360,12 @@
 			           Text="Xbox 360 Screenshots:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbXDKAutoSaveScreenshots" IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}" Content="Automatically save screenshots" />
+			          IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}" Content="Automatically save screenshots" />
 			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="8">
 				<TextBox
 					x:Name="txtAutoSaveDirectory" Width="400" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
 				<Button
-					x:Name="btnAutoSaveScreenshotDirectory" Margin="20,0,0,0" Width="90" Content="Select Folder"
+					Margin="20,0,0,0" Width="90" Content="Select Folder"
 					Click="btnAutoSaveScreenshotDirectory_Click" />
 			</StackPanel>
 
@@ -373,16 +374,16 @@
 			           Text="Image Resizing:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbXDKScreenshotReszing" IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}" Content="Resize screenshots" />
+			          IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}" Content="Resize screenshots" />
 			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="11">
 				<TextBlock Text="Width:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
 				           FontFamily="{DynamicResource MetroFontRegular}" />
-				<TextBox x:Name="txtXDKScreenshotWeight" Text="{Binding Path=XdkResizeScreenshotWidth, Mode=TwoWay}" Width="100" />
+				<TextBox Text="{Binding Path=XdkResizeScreenshotWidth, Mode=TwoWay}" Width="100" />
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="12">
 				<TextBlock Text="Height:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
 				           FontFamily="{DynamicResource MetroFontRegular}" />
-				<TextBox x:Name="txtXDKScreenshotHeight" Text="{Binding Path=XdkResizeScreenshotHeight, Mode=TwoWay}" Width="100" />
+				<TextBox Text="{Binding Path=XdkResizeScreenshotHeight, Mode=TwoWay}" Width="100" />
 			</StackPanel>
 
 			<!-- Gamma Adjustment -->
@@ -392,7 +393,7 @@
 			<CheckBox Grid.Column="2" Grid.Row="14" VerticalAlignment="Center" HorizontalAlignment="Left"
 			          IsChecked="True" Content="Adjust Gamma" />
 			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="15">
-				<TextBlock x:Name="lblXDKScreenGammaValue" Text="Gamma (0.55):" Foreground="White" Width="90"
+				<TextBlock x:Name="LblXdkScreenGammaValue" Text="Gamma (0.55):" Foreground="White" Width="90"
 				           VerticalAlignment="Center" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
 				<Slider
 				        TickFrequency=".01"
@@ -438,7 +439,7 @@
 			           Text="Info Panel Location:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<ComboBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
-			          x:Name="cbMapInfoPanel" SelectedIndex="0" Width="250">
+			          SelectedIndex="{Binding Path=HalomapMapInfoDockSide, Mode=TwoWay}" Width="250">
 				<ComboBoxItem Content="Left" />
 				<ComboBoxItem Content="Right" />
 			</ComboBox>
@@ -448,10 +449,12 @@
 			           Text="Tag Sorting Method:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<ComboBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" IsEnabled="False"
-			          x:Name="cbTagSorting" SelectedIndex="0" Width="250">
+			          SelectedIndex="{Binding Path=HalomapTagSort, Mode=TwoWay}" Width="250">
 				<ComboBoxItem Content="By Tag Class" />
-				<!--<ComboBoxItem Content="By Object Hierarchy" />
-                <ComboBoxItem Content="By Path Hierarchy" /> -->
+				<!--
+				<ComboBoxItem Content="By Object Hierarchy" />
+				<ComboBoxItem Content="By Path Hierarchy" />
+				-->
 			</ComboBox>
 		</Grid>
 
@@ -483,7 +486,7 @@
 			           Text="Meta Editor Settings:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbPluginsShowComments" IsChecked="True" Width="400" Content="Show comments in the meta editor" />
+			          IsChecked="{Binding Path=PluginsShowComments, Mode=TwoWay}" Width="400" Content="Show comments in the meta editor" />
 		</Grid>
 
 		<Grid x:Name="settingsStrtPge" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
@@ -517,11 +520,11 @@
 			           Text="Show Recent File Types:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbStartPageRecentMap" Margin="0,2,0,0" Content=".map files" />
+			          Margin="0,2,0,0" Content=".map files" IsChecked="{Binding Path=StartpageShowRecentsMap, Mode=TwoWay}" />
 			<CheckBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbStartPageRecentBLF" Margin="0,2,0,0" Content=".blf files" />
+			          Margin="0,2,0,0" Content=".blf files" IsChecked="{Binding Path=StartpageShowRecentsBlf, Mode=TwoWay}" />
 			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbStartPageRecentMapInfo" Margin="0,2,0,0" Content=".mapinfo files" />
+			          Margin="0,2,0,0" Content=".mapinfo files" IsChecked="{Binding Path=StartpageShowRecentsMapInfo, Mode=TwoWay}" />
 		</Grid>
 	</Grid>
 </UserControl>
