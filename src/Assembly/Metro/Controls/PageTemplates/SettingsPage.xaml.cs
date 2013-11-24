@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				Description = "Select the folder you would like to auto-save screenshots in"
 			};
 			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-				txtAutoSaveDirectory.Text = fbd.SelectedPath;
+				App.AssemblyStorage.AssemblySettings.XdkScreenshotPath = fbd.SelectedPath;
 		}
 		private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
