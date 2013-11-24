@@ -270,9 +270,7 @@
 			<!-- Accents -->
 			<TextBlock Grid.Column="1" Grid.Row="3"
 			           Text="Accent Theme:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-			<ComboBox Grid.Column="2" Grid.Row="3"
-			          x:Name="cbAccentSelector" Width="250" SelectedIndex="0"
-			          SelectionChanged="cbAccentSelector_SelectionChanged" HorizontalAlignment="Left">
+			<ComboBox Grid.Column="2" Grid.Row="3" Width="250" SelectedIndex="{Binding Path=ApplicationAccent, Mode=TwoWay}" HorizontalAlignment="Left">
 				<ComboBoxItem Content="Blue" />
 				<ComboBoxItem Content="Purple" />
 				<ComboBoxItem Content="Orange" />
@@ -282,21 +280,21 @@
 			<TextBlock Grid.Column="1" Grid.Row="5"
 			           Text="Updates on Startup:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center"
-			          x:Name="cbCheckUpdatesOnStartup" Margin="0,0,0,0" IsChecked="True" Content="Check for updates on startup." />
+			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Margin="0,0,0,0" 
+					  IsChecked="{Binding Path=ApplicationUpdateOnStartup, Mode=TwoWay}" Content="Check for updates on startup." />
 
 			<!-- Default File Types -->
 			<TextBlock Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
 			           Text="Default Editor for:" Foreground="White" Margin="0,4,0,0"
 			           FontFamily="{DynamicResource MetroFontRegular}" />
 			<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbDefaultMapEditor" Content=".map files" />
+			          Content=".map files" IsChecked="{Binding Path=DefaultMap, Mode=TwoWay}" />
 			<CheckBox Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbDefaultBLFEditor" Content=".blf files" />
+			          Content=".blf files" IsChecked="{Binding Path=DefaultBlf, Mode=TwoWay}" />
 			<CheckBox Grid.Column="2" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbDefaultMIFEditor" Content=".mapinfo files" />
+			          Content=".mapinfo files" IsChecked="{Binding Path=DefaultMif, Mode=TwoWay}" />
 			<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          x:Name="cbDefaultAMPEditor" Content=".asmp files" />
+			          Content=".asmp files" IsChecked="{Binding Path=DefaultAmp, Mode=TwoWay}" />
 		</Grid>
 
 		<Grid x:Name="settingsXboxDev" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
