@@ -12,89 +12,83 @@ using System.Threading;
 
 namespace Assembly
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : ISingleInstanceApp
-    {
-        #region ISingleInstanceApp Members
-        public bool SignalExternalCommandLineArgs(IList<string> args)
-        {
-            return Settings.homeWindow == null || Settings.homeWindow.ProcessCommandLineArgs(args);
-        }
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : ISingleInstanceApp
+	{
+		#region ISingleInstanceApp Members
+		public bool SignalExternalCommandLineArgs(IList<string> args)
+		{
+			return AssemblyStorage.AssemblySettings.HomeWindow == null || AssemblyStorage.AssemblySettings.HomeWindow.ProcessCommandLineArgs(args);
+		}
 
-	    #endregion
+		#endregion
 
-        [STAThread]
-        public static void Main()
-        {
-	        if (!SingleInstance<App>.InitializeAsFirstInstance("RecivedCommand")) return;
+		public static Storage AssemblyStorage;
 
-	        var application = new App();
+		[STAThread]
+		public static void Main()
+		{
+			if (!SingleInstance<App>.InitializeAsFirstInstance("RecivedCommand")) return;
 
-	        application.InitializeComponent();
-	        application.Run();
+			var application = new App();
 
-	        // Allow single instance code to perform cleanup operations
-	        SingleInstance<App>.Cleanup();
-        }
+			application.InitializeComponent();
+			application.Run();
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+			// Allow single instance code to perform cleanup operations
+			SingleInstance<App>.Cleanup();
+		}
+
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
 
 #if !DEBUG
-            Current.DispatcherUnhandledException += (o, args) =>
-            {
-                MetroException.Show(args.Exception);
+			Current.DispatcherUnhandledException += (o, args) =>
+			{
+				MetroException.Show(args.Exception);
 
-                args.Handled = true;
-            };
+				args.Handled = true;
+			};
 #endif
 
-            // For test compiling.
-            //AssemblyPluginLoader.LoadPlugin(XmlReader.Create(@"Plugins\Halo3\bipd.asm"), new TestPluginVisitor());
+			// Create Assembly Storage
+			AssemblyStorage = new Storage();
 
-            // Create Settings
-            Settings.LoadSettings(true);
+			// Update Assembly Protocol
+			AssemblyProtocol.UpdateProtocol();
 
-            // Update Assembly Protocol
-            AssemblyProtocol.UpdateProtocol();
+			// Create jumplist
+			JumpLists.UpdateJumplists();
 
-            // Create jumplist
-            JumpLists.UpdateJumplists();
+			// Create XBDM Instance
+			AssemblyStorage.AssemblySettings.Xbdm = new Xbdm(AssemblyStorage.AssemblySettings.XdkNameIp);
 
-            // Create XBDM Instance
-            Settings.xbdm = new Xbdm(Settings.XDKNameIP);
-            //try { Settings.xbdm.Connect(); } catch { }
+			// Try and delete all temp data
+			VariousFunctions.EmptyUpdaterLocations();
 
-            // Try and delete all temp data
-            VariousFunctions.EmptyUpdaterLocations();
+			// Dubs, checkem
+			_0xabad1dea.CheckServerStatus();
 
-            // Dubs, checkem
-            _0xabad1dea.CheckServerStatus();
+			// Update File Defaults
+			FileDefaults.UpdateFileDefaults();
 
-            // Update File Defaults
-            FileDefaults.UpdateFileDefaults();
+			// Set closing method
+			Current.Exit += (o, args) =>
+				{
+					// Update Settings with Window Width/Height
+					AssemblyStorage.AssemblySettings.ApplicationSizeMaximize = (AssemblyStorage.AssemblySettings.HomeWindow.WindowState == WindowState.Maximized);
+					if (AssemblyStorage.AssemblySettings.ApplicationSizeMaximize) return;
 
-            // Set closing method
-            Current.Exit += (o, args) =>
-                {
-                    // Update Settings with Window Width/Height
-                    Settings.applicationSizeMaximize = (Settings.homeWindow.WindowState == WindowState.Maximized);
-                    if (!Settings.applicationSizeMaximize)
-                    {
-                        Settings.applicationSizeWidth = Settings.homeWindow.Width;
-                        Settings.applicationSizeHeight = Settings.homeWindow.Height;
-                    }
-
-                    // Save Settings
-                    Settings.UpdateSettings();
-                };
+					AssemblyStorage.AssemblySettings.ApplicationSizeWidth = AssemblyStorage.AssemblySettings.HomeWindow.Width;
+					AssemblyStorage.AssemblySettings.ApplicationSizeHeight = AssemblyStorage.AssemblySettings.HomeWindow.Height;
+				};
 
 			// Start Caching Blam Cache MetaData
 			var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
 			metadataCacheThread.Start();
-        }
-    }
+		}
+	}
 }

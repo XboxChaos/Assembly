@@ -14,16 +14,16 @@ using AvalonDock.Layout;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
-    /// <summary>
-    /// Interaction logic for HaloInfo.xaml
-    /// </summary>
-    public partial class HaloInfo
-    {
-        private readonly string _blfLocation;
-        private PureBLF _blf;
-        private MapInfo _mapInfo;
-        private bool _startEditing;
-        private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>
+	/// <summary>
+	/// Interaction logic for HaloInfo.xaml
+	/// </summary>
+	public partial class HaloInfo
+	{
+		private readonly string _blfLocation;
+		private PureBLF _blf;
+		private MapInfo _mapInfo;
+		private bool _startEditing;
+		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>
         {
             new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
             new LanguageEntry { Index = 1, Language = "Japanese", LanguageShort = "ja" },
@@ -37,160 +37,160 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             new LanguageEntry { Index = 9, Language = "Portuguese", LanguageShort = "pt" }
         };
 
-        public HaloInfo(string infoLocation, LayoutDocument tab)
-        {
-            InitializeComponent();
-            _blfLocation = infoLocation;
+		public HaloInfo(string infoLocation, LayoutDocument tab)
+		{
+			InitializeComponent();
+			_blfLocation = infoLocation;
 
-            var fi = new FileInfo(_blfLocation);
-	        tab.Title = fi.Name;
-            lblBLFname.Text = fi.Name;
+			var fi = new FileInfo(_blfLocation);
+			tab.Title = fi.Name;
+			lblBLFname.Text = fi.Name;
 
 			var thrd = new Thread(LoadMapInfo);
-            thrd.SetApartmentState(ApartmentState.STA);
-            thrd.Start();
-        }
+			thrd.SetApartmentState(ApartmentState.STA);
+			thrd.Start();
+		}
 
-        public void LoadMapInfo()
-        {
-            try
-            {
-                // Just a lazy way to validate the BLF file
-                _blf = new PureBLF(_blfLocation);
-                if (_blf.BLFChunks[1].ChunkMagic != "levl")
-                    throw new Exception("The selected Map Info BLF is not a valid Map Info BLF file.");
-                _blf.Close();
+		public void LoadMapInfo()
+		{
+			try
+			{
+				// Just a lazy way to validate the BLF file
+				_blf = new PureBLF(_blfLocation);
+				if (_blf.BLFChunks[1].ChunkMagic != "levl")
+					throw new Exception("The selected Map Info BLF is not a valid Map Info BLF file.");
+				_blf.Close();
 
-                _mapInfo = new MapInfo(_blfLocation);
-                
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    // Add BLF Info
-                    paneBLFInfo.Children.Insert(0, new Components.MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X8")));
-                    paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
+				_mapInfo = new MapInfo(_blfLocation);
 
-                    // Load Languages
-                    LoadLanguages(_mapInfo.MapInformation.Game);
+				Dispatcher.Invoke(new Action(delegate
+				{
+					// Add BLF Info
+					paneBLFInfo.Children.Insert(0, new Components.MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X8")));
+					paneBLFInfo.Children.Insert(1, new Components.MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
-                    // Add Map Info
-                    switch (_mapInfo.MapInformation.Game)
-                    {
-                        case MapInfo.GameIdentifier.Halo3:
-                            txtGameName.Text = "Halo 3";
-                            break;
-                        case MapInfo.GameIdentifier.Halo3ODST:
-                            txtGameName.Text = "Halo 3: ODST";
-                            break;
-                        case MapInfo.GameIdentifier.HaloReach:
-                            txtGameName.Text = "Halo Reach";
-                            break;
-                        case MapInfo.GameIdentifier.HaloReachBetas:
-                            txtGameName.Text = "Halo Reach Pre/Beta";
-                            break;
-                        case MapInfo.GameIdentifier.Halo4:
-                            txtGameName.Text = "Halo 4";
-                            break;
-                    }
-                    txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
-                    lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
-                    txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
+					// Load Languages
+					LoadLanguages(_mapInfo.MapInformation.Game);
 
-                    // Update UI
-                    _startEditing = true;
-                    cbLanguages.SelectedIndex = 0;
+					// Add Map Info
+					switch (_mapInfo.MapInformation.Game)
+					{
+						case MapInfo.GameIdentifier.Halo3:
+							txtGameName.Text = "Halo 3";
+							break;
+						case MapInfo.GameIdentifier.Halo3ODST:
+							txtGameName.Text = "Halo 3: ODST";
+							break;
+						case MapInfo.GameIdentifier.HaloReach:
+							txtGameName.Text = "Halo Reach";
+							break;
+						case MapInfo.GameIdentifier.HaloReachBetas:
+							txtGameName.Text = "Halo Reach Pre/Beta";
+							break;
+						case MapInfo.GameIdentifier.Halo4:
+							txtGameName.Text = "Halo 4";
+							break;
+					}
+					txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
+					lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
+					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
-                    if (Settings.startpageHideOnLaunch)
-                        Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
+					// Update UI
+					_startEditing = true;
+					cbLanguages.SelectedIndex = 0;
 
-                    RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "Map Info", Settings.RecentFileType.MapInfo);
-                }));
-            }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(new Action(delegate
-                {
-                    MetroMessageBox.Show("Unable to open MapInfo", ex.Message);
-                    Settings.homeWindow.ExternalTabClose((LayoutDocument)Parent);
-                }));
-            }
-        }
+					if (App.AssemblyStorage.AssemblySettings.StartpageHideOnLaunch)
+						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
 
-        /// <summary>
-        /// Close stuff
-        /// </summary>
-        public bool Close() { try { _mapInfo.Close(); } catch { } return true; }
+					RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "Map Info", Settings.RecentFileType.MapInfo);
+				}));
+			}
+			catch (Exception ex)
+			{
+				Dispatcher.Invoke(new Action(delegate
+				{
+					MetroMessageBox.Show("Unable to open MapInfo", ex.Message);
+					App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose((LayoutDocument)Parent);
+				}));
+			}
+		}
 
-        // Validate MapID
-        private void txtMapID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-	        Int32 tmp32;
-            if (Int32.TryParse(txtMapID.Text, out tmp32))
-                txtMapID.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
-            else
-                txtMapID.BorderBrush = (Brush)FindResource("ExtryzeAccentBrush");
-        }
+		/// <summary>
+		/// Close stuff
+		/// </summary>
+		public bool Close() { try { _mapInfo.Close(); } catch { } return true; }
 
-        // Update UI form textbox
-        private void txtMapInternalName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text;
-        }
+		// Validate MapID
+		private void txtMapID_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			Int32 tmp32;
+			if (Int32.TryParse(txtMapID.Text, out tmp32))
+				txtMapID.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
+			else
+				txtMapID.BorderBrush = (Brush)FindResource("ExtryzeAccentBrush");
+		}
 
-        // Update Languages
-        private int oldLanguage = -1;
-        private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_mapInfo != null && _startEditing)
-            {
-                if (oldLanguage != -1)
-                {
-                    // Save values to memory
-                    _mapInfo.MapInformation.MapNames[oldLanguage] = txtMapName.Text.Trim();
-                    _mapInfo.MapInformation.MapDescriptions[oldLanguage] = txtMapDesc.Text.Trim();
+		// Update UI form textbox
+		private void txtMapInternalName_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text;
+		}
 
-                    // Make sure values arn't too long, kiddo
-                    if (_mapInfo.MapInformation.MapNames[oldLanguage].Length > 30)
-                        _mapInfo.MapInformation.MapNames[oldLanguage] = _mapInfo.MapInformation.MapNames[oldLanguage].Remove(30);
-                    if (_mapInfo.MapInformation.MapDescriptions[oldLanguage].Length > 126)
-                        _mapInfo.MapInformation.MapDescriptions[oldLanguage] = _mapInfo.MapInformation.MapDescriptions[oldLanguage].Remove(126);
-                }
+		// Update Languages
+		private int oldLanguage = -1;
+		private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (_mapInfo != null && _startEditing)
+			{
+				if (oldLanguage != -1)
+				{
+					// Save values to memory
+					_mapInfo.MapInformation.MapNames[oldLanguage] = txtMapName.Text.Trim();
+					_mapInfo.MapInformation.MapDescriptions[oldLanguage] = txtMapDesc.Text.Trim();
 
-                // Update oldLanguage int
-                oldLanguage = cbLanguages.SelectedIndex;
+					// Make sure values arn't too long, kiddo
+					if (_mapInfo.MapInformation.MapNames[oldLanguage].Length > 30)
+						_mapInfo.MapInformation.MapNames[oldLanguage] = _mapInfo.MapInformation.MapNames[oldLanguage].Remove(30);
+					if (_mapInfo.MapInformation.MapDescriptions[oldLanguage].Length > 126)
+						_mapInfo.MapInformation.MapDescriptions[oldLanguage] = _mapInfo.MapInformation.MapDescriptions[oldLanguage].Remove(126);
+				}
 
-                // Update UI
-                txtMapName.Text = _mapInfo.MapInformation.MapNames[oldLanguage];
-                txtMapDesc.Text = _mapInfo.MapInformation.MapDescriptions[oldLanguage];
-            }
-        }
+				// Update oldLanguage int
+				oldLanguage = cbLanguages.SelectedIndex;
 
-        // Update MapInfo file
-        private void btnUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            // Update MapID
-            if (!Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
-                _mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
+				// Update UI
+				txtMapName.Text = _mapInfo.MapInformation.MapNames[oldLanguage];
+				txtMapDesc.Text = _mapInfo.MapInformation.MapDescriptions[oldLanguage];
+			}
+		}
 
-            // Update Internal Name
-            _mapInfo.MapInformation.InternalName = txtMapInternalName.Text;
+		// Update MapInfo file
+		private void btnUpdate_Click(object sender, RoutedEventArgs e)
+		{
+			// Update MapID
+			if (!Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
+				_mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
 
-            // Update Physical Name
-            _mapInfo.MapInformation.PhysicalName = txtMapPhysicalName.Text;
+			// Update Internal Name
+			_mapInfo.MapInformation.InternalName = txtMapInternalName.Text;
 
-            // Update Current Map Name/Descrption Language Selection
-            _mapInfo.MapInformation.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
-            _mapInfo.MapInformation.MapDescriptions[cbLanguages.SelectedIndex] = txtMapDesc.Text;
+			// Update Physical Name
+			_mapInfo.MapInformation.PhysicalName = txtMapPhysicalName.Text;
 
-            // Write all changes to file
-            _mapInfo.UpdateMapInfo();
+			// Update Current Map Name/Descrption Language Selection
+			_mapInfo.MapInformation.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
+			_mapInfo.MapInformation.MapDescriptions[cbLanguages.SelectedIndex] = txtMapDesc.Text;
 
-            // Check if MapID was invalid, if so tell user.
-            if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
-                MetroMessageBox.Show("MapID Not Saved", "The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
-        }
+			// Write all changes to file
+			_mapInfo.UpdateMapInfo();
 
-        private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
-        {
+			// Check if MapID was invalid, if so tell user.
+			if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
+				MetroMessageBox.Show("MapID Not Saved", "The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
+		}
+
+		private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
+		{
 			//if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
 			//{
 			//	foreach (LanguageEntry entry in cbLanguages.Items)
@@ -198,24 +198,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			//	}
 			//}
-        }
+		}
 
-        // Load Languages
-        private void LoadLanguages(MapInfo.GameIdentifier gameIdent)
-        {
-            if (gameIdent == MapInfo.GameIdentifier.Halo4)
-            {
-                // TODO: Add the new Halo 4 Languages
-            }
+		// Load Languages
+		private void LoadLanguages(MapInfo.GameIdentifier gameIdent)
+		{
+			if (gameIdent == MapInfo.GameIdentifier.Halo4)
+			{
+				// TODO: Add the new Halo 4 Languages
+			}
 
-            cbLanguages.DataContext = _languages;
-        }
+			cbLanguages.DataContext = _languages;
+		}
 
-        public class LanguageEntry
-        {
-            public string Language { get; set; }
-            public int Index { get; set; }
-            public string LanguageShort { get; set; }
-        }
-    }
+		public class LanguageEntry
+		{
+			public string Language { get; set; }
+			public int Index { get; set; }
+			public string LanguageShort { get; set; }
+		}
+	}
 }

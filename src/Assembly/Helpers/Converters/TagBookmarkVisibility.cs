@@ -12,19 +12,14 @@ namespace Assembly.Helpers.Converters
 		{
 			var outputBoolean = false;
 			if (value != null)
-				outputBoolean = (bool) value;
+				outputBoolean = (bool)value;
 
-			if (!Settings.halomapOnlyShowBookmarkedTags)
+			if (!App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags)
 				return Visibility.Visible;
 
-			return (Settings.halomapOnlyShowBookmarkedTags && outputBoolean)
-				       ? Visibility.Visible
-				       : Visibility.Collapsed;
-
-
-			//return (Settings.halomapOnlyShowBookmarkedTags && outputBoolean)
-			//		   ? (Brush)Application.Current.FindResource("ExtryzeAccentBrushSecondary")
-			//		   : (Brush)Brushes.White;
+			return (App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags && outputBoolean)
+						? Visibility.Visible
+						: Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
