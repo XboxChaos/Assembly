@@ -1,4 +1,6 @@
-﻿using Assembly.Helpers.Net;
+﻿using System.Windows;
+using Assembly.Helpers.Net;
+using Assembly.Metro.Dialogs.ControlDialogs;
 
 namespace Assembly.Metro.Dialogs
 {
@@ -8,11 +10,11 @@ namespace Assembly.Metro.Dialogs
 		{
 			// ill up date u
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
-			var updater = new ControlDialogs.Updater(info, available)
-							  {
-								  Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
-								  WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
-							  };
+			var updater = new Updater(info, available)
+			{
+				Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner
+			};
 			updater.ShowDialog();
 			App.AssemblyStorage.AssemblySettings.HomeWindow.HideMask();
 		}

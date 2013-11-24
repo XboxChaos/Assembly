@@ -3,152 +3,158 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media.Animation;
-using Assembly.Helpers;
-using Assembly.Helpers.Net;
 using Assembly.Helpers.Native;
+using Assembly.Helpers.Net;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
-    /// <summary>
-    /// Interaction logic for Updater.xaml
-    /// </summary>
-    public partial class Updater
-    {
-        private readonly UpdateInfo _info;
-        private string _currentVersion;
+	/// <summary>
+	///     Interaction logic for Updater.xaml
+	/// </summary>
+	public partial class Updater
+	{
+		private readonly UpdateInfo _info;
+		private string _currentVersion;
 
-        public Updater(UpdateInfo info, bool available)
-        {
-            InitializeComponent();
-            DwmDropShadow.DropShadowToWindow(this);
+		public Updater(UpdateInfo info, bool available)
+		{
+			InitializeComponent();
+			DwmDropShadow.DropShadowToWindow(this);
 
-            _info = info;
-            if (!available)
-            {
-                lblAvailable.Text = "Your version of Assembly is up-to-date.";
-                lblAvailable.FontWeight = FontWeights.Normal;
-                updateButtons.Visibility = Visibility.Collapsed;
-                noUpdate.Visibility = Visibility.Visible;
-            }
+			_info = info;
+			if (!available)
+			{
+				lblAvailable.Text = "Your version of Assembly is up-to-date.";
+				lblAvailable.FontWeight = FontWeights.Normal;
+				updateButtons.Visibility = Visibility.Collapsed;
+				noUpdate.Visibility = Visibility.Visible;
+			}
 
-            LoadDataFromFormat();
+			LoadDataFromFormat();
 
-            // Set up UI
-            Width = 600;
-            Height = 400;
-            updateInfo.Visibility = Visibility.Visible;
-            updateProgress.Visibility = Visibility.Collapsed;
-        }
+			// Set up UI
+			Width = 600;
+			Height = 400;
+			updateInfo.Visibility = Visibility.Visible;
+			updateProgress.Visibility = Visibility.Collapsed;
+		}
 
-        private void LoadDataFromFormat()
-        {
-            _currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            lblCurrentVersion.Text = _currentVersion;
-            lblServerVersion.Text = _info.LatestVersion;
+		private void LoadDataFromFormat()
+		{
+			_currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			lblCurrentVersion.Text = _currentVersion;
+			lblServerVersion.Text = _info.LatestVersion;
 
-            BuildChangelog(_info);
-        }
+			BuildChangelog(_info);
+		}
 
-        private void btnApplyUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            updateInfo.Visibility = Visibility.Collapsed;
-            btnActionClose.Visibility = Visibility.Collapsed;
-            updateProgress.Visibility = Visibility.Visible;
-            lblTitle.Text = "Installing Update...";
+		private void btnApplyUpdate_Click(object sender, RoutedEventArgs e)
+		{
+			updateInfo.Visibility = Visibility.Collapsed;
+			btnActionClose.Visibility = Visibility.Collapsed;
+			updateProgress.Visibility = Visibility.Visible;
+			lblTitle.Text = "Installing Update...";
 
-			var storyboard = (Storyboard)Resources["ResizeWindowToUpdate"];
-            storyboard.Begin();
+			var storyboard = (Storyboard) Resources["ResizeWindowToUpdate"];
+			storyboard.Begin();
 
-            // Begin Update Downloading...
-            DownloadUpdate();
-        }
+			// Begin Update Downloading...
+			DownloadUpdate();
+		}
 
-        private void btnIgnoreUpdate_Click(object sender, RoutedEventArgs e) { Close(); }
+		private void btnIgnoreUpdate_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
 
-        private void BuildChangelog(UpdateInfo info)
-        {
-			for (var i = 0; i < info.Changelogs.Length; i++)
-            {
-				var changelog = info.Changelogs[i];
-	            lblChangeLog.Inlines.Add(i == 0
-		                                     ? new Bold(
-			                                       new Run(string.Format("What's new in version {0} (latest):", changelog.Version)))
-		                                     : new Bold(
-			                                       new Run(string.Format("Changes made in previous version {0}:",
-			                                                             changelog.Version))));
+		private void BuildChangelog(UpdateInfo info)
+		{
+			for (int i = 0; i < info.Changelogs.Length; i++)
+			{
+				UpdateInfo.UpdateChangelog changelog = info.Changelogs[i];
+				lblChangeLog.Inlines.Add(i == 0
+					? new Bold(
+						new Run(string.Format("What's new in version {0} (latest):", changelog.Version)))
+					: new Bold(
+						new Run(string.Format("Changes made in previous version {0}:",
+							changelog.Version))));
 
-	            lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
-                lblChangeLog.Inlines.Add(new Run(changelog.Changelog.TrimEnd('\r', '\n')));
-                lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
-            }
-        }
+				lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
+				lblChangeLog.Inlines.Add(new Run(changelog.Changelog.TrimEnd('\r', '\n')));
+				lblChangeLog.Inlines.Add(new Run(Environment.NewLine + Environment.NewLine));
+			}
+		}
 
-        #region Update Installing
-        private void DownloadUpdate()
-        {
+		#region Update Installing
+
+		private void DownloadUpdate()
+		{
 			var wb = new WebClient();
-			var tempFile = Path.GetTempFileName();
-            wb.DownloadFileCompleted += (o, args) =>
-                {
-                    if (args.Error != null)
-                    {
-                        File.Delete(tempFile);
-                        throw args.Error;
-                    }
-                    pbDownloadProgress.IsIndeterminate = true;
-                    ExtractUpdateManager(tempFile);
-                };
-            wb.DownloadProgressChanged += (o, args) =>
-                {
-                    lblDownloadProgress.Text = string.Format("Downloading Update -- ({0}%)", args.ProgressPercentage);
-                    pbDownloadProgress.Value = args.ProgressPercentage;
-                };
-            
-            wb.DownloadFileAsync(new Uri(_info.DownloadLink), tempFile);
-            pbDownloadProgress.Value = 0;
-            pbDownloadProgress.IsIndeterminate = false;
-        }
+			string tempFile = Path.GetTempFileName();
+			wb.DownloadFileCompleted += (o, args) =>
+			{
+				if (args.Error != null)
+				{
+					File.Delete(tempFile);
+					throw args.Error;
+				}
+				pbDownloadProgress.IsIndeterminate = true;
+				ExtractUpdateManager(tempFile);
+			};
+			wb.DownloadProgressChanged += (o, args) =>
+			{
+				lblDownloadProgress.Text = string.Format("Downloading Update -- ({0}%)", args.ProgressPercentage);
+				pbDownloadProgress.Value = args.ProgressPercentage;
+			};
 
-        private static void ExtractUpdateManager(string updateZip)
-        {
-			var tempDir = Path.GetTempPath();
+			wb.DownloadFileAsync(new Uri(_info.DownloadLink), tempFile);
+			pbDownloadProgress.Value = 0;
+			pbDownloadProgress.IsIndeterminate = false;
+		}
 
-            // Extract SharpZipLib
-			var zipDLL = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
-            using (var zipFileStream = new FileStream(Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll"), FileMode.Create))
-	            if (zipDLL != null) zipDLL.CopyTo(zipFileStream);
-	        if (zipDLL != null) zipDLL.Close();
+		private static void ExtractUpdateManager(string updateZip)
+		{
+			string tempDir = Path.GetTempPath();
 
-	        // Extract AssemblyUpdateManager.exe
-			var exeUpd = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Assembly.Update.AssemblyUpdateManager.exe");
-			var updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
-            using (var exeFileStream = new FileStream(updaterPath, FileMode.Create))
-	            if (exeUpd != null) exeUpd.CopyTo(exeFileStream);
-	        if (exeUpd != null) exeUpd.Close();
+			// Extract SharpZipLib
+			Stream zipDLL =
+				System.Reflection.Assembly.GetExecutingAssembly()
+					.GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
+			using (var zipFileStream = new FileStream(Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll"), FileMode.Create))
+				if (zipDLL != null) zipDLL.CopyTo(zipFileStream);
+			if (zipDLL != null) zipDLL.Close();
 
-	        var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var exeDir = Path.GetDirectoryName(exePath);
-            int pid = Process.GetCurrentProcess().Id;
+			// Extract AssemblyUpdateManager.exe
+			Stream exeUpd =
+				System.Reflection.Assembly.GetExecutingAssembly()
+					.GetManifestResourceStream("Assembly.Update.AssemblyUpdateManager.exe");
+			string updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
+			using (var exeFileStream = new FileStream(updaterPath, FileMode.Create))
+				if (exeUpd != null) exeUpd.CopyTo(exeFileStream);
+			if (exeUpd != null) exeUpd.Close();
 
-            // Run the updater in a windowless setting and pass in the path to the .zip and the current .exe
-	        if (exeDir != null)
-	        {
-		        var updater = new ProcessStartInfo(updaterPath)
-			                      {
-				                      Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", updateZip, exePath, pid),
-				                      CreateNoWindow = true,
-				                      WindowStyle = ProcessWindowStyle.Hidden,
-				                      WorkingDirectory = exeDir
-			                      };
-		        Process.Start(updater);
-	        }
+			string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+			string exeDir = Path.GetDirectoryName(exePath);
+			int pid = Process.GetCurrentProcess().Id;
 
-	        Application.Current.Shutdown();
-            
-        }
-        #endregion
-    }
+			// Run the updater in a windowless setting and pass in the path to the .zip and the current .exe
+			if (exeDir != null)
+			{
+				var updater = new ProcessStartInfo(updaterPath)
+				{
+					Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"", updateZip, exePath, pid),
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
+					WorkingDirectory = exeDir
+				};
+				Process.Start(updater);
+			}
+
+			Application.Current.Shutdown();
+		}
+
+		#endregion
+	}
 }

@@ -1,26 +1,25 @@
 ﻿using System.Windows;
-using System.Windows.Controls.Primitives;
 using Assembly.Helpers.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
-    /// <summary>
-    /// Interaction logic for MessageBox.xaml
-    /// </summary>
-    public partial class MessageBox
-    {
-        public MessageBox(string title, string message)
-        {
-            InitializeComponent();
-            DwmDropShadow.DropShadowToWindow(this);
+	/// <summary>
+	///     Interaction logic for MessageBox.xaml
+	/// </summary>
+	public partial class MessageBox
+	{
+		public MessageBox(string title, string message)
+		{
+			InitializeComponent();
+			DwmDropShadow.DropShadowToWindow(this);
 
-            lblTitle.Text = title;
-            lblSubInfo.Text = message;
-        }
+			lblTitle.Text = title;
+			lblSubInfo.Text = message;
+		}
 
-        private void btnOkay_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-    }
+		private void btnOkay_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+	}
 }

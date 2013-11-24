@@ -1,38 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
-    /// <summary>
-    /// Interaction logic for TrackBar.xaml
-    /// </summary>
-    public partial class TrackBar : UserControl
-    {
-        double minimum, maximum, small_change, large_change;
+	/// <summary>
+	///     Interaction logic for TrackBar.xaml
+	/// </summary>
+	public partial class TrackBar : UserControl
+	{
+		private double large_change;
+		private double maximum;
+		private double minimum;
+		private double small_change;
 
-        public TrackBar()
-        {
-            InitializeComponent();
-        }
+		public TrackBar()
+		{
+			InitializeComponent();
+		}
 
-        public void LoadValues(string title, string type, double min, double max, double smallStep, double largeStep)
-        {
-            lblName.ToolTip = lblName.Text = title;
-            minimum = min;
-            maximum = max;
-            small_change = smallStep;
-            large_change = largeStep;
-        }
-    }
+		public void LoadValues(string title, string type, double min, double max, double smallStep, double largeStep)
+		{
+			lblName.ToolTip = lblName.Text = title;
+			minimum = min;
+			maximum = max;
+			small_change = smallStep;
+			large_change = largeStep;
+		}
+	}
 }

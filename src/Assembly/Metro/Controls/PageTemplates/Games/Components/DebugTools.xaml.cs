@@ -6,7 +6,7 @@ using Blamite.Blam;
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
 	/// <summary>
-	/// Interaction logic for DebugTools.xaml
+	///     Interaction logic for DebugTools.xaml
 	/// </summary>
 	public partial class DebugTools
 	{
@@ -23,21 +23,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void btnConvert_Click(object sender = null, RoutedEventArgs e = null)
 		{
-			var convertingToOffset = string.IsNullOrEmpty(txtCoverterOffset.Text.Trim());
+			bool convertingToOffset = string.IsNullOrEmpty(txtCoverterOffset.Text.Trim());
 
 			// Parse
 			uint action;
 			if (convertingToOffset)
 			{
 				action = txtConverterAddress.Text.ToLowerInvariant().StartsWith("0x")
-					         ? uint.Parse(txtConverterAddress.Text.Remove(0, 2), NumberStyles.HexNumber)
-					         : uint.Parse(txtConverterAddress.Text);
+					? uint.Parse(txtConverterAddress.Text.Remove(0, 2), NumberStyles.HexNumber)
+					: uint.Parse(txtConverterAddress.Text);
 			}
 			else
 			{
 				action = txtCoverterOffset.Text.ToLowerInvariant().StartsWith("0x")
-							 ? uint.Parse(txtCoverterOffset.Text.Remove(0, 2), NumberStyles.HexNumber)
-							 : uint.Parse(txtCoverterOffset.Text);
+					? uint.Parse(txtCoverterOffset.Text.Remove(0, 2), NumberStyles.HexNumber)
+					: uint.Parse(txtCoverterOffset.Text);
 			}
 
 			// Do calc
@@ -69,6 +69,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			txtConverterAddress.Text = "";
 			btnConvert_Click();
 		}
+
 		private void txtConverterAddress_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key != Key.Enter && e.Key != Key.Return) return;

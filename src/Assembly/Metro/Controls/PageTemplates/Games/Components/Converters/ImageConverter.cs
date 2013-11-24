@@ -11,7 +11,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Converters
 		{
 			try
 			{
-				return new BitmapImage(new Uri((string)value));
+				return new BitmapImage(new Uri((string) value));
 			}
 			catch
 			{
@@ -20,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Converters
 		}
 
 		public object ConvertBack(object value, Type targetType,
-								  object parameter, CultureInfo culture)
+			object parameter, CultureInfo culture)
 		{
 			return value;
 		}

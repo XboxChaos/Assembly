@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -8,19 +9,21 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.SyntaxHighlighting;
 using Blamite.Flexibility;
 using Blamite.Util;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
 	/// <summary>
-	/// Interaction logic for PluginEditor.xaml
+	///     Interaction logic for PluginEditor.xaml
 	/// </summary>
 	public partial class PluginEditor
 	{
-		private readonly string _pluginPath;
-		private readonly MetaContainer _parent;
-		private readonly MetaEditor _sibling;
 		private readonly XMLCodeCompleter _completer = new XMLCodeCompleter();
+		private readonly MetaContainer _parent;
+		private readonly string _pluginPath;
+		private readonly MetaEditor _sibling;
 		private CompletionWindow _completionWindow;
 
 		public PluginEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
@@ -40,7 +43,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
 			_pluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-							  buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
+					buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
 			LoadPlugin();
 		}
 
@@ -48,12 +51,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			UpdateLayout();
 
-			var selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
+			DocumentLine selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
 			txtPlugin.ScrollToLine(line);
 			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
 		}
 
-		void Settings_SettingsChanged(object sender, EventArgs e)
+		private void Settings_SettingsChanged(object sender, EventArgs e)
 		{
 			// Reload the syntax highlighting definition in case the theme changed
 			LoadSyntaxHighlighting();
@@ -75,7 +78,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			// Move the cursor to the place where the click occurred (AvalonEdit doesn't do this by default)
 			// http://community.sharpdevelop.net/forums/p/12521/34105.aspx
-			var position = txtPlugin.GetPositionFromPoint(e.GetPosition(txtPlugin));
+			TextViewPosition? position = txtPlugin.GetPositionFromPoint(e.GetPosition(txtPlugin));
 			if (position.HasValue)
 				txtPlugin.TextArea.Caret.Position = position.Value;
 		}
@@ -83,7 +86,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void LoadSyntaxHighlighting()
 		{
 			// Load the file depending upon which theme is being used
-			var filename = "XMLBlue.xshd";
+			string filename = "XMLBlue.xshd";
 			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
 			{
 				case Settings.Accents.Blue:
@@ -128,38 +131,42 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RegisterMetaTag("vector3", "3D vector of 32-bit floating point values");
 			RegisterMetaTag("degree", "Radian value that should be converted to/from degrees");
 
-			var color = RegisterMetaTag("color", "Integer color value");
-			var colorf = RegisterMetaTag("colorf", "Floating-point color value");
-			var colorFormat = new CompletableXMLAttribute("format", "A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
+			CompletableXMLTag color = RegisterMetaTag("color", "Integer color value");
+			CompletableXMLTag colorf = RegisterMetaTag("colorf", "Floating-point color value");
+			var colorFormat = new CompletableXMLAttribute("format",
+				"A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
 			color.RegisterAttribute(colorFormat);
 			colorf.RegisterAttribute(colorFormat);
 
 			RegisterMetaTag("color24", "32-bit RGB color");
 			RegisterMetaTag("color32", "32-bit ARGB color");
 
-			var tagRef = RegisterMetaTag("tagRef", "Tag reference");
-			var withClass = new CompletableXMLAttribute("withClass", "Whether or not the reference includes a class ID (optional, default=true)");
+			CompletableXMLTag tagRef = RegisterMetaTag("tagRef", "Tag reference");
+			var withClass = new CompletableXMLAttribute("withClass",
+				"Whether or not the reference includes a class ID (optional, default=true)");
 			withClass.RegisterValue(new CompletableXMLValue("true", "The reference includes a 12-byte class ID (default)"));
 			withClass.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
 			tagRef.RegisterAttribute(withClass);
 
-			var dataRef = RegisterMetaTag("dataRef", "Data reference");
+			CompletableXMLTag dataRef = RegisterMetaTag("dataRef", "Data reference");
 			var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");
 			format.RegisterValue(new CompletableXMLValue("bytes", "Raw byte data (default)"));
 			format.RegisterValue(new CompletableXMLValue("asciiz", "Null-terminated ASCII string"));
 			format.RegisterValue(new CompletableXMLValue("unicode", "Null-terminated unicode string"));
 			dataRef.RegisterAttribute(format);
 
-			var reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
-			reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize", "The size of each entry in the reflexive (required)"));
+			CompletableXMLTag reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
+			reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize",
+				"The size of each entry in the reflexive (required)"));
 
-			var ascii = RegisterMetaTag("ascii", "ASCII string");
-			var utf16 = RegisterMetaTag("utf16", "UTF-16 string");
-			var strLength = new CompletableXMLAttribute("length", "The size of the string, including the null terminator (required)");
+			CompletableXMLTag ascii = RegisterMetaTag("ascii", "ASCII string");
+			CompletableXMLTag utf16 = RegisterMetaTag("utf16", "UTF-16 string");
+			var strLength = new CompletableXMLAttribute("length",
+				"The size of the string, including the null terminator (required)");
 			ascii.RegisterAttribute(strLength);
 			utf16.RegisterAttribute(strLength);
 
-			var raw = RegisterMetaTag("raw", "Raw data viewer");
+			CompletableXMLTag raw = RegisterMetaTag("raw", "Raw data viewer");
 			raw.RegisterAttribute(new CompletableXMLAttribute("size", "The size of the raw data (required)"));
 
 			var comment = new CompletableXMLTag("comment", "Displays a message");
@@ -173,34 +180,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_completer.ValueCompletionAvailable += ValueCompletionAvailable;
 		}
 
-		void ValueCompletionAvailable(object sender, ValueCompletionEventArgs e)
+		private void ValueCompletionAvailable(object sender, ValueCompletionEventArgs e)
 		{
 			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-			var data = _completionWindow.CompletionList.CompletionData;
-			foreach (var tag in e.Suggestions)
+			IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
+			foreach (CompletableXMLValue tag in e.Suggestions)
 				data.Add(new XMLValueCompletionData(tag));
 
 			_completionWindow.Show();
 		}
 
-		void AttributeCompletionAvailable(object sender, AttributeCompletionEventArgs e)
+		private void AttributeCompletionAvailable(object sender, AttributeCompletionEventArgs e)
 		{
 			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-			var data = _completionWindow.CompletionList.CompletionData;
-			foreach (var tag in e.Suggestions)
+			IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
+			foreach (CompletableXMLAttribute tag in e.Suggestions)
 				data.Add(new XMLAttributeCompletionData(tag, _completer));
 
 			_completionWindow.Show();
 		}
 
-		void TagCompletionAvailable(object sender, TagCompletionEventArgs e)
+		private void TagCompletionAvailable(object sender, TagCompletionEventArgs e)
 		{
 			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-			var data = _completionWindow.CompletionList.CompletionData;
-			foreach (var tag in e.Suggestions)
+			IList<ICompletionData> data = _completionWindow.CompletionList.CompletionData;
+			foreach (CompletableXMLTag tag in e.Suggestions)
 				data.Add(new XMLTagCompletionData(tag, _completer));
 
 			_completionWindow.Show();
@@ -230,7 +237,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			else if (e.Text == " " || e.Text == "\"")
 			{
 				// Get the current line
-				var currentLine = txtPlugin.Document.GetLineByNumber(txtPlugin.TextArea.Caret.Line);
+				DocumentLine currentLine = txtPlugin.Document.GetLineByNumber(txtPlugin.TextArea.Caret.Line);
 				int lineOffset = currentLine.Offset;
 				string lineText = txtPlugin.Document.GetText(lineOffset, currentLine.Length);
 

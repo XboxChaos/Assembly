@@ -16,33 +16,28 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Blamite.Blam.Util;
 using Blamite.IO;
 
 namespace Blamite.Blam
 {
-    /// <summary>
-    /// Represents a single tag in a class file.
-    /// </summary>
-    public interface ITag
-    {
-        /// <summary>
-        /// The tag's class. Can be null.
-        /// </summary>
-        ITagClass Class { get; set; }
+	/// <summary>
+	///     Represents a single tag in a class file.
+	/// </summary>
+	public interface ITag
+	{
+		/// <summary>
+		///     The tag's class. Can be null.
+		/// </summary>
+		ITagClass Class { get; set; }
 
-        /// <summary>
-        /// The pointer to the tag's metadata. Can be null.
-        /// </summary>
-        SegmentPointer MetaLocation { get; set; }
+		/// <summary>
+		///     The pointer to the tag's metadata. Can be null.
+		/// </summary>
+		SegmentPointer MetaLocation { get; set; }
 
-        /// <summary>
-        /// The tag's datum index.
-        /// </summary>
-        DatumIndex Index { get; }
-    }
+		/// <summary>
+		///     The tag's datum index.
+		/// </summary>
+		DatumIndex Index { get; }
+	}
 }

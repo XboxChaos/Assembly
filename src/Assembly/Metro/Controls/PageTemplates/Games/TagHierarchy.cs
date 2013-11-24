@@ -7,8 +7,11 @@ using Blamite.Blam;
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
 	public class TagHierarchy : INotifyPropertyChanged
-    {
+	{
 		private ObservableCollection<TagClass> _classes = new ObservableCollection<TagClass>();
+
+		private List<TagEntry> _entries = new List<TagEntry>();
+
 		public ObservableCollection<TagClass> Classes
 		{
 			get { return _classes; }
@@ -19,7 +22,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private List<TagEntry> _entries = new List<TagEntry>(); 
 		public List<TagEntry> Entries
 		{
 			get { return _entries; }
@@ -31,6 +33,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
 		private void NotifyPropertyChanged(String info)
 		{
 			if (PropertyChanged != null)
@@ -38,63 +41,65 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
-    }
+	}
 
-    public class TagClass : INotifyPropertyChanged
-    {
-        public TagClass(ITagClass baseClass, string name, string description)
-        {
-            RawClass = baseClass;
-            TagClassMagic = name;
-            Description = description;
-            Children = new List<TagEntry>();
-        }
+	public class TagClass : INotifyPropertyChanged
+	{
+		private List<TagEntry> _children = new List<TagEntry>();
+		private string _description = string.Empty;
+		private ITagClass _rawClass;
+		private string _tagClassMagic = string.Empty;
 
-	    private string _tagClassMagic = string.Empty;
-	    public string TagClassMagic
-	    {
+		public TagClass(ITagClass baseClass, string name, string description)
+		{
+			RawClass = baseClass;
+			TagClassMagic = name;
+			Description = description;
+			Children = new List<TagEntry>();
+		}
+
+		public string TagClassMagic
+		{
 			get { return _tagClassMagic; }
 			set
 			{
 				_tagClassMagic = value;
 				NotifyPropertyChanged("TagClassMagic");
 			}
-	    }
+		}
 
-	    private string _description = string.Empty;
-	    public string Description
-	    {
+		public string Description
+		{
 			get { return _description; }
 			set
 			{
 				_description = value;
 				NotifyPropertyChanged("Description");
 			}
-	    }
+		}
 
-	    private ITagClass _rawClass;
-	    public ITagClass RawClass
-	    {
+		public ITagClass RawClass
+		{
 			get { return _rawClass; }
 			set
 			{
 				_rawClass = value;
 				NotifyPropertyChanged("RawClass");
 			}
-	    }
+		}
 
-		private List<TagEntry> _children = new List<TagEntry>(); 
-	    public List<TagEntry> Children
-	    {
-		    get { return _children; }
-			internal set 
-			{ 
+		public List<TagEntry> Children
+		{
+			get { return _children; }
+			internal set
+			{
 				_children = value;
 				NotifyPropertyChanged("Children");
 			}
-	    }
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
 		private void NotifyPropertyChanged(String info)
 		{
 			if (PropertyChanged != null)
@@ -102,18 +107,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
-    }
+	}
 
 	public class TagEntry : INotifyPropertyChanged
-    {
-        public TagEntry(ITag baseTag, string className, string name)
-        {
-            RawTag = baseTag;
-            ClassName = className;
-            TagFileName = name;
-        }
+	{
+		private string _className = string.Empty;
+		private bool _isBookmark;
+		private ITag _rawTag;
+		private string _tagFileName = string.Empty;
 
-		private bool _isBookmark = false;
+		public TagEntry(ITag baseTag, string className, string name)
+		{
+			RawTag = baseTag;
+			ClassName = className;
+			TagFileName = name;
+		}
+
 		public bool IsBookmark
 		{
 			get { return _isBookmark; }
@@ -124,18 +133,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-        private string _className = string.Empty;
-        public string ClassName
-        {
-            get { return _className; }
-            internal set
-            {
-                _className = value;
-                NotifyPropertyChanged("ClassName");
-            }
-        }
+		public string ClassName
+		{
+			get { return _className; }
+			internal set
+			{
+				_className = value;
+				NotifyPropertyChanged("ClassName");
+			}
+		}
 
-		private string _tagFileName = string.Empty;
 		public string TagFileName
 		{
 			get { return _tagFileName; }
@@ -146,7 +153,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private ITag _rawTag;
 		public ITag RawTag
 		{
 			get { return _rawTag; }
@@ -158,6 +164,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
 		private void NotifyPropertyChanged(String info)
 		{
 			if (PropertyChanged != null)
@@ -165,5 +172,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				PropertyChanged(this, new PropertyChangedEventArgs(info));
 			}
 		}
-    }
+	}
 }

@@ -11,20 +11,21 @@ namespace Assembly.Metro.Dialogs
 	public static class MetroViewValueAs
 	{
 		/// <summary>
-		/// View the selected offset as every meta value type.
+		///     View the selected offset as every meta value type.
 		/// </summary>
 		/// <param name="cacheFile">The cache file which is being read from.</param>
 		/// <param name="buildInfo">Build information for the engine.</param>
 		/// <param name="streamManager">The stream manager to open the file with.</param>
 		/// <param name="fields">The fields to display in the viewer.</param>
 		/// <param name="cacheOffset">The initial offset to display.</param>
-		public static void Show(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager, IList<MetaField> fields, uint cacheOffset)
+		public static void Show(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
+			IList<MetaField> fields, uint cacheOffset)
 		{
 			var valueAs = new ViewValueAs(cacheFile, buildInfo, streamManager, fields, cacheOffset)
-							  {
-								  Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
-								  WindowStartupLocation = WindowStartupLocation.CenterOwner
-							  };
+			{
+				Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner
+			};
 			valueAs.Show();
 		}
 	}

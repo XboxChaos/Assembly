@@ -1,23 +1,25 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
-using System.ComponentModel;
-using Assembly.Metro.Dialogs;
 using Assembly.Helpers.Net;
+using Assembly.Metro.Dialogs;
 using AvalonDock.Layout;
+using Clipboard = System.Windows.Clipboard;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
 	/// <summary>
-	/// Interaction logic for HaloScreenshot.xaml
+	///     Interaction logic for HaloScreenshot.xaml
 	/// </summary>
 	public partial class HaloScreenshot
 	{
+		private readonly BitmapSource _bitmapImage;
 		private readonly string _datetime_long;
 		private readonly string _datetime_shrt;
-		private readonly BitmapSource _bitmapImage;
 		private string _imageID;
 
 		public HaloScreenshot(string tempImageLocation, LayoutDocument tabItem)
@@ -28,7 +30,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_bitmapImage = DDSConversion.Deswizzle(tempImageLocation);
 
 			// DateTime Creation
-			var date = DateTime.Now;
+			DateTime date = DateTime.Now;
 			_datetime_long = date.ToString("yyyy-MM-dd,hh-mm-ss");
 			_datetime_shrt = date.ToString("hh:mm.ss");
 
@@ -47,33 +49,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!Directory.Exists(App.AssemblyStorage.AssemblySettings.XdkScreenshotPath))
 				Directory.CreateDirectory(App.AssemblyStorage.AssemblySettings.XdkScreenshotPath);
 
-			var filePath = App.AssemblyStorage.AssemblySettings.XdkScreenshotPath + "\\" + _datetime_long + ".png";
+			string filePath = App.AssemblyStorage.AssemblySettings.XdkScreenshotPath + "\\" + _datetime_long + ".png";
 			SaveImage(filePath);
 		}
 
 		private void SaveImage(string filePath)
 		{
 			var encoder = new PngBitmapEncoder();
-			encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageScreenshot.Source));
+			encoder.Frames.Add(BitmapFrame.Create((BitmapSource) imageScreenshot.Source));
 			using (var stream = new FileStream(filePath, FileMode.Create))
 				encoder.Save(stream);
 		}
 
 		/// <summary>
-		/// Close stuff
+		///     Close stuff
 		/// </summary>
-		public bool Close() { return true; }
+		public bool Close()
+		{
+			return true;
+		}
 
 		private void btnSaveImg_Click(object sender, RoutedEventArgs e)
 		{
-			var sfd = new System.Windows.Forms.SaveFileDialog
-						  {
-							  Title = "Select where do you want to save the Screenshot",
-							  Filter = "PNG Image (*.png)|*.png"
-						  };
-			if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			var sfd = new SaveFileDialog
+			{
+				Title = "Select where do you want to save the Screenshot",
+				Filter = "PNG Image (*.png)|*.png"
+			};
+			if (sfd.ShowDialog() == DialogResult.OK)
 				SaveImage(sfd.FileName);
 		}
+
 		private void btnUploadImage_Click(object sender, RoutedEventArgs e)
 		{
 			if (_imageID == null)
@@ -88,41 +94,40 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			else
 				MetroImgurUpload.Show(_imageID);
 		}
+
 		private void btnClipboardImage_Click(object sender, RoutedEventArgs e)
 		{
 			Clipboard.SetImage(_bitmapImage);
 		}
 
-		void imageUpload_DoWork(object sender, DoWorkEventArgs e)
+		private void imageUpload_DoWork(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
-				var filePath = Path.GetTempFileName();
+				string filePath = Path.GetTempFileName();
 				Dispatcher.Invoke(new Action(delegate
 				{
 					var encoder = new PngBitmapEncoder();
-					encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageScreenshot.Source));
+					encoder.Frames.Add(BitmapFrame.Create((BitmapSource) imageScreenshot.Source));
 					using (var stream = new FileStream(filePath, FileMode.Create))
 						encoder.Save(stream);
 				}));
 
-				var newImageId = Imgur.UploadToImgur(File.ReadAllBytes(filePath));
+				string newImageId = Imgur.UploadToImgur(File.ReadAllBytes(filePath));
 				if (newImageId == null)
 					new Exception("Failed to Upload.");
 
-				Dispatcher.Invoke(new Action(delegate
-				{
-					_imageID = newImageId;
-				}));
+				Dispatcher.Invoke(new Action(delegate { _imageID = newImageId; }));
 			}
 			catch
 			{
 				Dispatcher.Invoke(new Action(
-									  () =>
-									  MetroMessageBox.Show("Error", "Unable to upload Image to server. Try again later.")));
+					() =>
+						MetroMessageBox.Show("Error", "Unable to upload Image to server. Try again later.")));
 			}
 		}
-		void imageUpload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+
+		private void imageUpload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			doingAction.Visibility = Visibility.Collapsed;
 

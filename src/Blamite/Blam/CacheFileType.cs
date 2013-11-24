@@ -16,22 +16,17 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Blamite.Blam
 {
-    /// <summary>
-    /// The different types and purposes of cache files.
-    /// </summary>
-    public enum CacheFileType
-    {
-        SinglePlayer,
-        Multiplayer,
-        MainMenu,
-        Shared,
-        SinglePlayerShared
-    }
+	/// <summary>
+	///     The different types and purposes of cache files.
+	/// </summary>
+	public enum CacheFileType
+	{
+		SinglePlayer,
+		Multiplayer,
+		MainMenu,
+		Shared,
+		SinglePlayerShared
+	}
 }

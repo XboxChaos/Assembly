@@ -19,13 +19,13 @@ using AvalonDock.Themes;
 
 namespace Assembly.Metro.Controls.AvalonDockMetro
 {
-    public class MetroTheme : Theme
-    {
-        public override Uri GetResourceUri()
-        {
-            return new Uri(
-				"/Assembly;component/Metro/Controls/AvalonDockMetro/Theme.xaml", 
-                UriKind.Relative);  
-        }
-    }
+	public class MetroTheme : Theme
+	{
+		public override Uri GetResourceUri()
+		{
+			return new Uri(
+				"/Assembly;component/Metro/Controls/AvalonDockMetro/Theme.xaml",
+				UriKind.Relative);
+		}
+	}
 }

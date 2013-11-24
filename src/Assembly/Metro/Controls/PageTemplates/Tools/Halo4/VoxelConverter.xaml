@@ -1,36 +1,40 @@
 ﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Tools.Halo4.VoxelConverter"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-			 xmlns:wp7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
-			 xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:wp7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
+             xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d"
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
 	<Grid>
 		<Grid x:Name="sideBar" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="300" Background="#2d2d30">
-			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right" d:LayoutOverrides="Height" />
+			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
+			           d:LayoutOverrides="Height" />
 
-			<TextBlock FontFamily="{DynamicResource MetroFontLight}" Text="Voxel Converter" Foreground="White" FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
-			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0" PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
+			<TextBlock FontFamily="{DynamicResource MetroFontLight}" Text="Voxel Converter" Foreground="White" FontSize="32"
+			           Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
+			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
+			                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
 				<ed:RegularPolygon.RenderTransform>
 					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="90"/>
-						<TranslateTransform/>
+						<ScaleTransform />
+						<SkewTransform />
+						<RotateTransform Angle="90" />
+						<TranslateTransform />
 					</TransformGroup>
 				</ed:RegularPolygon.RenderTransform>
 			</ed:RegularPolygon>
 
-			<Rectangle Fill="#FF363639" Height="1" Width="250" Margin="25,110,25,0" VerticalAlignment="Top" d:LayoutOverrides="Height" />
+			<Rectangle Fill="#FF363639" Height="1" Width="250" Margin="25,110,25,0" VerticalAlignment="Top"
+			           d:LayoutOverrides="Height" />
 			<Grid VerticalAlignment="Top" Margin="25,120,00,0">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<Grid Margin="0,20,20,0">
 						<TextBlock TextWrapping="Wrap" Foreground="White" FontSize="13">
-                            Convert XML Voxel Definition Files into raw float data for adding into a Halo 4 Cache File (.map).
+							Convert XML Voxel Definition Files into raw float data for adding into a Halo 4 Cache File (.map).
 							<LineBreak />
 							<LineBreak />
 							Voxels are effectivly just 'Point Cloud' Data that make up the loading animations in Halo 4.
@@ -54,7 +58,7 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="70px" />
 						</Grid.ColumnDefinitions>
-						<TextBox x:Name="txtInputFile" Text="" IsReadOnly="True"  Grid.Column="0" />
+						<TextBox x:Name="txtInputFile" Text="" IsReadOnly="True" Grid.Column="0" />
 						<Button x:Name="btnInputFile" Grid.Column="1" Content="Open" Width="50" Click="btnInputFile_Click" />
 					</Grid>
 
@@ -71,9 +75,9 @@
 			<Border x:Name="mapSelector" Grid.Row="1" BorderThickness="0,1,0,1" BorderBrush="#FF545456" Background="#2d2d30">
 				<Grid>
 					<avalon:TextEditor Name="txtOutputData" Height="Auto" Margin="0,0,0,0"
-                               FontFamily="Consolas" FontSize="10pt" IsReadOnly="True"
-                               Background="#FF252526" BorderBrush="#FF595959" Foreground="White"
-                               ShowLineNumbers="True" HorizontalScrollBarVisibility="Disabled" />
+					                   FontFamily="Consolas" FontSize="10pt" IsReadOnly="True"
+					                   Background="#FF252526" BorderBrush="#FF595959" Foreground="White"
+					                   ShowLineNumbers="True" HorizontalScrollBarVisibility="Disabled" />
 				</Grid>
 			</Border>
 		</Grid>
@@ -81,8 +85,9 @@
 		<Grid x:Name="MaskingPage" Visibility="Collapsed">
 			<Rectangle Opacity="0.80" Fill="{DynamicResource HomeOpacityBrush}" />
 			<Grid>
-				<TextBlock x:Name="lblProgressStatus" Text="Converting Voxel Data... (0%)" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" />
-				<wp7:ProgressionBar VerticalAlignment="Center" Margin="0,25,0,0"/>
+				<TextBlock x:Name="lblProgressStatus" Text="Converting Voxel Data... (0%)" HorizontalAlignment="Center"
+				           VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" />
+				<wp7:ProgressionBar VerticalAlignment="Center" Margin="0,25,0,0" />
 			</Grid>
 		</Grid>
 	</Grid>

@@ -4,7 +4,7 @@ using Assembly.Helpers.Native;
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
 	/// <summary>
-	/// Interaction logic for PostGeneratorViewer.xaml
+	///     Interaction logic for PostGeneratorViewer.xaml
 	/// </summary>
 	public partial class PostGeneratorViewer
 	{

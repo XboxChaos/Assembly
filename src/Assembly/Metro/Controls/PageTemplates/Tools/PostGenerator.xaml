@@ -1,18 +1,18 @@
 ﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Tools.PostGenerator"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-			 xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-			 xmlns:converter="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Converters"
-			 xmlns:wp7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
-             mc:Ignorable="d" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Converters"
+             xmlns:wp7="clr-namespace:Assembly.Metro.Controls.WP7Controls"
+             mc:Ignorable="d"
              Background="#28282b"
              d:DesignHeight="3000" d:DesignWidth="1800">
 	<UserControl.Resources>
 		<!-- Converters -->
 		<converter:ImageConverter x:Key="IValueImageConverter" />
-		
+
 	</UserControl.Resources>
 
 	<Grid>
@@ -20,16 +20,18 @@
 			<ColumnDefinition Width="250" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		
+
 		<Grid Grid.Column="0" Background="#2d2d30">
-			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Post Generator" Foreground="White" FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
-			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0" PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
+			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Post Generator" Foreground="White"
+			           FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
+			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
+			                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
 				<ed:RegularPolygon.RenderTransform>
 					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform Angle="90"/>
-						<TranslateTransform/>
+						<ScaleTransform />
+						<SkewTransform />
+						<RotateTransform Angle="90" />
+						<TranslateTransform />
 					</TransformGroup>
 				</ed:RegularPolygon.RenderTransform>
 			</ed:RegularPolygon>
@@ -37,10 +39,12 @@
 			<StackPanel Margin="25,114,25,0">
 				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" Margin="0,0,0,20" d:LayoutOverrides="Height" />
 
-				<TextBlock Text="The Post Generator creates simple and clean forum posts quickly. Just enter basic information about your mod, and hit `Generate`. We'll do all the hard work. Then just simple paste the returned BBCode into the forum of your choice." TextWrapping="WrapWithOverflow" Style="{DynamicResource GenericTextblock}" Foreground="White" />
+				<TextBlock
+					Text="The Post Generator creates simple and clean forum posts quickly. Just enter basic information about your mod, and hit `Generate`. We'll do all the hard work. Then just simple paste the returned BBCode into the forum of your choice."
+					TextWrapping="WrapWithOverflow" Style="{DynamicResource GenericTextblock}" Foreground="White" />
 
 				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" Margin="0,20,0,20" d:LayoutOverrides="Height" />
-				
+
 				<Button x:Name="btnParse" Content="Generate Post" Click="btnParse_Click" />
 			</StackPanel>
 
@@ -51,7 +55,7 @@
 				<WrapPanel>
 					<!-- Header -->
 					<Border Width="510" Margin="30"
-						BorderThickness="1,1,1,5" BorderBrush="#FF545456">
+					        BorderThickness="1,1,1,5" BorderBrush="#FF545456">
 						<Grid Margin="12">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="12" />
@@ -98,52 +102,55 @@
 
 							<!-- Title -->
 							<TextBlock Grid.ColumnSpan="6" Grid.Row="1"
-						           Text="Overview" FontFamily="{DynamicResource MetroFontLight}" FontSize="32" Foreground="{DynamicResource ExtryzeAccentBrush}" />
+							           Text="Overview" FontFamily="{DynamicResource MetroFontLight}" FontSize="32"
+							           Foreground="{DynamicResource ExtryzeAccentBrush}" />
 
 							<!-- Mod Name -->
 							<TextBlock Grid.Column="1" Grid.Row="3"
-								   Text="Mod Name:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Mod Name:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="3"
-									 Text="{Binding ModName}"/>
+							         Text="{Binding ModName}" />
 
 							<!-- Mod Description -->
 							<TextBlock Grid.Column="1" Grid.Row="5"
-								   Text="Mod Description:" Margin="0,0,0,0" Foreground="White" />
+							           Text="Mod Description:" Margin="0,0,0,0" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="5"
-									 Text="{Binding ModDescription}" Height="Auto" AcceptsReturn="True" />
+							         Text="{Binding ModDescription}" Height="Auto" AcceptsReturn="True" />
 
 							<!-- Mod Author -->
 							<TextBlock Grid.Column="1" Grid.Row="7"
-									   Text="Mod Author:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Mod Author:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="7"
-									Text="{Binding ModAuthor}" />
+							         Text="{Binding ModAuthor}" />
 
 							<!-- Mod Original Map -->
 							<TextBlock Grid.Column="1" Grid.Row="9"
-								       Text="Original Map:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Original Map:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="9"
-									 Text="{Binding ModOriginalMap}" />
+							         Text="{Binding ModOriginalMap}" />
 
 							<!-- Mod Patch Download -->
 							<TextBlock Grid.Column="1" Grid.Row="11"
-								       Text="Patch Download:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Patch Download:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="11"
-								     Text="{Binding ModPatchDownload}"  />
+							         Text="{Binding ModPatchDownload}" />
 							<Button Grid.Column="2" Grid.Row="12"
-									x:Name="btnLaunchPatcher" Content="Create Patch" Margin="0,2,0,0" Click="btnLaunchPatcher_Click" />
+							        x:Name="btnLaunchPatcher" Content="Create Patch" Margin="0,2,0,0" Click="btnLaunchPatcher_Click" />
 
 							<!-- Mod Preview Image -->
 							<TextBlock Grid.Column="1" Grid.Row="14"
-								   Text="Preview Image:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Preview Image:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="14"
-								Text="{Binding ModPreviewImage}" />
+							         Text="{Binding ModPreviewImage}" />
 							<Button Grid.Column="2" Grid.Row="15"
-								x:Name="btnGrabPreviewImageFromXbox" Content="Take Image from Xbox" Margin="0,2,0,0"  Click="btnGrabPreviewImageFromXbox_Click"/>
+							        x:Name="btnGrabPreviewImageFromXbox" Content="Take Image from Xbox" Margin="0,2,0,0"
+							        Click="btnGrabPreviewImageFromXbox_Click" />
 
-							<Grid x:Name="HeaderGrabMask" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="20" Opacity="0.65" Background="{DynamicResource HomeOpacityBrush}" Margin="-12">
+							<Grid x:Name="HeaderGrabMask" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="20" Opacity="0.65"
+							      Background="{DynamicResource HomeOpacityBrush}" Margin="-12">
 								<StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch">
 									<ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Stretch" />
-									<TextBlock Margin="12,0,0,0" Text="Grabbing Screenshot from Xbox 360 Console" Foreground="White"/>
+									<TextBlock Margin="12,0,0,0" Text="Grabbing Screenshot from Xbox 360 Console" Foreground="White" />
 								</StackPanel>
 							</Grid>
 						</Grid>
@@ -151,7 +158,7 @@
 
 					<!-- Attributes -->
 					<Border Width="510" Margin="30"
-						BorderThickness="1,1,1,5" BorderBrush="#FF545456">
+					        BorderThickness="1,1,1,5" BorderBrush="#FF545456">
 						<Grid Margin="12">
 							<Grid.RowDefinitions>
 								<!-- Header Padding -->
@@ -166,35 +173,36 @@
 
 							<!-- Title -->
 							<TextBlock Grid.ColumnSpan="6" Grid.Row="1"
-						           Text="Attributes" FontFamily="{DynamicResource MetroFontLight}" FontSize="32" Foreground="{DynamicResource ExtryzeAccentBrush}" />
+							           Text="Attributes" FontFamily="{DynamicResource MetroFontLight}" FontSize="32"
+							           Foreground="{DynamicResource ExtryzeAccentBrush}" />
 
 							<!-- Attributes -->
 							<WrapPanel Grid.Row="2">
-								<CheckBox Content="Weapon Edits"		IsChecked="{Binding WeaponEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Weapon Balances"		IsChecked="{Binding WeaponBalances}" Margin="20" Width="120" />
-								<CheckBox Content="Weather Edits"		IsChecked="{Binding WeatherEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Skin/Texture Edits"	IsChecked="{Binding TextureEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Projectile Edits"	IsChecked="{Binding ProjectileEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Machine Edits"		IsChecked="{Binding MachineEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Scenery Edits"		IsChecked="{Binding SceneryEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Biped Edits"			IsChecked="{Binding BipdEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Vehicle Edits"		IsChecked="{Binding VehicleEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Lighing Edits"		IsChecked="{Binding LighingEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Jmad Edits"			IsChecked="{Binding JmadEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Effect Edits"		IsChecked="{Binding EffectEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Model Edits"			IsChecked="{Binding ModelEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Physics Edits"		IsChecked="{Binding PhysicsEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Barrier Edits"		IsChecked="{Binding BarrierEdits}" Margin="20" Width="120" />
-								<CheckBox Content="AI Edits"			IsChecked="{Binding AiEdits}" Margin="20" Width="120" />
-								<CheckBox Content="BLF/MapInfo Edits"	IsChecked="{Binding BlfMapinfoEdits}" Margin="20" Width="120" />
-								<CheckBox Content="Other Edits"			IsChecked="{Binding OtherEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Weapon Edits" IsChecked="{Binding WeaponEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Weapon Balances" IsChecked="{Binding WeaponBalances}" Margin="20" Width="120" />
+								<CheckBox Content="Weather Edits" IsChecked="{Binding WeatherEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Skin/Texture Edits" IsChecked="{Binding TextureEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Projectile Edits" IsChecked="{Binding ProjectileEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Machine Edits" IsChecked="{Binding MachineEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Scenery Edits" IsChecked="{Binding SceneryEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Biped Edits" IsChecked="{Binding BipdEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Vehicle Edits" IsChecked="{Binding VehicleEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Lighing Edits" IsChecked="{Binding LighingEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Jmad Edits" IsChecked="{Binding JmadEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Effect Edits" IsChecked="{Binding EffectEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Model Edits" IsChecked="{Binding ModelEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Physics Edits" IsChecked="{Binding PhysicsEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Barrier Edits" IsChecked="{Binding BarrierEdits}" Margin="20" Width="120" />
+								<CheckBox Content="AI Edits" IsChecked="{Binding AiEdits}" Margin="20" Width="120" />
+								<CheckBox Content="BLF/MapInfo Edits" IsChecked="{Binding BlfMapinfoEdits}" Margin="20" Width="120" />
+								<CheckBox Content="Other Edits" IsChecked="{Binding OtherEdits}" Margin="20" Width="120" />
 							</WrapPanel>
 						</Grid>
 					</Border>
 
 					<!-- Images -->
 					<Border Width="510" Margin="30"
-						BorderThickness="1,1,1,5" BorderBrush="#FF545456">
+					        BorderThickness="1,1,1,5" BorderBrush="#FF545456">
 						<Grid Margin="12">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="12" />
@@ -225,31 +233,35 @@
 
 							<!-- Title -->
 							<TextBlock Grid.ColumnSpan="6" Grid.Row="1"
-						           Text="Images" FontFamily="{DynamicResource MetroFontLight}" FontSize="32" Foreground="{DynamicResource ExtryzeAccentBrush}" />
+							           Text="Images" FontFamily="{DynamicResource MetroFontLight}" FontSize="32"
+							           Foreground="{DynamicResource ExtryzeAccentBrush}" />
 
 							<!-- Mod Images -->
 							<DataGrid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3"
-									  x:Name="dataModImages" ItemsSource="{Binding Images}" Background="{x:Null}" Padding="0" BorderBrush="#FF3e3e45" BorderThickness="1,0,1,1" Foreground="White" VerticalAlignment="Stretch"
-									  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-									  CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
+							          x:Name="dataModImages" ItemsSource="{Binding Images}" Background="{x:Null}" Padding="0"
+							          BorderBrush="#FF3e3e45" BorderThickness="1,0,1,1" Foreground="White" VerticalAlignment="Stretch"
+							          VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+							          AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
+							          CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
 								<DataGrid.Columns>
 									<DataGridTemplateColumn Header="Image" Width="150" IsReadOnly="True">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
 												<Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="125" Height="125" Stretch="Uniform"
-													   Source="{Binding Path=Url, Converter={StaticResource IValueImageConverter}}"/>
+												       Source="{Binding Path=Url, Converter={StaticResource IValueImageConverter}}" />
 											</DataTemplate>
 										</DataGridTemplateColumn.CellTemplate>
 									</DataGridTemplateColumn>
 									<DataGridTemplateColumn Header="Url" Width="*" IsReadOnly="True">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
-												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Url}" Style="{DynamicResource GenericTextblock}"
-														   ToolTip="{Binding Url}"/>
+												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Url}"
+												           Style="{DynamicResource GenericTextblock}"
+												           ToolTip="{Binding Url}" />
 											</DataTemplate>
 										</DataGridTemplateColumn.CellTemplate>
 									</DataGridTemplateColumn>
-									
+
 									<DataGridTemplateColumn Header="Action" Width="100" IsReadOnly="True">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
@@ -262,18 +274,20 @@
 
 							<!-- Mod Preview Image -->
 							<TextBlock Grid.Column="1" Grid.Row="5"
-								   Text="Add new Image:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Add new Image:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="5"
-									 x:Name="txtImageToAdd" />
+							         x:Name="txtImageToAdd" />
 							<Button Grid.Column="2" Grid.Row="6"
-									x:Name="btnGrabImageFromXbox" Content="Take Image from Xbox" Margin="0,2,0,0" Click="btnGrabImageFromXbox_Click" />
+							        x:Name="btnGrabImageFromXbox" Content="Take Image from Xbox" Margin="0,2,0,0"
+							        Click="btnGrabImageFromXbox_Click" />
 							<Button Grid.Column="2" Grid.Row="7"
-									x:Name="btnAddImage" Content="Add Image" Margin="0,2,0,0" Click="btnAddImage_Click" />
+							        x:Name="btnAddImage" Content="Add Image" Margin="0,2,0,0" Click="btnAddImage_Click" />
 
-							<Grid x:Name="ImageGrabMask" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="8" Opacity="0.65" Background="{DynamicResource HomeOpacityBrush}" Margin="-12">
+							<Grid x:Name="ImageGrabMask" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="8" Opacity="0.65"
+							      Background="{DynamicResource HomeOpacityBrush}" Margin="-12">
 								<StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch">
 									<ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Stretch" />
-									<TextBlock Margin="12,0,0,0" Text="Grabbing Screenshot from Xbox 360 Console" Foreground="White"/>
+									<TextBlock Margin="12,0,0,0" Text="Grabbing Screenshot from Xbox 360 Console" Foreground="White" />
 								</StackPanel>
 							</Grid>
 						</Grid>
@@ -281,7 +295,7 @@
 
 					<!-- Thanks -->
 					<Border Width="510" Margin="30"
-						BorderThickness="1,1,1,5" BorderBrush="#FF545456">
+					        BorderThickness="1,1,1,5" BorderBrush="#FF545456">
 						<Grid Margin="12">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="12" />
@@ -313,19 +327,23 @@
 
 							<!-- Title -->
 							<TextBlock Grid.ColumnSpan="6" Grid.Row="1"
-						           Text="Thanks" FontFamily="{DynamicResource MetroFontLight}" FontSize="32" Foreground="{DynamicResource ExtryzeAccentBrush}" />
+							           Text="Thanks" FontFamily="{DynamicResource MetroFontLight}" FontSize="32"
+							           Foreground="{DynamicResource ExtryzeAccentBrush}" />
 
 							<!-- Mod Images -->
 							<DataGrid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3"
-									  x:Name="dataModThanks" ItemsSource="{Binding Thanks}" Background="{x:Null}" Padding="0" BorderBrush="#FF3e3e45" BorderThickness="1,0,1,1" Foreground="White" VerticalAlignment="Stretch"
-									  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-									  CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
+							          x:Name="dataModThanks" ItemsSource="{Binding Thanks}" Background="{x:Null}" Padding="0"
+							          BorderBrush="#FF3e3e45" BorderThickness="1,0,1,1" Foreground="White" VerticalAlignment="Stretch"
+							          VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+							          AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
+							          CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
 								<DataGrid.Columns>
 									<DataGridTemplateColumn Header="Alias" Width="150" IsReadOnly="False">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
-												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Alias}" Style="{DynamicResource GenericTextblock}"
-														   ToolTip="{Binding Alias}"/>
+												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Alias}"
+												           Style="{DynamicResource GenericTextblock}"
+												           ToolTip="{Binding Alias}" />
 											</DataTemplate>
 										</DataGridTemplateColumn.CellTemplate>
 										<DataGridTemplateColumn.CellEditingTemplate>
@@ -337,8 +355,9 @@
 									<DataGridTemplateColumn Header="Reason" Width="*" IsReadOnly="False">
 										<DataGridTemplateColumn.CellTemplate>
 											<DataTemplate>
-												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Reason}" Style="{DynamicResource GenericTextblock}"
-														   ToolTip="{Binding Reason}"/>
+												<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Reason}"
+												           Style="{DynamicResource GenericTextblock}"
+												           ToolTip="{Binding Reason}" />
 											</DataTemplate>
 										</DataGridTemplateColumn.CellTemplate>
 										<DataGridTemplateColumn.CellEditingTemplate>
@@ -360,27 +379,27 @@
 
 							<!-- Mod Preview Image -->
 							<TextBlock Grid.Column="1" Grid.Row="5"
-								   Text="Add new Mention:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Add new Mention:" VerticalAlignment="Center" Foreground="White" />
 
 							<TextBlock Grid.Column="1" Grid.Row="6"
-								   Text="Alias:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Alias:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="6"
-									 x:Name="txtThankAlias" />
-							
+							         x:Name="txtThankAlias" />
+
 							<TextBlock Grid.Column="1" Grid.Row="7"
-								   Text="Reason:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Reason:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="7"
-									 x:Name="txtThankReason" />
-							
+							         x:Name="txtThankReason" />
+
 							<Button Grid.Column="2" Grid.Row="8"
-									x:Name="btnAddMention" Content="Add Mention" Click="btnAddMention_Click" />
-							
+							        x:Name="btnAddMention" Content="Add Mention" Click="btnAddMention_Click" />
+
 						</Grid>
 					</Border>
 
 					<!-- Video -->
 					<Border Width="510" Margin="30"
-						BorderThickness="1,1,1,5" BorderBrush="#FF545456">
+					        BorderThickness="1,1,1,5" BorderBrush="#FF545456">
 						<Grid Margin="12">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="12" />
@@ -406,15 +425,17 @@
 
 							<!-- Title -->
 							<TextBlock Grid.ColumnSpan="6" Grid.Row="1"
-						           Text="Video" FontFamily="{DynamicResource MetroFontLight}" FontSize="32" Foreground="{DynamicResource ExtryzeAccentBrush}" />
+							           Text="Video" FontFamily="{DynamicResource MetroFontLight}" FontSize="32"
+							           Foreground="{DynamicResource ExtryzeAccentBrush}" />
 
 							<!-- Mod Name -->
 							<TextBlock Grid.Column="1" Grid.Row="3"
-									   Text="Mod Video:" VerticalAlignment="Center" Foreground="White" />
+							           Text="Mod Video:" VerticalAlignment="Center" Foreground="White" />
 							<TextBox Grid.Column="2" Grid.Row="3"
-									 Text="{Binding ModVideo}" />
+							         Text="{Binding ModVideo}" />
 							<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4"
-									   Text="*Note*: For best compatability on multiple sites, use Youtube" VerticalAlignment="Bottom" Foreground="#FF545456" />
+							           Text="*Note*: For best compatability on multiple sites, use Youtube" VerticalAlignment="Bottom"
+							           Foreground="#FF545456" />
 						</Grid>
 					</Border>
 				</WrapPanel>

@@ -1,12 +1,11 @@
-﻿using Assembly.Helpers;
-using Assembly.Metro.Dialogs.ControlDialogs;
+﻿using Assembly.Metro.Dialogs.ControlDialogs;
 
 namespace Assembly.Metro.Dialogs
 {
 	public static class MetroInputBox
 	{
 		/// <summary>
-		/// Show a Metro Input Message Box
+		///     Show a Metro Input Message Box
 		/// </summary>
 		/// <param name="title">The title of the Message Box.</param>
 		/// <param name="message">The message to display inside the Message Box.</param>
@@ -20,7 +19,7 @@ namespace Assembly.Metro.Dialogs
 		}
 
 		/// <summary>
-		/// Show a Metro Input Message Box
+		///     Show a Metro Input Message Box
 		/// </summary>
 		/// <param name="title">The title of the Message Box.</param>
 		/// <param name="message">The message to display inside the Message Box.</param>
@@ -31,11 +30,11 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, "", null, defaultText);
 			dialog.ShowDialog();
 
-            return dialog.Result;
+			return dialog.Result;
 		}
 
 		/// <summary>
-		/// Show a Metro Input Message Box
+		///     Show a Metro Input Message Box
 		/// </summary>
 		/// <param name="title">The title of the Message Box.</param>
 		/// <param name="message">The message to display inside the Message Box.</param>
@@ -47,11 +46,11 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, placeholder, null, defaultText);
 			dialog.ShowDialog();
 
-            return dialog.Result;
+			return dialog.Result;
 		}
 
 		/// <summary>
-		/// Show a Metro Input Message Box
+		///     Show a Metro Input Message Box
 		/// </summary>
 		/// <param name="title">The title of the Message Box.</param>
 		/// <param name="message">The message to display inside the Message Box.</param>
@@ -64,8 +63,7 @@ namespace Assembly.Metro.Dialogs
 			var dialog = new MessageBoxInput(title, message, placeholder, regexMatch, defaultText);
 			dialog.ShowDialog();
 
-            return dialog.Result;
+			return dialog.Result;
 		}
-
 	}
 }

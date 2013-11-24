@@ -9,19 +9,20 @@ namespace Assembly.Helpers
 		public static void BeginUpdateProcess()
 		{
 			// Grab JSON Update package from the server
-			var info = Updates.GetUpdateInfo();
+			UpdateInfo info = Updates.GetUpdateInfo();
 
 			// If the request failed, tell the user to gtfo
 			if (info == null || !info.Successful)
 			{
 				App.AssemblyStorage.AssemblySettings.HomeWindow.Dispatcher.Invoke(new Action(
-														  () =>
-														  MetroMessageBox.Show("Update Check Failed",
-																			   "Assembly is unable to check for updates at this time. Sorry :(")));
+					() =>
+						MetroMessageBox.Show("Update Check Failed",
+							"Assembly is unable to check for updates at this time. Sorry :(")));
 				return;
 			}
 
-			App.AssemblyStorage.AssemblySettings.HomeWindow.Dispatcher.Invoke(new Action(() => MetroUpdateDialog.Show(info, UpdateAvailable(info))));
+			App.AssemblyStorage.AssemblySettings.HomeWindow.Dispatcher.Invoke(
+				new Action(() => MetroUpdateDialog.Show(info, UpdateAvailable(info))));
 		}
 
 		public static bool UpdateAvailable(UpdateInfo info)
@@ -30,8 +31,8 @@ namespace Assembly.Helpers
 				return false;
 
 			// Just convert the version strings to ints and compare
-			var serverVersion = VersionStringToInt(info.LatestVersion);
-			var localVersion = VersionStringToInt(VariousFunctions.GetApplicationVersion());
+			long serverVersion = VersionStringToInt(info.LatestVersion);
+			long localVersion = VersionStringToInt(VariousFunctions.GetApplicationVersion());
 
 			return (serverVersion > localVersion);
 		}

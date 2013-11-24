@@ -16,61 +16,55 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Blamite.Flexibility;
 using Blamite.IO;
-using Blamite.Blam.ThirdGen.Structures;
-using Blamite.Blam;
-using Blamite.Blam.Util;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
-    public class ThirdGenTag : ITag
-    {
-        public ThirdGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer metaLocation)
-        {
-            Index = index;
-            Class = tagClass;
-            MetaLocation = metaLocation;
-        }
+	public class ThirdGenTag : ITag
+	{
+		public ThirdGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer metaLocation)
+		{
+			Index = index;
+			Class = tagClass;
+			MetaLocation = metaLocation;
+		}
 
-        public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
-        {
-            Load(values, index, metaArea, classList);
-        }
+		public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea,
+			IList<ITagClass> classList)
+		{
+			Load(values, index, metaArea, classList);
+		}
 
-        public StructureValueCollection Serialize(IList<ITagClass> classList)
-        {
-            StructureValueCollection result = new StructureValueCollection();
-            result.SetInteger("memory address", (MetaLocation != null) ? MetaLocation.AsPointer() : 0);
-            result.SetInteger("class index", (Class != null) ? (uint)classList.IndexOf(Class) : 0xFFFFFFFF);
-            result.SetInteger("datum index salt", Index.Salt);
-            return result;
-        }
+		public DatumIndex Index { get; private set; }
+		public ITagClass Class { get; set; }
+		public SegmentPointer MetaLocation { get; set; }
 
-        void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
-        {
-            uint address = values.GetInteger("memory address");
-            if (address != 0 && address != 0xFFFFFFFF)
-                MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+		public StructureValueCollection Serialize(IList<ITagClass> classList)
+		{
+			var result = new StructureValueCollection();
+			result.SetInteger("memory address", (MetaLocation != null) ? MetaLocation.AsPointer() : 0);
+			result.SetInteger("class index", (Class != null) ? (uint) classList.IndexOf(Class) : 0xFFFFFFFF);
+			result.SetInteger("datum index salt", Index.Salt);
+			return result;
+		}
 
-            int classIndex = (int)values.GetInteger("class index");
-            if (classIndex >= 0 && classIndex < classList.Count)
-                Class = classList[classIndex];
+		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
+		{
+			uint address = values.GetInteger("memory address");
+			if (address != 0 && address != 0xFFFFFFFF)
+				MetaLocation = SegmentPointer.FromPointer(address, metaArea);
 
-            ushort salt = (ushort)values.GetInteger("datum index salt");
-            if (salt != 0xFFFF)
-                Index = new DatumIndex(salt, index);
-            else
-                Index = DatumIndex.Null;
-        }
+			var classIndex = (int) values.GetInteger("class index");
+			if (classIndex >= 0 && classIndex < classList.Count)
+				Class = classList[classIndex];
 
-        public DatumIndex Index { get; private set; }
-        public ITagClass Class { get; set; }
-        public SegmentPointer MetaLocation { get; set; }
-    }
-    
+			var salt = (ushort) values.GetInteger("datum index salt");
+			if (salt != 0xFFFF)
+				Index = new DatumIndex(salt, index);
+			else
+				Index = DatumIndex.Null;
+		}
+	}
 }

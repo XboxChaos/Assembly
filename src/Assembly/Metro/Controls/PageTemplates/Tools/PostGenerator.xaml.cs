@@ -94,6 +94,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -102,13 +103,13 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
-using Assembly.Metro.Dialogs;
 using Assembly.Helpers.PostGeneration;
+using Assembly.Metro.Dialogs;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools
 {
 	/// <summary>
-	/// Interaction logic for PostGenerator.xaml
+	///     Interaction logic for PostGenerator.xaml
 	/// </summary>
 	public partial class PostGenerator
 	{
@@ -128,6 +129,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.AddPatchTabModule();
 		}
+
 		private void btnGrabPreviewImageFromXbox_Click(object sender, RoutedEventArgs e)
 		{
 			// Show Mask
@@ -140,25 +142,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 				try
 				{
 					// Grab Screenshot from Xbox
-					var screenshotFileName = Path.GetTempFileName();
-					var screenshotPng = Path.GetTempFileName();
+					string screenshotFileName = Path.GetTempFileName();
+					string screenshotPng = Path.GetTempFileName();
 
 					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
 					{
-						Dispatcher.Invoke(new Action(() => MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
+						Dispatcher.Invoke(
+							new Action(
+								() =>
+									MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
 						return;
 					}
 
 					// do stuff
-					var bitmapSource = DDSConversion.Deswizzle(screenshotFileName, 1204, 720, true, true);
+					BitmapSource bitmapSource = DDSConversion.Deswizzle(screenshotFileName, 1204, 720, true, true);
 
 					// convert to png
 					SaveImage(screenshotPng, bitmapSource);
 
 					// upload
-					var response = Imgur.UploadToImgur(File.ReadAllBytes(screenshotPng));
+					string response = Imgur.UploadToImgur(File.ReadAllBytes(screenshotPng));
 
-					var finalString = string.Format("http://i.imgur.com/{0}.png", response);
+					string finalString = string.Format("http://i.imgur.com/{0}.png", response);
 
 					Dispatcher.Invoke(new Action(() => _generatorViewModel.ModPreviewImage = finalString));
 				}
@@ -178,28 +183,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Image Stuff
 		private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
 		{
-			var dataContext = (ModPostInfo.Image)((Button)sender).DataContext;
+			var dataContext = (ModPostInfo.Image) ((Button) sender).DataContext;
 			_generatorViewModel.Images.Remove(dataContext);
 		}
+
 		private void btnAddImage_Click(object sender, RoutedEventArgs e)
 		{
-			if (String.IsNullOrEmpty(txtImageToAdd.Text.Trim()) || !Uri.IsWellFormedUriString(txtImageToAdd.Text, UriKind.RelativeOrAbsolute))
+			if (String.IsNullOrEmpty(txtImageToAdd.Text.Trim()) ||
+			    !Uri.IsWellFormedUriString(txtImageToAdd.Text, UriKind.RelativeOrAbsolute))
 			{
 				MetroMessageBox.Show("Invalid Image", "You didn't type a valid image url.");
 				return;
 			}
 
-			var existingImages =
+			IEnumerable<ModPostInfo.Image> existingImages =
 				_generatorViewModel.Images.Where(
 					image => image.Url.ToLowerInvariant().Trim() == txtImageToAdd.Text.ToLowerInvariant().Trim());
 
 			if (!existingImages.Any())
 				_generatorViewModel.Images.Add(new ModPostInfo.Image
-												  {
-													  Url = txtImageToAdd.Text.Trim()
-												  });
+				{
+					Url = txtImageToAdd.Text.Trim()
+				});
 			txtImageToAdd.Text = "";
 		}
+
 		private void btnGrabImageFromXbox_Click(object sender, RoutedEventArgs e)
 		{
 			// Show Mask
@@ -208,54 +216,58 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 			var backgroundWorker = new BackgroundWorker();
 			backgroundWorker.DoWork += (o, args) =>
-											{
-												try
-												{
-													// Grab Screenshot from Xbox
-													var screenshotFileName = Path.GetTempFileName();
-													var screenshotPng = Path.GetTempFileName();
+			{
+				try
+				{
+					// Grab Screenshot from Xbox
+					string screenshotFileName = Path.GetTempFileName();
+					string screenshotPng = Path.GetTempFileName();
 
-													if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-													{
-														Dispatcher.Invoke(new Action(() => MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
-														return;
-													}
+					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+					{
+						Dispatcher.Invoke(
+							new Action(
+								() =>
+									MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
+						return;
+					}
 
-													// do stuff
-													var bitmapSource = DDSConversion.Deswizzle(screenshotFileName, 1204, 720, true, true);
+					// do stuff
+					BitmapSource bitmapSource = DDSConversion.Deswizzle(screenshotFileName, 1204, 720, true, true);
 
-													// convert to png
-													SaveImage(screenshotPng, bitmapSource);
+					// convert to png
+					SaveImage(screenshotPng, bitmapSource);
 
-													// upload
-													var response = Imgur.UploadToImgur(File.ReadAllBytes(screenshotPng));
+					// upload
+					string response = Imgur.UploadToImgur(File.ReadAllBytes(screenshotPng));
 
-													var finalString = string.Format("http://i.imgur.com/{0}.png", response);
+					string finalString = string.Format("http://i.imgur.com/{0}.png", response);
 
-													Dispatcher.Invoke(new Action(() => _generatorViewModel.Images.Add(new ModPostInfo.Image
-																														 {
-																															 Url = finalString
-																														 })));
-												}
-												catch (Exception ex)
-												{
-													Dispatcher.Invoke(new Action(() => MetroException.Show(ex)));
-												}
-											};
+					Dispatcher.Invoke(new Action(() => _generatorViewModel.Images.Add(new ModPostInfo.Image
+					{
+						Url = finalString
+					})));
+				}
+				catch (Exception ex)
+				{
+					Dispatcher.Invoke(new Action(() => MetroException.Show(ex)));
+				}
+			};
 			backgroundWorker.RunWorkerCompleted += (o, args) =>
-													   {
-														   ImageGrabMask.Visibility = Visibility.Collapsed;
-														   btnAddImage.IsEnabled = btnGrabImageFromXbox.IsEnabled = true;
-													   };
+			{
+				ImageGrabMask.Visibility = Visibility.Collapsed;
+				btnAddImage.IsEnabled = btnGrabImageFromXbox.IsEnabled = true;
+			};
 			backgroundWorker.RunWorkerAsync();
 		}
 
 		// Thank Stuff
 		private void btnDeleteThank_Click(object sender, RoutedEventArgs e)
 		{
-			var dataContext = (ModPostInfo.Thank)((Button)sender).DataContext;
+			var dataContext = (ModPostInfo.Thank) ((Button) sender).DataContext;
 			_generatorViewModel.Thanks.Remove(dataContext);
 		}
+
 		private void btnAddMention_Click(object sender, RoutedEventArgs e)
 		{
 			if (String.IsNullOrEmpty(txtThankAlias.Text.Trim()) || String.IsNullOrEmpty(txtThankReason.Text.Trim()))
@@ -264,9 +276,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 				return;
 			}
 
-			var existingMentions =
+			IEnumerable<ModPostInfo.Thank> existingMentions =
 				_generatorViewModel.Thanks.Where(
-					thank => thank.Alias.ToLowerInvariant().Trim() == txtThankAlias.Text.ToLowerInvariant().Trim() && thank.Reason.ToLowerInvariant().Trim() == txtThankReason.Text.ToLowerInvariant().Trim());
+					thank =>
+						thank.Alias.ToLowerInvariant().Trim() == txtThankAlias.Text.ToLowerInvariant().Trim() &&
+						thank.Reason.ToLowerInvariant().Trim() == txtThankReason.Text.ToLowerInvariant().Trim());
 
 			if (!existingMentions.Any())
 				_generatorViewModel.Thanks.Add(new ModPostInfo.Thank
@@ -283,13 +297,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		private void btnParse_Click(object sender, RoutedEventArgs e)
 		{
 			var postGenerator = new BlamitePostGenerator(_generatorViewModel);
-			var generatedPost = postGenerator.Parse();
+			string generatedPost = postGenerator.Parse();
 
 			MetroPostGeneratorViewer.Show(generatedPost, _generatorViewModel.ModAuthor);
 		}
 
 		/// <summary>
-		/// Close dis mang
+		///     Close dis mang
 		/// </summary>
 		public bool Close()
 		{

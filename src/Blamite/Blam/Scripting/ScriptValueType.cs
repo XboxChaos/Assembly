@@ -1,64 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
 {
-    public class ScriptValueType
-    {
-        private string _name;
-        private ushort _opcode;
-        private int _size;
-        private bool _quoted;
-        private string _tag;
-        private List<string> _enumValues = new List<string>();
+	public class ScriptValueType
+	{
+		private readonly List<string> _enumValues = new List<string>();
+		private readonly string _name;
+		private readonly ushort _opcode;
+		private readonly bool _quoted;
+		private readonly int _size;
+		private readonly string _tag;
 
-        public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag)
-        {
-            _name = name;
-            _opcode = opcode;
-            _size = size;
-            _quoted = quoted;
-            _tag = tag;
-        }
+		public ScriptValueType(string name, ushort opcode, int size, bool quoted, string tag)
+		{
+			_name = name;
+			_opcode = opcode;
+			_size = size;
+			_quoted = quoted;
+			_tag = tag;
+		}
 
-        public void AddEnumValue(string name)
-        {
-            _enumValues.Add(name);
-        }
+		public string Name
+		{
+			get { return _name; }
+		}
 
-        public string GetEnumValue(uint value)
-        {
-            if (value < (uint)_enumValues.Count)
-                return _enumValues[(int)value];
-            return null;
-        }
+		public ushort Opcode
+		{
+			get { return _opcode; }
+		}
 
-        public string Name
-        {
-            get { return _name; }
-        }
+		public int Size
+		{
+			get { return _size; }
+		}
 
-        public ushort Opcode
-        {
-            get { return _opcode; }
-        }
+		public bool Quoted
+		{
+			get { return _quoted; }
+		}
 
-        public int Size
-        {
-            get { return _size; }
-        }
+		public string TagClass
+		{
+			get { return _tag; }
+		}
 
-        public bool Quoted
-        {
-            get { return _quoted; }
-        }
+		public void AddEnumValue(string name)
+		{
+			_enumValues.Add(name);
+		}
 
-        public string TagClass
-        {
-            get { return _tag; }
-        }
-    }
+		public string GetEnumValue(uint value)
+		{
+			if (value < (uint) _enumValues.Count)
+				return _enumValues[(int) value];
+			return null;
+		}
+	}
 }

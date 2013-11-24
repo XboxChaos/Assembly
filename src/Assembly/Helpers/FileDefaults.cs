@@ -12,19 +12,28 @@ namespace Assembly.Helpers
 			bool changed = false;
 
 			// Assign open commands
-			changed |= RegisterOpenCommand("assembly.xboxchaos.map", App.AssemblyStorage.AssemblySettings.DefaultMap, "Blam Cache File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
-			changed |= RegisterOpenCommand("assembly.xboxchaos.blf", App.AssemblyStorage.AssemblySettings.DefaultBlf, "Blam BLF File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
-			changed |= RegisterOpenCommand("assembly.xboxchaos.mif", App.AssemblyStorage.AssemblySettings.DefaultMif, "Blam Map Information File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
-			changed |= RegisterOpenCommand("assembly.xboxchaos.amp", App.AssemblyStorage.AssemblySettings.DefaultAmp, "Assembly Patch File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+			changed |= RegisterOpenCommand("assembly.xboxchaos.map", App.AssemblyStorage.AssemblySettings.DefaultMap,
+				"Blam Cache File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+			changed |= RegisterOpenCommand("assembly.xboxchaos.blf", App.AssemblyStorage.AssemblySettings.DefaultBlf,
+				"Blam BLF File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+			changed |= RegisterOpenCommand("assembly.xboxchaos.mif", App.AssemblyStorage.AssemblySettings.DefaultMif,
+				"Blam Map Information File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+			changed |= RegisterOpenCommand("assembly.xboxchaos.amp", App.AssemblyStorage.AssemblySettings.DefaultAmp,
+				"Assembly Patch File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
 
 			// Assign Valid apptypes
-			changed |= RegisterExtension(".map", App.AssemblyStorage.AssemblySettings.DefaultMap, "assembly.xboxchaos.map", "assembly/map", "");
-			changed |= RegisterExtension(".blf", App.AssemblyStorage.AssemblySettings.DefaultBlf, "assembly.xboxchaos.blf", "assembly/blf", "");
-			changed |= RegisterExtension(".mapinfo", App.AssemblyStorage.AssemblySettings.DefaultMif, "assembly.xboxchaos.mif", "assembly/mapinfo", "");
-			changed |= RegisterExtension(".asmp", App.AssemblyStorage.AssemblySettings.DefaultAmp, "assembly.xboxchaos.amp", "assembly/patch", "");
+			changed |= RegisterExtension(".map", App.AssemblyStorage.AssemblySettings.DefaultMap, "assembly.xboxchaos.map",
+				"assembly/map", "");
+			changed |= RegisterExtension(".blf", App.AssemblyStorage.AssemblySettings.DefaultBlf, "assembly.xboxchaos.blf",
+				"assembly/blf", "");
+			changed |= RegisterExtension(".mapinfo", App.AssemblyStorage.AssemblySettings.DefaultMif, "assembly.xboxchaos.mif",
+				"assembly/mapinfo", "");
+			changed |= RegisterExtension(".asmp", App.AssemblyStorage.AssemblySettings.DefaultAmp, "assembly.xboxchaos.amp",
+				"assembly/patch", "");
 
 			if (changed)
-				ShellChanges.SHChangeNotify(HChangeNotifyEventID.SHCNE_ASSOCCHANGED, HChangeNotifyFlags.SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
+				ShellChanges.SHChangeNotify(HChangeNotifyEventID.SHCNE_ASSOCCHANGED, HChangeNotifyFlags.SHCNF_IDLIST, IntPtr.Zero,
+					IntPtr.Zero);
 		}
 
 		private static bool RegisterOpenCommand(string clazz, bool register, string description, string command)
@@ -40,20 +49,21 @@ namespace Assembly.Helpers
 
 			// Set description
 			bool changed = false;
-			using (var key = Registry.CurrentUser.CreateSubKey(pathBase))
+			using (RegistryKey key = Registry.CurrentUser.CreateSubKey(pathBase))
 			{
 				changed |= SetKeyValue(key, "", description);
 			}
 
 			// Set command
-			using (var key = Registry.CurrentUser.CreateSubKey(path))
+			using (RegistryKey key = Registry.CurrentUser.CreateSubKey(path))
 			{
 				changed |= SetKeyValue(key, "", command);
 			}
 			return changed;
 		}
 
-		private static bool RegisterExtension(string ext, bool register, string clazz, string contentType, string perceivedType)
+		private static bool RegisterExtension(string ext, bool register, string clazz, string contentType,
+			string perceivedType)
 		{
 			string path = @"Software\Classes\" + ext;
 
@@ -61,7 +71,7 @@ namespace Assembly.Helpers
 				return DeleteKey(Registry.CurrentUser, path);
 
 			bool changed = false;
-			using (var key = Registry.CurrentUser.CreateSubKey(path))
+			using (RegistryKey key = Registry.CurrentUser.CreateSubKey(path))
 			{
 				changed |= SetKeyValue(key, "", clazz);
 				changed |= SetKeyValue(key, "Content Type", contentType);

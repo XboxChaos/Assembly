@@ -16,25 +16,20 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Blamite.Flexibility
 {
-    /// <summary>
-    /// The different types of basic values that a structure field can hold.
-    /// </summary>
-    public enum StructureValueType
-    {
-        Byte,
-        SByte,
-        UInt16,   // ushort
-        Int16,    // short
-        UInt32,   // uint
-        Int32,    // int
-        Asciiz,    // Null-terminated ASCII string
-        Float32
-    }
+	/// <summary>
+	///     The different types of basic values that a structure field can hold.
+	/// </summary>
+	public enum StructureValueType
+	{
+		Byte,
+		SByte,
+		UInt16, // ushort
+		Int16, // short
+		UInt32, // uint
+		Int32, // int
+		Asciiz, // Null-terminated ASCII string
+		Float32
+	}
 }

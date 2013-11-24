@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Blamite.Plugins.Generation
+﻿namespace Blamite.Plugins.Generation
 {
-    public enum MetaValueType
-    {
-        TagReference,
-        DataReference, // Data1 = Size, Pointer = Address
-        Reflexive      // Data1 = Entry count, Pointer = Address
-    }
+	public enum MetaValueType
+	{
+		TagReference,
+		DataReference, // Data1 = Size, Pointer = Address
+		Reflexive // Data1 = Entry count, Pointer = Address
+	}
 }

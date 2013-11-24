@@ -6,7 +6,7 @@
 		<Setter Property="OverridesDefaultStyle" Value="True" />
 		<Setter Property="Grid.IsSharedSizeScope" Value="true" />
 		<Setter Property="HasDropShadow" Value="True" />
-        <Setter Property="Foreground" Value="White" />
+		<Setter Property="Foreground" Value="White" />
 		<!--<Setter Property="Padding" Value="2,0,2,0" />-->
 		<Setter Property="Template">
 			<Setter.Value>
@@ -29,48 +29,48 @@
 	</Style>
 
 	<ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="MenuItem">
-		<Border Name="Border" >
+		<Border Name="Border">
 			<Grid>
-				<ContentPresenter 
-        Margin="6,3,6,3" 
-        ContentSource="Header"
-        RecognizesAccessKey="True" />
-				<Popup 
-        Name="Popup"
-        Placement="Bottom"
-        IsOpen="{TemplateBinding IsSubmenuOpen}"
-        AllowsTransparency="True" 
-        Focusable="False"
-        PopupAnimation="Fade">
-					<Border 
-          Name="SubmenuBorder"
-          SnapsToDevicePixels="True"
-          Background="{StaticResource WindowBackgroundBrush}"
-          BorderBrush="{StaticResource SolidBorderBrush}"
-          BorderThickness="1" >
-						<StackPanel  
-            IsItemsHost="True" 
-            KeyboardNavigation.DirectionalNavigation="Cycle" />
+				<ContentPresenter
+					Margin="6,3,6,3"
+					ContentSource="Header"
+					RecognizesAccessKey="True" />
+				<Popup
+					Name="Popup"
+					Placement="Bottom"
+					IsOpen="{TemplateBinding IsSubmenuOpen}"
+					AllowsTransparency="True"
+					Focusable="False"
+					PopupAnimation="Fade">
+					<Border
+						Name="SubmenuBorder"
+						SnapsToDevicePixels="True"
+						Background="{StaticResource WindowBackgroundBrush}"
+						BorderBrush="{StaticResource SolidBorderBrush}"
+						BorderThickness="1">
+						<StackPanel
+							IsItemsHost="True"
+							KeyboardNavigation.DirectionalNavigation="Cycle" />
 					</Border>
 				</Popup>
 			</Grid>
 		</Border>
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsSuspendingPopupAnimation" Value="true">
-				<Setter TargetName="Popup" Property="PopupAnimation" Value="None"/>
+				<Setter TargetName="Popup" Property="PopupAnimation" Value="None" />
 			</Trigger>
 			<Trigger Property="IsHighlighted" Value="true">
 				<Setter TargetName="Border" Property="Background"
-              Value="{StaticResource NormalBrush}"/>
+				        Value="{StaticResource NormalBrush}" />
 				<Setter TargetName="Border" Property="BorderBrush"
-              Value="Transparent"/>
+				        Value="Transparent" />
 			</Trigger>
 			<Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
-				<Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="0,0,4,4"/>
-				<Setter TargetName="SubmenuBorder" Property="Padding" Value="0,0,0,3"/>
+				<Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="0,0,4,4" />
+				<Setter TargetName="SubmenuBorder" Property="Padding" Value="0,0,0,3" />
 			</Trigger>
 			<Trigger Property="IsEnabled" Value="False">
-				<Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+				<Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
 			</Trigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>

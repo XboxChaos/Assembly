@@ -1,183 +1,181 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Util;
 
 namespace Blamite.Blam
 {
-    /// <summary>
-    /// A table of strings associated with a table of string offsets.
-    /// </summary>
-    public class IndexedStringTable : IEnumerable<string>
-    {
-        private List<string> _strings = new List<string>();
-        private AESKey _key;
-        private FileSegment _indexTable;
-        private FileSegment _data;
+	/// <summary>
+	///     A table of strings associated with a table of string offsets.
+	/// </summary>
+	public class IndexedStringTable : IEnumerable<string>
+	{
+		private readonly FileSegment _data;
+		private readonly FileSegment _indexTable;
+		private readonly AESKey _key;
+		private readonly List<string> _strings = new List<string>();
 
-        public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
-        {
-            _key = key;
-            _indexTable = indexTable;
-            _data = data;
+		public IndexedStringTable(IReader reader, int count, FileSegment indexTable, FileSegment data, AESKey key)
+		{
+			_key = key;
+			_indexTable = indexTable;
+			_data = data;
 
-            int[] offsets = ReadOffsets(reader, indexTable, count);
-            IReader stringReader = DecryptData(reader, data, key);
+			int[] offsets = ReadOffsets(reader, indexTable, count);
+			IReader stringReader = DecryptData(reader, data, key);
 
-            // Read each string
-            stringReader.SeekTo(0);
-            for (int i = 0; i < offsets.Length; i++)
-            {
-                stringReader.SeekTo(offsets[i]);
-                _strings.Add(stringReader.ReadAscii());
-            }
-        }
+			// Read each string
+			stringReader.SeekTo(0);
+			for (int i = 0; i < offsets.Length; i++)
+			{
+				stringReader.SeekTo(offsets[i]);
+				_strings.Add(stringReader.ReadAscii());
+			}
+		}
 
-        /// <summary>
-        /// Gets the number of strings in the table.
-        /// </summary>
-        public int Count
-        {
-            get { return _strings.Count; }
-        }
+		/// <summary>
+		///     Gets the number of strings in the table.
+		/// </summary>
+		public int Count
+		{
+			get { return _strings.Count; }
+		}
 
-        /// <summary>
-        /// Gets or sets the string at an index.
-        /// </summary>
-        /// <param name="index">The index of the string to get or set.</param>
-        /// <returns>The string at the given index.</returns>
-        public string this[int index]
-        {
-            get { return _strings[index]; }
-            set { _strings[index] = value; }
-        }
+		/// <summary>
+		///     Gets or sets the string at an index.
+		/// </summary>
+		/// <param name="index">The index of the string to get or set.</param>
+		/// <returns>The string at the given index.</returns>
+		public string this[int index]
+		{
+			get { return _strings[index]; }
+			set { _strings[index] = value; }
+		}
 
-        /// <summary>
-        /// Adds a string to the table.
-        /// </summary>
-        /// <param name="str">The string to add.</param>
-        public void Add(string str)
-        {
-            _strings.Add(str);
-        }
+		public IEnumerator<string> GetEnumerator()
+		{
+			return _strings.GetEnumerator();
+		}
 
-        /// <summary>
-        /// Expands the table to be at least a certain length by adding null strings to the end.
-        /// </summary>
-        /// <param name="length">The minimum length that the table must have.</param>
-        public void Expand(int length)
-        {
-            while (_strings.Count < length)
-                _strings.Add(null);
-        }
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return _strings.GetEnumerator();
+		}
 
-        /// <summary>
-        /// Searches for a given string and returns the zero-based index of its first occurrence in the table. O(n).
-        /// </summary>
-        /// <param name="str">The string to search for. Case-sensitive.</param>
-        /// <returns>The zero-based index of the first occurrence of the string in the table, or -1 if not found.</returns>
-        public int IndexOf(string str)
-        {
-            // TODO: Change this to use a Dictionary or something if the O(n) runtime complexity is too inefficient
-            return _strings.IndexOf(str);
-        }
+		/// <summary>
+		///     Adds a string to the table.
+		/// </summary>
+		/// <param name="str">The string to add.</param>
+		public void Add(string str)
+		{
+			_strings.Add(str);
+		}
 
-        /// <summary>
-        /// Saves changes made to the string table.
-        /// </summary>
-        /// <param name="stream">The stream to manipulate.</param>
-        public void SaveChanges(IStream stream)
-        {
-            SaveOffsets(stream);
-            SaveData(stream);
-        }
+		/// <summary>
+		///     Expands the table to be at least a certain length by adding null strings to the end.
+		/// </summary>
+		/// <param name="length">The minimum length that the table must have.</param>
+		public void Expand(int length)
+		{
+			while (_strings.Count < length)
+				_strings.Add(null);
+		}
 
-        public IEnumerator<string> GetEnumerator()
-        {
-            return _strings.GetEnumerator();
-        }
+		/// <summary>
+		///     Searches for a given string and returns the zero-based index of its first occurrence in the table. O(n).
+		/// </summary>
+		/// <param name="str">The string to search for. Case-sensitive.</param>
+		/// <returns>The zero-based index of the first occurrence of the string in the table, or -1 if not found.</returns>
+		public int IndexOf(string str)
+		{
+			// TODO: Change this to use a Dictionary or something if the O(n) runtime complexity is too inefficient
+			return _strings.IndexOf(str);
+		}
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _strings.GetEnumerator();
-        }
+		/// <summary>
+		///     Saves changes made to the string table.
+		/// </summary>
+		/// <param name="stream">The stream to manipulate.</param>
+		public void SaveChanges(IStream stream)
+		{
+			SaveOffsets(stream);
+			SaveData(stream);
+		}
 
-        private int[] ReadOffsets(IReader reader, FileSegment indexTable, int count)
-        {
-            reader.SeekTo(indexTable.Offset);
-            int[] offsets = new int[count];
-            for (int i = 0; i < count; i++)
-                offsets[i] = reader.ReadInt32();
-            return offsets;
-        }
+		private int[] ReadOffsets(IReader reader, FileSegment indexTable, int count)
+		{
+			reader.SeekTo(indexTable.Offset);
+			var offsets = new int[count];
+			for (int i = 0; i < count; i++)
+				offsets[i] = reader.ReadInt32();
+			return offsets;
+		}
 
-        private void SaveOffsets(IStream stream)
-        {
-            // I'm assuming here that the official cache files don't intern strings
-            // Doing that might be a possibility even if they don't, but, meh
-            _indexTable.Resize(_strings.Count * 4, stream);
-            stream.SeekTo(_indexTable.Offset);
-            var currentOffset = 0;
-            foreach (var str in _strings)
-            {
-                if (str != null)
-                {
-                    stream.WriteInt32(currentOffset);
-                    currentOffset += str.Length + 1; // + 1 is for the null terminator
-                }
-                else
-                {
-                    stream.WriteInt32(0);
-                }
-            }
-        }
+		private void SaveOffsets(IStream stream)
+		{
+			// I'm assuming here that the official cache files don't intern strings
+			// Doing that might be a possibility even if they don't, but, meh
+			_indexTable.Resize(_strings.Count*4, stream);
+			stream.SeekTo(_indexTable.Offset);
+			int currentOffset = 0;
+			foreach (string str in _strings)
+			{
+				if (str != null)
+				{
+					stream.WriteInt32(currentOffset);
+					currentOffset += str.Length + 1; // + 1 is for the null terminator
+				}
+				else
+				{
+					stream.WriteInt32(0);
+				}
+			}
+		}
 
-        private void SaveData(IStream stream)
-        {
-            // Create a memory buffer and write the strings there
-            var buffer = new MemoryStream();
-            var bufferWriter = new EndianWriter(buffer, stream.Endianness);
-            try
-            {
-                // Write the strings to the buffer
-                foreach (var str in _strings)
-                {
-                    if (str != null)
-                        bufferWriter.WriteAscii(str);
-                }
-                
-                // Align the buffer's length if encryption is necessary
-                if (_key != null)
-                    buffer.SetLength(AES.AlignSize((int)buffer.Length));
+		private void SaveData(IStream stream)
+		{
+			// Create a memory buffer and write the strings there
+			var buffer = new MemoryStream();
+			var bufferWriter = new EndianWriter(buffer, stream.Endianness);
+			try
+			{
+				// Write the strings to the buffer
+				foreach (string str in _strings)
+				{
+					if (str != null)
+						bufferWriter.WriteAscii(str);
+				}
 
-                var data = buffer.GetBuffer();
+				// Align the buffer's length if encryption is necessary
+				if (_key != null)
+					buffer.SetLength(AES.AlignSize((int) buffer.Length));
 
-                // Encrypt the buffer if necessary
-                if (_key != null)
-                    data = AES.Encrypt(data, 0, (int)buffer.Length, _key.Key, _key.IV);
+				byte[] data = buffer.GetBuffer();
 
-                // Resize the data area and write it in
-                _data.Resize((int)buffer.Length, stream);
-                stream.SeekTo(_data.Offset);
-                stream.WriteBlock(data, 0, (int)buffer.Length);
-            }
-            finally
-            {
-                bufferWriter.Close();
-            }
-        }
+				// Encrypt the buffer if necessary
+				if (_key != null)
+					data = AES.Encrypt(data, 0, (int) buffer.Length, _key.Key, _key.IV);
 
-        private IReader DecryptData(IReader reader, FileSegment dataLocation, AESKey key)
-        {
-            reader.SeekTo(dataLocation.Offset);
-            byte[] data = reader.ReadBlock(AES.AlignSize(dataLocation.Size));
-            if (key != null)
-                data = AES.Decrypt(data, key.Key, key.IV);
-            return new EndianReader(new MemoryStream(data), Endian.BigEndian);
-        }
-    }
+				// Resize the data area and write it in
+				_data.Resize((int) buffer.Length, stream);
+				stream.SeekTo(_data.Offset);
+				stream.WriteBlock(data, 0, (int) buffer.Length);
+			}
+			finally
+			{
+				bufferWriter.Close();
+			}
+		}
+
+		private IReader DecryptData(IReader reader, FileSegment dataLocation, AESKey key)
+		{
+			reader.SeekTo(dataLocation.Offset);
+			byte[] data = reader.ReadBlock(AES.AlignSize(dataLocation.Size));
+			if (key != null)
+				data = AES.Decrypt(data, key.Key, key.IV);
+			return new EndianReader(new MemoryStream(data), Endian.BigEndian);
+		}
+	}
 }

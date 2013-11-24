@@ -1,11 +1,11 @@
 ﻿using System.Windows;
-using Assembly.Helpers.Native;
 using Assembly.Helpers;
+using Assembly.Helpers.Native;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
 	/// <summary>
-	/// Interaction logic for MessageBoxOptions.xaml
+	///     Interaction logic for MessageBoxOptions.xaml
 	/// </summary>
 	public partial class MessageBoxOptions
 	{
@@ -54,16 +54,19 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.OK;
 			Close();
 		}
+
 		private void btnYes_Click(object sender, RoutedEventArgs e)
 		{
 			TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.Yes;
 			Close();
 		}
+
 		private void btnNo_Click(object sender, RoutedEventArgs e)
 		{
 			TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.No;
 			Close();
 		}
+
 		private void btnCancel_Click(object sender, RoutedEventArgs e)
 		{
 			TempStorage.MessageBoxButtonStorage = MetroMessageBox.MessageBoxResult.Cancel;

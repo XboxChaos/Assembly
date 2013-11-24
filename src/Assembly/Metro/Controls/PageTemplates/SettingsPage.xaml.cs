@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Media.Animation;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
 	/// <summary>
-	/// Interaction logic for SettingsPage.xaml
+	///     Interaction logic for SettingsPage.xaml
 	/// </summary>
 	public partial class SettingsPage
 	{
@@ -21,23 +22,26 @@ namespace Assembly.Metro.Controls.PageTemplates
 			// Setup Combo Boxes
 			ComboBoxAccents.ItemsSource = Enum.GetValues(typeof (Settings.Accents));
 			ComboBoxMapInfoDockSide.ItemsSource = Enum.GetValues(typeof (Settings.MapInfoDockSide));
-			ComboBoxMapTagSort.ItemsSource = Enum.GetValues(typeof(Settings.TagSort));
+			ComboBoxMapTagSort.ItemsSource = Enum.GetValues(typeof (Settings.TagSort));
 
 			// Load UI
 			btnTabSelection_Clicked(BtnSelectGeneral, null);
 		}
 
 		#region TabSelection
+
+		private string _currentTag = "";
+
 		private void btnTabSelection_Clicked(object sender, RoutedEventArgs e)
 		{
 			//if (_isActive) return;
 
-			var button = (ToggleButton)sender;
+			var button = (ToggleButton) sender;
 			if (button == null || button.IsChecked == null) return;
 			if (_currentTag == button.Tag.ToString()) return;
 
 			// Get Current Tab
-			var currentTabTag = _currentTag;
+			string currentTabTag = _currentTag;
 
 			// Disable all old buttons
 			SetAllToDisbaled();
@@ -47,13 +51,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 			_currentTag = button.Tag.ToString();
 
 			// Apply Storyboard
-			var storyboardHide = (Storyboard)TryFindResource(string.Format("Hide{0}Tab", currentTabTag));
-			var storyboardShow = (Storyboard)TryFindResource(string.Format("Show{0}Tab", button.Tag));
+			var storyboardHide = (Storyboard) TryFindResource(string.Format("Hide{0}Tab", currentTabTag));
+			var storyboardShow = (Storyboard) TryFindResource(string.Format("Show{0}Tab", button.Tag));
 			if (storyboardHide != null) storyboardHide.Begin();
 			if (storyboardShow != null) storyboardShow.Begin();
 		}
 
-		private string _currentTag = "";
 		private void SetAllToDisbaled()
 		{
 			BtnSelectGeneral.IsChecked = false;
@@ -62,21 +65,23 @@ namespace Assembly.Metro.Controls.PageTemplates
 			BtnSelectPlugins.IsChecked = false;
 			BtnSelectStrtpge.IsChecked = false;
 		}
+
 		#endregion
 
 		#region Inline Helpers
 
 		private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
 		{
-			var fbd = new System.Windows.Forms.FolderBrowserDialog
+			var fbd = new FolderBrowserDialog
 			{
 				ShowNewFolderButton = true,
 				SelectedPath = txtAutoSaveDirectory.Text,
 				Description = "Select the folder you would like to auto-save screenshots in"
 			};
-			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (fbd.ShowDialog() == DialogResult.OK)
 				App.AssemblyStorage.AssemblySettings.XdkScreenshotPath = fbd.SelectedPath;
 		}
+
 		private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			LblXdkScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);

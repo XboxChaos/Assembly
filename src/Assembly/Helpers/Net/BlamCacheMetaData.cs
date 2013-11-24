@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using Newtonsoft.Json;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization;
 using Assembly.Helpers.Caching;
+using Newtonsoft.Json;
+
 namespace Assembly.Helpers.Net
 {
 	/// <summary>
-	/// A server request to request new cached data
+	///     A server request to request new cached data
 	/// </summary>
 	[DataContract]
 	public class CacheDataRequest : ServerRequest
@@ -18,13 +17,13 @@ namespace Assembly.Helpers.Net
 		}
 
 		/// <summary>
-		/// The current timestamp of the cached data
+		///     The current timestamp of the cached data
 		/// </summary>
 		[DataMember(Name = "timestamp")]
 		public int UnixTimestamp { get; set; }
 
 		/// <summary>
-		/// The type of cached data to pull from the server
+		///     The type of cached data to pull from the server
 		/// </summary>
 		[DataMember(Name = "type")]
 		public string Type { get; set; }
@@ -38,7 +37,6 @@ namespace Assembly.Helpers.Net
 	}
 
 	/// <summary>
-	/// 
 	/// </summary>
 	[DataContract]
 	public class MetaContentModel
@@ -102,16 +100,17 @@ namespace Assembly.Helpers.Net
 	{
 		public static void BeginCachingData()
 		{
-			var blamcacheFolderPath = VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\";
-			var blamcacheFilePath = blamcacheFolderPath + "content.aidf";
+			string blamcacheFolderPath = VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\";
+			string blamcacheFilePath = blamcacheFolderPath + "content.aidf";
 
 			try
 			{
 				// Look for current cached data
-				var timestamp = 0;
-				var type = "cache_meta_content";
+				int timestamp = 0;
+				string type = "cache_meta_content";
 
 				#region Get Current Cached Data
+
 				if (!Directory.Exists(blamcacheFolderPath))
 					Directory.CreateDirectory(blamcacheFolderPath);
 
@@ -123,12 +122,13 @@ namespace Assembly.Helpers.Net
 				}
 
 				#endregion
+
 				var request = new CacheDataRequest
-								  {
-									  UnixTimestamp = timestamp,
-									  Type = type
-								  };
-				var response = AssemblyServer.SendRequest<CacheDataRequest, MetaContentResponse>(request);
+				{
+					UnixTimestamp = timestamp,
+					Type = type
+				};
+				MetaContentResponse response = AssemblyServer.SendRequest<CacheDataRequest, MetaContentResponse>(request);
 
 				if (response != null && response.UpdateCache)
 				{
@@ -143,9 +143,13 @@ namespace Assembly.Helpers.Net
 				// Store cache in application
 				CachingManager.BlamCacheMetaData =
 					JsonConvert.DeserializeObject<MetaContentModel>(File.ReadAllText(blamcacheFilePath));
-			} catch { }
+			}
+			catch
+			{
+			}
 
 			#region Un needed server code
+
 			//if (CachingManager.BlamCacheMetaData == null || CachingManager.BlamCacheMetaData.Games == null) return;
 			//// Start background image downloading
 			//foreach (var metadataEntry in CachingManager.BlamCacheMetaData.Games.SelectMany(game => game.MetaData))
@@ -203,6 +207,7 @@ namespace Assembly.Helpers.Net
 			//		}
 			//	}
 			//	catch { }
+
 			#endregion
 		}
 	}

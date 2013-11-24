@@ -1,32 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace DragDropListBox
 {
 	public class DraggedAdorner : Adorner
 	{
-		private ContentPresenter contentPresenter;
+		private readonly AdornerLayer adornerLayer;
+		private readonly ContentPresenter contentPresenter;
 		private double left;
 		private double top;
-		private AdornerLayer adornerLayer;
 
-		public DraggedAdorner(object dragDropData, DataTemplate dragDropTemplate, UIElement adornedElement, AdornerLayer adornerLayer)
+		public DraggedAdorner(object dragDropData, DataTemplate dragDropTemplate, UIElement adornedElement,
+			AdornerLayer adornerLayer)
 			: base(adornedElement)
 		{
 			this.adornerLayer = adornerLayer;
 
-			this.contentPresenter = new ContentPresenter();
-			this.contentPresenter.Content = dragDropData;
-			this.contentPresenter.ContentTemplate = dragDropTemplate;
-			this.contentPresenter.Opacity = 0.7;
+			contentPresenter = new ContentPresenter();
+			contentPresenter.Content = dragDropData;
+			contentPresenter.ContentTemplate = dragDropTemplate;
+			contentPresenter.Opacity = 0.7;
 
 			this.adornerLayer.Add(this);
+		}
+
+		protected override int VisualChildrenCount
+		{
+			get { return 1; }
 		}
 
 		public void SetPosition(double left, double top)
@@ -35,47 +37,41 @@ namespace DragDropListBox
 			// near the mouse cursor when dragging.
 			this.left = left - 1;
 			this.top = top + 13;
-			if (this.adornerLayer != null)
+			if (adornerLayer != null)
 			{
-				this.adornerLayer.Update(this.AdornedElement);
+				adornerLayer.Update(AdornedElement);
 			}
 		}
 
 		protected override Size MeasureOverride(Size constraint)
 		{
-			this.contentPresenter.Measure(constraint);
-			return this.contentPresenter.DesiredSize;
+			contentPresenter.Measure(constraint);
+			return contentPresenter.DesiredSize;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			this.contentPresenter.Arrange(new Rect(finalSize));
+			contentPresenter.Arrange(new Rect(finalSize));
 			return finalSize;
 		}
 
 		protected override Visual GetVisualChild(int index)
 		{
-			return this.contentPresenter;
-		}
-
-		protected override int VisualChildrenCount
-		{
-			get { return 1; }
+			return contentPresenter;
 		}
 
 		public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
 		{
-			GeneralTransformGroup result = new GeneralTransformGroup();
+			var result = new GeneralTransformGroup();
 			result.Children.Add(base.GetDesiredTransform(transform));
-			result.Children.Add(new TranslateTransform(this.left, this.top));
+			result.Children.Add(new TranslateTransform(left, top));
 
 			return result;
 		}
 
 		public void Detach()
 		{
-			this.adornerLayer.Remove(this);
+			adornerLayer.Remove(this);
 		}
-
 	}
 }

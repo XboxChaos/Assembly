@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Blamite.Blam.Util;
+﻿using System.Collections.Generic;
 using Blamite.Flexibility;
 using Blamite.IO;
 
 namespace Blamite.Blam.SecondGen.Structures
 {
-    public class SecondGenTag : ITag
-    {
-        public SecondGenTag(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
-        {
-            Load(values, metaArea, classesById);
-        }
+	public class SecondGenTag : ITag
+	{
+		public SecondGenTag(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
+		{
+			Load(values, metaArea, classesById);
+		}
 
-        private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
-        {
-            uint offset = values.GetInteger("offset");
-            if (offset > 0)
-                MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
+		public int DataSize { get; set; }
 
-            // Load the tag class by looking up the magic value that's stored
-            int classMagic = (int)values.GetInteger("class magic");
-            if (classMagic != -1)
-                Class = classesById[classMagic];
+		public ITagClass Class { get; set; }
+		public SegmentPointer MetaLocation { get; set; }
+		public DatumIndex Index { get; private set; }
 
-            Index = new DatumIndex(values.GetInteger("datum index"));
-            DataSize = (int)values.GetInteger("data size");
-        }
+		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
+		{
+			uint offset = values.GetInteger("offset");
+			if (offset > 0)
+				MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
 
-        public ITagClass Class { get; set; }
-        public SegmentPointer MetaLocation { get; set; }
-        public DatumIndex Index { get; private set; }
-        public int DataSize { get; set; }
-    }
+			// Load the tag class by looking up the magic value that's stored
+			var classMagic = (int) values.GetInteger("class magic");
+			if (classMagic != -1)
+				Class = classesById[classMagic];
+
+			Index = new DatumIndex(values.GetInteger("datum index"));
+			DataSize = (int) values.GetInteger("data size");
+		}
+	}
 }

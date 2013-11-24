@@ -1,216 +1,217 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <plugin game="Halo2" baseSize="0x104">
-	<!-- Automatically generated plugin -->
-	<revisions>
-		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
-		<revision author="XZodia" version="2">Completed</revision>
-	</revisions>
-	<float32 name="Search Distance Lower Bound" offset="0x0" visible="false" />
-	<float32 name="Search Distance Upper Bound" offset="0x4" visible="false" />
-	<float32 name="Luminels Per World Unit" offset="0x8" visible="false" />
-	<float32 name="Output White Reference" offset="0xC" visible="false" />
-	<float32 name="Output Black Reference" offset="0x10" visible="false" />
-	<float32 name="Output Schlick Reference" offset="0x14" visible="false" />
-	<float32 name="Diffuse Map Scale" offset="0x18" visible="false" />
-	<float32 name="Sun Scale" offset="0x1C" visible="false" />
-	<float32 name="Sky Scale" offset="0x20" visible="false" />
-	<float32 name="Indirect Scale" offset="0x24" visible="false" />
-	<float32 name="Prt Scale" offset="0x28" visible="false" />
-	<float32 name="Surface Light Scale" offset="0x2C" visible="false" />
-	<float32 name="Scenario Light Scale" offset="0x30" visible="false" />
-	<float32 name="Lightprobe Interpolation Override" offset="0x34" visible="false" />
-	<reflexive name="Lightmap Groups" offset="0x80" visible="true" entrySize="0x68">
-		<enum16 name="Type" offset="0x0" visible="false">
-			<option name="Normal" value="0x0" />
-		</enum16>
-		<bitfield16 name="Flags" offset="0x2" visible="true">
-			<bit name="Unused" index="0" />
-		</bitfield16>
-		<int32 name="Structure Checksum" offset="0x4" visible="false" />
-		<reflexive name="Section Palette" offset="0x8" visible="true" entrySize="0x400">
-			<int32 name="First Palette Color" offset="0x0" visible="false" />
-		</reflexive>
-		<reflexive name="Writable Palettes" offset="0x10" visible="true" entrySize="0x400">
-			<int32 name="First Palette Color" offset="0x0" visible="false" />
-		</reflexive>
-		<tagRef name="Bitmap Group" offset="0x18" visible="false" />
-		<reflexive name="Clusters" offset="0x20" visible="true" entrySize="0x54">
-			<int16 name="Total Vertex Count" offset="0x0" visible="false" />
-			<int16 name="Total Triangle Count" offset="0x2" visible="false" />
-			<int16 name="Total Part Count" offset="0x4" visible="false" />
-			<int16 name="Shadow-Casting Triangle Count" offset="0x6" visible="false" />
-			<int16 name="Shadow-Casting Part Count" offset="0x8" visible="false" />
-			<int16 name="Opaque Point Count" offset="0xA" visible="false" />
-			<int16 name="Opaque Vertex Count" offset="0xC" visible="false" />
-			<int16 name="Opaque Part Count" offset="0xE" visible="false" />
-			<int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="false" />
-			<int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="false" />
-			<int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="false" />
-			<enum32 name="Geometry Classification" offset="0x16" visible="false">
-				<option name="World Space" value="0x0" />
-			</enum32>
-			<bitfield16 name="Geometry Compression Flags" offset="0x1A" visible="true">
-				<bit name="Compressed Position" index="0" />
-				<bit name="Compressed Texcoord" index="1" />
-				<bit name="Compressed Secondary Texcoord" index="2" />
-			</bitfield16>
-			<int16 name="Hardware Node Count" offset="0x1C" visible="true" />
-			<int16 name="Node Map Size" offset="0x1E" visible="true" />
-			<int16 name="Software Plane Count" offset="0x20" visible="true" />
-			<int16 name="Total Subpart Count" offset="0x22" visible="true" />
-			<bitfield32 name="Section Lighting Flags" offset="0x24" visible="false">
-				<bit name="Has LM Texcoords" index="0" />
-				<bit name="Has LM Inc. Rad." index="1" />
-				<bit name="Has LM Colors" index="2" />
-				<bit name="Has LM Prt" index="3" />
-			</bitfield32>
-			<int32 name="Block Offset" offset="0x28" visible="false" />
-			<int32 name="Block Size" offset="0x2C" visible="false" />
-			<int32 name="Section Data Size" offset="0x30" visible="false" />
-			<int32 name="Resource Data Size" offset="0x34" visible="false" />
-			<int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
-		</reflexive>
-		<reflexive name="Cluster Render Info" offset="0x28" visible="true" entrySize="0x4">
-			<int16 name="Bitmap Index" offset="0x0" visible="false" />
-			<int16 name="Palette Index" offset="0x2" visible="false" />
-		</reflexive>
-		<reflexive name="Poop Definitions" offset="0x30" visible="true" entrySize="0x54">
-			<int16 name="Total Vertex Count" offset="0x0" visible="false" />
-			<int16 name="Total Triangle Count" offset="0x2" visible="false" />
-			<int16 name="Total Part Count" offset="0x4" visible="false" />
-			<int16 name="Shadow-Casting Triangle Count" offset="0x6" visible="false" />
-			<int16 name="Shadow-Casting Part Count" offset="0x8" visible="false" />
-			<int16 name="Opaque Point Count" offset="0xA" visible="false" />
-			<int16 name="Opaque Vertex Count" offset="0xC" visible="false" />
-			<int16 name="Opaque Part Count" offset="0xE" visible="false" />
-			<int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="false" />
-			<int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="false" />
-			<int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="false" />
-			<enum32 name="Geometry Classification" offset="0x16" visible="false">
-				<option name="World Space" value="0x0" />
-			</enum32>
-			<bitfield16 name="Geometry Compression Flags" offset="0x1A" visible="true">
-				<bit name="Compressed Position" index="0" />
-				<bit name="Compressed Texcoord" index="1" />
-				<bit name="Compressed Secondary Texcoord" index="2" />
-			</bitfield16>
-			<int16 name="Hardware Node Count" offset="0x1C" visible="true" />
-			<int16 name="Node Map Size" offset="0x1E" visible="true" />
-			<int16 name="Software Plane Count" offset="0x20" visible="true" />
-			<int16 name="Total Subpart Count" offset="0x22" visible="true" />
-			<bitfield32 name="Section Lighting Flags" offset="0x24" visible="false">
-				<bit name="Has LM Texcoords" index="0" />
-				<bit name="Has LM Inc. Rad." index="1" />
-				<bit name="Has LM Colors" index="2" />
-				<bit name="Has LM Prt" index="3" />
-			</bitfield32>
-			<int32 name="Block Offset" offset="0x28" visible="false" />
-			<int32 name="Block Size" offset="0x2C" visible="false" />
-			<int32 name="Section Data Size" offset="0x30" visible="false" />
-			<int32 name="Resource Data Size" offset="0x34" visible="false" />
-			<int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
-		</reflexive>
-		<reflexive name="Lighting Environments" offset="0x38" visible="true" entrySize="0xDC">
-			<float32 name="Sample Point X" offset="0x0" visible="false" />
-			<float32 name="Sample Point Y" offset="0x4" visible="false" />
-			<float32 name="Sample Point Z" offset="0x8" visible="false" />
-			<float32 name="Red Coefficient" offset="0xC" visible="false" />
-			<float32 name="Red Coefficient" offset="0x10" visible="false" />
-			<float32 name="Red Coefficient" offset="0x14" visible="false" />
-			<float32 name="Red Coefficient" offset="0x18" visible="false" />
-			<float32 name="Red Coefficient" offset="0x1C" visible="false" />
-			<float32 name="Red Coefficient" offset="0x20" visible="false" />
-			<float32 name="Red Coefficient" offset="0x24" visible="false" />
-			<float32 name="Red Coefficient" offset="0x28" visible="false" />
-			<float32 name="Red Coefficient" offset="0x2C" visible="false" />
-			<float32 name="Green Coefficient" offset="0x30" visible="false" />
-			<float32 name="Green Coefficient" offset="0x34" visible="false" />
-			<float32 name="Green Coefficient" offset="0x38" visible="false" />
-			<float32 name="Green Coefficient" offset="0x3C" visible="false" />
-			<float32 name="Green Coefficient" offset="0x40" visible="false" />
-			<float32 name="Green Coefficient" offset="0x44" visible="false" />
-			<float32 name="Green Coefficient" offset="0x48" visible="false" />
-			<float32 name="Green Coefficient" offset="0x4C" visible="false" />
-			<float32 name="Green Coefficient" offset="0x50" visible="false" />
-			<float32 name="Green Coefficient" offset="0x54" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x58" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x5C" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x60" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x64" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x68" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x6C" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x70" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x74" visible="false" />
-			<float32 name="Blue Coefficient" offset="0x78" visible="false" />
-			<degree name="Mean Incoming Light Direction i" offset="0x7C" visible="false" />
-			<degree name="Mean Incoming Light Direction j" offset="0x80" visible="false" />
-			<degree name="Mean Incoming Light Direction k" offset="0x84" visible="false" />
-			<float32 name="Incoming Light Intensity X" offset="0x88" visible="false" />
-			<float32 name="Incoming Light Intensity Y" offset="0x8C" visible="false" />
-			<float32 name="Incoming Light Intensity Z" offset="0x90" visible="false" />
-			<int32 name="Specular Bitmap Index" offset="0x94" visible="false" />
-			<degree name="Rotation Axis i" offset="0x98" visible="false" />
-			<degree name="Rotation Axis j" offset="0x9C" visible="false" />
-			<degree name="Rotation Axis k" offset="0xA0" visible="false" />
-			<float32 name="Rotation Speed" offset="0xA4" visible="false" />
-			<degree name="Bump Direction i" offset="0xA8" visible="false" />
-			<degree name="Bump Direction j" offset="0xAC" visible="false" />
-			<degree name="Bump Direction k" offset="0xB0" visible="false" />
-			<float32 name="Color Tint" offset="0xB4" visible="false" />
-			<enum32 name="Procedural Overide" offset="0xB8" visible="false" />
-			<bitfield32 name="Flags" offset="0xBC" visible="false">
-				<bit name="Leave Me Alone Please" index="0" />
-			</bitfield32>
-			<degree name="Procedural Param0 i" offset="0xC0" visible="false" />
-			<degree name="Procedural Param0 j" offset="0xC4" visible="false" />
-			<degree name="Procedural Param0 k" offset="0xC8" visible="false" />
-			<degree name="Procedural Param1.XYZ i" offset="0xCC" visible="false" />
-			<degree name="Procedural Param1.XYZ j" offset="0xD0" visible="false" />
-			<degree name="Procedural Param1.XYZ k" offset="0xD4" visible="false" />
-			<degree name="Procedural Param1.w" offset="0xD8" visible="false" />
-		</reflexive>
-		<reflexive name="Geometry Buckets" offset="0x40" visible="true" entrySize="0x38">
-			<bitfield32 name="Flags" offset="0x0" visible="false">
-				<bit name="Incident Direction" index="0" />
-				<bit name="Color" index="1" />
-			</bitfield32>
-			<undefined name="Raw Offset" offset="0xC" visible="false" />
-			<undefined name="Raw Size" offset="0x10" visible="false" />
-			<undefined name="Section Data Size" offset="0x14" visible="false" />
-			<undefined name="Resource Data Size" offset="0x18" visible="false" />
-			<reflexive name="Resources" offset="0x1C" visible="true" entrySize="0x10">
-				<enum32 name="Type" offset="0x0" visible="false" />
-				<int16 name="Primary Locator" offset="0x4" visible="false" />
-				<int16 name="Secondary Locator" offset="0x6" visible="false" />
-				<int32 name="Resource Data Size" offset="0x8" visible="false" />
-				<int32 name="Resource Data Offset" offset="0xC" visible="false" />
-			</reflexive>
-			<int32 name="Owner Tag Section Offset" offset="0x24" visible="false" />
-		</reflexive>
-		<reflexive name="Instance Render Info" offset="0x48" visible="true" entrySize="0x4">
-			<int16 name="Bitmap Index" offset="0x0" visible="false" />
-			<int16 name="Palette Index" offset="0x0" visible="false" />
-		</reflexive>
-		<reflexive name="Instance Bucket Refs" offset="0x50" visible="true" entrySize="0xC">
-			<int16 name="Flags" offset="0x0" visible="false" />
-			<int16 name="Bucket Index" offset="0x2" visible="false" />
-			<reflexive name="Section Offsets" offset="0x4" visible="true" entrySize="0x4">
-				<int32 name="Section Offset" offset="0x0" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Scenary Object Info" offset="0x58" visible="true" entrySize="0xC">
-			<int32 name="Unique ID" offset="0x0" visible="false" />
-			<int16 name="Origin BSP Index" offset="0x4" visible="false" />
-			<uint8 name="Type" offset="0x6" visible="false" />
-			<uint8 name="Source" offset="0x7" visible="false" />
-			<int32 name="Render Model Checksum" offset="0x8" visible="false" />
-		</reflexive>
-		<reflexive name="Scenary Object Bucket Refs" offset="0x60" visible="true" entrySize="0xC">
-			<int16 name="Flags" offset="0x0" visible="false" />
-			<int16 name="Bucket Index" offset="0x2" visible="false" />
-			<reflexive name="Section Offsets" offset="0x4" visible="true" entrySize="0x4">
-				<int32 name="Section Offset" offset="0x0" visible="false" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
+  <!-- Automatically generated plugin -->
+  <revisions>
+    <revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
+    <revision author="XZodia" version="2">Completed</revision>
+  </revisions>
+  <float32 name="Search Distance Lower Bound" offset="0x0" visible="false" />
+  <float32 name="Search Distance Upper Bound" offset="0x4" visible="false" />
+  <float32 name="Luminels Per World Unit" offset="0x8" visible="false" />
+  <float32 name="Output White Reference" offset="0xC" visible="false" />
+  <float32 name="Output Black Reference" offset="0x10" visible="false" />
+  <float32 name="Output Schlick Reference" offset="0x14" visible="false" />
+  <float32 name="Diffuse Map Scale" offset="0x18" visible="false" />
+  <float32 name="Sun Scale" offset="0x1C" visible="false" />
+  <float32 name="Sky Scale" offset="0x20" visible="false" />
+  <float32 name="Indirect Scale" offset="0x24" visible="false" />
+  <float32 name="Prt Scale" offset="0x28" visible="false" />
+  <float32 name="Surface Light Scale" offset="0x2C" visible="false" />
+  <float32 name="Scenario Light Scale" offset="0x30" visible="false" />
+  <float32 name="Lightprobe Interpolation Override" offset="0x34" visible="false" />
+  <reflexive name="Lightmap Groups" offset="0x80" visible="true" entrySize="0x68">
+    <enum16 name="Type" offset="0x0" visible="false">
+      <option name="Normal" value="0x0" />
+    </enum16>
+    <bitfield16 name="Flags" offset="0x2" visible="true">
+      <bit name="Unused" index="0" />
+    </bitfield16>
+    <int32 name="Structure Checksum" offset="0x4" visible="false" />
+    <reflexive name="Section Palette" offset="0x8" visible="true" entrySize="0x400">
+      <int32 name="First Palette Color" offset="0x0" visible="false" />
+    </reflexive>
+    <reflexive name="Writable Palettes" offset="0x10" visible="true" entrySize="0x400">
+      <int32 name="First Palette Color" offset="0x0" visible="false" />
+    </reflexive>
+    <tagRef name="Bitmap Group" offset="0x18" visible="false" />
+    <reflexive name="Clusters" offset="0x20" visible="true" entrySize="0x54">
+      <int16 name="Total Vertex Count" offset="0x0" visible="false" />
+      <int16 name="Total Triangle Count" offset="0x2" visible="false" />
+      <int16 name="Total Part Count" offset="0x4" visible="false" />
+      <int16 name="Shadow-Casting Triangle Count" offset="0x6" visible="false" />
+      <int16 name="Shadow-Casting Part Count" offset="0x8" visible="false" />
+      <int16 name="Opaque Point Count" offset="0xA" visible="false" />
+      <int16 name="Opaque Vertex Count" offset="0xC" visible="false" />
+      <int16 name="Opaque Part Count" offset="0xE" visible="false" />
+      <int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="false" />
+      <int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="false" />
+      <int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="false" />
+      <enum32 name="Geometry Classification" offset="0x16" visible="false">
+        <option name="World Space" value="0x0" />
+      </enum32>
+      <bitfield16 name="Geometry Compression Flags" offset="0x1A" visible="true">
+        <bit name="Compressed Position" index="0" />
+        <bit name="Compressed Texcoord" index="1" />
+        <bit name="Compressed Secondary Texcoord" index="2" />
+      </bitfield16>
+      <int16 name="Hardware Node Count" offset="0x1C" visible="true" />
+      <int16 name="Node Map Size" offset="0x1E" visible="true" />
+      <int16 name="Software Plane Count" offset="0x20" visible="true" />
+      <int16 name="Total Subpart Count" offset="0x22" visible="true" />
+      <bitfield32 name="Section Lighting Flags" offset="0x24" visible="false">
+        <bit name="Has LM Texcoords" index="0" />
+        <bit name="Has LM Inc. Rad." index="1" />
+        <bit name="Has LM Colors" index="2" />
+        <bit name="Has LM Prt" index="3" />
+      </bitfield32>
+      <int32 name="Block Offset" offset="0x28" visible="false" />
+      <int32 name="Block Size" offset="0x2C" visible="false" />
+      <int32 name="Section Data Size" offset="0x30" visible="false" />
+      <int32 name="Resource Data Size" offset="0x34" visible="false" />
+      <int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
+    </reflexive>
+    <reflexive name="Cluster Render Info" offset="0x28" visible="true" entrySize="0x4">
+      <int16 name="Bitmap Index" offset="0x0" visible="false" />
+      <int16 name="Palette Index" offset="0x2" visible="false" />
+    </reflexive>
+    <reflexive name="Poop Definitions" offset="0x30" visible="true" entrySize="0x54">
+      <int16 name="Total Vertex Count" offset="0x0" visible="false" />
+      <int16 name="Total Triangle Count" offset="0x2" visible="false" />
+      <int16 name="Total Part Count" offset="0x4" visible="false" />
+      <int16 name="Shadow-Casting Triangle Count" offset="0x6" visible="false" />
+      <int16 name="Shadow-Casting Part Count" offset="0x8" visible="false" />
+      <int16 name="Opaque Point Count" offset="0xA" visible="false" />
+      <int16 name="Opaque Vertex Count" offset="0xC" visible="false" />
+      <int16 name="Opaque Part Count" offset="0xE" visible="false" />
+      <int16 name="Opague Max Nodes/Vertex" offset="0x10" visible="false" />
+      <int16 name="Transparent Max Nodes/Vertex" offset="0x12" visible="false" />
+      <int16 name="Shadow-Casting Rigid Triangle" offset="0x14" visible="false" />
+      <enum32 name="Geometry Classification" offset="0x16" visible="false">
+        <option name="World Space" value="0x0" />
+      </enum32>
+      <bitfield16 name="Geometry Compression Flags" offset="0x1A" visible="true">
+        <bit name="Compressed Position" index="0" />
+        <bit name="Compressed Texcoord" index="1" />
+        <bit name="Compressed Secondary Texcoord" index="2" />
+      </bitfield16>
+      <int16 name="Hardware Node Count" offset="0x1C" visible="true" />
+      <int16 name="Node Map Size" offset="0x1E" visible="true" />
+      <int16 name="Software Plane Count" offset="0x20" visible="true" />
+      <int16 name="Total Subpart Count" offset="0x22" visible="true" />
+      <bitfield32 name="Section Lighting Flags" offset="0x24" visible="false">
+        <bit name="Has LM Texcoords" index="0" />
+        <bit name="Has LM Inc. Rad." index="1" />
+        <bit name="Has LM Colors" index="2" />
+        <bit name="Has LM Prt" index="3" />
+      </bitfield32>
+      <int32 name="Block Offset" offset="0x28" visible="false" />
+      <int32 name="Block Size" offset="0x2C" visible="false" />
+      <int32 name="Section Data Size" offset="0x30" visible="false" />
+      <int32 name="Resource Data Size" offset="0x34" visible="false" />
+      <int32 name="Owner Tag Section Offset" offset="0x44" visible="true" />
+    </reflexive>
+    <reflexive name="Lighting Environments" offset="0x38" visible="true" entrySize="0xDC">
+      <float32 name="Sample Point X" offset="0x0" visible="false" />
+      <float32 name="Sample Point Y" offset="0x4" visible="false" />
+      <float32 name="Sample Point Z" offset="0x8" visible="false" />
+      <float32 name="Red Coefficient" offset="0xC" visible="false" />
+      <float32 name="Red Coefficient" offset="0x10" visible="false" />
+      <float32 name="Red Coefficient" offset="0x14" visible="false" />
+      <float32 name="Red Coefficient" offset="0x18" visible="false" />
+      <float32 name="Red Coefficient" offset="0x1C" visible="false" />
+      <float32 name="Red Coefficient" offset="0x20" visible="false" />
+      <float32 name="Red Coefficient" offset="0x24" visible="false" />
+      <float32 name="Red Coefficient" offset="0x28" visible="false" />
+      <float32 name="Red Coefficient" offset="0x2C" visible="false" />
+      <float32 name="Green Coefficient" offset="0x30" visible="false" />
+      <float32 name="Green Coefficient" offset="0x34" visible="false" />
+      <float32 name="Green Coefficient" offset="0x38" visible="false" />
+      <float32 name="Green Coefficient" offset="0x3C" visible="false" />
+      <float32 name="Green Coefficient" offset="0x40" visible="false" />
+      <float32 name="Green Coefficient" offset="0x44" visible="false" />
+      <float32 name="Green Coefficient" offset="0x48" visible="false" />
+      <float32 name="Green Coefficient" offset="0x4C" visible="false" />
+      <float32 name="Green Coefficient" offset="0x50" visible="false" />
+      <float32 name="Green Coefficient" offset="0x54" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x58" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x5C" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x60" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x64" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x68" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x6C" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x70" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x74" visible="false" />
+      <float32 name="Blue Coefficient" offset="0x78" visible="false" />
+      <degree name="Mean Incoming Light Direction i" offset="0x7C" visible="false" />
+      <degree name="Mean Incoming Light Direction j" offset="0x80" visible="false" />
+      <degree name="Mean Incoming Light Direction k" offset="0x84" visible="false" />
+      <float32 name="Incoming Light Intensity X" offset="0x88" visible="false" />
+      <float32 name="Incoming Light Intensity Y" offset="0x8C" visible="false" />
+      <float32 name="Incoming Light Intensity Z" offset="0x90" visible="false" />
+      <int32 name="Specular Bitmap Index" offset="0x94" visible="false" />
+      <degree name="Rotation Axis i" offset="0x98" visible="false" />
+      <degree name="Rotation Axis j" offset="0x9C" visible="false" />
+      <degree name="Rotation Axis k" offset="0xA0" visible="false" />
+      <float32 name="Rotation Speed" offset="0xA4" visible="false" />
+      <degree name="Bump Direction i" offset="0xA8" visible="false" />
+      <degree name="Bump Direction j" offset="0xAC" visible="false" />
+      <degree name="Bump Direction k" offset="0xB0" visible="false" />
+      <float32 name="Color Tint" offset="0xB4" visible="false" />
+      <enum32 name="Procedural Overide" offset="0xB8" visible="false" />
+      <bitfield32 name="Flags" offset="0xBC" visible="false">
+        <bit name="Leave Me Alone Please" index="0" />
+      </bitfield32>
+      <degree name="Procedural Param0 i" offset="0xC0" visible="false" />
+      <degree name="Procedural Param0 j" offset="0xC4" visible="false" />
+      <degree name="Procedural Param0 k" offset="0xC8" visible="false" />
+      <degree name="Procedural Param1.XYZ i" offset="0xCC" visible="false" />
+      <degree name="Procedural Param1.XYZ j" offset="0xD0" visible="false" />
+      <degree name="Procedural Param1.XYZ k" offset="0xD4" visible="false" />
+      <degree name="Procedural Param1.w" offset="0xD8" visible="false" />
+    </reflexive>
+    <reflexive name="Geometry Buckets" offset="0x40" visible="true" entrySize="0x38">
+      <bitfield32 name="Flags" offset="0x0" visible="false">
+        <bit name="Incident Direction" index="0" />
+        <bit name="Color" index="1" />
+      </bitfield32>
+      <undefined name="Raw Offset" offset="0xC" visible="false" />
+      <undefined name="Raw Size" offset="0x10" visible="false" />
+      <undefined name="Section Data Size" offset="0x14" visible="false" />
+      <undefined name="Resource Data Size" offset="0x18" visible="false" />
+      <reflexive name="Resources" offset="0x1C" visible="true" entrySize="0x10">
+        <enum32 name="Type" offset="0x0" visible="false" />
+        <int16 name="Primary Locator" offset="0x4" visible="false" />
+        <int16 name="Secondary Locator" offset="0x6" visible="false" />
+        <int32 name="Resource Data Size" offset="0x8" visible="false" />
+        <int32 name="Resource Data Offset" offset="0xC" visible="false" />
+      </reflexive>
+      <int32 name="Owner Tag Section Offset" offset="0x24" visible="false" />
+    </reflexive>
+    <reflexive name="Instance Render Info" offset="0x48" visible="true" entrySize="0x4">
+      <int16 name="Bitmap Index" offset="0x0" visible="false" />
+      <int16 name="Palette Index" offset="0x0" visible="false" />
+    </reflexive>
+    <reflexive name="Instance Bucket Refs" offset="0x50" visible="true" entrySize="0xC">
+      <int16 name="Flags" offset="0x0" visible="false" />
+      <int16 name="Bucket Index" offset="0x2" visible="false" />
+      <reflexive name="Section Offsets" offset="0x4" visible="true" entrySize="0x4">
+        <int32 name="Section Offset" offset="0x0" visible="false" />
+      </reflexive>
+    </reflexive>
+    <reflexive name="Scenary Object Info" offset="0x58" visible="true" entrySize="0xC">
+      <int32 name="Unique ID" offset="0x0" visible="false" />
+      <int16 name="Origin BSP Index" offset="0x4" visible="false" />
+      <uint8 name="Type" offset="0x6" visible="false" />
+      <uint8 name="Source" offset="0x7" visible="false" />
+      <int32 name="Render Model Checksum" offset="0x8" visible="false" />
+    </reflexive>
+    <reflexive name="Scenary Object Bucket Refs" offset="0x60" visible="true" entrySize="0xC">
+      <int16 name="Flags" offset="0x0" visible="false" />
+      <int16 name="Bucket Index" offset="0x2" visible="false" />
+      <reflexive name="Section Offsets" offset="0x4" visible="true" entrySize="0x4">
+        <int32 name="Section Offset" offset="0x0" visible="false" />
+      </reflexive>
+    </reflexive>
+  </reflexive>
 </plugin>

@@ -21,13 +21,16 @@ using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
-	class SearchResult
+	internal class SearchResult
 	{
 		/// <summary>
-		/// Constructs a new search result holder.
+		///     Constructs a new search result holder.
 		/// </summary>
 		/// <param name="foundField">The field that was found and highlighted.</param>
-		/// <param name="listField">The top-level field in the field list. For reflexive entries, this is the topmost wrapper field, otherwise, this may be the same as foundField.</param>
+		/// <param name="listField">
+		///     The top-level field in the field list. For reflexive entries, this is the topmost wrapper
+		///     field, otherwise, this may be the same as foundField.
+		/// </param>
 		/// <param name="parent">The reflexive that the field is in. Can be null.</param>
 		public SearchResult(MetaField foundField, MetaField listField, ReflexiveData parent)
 		{
@@ -42,35 +45,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	}
 
 	/// <summary>
-	/// Interaction logic for MetaEditor.xaml
+	///     Interaction logic for MetaEditor.xaml
 	/// </summary>
 	public partial class MetaEditor : UserControl
 	{
-		private MetaContainer _parentMetaContainer;
-		private IStreamManager _fileManager;
-		private TagEntry _tag;
-		private TagHierarchy _tags;
-		private EngineDescription _buildInfo;
-		private ICacheFile _cache;
-		private string _pluginPath;
-		private ThirdGenPluginVisitor _pluginVisitor;
-		private bool hasInitFinished = false;
-		private ReflexiveFlattener _flattener;
-		private IRTEProvider _rteProvider;
-		private Trie _stringIdTrie;
-
-		private ObservableCollection<SearchResult> _searchResults;
-		private Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
-		private Timer _searchTimer;
+		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand GoToPlugin = new RoutedCommand();
+		private readonly EngineDescription _buildInfo;
+		private readonly ICacheFile _cache;
+		private readonly IStreamManager _fileManager;
+		private readonly MetaContainer _parentMetaContainer;
+		private readonly Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
+		private readonly IRTEProvider _rteProvider;
+		private readonly Timer _searchTimer;
+		private readonly Trie _stringIdTrie;
+		private readonly TagHierarchy _tags;
+		private readonly bool hasInitFinished;
 
 		private FieldChangeTracker _changeTracker;
 		private FieldChangeSet _fileChanges;
+		private ReflexiveFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
+		private string _pluginPath;
+		private ThirdGenPluginVisitor _pluginVisitor;
+		private ObservableCollection<SearchResult> _searchResults;
+		private TagEntry _tag;
 
-		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
-		public static RoutedCommand GoToPlugin = new RoutedCommand();
-
-		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
+			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
@@ -85,8 +87,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_stringIdTrie = stringIDTrie;
 
 			// Load Plugin Path
-			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.Settings.GetSetting<string>("plugins"), className);
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
 			// Set Invisibility box
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
@@ -114,7 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case MetaReader.LoadType.File:
 					streamManager = _fileManager;
-					baseOffset = (uint)_tag.RawTag.MetaLocation.AsOffset();
+					baseOffset = (uint) _tag.RawTag.MetaLocation.AsOffset();
 					break;
 
 				case MetaReader.LoadType.Memory:
@@ -137,9 +140,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			// Load Plugin File
-			using (var xml = XmlReader.Create(_pluginPath))
+			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
-				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
+				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
+					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
 				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
 			}
 
@@ -167,47 +171,50 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
 				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Class.Magic));
 			else
-				MetroMessageBox.Show("Press RB to...wait...how'd you do that?", "How did you load the plugin revision viewer before you loaded a plugin? wat.");
+				MetroMessageBox.Show("Press RB to...wait...how'd you do that?",
+					"How did you load the plugin revision viewer before you loaded a plugin? wat.");
 		}
+
 		private void UpdateMetaButtons(bool pluginExists)
 		{
 			if (pluginExists)
 			{
-				gridSearch.Visibility = System.Windows.Visibility.Visible;
-				cbShowInvisibles.Visibility = System.Windows.Visibility.Visible;
-				btnPluginSave.Visibility = System.Windows.Visibility.Visible;
+				gridSearch.Visibility = Visibility.Visible;
+				cbShowInvisibles.Visibility = Visibility.Visible;
+				btnPluginSave.Visibility = Visibility.Visible;
 
 				// Only enable poking if RTE support is available
 				if (_rteProvider != null)
 				{
-					btnPluginPokeAll.Visibility = System.Windows.Visibility.Visible;
-					btnPluginPokeChanged.Visibility = System.Windows.Visibility.Visible;
-					btnPluginRefreshFromMemory.Visibility = System.Windows.Visibility.Visible;
+					btnPluginPokeAll.Visibility = Visibility.Visible;
+					btnPluginPokeChanged.Visibility = Visibility.Visible;
+					btnPluginRefreshFromMemory.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					btnPluginPokeAll.Visibility = System.Windows.Visibility.Collapsed;
-					btnPluginPokeChanged.Visibility = System.Windows.Visibility.Collapsed;
-					btnPluginRefreshFromMemory.Visibility = System.Windows.Visibility.Collapsed;
+					btnPluginPokeAll.Visibility = Visibility.Collapsed;
+					btnPluginPokeChanged.Visibility = Visibility.Collapsed;
+					btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
 				}
 
-				btnPluginRevisionViewer.Visibility = System.Windows.Visibility.Visible;
-				btnPluginRefresh.Visibility = System.Windows.Visibility.Visible;
+				btnPluginRevisionViewer.Visibility = Visibility.Visible;
+				btnPluginRefresh.Visibility = Visibility.Visible;
 			}
 			else
 			{
-				gridSearch.Visibility = System.Windows.Visibility.Collapsed;
+				gridSearch.Visibility = Visibility.Collapsed;
 
-				cbShowInvisibles.Visibility = System.Windows.Visibility.Collapsed;
-				btnPluginSave.Visibility = System.Windows.Visibility.Collapsed;
-				btnPluginPokeAll.Visibility = System.Windows.Visibility.Collapsed;
-				btnPluginPokeChanged.Visibility = System.Windows.Visibility.Collapsed;
-				btnPluginRevisionViewer.Visibility = System.Windows.Visibility.Collapsed;
-				btnPluginRefreshFromMemory.Visibility = System.Windows.Visibility.Collapsed;
+				cbShowInvisibles.Visibility = Visibility.Collapsed;
+				btnPluginSave.Visibility = Visibility.Collapsed;
+				btnPluginPokeAll.Visibility = Visibility.Collapsed;
+				btnPluginPokeChanged.Visibility = Visibility.Collapsed;
+				btnPluginRevisionViewer.Visibility = Visibility.Collapsed;
+				btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
 
-				btnPluginRefresh.Visibility = System.Windows.Visibility.Visible;
+				btnPluginRefresh.Visibility = Visibility.Visible;
 			}
 		}
+
 		private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
 		{
 			if (type == MetaWriter.SaveType.File)
@@ -220,7 +227,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 #if DEBUG_SAVE_ALL
                     MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					MetaWriter metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges, _stringIdTrie);
+					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
+						_fileChanges, _stringIdTrie);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
 					_cache.SaveChanges(stream);
@@ -237,7 +245,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (metaStream != null)
 					{
 						FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-						MetaWriter metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type, changes, _stringIdTrie);
+						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
+							changes, _stringIdTrie);
 						metaUpdate.WriteFields(_pluginVisitor.Values);
 
 						if (showActionDialog)
@@ -261,21 +270,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			switch (_rteProvider.ConnectionType)
 			{
 				case RTEConnectionType.ConsoleX360:
-					MetroMessageBox.Show("Connection Error", "Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
+					MetroMessageBox.Show("Connection Error",
+						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
 					break;
 
 				case RTEConnectionType.LocalProcess:
-					MetroMessageBox.Show("Connection Error", "Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
+					MetroMessageBox.Show("Connection Error",
+						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
 					break;
 			}
 		}
+
 		public void LoadNewTagEntry(TagEntry tag)
 		{
 			_tag = tag;
 
 			// Load Plugin Path
-			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins", _buildInfo.Settings.GetSetting<string>("plugins"), className);
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
+			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
 			// Set Invisibility box
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
@@ -288,6 +301,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			RefreshEditor(MetaReader.LoadType.File);
 		}
+
 		private void btnPluginRefreshFromMemory_Click(object sender, RoutedEventArgs e)
 		{
 			RefreshEditor(MetaReader.LoadType.Memory);
@@ -303,7 +317,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (!hasInitFinished) return;
 
 			if (cbShowInvisibles.IsChecked != null)
-				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool)cbShowInvisibles.IsChecked;
+				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool) cbShowInvisibles.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
 		}
 
@@ -317,10 +331,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			UpdateMeta(MetaWriter.SaveType.Memory, false);
 		}
+
 		private void btnPluginPokeChanged_Click(object sender, RoutedEventArgs e)
 		{
 			UpdateMeta(MetaWriter.SaveType.Memory, true);
 		}
+
 		private void btnPluginSave_Click(object sender, RoutedEventArgs e)
 		{
 			UpdateMeta(MetaWriter.SaveType.File, false);
@@ -372,7 +388,119 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 		}
 
+		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			ValueField field = GetValueField(e.Source);
+			e.CanExecute = (field != null);
+		}
+
+		private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			ValueField field = GetValueField(e.Source);
+			if (field != null)
+			{
+				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
+				var offset = (uint) _cache.MetaArea.PointerToOffset(field.FieldAddress);
+				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
+			}
+		}
+
+		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			MetaField field = GetWrappedField(e.Source);
+			e.CanExecute = (field != null && field.PluginLine > 0);
+		}
+
+		private void GoToPlugin_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			MetaField field = GetWrappedField(e.Source);
+			if (field == null) return;
+
+			_parentMetaContainer.GoToRawPluginLine((int) field.PluginLine);
+		}
+
+		private static MetaField GetWrappedField(MetaField field)
+		{
+			WrappedReflexiveEntry wrapper = null;
+			while (true)
+			{
+				wrapper = field as WrappedReflexiveEntry;
+				if (wrapper == null)
+					return field;
+				field = wrapper.WrappedField;
+			}
+		}
+
+		private static MetaField GetWrappedField(object elem)
+		{
+			// Get the FrameworkElement
+			var source = elem as FrameworkElement;
+			if (source == null)
+				return null;
+
+			// Get the field
+			var field = source.DataContext as MetaField;
+			if (field == null)
+				return null;
+
+			return GetWrappedField(field);
+		}
+
+		/// <summary>
+		///     Given a source element, retrieves the ValueField it represents.
+		/// </summary>
+		/// <param name="elem">The FrameworkElement to get the ValueField for.</param>
+		/// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
+		private static ValueField GetValueField(object elem)
+		{
+			MetaField field = GetWrappedField(elem);
+			var valueField = field as ValueField;
+			if (valueField == null)
+			{
+				var wrapper = field as WrappedReflexiveEntry;
+				if (wrapper != null)
+					valueField = GetWrappedField(wrapper) as ValueField;
+			}
+			return valueField;
+		}
+
+		/// <summary>
+		///     Loads the example "view value as" plugin.
+		/// </summary>
+		/// <returns>The fields created from the "view value as" plugin.</returns>
+		private IList<MetaField> LoadViewValueAsPlugin()
+		{
+			string path = string.Format("{0}\\Examples\\ThirdGenExample.xml",
+				VariousFunctions.GetApplicationLocation() + @"Plugins");
+			XmlReader reader = XmlReader.Create(path);
+
+			var plugin = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, true);
+			AssemblyPluginLoader.LoadPlugin(reader, plugin);
+			reader.Close();
+
+			return plugin.Values;
+		}
+
+		private bool ConfirmNewStringIds()
+		{
+			var newStrings = new List<string>();
+			foreach (MetaField field in _fileChanges)
+			{
+				var stringIdField = field as StringIDData;
+				if (stringIdField != null)
+				{
+					if (!_stringIdTrie.Contains(stringIdField.Value))
+						newStrings.Add(stringIdField.Value);
+				}
+			}
+			if (newStrings.Count > 0)
+				return MetroMessageBoxList.Show("New StringIDs",
+					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
+			return true;
+		}
+
 		#region Searching
+
 		private void txtSearch_TextChanged_1(object sender, TextChangedEventArgs e)
 		{
 			_searchTimer.Change(100, Timeout.Infinite);
@@ -405,7 +533,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			_searchResults = new ObservableCollection<SearchResult>();
 			_resultIndices.Clear();
-			MetaFilterer filterer = new MetaFilterer(_flattener, MetaFilterer_CollectResult, MetaFilterer_HighlightField);
+			var filterer = new MetaFilterer(_flattener, MetaFilterer_CollectResult, MetaFilterer_HighlightField);
 			filterer.FilterFields(_pluginVisitor.Values, text);
 		}
 
@@ -448,30 +576,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (_searchResults != null)
 			{
 				Dispatcher.Invoke(new Action(delegate
+				{
+					if (_searchResults.Count > 0)
 					{
-						if (_searchResults.Count > 0)
+						if (panelMetaComponents.SelectedItem == null ||
+						    FindResultByListField(panelMetaComponents.SelectedItem as MetaField) == -1)
 						{
-							if (panelMetaComponents.SelectedItem == null || FindResultByListField(panelMetaComponents.SelectedItem as MetaField) == -1)
-							{
-								SelectResult(_searchResults[0]);
-							}
-							else
-							{
-								panelMetaComponents.ScrollIntoView(panelMetaComponents.SelectedItem);
-								UpdateMovementControls();
-							}
+							SelectResult(_searchResults[0]);
 						}
 						else
 						{
-							panelMetaComponents.SelectedItem = null;
+							panelMetaComponents.ScrollIntoView(panelMetaComponents.SelectedItem);
+							UpdateMovementControls();
 						}
 					}
-				));
+					else
+					{
+						panelMetaComponents.SelectedItem = null;
+					}
+				}
+					));
 			}
 		}
 
 		/// <summary>
-		/// Makes every field visible.
+		///     Makes every field visible.
 		/// </summary>
 		private void ShowAll()
 		{
@@ -484,7 +613,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			field.Opacity = 1.0f;
 
 			// If the field is a reflexive, recursively set the opacity of its children
-			ReflexiveData reflexive = field as ReflexiveData;
+			var reflexive = field as ReflexiveData;
 			if (reflexive != null)
 			{
 				// Show wrappers
@@ -524,48 +653,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void UpdateMovementControls()
 		{
 			Dispatcher.Invoke(new Action(delegate
-				{
-					int resultIndex = FindResultByListField(panelMetaComponents.SelectedItem as MetaField);
-					comboSearchResults.SelectedIndex = resultIndex;
+			{
+				int resultIndex = FindResultByListField(panelMetaComponents.SelectedItem as MetaField);
+				comboSearchResults.SelectedIndex = resultIndex;
 
-					if (_searchResults != null)
-					{
-						comboSearchResults.IsEnabled = true;
-						btnPreviousResult.IsEnabled = (resultIndex > 0);
-						btnNextResult.IsEnabled = (resultIndex < _searchResults.Count - 1);
-					}
-					else
-					{
-						comboSearchResults.IsEnabled = false;
-						btnPreviousResult.IsEnabled = false;
-						btnNextResult.IsEnabled = false;
-					}
+				if (_searchResults != null)
+				{
+					comboSearchResults.IsEnabled = true;
+					btnPreviousResult.IsEnabled = (resultIndex > 0);
+					btnNextResult.IsEnabled = (resultIndex < _searchResults.Count - 1);
 				}
-			));
+				else
+				{
+					comboSearchResults.IsEnabled = false;
+					btnPreviousResult.IsEnabled = false;
+					btnNextResult.IsEnabled = false;
+				}
+			}
+				));
 		}
 
 		// Thread-safe
 		private void DisableMovementButtons()
 		{
 			Dispatcher.Invoke(new Action(delegate
-				{
-					btnPreviousResult.IsEnabled = false;
-					btnNextResult.IsEnabled = false;
-					comboSearchResults.IsEnabled = false;
-				}
-			));
+			{
+				btnPreviousResult.IsEnabled = false;
+				btnNextResult.IsEnabled = false;
+				comboSearchResults.IsEnabled = false;
+			}
+				));
 		}
 
 		// Thread-safe
 		private void SelectField(MetaField field)
 		{
 			Dispatcher.Invoke(new Action(delegate
-				{
-					panelMetaComponents.SelectedItem = field;
-					if (field != null)
-						panelMetaComponents.ScrollIntoView(field);
-				}
-			));
+			{
+				panelMetaComponents.SelectedItem = field;
+				if (field != null)
+					panelMetaComponents.ScrollIntoView(field);
+			}
+				));
 		}
 
 		// Thread-safe
@@ -598,12 +727,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			else
 			{
-				MetaField field = panelMetaComponents.SelectedItem as MetaField;
+				var field = panelMetaComponents.SelectedItem as MetaField;
 				if (field != null && e.RemovedItems.Count > 0 && FindResultByListField(field) == -1)
 				{
 					// Disallow selecting filtered items and reflexive wrappers
 					// as long as this wouldn't cause an infinite loop of selection changes
-					MetaField oldField = e.RemovedItems[0] as MetaField;
+					var oldField = e.RemovedItems[0] as MetaField;
 					if (oldField != null && FindResultByListField(oldField) != -1)
 						panelMetaComponents.SelectedItem = oldField;
 					else
@@ -617,116 +746,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void comboSearchResults_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
 		{
-			SearchResult selectedResult = comboSearchResults.SelectedItem as SearchResult;
+			var selectedResult = comboSearchResults.SelectedItem as SearchResult;
 			if (selectedResult != null)
 				SelectResult(selectedResult);
 		}
+
 		#endregion
-
-		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			ValueField field = GetValueField(e.Source);
-			e.CanExecute = (field != null);
-		}
-		private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			ValueField field = GetValueField(e.Source);
-			if (field != null)
-			{
-				IList<MetaField> viewValueAsFields = LoadViewValueAsPlugin();
-				uint offset = (uint)_cache.MetaArea.PointerToOffset(field.FieldAddress);
-				MetroViewValueAs.Show(_cache, _buildInfo, _fileManager, viewValueAsFields, offset);
-			}
-		}
-		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			var field = GetWrappedField(e.Source);
-			e.CanExecute = (field != null && field.PluginLine > 0);
-		}
-		private void GoToPlugin_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			var field = GetWrappedField(e.Source);
-			if (field == null) return;
-
-			_parentMetaContainer.GoToRawPluginLine((int)field.PluginLine);
-		}
-
-		private static MetaField GetWrappedField(MetaField field)
-		{
-			WrappedReflexiveEntry wrapper = null;
-			while (true)
-			{
-				wrapper = field as WrappedReflexiveEntry;
-				if (wrapper == null)
-					return field;
-				field = wrapper.WrappedField;
-			}
-		}
-
-		private static MetaField GetWrappedField(object elem)
-		{
-			// Get the FrameworkElement
-			FrameworkElement source = elem as FrameworkElement;
-			if (source == null)
-				return null;
-
-			// Get the field
-			MetaField field = source.DataContext as MetaField;
-			if (field == null)
-				return null;
-
-			return GetWrappedField(field);
-		}
-
-		/// <summary>
-		/// Given a source element, retrieves the ValueField it represents.
-		/// </summary>
-		/// <param name="elem">The FrameworkElement to get the ValueField for.</param>
-		/// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
-		private static ValueField GetValueField(object elem)
-		{
-			MetaField field = GetWrappedField(elem);
-			ValueField valueField = field as ValueField;
-			if (valueField == null)
-			{
-				WrappedReflexiveEntry wrapper = field as WrappedReflexiveEntry;
-				if (wrapper != null)
-					valueField = GetWrappedField(wrapper) as ValueField;
-			}
-			return valueField;
-		}
-
-		/// <summary>
-		/// Loads the example "view value as" plugin.
-		/// </summary>
-		/// <returns>The fields created from the "view value as" plugin.</returns>
-		private IList<MetaField> LoadViewValueAsPlugin()
-		{
-			string path = string.Format("{0}\\Examples\\ThirdGenExample.xml", VariousFunctions.GetApplicationLocation() + @"Plugins");
-			XmlReader reader = XmlReader.Create(path);
-
-			ThirdGenPluginVisitor plugin = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea, true);
-			AssemblyPluginLoader.LoadPlugin(reader, plugin);
-			reader.Close();
-
-			return plugin.Values;
-		}
-
-		private bool ConfirmNewStringIds()
-		{
-			var newStrings = new List<string>();
-			foreach (var field in _fileChanges)
-			{
-				var stringIdField = field as StringIDData;
-				if (stringIdField != null)
-				{
-					if (!_stringIdTrie.Contains(stringIdField.Value))
-						newStrings.Add(stringIdField.Value);
-				}
-			}
-			if (newStrings.Count > 0)
-				return MetroMessageBoxList.Show("New StringIDs", "The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
-			return true;
-		}
 	}
 }

@@ -2,27 +2,26 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using Assembly.Metro.Dialogs;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 {
 	/// <summary>
-	/// Interaction logic for VoxelConverter.xaml
+	///     Interaction logic for VoxelConverter.xaml
 	/// </summary>
 	public partial class VoxelConverter
 	{
+		private bool _doingWork;
+
 		public VoxelConverter()
 		{
 			InitializeComponent();
 		}
 
-		private bool _doingWork;
 		public bool Close()
 		{
 			return !_doingWork;
@@ -31,14 +30,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 		private void btnInputFile_Click(object sender, RoutedEventArgs e)
 		{
 			var ofd = new OpenFileDialog
-				          {
-					          Title = "Assembly - Select a XML Voxel Definition File",
-					          Filter = "Xml File (*.xml)|*.xml"
-				          };
+			{
+				Title = "Assembly - Select a XML Voxel Definition File",
+				Filter = "Xml File (*.xml)|*.xml"
+			};
 			if (ofd.ShowDialog() != DialogResult.OK) return;
 
 			txtInputFile.Text = ofd.FileName;
 		}
+
 		private void btnConvertVoxel_Click(object sender, RoutedEventArgs e)
 		{
 			// Check that all needed info is loaded
@@ -58,7 +58,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 			btnInputFile.IsEnabled =
 				btnConvertVoxel.IsEnabled = false;
 
-			var filePath = txtInputFile.Text;
+			string filePath = txtInputFile.Text;
 			var worker = new BackgroundWorker();
 			worker.DoWork += (o, args) => doConvert(worker, filePath);
 			worker.WorkerReportsProgress = true;
@@ -68,6 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 
 			MaskingPage.Visibility = Visibility.Visible;
 		}
+
 		private void EndConversion()
 		{
 			_doingWork = false;
@@ -76,6 +77,78 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 				btnConvertVoxel.IsEnabled = true;
 
 			MaskingPage.Visibility = Visibility.Collapsed;
+		}
+
+		private void doConvert(BackgroundWorker worker, string filePath)
+		{
+			var doc = new XmlDocument();
+			doc.LoadXml(File.ReadAllText(filePath));
+			XmlNodeList xmlNodes = doc.SelectNodes("voxel_data/position");
+			int index = 0;
+			var outputBuilder = new StringBuilder();
+
+			if (xmlNodes != null)
+				foreach (XmlNode voxelData in xmlNodes)
+				{
+					// Calculate Percentage Done
+					float a = xmlNodes.Count;
+					float b = index;
+					a = a <= 0 ? 1 : a;
+					b = b <= 0 ? 1 : b;
+					b = ((a - b)/a)*100;
+					worker.ReportProgress((int) ((100 - b)*2.5));
+
+					try
+					{
+						float x = float.Parse(voxelData.SelectSingleNode("x/text()").Value);
+						float y = float.Parse(voxelData.SelectSingleNode("y/text()").Value);
+						float z = float.Parse(voxelData.SelectSingleNode("z/text()").Value);
+
+						outputBuilder.Append(string.Format("{0}{1}{2}",
+							FloatToHexString(x),
+							FloatToHexString(y),
+							FloatToHexString(z)));
+					}
+					finally
+					{
+					}
+
+					index++;
+				}
+			Dispatcher.Invoke(new Action(() => { txtOutputData.Text = outputBuilder.ToString(); }));
+
+			worker.ReportProgress(100);
+		}
+
+		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			lblProgressStatus.Text = string.Format("Converting Voxel Data... ({0}%)", e.ProgressPercentage);
+		}
+
+		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Error != null)
+			{
+				if (
+					MetroMessageBox.Show("Voxel Conversion Failed!",
+						"There was an error converting your voxel data... Would you like to see it?",
+						MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
+					MetroException.Show(e.Error);
+			}
+			else
+			{
+				MetroMessageBox.Show("Voxel conversion Complete!", "Your voxel data has been successfully converted.");
+			}
+
+			EndConversion();
+		}
+
+
+		private string FloatToHexString(float val)
+		{
+			byte[] floatBytes = BitConverter.GetBytes(val);
+			Array.Reverse(floatBytes);
+			return BitConverter.ToString(floatBytes).Replace("-", string.Empty);
 		}
 
 		public class VoxelDataContainer
@@ -95,73 +168,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 					public float z { get; set; }
 				}
 			}
-		}
-		private void doConvert(BackgroundWorker worker, string filePath)
-		{
-			var doc = new XmlDocument();
-			doc.LoadXml(File.ReadAllText(filePath));
-			var xmlNodes = doc.SelectNodes("voxel_data/position");
-			var index = 0;
-			var outputBuilder = new StringBuilder();
-
-			if (xmlNodes != null)
-				foreach (XmlNode voxelData in xmlNodes)
-				{
-					// Calculate Percentage Done
-					float a = xmlNodes.Count;
-					float b = index;
-					a = a <= 0 ? 1 : a;
-					b = b <= 0 ? 1 : b;
-					b = ((a - b) / a) * 100;
-					worker.ReportProgress((int)((100 - b) * 2.5));
-
-					try
-					{
-						var x = float.Parse(voxelData.SelectSingleNode("x/text()").Value);
-						var y = float.Parse(voxelData.SelectSingleNode("y/text()").Value);
-						var z = float.Parse(voxelData.SelectSingleNode("z/text()").Value);
-
-						outputBuilder.Append(string.Format("{0}{1}{2}",
-						                                   FloatToHexString(x),
-						                                   FloatToHexString(y),
-						                                   FloatToHexString(z)));
-					}
-					finally { }
-
-					index++;
-				}
-			Dispatcher.Invoke(new Action(() =>
-			{
-				txtOutputData.Text = outputBuilder.ToString();
-			}));
-
-			worker.ReportProgress(100);
-		}
-		void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			lblProgressStatus.Text = string.Format("Converting Voxel Data... ({0}%)", e.ProgressPercentage);
-		}
-		void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (e.Error != null)
-			{
-				if (MetroMessageBox.Show("Voxel Conversion Failed!", "There was an error converting your voxel data... Would you like to see it?", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
-					MetroException.Show(e.Error);
-			}
-			else
-			{
-				MetroMessageBox.Show("Voxel conversion Complete!", "Your voxel data has been successfully converted.");
-			}
-
-			EndConversion();
-		}
-
-
-		private string FloatToHexString(float val)
-		{
-			var floatBytes = BitConverter.GetBytes(val);
-			Array.Reverse(floatBytes);
-			return BitConverter.ToString(floatBytes).Replace("-", string.Empty);
 		}
 	}
 }

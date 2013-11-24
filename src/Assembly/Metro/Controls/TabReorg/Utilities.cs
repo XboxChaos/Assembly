@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Controls;
 using System.Collections;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace DragDropListBox
 {
@@ -18,7 +15,7 @@ namespace DragDropListBox
 			bool hasVerticalOrientation = true;
 			if (itemContainer != null)
 			{
-				Panel panel = VisualTreeHelper.GetParent(itemContainer) as Panel;
+				var panel = VisualTreeHelper.GetParent(itemContainer) as Panel;
 				StackPanel stackPanel;
 				WrapPanel wrapPanel;
 
@@ -45,10 +42,10 @@ namespace DragDropListBox
 				{
 					itemsControl.Items.Insert(insertionIndex, itemToInsert);
 				}
-				// Is the ItemsSource IList or IList<T>? If so, insert the dragged item in the list.
+					// Is the ItemsSource IList or IList<T>? If so, insert the dragged item in the list.
 				else if (itemsSource is IList)
 				{
-					((IList)itemsSource).Insert(insertionIndex, itemToInsert);
+					((IList) itemsSource).Insert(insertionIndex, itemToInsert);
 				}
 				else
 				{
@@ -56,7 +53,7 @@ namespace DragDropListBox
 					Type genericIListType = type.GetInterface("IList`1");
 					if (genericIListType != null)
 					{
-						type.GetMethod("Insert").Invoke(itemsSource, new object[] { insertionIndex, itemToInsert });
+						type.GetMethod("Insert").Invoke(itemsSource, new[] {insertionIndex, itemToInsert});
 					}
 				}
 			}
@@ -68,7 +65,7 @@ namespace DragDropListBox
 			if (itemToRemove != null)
 			{
 				indexToBeRemoved = itemsControl.Items.IndexOf(itemToRemove);
-				
+
 				if (indexToBeRemoved != -1)
 				{
 					IEnumerable itemsSource = itemsControl.ItemsSource;
@@ -76,10 +73,10 @@ namespace DragDropListBox
 					{
 						itemsControl.Items.RemoveAt(indexToBeRemoved);
 					}
-					// Is the ItemsSource IList or IList<T>? If so, remove the item from the list.
+						// Is the ItemsSource IList or IList<T>? If so, remove the item from the list.
 					else if (itemsSource is IList)
 					{
-						((IList)itemsSource).RemoveAt(indexToBeRemoved);
+						((IList) itemsSource).RemoveAt(indexToBeRemoved);
 					}
 					else
 					{
@@ -87,7 +84,7 @@ namespace DragDropListBox
 						Type genericIListType = type.GetInterface("IList`1");
 						if (genericIListType != null)
 						{
-							type.GetMethod("RemoveAt").Invoke(itemsSource, new object[] { indexToBeRemoved });
+							type.GetMethod("RemoveAt").Invoke(itemsSource, new object[] {indexToBeRemoved});
 						}
 					}
 				}
@@ -99,15 +96,15 @@ namespace DragDropListBox
 		{
 			if (hasVerticalOrientation)
 			{
-				return clickedPoint.Y < container.ActualHeight / 2;
+				return clickedPoint.Y < container.ActualHeight/2;
 			}
-			return clickedPoint.X < container.ActualWidth / 2;
+			return clickedPoint.X < container.ActualWidth/2;
 		}
 
 		public static bool IsMovementBigEnough(Point initialMousePosition, Point currentPosition)
 		{
 			return (Math.Abs(currentPosition.X - initialMousePosition.X) >= SystemParameters.MinimumHorizontalDragDistance ||
-				 Math.Abs(currentPosition.Y - initialMousePosition.Y) >= SystemParameters.MinimumVerticalDragDistance);
+			        Math.Abs(currentPosition.Y - initialMousePosition.Y) >= SystemParameters.MinimumVerticalDragDistance);
 		}
 	}
 }

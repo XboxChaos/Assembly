@@ -6,13 +6,20 @@ using System.Xml;
 namespace Blamite.Plugins
 {
 	/// <summary>
-	/// Modified version of AssemblyPluginLoader that can load plugins from Ascension and Alteration as well.
+	///     Modified version of AssemblyPluginLoader that can load plugins from Ascension and Alteration as well.
 	/// </summary>
 	public class UniversalPluginLoader
 	{
+		private readonly SortedList<float, PluginRevision> revisions = new SortedList<float, PluginRevision>();
+		private int versionBase = 1;
+
+		private UniversalPluginLoader()
+		{
+		}
+
 		/// <summary>
-		/// Parses an XML plugin, calling the corresponding method in
-		/// IPluginVisitor for each XML tag it encounters.
+		///     Parses an XML plugin, calling the corresponding method in
+		///     IPluginVisitor for each XML tag it encounters.
 		/// </summary>
 		/// <param name="reader">The XmlReader to read the plugin XML from.</param>
 		/// <param name="visitor">The IPluginVisitor to call for each XML tag.</param>
@@ -27,17 +34,10 @@ namespace Blamite.Plugins
 
 			if (visitor.EnterPlugin(baseSize))
 			{
-				UniversalPluginLoader loader = new UniversalPluginLoader();
+				var loader = new UniversalPluginLoader();
 				loader.ReadElements(reader, true, visitor);
 				visitor.LeavePlugin();
 			}
-		}
-
-		private SortedList<float, PluginRevision> revisions = new SortedList<float, PluginRevision>();
-		private int versionBase = 1;
-
-		private UniversalPluginLoader()
-		{
 		}
 
 		private void ReadElements(XmlReader reader, bool topLevel, IPluginVisitor visitor)
@@ -72,7 +72,7 @@ namespace Blamite.Plugins
 			{
 				// Dump ALL the revisions!
 				int version = versionBase;
-				foreach (KeyValuePair<float, PluginRevision> pair in revisions)
+				foreach (var pair in revisions)
 				{
 					pair.Value.Version = version;
 					version++;
@@ -111,14 +111,14 @@ namespace Blamite.Plugins
 				title = reader.Value;
 
 			reader.MoveToElement();
-            uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
+			var pluginLine = (uint) (reader as IXmlLineInfo).LineNumber;
 			string text = reader.ReadElementContentAsString();
 			visitor.VisitComment(title, text, pluginLine);
 		}
 
 		/// <summary>
-		/// Handles an element which describes how a value
-		/// should be read from the cache file.
+		///     Handles an element which describes how a value
+		///     should be read from the cache file.
 		/// </summary>
 		/// <param name="reader">The XmlReader that read the element.</param>
 		/// <param name="elementName">The element's name.</param>
@@ -127,7 +127,7 @@ namespace Blamite.Plugins
 		{
 			string name = "Unknown";
 			uint offset = 0;
-			uint pluginLine = (uint)(reader as IXmlLineInfo).LineNumber;
+			var pluginLine = (uint) (reader as IXmlLineInfo).LineNumber;
 			bool visible = true;
 
 			if (reader.MoveToAttribute("name"))
@@ -297,14 +297,14 @@ namespace Blamite.Plugins
 
 		private static string ReadDataRef(XmlReader reader)
 		{
-			var format = "bytes";
+			string format = "bytes";
 
 			if (reader.MoveToAttribute("format"))
 				format = reader.Value;
 
 			if (format != "bytes" &&
-				format != "unicode" &&
-				format != "asciiz")
+			    format != "unicode" &&
+			    format != "asciiz")
 				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
 
 			return format;
@@ -325,17 +325,18 @@ namespace Blamite.Plugins
 				// Handle a letter suffix (some Entity plugins use this)
 				char suffix = reader.Value[reader.Value.Length - 1];
 				if (suffix >= 'a' && suffix <= 'c')
-					version += (suffix - 'a' + 1) * 0.001f;
+					version += (suffix - 'a' + 1)*0.001f;
 			}
 
 			reader.MoveToElement();
 			description = reader.ReadElementContentAsString();
 
-			PluginRevision revision = new PluginRevision(author, (int)version, description);
+			var revision = new PluginRevision(author, (int) version, description);
 			revisions[version] = revision;
 		}
 
-		private static void ReadTagRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+		private static void ReadTagRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			bool showJumpTo = true;
 			bool withClass = true;
@@ -348,7 +349,8 @@ namespace Blamite.Plugins
 			visitor.VisitTagReference(name, offset, visible, withClass, showJumpTo, pluginLine);
 		}
 
-		private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+		private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			int size = 0;
 
@@ -358,7 +360,8 @@ namespace Blamite.Plugins
 			visitor.VisitAscii(name, offset, visible, size, pluginLine);
 		}
 
-		private static void ReadUtf16(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+		private static void ReadUtf16(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			int size = 0;
 
@@ -401,7 +404,8 @@ namespace Blamite.Plugins
 			visitor.VisitBit(name, index);
 		}
 
-		private static void ReadRaw(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+		private static void ReadRaw(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			int size;
 
@@ -454,7 +458,8 @@ namespace Blamite.Plugins
 			return format;
 		}
 
-		private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor, uint pluginLine)
+		private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			uint entrySize = 0;
 
@@ -477,7 +482,7 @@ namespace Blamite.Plugins
 
 		private static string PositionInfo(XmlReader reader)
 		{
-			IXmlLineInfo info = reader as IXmlLineInfo;
+			var info = reader as IXmlLineInfo;
 			if (info != null)
 				return string.Format(" Line {0}, position {1}.", info.LineNumber, info.LinePosition);
 			return "";

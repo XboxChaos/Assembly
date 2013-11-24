@@ -16,34 +16,28 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Blamite.Blam.ThirdGen.Structures;
-using Blamite.IO;
 using Blamite.Flexibility;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
-    public class ThirdGenTagClass : ITagClass
-    {
-        public ThirdGenTagClass(StructureValueCollection values)
-        {
-            Load(values);
-        }
+	public class ThirdGenTagClass : ITagClass
+	{
+		public ThirdGenTagClass(StructureValueCollection values)
+		{
+			Load(values);
+		}
 
-        private void Load(StructureValueCollection values)
-        {
-            Magic = (int)values.GetInteger("magic");
-            ParentMagic = (int)values.GetInteger("parent magic");
-            GrandparentMagic = (int)values.GetInteger("grandparent magic");
-            Description = new StringID(values.GetIntegerOrDefault("stringid", 0));
-        }
+		public int Magic { get; set; }
+		public int ParentMagic { get; set; }
+		public int GrandparentMagic { get; set; }
+		public StringID Description { get; set; }
 
-        public int Magic { get; set; }
-        public int ParentMagic { get; set; }
-        public int GrandparentMagic { get; set; }
-        public StringID Description { get; set; }
-    }
+		private void Load(StructureValueCollection values)
+		{
+			Magic = (int) values.GetInteger("magic");
+			ParentMagic = (int) values.GetInteger("parent magic");
+			GrandparentMagic = (int) values.GetInteger("grandparent magic");
+			Description = new StringID(values.GetIntegerOrDefault("stringid", 0));
+		}
+	}
 }

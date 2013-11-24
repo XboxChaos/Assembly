@@ -1,26 +1,28 @@
-﻿using System;
+﻿#if !DEBUG
+using Assembly.Metro.Dialogs;
+#endif
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
-#if !DEBUG
-using Assembly.Metro.Dialogs;
-#endif
-using XBDMCommunicator;
 using Microsoft.Shell;
-using System.Threading;
+using XBDMCommunicator;
 
 namespace Assembly
 {
 	/// <summary>
-	/// Interaction logic for App.xaml
+	///     Interaction logic for App.xaml
 	/// </summary>
 	public partial class App : ISingleInstanceApp
 	{
 		#region ISingleInstanceApp Members
+
 		public bool SignalExternalCommandLineArgs(IList<string> args)
 		{
-			return AssemblyStorage.AssemblySettings.HomeWindow == null || AssemblyStorage.AssemblySettings.HomeWindow.ProcessCommandLineArgs(args);
+			return AssemblyStorage.AssemblySettings.HomeWindow == null ||
+			       AssemblyStorage.AssemblySettings.HomeWindow.ProcessCommandLineArgs(args);
 		}
 
 		#endregion
@@ -77,14 +79,15 @@ namespace Assembly
 
 			// Set closing method
 			Current.Exit += (o, args) =>
-				{
-					// Update Settings with Window Width/Height
-					AssemblyStorage.AssemblySettings.ApplicationSizeMaximize = (AssemblyStorage.AssemblySettings.HomeWindow.WindowState == WindowState.Maximized);
-					if (AssemblyStorage.AssemblySettings.ApplicationSizeMaximize) return;
+			{
+				// Update Settings with Window Width/Height
+				AssemblyStorage.AssemblySettings.ApplicationSizeMaximize =
+					(AssemblyStorage.AssemblySettings.HomeWindow.WindowState == WindowState.Maximized);
+				if (AssemblyStorage.AssemblySettings.ApplicationSizeMaximize) return;
 
-					AssemblyStorage.AssemblySettings.ApplicationSizeWidth = AssemblyStorage.AssemblySettings.HomeWindow.Width;
-					AssemblyStorage.AssemblySettings.ApplicationSizeHeight = AssemblyStorage.AssemblySettings.HomeWindow.Height;
-				};
+				AssemblyStorage.AssemblySettings.ApplicationSizeWidth = AssemblyStorage.AssemblySettings.HomeWindow.Width;
+				AssemblyStorage.AssemblySettings.ApplicationSizeHeight = AssemblyStorage.AssemblySettings.HomeWindow.Height;
+			};
 
 			// Start Caching Blam Cache MetaData
 			var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);

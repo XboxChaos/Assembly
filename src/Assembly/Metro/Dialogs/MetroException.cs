@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using Assembly.Helpers;
 
 namespace Assembly.Metro.Dialogs
@@ -6,7 +7,7 @@ namespace Assembly.Metro.Dialogs
 	public static class MetroException
 	{
 		/// <summary>
-		/// Because you are the only exception.
+		///     Because you are the only exception.
 		/// </summary>
 		/// <param name="ex">The exception to pass into the dialog.</param>
 		public static void Show(Exception ex)
@@ -18,11 +19,13 @@ namespace Assembly.Metro.Dialogs
 			if (App.AssemblyStorage.AssemblySettings.HomeWindow != null)
 				App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
 
-			var exceptionDialog = App.AssemblyStorage.AssemblySettings.HomeWindow != null ? new ControlDialogs.Exception(ex)
-																	{
-																		Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
-																		WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
-																	} : new ControlDialogs.Exception(ex);
+			ControlDialogs.Exception exceptionDialog = App.AssemblyStorage.AssemblySettings.HomeWindow != null
+				? new ControlDialogs.Exception(ex)
+				{
+					Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
+					WindowStartupLocation = WindowStartupLocation.CenterOwner
+				}
+				: new ControlDialogs.Exception(ex);
 			exceptionDialog.ShowDialog();
 
 			if (App.AssemblyStorage.AssemblySettings.HomeWindow != null)

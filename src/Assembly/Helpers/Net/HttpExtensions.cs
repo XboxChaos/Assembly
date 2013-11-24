@@ -11,11 +11,12 @@ namespace Assembly.Helpers.Net
 			var taskComplete = new TaskCompletionSource<Stream>();
 			request.BeginGetRequestStream(ar =>
 			{
-				var requestStream = request.EndGetRequestStream(ar);
+				Stream requestStream = request.EndGetRequestStream(ar);
 				taskComplete.TrySetResult(requestStream);
 			}, request);
 			return taskComplete.Task;
 		}
+
 		public static Task<HttpWebResponse> GetResponseAsync(this HttpWebRequest request)
 		{
 			var taskComplete = new TaskCompletionSource<HttpWebResponse>();
@@ -23,29 +24,65 @@ namespace Assembly.Helpers.Net
 			{
 				try
 				{
-					var responseRequest = (HttpWebRequest)asyncResponse.AsyncState;
-					var someResponse = (HttpWebResponse)responseRequest.EndGetResponse(asyncResponse);
+					var responseRequest = (HttpWebRequest) asyncResponse.AsyncState;
+					var someResponse = (HttpWebResponse) responseRequest.EndGetResponse(asyncResponse);
 					taskComplete.TrySetResult(someResponse);
 				}
 				catch (WebException webExc)
 				{
-					var failedResponse = (HttpWebResponse)webExc.Response;
+					var failedResponse = (HttpWebResponse) webExc.Response;
 					taskComplete.TrySetResult(failedResponse);
 				}
 			}, request);
 			return taskComplete.Task;
 		}
 	}
+
 	public static class HttpMethod
 	{
-		public static string Head { get { return "HEAD"; } }
-		public static string Post { get { return "POST"; } }
-		public static string Put { get { return "PUT"; } }
-		public static string Get { get { return "GET"; } }
-		public static string Delete { get { return "DELETE"; } }
-		public static string Trace { get { return "TRACE"; } }
-		public static string Options { get { return "OPTIONS"; } }
-		public static string Connect { get { return "CONNECT"; } }
-		public static string Patch { get { return "PATCH"; } }
+		public static string Head
+		{
+			get { return "HEAD"; }
+		}
+
+		public static string Post
+		{
+			get { return "POST"; }
+		}
+
+		public static string Put
+		{
+			get { return "PUT"; }
+		}
+
+		public static string Get
+		{
+			get { return "GET"; }
+		}
+
+		public static string Delete
+		{
+			get { return "DELETE"; }
+		}
+
+		public static string Trace
+		{
+			get { return "TRACE"; }
+		}
+
+		public static string Options
+		{
+			get { return "OPTIONS"; }
+		}
+
+		public static string Connect
+		{
+			get { return "CONNECT"; }
+		}
+
+		public static string Patch
+		{
+			get { return "PATCH"; }
+		}
 	}
 }

@@ -16,16 +16,11 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Blamite.IO
 {
-    public enum Endian
-    {
-        BigEndian,      // MSB -> LSB
-        LittleEndian    // LSB -> MSB
-    }
-}      
+	public enum Endian
+	{
+		BigEndian, // MSB -> LSB
+		LittleEndian // LSB -> MSB
+	}
+}

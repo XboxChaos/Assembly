@@ -4,13 +4,15 @@ namespace Blamite.Patching
 {
 	public class BlfContent
 	{
-		public BlfContent(string mapInfoFileName, byte[] mapInfo, TargetGame targetGame, IList<BlfContainerEntry> blfContainerEntries)
+		public BlfContent(string mapInfoFileName, byte[] mapInfo, TargetGame targetGame,
+			IList<BlfContainerEntry> blfContainerEntries)
 		{
 			MapInfoFileName = mapInfoFileName;
 			MapInfo = mapInfo;
 			TargetGame = targetGame;
 			BlfContainerEntries = blfContainerEntries;
 		}
+
 		public BlfContent(string mapInfoFileName, byte[] mapInfo, TargetGame targetGame)
 		{
 			MapInfoFileName = mapInfoFileName;
@@ -20,22 +22,22 @@ namespace Blamite.Patching
 		}
 
 		/// <summary>
-		/// The filename of the mapinfo
+		///     The filename of the mapinfo
 		/// </summary>
 		public string MapInfoFileName { get; private set; }
 
 		/// <summary>
-		/// The custom Mapinfo file.
+		///     The custom Mapinfo file.
 		/// </summary>
 		public byte[] MapInfo { get; private set; }
 
 		/// <summary>
-		/// The game the patch is targeted at.
+		///     The game the patch is targeted at.
 		/// </summary>
 		public TargetGame TargetGame { get; private set; }
 
 		/// <summary>
-		/// A collection of Blf Conainer Entries
+		///     A collection of Blf Conainer Entries
 		/// </summary>
 		public IList<BlfContainerEntry> BlfContainerEntries { get; private set; }
 	}
@@ -49,12 +51,12 @@ namespace Blamite.Patching
 		}
 
 		/// <summary>
-		/// Blf Container File Name
+		///     Blf Container File Name
 		/// </summary>
 		public string FileName { get; private set; }
 
 		/// <summary>
-		/// The Blf Container
+		///     The Blf Container
 		/// </summary>
 		public byte[] BlfContainer { get; private set; }
 	}

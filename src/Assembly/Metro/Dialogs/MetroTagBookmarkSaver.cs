@@ -1,25 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using Assembly.Helpers;
+using Assembly.Metro.Dialogs.ControlDialogs;
 
 namespace Assembly.Metro.Dialogs
 {
 	public class MetroTagBookmarkSaver
 	{
 		/// <summary>
-		/// Show a Metro Message Box
+		///     Show a Metro Message Box
 		/// </summary>
 		public static KeyValuePair<string, int> Show()
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
-			var tagBookmarkSaver = new ControlDialogs.TagBookmarkSaver()
+			var tagBookmarkSaver = new TagBookmarkSaver
 			{
 				Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
-				WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner
+				WindowStartupLocation = WindowStartupLocation.CenterOwner
 			};
 			tagBookmarkSaver.ShowDialog();
 			App.AssemblyStorage.AssemblySettings.HomeWindow.HideMask();
 
-			var tempStorage = TempStorage.TagBookmarkSaver;
+			KeyValuePair<string, int> tempStorage = TempStorage.TagBookmarkSaver;
 			TempStorage.TagBookmarkSaver = new KeyValuePair<string, int>(null, -1);
 			return tempStorage;
 		}

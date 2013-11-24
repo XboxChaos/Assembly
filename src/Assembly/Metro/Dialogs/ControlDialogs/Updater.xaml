@@ -5,92 +5,107 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:n="clr-namespace:Assembly.Helpers.Native"
-        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner" SnapsToDevicePixels="True" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner"
+        SnapsToDevicePixels="True" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Height="150"
         Width="600"
         ShowInTaskbar="False"
         Title="Updater"
         n:WindowMovement.IsDraggable="True">
-    <Window.Resources>
-        <Storyboard x:Key="ResizeWindowToUpdate">
-            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="UpdaterWindow" Storyboard.TargetProperty="(FrameworkElement.Height)">
-                <SplineDoubleKeyFrame KeyTime="00:00:00" Value="400"/>
-                <SplineDoubleKeyFrame KeyTime="00:00:00.30" Value="150"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-    </Window.Resources>
-    
-    <Border Background="#FF2E2E31" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
-        <Grid>
-            <Path IsHitTestVisible="False" Fill="{DynamicResource ExtryzeAccentBrush}" Data="M898,1859C845,1855 757,1844 703,1835 613,1820 602,1816 571,1783 545,1755 518,1742 441,1718 307,1676 184,1611 106,1538 14,1454 12,1448 59,1411L98,1380 157,1437C295,1574 516,1650 860,1680 923,1685 1001,1690 1034,1690L1093,1690 1037,1628C1006,1593 977,1566 971,1567 966,1569 936,1542 906,1507L850,1445 901,1442C946,1439,957,1442,982,1467L1012,1495 1091,1410C1134,1363 1170,1323 1170,1320 1170,1317 1099,1316 1013,1318 926,1320 846,1319 835,1316 824,1313 807,1297 797,1280 780,1253 774,1250 726,1250L674,1250 531,1090 388,930 339,930 290,930 290,890 290,850 414,850C535,850 539,849 542,828 545,803 575,795 775,764 864,750 893,741 929,717L974,687 1189,698C1812,733,2092,844,2291,1135L2345,1215 2448,1218 2550,1221 2550,1260 2550,1300 2457,1300C2344,1300 2330,1308 2290,1396 2222,1547 2049,1671 1781,1760 1510,1851 1207,1885 898,1859z M1332,1679C1673,1642 1964,1475 1987,1302 1994,1246 1967,1171 1920,1117 1869,1059 1783,1003 1765,1016 1746,1029 1140,1678 1140,1685 1140,1693 1221,1691 1332,1679z M1406,1068L1522,935 1486,932C1456,929 1450,925 1450,906 1450,886 1443,881 1393,871 1361,865 1277,855 1205,849 1067,837 842,848 690,875L615,887 748,889C873,890 880,891 880,910 880,929 873,930 789,930 739,930 700,934 702,939 704,944 753,1004 813,1074L920,1200 1105,1200 1289,1200 1406,1068z" Margin="6.443,5.656,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="33.557" Stretch="Fill" Width="33.557" RenderTransformOrigin="0.5,0.5">
-                <Path.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleY="-0.5"/>
-                        <SkewTransform/>
-                        <RotateTransform/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Path.RenderTransform>
-            </Path>
+	<Window.Resources>
+		<Storyboard x:Key="ResizeWindowToUpdate">
+			<DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="UpdaterWindow"
+			                               Storyboard.TargetProperty="(FrameworkElement.Height)">
+				<SplineDoubleKeyFrame KeyTime="00:00:00" Value="400" />
+				<SplineDoubleKeyFrame KeyTime="00:00:00.30" Value="150" />
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+	</Window.Resources>
 
-            <Grid 
-					x:Name="headerThumb" 
-					Opacity="0" 
-					Background="Transparent" 
-					Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
-                    n:WindowMovement.DragsWindow="True"
-					/>
+	<Border Background="#FF2E2E31" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
+		<Grid>
+			<Path IsHitTestVisible="False" Fill="{DynamicResource ExtryzeAccentBrush}"
+			      Data="M898,1859C845,1855 757,1844 703,1835 613,1820 602,1816 571,1783 545,1755 518,1742 441,1718 307,1676 184,1611 106,1538 14,1454 12,1448 59,1411L98,1380 157,1437C295,1574 516,1650 860,1680 923,1685 1001,1690 1034,1690L1093,1690 1037,1628C1006,1593 977,1566 971,1567 966,1569 936,1542 906,1507L850,1445 901,1442C946,1439,957,1442,982,1467L1012,1495 1091,1410C1134,1363 1170,1323 1170,1320 1170,1317 1099,1316 1013,1318 926,1320 846,1319 835,1316 824,1313 807,1297 797,1280 780,1253 774,1250 726,1250L674,1250 531,1090 388,930 339,930 290,930 290,890 290,850 414,850C535,850 539,849 542,828 545,803 575,795 775,764 864,750 893,741 929,717L974,687 1189,698C1812,733,2092,844,2291,1135L2345,1215 2448,1218 2550,1221 2550,1260 2550,1300 2457,1300C2344,1300 2330,1308 2290,1396 2222,1547 2049,1671 1781,1760 1510,1851 1207,1885 898,1859z M1332,1679C1673,1642 1964,1475 1987,1302 1994,1246 1967,1171 1920,1117 1869,1059 1783,1003 1765,1016 1746,1029 1140,1678 1140,1685 1140,1693 1221,1691 1332,1679z M1406,1068L1522,935 1486,932C1456,929 1450,925 1450,906 1450,886 1443,881 1393,871 1361,865 1277,855 1205,849 1067,837 842,848 690,875L615,887 748,889C873,890 880,891 880,910 880,929 873,930 789,930 739,930 700,934 702,939 704,944 753,1004 813,1074L920,1200 1105,1200 1289,1200 1406,1068z"
+			      Margin="6.443,5.656,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="33.557" Stretch="Fill"
+			      Width="33.557" RenderTransformOrigin="0.5,0.5">
+				<Path.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform ScaleY="-0.5" />
+						<SkewTransform />
+						<RotateTransform />
+						<TranslateTransform />
+					</TransformGroup>
+				</Path.RenderTransform>
+			</Path>
 
-            <Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0" Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="btnIgnoreUpdate_Click">
-                <Vectors:CloseModule Width="34" Height="26"/>
-            </Button>
-            
-            <TextBlock x:Name="lblTitle" IsHitTestVisible="False" Text="Updater - Assembly" Foreground="#989898" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,34,0" FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis"/>
+			<Grid
+				x:Name="headerThumb"
+				Opacity="0"
+				Background="Transparent"
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				n:WindowMovement.DragsWindow="True" />
 
-            <Grid x:Name="updateInfo" Margin="0,0,0,0" Visibility="Collapsed">
-                <Grid Margin="0,55,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.45*" />
-                        <ColumnDefinition Width="0.55*" />
-                    </Grid.ColumnDefinitions>
-                    
-                    <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="#FF999999" Margin="0,10,0,10">
-                        <Grid>
-                            <StackPanel Margin="15,0,10,20">
-                                <TextBlock x:Name="lblAvailable" Text="A wild update appeared!" Style="{DynamicResource GenericTextblock}" FontWeight="Bold" Margin="0,0,0,20" />
-                                
-                                <TextBlock Text="Current Assembly Version:" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" />
-                                <TextBlock x:Name="lblCurrentVersion" Text="&lt;/current_assembly_version&gt;" Margin="10,2,0,0" Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />
+			<Button x:Name="btnActionClose" ToolTip="Close" Width="34" Height="26" Margin="0"
+			        Style="{StaticResource WindowActionButton}" VerticalAlignment="Top" HorizontalAlignment="Right"
+			        Click="btnIgnoreUpdate_Click">
+				<Vectors:CloseModule Width="34" Height="26" />
+			</Button>
 
-                                <TextBlock Text="Updated Assembly Version:" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
-                                <TextBlock x:Name="lblServerVersion" Text="&lt;/updated_assembly_version&gt;" Margin="10,2,0,0" Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />
+			<TextBlock x:Name="lblTitle" IsHitTestVisible="False" Text="Updater - Assembly" Foreground="#989898"
+			           VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,34,0"
+			           FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
 
-                                <!--<TextBlock Text="Updated Assembly Hash (MD5):" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
+			<Grid x:Name="updateInfo" Margin="0,0,0,0" Visibility="Collapsed">
+				<Grid Margin="0,55,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="0.45*" />
+						<ColumnDefinition Width="0.55*" />
+					</Grid.ColumnDefinitions>
+
+					<Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="#FF999999" Margin="0,10,0,10">
+						<Grid>
+							<StackPanel Margin="15,0,10,20">
+								<TextBlock x:Name="lblAvailable" Text="A wild update appeared!" Style="{DynamicResource GenericTextblock}"
+								           FontWeight="Bold" Margin="0,0,0,20" />
+
+								<TextBlock Text="Current Assembly Version:" Margin="0,0,0,0" Style="{DynamicResource GenericTextblock}" />
+								<TextBlock x:Name="lblCurrentVersion" Text="&lt;/current_assembly_version&gt;" Margin="10,2,0,0"
+								           Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />
+
+								<TextBlock Text="Updated Assembly Version:" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
+								<TextBlock x:Name="lblServerVersion" Text="&lt;/updated_assembly_version&gt;" Margin="10,2,0,0"
+								           Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />
+
+								<!--<TextBlock Text="Updated Assembly Hash (MD5):" Margin="0,5,0,0" Style="{DynamicResource GenericTextblock}" />
                                 <TextBlock x:Name="lblServerHash" Text="&lt;/updated_assembly_hash_md5&gt;" Margin="10,2,0,0" Foreground="{DynamicResource ExtryzeAccentBrush}" Style="{DynamicResource GenericTextblock}" />-->
-                            </StackPanel>
-                            <StackPanel x:Name="updateButtons" VerticalAlignment="Bottom" Margin="0,0,0,10">
-                                <Button x:Name="btnApplyUpdate" Content="Apply Update" Margin="15,10,20,0" Height="30" Click="btnApplyUpdate_Click" />
-                                <Button x:Name="btnIgnoreUpdate" Content="Ignore Update" Margin="15,10,20,0" Height="30" Click="btnIgnoreUpdate_Click" />
-                            </StackPanel>
-                            <StackPanel x:Name="noUpdate" VerticalAlignment="Bottom" Margin="0,0,0,10" Visibility="Collapsed">
-                                <Button x:Name="btnClose" Content="Close" Margin="15,10,20,0" Height="30" Click="btnIgnoreUpdate_Click" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                
-                    <Border Grid.Column="1" Margin="10,10,20,20">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <TextBlock x:Name="lblChangeLog" TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" />
-                        </ScrollViewer>
-                    </Border>
-                </Grid>
-            </Grid>
-            <Grid x:Name="updateProgress">
-                <StackPanel Margin="30,60,0,0" VerticalAlignment="Top" >
-                    <TextBlock x:Name="lblDownloadProgress" Text="Downloading Update -- (0%)" Style="{DynamicResource GenericTextblock}" HorizontalAlignment="Left" />
-                    <ProgressBar x:Name="pbDownloadProgress" Height="3" Minimum="0" Maximum="100" Margin="0,5,10,5" IsIndeterminate="True" />
-                </StackPanel>
-            </Grid>
-        </Grid>
-    </Border>
+							</StackPanel>
+							<StackPanel x:Name="updateButtons" VerticalAlignment="Bottom" Margin="0,0,0,10">
+								<Button x:Name="btnApplyUpdate" Content="Apply Update" Margin="15,10,20,0" Height="30"
+								        Click="btnApplyUpdate_Click" />
+								<Button x:Name="btnIgnoreUpdate" Content="Ignore Update" Margin="15,10,20,0" Height="30"
+								        Click="btnIgnoreUpdate_Click" />
+							</StackPanel>
+							<StackPanel x:Name="noUpdate" VerticalAlignment="Bottom" Margin="0,0,0,10" Visibility="Collapsed">
+								<Button x:Name="btnClose" Content="Close" Margin="15,10,20,0" Height="30" Click="btnIgnoreUpdate_Click" />
+							</StackPanel>
+						</Grid>
+					</Border>
+
+					<Border Grid.Column="1" Margin="10,10,20,20">
+						<ScrollViewer VerticalScrollBarVisibility="Auto">
+							<TextBlock x:Name="lblChangeLog" TextWrapping="Wrap" Style="{DynamicResource GenericTextblock}" />
+						</ScrollViewer>
+					</Border>
+				</Grid>
+			</Grid>
+			<Grid x:Name="updateProgress">
+				<StackPanel Margin="30,60,0,0" VerticalAlignment="Top">
+					<TextBlock x:Name="lblDownloadProgress" Text="Downloading Update -- (0%)"
+					           Style="{DynamicResource GenericTextblock}" HorizontalAlignment="Left" />
+					<ProgressBar x:Name="pbDownloadProgress" Height="3" Minimum="0" Maximum="100" Margin="0,5,10,5"
+					             IsIndeterminate="True" />
+				</StackPanel>
+			</Grid>
+		</Grid>
+	</Border>
 </Window>
