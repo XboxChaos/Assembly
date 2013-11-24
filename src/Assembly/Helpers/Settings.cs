@@ -1,309 +1,653 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Windows;
 using Assembly.Windows;
 using Microsoft.Win32;
 using System.Web.Script.Serialization;
 using Assembly.Metro.Dialogs;
+using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Flexibility;
 using Blamite.Flexibility.Settings;
+using System.ComponentModel;
 
 namespace Assembly.Helpers
 {
-    public static class Settings
-    {
-        /// <summary>
-        /// Raised whenever the settings are loaded or saved.
-        /// </summary>
-        public static event EventHandler SettingsChanged;
+	public static class Stuff
+	{
+		public static Settings Rawr = new Settings();
+	}
 
-        public static void LoadSettings(bool applyThemeAswell = false)
-        {
-            // Declare Registry
+	public class Settings : INotifyPropertyChanged
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="applyThemeAswell"></param>
+		public Settings(bool applyThemeAswell = false)
+		{
+			LoadSettings(applyThemeAswell);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="applyThemeAswell"></param>
+		public void LoadSettings(bool applyThemeAswell = false)
+		{
+			// Declare Registry
 			var keyApp = Registry.CurrentUser.CreateSubKey("Software\\Xeraxic\\Assembly\\ApplicationSettings\\");
-            // Create a JSON Seralizer
-            var jss = new JavaScriptSerializer();
+			// Create a JSON Seralizer
+			var jss = new JavaScriptSerializer();
 
-	        if (keyApp != null)
-	        {
-		        applicationAccent = (Accents)keyApp.GetValue("accent", 0);
+			if (keyApp != null)
+			{
+				_applicationAccent = (Accents)keyApp.GetValue("accent", 0);
 				applicationEasterEggs = Convert.ToBoolean(keyApp.GetValue("easterEggs", true));
 				applicationUpdateOnStartup = Convert.ToBoolean(keyApp.GetValue("CheckUpdatesOnStartup", true));
 				if (applyThemeAswell)
 					ApplyAccent();
 
-		        applicationRecents = jss.Deserialize<List<RecentFileEntry>>(keyApp.GetValue("RecentFiles", "").ToString());
-		        applicationSizeWidth = Convert.ToSingle(keyApp.GetValue("SizeWidth", 1100));
-		        applicationSizeHeight = Convert.ToSingle(keyApp.GetValue("SizeHeight", 600));
-		        applicationSizeMaximize = Convert.ToBoolean(keyApp.GetValue("SizeMaxamize", false));
+				applicationRecents = jss.Deserialize<List<RecentFileEntry>>(keyApp.GetValue("RecentFiles", "").ToString());
+				applicationSizeWidth = Convert.ToSingle(keyApp.GetValue("SizeWidth", 1100));
+				applicationSizeHeight = Convert.ToSingle(keyApp.GetValue("SizeHeight", 600));
+				applicationSizeMaximize = Convert.ToBoolean(keyApp.GetValue("SizeMaxamize", false));
 
-		        XDKNameIP = keyApp.GetValue("XDKNameIP", "192.168.1.0").ToString();
+				XDKNameIP = keyApp.GetValue("XDKNameIP", "192.168.1.0").ToString();
 				if (xbdm != null)
 				{
 					xbdm.UpdateDeviceIdent(XDKNameIP);
 					//try { xbdm.Connect(); } catch { }
 				}
-		        XDKAutoSave = Convert.ToBoolean(keyApp.GetValue("XDKAutoSave", true));
-		        XDKScreenshotPath = keyApp.GetValue("XDKScreenshotPath", VariousFunctions.GetApplicationLocation() + @"Saved Images\").ToString();
-		        XDKResizeImages = Convert.ToBoolean(keyApp.GetValue("XDKScreenshotResize", true));
-		        XDKResizeScreenshotHeight = Convert.ToInt16(keyApp.GetValue("XDKScreenshotHeight", 1080));
-		        XDKResizeScreenshotWidth = Convert.ToInt16(keyApp.GetValue("XDKScreenshotWidth", 1920));
-		        XDKScreenshotGammaCorrect = Convert.ToBoolean(keyApp.GetValue("XDKScreenGammaCorrect", true));
-		        XDKScreenshotGammaModifier = Convert.ToDouble(keyApp.GetValue("XDKScreenModifier", 0.5));
-		        XDKScreenshotFreeze = Convert.ToBoolean(keyApp.GetValue("XDKScreenFreeze", false));
+				XDKAutoSave = Convert.ToBoolean(keyApp.GetValue("XDKAutoSave", true));
+				XDKScreenshotPath = keyApp.GetValue("XDKScreenshotPath", VariousFunctions.GetApplicationLocation() + @"Saved Images\").ToString();
+				XDKResizeImages = Convert.ToBoolean(keyApp.GetValue("XDKScreenshotResize", true));
+				XDKResizeScreenshotHeight = Convert.ToInt16(keyApp.GetValue("XDKScreenshotHeight", 1080));
+				XDKResizeScreenshotWidth = Convert.ToInt16(keyApp.GetValue("XDKScreenshotWidth", 1920));
+				XDKScreenshotGammaCorrect = Convert.ToBoolean(keyApp.GetValue("XDKScreenGammaCorrect", true));
+				XDKScreenshotGammaModifier = Convert.ToDouble(keyApp.GetValue("XDKScreenModifier", 0.5));
+				XDKScreenshotFreeze = Convert.ToBoolean(keyApp.GetValue("XDKScreenFreeze", false));
 
-		        startpageShowOnLoad = Convert.ToBoolean(keyApp.GetValue("ShowStartPageOnLoad", true));
-		        startpageHideOnLaunch = Convert.ToBoolean(keyApp.GetValue("HideStartPageOnLaunch", false));
-		        startpageShowRecentsMap = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMap", true));
-		        startpageShowRecentsBLF = Convert.ToBoolean(keyApp.GetValue("ShowRecentsBLF", true));
-		        startpageShowRecentsMapInfo = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMapInfo", true));
+				startpageShowOnLoad = Convert.ToBoolean(keyApp.GetValue("ShowStartPageOnLoad", true));
+				startpageHideOnLaunch = Convert.ToBoolean(keyApp.GetValue("HideStartPageOnLaunch", false));
+				startpageShowRecentsMap = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMap", true));
+				startpageShowRecentsBLF = Convert.ToBoolean(keyApp.GetValue("ShowRecentsBLF", true));
+				startpageShowRecentsMapInfo = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMapInfo", true));
 
-		        halomapTagSort = (TagSort)keyApp.GetValue("TagSorting", 0);
+				halomapTagSort = (TagSort)keyApp.GetValue("TagSorting", 0);
 				halomapTagOpenMode = (TagOpenMode)keyApp.GetValue("TagOpeningMode", 0);
-		        halomapShowEmptyClasses = Convert.ToBoolean(keyApp.GetValue("ShowEmptyClasses", false));
+				halomapShowEmptyClasses = Convert.ToBoolean(keyApp.GetValue("ShowEmptyClasses", false));
 				halomapOnlyShowBookmarkedTags = Convert.ToBoolean(keyApp.GetValue("OnlyShowBookmarkedTags", false));
-		        halomapLastSelectedMetaEditor = (LastMetaEditorType)keyApp.GetValue("LastSelectedMetaEditor", 0);
-		        halomapMapInfoDockSide = (MapInfoDockSide)keyApp.GetValue("MapInfoDockSide", 0);
+				halomapLastSelectedMetaEditor = (LastMetaEditorType)keyApp.GetValue("LastSelectedMetaEditor", 0);
+				halomapMapInfoDockSide = (MapInfoDockSide)keyApp.GetValue("MapInfoDockSide", 0);
 
-		        pluginsShowInvisibles = Convert.ToBoolean(keyApp.GetValue("ShowInvisibles", false));
-		        pluginsShowComments = Convert.ToBoolean(keyApp.GetValue("ShowComments", true));
+				pluginsShowInvisibles = Convert.ToBoolean(keyApp.GetValue("ShowInvisibles", false));
+				pluginsShowComments = Convert.ToBoolean(keyApp.GetValue("ShowComments", true));
 
-		        defaultMAP = Convert.ToBoolean(keyApp.GetValue("DefaultMAPEditor", true));
-		        defaultBLF = Convert.ToBoolean(keyApp.GetValue("DefaultBLFEditor", false));
-		        defaultMIF = Convert.ToBoolean(keyApp.GetValue("DefaultMIFEditor", false));
-		        defaultAMP = Convert.ToBoolean(keyApp.GetValue("DefaultAMPEditor", true));
-	        }
-
-	        OnSettingsChanged();
-        }
-        public static void UpdateSettings(bool applyThemeAswell = false)
-        {
-            // Declare Registry
-			var keyApp = Registry.CurrentUser.CreateSubKey("Software\\Xeraxic\\Assembly\\ApplicationSettings\\");
-            // Create a JSON Seralizer
-			var jss = new JavaScriptSerializer();
-
-			if (keyApp != null)
-			{
-				keyApp.SetValue("accent", (int) applicationAccent);
-				keyApp.SetValue("easterEggs", applicationEasterEggs);
-				keyApp.SetValue("CheckUpdatesOnStartup", applicationUpdateOnStartup);
-				if (applyThemeAswell)
-					ApplyAccent();
-
-                if (applicationRecents != null && applicationRecents.Count > 10)
-                    applicationRecents.RemoveRange(10, applicationRecents.Count - 10);
-
-				keyApp.SetValue("RecentFiles", jss.Serialize(applicationRecents));
-				keyApp.SetValue("SizeWidth", applicationSizeWidth);
-				keyApp.SetValue("SizeHeight", applicationSizeHeight);
-				keyApp.SetValue("SizeMaxamize", applicationSizeMaximize);
-
-				keyApp.SetValue("XDKNameIP", XDKNameIP);
-				if (xbdm != null)
-				{
-					xbdm.UpdateDeviceIdent(XDKNameIP);
-					//try { xbdm.Connect(); } catch { }
-				}
-
-				keyApp.SetValue("XDKAutoSave", XDKAutoSave);
-				keyApp.SetValue("XDKScreenshotPath", XDKScreenshotPath);
-				keyApp.SetValue("XDKScreenshotResize", XDKResizeImages);
-				keyApp.SetValue("XDKScreenshotHeight", XDKResizeScreenshotHeight);
-				keyApp.SetValue("XDKScreenshotWidth", XDKResizeScreenshotWidth);
-				keyApp.SetValue("XDKScreenGammaCorrect", XDKScreenshotGammaCorrect);
-				keyApp.SetValue("XDKScreenModifier", XDKScreenshotGammaModifier);
-				keyApp.SetValue("XDKScreenFreeze", XDKScreenshotFreeze);
-
-				keyApp.SetValue("ShowStartPageOnLoad", startpageShowOnLoad);
-				keyApp.SetValue("HideStartPageOnLaunch", startpageHideOnLaunch);
-				keyApp.SetValue("ShowRecentsMap", startpageShowRecentsMap);
-				keyApp.SetValue("ShowRecentsBLF", startpageShowRecentsBLF);
-				keyApp.SetValue("ShowRecentsMapInfo", startpageShowRecentsMapInfo);
-
-				keyApp.SetValue("TagSorting", (int)halomapTagSort);
-				keyApp.SetValue("TagOpeningMode", (int)halomapTagOpenMode);
-				keyApp.SetValue("MapInfoDockSide", (int) halomapMapInfoDockSide);
-
-				keyApp.SetValue("ShowEmptyClasses", halomapShowEmptyClasses);
-				keyApp.SetValue("OnlyShowBookmarkedTags", halomapOnlyShowBookmarkedTags);
-				keyApp.SetValue("LastSelectedMetaEditor", (int) halomapLastSelectedMetaEditor);
-
-				keyApp.SetValue("ShowInvisibles", pluginsShowInvisibles);
-				keyApp.SetValue("ShowComments", pluginsShowComments);
-
-				keyApp.SetValue("DefaultMAPEditor", defaultMAP);
-				keyApp.SetValue("DefaultBLFEditor", defaultBLF);
-				keyApp.SetValue("DefaultMIFEditor", defaultMIF);
-				keyApp.SetValue("DefaultAMPEditor", defaultAMP);
+				defaultMAP = Convert.ToBoolean(keyApp.GetValue("DefaultMAPEditor", true));
+				defaultBLF = Convert.ToBoolean(keyApp.GetValue("DefaultBLFEditor", false));
+				defaultMIF = Convert.ToBoolean(keyApp.GetValue("DefaultMIFEditor", false));
+				defaultAMP = Convert.ToBoolean(keyApp.GetValue("DefaultAMPEditor", true));
 			}
+		}
 
-            // Update File Defaults
-            FileDefaults.UpdateFileDefaults();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="applyThemeAswell"></param>
+		public void UpdateSettings(bool applyThemeAswell = false)
+		{
+			// JSON Stuff
+			var jsonData = JsonConvert.SerializeObject(this);
+			
+			// Get File Path
+			if (!File.Exists("AssemblySettings.ason"))
+				File.Create("AssemblySettings.ason");
+			File.WriteAllText("AssemblySettings.ason", jsonData);
 
-            OnSettingsChanged();
-        }
+			// Update Accent
+			if (applyThemeAswell)
+				ApplyAccent();
 
-        private static void OnSettingsChanged()
-        {
-            if (SettingsChanged != null)
-                SettingsChanged(null, EventArgs.Empty);
-        }
+			// Update File Defaults
+			FileDefaults.UpdateFileDefaults();
+		}
 
-        public static void ApplyAccent()
-        {
-            var theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Accents), applicationAccent.ToString()).ToString());
-            try
-            {
-                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/" + theme + ".xaml", UriKind.Relative) });
-            }
-            catch
-            {
-                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/Blue.xaml", UriKind.Relative) });
-            }
-        }
-        public static Accents applicationAccent = Accents.Blue;
-	    public static bool applicationUpdateOnStartup = true;
-        public static bool applicationEasterEggs = true;
+		/// <summary>
+		/// 
+		/// </summary>
+		public void ApplyAccent()
+		{
+			var theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Accents), ApplicationAccent.ToString()).ToString());
+			try
+			{
+				Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/" + theme + ".xaml", UriKind.Relative) });
+			}
+			catch
+			{
+				Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Assembly;component/Metro/Themes/Blue.xaml", UriKind.Relative) });
+			}
+		}
 
-        public static List<RecentFileEntry> applicationRecents = new List<RecentFileEntry>();
+		/// <summary>
+		/// The Accent colour the user has selected. Defaults to Assembly Blue.
+		/// </summary>
+		public Accents ApplicationAccent
+		{
+			get { return _applicationAccent; }
+			set { SetField(ref _applicationAccent, value, "ApplicationAccent"); }
+		}
+		private Accents _applicationAccent = Accents.Blue;
 
-        public static double applicationSizeWidth = 1100;
-        public static double applicationSizeHeight = 600;
-        public static bool applicationSizeMaximize = false;
+		/// <summary>
+		/// Wether Assebembly checks for updates at the startup. Defaults to True.
+		/// </summary>
+		public bool ApplicationUpdateOnStartup
+		{
+			get { return _applicationUpdateOnStartup; }
+			set { SetField(ref _applicationUpdateOnStartup, value, "ApplicationUpdateOnStartup"); }
+		}
+		private bool _applicationUpdateOnStartup = true;
 
-        public static bool startpageShowOnLoad = true;
-        public static bool startpageHideOnLaunch = false;
-        public static bool startpageShowRecentsMap = true;
-        public static bool startpageShowRecentsBLF = true;
-        public static bool startpageShowRecentsMapInfo = true;
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool ApplicationEasterEggs
+		{
+			get { return _applicationEasterEggs; }
+			set { SetField(ref _applicationEasterEggs, value, "ApplicationEasterEggs"); }
+		}
+		private bool _applicationEasterEggs = true;
 
-        public static string XDKNameIP = "";
-        public static bool XDKAutoSave = false;
-        public static string XDKScreenshotPath = "";
-        public static bool XDKResizeImages = false;
-        public static int XDKResizeScreenshotHeight = 1080;
-        public static int XDKResizeScreenshotWidth = 1920;
-        public static bool XDKScreenshotGammaCorrect = true;
-        public static double XDKScreenshotGammaModifier = 0.5;
-        public static bool XDKScreenshotFreeze = true;
+		/// <summary>
+		/// A list of Assembly's recently opened files.
+		/// </summary>
+		public List<RecentFileEntry> ApplicationRecents
+		{
+			get { return _applicationRecents; }
+			set { SetField(ref _applicationRecents, value, "ApplicationRecents"); }
+		}
+		private List<RecentFileEntry> _applicationRecents = new List<RecentFileEntry>();
 
-        public static TagSort halomapTagSort = TagSort.TagClass;
-	    public static TagOpenMode halomapTagOpenMode = TagOpenMode.NewTab;
-        public static bool halomapShowEmptyClasses = false;
-	    public static bool halomapOnlyShowBookmarkedTags = false;
-        public static MapInfoDockSide halomapMapInfoDockSide = MapInfoDockSide.Left;
-        public static LastMetaEditorType halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
+		/// <summary>
+		/// 
+		/// </summary>
+		public double ApplicationSizeWidth
+		{
+			get { return _applicationSizeWidth; }
+			set { SetField(ref _applicationSizeWidth, value, "ApplicationSizeWidth"); }
+		}
+		private double _applicationSizeWidth = 1100;
 
-        public static bool pluginsShowInvisibles = false;
-        public static bool pluginsShowComments = true;
+		/// <summary>
+		/// 
+		/// </summary>
+		public double ApplicationSizeHeight
+		{
+			get { return _applicationSizeHeight; }
+			set { SetField(ref _applicationSizeHeight, value, "ApplicationSizeHeight"); }
+		}
+		private double _applicationSizeHeight = 600;
 
-        public static bool defaultMAP = true;
-        public static bool defaultBLF = false;
-		public static bool defaultMIF = false;
-		public static bool defaultAMP = false;
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool ApplicationSizeMaximize
+		{
+			get { return _applicationSizeMaximize; }
+			set { SetField(ref _applicationSizeMaximize, value, "ApplicationSizeMaximize"); }
+		}
+		private bool _applicationSizeMaximize;
 
-        public static Home homeWindow = null;
-        public static Xbdm xbdm = null;
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool StartpageShowOnLoad
+		{
+			get { return _startpageShowOnLoad; }
+			set { SetField(ref _startpageShowOnLoad, value, "StartpageShowOnLoad"); }
+		}
+		private bool _startpageShowOnLoad = true;
 
-        public static EngineDatabase DefaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool StartpageHideOnLaunch
+		{
+			get { return _startpageHideOnLaunch; }
+			set { SetField(ref _startpageHideOnLaunch, value, "StartpageHideOnLaunch"); }
+		}
+		private bool _startpageHideOnLaunch;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool StartpageShowRecentsMap
+		{
+			get { return _startpageShowRecentsMap; }
+			set { SetField(ref _startpageShowRecentsMap, value, "StartpageShowRecentsMap"); }
+		}
+		private bool _startpageShowRecentsMap = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool StartpageShowRecentsBlf
+		{
+			get { return _startpageShowRecentsBlf; }
+			set { SetField(ref _startpageShowRecentsBlf, value, "StartpageShowRecentsBlf"); }
+		}
+		private bool _startpageShowRecentsBlf = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool StartpageShowRecentsMapInfo
+		{
+			get { return _startpageShowRecentsMapInfo; }
+			set { SetField(ref _startpageShowRecentsMapInfo, value, "StartpageShowRecentsMapInfo"); }
+		}
+		private bool _startpageShowRecentsMapInfo = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public string XdkNameIp
+		{
+			get { return _xdkNameIp; }
+			set
+			{
+				SetField(ref _xdkNameIp, value, "XdkNameIp");
+
+				if (Xbdm != null)
+					Xbdm.UpdateDeviceIdent(value);
+			}
+		}
+		private string _xdkNameIp = "";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool XdkAutoSave
+		{
+			get { return _xdkAutoSave; }
+			set { SetField(ref _xdkAutoSave, value, "XdkAutoSave"); }
+		}
+		private bool _xdkAutoSave;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public string XdkScreenshotPath
+		{
+			get { return _xdkScreenshotPath; }
+			set { SetField(ref _xdkScreenshotPath, value, "XdkScreenshotPath"); }
+		}
+		private string _xdkScreenshotPath = "";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool XdkResizeImages
+		{
+			get { return _xdkResizeImages; }
+			set { SetField(ref _xdkResizeImages, value, "XdkResizeImages"); }
+		}
+		private bool _xdkResizeImages;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public int XdkResizeScreenshotHeight
+		{
+			get { return _xdkResizeScreenshotHeight; }
+			set { SetField(ref _xdkResizeScreenshotHeight, value, "XdkResizeScreenshotHeight"); }
+		}
+		private int _xdkResizeScreenshotHeight = 1080;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public int XdkResizeScreenshotWidth
+		{
+			get { return _xdkResizeScreenshotWidth; }
+			set { SetField(ref _xdkResizeScreenshotWidth, value, "XdkResizeScreenshotWidth"); }
+		}
+		private int _xdkResizeScreenshotWidth = 1920;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool XdkScreenshotGammaCorrect
+		{
+			get { return _xdkScreenshotGammaCorrect; }
+			set { SetField(ref _xdkScreenshotGammaCorrect, value, "XdkScreenshotGammaCorrect"); }
+		}
+		private bool _xdkScreenshotGammaCorrect = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public double XdkScreenshotGammaModifier
+		{
+			get { return _xdkScreenshotGammaModifier; }
+			set { SetField(ref _xdkScreenshotGammaModifier, value, "XdkScreenshotGammaModifier"); }
+		}
+		private double _xdkScreenshotGammaModifier = 0.5;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool XdkScreenshotFreeze
+		{
+			get { return _xdkScreenshotFreeze; }
+			set { SetField(ref _xdkScreenshotFreeze, value, "XdkScreenshotFreeze"); }
+		}
+		private bool _xdkScreenshotFreeze = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public TagSort HalomapTagSort
+		{
+			get { return _halomapTagSort; }
+			set { SetField(ref _halomapTagSort, value, "HalomapTagSort"); }
+		}
+		private TagSort _halomapTagSort = TagSort.TagClass;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public TagOpenMode HalomapTagOpenMode
+		{
+			get { return _halomapTagOpenMode; }
+			set { SetField(ref _halomapTagOpenMode, value, "HalomapTagOpenMode"); }
+		}
+		private TagOpenMode _halomapTagOpenMode = TagOpenMode.NewTab;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool HalomapShowEmptyClasses
+		{
+			get { return _halomapShowEmptyClasses; }
+			set { SetField(ref _halomapShowEmptyClasses, value, "HalomapShowEmptyClasses"); }
+		}
+		private bool _halomapShowEmptyClasses;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool HalomapOnlyShowBookmarkedTags
+		{
+			get { return _halomapOnlyShowBookmarkedTags; }
+			set { SetField(ref _halomapOnlyShowBookmarkedTags, value, "HalomapOnlyShowBookmarkedTags"); }
+		}
+		private bool _halomapOnlyShowBookmarkedTags;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public MapInfoDockSide HalomapMapInfoDockSide
+		{
+			get { return _halomapMapInfoDockSide; }
+			set { SetField(ref _halomapMapInfoDockSide, value, "HalomapMapInfoDockSide"); }
+		}
+		private MapInfoDockSide _halomapMapInfoDockSide = MapInfoDockSide.Left;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public LastMetaEditorType HalomapLastSelectedMetaEditor
+		{
+			get { return _halomapLastSelectedMetaEditor; }
+			set { SetField(ref _halomapLastSelectedMetaEditor, value, "HalomapLastSelectedMetaEditor"); }
+		}
+		private LastMetaEditorType _halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool PluginsShowInvisibles
+		{
+			get { return _pluginsShowInvisibles; }
+			set { SetField(ref _pluginsShowInvisibles, value, "PluginsShowInvisibles"); }
+		}
+		private bool _pluginsShowInvisibles;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool PluginsShowComments
+		{
+			get { return _pluginsShowComments; }
+			set { SetField(ref _pluginsShowComments, value, "PluginsShowComments"); }
+		}
+		private bool _pluginsShowComments = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool DefaultMap
+		{
+			get { return _defaultMap; }
+			set { SetField(ref _defaultMap, value, "DefaultMap"); }
+		}
+		private bool _defaultMap = true;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool DefaultBlf
+		{
+			get { return _defaultBlf; }
+			set { SetField(ref _defaultBlf, value, "DefaultBlf"); }
+		}
+		private bool _defaultBlf;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool DefaultMif
+		{
+			get { return _defaultMif; }
+			set { SetField(ref _defaultMif, value, "DefaultMif"); }
+		}
+		private bool _defaultMif;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool DefaultAmp
+		{
+			get { return _defaultAmp; }
+			set { SetField(ref _defaultAmp, value, "DefaultAmp"); }
+		}
+		private bool _defaultAmp;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[JsonIgnore]
+		public Home HomeWindow
+		{
+			get { return _homeWindow; }
+			set { SetField(ref _homeWindow, value, "HomeWindow"); }
+		}
+		private Home _homeWindow;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[JsonIgnore]
+		public Xbdm Xbdm
+		{
+			get { return _xbdm; }
+			set { SetField(ref _xbdm, value, "Xbdm"); }
+		}
+		private Xbdm _xbdm;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[JsonIgnore]
+		public EngineDatabase DefaultDatabase
+		{
+			get { return _defaultDatabase; }
+			set { SetField(ref _defaultDatabase, value, "DefaultDatabase"); }
+		}
+		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+
+		#region Enums
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public enum TagOpenMode
 		{
 			NewTab,
 			ExistingTab
 		}
-        public enum Accents
-        {
-            Blue,
-            Purple,
-            Orange,
-            Green
-        }
-        public enum RecentFileType
-        {
-            Cache,
-            MapInfo,
-            BLF
-        }
-        public enum TagSort
-        {
-            TagClass,
-            ObjectHierarchy,
-            PathHierarchy
-        }
-        public enum MapInfoDockSide
-        {
-            Left,
-            Right
-        }
-        public enum LastMetaEditorType
-        {
-            Info,
-            MetaEditor,
-            PluginEditor,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public enum Accents
+		{
+			Blue,
+			Purple,
+			Orange,
+			Green
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public enum RecentFileType
+		{
+			Cache,
+			MapInfo,
+			Blf
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public enum TagSort
+		{
+			TagClass,
+			ObjectHierarchy,
+			PathHierarchy
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public enum MapInfoDockSide
+		{
+			Left,
+			Right
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public enum LastMetaEditorType
+		{
+			Info,
+			MetaEditor,
+			PluginEditor,
 			Sound,
 			Model,
 			Bsp
-        }
-        public class RecentFileEntry
-        {
-            public string FileName { get; set; }
-            public RecentFileType FileType { get; set; }
-            public string FileGame { get; set; }
-            public string FilePath { get; set; }
-        }
-    }
+		}
 
-    public class TempStorage
-    {
-        public static MetroMessageBox.MessageBoxResult MessageBoxButtonStorage;
+		#endregion
 
-	    public static KeyValuePair<string, int> TagBookmarkSaver;
-    }
+		#region Classes
 
-    public class RecentFiles
-    {
-        public static void AddNewEntry(string filename, string filepath, string game, Settings.RecentFileType type)
-        {
-            Settings.RecentFileEntry alreadyExistsEntry = null;
+		/// <summary>
+		/// 
+		/// </summary>
+		public class RecentFileEntry
+		{
+			public string FileName { get; set; }
+			public RecentFileType FileType { get; set; }
+			public string FileGame { get; set; }
+			public string FilePath { get; set; }
+		}
 
-            if (Settings.applicationRecents == null)
-                Settings.applicationRecents = new List<Settings.RecentFileEntry>();
+		#endregion
 
-            foreach (var entry in Settings.applicationRecents.Where(entry => entry.FileName == filename && entry.FilePath == filepath && entry.FileGame == game))
-	            alreadyExistsEntry = entry;
+		#region Interface
 
-            if (alreadyExistsEntry == null)
-            {
-                // Add New Entry
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+		protected bool SetField<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
+
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		#endregion
+	}
+
+	public class TempStorage
+	{
+		public static MetroMessageBox.MessageBoxResult MessageBoxButtonStorage;
+
+		public static KeyValuePair<string, int> TagBookmarkSaver;
+	}
+
+	public class RecentFiles
+	{
+		public static void AddNewEntry(string filename, string filepath, string game, Settings.RecentFileType type)
+		{
+			Settings.RecentFileEntry alreadyExistsEntry = null;
+
+			if (Settings.applicationRecents == null)
+				Settings.applicationRecents = new List<Settings.RecentFileEntry>();
+
+			foreach (var entry in Settings.applicationRecents.Where(entry => entry.FileName == filename && entry.FilePath == filepath && entry.FileGame == game))
+				alreadyExistsEntry = entry;
+
+			if (alreadyExistsEntry == null)
+			{
+				// Add New Entry
 				var newEntry = new Settings.RecentFileEntry
-                {
-                    FileGame = game,
-                    FileName = filename,
-                    FilePath = filepath,
-                    FileType = type
-                };
-                Settings.applicationRecents.Insert(0, newEntry);
-            }
-            else
-            {
-                // Move existing Entry
-                Settings.applicationRecents.Remove(alreadyExistsEntry);
-                Settings.applicationRecents.Insert(0, alreadyExistsEntry);
-            }
+				{
+					FileGame = game,
+					FileName = filename,
+					FilePath = filepath,
+					FileType = type
+				};
+				Settings.applicationRecents.Insert(0, newEntry);
+			}
+			else
+			{
+				// Move existing Entry
+				Settings.applicationRecents.Remove(alreadyExistsEntry);
+				Settings.applicationRecents.Insert(0, alreadyExistsEntry);
+			}
 
-            Settings.UpdateSettings();
-            JumpLists.UpdateJumplists();
-        }
+			Settings.UpdateSettings();
+			JumpLists.UpdateJumplists();
+		}
 
-        public static void RemoveEntry(Settings.RecentFileEntry entry)
-        {
-            Settings.applicationRecents.Remove(entry);
-            Settings.UpdateSettings();
-        }
-    }
+		public static void RemoveEntry(Settings.RecentFileEntry entry)
+		{
+			Settings.applicationRecents.Remove(entry);
+			Settings.UpdateSettings();
+		}
+	}
 }

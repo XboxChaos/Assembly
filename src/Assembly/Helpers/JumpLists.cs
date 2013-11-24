@@ -21,7 +21,7 @@ namespace Assembly.Helpers
 					var iconIndex = -200;
                     switch (Settings.applicationRecents[i].FileType)
                     {
-                        case Settings.RecentFileType.BLF:
+                        case Settings.RecentFileType.Blf:
                             iconIndex = -200;
                             break;
                         case Settings.RecentFileType.Cache:

@@ -61,7 +61,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 	                    case Settings.RecentFileType.Cache:
 		                    Settings.homeWindow.AddCacheTabModule(senderEntry.FilePath);
 		                    break;
-	                    case Settings.RecentFileType.BLF:
+	                    case Settings.RecentFileType.Blf:
 		                    Settings.homeWindow.AddImageTabModule(senderEntry.FilePath);
 		                    break;
 	                    case Settings.RecentFileType.MapInfo:
@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates
                         btnRecent.Content = string.Format("{0} - {1}", entry.FileGame, entry.FileName.Replace("_", "__"));
                         panelRecents.Children.Add(btnRecent);
                     }
-                    else if (entry.FileType == Settings.RecentFileType.BLF && Settings.startpageShowRecentsBLF)
+                    else if (entry.FileType == Settings.RecentFileType.Blf && Settings.startpageShowRecentsBLF)
                     {
                         btnRecent.Content = string.Format("Map Image - {0}", entry.FileName.Replace("_", "__"));
                         panelRecents.Children.Add(btnRecent);

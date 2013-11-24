@@ -67,7 +67,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                     if (Settings.startpageHideOnLaunch)
                         Settings.homeWindow.ExternalTabClose(Windows.Home.TabGenre.StartPage);
 
-                    RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "BLF Image", Settings.RecentFileType.BLF);
+                    RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "BLF Image", Settings.RecentFileType.Blf);
                 }));
             }
             catch (Exception ex)
