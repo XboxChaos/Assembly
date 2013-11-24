@@ -12,89 +12,88 @@ using System.Threading;
 
 namespace Assembly
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : ISingleInstanceApp
-    {
-        #region ISingleInstanceApp Members
-        public bool SignalExternalCommandLineArgs(IList<string> args)
-        {
-            return Settings.homeWindow == null || Settings.homeWindow.ProcessCommandLineArgs(args);
-        }
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : ISingleInstanceApp
+	{
+		#region ISingleInstanceApp Members
+		public bool SignalExternalCommandLineArgs(IList<string> args)
+		{
+			return Stuff.Rawr.HomeWindow == null || Stuff.Rawr.HomeWindow.ProcessCommandLineArgs(args);
+		}
 
-	    #endregion
+		#endregion
 
-        [STAThread]
-        public static void Main()
-        {
-	        if (!SingleInstance<App>.InitializeAsFirstInstance("RecivedCommand")) return;
+		[STAThread]
+		public static void Main()
+		{
+			if (!SingleInstance<App>.InitializeAsFirstInstance("RecivedCommand")) return;
 
-	        var application = new App();
+			var application = new App();
 
-	        application.InitializeComponent();
-	        application.Run();
+			application.InitializeComponent();
+			application.Run();
 
-	        // Allow single instance code to perform cleanup operations
-	        SingleInstance<App>.Cleanup();
-        }
+			// Allow single instance code to perform cleanup operations
+			SingleInstance<App>.Cleanup();
+		}
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
 
 #if !DEBUG
-            Current.DispatcherUnhandledException += (o, args) =>
-            {
-                MetroException.Show(args.Exception);
+			Current.DispatcherUnhandledException += (o, args) =>
+			{
+				MetroException.Show(args.Exception);
 
-                args.Handled = true;
-            };
+				args.Handled = true;
+			};
 #endif
 
-            // For test compiling.
-            //AssemblyPluginLoader.LoadPlugin(XmlReader.Create(@"Plugins\Halo3\bipd.asm"), new TestPluginVisitor());
+			// For test compiling.
+			//AssemblyPluginLoader.LoadPlugin(XmlReader.Create(@"Plugins\Halo3\bipd.asm"), new TestPluginVisitor());
 
-            // Create Settings
-            Settings.LoadSettings(true);
+			// Create Settings
+			Stuff.Rawr = new Settings(true);
 
-            // Update Assembly Protocol
-            AssemblyProtocol.UpdateProtocol();
+			// Update Assembly Protocol
+			AssemblyProtocol.UpdateProtocol();
 
-            // Create jumplist
-            JumpLists.UpdateJumplists();
+			// Create jumplist
+			JumpLists.UpdateJumplists();
 
-            // Create XBDM Instance
-            Settings.xbdm = new Xbdm(Settings.XDKNameIP);
-            //try { Settings.xbdm.Connect(); } catch { }
+			// Create XBDM Instance
+			Stuff.Rawr.Xbdm = new Xbdm(Settings.XDKNameIP);
 
-            // Try and delete all temp data
-            VariousFunctions.EmptyUpdaterLocations();
+			// Try and delete all temp data
+			VariousFunctions.EmptyUpdaterLocations();
 
-            // Dubs, checkem
-            _0xabad1dea.CheckServerStatus();
+			// Dubs, checkem
+			_0xabad1dea.CheckServerStatus();
 
-            // Update File Defaults
-            FileDefaults.UpdateFileDefaults();
+			// Update File Defaults
+			FileDefaults.UpdateFileDefaults();
 
-            // Set closing method
-            Current.Exit += (o, args) =>
-                {
-                    // Update Settings with Window Width/Height
-                    Settings.applicationSizeMaximize = (Settings.homeWindow.WindowState == WindowState.Maximized);
-                    if (!Settings.applicationSizeMaximize)
-                    {
-                        Settings.applicationSizeWidth = Settings.homeWindow.Width;
-                        Settings.applicationSizeHeight = Settings.homeWindow.Height;
-                    }
+			// Set closing method
+			Current.Exit += (o, args) =>
+				{
+					// Update Settings with Window Width/Height
+					Stuff.Rawr.ApplicationSizeMaximize = (Stuff.Rawr.HomeWindow.WindowState == WindowState.Maximized);
+					if (!Stuff.Rawr.ApplicationSizeMaximize)
+					{
+						Stuff.Rawr.ApplicationSizeWidth = Stuff.Rawr.HomeWindow.Width;
+						Stuff.Rawr.ApplicationSizeHeight = Stuff.Rawr.HomeWindow.Height;
+					}
 
-                    // Save Settings
-                    Settings.UpdateSettings();
-                };
+					// Save Settings
+					Stuff.Rawr.UpdateSettings();
+				};
 
 			// Start Caching Blam Cache MetaData
 			var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
 			metadataCacheThread.Start();
-        }
-    }
+		}
+	}
 }
