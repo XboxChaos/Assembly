@@ -112,21 +112,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 	/// </summary>
 	public partial class PostGenerator
 	{
-		private readonly ModPostInfo GeneratorViewModel;
+		private readonly ModPostInfo _generatorViewModel;
 
 		public PostGenerator()
 		{
 			InitializeComponent();
 
-			GeneratorViewModel = new ModPostInfo();
+			_generatorViewModel = new ModPostInfo();
 
-			DataContext = GeneratorViewModel;
+			DataContext = _generatorViewModel;
 		}
 
 		// Header Stuff
 		private void btnLaunchPatcher_Click(object sender, RoutedEventArgs e)
 		{
-			Settings.homeWindow.AddPatchTabModule();
+			App.AssemblyStorage.AssemblySettings.HomeWindow.AddPatchTabModule();
 		}
 		private void btnGrabPreviewImageFromXbox_Click(object sender, RoutedEventArgs e)
 		{
@@ -143,7 +143,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					var screenshotFileName = Path.GetTempFileName();
 					var screenshotPng = Path.GetTempFileName();
 
-					if (!Settings.xbdm.GetScreenshot(screenshotFileName))
+					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
 					{
 						Dispatcher.Invoke(new Action(() => MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
 						return;
@@ -160,7 +160,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 					var finalString = string.Format("http://i.imgur.com/{0}.png", response);
 
-					Dispatcher.Invoke(new Action(() => GeneratorViewModel.ModPreviewImage = finalString));
+					Dispatcher.Invoke(new Action(() => _generatorViewModel.ModPreviewImage = finalString));
 				}
 				catch (Exception ex)
 				{
@@ -178,8 +178,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Image Stuff
 		private void btnDeleteImage_Click(object sender, RoutedEventArgs e)
 		{
-			var dataContext = (ModPostInfo.Image) ((Button) sender).DataContext;
-			GeneratorViewModel.Images.Remove(dataContext);
+			var dataContext = (ModPostInfo.Image)((Button)sender).DataContext;
+			_generatorViewModel.Images.Remove(dataContext);
 		}
 		private void btnAddImage_Click(object sender, RoutedEventArgs e)
 		{
@@ -190,11 +190,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			}
 
 			var existingImages =
-				GeneratorViewModel.Images.Where(
+				_generatorViewModel.Images.Where(
 					image => image.Url.ToLowerInvariant().Trim() == txtImageToAdd.Text.ToLowerInvariant().Trim());
 
 			if (!existingImages.Any())
-				GeneratorViewModel.Images.Add(new ModPostInfo.Image
+				_generatorViewModel.Images.Add(new ModPostInfo.Image
 												  {
 													  Url = txtImageToAdd.Text.Trim()
 												  });
@@ -215,7 +215,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 													var screenshotFileName = Path.GetTempFileName();
 													var screenshotPng = Path.GetTempFileName();
 
-													if (!Settings.xbdm.GetScreenshot(screenshotFileName))
+													if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
 													{
 														Dispatcher.Invoke(new Action(() => MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360, unable to get screenshot")));
 														return;
@@ -232,7 +232,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 
 													var finalString = string.Format("http://i.imgur.com/{0}.png", response);
 
-													Dispatcher.Invoke(new Action(() => GeneratorViewModel.Images.Add(new ModPostInfo.Image
+													Dispatcher.Invoke(new Action(() => _generatorViewModel.Images.Add(new ModPostInfo.Image
 																														 {
 																															 Url = finalString
 																														 })));
@@ -243,10 +243,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 												}
 											};
 			backgroundWorker.RunWorkerCompleted += (o, args) =>
-				                                       {
+													   {
 														   ImageGrabMask.Visibility = Visibility.Collapsed;
 														   btnAddImage.IsEnabled = btnGrabImageFromXbox.IsEnabled = true;
-				                                       };
+													   };
 			backgroundWorker.RunWorkerAsync();
 		}
 
@@ -254,7 +254,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		private void btnDeleteThank_Click(object sender, RoutedEventArgs e)
 		{
 			var dataContext = (ModPostInfo.Thank)((Button)sender).DataContext;
-			GeneratorViewModel.Thanks.Remove(dataContext);
+			_generatorViewModel.Thanks.Remove(dataContext);
 		}
 		private void btnAddMention_Click(object sender, RoutedEventArgs e)
 		{
@@ -265,11 +265,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			}
 
 			var existingMentions =
-				GeneratorViewModel.Thanks.Where(
+				_generatorViewModel.Thanks.Where(
 					thank => thank.Alias.ToLowerInvariant().Trim() == txtThankAlias.Text.ToLowerInvariant().Trim() && thank.Reason.ToLowerInvariant().Trim() == txtThankReason.Text.ToLowerInvariant().Trim());
 
 			if (!existingMentions.Any())
-				GeneratorViewModel.Thanks.Add(new ModPostInfo.Thank
+				_generatorViewModel.Thanks.Add(new ModPostInfo.Thank
 				{
 					Alias = txtThankAlias.Text.Trim(),
 					Reason = txtThankReason.Text.Trim(),
@@ -282,10 +282,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 		// Generate
 		private void btnParse_Click(object sender, RoutedEventArgs e)
 		{
-			var postGenerator = new BlamitePostGenerator(GeneratorViewModel);
+			var postGenerator = new BlamitePostGenerator(_generatorViewModel);
 			var generatedPost = postGenerator.Parse();
 
-			MetroPostGeneratorViewer.Show(generatedPost, GeneratorViewModel.ModAuthor);
+			MetroPostGeneratorViewer.Show(generatedPost, _generatorViewModel.ModAuthor);
 		}
 
 		/// <summary>

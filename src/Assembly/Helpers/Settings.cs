@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows;
+using Assembly.Properties;
 using Assembly.Windows;
 using Microsoft.Win32;
 using System.Web.Script.Serialization;
@@ -15,110 +17,101 @@ using System.ComponentModel;
 
 namespace Assembly.Helpers
 {
-	public static class Stuff
+	/// <summary>
+	/// 
+	/// </summary>
+	public class Storage : INotifyPropertyChanged
 	{
-		public static Settings Rawr = new Settings();
+		/// <summary>
+		/// 
+		/// </summary>
+		public Storage()
+		{
+			Load();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Settings AssemblySettings
+		{
+			get { return _assemblySettings; }
+			set
+			{
+				// Set Data
+				SetField(ref _assemblySettings, value, "AssemblySettings");
+
+				// Write Changes
+				var jsonData = JsonConvert.SerializeObject(_assemblySettings);
+
+				// Get File Path
+				if (!File.Exists("AssemblyApp.AssemblyStorage.AssemblySettings.ason"))
+					File.Create("AssemblyApp.AssemblyStorage.AssemblySettings.ason");
+				File.WriteAllText("AssemblyApp.AssemblyStorage.AssemblySettings.ason", jsonData);
+
+				// Update Accent
+				_assemblySettings.UpdateAssemblyAccent();
+
+				// Update File Defaults
+				FileDefaults.UpdateFileDefaults();
+			}
+		}
+		private Settings _assemblySettings = new Settings();
+
+		#region Helpers
+
+		public void Load()
+		{
+			#region Settings
+
+			// Get File Path
+			string jsonString = null;
+			if (File.Exists("AssemblyApp.AssemblyStorage.AssemblySettings.ason"))
+				jsonString = File.ReadAllText("AssemblyApp.AssemblyStorage.AssemblySettings.ason");
+
+			AssemblySettings = jsonString == null ? new Settings() : JsonConvert.DeserializeObject<Settings>(jsonString);
+
+			// Update Accent
+			AssemblySettings.UpdateAssemblyAccent();
+
+			// Update File Defaults
+			FileDefaults.UpdateFileDefaults();
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Interface
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+		protected bool SetField<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
+
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
+		#endregion
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
 	public class Settings : INotifyPropertyChanged
 	{
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="applyThemeAswell"></param>
-		public Settings(bool applyThemeAswell = false)
-		{
-			LoadSettings(applyThemeAswell);
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="applyThemeAswell"></param>
-		public void LoadSettings(bool applyThemeAswell = false)
-		{
-			// Declare Registry
-			var keyApp = Registry.CurrentUser.CreateSubKey("Software\\Xeraxic\\Assembly\\ApplicationSettings\\");
-			// Create a JSON Seralizer
-			var jss = new JavaScriptSerializer();
-
-			if (keyApp != null)
-			{
-				_applicationAccent = (Accents)keyApp.GetValue("accent", 0);
-				applicationEasterEggs = Convert.ToBoolean(keyApp.GetValue("easterEggs", true));
-				applicationUpdateOnStartup = Convert.ToBoolean(keyApp.GetValue("CheckUpdatesOnStartup", true));
-				if (applyThemeAswell)
-					ApplyAccent();
-
-				applicationRecents = jss.Deserialize<List<RecentFileEntry>>(keyApp.GetValue("RecentFiles", "").ToString());
-				applicationSizeWidth = Convert.ToSingle(keyApp.GetValue("SizeWidth", 1100));
-				applicationSizeHeight = Convert.ToSingle(keyApp.GetValue("SizeHeight", 600));
-				applicationSizeMaximize = Convert.ToBoolean(keyApp.GetValue("SizeMaxamize", false));
-
-				XDKNameIP = keyApp.GetValue("XDKNameIP", "192.168.1.0").ToString();
-				if (xbdm != null)
-				{
-					xbdm.UpdateDeviceIdent(XDKNameIP);
-					//try { xbdm.Connect(); } catch { }
-				}
-				XDKAutoSave = Convert.ToBoolean(keyApp.GetValue("XDKAutoSave", true));
-				XDKScreenshotPath = keyApp.GetValue("XDKScreenshotPath", VariousFunctions.GetApplicationLocation() + @"Saved Images\").ToString();
-				XDKResizeImages = Convert.ToBoolean(keyApp.GetValue("XDKScreenshotResize", true));
-				XDKResizeScreenshotHeight = Convert.ToInt16(keyApp.GetValue("XDKScreenshotHeight", 1080));
-				XDKResizeScreenshotWidth = Convert.ToInt16(keyApp.GetValue("XDKScreenshotWidth", 1920));
-				XDKScreenshotGammaCorrect = Convert.ToBoolean(keyApp.GetValue("XDKScreenGammaCorrect", true));
-				XDKScreenshotGammaModifier = Convert.ToDouble(keyApp.GetValue("XDKScreenModifier", 0.5));
-				XDKScreenshotFreeze = Convert.ToBoolean(keyApp.GetValue("XDKScreenFreeze", false));
-
-				startpageShowOnLoad = Convert.ToBoolean(keyApp.GetValue("ShowStartPageOnLoad", true));
-				startpageHideOnLaunch = Convert.ToBoolean(keyApp.GetValue("HideStartPageOnLaunch", false));
-				startpageShowRecentsMap = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMap", true));
-				startpageShowRecentsBLF = Convert.ToBoolean(keyApp.GetValue("ShowRecentsBLF", true));
-				startpageShowRecentsMapInfo = Convert.ToBoolean(keyApp.GetValue("ShowRecentsMapInfo", true));
-
-				halomapTagSort = (TagSort)keyApp.GetValue("TagSorting", 0);
-				halomapTagOpenMode = (TagOpenMode)keyApp.GetValue("TagOpeningMode", 0);
-				halomapShowEmptyClasses = Convert.ToBoolean(keyApp.GetValue("ShowEmptyClasses", false));
-				halomapOnlyShowBookmarkedTags = Convert.ToBoolean(keyApp.GetValue("OnlyShowBookmarkedTags", false));
-				halomapLastSelectedMetaEditor = (LastMetaEditorType)keyApp.GetValue("LastSelectedMetaEditor", 0);
-				halomapMapInfoDockSide = (MapInfoDockSide)keyApp.GetValue("MapInfoDockSide", 0);
-
-				pluginsShowInvisibles = Convert.ToBoolean(keyApp.GetValue("ShowInvisibles", false));
-				pluginsShowComments = Convert.ToBoolean(keyApp.GetValue("ShowComments", true));
-
-				defaultMAP = Convert.ToBoolean(keyApp.GetValue("DefaultMAPEditor", true));
-				defaultBLF = Convert.ToBoolean(keyApp.GetValue("DefaultBLFEditor", false));
-				defaultMIF = Convert.ToBoolean(keyApp.GetValue("DefaultMIFEditor", false));
-				defaultAMP = Convert.ToBoolean(keyApp.GetValue("DefaultAMPEditor", true));
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="applyThemeAswell"></param>
-		public void UpdateSettings(bool applyThemeAswell = false)
-		{
-			// JSON Stuff
-			var jsonData = JsonConvert.SerializeObject(this);
-			
-			// Get File Path
-			if (!File.Exists("AssemblySettings.ason"))
-				File.Create("AssemblySettings.ason");
-			File.WriteAllText("AssemblySettings.ason", jsonData);
-
-			// Update Accent
-			if (applyThemeAswell)
-				ApplyAccent();
-
-			// Update File Defaults
-			FileDefaults.UpdateFileDefaults();
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public void ApplyAccent()
+		public void UpdateAssemblyAccent()
 		{
 			var theme = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof(Accents), ApplicationAccent.ToString()).ToString());
 			try
@@ -137,7 +130,11 @@ namespace Assembly.Helpers
 		public Accents ApplicationAccent
 		{
 			get { return _applicationAccent; }
-			set { SetField(ref _applicationAccent, value, "ApplicationAccent"); }
+			set
+			{
+				SetField(ref _applicationAccent, value, "ApplicationAccent");
+				UpdateAssemblyAccent();
+			}
 		}
 		private Accents _applicationAccent = Accents.Blue;
 
@@ -602,6 +599,9 @@ namespace Assembly.Helpers
 		#endregion
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
 	public class TempStorage
 	{
 		public static MetroMessageBox.MessageBoxResult MessageBoxButtonStorage;
@@ -609,16 +609,19 @@ namespace Assembly.Helpers
 		public static KeyValuePair<string, int> TagBookmarkSaver;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
 	public class RecentFiles
 	{
 		public static void AddNewEntry(string filename, string filepath, string game, Settings.RecentFileType type)
 		{
 			Settings.RecentFileEntry alreadyExistsEntry = null;
 
-			if (Settings.applicationRecents == null)
-				Settings.applicationRecents = new List<Settings.RecentFileEntry>();
+			if (App.AssemblyStorage.AssemblySettings.ApplicationRecents == null)
+				App.AssemblyStorage.AssemblySettings.ApplicationRecents = new List<Settings.RecentFileEntry>();
 
-			foreach (var entry in Settings.applicationRecents.Where(entry => entry.FileName == filename && entry.FilePath == filepath && entry.FileGame == game))
+			foreach (var entry in App.AssemblyStorage.AssemblySettings.ApplicationRecents.Where(entry => entry.FileName == filename && entry.FilePath == filepath && entry.FileGame == game))
 				alreadyExistsEntry = entry;
 
 			if (alreadyExistsEntry == null)
@@ -631,23 +634,21 @@ namespace Assembly.Helpers
 					FilePath = filepath,
 					FileType = type
 				};
-				Settings.applicationRecents.Insert(0, newEntry);
+				App.AssemblyStorage.AssemblySettings.ApplicationRecents.Insert(0, newEntry);
 			}
 			else
 			{
 				// Move existing Entry
-				Settings.applicationRecents.Remove(alreadyExistsEntry);
-				Settings.applicationRecents.Insert(0, alreadyExistsEntry);
+				App.AssemblyStorage.AssemblySettings.ApplicationRecents.Remove(alreadyExistsEntry);
+				App.AssemblyStorage.AssemblySettings.ApplicationRecents.Insert(0, alreadyExistsEntry);
 			}
 
-			Settings.UpdateSettings();
 			JumpLists.UpdateJumplists();
 		}
 
 		public static void RemoveEntry(Settings.RecentFileEntry entry)
 		{
-			Settings.applicationRecents.Remove(entry);
-			Settings.UpdateSettings();
+			App.AssemblyStorage.AssemblySettings.ApplicationRecents.Remove(entry);
 		}
 	}
 }

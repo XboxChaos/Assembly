@@ -1,6 +1,4 @@
-﻿using Assembly.Helpers;
-
-namespace Assembly.Windows
+﻿namespace Assembly.Windows
 {
     public static class StatusUpdater
     {
@@ -10,7 +8,7 @@ namespace Assembly.Windows
         /// <param name="update">The new status</param>
         public static void Update(string update)
         {
-            Settings.homeWindow.UpdateStatusText(update);
+            App.AssemblyStorage.AssemblySettings.HomeWindow.UpdateStatusText(update);
         }
     }
 }

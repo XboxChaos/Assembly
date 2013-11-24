@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Assembly.Helpers;
 using Assembly.Helpers.CodeCompletion.XML;
@@ -11,237 +9,236 @@ using Assembly.SyntaxHighlighting;
 using Blamite.Flexibility;
 using Blamite.Util;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
-    /// <summary>
-    /// Interaction logic for PluginEditor.xaml
-    /// </summary>
-    public partial class PluginEditor : UserControl
-    {
-        private string _pluginPath;
-        private MetaContainer _parent;
-        private MetaEditor _sibling;
-        private XMLCodeCompleter _completer = new XMLCodeCompleter();
-        private CompletionWindow _completionWindow;
+	/// <summary>
+	/// Interaction logic for PluginEditor.xaml
+	/// </summary>
+	public partial class PluginEditor
+	{
+		private readonly string _pluginPath;
+		private readonly MetaContainer _parent;
+		private readonly MetaEditor _sibling;
+		private readonly XMLCodeCompleter _completer = new XMLCodeCompleter();
+		private CompletionWindow _completionWindow;
 
-        public PluginEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
-        {
-            InitializeComponent();
+		public PluginEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
+		{
+			InitializeComponent();
 
-            txtPlugin.TextArea.TextEntered += PluginTextEntered;
+			txtPlugin.TextArea.TextEntered += PluginTextEntered;
 
-            _parent = parent;
-            _sibling = sibling;
+			_parent = parent;
+			_sibling = sibling;
 
-            LoadSyntaxHighlighting();
-            LoadCodeCompletion();
+			LoadSyntaxHighlighting();
+			LoadCodeCompletion();
 
-            Settings.SettingsChanged += Settings_SettingsChanged;
+			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 
-	        string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
-	        _pluginPath =
-		        string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			_pluginPath =
+				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 							  buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
-            LoadPlugin();
-        }
+			LoadPlugin();
+		}
 
 		public void GoToLine(int line)
 		{
-            UpdateLayout();
+			UpdateLayout();
 
 			var selectedLineDetails = txtPlugin.Document.GetLineByNumber(line);
-            txtPlugin.ScrollToLine(line);
+			txtPlugin.ScrollToLine(line);
 			txtPlugin.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
 		}
 
-        void Settings_SettingsChanged(object sender, EventArgs e)
-        {
-            // Reload the syntax highlighting definition in case the theme changed
-            LoadSyntaxHighlighting();
-        }
+		void Settings_SettingsChanged(object sender, EventArgs e)
+		{
+			// Reload the syntax highlighting definition in case the theme changed
+			LoadSyntaxHighlighting();
+		}
 
-        private void btnPluginSave_Click(object sender, RoutedEventArgs e)
-        {
-            File.WriteAllText(_pluginPath, txtPlugin.Text);
-            _sibling.RefreshEditor(MetaReader.LoadType.File);
-            _parent.ShowMetaEditor();
-        }
+		private void btnPluginSave_Click(object sender, RoutedEventArgs e)
+		{
+			File.WriteAllText(_pluginPath, txtPlugin.Text);
+			_sibling.RefreshEditor(MetaReader.LoadType.File);
+			_parent.ShowMetaEditor();
+		}
 
-        private void btnLoadFromDisk_Click_1(object sender, RoutedEventArgs e)
-        {
-            LoadPlugin();
-        }
+		private void btnLoadFromDisk_Click_1(object sender, RoutedEventArgs e)
+		{
+			LoadPlugin();
+		}
 
-        private void txtPlugin_MouseRightButtonDown_1(object sender, MouseButtonEventArgs e)
-        {
-            // Move the cursor to the place where the click occurred (AvalonEdit doesn't do this by default)
-            // http://community.sharpdevelop.net/forums/p/12521/34105.aspx
-            var position = txtPlugin.GetPositionFromPoint(e.GetPosition(txtPlugin));
-            if (position.HasValue)
-                txtPlugin.TextArea.Caret.Position = position.Value;
-        }
+		private void txtPlugin_MouseRightButtonDown_1(object sender, MouseButtonEventArgs e)
+		{
+			// Move the cursor to the place where the click occurred (AvalonEdit doesn't do this by default)
+			// http://community.sharpdevelop.net/forums/p/12521/34105.aspx
+			var position = txtPlugin.GetPositionFromPoint(e.GetPosition(txtPlugin));
+			if (position.HasValue)
+				txtPlugin.TextArea.Caret.Position = position.Value;
+		}
 
-        private void LoadSyntaxHighlighting()
-        {
-            // Load the file depending upon which theme is being used
-            string filename = "XMLBlue.xshd";
-            switch (Settings.applicationAccent)
-            {
-                case Settings.Accents.Blue:
-                    filename = "XMLBlue.xshd";
-                    break;
-                case Settings.Accents.Green:
-                    filename = "XMLGreen.xshd";
-                    break;
-                case Settings.Accents.Orange:
-                    filename = "XMLOrange.xshd";
-                    break;
-                case Settings.Accents.Purple:
-                    filename = "XMLPurple.xshd";
-                    break;
-            }
-            txtPlugin.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
-        }
+		private void LoadSyntaxHighlighting()
+		{
+			// Load the file depending upon which theme is being used
+			var filename = "XMLBlue.xshd";
+			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+			{
+				case Settings.Accents.Blue:
+					filename = "XMLBlue.xshd";
+					break;
+				case Settings.Accents.Green:
+					filename = "XMLGreen.xshd";
+					break;
+				case Settings.Accents.Orange:
+					filename = "XMLOrange.xshd";
+					break;
+				case Settings.Accents.Purple:
+					filename = "XMLPurple.xshd";
+					break;
+			}
+			txtPlugin.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
+		}
 
-        private void LoadPlugin()
-        {
-            // Load Plugin Path
-            if (File.Exists(_pluginPath))
-                txtPlugin.Text = File.ReadAllText(_pluginPath);
-        }
+		private void LoadPlugin()
+		{
+			// Load Plugin Path
+			if (File.Exists(_pluginPath))
+				txtPlugin.Text = File.ReadAllText(_pluginPath);
+		}
 
-        private void LoadCodeCompletion()
-        {
-            RegisterMetaTag("uint8", "Unsigned 8-bit integer");
-            RegisterMetaTag("int8", "Signed 8-bit integer");
-            RegisterMetaTag("uint16", "Unsigned 16-bit integer");
-            RegisterMetaTag("int16", "Signed 16-bit integer");
-            RegisterMetaTag("uint32", "Unsigned 32-bit integer");
-            RegisterMetaTag("int32", "Signed 32-bit integer");
-            RegisterMetaTag("float32", "32-bit floating-point value");
-            RegisterMetaTag("stringId", "32-bit string ID");
-            RegisterMetaTag("bitfield8", "8-bit bitfield");
-            RegisterMetaTag("bitfield16", "16-bit bitfield");
-            RegisterMetaTag("bitfield32", "32-bit bitfield");
-            RegisterMetaTag("enum8", "8-bit enumeration value");
-            RegisterMetaTag("enum16", "8-bit enumeration value");
-            RegisterMetaTag("enum32", "8-bit enumeration value");
-            RegisterMetaTag("vector3", "3D vector of 32-bit floating point values");
-            RegisterMetaTag("degree", "Radian value that should be converted to/from degrees");
+		private void LoadCodeCompletion()
+		{
+			RegisterMetaTag("uint8", "Unsigned 8-bit integer");
+			RegisterMetaTag("int8", "Signed 8-bit integer");
+			RegisterMetaTag("uint16", "Unsigned 16-bit integer");
+			RegisterMetaTag("int16", "Signed 16-bit integer");
+			RegisterMetaTag("uint32", "Unsigned 32-bit integer");
+			RegisterMetaTag("int32", "Signed 32-bit integer");
+			RegisterMetaTag("float32", "32-bit floating-point value");
+			RegisterMetaTag("stringId", "32-bit string ID");
+			RegisterMetaTag("bitfield8", "8-bit bitfield");
+			RegisterMetaTag("bitfield16", "16-bit bitfield");
+			RegisterMetaTag("bitfield32", "32-bit bitfield");
+			RegisterMetaTag("enum8", "8-bit enumeration value");
+			RegisterMetaTag("enum16", "8-bit enumeration value");
+			RegisterMetaTag("enum32", "8-bit enumeration value");
+			RegisterMetaTag("vector3", "3D vector of 32-bit floating point values");
+			RegisterMetaTag("degree", "Radian value that should be converted to/from degrees");
 
-            var color = RegisterMetaTag("color", "Integer color value");
-            var colorf = RegisterMetaTag("colorf", "Floating-point color value");
-            var colorFormat = new CompletableXMLAttribute("format", "A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
-            color.RegisterAttribute(colorFormat);
-            colorf.RegisterAttribute(colorFormat);
+			var color = RegisterMetaTag("color", "Integer color value");
+			var colorf = RegisterMetaTag("colorf", "Floating-point color value");
+			var colorFormat = new CompletableXMLAttribute("format", "A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
+			color.RegisterAttribute(colorFormat);
+			colorf.RegisterAttribute(colorFormat);
 
-            RegisterMetaTag("color24", "32-bit RGB color");
-            RegisterMetaTag("color32", "32-bit ARGB color");
+			RegisterMetaTag("color24", "32-bit RGB color");
+			RegisterMetaTag("color32", "32-bit ARGB color");
 
-            var tagRef = RegisterMetaTag("tagRef", "Tag reference");
-            var withClass = new CompletableXMLAttribute("withClass", "Whether or not the reference includes a class ID (optional, default=true)");
-            withClass.RegisterValue(new CompletableXMLValue("true", "The reference includes a 12-byte class ID (default)"));
-            withClass.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
-            tagRef.RegisterAttribute(withClass);
+			var tagRef = RegisterMetaTag("tagRef", "Tag reference");
+			var withClass = new CompletableXMLAttribute("withClass", "Whether or not the reference includes a class ID (optional, default=true)");
+			withClass.RegisterValue(new CompletableXMLValue("true", "The reference includes a 12-byte class ID (default)"));
+			withClass.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
+			tagRef.RegisterAttribute(withClass);
 
-            var dataRef = RegisterMetaTag("dataRef", "Data reference");
-            var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");
-            format.RegisterValue(new CompletableXMLValue("bytes", "Raw byte data (default)"));
-            format.RegisterValue(new CompletableXMLValue("asciiz", "Null-terminated ASCII string"));
-            format.RegisterValue(new CompletableXMLValue("unicode", "Null-terminated unicode string"));
-            dataRef.RegisterAttribute(format);
+			var dataRef = RegisterMetaTag("dataRef", "Data reference");
+			var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");
+			format.RegisterValue(new CompletableXMLValue("bytes", "Raw byte data (default)"));
+			format.RegisterValue(new CompletableXMLValue("asciiz", "Null-terminated ASCII string"));
+			format.RegisterValue(new CompletableXMLValue("unicode", "Null-terminated unicode string"));
+			dataRef.RegisterAttribute(format);
 
-            var reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
-            reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize", "The size of each entry in the reflexive (required)"));
+			var reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
+			reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize", "The size of each entry in the reflexive (required)"));
 
-            var ascii = RegisterMetaTag("ascii", "ASCII string");
-            var utf16 = RegisterMetaTag("utf16", "UTF-16 string");
-            var strLength = new CompletableXMLAttribute("length", "The size of the string, including the null terminator (required)");
-            ascii.RegisterAttribute(strLength);
-            utf16.RegisterAttribute(strLength);
+			var ascii = RegisterMetaTag("ascii", "ASCII string");
+			var utf16 = RegisterMetaTag("utf16", "UTF-16 string");
+			var strLength = new CompletableXMLAttribute("length", "The size of the string, including the null terminator (required)");
+			ascii.RegisterAttribute(strLength);
+			utf16.RegisterAttribute(strLength);
 
-            var raw = RegisterMetaTag("raw", "Raw data viewer");
-            raw.RegisterAttribute(new CompletableXMLAttribute("size", "The size of the raw data (required)"));
+			var raw = RegisterMetaTag("raw", "Raw data viewer");
+			raw.RegisterAttribute(new CompletableXMLAttribute("size", "The size of the raw data (required)"));
 
-            var comment = new CompletableXMLTag("comment", "Displays a message");
-            comment.RegisterAttribute(new CompletableXMLAttribute("title", "The title of the comment (optional)"));
-            _completer.RegisterTag(comment);
+			var comment = new CompletableXMLTag("comment", "Displays a message");
+			comment.RegisterAttribute(new CompletableXMLAttribute("title", "The title of the comment (optional)"));
+			_completer.RegisterTag(comment);
 
-            RegisterMetaTag("undefined", "Value of an unknown type");
+			RegisterMetaTag("undefined", "Value of an unknown type");
 
-            _completer.TagCompletionAvailable += TagCompletionAvailable;
-            _completer.AttributeCompletionAvailable += AttributeCompletionAvailable;
-            _completer.ValueCompletionAvailable += ValueCompletionAvailable;
-        }
+			_completer.TagCompletionAvailable += TagCompletionAvailable;
+			_completer.AttributeCompletionAvailable += AttributeCompletionAvailable;
+			_completer.ValueCompletionAvailable += ValueCompletionAvailable;
+		}
 
-        void ValueCompletionAvailable(object sender, ValueCompletionEventArgs e)
-        {
-            _completionWindow = new CompletionWindow(txtPlugin.TextArea);
+		void ValueCompletionAvailable(object sender, ValueCompletionEventArgs e)
+		{
+			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-            var data = _completionWindow.CompletionList.CompletionData;
-            foreach (var tag in e.Suggestions)
-                data.Add(new XMLValueCompletionData(tag));
+			var data = _completionWindow.CompletionList.CompletionData;
+			foreach (var tag in e.Suggestions)
+				data.Add(new XMLValueCompletionData(tag));
 
-            _completionWindow.Show();
-        }
+			_completionWindow.Show();
+		}
 
-        void AttributeCompletionAvailable(object sender, AttributeCompletionEventArgs e)
-        {
-            _completionWindow = new CompletionWindow(txtPlugin.TextArea);
+		void AttributeCompletionAvailable(object sender, AttributeCompletionEventArgs e)
+		{
+			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-            var data = _completionWindow.CompletionList.CompletionData;
-            foreach (var tag in e.Suggestions)
-                data.Add(new XMLAttributeCompletionData(tag, _completer));
+			var data = _completionWindow.CompletionList.CompletionData;
+			foreach (var tag in e.Suggestions)
+				data.Add(new XMLAttributeCompletionData(tag, _completer));
 
-            _completionWindow.Show();
-        }
+			_completionWindow.Show();
+		}
 
-        void TagCompletionAvailable(object sender, TagCompletionEventArgs e)
-        {
-            _completionWindow = new CompletionWindow(txtPlugin.TextArea);
+		void TagCompletionAvailable(object sender, TagCompletionEventArgs e)
+		{
+			_completionWindow = new CompletionWindow(txtPlugin.TextArea);
 
-            var data = _completionWindow.CompletionList.CompletionData;
-            foreach (var tag in e.Suggestions)
-                data.Add(new XMLTagCompletionData(tag, _completer));
+			var data = _completionWindow.CompletionList.CompletionData;
+			foreach (var tag in e.Suggestions)
+				data.Add(new XMLTagCompletionData(tag, _completer));
 
-            _completionWindow.Show();
-        }
+			_completionWindow.Show();
+		}
 
-        private CompletableXMLTag RegisterMetaTag(string name, string description)
-        {
-            var tag = new CompletableXMLTag(name, description);
-            tag.RegisterAttribute(new CompletableXMLAttribute("name", "The field's name (required)"));
-            tag.RegisterAttribute(new CompletableXMLAttribute("offset", "The field's offset (required)"));
-            
-            var visible = new CompletableXMLAttribute("visible", "Whether or not the field is always visible (required)");
-            visible.RegisterValue(new CompletableXMLValue("true", "Field is always visible"));
-            visible.RegisterValue(new CompletableXMLValue("false", "Field is only visible when invisibles are shown"));
-            
-            tag.RegisterAttribute(visible);
-            _completer.RegisterTag(tag);
-            return tag;
-        }
+		private CompletableXMLTag RegisterMetaTag(string name, string description)
+		{
+			var tag = new CompletableXMLTag(name, description);
+			tag.RegisterAttribute(new CompletableXMLAttribute("name", "The field's name (required)"));
+			tag.RegisterAttribute(new CompletableXMLAttribute("offset", "The field's offset (required)"));
 
-        private void PluginTextEntered(object sender, TextCompositionEventArgs e)
-        {
-            if (e.Text == "<") // Tag completion
-            {
-                _completer.CompleteTag();
-            }
-            else if (e.Text == " " || e.Text == "\"")
-            {
-                // Get the current line
-                var currentLine = txtPlugin.Document.GetLineByNumber(txtPlugin.TextArea.Caret.Line);
-                int lineOffset = currentLine.Offset;
-                string lineText = txtPlugin.Document.GetText(lineOffset, currentLine.Length);
+			var visible = new CompletableXMLAttribute("visible", "Whether or not the field is always visible (required)");
+			visible.RegisterValue(new CompletableXMLValue("true", "Field is always visible"));
+			visible.RegisterValue(new CompletableXMLValue("false", "Field is only visible when invisibles are shown"));
 
-                if (e.Text == " ") // Attribute completion
-                    _completer.CompleteAttributeName(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
-                else // Value completion
-                    _completer.CompleteAttributeValue(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
-            }
-        }
-    }
+			tag.RegisterAttribute(visible);
+			_completer.RegisterTag(tag);
+			return tag;
+		}
+
+		private void PluginTextEntered(object sender, TextCompositionEventArgs e)
+		{
+			if (e.Text == "<") // Tag completion
+			{
+				_completer.CompleteTag();
+			}
+			else if (e.Text == " " || e.Text == "\"")
+			{
+				// Get the current line
+				var currentLine = txtPlugin.Document.GetLineByNumber(txtPlugin.TextArea.Caret.Line);
+				int lineOffset = currentLine.Offset;
+				string lineText = txtPlugin.Document.GetText(lineOffset, currentLine.Length);
+
+				if (e.Text == " ") // Attribute completion
+					_completer.CompleteAttributeName(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
+				else // Value completion
+					_completer.CompleteAttributeValue(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
+			}
+		}
+	}
 }

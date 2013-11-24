@@ -20,10 +20,12 @@ namespace Assembly
 		#region ISingleInstanceApp Members
 		public bool SignalExternalCommandLineArgs(IList<string> args)
 		{
-			return Stuff.Rawr.HomeWindow == null || Stuff.Rawr.HomeWindow.ProcessCommandLineArgs(args);
+			return AssemblyStorage.AssemblySettings.HomeWindow == null || AssemblyStorage.AssemblySettings.HomeWindow.ProcessCommandLineArgs(args);
 		}
 
 		#endregion
+
+		public static Storage AssemblyStorage;
 
 		[STAThread]
 		public static void Main()
@@ -52,11 +54,8 @@ namespace Assembly
 			};
 #endif
 
-			// For test compiling.
-			//AssemblyPluginLoader.LoadPlugin(XmlReader.Create(@"Plugins\Halo3\bipd.asm"), new TestPluginVisitor());
-
-			// Create Settings
-			Stuff.Rawr = new Settings(true);
+			// Create Assembly Storage
+			AssemblyStorage = new Storage();
 
 			// Update Assembly Protocol
 			AssemblyProtocol.UpdateProtocol();
@@ -65,7 +64,7 @@ namespace Assembly
 			JumpLists.UpdateJumplists();
 
 			// Create XBDM Instance
-			Stuff.Rawr.Xbdm = new Xbdm(Settings.XDKNameIP);
+			AssemblyStorage.AssemblySettings.Xbdm = new Xbdm(AssemblyStorage.AssemblySettings.XdkNameIp);
 
 			// Try and delete all temp data
 			VariousFunctions.EmptyUpdaterLocations();
@@ -80,15 +79,11 @@ namespace Assembly
 			Current.Exit += (o, args) =>
 				{
 					// Update Settings with Window Width/Height
-					Stuff.Rawr.ApplicationSizeMaximize = (Stuff.Rawr.HomeWindow.WindowState == WindowState.Maximized);
-					if (!Stuff.Rawr.ApplicationSizeMaximize)
-					{
-						Stuff.Rawr.ApplicationSizeWidth = Stuff.Rawr.HomeWindow.Width;
-						Stuff.Rawr.ApplicationSizeHeight = Stuff.Rawr.HomeWindow.Height;
-					}
+					AssemblyStorage.AssemblySettings.ApplicationSizeMaximize = (AssemblyStorage.AssemblySettings.HomeWindow.WindowState == WindowState.Maximized);
+					if (AssemblyStorage.AssemblySettings.ApplicationSizeMaximize) return;
 
-					// Save Settings
-					Stuff.Rawr.UpdateSettings();
+					AssemblyStorage.AssemblySettings.ApplicationSizeWidth = AssemblyStorage.AssemblySettings.HomeWindow.Width;
+					AssemblyStorage.AssemblySettings.ApplicationSizeHeight = AssemblyStorage.AssemblySettings.HomeWindow.Height;
 				};
 
 			// Start Caching Blam Cache MetaData

@@ -356,7 +356,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
 			var versionInfo = new CacheFileVersionInfo(reader);
-            var buildInfo = Settings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
+            var buildInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
 
 			return
 				new KeyValuePair<ICacheFile, EngineDescription>(new ThirdGenCacheFile(reader, buildInfo, versionInfo.BuildString),

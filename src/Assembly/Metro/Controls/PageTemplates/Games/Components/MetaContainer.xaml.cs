@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Assembly.Helpers;
-using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -10,59 +9,59 @@ using Blamite.Util;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
-    /// <summary>
-    /// Interaction logic for MetaContainer.xaml
-    /// </summary>
-    public partial class MetaContainer
-    {
-        private TagEntry _tag;
-        private EngineDescription _buildInfo;
-        private ICacheFile _cache;
-	    private IStreamManager _streamManager;
-	    private IRTEProvider _rteProvider;
-        private Trie _stringIDTrie;
-	    private TagHierarchy _tags;
+	/// <summary>
+	/// Interaction logic for MetaContainer.xaml
+	/// </summary>
+	public partial class MetaContainer
+	{
+		private TagEntry _tag;
+		private EngineDescription _buildInfo;
+		private ICacheFile _cache;
+		private IStreamManager _streamManager;
+		private IRTEProvider _rteProvider;
+		private Trie _stringIDTrie;
+		private TagHierarchy _tags;
 
 		private MetaInformation _metaInformation;
 		private MetaEditor _metaEditor;
 		private PluginEditor _pluginEditor;
 
-        #region Public Access
-        public TagEntry TagEntry
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-        #endregion
+		#region Public Access
+		public TagEntry TagEntry
+		{
+			get { return _tag; }
+			set { _tag = value; }
+		}
+		#endregion
 
-        public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
-        {
-            InitializeComponent();
+		public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+		{
+			InitializeComponent();
 
-            _tag = tag;
-	        _tags = tags;
-            _buildInfo = buildInfo;
-            _cache = cache;
-	        _streamManager = streamManager;
-	        _rteProvider = rteProvider;
-            _stringIDTrie = stringIDTrie;
+			_tag = tag;
+			_tags = tags;
+			_buildInfo = buildInfo;
+			_cache = cache;
+			_streamManager = streamManager;
+			_rteProvider = rteProvider;
+			_stringIDTrie = stringIDTrie;
 
-            tbMetaEditors.SelectedIndex = (int)Settings.halomapLastSelectedMetaEditor;
+			tbMetaEditors.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor;
 
-            // Create Meta Information Tab
-            _metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			// Create Meta Information Tab
+			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
 			tabTagInfo.Content = _metaInformation;
 
-            // Create Meta Editor Tab
+			// Create Meta Editor Tab
 			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie)
-				              {
-					              Padding = new Thickness(0)
-				              };
-	        tabMetaEditor.Content = _metaEditor;
+							  {
+								  Padding = new Thickness(0)
+							  };
+			tabMetaEditor.Content = _metaEditor;
 
-            // Create Plugin Editor Tab
-            _pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
-            tabPluginEditor.Content = _pluginEditor;
+			// Create Plugin Editor Tab
+			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
+			tabPluginEditor.Content = _pluginEditor;
 
 			// Create Raw Tabs
 			#region Models
@@ -74,8 +73,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			//else
 			//{
 			//	tabSound.Visibility = Visibility.Collapsed;
-			//	if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Model)
-			//		tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
+			//	if (App.AssemblyStorage.AssemblySettings.halomapLastSelectedMetaEditor == App.AssemblyStorage.AssemblySettings.LastMetaEditorType.Model)
+			//		tbMetaEditors.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.LastMetaEditorType.MetaEditor;
 			//}
 			#endregion
 			#region BSP
@@ -87,7 +86,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			else*/
 			{
 				tabBspEditor.Visibility = Visibility.Collapsed;
-				if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
+				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
 					tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
 			}
 			#endregion
@@ -100,8 +99,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			//else
 			//{
 			//	tabSound.Visibility = Visibility.Collapsed;
-			//	if (Settings.halomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Sound)
-			//		tbMetaEditors.SelectedIndex = (int)Settings.LastMetaEditorType.MetaEditor;
+			//	if (App.AssemblyStorage.AssemblySettings.halomapLastSelectedMetaEditor == App.AssemblyStorage.AssemblySettings.LastMetaEditorType.Sound)
+			//		tbMetaEditors.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.LastMetaEditorType.MetaEditor;
 			//}
 			#endregion
 
@@ -110,13 +109,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		public void GoToRawPluginLine(int pluginLine)
 		{
 			tbMetaEditors.SelectedItem = tabPluginEditor;
-            _pluginEditor.GoToLine(pluginLine);
+			_pluginEditor.GoToLine(pluginLine);
 		}
 
-        public void ShowMetaEditor()
-        {
-            tbMetaEditors.SelectedItem = tabMetaEditor;
-        }
+		public void ShowMetaEditor()
+		{
+			tbMetaEditors.SelectedItem = tabMetaEditor;
+		}
 
 		public void LoadNewTagEntry(TagEntry tag)
 		{
@@ -134,9 +133,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tabPluginEditor.Content = _pluginEditor;
 		}
 
-        private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Settings.halomapLastSelectedMetaEditor = (Settings.LastMetaEditorType)tbMetaEditors.SelectedIndex;
-        }
-    }
+		private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor = (Settings.LastMetaEditorType)tbMetaEditors.SelectedIndex;
+		}
+	}
 }
