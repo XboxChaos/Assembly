@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Controls.Primitives;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -15,6 +17,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			// Set DataContext
 			DataContext = App.AssemblyStorage.AssemblySettings;
+
+			// Setup Combo Boxes
+			ComboBoxAccents.ItemsSource = Enum.GetValues(typeof (Settings.Accents));
+			ComboBoxMapInfoDockSide.ItemsSource = Enum.GetValues(typeof (Settings.MapInfoDockSide));
+			ComboBoxMapTagSort.ItemsSource = Enum.GetValues(typeof(Settings.TagSort));
 
 			// Load UI
 			btnTabSelection_Clicked(BtnSelectGeneral, null);

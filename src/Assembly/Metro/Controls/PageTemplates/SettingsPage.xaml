@@ -191,15 +191,14 @@
 			<ColumnDefinition Width="230" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		
+
 		<Image Source="/Assembly;component/Metro/Images/settings_logo.png" OpacityMask="#FF7A7A7A" Opacity="0.05"
-		       HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="420" Width="421.527"
-		       d:LayoutOverrides="HorizontalAlignment" Margin="-84,0,0,-52" />
+				HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="336" Width="338" Margin="116,0,0,-77" Grid.ColumnSpan="2" />
 		<Grid Grid.Column="0" Background="#2d2d30">
 			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Settings" Foreground="White"
-			           FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
+						FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
 			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
-			                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
+								PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
 				<ed:RegularPolygon.RenderTransform>
 					<TransformGroup>
 						<ScaleTransform />
@@ -214,317 +213,323 @@
 				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" d:LayoutOverrides="Height" />
 
 				<ToggleButton x:Name="BtnSelectGeneral" Content="General" Margin="0,40,0,0" HorizontalAlignment="Left"
-				              Style="{DynamicResource ToggleTabChoser}"
-				              Tag="General" Click="btnTabSelection_Clicked" />
+								Style="{DynamicResource ToggleTabChoser}"
+								Tag="General" Click="btnTabSelection_Clicked" />
 				<ToggleButton x:Name="BtnSelectXboxDev" Content="Xbox 360 Development" Margin="0,0,0,0" HorizontalAlignment="Left"
-				              Style="{DynamicResource ToggleTabChoser}"
-				              Tag="XboxDev" Click="btnTabSelection_Clicked" />
+								Style="{DynamicResource ToggleTabChoser}"
+								Tag="XboxDev" Click="btnTabSelection_Clicked" />
 				<ToggleButton x:Name="BtnSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
-				              Style="{DynamicResource ToggleTabChoser}"
-				              Tag="MapEdit" Click="btnTabSelection_Clicked" />
+								Style="{DynamicResource ToggleTabChoser}"
+								Tag="MapEdit" Click="btnTabSelection_Clicked" />
 				<ToggleButton x:Name="BtnSelectPlugins" Content="Plugins" Margin="0,0,0,0" HorizontalAlignment="Left"
-				              Style="{DynamicResource ToggleTabChoser}"
-				              Tag="Plugins" Click="btnTabSelection_Clicked" />
+								Style="{DynamicResource ToggleTabChoser}"
+								Tag="Plugins" Click="btnTabSelection_Clicked" />
 				<ToggleButton x:Name="BtnSelectStrtpge" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
-				              Style="{DynamicResource ToggleTabChoser}"
-				              Tag="Strtpge" Click="btnTabSelection_Clicked" />
+								Style="{DynamicResource ToggleTabChoser}"
+								Tag="Strtpge" Click="btnTabSelection_Clicked" />
 			</StackPanel>
 
 		</Grid>
-		
+
 		<GridSplitter Width="2" Background="#FF545456" Foreground="{x:Null}" ResizeDirection="Columns" IsEnabled="False" />
 
-		<Grid x:Name="settingsGeneral" Margin="30,0,0,0" Grid.Column="1" Visibility="Visible">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="140" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<!-- Header -->
-				<RowDefinition Height="40" />
-				<RowDefinition Height="40" />
+		<Grid Grid.Column="1" Margin="30,0,0,40">
+			<Grid x:Name="settingsGeneral" Visibility="Visible">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="25" />
+					<ColumnDefinition Width="140" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<!-- Header -->
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
+
+					<!-- Accents -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+
+					<!-- Updates -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+
+					<!-- Default File Types -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+
+					<!-- Footer -->
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
+							Text="general" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
+							FontFamily="{DynamicResource MetroFontSemiLight}" />
 
 				<!-- Accents -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="3"
+							Text="Accent Theme:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
+				<ComboBox x:Name="ComboBoxAccents" Grid.Column="2" Grid.Row="3" Width="250" 
+							SelectedItem="{Binding Path=ApplicationAccent, Mode=TwoWay}" HorizontalAlignment="Left">
+				</ComboBox>
 
-				<!-- Updates -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<!-- Updates on Startup -->
+				<TextBlock Grid.Column="1" Grid.Row="5"
+							Text="Updates on Startup:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Margin="0,0,0,0" 
+							IsChecked="{Binding Path=ApplicationUpdateOnStartup, Mode=TwoWay}" Content="Check for updates on startup." />
 
 				<!-- Default File Types -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Text="Default Editor for:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Content=".map files" IsChecked="{Binding Path=DefaultMap, Mode=TwoWay}" />
+				<CheckBox Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Content=".blf files" IsChecked="{Binding Path=DefaultBlf, Mode=TwoWay}" />
+				<CheckBox Grid.Column="2" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Content=".mapinfo files" IsChecked="{Binding Path=DefaultMif, Mode=TwoWay}" />
+				<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Content=".asmp files" IsChecked="{Binding Path=DefaultAmp, Mode=TwoWay}" />
+			</Grid>
 
-				<!-- Footer -->
-				<RowDefinition />
-			</Grid.RowDefinitions>
+			<Grid x:Name="settingsXboxDev" Visibility="Collapsed">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="25" />
+					<ColumnDefinition Width="140" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<!-- Header -->
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
 
-			<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
-			           Text="general" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
-			           FontFamily="{DynamicResource MetroFontSemiLight}" />
+					<!-- Xbox Name/IP -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
 
-			<!-- Accents -->
-			<TextBlock Grid.Column="1" Grid.Row="3"
-			           Text="Accent Theme:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-			<ComboBox Grid.Column="2" Grid.Row="3" Width="250" SelectedIndex="{Binding Path=ApplicationAccent, Mode=TwoWay}" HorizontalAlignment="Left">
-				<ComboBoxItem Content="Blue" />
-				<ComboBoxItem Content="Purple" />
-				<ComboBoxItem Content="Orange" />
-			</ComboBox>
+					<!-- Freeze Console on Screen capture -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
 
-			<!-- Updates on Startup -->
-			<TextBlock Grid.Column="1" Grid.Row="5"
-			           Text="Updates on Startup:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" Margin="0,0,0,0" 
-					  IsChecked="{Binding Path=ApplicationUpdateOnStartup, Mode=TwoWay}" Content="Check for updates on startup." />
+					<!-- Xbox Screenshots -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
 
-			<!-- Default File Types -->
-			<TextBlock Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
-			           Text="Default Editor for:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Content=".map files" IsChecked="{Binding Path=DefaultMap, Mode=TwoWay}" />
-			<CheckBox Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Content=".blf files" IsChecked="{Binding Path=DefaultBlf, Mode=TwoWay}" />
-			<CheckBox Grid.Column="2" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Content=".mapinfo files" IsChecked="{Binding Path=DefaultMif, Mode=TwoWay}" />
-			<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Content=".asmp files" IsChecked="{Binding Path=DefaultAmp, Mode=TwoWay}" />
-		</Grid>
+					<!-- Image Resizing -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="30" />
+					<RowDefinition Height="30" />
 
-		<Grid x:Name="settingsXboxDev" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="140" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<!-- Header -->
-				<RowDefinition Height="40" />
-				<RowDefinition Height="40" />
+					<!-- Gamma Adjustment -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+
+					<!-- Footer -->
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
+							Text="xbox 360 development kit" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
+							FontFamily="{DynamicResource MetroFontSemiLight}" />
 
 				<!-- Xbox Name/IP -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="3"
+							Text="Xbox Name/IP:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
+				<TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
+							Width="250" Text="{Binding Path=XdkNameIp, Mode=TwoWay}" />
 
 				<!-- Freeze Console on Screen capture -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="5"
+							Text="Freeze Console:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
+							Margin="0,0,0,0" Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
+							Content="Freeze console while taking screenshots (makes screenshots smoother)" />
 
 				<!-- Xbox Screenshots -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="7"
+							Text="Xbox 360 Screenshots:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}" Content="Automatically save screenshots" />
+				<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="8">
+					<TextBox
+						x:Name="txtAutoSaveDirectory" Width="400" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
+					<Button
+						Margin="20,0,0,0" Width="90" Content="Select Folder"
+						Click="btnAutoSaveScreenshotDirectory_Click" />
+				</StackPanel>
 
 				<!-- Image Resizing -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="30" />
-				<RowDefinition Height="30" />
+				<TextBlock Grid.Column="1" Grid.Row="10"
+							Text="Image Resizing:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}" Content="Resize screenshots" />
+				<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="11">
+					<TextBlock Text="Width:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
+								FontFamily="{DynamicResource MetroFontRegular}" />
+					<TextBox Text="{Binding Path=XdkResizeScreenshotWidth, Mode=TwoWay}" Width="100" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="12">
+					<TextBlock Text="Height:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
+								FontFamily="{DynamicResource MetroFontRegular}" />
+					<TextBox Text="{Binding Path=XdkResizeScreenshotHeight, Mode=TwoWay}" Width="100" />
+				</StackPanel>
 
 				<!-- Gamma Adjustment -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="14"
+							Text="Gamma Adjustment:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="14" VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="True" Content="Adjust Gamma" />
+				<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="15">
+					<TextBlock x:Name="LblXdkScreenGammaValue" Text="Gamma (0.55):" Foreground="White" Width="90"
+								VerticalAlignment="Center" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
+					<Slider
+							TickFrequency=".01"
+							IsSnapToTickEnabled="true"
+							TickPlacement="None"
+							Value="{Binding Path=XdkScreenshotGammaModifier, Mode=TwoWay}"
+							Maximum="1"
+							Minimum="0"
+							Width="100"
+							ValueChanged="sliderXDKScreenGammaModifier_ValueChanged" />
+				</StackPanel>
+			</Grid>
 
-				<!-- Footer -->
-				<RowDefinition />
-			</Grid.RowDefinitions>
+			<Grid x:Name="settingsMapEdit" Visibility="Collapsed">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="25" />
+					<ColumnDefinition Width="140" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<!-- Header -->
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
 
-			<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
-			           Text="xbox 360 development kit" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
-			           FontFamily="{DynamicResource MetroFontSemiLight}" />
+					<!-- Info Panel Location -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
 
-			<!-- Xbox Name/IP -->
-			<TextBlock Grid.Column="1" Grid.Row="3"
-			           Text="Xbox Name/IP:" Foreground="White" Margin="0,4,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-			<TextBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
-			         Width="250" Text="{Binding Path=XdkNameIp, Mode=TwoWay}" />
+					<!-- Tag Sort Method -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
 
-			<!-- Freeze Console on Screen capture -->
-			<TextBlock Grid.Column="1" Grid.Row="5"
-			           Text="Freeze Console:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Margin="0,0,0,0" Width="400" IsChecked="{Binding Path=XdkScreenshotFreeze, Mode=TwoWay}"
-			          Content="Freeze console while taking screenshots (makes screenshots smoother)" />
+					<!-- Footer -->
+					<RowDefinition />
+				</Grid.RowDefinitions>
 
-			<!-- Xbox Screenshots -->
-			<TextBlock Grid.Column="1" Grid.Row="7"
-			           Text="Xbox 360 Screenshots:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          IsChecked="{Binding Path=XdkAutoSave, Mode=TwoWay}" Content="Automatically save screenshots" />
-			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="8">
-				<TextBox
-					x:Name="txtAutoSaveDirectory" Width="400" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
-				<Button
-					Margin="20,0,0,0" Width="90" Content="Select Folder"
-					Click="btnAutoSaveScreenshotDirectory_Click" />
-			</StackPanel>
-
-			<!-- Image Resizing -->
-			<TextBlock Grid.Column="1" Grid.Row="10"
-			           Text="Image Resizing:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          IsChecked="{Binding Path=XdkResizeImages, Mode=TwoWay}" Content="Resize screenshots" />
-			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="11">
-				<TextBlock Text="Width:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
-				           FontFamily="{DynamicResource MetroFontRegular}" />
-				<TextBox Text="{Binding Path=XdkResizeScreenshotWidth, Mode=TwoWay}" Width="100" />
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="12">
-				<TextBlock Text="Height:" Foreground="White" VerticalAlignment="Center" Width="50" Margin="0,0,0,0"
-				           FontFamily="{DynamicResource MetroFontRegular}" />
-				<TextBox Text="{Binding Path=XdkResizeScreenshotHeight, Mode=TwoWay}" Width="100" />
-			</StackPanel>
-
-			<!-- Gamma Adjustment -->
-			<TextBlock Grid.Column="1" Grid.Row="14"
-			           Text="Gamma Adjustment:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="14" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          IsChecked="True" Content="Adjust Gamma" />
-			<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="15">
-				<TextBlock x:Name="LblXdkScreenGammaValue" Text="Gamma (0.55):" Foreground="White" Width="90"
-				           VerticalAlignment="Center" Margin="0,0,0,0" FontFamily="{DynamicResource MetroFontRegular}" />
-				<Slider
-				        TickFrequency=".01"
-				        IsSnapToTickEnabled="true"
-				        TickPlacement="None"
-				        Value="{Binding Path=XdkScreenshotGammaModifier, Mode=TwoWay}"
-				        Maximum="1"
-				        Minimum="0"
-				        Width="100"
-				        ValueChanged="sliderXDKScreenGammaModifier_ValueChanged" />
-			</StackPanel>
-		</Grid>
-
-		<Grid x:Name="settingsMapEdit" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="140" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<!-- Header -->
-				<RowDefinition Height="40" />
-				<RowDefinition Height="40" />
+				<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
+							Text="map editor" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
+							FontFamily="{DynamicResource MetroFontSemiLight}" />
 
 				<!-- Info Panel Location -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="3"
+							Text="Info Panel Location:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<ComboBox x:Name="ComboBoxMapInfoDockSide" Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
+							SelectedItem="{Binding Path=HalomapMapInfoDockSide, Mode=TwoWay}" Width="250">
+				</ComboBox>
 
 				<!-- Tag Sort Method -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="5"
+							Text="Tag Sorting Method:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<ComboBox x:Name="ComboBoxMapTagSort" Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" IsEnabled="False"
+							SelectedItem="{Binding Path=HalomapTagSort, Mode=TwoWay}" Width="250">
+					<!--
+					<ComboBoxItem Content="By Object Hierarchy" />
+					<ComboBoxItem Content="By Path Hierarchy" />
+					-->
+				</ComboBox>
+			</Grid>
 
-				<!-- Footer -->
-				<RowDefinition />
-			</Grid.RowDefinitions>
+			<Grid x:Name="settingsPlugins" Visibility="Collapsed">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="25" />
+					<ColumnDefinition Width="140" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<!-- Header -->
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
 
-			<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
-			           Text="map editor" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
-			           FontFamily="{DynamicResource MetroFontSemiLight}" />
+					<!-- Show Comments -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
 
-			<!-- Info Panel Location -->
-			<TextBlock Grid.Column="1" Grid.Row="3"
-			           Text="Info Panel Location:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<ComboBox Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left"
-			          SelectedIndex="{Binding Path=HalomapMapInfoDockSide, Mode=TwoWay}" Width="250">
-				<ComboBoxItem Content="Left" />
-				<ComboBoxItem Content="Right" />
-			</ComboBox>
+					<!-- Footer -->
+					<RowDefinition />
+				</Grid.RowDefinitions>
 
-			<!-- Tag Sort Method -->
-			<TextBlock Grid.Column="1" Grid.Row="5"
-			           Text="Tag Sorting Method:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<ComboBox Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" IsEnabled="False"
-			          SelectedIndex="{Binding Path=HalomapTagSort, Mode=TwoWay}" Width="250">
-				<ComboBoxItem Content="By Tag Class" />
-				<!--
-				<ComboBoxItem Content="By Object Hierarchy" />
-				<ComboBoxItem Content="By Path Hierarchy" />
-				-->
-			</ComboBox>
-		</Grid>
-
-		<Grid x:Name="settingsPlugins" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="140" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<!-- Header -->
-				<RowDefinition Height="40" />
-				<RowDefinition Height="40" />
+				<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
+							Text="plugins" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
+							FontFamily="{DynamicResource MetroFontSemiLight}" />
 
 				<!-- Show Comments -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
+				<TextBlock Grid.Column="1" Grid.Row="3"
+							Text="Meta Editor Settings:" Foreground="White" Margin="0,4,0,0"
+							FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
+							IsChecked="{Binding Path=PluginsShowComments, Mode=TwoWay}" Width="400" Content="Show comments in the meta editor" />
+			</Grid>
 
-				<!-- Footer -->
-				<RowDefinition />
-			</Grid.RowDefinitions>
+			<Grid x:Name="settingsStrtPge" Visibility="Collapsed">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="25" />
+					<ColumnDefinition Width="140" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<!-- Header -->
+					<RowDefinition Height="40" />
+					<RowDefinition Height="40" />
 
-			<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
-			           Text="plugins" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
-			           FontFamily="{DynamicResource MetroFontSemiLight}" />
+					<!-- Show Recent File Types -->
+					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
+					<RowDefinition Height="25" />
 
-			<!-- Show Comments -->
-			<TextBlock Grid.Column="1" Grid.Row="3"
-			           Text="Meta Editor Settings:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          IsChecked="{Binding Path=PluginsShowComments, Mode=TwoWay}" Width="400" Content="Show comments in the meta editor" />
-		</Grid>
+					<!-- Footer -->
+					<RowDefinition />
+				</Grid.RowDefinitions>
 
-		<Grid x:Name="settingsStrtPge" Margin="30,0,0,0" Grid.Column="1" Visibility="Collapsed">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="25" />
-				<ColumnDefinition Width="140" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<!-- Header -->
-				<RowDefinition Height="40" />
-				<RowDefinition Height="40" />
+				<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
+						Text="start page" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
+						FontFamily="{DynamicResource MetroFontSemiLight}" />
 
 				<!-- Show Recent File Types -->
-				<RowDefinition Height="10" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
-				<RowDefinition Height="25" />
-
-				<!-- Footer -->
-				<RowDefinition />
-			</Grid.RowDefinitions>
-
-			<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,0,0"
-			           Text="start page" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="30"
-			           FontFamily="{DynamicResource MetroFontSemiLight}" />
-
-			<!-- Show Recent File Types -->
-			<TextBlock Grid.Column="1" Grid.Row="3"
-			           Text="Show Recent File Types:" Foreground="White" Margin="0,4,0,0"
-			           FontFamily="{DynamicResource MetroFontRegular}" />
-			<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Margin="0,2,0,0" Content=".map files" IsChecked="{Binding Path=StartpageShowRecentsMap, Mode=TwoWay}" />
-			<CheckBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Margin="0,2,0,0" Content=".blf files" IsChecked="{Binding Path=StartpageShowRecentsBlf, Mode=TwoWay}" />
-			<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
-			          Margin="0,2,0,0" Content=".mapinfo files" IsChecked="{Binding Path=StartpageShowRecentsMapInfo, Mode=TwoWay}" />
+				<TextBlock Grid.Column="1" Grid.Row="3"
+						Text="Show Recent File Types:" Foreground="White" Margin="0,4,0,0"
+						FontFamily="{DynamicResource MetroFontRegular}" />
+				<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="0,2,0,0" Content=".map files" IsChecked="{Binding Path=StartpageShowRecentsMap, Mode=TwoWay}" />
+				<CheckBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="0,2,0,0" Content=".blf files" IsChecked="{Binding Path=StartpageShowRecentsBlf, Mode=TwoWay}" />
+				<CheckBox Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Left"
+						Margin="0,2,0,0" Content=".mapinfo files" IsChecked="{Binding Path=StartpageShowRecentsMapInfo, Mode=TwoWay}" />
+			</Grid>
 		</Grid>
+		
+		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1" Orientation="Vertical" Margin="0,0,5,5">
+			<TextBlock HorizontalAlignment="Right" Text="Where is my Save Button?" FontFamily="{DynamicResource MetroFontSemiBold}" >
+				<TextBlock.Foreground>
+					<SolidColorBrush Color="{DynamicResource ExtryzeAccentBrushColour}"/>
+				</TextBlock.Foreground>
+			</TextBlock>
+			<TextBlock Text="Just change your settings, they get saved as you edit them." FontFamily="{DynamicResource MetroFontRegular}" Foreground="White" />
+		</StackPanel>
 	</Grid>
 </UserControl>
