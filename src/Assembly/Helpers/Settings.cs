@@ -438,7 +438,7 @@ namespace Assembly.Helpers
 			get { return _defaultMap; }
 			set { SetField(ref _defaultMap, value, "DefaultMap"); }
 		}
-		private bool _defaultMap = true;
+		private bool _defaultMap;
 
 		/// <summary>
 		/// 
