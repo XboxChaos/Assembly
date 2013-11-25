@@ -21,17 +21,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	///     Interaction logic for HaloImage.xaml
 	/// </summary>
 	public partial class HaloImage
-	{
+    {
+        private readonly LayoutDocument _tab;
 		private readonly string _blfLocation;
 		private PureBLF _blf;
 
 		public HaloImage(string imageLocation, LayoutDocument tab)
 		{
 			InitializeComponent();
-
 			_blfLocation = imageLocation;
 
-			var fi = new FileInfo(_blfLocation);
+            var fi = new FileInfo(_blfLocation);
+            _tab = tab;
 			tab.Title = fi.Name;
 
 			lblBLFname.Text = fi.Name;
@@ -77,8 +78,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				Dispatcher.Invoke(new Action(delegate
 				{
-					MetroMessageBox.Show("Unable to open BLF", ex.Message.ToString(CultureInfo.InvariantCulture));
-					App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose((LayoutDocument) Parent);
+                    MetroMessageBox.Show("Unable to open BLF", ex.Message.ToString(CultureInfo.InvariantCulture));
+                    App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 				}));
 			}
 		}
