@@ -541,7 +541,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (_dockSide == Settings.MapInfoDockSide.Left)
 			{
-				colLeft.Width = new GridLength(500);
+				colLeft.Width = new GridLength(400);
 				colRight.Width = new GridLength(1, GridUnitType.Star);
 
 				sideBar.SetValue(Grid.ColumnProperty, 0);
@@ -549,7 +549,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			else
 			{
-				colRight.Width = new GridLength(500);
+				colRight.Width = new GridLength(400);
 				colLeft.Width = new GridLength(1, GridUnitType.Star);
 
 				sideBar.SetValue(Grid.ColumnProperty, 1);
