@@ -227,8 +227,7 @@ namespace Assembly.Helpers
 		{
 			ApplicationRecents.CollectionChanged += (sender, args) =>
 			{
-				_applicationRecents = ApplicationRecents;
-				OnPropertyChanged("ApplicationRecents");
+				SetField(ref _applicationAccent, ApplicationRecents, "ApplicationRecents");
 			};
 		}
 
