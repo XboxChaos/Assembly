@@ -21,20 +21,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloInfo
 	{
+		private readonly LayoutDocument _tab;
 		private readonly string _blfLocation;
+
+		private ObservableCollection<LanguageEntry> _languageset;
 
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>
 		{
-			new LanguageEntry {Index = 0, Language = "English", LanguageShort = "en"},
-			new LanguageEntry {Index = 1, Language = "Japanese", LanguageShort = "ja"},
-			new LanguageEntry {Index = 2, Language = "German", LanguageShort = "de"},
-			new LanguageEntry {Index = 3, Language = "French", LanguageShort = "fr"},
-			new LanguageEntry {Index = 4, Language = "Spanish", LanguageShort = "es"},
-			new LanguageEntry {Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es"},
-			new LanguageEntry {Index = 6, Language = "Italian", LanguageShort = "it"},
-			new LanguageEntry {Index = 7, Language = "Korean", LanguageShort = "ko"},
-			new LanguageEntry {Index = 8, Language = "Chinese", LanguageShort = "zh-CHS"},
-			new LanguageEntry {Index = 9, Language = "Portuguese", LanguageShort = "pt"}
+			new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
+			new LanguageEntry { Index = 1, Language = "Japanese", LanguageShort = "ja" },
+			new LanguageEntry { Index = 2, Language = "German", LanguageShort = "de" },
+			new LanguageEntry { Index = 3, Language = "French", LanguageShort = "fr" },
+			new LanguageEntry { Index = 4, Language = "Spanish", LanguageShort = "es" },
+			new LanguageEntry { Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es" },
+			new LanguageEntry { Index = 6, Language = "Italian", LanguageShort = "it" },
+			new LanguageEntry { Index = 7, Language = "Korean", LanguageShort = "ko" },
+			new LanguageEntry { Index = 8, Language = "Chinese (Traditional)", LanguageShort = "zh-CHS" },
+			new LanguageEntry { Index = 9, Language = "Chinese (Simplified)", LanguageShort = "zh-CHS" },
+			new LanguageEntry { Index = 10, Language = "Portuguese", LanguageShort = "pt" },
+			new LanguageEntry { Index = 11, Language = "Polish", LanguageShort = "pl" },
+		};
+
+		private readonly ObservableCollection<LanguageEntry> _halo4languages = new ObservableCollection<LanguageEntry>
+		{
+			new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
+			new LanguageEntry { Index = 1, Language = "Japanese", LanguageShort = "ja" },
+			new LanguageEntry { Index = 2, Language = "German", LanguageShort = "de" },
+			new LanguageEntry { Index = 3, Language = "French", LanguageShort = "fr" },
+			new LanguageEntry { Index = 4, Language = "Spanish", LanguageShort = "es" },
+			new LanguageEntry { Index = 5, Language = "Spanish (Latin American)", LanguageShort = "es" },
+			new LanguageEntry { Index = 6, Language = "Italian", LanguageShort = "it" },
+			new LanguageEntry { Index = 7, Language = "Korean", LanguageShort = "ko" },
+			new LanguageEntry { Index = 8, Language = "Chinese (Traditional)", LanguageShort = "zh-CHS" },
+			new LanguageEntry { Index = 9, Language = "Chinese (Simplified)", LanguageShort = "zh-CHS" },
+			new LanguageEntry { Index = 10, Language = "Portuguese", LanguageShort = "pt" },
+			new LanguageEntry { Index = 11, Language = "Polish", LanguageShort = "pl" },
+			new LanguageEntry { Index = 12, Language = "Russian", LanguageShort = "ru" },
+			new LanguageEntry { Index = 13, Language = "Danish", LanguageShort = "da" },
+			new LanguageEntry { Index = 14, Language = "Finnish", LanguageShort = "fi" },
+			new LanguageEntry { Index = 15, Language = "Dutch", LanguageShort = "nl" },
+			new LanguageEntry { Index = 16, Language = "Norwegian", LanguageShort = "nb" }
 		};
 
 		private PureBLF _blf;
@@ -48,6 +74,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_blfLocation = infoLocation;
 
 			var fi = new FileInfo(_blfLocation);
+			_tab = tab;
 			tab.Title = fi.Name;
 			lblBLFname.Text = fi.Name;
 
@@ -76,7 +103,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
 					// Load Languages
-					LoadLanguages(_mapInfo.MapInformation.Game);
+					LoadLanguages();
 
 					// Add Map Info
 					switch (_mapInfo.MapInformation.Game)
@@ -101,6 +128,64 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
 					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
+					// Set up the Type combo box
+					switch (_mapInfo.MapInformation.Game)
+					{
+						case MapInfo.GameIdentifier.Halo3:
+						case MapInfo.GameIdentifier.Halo3ODST:
+							cbType_Cine.Visibility = System.Windows.Visibility.Collapsed;
+							cbType_Cine.IsEnabled = false;
+							cbType_FF.Visibility = System.Windows.Visibility.Collapsed;
+							cbType_FF.IsEnabled = false;
+							break;
+						case MapInfo.GameIdentifier.HaloReach:
+						case MapInfo.GameIdentifier.HaloReachBetas:
+							cbType_Cine.Visibility = System.Windows.Visibility.Visible;
+							cbType_Cine.IsEnabled = true;
+							cbType_FF.Visibility = System.Windows.Visibility.Visible;
+							cbType_FF.IsEnabled = true;
+							cbType_FF.Content = "Firefight";
+							break;
+						case MapInfo.GameIdentifier.Halo4:
+							cbType_Cine.Visibility = System.Windows.Visibility.Visible;
+							cbType_Cine.IsEnabled = true;
+							cbType_FF.Visibility = System.Windows.Visibility.Visible;
+							cbType_FF.IsEnabled = true;
+							cbType_FF.Content = "Spartan Ops";
+							break;
+					}
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMainMenu))
+						cbType.SelectedIndex = 0;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMultiplayer))
+						cbType.SelectedIndex = 1;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCampaign))
+						cbType.SelectedIndex = 2;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCinematic))
+						cbType.SelectedIndex = 3;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsFirefight))
+						cbType.SelectedIndex = 4;
+
+					// Set up the Checkboxes
+					switch (_mapInfo.MapInformation.Game)
+					{
+						case MapInfo.GameIdentifier.Halo4:
+							cbDLC.Margin = new Thickness(112, 0, 0, 0);
+							cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
+							break;
+						default:
+							cbDLC.Margin = new Thickness(150, 0, 0, 0);
+							cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
+							break;
+					}
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible))
+						cbVisible.IsChecked = true;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm))
+						cbGeneratesFilm.IsChecked = true;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsDLC))
+						cbDLC.IsChecked = true;
+					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsForgeOnly))
+						cbForgeOnly.IsChecked = true;
+
 					// Update UI
 					_startEditing = true;
 					cbLanguages.SelectedIndex = 0;
@@ -109,6 +194,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Home.TabGenre.StartPage);
 
 					RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "Map Info", Settings.RecentFileType.MapInfo);
+					Close();
 				}));
 			}
 			catch (Exception ex)
@@ -116,7 +202,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(delegate
 				{
 					MetroMessageBox.Show("Unable to open MapInfo", ex.Message);
-					App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose((LayoutDocument) Parent);
+					App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
+					Close();
 				}));
 			}
 		}
@@ -146,7 +233,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				txtMapID.BorderBrush = (Brush) FindResource("ExtryzeAccentBrush");
 		}
 
-		// Update UI form textbox
+		// Update UI from textbox
 		private void txtMapInternalName_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text;
@@ -184,10 +271,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		// Update MapInfo file
 		private void btnUpdate_Click(object sender, RoutedEventArgs e)
 		{
+			_mapInfo = new MapInfo(_blfLocation);
 			// Update MapID
 			if (!Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
 				_mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
 
+			// Check if MapID was invalid, if so tell user.
+			if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
+			{
+				MetroMessageBox.Show("MapID Not Saved",
+					"The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
+				return;
+			}
 			// Update Internal Name
 			_mapInfo.MapInformation.InternalName = txtMapInternalName.Text;
 
@@ -198,13 +293,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_mapInfo.MapInformation.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
 			_mapInfo.MapInformation.MapDescriptions[cbLanguages.SelectedIndex] = txtMapDesc.Text;
 
+			// Update Flags
+			_mapInfo.MapInformation.Flags = LevelFlags.None;
+			if (cbType.SelectedIndex == 0)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsMainMenu;
+			if (cbType.SelectedIndex == 1)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsMultiplayer;
+			if (cbType.SelectedIndex == 2)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsCampaign;
+			if (cbType.SelectedIndex == 4)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsFirefight;
+			if (cbType.SelectedIndex == 3)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsCinematic;
+			if (cbVisible.IsChecked == true)
+				_mapInfo.MapInformation.Flags |= LevelFlags.Visible;
+			if (cbGeneratesFilm.IsChecked == true)
+				_mapInfo.MapInformation.Flags |= LevelFlags.GeneratesFilm;
+			if (cbDLC.IsChecked == true)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsDLC;
+			if (cbForgeOnly.IsChecked == true)
+				_mapInfo.MapInformation.Flags |= LevelFlags.IsForgeOnly;
+
 			// Write all changes to file
 			_mapInfo.UpdateMapInfo();
-
-			// Check if MapID was invalid, if so tell user.
-			if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
-				MetroMessageBox.Show("MapID Not Saved",
-					"The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
+			Close();
+			MetroMessageBox.Show("Save Successful", "Your MapInfo has been saved.");
+			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
 
 		private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
@@ -219,14 +333,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 
 		// Load Languages
-		private void LoadLanguages(MapInfo.GameIdentifier gameIdent)
+		private void LoadLanguages()
 		{
-			if (gameIdent == MapInfo.GameIdentifier.Halo4)
+			// If the game is Halo 4, use that set of languages, if not, use the default set.
+			switch (_mapInfo.MapInformation.Game)
 			{
-				// TODO: Add the new Halo 4 Languages
+				case MapInfo.GameIdentifier.Halo4:
+					_languageset = _halo4languages;
+					break;
+				default:
+					_languageset = _languages;
+					break;
 			}
-
-			cbLanguages.DataContext = _languages;
+			cbLanguages.DataContext = _languageset;
 		}
 
 		public class LanguageEntry

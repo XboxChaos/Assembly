@@ -8,7 +8,7 @@
              Background="#28282b"
              d:DesignHeight="1000" d:DesignWidth="1200">
 	<Grid>
-		<Grid x:Name="sideBar" Width="300" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#2d2d30">
+		<Grid x:Name="sideBar" Width="400" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#2d2d30">
 			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
 			           d:LayoutOverrides="Height" />
 
@@ -33,14 +33,14 @@
 					<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="BLF Info;" Foreground="White" FontSize="16" />
 					<StackPanel x:Name="paneBLFInfo" Margin="0,10,0,0" />
 
-					<Rectangle Fill="#FF363639" Height="1" Width="250" Margin="0,20,0,15" VerticalAlignment="Top"
+					<Rectangle Fill="#FF363639" Height="1" Width="350" Margin="0,20,0,15" VerticalAlignment="Top"
 					           d:LayoutOverrides="Height" />
 
 					<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Map Info;" Foreground="White" FontSize="16" />
 					<StackPanel x:Name="panelMapInfo" Margin="0,10,0,0">
 						<StackPanel Orientation="Horizontal">
 							<StackPanel Width="90">
-								<Grid Height="24">
+								<Grid Height="27">
 									<TextBlock Text="Game:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								</Grid>
 								<Grid Height="24">
@@ -54,19 +54,35 @@
 									<TextBlock Text="Physical Name:" ToolTip="Name of the relative .blf file."
 									           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								</Grid>
+									<Grid Height="24">
+									<TextBlock Text="Map Type:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								</Grid>
 							</StackPanel>
 							<StackPanel>
 								<Grid Height="24" Margin="10,0,0,0">
 									<TextBlock x:Name="txtGameName" Text="" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}"
 									           VerticalAlignment="Center" />
 								</Grid>
-								<TextBox x:Name="txtMapID" Width="150" Margin="10,0,0,0" TextChanged="txtMapID_TextChanged" />
-								<TextBox x:Name="txtMapInternalName" Width="150" Margin="10,0,0,0" MaxLength="30"
+								<TextBox x:Name="txtMapID" Width="250" Margin="10,3,0,0" TextChanged="txtMapID_TextChanged" />
+								<TextBox x:Name="txtMapInternalName" Width="250" Margin="10,3,0,0" MaxLength="30"
 								         TextChanged="txtMapInternalName_TextChanged" />
-								<TextBox x:Name="txtMapPhysicalName" Width="150" Margin="10,0,0,0" MaxLength="30" />
+								<TextBox x:Name="txtMapPhysicalName" Width="250" Margin="10,3,0,0" MaxLength="30" />
+								<ComboBox x:Name="cbType" Width="250" Margin="10,3,0,0" HorizontalAlignment="Left" >
+									<ComboBoxItem x:Name="cbType_MM" Content="Main Menu"/>
+									<ComboBoxItem x:Name="cbType_MP" Content="Multiplayer"/>
+									<ComboBoxItem x:Name="cbType_Camp" Content="Campaign"/>
+									<ComboBoxItem x:Name="cbType_Cine" Content="Campaign (Cinematic)"/>
+									<ComboBoxItem x:Name="cbType_FF" Content="Firefight"/>
+								</ComboBox>
 							</StackPanel>
 						</StackPanel>
-						<Button x:Name="btnUpdate" Margin="0,20,0,0" Content="Save MapInfo" Click="btnUpdate_Click" />
+						<Grid Margin="0,4,0,0" >
+							<CheckBox x:Name="cbVisible" Margin="-290,0,0,0" Content="Is Visible" Width="70" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbGeneratesFilm" Margin="-60,0,0,0" Content="Generates Film" Width="100" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbDLC" Margin="150,0,0,0" Content="DLC" Width="45" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbForgeOnly" Margin="260,0,0,0" Content="Forge Only" Width="80" VerticalAlignment="Top" Visibility="Collapsed"/>
+							</Grid>
+						<Button x:Name="btnUpdate" Margin="0,20,0,0" Content="Save and Close" Click="btnUpdate_Click" />
 					</StackPanel>
 
 					<Rectangle Fill="#FF363639" Height="1" Width="250" Margin="0,20,0,15" VerticalAlignment="Top"
@@ -75,7 +91,7 @@
 			</ScrollViewer>
 		</Grid>
 
-		<Grid Margin="300,0,0,0" HorizontalAlignment="Stretch">
+		<Grid Margin="400,0,0,0" HorizontalAlignment="Stretch">
 			<TextBlock x:Name="lblBLFNameFooter" Text="map_info" VerticalAlignment="Bottom" HorizontalAlignment="Left"
 			           FontFamily="{DynamicResource MetroFontLight}" FontSize="200" Opacity="0.3" Foreground="#FF999999"
 			           Margin="0,0,0,-36" />
