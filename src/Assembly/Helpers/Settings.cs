@@ -225,7 +225,10 @@ namespace Assembly.Helpers
 
 		public Settings()
 		{
-			ApplicationRecents.CollectionChanged += (sender, args) => SetField(ref _applicationRecents, ApplicationRecents, "ApplicationRecents");
+			ApplicationRecents.CollectionChanged += (sender, args) =>
+			{
+				SetField(ref _applicationRecents, sender as ObservableCollection<RecentFileEntry>, "ApplicationRecents", true);
+			};
 		}
 
 		#endregion
@@ -240,16 +243,17 @@ namespace Assembly.Helpers
 				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		protected bool SetField<T>(ref T field, T value, string propertyName)
+		protected bool SetField<T>(ref T field, T value, string propertyName, bool overrideChecks = false)
 		{
-			if (EqualityComparer<T>.Default.Equals(field, value))
-				return false;
+			if (!overrideChecks)
+				if (EqualityComparer<T>.Default.Equals(field, value))
+					return false;
 
 			field = value;
 			OnPropertyChanged(propertyName);
 
 			// Write Changes
-			string jsonData = JsonConvert.SerializeObject(this);
+			var jsonData = JsonConvert.SerializeObject(this);
 			File.WriteAllText("AssemblySettings.ason", jsonData);
 
 			return true;
