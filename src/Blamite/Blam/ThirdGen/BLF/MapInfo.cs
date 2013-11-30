@@ -5,27 +5,27 @@ using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.BLF
 {
-    [Flags]
-    public enum LevelFlags
-    {
-        None = 0,
-        Unknown0 = 1 << 0,
-        Unknown1 = 1 << 1,
-        Visible = 1 << 2,
-        GeneratesFilm = 1 << 3,
-        IsMainMenu = 1 << 4,
-        IsCampaign = 1 << 5,
-        IsMultiplayer = 1 << 6,
-        IsDLC = 1 << 7,
-        Unknown8 = 1 << 8,
-        Unknown9 = 1 << 9,
-        IsFirefight = 1 << 10,
-        IsCinematic = 1 << 11,
-        IsForgeOnly = 1 << 12,
-        Unknown13 = 1 << 13,
-        Unknown14 = 1 << 14,
-        Unknown15 = 1 << 15,
-    }
+	[Flags]
+	public enum LevelFlags
+	{
+		None = 0,
+		Unknown0 = 1 << 0,
+		Unknown1 = 1 << 1,
+		Visible = 1 << 2,
+		GeneratesFilm = 1 << 3,
+		IsMainMenu = 1 << 4,
+		IsCampaign = 1 << 5,
+		IsMultiplayer = 1 << 6,
+		IsDLC = 1 << 7,
+		Unknown8 = 1 << 8,
+		Unknown9 = 1 << 9,
+		IsFirefight = 1 << 10,
+		IsCinematic = 1 << 11,
+		IsForgeOnly = 1 << 12,
+		Unknown13 = 1 << 13,
+		Unknown14 = 1 << 14,
+		Unknown15 = 1 << 15,
+	}
 
 	public class MapInfo
 	{
@@ -128,9 +128,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_stream.SeekTo(0x3C);
 			_mapInformation.MapID = _stream.ReadInt32();
 
-            // Load Flags
-            _stream.SeekTo(0x42);
-            _mapInformation.Flags = (LevelFlags)_stream.ReadInt16();
+			// Load Flags
+			_stream.SeekTo(0x42);
+			_mapInformation.Flags = (LevelFlags)_stream.ReadInt16();
 
 			// Load Map Names
 			LoadMapNames();
@@ -185,9 +185,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_stream.SeekTo(0x3C);
 			_stream.WriteInt32(_mapInformation.MapID);
 
-            // Load Flags
-            _stream.SeekTo(0x42);
-            _stream.WriteInt16((short)_mapInformation.Flags);
+			// Load Flags
+			_stream.SeekTo(0x42);
+			_stream.WriteInt16((short)_mapInformation.Flags);
 
 			// Update Map Names
 			UpdateMapNames();
@@ -243,8 +243,8 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public IList<string> MapDescriptions = new List<string>();
 			public IList<string> MapNames = new List<string>();
 			public GameIdentifier Game { get; set; }
-            public int MapID { get; set; }
-            public LevelFlags Flags { get; set; }
+			public int MapID { get; set; }
+			public LevelFlags Flags { get; set; }
 
 			public string InternalName { get; set; }
 			public string PhysicalName { get; set; }
