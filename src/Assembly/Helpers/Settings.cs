@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -111,11 +112,10 @@ namespace Assembly.Helpers
 	{
 		private Accents _applicationAccent = Accents.Blue;
 		private bool _applicationEasterEggs = true;
-		private List<RecentFileEntry> _applicationRecents = new List<RecentFileEntry>();
+		private ObservableCollection<RecentFileEntry> _applicationRecents = new ObservableCollection<RecentFileEntry>();
 		private double _applicationSizeHeight = 600;
 		private bool _applicationSizeMaximize;
 		private double _applicationSizeWidth = 1100;
-
 		private bool _applicationUpdateOnStartup = true;
 		private bool _defaultAmp;
 		private bool _defaultBlf;
@@ -281,7 +281,7 @@ namespace Assembly.Helpers
 		/// <summary>
 		///     A list of Assembly's recently opened files.
 		/// </summary>
-		public List<RecentFileEntry> ApplicationRecents
+		public ObservableCollection<RecentFileEntry> ApplicationRecents
 		{
 			get { return _applicationRecents; }
 			set { SetField(ref _applicationRecents, value, "ApplicationRecents"); }
@@ -594,7 +594,7 @@ namespace Assembly.Helpers
 			Settings.RecentFileEntry alreadyExistsEntry = null;
 
 			if (App.AssemblyStorage.AssemblySettings.ApplicationRecents == null)
-				App.AssemblyStorage.AssemblySettings.ApplicationRecents = new List<Settings.RecentFileEntry>();
+				App.AssemblyStorage.AssemblySettings.ApplicationRecents = new ObservableCollection<Settings.RecentFileEntry>();
 
 			foreach (
 				Settings.RecentFileEntry entry in
