@@ -442,7 +442,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// TODO: Define the language names in an XML file or something
 			AddLanguage("English", GameLanguage.English);
-			AddLanguage("Chinese", GameLanguage.Chinese);
+			AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
+			AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
 			AddLanguage("Danish", GameLanguage.Danish);
 			AddLanguage("Dutch", GameLanguage.Dutch);
 			AddLanguage("Finnish", GameLanguage.Finnish);
@@ -457,7 +458,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			AddLanguage("Russian", GameLanguage.Russian);
 			AddLanguage("Spanish", GameLanguage.Spanish);
 			AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
-			AddLanguage("Extra", GameLanguage.Unknown);
 
 			Dispatcher.Invoke(new Action(delegate
 			{
