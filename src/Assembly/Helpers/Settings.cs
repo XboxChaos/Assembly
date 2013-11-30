@@ -225,10 +225,7 @@ namespace Assembly.Helpers
 
 		public Settings()
 		{
-			ApplicationRecents.CollectionChanged += (sender, args) =>
-			{
-				SetField(ref _applicationAccent, ApplicationRecents, "ApplicationRecents");
-			};
+			ApplicationRecents.CollectionChanged += (sender, args) => SetField(ref _applicationRecents, ApplicationRecents, "ApplicationRecents");
 		}
 
 		#endregion
