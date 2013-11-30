@@ -221,6 +221,19 @@ namespace Assembly.Helpers
 
 		#endregion
 
+		#region Methods
+
+		public Settings()
+		{
+			ApplicationRecents.CollectionChanged += (sender, args) =>
+			{
+				_applicationRecents = ApplicationRecents;
+				OnPropertyChanged("ApplicationRecents");
+			};
+		}
+
+		#endregion
+
 		#region Interface
 
 		public event PropertyChangedEventHandler PropertyChanged;
