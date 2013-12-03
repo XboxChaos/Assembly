@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Assembly")]
 [assembly: AssemblyDescription("Third Generation Blam Cache File Editor")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("XboxChaos & Valhalla Studios")]
+[assembly: AssemblyCompany("XboxChaos")]
 [assembly: AssemblyProduct("Assembly")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
