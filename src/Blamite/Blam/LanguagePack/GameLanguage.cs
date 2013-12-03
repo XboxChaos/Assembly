@@ -13,8 +13,8 @@
 		LatinAmericanSpanish,
 		Italian,
 		Korean,
-		Chinese,
-		Unknown,
+		ChineseTrad,
+		ChineseSimp,
 		Portuguese,
 		Polish,
 		Russian, // H4 only

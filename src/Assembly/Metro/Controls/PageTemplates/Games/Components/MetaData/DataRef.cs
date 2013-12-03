@@ -10,7 +10,7 @@
 			Format = format;
 		}
 
-		public string Kind
+		public new string Kind
 		{
 			get { return "dataref " + Format; }
 		}

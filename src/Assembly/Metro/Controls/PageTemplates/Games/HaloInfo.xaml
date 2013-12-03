@@ -40,34 +40,22 @@
 					<StackPanel x:Name="panelMapInfo" Margin="0,10,0,0">
 						<StackPanel Orientation="Horizontal">
 							<StackPanel Width="90">
-								<Grid Height="27">
+								<Grid Height="24">
 									<TextBlock Text="Game:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								</Grid>
-								<Grid Height="24">
-									<TextBlock Text="Map ID:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								</Grid>
-								<Grid Height="24">
-									<TextBlock Text="Internal Name:" ToolTip="Name of the relative .map file."
-									           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								</Grid>
-								<Grid Height="24">
-									<TextBlock Text="Physical Name:" ToolTip="Name of the relative .blf file."
-									           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								</Grid>
-									<Grid Height="24">
-									<TextBlock Text="Map Type:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								</Grid>
+								<TextBlock Text="Map ID:" Margin="0,7,0,3" ToolTip="The unique ID from the map's scenario tag." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Map Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .map file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Image Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .blf file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Map Type:" Margin="0,7,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 							</StackPanel>
 							<StackPanel>
 								<Grid Height="24" Margin="10,0,0,0">
-									<TextBlock x:Name="txtGameName" Text="" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}"
-									           VerticalAlignment="Center" />
+									<TextBlock x:Name="txtGameName" Text="" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" VerticalAlignment="Center" />
 								</Grid>
-								<TextBox x:Name="txtMapID" Width="250" Margin="10,3,0,0" TextChanged="txtMapID_TextChanged" />
-								<TextBox x:Name="txtMapInternalName" Width="250" Margin="10,3,0,0" MaxLength="30"
-								         TextChanged="txtMapInternalName_TextChanged" />
-								<TextBox x:Name="txtMapPhysicalName" Width="250" Margin="10,3,0,0" MaxLength="30" />
-								<ComboBox x:Name="cbType" Width="250" Margin="10,3,0,0" HorizontalAlignment="Left" >
+								<TextBox x:Name="txtMapID" Width="250" Margin="10,4,0,0" TextChanged="txtMapID_TextChanged" />
+								<TextBox x:Name="txtMapInternalName" Width="250" Margin="10,4,0,0" MaxLength="30" TextChanged="txtMapInternalName_TextChanged" />
+                                <TextBox x:Name="txtMapPhysicalName" Width="250" Margin="10,4,0,0" MaxLength="30" />
+								<ComboBox x:Name="cbType" Width="250" Margin="10,4,0,0" HorizontalAlignment="Left" >
 									<ComboBoxItem x:Name="cbType_MM" Content="Main Menu"/>
 									<ComboBoxItem x:Name="cbType_MP" Content="Multiplayer"/>
 									<ComboBoxItem x:Name="cbType_Camp" Content="Campaign"/>
@@ -77,11 +65,11 @@
 							</StackPanel>
 						</StackPanel>
 						<Grid Margin="0,4,0,0" >
-							<CheckBox x:Name="cbVisible" Margin="-290,0,0,0" Content="Is Visible" Width="70" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
-							<CheckBox x:Name="cbGeneratesFilm" Margin="-60,0,0,0" Content="Generates Film" Width="100" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
-							<CheckBox x:Name="cbDLC" Margin="150,0,0,0" Content="DLC" Width="45" VerticalAlignment="Top"/>
-							<CheckBox x:Name="cbForgeOnly" Margin="260,0,0,0" Content="Forge Only" Width="80" VerticalAlignment="Top" Visibility="Collapsed"/>
-							</Grid>
+							<CheckBox x:Name="cbVisible" Margin="-290,0,0,0" Content="Is Visible" ToolTip="This map will be visible in the lobby." Width="70" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbGeneratesFilm" Margin="-60,0,0,0" Content="Generates Film" ToolTip="If supported, this map will generate a film to the cache." Width="100" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbDLC" Margin="150,0,0,0" Content="DLC" ToolTip="This map's origin is DLC." Width="45" VerticalAlignment="Top"/>
+							<CheckBox x:Name="cbForgeOnly" Margin="260,0,0,0" Content="Forge Only" ToolTip="The base map can only be selected in Forge." Width="80" VerticalAlignment="Top" Visibility="Collapsed"/>
+						</Grid>
 						<Button x:Name="btnUpdate" Margin="0,20,0,0" Content="Save and Close" Click="btnUpdate_Click" />
 					</StackPanel>
 
@@ -119,13 +107,9 @@
 					<StackPanel Margin="0,50,0,0">
 						<TextBlock Text="Map Name:" Style="{DynamicResource GenericTextblock}" />
 						<TextBox x:Name="txtMapName" MaxLength="30" Margin="10,2,10,0" />
-
-						<TextBlock Text="Map Descrption:" Margin="0,20,0,0" Style="{DynamicResource GenericTextblock}" />
-						<TextBox x:Name="txtMapDesc" MaxLength="126" Margin="10,2,10,0" TextWrapping="Wrap" Height="78"
-						         AcceptsReturn="True" />
-
-						<Button x:Name="btnTranslateAllOthers" Visibility="Collapsed" Margin="0,20,0,10"
-						        Content="Translate all other Names/Descriptions." Click="btnTranslateAllOthers_Click" />
+						<TextBlock Text="Map Description:" Margin="0,15,0,0" Style="{DynamicResource GenericTextblock}" />
+						<TextBox x:Name="txtMapDesc" MaxLength="126" Margin="10,2,10,0" TextWrapping="Wrap" Height="78" AcceptsReturn="True" />
+						<Button x:Name="btnTranslateAllOthers" Visibility="Collapsed" Margin="0,20,0,10" Content="Translate all other Names/Descriptions." Click="btnTranslateAllOthers_Click" />
 					</StackPanel>
 				</Grid>
 			</Border>

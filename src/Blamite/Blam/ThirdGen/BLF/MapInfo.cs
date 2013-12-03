@@ -210,9 +210,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 			for (int i = 0; i < _mapInformation.MapNames.Count; i++)
 			{
 				int seekVal = 0;
-				if (i == _mapInformation.MapNames.Count - 1)
-					seekVal = baseOffset + ((i*0x40) + 0x40);
-				else
+				//if (i == _mapInformation.MapNames.Count - 1)
+				//	seekVal = baseOffset + ((i*0x40) + 0x40);
+				//else
 					seekVal = baseOffset + (i*0x40);
 
 				_stream.SeekTo(seekVal);
@@ -226,9 +226,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 			for (int i = 0; i < _mapInformation.MapDescriptions.Count; i++)
 			{
 				int seekVal = 0;
-				if (i == _mapInformation.MapDescriptions.Count - 1)
-					seekVal = baseOffset + ((i*0x100) + 0x100);
-				else
+				//if (i == _mapInformation.MapDescriptions.Count - 1)
+				//	seekVal = baseOffset + ((i*0x100) + 0x100);
+				//else
 					seekVal = baseOffset + (i*0x100);
 
 				_stream.SeekTo(seekVal);

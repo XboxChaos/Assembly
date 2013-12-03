@@ -67,7 +67,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			panelRecents.Children.Clear();
 
-			if (App.AssemblyStorage.AssemblySettings.ApplicationRecents != null)
+			if (App.AssemblyStorage.AssemblySettings.ApplicationRecents.Count != 0)
 			{
 				int recentsCount = 0;
 				foreach (Settings.RecentFileEntry entry in App.AssemblyStorage.AssemblySettings.ApplicationRecents)
@@ -104,8 +104,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 					recentsCount++;
 				}
 			}
-			else if (App.AssemblyStorage.AssemblySettings.ApplicationRecents == null ||
-			         App.AssemblyStorage.AssemblySettings.ApplicationRecents.Count == 0)
+			else if (App.AssemblyStorage.AssemblySettings.ApplicationRecents.Count == 0)
 				panelRecents.Children.Add(new TextBlock
 				{
 					Text = "It's lonely in here, get modding ;)",
