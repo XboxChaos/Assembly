@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(delegate
 				{
 					// Add BLF Info
-					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X8")));
+					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X")));
 					paneBLFInfo.Children.Insert(1,
 						new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
@@ -240,7 +240,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 
 		// Update Languages
-
 		private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (_mapInfo != null && _startEditing)
