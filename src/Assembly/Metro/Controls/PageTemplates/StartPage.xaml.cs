@@ -57,6 +57,9 @@ namespace Assembly.Metro.Controls.PageTemplates
 					case Settings.RecentFileType.MapInfo:
 						App.AssemblyStorage.AssemblySettings.HomeWindow.AddInfooTabModule(senderEntry.FilePath);
 						break;
+					case Settings.RecentFileType.Campaign:
+						App.AssemblyStorage.AssemblySettings.HomeWindow.AddCampaignTabModule(senderEntry.FilePath);
+						break;
 					default:
 						MetroMessageBox.Show("wut.", "This content type doesn't even exist, how the fuck did you manage that?");
 						break;
@@ -98,6 +101,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 					         App.AssemblyStorage.AssemblySettings.StartpageShowRecentsMapInfo)
 					{
 						btnRecent.Content = string.Format("Map Info - {0}", entry.FileName.Replace("_", "__"));
+						panelRecents.Children.Add(btnRecent);
+					}
+					else if (entry.FileType == Settings.RecentFileType.Campaign &&
+							 App.AssemblyStorage.AssemblySettings.StartpageShowRecentsCampaign)
+					{
+						btnRecent.Content = string.Format("Campaign - {0}", entry.FileName.Replace("_", "__"));
 						panelRecents.Children.Add(btnRecent);
 					}
 
@@ -144,6 +153,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 		private void btnOpenCacheImag_Click(object sender, RoutedEventArgs e)
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.MapImage);
+		}
+
+		private void btnOpenCampaign_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.Campaign);
 		}
 
 		#endregion
