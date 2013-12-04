@@ -779,29 +779,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 
 			// Extract resource info
-			while (resourcesToProcess.Count > 0)
+			if (resources != null)
 			{
-				DatumIndex index = resourcesToProcess.Dequeue();
-				if (resourcesProcessed.Contains(index))
-					continue;
-
-				// Add the resource
-				if (resources == null) return;
-				Resource resource = resources.Resources[index.Index];
-				container.AddResource(new ExtractedResourceInfo(resource));
-
-				// Add data for its pages
-				if (resource.Location == null)
-					continue;
-				if (resource.Location.PrimaryPage != null && !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+				while (resourcesToProcess.Count > 0)
 				{
-					container.AddResourcePage(resource.Location.PrimaryPage);
-					resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+					DatumIndex index = resourcesToProcess.Dequeue();
+					if (resourcesProcessed.Contains(index))
+						continue;
+
+					// Add the resource
+					Resource resource = resources.Resources[index.Index];
+					container.AddResource(new ExtractedResourceInfo(resource));
+
+					// Add data for its pages
+					if (resource.Location == null)
+						continue;
+					if (resource.Location.PrimaryPage != null && !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+					{
+						container.AddResourcePage(resource.Location.PrimaryPage);
+						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+					}
+					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+						continue;
+					container.AddResourcePage(resource.Location.SecondaryPage);
+					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
 				}
-				if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
-					continue;
-				container.AddResourcePage(resource.Location.SecondaryPage);
-				resourcePagesProcessed.Add(resource.Location.SecondaryPage);
 			}
 
 			// Write it to a file

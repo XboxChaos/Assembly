@@ -56,7 +56,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection values = LoadTag(reader);
 			byte[] infoBuffer = LoadResourceInfoBuffer(values, reader);
 
-			var count = (int) values.GetInteger("number of resources");
+			var count = (int)values.GetInteger("number of resources");
 			uint address = values.GetInteger("resource table address");
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
@@ -129,6 +129,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void LoadResourceTypes(StructureValueCollection values, IReader reader, StringIDSource stringIDs)
 		{
+			if (!values.HasInteger("number of resource types") || !values.HasInteger("resource type table address"))
+				return;
+
 			var count = (int) values.GetInteger("number of resource types");
 			uint address = values.GetInteger("resource type table address");
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource type entry");

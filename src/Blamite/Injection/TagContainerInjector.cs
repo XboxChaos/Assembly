@@ -129,6 +129,8 @@ namespace Blamite.Injection
 
 		public int InjectResourcePage(ResourcePage page, IReader reader)
 		{
+			if (_resources == null)
+				return -1;
 			if (page == null)
 				throw new ArgumentNullException("page is null");
 
@@ -153,6 +155,8 @@ namespace Blamite.Injection
 
 		public DatumIndex InjectResource(ExtractedResourceInfo resource, IStream stream)
 		{
+			if (_resources == null)
+				return DatumIndex.Null;
 			if (resource == null)
 				throw new ArgumentNullException("resource is null");
 
