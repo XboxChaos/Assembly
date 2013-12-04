@@ -86,6 +86,14 @@ namespace Blamite.Injection
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
+			if (_resources == null && BlockNeedsResources(tagData))
+			{
+				// If the tag relies on resources and that info isn't available, throw it out
+				LoadResourceTable(stream);
+				if (_resources == null)
+					return DatumIndex.Null;
+			}
+
 			ITag newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
@@ -222,6 +230,20 @@ namespace Blamite.Injection
 		public DatumIndex InjectResource(DatumIndex originalIndex, IStream stream)
 		{
 			return InjectResource(_container.FindResource(originalIndex), stream);
+		}
+
+		private bool BlockNeedsResources(DataBlock block)
+		{
+			if (block.ResourceFixups.Count > 0)
+				return true;
+
+			foreach (var addrFixup in block.AddressFixups)
+			{
+				var subBlock = _container.FindDataBlock(addrFixup.OriginalAddress);
+				if (subBlock != null && BlockNeedsResources(subBlock))
+					return true;
+			}
+			return false;
 		}
 
 		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream)
