@@ -103,7 +103,8 @@ namespace Blamite.Injection
 
 			// Make the tag load
 			LoadZoneSets(stream);
-			_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+			if (_zoneSets != null)
+				_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
 
 			return newTag.Index;
 		}
@@ -222,7 +223,8 @@ namespace Blamite.Injection
 
 			// Make it load
 			LoadZoneSets(stream);
-			_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
+			if (_zoneSets != null)
+				_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
 
 			return newIndex;
 		}
