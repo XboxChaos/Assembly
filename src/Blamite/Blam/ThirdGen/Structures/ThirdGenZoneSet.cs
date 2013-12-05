@@ -125,15 +125,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, ReflexiveCache<int> cache)
 		{
 			var result = new StructureValueCollection();
-			SaveBitArray(_activeResources, "number of raw pool bitfields", "raw pool bitfield table address", allocator, stream,
-				cache, result);
-			SaveBitArray(_unknownResources, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator,
-				stream, cache, result);
-			SaveBitArray(_unknownResources2, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator,
-				stream, cache, result);
+			SaveBitArray(_activeResources, "number of raw pool bitfields", "raw pool bitfield table address", allocator, stream, cache, result);
+			SaveBitArray(_unknownResources, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator, stream, cache, result);
+			SaveBitArray(_unknownResources2, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator, stream, cache, result);
 			SaveBitArray(_activeTags, "number of tag bitfields", "tag bitfield table address", allocator, stream, cache, result);
-			SaveBitArray(_unknownTags, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator, stream, cache,
-				result);
+			SaveBitArray(_unknownTags, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator, stream, cache, result);
 			return result;
 		}
 
@@ -150,16 +146,17 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			Name = new StringID(values.GetInteger("name stringid"));
 			_activeResources = LoadBitArray(values, "number of raw pool bitfields", "raw pool bitfield table address", reader);
-			_unknownResources = LoadBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address",
-				reader);
-			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address",
-				reader);
+			_unknownResources = LoadBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", reader);
+			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", reader);
 			_activeTags = LoadBitArray(values, "number of tag bitfields", "tag bitfield table address", reader);
 			_unknownTags = LoadBitArray(values, "number of tag 2 bitfields", "tag 2 bitfield table address", reader);
 		}
 
 		private BitArray LoadBitArray(StructureValueCollection values, string countName, string addressName, IReader reader)
 		{
+			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
+				return new BitArray(0);
+
 			var count = (int) values.GetInteger(countName);
 			uint address = values.GetInteger(addressName);
 			if (count <= 0 || address == 0)
@@ -173,9 +170,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return new BitArray(ints);
 		}
 
-		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream,
-			ReflexiveCache<int> cache, StructureValueCollection values)
+		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, ReflexiveCache<int> cache, StructureValueCollection values)
 		{
+			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
+				return;
+
 			if (bits.Length == 0)
 			{
 				values.SetInteger(countName, 0);
@@ -198,14 +197,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 				cache.Add(newAddress, ints);
 			}
 
-			values.SetInteger(countName, (uint) ints.Length);
+			values.SetInteger(countName, (uint)ints.Length);
 			values.SetInteger(addressName, newAddress);
 		}
 
-		private static void FreeBitArray(StructureValueCollection values, string countName, string addressName,
-			MetaAllocator allocator)
+		private static void FreeBitArray(StructureValueCollection values, string countName, string addressName, MetaAllocator allocator)
 		{
-			var oldCount = (int) values.GetInteger(countName);
+			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
+				return;
+
+			var oldCount = (int)values.GetInteger(countName);
 			uint oldAddress = values.GetInteger(addressName);
 			if (oldCount > 0 && oldAddress > 0)
 				allocator.Free(oldAddress, oldCount*4);

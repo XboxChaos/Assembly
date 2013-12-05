@@ -59,23 +59,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FreeZoneSets(tagValues, stream);
 
 			var cache = new ReflexiveCache<int>();
-			SaveZoneSetTable(GlobalZoneSet, tagValues, "number of global zone sets", "global zone set table address", cache,
-				stream);
-			SaveZoneSetTable(UnattachedZoneSet, tagValues, "number of unattached zone sets", "unattached zone set table address",
-				cache, stream);
-			SaveZoneSetTable(DiscForbiddenZoneSet, tagValues, "number of disc forbidden zone sets",
-				"disc forbidden zone set table address", cache, stream);
-			SaveZoneSetTable(DiscAlwaysStreamingZoneSet, tagValues, "number of disc always streaming zone sets",
-				"disc always streaming zone set table address", cache, stream);
-			SaveZoneSetTable(GeneralZoneSets, tagValues, "number of general zone sets", "general zone set table address", cache,
-				stream);
+			SaveZoneSetTable(GlobalZoneSet, tagValues, "number of global zone sets", "global zone set table address", cache, stream);
+			SaveZoneSetTable(UnattachedZoneSet, tagValues, "number of unattached zone sets", "unattached zone set table address", cache, stream);
+			SaveZoneSetTable(DiscForbiddenZoneSet, tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", cache, stream);
+			SaveZoneSetTable(DiscAlwaysStreamingZoneSet, tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", cache, stream);
+			SaveZoneSetTable(GeneralZoneSets, tagValues, "number of general zone sets", "general zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets, tagValues, "number of bsp zone sets", "bsp zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets2, tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets3, tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", cache, stream);
-			SaveZoneSetTable(CinematicZoneSets, tagValues, "number of cinematic zone sets", "cinematic zone set table address",
-				cache, stream);
-			SaveZoneSetTable(CustomZoneSets, tagValues, "number of custom zone sets", "custom zone set table address", cache,
-				stream);
+			SaveZoneSetTable(CinematicZoneSets, tagValues, "number of cinematic zone sets", "cinematic zone set table address", cache, stream);
+			SaveZoneSetTable(CustomZoneSets, tagValues, "number of custom zone sets", "custom zone set table address", cache, stream);
 
 			_gestalt.SaveTag(tagValues, stream);
 		}
@@ -85,35 +78,25 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection tagValues = _gestalt.LoadTag(reader);
 
 			// Global, unattached, disc-forbidden, and disc-always-streaming usually only have one entry
-			GlobalZoneSet =
-				ReadZoneSetTable(tagValues, "number of global zone sets", "global zone set table address", reader).FirstOrDefault();
-			UnattachedZoneSet =
-				ReadZoneSetTable(tagValues, "number of unattached zone sets", "unattached zone set table address", reader)
-					.FirstOrDefault();
-			DiscForbiddenZoneSet =
-				ReadZoneSetTable(tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", reader)
-					.FirstOrDefault();
-			DiscAlwaysStreamingZoneSet =
-				ReadZoneSetTable(tagValues, "number of disc always streaming zone sets",
-					"disc always streaming zone set table address", reader).FirstOrDefault();
+			GlobalZoneSet = ReadZoneSetTable(tagValues, "number of global zone sets", "global zone set table address", reader).FirstOrDefault();
+			UnattachedZoneSet = ReadZoneSetTable(tagValues, "number of unattached zone sets", "unattached zone set table address", reader).FirstOrDefault();
+			DiscForbiddenZoneSet = ReadZoneSetTable(tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", reader).FirstOrDefault();
+			DiscAlwaysStreamingZoneSet = ReadZoneSetTable(tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", reader).FirstOrDefault();
 
 			// Everything else needs to be an array
-			GeneralZoneSets =
-				ReadZoneSetTable(tagValues, "number of general zone sets", "general zone set table address", reader).ToArray();
+			GeneralZoneSets = ReadZoneSetTable(tagValues, "number of general zone sets", "general zone set table address", reader).ToArray();
 			BSPZoneSets = ReadZoneSetTable(tagValues, "number of bsp zone sets", "bsp zone set table address", reader).ToArray();
-			BSPZoneSets2 =
-				ReadZoneSetTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader).ToArray();
-			BSPZoneSets3 =
-				ReadZoneSetTable(tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", reader).ToArray();
-			CinematicZoneSets =
-				ReadZoneSetTable(tagValues, "number of cinematic zone sets", "cinematic zone set table address", reader).ToArray();
-			CustomZoneSets =
-				ReadZoneSetTable(tagValues, "number of custom zone sets", "custom zone set table address", reader).ToArray();
+			BSPZoneSets2 = ReadZoneSetTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader).ToArray();
+			BSPZoneSets3 = ReadZoneSetTable(tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", reader).ToArray();
+			CinematicZoneSets = ReadZoneSetTable(tagValues, "number of cinematic zone sets", "cinematic zone set table address", reader).ToArray();
+			CustomZoneSets = ReadZoneSetTable(tagValues, "number of custom zone sets", "custom zone set table address", reader).ToArray();
 		}
 
-		private IEnumerable<ThirdGenZoneSet> ReadZoneSetTable(StructureValueCollection tagValues, string countName,
-			string addressName, IReader reader)
+		private IEnumerable<ThirdGenZoneSet> ReadZoneSetTable(StructureValueCollection tagValues, string countName, string addressName, IReader reader)
 		{
+			if (!tagValues.HasInteger(countName) || !tagValues.HasInteger(addressName))
+				return Enumerable.Empty<ThirdGenZoneSet>();
+
 			var count = (int) tagValues.GetInteger(countName);
 			uint address = tagValues.GetInteger(addressName);
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("zone set definition");
@@ -121,15 +104,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return entries.Select(e => new ThirdGenZoneSet(e, reader, _metaArea));
 		}
 
-		private void SaveZoneSetTable(IZoneSet set, StructureValueCollection tagValues, string countName, string addressName,
-			ReflexiveCache<int> cache, IStream stream)
+		private void SaveZoneSetTable(IZoneSet set, StructureValueCollection tagValues, string countName, string addressName, ReflexiveCache<int> cache, IStream stream)
 		{
 			SaveZoneSetTable(new[] {set}, tagValues, countName, addressName, cache, stream);
 		}
 
-		private void SaveZoneSetTable(IZoneSet[] sets, StructureValueCollection tagValues, string countName,
-			string addressName, ReflexiveCache<int> cache, IStream stream)
+		private void SaveZoneSetTable(IZoneSet[] sets, StructureValueCollection tagValues, string countName, string addressName, ReflexiveCache<int> cache, IStream stream)
 		{
+			if (!tagValues.HasInteger(countName) || !tagValues.HasInteger(addressName))
+				return;
+
 			var count = (int) tagValues.GetInteger(countName);
 			if (count != sets.Length)
 				throw new InvalidOperationException("Zone set count does not match");
@@ -146,8 +130,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FreeZoneSetsInTable(tagValues, "number of global zone sets", "global zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of unattached zone sets", "unattached zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", reader);
-			FreeZoneSetsInTable(tagValues, "number of disc always streaming zone sets",
-				"disc always streaming zone set table address", reader);
+			FreeZoneSetsInTable(tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of general zone sets", "general zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of bsp zone sets", "bsp zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader);
@@ -156,9 +139,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FreeZoneSetsInTable(tagValues, "number of custom zone sets", "custom zone set table address", reader);
 		}
 
-		private void FreeZoneSetsInTable(StructureValueCollection tagValues, string countName, string addressName,
-			IReader reader)
+		private void FreeZoneSetsInTable(StructureValueCollection tagValues, string countName, string addressName, IReader reader)
 		{
+			if (!tagValues.HasInteger(countName) || !tagValues.HasInteger(addressName))
+				return;
+
 			var count = (int) tagValues.GetInteger(countName);
 			uint address = tagValues.GetInteger(addressName);
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("zone set definition");
