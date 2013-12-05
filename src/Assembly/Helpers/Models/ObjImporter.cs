@@ -118,6 +118,8 @@ namespace Assembly.Helpers.Models
 
 				Debug.WriteLine(line);
 			}
+
+			return wavefrontObject;
 		}
 
 		public void Dispose()
