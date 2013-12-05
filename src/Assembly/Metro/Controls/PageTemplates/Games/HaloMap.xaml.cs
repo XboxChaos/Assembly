@@ -10,15 +10,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using Assembly.Helpers;
-<<<<<<< HEAD
-using Assembly.Helpers.Caching;
 using Assembly.Helpers.Models;
-=======
->>>>>>> master
-using Assembly.Helpers.Net;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Assembly.Metro.Dialogs;

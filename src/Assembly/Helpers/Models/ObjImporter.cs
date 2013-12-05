@@ -21,6 +21,9 @@ namespace Assembly.Helpers.Models
 
 		public class WaveFrontObject
 		{
+			public IList<Vertex> Vertices { get; set; }
+			public IList<Vertex> VertexTextureCoordinates { get; set; }
+			public IList<Vertex> VertexNormals { get; set; }
 			public IList<Face> FaceDefinitions { get; set; }
 
 			public int BaseIndex { get; set; }
@@ -40,10 +43,6 @@ namespace Assembly.Helpers.Models
 
 				public class Element
 				{
-					public Vertex Vertex { get; set; }
-					public Vertex VertexTextureCoordinate { get; set; }
-					public Vertex VertexNormal { get; set; }
-
 					public int VertexIndex { get; set; }
 					public int VertexTextureCoordinateIndex { get; set; }
 					public int VertexNormalIndex { get; set; }
@@ -56,13 +55,12 @@ namespace Assembly.Helpers.Models
 			var wavefrontObject = new WaveFrontObject
 			{
 				FaceDefinitions = new List<WaveFrontObject.Face>(),
+				Vertices = new List<WaveFrontObject.Vertex>(),
+				VertexTextureCoordinates = new List<WaveFrontObject.Vertex>(),
+				VertexNormals = new List<WaveFrontObject.Vertex>(),
 				Name = "",
 				BaseIndex = 0
 			};
-
-			var vertices = new List<WaveFrontObject.Vertex>();
-			var vertexNormals = new List<WaveFrontObject.Vertex>();
-			var vertexTextureCoordinates = new List<WaveFrontObject.Vertex>();
 
 			while (!_input.EndOfStream)
 			{
@@ -82,11 +80,11 @@ namespace Assembly.Helpers.Models
 					};
 
 					if (line.StartsWith("vn"))
-						vertexNormals.Add(vertex);
+						wavefrontObject.VertexNormals.Add(vertex);
 					else if (line.StartsWith("vt"))
-						vertexTextureCoordinates.Add(vertex);
+						wavefrontObject.VertexTextureCoordinates.Add(vertex);
 					else if (line.StartsWith("v"))
-						vertices.Add(vertex);
+						wavefrontObject.Vertices.Add(vertex);
 				}
 				else if (line.StartsWith("# baseindex = "))
 					wavefrontObject.BaseIndex = int.Parse(line.Replace("# baseindex = ", ""));
@@ -105,11 +103,8 @@ namespace Assembly.Helpers.Models
 
 						face.Elements.Add(new WaveFrontObject.Face.Element
 						{
-							Vertex = vertices[vertexIndex],
 							VertexIndex = vertexIndex,
-							VertexTextureCoordinate = vertexTextureCoordinates[vertexTextureCoordinateIndex],
 							VertexTextureCoordinateIndex = vertexTextureCoordinateIndex,
-							VertexNormal = vertexNormals[vertexNormalIndex],
 							VertexNormalIndex = vertexNormalIndex,
 						});
 					}
