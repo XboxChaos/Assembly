@@ -78,9 +78,9 @@ namespace Assembly.Helpers.Models
 					};
 
 					if (line.StartsWith("vn"))
-						vertices.Add(vertex);
+						vertexNormals.Add(vertex);
 					else if (line.StartsWith("vt"))
-						vertices.Add(vertex);
+						vertexTextureCoordinates.Add(vertex);
 					else if (line.StartsWith("v"))
 						vertices.Add(vertex);
 				}
@@ -92,7 +92,7 @@ namespace Assembly.Helpers.Models
 				{
 					var match = Regex.Match(line, @"f[ ]+([0-9\/]+) ([0-9\/]+) ([0-9\/]+)", RegexOptions.IgnoreCase);
 					var face = new WaveFrontObject.Face { Elements = new List<WaveFrontObject.Face.Element>() };
-					for (var i = 1; i < 4; i++)
+					for (var i = 1; i < match.Groups.Count; i++)
 					{
 						var section = match.Groups[i].Captures[0].Value.Split('/');
 						var vertexIndex = int.Parse(section[0]) - 1;
