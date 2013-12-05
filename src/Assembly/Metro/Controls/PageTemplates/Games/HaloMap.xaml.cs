@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using Assembly.Helpers;
-using Assembly.Helpers.Caching;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
@@ -65,7 +64,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
-		private MetaContentModel.GameEntry.MetaDataEntry _mapMetaData = new MetaContentModel.GameEntry.MetaDataEntry();
 		private IRTEProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
@@ -118,16 +116,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				_headerDetails = value;
 				NotifyPropertyChanged("HeaderDetails");
-			}
-		}
-
-		public MetaContentModel.GameEntry.MetaDataEntry MapMetaData
-		{
-			get { return _mapMetaData; }
-			set
-			{
-				_mapMetaData = value;
-				NotifyPropertyChanged("MapMetaData");
 			}
 		}
 
@@ -258,7 +246,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				pageReader.Close();*/
 
 				LoadHeader();
-				LoadMetaData();
 				LoadTags();
 				LoadLocales();
 				LoadScripts();
@@ -333,44 +320,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 				StatusUpdater.Update("Loaded Header Info");
-			}));
-		}
-
-		private void LoadMetaData()
-		{
-			Dispatcher.Invoke(new Action(delegate
-			{
-				MetaContentModel.GameEntry.MetaDataEntry gameMetaData =
-					CachingManager.GetMapMetaData(_buildInfo.Settings.GetSetting<string>("shortName"),
-						_cacheFile.InternalName);
-
-				if (gameMetaData == null) return;
-
-				lblMapMetaData.Text = "Map Metadata;";
-				MapMetaData = gameMetaData;
-				lblEnglishName.Text = gameMetaData.EnglishName;
-				lblEnglishDesc.Text = gameMetaData.EnglishDesc;
-				lblInternalName.Text = gameMetaData.InternalName;
-				lblPhysicalName.Text = gameMetaData.PhysicalName;
-				panelMapMetadata.Visibility = Visibility.Visible;
-
-				#region ImageMetaData
-
-				if (VariousFunctions.CheckIfFileLocked(
-					new FileInfo(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" +
-					             gameMetaData.ImageMetaData.Large))) return;
-
-				var source = new BitmapImage();
-				imgMetaDataImagePanel.Visibility = Visibility.Visible;
-				source.BeginInit();
-				source.StreamSource =
-					new MemoryStream(
-						File.ReadAllBytes(VariousFunctions.GetApplicationLocation() + "Meta\\BlamCache\\" +
-						                  gameMetaData.ImageMetaData.Large));
-				source.EndInit();
-				imgMetaDataImage.Source = source;
-
-				#endregion
 			}));
 		}
 
