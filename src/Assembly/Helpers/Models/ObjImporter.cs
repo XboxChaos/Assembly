@@ -67,7 +67,7 @@ namespace Assembly.Helpers.Models
 					break;
 				line = line.ToLower();
 
-				if (line.StartsWith("v "))
+				if (line.StartsWith("v"))
 				{
 					var coords = line.Remove(0, 2).Trim().Split(' ');
 					var vertex = new WaveFrontObject.Vertex
