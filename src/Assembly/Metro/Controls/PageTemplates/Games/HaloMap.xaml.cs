@@ -108,11 +108,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
-			var initalLoadBackgroundWorker = new BackgroundWorker();
-			initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
-			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
+			var initialLoadBackgroundWorker = new BackgroundWorker();
+			initialLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
+			initialLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
-			initalLoadBackgroundWorker.RunWorkerAsync();
+			initialLoadBackgroundWorker.RunWorkerAsync();
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -283,7 +283,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				#region inject
 
 				var leInjectModel = new ObjImporter(@"C:\Users\Alex\Desktop\tests\inject.obj");
-				leInjectModel.Process();
+				var wavefrontModel = leInjectModel.Process();
 				//var derp = NvTriStripDotNet.TriStripGenerator.GenerateStrips()
 
 				#endregion

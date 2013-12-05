@@ -43,11 +43,15 @@ namespace Assembly.Helpers.Models
 					public Vertex Vertex { get; set; }
 					public Vertex VertexTextureCoordinate { get; set; }
 					public Vertex VertexNormal { get; set; }
+
+					public int VertexIndex { get; set; }
+					public int VertexTextureCoordinateIndex { get; set; }
+					public int VertexNormalIndex { get; set; }
 				}
 			}
 		}
 
-		public void Process()
+		public WaveFrontObject Process()
 		{
 			var wavefrontObject = new WaveFrontObject
 			{
@@ -102,8 +106,11 @@ namespace Assembly.Helpers.Models
 						face.Elements.Add(new WaveFrontObject.Face.Element
 						{
 							Vertex = vertices[vertexIndex],
+							VertexIndex = vertexIndex,
 							VertexTextureCoordinate = vertexTextureCoordinates[vertexTextureCoordinateIndex],
+							VertexTextureCoordinateIndex = vertexTextureCoordinateIndex,
 							VertexNormal = vertexNormals[vertexNormalIndex],
+							VertexNormalIndex = vertexNormalIndex,
 						});
 					}
 					wavefrontObject.FaceDefinitions.Add(face);
