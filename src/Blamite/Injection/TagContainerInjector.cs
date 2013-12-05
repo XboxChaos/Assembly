@@ -279,7 +279,7 @@ namespace Blamite.Injection
 
 		private void FixStringIDReferences(DataBlock block, IWriter buffer)
 		{
-			foreach (DataBlockStringIDFixup fixup in block.StringIDFixups)
+			foreach (DataBlockStringIdFixup fixup in block.StringIdFixups)
 			{
 				// Try to find the string, and if it's not found, inject it
 				StringID newSID = _cacheFile.StringIDs.FindStringID(fixup.OriginalString);

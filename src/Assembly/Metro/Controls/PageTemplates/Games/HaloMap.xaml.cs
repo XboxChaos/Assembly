@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Caching;
+using Assembly.Helpers.Models;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
@@ -22,7 +24,9 @@ using AvalonDock.Layout;
 using Blamite.Blam;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.ThirdGen;
 using Blamite.Flexibility;
 using Blamite.Injection;
 using Blamite.IO;
@@ -229,39 +233,60 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						_buildInfo.Settings.GetSetting<string>("shortName"), Settings.RecentFileType.Cache);
 					StatusUpdater.Update("Added To Recents");
 				}));
-
-				/*ITag dice = _cacheFile.Tags[0x0102];
-				IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
-				var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
-				Resource diceResource = resourceTable.Resources[diceModel.ModelResourceIndex.Index];
-				ICacheFile resourceFile = _cacheFile;
-				Stream resourceStream = fileStream;
-				if (diceResource.Location.PrimaryPage.FilePath != null)
-				{
-					resourceStream = File.OpenRead(Path.Combine(Path.GetDirectoryName(_cacheLocation), Path.GetFileName(diceResource.Location.PrimaryPage.FilePath)));
-					resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cacheFile.BuildString);
-				}
-				ResourcePageExtractor extractor = new ResourcePageExtractor(resourceFile);
-				string path = Path.GetTempFileName();
-				FileStream pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-				extractor.ExtractPage(diceResource.Location.PrimaryPage, resourceStream, pageStream);
-				if (resourceStream != fileStream)
-					resourceStream.Close();
-				IReader pageReader = new EndianReader(pageStream, Endian.BigEndian);
-				pageReader.SeekTo(diceResource.Location.PrimaryOffset);
-				ObjExporter exporter = new ObjExporter("C:\\Users\\Aaron\\Desktop\\test.obj");
-				System.Collections.BitArray sections = new System.Collections.BitArray(diceModel.Sections.Length, true);
-				//sections[3] = true;
-				//sections[1] = true;
-				ModelReader.ReadModelData(pageReader, diceModel, sections, _buildInfo, exporter);
-				exporter.Close();
-				pageReader.Close();*/
-
+				
 				LoadHeader();
 				LoadMetaData();
 				LoadTags();
 				LoadLocales();
 				LoadScripts();
+
+				#region extract
+
+				//// Load the basic tag data
+				//ITag tag = null;
+				//foreach (var t in _tagEntries.Where(t => t != null && t.ClassName == "mode" && t.TagFileName.Contains("derek")))
+				//	tag = t.RawTag;
+				//var model = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(tag, reader);
+				//var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
+				//var resource = resourceTable.Resources[model.ModelResourceIndex.Index];
+
+				//// If the resource exists in a shared cache, it has to be loaded
+				//var resourceCache = _cacheFile;
+				//var resourceStream = fileStream;
+				//if (resource.Location.PrimaryPage.FilePath != null)
+				//{
+				//	resourceStream = File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo Reach\Maps\", Path.GetFileName(resource.Location.PrimaryPage.FilePath)));
+				//	resourceCache = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cacheFile.BuildString);
+				//}
+
+				//// Extract the resource page to a temporary file
+				//var extractor = new ResourcePageExtractor(resourceCache);
+				//var path = Path.GetTempFileName();
+				//var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+				//extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
+				//if (resourceStream != fileStream)
+				//	resourceStream.Close();
+
+				//// Now extract the model data
+				//using (var pageReader = new EndianReader(pageStream, Endian.BigEndian))
+				//{
+				//	pageReader.SeekTo(resource.Location.PrimaryOffset);
+				//	var exporter = new ObjExporter(@"C:\Users\Alex\Desktop\tests\test.obj", _cacheFile);
+				//	var sections = new BitArray(model.Sections.Length, true); // Export all model sections
+				//	ModelReader.ReadModelData(pageReader, model, sections, _buildInfo, exporter);
+				//	exporter.Close();
+				//}
+				//File.Delete(path); // Delete the temp file
+
+				#endregion
+
+				#region inject
+
+				var leInjectModel = new ObjImporter(@"C:\Users\Alex\Desktop\tests\inject.obj");
+				leInjectModel.Process();
+				//var derp = NvTriStripDotNet.TriStripGenerator.GenerateStrips()
+
+				#endregion
 			}
 		}
 

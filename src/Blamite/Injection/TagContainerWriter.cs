@@ -54,8 +54,8 @@ namespace Blamite.Injection
 				}
 
 				// StringID fixups
-				writer.WriteInt32(dataBlock.StringIDFixups.Count);
-				foreach (DataBlockStringIDFixup sid in dataBlock.StringIDFixups)
+				writer.WriteInt32(dataBlock.StringIdFixups.Count);
+				foreach (DataBlockStringIdFixup sid in dataBlock.StringIdFixups)
 				{
 					writer.WriteAscii(sid.OriginalString);
 					writer.WriteInt32(sid.WriteOffset);

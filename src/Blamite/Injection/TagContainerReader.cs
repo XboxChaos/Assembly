@@ -97,7 +97,7 @@ namespace Blamite.Injection
 				{
 					string str = reader.ReadAscii();
 					int writeOffset = reader.ReadInt32();
-					block.StringIDFixups.Add(new DataBlockStringIDFixup(str, writeOffset));
+					block.StringIdFixups.Add(new DataBlockStringIdFixup(str, writeOffset));
 				}
 			}
 

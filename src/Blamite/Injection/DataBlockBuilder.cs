@@ -285,8 +285,8 @@ namespace Blamite.Injection
 				string str = _cacheFile.StringIDs.GetString(sid);
 				if (str != null)
 				{
-					var fixup = new DataBlockStringIDFixup(str, (int) offset);
-					block.StringIDFixups.Add(fixup);
+					var fixup = new DataBlockStringIdFixup(str, (int) offset);
+					block.StringIdFixups.Add(fixup);
 				}
 			}
 		}

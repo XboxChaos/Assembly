@@ -42,12 +42,19 @@ namespace Blamite.Blam.Resources.Models
 		/// </param>
 		/// <param name="buildInfo">Information about the cache file's target engine.</param>
 		/// <param name="processor">The IModelProcessor to pass the read model data to.</param>
-		private static void ReadVertexBuffers(IReader reader, IRenderModel model, BitArray sectionsToRead,
+		private static void ReadVertexBuffers(IReader reader, IModel model, BitArray sectionsToRead,
 			EngineDescription buildInfo, IModelProcessor processor)
 		{
-			for (int i = 0; i < model.Sections.Length; i++)
-				ReadSectionVertices(reader, model.Sections[i], model.BoundingBoxes[0], buildInfo,
+			for (var i = 0; i < model.Sections.Length; i++)
+			{
+				var section = model.Sections[i];
+				processor.BeginSection(i, section);
+
+				ReadSectionVertices(reader, section, model.BoundingBoxes[0], buildInfo,
 					sectionsToRead[i] ? processor : null);
+
+				processor.EndSection(i, section);
+			}
 		}
 
 		/// <summary>
@@ -64,9 +71,9 @@ namespace Blamite.Blam.Resources.Models
 		private static void ReadSectionVertices(IReader reader, IModelSection section, BoundingBox boundingBox,
 			EngineDescription buildInfo, IModelProcessor processor)
 		{
-			VertexLayout layout = buildInfo.VertexLayouts.GetLayout(section.VertexFormat);
+			var layout = buildInfo.VertexLayouts.GetLayout(section.VertexFormat);
 
-			foreach (IModelSubmesh submesh in section.Submeshes)
+			foreach (var submesh in section.Submeshes)
 			{
 				if (processor != null)
 					processor.BeginSubmeshVertices(submesh);
@@ -94,11 +101,11 @@ namespace Blamite.Blam.Resources.Models
 		private static void ReadIndexBuffers(IReader reader, IRenderModel model, BitArray sectionsToRead,
 			EngineDescription buildInfo, IModelProcessor processor)
 		{
-			int baseIndex = 0;
-			for (int i = 0; i < model.Sections.Length; i++)
+			var baseIndex = 0;
+			for (var i = 0; i < model.Sections.Length; i++)
 			{
-				IModelSection section = model.Sections[i];
-				ReadSectionIndices(reader, section, baseIndex, buildInfo, sectionsToRead[i] ? processor : null);
+				var section = model.Sections[i];
+				ReadSectionIndices(reader, section, i, baseIndex, buildInfo, sectionsToRead[i] ? processor : null);
 
 				if (sectionsToRead[i])
 					baseIndex += CountVertices(section);
@@ -110,20 +117,22 @@ namespace Blamite.Blam.Resources.Models
 		/// </summary>
 		/// <param name="reader">The stream to read the index buffer from.</param>
 		/// <param name="section">The model section that the index buffer belongs to.</param>
+		/// <param name="sectionIndex">The index of the model's section that the index buffer belongs to.</param>
+		/// <param name="baseIndex"></param>
 		/// <param name="buildInfo">Information about the cache file's target engine.</param>
 		/// <param name="processor">
 		///     The IModelProcessor to pass the read model data to, or null if the index buffer should be
 		///     skipped over.
 		/// </param>
-		private static void ReadSectionIndices(IReader reader, IModelSection section, int baseIndex,
+		private static void ReadSectionIndices(IReader reader, IModelSection section, int sectionIndex, int baseIndex,
 			EngineDescription buildInfo, IModelProcessor processor)
 		{
-			foreach (IModelSubmesh submesh in section.Submeshes)
+			foreach (var submesh in section.Submeshes)
 			{
 				if (processor != null)
 				{
-					ushort[] indices = IndexBufferReader.ReadIndexBuffer(reader, submesh.IndexBufferCount);
-					processor.ProcessSubmeshIndices(submesh, indices, baseIndex);
+					var indices = IndexBufferReader.ReadIndexBuffer(reader, submesh.IndexBufferCount);
+					processor.ProcessSubmeshIndices(submesh, indices, baseIndex, sectionIndex);
 				}
 				else
 				{

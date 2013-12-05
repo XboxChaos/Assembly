@@ -206,7 +206,7 @@ namespace Blamite.Blam.SecondGen
 		{
 			var strings = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable, _header.StringIDData,
 				buildInfo.StringIDKey);
-			return new IndexedStringIDSource(strings, new LengthBasedStringIDResolver(strings));
+			return new IndexedStringIDSource(strings, new LengthBasedStringIdResolver(strings));
 		}
 
 		private void CalculateChecksum(IReader reader)

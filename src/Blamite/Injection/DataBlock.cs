@@ -94,14 +94,14 @@ namespace Blamite.Injection
 	///     Contains information about a stringID reference in a <see cref="DataBlock" /> which needs to be changed to point to
 	///     a stringID in the new cache file.
 	/// </summary>
-	public class DataBlockStringIDFixup
+	public class DataBlockStringIdFixup
 	{
 		/// <summary>
-		///     Initializes a new instance of the <see cref="DataBlockStringIDFixup" /> class.
+		///     Initializes a new instance of the <see cref="DataBlockStringIdFixup" /> class.
 		/// </summary>
 		/// <param name="originalString">The original string for the stringID.</param>
 		/// <param name="writeOffset">The offset within the data block's data to write the new stringID to.</param>
-		public DataBlockStringIDFixup(string originalString, int writeOffset)
+		public DataBlockStringIdFixup(string originalString, int writeOffset)
 		{
 			OriginalString = originalString;
 			WriteOffset = writeOffset;
@@ -137,7 +137,7 @@ namespace Blamite.Injection
 			AddressFixups = new List<DataBlockAddressFixup>();
 			TagFixups = new List<DataBlockTagFixup>();
 			ResourceFixups = new List<DataBlockResourceFixup>();
-			StringIDFixups = new List<DataBlockStringIDFixup>();
+			StringIdFixups = new List<DataBlockStringIdFixup>();
 		}
 
 		/// <summary>
@@ -185,6 +185,6 @@ namespace Blamite.Injection
 		///     Gets a list of stringIDs in this block that need to be changed in order to correctly point to strings in the new
 		///     cache file.
 		/// </summary>
-		public List<DataBlockStringIDFixup> StringIDFixups { get; private set; }
+		public List<DataBlockStringIdFixup> StringIdFixups { get; private set; }
 	}
 }

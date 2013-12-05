@@ -5,7 +5,7 @@ namespace Blamite.Blam
 	/// <summary>
 	///     A StringIDResolver which accepts and creates stringIDs with length information set.
 	/// </summary>
-	public class LengthBasedStringIDResolver : IStringIDResolver
+	public class LengthBasedStringIdResolver : IStringIDResolver
 	{
 		private readonly IndexedStringTable _strings;
 
@@ -13,7 +13,7 @@ namespace Blamite.Blam
 		///     Constructs a new LengthBasedStringIDResolver.
 		/// </summary>
 		/// <param name="strings">The IndexedStringTable to reference to get string lengths.</param>
-		public LengthBasedStringIDResolver(IndexedStringTable strings)
+		public LengthBasedStringIdResolver(IndexedStringTable strings)
 		{
 			_strings = strings;
 			IDLayout = new StringIDLayout(24, 0, 8); // TODO: is it necessary to make this a build option?
