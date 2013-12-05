@@ -89,9 +89,6 @@ namespace Assembly
 				AssemblyStorage.AssemblySettings.ApplicationSizeHeight = AssemblyStorage.AssemblySettings.HomeWindow.Height;
 			};
 
-			// Start Caching Blam Cache MetaData
-			var metadataCacheThread = new Thread(BlamCacheMetaData.BeginCachingData);
-			metadataCacheThread.Start();
 		}
 	}
 }
