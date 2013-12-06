@@ -1,5 +1,7 @@
 # Assembly #
-## Multi-Generation Blam Engine Research Tool ##
+
+### Multi-Generation Blam Engine Research Tool ###
+__Build Status:__ <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
 __Downloads are now made available through [GitHub's release system](https://github.com/XboxChaos/Assembly/releases). The SourceForge page will remain up for some time, but will not be updated anymore.__
 
