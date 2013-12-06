@@ -172,9 +172,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, ReflexiveCache<int> cache, StructureValueCollection values)
 		{
-			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
-				return;
-
 			if (bits.Length == 0)
 			{
 				values.SetInteger(countName, 0);
