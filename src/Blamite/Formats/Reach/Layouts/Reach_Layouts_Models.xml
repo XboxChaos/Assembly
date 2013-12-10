@@ -1,73 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <layouts>
-  <!-- mode (render_model) -->
-  <layout for="render model">
-    <int32 name="number of regions" offset="0xC" />
-    <uint32 name="region table address" offset="0x10" />
+	<!-- mode (render_model) -->
+	<layout for="render model">
+		<int32 name="number of regions" offset="0xC" />
+		<uint32 name="region table address" offset="0x10" />
 
-    <int32 name="number of sections" offset="0x68" />
-    <uint32 name="section table address" offset="0x6C" />
+		<int32 name="number of sections" offset="0x68" />
+		<uint32 name="section table address" offset="0x6C" />
 
-    <int32 name="number of bounding boxes" offset="0x74" />
-    <uint32 name="bounding box table address" offset="0x78" />
+		<int32 name="number of bounding boxes" offset="0x74" />
+		<uint32 name="bounding box table address" offset="0x78" />
 
-    <uint32 name="resource datum index" offset="0xF8" />
-  </layout>
+		<uint32 name="resource datum index" offset="0xF8" />
+	</layout>
 
-  <!-- Reflexive at 0xC in mode -->
-  <layout for="model region" size="0x10">
-    <uint32 name="name stringid" offset="0x0" />
-    <int32 name="number of permutations" offset="0x4" />
-    <uint32 name="permutation table address" offset="0x8" />
-  </layout>
+	<!-- Reflexive at 0xC in mode -->
+	<layout for="model region" size="0x10">
+		<uint32 name="name stringid" offset="0x0" />
+		<int32 name="number of permutations" offset="0x4" />
+		<uint32 name="permutation table address" offset="0x8" />
+	</layout>
 
-  <!-- Reflexive at 0x4 in model region -->
-  <layout for="model permutation" size="0x18">
-    <uint32 name="name stringid" offset="0x0" />
-    <int16 name="model section" offset="0x4" />
-  </layout>
+	<!-- Reflexive at 0x4 in model region -->
+	<layout for="model permutation" size="0x18">
+		<uint32 name="name stringid" offset="0x0" />
+		<int16 name="model section" offset="0x4" />
+	</layout>
 
-  <!-- Reflexive at 0x68 in mode -->
-  <layout for="model section" size="0x5C">
-    <int32 name="number of submeshes" offset="0x0" />
-    <uint32 name="submesh table address" offset="0x4" />
-    <int32 name="number of vertex groups" offset="0xC" />
-    <uint32 name="vertex group table address" offset="0x10" />
-    <byte name="vertex format" offset="0x2F" />
-    <byte name="extra elements per vertex" offset="0x30" />
-    <byte name="extra element type" offset="0x31" />
-  </layout>
+	<!-- Reflexive at 0x68 in mode -->
+	<layout for="model section" size="0x5C">
+		<int32 name="number of submeshes" offset="0x0" />
+		<uint32 name="submesh table address" offset="0x4" />
+		<int32 name="number of vertex groups" offset="0xC" />
+		<uint32 name="vertex group table address" offset="0x10" />
+		<byte name="vertex format" offset="0x2F" />
+		<byte name="extra elements per vertex" offset="0x30" />
+		<byte name="extra element type" offset="0x31" />
+	</layout>
 
-  <!-- Reflexive at 0x0 in model section -->
-  <layout for="model submesh" size="0x18">
-    <int16 name="shader index" offset="0x0" />
-    <int32 name="index buffer start" offset="0x4" />
-    <int32 name="index buffer count" offset="0x8" />
-    <int16 name="vertex group start" offset="0xC" />
-    <int16 name="vertex group count" offset="0xE" />
-    <int16 name="vertex buffer count" offset="0x14" />
-  </layout>
+	<!-- Reflexive at 0x0 in model section -->
+	<layout for="model submesh" size="0x18">
+		<int16 name="shader index" offset="0x0" />
+		<int32 name="index buffer start" offset="0x4" />
+		<int32 name="index buffer count" offset="0x8" />
+		<int16 name="vertex group start" offset="0xC" />
+		<int16 name="vertex group count" offset="0xE" />
+		<int16 name="vertex buffer count" offset="0x14" />
+	</layout>
 
-  <!-- Reflexive at 0xC in model section -->
-  <layout for="model vertex group" size="0x10">
-    <int32 name="index buffer start" offset="0x0" />
-    <int32 name="index buffer count" offset="0x4" />
-    <int16 name="parent submesh index" offset="0x8" />
-    <int16 name="vertex buffer count" offset="0xA" />
-  </layout>
+	<!-- Reflexive at 0xC in model section -->
+	<layout for="model vertex group" size="0x10">
+		<int32 name="index buffer start" offset="0x0" />
+		<int32 name="index buffer count" offset="0x4" />
+		<int16 name="parent submesh index" offset="0x8" />
+		<int16 name="vertex buffer count" offset="0xA" />
+	</layout>
 
-  <!-- Reflexive at 0x74 in mode -->
-  <layout for="model bounding box" size="0x34">
-    <float32 name="min x" offset="0x4" />
-    <float32 name="max x" offset="0x8" />
-    <float32 name="min y" offset="0xC" />
-    <float32 name="max y" offset="0x10" />
-    <float32 name="min z" offset="0x14" />
-    <float32 name="max z" offset="0x18" />
-    <float32 name="min u" offset="0x1C" />
-    <float32 name="max u" offset="0x20" />
-    <float32 name="min v" offset="0x24" />
-    <float32 name="max v" offset="0x28" />
-  </layout>
+	<!-- Reflexive at 0x74 in mode -->
+	<layout for="model bounding box" size="0x34">
+		<float32 name="min x" offset="0x4" />
+		<float32 name="max x" offset="0x8" />
+		<float32 name="min y" offset="0xC" />
+		<float32 name="max y" offset="0x10" />
+		<float32 name="min z" offset="0x14" />
+		<float32 name="max z" offset="0x18" />
+		<float32 name="min u" offset="0x1C" />
+		<float32 name="max u" offset="0x20" />
+		<float32 name="min v" offset="0x24" />
+		<float32 name="max v" offset="0x28" />
+	</layout>
 </layouts>
