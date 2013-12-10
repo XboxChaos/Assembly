@@ -61,7 +61,7 @@ namespace Blamite.Injection
 				_cacheFile.Resources.SaveResourceTable(_resources, stream);
 				_resources = null;
 			}
-			if (_zoneSets != null)
+			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
 			{
 				_zoneSets.SaveChanges(stream);
 				_zoneSets = null;
