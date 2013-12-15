@@ -221,7 +221,7 @@ namespace Blamite.Plugins
 					break;
 
 				case "dataref":
-					visitor.VisitDataReference(name, offset, ReadDataRef(reader), visible, pluginLine);
+					ReadDataRef(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "reflexive":
@@ -259,7 +259,8 @@ namespace Blamite.Plugins
 			return new PluginRevision(author, version, description);
 		}
 
-		private static string ReadDataRef(XmlReader reader)
+		private static void ReadDataRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			string format = "bytes";
 
@@ -271,7 +272,11 @@ namespace Blamite.Plugins
 			    format != "asciiz")
 				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
 
-			return format;
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
+
+			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine);
 		}
 
 		private static void ReadRange(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
@@ -402,8 +407,11 @@ namespace Blamite.Plugins
 				throw new ArgumentException("Reflexives must have an entrySize attribute." + PositionInfo(reader));
 
 			uint entrySize = ParseUInt(reader.Value);
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, pluginLine))
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

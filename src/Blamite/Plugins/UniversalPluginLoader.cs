@@ -248,7 +248,7 @@ namespace Blamite.Plugins
 
 				case "tagdata":
 				case "dataref":
-					visitor.VisitDataReference(name, offset, ReadDataRef(reader), visible, pluginLine);
+					ReadDataRef(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "struct":
@@ -295,7 +295,8 @@ namespace Blamite.Plugins
 				ReadRevision(reader);
 		}
 
-		private static string ReadDataRef(XmlReader reader)
+		private static void ReadDataRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			string format = "bytes";
 
@@ -303,11 +304,15 @@ namespace Blamite.Plugins
 				format = reader.Value;
 
 			if (format != "bytes" &&
-			    format != "unicode" &&
-			    format != "asciiz")
+				format != "unicode" &&
+				format != "asciiz")
 				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
 
-			return format;
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
+
+			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine);
 		}
 
 		private void ReadRevision(XmlReader reader)
@@ -469,7 +474,11 @@ namespace Blamite.Plugins
 					entrySize = ParseUInt(reader.Value);
 			}
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, pluginLine))
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
+
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

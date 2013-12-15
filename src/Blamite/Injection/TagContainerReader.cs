@@ -53,14 +53,15 @@ namespace Blamite.Injection
 
 		private static DataBlock ReadDataBlock(IReader reader, byte version)
 		{
-			if (version > 2)
+			if (version > 3)
 				throw new InvalidOperationException("Unrecognized \"data\" block version");
 
 			// Block data
 			uint originalAddress = reader.ReadUInt32();
 			int entryCount = (version >= 1) ? reader.ReadInt32() : 1;
+			int align = (version >= 3) ? reader.ReadInt32() : 4;
 			byte[] data = ReadByteArray(reader);
-			var block = new DataBlock(originalAddress, entryCount, data);
+			var block = new DataBlock(originalAddress, entryCount, align, data);
 
 			// Address fixups
 			int numAddressFixups = reader.ReadInt32();

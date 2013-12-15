@@ -137,10 +137,12 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			WriteValueStart("dataRef", name, offset, visible);
 			_output.WriteAttributeString("format", format);
+			if (align != 4)
+				_output.WriteAttributeString("align", ToHexString(align));
 			_output.WriteEndElement();
 		}
 
@@ -244,10 +246,12 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			WriteValueStart("reflexive", name, offset, visible);
 			_output.WriteAttributeString("entrySize", ToHexString(entrySize));
+			if (align != 4)
+				_output.WriteAttributeString("align", ToHexString(align));
 			return true;
 		}
 

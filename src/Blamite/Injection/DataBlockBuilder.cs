@@ -64,7 +64,7 @@ namespace Blamite.Injection
 			byte[] data = _reader.ReadBlock(baseSize);
 
 			// Create a block for it and push it onto the block stack
-			var block = new DataBlock(_tagLocation.AsPointer(), 1, data);
+			var block = new DataBlock(_tagLocation.AsPointer(), 1, 4, data);
 			DataBlocks.Add(block);
 
 			var blockList = new List<DataBlock>();
@@ -168,9 +168,9 @@ namespace Blamite.Injection
 			ReadReferences(offset, (b, o) => ReadTagReference(b, o, withClass));
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
-			ReadReferences(offset, (b, o) => ReadDataReference(b, o));
+			ReadReferences(offset, (b, o) => ReadDataReference(b, o, align));
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
@@ -244,10 +244,10 @@ namespace Blamite.Injection
 		{
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			_reflexiveBlocks = new List<DataBlock>();
-			ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize));
+			ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize, align));
 			if (_reflexiveBlocks.Count > 0)
 			{
 				_blockStack.Push(_reflexiveBlocks);
@@ -303,12 +303,12 @@ namespace Blamite.Injection
 			}
 		}
 
-		private DataBlock ReadDataBlock(uint pointer, int entrySize, int entryCount)
+		private DataBlock ReadDataBlock(uint pointer, int entrySize, int entryCount, int align)
 		{
 			_reader.SeekTo(_cacheFile.MetaArea.PointerToOffset(pointer));
 			byte[] data = _reader.ReadBlock(entrySize*entryCount);
 
-			var block = new DataBlock(pointer, entryCount, data);
+			var block = new DataBlock(pointer, entryCount, align, data);
 			DataBlocks.Add(block);
 			return block;
 		}
@@ -346,7 +346,7 @@ namespace Blamite.Injection
 			}
 		}
 
-		private void ReadDataReference(DataBlock block, uint offset)
+		private void ReadDataReference(DataBlock block, uint offset, int align)
 		{
 			// Read the size and pointer
 			SeekToOffset(block, offset);
@@ -357,13 +357,13 @@ namespace Blamite.Injection
 			if (size > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, size))
 			{
 				// Read the block and create a fixup for it
-				ReadDataBlock(pointer, size, 1);
+				ReadDataBlock(pointer, size, 1, align);
 				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _dataRefLayout.GetFieldOffset("pointer"));
 				block.AddressFixups.Add(fixup);
 			}
 		}
 
-		private void ReadReflexive(DataBlock block, uint offset, uint entrySize)
+		private void ReadReflexive(DataBlock block, uint offset, uint entrySize, int align)
 		{
 			// Read the count and pointer
 			SeekToOffset(block, offset);
@@ -373,7 +373,7 @@ namespace Blamite.Injection
 
 			if (count > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, (int) (count*entrySize)))
 			{
-				DataBlock newBlock = ReadDataBlock(pointer, (int) entrySize, count);
+				DataBlock newBlock = ReadDataBlock(pointer, (int) entrySize, count, align);
 
 				// Now create a fixup for the block
 				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _reflexiveLayout.GetFieldOffset("pointer"));

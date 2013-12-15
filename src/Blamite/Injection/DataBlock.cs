@@ -128,11 +128,13 @@ namespace Blamite.Injection
 		/// </summary>
 		/// <param name="originalAddress">The original address of the data block.</param>
 		/// <param name="entryCount">The number of array entries stored by the block.</param>
+		/// <param name="align">The power of two to align the block on.</param>
 		/// <param name="data">The data to inject for the block.</param>
-		public DataBlock(uint originalAddress, int entryCount, byte[] data)
+		public DataBlock(uint originalAddress, int entryCount, int align, byte[] data)
 		{
 			OriginalAddress = originalAddress;
 			EntryCount = entryCount;
+			Alignment = align;
 			Data = data;
 			AddressFixups = new List<DataBlockAddressFixup>();
 			TagFixups = new List<DataBlockTagFixup>();
@@ -157,6 +159,11 @@ namespace Blamite.Injection
 		{
 			get { return Data.Length/EntryCount; }
 		}
+
+		/// <summary>
+		/// Gets the power of two to align the block on.
+		/// </summary>
+		public int Alignment { get; private set; }
 
 		/// <summary>
 		///     Gets the data to inject for the block.

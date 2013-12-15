@@ -181,9 +181,9 @@ namespace Blamite.Plugins
 			Debug.Unindent();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
-			Debug.WriteLine("Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}", name, offset, visible, entrySize);
+			Debug.WriteLine("Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}", name, offset, visible, entrySize, align);
 			Debug.Indent();
 			return true;
 		}
@@ -193,9 +193,9 @@ namespace Blamite.Plugins
 			Debug.Unindent();
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
-			Debug.WriteLine("Data reference \"{0}\" at {1}, format = {2}, visible = {3}", name, offset, format, visible);
+			Debug.WriteLine("Data reference \"{0}\" at {1}, format = {2}, visible = {3}, align = {4}", name, offset, format, visible, align);
 		}
 
 		public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)

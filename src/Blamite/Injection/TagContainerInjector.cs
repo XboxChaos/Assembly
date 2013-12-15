@@ -125,7 +125,7 @@ namespace Blamite.Injection
 				return newAddress;
 
 			// Allocate space for it and write it to the file
-			newAddress = _cacheFile.Allocator.Allocate(block.Data.Length, stream);
+			newAddress = _cacheFile.Allocator.Allocate(block.Data.Length, (uint)block.Alignment, stream);
 			SegmentPointer location = SegmentPointer.FromPointer(newAddress, _cacheFile.MetaArea);
 			WriteDataBlock(block, location, stream);
 			return newAddress;

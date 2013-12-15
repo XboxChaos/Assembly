@@ -126,7 +126,7 @@ namespace Assembly.Helpers.Plugins
 			AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withClass, pluginLine));
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine));
@@ -226,7 +226,7 @@ namespace Assembly.Helpers.Plugins
 
 		#region Reflexive
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{

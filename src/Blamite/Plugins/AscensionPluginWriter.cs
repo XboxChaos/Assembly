@@ -122,7 +122,7 @@ namespace Blamite.Plugins
 				WriteBasicValue("tagref", name, offset, visible);
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			WriteValueStart("tagdata", name, offset, visible);
 			_output.WriteAttributeString("format", format);
@@ -231,7 +231,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			WriteValueStart("struct", name, offset, visible);
 			_output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));
