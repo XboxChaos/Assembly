@@ -111,10 +111,12 @@ namespace BlockAlignmentScanner
 				// Read the address
 				var offset = ParseInteger(elem.Attribute("offset").Value);
 				var count = 0;
+				var entrySize = 0;
 				if (isTagBlock)
 				{
 					reader.SeekTo(baseOffset + offset);
 					count = reader.ReadInt32();
+					entrySize = ParseInteger(elem.Attribute("entrySize").Value);
 				}
 				else
 				{
@@ -123,6 +125,8 @@ namespace BlockAlignmentScanner
 
 				var addr = reader.ReadUInt32();
 				if (addr == 0)
+					continue;
+				if (isTagBlock && !cacheFile.MetaArea.ContainsBlockPointer(addr, count * entrySize))
 					continue;
 
 				// Only update the alignment if it's less than the currently-guessed alignment
@@ -134,7 +138,6 @@ namespace BlockAlignmentScanner
 				// If it's a tag block, then recurse into it
 				if (isTagBlock)
 				{
-					var entrySize = ParseInteger(elem.Attribute("entrySize").Value);
 					var blockBaseOffset = cacheFile.MetaArea.PointerToOffset(addr);
 					for (var i = 0; i < count; i++)
 						DetectAlignment(cacheFile, reader, blockBaseOffset + i * entrySize, elem, alignsByElem);
