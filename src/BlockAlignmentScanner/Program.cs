@@ -52,6 +52,7 @@ namespace BlockAlignmentScanner
 				using (var reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 				{
 					var map = CacheFileLoader.LoadCacheFile(reader, db);
+					var visitedTagBlocks = new HashSet<uint>();
 					foreach (var tag in map.Tags)
 					{
 						if (tag == null || tag.Class == null || tag.MetaLocation == null)
@@ -66,7 +67,7 @@ namespace BlockAlignmentScanner
 						// Process it
 						var baseOffset = tag.MetaLocation.AsOffset();
 						var baseElement = plugin.Element("plugin");
-						DetectAlignment(map, reader, baseOffset, baseElement, alignsByElem);
+						DetectAlignment(map, reader, baseOffset, baseElement, alignsByElem, visitedTagBlocks);
 					}
 				}
 			}
@@ -98,7 +99,7 @@ namespace BlockAlignmentScanner
 			}
 		}
 
-		static void DetectAlignment(ICacheFile cacheFile, IReader reader, int baseOffset, XElement baseElement, Dictionary<XElement, int> alignsByElem)
+		static void DetectAlignment(ICacheFile cacheFile, IReader reader, int baseOffset, XElement baseElement, Dictionary<XElement, int> alignsByElem, HashSet<uint> visitedTagBlocks)
 		{
 			// Loop through all tag blocks and data references
 			foreach (var elem in baseElement.Elements())
@@ -136,11 +137,12 @@ namespace BlockAlignmentScanner
 					alignsByElem[elem] = newAlign;
 
 				// If it's a tag block, then recurse into it
-				if (isTagBlock)
+				if (isTagBlock && !visitedTagBlocks.Contains(addr))
 				{
+					visitedTagBlocks.Add(addr);
 					var blockBaseOffset = cacheFile.MetaArea.PointerToOffset(addr);
 					for (var i = 0; i < count; i++)
-						DetectAlignment(cacheFile, reader, blockBaseOffset + i * entrySize, elem, alignsByElem);
+						DetectAlignment(cacheFile, reader, blockBaseOffset + i * entrySize, elem, alignsByElem, visitedTagBlocks);
 				}
 			}
 		}
