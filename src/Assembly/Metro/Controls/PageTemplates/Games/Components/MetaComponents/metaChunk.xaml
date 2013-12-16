@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
+             xmlns:converters="clr-namespace:Assembly.Helpers.Converters"
              mc:Ignorable="d"
              HorizontalAlignment="Stretch"
-             x:Name="metaChunk"
              d:DesignWidth="602"
              MinWidth="602">
 
@@ -29,6 +29,8 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
+			
+			<converters:BooleanToVisibilityConverter x:Key="IValueConverterBooleanToVisibility" />
 		</ResourceDictionary>
 	</UserControl.Resources>
 
@@ -54,19 +56,28 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
-				<Label Grid.Column="0" x:Name="lblChunkName" Content="{Binding Name}" HorizontalAlignment="Stretch" Height="22"
+				<Label Grid.Column="0" x:Name="BlockNameLabel" Content="{Binding Name}" HorizontalAlignment="Stretch" Height="22"
 				       VerticalAlignment="Top" Margin="0,0,0,0" Foreground="#FF999999" Background="#FF474747" Padding="5,3"
 				       FontSize="12" />
-				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="5,0,0,0"
+				
+				<ToggleButton x:Name="BlockInformationToggleButton" IsChecked="True" Grid.Column="1" HorizontalAlignment="Stretch" Height="22"
+							  VerticalAlignment="Top" Padding="4,2,4,2" Margin="5,0,5,0" Content="Info" />
+				
+				<ToggleButton x:Name="BlockContentToggleButton" IsChecked="True" Grid.Column="2" HorizontalAlignment="Stretch" Height="22"
+							  VerticalAlignment="Top" Padding="4,2,4,2" Margin="5,0,5,0" Content="Data" IsEnabled="{Binding HasChildren}" />
+				
+				<ComboBox Grid.Column="3" x:Name="ChunkIndexComboBox" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="5,0,0,0"
 				          VerticalAlignment="Top" ItemsSource="{Binding Pages}"
 				          SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 				          IsEnabled="{Binding HasChildren}">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock>
-								<Run Text="{Binding Index}" /> - <Run Text="{Binding DataContext.LastChunkIndex, ElementName=cbChunkIndex, Mode=OneWay}" /> (<Run Text="{Binding DataContext.Length, ElementName=cbChunkIndex, Mode=OneWay}" />)
+								<Run Text="{Binding Index}" /> - <Run Text="{Binding DataContext.LastChunkIndex, ElementName=ChunkIndexComboBox, Mode=OneWay}" /> (<Run Text="{Binding DataContext.Length, ElementName=ChunkIndexComboBox, Mode=OneWay}" />)
 							</TextBlock>
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
@@ -78,8 +89,9 @@
 				</ComboBox>
 			</Grid>
 			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0">
-				<Expander x:Name="InformationExpander" Header="Information" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-					<Grid Height="28">
+				<Border x:Name="InformationGrid" BorderBrush="#FF292929" Padding="0,2,0,2" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+						Visibility="{Binding IsChecked, ElementName=BlockInformationToggleButton, Converter={StaticResource IValueConverterBooleanToVisibility}}">
+					<Grid>
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
@@ -88,13 +100,13 @@
 							<StackPanel Grid.Column="0" HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Center">
 								<Label Content="Count:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
 								       Background="{x:Null}" Foreground="#FF999999" />
-								<TextBox x:Name="txtChunkCount" Text="{Binding Length, UpdateSourceTrigger=LostFocus}"
+								<TextBox x:Name="ChunkCountTextBox" Text="{Binding Length, UpdateSourceTrigger=LostFocus}"
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80"
 								         Foreground="#FF999999" Padding="0,0,0,0"
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
 								<Label Content="Address:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
 								       Background="{x:Null}" Foreground="#FF999999" />
-								<TextBox x:Name="txtChunkAddress"
+								<TextBox x:Name="CheckAddressTextBox"
 								         Text="{Binding FirstEntryAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80"
 								         Foreground="#FF999999" Padding="0,0,0,0"
@@ -104,17 +116,17 @@
 							<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
 								<Label Content="Entry Size:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"
 								       Background="{x:Null}" Foreground="#FF999999" />
-								<TextBox x:Name="txtChunkSize" Text="{Binding EntrySize, UpdateSourceTrigger=LostFocus}"
+								<TextBox x:Name="CheckSizeTextBox" Text="{Binding EntrySize, UpdateSourceTrigger=LostFocus}"
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"
 								         Width="80" Foreground="#FF999999" Padding="0,0,0,0"
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
 							</StackPanel>
 						</Grid>
 					</Grid>
-				</Expander>
+				</Border>
 
-				<Expander Header="Contents" Margin="0,4,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-				          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" />
+				<Border x:Name="Contents" BorderBrush="#FF292929" BorderThickness="1" Padding="0,2,0,2" Margin="0,4,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" 
+						Visibility="{Binding IsChecked, ElementName=BlockContentToggleButton, Converter={StaticResource IValueConverterBooleanToVisibility}}"/>
 			</StackPanel>
 		</Grid>
 	</Border>
