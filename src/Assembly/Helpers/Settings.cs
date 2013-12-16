@@ -511,7 +511,11 @@ namespace Assembly.Helpers
 		public bool DefaultMap
 		{
 			get { return _defaultMap; }
-			set { SetField(ref _defaultMap, value, "DefaultMap"); }
+			set
+			{
+				SetField(ref _defaultMap, value, "DefaultMap");
+				FileDefaults.UpdateFileDefaults();
+			}
 		}
 
 		/// <summary>
@@ -519,7 +523,11 @@ namespace Assembly.Helpers
 		public bool DefaultBlf
 		{
 			get { return _defaultBlf; }
-			set { SetField(ref _defaultBlf, value, "DefaultBlf"); }
+			set
+			{
+				SetField(ref _defaultBlf, value, "DefaultBlf");
+				FileDefaults.UpdateFileDefaults();
+			}
 		}
 
 		/// <summary>
@@ -527,7 +535,11 @@ namespace Assembly.Helpers
 		public bool DefaultMif
 		{
 			get { return _defaultMif; }
-			set { SetField(ref _defaultMif, value, "DefaultMif"); }
+			set
+			{
+				SetField(ref _defaultMif, value, "DefaultMif");
+				FileDefaults.UpdateFileDefaults();
+			}
 		}
 
 		/// <summary>
