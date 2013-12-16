@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x648">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -123,7 +123,7 @@
 	<tagRef name="Material Effect" offset="0xe4" visible="true" />
 	<tagRef name="Melee Impact" offset="0xf4" visible="true" />
 	<undefined name="Unknown" offset="0x104" visible="false" />
-	<reflexive name="AI Properties" offset="0x108" visible="true" entrySize="0x10">
+	<reflexive name="AI Properties" offset="0x108" visible="true" entrySize="0x10" align="0x8">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -180,7 +180,7 @@
 			<option name="Infinite" value="0x7" />
 		</enum16>
 	</reflexive>
-	<reflexive name="Functions" offset="0x114" visible="true" entrySize="0x40">
+	<reflexive name="Functions" offset="0x114" visible="true" entrySize="0x40" align="0x8">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -218,7 +218,7 @@
 		<stringid name="Import Name" offset="0x4" visible="true" />
 		<stringid name="Export Name" offset="0x8" visible="true" />
 		<stringid name="Turn Off With" offset="0xC" visible="true" />
-		<stringid  name="Unknown" offset="0x10" visible="true" />
+		<stringid name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Data" offset="0x18" visible="true" />
 		<stringid name="Scale By" offset="0x2C" visible="true" />
@@ -246,7 +246,7 @@
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0x138" visible="true" />
 	<int16 name="Unknown" offset="0x13A" visible="false" />
-	<reflexive name="Attachments" offset="0x13c" visible="true" entrySize="0x20">
+	<reflexive name="Attachments" offset="0x13c" visible="true" entrySize="0x20" align="0x8">
 		<tagRef name="Attachment" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum16 name="Change Color" offset="0x14" visible="true">
@@ -556,7 +556,7 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<tagref name="Hologram" offset="0x210" visible="true" />
-	<reflexive name="Incident Helpers" offset="0x220" visible="true" entrySize="0x8">
+	<reflexive name="Incident Helpers" offset="0x220" visible="true" entrySize="0x8" align="0x8">
 		<int8 name="Unknown" offset="0x0" visible="false" />
 		<enum8 name="Unit Kind" offset="0x1" visible="true">
 			<option name="Any" value="0xFFFFFFFF" />
@@ -655,10 +655,10 @@
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<stringid name="Camera Marker" offset="0x240" visible="true" />
-	<undefined name="Pitch Auto-Level" offset="0x244" visible="true" />
+	<degree name="Pitch Auto-Level" offset="0x244" visible="true" />
 	<degree name="Pitch Range (min)" offset="0x248" visible="true" />
 	<degree name="Pitch Range (max)" offset="0x24C" visible="true" />
-	<reflexive name="Camera Tracks" offset="0x250" visible="true" entrySize="0x20">
+	<reflexive name="Camera Tracks" offset="0x250" visible="true" entrySize="0x20" align="0x400">
 		<tagRef name="Track" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
 	</reflexive>
@@ -754,7 +754,7 @@
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<stringid name="Assassination Camera Marker" offset="0x2B8" visible="true" />
-	<undefined name="Assassination Pitch Auto-Level" offset="0x2BC" visible="true" />
+	<degree name="Assassination Pitch Auto-Level" offset="0x2BC" visible="true" />
 	<degree name="Assassination Pitch Range (min)" offset="0x2C0" visible="true" />
 	<degree name="Assassination Pitch Range (max)" offset="0x2C4" visible="true" />
 	<reflexive name="Assassination Camera Tracks" offset="0x2c8" visible="true" entrySize="0x20">
@@ -931,7 +931,7 @@
 		<option name="Promethean Pulse" value="0x2" />
 	</enum16>
 	<int16 name="Grenade Count" offset="0x52E" visible="true" />
-	<reflexive name="Powered Seats" offset="0x530" visible="true" entrySize="0x8">
+	<reflexive name="Powered Seats" offset="0x530" visible="true" entrySize="0x8" align="0x20">
 		<undefined name="Powerup Time" offset="0x0" visible="true" />
 		<undefined name="Powerdown Time" offset="0x4" visible="true" />
 	</reflexive>
@@ -1003,7 +1003,7 @@
 		<tagRef name="Locking-on Sound" offset="0x18" visible="true" />
 		<tagRef name="Locked-on Sound" offset="0x28" visible="true" />
 	</reflexive>
-	<reflexive name="Seats" offset="0x554" visible="true" entrySize="0x16c">
+	<reflexive name="Seats" offset="0x554" visible="true" entrySize="0x16c" align="0x8">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invisible" index="0" />
 			<bit name="Locked" index="1" />
@@ -1072,19 +1072,19 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-	    <stringid name="Seat Animation" offset="0x8" visible="true" />
-	    <stringid name="Seat Marker" offset="0xC" visible="true" />
-	    <stringid name="Entry Marker" offset="0x10" visible="true" />
-	    <stringid name="Tank Entry Marker" offset="0x14" visible="true" />
-	    <stringid name="Ordnance Navpoint Name" offset="0x18" visible="true" />
-	    <stringid name="Boarding Grenade Marker" offset="0x1C" visible="true" />
-	    <stringid name="Boarding Grenade String" offset="0x20" visible="true" />
-	    <stringid name="Boarding Melee String" offset="0x24" visible="true" />
-	    <undefined name="Unknown" offset="0x28" visible="false" />
-	    <undefined name="Ping Scale" offset="0x2C" visible="true" />
-	    <undefined name="Turnover Time (sec)" offset="0x30" visible="true" />
-	    <tagref name="Acceleration" offset="0x34" visible="true" />
-	    <undefined name="AI Scariness" offset="0x44" visible="true" />
+		<stringid name="Seat Animation" offset="0x8" visible="true" />
+		<stringid name="Seat Marker" offset="0xC" visible="true" />
+		<stringid name="Entry Marker" offset="0x10" visible="true" />
+		<stringid name="Tank Entry Marker" offset="0x14" visible="true" />
+		<stringid name="Ordnance Navpoint Name" offset="0x18" visible="true" />
+		<stringid name="Boarding Grenade Marker" offset="0x1C" visible="true" />
+		<stringid name="Boarding Grenade String" offset="0x20" visible="true" />
+		<stringid name="Boarding Melee String" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Ping Scale" offset="0x2C" visible="true" />
+		<undefined name="Turnover Time (sec)" offset="0x30" visible="true" />
+		<tagref name="Acceleration" offset="0x34" visible="true" />
+		<undefined name="AI Scariness" offset="0x44" visible="true" />
 		<enum16 name="AI Seat Type" offset="0x48" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Passenger" value="0x1" />
@@ -1094,18 +1094,18 @@
 			<option name="Driver" value="0x5" />
 		</enum16>
 		<int16 name="Boarding Seat #" offset="0x4A" visible="true" />
-	    <undefined name="struct here" offset="0x4C" visible="false" />
-	    <undefined name="struct here" offset="0x50" visible="false" />
-	    <undefined name="struct here" offset="0x54" visible="false" />
-	    <undefined name="Listener Interpolation Factor" offset="0x58" visible="true" />
-	    <undefined name="Yaw Rate Bounds (min)" offset="0x5C" visible="true" />
-	    <undefined name="Yaw Rate Bounds (max)" offset="0x60" visible="true" />
-	    <undefined name="Pitch Rate Bounds (min)" offset="0x64" visible="true" />
-	    <undefined name="Pitch Rate Bounds (max)" offset="0x68" visible="true" />
-	    <undefined name="Unknown" offset="0x6C" visible="false" />
-	    <undefined name="Min Speed Reference" offset="0x70" visible="true" />
-	    <undefined name="Max Speed Reference" offset="0x74" visible="true" />
-	    <undefined name="Speed Exponent" offset="0x78" visible="true" />
+		<undefined name="struct here" offset="0x4C" visible="false" />
+		<undefined name="struct here" offset="0x50" visible="false" />
+		<undefined name="struct here" offset="0x54" visible="false" />
+		<undefined name="Listener Interpolation Factor" offset="0x58" visible="true" />
+		<undefined name="Yaw Rate Bounds (min)" offset="0x5C" visible="true" />
+		<undefined name="Yaw Rate Bounds (max)" offset="0x60" visible="true" />
+		<undefined name="Pitch Rate Bounds (min)" offset="0x64" visible="true" />
+		<undefined name="Pitch Rate Bounds (max)" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Min Speed Reference" offset="0x70" visible="true" />
+		<undefined name="Max Speed Reference" offset="0x74" visible="true" />
+		<undefined name="Speed Exponent" offset="0x78" visible="true" />
 		<bitfield32 name="Camera Flags" offset="0x7C" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -1140,27 +1140,27 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-	    <stringid name="Camera Marker" offset="0x80" visible="true" />
-	    <undefined name="Pitch Auto-Level" offset="0x84" visible="true" />
-	    <degree name="Pitch Range (min)" offset="0x88" visible="true" />
-	    <degree name="Pitch Range (max)" offset="0x8C" visible="true" />
-		<reflexive name="Camera Tracks" offset="0x90" visible="true" entrySize="0x20">
+		<stringid name="Camera Marker" offset="0x80" visible="true" />
+		<degree name="Pitch Auto-Level" offset="0x84" visible="true" />
+		<degree name="Pitch Range (min)" offset="0x88" visible="true" />
+		<degree name="Pitch Range (max)" offset="0x8C" visible="true" />
+		<reflexive name="Camera Tracks" offset="0x90" visible="true" entrySize="0x20" align="0x8">
 			<tagRef name="Track" offset="0x0" visible="true" />
 			<tagRef name="Unknown" offset="0x10" visible="true" />
 		</reflexive>
-	    <degree name="Camera Tightness (min)" offset="0x9C" visible="true" />
-	    <degree name="Camera Tightness (max)" offset="0xa0" visible="true" />
-	    <degree name="Unknown" offset="0xa4" visible="false" />
-	    <undefined name="Unknown" offset="0xa8" visible="false" />
-	    <undefined name="Unknown" offset="0xaC" visible="false" />
-	    <undefined name="Unknown" offset="0xb0" visible="false" />
-	    <degree name="FOV" offset="0xb4" visible="true" />
-	    <undefined name="Unknown" offset="0xb8" visible="false" />
-	    <undefined name="Unknown" offset="0xbC" visible="false" />
-	    <undefined name="Unknown" offset="0xc0" visible="false" />
-	    <undefined name="Unknown" offset="0xc4" visible="false" />
-	    <undefined name="Unknown" offset="0xc8" visible="false" />
-	    <undefined name="Unknown" offset="0xcC" visible="false" />
+		<degree name="Camera Tightness (min)" offset="0x9C" visible="true" />
+		<degree name="Camera Tightness (max)" offset="0xa0" visible="true" />
+		<degree name="Unknown" offset="0xa4" visible="false" />
+		<undefined name="Unknown" offset="0xa8" visible="false" />
+		<undefined name="Unknown" offset="0xaC" visible="false" />
+		<undefined name="Unknown" offset="0xb0" visible="false" />
+		<degree name="FOV" offset="0xb4" visible="true" />
+		<undefined name="Unknown" offset="0xb8" visible="false" />
+		<undefined name="Unknown" offset="0xbC" visible="false" />
+		<undefined name="Unknown" offset="0xc0" visible="false" />
+		<undefined name="Unknown" offset="0xc4" visible="false" />
+		<undefined name="Unknown" offset="0xc8" visible="false" />
+		<undefined name="Unknown" offset="0xcC" visible="false" />
 		<reflexive name="Camera Modifiers" offset="0xd0" visible="true" entrySize="0x70">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
@@ -1205,27 +1205,27 @@
 				<dataref name="Unknown" offset="0x0" visible="true" />
 			</reflexive>
 		</reflexive>
-	    <tagref name="HUD" offset="0xf4" visible="true" />
-	    <stringid name="Entry String" offset="0x104" visible="true" />
-	    <degree name="Yaw Range (min)" offset="0x108" visible="true" />
-	    <degree name="Yaw Range (max)" offset="0x10C" visible="true" />
-	    <undefined name="Unknown" offset="0x110" visible="false" />
-	    <undefined name="Unknown" offset="0x114" visible="false" />
-	    <tagref name="Built-In Gunner" offset="0x118" visible="true" />
-	    <float32 name="Entry Radius" offset="0x128" visible="true" />
-	    <degree name="Entry Marker Cone Angle" offset="0x12C" visible="true" />
-	    <degree name="Entry Marker Facing Angle" offset="0x130" visible="true" />
-	    <float32 name="Maximum Relative Velocity" offset="0x134" visible="true" />
-	    <float32 name="Power Off Animation Speed" offset="0x138" visible="true" />
-	    <float32 name="Power On Animation Speed" offset="0x13C" visible="true" />
-	    <stringid name="Open Animation" offset="0x140" visible="true" />
-	    <stringid name="Opening Animation" offset="0x144" visible="true" />
-	    <stringid name="Closing Animation" offset="0x148" visible="true" />
-	    <stringid name="Invisible Seat Region" offset="0x14C" visible="true" />
-	    <int32 name="Runtime Invisible Seat Region Index" offset="0x150" visible="true" />
-	    <tagref name="Unknown" offset="0x154" visible="true" />
-	    <stringid name="Unknown Seat" offset="0x164" visible="true" />
-	    <undefined name="Unknown" offset="0x168" visible="false" />
+		<tagref name="HUD" offset="0xf4" visible="true" />
+		<stringid name="Entry String" offset="0x104" visible="true" />
+		<degree name="Yaw Range (min)" offset="0x108" visible="true" />
+		<degree name="Yaw Range (max)" offset="0x10C" visible="true" />
+		<undefined name="Unknown" offset="0x110" visible="false" />
+		<undefined name="Unknown" offset="0x114" visible="false" />
+		<tagref name="Built-In Gunner" offset="0x118" visible="true" />
+		<float32 name="Entry Radius" offset="0x128" visible="true" />
+		<degree name="Entry Marker Cone Angle" offset="0x12C" visible="true" />
+		<degree name="Entry Marker Facing Angle" offset="0x130" visible="true" />
+		<float32 name="Maximum Relative Velocity" offset="0x134" visible="true" />
+		<float32 name="Power Off Animation Speed" offset="0x138" visible="true" />
+		<float32 name="Power On Animation Speed" offset="0x13C" visible="true" />
+		<stringid name="Open Animation" offset="0x140" visible="true" />
+		<stringid name="Opening Animation" offset="0x144" visible="true" />
+		<stringid name="Closing Animation" offset="0x148" visible="true" />
+		<stringid name="Invisible Seat Region" offset="0x14C" visible="true" />
+		<int32 name="Runtime Invisible Seat Region Index" offset="0x150" visible="true" />
+		<tagref name="Unknown" offset="0x154" visible="true" />
+		<stringid name="Unknown Seat" offset="0x164" visible="true" />
+		<undefined name="Unknown" offset="0x168" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x560" visible="false" />
 	<undefined name="Unknown" offset="0x564" visible="false" />
@@ -1234,37 +1234,37 @@
 	<tagref name="EMP Drain Effect" offset="0x570" visible="true" />
 	<tagref name="Boost Collision Damage" offset="0x580" visible="true" />
 	<bitfield32 name="Boost Flags" offset="0x590" visible="true">
-	    <bit name="Propels Unit Forward" index="0" />
-	    <bit name="Bit 1" index="1" />
-	    <bit name="Bit 2" index="2" />
-	    <bit name="Bit 3" index="3" />
-	    <bit name="Bit 4" index="4" />
-	    <bit name="Bit 5" index="5" />
-	    <bit name="Bit 6" index="6" />
-	    <bit name="Bit 7" index="7" />
-	    <bit name="Bit 8" index="8" />
-	    <bit name="Bit 9" index="9" />
-	    <bit name="Bit 10" index="10" />
-	    <bit name="Bit 11" index="11" />
-	    <bit name="Bit 12" index="12" />
-	    <bit name="Bit 13" index="13" />
-	    <bit name="Bit 14" index="14" />
-	    <bit name="Bit 15" index="15" />
-	    <bit name="Bit 16" index="16" />
-	    <bit name="Bit 17" index="17" />
-	    <bit name="Bit 18" index="18" />
-	    <bit name="Bit 19" index="19" />
-	    <bit name="Bit 20" index="20" />
-	    <bit name="Bit 21" index="21" />
-	    <bit name="Bit 22" index="22" />
-	    <bit name="Bit 23" index="23" />
-	    <bit name="Bit 24" index="24" />
-	    <bit name="Bit 25" index="25" />
-	    <bit name="Bit 26" index="26" />
-	    <bit name="Bit 27" index="27" />
-	    <bit name="Bit 28" index="28" />
-	    <bit name="Bit 29" index="29" />
-	    <bit name="Bit 30" index="30" />
+		<bit name="Propels Unit Forward" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<undefined name="Boost Peak Power" offset="0x594" visible="true" />

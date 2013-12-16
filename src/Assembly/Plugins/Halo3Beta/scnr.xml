@@ -2425,13 +2425,90 @@
 	<reflexive name="Kill Zones" offset="0x454" visible="true" entrySize="0x2">
 		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Script Syntax" offset="0x460" visible="true" entrySize="0x18">
+	<reflexive name="Script Expressions" offset="0x460" visible="true" entrySize="0x18">
 		<uint16 name="Salt" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
+		<uint16 name="Opcode" offset="0x2" visible="true" />
+		<enum16 name="Value Type" offset="0x4" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special form" value="0x1" />
+			<option name="function name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="string_id" value="0xB" />
+			<option name="unit_seat_mapping" value="0xC" />
+			<option name="trigger_volume" value="0xD" />
+			<option name="cutscene_flag" value="0xE" />
+			<option name="cutscene_camera_point" value="0xF" />
+			<option name="cutscene_title" value="0x10" />
+			<option name="cutscene_recording" value="0x11" />
+			<option name="device_group" value="0x12" />
+			<option name="ai" value="0x13" />
+			<option name="ai_command_list" value="0x14" />
+			<option name="ai_command_script" value="0x15" />
+			<option name="ai_behavior" value="0x16" />
+			<option name="ai_orders" value="0x17" />
+			<option name="ai_line" value="0x18" />
+			<option name="starting_profile" value="0x19" />
+			<option name="conversation" value="0x1A" />
+			<option name="zone_set" value="0x1B" />
+			<option name="designer_zone" value="0x1C" />
+			<option name="point_reference" value="0x1D" />
+			<option name="style" value="0x1E" />
+			<option name="object_list" value="0x1F" />
+			<option name="sound" value="0x20" />
+			<option name="effect" value="0x21" />
+			<option name="damage" value="0x22" />
+			<option name="looping_sound" value="0x23" />
+			<option name="animation_graph" value="0x24" />
+			<option name="damage_effect" value="0x25" />
+			<option name="object_definition" value="0x26" />
+			<option name="bitmap" value="0x27" />
+			<option name="shader" value="0x28" />
+			<option name="render model" value="0x29" />
+			<option name="structure definition" value="0x2A" />
+			<option name="lightmap definition" value="0x2B" />
+			<option name="cinematic definition" value="0x2C" />
+			<option name="cinematic scene definition" value="0x2D" />
+			<option name="any tag" value="0x2E" />
+			<option name="any tag not resolving" value="0x2F" />
+			<option name="game_difficulty" value="0x30" />
+			<option name="team" value="0x31" />
+			<option name="mp_team" value="0x32" />
+			<option name="controller" value="0x33" />
+			<option name="button preset" value="0x34" />
+			<option name="joystick preset" value="0x35" />
+			<option name="player color" value="0x36" />
+			<option name="player character type" value="0x37" />
+			<option name="voice output setting" value="0x38" />
+			<option name="voice mask" value="0x39" />
+			<option name="subtitle setting" value="0x3A" />
+			<option name="actor_type" value="0x3B" />
+			<option name="model_state" value="0x3C" />
+			<option name="event" value="0x3D" />
+			<option name="character_physics" value="0x3E" />
+			<option name="object" value="0x3F" />
+			<option name="unit" value="0x40" />
+			<option name="vehicle" value="0x41" />
+			<option name="weapon" value="0x42" />
+			<option name="device" value="0x43" />
+			<option name="scenery" value="0x44" />
+			<option name="object_name" value="0x45" />
+			<option name="unit_name" value="0x46" />
+			<option name="vehicle_name" value="0x47" />
+			<option name="weapon_name" value="0x48" />
+			<option name="device_name" value="0x49" />
+			<option name="scenery_name" value="0x4A" />
+			<option name="cinematic_lightprobe" value="0x4B" />
+		</enum16>
+		<int16 name="Expression Type" offset="0x6" visible="true" />
+		<uint16 name="Next Expression Salt" offset="0x8" visible="true" />
+		<uint16 name="Next Expression Index" offset="0xA" visible="true" />
 		<uint32 name="String Address" offset="0xC" visible="true" />
 		<int8 name="Value First Byte" offset="0x10" visible="true" />
 		<int8 name="Value Second Byte" offset="0x11" visible="true" />
@@ -3148,65 +3225,70 @@
 	<undefined name="Unknown" offset="0x6D8" visible="false" />
 	<undefined name="Unknown" offset="0x6DC" visible="false" />
 	<undefined name="Unknown" offset="0x6E0" visible="false" />
-	<reflexive name="Unknown" offset="0x6E4" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0xCC">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Objectives" offset="0x6E4" visible="true" entrySize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<reflexive name="Unknown" offset="0x8" visible="true" entrySize="0xCC">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<int16 name="Unknown" offset="0x8" visible="false" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x44" visible="false" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
-			<undefined name="Unknown" offset="0x4C" visible="false" />
-			<undefined name="Unknown" offset="0x50" visible="false" />
-			<undefined name="Unknown" offset="0x54" visible="false" />
-			<undefined name="Unknown" offset="0x58" visible="false" />
-			<undefined name="Unknown" offset="0x5C" visible="false" />
-			<undefined name="Unknown" offset="0x60" visible="false" />
-			<undefined name="Unknown" offset="0x64" visible="false" />
-			<undefined name="Unknown" offset="0x68" visible="false" />
-			<undefined name="Unknown" offset="0x6C" visible="false" />
-			<undefined name="Unknown" offset="0x70" visible="false" />
-			<undefined name="Unknown" offset="0x74" visible="false" />
-			<undefined name="Unknown" offset="0x78" visible="false" />
-			<undefined name="Unknown" offset="0x7C" visible="false" />
-			<undefined name="Unknown" offset="0x80" visible="false" />
-			<undefined name="Unknown" offset="0x84" visible="false" />
-			<undefined name="Unknown" offset="0x88" visible="false" />
-			<undefined name="Unknown" offset="0x8C" visible="false" />
-			<undefined name="Unknown" offset="0x90" visible="false" />
-			<undefined name="Unknown" offset="0x94" visible="false" />
-			<undefined name="Unknown" offset="0x98" visible="false" />
-			<undefined name="Unknown" offset="0x9C" visible="false" />
-			<undefined name="Unknown" offset="0xA0" visible="false" />
-			<undefined name="Unknown" offset="0xA4" visible="false" />
+			<ascii name="Unknown" offset="0x10" length="0x20" visible="true" />
+			<ascii name="Unknown" offset="0x30" length="0x20" visible="true" />
+			<ascii name="Unknown" offset="0x50" length="0x20" visible="true" />
+			<int16 name="Unknown" offset="0x70" visible="false" />
+			<int16 name="Unknown" offset="0x72" visible="false" />
+			<int16 name="Unknown" offset="0x74" visible="false" />
+			<int16 name="Unknown" offset="0x76" visible="false" />
+			<int16 name="Unknown" offset="0x78" visible="false" />
+			<int16 name="Unknown" offset="0x7A" visible="false" />
+			<reflexive name="Unknown 84" offset="0x7C" visible="false" entrySize="0x8">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+			</reflexive>
+			<stringid name="Unknown" offset="0x88" visible="true" />
+			<int16 name="Unknown" offset="0x8C" visible="false" />
+			<int16 name="Unknown" offset="0x8E" visible="false" />
+			<int16 name="Unknown" offset="0x90" visible="false" />
+			<int16 name="Unknown" offset="0x92" visible="false" />
+			<reflexive name="Unknown" offset="0x94" visible="true" entrySize="0x124">
+				<ascii name="Unknown" offset="0x0" length="0x20" visible="true" />
+				<ascii name="Unknown" offset="0x20" length="0x100" visible="true" />
+				<int16 name="Unknown" offset="0x120" visible="false" />
+				<int16 name="Unknown" offset="0x122" visible="false" />
+			</reflexive>
+			<int16 name="Unknown" offset="0xA0" visible="false" />
+			<int16 name="Unknown" offset="0xA2" visible="false" />
+			<int16 name="Unknown" offset="0xA4" visible="false" />
+			<int16 name="Unknown" offset="0xA6" visible="false" />
 			<undefined name="Unknown" offset="0xA8" visible="false" />
 			<undefined name="Unknown" offset="0xAC" visible="false" />
 			<undefined name="Unknown" offset="0xB0" visible="false" />
-			<undefined name="Unknown" offset="0xB4" visible="false" />
-			<undefined name="Unknown" offset="0xB8" visible="false" />
-			<undefined name="Unknown" offset="0xBC" visible="false" />
-			<undefined name="Unknown" offset="0xC0" visible="false" />
-			<undefined name="Unknown" offset="0xC4" visible="false" />
-			<undefined name="Unknown" offset="0xC8" visible="false" />
+			<reflexive name="Unknown" offset="0xB4" visible="false" entrySize="0xA">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Unknown" offset="0x8" visible="false" />
+			</reflexive>
+			<reflexive name="Unknown" offset="0xC0" visible="false" entrySize="0x20">
+				<undefined name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x4" visible="false" />
+				<undefined name="Unknown" offset="0x8" visible="false" />
+				<int16 name="Unknown" offset="0xC" visible="false" />
+				<int16 name="Unknown" offset="0xA" visible="false" />
+				<undefined name="Unknown" offset="0x10" visible="false" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<int16 name="Unknown" offset="0x1C" visible="false" />
+				<int16 name="Unknown" offset="0x1E" visible="false" />
+			</reflexive>
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown" offset="0x6F0" visible="false" entrySize="0xB0">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Designer Zonesets" offset="0x6F0" visible="false" entrySize="0xB0">
+		<stringid name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x74">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -17,7 +17,7 @@
 			<option name="AI Objective Fragments" value="0x3" />
 		</enum32>
 	</reflexive>
-	<reflexive name="Script Names" offset="0xC" visible="true" entrySize="0x20">
+	<reflexive name="Scripts" offset="0xC" visible="true" entrySize="0x20">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="Startup" value="0x0" />
@@ -137,8 +137,8 @@
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
 		</enum16>
-		<uint16 name="Syntax Salt" offset="0xC" visible="true" />
-		<int16 name="Syntax Index" offset="0xE" visible="true" />
+		<uint16 name="Root Expression Salt" offset="0xC" visible="true" />
+		<uint16 name="Root Expression Index" offset="0xE" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="false" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
 		<reflexive name="Parameters" offset="0x14" visible="true" entrySize="0x24">
@@ -357,8 +357,8 @@
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
 		</enum16>
-		<uint16 name="Syntax Salt" offset="0x8" visible="true" />
-		<int16 name="Syntax Index" offset="0xA" visible="true" />
+		<uint16 name="Initialization Expression Salt" offset="0x8" visible="true" />
+		<uint16 name="Initialization Expression Index" offset="0xA" visible="true" />
 	</reflexive>
 	<reflexive name="Variables" offset="0x24" visible="true" entrySize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -467,8 +467,8 @@
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
 		</enum16>
-		<uint16 name="Syntax Salt" offset="0x8" visible="true" />
-		<int16 name="Syntax Index" offset="0xA" visible="true" />
+		<uint16 name="Expression Salt" offset="0x8" visible="true" />
+		<uint16 name="Expression Index" offset="0xA" visible="true" />
 	</reflexive>
 	<reflexive name="Resources" offset="0x30" visible="true" entrySize="0x10">
 		<tagRef name="Resource" offset="0x0" visible="true" />
@@ -511,17 +511,18 @@
 		</bitfield32>
 		<undefined name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
-	<reflexive name="Syntax" offset="0x48" visible="true" entrySize="0x1C">
+	<reflexive name="Expressions" offset="0x48" visible="true" entrySize="0x1C">
 		<uint16 name="Salt" offset="0x0" visible="true" />
-		<int16 name="Identity" offset="0x2" visible="true" />
-		<uint16 name="Sibling  Salt" offset="0x4" visible="true" />
-		<int16 name="Sibling Index" offset="0x6" visible="true" />
-		<uint32 name="Value 32" offset="0x8" visible="true" />
-		<uint16 name="Value 16" offset="0x8" visible="true" />
-		<uint16 name="Value 16" offset="0xA" visible="true" />
-		<uint32 name="String Offset" offset="0xC" visible="true" />
+		<int16 name="Opcode" offset="0x2" visible="true" />
+		<uint16 name="Next Expression Salt" offset="0x4" visible="true" />
+		<uint16 name="Next Expression Index" offset="0x6" visible="true" />
+		<int8 name="Value First Byte" offset="0x8" visible="true" />
+		<int8 name="Value Second Byte" offset="0x9" visible="true" />
+		<int8 name="Value Third Byte" offset="0xA" visible="true" />
+		<int8 name="Value Fourth Byte" offset="0xB" visible="true" />
+		<uint32 name="String Address" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="true" />
-		<enum16 name="Return Type" offset="0x12" visible="true">
+		<enum16 name="Value Type" offset="0x12" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -634,14 +635,14 @@
 			<option name="Global Reference" value="0x29" />
 			<option name="Script Parameter" value="0x69" />
 			<option name="External Script" value="0x222" />
-			<option name="External Global" value="0x229" />		
+			<option name="External Global" value="0x229" />
 		</enum16>
 		<int16 name="Source File Index" offset="0x16" visible="true" />
 		<int32 name="Line Number" offset="0x18" visible="true" />
 	</reflexive>
 	<dataRef name="Script Strings" offset="0x54" visible="true" />
-	<reflexive name="Global Script References" offset="0x68" visible="false" entrySize="0x1C">
-		<tagRef name="Global Container" offset="0x0" visible="true" withClass="false" />
+	<reflexive name="Global Script References" offset="0x68" visible="true" entrySize="0x1C">
+		<tagRef name="Source" offset="0x0" visible="true" withClass="false" />
 		<reflexive name="Scripts" offset="0x4" visible="true" entrySize="0xC">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x4" visible="true" />

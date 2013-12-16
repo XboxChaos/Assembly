@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x22C">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -9,8 +9,8 @@
 		<option name="Main Menu" value="0x2" />
 	</enum16>
 	<int16 name="Flags" offset="0x2" visible="false" />
-	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x20">
-		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x20" align="0x8">
+		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="true" />
 		<stringid name="Name" offset="0x14" visible="true" />
@@ -19,12 +19,12 @@
 		<int16 name="Unknown" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="true" />
 	</reflexive>
-	<reflexive name="Resource Structure Types" offset="0x10" visible="true" entrySize="0x14">
-		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+	<reflexive name="Resource Structure Types" offset="0x10" visible="true" entrySize="0x14" align="0x8">
+		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 		<stringid name="Name" offset="0x10" visible="true" />
 	</reflexive>
 	<reflexive name="Compression Codecs" offset="0x1C" visible="true" entrySize="0x10">
-		<raw name="Guid" offset="0x0" size="0x10" visible="true"/>
+		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 	</reflexive>
 	<reflexive name="External Cache References" offset="0x28" visible="true" entrySize="0x108">
 		<ascii name="Map Path" offset="0x0" visible="true" length="0x12" />
@@ -104,9 +104,9 @@
 		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
 		<int32 name="CRC Checksum" offset="0x14" visible="true" />
-		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true"/>
-		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true"/>
-		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true"/>
+		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
+		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
 		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="true" />
 	</reflexive>
@@ -2231,7 +2231,7 @@ If a bit is enabled then that member will be loaded.
 	<int32 name="struct here" offset="0x188" visible="true" />
 	<int32 name="struct here 2" offset="0x194" visible="true" />
 	<reflexive name="Local Zoneset?" offset="0x1A0" visible="true" entrySize="0xA8">
-		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
+		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4" align="0x8">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
@@ -2267,7 +2267,7 @@ If a bit is enabled then that member will be loaded.
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4">
+		<reflexive name="Optional Raw Pool" offset="0xC" visible="false" entrySize="0x4" align="0x8">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
