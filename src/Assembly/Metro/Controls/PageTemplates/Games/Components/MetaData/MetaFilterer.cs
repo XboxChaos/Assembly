@@ -182,6 +182,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public void VisitShaderRef(ShaderRef field)
+		{
+			if (!FilterString(field, field.Name))
+				FilterString(field, field.DatabasePath);
+		}
+
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)
 		{
 			_filter = filter.ToLower();

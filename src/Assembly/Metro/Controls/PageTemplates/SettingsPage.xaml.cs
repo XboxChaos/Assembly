@@ -87,6 +87,17 @@ namespace Assembly.Metro.Controls.PageTemplates
 			LblXdkScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);
 		}
 
+		private void btnBrowseXsd_Click(object sender, RoutedEventArgs e)
+		{
+			var dialog = new OpenFileDialog()
+			{
+				Filter = "Executable Files|*.exe|All Files|*.*",
+				FileName = App.AssemblyStorage.AssemblySettings.XsdPath,
+				Title = "Open xsd.exe"
+			};
+			if (dialog.ShowDialog() == DialogResult.OK)
+				App.AssemblyStorage.AssemblySettings.XsdPath = dialog.FileName;
+		}
 		#endregion
 
 		public bool Close()

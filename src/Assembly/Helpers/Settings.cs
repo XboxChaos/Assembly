@@ -43,6 +43,7 @@ namespace Assembly.Helpers
 			{
 				_assemblySettings = new Settings();
 			}
+			_assemblySettings.Loaded = true;
 
 			// Update Accent
 			_assemblySettings.UpdateAssemblyAccent();
@@ -146,6 +147,7 @@ namespace Assembly.Helpers
 		private bool _xdkScreenshotGammaCorrect = true;
 		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
+		private string _xsdPath = "";
 
 		#region Enums
 
@@ -237,6 +239,9 @@ namespace Assembly.Helpers
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		[JsonIgnore]
+		public bool Loaded { get; set; }
+
 		protected virtual void OnPropertyChanged(string propertyName)
 		{
 			if (PropertyChanged != null)
@@ -251,6 +256,9 @@ namespace Assembly.Helpers
 
 			field = value;
 			OnPropertyChanged(propertyName);
+
+			if (!Loaded)
+				return true;
 
 			// Write Changes
 			var jsonData = JsonConvert.SerializeObject(this);
@@ -484,6 +492,14 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
+		public string XsdPath
+		{
+			get { return _xsdPath; }
+			set { SetField(ref _xsdPath, value, "XsdPath"); }
+		}
+
+		/// <summary>
+		/// </summary>
 		public LastMetaEditorType HalomapLastSelectedMetaEditor
 		{
 			get { return _halomapLastSelectedMetaEditor; }
@@ -514,7 +530,8 @@ namespace Assembly.Helpers
 			set
 			{
 				SetField(ref _defaultMap, value, "DefaultMap");
-				FileDefaults.UpdateFileDefaults();
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
 			}
 		}
 
@@ -526,7 +543,8 @@ namespace Assembly.Helpers
 			set
 			{
 				SetField(ref _defaultBlf, value, "DefaultBlf");
-				FileDefaults.UpdateFileDefaults();
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
 			}
 		}
 
@@ -538,7 +556,8 @@ namespace Assembly.Helpers
 			set
 			{
 				SetField(ref _defaultMif, value, "DefaultMif");
-				FileDefaults.UpdateFileDefaults();
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
 			}
 		}
 
@@ -547,7 +566,12 @@ namespace Assembly.Helpers
 		public bool DefaultAmp
 		{
 			get { return _defaultAmp; }
-			set { SetField(ref _defaultAmp, value, "DefaultAmp"); }
+			set
+			{
+				SetField(ref _defaultAmp, value, "DefaultAmp");
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
+			}
 		}
 
 		/// <summary>

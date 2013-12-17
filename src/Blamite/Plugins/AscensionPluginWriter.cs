@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -241,6 +242,11 @@ namespace Blamite.Plugins
 		public void LeaveReflexive()
 		{
 			_output.WriteEndElement();
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			WriteBasicValue("uint32", name, offset, visible);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible)

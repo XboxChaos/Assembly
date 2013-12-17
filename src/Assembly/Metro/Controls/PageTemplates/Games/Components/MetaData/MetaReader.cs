@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Blamite.Blam;
+using Blamite.Blam.Shaders;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Util;
@@ -309,6 +310,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Length = length;
 			if (pointer != field.FirstEntryAddress)
 				field.FirstEntryAddress = pointer;
+		}
+
+		public void VisitShaderRef(ShaderRef field)
+		{
+			SeekToOffset(field.Offset);
+			if (_cache.ShaderReader != null)
+				field.Shader = _cache.ShaderReader.ReadShader(_reader, field.Type);
 		}
 
 		public void VisitReflexiveEntry(WrappedReflexiveEntry field)

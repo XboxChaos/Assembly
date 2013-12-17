@@ -20,8 +20,10 @@ using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.Shaders;
 using Blamite.Blam.ThirdGen.LanguagePack;
 using Blamite.Blam.ThirdGen.Resources;
+using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
@@ -203,6 +205,8 @@ namespace Blamite.Blam.ThirdGen
 
 		public IScriptFile[] ScriptFiles { get; private set; }
 
+		public IShaderReader ShaderReader { get; private set; }
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -212,6 +216,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
+			ShaderReader = new ThirdGenShaderReader(this, _buildInfo);
 		}
 
 		private void LoadHeader(IReader reader, string buildString)

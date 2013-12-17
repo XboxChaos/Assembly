@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -272,6 +273,13 @@ namespace Blamite.Plugins
 			_output.WriteAttributeString("max", max.ToString(CultureInfo.InvariantCulture));
 			_output.WriteAttributeString("smallChange", smallChange.ToString(CultureInfo.InvariantCulture));
 			_output.WriteAttributeString("largeChange", largeChange.ToString(CultureInfo.InvariantCulture));
+			_output.WriteEndElement();
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			WriteValueStart("shader", name, offset, visible);
+			_output.WriteAttributeString("type", (type == ShaderType.Pixel) ? "pixel" : "vertex");
 			_output.WriteEndElement();
 		}
 

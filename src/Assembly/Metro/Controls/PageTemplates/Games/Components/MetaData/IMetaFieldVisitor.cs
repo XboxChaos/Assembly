@@ -23,5 +23,6 @@
 		void VisitDegree(DegreeData field);
 		void VisitColourInt(ColourData field);
 		void VisitColourFloat(ColourData field);
+		void VisitShaderRef(ShaderRef field);
 	}
 }

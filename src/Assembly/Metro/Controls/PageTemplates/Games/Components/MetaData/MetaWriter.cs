@@ -321,6 +321,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteFloat(field.Radian);
 		}
 
+		public void VisitShaderRef(ShaderRef field)
+		{
+			// Don't do anything
+		}
+
 		public void WriteFields(IList<MetaField> fields)
 		{
 			foreach (MetaField t in fields)
