@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Blamite.Blam;
+using Blamite.Blam.Shaders;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Plugins;
@@ -260,6 +261,11 @@ namespace Blamite.Injection
 		{
 			// Pop the block stack
 			_blockStack.Pop();
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			// TODO: Extract the shader
 		}
 
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)

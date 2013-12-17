@@ -368,6 +368,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 		}
 
+		public void VisitShaderRef(ShaderRef field)
+		{
+		}
+
 		public void Flatten(ObservableCollection<MetaField> fields)
 		{
 			if (_topLevelFields == null)

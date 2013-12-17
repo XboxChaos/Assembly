@@ -173,6 +173,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			comment.RegisterAttribute(new CompletableXMLAttribute("title", "The title of the comment (optional)"));
 			_completer.RegisterTag(comment);
 
+			CompletableXMLTag shader = RegisterMetaTag("shader", "Shader reference");
+			var shaderType = new CompletableXMLAttribute("type", "The type of the shader (required)");
+			shaderType.RegisterValue(new CompletableXMLValue("pixel", "Pixel shader"));
+			shaderType.RegisterValue(new CompletableXMLValue("vertex", "Vertex shader"));
+			shader.RegisterAttribute(shaderType);
+
 			RegisterMetaTag("undefined", "Value of an unknown type");
 
 			_completer.TagCompletionAvailable += TagCompletionAvailable;

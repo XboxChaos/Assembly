@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -226,6 +227,11 @@ namespace Blamite.Plugins
 		private static void PrintBasicValue(string type, string name, uint offset, bool visible)
 		{
 			Debug.WriteLine("{0} \"{1}\" at {2}, visible = {3}", type, name, offset, visible);
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			Debug.WriteLine("Shader \"{0}\" at {1}, visible = {2}, type = {3}", name, offset, visible, type);
 		}
 	}
 }

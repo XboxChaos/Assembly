@@ -3,6 +3,7 @@ using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.SecondGen.Structures;
+using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -171,6 +172,11 @@ namespace Blamite.Blam.SecondGen
 		public IScriptFile[] ScriptFiles
 		{
 			get { return new IScriptFile[0]; }
+		}
+
+		public IShaderReader ShaderReader
+		{
+			get { return null; }
 		}
 
 		private void Load(IReader reader, EngineDescription buildInfo, string buildString)

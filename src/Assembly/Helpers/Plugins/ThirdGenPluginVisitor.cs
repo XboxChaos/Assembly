@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using Blamite.Blam.Shaders;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Util;
@@ -130,6 +131,12 @@ namespace Assembly.Helpers.Plugins
 		{
 			if (visible || _showInvisibles)
 				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine));
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new ShaderRef(name, offset, 0, type, null, pluginLine));
 		}
 
 		#region Bitfield

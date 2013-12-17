@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -262,6 +263,10 @@ namespace Blamite.Plugins
 					ReadRaw(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
+				case "shader":
+					ReadShader(reader, name, offset, visible, visitor, pluginLine);
+					break;
+
 				case "color8":
 				case "color16":
 				case "color24":
@@ -419,6 +424,23 @@ namespace Blamite.Plugins
 			size = ParseInt(reader.Value);
 
 			visitor.VisitRawData(name, offset, visible, size, pluginLine);
+		}
+
+		private static void ReadShader(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
+		{
+			if (!reader.MoveToAttribute("type"))
+				throw new ArgumentException("Shaders must have a type attribute." + PositionInfo(reader));
+
+			ShaderType type;
+			if (reader.Value == "pixel")
+				type = ShaderType.Pixel;
+			else if (reader.Value == "vertex")
+				type = ShaderType.Vertex;
+			else
+				throw new ArgumentException("Invalid shader type \"" + reader.Value + "\"");
+
+			visitor.VisitShader(name, offset, visible, type, pluginLine);
 		}
 
 		private static void ReadOptions(XmlReader reader, IPluginVisitor visitor)
