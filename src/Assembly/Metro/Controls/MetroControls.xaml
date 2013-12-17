@@ -419,7 +419,7 @@
 				<ControlTemplate TargetType="{x:Type Expander}">
 					<Border BorderBrush="#292929" BorderThickness="2" Background="#FF252525" CornerRadius="3" SnapsToDevicePixels="True">
 						<DockPanel>
-							<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" Foreground="#999999" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+							<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
 								<ToggleButton.FocusVisualStyle>
 									<Style>
 										<Setter Property="Control.Template">
@@ -446,7 +446,7 @@
 															</Grid.ColumnDefinitions>
 															<Ellipse x:Name="circle" Fill="Transparent" HorizontalAlignment="Center" Height="19" Stroke="DarkGray" VerticalAlignment="Center" Width="19"/>
 															<Path x:Name="arrow" Data="M 4.5 0 L 4.5 9 M 0 4.5 L 9 4.5" HorizontalAlignment="Center" SnapsToDevicePixels="False" Stroke="#FF666666" StrokeThickness="2" VerticalAlignment="Center"/>
-															<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center"/>
+															<ContentPresenter x:Name="label" ContentTemplate="{TemplateBinding ContentTemplate}" TextBlock.Foreground="#999999" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center" OpacityMask="#FFF90D0D"/>
 														</Grid>
 													</Border>
 													<ControlTemplate.Triggers>
@@ -465,9 +465,10 @@
 															<Setter Property="Stroke" TargetName="arrow" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
 														</Trigger>
 														<Trigger Property="IsEnabled" Value="False">
-															<Setter Property="Stroke" TargetName="circle" Value="DarkGray"/>
+															<Setter Property="Stroke" TargetName="circle" Value="#FF666666"/>
 															<Setter Property="Fill" TargetName="circle" Value="Transparent"/>
 															<Setter Property="Stroke" TargetName="arrow" Value="#FF666666"/>
+															<Setter Property="TextBlock.Foreground" TargetName="label" Value="#FF666666" />
 														</Trigger>
 													</ControlTemplate.Triggers>
 												</ControlTemplate>
