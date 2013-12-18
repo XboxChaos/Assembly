@@ -364,7 +364,7 @@
 					<TextBox
 						x:Name="txtAutoSaveDirectory" Width="400" Text="{Binding Path=XdkScreenshotPath, Mode=TwoWay}" />
 					<Button
-						Margin="20,0,0,0" Width="90" Content="Select Folder"
+						Margin="10,0,0,0" Width="75" Content="Browse..."
 						Click="btnAutoSaveScreenshotDirectory_Click" />
 				</StackPanel>
 
@@ -425,7 +425,11 @@
 					<RowDefinition Height="10" />
 					<RowDefinition Height="25" />
 
-					<!-- Footer -->
+                    <!-- XSD Path -->
+                    <RowDefinition Height="10" />
+                    <RowDefinition Height="25" />
+
+                    <!-- Footer -->
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
@@ -446,12 +450,19 @@
 				           FontFamily="{DynamicResource MetroFontRegular}" />
 				<ComboBox x:Name="ComboBoxMapTagSort" Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" IsEnabled="False"
 				          SelectedItem="{Binding Path=HalomapTagSort, Mode=TwoWay}" Width="250">
-					<!--
+                    <!--
 					<ComboBoxItem Content="By Object Hierarchy" />
 					<ComboBoxItem Content="By Path Hierarchy" />
 					-->
 				</ComboBox>
-			</Grid>
+
+                <!-- XSD Path -->
+                <TextBlock Grid.Column="1" Grid.Row="7"
+				        Text="xsd.exe Path:" Foreground="White" Margin="0,4,0,0"
+				        FontFamily="{DynamicResource MetroFontRegular}" />
+                <TextBox x:Name="txtXsdPath" Grid.Column="2" Grid.Row="7" HorizontalAlignment="Left" Width="250" Text="{Binding XsdPath, Mode=TwoWay}" />
+                <Button x:Name="btnBrowseXsd" Grid.Column="2" Grid.Row="7" Margin="260,0,0,0" Width="75" HorizontalAlignment="Left" Click="btnBrowseXsd_Click">Browse...</Button>
+            </Grid>
 
 			<Grid x:Name="settingsPlugins" Visibility="Collapsed">
 				<Grid.ColumnDefinitions>
@@ -466,6 +477,9 @@
 
 					<!-- Show Comments -->
 					<RowDefinition Height="10" />
+					<RowDefinition Height="25" />
+					
+					<!-- Show Information -->
 					<RowDefinition Height="25" />
 
 					<!-- Footer -->
@@ -483,6 +497,10 @@
 				<CheckBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left"
 				          IsChecked="{Binding Path=PluginsShowComments, Mode=TwoWay}" Width="400"
 				          Content="Show comments in the meta editor" />
+				<!-- Show Information -->
+				<CheckBox Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left"
+				          IsChecked="{Binding Path=PluginsShowInformation, Mode=TwoWay}" Width="400"
+				          Content="Show tag block information by default in the meta editor" />
 			</Grid>
 
 			<Grid x:Name="settingsStrtPge" Visibility="Collapsed">
@@ -527,7 +545,7 @@
 
 		<StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Column="1" Orientation="Vertical"
 		            Margin="0,0,5,5">
-			<TextBlock HorizontalAlignment="Right" Text="Where is my Save Button?"
+			<TextBlock HorizontalAlignment="Right" Text="Where is my save button?"
 			           FontFamily="{DynamicResource MetroFontSemiBold}">
 				<TextBlock.Foreground>
 					<SolidColorBrush Color="{DynamicResource ExtryzeAccentBrushColour}" />

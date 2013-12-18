@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -137,10 +138,12 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			WriteValueStart("dataRef", name, offset, visible);
 			_output.WriteAttributeString("format", format);
+			if (align != 4)
+				_output.WriteAttributeString("align", ToHexString(align));
 			_output.WriteEndElement();
 		}
 
@@ -244,10 +247,12 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			WriteValueStart("reflexive", name, offset, visible);
 			_output.WriteAttributeString("entrySize", ToHexString(entrySize));
+			if (align != 4)
+				_output.WriteAttributeString("align", ToHexString(align));
 			return true;
 		}
 
@@ -268,6 +273,13 @@ namespace Blamite.Plugins
 			_output.WriteAttributeString("max", max.ToString(CultureInfo.InvariantCulture));
 			_output.WriteAttributeString("smallChange", smallChange.ToString(CultureInfo.InvariantCulture));
 			_output.WriteAttributeString("largeChange", largeChange.ToString(CultureInfo.InvariantCulture));
+			_output.WriteEndElement();
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			WriteValueStart("shader", name, offset, visible);
+			_output.WriteAttributeString("type", (type == ShaderType.Pixel) ? "pixel" : "vertex");
 			_output.WriteEndElement();
 		}
 

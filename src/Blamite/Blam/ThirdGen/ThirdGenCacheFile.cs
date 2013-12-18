@@ -20,8 +20,10 @@ using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.Shaders;
 using Blamite.Blam.ThirdGen.LanguagePack;
 using Blamite.Blam.ThirdGen.Resources;
+using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
@@ -203,6 +205,8 @@ namespace Blamite.Blam.ThirdGen
 
 		public IScriptFile[] ScriptFiles { get; private set; }
 
+		public IShaderReader ShaderReader { get; private set; }
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -212,6 +216,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
+			ShaderReader = new ThirdGenShaderReader(this, _buildInfo);
 		}
 
 		private void LoadHeader(IReader reader, string buildString)
@@ -297,11 +302,19 @@ namespace Blamite.Blam.ThirdGen
 		{
 			ITag zoneTag = _tags.FindTagByClass("zone");
 			ITag playTag = _tags.FindTagByClass("play");
-			if (zoneTag != null && playTag != null && _buildInfo.Layouts.HasLayout("resource gestalt") &&
-			    _buildInfo.Layouts.HasLayout("resource layout table"))
+			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
+			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
+			bool canLoadZone = (zoneTag != null && haveZoneLayout);
+			bool canLoadPlay = (playTag != null && havePlayLayout);
+			if (canLoadZone || canLoadPlay)
 			{
-				var gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
-				var layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+				ThirdGenResourceGestalt gestalt = null;
+				ThirdGenResourceLayoutTable layoutTable = null;
+				if (canLoadZone)
+					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+				if (canLoadPlay)
+					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+
 				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
 			}
 		}

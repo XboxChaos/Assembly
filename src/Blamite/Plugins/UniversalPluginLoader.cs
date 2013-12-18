@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -248,7 +249,7 @@ namespace Blamite.Plugins
 
 				case "tagdata":
 				case "dataref":
-					visitor.VisitDataReference(name, offset, ReadDataRef(reader), visible, pluginLine);
+					ReadDataRef(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "struct":
@@ -260,6 +261,10 @@ namespace Blamite.Plugins
 				case "bytearray":
 				case "raw":
 					ReadRaw(reader, name, offset, visible, visitor, pluginLine);
+					break;
+
+				case "shader":
+					ReadShader(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "color8":
@@ -295,7 +300,8 @@ namespace Blamite.Plugins
 				ReadRevision(reader);
 		}
 
-		private static string ReadDataRef(XmlReader reader)
+		private static void ReadDataRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
 		{
 			string format = "bytes";
 
@@ -303,11 +309,15 @@ namespace Blamite.Plugins
 				format = reader.Value;
 
 			if (format != "bytes" &&
-			    format != "unicode" &&
-			    format != "asciiz")
+				format != "unicode" &&
+				format != "asciiz")
 				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
 
-			return format;
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
+
+			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine);
 		}
 
 		private void ReadRevision(XmlReader reader)
@@ -416,6 +426,23 @@ namespace Blamite.Plugins
 			visitor.VisitRawData(name, offset, visible, size, pluginLine);
 		}
 
+		private static void ReadShader(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
+		{
+			if (!reader.MoveToAttribute("type"))
+				throw new ArgumentException("Shaders must have a type attribute." + PositionInfo(reader));
+
+			ShaderType type;
+			if (reader.Value == "pixel")
+				type = ShaderType.Pixel;
+			else if (reader.Value == "vertex")
+				type = ShaderType.Vertex;
+			else
+				throw new ArgumentException("Invalid shader type \"" + reader.Value + "\"");
+
+			visitor.VisitShader(name, offset, visible, type, pluginLine);
+		}
+
 		private static void ReadOptions(XmlReader reader, IPluginVisitor visitor)
 		{
 			XmlReader subtree = reader.ReadSubtree();
@@ -469,7 +496,11 @@ namespace Blamite.Plugins
 					entrySize = ParseUInt(reader.Value);
 			}
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, pluginLine))
+			int align = 4;
+			if (reader.MoveToAttribute("align"))
+				align = ParseInt(reader.Value);
+
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

@@ -18,6 +18,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			cutItem.CommandTarget = txtValue.TextArea;
 			copyItem.CommandTarget = txtValue.TextArea;
 			pasteItem.CommandTarget = txtValue.TextArea;
+			selectItem.CommandTarget = txtValue.TextArea;
 		}
 
 		private void txtValue_MouseRightButtonDown_1(object sender, MouseButtonEventArgs e)

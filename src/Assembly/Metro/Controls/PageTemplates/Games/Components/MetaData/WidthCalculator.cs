@@ -28,6 +28,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly VectorValue _vectorControl = new VectorValue();
 		private static readonly DegreeValue _degreeControl = new DegreeValue();
 		private static readonly ColourValue _colourValue = new ColourValue();
+		private static readonly Shader _shader = new Shader();
 		private double _totalWidth;
 
 		public double TotalWidth
@@ -146,6 +147,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitColourFloat(ColourData field)
 		{
 			AddWidth(_colourValue.Width);
+		}
+
+		public void VisitShaderRef(ShaderRef field)
+		{
+			AddWidth(_shader.Width);
 		}
 
 		public void Add(MetaField field)

@@ -61,7 +61,7 @@ namespace Blamite.Injection
 				_cacheFile.Resources.SaveResourceTable(_resources, stream);
 				_resources = null;
 			}
-			if (_zoneSets != null)
+			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
 			{
 				_zoneSets.SaveChanges(stream);
 				_zoneSets = null;
@@ -86,6 +86,14 @@ namespace Blamite.Injection
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
+			if (_resources == null && BlockNeedsResources(tagData))
+			{
+				// If the tag relies on resources and that info isn't available, throw it out
+				LoadResourceTable(stream);
+				if (_resources == null)
+					return DatumIndex.Null;
+			}
+
 			ITag newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
@@ -95,7 +103,8 @@ namespace Blamite.Injection
 
 			// Make the tag load
 			LoadZoneSets(stream);
-			_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
+				_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
 
 			return newTag.Index;
 		}
@@ -116,7 +125,7 @@ namespace Blamite.Injection
 				return newAddress;
 
 			// Allocate space for it and write it to the file
-			newAddress = _cacheFile.Allocator.Allocate(block.Data.Length, stream);
+			newAddress = _cacheFile.Allocator.Allocate(block.Data.Length, (uint)block.Alignment, stream);
 			SegmentPointer location = SegmentPointer.FromPointer(newAddress, _cacheFile.MetaArea);
 			WriteDataBlock(block, location, stream);
 			return newAddress;
@@ -129,6 +138,8 @@ namespace Blamite.Injection
 
 		public int InjectResourcePage(ResourcePage page, IReader reader)
 		{
+			if (_resources == null)
+				return -1;
 			if (page == null)
 				throw new ArgumentNullException("page is null");
 
@@ -153,6 +164,8 @@ namespace Blamite.Injection
 
 		public DatumIndex InjectResource(ExtractedResourceInfo resource, IStream stream)
 		{
+			if (_resources == null)
+				return DatumIndex.Null;
 			if (resource == null)
 				throw new ArgumentNullException("resource is null");
 
@@ -210,7 +223,8 @@ namespace Blamite.Injection
 
 			// Make it load
 			LoadZoneSets(stream);
-			_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
+			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
+				_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
 
 			return newIndex;
 		}
@@ -218,6 +232,20 @@ namespace Blamite.Injection
 		public DatumIndex InjectResource(DatumIndex originalIndex, IStream stream)
 		{
 			return InjectResource(_container.FindResource(originalIndex), stream);
+		}
+
+		private bool BlockNeedsResources(DataBlock block)
+		{
+			if (block.ResourceFixups.Count > 0)
+				return true;
+
+			foreach (var addrFixup in block.AddressFixups)
+			{
+				var subBlock = _container.FindDataBlock(addrFixup.OriginalAddress);
+				if (subBlock != null && BlockNeedsResources(subBlock))
+					return true;
+			}
+			return false;
 		}
 
 		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream)

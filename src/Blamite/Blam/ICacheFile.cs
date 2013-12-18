@@ -2,6 +2,7 @@
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
+using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
 using Blamite.IO;
 
@@ -165,6 +166,11 @@ namespace Blamite.Blam
 		///     The script files stored in the file.
 		/// </summary>
 		IScriptFile[] ScriptFiles { get; }
+
+		/// <summary>
+		/// The shader reader for the cache file.
+		/// </summary>
+		IShaderReader ShaderReader { get; }
 
 		/// <summary>
 		///     Saves any changes that were made to the file.

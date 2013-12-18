@@ -10,6 +10,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		public MetaChunk()
 		{
 			InitializeComponent();
+
+			// Set Invisibility box
+			infoToggle.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 		}
 	}
 }

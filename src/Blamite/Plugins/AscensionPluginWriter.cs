@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml;
+using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
@@ -122,7 +123,7 @@ namespace Blamite.Plugins
 				WriteBasicValue("tagref", name, offset, visible);
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			WriteValueStart("tagdata", name, offset, visible);
 			_output.WriteAttributeString("format", format);
@@ -231,7 +232,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			WriteValueStart("struct", name, offset, visible);
 			_output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));
@@ -241,6 +242,11 @@ namespace Blamite.Plugins
 		public void LeaveReflexive()
 		{
 			_output.WriteEndElement();
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			WriteBasicValue("uint32", name, offset, visible);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible)

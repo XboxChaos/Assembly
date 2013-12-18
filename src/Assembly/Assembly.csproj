@@ -41,38 +41,8 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
     <StartupObject>Assembly.App</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>Metro\Images\app_icon_large.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -91,10 +61,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <SupportedCultures Condition="'$(SupportedCultures)' == ''">en;en-US</SupportedCultures>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowedReferenceRelatedFileExtensions Condition=" '$(AllowedReferenceRelatedFileExtensions)' == '' ">-</AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -112,37 +84,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCBuild|AnyCPU'">
-    <OutputPath>bin\TCBuild\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCBuild|x86'">
-    <OutputPath>bin\x86\TCBuild\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'TCBuild|x64'">
-    <OutputPath>bin\x64\TCBuild\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -196,8 +137,6 @@
     <Reference Include="Xceed.Wpf.DataGrid">
       <HintPath>..\packages\Extended.Wpf.Toolkit.1.8.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -208,7 +147,6 @@
     </Compile>
     <Compile Include="Helpers\0xabad1dea.cs" />
     <Compile Include="Helpers\AssemblyProtocol.cs" />
-    <Compile Include="Helpers\Caching\CachingManager.cs" />
     <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLAttribute.cs" />
     <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLTag.cs" />
     <Compile Include="Helpers\CodeCompletion\XML\CompletableXMLValue.cs" />
@@ -230,7 +168,6 @@
     <Compile Include="Helpers\JumpLists.cs" />
     <Compile Include="Helpers\Native\ShellChanges.cs" />
     <Compile Include="Helpers\Models\ObjExporter.cs" />
-    <Compile Include="Helpers\Net\BlamCacheMetaData.cs" />
     <Compile Include="Helpers\Net\HttpExtensions.cs" />
     <Compile Include="Helpers\Net\HttpRequests.cs" />
     <Compile Include="Helpers\Net\SignIn.cs" />
@@ -318,6 +255,9 @@
       <DependentUpon>DegreeValue.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\LowercaseConverter.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\Shader.xaml.cs">
+      <DependentUpon>Shader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\StringIDValue.xaml.cs">
       <DependentUpon>StringIDValue.xaml</DependentUpon>
     </Compile>
@@ -340,6 +280,7 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\NumberData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\RawData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ReflexiveFlattener.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ShaderRef.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\StringIDData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ValueField.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaInformation.xaml.cs">
@@ -424,6 +365,9 @@
     <Compile Include="Metro\Controls\XamlStyleSandbox.xaml.cs">
       <DependentUpon>XamlStyleSandbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metro\Dialogs\ControlDialogs\MessageBoxCode.xaml.cs">
+      <DependentUpon>MessageBoxCode.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\MessageBoxList.xaml.cs">
       <DependentUpon>MessageBoxList.xaml</DependentUpon>
     </Compile>
@@ -443,6 +387,7 @@
       <DependentUpon>ViewValueAs.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Dialogs\MetroInputBox.cs" />
+    <Compile Include="Metro\Dialogs\MetroMessageBoxCode.cs" />
     <Compile Include="Metro\Dialogs\MetroMessageBoxList.cs" />
     <Compile Include="Metro\Dialogs\MetroPostGeneratorViewer.cs" />
     <Compile Include="Metro\Dialogs\MetroTagBookmarkSaver.cs" />
@@ -785,6 +730,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\Shader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\StringIDValue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -965,6 +914,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Metro\Dialogs\ControlDialogs\MessageBoxCode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Metro\Dialogs\ControlDialogs\MessageBoxList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1033,8 +986,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1071,9 +1022,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
-    <Content Include="Meta\BlamCache\content.aidf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
@@ -1084,8 +1032,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
     <BlendEmbeddedFont Include="Fonts\SegoeWP-Bold.ttf">
       <IsSystemFont>True</IsSystemFont>
       <All>True</All>
@@ -1119,22 +1065,12 @@
     <Resource Include="Metro\Images\blue_logo.png" />
     <Resource Include="Metro\Images\orange_logo.png" />
     <Resource Include="Metro\Images\purple_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\blue_logo_small.png" />
     <Resource Include="Metro\Images\orange_logo_small.png" />
     <Resource Include="Metro\Images\purple_logo_small.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\logo_small.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\background_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\settings_logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Blamite\Blamite.csproj">
       <Project>{6b105ab9-84a0-4774-b319-75e9cab3db4b}</Project>
       <Name>Blamite</Name>
@@ -1144,8 +1080,6 @@
       <Project>{cf7b2216-1f9e-4bcf-bcf2-f76fb38d69bb}</Project>
       <Name>XBDMCommunicator</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
@@ -1166,795 +1100,20 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\green_logo.png" />
     <Resource Include="Metro\Images\green_logo_small.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Metro\Images\Vectored\screenshotVector.png" />
     <Resource Include="Metro\Images\Vectored\freezeVector.png" />
     <Resource Include="Metro\Images\Vectored\unfreezeVector.png" />
     <Resource Include="Metro\Images\Vectored\rebootVector.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
     <Resource Include="Metro\Images\super_patcher.png" />
     <Resource Include="Metro\Images\Placeholder\wargames_z11_valhalla.jpg" />
     <Resource Include="Metro\Images\Placeholder\c_m20.jpg" />
     <Resource Include="Metro\Images\Placeholder\m_riverworld.jpg" />
     <Resource Include="Metro\Images\Placeholder\c_sc110.jpg" />
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_creeper.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_creeper_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_dropoff.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_dropoff_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_c100.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_c100_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_c200.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_c200_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_h100.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_h100_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_L200.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_L200_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_L300.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_L300_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc100.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc100_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc110.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc110_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc120.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc120_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc130.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc130_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc140.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc140_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc150.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\ODST\maps\c_sc150_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_005.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_005_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_010.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_010_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_020.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_020_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_030.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_030_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_040.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_040_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_050.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_050_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_070.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_070_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_100.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_100_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_110.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_110_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_120.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\c_120_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_armory.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_armory_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_bunkerworld.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_bunkerworld_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_chillout.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_chillout_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_citadel.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_citadel_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_descent.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_descent_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_docks.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_docks_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_ghost_town.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_ghost_town_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_lockout.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_lockout_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_midship.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_midship_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_sandbox.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_sandbox_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_sidewinder.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_sidewinder_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_space_camp.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_space_camp_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_warehouse.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\dlc_warehouse_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_chill.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_chill_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_construct.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_construct_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_cyberdyne.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_cyberdyne_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_guardian.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_guardian_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_isolation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_isolation_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_riverworld.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_riverworld_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_salvation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_salvation_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_shrine.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_shrine_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_snowbound.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_snowbound_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_wallocotton.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_wallocotton_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_zanzibar.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo3\maps\m_zanzibar_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_005.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_005_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_010.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_010_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_020.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_020_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_030.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_030_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_040.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_040_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_060.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_060_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_070.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_070_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_080.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_080_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_090.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_090_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_095.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\c_095_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Breach.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Breach_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Caverns.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Caverns_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_blood_cavern.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_blood_cavern_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_blood_crash.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_blood_crash_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_canyon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_canyon_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_daybreak.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_daybreak_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_gore_valley.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_gore_valley_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_landfall.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_landfall_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_monolith.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_monolith_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_outcast.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_outcast_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_perdition.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_perdition_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_rattler.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_rattler_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_redoubt.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_redoubt_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_tower.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_tower_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_warhouse.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_ca_warhouse_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Engine.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Engine_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Erosion.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Erosion_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Factory.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Factory_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_forgeIsland.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_forgeIsland_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Grind.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Grind_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Hillside.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Hillside_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Impact.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Impact_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Jewel.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Jewel_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Junkyard.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Junkyard_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_mezzanine.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_mezzanine_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Ravine.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Ravine_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Vortex.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_Vortex_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_wraparound.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_wraparound_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_z05_cliffside.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_z05_cliffside_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_z11_valhalla.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\Halo4\maps\wargames_z11_valhalla_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_beaver_creek.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_beaver_creek_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_damnation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_damnation_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_ff_halo.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_ff_halo_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_hangemhigh.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_hangemhigh_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_headlong.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_headlong_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_prisoner.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_prisoner_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_timberland.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\cex_timberland_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\condemned.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\condemned_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_010.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_010_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M10.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M10_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m20.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m20_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m30.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m30_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m35.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m35_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m45.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m45_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m50.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m50_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m52.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m52_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m60.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_m60_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M70.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M70_bonus.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M70_bonus_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\c_M70_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_invasion.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_invasion_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_medium.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_medium_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_slayer.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\dlc_slayer_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_10_prototype.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_10_prototype_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_20_courtyard.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_20_courtyard_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_30_waterfront.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_30_waterfront_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_45_corvette.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_45_corvette_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_50_park.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_50_park_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_60_airview.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_60_airview_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_60_icecave.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_60_icecave_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_70_holdout.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_70_holdout_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_unearthed.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\ff_unearthed_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_00_forge_halo.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_00_forge_halo_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_10_sword_slayer.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_10_sword_slayer_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_20_settlement.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_20_settlement_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_35_island.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_35_island_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_45_aftship.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_45_aftship_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_45_launch_station.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_45_launch_station_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_50_panopticon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_50_panopticon_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_52_ivory_tower.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_52_ivory_tower_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_70_boneyard.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\m_70_boneyard_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Metro\Controls\AvalonDockMetro\Images\Locked.png" />
     <Resource Include="Metro\Controls\AvalonDockMetro\Images\PinRestore.png" />
     <Resource Include="Metro\Images\DockPaneImageTile.png" />
-    <Content Include="Meta\BlamCache\HaloReach\maps\trainingpreserve.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Meta\BlamCache\HaloReach\maps\trainingpreserve_small.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Plugins\Examples\ThirdGenExample.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -5019,13 +4178,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.0\Microsoft.Expression.Blend.WPF.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <!--<Import Project="..\packages\Microsoft.Bcl.1.0.11-beta\tools\portable-net40+sl4+win8+wp71\Microsoft.Bcl.targets" />-->
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  -->
-  <Target Name="TeamCitySetup">
-    <!-- Get XDevKit -->
-    <Copy SourceFiles="C:\DllResources\xdevkit.dll" DestinationFolder="$(SolutionDir)\XBDMCommunicator" />
+  <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target>

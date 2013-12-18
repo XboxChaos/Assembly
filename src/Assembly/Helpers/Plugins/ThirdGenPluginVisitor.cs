@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using Blamite.Blam.Shaders;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Util;
@@ -126,10 +127,16 @@ namespace Assembly.Helpers.Plugins
 			AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withClass, pluginLine));
 		}
 
-		public void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine)
+		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine));
+		}
+
+		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new ShaderRef(name, offset, 0, type, null, pluginLine));
 		}
 
 		#region Bitfield
@@ -226,7 +233,7 @@ namespace Assembly.Helpers.Plugins
 
 		#region Reflexive
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{

@@ -49,6 +49,9 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// </returns>
 		public ResourceTable LoadResourceTable(IReader reader)
 		{
+			if (_layoutTable == null || _gestalt == null)
+				return null;
+
 			var result = new ResourceTable();
 			result.Pages.AddRange(_layoutTable.LoadPages(reader));
 			IEnumerable<ResourcePointer> pointers = _layoutTable.LoadPointers(reader, result.Pages);
@@ -63,6 +66,9 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// <param name="stream">The stream to save to.</param>
 		public void SaveResourceTable(ResourceTable table, IStream stream)
 		{
+			if (_layoutTable == null || _gestalt == null)
+				return;
+
 			IList<ResourcePointer> pointers = _gestalt.SaveResources(table.Resources, stream);
 			_layoutTable.SavePointers(pointers, stream);
 			_layoutTable.SavePages(table.Pages, stream);
@@ -77,6 +83,8 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// </returns>
 		public IZoneSetTable LoadZoneSets(IReader reader)
 		{
+			if (_gestalt == null)
+				return null;
 			return new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo);
 		}
 	}

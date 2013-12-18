@@ -1,4 +1,5 @@
-﻿namespace Blamite.Plugins
+﻿using Blamite.Blam.Shaders;
+namespace Blamite.Plugins
 {
 	/// <summary>
 	///     An interface for a class which handles data read from plugins.
@@ -57,7 +58,7 @@
 		void VisitDegree(string name, uint offset, bool visible, uint pluginLine);
 		void VisitStringID(string name, uint offset, bool visible, uint pluginLine);
 		void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine);
-		void VisitDataReference(string name, uint offset, string format, bool visible, uint pluginLine);
+		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine);
 
 		/// <summary>
 		///     Called when a raw data block is encountered in the plugin.
@@ -177,13 +178,24 @@
 		/// <param name="offset">The offset of the reflexive's size and pointer.</param>
 		/// <param name="visible">True if the reflexive is visible.</param>
 		/// <param name="entrySize">The size of each entry in the reflexive.</param>
+		/// <param name="align">The power of two to align the block on.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		/// <returns>False if the entries in the reflexive should be skipped over.</returns>
-		bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, uint pluginLine);
+		bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine);
 
 		/// <summary>
 		///     Called when a reflexive definition is exited.
 		/// </summary>
 		void LeaveReflexive();
+
+		/// <summary>
+		/// Called when a shader reference is encountered in the plugin.
+		/// </summary>
+		/// <param name="name">The shader's name.</param>
+		/// <param name="offset">The shader's offset.</param>
+		/// <param name="visible">True if the shader is visible.</param>
+		/// <param name="type">The shader's type.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
+		void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine);
 	}
 }
