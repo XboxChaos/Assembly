@@ -138,6 +138,7 @@ namespace Assembly.Helpers
 		private bool _startpageShowRecentsBlf = true;
 		private bool _startpageShowRecentsMap = true;
 		private bool _startpageShowRecentsMapInfo = true;
+		private bool _startpageShowRecentsCampaign = true;
 		private Xbdm _xbdm;
 		private bool _xdkAutoSave;
 		private string _xdkNameIp = "192.168.0.1";
@@ -188,7 +189,8 @@ namespace Assembly.Helpers
 		{
 			Cache,
 			MapInfo,
-			Blf
+			Blf,
+			Campaign
 		}
 
 		/// <summary>
@@ -371,6 +373,14 @@ namespace Assembly.Helpers
 		{
 			get { return _startpageShowRecentsMapInfo; }
 			set { SetField(ref _startpageShowRecentsMapInfo, value, "StartpageShowRecentsMapInfo"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool StartpageShowRecentsCampaign
+		{
+			get { return _startpageShowRecentsCampaign; }
+			set { SetField(ref _startpageShowRecentsCampaign, value, "StartpageShowRecentsCampaign"); }
 		}
 
 		/// <summary>
