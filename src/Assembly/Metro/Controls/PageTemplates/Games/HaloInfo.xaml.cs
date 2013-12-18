@@ -125,7 +125,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							break;
 					}
 					txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
-					lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
+					txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
 					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
 					// Set up the Type combo box
@@ -229,12 +229,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				txtMapID.BorderBrush = (Brush) new BrushConverter().ConvertFromString("#FF595959");
 			else
 				txtMapID.BorderBrush = (Brush) FindResource("ExtryzeAccentBrush");
-		}
-
-		// Update UI from textbox
-		private void txtMapInternalName_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text;
 		}
 
 		// Update Languages
