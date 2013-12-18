@@ -123,6 +123,7 @@ namespace Assembly.Helpers
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 		private bool _defaultMap;
 		private bool _defaultMif;
+		private bool _defaultCif;
 		private LastMetaEditorType _halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
 		private MapInfoDockSide _halomapMapInfoDockSide = MapInfoDockSide.Left;
 		private bool _halomapOnlyShowBookmarkedTags;
@@ -573,6 +574,19 @@ namespace Assembly.Helpers
 			set
 			{
 				SetField(ref _defaultMif, value, "DefaultMif");
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool DefaultCif
+		{
+			get { return _defaultCif; }
+			set
+			{
+				SetField(ref _defaultCif, value, "DefaultCif");
 				if (Loaded)
 					FileDefaults.UpdateFileDefaults();
 			}

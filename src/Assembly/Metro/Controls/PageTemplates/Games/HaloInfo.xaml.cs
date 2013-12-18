@@ -169,11 +169,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					switch (_mapInfo.MapInformation.Game)
 					{
 						case MapInfo.GameIdentifier.Halo4:
-							cbDLC.Margin = new Thickness(112, 0, 0, 0);
 							cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
 							break;
 						default:
-							cbDLC.Margin = new Thickness(150, 0, 0, 0);
 							cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
 							break;
 					}

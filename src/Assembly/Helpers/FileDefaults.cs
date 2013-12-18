@@ -18,6 +18,8 @@ namespace Assembly.Helpers
 				"Blam BLF File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
 			changed |= RegisterOpenCommand("assembly.xboxchaos.mif", App.AssemblyStorage.AssemblySettings.DefaultMif,
 				"Blam Map Information File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
+			changed |= RegisterOpenCommand("assembly.xboxchaos.cif", App.AssemblyStorage.AssemblySettings.DefaultCif,
+				"Blam Campaign File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
 			changed |= RegisterOpenCommand("assembly.xboxchaos.amp", App.AssemblyStorage.AssemblySettings.DefaultAmp,
 				"Assembly Patch File", string.Format("\"{0}\" open \"%1\"", assemblyPath));
 
@@ -28,6 +30,8 @@ namespace Assembly.Helpers
 				"assembly/blf", "");
 			changed |= RegisterExtension(".mapinfo", App.AssemblyStorage.AssemblySettings.DefaultMif, "assembly.xboxchaos.mif",
 				"assembly/mapinfo", "");
+			changed |= RegisterExtension(".campaign", App.AssemblyStorage.AssemblySettings.DefaultCif, "assembly.xboxchaos.cif",
+				"assembly/campaign", "");
 			changed |= RegisterExtension(".asmp", App.AssemblyStorage.AssemblySettings.DefaultAmp, "assembly.xboxchaos.amp",
 				"assembly/patch", "");
 
