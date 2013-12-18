@@ -278,6 +278,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Check if MapID was invalid, if so tell user.
 			if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
 			{
+				Close();
 				MetroMessageBox.Show("MapID Not Saved",
 					"The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
 				return;
