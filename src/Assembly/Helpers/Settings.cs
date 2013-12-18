@@ -132,6 +132,7 @@ namespace Assembly.Helpers
 		private Home _homeWindow;
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
+		private bool _pluginsShowInformation = false;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -512,6 +513,12 @@ namespace Assembly.Helpers
 		{
 			get { return _pluginsShowInvisibles; }
 			set { SetField(ref _pluginsShowInvisibles, value, "PluginsShowInvisibles"); }
+		}
+
+		public bool PluginsShowInformation
+		{
+			get { return _pluginsShowInformation; }
+			set { SetField(ref _pluginsShowInformation, value, "PluginsShowInformation"); }
 		}
 
 		/// <summary>

@@ -29,6 +29,59 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
+			<BooleanToVisibilityConverter x:Key="b2v" />
+			<Style x:Key="customBlockExpander" TargetType="{x:Type Expander}">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Expander}">
+							<Border Background="#FF474747"  SnapsToDevicePixels="True">
+								<DockPanel>
+									<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="2,0,0,0" VerticalContentAlignment="Center" Height="20">
+										<ToggleButton.Style>
+											<Style TargetType="{x:Type ToggleButton}">
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ToggleButton}">
+															<Border Padding="{TemplateBinding Padding}">
+																<Grid Background="Transparent" Margin="0,0,0,0" VerticalAlignment="Center" SnapsToDevicePixels="False">
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="19"/>
+																		<ColumnDefinition Width="*"/>
+																	</Grid.ColumnDefinitions>
+																	<Rectangle x:Name="box" Width="19" Height="16" Stroke="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+																	<Path x:Name="arrow" Data="M 4.5 0 L 4.5 9 M 0 4.5 L 9 4.5" HorizontalAlignment="Center" SnapsToDevicePixels="False" Stroke="DarkGray" StrokeThickness="2" VerticalAlignment="Center"/>
+																	<ContentPresenter x:Name="label" ContentTemplate="{TemplateBinding ContentTemplate}" TextBlock.Foreground="#FF999999" Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="Left" Margin="4,0,0,0" RecognizesAccessKey="True" SnapsToDevicePixels="True" VerticalAlignment="Center" OpacityMask="#FFF90D0D"/>
+																</Grid>
+															</Border>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsChecked" Value="True">
+																	<Setter Property="Data" TargetName="arrow" Value="M 0 1.5 L 9 1.5"/>
+																</Trigger>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter Property="Stroke" TargetName="box" Value="{DynamicResource ExtryzeAccentBrush}"/>
+																	<Setter Property="Stroke" TargetName="arrow" Value="DarkGray"/>
+																</Trigger>
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter Property="Stroke" TargetName="box" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
+																	<Setter Property="StrokeThickness" TargetName="box" Value="1.5"/>
+																	<Setter Property="Stroke" TargetName="arrow" Value="{DynamicResource ExtryzeAccentBrushSecondary}"/>
+																</Trigger>
+																<Trigger Property="IsEnabled" Value="False">
+																	<Setter Property="Stroke" TargetName="arrow" Value="#FF666666"/>
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</ToggleButton.Style>
+									</ToggleButton>
+								</DockPanel>
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 		</ResourceDictionary>
 	</UserControl.Resources>
 
@@ -54,12 +107,20 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="20" />
 				</Grid.ColumnDefinitions>
-
-				<Label Grid.Column="0" x:Name="lblChunkName" Content="{Binding Name}" HorizontalAlignment="Stretch" Height="22"
-				       VerticalAlignment="Top" Margin="0,0,0,0" Foreground="#FF999999" Background="#FF474747" Padding="5,3"
+				<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+					IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
+				<Label Grid.Column="0"  HorizontalAlignment="Stretch" Height="22"
+				       VerticalAlignment="Top" Margin="0,0,0,0"  Padding="5,3"
 				       FontSize="12" />
-				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="5,0,0,0"
+				<ToggleButton x:Name="infoToggle" Grid.Column="2" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
+					<!--Tooltips inheriting text styles is dumb -->
+					<ToggleButton.ToolTip>
+						<TextBlock Text="Show/Hide Information" FontStyle="Normal" />
+					</ToggleButton.ToolTip>
+				</ToggleButton>
+				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
 				          VerticalAlignment="Top" ItemsSource="{Binding Pages}"
 				          SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 				          IsEnabled="{Binding HasChildren}">
@@ -77,9 +138,9 @@
 					</ComboBox.ItemsPanel>
 				</ComboBox>
 			</Grid>
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0">
-				<Expander x:Name="InformationExpander" Header="Information" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-					<Grid Height="28">
+			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0" Visibility="{Binding IsChecked, ElementName=infoToggle, Converter={StaticResource b2v}}">
+				<Grid Height="28">
+					<Border Background="#333337">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*" />
@@ -110,11 +171,8 @@
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
 							</StackPanel>
 						</Grid>
-					</Grid>
-				</Expander>
-
-				<Expander Header="Contents" Margin="0,4,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-				          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" />
+					</Border>
+				</Grid>
 			</StackPanel>
 		</Grid>
 	</Border>
