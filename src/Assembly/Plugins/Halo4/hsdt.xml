@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x74">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -6,16 +6,16 @@
 		<revision author="SnipeStyle" version="3">Updated Value Types And Modifiers.</revision>
 		<revision author="SnipeStyle" version="4">Shared Functions.</revision>
 		<revision author="SnipeStyle" version="5">Added External Syntax Types, Corrected File Index.</revision>
+		<revision author="kornman00" version="666">Mark of the beast</revision>
 	</revisions>
 	<reflexive name="Source Files" offset="0x0" visible="true" entrySize="0x38">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<dataRef name="Data" format="asciiz" offset="0x20" visible="true" />
-		<enum32 name="Type?" offset="0x34" visible="true">
-			<option name="Script File" value="0x0" />
-			<option name="Auto Generated Cinematic Script" value="0x1" />
-			<option name="AI Performance Fragments" value="0x5" />
-			<option name="AI Objective Fragments" value="0x3" />
-		</enum32>
+		<bitfield32 name="Flags" offset="0x34" visible="true">
+			<bit name="Auto Generated Script" index="0" />
+			<bit name="AI Objective Fragments" index="1" />
+			<bit name="AI Performance Fragments" index="2" />
+		</bitfield32>
 	</reflexive>
 	<reflexive name="Scripts" offset="0xC" visible="true" entrySize="0x20">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -27,13 +27,11 @@
 			<option name="Command Script" value="0x4" />
 			<option name="Stub" value="0x5" />
 		</enum16>
-		<enum16 name="Modifier" offset="0x6" visible="true">
-			<option name="Not Specified" value="0x0" />
-			<option name="Instanced" value="0x1" />
-			<option name="Cinema" value="0x2" />
-		</enum16>
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<enum16 name="Return Type" offset="0xA" visible="true">
+		<bitfield16 name="Flags" offset="0x6" visible="true">
+			<bit name="Instanced" index="0" />
+			<bit name="Cinema" index="1" />
+		</bitfield16>
+		<enum32 name="Return Type" offset="0x8" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -48,30 +46,30 @@
 			<option name="string_id" value="0xB" />
 			<option name="unit_seat_mapping" value="0xC" />
 			<option name="trigger_volume" value="0xD" />
-			<option name="cutscene_flag" value="0xE" />
-			<option name="cutscene_camera_point" value="0xF" />
-			<option name="cutscene_title" value="0x10" />
-			<option name="cutscene_recording" value="0x11" />
-			<option name="device_group" value="0x12" />
-			<option name="ai" value="0x13" />
-			<option name="ai_command_list" value="0x14" />
-			<option name="ai_command_script" value="0x15" />
-			<option name="ai_behavior" value="0x16" />
-			<option name="ai_orders" value="0x17" />
-			<option name="ai_line" value="0x18" />
-			<option name="starting_profile" value="0x19" />
-			<option name="conversation" value="0x1A" />
-			<option name="player" value="0x1B" />
-			<option name="zone_set" value="0x1C" />
-			<option name="designer_zone" value="0x1D" />
-			<option name="point_reference" value="0x1E" />
-			<option name="point_set_reference" value="0x1F" />
-			<option name="style" value="0x20" />
-			<option name="object_list" value="0x21" />
-			<option name="folder" value="0x22" />
-			<option name="sound" value="0x23" />
-			<option name="looping_sound" value="0x24" />
-			<option name="sound_event" value="0x25" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="looping_sound" value="0x25" />
 			<option name="effect" value="0x26" />
 			<option name="damage" value="0x27" />
 			<option name="animation_graph" value="0x28" />
@@ -136,15 +134,13 @@
 			<option name="animation_budget_reference" value="0x63" />
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
-		</enum16>
+		</enum32>
 		<uint16 name="Root Expression Salt" offset="0xC" visible="true" />
 		<uint16 name="Root Expression Index" offset="0xE" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
+		<int32 name="Locals Allocation Size" offset="0x10" visible="true" />
 		<reflexive name="Parameters" offset="0x14" visible="true" entrySize="0x24">
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
-			<int16 name="Unknown" offset="0x20" visible="true" />
-			<enum16 name="Return Type" offset="0x22" visible="true">
+			<enum32 name="Type" offset="0x20" visible="true">
 				<option name="unparsed" value="0x0" />
 				<option name="special_form" value="0x1" />
 				<option name="function_name" value="0x2" />
@@ -159,30 +155,30 @@
 				<option name="string_id" value="0xB" />
 				<option name="unit_seat_mapping" value="0xC" />
 				<option name="trigger_volume" value="0xD" />
-				<option name="cutscene_flag" value="0xE" />
-				<option name="cutscene_camera_point" value="0xF" />
-				<option name="cutscene_title" value="0x10" />
-				<option name="cutscene_recording" value="0x11" />
-				<option name="device_group" value="0x12" />
-				<option name="ai" value="0x13" />
-				<option name="ai_command_list" value="0x14" />
-				<option name="ai_command_script" value="0x15" />
-				<option name="ai_behavior" value="0x16" />
-				<option name="ai_orders" value="0x17" />
-				<option name="ai_line" value="0x18" />
-				<option name="starting_profile" value="0x19" />
-				<option name="conversation" value="0x1A" />
-				<option name="player" value="0x1B" />
-				<option name="zone_set" value="0x1C" />
-				<option name="designer_zone" value="0x1D" />
-				<option name="point_reference" value="0x1E" />
-				<option name="point_set_reference" value="0x1F" />
-				<option name="style" value="0x20" />
-				<option name="object_list" value="0x21" />
-				<option name="folder" value="0x22" />
-				<option name="sound" value="0x23" />
-				<option name="looping_sound" value="0x24" />
-				<option name="sound_event" value="0x25" />
+				<option name="sound_event" value="0xE" />
+				<option name="cutscene_flag" value="0xF" />
+				<option name="cutscene_camera_point" value="0x10" />
+				<option name="cutscene_title" value="0x11" />
+				<option name="cutscene_recording" value="0x12" />
+				<option name="device_group" value="0x13" />
+				<option name="ai" value="0x14" />
+				<option name="ai_command_list" value="0x15" />
+				<option name="ai_command_script" value="0x16" />
+				<option name="ai_behavior" value="0x17" />
+				<option name="ai_orders" value="0x18" />
+				<option name="ai_line" value="0x19" />
+				<option name="starting_profile" value="0x1A" />
+				<option name="conversation" value="0x1B" />
+				<option name="player" value="0x1C" />
+				<option name="zone_set" value="0x1D" />
+				<option name="designer_zone" value="0x1E" />
+				<option name="point_reference" value="0x1F" />
+				<option name="point_set_reference" value="0x20" />
+				<option name="style" value="0x21" />
+				<option name="object_list" value="0x22" />
+				<option name="folder" value="0x23" />
+				<option name="sound" value="0x24" />
+				<option name="looping_sound" value="0x25" />
 				<option name="effect" value="0x26" />
 				<option name="damage" value="0x27" />
 				<option name="animation_graph" value="0x28" />
@@ -247,13 +243,12 @@
 				<option name="animation_budget_reference" value="0x63" />
 				<option name="looping_sound_budget_reference" value="0x64" />
 				<option name="sound_budget_reference" value="0x65" />
-			</enum16>
+			</enum32>
 		</reflexive>
 	</reflexive>
 	<reflexive name="Globals" offset="0x18" visible="true" entrySize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="true" />
-		<enum16 name="Return Type" offset="0x6" visible="true">
+		<enum32 name="Type" offset="0x4" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -268,30 +263,30 @@
 			<option name="string_id" value="0xB" />
 			<option name="unit_seat_mapping" value="0xC" />
 			<option name="trigger_volume" value="0xD" />
-			<option name="cutscene_flag" value="0xE" />
-			<option name="cutscene_camera_point" value="0xF" />
-			<option name="cutscene_title" value="0x10" />
-			<option name="cutscene_recording" value="0x11" />
-			<option name="device_group" value="0x12" />
-			<option name="ai" value="0x13" />
-			<option name="ai_command_list" value="0x14" />
-			<option name="ai_command_script" value="0x15" />
-			<option name="ai_behavior" value="0x16" />
-			<option name="ai_orders" value="0x17" />
-			<option name="ai_line" value="0x18" />
-			<option name="starting_profile" value="0x19" />
-			<option name="conversation" value="0x1A" />
-			<option name="player" value="0x1B" />
-			<option name="zone_set" value="0x1C" />
-			<option name="designer_zone" value="0x1D" />
-			<option name="point_reference" value="0x1E" />
-			<option name="point_set_reference" value="0x1F" />
-			<option name="style" value="0x20" />
-			<option name="object_list" value="0x21" />
-			<option name="folder" value="0x22" />
-			<option name="sound" value="0x23" />
-			<option name="looping_sound" value="0x24" />
-			<option name="sound_event" value="0x25" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="looping_sound" value="0x25" />
 			<option name="effect" value="0x26" />
 			<option name="damage" value="0x27" />
 			<option name="animation_graph" value="0x28" />
@@ -356,14 +351,13 @@
 			<option name="animation_budget_reference" value="0x63" />
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
-		</enum16>
+		</enum32>
 		<uint16 name="Initialization Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Initialization Expression Index" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Variables" offset="0x24" visible="true" entrySize="0xC">
+	<reflexive name="Object Member Variables" offset="0x24" visible="true" entrySize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="true" />
-		<enum16 name="Return Type" offset="0x6" visible="true">
+		<enum32 name="Type" offset="0x4" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -378,30 +372,30 @@
 			<option name="string_id" value="0xB" />
 			<option name="unit_seat_mapping" value="0xC" />
 			<option name="trigger_volume" value="0xD" />
-			<option name="cutscene_flag" value="0xE" />
-			<option name="cutscene_camera_point" value="0xF" />
-			<option name="cutscene_title" value="0x10" />
-			<option name="cutscene_recording" value="0x11" />
-			<option name="device_group" value="0x12" />
-			<option name="ai" value="0x13" />
-			<option name="ai_command_list" value="0x14" />
-			<option name="ai_command_script" value="0x15" />
-			<option name="ai_behavior" value="0x16" />
-			<option name="ai_orders" value="0x17" />
-			<option name="ai_line" value="0x18" />
-			<option name="starting_profile" value="0x19" />
-			<option name="conversation" value="0x1A" />
-			<option name="player" value="0x1B" />
-			<option name="zone_set" value="0x1C" />
-			<option name="designer_zone" value="0x1D" />
-			<option name="point_reference" value="0x1E" />
-			<option name="point_set_reference" value="0x1F" />
-			<option name="style" value="0x20" />
-			<option name="object_list" value="0x21" />
-			<option name="folder" value="0x22" />
-			<option name="sound" value="0x23" />
-			<option name="looping_sound" value="0x24" />
-			<option name="sound_event" value="0x25" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="looping_sound" value="0x25" />
 			<option name="effect" value="0x26" />
 			<option name="damage" value="0x27" />
 			<option name="animation_graph" value="0x28" />
@@ -466,7 +460,7 @@
 			<option name="animation_budget_reference" value="0x63" />
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
-		</enum16>
+		</enum32>
 		<uint16 name="Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Expression Index" offset="0xA" visible="true" />
 	</reflexive>
@@ -512,17 +506,16 @@
 		<undefined name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
 	<reflexive name="Expressions" offset="0x48" visible="true" entrySize="0x1C">
-		<uint16 name="Salt" offset="0x0" visible="true" />
+		<uint16 name="Salt (0 means unused)" offset="0x0" visible="true" />
 		<int16 name="Opcode" offset="0x2" visible="true" />
 		<uint16 name="Next Expression Salt" offset="0x4" visible="true" />
 		<uint16 name="Next Expression Index" offset="0x6" visible="true" />
-		<int8 name="Value First Byte" offset="0x8" visible="true" />
-		<int8 name="Value Second Byte" offset="0x9" visible="true" />
-		<int8 name="Value Third Byte" offset="0xA" visible="true" />
-		<int8 name="Value Fourth Byte" offset="0xB" visible="true" />
+		<int8 name="Value 03 (MSB)" offset="0x8" visible="true" />
+		<int8 name="Value 02" offset="0x9" visible="true" />
+		<int8 name="Value 01" offset="0xA" visible="true" />
+		<int8 name="Value 00 (LSB)" offset="0xB" visible="true" />
 		<uint32 name="String Address" offset="0xC" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="true" />
-		<enum16 name="Value Type" offset="0x12" visible="true">
+		<enum32 name="Value Type" offset="0x10" visible="true">
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -537,30 +530,30 @@
 			<option name="string_id" value="0xB" />
 			<option name="unit_seat_mapping" value="0xC" />
 			<option name="trigger_volume" value="0xD" />
-			<option name="cutscene_flag" value="0xE" />
-			<option name="cutscene_camera_point" value="0xF" />
-			<option name="cutscene_title" value="0x10" />
-			<option name="cutscene_recording" value="0x11" />
-			<option name="device_group" value="0x12" />
-			<option name="ai" value="0x13" />
-			<option name="ai_command_list" value="0x14" />
-			<option name="ai_command_script" value="0x15" />
-			<option name="ai_behavior" value="0x16" />
-			<option name="ai_orders" value="0x17" />
-			<option name="ai_line" value="0x18" />
-			<option name="starting_profile" value="0x19" />
-			<option name="conversation" value="0x1A" />
-			<option name="player" value="0x1B" />
-			<option name="zone_set" value="0x1C" />
-			<option name="designer_zone" value="0x1D" />
-			<option name="point_reference" value="0x1E" />
-			<option name="point_set_reference" value="0x1F" />
-			<option name="style" value="0x20" />
-			<option name="object_list" value="0x21" />
-			<option name="folder" value="0x22" />
-			<option name="sound" value="0x23" />
-			<option name="looping_sound" value="0x24" />
-			<option name="sound_event" value="0x25" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="looping_sound" value="0x25" />
 			<option name="effect" value="0x26" />
 			<option name="damage" value="0x27" />
 			<option name="animation_graph" value="0x28" />
@@ -625,8 +618,10 @@
 			<option name="animation_budget_reference" value="0x63" />
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
-		</enum16>
-		<enum16 name="Expression Type" offset="0x14" visible="true">
+		</enum32>
+		<enum16 name="Flags" offset="0x14" visible="true">
+			<bit name="Primitive" index="0" />
+			
 			<option name="Syntax" value="0x20" />
 			<option name="Expression" value="0x21" />
 			<option name="Local" value="0x24" />
@@ -640,19 +635,17 @@
 		<int16 name="Source File Index" offset="0x16" visible="true" />
 		<int32 name="Line Number" offset="0x18" visible="true" />
 	</reflexive>
-	<dataRef name="Script Strings" offset="0x54" visible="true" />
-	<reflexive name="Global Script References" offset="0x68" visible="true" entrySize="0x1C">
+	<dataRef name="String Constants" offset="0x54" visible="true" />
+	<reflexive name="Imports" offset="0x68" visible="true" entrySize="0x1C">
 		<tagRef name="Source" offset="0x0" visible="true" withClass="false" />
 		<reflexive name="Scripts" offset="0x4" visible="true" entrySize="0xC">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x4" visible="true" />
-			<int16 name="Number Of Parameters" offset="0x6" visible="true" />
+			<int32 name="Number Of Parameters" offset="0x4" visible="true" />
 			<int32 name="Script Index" offset="0x8" visible="true" />
 		</reflexive>
 		<reflexive name="Globals" offset="0x10" visible="true" entrySize="0xC">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x4" visible="true" />
-			<int16 name="Unknown" offset="0x6" visible="true" />
+			<int32 name="Library Index" offset="0x4" visible="true" />
 			<int32 name="Global Index" offset="0x8" visible="true" />
 		</reflexive>
 	</reflexive>
