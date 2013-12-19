@@ -146,6 +146,11 @@ namespace Assembly.Windows
 			OpenContentFile(ContentTypes.MapImage);
 		}
 
+		private void menuOpenCampaign_Click(object sender, RoutedEventArgs e)
+		{
+			OpenContentFile(ContentTypes.Campaign);
+		}
+
 		// Edit
 		private void menuOpenSettings_Click(object sender, EventArgs e)
 		{
@@ -360,7 +365,8 @@ namespace Assembly.Windows
 		{
 			Map,
 			MapInfo,
-			MapImage
+			MapImage,
+			Campaign
 		}
 
 		private readonly Dictionary<ContentTypes, ContentFileHandler> _contentFileHandlers = new Dictionary
@@ -383,6 +389,12 @@ namespace Assembly.Windows
 					"Assembly - Open Blam Map Info File",
 					"Blam Map Info File (*.mapinfo)|*.mapinfo",
 					(home, file) => home.AddInfooTabModule(file))
+			},
+			{
+				ContentTypes.Campaign, new ContentFileHandler(
+					"Assembly - Open Blam Campaign File",
+					"Blam Campaign File (*.campaign)|*.campaign",
+					(home, file) => home.AddCampaignTabModule(file))
 			},
 		};
 
@@ -527,7 +539,7 @@ namespace Assembly.Windows
 		/// <param name="imageLocation">Path to the BLF file</param>
 		public void AddImageTabModule(string imageLocation)
 		{
-			// Check Map isn't already open
+			// Check File isn't already open
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == imageLocation))
 			{
 				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
@@ -551,22 +563,46 @@ namespace Assembly.Windows
 		/// <param name="infooLocation">Path to the MapInfo file</param>
 		public void AddInfooTabModule(string infooLocation)
 		{
-			// Check Map isn't already open
+			// Check File isn't already open
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == infooLocation))
 			{
 				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
 				return;
 			}
 
-			var newMapImageTab = new LayoutDocument
+			var newMapInfoTab = new LayoutDocument
 			{
 				ContentId = infooLocation,
-				Title = "Image",
+				Title = "Info",
 				ToolTip = infooLocation
 			};
-			newMapImageTab.Content = new HaloInfo(infooLocation, newMapImageTab);
-			documentManager.Children.Add(newMapImageTab);
-			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newMapImageTab);
+			newMapInfoTab.Content = new HaloInfo(infooLocation, newMapInfoTab);
+			documentManager.Children.Add(newMapInfoTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newMapInfoTab);
+		}
+
+		/// <summary>
+		///     Add a new Campaign Editor Container
+		/// </summary>
+		/// <param name="campiagnLocation">Path to the Campaign file</param>
+		public void AddCampaignTabModule(string campiagnLocation)
+		{
+			// Check File isn't already open
+			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == campiagnLocation))
+			{
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return;
+			}
+
+			var newCampaignTab = new LayoutDocument
+			{
+				ContentId = campiagnLocation,
+				Title = "Campaign",
+				ToolTip = campiagnLocation
+			};
+			newCampaignTab.Content = new HaloCampaign(campiagnLocation, newCampaignTab);
+			documentManager.Children.Add(newCampaignTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCampaignTab);
 		}
 
 		/// <summary>
@@ -813,5 +849,6 @@ namespace Assembly.Windows
 		}
 
 		#endregion
+
 	}
 }

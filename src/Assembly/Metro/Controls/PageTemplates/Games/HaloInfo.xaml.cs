@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(delegate
 				{
 					// Add BLF Info
-					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X8")));
+					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X")));
 					paneBLFInfo.Children.Insert(1,
 						new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
 
@@ -125,7 +125,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							break;
 					}
 					txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
-					lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
+					txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
 					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
 					// Set up the Type combo box
@@ -169,11 +169,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					switch (_mapInfo.MapInformation.Game)
 					{
 						case MapInfo.GameIdentifier.Halo4:
-							cbDLC.Margin = new Thickness(112, 0, 0, 0);
 							cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
 							break;
 						default:
-							cbDLC.Margin = new Thickness(150, 0, 0, 0);
 							cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
 							break;
 					}
@@ -233,14 +231,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				txtMapID.BorderBrush = (Brush) FindResource("ExtryzeAccentBrush");
 		}
 
-		// Update UI from textbox
-		private void txtMapInternalName_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			lblBLFNameFooter.Text = lblBLFname.Text = txtMapInternalName.Text;
-		}
-
 		// Update Languages
-
 		private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (_mapInfo != null && _startEditing)
@@ -279,6 +270,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Check if MapID was invalid, if so tell user.
 			if (Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
 			{
+				Close();
 				MetroMessageBox.Show("MapID Not Saved",
 					"The MapID was not saved into the MapInfo. Change the MapID to a valid number, then save again.");
 				return;
