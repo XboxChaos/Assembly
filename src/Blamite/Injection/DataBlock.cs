@@ -119,6 +119,34 @@ namespace Blamite.Injection
 	}
 
 	/// <summary>
+	///     Contains information about a shader reference in a <see cref="DataBlock" /> which needs to be changed to point to
+	///     a shader in the new cache file.
+	/// </summary>
+	public class DataBlockShaderFixup
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DataBlockShaderFixup"/> class.
+		/// </summary>
+		/// <param name="writeOffset">The write offset.</param>
+		/// <param name="data">The data.</param>
+		public DataBlockShaderFixup(int writeOffset, byte[] data)
+		{
+			WriteOffset = writeOffset;
+			Data = data;
+		}
+
+		/// <summary>
+		/// Gets the offset to write the shader pointer to.
+		/// </summary>
+		public int WriteOffset { get; private set; }
+
+		/// <summary>
+		/// Gets the shader data to import.
+		/// </summary>
+		public byte[] Data { get; private set; }
+	}
+
+	/// <summary>
 	///     Represents a block of tag data which can be injected into a cache file.
 	/// </summary>
 	public class DataBlock
@@ -140,6 +168,7 @@ namespace Blamite.Injection
 			TagFixups = new List<DataBlockTagFixup>();
 			ResourceFixups = new List<DataBlockResourceFixup>();
 			StringIDFixups = new List<DataBlockStringIDFixup>();
+			ShaderFixups = new List<DataBlockShaderFixup>();
 		}
 
 		/// <summary>
@@ -193,5 +222,11 @@ namespace Blamite.Injection
 		///     cache file.
 		/// </summary>
 		public List<DataBlockStringIDFixup> StringIDFixups { get; private set; }
+
+		/// <summary>
+		///     Gets a list of shader references in this block that need to be changed in order to correctly point to injected
+		///     shaders.
+		/// </summary>
+		public List<DataBlockShaderFixup> ShaderFixups { get; private set; }
 	}
 }

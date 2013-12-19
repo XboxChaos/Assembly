@@ -22,7 +22,7 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlock dataBlock in tags.DataBlocks)
 			{
-				container.StartBlock("data", 3);
+				container.StartBlock("data", 4);
 
 				// Main data
 				writer.WriteUInt32(dataBlock.OriginalAddress);
@@ -60,6 +60,22 @@ namespace Blamite.Injection
 				{
 					writer.WriteAscii(sid.OriginalString);
 					writer.WriteInt32(sid.WriteOffset);
+				}
+
+				// Shader fixups
+				writer.WriteInt32(dataBlock.ShaderFixups.Count);
+				foreach (DataBlockShaderFixup shaderRef in dataBlock.ShaderFixups)
+				{
+					writer.WriteInt32(shaderRef.WriteOffset);
+					if (shaderRef.Data != null)
+					{
+						writer.WriteInt32(shaderRef.Data.Length);
+						writer.WriteBlock(shaderRef.Data);
+					}
+					else
+					{
+						writer.WriteInt32(0);
+					}
 				}
 
 				container.EndBlock();

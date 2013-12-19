@@ -32,7 +32,7 @@ namespace Blamite.Blam.Util
 		/// <returns>The memory address of the allocated area.</returns>
 		public uint Allocate(int size, IStream stream)
 		{
-			return Allocate(size, 1, stream);
+			return Allocate(size, 4, stream);
 		}
 
 		/// <summary>

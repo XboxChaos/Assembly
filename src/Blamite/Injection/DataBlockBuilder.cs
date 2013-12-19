@@ -265,7 +265,7 @@ namespace Blamite.Injection
 
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
 		{
-			// TODO: Extract the shader
+			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
 		}
 
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
@@ -388,6 +388,14 @@ namespace Blamite.Injection
 				// Add it to _reflexiveBlocks so it'll be recursed into
 				_reflexiveBlocks.Add(newBlock);
 			}
+		}
+
+		private void ReadShader(DataBlock block, uint offset, ShaderType type)
+		{
+			SeekToOffset(block, offset);
+			var data = _cacheFile.ShaderStreamer.ExportShader(_reader, type);
+			var fixup = new DataBlockShaderFixup((int)offset, data);
+			block.ShaderFixups.Add(fixup);
 		}
 
 		private void SeekToOffset(DataBlock block, uint offset)

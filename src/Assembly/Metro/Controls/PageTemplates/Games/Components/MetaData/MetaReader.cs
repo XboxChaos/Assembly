@@ -315,8 +315,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitShaderRef(ShaderRef field)
 		{
 			SeekToOffset(field.Offset);
-			if (_cache.ShaderReader != null)
-				field.Shader = _cache.ShaderReader.ReadShader(_reader, field.Type);
+			if (_cache.ShaderStreamer != null)
+				field.Shader = _cache.ShaderStreamer.ReadShader(_reader, field.Type);
 		}
 
 		public void VisitReflexiveEntry(WrappedReflexiveEntry field)

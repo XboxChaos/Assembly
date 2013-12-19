@@ -53,7 +53,7 @@ namespace Blamite.Injection
 
 		private static DataBlock ReadDataBlock(IReader reader, byte version)
 		{
-			if (version > 3)
+			if (version > 4)
 				throw new InvalidOperationException("Unrecognized \"data\" block version");
 
 			// Block data
@@ -99,6 +99,19 @@ namespace Blamite.Injection
 					string str = reader.ReadAscii();
 					int writeOffset = reader.ReadInt32();
 					block.StringIDFixups.Add(new DataBlockStringIDFixup(str, writeOffset));
+				}
+			}
+
+			if (version >= 4)
+			{
+				// Shader fixups
+				int numShaderFixups = reader.ReadInt32();
+				for (int i = 0; i < numShaderFixups; i++)
+				{
+					int writeOffset = reader.ReadInt32();
+					int shaderDataSize = reader.ReadInt32();
+					byte[] shaderData = reader.ReadBlock(shaderDataSize);
+					block.ShaderFixups.Add(new DataBlockShaderFixup(writeOffset, shaderData));
 				}
 			}
 
