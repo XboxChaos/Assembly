@@ -186,19 +186,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Only enable poking if RTE support is available
 				if (_rteProvider != null)
 				{
-					btnPluginPokeAll.Visibility = Visibility.Visible;
-					btnPluginPokeChanged.Visibility = Visibility.Visible;
-					btnPluginRefreshFromMemory.Visibility = Visibility.Visible;
+					sbPluginPoke.Visibility = Visibility.Visible;
+					miPluginRefreshMem.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					btnPluginPokeAll.Visibility = Visibility.Collapsed;
-					btnPluginPokeChanged.Visibility = Visibility.Collapsed;
-					btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
+					sbPluginPoke.Visibility = Visibility.Collapsed;
+					miPluginRefreshMem.Visibility = Visibility.Collapsed;
 				}
 
 				btnPluginRevisionViewer.Visibility = Visibility.Visible;
-				btnPluginRefresh.Visibility = Visibility.Visible;
+				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 			else
 			{
@@ -206,12 +204,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				cbShowInvisibles.Visibility = Visibility.Collapsed;
 				btnPluginSave.Visibility = Visibility.Collapsed;
-				btnPluginPokeAll.Visibility = Visibility.Collapsed;
-				btnPluginPokeChanged.Visibility = Visibility.Collapsed;
+				sbPluginPoke.Visibility = Visibility.Collapsed;
 				btnPluginRevisionViewer.Visibility = Visibility.Collapsed;
-				btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
+				miPluginRefreshMem.Visibility = Visibility.Collapsed;
 
-				btnPluginRefresh.Visibility = Visibility.Visible;
+				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 		}
 

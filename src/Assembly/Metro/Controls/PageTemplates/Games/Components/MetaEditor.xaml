@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
              xmlns:MetaComps="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:MetaData="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData"
+			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000" Margin="-5,-5,-5,0" KeyDown="metaEditor_KeyDown">
 	<UserControl.Resources>
@@ -124,17 +125,24 @@
 			<Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
 				<Grid>
 					<StackPanel Orientation="Horizontal">
-						<Button x:Name="btnPluginSave" ToolTip="Save the meta to the map file. (Ctrl + S)" Content="Save Changes"
+						<Button x:Name="btnPluginSave" ToolTip="Save the current changes to the cache file. (Ctrl + S)" Content="Save Changes"
 						        Width="100" Margin="10,0,0,0" Click="btnPluginSave_Click" />
-						<Button x:Name="btnPluginPokeChanged" ToolTip="Poke changed meta to the map file in memory. (Ctrl + P)"
-						        Content="Quick Poke" Width="100" Margin="5,0,0,0" Click="btnPluginPokeChanged_Click" />
-						<Button x:Name="btnPluginPokeAll"
-						        ToolTip="Poke all the meta to the map file in memory (slow!). (Ctrl + Shift + P)" Content="Poke All"
-						        Width="65" Margin="5,0,0,0" Click="btnPluginPokeAll_Click" />
-						<Button x:Name="btnPluginRefresh" ToolTip="Reloads the plugin and meta. (Ctrl + R)" Content="Reload" Width="65"
-						        Margin="5,0,0,0" Click="btnPluginRefresh_Click" />
-						<Button x:Name="btnPluginRefreshFromMemory" ToolTip="Reloads the plugin and meta from memory. (Ctrl + Alt + R)"
-						        Content="Reload From Memory" Width="140" Margin="5,0,0,0" Click="btnPluginRefreshFromMemory_Click" />
+						<xctk:SplitButton Content="Quick Poke" x:Name="sbPluginPoke" Margin="5,0,0,0" Width="100" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. Click the arrow for more options.">
+							<xctk:SplitButton.DropDownContent>
+								<StackPanel>
+									<MenuItem Header="Poke Changes" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. (Ctrl + P)" Foreground="White"/>
+									<MenuItem Header="Poke All" Click="btnPluginPokeAll_Click" ToolTip="Pokes the entire tag to the cache file in memory (slow!). (Ctrl + Shift + P)" Foreground="White"/>
+								</StackPanel>
+							</xctk:SplitButton.DropDownContent>
+						</xctk:SplitButton>
+						<xctk:SplitButton Content="Quick Reload" x:Name="sbPluginRefresh" Margin="5,0,0,0" Width="110" Click="btnPluginRefresh_Click" ToolTip="Reloads the plugin and tagdata from the cache file. Click the arrow for more options.">
+							<xctk:SplitButton.DropDownContent>
+								<StackPanel>
+									<MenuItem Header="Reload From File" Click="btnPluginRefresh_Click" ToolTip="Reloads the plugin and tagdata from the cache file. (Ctrl + R)" Foreground="White"/>
+									<MenuItem Header="Reload From Memory" x:Name="miPluginRefreshMem" Click="btnPluginRefreshFromMemory_Click" ToolTip="Reloads the plugin and tagdata from memory. (Ctrl + Alt + R)" Foreground="White"/>
+								</StackPanel>
+							</xctk:SplitButton.DropDownContent>
+						</xctk:SplitButton>
 						<Button x:Name="btnPluginRevisionViewer"
 						        ToolTip="View who researched the plugin and what they did. (Ctrl + Shift + R)" Content="Revisions"
 						        Width="70" Margin="5,0,0,0" Click="btnPluginRevisionViewer_Click" />
