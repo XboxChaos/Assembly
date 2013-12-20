@@ -39,7 +39,7 @@ namespace Blamite.Util
 		/// <returns><c>true</c> if the string exists in the trie.</returns>
 		public bool Contains(string str)
 		{
-			return FindPrefix(str).Any(s => s == str);
+			return (str.Length == 0) || FindPrefix(str).Any(s => s == str);
 		}
 
 		/// <summary>
