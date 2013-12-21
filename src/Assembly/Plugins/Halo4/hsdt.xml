@@ -69,9 +69,9 @@
 			<option name="object_list" value="0x22" />
 			<option name="folder" value="0x23" />
 			<option name="sound" value="0x24" />
-			<option name="looping_sound" value="0x25" />
-			<option name="effect" value="0x26" />
-			<option name="damage" value="0x27" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
 			<option name="animation_graph" value="0x28" />
 			<option name="damage_effect" value="0x29" />
 			<option name="object_definition" value="0x2A" />
@@ -178,9 +178,9 @@
 				<option name="object_list" value="0x22" />
 				<option name="folder" value="0x23" />
 				<option name="sound" value="0x24" />
-				<option name="looping_sound" value="0x25" />
-				<option name="effect" value="0x26" />
-				<option name="damage" value="0x27" />
+				<option name="effect" value="0x25" />
+				<option name="damage" value="0x26" />
+				<option name="looping_sound" value="0x27" />
 				<option name="animation_graph" value="0x28" />
 				<option name="damage_effect" value="0x29" />
 				<option name="object_definition" value="0x2A" />
@@ -286,9 +286,9 @@
 			<option name="object_list" value="0x22" />
 			<option name="folder" value="0x23" />
 			<option name="sound" value="0x24" />
-			<option name="looping_sound" value="0x25" />
-			<option name="effect" value="0x26" />
-			<option name="damage" value="0x27" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
 			<option name="animation_graph" value="0x28" />
 			<option name="damage_effect" value="0x29" />
 			<option name="object_definition" value="0x2A" />
@@ -355,7 +355,7 @@
 		<uint16 name="Initialization Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Initialization Expression Index" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Object Member Variables" offset="0x24" visible="true" entrySize="0xC">
+	<reflexive name="Instanced Variables" offset="0x24" visible="true" entrySize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum32 name="Type" offset="0x4" visible="true">
 			<option name="unparsed" value="0x0" />
@@ -395,9 +395,9 @@
 			<option name="object_list" value="0x22" />
 			<option name="folder" value="0x23" />
 			<option name="sound" value="0x24" />
-			<option name="looping_sound" value="0x25" />
-			<option name="effect" value="0x26" />
-			<option name="damage" value="0x27" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
 			<option name="animation_graph" value="0x28" />
 			<option name="damage_effect" value="0x29" />
 			<option name="object_definition" value="0x2A" />
@@ -464,12 +464,12 @@
 		<uint16 name="Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Expression Index" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Resources" offset="0x30" visible="true" entrySize="0x10">
-		<tagRef name="Resource" offset="0x0" visible="true" />
+	<reflexive name="References" offset="0x30" visible="true" entrySize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Unit Seats" offset="0x3C" visible="true" entrySize="0xC">
+	<reflexive name="Unit Seats Mapping" offset="0x3C" visible="true" entrySize="0xC">
 		<tagref name="Unit" offset="0x0" withClass="true" visible="true" />
-		<bitfield32 name="Seats" offset="0x4" visible="true">
+		<bitfield32 name="Seats Bitvector" offset="0x4" visible="true">
 			<bit name="Seat 0" index="0" />
 			<bit name="Seat 1" index="1" />
 			<bit name="Seat 2" index="2" />
@@ -506,16 +506,21 @@
 		<undefined name="Unknown" offset="0x8" visible="false" />
 	</reflexive>
 	<reflexive name="Expressions" offset="0x48" visible="true" entrySize="0x1C">
+		<!-- node body is filled with 0xBA when datum isn't valid, while header is zero (normal sentinel for invalid datums) -->
 		<uint16 name="Salt (0 means unused)" offset="0x0" visible="true" />
+		<!-- constant_type / function_index / script_index -->
 		<int16 name="Opcode" offset="0x2" visible="true" />
 		<uint16 name="Next Expression Salt" offset="0x4" visible="true" />
 		<uint16 name="Next Expression Index" offset="0x6" visible="true" />
-		<int8 name="Value 03 (MSB)" offset="0x8" visible="true" />
-		<int8 name="Value 02" offset="0x9" visible="true" />
-		<int8 name="Value 01" offset="0xA" visible="true" />
-		<int8 name="Value 00 (LSB)" offset="0xB" visible="true" />
+		<!-- Set value to -2 for 'this' values -->
+		<uint8 name="Value 03 (MSB)" offset="0x8" visible="true" />
+		<uint8 name="Value 02" offset="0x9" visible="true" />
+		<uint8 name="Value 01" offset="0xA" visible="true" />
+		<uint8 name="Value 00 (LSB)" offset="0xB" visible="true" />
 		<uint32 name="String Address" offset="0xC" visible="true" />
 		<enum32 name="Value Type" offset="0x10" visible="true">
+			<option name="INVALID" value="0xBABA" />
+
 			<option name="unparsed" value="0x0" />
 			<option name="special_form" value="0x1" />
 			<option name="function_name" value="0x2" />
@@ -553,9 +558,9 @@
 			<option name="object_list" value="0x22" />
 			<option name="folder" value="0x23" />
 			<option name="sound" value="0x24" />
-			<option name="looping_sound" value="0x25" />
-			<option name="effect" value="0x26" />
-			<option name="damage" value="0x27" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
 			<option name="animation_graph" value="0x28" />
 			<option name="damage_effect" value="0x29" />
 			<option name="object_definition" value="0x2A" />
@@ -619,21 +624,22 @@
 			<option name="looping_sound_budget_reference" value="0x64" />
 			<option name="sound_budget_reference" value="0x65" />
 		</enum32>
-		<enum16 name="Flags" offset="0x14" visible="true">
+		<bitfield16 name="Flags" offset="0x14" visible="true">
 			<bit name="Primitive" index="0" />
-			
-			<option name="Syntax" value="0x20" />
-			<option name="Expression" value="0x21" />
-			<option name="Local" value="0x24" />
-			<option name="Local Reference" value="0x429" />
-			<option name="Script Reference" value="0x22" />
-			<option name="Global Reference" value="0x29" />
-			<option name="Script Parameter" value="0x69" />
-			<option name="External Script" value="0x222" />
-			<option name="External Global" value="0x229" />
-		</enum16>
+			<bit name="Script Index" index="1" />
+			<bit name="Object member script" index="2" /> <!--requires script index bit-->
+			<bit name="Variable index" index="3" /> <!--"global index" when no other variable-type bits are set-->
+			<bit name="Instance variable" index="4" /> <!--requires variable index bit-->
+			<bit name="Parsed?" index="5" /> <!--all syntax nodes have this set. pretty sure it's just a flag used to designate that a node has been parsed, or maybe touched already in a certain pass-->
+			<bit name="Parameter variable" index="6" /> <!--requires variable index bit-->
+			<bit name="24 Unused?" index="7" />
+			<bit name="23 Unused?" index="8" />
+			<bit name="Import" index="9" /> <!-- script or global index is from the imports section -->
+			<bit name="Local variable" index="10" /> <!--requires variable index bit-->
+			<!--haven't seen bits after here used or referenced in code-->
+		</bitfield16>
 		<int16 name="Source File Index" offset="0x16" visible="true" />
-		<int32 name="Line Number" offset="0x18" visible="true" />
+		<int32 name="Source File Offset" offset="0x18" visible="true" />
 	</reflexive>
 	<dataRef name="String Constants" offset="0x54" visible="true" />
 	<reflexive name="Imports" offset="0x68" visible="true" entrySize="0x1C">
