@@ -14,6 +14,68 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="MetaComponents/ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
+			<Style x:Key="optionsToggleButton" TargetType="{x:Type ToggleButton}">
+				<Setter Property="Foreground" Value="#FF999999" />
+				<Setter Property="Background" Value="#FF222222" />
+				<Setter Property="BorderBrush" Value="#FF616161" />
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="Padding" Value="0,0,0,0" />
+				<Setter Property="Height" Value="22" />
+				<Setter Property="FontSize" Value="12" />
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type ToggleButton}">
+							<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+								Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+								<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
+									ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+									Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							</Border>
+							<ControlTemplate.Triggers>
+								<!-- Checked Button -->
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsChecked" Value="true" />
+										<Condition Property="IsEnabled" Value="true" />
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" Value="#333333" TargetName="border" />
+									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
+								</MultiTrigger>
+
+								<!-- Mouse Over -->
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+										<Condition Property="IsPressed" Value="false" />
+										<Condition Property="IsEnabled" Value="true" />
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" Value="#393939" TargetName="border" />
+									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
+								</MultiTrigger>
+
+								<!-- Mouse Pressed -->
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="IsPressed" Value="true" />
+										<Condition Property="IsEnabled" Value="true" />
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" Value="#393939" TargetName="border" />
+									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
+								</MultiTrigger>
+
+								<!-- Disabled -->
+								<Trigger Property="IsEnabled" Value="false">
+									<Setter Property="Background" Value="#FF575757" TargetName="border" />
+									<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 		</ResourceDictionary>
 	</UserControl.Resources>
 	<Grid>
@@ -124,13 +186,10 @@
 		<Grid Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
 			<Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
 				<Grid>
-					<CheckBox x:Name="cbShowInvisibles" Content="Show Invisibles" Margin="0,0,10,0" HorizontalAlignment="Right"
-					          VerticalAlignment="Center" VerticalContentAlignment="Center" Checked="cbShowInvisibles_Altered"
-					          Unchecked="cbShowInvisibles_Altered" />
 					<StackPanel Orientation="Horizontal">
-						<Button x:Name="btnPluginSave" ToolTip="Save the current changes to the cache file. (Ctrl + S)" Content="Save Changes"
-						        Width="100" Margin="10,0,0,0" Click="btnPluginSave_Click" />
-						<xctk:SplitButton Content="Quick Poke" x:Name="sbPluginPoke" Margin="5,0,0,0" Width="100" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. Click the arrow for more options.">
+						<Button x:Name="btnPluginSave" ToolTip="Save the current changes to the cache file. (Ctrl + S)" Content="Save"
+						        Width="50" Margin="10,0,0,0" Click="btnPluginSave_Click" />
+						<xctk:SplitButton Content="Poke" x:Name="sbPluginPoke" Margin="5,0,0,0" Width="60" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. Click the arrow for more options.">
 							<xctk:SplitButton.DropDownContent>
 								<StackPanel>
 									<MenuItem Header="Poke Changes" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory." Foreground="White" InputGestureText="Ctrl + P"/>
@@ -138,7 +197,7 @@
 								</StackPanel>
 							</xctk:SplitButton.DropDownContent>
 						</xctk:SplitButton>
-						<xctk:SplitButton Content="Quick Reload" x:Name="sbPluginRefresh" Margin="5,0,0,0" Width="110" Click="btnPluginRefresh_Click" ToolTip="Reloads the plugin and tagdata from the cache file. Click the arrow for more options.">
+						<xctk:SplitButton Content="Reload" x:Name="sbPluginRefresh" Margin="5,0,0,0" Width="70" Click="btnPluginRefresh_Click" ToolTip="Reloads the plugin and tagdata from the cache file. Click the arrow for more options.">
 							<xctk:SplitButton.DropDownContent>
 								<StackPanel>
 									<MenuItem Header="Reload From File" Click="btnPluginRefresh_Click" ToolTip="Reloads the plugin and tagdata from the cache file." Foreground="White" InputGestureText="Ctrl + R"/>
@@ -149,6 +208,27 @@
 						<Button x:Name="btnPluginRevisionViewer"
 						        ToolTip="View who researched the plugin and what they did. (Ctrl + Shift + R)" Content="Revisions"
 						        Width="70" Margin="5,0,0,0" Click="btnPluginRevisionViewer_Click" />
+						<ToggleButton x:Name="btnOptions" Width="75" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource optionsToggleButton}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="50"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+
+								<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
+								<Path x:Name="Arrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+							</Grid>
+						</ToggleButton>
+						<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
+							<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+								<StackPanel>
+									<MenuItem x:Name="cbShowInvisibles" Header="Show Invisibles" IsCheckable="True" Foreground="White" Checked="cbShowInvisibles_Altered" Unchecked="cbShowInvisibles_Altered" />
+									<!-- TODO: Make these work -->
+									<MenuItem Header="Show Comments" Visibility="Collapsed" IsCheckable="True" Foreground="White" />
+									<MenuItem Header="Show Block Information" Visibility="Collapsed" IsCheckable="True" Foreground="White" />
+								</StackPanel>
+							</Border>
+						</Popup>
 					</StackPanel>
 				</Grid>
 			</Border>

@@ -309,11 +309,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RevisionViewer();
 		}
 
+	//	private void btnOptions_Click(object sender, RoutedEventArgs e)
+	//	{
+	//		popOptions.IsOpen = true;
+	//	}
+
 		private void cbShowInvisibles_Altered(object sender, RoutedEventArgs e)
 		{
 			if (!hasInitFinished) return;
 
-			if (cbShowInvisibles.IsChecked != null)
+			
 				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool) cbShowInvisibles.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
 		}
