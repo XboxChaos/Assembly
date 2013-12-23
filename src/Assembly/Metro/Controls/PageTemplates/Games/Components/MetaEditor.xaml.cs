@@ -91,8 +91,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
-			// Set Invisibility box
+			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
+			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
+			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
+			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -287,8 +290,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
-			// Set Invisibility box
+			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
+			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
+			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
+			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -321,6 +327,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			
 				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool) cbShowInvisibles.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
+		}
+
+		private void cbShowComments_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowComments = (bool)cbShowComments.IsChecked;
+			RefreshEditor(MetaReader.LoadType.File);
+		}
+
+		private void cbShowEnumIndex_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex = (bool)cbShowEnumIndex.IsChecked;
+		}
+
+		private void cbShowInformation_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
 		}
 
 		private void cbReflexives_SelectionChanged(object sender, SelectionChangedEventArgs e)

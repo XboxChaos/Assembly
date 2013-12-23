@@ -62,7 +62,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			BtnSelectGeneral.IsChecked = false;
 			BtnSelectXboxDev.IsChecked = false;
 			BtnSelectMapEdit.IsChecked = false;
-			BtnSelectPlugins.IsChecked = false;
+		//	BtnSelectPlugins.IsChecked = false;
 			BtnSelectStrtpge.IsChecked = false;
 		}
 

@@ -11,7 +11,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			InitializeComponent();
 
-			// Set Invisibility box
+			// Set Information box
 			infoToggle.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 		}
 	}

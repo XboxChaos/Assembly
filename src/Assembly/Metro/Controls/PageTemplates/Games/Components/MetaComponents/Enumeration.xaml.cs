@@ -10,6 +10,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		public Enumeration()
 		{
 			InitializeComponent();
+
+			indexToggle.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
 		}
 	}
 }
