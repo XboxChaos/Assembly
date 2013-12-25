@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.IO;
@@ -15,6 +16,8 @@ namespace Blamite.Injection
 		private readonly Dictionary<DataBlock, uint> _dataBlockAddresses = new Dictionary<DataBlock, uint>();
 		private readonly List<StringID> _injectedStrings = new List<StringID>();
 		private readonly Dictionary<ResourcePage, int> _pageIndices = new Dictionary<ResourcePage, int>();
+
+		private readonly Dictionary<ExtractedPage, int> _extractedResourcePages = new Dictionary<ExtractedPage, int>();
 
 		private readonly Dictionary<ExtractedResourceInfo, DatumIndex> _resourceIndices =
 			new Dictionary<ExtractedResourceInfo, DatumIndex>();
@@ -42,6 +45,11 @@ namespace Blamite.Injection
 		public ICollection<ResourcePage> InjectedPages
 		{
 			get { return _pageIndices.Keys; }
+		}
+
+		public ICollection<ExtractedPage> InjectedExtractedResourcePages
+		{
+			get { return _extractedResourcePages.Keys; }
 		}
 
 		public ICollection<ExtractedResourceInfo> InjectedResources
@@ -136,7 +144,7 @@ namespace Blamite.Injection
 			return InjectDataBlock(_container.FindDataBlock(originalAddress), stream);
 		}
 
-		public int InjectResourcePage(ResourcePage page, IReader reader)
+		public int InjectResourcePage(ResourcePage page, IStream stream)
 		{
 			if (_resources == null)
 				return -1;
@@ -149,28 +157,40 @@ namespace Blamite.Injection
 				return newIndex;
 
 			// Add the page and associate its new index with it
+			var extractedRaw = _container.FindExtractedResourcePage(page.Index);
 			newIndex = _resources.Pages.Count;
-			page.Index = newIndex; // haxhaxhax
-			LoadResourceTable(reader);
+			page.Index = newIndex; // haxhaxhax, oh aaron
+			LoadResourceTable(stream);
+
+			// Inject?
+			if (extractedRaw != null)
+			{
+				var rawOffset = InjectExtractedResourcePage(page, extractedRaw, stream);
+				page.Offset = rawOffset;
+				page.FilePath = null;
+			}
+
 			_resources.Pages.Add(page);
 			_pageIndices[page] = newIndex;
 			return newIndex;
 		}
 
-		public int InjectResourcePage(int originalIndex, IReader reader)
+		public int InjectResourcePage(int originalIndex, IStream stream)
 		{
-			return InjectResourcePage(_container.FindResourcePage(originalIndex), reader);
+			return InjectResourcePage(_container.FindResourcePage(originalIndex), stream);
 		}
 
-		public void InjectExtractedResourcePage(ExtractedPage extractedPage, IStream stream)
+		public int InjectExtractedResourcePage(ResourcePage resourcePage, ExtractedPage extractedPage, IStream stream)
 		{
 			if (extractedPage == null)
 				throw new ArgumentNullException("extractedPage");
 
-			var resourcePage = _container.FindResourcePage(extractedPage.ResourcePageIndex);
+			var injector = new ResourcePageInjector(_cacheFile);
+			var rawOffset = injector.InjectPage(stream, resourcePage, extractedPage.ExtractedPageData);
+			
+			_extractedResourcePages[extractedPage] = extractedPage.ResourcePageIndex;
 
-			// TODO: Allocate and write the file, then update the resource page
-			resourcePage.FilePath = null;
+			return rawOffset;
 		}
 
 		public DatumIndex InjectResource(ExtractedResourceInfo resource, IStream stream)

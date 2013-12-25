@@ -12,8 +12,8 @@ namespace Blamite.Injection
 
 			WriteDataBlocks(tags, container, writer);
 			WriteTags(tags, container, writer);
-			WriteResourcePages(tags, container, writer);
 			WriteExtractedResourcePages(tags, container, writer);
+			WriteResourcePages(tags, container, writer);
 			WriteResources(tags, container, writer);
 
 			container.EndBlock();

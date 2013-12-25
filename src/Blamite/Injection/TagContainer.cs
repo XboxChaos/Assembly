@@ -132,6 +132,16 @@ namespace Blamite.Injection
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="originalIndex"></param>
+		/// <returns></returns>
+		public ExtractedPage FindExtractedResourcePage(int originalIndex)
+		{
+			return Find(_extractedResourcePageByPageIndex, originalIndex);
+		}
+
+		/// <summary>
 		///     Finds the resource page which has a specified original index.
 		/// </summary>
 		/// <param name="originalIndex">The original index of the resource page to find.</param>

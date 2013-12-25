@@ -38,13 +38,14 @@ namespace Blamite.Injection
 						tags.AddTag(ReadTag(reader, containerFile.BlockVersion));
 						break;
 
+					case "ersp":
+						// Extracted Raw Resource Page
+						tags.AddExtractedResourcePage(ReadExtractedResourcePage(reader, containerFile.BlockVersion));
+						break;
+
 					case "rspg":
 						// Resource page
 						tags.AddResourcePage(ReadResourcePage(reader, containerFile.BlockVersion));
-						break;
-
-					case "ersp":
-						
 						break;
 
 					case "rsrc":
