@@ -43,6 +43,10 @@ namespace Blamite.Injection
 						tags.AddResourcePage(ReadResourcePage(reader, containerFile.BlockVersion));
 						break;
 
+					case "ersp":
+						
+						break;
+
 					case "rsrc":
 						// Resource info
 						tags.AddResource(ReadResource(reader, containerFile.BlockVersion));
@@ -157,6 +161,18 @@ namespace Blamite.Injection
 			return page;
 		}
 
+		private static ExtractedPage ReadExtractedResourcePage(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"ersp\" block version");
+
+			return new ExtractedPage
+			{
+				ResourcePageIndex = reader.ReadInt32(),
+				ExtractedPageData = ReadByteArray(reader)
+			};
+		}
+
 		private static ExtractedResourceInfo ReadResource(IReader reader, byte version)
 		{
 			if (version != 1)
@@ -208,10 +224,8 @@ namespace Blamite.Injection
 
 		private static byte[] ReadByteArray(IReader reader)
 		{
-			int size = reader.ReadInt32();
-			if (size <= 0)
-				return new byte[0];
-			return reader.ReadBlock(size);
+			var size = reader.ReadInt32();
+			return size <= 0 ? new byte[0] : reader.ReadBlock(size);
 		}
 	}
 }

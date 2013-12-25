@@ -162,6 +162,17 @@ namespace Blamite.Injection
 			return InjectResourcePage(_container.FindResourcePage(originalIndex), reader);
 		}
 
+		public void InjectExtractedResourcePage(ExtractedPage extractedPage, IStream stream)
+		{
+			if (extractedPage == null)
+				throw new ArgumentNullException("extractedPage");
+
+			var resourcePage = _container.FindResourcePage(extractedPage.ResourcePageIndex);
+
+			// TODO: Allocate and write the file, then update the resource page
+			resourcePage.FilePath = null;
+		}
+
 		public DatumIndex InjectResource(ExtractedResourceInfo resource, IStream stream)
 		{
 			if (_resources == null)

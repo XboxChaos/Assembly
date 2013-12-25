@@ -13,6 +13,7 @@ namespace Blamite.Injection
 			WriteDataBlocks(tags, container, writer);
 			WriteTags(tags, container, writer);
 			WriteResourcePages(tags, container, writer);
+			WriteExtractedResourcePages(tags, container, writer);
 			WriteResources(tags, container, writer);
 
 			container.EndBlock();
@@ -99,9 +100,9 @@ namespace Blamite.Injection
 
 		private static void WriteResourcePages(TagContainer tags, ContainerWriter container, IWriter writer)
 		{
-			foreach (ResourcePage page in tags.ResourcePages)
+			foreach (var page in tags.ResourcePages)
 			{
-				container.StartBlock("rspg", 1);
+				container.StartBlock("rspg", 2);
 
 				writer.WriteInt32(page.Index);
 				writer.WriteUInt16(page.Salt);
@@ -118,6 +119,19 @@ namespace Blamite.Injection
 				writer.WriteInt32(page.Unknown1);
 				writer.WriteInt32(page.Unknown2);
 				writer.WriteInt32(page.Unknown3);
+
+				container.EndBlock();
+			}
+		}
+
+		private static void WriteExtractedResourcePages(TagContainer tags, ContainerWriter container, IWriter writer)
+		{
+			foreach (var extractedPage in tags.ExtractedResourcePages)
+			{
+				container.StartBlock("ersp", 0);
+
+				writer.WriteInt32(extractedPage.ResourcePageIndex);
+				WriteByteArray(extractedPage.ExtractedPageData, writer);
 
 				container.EndBlock();
 			}

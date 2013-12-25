@@ -10,13 +10,20 @@ namespace Blamite.Injection
 	/// </summary>
 	public class TagContainer
 	{
-		private readonly Dictionary<uint, DataBlock> _dataBlocksByAddress = new Dictionary<uint, DataBlock>();
-		private readonly Dictionary<int, ResourcePage> _pagesByIndex = new Dictionary<int, ResourcePage>();
+		private readonly Dictionary<uint, DataBlock> _dataBlocksByAddress = 
+			new Dictionary<uint, DataBlock>();
+
+		private readonly Dictionary<int, ResourcePage> _pagesByIndex = 
+			new Dictionary<int, ResourcePage>();
 
 		private readonly Dictionary<DatumIndex, ExtractedResourceInfo> _resourcesByIndex =
 			new Dictionary<DatumIndex, ExtractedResourceInfo>();
 
-		private readonly Dictionary<DatumIndex, ExtractedTag> _tagsByIndex = new Dictionary<DatumIndex, ExtractedTag>();
+		private readonly Dictionary<int, ExtractedPage> _extractedResourcePageByPageIndex =
+			new Dictionary<int, ExtractedPage>();
+
+		private readonly Dictionary<DatumIndex, ExtractedTag> _tagsByIndex = 
+			new Dictionary<DatumIndex, ExtractedTag>();
 
 		/// <summary>
 		///     Gets a collection of all data blocks in the container.
@@ -40,6 +47,14 @@ namespace Blamite.Injection
 		public ICollection<ResourcePage> ResourcePages
 		{
 			get { return _pagesByIndex.Values; }
+		}
+
+		/// <summary>
+		///     
+		/// </summary>
+		public ICollection<ExtractedPage> ExtractedResourcePages
+		{
+			get { return _extractedResourcePageByPageIndex.Values; }
 		}
 
 		/// <summary>
@@ -75,6 +90,16 @@ namespace Blamite.Injection
 		public void AddResourcePage(ResourcePage page)
 		{
 			_pagesByIndex[page.Index] = page;
+		}
+
+		/// <summary>
+		///     
+		/// </summary>
+		/// <param name="extractedPage"></param>
+		/// <param name="page"></param>
+		public void AddExtractedResourcePage(ExtractedPage extractedPage)
+		{
+			_extractedResourcePageByPageIndex[extractedPage.ResourcePageIndex] = extractedPage;
 		}
 
 		/// <summary>
@@ -127,14 +152,14 @@ namespace Blamite.Injection
 		}
 
 		/// <summary>
-		///     Attempts to find a value in a <see cref="Dictionary" />, returning the type's default value if not found.
+		///     Attempts to find a value in a <see><cref>Dictionary</cref></see>, returning the type's default value if not found.
 		/// </summary>
 		/// <typeparam name="TKey">The type of the dictionary's keys.</typeparam>
 		/// <typeparam name="TValue">The type of the dictionary's values.</typeparam>
 		/// <param name="dict">The dictionary to search in.</param>
 		/// <param name="key">The key to search for.</param>
 		/// <returns>The value with the corresponding key if found, or <typeparamref name="TValue" />'s default value if not found.</returns>
-		private TValue Find<TKey, TValue>(Dictionary<TKey, TValue> dict, TKey key)
+		private static TValue Find<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
 		{
 			TValue result;
 			dict.TryGetValue(key, out result);
