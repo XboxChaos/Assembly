@@ -102,7 +102,7 @@ namespace Blamite.Injection
 		{
 			foreach (var page in tags.ResourcePages)
 			{
-				container.StartBlock("rspg", 2);
+				container.StartBlock("rspg", 1);
 
 				writer.WriteInt32(page.Index);
 				writer.WriteUInt16(page.Salt);
