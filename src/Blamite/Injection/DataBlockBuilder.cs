@@ -248,12 +248,9 @@ namespace Blamite.Injection
 		{
 			_reflexiveBlocks = new List<DataBlock>();
 			ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize, align));
-			if (_reflexiveBlocks.Count > 0)
-			{
-				_blockStack.Push(_reflexiveBlocks);
-				return true;
-			}
-			return false;
+			if (_reflexiveBlocks.Count <= 0) return false;
+			_blockStack.Push(_reflexiveBlocks);
+			return true;
 		}
 
 		public void LeaveReflexive()
