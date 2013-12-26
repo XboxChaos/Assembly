@@ -2,6 +2,7 @@
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.IO;
 
 namespace Blamite.Blam.SecondGen
@@ -19,12 +20,22 @@ namespace Blamite.Blam.SecondGen
 			throw new NotImplementedException();
 		}
 
-		public bool SupportsScenarioBSPs
+		public bool SupportsSounds
 		{
 			get { return false; }
 		}
 
-		public IScenarioBSP LoadScenarioBSPMeta(ITag sbspTag, IReader reader)
+		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool SupportsScenarioBsps
+		{
+			get { return false; }
+		}
+
+		public IScenarioBSP LoadScenarioBspMeta(ITag sbspTag, IReader reader)
 		{
 			throw new NotImplementedException();
 		}

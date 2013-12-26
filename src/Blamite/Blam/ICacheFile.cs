@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
@@ -143,7 +144,7 @@ namespace Blamite.Blam
 		///     The cache file's resource manager.
 		/// </summary>
 		IResourceManager Resources { get; }
-
+		
 		/// <summary>
 		///     The IResourceMetaLoader which can be used to load metadata for resources.
 		/// </summary>
