@@ -30,19 +30,10 @@ namespace Assembly.Helpers
 			if (info == null || !info.Successful)
 				return false;
 
-			// Just convert the version strings to ints and compare
-			long serverVersion = VersionStringToInt(info.LatestVersion);
-			long localVersion = VersionStringToInt(VariousFunctions.GetApplicationVersion());
+			var serverVersion = info.LatestVersion;
+			var currentVersion = VariousFunctions.GetApplicationVersion();
 
-			return (serverVersion > localVersion);
-		}
-
-		private static Int64 VersionStringToInt(string version)
-		{
-			version = version.Replace(".", "");
-			Int64 versionInt;
-
-			return Int64.TryParse(version, out versionInt) ? versionInt : 0;
+			return (serverVersion.CompareTo(currentVersion) > 0);
 		}
 	}
 }
