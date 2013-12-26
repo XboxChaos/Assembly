@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Blamite.Blam.Resources;
+using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
@@ -54,10 +54,32 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 			var result = new ResourceTable();
 			result.Pages.AddRange(_layoutTable.LoadPages(reader));
-			IEnumerable<ResourcePointer> pointers = _layoutTable.LoadPointers(reader, result.Pages);
+			var pointers = _layoutTable.LoadPointers(reader, result.Pages);
 			result.Resources.AddRange(_gestalt.LoadResources(reader, _tags, pointers.ToList()));
 			return result;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <returns></returns>
+		private ThirdGenSoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+		{
+			if (_tags == null || !_buildInfo.Layouts.HasLayout("sound resource gestalt"))
+				return null;
+			
+			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
+			
+			var ugh = _tags.FindTagByClass("ugh!");
+			if (ugh == null)
+				return null;
+
+			reader.SeekTo(ugh.MetaLocation.AsOffset());
+			var values = StructureReader.ReadStructure(reader, layout);
+			return new ThirdGenSoundResourceGestalt(values, reader, _metaArea, _buildInfo);
+		}
+
 
 		/// <summary>
 		///     Saves the resource table back to the file.
@@ -69,7 +91,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			if (_layoutTable == null || _gestalt == null)
 				return;
 
-			IList<ResourcePointer> pointers = _gestalt.SaveResources(table.Resources, stream);
+			var pointers = _gestalt.SaveResources(table.Resources, stream);
 			_layoutTable.SavePointers(pointers, stream);
 			_layoutTable.SavePages(table.Pages, stream);
 		}
@@ -83,9 +105,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// </returns>
 		public IZoneSetTable LoadZoneSets(IReader reader)
 		{
-			if (_gestalt == null)
-				return null;
-			return new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo);
+			return _gestalt == null ? null : new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo);
 		}
 	}
 }
