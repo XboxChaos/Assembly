@@ -62,14 +62,13 @@ namespace Blamite.Injection
 		{
 			// Read the tag data in based off the base size
 			_reader.SeekTo(_tagLocation.AsOffset());
-			byte[] data = _reader.ReadBlock(baseSize);
+			var data = _reader.ReadBlock(baseSize);
 
 			// Create a block for it and push it onto the block stack
 			var block = new DataBlock(_tagLocation.AsPointer(), 1, 4, data);
 			DataBlocks.Add(block);
 
-			var blockList = new List<DataBlock>();
-			blockList.Add(block);
+			var blockList = new List<DataBlock> {block};
 			_blockStack.Push(blockList);
 
 			return true;
@@ -161,7 +160,7 @@ namespace Blamite.Injection
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
 		{
-			ReadReferences(offset, (b, o) => ReadStringId(b, o));
+			ReadReferences(offset, ReadStringId);
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
