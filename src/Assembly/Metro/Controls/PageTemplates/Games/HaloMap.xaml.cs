@@ -31,6 +31,7 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
+using Blamite.Blam.ThirdGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -739,35 +740,66 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					container.AddResource(new ExtractedResourceInfo(resource));
 
 					// Add data for its pages
-					if (resource.Location != null)
+					if (resource.Location == null) continue;
+
+					if (resource.Location.PrimaryPage != null &&
+					    !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
 					{
-						if (resource.Location.PrimaryPage != null &&
-						    !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
-						{
-							container.AddResourcePage(resource.Location.PrimaryPage);
-							resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+						container.AddResourcePage(resource.Location.PrimaryPage);
+						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
 
-							using (var fileStream = File.OpenRead(_cacheLocation))
+						using (var fileStream = File.OpenRead(_cacheLocation))
+						{
+							var resourceFile = _cacheFile;
+							Stream resourceStream = fileStream;
+							if (resource.Location.PrimaryPage.FilePath != null)
 							{
-								var extractor = new ResourcePageExtractor(_cacheFile);
-								var path = Path.GetTempFileName();
-								var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-								extractor.ExtractPage(resource.Location.PrimaryPage, fileStream, pageStream);
-								pageStream.Close();
-
-								container.AddExtractedResourcePage(
-									new ExtractedPage(File.ReadAllBytes(path),
-									resource.Location.PrimaryPage.Index));
+								resourceStream =
+									File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo 3\Maps\Clean\",
+										Path.GetFileName(resource.Location.PrimaryPage.FilePath)));
+								resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+									_cacheFile.BuildString);
 							}
-						}
-						if (resource.Location.SecondaryPage != null &&
-						    !resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
-						{
-							container.AddResourcePage(resource.Location.SecondaryPage);
-							resourcePagesProcessed.Add(resource.Location.SecondaryPage);
 
-							// TODO: Secondary Page Extraction
+							var extractor = new ResourcePageExtractor(resourceFile);
+							var path = Path.GetTempFileName();
+							var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+							extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
+							pageStream.Close();
+
+							container.AddExtractedResourcePage(
+								new ExtractedPage(File.ReadAllBytes(path),
+									resource.Location.PrimaryPage.Index));
 						}
+					}
+					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+						continue;
+
+					container.AddResourcePage(resource.Location.SecondaryPage);
+					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+
+					using (var fileStream = File.OpenRead(_cacheLocation))
+					{
+						var resourceFile = _cacheFile;
+						Stream resourceStream = fileStream;
+						if (resource.Location.SecondaryPage.FilePath != null)
+						{
+							resourceStream =
+								File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo 3\Maps\Clean\",
+									Path.GetFileName(resource.Location.SecondaryPage.FilePath)));
+							resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+								_cacheFile.BuildString);
+						}
+
+						var extractor = new ResourcePageExtractor(resourceFile);
+						var path = Path.GetTempFileName();
+						var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+						extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
+						pageStream.Close();
+
+						container.AddExtractedResourcePage(
+							new ExtractedPage(File.ReadAllBytes(path),
+								resource.Location.SecondaryPage.Index));
 					}
 				}
 			}
