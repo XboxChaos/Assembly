@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Assembly.Helpers;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -83,35 +84,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			#endregion
 
-			#region BSP
-
-			/*if (true && _tag.RawTag.Class.Magic == CharConstant.FromString("sbsp")) // add some manual check here akarias, since you code isn't in blamite
-			{
-				tabBspEditor.Visibility = Visibility.Visible;
-				tabBspEditor.Content = new BspEditor(_tag, _cache, _streamManager);
-			}
-			else*/
-			{
-				tabBspEditor.Visibility = Visibility.Collapsed;
-				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
-					tbMetaEditors.SelectedIndex = (int) Settings.LastMetaEditorType.MetaEditor;
-			}
-
-			#endregion
-
 			#region Sound
 
-			//if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
-			//{
-			//	tabSound.Visibility = Visibility.Visible;
-			//	tabSound.Content = new SoundEditor(_tag, _cache, _streamManager);
-			//}
-			//else
-			//{
-			//	tabSound.Visibility = Visibility.Collapsed;
-			//	if (App.AssemblyStorage.AssemblySettings.halomapLastSelectedMetaEditor == App.AssemblyStorage.AssemblySettings.LastMetaEditorType.Sound)
-			//		tbMetaEditors.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.LastMetaEditorType.MetaEditor;
-			//}
+			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
+			{
+				tabSoundEditor.Visibility = Visibility.Visible;
+				tabSoundEditor.Content = new SoundEditor(_tag, _cache, _streamManager);
+			}
+			else
+			{
+				tabSoundEditor.Visibility = Visibility.Collapsed;
+				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == 
+					Settings.LastMetaEditorType.Sound)
+					tbMetaEditors.SelectedIndex = 
+						(int)Settings.LastMetaEditorType.MetaEditor;
+			}
 
 			#endregion
 		}

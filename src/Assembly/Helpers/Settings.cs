@@ -173,8 +173,7 @@ namespace Assembly.Helpers
 			MetaEditor,
 			PluginEditor,
 			Sound,
-			Model,
-			Bsp
+			Model
 		}
 
 		/// <summary>
