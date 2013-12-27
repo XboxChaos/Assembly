@@ -4,8 +4,227 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+             d:DesignHeight="500" d:DesignWidth="800">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="300" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock x:Name="lblTagName" Grid.ColumnSpan="2" Text="objects/swag/fag/yolo" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontFamily="{DynamicResource MetroFontLight}" FontSize="100" Opacity="0.3" Foreground="#FF999999" Margin="-3200,0,0,-11" TextAlignment="Right" Width="4000" />
+		<StackPanel Margin="0,20,0,0">
+			<StackPanel Margin="12,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Permutations;" FontSize="25" Opacity="0.3" />
+				
+				<ListBox x:Name="SoundPermutationListBox" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+						 ItemsSource="{Binding Permutations}" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+						 Background="{x:Null}" BorderBrush="#FF3C3C3C" Foreground="{x:Null}" 
+						 VerticalAlignment="Top" HorizontalAlignment="Left" Width="200" MinHeight="100" 
+						 MaxHeight="300">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" Foreground="White" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+
+
+			<StackPanel Margin="12,20,0,0">
+				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Sound Tools;" FontSize="25" Opacity="0.3" />
+				<Grid HorizontalAlignment="Left" Width="200" Height="120">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+
+
+
+					<Button x:Name="btnExtractRawSound" Grid.ColumnSpan="3" Grid.Row="3" Content="Extract Complete Raw Sound" Click="btnExtractRawSound_Click" />
+					<Button x:Name="btnExtractAllPerms" Grid.ColumnSpan="3" Grid.Row="2" Content="Extract All Permutations" />
+					<Button x:Name="btnExtractSelectedPerm" Grid.ColumnSpan="3" Grid.Row="1" Content="Extract Selected Permutation" />
+					<Button x:Name="btnPlay" Grid.Column="0" Grid.Row="0" Content="Play" Click="btnPlay_Click" />
+					<Button x:Name="btnStop" Grid.Column="2" Grid.Row="0" Content="Stop" />
+				</Grid>
+			</StackPanel>
+		</StackPanel>
+
+		<StackPanel Grid.Column="1">
+			<StackPanel Margin="12,20,0,0">
+				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Primary Resource Page;" FontSize="25" Opacity="0.3" />
+				<StackPanel>
+					<!-- Compression Type -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Compression:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage1Compression" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Compressed Size -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Compressed Size:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage1CompressedSize" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Uncompressed Size -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Uncompressed Size:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage1UncompressedSize" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Offset -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Offset:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage1Offset" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- File Path -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        File Path:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage1FilePath" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+
+
+			<StackPanel Margin="12,30,0,0">
+				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Secondary Resource Page;" FontSize="25" Opacity="0.3" />
+				<StackPanel>
+					<!-- Compression Type -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Compression:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage2Compression" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Compressed Size -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Compressed Size:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage2CompressedSize" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Uncompressed Size -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Uncompressed Size:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage2UncompressedSize" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Offset -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Offset:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage2Offset" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- File Path -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        File Path:
+						</TextBlock>
+						<TextBlock x:Name="lblResourcePage2FilePath" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Null
+						</TextBlock>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+
+
+			<StackPanel Margin="12,20,0,0">
+				<TextBlock Style="{DynamicResource GenericTextblock}" Text="Sound Information;" FontSize="25" Opacity="0.3" />
+				<StackPanel>
+					<!-- Sound Class -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Sound Class:
+						</TextBlock>
+						<TextBlock x:Name="lblSoundInfoSoundClass" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        0
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Sample Rate -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Audio Channel:
+						</TextBlock>
+						<TextBlock x:Name="lblSoundInfoAudioChannel" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        Stereo
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Encoding -->
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Encoding:
+						</TextBlock>
+						<TextBlock x:Name="lblSoundInfoEncoding" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        XMA
+						</TextBlock>
+					</StackPanel>
+
+
+					<!-- Max Playtime -->
+					<StackPanel Orientation="Horizontal" Visibility="Collapsed">
+						<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White">
+                                                        Max Playtime:
+						</TextBlock>
+						<TextBlock x:Name="lblSoundInfoMaxPlaytime" Style="{DynamicResource GenericTextblock}" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0">
+                                                        0
+						</TextBlock>
+					</StackPanel>
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
 </UserControl>

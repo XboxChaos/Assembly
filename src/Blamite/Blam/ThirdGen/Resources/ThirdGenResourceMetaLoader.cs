@@ -64,19 +64,18 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 		public bool SupportsSounds
 		{
-			get { return _buildInfo.Layouts.HasLayout("sounds"); }
+			get { return _buildInfo.Layouts.HasLayout("sound"); }
 		}
 
 		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
 		{
 			if (sndTag.MetaLocation == null || sndTag.Class == null || sndTag.Class.Magic != SndMagic)
 				throw new ArgumentException("sndTag");
-
 			if (!SupportsSounds)
 				throw new NotSupportedException("Sound metadata loading is not supported for the cache file's engine.");
 
 			reader.SeekTo(sndTag.MetaLocation.AsOffset());
-			var layout = _buildInfo.Layouts.GetLayout("sounds");
+			var layout = _buildInfo.Layouts.GetLayout("sound");
 			var values = StructureReader.ReadStructure(reader, layout);
 			return new ThirdGenSound(values, reader, _metaArea, _buildInfo);
 		}

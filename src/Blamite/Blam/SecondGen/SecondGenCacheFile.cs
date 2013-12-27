@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.SecondGen.Structures;
 using Blamite.Blam.Shaders;
@@ -145,6 +147,11 @@ namespace Blamite.Blam.SecondGen
 		public IResourceMetaLoader ResourceMetaLoader
 		{
 			get { return new SecondGenResourceMetaLoader(); }
+		}
+
+		public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+		{
+			throw new NotImplementedException();
 		}
 
 		public FileSegment StringIDIndexTable

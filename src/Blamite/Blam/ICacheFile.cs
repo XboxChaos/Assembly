@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
@@ -148,6 +149,12 @@ namespace Blamite.Blam
 		///     The IResourceMetaLoader which can be used to load metadata for resources.
 		/// </summary>
 		IResourceMetaLoader ResourceMetaLoader { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="reader"></param>
+		ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader);
 
 		/// <summary>
 		///     A collection of segments that the file has been arbitrarily divided into.

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Blamite.Blam.Resources;
-using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Flexibility;
@@ -58,29 +57,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			result.Resources.AddRange(_gestalt.LoadResources(reader, _tags, pointers.ToList()));
 			return result;
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <returns></returns>
-		private ThirdGenSoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
-		{
-			if (_tags == null || !_buildInfo.Layouts.HasLayout("sound resource gestalt"))
-				return null;
-			
-			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
-			
-			var ugh = _tags.FindTagByClass("ugh!");
-			if (ugh == null)
-				return null;
-
-			reader.SeekTo(ugh.MetaLocation.AsOffset());
-			var values = StructureReader.ReadStructure(reader, layout);
-			return new ThirdGenSoundResourceGestalt(values, reader, _metaArea, _buildInfo);
-		}
-
-
+		
 		/// <summary>
 		///     Saves the resource table back to the file.
 		/// </summary>

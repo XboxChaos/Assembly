@@ -89,7 +89,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
 			{
 				tabSoundEditor.Visibility = Visibility.Visible;
-				tabSoundEditor.Content = new SoundEditor(_tag, _cache, _streamManager);
+				tabSoundEditor.Content = new SoundEditor(_buildInfo, _tag, _cache, _streamManager);
 			}
 			else
 			{
