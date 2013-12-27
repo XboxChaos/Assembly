@@ -7,5 +7,7 @@
 		ISoundPermutation[] SoundPermutations { get; }
 
 		ISoundRawChunk[] SoundRawChunks { get; }
+
+		ISoundPlatformCodec[] SoundPlatformCodecs { get; }
 	}
 }

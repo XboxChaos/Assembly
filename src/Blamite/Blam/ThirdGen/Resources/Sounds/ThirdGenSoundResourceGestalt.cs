@@ -17,6 +17,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 		public ISoundPlayback[] SoundPlaybacks { get; private set; }
 		public ISoundPermutation[] SoundPermutations { get; private set; }
 		public ISoundRawChunk[] SoundRawChunks { get; private set; }
+		public ISoundPlatformCodec[] SoundPlatformCodecs { get; private set; }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
@@ -24,6 +25,17 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			LoadSoundPlaybacks(values, reader, metaArea, buildInfo);
 			LoadSoundPermutations(values, reader, metaArea, buildInfo);
 			LoadSoundRawChunks(values, reader, metaArea, buildInfo);
+			LoadPlatformCodecs(values, reader, metaArea, buildInfo);
+		}
+		private void LoadPlatformCodecs(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
+		{
+			var count = (int)values.GetInteger("number of platform codecs");
+			var address = values.GetInteger("platform codecs table address");
+			var layout = buildInfo.Layouts.GetLayout("sound platform codecs");
+			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+
+			SoundPlatformCodecs = (from entry in entries
+						   select new ThirdGenSoundPlatformCodec(entry)).ToArray<ISoundPlatformCodec>();
 		}
 		private void LoadSoundNames(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{

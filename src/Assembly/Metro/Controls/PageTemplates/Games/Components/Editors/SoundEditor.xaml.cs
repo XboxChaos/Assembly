@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
@@ -73,7 +74,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					if (_soundResource.Location.PrimaryPage != null)
 						_resourcePages[0] = _soundResource.Location.PrimaryPage;
 					if (_soundResource.Location.SecondaryPage != null)
-						_resourcePages[0] = _soundResource.Location.SecondaryPage;
+						_resourcePages[1] = _soundResource.Location.SecondaryPage;
 				}
 
 				var playback = _soundResourceGestalt.SoundPlaybacks[_sound.PlaybackIndex];
@@ -195,67 +196,85 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			var perm = (ViewModel.ViewPermutation)SoundPermutationListBox.SelectedValue;
 			if (perm == null) return;
 
-			const string pathToWav = @"A:\Xbox\Games\towav.exe";
-			var sound = ConvertToAudioFile(ExtractRawPerm(perm.SoundPermutation));
-			var tempFile = Path.GetTempFileName();
-			File.WriteAllBytes(tempFile, sound);
-
-			VariousFunctions.RunProgramSilently(pathToWav,
-				string.Format("\"{0}\"", Path.GetFileName(tempFile)),
-				Path.GetDirectoryName(tempFile));
-
-			_soundPlayer = new SoundPlayer(Path.ChangeExtension(tempFile, "wav"));
+			_soundPlayer = new SoundPlayer(ConvertToAudioFile(ExtractRawPerm(perm.SoundPermutation)));
 			_soundPlayer.Play();
 		}
 
 		private void btnExtractRawSound_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			var path = @"C:\Users\Alex\Desktop\snd\all.wav";
-
-			File.WriteAllBytes(path, ConvertToAudioFile(ExtractRaw()));
+			ConvertToAudioFile(ExtractRaw());
 		}
 
-		private byte[] ConvertToAudioFile(ICollection<byte> raw)
+		private string ConvertToAudioFile(ICollection<byte> data, string path = null)
 		{
-			using (var convertStream = new EndianStream(new MemoryStream(), Endian.BigEndian))
+			var tempFile = Path.GetTempFileName();
+
+			byte[] footer;
+			var codec = _soundResourceGestalt.SoundPlatformCodecs[_sound.CodecIndex];
+			switch (codec.Channel)
 			{
-				switch (_sound.Encoding)
-				{
-					case Encoding.XMA:
-						convertStream.WriteInt32(0x52494646); // 'RIFF'
-						convertStream.Endianness = Endian.LittleEndian;
-						convertStream.WriteInt32(0x00);
-						convertStream.Endianness = Endian.BigEndian;
-						convertStream.WriteInt32(0x57415645);
+				case Channel.Mono:
+					footer = _monoFooter;
+					break;
 
-						// 'data' chunk
-						convertStream.WriteInt32(0x64617461); // 'data'
-						convertStream.Endianness = Endian.LittleEndian;
-						convertStream.WriteInt32(raw.Count);
-						convertStream.WriteBlock(raw.ToArray());
-						break;
+				case Channel.Stereo:
+					footer = _stereoFooter;
+					break;
 
-					case Encoding.WMA:
-					case Encoding.XboxADPCM:
-						throw new NotImplementedException();
-				}
+				default:
+					throw new NotImplementedException();
+			}
 
-				switch (_sound.SampleRate)
-				{
-					case SampleRate.Mono_22050kbps:
-						convertStream.WriteBlock(_monoFooter);
-						break;
-					case SampleRate.Stereo_44100kbps:
-						convertStream.WriteBlock(_stereoFooter);
-						break;
-				}
+			switch (_sound.Encoding)
+			{
+				case Encoding.XMA:
+					using (var fileStream = new FileStream(tempFile, FileMode.OpenOrCreate))
+					{
+						using (var writer = new EndianWriter(fileStream, Endian.BigEndian))
+						{
+							// Generate an XMA header
+							// ADAPTED FROM wwisexmabank - I DO NOT TAKE ANY CREDIT WHATSOEVER FOR THE FOLLOWING CODE.
+							// See http://hcs64.com/vgm_ripping.html for more information
 
-				convertStream.Endianness = Endian.LittleEndian;
-				convertStream.SeekTo(0x04);
-				convertStream.WriteInt32((int)convertStream.Length - 0x08);
+							// 'riff' chunk
+							writer.WriteInt32(0x52494646); // 'RIFF'
+							writer.Endianness = Endian.LittleEndian;
+							writer.WriteInt32(data.Count + 0x34);
+							writer.Endianness = Endian.BigEndian;
+							writer.WriteInt32(0x57415645);
+							
+							// 'data' chunk
+							writer.Endianness = Endian.BigEndian;
+							writer.WriteInt32(0x64617461); // 'data'
+							writer.Endianness = Endian.LittleEndian;
+							writer.WriteInt32(data.Count);
+							writer.WriteBlock(data.ToArray());
+							
+							// footer
+							writer.WriteBlock(footer);
 
-				convertStream.SeekTo(0x00);
-				return VariousFunctions.StreamToByteArray(convertStream.BaseStream);
+							// size
+							writer.SeekTo(0x04);
+							writer.WriteInt32((Int32)writer.Length - 0x08);
+						}
+					}
+
+					VariousFunctions.RunProgramSilently(@"A:\Xbox\Games\towav.exe",
+						string.Format("\"{0}\"", Path.GetFileName(tempFile)),
+						Path.GetDirectoryName(tempFile));
+
+					if (File.Exists(tempFile))
+						File.Delete(tempFile);
+
+					tempFile = Path.ChangeExtension(tempFile, "wav");
+
+					if (path != null)
+						File.Move(tempFile, path);
+
+					return path ?? tempFile;
+
+				default:
+					throw new NotImplementedException();
 			}
 		}
 
@@ -293,7 +312,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 				for (var i = 0; i < _resourcePages.Length; i++)
 				{
 					var page = _resourcePages[i];
-					if (page == null) continue;
+					if (page == null || (page.CompressedSize == 0 || page.UncompressedSize == 0))
+						continue;
 					var resourceFile = _cache;
 					Stream resourceStream = null;
 					if (page.FilePath != null)
@@ -331,6 +351,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 
 			return outputBytes.ToArray();
+		}
+
+		private void btnExtractSelectedPerm_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			ConvertToAudioFile(ExtractRaw(), @"C:\Users\Alex\Desktop\snd\020la_300_pot-asm.wav");
 		}
 	}
 }

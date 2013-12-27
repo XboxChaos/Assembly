@@ -7,9 +7,8 @@ namespace Blamite.Blam.Resources.Sounds
 	/// </summary>
 	public enum SampleRate
 	{
-		Mono_22050kbps,
-		Stereo_44100kbps,
-		WMASpecific
+		_22050,
+		_44100
 	}
 
 	/// <summary>

@@ -21,6 +21,9 @@
 
 	<!-- ugh! (sound_cache_file_gestalt) -->
 	<layout for="sound resource gestalt">
+		<int32 name="number of platform codecs" offset="0x00" />
+		<uint32 name="platform codecs table address" offset="0x04" />
+		
 		<int32 name="number of sound names" offset="0x24" />
 		<uint32 name="sound name table address" offset="0x28" />
 
@@ -32,6 +35,11 @@
 
 		<int32 name="number of raw chunks" offset="0x94" />
 		<uint32 name="raw chunk table address" offset="0x98" />
+	</layout>
+	<layout for="sound platform codecs" size="0x3">
+		<byte name="unknown1" offset="0x0" />
+		<byte name="channel" offset="0x1" />
+		<byte name="unknown2" offset="0x2" />
 	</layout>
 	<layout for="sound names" size="0x4">
 		<int32 name="name index" offset="0x0" />
@@ -46,7 +54,7 @@
 	<layout for="sound permutations" size="0x10">
 		<int16 name="sound name index" offset="0x0" />
 		<int16 name="encoded skip fraction" offset="0x2" />
-		<byte name="encoded gain" offset="0x3" />
+		<byte name="encoded gain" offset="0x4" />
 		<byte name="permutation info index" offset="0x5" />
 		<int16 name="language neutral time" offset="0x6" />
 		<uint32 name="raw chunk index" offset="0x8" />
