@@ -29,12 +29,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private readonly TagEntry _tag;
 		private readonly ICacheFile _cache;
 		private readonly IStreamManager _streamManager;
-		private readonly ResourceTable _resourceTable;
 		private ResourcePage[] _resourcePages;
 		private readonly Resource _soundResource;
 		private readonly ISound _sound;
 		private readonly ISoundResourceGestalt _soundResourceGestalt;
-		private ViewModel _viewModel;
+
 		private readonly byte[] _monoFooter = 
 		{
 			0x58, 0x4d, 0x41, 0x32, 0x2c, 0x00, 0x00, 0x00, 0x04, 0x01, 0x00, 0xff, 0x00, 0x00, 0x01, 0x80,
@@ -59,136 +58,50 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			_tag = tag;
 			_cache = cache;
 			_streamManager = streamManager;
-			_viewModel = new ViewModel();
-			DataContext = _viewModel;
 
-			if (_cache.ResourceMetaLoader.SupportsSounds)
-			{
-				using (var reader = _streamManager.OpenRead())
-				{
-					_soundResourceGestalt = _cache.LoadSoundResourceGestaltData(reader);
-					_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag.RawTag, reader);
-					_resourceTable = _cache.Resources.LoadResourceTable(reader);
-					_soundResource = _resourceTable.Resources.First(r => r.Index == _sound.ResourceIndex);
-					_resourcePages = new ResourcePage[2];
-					if (_soundResource.Location.PrimaryPage != null)
-						_resourcePages[0] = _soundResource.Location.PrimaryPage;
-					if (_soundResource.Location.SecondaryPage != null)
-						_resourcePages[1] = _soundResource.Location.SecondaryPage;
-				}
+			var viewModel = new ViewModel();
+			DataContext = viewModel;
+			viewModel.TagName = _tag.TagFileName;
+			viewModel.Sound = _sound;
 
-				var playback = _soundResourceGestalt.SoundPlaybacks[_sound.PlaybackIndex];
-
-				for (var i = 0; i < playback.EncodedPermutationCount; i++)
-				{
-					var permutation = _soundResourceGestalt.SoundPermutations[i + playback.FirstPermutationIndex];
-
-					_viewModel.Permutations.Add(new ViewModel.ViewPermutation
-					{
-						Name = _cache.StringIDs.GetString(permutation.SoundName),
-						Index = i,
-						SoundPermutation = permutation
-					});
-				}
-
-				#region Load Resource Pages
-
-				// Load Resource Page 1
-				if (_resourcePages[0] != null)
-				{
-					var page = _resourcePages[0];
-					
-					lblResourcePage1Compression.Text = page.CompressionMethod.ToString();
-					lblResourcePage1CompressedSize.Text = "0x" + page.CompressedSize.ToString("X8");
-					lblResourcePage1UncompressedSize.Text = "0x" + page.UncompressedSize.ToString("X8");
-					lblResourcePage1Offset.Text = "0x" + page.Offset.ToString("X8");
-					lblResourcePage1FilePath.Text = page.FilePath ?? "maps\\" + _cache.InternalName + ".map";
-				}
-				
-				// Load Resource Page 2
-				if (_resourcePages[1] != null)
-				{
-					var page = _resourcePages[1];
-					
-					lblResourcePage2Compression.Text = page.CompressionMethod.ToString();
-					lblResourcePage2CompressedSize.Text = "0x" + page.CompressedSize.ToString("X8");
-					lblResourcePage2UncompressedSize.Text = "0x" + page.UncompressedSize.ToString("X8");
-					lblResourcePage2Offset.Text = "0x" + page.Offset.ToString("X8");
-					lblResourcePage2FilePath.Text = page.FilePath ?? "maps\\" + _cache.InternalName + ".map";
-				}
-
-				#endregion
-				
-				// Load Sound Info
-				if (_sound != null)
-				{
-					lblSoundInfoSoundClass.Text = _sound.SoundClass.ToString(CultureInfo.InvariantCulture);
-					lblSoundInfoAudioChannel.Text = _sound.SampleRate.ToString();
-					lblSoundInfoEncoding.Text = _sound.Encoding.ToString();
-					lblSoundInfoMaxPlaytime.Text = _sound.MaxPlaytime.ToString(CultureInfo.InvariantCulture);
-				}
-			}
-			else
+			if (!_cache.ResourceMetaLoader.SupportsSounds)
 			{
 				IsEnabled = false;
 				MetroMessageBox.Show("Unsupported", "Assembly doesn't support sounds on this build of Halo yet.");
+				return;
 			}
-		}
 
-		public class ViewModel : INotifyPropertyChanged
-		{
-			public ViewModel()
+			using (var reader = _streamManager.OpenRead())
 			{
-				_permutations.CollectionChanged += PermutationsOnCollectionChanged;
+				_soundResourceGestalt = _cache.LoadSoundResourceGestaltData(reader);
+				_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag.RawTag, reader);
+				var resourceTable = _cache.Resources.LoadResourceTable(reader);
+				_soundResource = resourceTable.Resources.First(r => r.Index == _sound.ResourceIndex);
+				_resourcePages = new ResourcePage[2]
+				{
+					_soundResource.Location.PrimaryPage,
+					_soundResource.Location.SecondaryPage
+				};
+
+				viewModel.ResourcePages = 
+					new ObservableCollection<ResourcePage>(_resourcePages.ToList());
 			}
 
-			private ObservableCollection<ViewPermutation> _permutations = new ObservableCollection<ViewPermutation>();
-			public ObservableCollection<ViewPermutation> Permutations
+			var playback = _soundResourceGestalt.SoundPlaybacks[_sound.PlaybackIndex];
+
+			var soundPermutations = new ISoundPermutation[playback.EncodedPermutationCount];
+			for (var i = 0; i < playback.EncodedPermutationCount; i++)
 			{
-				get { return _permutations; }
-				set { SetField(ref _permutations, value, "Permutations"); }
+				var permutation = _soundResourceGestalt.SoundPermutations[i + playback.FirstPermutationIndex];
+				soundPermutations[i] = permutation;
+				viewModel.Permutations.Add(new ViewModel.ViewPermutation
+				{
+					Name = _cache.StringIDs.GetString(permutation.SoundName),
+					Index = i,
+					SoundPermutation = permutation
+				});
 			}
-
-			#region Events
-
-			private void PermutationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-			{
-				Permutations = (ObservableCollection<ViewPermutation>) sender;
-			}
-
-			#endregion
 			
-			#region Models
-
-			public class ViewPermutation
-			{
-				public string Name { get; set; }
-
-				public int Index { get; set; }
-
-				public ISoundPermutation SoundPermutation { get; set; }
-			}
-
-			#endregion
-			
-			#region Binding Stuff
-
-			public event PropertyChangedEventHandler PropertyChanged;
-			protected virtual void OnPropertyChanged(string propertyName)
-			{
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-			protected bool SetField<T>(ref T field, T value, string propertyName)
-			{
-				if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-				field = value;
-				OnPropertyChanged(propertyName);
-				return true;
-			}
-
-			#endregion
-
 		}
 
 		private void btnPlay_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -200,10 +113,39 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			_soundPlayer.Play();
 		}
 
+		private void StopAudioButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			if (_soundPlayer != null)
+				_soundPlayer.Stop();
+		}
+
+		private void btnExtractSelectedPerm_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			var perm = SoundPermutationListBox.SelectedItem as ViewModel.ViewPermutation;
+			if (perm == null)
+				return;
+
+			var sfd = new SaveFileDialog
+			{
+				FileName = perm.Name + ".wav"
+			};
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+				ConvertToAudioFile(ExtractRawPerm(perm.SoundPermutation), sfd.FileName);
+		}
+
 		private void btnExtractRawSound_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			ConvertToAudioFile(ExtractRaw());
+			var sfd = new SaveFileDialog
+			{
+				FileName = _tag.TagFileName + ".wav"
+			};
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+				ConvertToAudioFile(ExtractRaw(), sfd.FileName);
 		}
+
+		#region Sound Helpers
 
 		private string ConvertToAudioFile(ICollection<byte> data, string path = null)
 		{
@@ -353,9 +295,90 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			return outputBytes.ToArray();
 		}
 
-		private void btnExtractSelectedPerm_Click(object sender, System.Windows.RoutedEventArgs e)
+		#endregion
+
+		public class ViewModel : INotifyPropertyChanged
 		{
-			ConvertToAudioFile(ExtractRaw(), @"C:\Users\Alex\Desktop\snd\020la_300_pot-asm.wav");
+			public ViewModel()
+			{
+				_permutations.CollectionChanged += PermutationsOnCollectionChanged;
+				_resourcePages.CollectionChanged += ResourcePagesOnCollectionChanged;
+			}
+
+			public ObservableCollection<ViewPermutation> Permutations
+			{
+				get { return _permutations; }
+				set { SetField(ref _permutations, value, "Permutations"); }
+			}
+			private ObservableCollection<ViewPermutation> _permutations = new ObservableCollection<ViewPermutation>();
+
+			public ObservableCollection<ResourcePage> ResourcePages
+			{
+				get { return _resourcePages; }
+				set { SetField(ref _resourcePages, value, "ResourcePages"); }
+			}
+			private ObservableCollection<ResourcePage> _resourcePages = new ObservableCollection<ResourcePage>();
+
+			public string TagName
+			{
+				get { return _tagName; }
+				set { SetField(ref _tagName, value, "TagName"); }
+			}
+			private string _tagName;
+
+			public ISound Sound
+			{
+				get { return _sound; }
+				set { SetField(ref _sound, value, "Sound"); }
+			}
+			private ISound _sound;
+
+			public ResourcePage PrimaryResourcePage { get { return _resourcePages[0]; } }
+			public ResourcePage SecondaryResourcePage { get { return _resourcePages[1]; } }
+
+			#region Events
+
+			private void PermutationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+			{
+				Permutations = (ObservableCollection<ViewPermutation>)sender;
+			}
+			private void ResourcePagesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+			{
+				ResourcePages = (ObservableCollection<ResourcePage>) sender;
+			}
+
+			#endregion
+
+			#region Models
+
+			public class ViewPermutation
+			{
+				public string Name { get; set; }
+
+				public int Index { get; set; }
+
+				public ISoundPermutation SoundPermutation { get; set; }
+			}
+
+			#endregion
+
+			#region Binding Stuff
+
+			public event PropertyChangedEventHandler PropertyChanged;
+			protected virtual void OnPropertyChanged(string propertyName)
+			{
+				if (PropertyChanged != null)
+					PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+			protected bool SetField<T>(ref T field, T value, string propertyName)
+			{
+				if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+				field = value;
+				OnPropertyChanged(propertyName);
+				return true;
+			}
+
+			#endregion
 		}
 	}
 }
