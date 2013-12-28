@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -25,11 +24,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 	public partial class SoundEditor
 	{
 		private SoundPlayer _soundPlayer;
+		private ResourcePage[] _resourcePages;
 		private readonly EngineDescription _buildInfo;
 		private readonly TagEntry _tag;
 		private readonly ICacheFile _cache;
+		private readonly string _cacheLocation;
 		private readonly IStreamManager _streamManager;
-		private ResourcePage[] _resourcePages;
 		private readonly Resource _soundResource;
 		private readonly ISound _sound;
 		private readonly ISoundResourceGestalt _soundResourceGestalt;
@@ -50,11 +50,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		};
 
 
-		public SoundEditor(EngineDescription buildInfo, TagEntry tag, ICacheFile cache, IStreamManager streamManager)
+		public SoundEditor(EngineDescription buildInfo, string cacheLocation, TagEntry tag, ICacheFile cache, IStreamManager streamManager)
 		{
 			InitializeComponent();
 
 			_buildInfo = buildInfo;
+			_cacheLocation = cacheLocation;
 			_tag = tag;
 			_cache = cache;
 			_streamManager = streamManager;
@@ -77,7 +78,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 				_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag.RawTag, reader);
 				var resourceTable = _cache.Resources.LoadResourceTable(reader);
 				_soundResource = resourceTable.Resources.First(r => r.Index == _sound.ResourceIndex);
-				_resourcePages = new ResourcePage[2]
+				_resourcePages = new []
 				{
 					_soundResource.Location.PrimaryPage,
 					_soundResource.Location.SecondaryPage
@@ -260,12 +261,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					Stream resourceStream = null;
 					if (page.FilePath != null)
 					{
-						resourceStream = 
-							File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo 3\Maps\Clean\", 
-								Path.GetFileName(page.FilePath)));
+						var resourceCacheInfo =
+								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+									r => r.EngineName == _buildInfo.Name);
 
-						resourceFile = new ThirdGenCacheFile(
-							new EndianReader(resourceStream, Endian.BigEndian), _buildInfo, _cache.BuildString);
+						var resourceCachePath = (resourceCacheInfo != null)
+							? resourceCacheInfo.ResourceCachePath
+							: Path.GetDirectoryName(_cacheLocation);
+
+						resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(page.FilePath));
+
+						if (!File.Exists(resourceCachePath))
+						{
+							throw new FileNotFoundException("Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+						}
+
+						resourceStream =
+							File.OpenRead(resourceCachePath);
+						resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+							_cache.BuildString);
 					}
 					
 					var tmpStream = new MemoryStream();

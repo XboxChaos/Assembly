@@ -22,6 +22,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private PluginEditor _pluginEditor;
 		private IRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
+		private string _cacheLocation;
 		private Trie _stringIDTrie;
 		private TagEntry _tag;
 		private TagHierarchy _tags;
@@ -36,11 +37,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		#endregion
 
-		public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache,
+		public MetaContainer(EngineDescription buildInfo, string cacheLocation, TagEntry tag, TagHierarchy tags, ICacheFile cache,
 			IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
+			_cacheLocation = cacheLocation;
 			_tag = tag;
 			_tags = tags;
 			_buildInfo = buildInfo;
@@ -89,7 +91,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
 			{
 				tabSoundEditor.Visibility = Visibility.Visible;
-				tabSoundEditor.Content = new SoundEditor(_buildInfo, _tag, _cache, _streamManager);
+				tabSoundEditor.Content = new SoundEditor(_buildInfo, _cacheLocation, _tag, _cache, _streamManager);
 			}
 			else
 			{

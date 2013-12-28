@@ -754,9 +754,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							Stream resourceStream = fileStream;
 							if (resource.Location.PrimaryPage.FilePath != null)
 							{
+								var resourceCacheInfo =
+								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+									r => r.EngineName == _buildInfo.Name);
+
+								var resourceCachePath = (resourceCacheInfo != null)
+									? resourceCacheInfo.ResourceCachePath
+									: Path.GetDirectoryName(_cacheLocation);
+
+								resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.PrimaryPage.FilePath));
+
+								if (!File.Exists(resourceCachePath))
+								{
+									MetroMessageBox.Show("Unable to extract tag",
+										"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+									return;
+								}
+
 								resourceStream =
-									File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo 3\Maps\Clean\",
-										Path.GetFileName(resource.Location.PrimaryPage.FilePath)));
+									File.OpenRead(resourceCachePath);
 								resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
 									_cacheFile.BuildString);
 							}
@@ -784,9 +800,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Stream resourceStream = fileStream;
 						if (resource.Location.SecondaryPage.FilePath != null)
 						{
+							var resourceCacheInfo =
+								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+									r => r.EngineName == _buildInfo.Name);
+
+							var resourceCachePath = (resourceCacheInfo != null)
+								? resourceCacheInfo.ResourceCachePath
+								: Path.GetDirectoryName(_cacheLocation);
+
+							resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.SecondaryPage.FilePath));
+
+							if (!File.Exists(resourceCachePath))
+							{
+								MetroMessageBox.Show("Unable to extract tag",
+									"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+								return;
+							}
+
 							resourceStream =
-								File.OpenRead(Path.Combine(@"A:\Xbox\Games\Halo 3\Maps\Clean\",
-									Path.GetFileName(resource.Location.SecondaryPage.FilePath)));
+								File.OpenRead(resourceCachePath);
 							resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
 								_cacheFile.BuildString);
 						}
@@ -1274,7 +1306,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					},
 					Tag = tag,
 					Content =
-						new MetaContainer(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
+						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
 							_stringIdTrie)
 				});
 			}

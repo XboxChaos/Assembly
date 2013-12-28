@@ -297,7 +297,7 @@ namespace Blamite.Injection
 				FixBlockReferences(block, bufferWriter, stream);
 				FixTagReferences(block, bufferWriter, stream);
 				FixResourceReferences(block, bufferWriter, stream);
-				FixStringIDReferences(block, bufferWriter);
+				FixStringIdReferences(block, bufferWriter);
 
 				// Write the buffer to the file
 				stream.SeekTo(location.AsOffset());
@@ -305,7 +305,7 @@ namespace Blamite.Injection
 			}
 
 			// Write shader fixups (they can't be done in-memory because they require cache file expansion)
-			FixShaderReferences(block, stream, (int)location.AsOffset());
+			FixShaderReferences(block, stream, location.AsOffset());
 		}
 
 		private void FixBlockReferences(DataBlock block, IWriter buffer, IStream stream)
@@ -338,7 +338,7 @@ namespace Blamite.Injection
 			}
 		}
 
-		private void FixStringIDReferences(DataBlock block, IWriter buffer)
+		private void FixStringIdReferences(DataBlock block, IWriter buffer)
 		{
 			foreach (DataBlockStringIDFixup fixup in block.StringIDFixups)
 			{
