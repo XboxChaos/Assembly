@@ -20,7 +20,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 
 		public int LanguageNeutralTime { get; private set; }
 
-		public int RawChunkIndex { get; private set; }
+		public int PermutationChunkIndex { get; private set; }
 
 		public int ChunkCount { get; private set; }
 
@@ -33,7 +33,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			EncodedGain = (int)values.GetInteger("encoded gain");
 			PermutationInfoIndex = (int)values.GetInteger("permutation info index");
 			LanguageNeutralTime = (int)values.GetInteger("language neutral time");
-			RawChunkIndex = (int)values.GetInteger("raw chunk index");
+			PermutationChunkIndex = (int)values.GetInteger("raw chunk index");
 			ChunkCount = (int)values.GetInteger("chunk count");
 			EncodedPermutationIndex = (int)values.GetInteger("encoded permutation index");
 		}

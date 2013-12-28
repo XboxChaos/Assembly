@@ -16,7 +16,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 		public StringID[] SoundNames { get; private set; }
 		public ISoundPlayback[] SoundPlaybacks { get; private set; }
 		public ISoundPermutation[] SoundPermutations { get; private set; }
-		public ISoundRawChunk[] SoundRawChunks { get; private set; }
+		public ISoundPermutationChunk[] SoundPermutationChunks { get; private set; }
 		public ISoundPlatformCodec[] SoundPlatformCodecs { get; private set; }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
@@ -68,13 +68,13 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 		}
 		private void LoadSoundRawChunks(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
-			var count = (int)values.GetInteger("number of raw chunks");
-			var address = values.GetInteger("raw chunk table address");
-			var layout = buildInfo.Layouts.GetLayout("sound raw chunks");
+			var count = (int)values.GetInteger("number of permutation chunks");
+			var address = values.GetInteger("permutation chunk table address");
+			var layout = buildInfo.Layouts.GetLayout("sound permutation chunks");
 			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 
-			SoundRawChunks = (from entry in entries
-							  select new ThirdGenSoundRawChunk(entry)).ToArray<ISoundRawChunk>();
+			SoundPermutationChunks = (from entry in entries
+							  select new ThirdGenSoundPermutationChunk(entry)).ToArray<ISoundPermutationChunk>();
 		}
 	}
 }

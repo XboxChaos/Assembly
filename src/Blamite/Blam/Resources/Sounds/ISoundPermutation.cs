@@ -12,7 +12,7 @@
 
 		int LanguageNeutralTime { get; }
 
-		int RawChunkIndex { get; }
+		int PermutationChunkIndex { get; }
 
 		int ChunkCount { get; }
 

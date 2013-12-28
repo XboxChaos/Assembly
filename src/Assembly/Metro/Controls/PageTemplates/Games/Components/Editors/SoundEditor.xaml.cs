@@ -229,11 +229,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			var memoryStream = new MemoryStream(data);
 			var stream = new EndianStream(memoryStream, Endian.BigEndian);
 
-			for (var i = permutation.RawChunkIndex; 
-				i < permutation.ChunkCount + permutation.RawChunkIndex; 
+			for (var i = permutation.PermutationChunkIndex; 
+				i < permutation.ChunkCount + permutation.PermutationChunkIndex; 
 				i++)
 			{
-				var permutationChunk = _soundResourceGestalt.SoundRawChunks[i];
+				var permutationChunk = _soundResourceGestalt.SoundPermutationChunks[i];
 
 				stream.SeekTo(permutationChunk.Offset);
 				permutationData.AddRange(stream.ReadBlock(permutationChunk.Size));

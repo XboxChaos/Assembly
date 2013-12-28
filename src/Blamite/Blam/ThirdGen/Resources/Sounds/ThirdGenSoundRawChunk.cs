@@ -3,9 +3,9 @@ using Blamite.Flexibility;
 
 namespace Blamite.Blam.ThirdGen.Resources.Sounds
 {
-	public class ThirdGenSoundRawChunk : ISoundRawChunk
+	public class ThirdGenSoundPermutationChunk : ISoundPermutationChunk
 	{
-		public ThirdGenSoundRawChunk(StructureValueCollection values)
+		public ThirdGenSoundPermutationChunk(StructureValueCollection values)
 		{
 			Load(values);
 		}

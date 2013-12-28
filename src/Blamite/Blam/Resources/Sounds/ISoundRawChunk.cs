@@ -1,6 +1,6 @@
 ﻿namespace Blamite.Blam.Resources.Sounds
 {
-	public interface ISoundRawChunk
+	public interface ISoundPermutationChunk
 	{
 		int Offset { get; }
 
