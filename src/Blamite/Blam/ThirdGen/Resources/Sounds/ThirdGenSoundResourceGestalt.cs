@@ -13,19 +13,23 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			Load(values, reader, metaArea, buildInfo);
 		}
 
+		public ISoundPlatformCodec[] SoundPlatformCodecs { get; private set; }
+		public ISoundPlaybackParameter[] SoundPlaybackParameters { get; private set; }
+		public ISoundScale[] SoundScales { get; private set; }
 		public StringID[] SoundNames { get; private set; }
 		public ISoundPlayback[] SoundPlaybacks { get; private set; }
 		public ISoundPermutation[] SoundPermutations { get; private set; }
 		public ISoundPermutationChunk[] SoundPermutationChunks { get; private set; }
-		public ISoundPlatformCodec[] SoundPlatformCodecs { get; private set; }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
 			LoadSoundNames(values, reader, metaArea, buildInfo);
+			LoadPlatformCodecs(values, reader, metaArea, buildInfo);
+			LoadPlaybackParameters(values, reader, metaArea, buildInfo);
+			LoadScales(values, reader, metaArea, buildInfo);
 			LoadSoundPlaybacks(values, reader, metaArea, buildInfo);
 			LoadSoundPermutations(values, reader, metaArea, buildInfo);
-			LoadSoundRawChunks(values, reader, metaArea, buildInfo);
-			LoadPlatformCodecs(values, reader, metaArea, buildInfo);
+			LoadSoundPermutationChunks(values, reader, metaArea, buildInfo);
 		}
 		private void LoadPlatformCodecs(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
@@ -36,6 +40,26 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 
 			SoundPlatformCodecs = (from entry in entries
 						   select new ThirdGenSoundPlatformCodec(entry)).ToArray<ISoundPlatformCodec>();
+		}
+		private void LoadPlaybackParameters(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
+		{
+			var count = (int)values.GetInteger("number of playback parameters");
+			var address = values.GetInteger("playback parameters table address");
+			var layout = buildInfo.Layouts.GetLayout("sound playback parameters");
+			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+
+			SoundPlaybackParameters = (from entry in entries
+								   select new ThirdGenSoundPlaybackParameter(entry)).ToArray<ISoundPlaybackParameter>();
+		}
+		private void LoadScales(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
+		{
+			var count = (int)values.GetInteger("number of scales");
+			var address = values.GetInteger("scales table address");
+			var layout = buildInfo.Layouts.GetLayout("sound scales");
+			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+
+			SoundScales = (from entry in entries
+						   select new ThirdGenSoundScale(entry)).ToArray<ISoundScale>();
 		}
 		private void LoadSoundNames(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
@@ -66,7 +90,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			SoundPermutations = (from entry in entries
 								 select new ThirdGenSoundPermutation(entry, SoundNames)).ToArray<ISoundPermutation>();
 		}
-		private void LoadSoundRawChunks(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
+		private void LoadSoundPermutationChunks(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, EngineDescription buildInfo)
 		{
 			var count = (int)values.GetInteger("number of permutation chunks");
 			var address = values.GetInteger("permutation chunk table address");
