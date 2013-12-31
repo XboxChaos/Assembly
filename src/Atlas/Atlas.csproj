@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AA65F6E-CE77-4B93-9CD3-9E266CAC133F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Atlas</RootNamespace>
+    <AssemblyName>Atlas</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\WindowTitleConverter.cs" />
+    <Compile Include="Metro\Controls\Custom\MetroWindow.cs" />
+    <Compile Include="Metro\Vectors\CloseModule.xaml.cs">
+      <DependentUpon>CloseModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Vectors\MaximizeModule.xaml.cs">
+      <DependentUpon>MaximizeModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Vectors\MinimizeModule.xaml.cs">
+      <DependentUpon>MinimizeModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Vectors\ResizeModule.xaml.cs">
+      <DependentUpon>ResizeModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Vectors\RestoreModule.xaml.cs">
+      <DependentUpon>RestoreModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Base.cs" />
+    <Compile Include="Native\DwmDropShadow.cs" />
+    <Compile Include="Native\Monitor_Workarea.cs" />
+    <Compile Include="Native\ShellChanges.cs" />
+    <Compile Include="Native\WindowMovement.cs" />
+    <Compile Include="Windows\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP-Black.ttf" />
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP-Bold.ttf" />
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP-Light.ttf" />
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP-Semibold.ttf" />
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP-Semilight.ttf" />
+    <BlendEmbeddedFont Include="Metro\Fonts\SegoeWP.ttf" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Metro\Accents\Blue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Controls\MetroButtons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Controls\MetroFonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Controls\MetroTextblock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Metro\Themes\Dark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Accents\Green.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Accents\Light.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Accents\Orange.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Accents\Purple.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Vectors\MinimizeModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Vectors\MaximizeModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Vectors\CloseModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Vectors\ResizeModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Vectors\RestoreModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\app_icon_large.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\app_icon_large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\background_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\blue_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\blue_logo_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\DockPaneImageTile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\green_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\green_logo_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\logo_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\orange_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\orange_logo_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Placeholder\c_m20.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Placeholder\c_sc110.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Placeholder\m_riverworld.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Placeholder\wargames_z11_valhalla.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\purple_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\purple_logo_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\settings_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\super_patcher.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Vectored\freezeVector.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Vectored\rebootVector.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Vectored\screenshotVector.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Metro\Images\Vectored\unfreezeVector.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
