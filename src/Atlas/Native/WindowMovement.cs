@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Atlas.Metro.Controls.Custom;
 
 namespace Atlas.Native
 {
@@ -22,7 +23,7 @@ namespace Atlas.Native
 		/// </summary>
 		/// <param name="window">The Window to set the property on.</param>
 		/// <param name="value">The value to set the property to.</param>
-		public static void SetIsDraggable(Window window, bool value)
+		public static void SetIsDraggable(MetroWindow window, bool value)
 		{
 			window.SetValue(IsDraggableProperty, value);
 		}
@@ -32,14 +33,14 @@ namespace Atlas.Native
 		/// </summary>
 		/// <param name="window">The Window to set the property on.</param>
 		/// <returns>The value of the property on the Window.</returns>
-		public static bool GetIsDraggable(Window window)
+		public static bool GetIsDraggable(MetroWindow window)
 		{
 			return (bool) window.GetValue(IsDraggableProperty);
 		}
 
 		private static void IsDraggableChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			var window = sender as Window;
+			var window = sender as MetroWindow;
 			if (window == null)
 				return;
 			if (e.NewValue.Equals(e.OldValue))
@@ -63,7 +64,7 @@ namespace Atlas.Native
 
 		private static void WindowSourceInitialized(object sender, EventArgs e)
 		{
-			MakeWindowMovable((Window) sender);
+			MakeWindowMovable((MetroWindow)sender);
 		}
 
 		#endregion
@@ -79,7 +80,7 @@ namespace Atlas.Native
 		/// <summary>
 		///     Sets the value of the WindowMovement.DragsWindow attached property on a Visual.
 		/// </summary>
-		/// <param name="window">The Visual to set the property on.</param>
+		/// <param name="visual">The Visual to set the property on.</param>
 		/// <param name="value">The value to set the property to.</param>
 		public static void SetDragsWindow(Visual visual, bool value)
 		{
@@ -89,7 +90,7 @@ namespace Atlas.Native
 		/// <summary>
 		///     Gets the value of the WindowMovement.DragsWindow attached property on a Visual.
 		/// </summary>
-		/// <param name="window">The Visual to set the property on.</param>
+		/// <param name="visual">The Visual to set the property on.</param>
 		/// <returns>The value of the property on the Visual.</returns>
 		public static bool GetDragsWindow(Visual visual)
 		{
@@ -109,15 +110,15 @@ namespace Atlas.Native
 
 		#endregion
 
-		private static readonly Dictionary<Window, CaptionHitTester> _registeredWindows =
-			new Dictionary<Window, CaptionHitTester>();
+		private static readonly Dictionary<MetroWindow, CaptionHitTester> _registeredWindows =
+			new Dictionary<MetroWindow, CaptionHitTester>();
 
 		/// <summary>
 		///     Gets a Window's HwndSource.
 		/// </summary>
 		/// <param name="window">The Window to get the HwndSource for.</param>
 		/// <returns>The Window's HwndSource, or null if it is not initialized.</returns>
-		private static HwndSource GetWindowSource(Window window)
+		private static HwndSource GetWindowSource(MetroWindow window)
 		{
 			var interop = new WindowInteropHelper(window);
 			if (interop.Handle == IntPtr.Zero)
@@ -131,7 +132,7 @@ namespace Atlas.Native
 		/// </summary>
 		/// <param name="window">The Window to make draggable.</param>
 		/// <returns>true if the operation was successful.</returns>
-		private static bool MakeWindowMovable(Window window)
+		private static bool MakeWindowMovable(MetroWindow window)
 		{
 			HwndSource source = GetWindowSource(window);
 			if (source == null)
@@ -154,14 +155,14 @@ namespace Atlas.Native
 		private static void window_Closed(object sender, EventArgs e)
 		{
 			// Unregister the window so the dictionary doesn't eat up memory
-			_registeredWindows.Remove((Window) sender);
+			_registeredWindows.Remove((MetroWindow)sender);
 		}
 
 		/// <summary>
 		///     Makes a window affected by <see cref="MakeWindowMovable" /> no longer movable.
 		/// </summary>
 		/// <param name="window">The Window to make unmovable.</param>
-		private static void MakeWindowUnmovable(Window window)
+		private static void MakeWindowUnmovable(MetroWindow window)
 		{
 			HwndSource source = GetWindowSource(window);
 			if (source == null)
@@ -178,10 +179,10 @@ namespace Atlas.Native
 		/// </summary>
 		private class CaptionHitTester
 		{
-			private readonly Window _window;
+			private readonly MetroWindow _window;
 			private HitTestResult _testResult;
 
-			public CaptionHitTester(Window window)
+			public CaptionHitTester(MetroWindow window)
 			{
 				_window = window;
 			}
