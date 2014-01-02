@@ -6,7 +6,6 @@
 		xmlns:native="clr-namespace:Atlas.Native"
 		xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
 		xmlns:vectors="clr-namespace:Atlas.Metro.Vectors"
-		xmlns:pages="clr-namespace:Atlas.Pages"
 		mc:Ignorable="d"
 		native:WindowMovement.IsDraggable="True"
 		d:DesignHeight="720" d:DesignWidth="1028" WindowStartupLocation="CenterScreen">
@@ -131,7 +130,7 @@
 						<MenuItem Header="Patch" FontFamily="{DynamicResource MetroFontLight}" />
 					</MenuItem>
 					<MenuItem Header="Open" FontFamily="{DynamicResource MetroFontLight}">
-						<MenuItem Header="Cache" FontFamily="{DynamicResource MetroFontLight}" />
+						<MenuItem x:Name="OpenCacheMenuItem" Header="Cache" FontFamily="{DynamicResource MetroFontLight}" Click="OpenCacheMenuItem_OnClick" />
 						<MenuItem Header="Map Image" FontFamily="{DynamicResource MetroFontLight}" />
 						<MenuItem Header="Map Info" FontFamily="{DynamicResource MetroFontLight}" />
 						<MenuItem Header="Campaign" FontFamily="{DynamicResource MetroFontLight}" />
@@ -197,7 +196,7 @@
 			</Menu>
 		
 			<Grid Grid.Row="1">
-				<pages:StartPage />
+				<ContentPresenter Content="{Binding Path=AssemblyPage}" />
 			</Grid>
 		</Grid>
 	</Grid>
