@@ -34,4 +34,34 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="TabActiveButtons" TargetType="Button">
+		<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrush}" />
+		<Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="Height" Value="20" />
+		<Setter Property="Margin" Value="5,0,0,0" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="OverridesDefaultStyle" Value="True" />
+		<Setter Property="Background" Value="{x:Null}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Grid x:Name="Grid">
+						<Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+						        BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" />
+						<ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
 </ResourceDictionary>
