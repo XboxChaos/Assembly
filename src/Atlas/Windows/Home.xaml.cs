@@ -1,5 +1,6 @@
 ﻿using System;
 using Atlas.Native;
+using Atlas.Pages;
 using Atlas.ViewModels;
 
 namespace Atlas.Windows
@@ -31,6 +32,11 @@ namespace Atlas.Windows
 			DwmDropShadow.DropShadowToWindow(this);
 
 			base.OnSourceInitialized(e);
+		}
+
+		private void OpenCacheMenuItem_OnClick(object sender, System.Windows.RoutedEventArgs e)
+		{
+			_viewModel.AssemblyPage = new CachePage();
 		}
 	}
 }
