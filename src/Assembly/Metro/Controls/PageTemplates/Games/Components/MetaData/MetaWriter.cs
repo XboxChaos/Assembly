@@ -291,8 +291,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				var values = new StructureValueCollection();
 				if (field.Value != null)
 				{
-					values.SetInteger("class magic", (uint) field.Value.RawTag.Class.Magic);
-					values.SetInteger("datum index", field.Value.RawTag.Index.Value);
+					values.SetInteger("class magic", (uint)field.Value.Tag.Class.Magic);
+					values.SetInteger("datum index", field.Value.Tag.Index.Value);
 				}
 				else
 				{
@@ -303,7 +303,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 			else
 			{
-				_writer.WriteUInt32(field.Value == null ? 0xFFFFFFFF : field.Value.RawTag.Index.Value);
+				_writer.WriteUInt32(field.Value == null ? 0xFFFFFFFF : field.Value.Tag.Index.Value);
 			}
 		}
 

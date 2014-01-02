@@ -129,7 +129,7 @@ namespace Assembly.Helpers
 		private bool _halomapOnlyShowBookmarkedTags;
 		private bool _halomapShowEmptyClasses;
 		private TagOpenMode _halomapTagOpenMode = TagOpenMode.NewTab;
-		private TagSort _halomapTagSort = TagSort.TagClass;
+		private TagSort _halomapTagSort = TagSort.PathHierarchy;
 		private Home _homeWindow;
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
@@ -208,7 +208,6 @@ namespace Assembly.Helpers
 		public enum TagSort
 		{
 			TagClass,
-			ObjectHierarchy,
 			PathHierarchy
 		}
 

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
+using Assembly.Helpers.Tags;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Assembly.Metro.Dialogs;
@@ -58,7 +59,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private readonly LayoutDocument _tab;
 
 		private readonly Settings.TagSort _tagSorting;
-		private TagHierarchy _allTags = new TagHierarchy();
 		private EngineDescription _buildInfo;
 		private ICacheFile _cacheFile;
 		private Settings.MapInfoDockSide _dockSide;
@@ -66,9 +66,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private IStreamManager _mapManager;
 		private IRTEProvider _rteProvider;
 		private Trie _stringIdTrie;
-		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
-		private TagHierarchy _visibleTags = new TagHierarchy();
+
+		private TagHierarchy _classHierarchy;
+		private TagHierarchy _activeHierarchy;
 
 		/// <summary>
 		///     New Instance of the Halo Map Location
@@ -98,7 +99,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Read Settings
 			cbShowEmptyTags.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapShowEmptyClasses;
-			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -332,53 +332,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_cacheFile.Resources == null)
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
-			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
-			_allTags = BuildTagHierarchy(
-				c => c.Children.Count > 0,
-				t => true);
+			// Class hierarchy is needed for tagref controls
+			_classHierarchy = new ClassTagHierarchy(_cacheFile);
+			PopulateHierarchy(_classHierarchy);
+
+			switch (App.AssemblyStorage.AssemblySettings.HalomapTagSort)
+			{
+				case Settings.TagSort.TagClass:
+					_activeHierarchy = _classHierarchy;
+					break;
+				case Settings.TagSort.PathHierarchy:
+					_activeHierarchy = new PathTagHierarchy(_cacheFile);
+					PopulateHierarchy(_activeHierarchy);
+					break;
+			}
 
 			UpdateTagFilter();
 		}
 
-		private TagHierarchy BuildTagHierarchy(Func<TagClass, bool> classFilter, Func<TagEntry, bool> tagFilter)
+		private void PopulateHierarchy(TagHierarchy hierarchy)
 		{
-			// Build a dictionary of tag classes
-			var classWrappers = new Dictionary<ITagClass, TagClass>();
-			foreach (ITagClass tagClass in _cacheFile.TagClasses)
-			{
-				string name = CharConstant.ToString(tagClass.Magic);
-				string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
-				var wrapper = new TagClass(tagClass, name, description);
-				classWrappers[tagClass] = wrapper;
-			}
+			foreach (var tag in _cacheFile.Tags.Where((t) => t != null && t.Class != null && t.MetaLocation != null))
+				hierarchy.AddTag(tag, GetTagName(tag));
+		}
 
-			// Now add tags which match the filter to their respective classes
-			var result = new TagHierarchy
-			{
-				Entries = _tagEntries
-			};
-
-			foreach (TagEntry tag in _tagEntries.Where(t => t != null))
-			{
-				TagClass parentClass = classWrappers[tag.RawTag.Class];
-				if (tagFilter(tag))
-					parentClass.Children.Add(tag);
-			}
-
-			// Build a sorted list of classes, and then sort each tag in them
-			List<TagClass> classList = classWrappers.Values.Where(classFilter).ToList();
-			classList.Sort((a, b) => String.Compare(a.TagClassMagic, b.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-			foreach (TagClass tagClass in classList)
-				tagClass.Children.Sort((a, b) => String.Compare(a.TagFileName, b.TagFileName, StringComparison.OrdinalIgnoreCase));
-
-			// Done!
-			Dispatcher.Invoke(new Action(delegate
-			{
-				// Give the dispatcher ownership of the ObservableCollection
-				result.Classes = new ObservableCollection<TagClass>(classList);
-			}));
-
-			return result;
+		private string GetTagName(ITag tag)
+		{
+			var name = _cacheFile.FileNames.GetTagName(tag);
+			if (string.IsNullOrWhiteSpace(name))
+				return tag.Index.ToString();
+			return name;
 		}
 
 		private void LoadLocales()
@@ -509,7 +492,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void tvTagList_SelectedTagChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
 			// Check it's actually a tag, and not a class the user clicked
-			var selectedItem = ((TreeView) sender).SelectedItem as TagEntry;
+			var selectedItem = ((TreeView) sender).SelectedItem as TagHierarchyNode;
 			if (selectedItem != null)
 				CreateTag(selectedItem);
 		}
@@ -518,7 +501,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			var item = e.Source as TreeViewItem;
 			if (item == null) return;
-			var entry = item.DataContext as TagEntry;
+			var entry = item.DataContext as TagHierarchyNode;
 			if (entry != null)
 				CreateTag(entry);
 		}
@@ -585,7 +568,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (item == null)
 				return;
 
-			var tagClass = item.DataContext as TagClass;
+			var tagClass = item.DataContext as TagHierarchyNode;
 			if (tagClass == null)
 				return;
 
@@ -602,13 +585,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Dump all of the tags that belong to the class
 			using (var writer = new StreamWriter(sfd.FileName))
 			{
-				foreach (ITag tag in _cacheFile.Tags)
+				foreach (var node in tagClass.Children)
 				{
-					if (tag == null || tag.Class != tagClass.RawClass) continue;
+					if (node == null || node.Tag == null)
+						return;
 
-					string name = _cacheFile.FileNames.GetTagName(tag);
-					if (name != null)
-						writer.WriteLine("{0}={1}", tag.Index, name);
+					writer.WriteLine("{0}={1}", node.Tag.Index, node.Name);
 				}
 			}
 
@@ -625,44 +607,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void ExecutedJumpToCommand(object sender, ExecutedRoutedEventArgs e)
 		{
-			var tag = e.Parameter as TagEntry;
+			var tag = e.Parameter as TagHierarchyNode;
 			if (tag != null)
 				CreateTag(tag);
 		}
 
 		private void contextRename_Click(object sender, RoutedEventArgs e)
 		{
-			// Get the menu item and the tag
+			// Get the menu item and the node
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
 
-			var tag = item.DataContext as TagEntry;
-			if (tag == null)
+			var node = item.DataContext as TagHierarchyNode;
+			if (node == null || !_activeHierarchy.CanRenameNode(node))
 				return;
 
 			// Ask for the new name
-			string newName = MetroInputBox.Show("Rename Tag",
-				"Please enter a new name for the tag.\r\n\t\nThis will not update the cache file until you click the \"Save Tag Names\" button at the bottom.",
-				tag.TagFileName, "Enter a tag name.");
-			if (newName == null || newName == tag.TagFileName)
+			string newName = MetroInputBox.Show("Rename Node",
+				"Please enter a new name for the node.\r\n\t\nThis will not update the cache file until you click the \"Save Tag Names\" button at the bottom.",
+				node.Name, "Enter a name.");
+			if (newName == null || newName == node.Name)
 				return;
 
 			// Set the name
-			tag.TagFileName = newName;
-
-			StatusUpdater.Update("Tag Renamed");
+			_activeHierarchy.RenameNode(node, newName);
+			StatusUpdater.Update("Node Renamed");
 		}
 
 		private void contextExtract_Click(object sender, RoutedEventArgs e)
 		{
-			// Get the menu item and the tag
+			// Get the menu item and the node
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
 
-			var tag = item.DataContext as TagEntry;
-			if (tag == null)
+			var tag = item.DataContext as TagHierarchyNode;
+			if (tag == null || !tag.IsTag)
 				return;
 
 			// Ask where to save the extracted tag collection
@@ -684,7 +665,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var resourcesToProcess = new Queue<DatumIndex>();
 			var resourcesProcessed = new HashSet<DatumIndex>();
 			var resourcePagesProcessed = new HashSet<ResourcePage>();
-			tagsToProcess.Enqueue(tag.RawTag);
+			tagsToProcess.Enqueue(tag.Tag);
 
 			ResourceTable resources = null;
 			using (IReader reader = _mapManager.OpenRead())
@@ -785,7 +766,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
-					injector.InjectTag(tag, stream);
+				{
+					var index = injector.InjectTag(tag, stream);
+
+					// Add the tag to the hierarchy
+					var injectedTag = _cacheFile.Tags[index];
+					var name = GetTagName(injectedTag);
+					_activeHierarchy.AddTag(injectedTag, name);
+					if (_classHierarchy != _activeHierarchy)
+						_classHierarchy.AddTag(injectedTag, name);
+				}
 
 				injector.SaveChanges(stream);
 			}
@@ -794,7 +784,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (StringID sid in injector.InjectedStringIDs)
 				_stringIdTrie.Add(_cacheFile.StringIDs.GetString(sid));
 
-			LoadTags();
 			MetroMessageBox.Show("Import Successful",
 				"Imported " + injector.InjectedTags.Count + " tag(s), " + injector.InjectedBlocks.Count + " data block(s), " +
 				injector.InjectedPages.Count + " resource page pointer(s), " + injector.InjectedResources.Count +
@@ -804,11 +793,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void btnSaveNames_Click(object sender, RoutedEventArgs e)
 		{
-			// Store the names back to the cache file
-			foreach (TagEntry tag in _allTags.Entries.Where(t => t != null))
-				_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
+			// Update the names in the backend
+			var names = _activeHierarchy.GetTagNames();
+			for (var i = 0; i < names.Count; i++)
+				_cacheFile.FileNames.SetTagName(i, names[i]);
 
-			// Save it
+			// Save them
 			using (IStream stream = _mapManager.OpenReadWrite())
 				_cacheFile.SaveChanges(stream);
 
@@ -819,114 +809,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
 		public static RoutedCommand CommandTagBookmarking = new RoutedCommand();
-
-		#endregion
-
-		#region Tag Bookmarking
-
-		private void contextBookmark_Click(object sender, RoutedEventArgs e)
-		{
-			// Get the menu item and the tag class
-			var item = e.Source as MenuItem;
-			if (item == null)
-				return;
-			var tagEntry = item.DataContext as TagEntry;
-			if (tagEntry == null)
-				return;
-
-			// Toggle its bookmarked status and update the tag tree if necessary
-			tagEntry.IsBookmark = !tagEntry.IsBookmark;
-			if (App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags)
-				UpdateTagFilter();
-		}
-
-		private void cbShowBookmarkedTagsOnly_Altered(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked ?? false;
-			UpdateTagFilter();
-		}
-
-		private void contextSaveBookmarks_Click(object sender, RoutedEventArgs e)
-		{
-			List<TagEntry> bookmarkedTags = _allTags.Entries.Where(t => t != null && t.IsBookmark).ToList();
-			if (bookmarkedTags.Count == 0)
-			{
-				MetroMessageBox.Show("No Bookmarked Tags!",
-					"If you want to save the current bookmarks, it helps if you bookmark some tags first.");
-				return;
-			}
-
-			// Save these bookmarks
-			KeyValuePair<string, int> keypair = MetroTagBookmarkSaver.Show();
-
-			if (keypair.Key == null || keypair.Value == -1)
-				return;
-
-			var bookmarkStorage = new BookmarkStorageFormat
-			{
-				StorageUsingTagNames = (keypair.Value == 1)
-			};
-
-			if (bookmarkStorage.StorageUsingTagNames)
-			{
-				bookmarkStorage.BookmarkedTagNames = bookmarkedTags.Select(t => new[]
-				{
-					CharConstant.ToString(t.RawTag.Class.Magic),
-					t.TagFileName.ToLowerInvariant()
-				}).ToList();
-			}
-			else
-			{
-				bookmarkStorage.BookmarkedDatumIndices = bookmarkedTags.Select(t => t.RawTag.Index.Value).ToList();
-			}
-
-			string jsonString = JsonConvert.SerializeObject(bookmarkStorage);
-
-			if (File.Exists(keypair.Key))
-				File.Delete(keypair.Key);
-
-			File.WriteAllText(keypair.Key, jsonString);
-		}
-
-		private void contextLoadBookmarks_Click(object sender, RoutedEventArgs e)
-		{
-			if (_tagEntries.Any(t => t != null && t.IsBookmark))
-			{
-				if (
-					MetroMessageBox.Show("You already have bookmarks!",
-						"If you continue, your current bookmarks will be overwritten with the bookmarks you choose. \n\nAre you sure you wish to continue?",
-						MetroMessageBox.MessageBoxButtons.YesNoCancel) != MetroMessageBox.MessageBoxResult.Yes)
-					return;
-			}
-
-			var ofd = new OpenFileDialog
-			{
-				Title = "Assembly - Select a Tag Bookmark File",
-				Filter = "Assembly Tag Bookmark File (*.astb)|*.astb"
-			};
-			if (!(bool) ofd.ShowDialog())
-				return;
-
-			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
-			foreach (TagEntry tag in _tagEntries.Where(t => t != null))
-			{
-				string className = CharConstant.ToString(tag.RawTag.Class.Magic);
-				tag.IsBookmark = bookmarkStorage.StorageUsingTagNames
-					? bookmarkStorage.BookmarkedTagNames.Any(pair => pair[0] == className && pair[1] == tag.TagFileName)
-					: bookmarkStorage.BookmarkedDatumIndices.Contains(tag.RawTag.Index.Value);
-			}
-
-			if (App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags)
-				UpdateTagFilter();
-		}
-
-		public class BookmarkStorageFormat
-		{
-			public bool StorageUsingTagNames { get; set; }
-
-			public IList<string[]> BookmarkedTagNames { get; set; }
-			public IList<uint> BookmarkedDatumIndices { get; set; }
-		}
 
 		#endregion
 
@@ -1112,10 +994,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		///     Check to see if a tag is already open in the Editor Pane
 		/// </summary>
 		/// <param name="tag">The tag to search for</param>
-		private bool IsTagOpen(TagEntry tag)
+		private bool IsTagOpen(TagHierarchyNode tag)
 		{
 			return
-				contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Tag != null && ((TagEntry) tab.Tag).RawTag == tag.RawTag);
+				contentTabs.Items.Cast<CloseableTabItem>().Any(tab => tab.Tag != null && ((TagHierarchyNode) tab.Tag).Tag == tag.Tag);
 		}
 
 		/// <summary>
@@ -1140,22 +1022,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		///     Select a tab based on a TagEntry
 		/// </summary>
 		/// <param name="tag">The tag to search for</param>
-		private void SelectTabFromTag(TagEntry tag)
+		private void SelectTabFromTag(TagHierarchyNode tag)
 		{
-			CloseableTabItem tab = null;
-			foreach (
-				CloseableTabItem tabb in
-					contentTabs.Items.Cast<CloseableTabItem>()
-						.Where(tabb => tabb.Tag != null && ((TagEntry) tabb.Tag).RawTag == tag.RawTag))
-				tab = tabb;
-
-			if (tab != null)
-				contentTabs.SelectedItem = tab;
+			var selectTab = contentTabs.Items.Cast<CloseableTabItem>().FirstOrDefault(tab => tab.Tag != null && ((TagHierarchyNode)tab.Tag).Tag == tag.Tag);
+			if (selectTab != null)
+				contentTabs.SelectedItem = selectTab;
 		}
 
-		public void CreateTag(TagEntry tag)
+		public void CreateTag(TagHierarchyNode node)
 		{
-			TagEntry selectedTag = null;
+			if (!node.IsTag)
+				return;
+
+			TagHierarchyNode selectedTag = null;
 			TabItem selectedTab = null;
 
 			if (_tagOpenMode == Settings.TagOpenMode.ExistingTab)
@@ -1166,19 +1045,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				if (currentTab != null &&
 				    currentTab.Tag != null &&
 				    currentTab.Content is MetaContainer &&
-				    currentTab.Tag is TagEntry)
+				    currentTab.Tag is TagHierarchyNode)
 				{
 					// Save this
-					selectedTag = (TagEntry) currentTab.Tag;
+					selectedTag = (TagHierarchyNode) currentTab.Tag;
 					selectedTab = currentTab;
 				}
 				else
 				{
 					foreach (
 						CloseableTabItem tab in
-							contentTabs.Items.Cast<CloseableTabItem>().Where(tab => tab.Tag is TagEntry && tab.Content is MetaContainer))
+							contentTabs.Items.Cast<CloseableTabItem>().Where(tab => tab.Tag is TagHierarchyNode && tab.Content is MetaContainer))
 					{
-						selectedTag = (TagEntry) tab.Tag;
+						selectedTag = (TagHierarchyNode) tab.Tag;
 						selectedTab = tab;
 					}
 				}
@@ -1187,43 +1066,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				if (selectedTag != null && selectedTab != null)
 				{
 					var metaContainer = (MetaContainer) selectedTab.Content;
-					metaContainer.LoadNewTagEntry(tag);
+					metaContainer.LoadTag(node.Tag);
 					selectedTab.Header = new ContentControl
 					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
+						Content = GetTabHeader(node),
 						ContextMenu = BaseContextMenu
 					};
-					selectedTab.Tag = tag;
-					SelectTabFromTag(tag);
+					selectedTab.Tag = node;
+					SelectTabFromTag(node);
 
 					return;
 				}
 				// ReSharper restore ConditionIsAlwaysTrueOrFalse
 			}
 
-			if (!IsTagOpen(tag))
+			if (!IsTagOpen(node))
 			{
 				contentTabs.Items.Add(new CloseableTabItem
 				{
 					Header = new ContentControl
 					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
+						Content = GetTabHeader(node),
 						ContextMenu = BaseContextMenu
 					},
-					Tag = tag,
+					Tag = node,
 					Content =
-						new MetaContainer(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
+						new MetaContainer(_buildInfo, node.Tag, _classHierarchy, _cacheFile, _mapManager, _rteProvider,
 							_stringIdTrie)
 				});
 			}
 
-			SelectTabFromTag(tag);
+			SelectTabFromTag(node);
+		}
+
+		private string GetTabHeader(TagHierarchyNode node)
+		{
+			var name = node.Name.Substring(node.Name.LastIndexOf('\\') + 1);
+			var extension = "." + CharConstant.ToString(node.Tag.Class.Magic);
+			if (!name.EndsWith(extension))
+				name += extension;
+			return name;
 		}
 
 		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
@@ -1303,27 +1185,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_cacheFile == null)
 				return;
 
-			string filter = "";
+			/*string filter = "";
 			Dispatcher.Invoke(new Action(delegate { filter = txtTagSearch.Text.ToLower(); }));
 
 			_visibleTags = BuildTagHierarchy(
 				c => FilterClass(c, filter),
-				t => FilterTag(t, filter));
+				t => FilterTag(t, filter));*/
 
-			Dispatcher.Invoke(new Action(delegate { tvTagList.DataContext = _visibleTags.Classes; }));
-		}
-
-		private TagEntry WrapTag(ITag tag)
-		{
-			if (tag == null || tag.Class == null || tag.MetaLocation == null)
-				return null;
-
-			string className = CharConstant.ToString(tag.Class.Magic);
-			string name = _cacheFile.FileNames.GetTagName(tag);
-			if (string.IsNullOrWhiteSpace(name))
-				name = tag.Index.ToString();
-
-			return new TagEntry(tag, className, name);
+			Dispatcher.Invoke(new Action(delegate { tvTagList.DataContext = _activeHierarchy; }));
 		}
 
 		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
@@ -1331,7 +1200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			UpdateTagFilter();
 		}
 
-		private bool FilterClass(TagClass tagClass, string filter)
+		/*private bool FilterClass(TagClass tagClass, string filter)
 		{
 			bool emptyFilter = string.IsNullOrWhiteSpace(filter);
 			return tagClass.Children.Count != 0 ||
@@ -1356,7 +1225,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Name search
 			return tag.TagFileName.ToLower().Contains(filter) || tag.ClassName.ToLower().Contains(filter);
-		}
+		}*/
 
 		#endregion
 

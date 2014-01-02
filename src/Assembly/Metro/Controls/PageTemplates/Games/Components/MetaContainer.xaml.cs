@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Assembly.Helpers;
+using Assembly.Helpers.Tags;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -16,31 +17,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 	{
 		private readonly EngineDescription _buildInfo;
 		private readonly ICacheFile _cache;
-		private readonly MetaEditor _metaEditor;
+		private MetaEditor _metaEditor;
 		private MetaInformation _metaInformation;
 		private PluginEditor _pluginEditor;
 		private IRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
 		private Trie _stringIDTrie;
-		private TagEntry _tag;
 		private TagHierarchy _tags;
 
-		#region Public Access
-
-		public TagEntry TagEntry
-		{
-			get { return _tag; }
-			set { _tag = value; }
-		}
-
-		#endregion
-
-		public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache,
+		public MetaContainer(EngineDescription buildInfo, ITag tag, TagHierarchy tags, ICacheFile cache,
 			IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
-			_tag = tag;
 			_tags = tags;
 			_buildInfo = buildInfo;
 			_cache = cache;
@@ -50,20 +39,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			tbMetaEditors.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor;
 
-			// Create Meta Information Tab
-			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
-			tabTagInfo.Content = _metaInformation;
-
-			// Create Meta Editor Tab
-			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie)
-			{
-				Padding = new Thickness(0)
-			};
-			tabMetaEditor.Content = _metaEditor;
-
-			// Create Plugin Editor Tab
-			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
-			tabPluginEditor.Content = _pluginEditor;
+			LoadTag(tag);
 
 			// Create Raw Tabs
 
@@ -127,19 +103,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tbMetaEditors.SelectedItem = tabMetaEditor;
 		}
 
-		public void LoadNewTagEntry(TagEntry tag)
+		public void LoadTag(ITag tag)
 		{
-			TagEntry = tag;
-
 			// Create Meta Information Tab
-			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			_metaInformation = new MetaInformation(_buildInfo, tag, _cache);
 			tabTagInfo.Content = _metaInformation;
 
 			// Create Meta Editor Tab
-			_metaEditor.LoadNewTagEntry(tag);
+			_metaEditor = new MetaEditor(_buildInfo, tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie);
+			tabMetaEditor.Content = _metaEditor;
 
 			// Create Plugin Editor Tab
-			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
+			_pluginEditor = new PluginEditor(_buildInfo, tag, this, _metaEditor);
 			tabPluginEditor.Content = _pluginEditor;
 		}
 

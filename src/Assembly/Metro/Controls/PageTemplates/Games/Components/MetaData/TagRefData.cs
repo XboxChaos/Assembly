@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Assembly.Helpers.Tags;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -6,9 +7,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private readonly TagHierarchy _allTags;
 		private readonly bool _withClass;
-		private TagClass _class;
+		private TagHierarchyNode _class;
 		private Visibility _showJumpTo;
-		private TagEntry _value;
+		private TagHierarchyNode _value;
 
 		public TagRefData(string name, uint offset, uint address, TagHierarchy allTags, Visibility showJumpTo, bool withClass,
 			uint pluginLine)
@@ -19,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_showJumpTo = showJumpTo;
 		}
 
-		public TagEntry Value
+		public TagHierarchyNode Value
 		{
 			get { return _value; }
 			set
@@ -39,7 +40,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public TagClass Class
+		public TagHierarchyNode Class
 		{
 			get { return _class; }
 			set

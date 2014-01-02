@@ -154,8 +154,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (!FilterString(field, field.Name) && field.Class != null)
 			{
-				if (!FilterString(field, field.Class.TagClassMagic) && field.Value != null)
-					FilterString(field, field.Value.TagFileName);
+				if (!FilterString(field, field.Class.Name) && field.Value != null)
+					FilterString(field, field.Value.Name);
 			}
 		}
 
