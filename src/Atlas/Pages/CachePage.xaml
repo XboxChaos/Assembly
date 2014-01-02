@@ -3,32 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<UserControl.Resources>
-		<DataTemplate x:Key="MetroContainerDataTemplate">
-			<Border BorderThickness="1" BorderBrush="#3f3f46">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="21"/>
-						<RowDefinition Height="*"/>
-					</Grid.RowDefinitions>
-					<Grid Grid.Row="0" Background="{DynamicResource AssemblyAccentBrush}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="*"/>
-						</Grid.ColumnDefinitions>
-						
-						<TextBlock Margin="5,0" Grid.Column="0" Foreground="White" Text="{Binding Path=Title, FallbackValue=Container Title}" HorizontalAlignment="Left" VerticalAlignment="Center" />
-						
-						<Grid>
-							
-						</Grid>
-					</Grid>
-				</Grid>
-			</Border>
-		</DataTemplate>
 	</UserControl.Resources>
 	<Grid>
 		<Grid>
@@ -61,7 +38,29 @@
 				</Grid>
 				<GridSplitter Grid.Row="1" Background="#3f3f46" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
 				<Grid Grid.Row="2">
-					<custom:MetroContainer Title="Map Information" ContentTemplate="{StaticResource MetroContainerDataTemplate}" />
+					<Border BorderThickness="1" BorderBrush="#3f3f46">
+						<Grid >
+							<Grid.RowDefinitions>
+								<RowDefinition Height="21"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+							<Grid Grid.Row="0" Background="{DynamicResource AssemblyAccentBrush}">
+								<Grid Margin="5,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+									<TextBlock Grid.Column="0" Margin="0,0,10,0" Foreground="White" Text="Map Information" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+									<Grid Grid.Column="1">
+										<Grid.Background>
+											<ImageBrush ImageSource="/Atlas;component/Metro/Images/container-title-loop.png" Stretch="None" TileMode="Tile"/>
+										</Grid.Background>
+									</Grid>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Border>
 				</Grid>
 			</Grid>
 		</Grid>

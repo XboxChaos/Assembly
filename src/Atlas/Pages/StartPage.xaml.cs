@@ -14,7 +14,7 @@ namespace Atlas.Pages
 
 		public bool Close()
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 	}
 }

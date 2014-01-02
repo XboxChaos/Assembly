@@ -78,7 +78,14 @@ namespace Atlas.ViewModels
 		public IAssemblyPage AssemblyPage
 		{
 			get { return _assemblyPage; }
-			set { SetField(ref _assemblyPage, value); }
+			set
+			{
+				// try closing current page
+				if (!_assemblyPage.Close()) return;
+
+				// aite, we can
+				SetField(ref _assemblyPage, value);
+			}
 		}
 		private IAssemblyPage _assemblyPage = new StartPage();
 		#endregion
