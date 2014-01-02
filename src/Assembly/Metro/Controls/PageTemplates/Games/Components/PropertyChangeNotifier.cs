@@ -5,9 +5,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
 	public class PropertyChangeNotifier : INotifyPropertyChanged
 	{
-		private readonly Dictionary<string, PropertyChangedEventArgs> _argsCache =
-			new Dictionary<string, PropertyChangedEventArgs>();
-
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>
@@ -17,18 +14,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		protected void NotifyPropertyChanged(string name)
 		{
 			if (PropertyChanged != null)
-				PropertyChanged(this, GetArgs(name));
-		}
-
-		private PropertyChangedEventArgs GetArgs(string propertyName)
-		{
-			PropertyChangedEventArgs result;
-			if (_argsCache.TryGetValue(propertyName, out result))
-				return result;
-
-			result = new PropertyChangedEventArgs(propertyName);
-			_argsCache[propertyName] = result;
-			return result;
+				PropertyChanged(this, new PropertyChangedEventArgs(name));
 		}
 	}
 }

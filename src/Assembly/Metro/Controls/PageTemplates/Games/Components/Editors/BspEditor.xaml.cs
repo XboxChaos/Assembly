@@ -11,9 +11,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 	{
 		private readonly ICacheFile _cache;
 		private readonly IStreamManager _streamManager;
-		private readonly TagEntry _tag;
+		private readonly ITag _tag;
 
-		public BspEditor(TagEntry tag, ICacheFile cache, IStreamManager streamManager)
+		public BspEditor(ITag tag, ICacheFile cache, IStreamManager streamManager)
 		{
 			InitializeComponent();
 
