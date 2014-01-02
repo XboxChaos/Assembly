@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using Atlas.Metro.Controls.Custom;
+using Atlas.Pages;
 
 namespace Atlas.ViewModels
 {
@@ -70,6 +71,16 @@ namespace Atlas.ViewModels
 		}
 		private Visibility _resizingVisibility = Visibility.Collapsed;
 
+		#endregion
+
+		#region Content
+
+		public IAssemblyPage AssemblyPage
+		{
+			get { return _assemblyPage; }
+			set { SetField(ref _assemblyPage, value); }
+		}
+		private IAssemblyPage _assemblyPage = new StartPage();
 		#endregion
 
 		#endregion
