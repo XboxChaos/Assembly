@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-             xmlns:DataBind="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
+             xmlns:DataBind="clr-namespace:Assembly.Helpers.Tags"
              xmlns:Converters="clr-namespace:Assembly.Helpers.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dd="clr-namespace:DragDropListBox"
@@ -13,9 +13,9 @@
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
 	<UserControl.Resources>
-		<Converters:TagDescriptionCleanup x:Key="IValueTagDescriptionCleanup" />
 		<Converters:TagBookmarkVisibility x:Key="IValueTagBookmarkVisibility" />
 		<Converters:TagBookmarkForeground x:Key="IValueTagBookmarkForeground" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 
 		<DataTemplate x:Key="Local_TabItemDragTemplate">
 			<Border CornerRadius="0"
@@ -112,9 +112,6 @@
 									<StackPanel Grid.Row="2" Margin="25,15,0,20">
 										<CheckBox x:Name="cbShowEmptyTags" Margin="0,0,0,5" Content="Show unused classes" VerticalAlignment="Center"
 										          HorizontalAlignment="Stretch" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered" />
-										<CheckBox x:Name="cbShowBookmarkedTagsOnly" Margin="0,0,0,5" Content="Only Show Bookmarked Tags"
-										          VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-										          Unchecked="cbShowBookmarkedTagsOnly_Altered" Checked="cbShowBookmarkedTagsOnly_Altered" />
 
 										<TextBlock Text="Open Tag Action:" Margin="0,5,0,0" />
 										<ComboBox x:Name="cbTabOpenMode" Margin="15,5,20,0" SelectionChanged="cbTabOpenMode_SelectionChanged">
@@ -140,32 +137,17 @@
 
 								<Grid>
 									<MetroTreeView:MetroTreeView DockPanel.Dock="Top" x:Name="tvTagList" Margin="0,0,0,28"
-									                             SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}"
+									                             SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding Nodes}"
 									                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}"
 									                             BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2"
 									                             Foreground="White"
 									                             VirtualizingStackPanel.IsVirtualizing="True"
 									                             VirtualizingStackPanel.VirtualizationMode="Standard">
 										<MetroTreeView:MetroTreeView.Resources>
-											<HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}">
-												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-													<TextBlock>
-														<Run Text="{Binding TagClassMagic}" />
-														<Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " />
-														<Run Foreground="{StaticResource TextBrushSecondary}"
-														     Text="{Binding Path=Description, Converter={StaticResource IValueTagDescriptionCleanup}}" />
-													</TextBlock>
-													<StackPanel.ContextMenu>
-														<ContextMenu>
-															<MenuItem Header="Dump Tag List..." Click="DumpClassTagList" />
-														</ContextMenu>
-													</StackPanel.ContextMenu>
-												</StackPanel>
-											</HierarchicalDataTemplate>
-											<DataTemplate DataType="{x:Type DataBind:TagEntry}">
-												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-													<StackPanel.ContextMenu>
-														<!--<ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                            <HierarchicalDataTemplate DataType="{x:Type DataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                                    <StackPanel.ContextMenu>
+                                                        <!--<ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
 													<ContextMenu.CommandBindings>
 														<CommandBinding Command="{x:Static DataBind:HaloMap.CommandTagBookmarking }"
 																		CanExecute="CommandTagBookmarking_CanExecute"
@@ -173,23 +155,17 @@
 													</ContextMenu.CommandBindings>
 													<MenuItem Header="Bookmark Tag" Foreground="White" Command="{x:Static DataBind:HaloMap.CommandTagBookmarking}" CommandParameter="{Binding}" />
 												</ContextMenu>-->
-														<ContextMenu>
-															<MenuItem Header="Rename..." Click="contextRename_Click" />
-															<MenuItem Header="Extract..." Click="contextExtract_Click" />
-															<Separator />
-															<MenuItem x:Name="contextmenuBookmark" Header="Add/Remove Bookmark" Foreground="White"
-															          Click="contextBookmark_Click" />
-															<Separator />
-															<MenuItem Header="Save Bookmarks" Click="contextSaveBookmarks_Click" />
-															<MenuItem Header="Load Bookmarks" Click="contextLoadBookmarks_Click" />
-														</ContextMenu>
-													</StackPanel.ContextMenu>
-													<TextBlock Text="{Binding Path=TagFileName}"
-													           Visibility="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkVisibility}}"
-													           Foreground="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkForeground}}" />
-												</StackPanel>
-											</DataTemplate>
-										</MetroTreeView:MetroTreeView.Resources>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Rename..." Click="contextRename_Click" />
+                                                            <MenuItem Header="Extract..." Click="contextExtract_Click" />
+                                                        </ContextMenu>
+                                                    </StackPanel.ContextMenu>
+                                                    <TextBlock>
+                                                        <Run Text="{Binding Name, Mode=OneWay}" /><Run Text="{Binding Suffix, Mode=OneWay}" Foreground="{StaticResource TextBrushSecondary}" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </HierarchicalDataTemplate>
+                                        </MetroTreeView:MetroTreeView.Resources>
 										<MetroTreeView:MetroTreeView.ItemContainerStyle>
 											<Style TargetType="{x:Type MetroTreeView:MetroTreeViewItem}"
 											       BasedOn="{StaticResource {x:Type MetroTreeView:MetroTreeViewItem}}">

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Assembly.Helpers.Tags;
 using Blamite.Blam;
 using Blamite.Blam.Shaders;
 using Blamite.Flexibility;
@@ -253,17 +254,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				index = DatumIndex.ReadFrom(_reader);
 			}
 
-			TagEntry tag = null;
-			if (index.IsValid && index.Index < field.Tags.Entries.Count)
+			TagHierarchyNode tag = null;
+			if (_cache.Tags.IsValidIndex(index))
 			{
-				tag = field.Tags.Entries[index.Index];
-				if (tag == null || tag.RawTag == null || tag.RawTag.Index != index)
+				tag = field.Tags.FindNodeByTagIndex(index);
+				if (tag == null || tag.Tag == null || tag.Tag.Index != index)
 					tag = null;
 			}
-
 			if (tag != null)
 			{
-				field.Class = field.Tags.Classes.FirstOrDefault(c => c.RawClass == tag.RawTag.Class);
+				field.Class = tag.Parent;
 				field.Value = tag;
 			}
 			else

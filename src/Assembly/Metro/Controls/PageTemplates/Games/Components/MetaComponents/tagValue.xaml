@@ -4,18 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
-             xmlns:games="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
+             xmlns:tags="clr-namespace:Assembly.Helpers.Tags"
              mc:Ignorable="d" Height="28" Width="785"
              HorizontalAlignment="Left"
              x:Name="control">
 	<UserControl.Resources>
 		<local:TagClassConverter x:Key="classToIndexConverter" TagsSource="{Binding DataContext.Tags, Source={x:Reference control}}" />
 		<local:TagEntryListRetriever x:Key="classItemsRetriever" />
-		<DataTemplate DataType="{x:Type games:TagClass}">
-			<TextBlock Text="{Binding TagClassMagic}" />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type games:TagEntry}">
-			<TextBlock Text="{Binding TagFileName}" />
+		<DataTemplate DataType="{x:Type tags:TagHierarchyNode}">
+			<TextBlock Text="{Binding Name}" />
 		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
@@ -34,7 +31,7 @@
 				<ComboBox.Resources>
 					<CompositeCollection x:Key="classList">
 						<ComboBoxItem>(null)</ComboBoxItem>
-						<CollectionContainer Collection="{Binding DataContext.Tags.Classes, Source={x:Reference cbTagClass}}" />
+						<CollectionContainer Collection="{Binding DataContext.Tags.Nodes, Source={x:Reference cbTagClass}}" />
 					</CompositeCollection>
 				</ComboBox.Resources>
 			</ComboBox>

@@ -26,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private SoundPlayer _soundPlayer;
 		private ResourcePage[] _resourcePages;
 		private readonly EngineDescription _buildInfo;
-		private readonly TagEntry _tag;
+		private readonly ITag _tag;
 		private readonly ICacheFile _cache;
 		private readonly string _cacheLocation;
 		private readonly IStreamManager _streamManager;
@@ -50,7 +50,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		};
 
 
-		public SoundEditor(EngineDescription buildInfo, string cacheLocation, TagEntry tag, ICacheFile cache, IStreamManager streamManager)
+		public SoundEditor(EngineDescription buildInfo, string cacheLocation, ITag tag, ICacheFile cache, IStreamManager streamManager)
 		{
 			InitializeComponent();
 
@@ -62,7 +62,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			var viewModel = new ViewModel();
 			DataContext = viewModel;
-			viewModel.TagName = _tag.TagFileName;
+			viewModel.TagName = ""; // TODO: Add the tagname again
 			viewModel.Sound = _sound;
 
 			if (!_cache.ResourceMetaLoader.SupportsSounds)
@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			using (var reader = _streamManager.OpenRead())
 			{
 				_soundResourceGestalt = _cache.LoadSoundResourceGestaltData(reader);
-				_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag.RawTag, reader);
+				_sound = _cache.ResourceMetaLoader.LoadSoundMeta(_tag, reader);
 				var resourceTable = _cache.Resources.LoadResourceTable(reader);
 				_soundResource = resourceTable.Resources.First(r => r.Index == _sound.ResourceIndex);
 				_resourcePages = new []
@@ -139,7 +139,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		{
 			var sfd = new SaveFileDialog
 			{
-				FileName = _tag.TagFileName + ".wav"
+				FileName = "extracted_sound" + ".wav" // TODO: Add the tagname again
 			};
 
 			if (sfd.ShowDialog() == DialogResult.OK)

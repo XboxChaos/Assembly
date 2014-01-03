@@ -7,6 +7,7 @@ using Assembly.Helpers;
 using Assembly.Helpers.CodeCompletion.XML;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.SyntaxHighlighting;
+using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.Util;
 using ICSharpCode.AvalonEdit;
@@ -26,7 +27,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly MetaEditor _sibling;
 		private CompletionWindow _completionWindow;
 
-		public PluginEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parent, MetaEditor sibling)
+		public PluginEditor(EngineDescription buildInfo, ITag tag, MetaContainer parent, MetaEditor sibling)
 		{
 			InitializeComponent();
 
@@ -40,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.Class.Magic)).Trim();
 			_pluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());

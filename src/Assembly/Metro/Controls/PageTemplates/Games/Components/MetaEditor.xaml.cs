@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Xml;
 using Assembly.Helpers;
 using Assembly.Helpers.Plugins;
+using Assembly.Helpers.Tags;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
@@ -69,9 +70,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private string _pluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
-		private TagEntry _tag;
+		private ITag _tag;
 
-		public MetaEditor(EngineDescription buildInfo, TagEntry tag, MetaContainer parentContainer, TagHierarchy tags,
+		public MetaEditor(EngineDescription buildInfo, ITag tag, MetaContainer parentContainer, TagHierarchy tags,
 			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
@@ -86,19 +87,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_searchTimer = new Timer(SearchTimer);
 			_stringIdTrie = stringIDTrie;
 
-			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
-			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), className);
-
-			// Set Option boxes
-			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
-			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
-			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
-
-			// Load Meta
-			RefreshEditor(MetaReader.LoadType.File);
+			LoadTag(tag);
 
 			// Set init finished
 			hasInitFinished = true;
@@ -120,7 +109,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			{
 				case MetaReader.LoadType.File:
 					streamManager = _fileManager;
-					baseOffset = (uint) _tag.RawTag.MetaLocation.AsOffset();
+					baseOffset = (uint) _tag.MetaLocation.AsOffset();
 					break;
 
 				case MetaReader.LoadType.Memory:
@@ -134,7 +123,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					}
 
 					streamManager = new RTEStreamManager(_rteProvider, _cache);
-					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
+					baseOffset = _tag.MetaLocation.AsPointer();
 					break;
 
 				default:
@@ -172,7 +161,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void RevisionViewer()
 		{
 			if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
-				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Class.Magic));
+				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.Class.Magic));
 			else
 				MetroMessageBox.Show("Press RB to...wait...how'd you do that?",
 					"How did you load the plugin revision viewer before you loaded a plugin? wat.");
@@ -227,7 +216,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 #if DEBUG_SAVE_ALL
                     MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
+					var metaUpdate = new MetaWriter(stream, (uint) _tag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
 						_fileChanges, _stringIdTrie);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
@@ -245,7 +234,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (metaStream != null)
 					{
 						FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
+						var metaUpdate = new MetaWriter(metaStream, _tag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
 							changes, _stringIdTrie);
 						metaUpdate.WriteFields(_pluginVisitor.Values);
 
@@ -281,12 +270,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 		}
 
-		public void LoadNewTagEntry(TagEntry tag)
+		public void LoadTag(ITag tag)
 		{
 			_tag = tag;
 
 			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
+			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.Class.Magic)).Trim();
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 

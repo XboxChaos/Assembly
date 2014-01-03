@@ -1,0 +1,250 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using Assembly.Metro.Controls.PageTemplates.Games.Components;
+using Blamite.Blam;
+using Blamite.Util;
+
+namespace Assembly.Helpers.Tags
+{
+	/// <summary>
+	/// A node in a tag hierarchy.
+	/// </summary>
+	public class TagHierarchyNode : PropertyChangeNotifier
+	{
+		private string _name;
+		private string _suffix;
+
+		private IComparer<TagHierarchyNode> _sortComparison = new NodeSortComparison();
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TagHierarchyNode"/> class.
+		/// The node will represent a folder with no associated tag or tag class.
+		/// </summary>
+		/// <param name="name">The node's name.</param>
+		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
+		public TagHierarchyNode(string name, string suffix)
+		{
+			Name = name;
+			Suffix = suffix;
+			Children = new ObservableCollection<TagHierarchyNode>();
+			Children.CollectionChanged += Children_CollectionChanged; // Handles keeping track of a node's parent
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TagHierarchyNode"/> class.
+		/// The node will represent a tag.
+		/// </summary>
+		/// <param name="name">The node's name.</param>
+		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
+		/// <param name="tag">The tag to associate with the node.</param>
+		public TagHierarchyNode(string name, string suffix, ITag tag)
+			: this(name, suffix)
+		{
+			Tag = tag;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TagHierarchyNode"/> class.
+		/// The node will be a folder representing a tag class.
+		/// </summary>
+		/// <param name="name">The node's name.</param>
+		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
+		/// <param name="tagClass">The tag class to associate with the node.</param>
+		public TagHierarchyNode(string name, string suffix, ITagClass tagClass)
+			: this(name, suffix)
+		{
+			TagClass = tagClass;
+		}
+
+		/// <summary>
+		/// Gets or sets the node's name.
+		/// </summary>
+		public string Name
+		{
+			get { return _name; }
+			set { _name = value; NotifyPropertyChanged("Name"); }
+		}
+
+		/// <summary>
+		/// Gets or sets the node's suffix.
+		/// </summary>
+		public string Suffix
+		{
+			get { return _suffix; }
+			set { _suffix = value; NotifyPropertyChanged("Suffix"); }
+		}
+
+		/// <summary>
+		/// Gets whether or not the node has a valid suffix.
+		/// </summary>
+		public bool HasSuffix
+		{
+			get { return !string.IsNullOrEmpty(Suffix); }
+		}
+
+		/// <summary>
+		/// Gets the tag associated with the node. Can be <c>null</c>.
+		/// </summary>
+		public ITag Tag { get; private set; }
+
+		/// <summary>
+		/// Gets the tag class associated with the node. Can be <c>null</c>.
+		/// </summary>
+		public ITagClass TagClass { get; private set; }
+
+		/// <summary>
+		/// Gets a list of child nodes of this node.
+		/// </summary>
+		public ObservableCollection<TagHierarchyNode> Children { get; private set; }
+
+		/// <summary>
+		/// Gets the node's parent. Can be <c>null</c>.
+		/// </summary>
+		public TagHierarchyNode Parent { get; private set; }
+
+		/// <summary>
+		/// Gets whether or not this node represents a folder.
+		/// </summary>
+		public bool IsFolder
+		{
+			get
+			{
+				// If the node doesn't have a tag associated with it OR it has children, consider it to be a folder
+				return (Children.Count > 0) || (Tag == null);
+			}
+		}
+
+		/// <summary>
+		/// Gets whether or not this node represents a tag.
+		/// </summary>
+		public bool IsTag
+		{
+			get { return (Tag != null); }
+		}
+
+		/// <summary>
+		/// Gets whether or not this node represents a tag class.
+		/// </summary>
+		public bool IsTagClass
+		{
+			get { return (TagClass != null); }
+		}
+
+		/// <summary>
+		/// Adds a child node to this node, sorting it by name and suffix.
+		/// The other children of this node must be sorted as well.
+		/// If a node with the same name and suffix is already present, nothing will happen.
+		/// </summary>
+		/// <param name="child">The child node to insert.</param>
+		/// <returns>If the child was added, it will be returned, otherwise the already-existing node will be returned.</returns>
+		public TagHierarchyNode InsertChildSorted(TagHierarchyNode child)
+		{
+			// Binary search the tree to determine where the node should be inserted
+			var insertPos = ListSearching.BinarySearch(Children, child, _sortComparison);
+
+			// If a node with the same name and suffix is already in the tree,
+			// then just return that and don't do anything further
+			if (insertPos >= 0)
+				return Children[insertPos];
+
+			// Insert the child before the next greater node
+			insertPos = ~insertPos;
+			Children.Insert(insertPos, child);
+			return child;
+		}
+
+		/// <summary>
+		/// Renames a child node by moving it, maintaining a sorted list of children.
+		/// </summary>
+		/// <param name="child">The child node.</param>
+		/// <param name="newName">The new name for the node.</param>
+		public void RenameChildSorted(TagHierarchyNode child, string newName)
+		{
+			if (child.Parent != this)
+				throw new ArgumentException("The node is not a direct child node");
+
+			// Create a temporary node to determine its new index in the list
+			var temp = new TagHierarchyNode(newName, child.Suffix, child.Tag);
+			var newPos = ListSearching.BinarySearch(Children, temp, _sortComparison);
+			if (newPos >= 0)
+				throw new InvalidOperationException("A node with the new name already exists");
+
+			// Because we used a temporary node to get the new position,
+			// if the new position is greater than the current position, we have to subtract 1
+			newPos = ~newPos;
+			var oldPos = Children.IndexOf(child);
+			if (newPos > oldPos)
+				newPos--;
+
+			// Rename and move the node
+			child.Name = newName;
+			Children.Move(oldPos, newPos);
+		}
+
+		/// <summary>
+		/// Detaches this node from its parent.
+		/// </summary>
+		public void Detach()
+		{
+			if (Parent != null)
+				Parent.Children.Remove(this);
+			// No need to set Parent to null here because it will be done in the former parent's CollectionChanged handler
+		}
+
+		private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			// If nodes are added or removed from this node, update their Parent properties
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				// Added - set each node's parent to this node
+				foreach (TagHierarchyNode node in e.NewItems)
+				{
+					if (node.Parent != null)
+						throw new InvalidOperationException("A tag hierarchy node cannot have more than one parent node.");
+					node.Parent = this;
+				}
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				// Removed - set each node's parent to null
+				foreach (TagHierarchyNode node in e.OldItems)
+					node.Parent = null;
+			}
+		}
+
+		/// <summary>
+		/// Sorts hierarchy nodes by name, suffix, and whether or not they represent tags.
+		/// </summary>
+		/// <seealso cref="InsertChildSorted"/>
+		private class NodeSortComparison : IComparer<TagHierarchyNode>
+		{
+			public int Compare(TagHierarchyNode x, TagHierarchyNode y)
+			{
+				// Non-tag nodes come first
+				if (!x.IsTag && y.IsTag)
+					return -1;
+				else if (x.IsTag && !y.IsTag)
+					return 1;
+
+				// Then sort the nodes by name
+				var nameCompare = x.Name.CompareTo(y.Name);
+				if (nameCompare != 0)
+					return nameCompare;
+
+				// Then sort them by suffix, putting ones without suffixes at the bottom
+				if (!x.HasSuffix && !y.HasSuffix)
+					return 0;
+				else if (x.HasSuffix && !y.HasSuffix)
+					return -1;
+				else if (!x.HasSuffix && y.HasSuffix)
+					return 1;
+				else
+					return x.Suffix.CompareTo(y.Suffix);
+			}
+		}
+	}
+}
