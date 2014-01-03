@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace Atlas.Metro.Controls.Custom
 {
-	public class MetroContainer : ContentControl
+	public class MetroContainer : UserControl
 	{
 		public static DependencyProperty TitleProperty;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Atlas.ViewModels;
 
 namespace Atlas.Pages
 {
@@ -7,13 +8,21 @@ namespace Atlas.Pages
 	/// </summary>
 	public partial class CachePage : IAssemblyPage
 	{
-		public CachePage()
+		public readonly CachePageViewModel ViewModel;
+
+		public CachePage(string cacheLocation)
 		{
 			InitializeComponent();
+
+			ViewModel = new CachePageViewModel();
+			DataContext = ViewModel;
+
+			ViewModel.LoadCache(cacheLocation);
 		}
 
 		public bool Close()
 		{
+			// Ask for user permission to close
 			throw new NotImplementedException();
 		}
 	}

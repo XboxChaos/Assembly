@@ -5,6 +5,7 @@
 		<Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}" />
 		<Setter Property="Foreground" Value="White" />
 		<Setter Property="Padding" Value="8,2,8,1" />
+		<Setter Property="Margin" Value="0,0,0,0" />
 		<Setter Property="FontSize" Value="12" />
 		<Setter Property="BorderBrush" Value="#3f3f41" />
 		<Setter Property="Background" Value="#2e2e31" />
@@ -14,7 +15,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TabItem}">
 					<Grid SnapsToDevicePixels="true">
-						<Border x:Name="Bd" BorderBrush="Transparent" BorderThickness="1,0"
+						<Border x:Name="Bd" BorderBrush="Transparent" BorderThickness="1,0,1,1" Margin="{TemplateBinding Margin}"
 						        Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
 							<ContentPresenter x:Name="Content" ContentSource="Header"
 							                  HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
@@ -28,6 +29,7 @@
 							<Setter Property="Background" TargetName="Bd" Value="#252526" />
 							<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrush}" />
 							<Setter TargetName="Bd" Property="BorderBrush" Value="#3f3f41" />
+							<Setter TargetName="Bd" Property="Margin" Value="-1,-2,0,0" />
 						</Trigger>
 
 						<MultiTrigger>
