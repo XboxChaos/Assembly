@@ -36,7 +36,7 @@ namespace Atlas.Windows
 
 		private void OpenCacheMenuItem_OnClick(object sender, System.Windows.RoutedEventArgs e)
 		{
-			_viewModel.AssemblyPage = new CachePage();
+			_viewModel.AssemblyPage = new CachePage("");
 		}
 	}
 }
