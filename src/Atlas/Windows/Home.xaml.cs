@@ -10,19 +10,19 @@ namespace Atlas.Windows
 	/// </summary>
 	public partial class Home
 	{
-		private readonly HomeViewModel _viewModel;
+		public HomeViewModel ViewModel { get; private set; }
 
 		public Home()
 		{
 			InitializeComponent();
-			
-			_viewModel = new HomeViewModel();
-			DataContext = _viewModel;
+
+			ViewModel = new HomeViewModel();
+			DataContext = ViewModel;
 		}
 
 		protected override void OnStateChanged(EventArgs e)
 		{
-			_viewModel.OnStateChanged(WindowState, e);
+			ViewModel.OnStateChanged(WindowState, e);
 			base.OnStateChanged(e);
 		}
 
@@ -36,7 +36,7 @@ namespace Atlas.Windows
 
 		private void OpenCacheMenuItem_OnClick(object sender, System.Windows.RoutedEventArgs e)
 		{
-			_viewModel.AssemblyPage = new CachePage("");
+			ViewModel.OpenFile(HomeViewModel.Type.BlamCache);
 		}
 	}
 }

@@ -18,6 +18,9 @@ namespace Atlas.Pages
 			DataContext = ViewModel;
 
 			ViewModel.LoadCache(cacheLocation);
+
+			// Set Datacontext's
+			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
 		}
 
 		public bool Close()
