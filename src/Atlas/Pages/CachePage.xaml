@@ -4,6 +4,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+	xmlns:DataBind="clr-namespace:Atlas.Helpers.Tags"
+	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<Grid>
@@ -102,7 +104,24 @@
 						</TabControl.Resources>
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
 							<custom:MetroContainer Title="Tag Explorer (riverworld)">
-
+								<Grid>
+									<TreeView x:Name="TagTreeView" ItemsSource="{Binding (DataBind:TagHierarchy.Nodes)}" 
+											  Background="{x:Null}" BorderThickness="0" Padding="0,10,0,0" 
+											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
+										<TreeView.Resources>
+											<HierarchicalDataTemplate DataType="{x:Type DataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">
+												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="19">
+													<ContentControl Template="{Binding Converter={StaticResource IValueConverterHierarchyNodeToIcon}}" />
+													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
+															   VerticalAlignment="Center">
+														<Run Text="{Binding Name, Mode=OneWay}" />
+														<Run Text="{Binding Suffix, Mode=OneWay}" Foreground="{StaticResource TextBrushSecondary}" />
+													</TextBlock>
+												</StackPanel>
+											</HierarchicalDataTemplate>
+										</TreeView.Resources>
+									</TreeView>
+								</Grid>
 							</custom:MetroContainer>
 						</TabItem>
 						<TabItem Header="Locale Languages" Style="{DynamicResource MetroTabControlBottom}">

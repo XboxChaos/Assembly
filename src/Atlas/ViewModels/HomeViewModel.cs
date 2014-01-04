@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Forms;
 using Atlas.Metro.Controls.Custom;
 using Atlas.Pages;
 
@@ -132,6 +133,41 @@ namespace Atlas.ViewModels
 			field = value;
 			OnPropertyChanged(propertyName);
 			return true;
+		}
+
+		#endregion
+
+		#region Helpers
+
+		public enum Type
+		{
+			BlamCache,
+			MapInfo,
+			MapImage,
+			Campaign,
+			Patch,
+
+			Other
+		}
+
+		public void OpenFile(Type type)
+		{
+			var openFileDialog = new OpenFileDialog
+			{
+				Filter = "Blam Cache Files (*.map)|*.map|" +
+				         "Blam Map Info (*.mapinfo)|*.mapinfo|" +
+				         "Blam Map Image (*.blf)|*.blf|" +
+				         "Blam Campaign (*.campaign)|*.campaign|" +
+				         "Assembly Patch (*.asmp)|*.asmp|" +
+				         "All Files (*.*)|*.*",
+				FilterIndex = (int) type
+			};
+
+			if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+				return;
+
+			// TODO: process type, and open in the correct editor
+			AssemblyPage = new CachePage(openFileDialog.FileName);
 		}
 
 		#endregion
