@@ -10,7 +10,7 @@ namespace Atlas.Metro.Controls.Custom
 
 		static MetroContainer()
 		{
-			TitleProperty = DependencyProperty.Register("Title", typeof (String), typeof (MetroContainer));
+			TitleProperty = DependencyProperty.Register("Title", typeof(String), typeof(MetroContainer));
 		}
 
 		public String Title

@@ -4,9 +4,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
-	xmlns:DataBind="clr-namespace:Atlas.Helpers.Tags"
-	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
+	xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<Grid>
@@ -32,18 +33,16 @@
 				</Grid.RowDefinitions>
 
 				<Grid Grid.Row="0" Background="#2d2d30">
-					<TabControl TabStripPlacement="Bottom" Background="#252526" BorderBrush="{x:Null}">
+					<TabControl TabStripPlacement="Bottom">
 						<TabControl.Resources>
-							<SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
-							<SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
 							<Style TargetType="{x:Type TabControl}">
 								<Setter Property="Padding" Value="2"/>
 								<Setter Property="HorizontalContentAlignment" Value="Center"/>
 								<Setter Property="VerticalContentAlignment" Value="Center"/>
-								<Setter Property="Background" Value="{StaticResource TabItem.Selected.Background}"/>
-								<Setter Property="BorderBrush" Value="{StaticResource TabItem.Selected.Border}"/>
+								<Setter Property="Background" Value="#252526"/>
+								<Setter Property="BorderBrush" Value="{x:Null}"/>
 								<Setter Property="BorderThickness" Value="1"/>
-								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+								<Setter Property="Foreground" Value="White"/>
 								<Setter Property="Template">
 									<Setter.Value>
 										<ControlTemplate TargetType="{x:Type TabControl}">
@@ -104,7 +103,7 @@
 							</Style>
 						</TabControl.Resources>
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
-							<custom:MetroContainer Title="Tag Explorer (riverworld)">
+							<custom:MetroContainer Title="{Binding (viewModels:CachePageViewModel.CacheFile).InternalName, TargetNullValue='', FallbackValue='', StringFormat='Tag Explorer ({0})'}">
 								<Grid>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="0" />
@@ -112,11 +111,11 @@
 										<RowDefinition/>
 									</Grid.RowDefinitions>
 									<custom:MetroWatermarkTextbox Grid.Row="1" Watermark="Search Tag Explorer - riverworld (Ctrl+;)" />
-									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (DataBind:TagHierarchy.Nodes)}" 
+									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (dataBind:TagHierarchy.Nodes)}" 
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
 											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
 										<TreeView.Resources>
-											<HierarchicalDataTemplate DataType="{x:Type DataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">
+											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20">
 													<ContentControl Template="{Binding Converter={StaticResource IValueConverterHierarchyNodeToIcon}}" />
 													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
@@ -151,8 +150,16 @@
 				<GridSplitter Grid.Row="1" Background="#3f3f46" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
 				<Grid Grid.Row="2">
 					<custom:MetroContainer Title="Cache Information">
-						<xctk:PropertyGrid  x:Name="CacheInformationPropertyGrid" ShowSortOptions="False" AutoGenerateProperties="True">
-							
+						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" ShowSortOptions="False" AutoGenerateProperties="True">
+							<xctk:PropertyGrid.EditorDefinitions>
+								<xctk:EditorTemplateDefinition >
+									<xctk:EditorTemplateDefinition.EditingTemplate>
+										<DataTemplate>
+											<TextBox Text="{Binding Value}" IsReadOnly="True" />
+										</DataTemplate>
+									</xctk:EditorTemplateDefinition.EditingTemplate>
+								</xctk:EditorTemplateDefinition>
+							</xctk:PropertyGrid.EditorDefinitions>
 						</xctk:PropertyGrid>
 					</custom:MetroContainer>
 				</Grid>

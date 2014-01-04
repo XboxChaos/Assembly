@@ -8,7 +8,7 @@
 		<Setter Property="Height" Value="22" />
 		<Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
 		<Setter Property="FontSize" Value="12" />
-		<Setter Property="Background" Value="#414141" />
+		<Setter Property="Background" Value="#333337" />
 		<Setter Property="Padding" Value="0,0,0,0" />
 		<Setter Property="Foreground" Value="White" />
 		<Setter Property="SelectionBrush" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
@@ -88,13 +88,15 @@
 						<Rectangle x:Name="FocusInnerRectangle" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="0"
 								   Margin="1" Stroke="{x:Null}" />
 						<Rectangle x:Name="InvalidContentValidation" StrokeThickness="1" Opacity="0" Margin="1" Stroke="Red" />
-						<Grid Margin="0,1,0,0">
-							<Border x:Name="ReadOnlyVisualElement" Background="{x:Null}" Opacity="0" />
+						<Border x:Name="Border" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" Margin="0">
 							<Grid>
-								<ScrollViewer x:Name="PART_ContentHost" BorderThickness="0" IsTabStop="False" Margin="4,2,2,2"
-											  VerticalAlignment="Stretch" Background="{x:Null}" />
+								<Border x:Name="ReadOnlyVisualElement" Background="{x:Null}" Opacity="0" />
+								<Grid>
+									<ScrollViewer x:Name="PART_ContentHost" BorderThickness="0" IsTabStop="False" Margin="4,2,2,2"
+												  VerticalAlignment="Stretch" Background="{x:Null}" />
+								</Grid>
 							</Grid>
-						</Grid>
+						</Border>
 						<Rectangle x:Name="DisabledVisualElement" Stroke="#FF999999" StrokeThickness="{TemplateBinding BorderThickness}"
 								   Fill="#FF999999" IsHitTestVisible="False" Opacity="0" />
 						<Border x:Name="ValidationErrorElement" BorderBrush="{x:Null}" BorderThickness="1" Visibility="Collapsed">
@@ -135,6 +137,15 @@
 							</MultiTrigger.Conditions>
 							<Setter Property="Background" Value="#414141" />
 						</MultiTrigger>
+
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource AssemblyAccentBrush}"/>
+							<Setter Property="Background" TargetName="Border" Value="#3f3f46"/>
+						</Trigger>
+						<Trigger Property="IsFocused" Value="True">
+							<Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource AssemblyAccentBrush}"/>
+							<Setter Property="Background" TargetName="Border" Value="#3f3f46"/>
+						</Trigger>
 					</ControlTemplate.Triggers>
 
 				</ControlTemplate>

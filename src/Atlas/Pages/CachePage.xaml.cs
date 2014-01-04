@@ -12,12 +12,10 @@ namespace Atlas.Pages
 
 		public CachePage(string cacheLocation)
 		{
-			InitializeComponent();
-
 			ViewModel = new CachePageViewModel();
-			DataContext = ViewModel;
-
 			ViewModel.LoadCache(cacheLocation);
+			DataContext = ViewModel;
+			InitializeComponent();
 
 			// Set Datacontext's
 			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
