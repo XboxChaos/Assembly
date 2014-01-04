@@ -102,7 +102,16 @@ namespace Atlas.ViewModels
 				Build = CacheFile.BuildString,
 				Type = CacheFile.Type.ToString(),
 				InternalName = CacheFile.InternalName,
-				ScenarioName = CacheFile.ScenarioName
+				ScenarioName = CacheFile.ScenarioName,
+
+				MetaBase = (CacheFile.MetaArea != null) ? "0x" + CacheFile.MetaArea.BasePointer.ToString("X8") : "Unknown",
+				MetaSize = (CacheFile.MetaArea != null) ? "0x" + CacheFile.MetaArea.Size.ToString("X") : "Unknown",
+				MapMagic = (CacheFile.MetaArea != null) ? "0x" + CacheFile.MetaArea.OffsetToPointer(0).ToString("X8") : "Unknown",
+				IndexHeaderPointer = (CacheFile.RawTable != null) ? "0x" + CacheFile.IndexHeaderLocation.AsPointer().ToString("X8") : "Unknown",
+				SdkVersion = (CacheFile.XDKVersion > 0) ? CacheFile.XDKVersion.ToString(CultureInfo.InvariantCulture) : "Unknown",
+				RawTableOffset = (CacheFile.RawTable != null) ? "0x" + CacheFile.RawTable.Offset.ToString("X8") : "Unknown",
+				RawTableSize = (CacheFile.RawTable != null) ? "0x" + CacheFile.RawTable.Size.ToString("X8") : "Unknown",
+				IndexOffsetMagic = (CacheFile.LocaleArea != null) ? "0x" + ((uint)-CacheFile.LocaleArea.PointerMask).ToString("X8") : "Unknown"
 			};
 		}
 
