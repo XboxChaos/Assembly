@@ -105,8 +105,14 @@
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
 							<custom:MetroContainer Title="Tag Explorer (riverworld)">
 								<Grid>
-									<TreeView x:Name="TagTreeView" ItemsSource="{Binding (DataBind:TagHierarchy.Nodes)}" 
-											  Background="{x:Null}" BorderThickness="0" Padding="0,10,0,0" 
+									<Grid.RowDefinitions>
+										<RowDefinition Height="0" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<custom:MetroWatermarkTextbox Grid.Row="1" Watermark="Search Tag Explorer - riverworld (Ctrl+;)" />
+									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (DataBind:TagHierarchy.Nodes)}" 
+											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
 											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
 										<TreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type DataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">

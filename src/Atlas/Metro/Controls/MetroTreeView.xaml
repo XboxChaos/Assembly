@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:converters="clr-namespace:Atlas.Converters">
+					xmlns:converters="clr-namespace:Atlas.Converters"
+					xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom">
 	<Style x:Key="TreeViewItemFocusVisual">
 		<Setter Property="Control.Template">
 			<Setter.Value>
@@ -10,56 +11,109 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 L6,0 z" />
-	<Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+	<PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 6,0 z" />
+	<Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type custom:MetroTreeViewToggle}">
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Width" Value="16" />
 		<Setter Property="Height" Value="16" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ToggleButton}">
+				<ControlTemplate TargetType="{x:Type custom:MetroTreeViewToggle}">
 					<Border Background="Transparent" Height="16" Padding="5,5,5,5" Width="16">
-						<Path x:Name="ExpandPath" Data="{StaticResource TreeArrow}" Fill="Transparent" Stroke="White">
+						<Path x:Name="ExpandPath" SnapsToDevicePixels="True" Data="{StaticResource TreeArrow}" Fill="Transparent" Stroke="White">
 							<Path.RenderTransform>
 								<RotateTransform Angle="135" CenterY="3" CenterX="3" />
 							</Path.RenderTransform>
 						</Path>
 					</Border>
 					<ControlTemplate.Triggers>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsMouseOver" Value="True" />
-								<Condition Property="IsChecked" Value="False" />
-							</MultiTrigger.Conditions>
-							<Setter Property="Stroke" TargetName="ExpandPath" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
-							<Setter Property="Fill" TargetName="ExpandPath" Value="Transparent" />
-						</MultiTrigger>
-
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
-								<Condition Property="IsMouseOver" Value="False" />
-								<Condition Property="IsChecked" Value="True" />
-							</MultiTrigger.Conditions>
+						<!-- Checked Triangle Rotation -->
+						<Trigger Property="IsChecked" Value="True">
 							<Setter Property="RenderTransform" TargetName="ExpandPath">
 								<Setter.Value>
-									<RotateTransform Angle="180" CenterY="3" CenterX="3" />
+									<RotateTransform Angle="180" CenterY="4" CenterX="4" />
 								</Setter.Value>
 							</Setter>
+							<Setter Property="Margin" TargetName="ExpandPath" Value="0,-2,0,0" />
+						</Trigger>
+						
+						<!-- Is Active -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="True" />
+								<Condition Property="IsChecked" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="Transparent" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="True" />
+								<Condition Property="IsChecked" Value="True" />
+								<Condition Property="IsMouseOver" Value="False" />
+							</MultiTrigger.Conditions>
 							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
 							<Setter Property="Fill" TargetName="ExpandPath" Value="White" />
 						</MultiTrigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="True" />
+								<Condition Property="IsChecked" Value="False" />
 								<Condition Property="IsMouseOver" Value="True" />
-								<Condition Property="IsChecked" Value="True" />
 							</MultiTrigger.Conditions>
-							<Setter Property="RenderTransform" TargetName="ExpandPath">
-								<Setter.Value>
-									<RotateTransform Angle="180" CenterY="3" CenterX="3" />
-								</Setter.Value>
-							</Setter>
-							<Setter Property="Fill" TargetName="ExpandPath" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
-							<Setter Property="Stroke" TargetName="ExpandPath" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="White" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="True" />
+								<Condition Property="IsChecked" Value="False" />
+								<Condition Property="IsMouseOver" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="Transparent" />
+						</MultiTrigger>
+						
+						<!-- Not Active -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="False" />
+								<Condition Property="IsChecked" Value="True" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="False" />
+								<Condition Property="IsChecked" Value="True" />
+								<Condition Property="IsMouseOver" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="White" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="False" />
+								<Condition Property="IsChecked" Value="False" />
+								<Condition Property="IsMouseOver" Value="True" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="Transparent" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsActive" Value="False" />
+								<Condition Property="IsChecked" Value="False" />
+								<Condition Property="IsMouseOver" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Stroke" TargetName="ExpandPath" Value="White" />
+							<Setter Property="Fill" TargetName="ExpandPath" Value="Transparent" />
 						</MultiTrigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -91,11 +145,11 @@
 									<ColumnDefinition Width="19" />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
-								<ToggleButton x:Name="Expander"
+								<custom:MetroTreeViewToggle x:Name="Expander"
 											  Style="{StaticResource ExpandCollapseToggleStyle}"
+											  IsActive="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
 											  IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
 											  ClickMode="Press"/>
-
 								<ContentPresenter x:Name="PART_Header"
 												  Grid.Column="1"
 												  ContentSource="Header"
