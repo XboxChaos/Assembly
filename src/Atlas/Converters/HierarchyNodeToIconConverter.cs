@@ -26,6 +26,9 @@ namespace Atlas.Converters
 				case ".bitm":
 					return Application.Current.FindResource("HierarchyBitmTag");
 
+				case ".mode":
+					return Application.Current.FindResource("HierarchyModeTag");
+
 				default:
 					return Application.Current.FindResource("HierarchyGenericTag");
 			}
