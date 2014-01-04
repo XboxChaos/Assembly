@@ -11,7 +11,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 6,0 z" />
+	<PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,5 5,0 z" />
 	<Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type custom:MetroTreeViewToggle}">
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Width" Value="16" />
@@ -22,8 +22,8 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type custom:MetroTreeViewToggle}">
-					<Border Background="Transparent" Height="16" Padding="5,5,5,5" Width="16">
-						<Path x:Name="ExpandPath" SnapsToDevicePixels="True" Data="{StaticResource TreeArrow}" Fill="Transparent" Stroke="White">
+					<Border Background="Transparent" Height="16" Width="16">
+						<Path x:Name="ExpandPath" SnapsToDevicePixels="True" HorizontalAlignment="Center" VerticalAlignment="Center" Data="{StaticResource TreeArrow}" Fill="Transparent" Stroke="White">
 							<Path.RenderTransform>
 								<RotateTransform Angle="135" CenterY="3" CenterX="3" />
 							</Path.RenderTransform>
@@ -34,10 +34,11 @@
 						<Trigger Property="IsChecked" Value="True">
 							<Setter Property="RenderTransform" TargetName="ExpandPath">
 								<Setter.Value>
-									<RotateTransform Angle="180" CenterY="4" CenterX="4" />
+									<RotateTransform Angle="180" CenterY="3" CenterX="3" />
 								</Setter.Value>
 							</Setter>
-							<Setter Property="Margin" TargetName="ExpandPath" Value="0,-2,0,0" />
+							<Setter Property="RenderOptions.EdgeMode" Value="Aliased" />
+							<Setter Property="Margin" TargetName="ExpandPath" Value="2,0,0,0" />
 						</Trigger>
 						
 						<!-- Is Active -->
