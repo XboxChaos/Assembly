@@ -21,6 +21,7 @@ namespace Atlas.Pages
 
 			// Set Datacontext's
 			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
+			CacheInformationPropertyGrid.SelectedObject = ViewModel.CacheHeaderInformation;
 		}
 
 		public bool Close()

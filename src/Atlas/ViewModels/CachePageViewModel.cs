@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -65,12 +66,12 @@ namespace Atlas.ViewModels
 		}
 		private TagHierarchy _activeHierarchy;
 
-		public Dictionary<string, object> CacheHeaderInformation
+		public CacheHeaderInformation CacheHeaderInformation
 		{
 			get { return _cacheHeaderInformation; }
 			private set { SetField(ref _cacheHeaderInformation, value); }
 		}
-		private Dictionary<string, object> _cacheHeaderInformation;
+		private CacheHeaderInformation _cacheHeaderInformation;
 
 		public void LoadCache(string cacheLocation)
 		{
@@ -95,10 +96,13 @@ namespace Atlas.ViewModels
 
 		private void LoadHeader()
 		{
-			CacheHeaderInformation = new Dictionary<string, object>
+			CacheHeaderInformation = new CacheHeaderInformation
 			{
-				{ "Game:", EngineDescription.Name },
-				{ "Build:", CacheFile.BuildString.ToString(CultureInfo.InvariantCulture) }
+				Game = EngineDescription.Name,
+				Build = CacheFile.BuildString,
+				Type = CacheFile.Type.ToString(),
+				InternalName = CacheFile.InternalName,
+				ScenarioName = CacheFile.ScenarioName
 			};
 		}
 
