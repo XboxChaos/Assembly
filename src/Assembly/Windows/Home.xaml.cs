@@ -393,7 +393,7 @@ namespace Assembly.Windows
 			{
 				ContentTypes.Campaign, new ContentFileHandler(
 					"Assembly - Open Blam Campaign File",
-					"Blam Campaign File (*.campiagn)|*.campaign",
+					"Blam Campaign File (*.campaign)|*.campaign",
 					(home, file) => home.AddCampaignTabModule(file))
 			},
 		};

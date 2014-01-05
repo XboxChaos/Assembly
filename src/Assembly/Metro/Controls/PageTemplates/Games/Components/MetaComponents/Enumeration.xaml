@@ -5,6 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" Height="28" Width="580"
              HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<BooleanToVisibilityConverter x:Key="b2v" />
+		</ResourceDictionary>
+	</UserControl.Resources>
 	<Grid>
 		<StackPanel Orientation="Horizontal">
 			<TextBlock x:Name="lblEnumName" Text="{Binding Name}" ToolTip="{Binding Path=Name}"
@@ -22,11 +27,16 @@
 				</ComboBox.ItemsPanel>
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Name}" />
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding Value}" Visibility="{Binding IsChecked, ElementName=indexToggle, Converter={StaticResource b2v}}"/>
+							<TextBlock Text=". " Visibility="{Binding IsChecked, ElementName=indexToggle, Converter={StaticResource b2v}}"/>
+							<TextBlock Text="{Binding Name}" />
+						</StackPanel>
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>
 
+			<ToggleButton x:Name="indexToggle" Width="16" Content="#" Visibility="Collapsed" Margin="5,0,0,0"/>
 			<TextBlock x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
 			           VerticalAlignment="Center" Width="150" Margin="20,0,0,0" />
 		</StackPanel>

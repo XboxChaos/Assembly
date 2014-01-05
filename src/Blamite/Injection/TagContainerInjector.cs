@@ -273,6 +273,9 @@ namespace Blamite.Injection
 				stream.SeekTo(location.AsOffset());
 				stream.WriteBlock(buffer.GetBuffer(), 0, (int) buffer.Length);
 			}
+
+			// Write shader fixups (they can't be done in-memory because they require cache file expansion)
+			FixShaderReferences(block, stream, (int)location.AsOffset());
 		}
 
 		private void FixBlockReferences(DataBlock block, IWriter buffer, IStream stream)
@@ -319,6 +322,15 @@ namespace Blamite.Injection
 
 				buffer.SeekTo(fixup.WriteOffset);
 				buffer.WriteUInt32(newSID.Value);
+			}
+		}
+
+		private void FixShaderReferences(DataBlock block, IStream stream, int baseOffset)
+		{
+			foreach (DataBlockShaderFixup fixup in block.ShaderFixups)
+			{
+				stream.SeekTo(baseOffset + fixup.WriteOffset);
+				_cacheFile.ShaderStreamer.ImportShader(fixup.Data, stream);
 			}
 		}
 

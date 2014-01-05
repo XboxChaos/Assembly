@@ -91,8 +91,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
-			// Set Invisibility box
+			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
+			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
+			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
+			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -186,19 +189,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Only enable poking if RTE support is available
 				if (_rteProvider != null)
 				{
-					btnPluginPokeAll.Visibility = Visibility.Visible;
-					btnPluginPokeChanged.Visibility = Visibility.Visible;
-					btnPluginRefreshFromMemory.Visibility = Visibility.Visible;
+					sbPluginPoke.Visibility = Visibility.Visible;
+					miPluginRefreshMem.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					btnPluginPokeAll.Visibility = Visibility.Collapsed;
-					btnPluginPokeChanged.Visibility = Visibility.Collapsed;
-					btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
+					sbPluginPoke.Visibility = Visibility.Collapsed;
+					miPluginRefreshMem.Visibility = Visibility.Collapsed;
 				}
 
 				btnPluginRevisionViewer.Visibility = Visibility.Visible;
-				btnPluginRefresh.Visibility = Visibility.Visible;
+				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 			else
 			{
@@ -206,12 +207,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 				cbShowInvisibles.Visibility = Visibility.Collapsed;
 				btnPluginSave.Visibility = Visibility.Collapsed;
-				btnPluginPokeAll.Visibility = Visibility.Collapsed;
-				btnPluginPokeChanged.Visibility = Visibility.Collapsed;
+				sbPluginPoke.Visibility = Visibility.Collapsed;
 				btnPluginRevisionViewer.Visibility = Visibility.Collapsed;
-				btnPluginRefreshFromMemory.Visibility = Visibility.Collapsed;
+				miPluginRefreshMem.Visibility = Visibility.Collapsed;
 
-				btnPluginRefresh.Visibility = Visibility.Visible;
+				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 		}
 
@@ -290,8 +290,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
-			// Set Invisibility box
+			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
+			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
+			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
+			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -312,13 +315,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RevisionViewer();
 		}
 
+	//	private void btnOptions_Click(object sender, RoutedEventArgs e)
+	//	{
+	//		popOptions.IsOpen = true;
+	//	}
+
 		private void cbShowInvisibles_Altered(object sender, RoutedEventArgs e)
 		{
 			if (!hasInitFinished) return;
 
-			if (cbShowInvisibles.IsChecked != null)
+			
 				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool) cbShowInvisibles.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
+		}
+
+		private void cbShowComments_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowComments = (bool)cbShowComments.IsChecked;
+			RefreshEditor(MetaReader.LoadType.File);
+		}
+
+		private void cbShowEnumIndex_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex = (bool)cbShowEnumIndex.IsChecked;
+		}
+
+		private void cbShowInformation_Altered(object sender, RoutedEventArgs e)
+		{
+			if (!hasInitFinished) return;
+
+
+			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
 		}
 
 		private void cbReflexives_SelectionChanged(object sender, SelectionChangedEventArgs e)

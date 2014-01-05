@@ -205,7 +205,7 @@ namespace Blamite.Blam.ThirdGen
 
 		public IScriptFile[] ScriptFiles { get; private set; }
 
-		public IShaderReader ShaderReader { get; private set; }
+		public IShaderStreamer ShaderStreamer { get; private set; }
 
 		private void Load(IReader reader, string buildString)
 		{
@@ -216,7 +216,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
-			ShaderReader = new ThirdGenShaderReader(this, _buildInfo);
+			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
 		}
 
 		private void LoadHeader(IReader reader, string buildString)

@@ -123,6 +123,7 @@ namespace Assembly.Helpers
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 		private bool _defaultMap;
 		private bool _defaultMif;
+		private bool _defaultCif;
 		private LastMetaEditorType _halomapLastSelectedMetaEditor = LastMetaEditorType.Info;
 		private MapInfoDockSide _halomapMapInfoDockSide = MapInfoDockSide.Left;
 		private bool _halomapOnlyShowBookmarkedTags;
@@ -133,6 +134,7 @@ namespace Assembly.Helpers
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
 		private bool _pluginsShowInformation = false;
+		private bool _pluginsShowEnumIndex = false;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -525,10 +527,20 @@ namespace Assembly.Helpers
 			set { SetField(ref _pluginsShowInvisibles, value, "PluginsShowInvisibles"); }
 		}
 
+		/// <summary>
+		/// </summary>
 		public bool PluginsShowInformation
 		{
 			get { return _pluginsShowInformation; }
 			set { SetField(ref _pluginsShowInformation, value, "PluginsShowInformation"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool PluginsShowEnumIndex
+		{
+			get { return _pluginsShowEnumIndex; }
+			set { SetField(ref _pluginsShowEnumIndex, value, "PluginsShowEnumIndex"); }
 		}
 
 		/// <summary>
@@ -573,6 +585,19 @@ namespace Assembly.Helpers
 			set
 			{
 				SetField(ref _defaultMif, value, "DefaultMif");
+				if (Loaded)
+					FileDefaults.UpdateFileDefaults();
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool DefaultCif
+		{
+			get { return _defaultCif; }
+			set
+			{
+				SetField(ref _defaultCif, value, "DefaultCif");
 				if (Loaded)
 					FileDefaults.UpdateFileDefaults();
 			}

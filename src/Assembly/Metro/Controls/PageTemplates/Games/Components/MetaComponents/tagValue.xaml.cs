@@ -24,6 +24,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			bool enable = (cbTagClass.SelectedIndex > 0);
 			cbTagEntry.IsEnabled = enable;
+			btnNullTag.IsEnabled = enable;
 			btnJumpToTag.IsEnabled = enable;
 		}
 
@@ -37,6 +38,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			// hack so that the button is enabled by default
 			e.CanExecute = true;
+		}
+
+		private void btnNullTag_Click(object sender, RoutedEventArgs e)
+		{
+			cbTagClass.SelectedIndex = 0;
 		}
 	}
 

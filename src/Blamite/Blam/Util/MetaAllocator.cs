@@ -32,7 +32,7 @@ namespace Blamite.Blam.Util
 		/// <returns>The memory address of the allocated area.</returns>
 		public uint Allocate(int size, IStream stream)
 		{
-			return Allocate(size, 1, stream);
+			return Allocate(size, 4, stream);
 		}
 
 		/// <summary>
@@ -56,12 +56,14 @@ namespace Blamite.Blam.Util
 				return block.Address;
 			}
 
-			// Too large - adjust the block's start address
+			// Align the address
 			uint oldAddress = block.Address;
-			ChangeStartAddress(block, (uint) (block.Address + size));
+			uint alignedAddress = (oldAddress + align - 1) & ~(align - 1);
+
+			// Adjust the block's start address to free the data we're using
+			ChangeStartAddress(block, (uint) (alignedAddress + size));
 
 			// Add a block at the beginning if we had to align
-			uint alignedAddress = (oldAddress + align - 1) & ~(align - 1);
 			if (alignedAddress > oldAddress)
 				Free(oldAddress, (int) (alignedAddress - oldAddress));
 

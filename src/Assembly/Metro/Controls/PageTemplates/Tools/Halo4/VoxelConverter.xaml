@@ -10,7 +10,7 @@
              Background="#28282b"
              d:DesignWidth="1000" d:DesignHeight="600">
 	<Grid>
-		<Grid x:Name="sideBar" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="300" Background="#2d2d30">
+		<Grid x:Name="sideBar" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="350" Background="#2d2d30">
 			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
 			           d:LayoutOverrides="Height" />
 
@@ -28,7 +28,7 @@
 				</ed:RegularPolygon.RenderTransform>
 			</ed:RegularPolygon>
 
-			<Rectangle Fill="#FF363639" Height="1" Width="250" Margin="25,110,25,0" VerticalAlignment="Top"
+			<Rectangle Fill="#FF363639" Height="1" Margin="25,110,25,0" VerticalAlignment="Top"
 			           d:LayoutOverrides="Height" />
 			<Grid VerticalAlignment="Top" Margin="25,120,00,0">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -44,7 +44,7 @@
 			</Grid>
 		</Grid>
 
-		<Grid x:Name="content" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="300,0,0,0">
+		<Grid x:Name="content" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="350,0,0,0">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="95px" />
 				<RowDefinition Height="*" />
@@ -70,7 +70,15 @@
 					<avalon:TextEditor Name="txtOutputData" Height="Auto" Margin="0,0,0,0"
 					                   FontFamily="Consolas" FontSize="10pt" IsReadOnly="True"
 					                   Background="#FF252526" BorderBrush="#FF595959" Foreground="White"
-					                   ShowLineNumbers="True" HorizontalScrollBarVisibility="Disabled" />
+					                   ShowLineNumbers="True" HorizontalScrollBarVisibility="Disabled">
+						<avalon:TextEditor.ContextMenu>
+							<ContextMenu FontSize="12">
+								<MenuItem Command="Copy"/>
+								<Separator/>
+								<MenuItem Command="SelectAll"/>
+							</ContextMenu>
+						</avalon:TextEditor.ContextMenu>
+					</avalon:TextEditor>
 				</Grid>
 			</Border>
 		</Grid>

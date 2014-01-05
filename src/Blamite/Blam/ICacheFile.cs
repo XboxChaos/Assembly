@@ -168,9 +168,9 @@ namespace Blamite.Blam
 		IScriptFile[] ScriptFiles { get; }
 
 		/// <summary>
-		/// The shader reader for the cache file.
+		/// The shader streamer for the cache file.
 		/// </summary>
-		IShaderReader ShaderReader { get; }
+		IShaderStreamer ShaderStreamer { get; }
 
 		/// <summary>
 		///     Saves any changes that were made to the file.

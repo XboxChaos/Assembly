@@ -174,7 +174,7 @@ namespace Blamite.Blam.SecondGen
 			get { return new IScriptFile[0]; }
 		}
 
-		public IShaderReader ShaderReader
+		public IShaderStreamer ShaderStreamer
 		{
 			get { return null; }
 		}
