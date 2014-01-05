@@ -16,14 +16,14 @@
 				<ColumnDefinition Width="4" />
 				<ColumnDefinition x:Name="GridRightColumnDefinition" Width="350" MinWidth="30" />
 			</Grid.ColumnDefinitions>
-			
+
 			<Grid x:Name="MainContentGrid" Grid.Column="0">
 				<TabControl Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
 				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" />
 			</Grid>
 
 			<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
-			
+
 			<Grid x:Name="SideContentGrid" Grid.Column="2">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="0.6*" />
@@ -37,10 +37,34 @@
 							<custom:MetroContainer x:Name="TagExplorerMetroContainer" Title="{Binding FallbackValue='Tag Explorer (internal)', StringFormat='Tag Explorer ({0})'}">
 								<Grid>
 									<Grid.RowDefinitions>
-										<RowDefinition Height="0" />
+										<RowDefinition Height="Auto" />
 										<RowDefinition Height="Auto" />
 										<RowDefinition/>
 									</Grid.RowDefinitions>
+									<custom:MetroToolBar ToolBarTray.IsLocked="True" DropDownVisibility="Visible">
+										<Button>
+											<Grid>
+												<Ellipse Fill="#7ac1ff" Width="14" Height="14" />
+												<Path Fill="#313135" Data="M 0,2 L 3,0 4,0 3,2 7,2 7,4 3,4 4,6 3,6 0,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+											</Grid>
+										</Button>
+										<Button>
+											<Grid>
+												<Ellipse Fill="#7ac1ff" Width="14" Height="14" />
+												<Path Fill="#313135" Data="M 0,2 L 3,0 4,0 3,2 7,2 7,4 3,4 4,6 3,6 0,4" VerticalAlignment="Center" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" >
+													<Path.RenderTransform>
+														<TransformGroup>
+															<ScaleTransform ScaleY="1" ScaleX="-1"/>
+															<SkewTransform AngleY="0" AngleX="0"/>
+															<RotateTransform Angle="0"/>
+															<TranslateTransform/>
+														</TransformGroup>
+													</Path.RenderTransform>
+												</Path>
+											</Grid>
+										</Button>
+										<Separator />
+									</custom:MetroToolBar>
 									<custom:MetroWatermarkTextbox x:Name="TagExplorerSearchTextbox" Grid.Row="1" Watermark="{Binding FallbackValue='Search Tag Explorer - internal (Ctrl+;)', StringFormat='Search Tag Explorer - {0} (Ctrl+;)'}" />
 									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (dataBind:TagHierarchy.Nodes)}" 
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
@@ -84,9 +108,9 @@
 						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" ShowSortOptions="False" AutoGenerateProperties="True">
 							<xctk:PropertyGrid.EditorDefinitions>
 								<xctk:EditorTemplateDefinition>
-									<xctk:EditorTemplateDefinition.TargetProperties>
+									<!--<xctk:EditorTemplateDefinition.TargetProperties>
 										<xctk:TargetPropertyType Type="{x:Type sys:String}" />
-									</xctk:EditorTemplateDefinition.TargetProperties>
+									</xctk:EditorTemplateDefinition.TargetProperties>-->
 									<xctk:EditorTemplateDefinition.EditingTemplate>
 										<DataTemplate>
 											<TextBox Text="{Binding Value}" IsReadOnly="True" />
