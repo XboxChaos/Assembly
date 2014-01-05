@@ -7,7 +7,6 @@
 	xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
-	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<Grid>
@@ -103,14 +102,14 @@
 							</Style>
 						</TabControl.Resources>
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
-							<custom:MetroContainer Title="{Binding (viewModels:CachePageViewModel.CacheFile).InternalName, TargetNullValue='', FallbackValue='', StringFormat='Tag Explorer ({0})'}">
+							<custom:MetroContainer x:Name="TagExplorerMetroContainer" Title="{Binding FallbackValue='Tag Explorer (internal)', StringFormat='Tag Explorer ({0})'}">
 								<Grid>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="0" />
 										<RowDefinition Height="Auto" />
 										<RowDefinition/>
 									</Grid.RowDefinitions>
-									<custom:MetroWatermarkTextbox Grid.Row="1" Watermark="Search Tag Explorer - riverworld (Ctrl+;)" />
+									<custom:MetroWatermarkTextbox x:Name="TagExplorerSearchTextbox" Grid.Row="1" Watermark="{Binding FallbackValue='Search Tag Explorer - internal (Ctrl+;)', StringFormat='Search Tag Explorer - {0} (Ctrl+;)'}" />
 									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (dataBind:TagHierarchy.Nodes)}" 
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
 											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
@@ -152,7 +151,10 @@
 					<custom:MetroContainer Title="Cache Information">
 						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" ShowSortOptions="False" AutoGenerateProperties="True">
 							<xctk:PropertyGrid.EditorDefinitions>
-								<xctk:EditorTemplateDefinition >
+								<xctk:EditorTemplateDefinition>
+									<xctk:EditorTemplateDefinition.TargetProperties>
+										<xctk:TargetPropertyType Type="{x:Type sys:String}" />
+									</xctk:EditorTemplateDefinition.TargetProperties>
 									<xctk:EditorTemplateDefinition.EditingTemplate>
 										<DataTemplate>
 											<TextBox Text="{Binding Value}" IsReadOnly="True" />

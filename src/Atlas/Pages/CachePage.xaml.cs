@@ -18,6 +18,7 @@ namespace Atlas.Pages
 			InitializeComponent();
 
 			// Set Datacontext's
+			TagExplorerMetroContainer.DataContext = TagExplorerSearchTextbox.DataContext = ViewModel.CacheFile.InternalName;
 			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
 			CacheInformationPropertyGrid.SelectedObject = ViewModel.CacheHeaderInformation;
 		}
