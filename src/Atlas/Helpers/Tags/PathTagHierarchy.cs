@@ -36,7 +36,7 @@ namespace Atlas.Helpers.Tags
 			var parentNode = Root;
 			for (var i = 0; i < components.Length - 1; i++)
 			{
-				var node = new TagHierarchyNode(components[i], null);
+				var node = new TagHierarchyNode(components[i], null, _cacheFile);
 				parentNode = parentNode.InsertChildSorted(node);
 			}
 
@@ -54,7 +54,7 @@ namespace Atlas.Helpers.Tags
 				extension = CharConstant.ToString(tag.Class.Magic);
 			}
 			var nodeName = components[components.Length - 1] + "." + extension;
-			return parentNode.InsertChildSorted(new TagHierarchyNode(nodeName, suffix, tag));
+			return parentNode.InsertChildSorted(new TagHierarchyNode(nodeName, suffix, _cacheFile, tag));
 		}
 
 		/// <summary>

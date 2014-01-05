@@ -13,10 +13,13 @@ namespace Atlas.Helpers.Tags
 	/// </summary>
 	public class TagHierarchyNode : Base
 	{
+		private const string SoundClassMagic = "snd!";
+		private const string ModelClassMagic = "mode";
+
 		private string _name;
 		private string _suffix;
 
-		private IComparer<TagHierarchyNode> _sortComparison = new NodeSortComparison();
+		private readonly IComparer<TagHierarchyNode> _sortComparison = new NodeSortComparison();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TagHierarchyNode"/> class.
@@ -24,12 +27,15 @@ namespace Atlas.Helpers.Tags
 		/// </summary>
 		/// <param name="name">The node's name.</param>
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
-		public TagHierarchyNode(string name, string suffix)
+		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile)
 		{
+			CacheFile = cacheFile;
 			Name = name;
 			Suffix = suffix;
 			Children = new ObservableCollection<TagHierarchyNode>();
 			Children.CollectionChanged += Children_CollectionChanged; // Handles keeping track of a node's parent
+			Editors = new ObservableCollection<CacheEditorNode>();
 		}
 
 		/// <summary>
@@ -38,11 +44,15 @@ namespace Atlas.Helpers.Tags
 		/// </summary>
 		/// <param name="name">The node's name.</param>
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
+		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
 		/// <param name="tag">The tag to associate with the node.</param>
-		public TagHierarchyNode(string name, string suffix, ITag tag)
-			: this(name, suffix)
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITag tag)
+			: this(name, suffix, cacheFile)
 		{
 			Tag = tag;
+			TagClass = Tag.Class;
+
+			CreateApplicableEditors();
 		}
 
 		/// <summary>
@@ -51,11 +61,27 @@ namespace Atlas.Helpers.Tags
 		/// </summary>
 		/// <param name="name">The node's name.</param>
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
+		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
 		/// <param name="tagClass">The tag class to associate with the node.</param>
-		public TagHierarchyNode(string name, string suffix, ITagClass tagClass)
-			: this(name, suffix)
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITagClass tagClass)
+			: this(name, suffix, cacheFile)
 		{
 			TagClass = tagClass;
+
+			CreateApplicableEditors();
+		}
+
+		private void CreateApplicableEditors()
+		{
+			if (CacheFile == null || TagClass == null) return;
+			var className = CharConstant.ToString(TagClass.Magic);
+
+			if (className == ModelClassMagic &&
+				CacheFile.ResourceMetaLoader.SupportsRenderModels)
+				Editors.Add(new CacheEditorNode(CacheEditorType.Model));
+			else if (className == SoundClassMagic &&
+				CacheFile.ResourceMetaLoader.SupportsSounds)
+				Editors.Add(new CacheEditorNode(CacheEditorType.Sound));
 		}
 
 		/// <summary>
@@ -84,6 +110,8 @@ namespace Atlas.Helpers.Tags
 			get { return !string.IsNullOrEmpty(Suffix); }
 		}
 
+		public ICacheFile CacheFile { get; private set; }
+
 		/// <summary>
 		/// Gets the tag associated with the node. Can be <c>null</c>.
 		/// </summary>
@@ -98,6 +126,29 @@ namespace Atlas.Helpers.Tags
 		/// Gets a list of child nodes of this node.
 		/// </summary>
 		public ObservableCollection<TagHierarchyNode> Children { get; private set; }
+
+		/// <summary>
+		/// TODO: name
+		/// </summary>
+		public ObservableCollection<CacheEditorNode> Editors { get; private set; }
+
+		/// <summary>
+		/// TODO: name
+		/// </summary>
+		public ObservableCollection<object> Babies
+		{
+			get
+			{
+				var babyNodes = new ObservableCollection<object>();
+
+				foreach(var child in Children)
+					babyNodes.Add(child);
+				foreach(var editor in Editors)
+					babyNodes.Add(editor);
+
+				return babyNodes;
+			}
+		} 
 
 		/// <summary>
 		/// Gets the node's parent. Can be <c>null</c>.
@@ -166,7 +217,7 @@ namespace Atlas.Helpers.Tags
 				throw new ArgumentException("The node is not a direct child node");
 
 			// Create a temporary node to determine its new index in the list
-			var temp = new TagHierarchyNode(newName, child.Suffix, child.Tag);
+			var temp = new TagHierarchyNode(newName, child.Suffix, CacheFile, child.Tag);
 			var newPos = ListSearching.BinarySearch(Children, temp, _sortComparison);
 			if (newPos >= 0)
 				throw new InvalidOperationException("A node with the new name already exists");
@@ -196,21 +247,20 @@ namespace Atlas.Helpers.Tags
 		private void Children_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			// If nodes are added or removed from this node, update their Parent properties
-			if (e.Action == NotifyCollectionChangedAction.Add)
+			switch (e.Action)
 			{
-				// Added - set each node's parent to this node
-				foreach (TagHierarchyNode node in e.NewItems)
-				{
-					if (node.Parent != null)
-						throw new InvalidOperationException("A tag hierarchy node cannot have more than one parent node.");
-					node.Parent = this;
-				}
-			}
-			else if (e.Action == NotifyCollectionChangedAction.Remove)
-			{
-				// Removed - set each node's parent to null
-				foreach (TagHierarchyNode node in e.OldItems)
-					node.Parent = null;
+				case NotifyCollectionChangedAction.Add:
+					foreach (TagHierarchyNode node in e.NewItems)
+					{
+						if (node.Parent != null)
+							throw new InvalidOperationException("A tag hierarchy node cannot have more than one parent node.");
+						node.Parent = this;
+					}
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					foreach (TagHierarchyNode node in e.OldItems)
+						node.Parent = null;
+					break;
 			}
 		}
 
@@ -225,23 +275,23 @@ namespace Atlas.Helpers.Tags
 				// Non-tag nodes come first
 				if (!x.IsTag && y.IsTag)
 					return -1;
-				else if (x.IsTag && !y.IsTag)
+				if (x.IsTag && !y.IsTag)
 					return 1;
 
 				// Then sort the nodes by name
-				var nameCompare = x.Name.CompareTo(y.Name);
+				var nameCompare = String.Compare(x.Name, y.Name, StringComparison.Ordinal);
 				if (nameCompare != 0)
 					return nameCompare;
 
 				// Then sort them by suffix, putting ones without suffixes at the bottom
 				if (!x.HasSuffix && !y.HasSuffix)
 					return 0;
-				else if (x.HasSuffix && !y.HasSuffix)
+				if (x.HasSuffix && !y.HasSuffix)
 					return -1;
-				else if (!x.HasSuffix && y.HasSuffix)
+				if (!x.HasSuffix && y.HasSuffix)
 					return 1;
-				else
-					return x.Suffix.CompareTo(y.Suffix);
+
+				return String.Compare(x.Suffix, y.Suffix, StringComparison.Ordinal);
 			}
 		}
 	}

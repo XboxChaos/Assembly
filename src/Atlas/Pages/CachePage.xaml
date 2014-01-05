@@ -7,6 +7,7 @@
 	xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:models="clr-namespace:Atlas.Models"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<Grid>
@@ -70,16 +71,26 @@
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
 											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
 										<TreeView.Resources>
-											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Children}">
+											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Babies}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20">
 													<ContentControl Template="{Binding Converter={StaticResource IValueConverterHierarchyNodeToIcon}}" />
 													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
 															   VerticalAlignment="Center">
 														<Run Text="{Binding Name, Mode=OneWay}" />
-														<Run Text="{Binding Suffix, Mode=OneWay}" Foreground="{StaticResource TextBrushSecondary}" />
+														<Run Text="{Binding Suffix, Mode=OneWay}" Foreground="#e5e5e5" />
 													</TextBlock>
 												</StackPanel>
 											</HierarchicalDataTemplate>
+											<DataTemplate DataType="{x:Type models:CacheEditorNode}" >
+												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20">
+													<ContentControl Template="{Binding Converter={StaticResource IValueConverterCacheEditorNodeToIcon}}" />
+													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
+															   VerticalAlignment="Center">
+														<Run Text="{Binding Name, Mode=OneWay}" />
+														<Run Text=" - Specialized Editor" Foreground="#e5e5e5" />
+													</TextBlock>
+												</StackPanel>
+											</DataTemplate>
 										</TreeView.Resources>
 									</TreeView>
 								</Grid>
