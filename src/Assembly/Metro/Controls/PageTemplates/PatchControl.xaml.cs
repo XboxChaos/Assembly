@@ -200,9 +200,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 			// Set meta visibility depending on Targeted Game
 			switch (cboxCreatePatchTargetGame.SelectedIndex)
 			{
-				case (int) TargetGame.Halo3:
-				case (int) TargetGame.Halo3ODST:
+				case (int)TargetGame.Halo3:
 					PrepHalo3();
+					break;
+
+				case (int) TargetGame.Halo3ODST:
+					PrepHalo3ODST();
 					break;
 
 				case (int) TargetGame.HaloReach:
@@ -235,9 +238,36 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf1.Text = "Modified blf_clip:";
 			lblCreatePatchTitleblf1.Tag = "blf_clip";
 			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
-			lblCreatePatchTitleblf1.Tag = "blf_film";
+			lblCreatePatchTitleblf2.Tag = "blf_film";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
-			lblCreatePatchTitleblf4.Text = "Modified blf_varient:";
+			lblCreatePatchTitleblf4.Text = "Modified blf_variant:";
+
+			// Reset fields
+			txtCreatePatchMapInfo.Text = "";
+			txtCreatePatchblf0.Text = "";
+			txtCreatePatchblf1.Text = "";
+			txtCreatePatchblf2.Text = "";
+			txtCreatePatchblf3.Text = "";
+			txtCreatePatchblf4.Text = "";
+		}
+
+		private void PrepHalo3ODST()
+		{
+			// Un-Hide Extras grid
+			PatchCreationExtras.Visibility = Visibility.Visible;
+
+			// Hide/Show fields
+			PatchCreationBlfOption0.Visibility =
+				PatchCreationBlfOption1.Visibility =
+					PatchCreationBlfOption2.Visibility = Visibility.Visible;
+			PatchCreationBlfOption3.Visibility =
+				PatchCreationBlfOption4.Visibility = Visibility.Collapsed;
+
+			// Re-name fields
+			lblCreatePatchTitleblf1.Text = "Modified blf_film:";
+			lblCreatePatchTitleblf1.Tag = "blf_film";
+			lblCreatePatchTitleblf2.Text = "Modified blf_sm:";
+			lblCreatePatchTitleblf2.Tag = "blf_sm";
 
 			// Reset fields
 			txtCreatePatchMapInfo.Text = "";
@@ -262,7 +292,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 			// Re-name fields
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
-
 
 			// Reset fields
 			txtCreatePatchMapInfo.Text = "";
@@ -289,7 +318,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf1.Text = "Modified blf_card:";
 			lblCreatePatchTitleblf1.Tag = "blf_card";
 			lblCreatePatchTitleblf2.Text = "Modified blf_lobby:";
-			lblCreatePatchTitleblf1.Tag = "blf_lobby";
+			lblCreatePatchTitleblf2.Tag = "blf_lobby";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
 
 			// Reset fields
