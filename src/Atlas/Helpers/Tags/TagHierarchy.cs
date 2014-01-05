@@ -10,14 +10,14 @@ namespace Atlas.Helpers.Tags
 	/// </summary>
 	public abstract class TagHierarchy
 	{
-		private List<TagHierarchyNode> _tagNodes = new List<TagHierarchyNode>(); // In order by datum index, can have null values
+		private readonly List<TagHierarchyNode> _tagNodes = new List<TagHierarchyNode>(); // In order by datum index, can have null values
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TagHierarchy"/> class.
 		/// </summary>
-		public TagHierarchy()
+		protected TagHierarchy()
 		{
-			Root = new TagHierarchyNode("(root)", null);
+			Root = new TagHierarchyNode("(root)", null, null);
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace Atlas.Helpers.Tags
 		{
 			var node = FindNodeByTag(tag);
 			RemoveTagImpl(tag, node);
-			UnregisterTagNode(node);
+			UnRegisterTagNode(node);
 		}
 
 		/// <summary>
@@ -130,7 +130,7 @@ namespace Atlas.Helpers.Tags
 		/// <summary>
 		/// Registers a newly-added tag node with the hierarchy so that it can be found by its tag's datum index.
 		/// </summary>
-		/// <param name="tag">The tag node to register.</param>
+		/// <param name="node">The tag node to register.</param>
 		private void RegisterTagNode(TagHierarchyNode node)
 		{
 			if (node == null || node.Tag == null || node.Tag.Index == DatumIndex.Null)
@@ -150,7 +150,7 @@ namespace Atlas.Helpers.Tags
 		/// Unregisters a tag node with the hierarchy so that it can no longer be found by its tag's datum index.
 		/// </summary>
 		/// <param name="node">The tag node to unregister.</param>
-		private void UnregisterTagNode(TagHierarchyNode node)
+		private void UnRegisterTagNode(TagHierarchyNode node)
 		{
 			if (node == null || node.Tag == null || node.Tag.Index == DatumIndex.Null)
 				return;
