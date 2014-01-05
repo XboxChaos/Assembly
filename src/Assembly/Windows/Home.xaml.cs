@@ -829,6 +829,9 @@ namespace Assembly.Windows
 									case "mapi":
 										AddImageTabModule(path);
 										return;
+									case "cmpn":
+										AddCampaignTabModule(path);
+										return;
 								}
 							}
 							MetroMessageBox.Show("Unsupported BLF Type", "The selected BLF file is not supported in assembly.");
