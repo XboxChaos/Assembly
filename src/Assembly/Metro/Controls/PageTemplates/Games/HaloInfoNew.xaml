@@ -1,4 +1,4 @@
-﻿<UserControl xmlns:MetaComponents="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"  x:Class="Assembly.Metro.Controls.PageTemplates.Games.HaloInfo"
+﻿<UserControl xmlns:MetaComponents="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"  x:Class="Assembly.Metro.Controls.PageTemplates.Games.HaloInfoNew"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,12 +30,7 @@
 			           d:LayoutOverrides="Height" />
 			<ScrollViewer Margin="25,156,15,21" ScrollViewer.VerticalScrollBarVisibility="Auto">
 				<StackPanel>
-					<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="BLF Info;" Foreground="White" FontSize="16" />
-					<StackPanel x:Name="paneBLFInfo" Margin="0,10,0,0" />
-
-					<Rectangle Fill="#FF363639" Height="1" Margin="0,20,0,15" VerticalAlignment="Top"
-					           d:LayoutOverrides="Height" />
-
+					
 					<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Map Info;" Foreground="White" FontSize="16" />
 					<StackPanel x:Name="panelMapInfo" Margin="0,10,10,0">
 						<Grid x:Name="gridMapInfo" Width="310">
@@ -44,8 +39,8 @@
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Column="0" VerticalAlignment="Top">
-								<TextBlock Text="Game:"  Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<TextBlock Text="Map ID:" Margin="0,7,0,3" ToolTip="The unique ID from the map's scenario tag." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Game:" Margin="0,8,0,0"  Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock Text="Map ID:" Margin="0,9,0,3" ToolTip="The unique ID from the map's scenario tag." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Map Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .map file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Image Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .blf file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Map Type:" Margin="0,7,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
@@ -53,11 +48,18 @@
 								<TextBlock x:Name="lblDefaultAuthor" Text="Default Author:" Margin="0,55,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 							</StackPanel>
 							<StackPanel Grid.Column="1" Margin="0,0,10,0">
-								<TextBlock x:Name="txtGameName" Text="" Margin="10,0,0,0" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" VerticalAlignment="Center" />
+								<ComboBox x:Name="cbGame"  Margin="10,4,0,0" HorizontalAlignment="Stretch" SelectionChanged="cbGame_SelectionChanged" >
+									<ComboBoxItem x:Name="cbGame_Halo3" Content="Halo 3"/>
+									<ComboBoxItem x:Name="cbGame_ODST" Content="Halo 3: ODST"/>
+									<ComboBoxItem x:Name="cbGame_ReachBetas" Content="Halo Reach Betas"/>
+									<ComboBoxItem x:Name="cbGame_Reach" Content="Halo Reach"/>
+									<ComboBoxItem x:Name="cbGame_H4NetTest" Content="Halo 4 Network Test" IsEnabled="False" Visibility="Collapsed"/>
+									<ComboBoxItem x:Name="cbGame_Halo4" Content="Halo 4"/>
+								</ComboBox>
 								<TextBox x:Name="txtMapID" Margin="10,4,0,0" MaxLength="10" TextChanged="txtMapID_TextChanged" />
 								<TextBox x:Name="txtMapInternalName" Margin="10,4,0,0" MaxLength="30" />
                                 <TextBox x:Name="txtMapPhysicalName" Margin="10,4,0,0" MaxLength="30" />
-								<ComboBox x:Name="cbType"  Margin="10,4,0,0" HorizontalAlignment="Stretch" >
+								<ComboBox x:Name="cbType"  Margin="10,4,0,0" HorizontalAlignment="Stretch" SelectionChanged="cbType_SelectionChanged" >
 									<ComboBoxItem x:Name="cbType_MM" Content="Main Menu"/>
 									<ComboBoxItem x:Name="cbType_MP" Content="Multiplayer"/>
 									<ComboBoxItem x:Name="cbType_Camp" Content="Campaign"/>
@@ -82,12 +84,11 @@
 		<Grid Margin="350,0,0,0" HorizontalAlignment="Stretch">
 			<Border Margin="30,30,0,0" HorizontalAlignment="Left" BorderThickness="0" VerticalAlignment="Top" Padding="10" BorderBrush="#FF999999">
 				<TabControl x:Name="mapInfoSelection" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Margin="0" HorizontalAlignment="Center">
-					<TabItem Header="Meta" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="0,0,0,-15" VerticalAlignment="Bottom">
+					<TabItem x:Name="tiMeta" Header="Meta" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="0,0,0,-15" VerticalAlignment="Bottom">
 						<Grid Margin="0,25,0,0" MinWidth="350" >
 							<StackPanel Height="45" VerticalAlignment="Top">
 								<TextBlock Text="Select Language;" Style="{DynamicResource GenericTextblock}" />
-								<ComboBox x:Name="cbLanguages" Width="200" ItemsSource="{Binding}" Margin="10,0,0,0" HorizontalAlignment="Left"
-						          SelectionChanged="cbLanguages_SelectionChanged">
+								<ComboBox x:Name="cbLanguages" Width="200" ItemsSource="{Binding}" Margin="10,0,0,0" HorizontalAlignment="Left" SelectionChanged="cbLanguages_SelectionChanged">
 									<ComboBox.ItemsPanel>
 										<ItemsPanelTemplate>
 											<VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"

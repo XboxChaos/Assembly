@@ -65,11 +65,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 		Object31 = 1 << 31,
 	}
 
-	public class InsertionPoint
-	{
-
-	}
-
 	public class MapInfo
 	{
 		// Private Modifiers

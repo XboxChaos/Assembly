@@ -160,6 +160,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.Campaign);
 		}
 
+		private void btnCreateCacheInfo_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.HomeWindow.NewContentFile(Home.ContentTypes.MapInfo);
+		}
+
 		#endregion
 	}
 }

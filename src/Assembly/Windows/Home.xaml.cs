@@ -151,6 +151,11 @@ namespace Assembly.Windows
 			OpenContentFile(ContentTypes.Campaign);
 		}
 
+		private void menuCreateCacheInfomation_Click(object sender, RoutedEventArgs e)
+		{
+			NewContentFile(ContentTypes.MapInfo);
+		}
+
 		// Edit
 		private void menuOpenSettings_Click(object sender, EventArgs e)
 		{
@@ -423,6 +428,33 @@ namespace Assembly.Windows
 				handler.FileHandler(this, ofd.FileName);
 		}
 
+		/// <summary>
+		///     Create a new Blam Engine File
+		/// </summary>
+		/// <param name="contentType">Type of content to open</param>
+		public void NewContentFile(ContentTypes contentType)
+		{
+			if (contentType == ContentTypes.Map)
+			{
+				//
+			}
+
+			if (contentType == ContentTypes.MapInfo)
+			{
+				AddNewInfoTabModule();
+			}
+
+			if (contentType == ContentTypes.Campaign)
+			{
+				//
+			}
+
+			if (contentType == ContentTypes.MapImage)
+			{
+				//
+			}
+		}
+
 		private class ContentFileHandler
 		{
 			public readonly Action<Home, string> FileHandler;
@@ -603,6 +635,23 @@ namespace Assembly.Windows
 			newCampaignTab.Content = new HaloCampaign(campiagnLocation, newCampaignTab);
 			documentManager.Children.Add(newCampaignTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCampaignTab);
+		}
+
+		/// <summary>
+		///     Add a new MapInfo Creator Container
+		/// </summary>
+		/// <param name="infooLocation">Path to the MapInfo file</param>
+		public void AddNewInfoTabModule()
+		{
+			var newMapInfoTab = new LayoutDocument
+			{
+				ContentId = "New MapInfo",
+				Title = "Info",
+				ToolTip = "New MapInfo"
+			};
+			newMapInfoTab.Content = new HaloInfoNew(newMapInfoTab);
+			documentManager.Children.Add(newMapInfoTab);
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newMapInfoTab);
 		}
 
 		/// <summary>

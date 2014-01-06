@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -18,12 +19,11 @@ using Blamite.Blam.ThirdGen.BLF;
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
 	/// <summary>
-	///     Interaction logic for HaloInfo.xaml
+	///     Interaction logic for HaloInfoNew.xaml
 	/// </summary>
-	public partial class HaloInfo
+	public partial class HaloInfoNew
 	{
 		private readonly LayoutDocument _tab;
-		private readonly string _blfLocation;
 
 		private ObservableCollection<LanguageEntry> _languageset;
 
@@ -74,169 +74,153 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			public IList<string> IPDescriptions { get; set; }
 		}
 
-		private PureBLF _blf;
+		private MapInfo.GameIdentifier game;
 		private MapInfo _mapInfo;
 		private bool _startEditing;
 		public int insertionOldLanguage = -1;
 		public int oldLanguage = -1;
 		public int oldIndex = -1;
 		public int insertionPointCount = 4;
+		public int oldTypeIndex = -1;
 		public string culpritTextString;
+		public List<string> MapNames = new List<string>();
+		public List<string> MapDescs = new List<string>();
+		public List<int> checkedIndices = new List<int>();
 		public List<InsertionPoint> InsertionPointList = new List<InsertionPoint>();
+
+		public enum Games
+		{
+			Halo3,
+			Halo3ODST,
+			HaloReachBetas,
+			HaloReach,
+			Halo4NetworkTest,
+			Halo4
+		}
 		
-		public HaloInfo(string infoLocation, LayoutDocument tab)
+		public HaloInfoNew(LayoutDocument tab)
 		{
 			InitializeComponent();
-			_blfLocation = infoLocation;
 
-			var fi = new FileInfo(_blfLocation);
 			_tab = tab;
-			tab.Title = fi.Name;
-			lblBLFname.Text = fi.Name;
+			tab.Title = "New MapInfo";
+			lblBLFname.Text = "New MapInfo";
 
-			var thrd = new Thread(LoadMapInfo);
+			var thrd = new Thread(SetupMapInfo);
 			thrd.SetApartmentState(ApartmentState.STA);
 			thrd.Start();
 		}
 
-		public void LoadMapInfo()
+		public void SwitchGameBasedUI()
+		{
+			// Load Languages
+			LoadLanguages();
+
+			switch (game)
+			{
+				case MapInfo.GameIdentifier.Halo3:
+				case MapInfo.GameIdentifier.Halo3ODST:
+					cbType_Cine.Visibility = System.Windows.Visibility.Collapsed;
+					cbType_Cine.IsEnabled = false;
+					cbType_FF.Visibility = System.Windows.Visibility.Collapsed;
+					cbType_FF.IsEnabled = false;
+					cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
+					lblDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
+					txtDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
+					tiMaxTeams.Visibility = System.Windows.Visibility.Visible;
+					tiMPObjects.Visibility = System.Windows.Visibility.Collapsed;
+					break;
+				case MapInfo.GameIdentifier.HaloReachBetas:
+					cbType_Cine.Visibility = System.Windows.Visibility.Visible;
+					cbType_Cine.IsEnabled = true;
+					cbType_FF.Visibility = System.Windows.Visibility.Visible;
+					cbType_FF.IsEnabled = true;
+					cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
+					lblDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
+					txtDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
+					tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
+					tiMPObjects.Visibility = System.Windows.Visibility.Visible;
+					break;
+				case MapInfo.GameIdentifier.HaloReach:
+				case MapInfo.GameIdentifier.Halo4NetworkTest:
+					cbType_Cine.Visibility = System.Windows.Visibility.Visible;
+					cbType_Cine.IsEnabled = true;
+					cbType_FF.Visibility = System.Windows.Visibility.Visible;
+					cbType_FF.IsEnabled = true;
+					cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
+					lblDefaultAuthor.Margin = new Thickness(0, 37, 0, 3);
+					lblDefaultAuthor.Visibility = System.Windows.Visibility.Visible;
+					txtDefaultAuthor.Visibility = System.Windows.Visibility.Visible;
+					tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
+					tiMPObjects.Visibility = System.Windows.Visibility.Visible;
+					break;
+				case MapInfo.GameIdentifier.Halo4:
+					cbType_Cine.Visibility = System.Windows.Visibility.Visible;
+					cbType_Cine.IsEnabled = true;
+					cbType_FF.Visibility = System.Windows.Visibility.Visible;
+					cbType_FF.IsEnabled = true;
+					cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
+					lblDefaultAuthor.Margin = new Thickness(0, 55, 0, 3);
+					cbType_FF.Content = "Spartan Ops";
+					lblDefaultAuthor.Visibility = System.Windows.Visibility.Visible;
+					txtDefaultAuthor.Visibility = System.Windows.Visibility.Visible;
+					tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
+					tiMPObjects.Visibility = System.Windows.Visibility.Visible;
+					break;
+			}
+
+			// Load Multiplayer Objects
+			LoadMPObjects();
+
+			// Load Insertion Points
+			LoadInsertionPoints();
+		}
+
+		public void SetupMapInfo()
 		{
 			try
 			{
-				// Just a lazy way to validate the BLF file
-				_blf = new PureBLF(_blfLocation);
-				if (_blf.BLFChunks[1].ChunkMagic != "levl")
-					throw new Exception("The selected Map Info BLF is not a valid Map Info BLF file.");
-				_blf.Close();
-
-				_mapInfo = new MapInfo(_blfLocation);
-
 				Dispatcher.Invoke(new Action(delegate
 				{
-					// Add BLF Info
-					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X")));
-					paneBLFInfo.Children.Insert(1,
-						new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
-
-					// Load Languages
-					LoadLanguages();
+					for (int i = 0; i < 17; i++)
+					{
+						MapNames.Add("");
+						MapDescs.Add("");
+					}
 
 					// Add Map Info
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo3:
-							txtGameName.Text = "Halo 3";
-							break;
-						case MapInfo.GameIdentifier.Halo3ODST:
-							txtGameName.Text = "Halo 3: ODST";
-							break;
-						case MapInfo.GameIdentifier.HaloReach:
-							txtGameName.Text = "Halo Reach";
-							break;
-						case MapInfo.GameIdentifier.HaloReachBetas:
-							txtGameName.Text = "Halo Reach Pre/Beta";
-							break;
-						case MapInfo.GameIdentifier.Halo4NetworkTest:
-							txtGameName.Text = "Halo 4 Network Test";
-							break;
-						case MapInfo.GameIdentifier.Halo4:
-							txtGameName.Text = "Halo 4";
-							break;
-					}
-					txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
-					txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
-					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
+					txtMapID.Text = "-1";
 
 					// Set up the Game-Specific UI
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo3:
-						case MapInfo.GameIdentifier.Halo3ODST:
-							cbType_Cine.Visibility = System.Windows.Visibility.Collapsed;
-							cbType_Cine.IsEnabled = false;
-							cbType_FF.Visibility = System.Windows.Visibility.Collapsed;
-							cbType_FF.IsEnabled = false;
-							lblDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
-							txtDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
-							tiMPObjects.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-						case MapInfo.GameIdentifier.HaloReachBetas:
-							lblDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
-							txtDefaultAuthor.Visibility = System.Windows.Visibility.Collapsed;
-							tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-						case MapInfo.GameIdentifier.HaloReach:
-						case MapInfo.GameIdentifier.Halo4NetworkTest:
-							lblDefaultAuthor.Margin = new Thickness(0, 37, 0, 3);
-							tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-						case MapInfo.GameIdentifier.Halo4:
-							cbType_FF.Content = "Spartan Ops";
-							tiMaxTeams.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-					}
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMainMenu))
-						cbType.SelectedIndex = 0;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMultiplayer))
-						cbType.SelectedIndex = 1;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCampaign))
-						cbType.SelectedIndex = 2;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCinematic))
-						cbType.SelectedIndex = 3;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsFirefight))
-						cbType.SelectedIndex = 4;
+					SwitchGameBasedUI();
 
-					// Set up the Checkboxes
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo4:
-							cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
-							break;
-						default:
-							cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-					}
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible))
-						cbVisible.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm))
-						cbGeneratesFilm.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsDLC))
-						cbDLC.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsForgeOnly))
-						cbForgeOnly.IsChecked = true;
-
-					txtDefaultAuthor.Text = _mapInfo.MapInformation.DefaultAuthor;
-
-					// Load Max Teams
-					txtTeamsNone.Text = _mapInfo.MapInformation.MaxTeamsNone.ToString();
-					txtTeamsCTF.Text = _mapInfo.MapInformation.MaxTeamsCTF.ToString();
-					txtTeamsSlayer.Text = _mapInfo.MapInformation.MaxTeamsSlayer.ToString();
-					txtTeamsOddball.Text = _mapInfo.MapInformation.MaxTeamsOddball.ToString();
-					txtTeamsKOTH.Text = _mapInfo.MapInformation.MaxTeamsKOTH.ToString();
-					txtTeamsRace.Text = _mapInfo.MapInformation.MaxTeamsRace.ToString();
-					txtTeamsHeadhunter.Text = _mapInfo.MapInformation.MaxTeamsHeadhunter.ToString();
-					txtTeamsJuggernaut.Text = _mapInfo.MapInformation.MaxTeamsJuggernaut.ToString();
-					txtTeamsTerritories.Text = _mapInfo.MapInformation.MaxTeamsTerritories.ToString();
-					txtTeamsAssault.Text = _mapInfo.MapInformation.MaxTeamsAssault.ToString();
-					txtTeamsVIP.Text = _mapInfo.MapInformation.MaxTeamsVIP.ToString();
-					txtTeamsInfection.Text = _mapInfo.MapInformation.MaxTeamsInfection.ToString();
-
-					// Load Multiplayer Objects
-					LoadMPObjects();
+					// Set up Max Teams
+					txtTeamsNone.Text = "0";
+					txtTeamsCTF.Text = "0";
+					txtTeamsSlayer.Text = "0";
+					txtTeamsOddball.Text = "0";
+					txtTeamsKOTH.Text = "0";
+					txtTeamsRace.Text = "0";
+					txtTeamsHeadhunter.Text = "0";
+					txtTeamsJuggernaut.Text = "0";
+					txtTeamsTerritories.Text = "0";
+					txtTeamsAssault.Text = "0";
+					txtTeamsVIP.Text = "0";
+					txtTeamsInfection.Text = "0";
 
 					// Load Insertion Points
 					LoadInsertionPoints();
 
 					// Update UI
 					_startEditing = true;
+					cbGame.SelectedIndex = 0;
+					cbType.SelectedIndex = 0;
 					cbLanguages.SelectedIndex = 0;
 					cbInsertIndex.SelectedIndex = 0;
 					cbInsertLanguages.SelectedIndex = 0;
 
 					if (App.AssemblyStorage.AssemblySettings.StartpageHideOnLaunch)
 						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Home.TabGenre.StartPage);
-
-					RecentFiles.AddNewEntry(new FileInfo(_blfLocation).Name, _blfLocation, "Map Info", Settings.RecentFileType.MapInfo);
 					Close();
 				}));
 			}
@@ -354,127 +338,150 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		// Update Languages
 		private void cbLanguages_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (_mapInfo != null && _startEditing)
+			if (_startEditing)
 			{
 				if (oldLanguage != -1)
 				{
 					// Save values to memory
-					_mapInfo.MapInformation.MapNames[oldLanguage] = txtMapName.Text.Trim();
-					_mapInfo.MapInformation.MapDescriptions[oldLanguage] = txtMapDesc.Text.Trim();
+					MapNames[oldLanguage] = txtMapName.Text.Trim();
+					MapDescs[oldLanguage] = txtMapDesc.Text.Trim();
 
 					// Make sure values arn't too long, kiddo
-					if (_mapInfo.MapInformation.MapNames[oldLanguage].Length > 32)
-						_mapInfo.MapInformation.MapNames[oldLanguage] = _mapInfo.MapInformation.MapNames[oldLanguage].Remove(32);
-					if (_mapInfo.MapInformation.MapDescriptions[oldLanguage].Length > 128)
-						_mapInfo.MapInformation.MapDescriptions[oldLanguage] =
-							_mapInfo.MapInformation.MapDescriptions[oldLanguage].Remove(128);
+					if (MapNames[oldLanguage].Length > 32)
+						MapNames[oldLanguage] = MapNames[oldLanguage].Remove(32);
+					if (MapDescs[oldLanguage].Length > 128)
+						MapDescs[oldLanguage] =
+							MapDescs[oldLanguage].Remove(128);
 				}
 
 				// Update oldLanguage int
 				oldLanguage = cbLanguages.SelectedIndex;
 
 				// Update UI
-				txtMapName.Text = _mapInfo.MapInformation.MapNames[oldLanguage];
-				txtMapDesc.Text = _mapInfo.MapInformation.MapDescriptions[oldLanguage];
+				if (oldLanguage != -1)
+				{
+					txtMapName.Text = MapNames[oldLanguage];
+					txtMapDesc.Text = MapDescs[oldLanguage];
+				}
 			}
 		}
 
 		// Update MapInfo file
 		private void btnUpdate_Click(object sender, RoutedEventArgs e)
 		{
-			int txtErrorCount = 0;
-			_mapInfo = new MapInfo(_blfLocation);
-			// Check if the Map ID, Current Zone Index, and Max Team Counts are Valid
-			txtErrorCount += CheckTextBoxValidity(txtMapID, "Map ID");
-			txtErrorCount += CheckTextBoxValidity(txtZoneIndex, ("Insertion Point " + cbInsertIndex.SelectedIndex.ToString() + ": Zone Index"));
-			txtErrorCount += CheckTextBoxValidity(txtTeamsNone, "No GameType Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsCTF, "CTF Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsSlayer, "Slayer Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsOddball, "Oddball Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsKOTH, "KOTH Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsRace, "Race Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsHeadhunter, "Headhunter Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsJuggernaut, "Juggernaut Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsTerritories, "Territories Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsAssault, "Assault Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsVIP, "VIP Max Teams");
-			txtErrorCount += CheckTextBoxValidity(txtTeamsInfection, "Infection Max Teams");
+			NewBLF _blf = new NewBLF();
 
-			if (txtErrorCount == 1)
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Title = "Assembly - Save Blam Map Info File";
+			sfd.Filter = "Blam Map Info File (*.mapinfo)|*.mapinfo";
+
+			if (!(bool)sfd.ShowDialog()) return;
+
+			if ((bool)sfd.ShowDialog())
 			{
+				_blf.NewMapInfo(sfd.FileName, game);
+
+				int txtErrorCount = 0;
+				_mapInfo = new MapInfo(sfd.FileName);
+				// Check if the Map ID, Current Zone Index, and Max Team Counts are Valid
+				txtErrorCount += CheckTextBoxValidity(txtMapID, "Map ID");
+				txtErrorCount += CheckTextBoxValidity(txtZoneIndex, ("Insertion Point " + cbInsertIndex.SelectedIndex.ToString() + ": Zone Index"));
+				txtErrorCount += CheckTextBoxValidity(txtTeamsNone, "No GameType Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsCTF, "CTF Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsSlayer, "Slayer Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsOddball, "Oddball Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsKOTH, "KOTH Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsRace, "Race Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsHeadhunter, "Headhunter Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsJuggernaut, "Juggernaut Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsTerritories, "Territories Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsAssault, "Assault Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsVIP, "VIP Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsInfection, "Infection Max Teams");
+
+				if (txtErrorCount == 1)
+				{
+					Close();
+					MetroMessageBox.Show("MapInfo Not Saved", (culpritTextString + " was either not a valid number or too large."));
+					return;
+				}
+
+				if (txtErrorCount > 1)
+				{
+					Close();
+					MetroMessageBox.Show("MapInfo Not Saved", "Multiple number inputs were either invalid numbers or too large.");
+					return;
+				}
+
+				// If all valid, Update
+				_mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
+				_mapInfo.MapInformation.MaxTeamsNone = Byte.Parse(txtTeamsNone.Text);
+				_mapInfo.MapInformation.MaxTeamsCTF = Byte.Parse(txtTeamsCTF.Text);
+				_mapInfo.MapInformation.MaxTeamsSlayer = Byte.Parse(txtTeamsSlayer.Text);
+				_mapInfo.MapInformation.MaxTeamsOddball = Byte.Parse(txtTeamsOddball.Text);
+				_mapInfo.MapInformation.MaxTeamsKOTH = Byte.Parse(txtTeamsKOTH.Text);
+				_mapInfo.MapInformation.MaxTeamsRace = Byte.Parse(txtTeamsRace.Text);
+				_mapInfo.MapInformation.MaxTeamsHeadhunter = Byte.Parse(txtTeamsHeadhunter.Text);
+				_mapInfo.MapInformation.MaxTeamsJuggernaut = Byte.Parse(txtTeamsJuggernaut.Text);
+				_mapInfo.MapInformation.MaxTeamsTerritories = Byte.Parse(txtTeamsTerritories.Text);
+				_mapInfo.MapInformation.MaxTeamsAssault = Byte.Parse(txtTeamsAssault.Text);
+				_mapInfo.MapInformation.MaxTeamsVIP = Byte.Parse(txtTeamsVIP.Text);
+				_mapInfo.MapInformation.MaxTeamsInfection = Byte.Parse(txtTeamsInfection.Text);
+
+				// Update Internal Name
+				_mapInfo.MapInformation.InternalName = txtMapInternalName.Text;
+
+				// Update Physical Name
+				_mapInfo.MapInformation.PhysicalName = txtMapPhysicalName.Text;
+
+				// Update Current Map Name/Descrption Language Selection
+				MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
+				MapDescs[cbLanguages.SelectedIndex] = txtMapDesc.Text;
+
+				// Update Languages
+				for (int i = 0; i < _languageset.Count; i++)
+				{
+					_mapInfo.MapInformation.MapNames[i] = MapNames[i];
+					_mapInfo.MapInformation.MapDescriptions[i] = MapDescs[i];
+				}
+
+				// Update Flags
+				_mapInfo.MapInformation.Flags = LevelFlags.None;
+				if (cbType.SelectedIndex == 0)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsMainMenu;
+				if (cbType.SelectedIndex == 1)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsMultiplayer;
+				if (cbType.SelectedIndex == 2)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsCampaign;
+				if (cbType.SelectedIndex == 4)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsFirefight;
+				if (cbType.SelectedIndex == 3)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsCinematic;
+				if (cbVisible.IsChecked == true)
+					_mapInfo.MapInformation.Flags |= LevelFlags.Visible;
+				if (cbGeneratesFilm.IsChecked == true)
+					_mapInfo.MapInformation.Flags |= LevelFlags.GeneratesFilm;
+				if (cbDLC.IsChecked == true)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsDLC;
+				if (cbForgeOnly.IsChecked == true)
+					_mapInfo.MapInformation.Flags |= LevelFlags.IsForgeOnly;
+
+				// Update MP Objects
+				if (game != MapInfo.GameIdentifier.Halo3 && game != MapInfo.GameIdentifier.Halo3ODST)
+					UpdateMPObjects();
+
+				// Update Insertion Points
+				UpdateInsertionPoints();
+
+				// Update Default Author
+				_mapInfo.MapInformation.DefaultAuthor = txtDefaultAuthor.Text;
+
+				// Write all changes to file
+				_mapInfo.UpdateMapInfo();
 				Close();
-				MetroMessageBox.Show("MapInfo Not Saved", (culpritTextString + " was either not a valid number or too large."));
-				return;
+				MetroMessageBox.Show("Save Successful", "Your MapInfo has been saved.");
+				App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 			}
-
-			if (txtErrorCount > 1)
-			{
-				Close();
-				MetroMessageBox.Show("MapInfo Not Saved", "Multiple number inputs were either invalid numbers or too large.");
-				return;
-			}
-
-			// If all valid, Update
-			_mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
-			_mapInfo.MapInformation.MaxTeamsNone = Byte.Parse(txtTeamsNone.Text);
-			_mapInfo.MapInformation.MaxTeamsCTF = Byte.Parse(txtTeamsCTF.Text);
-			_mapInfo.MapInformation.MaxTeamsSlayer = Byte.Parse(txtTeamsSlayer.Text);
-			_mapInfo.MapInformation.MaxTeamsOddball = Byte.Parse(txtTeamsOddball.Text);
-			_mapInfo.MapInformation.MaxTeamsKOTH = Byte.Parse(txtTeamsKOTH.Text);
-			_mapInfo.MapInformation.MaxTeamsRace = Byte.Parse(txtTeamsRace.Text);
-			_mapInfo.MapInformation.MaxTeamsHeadhunter = Byte.Parse(txtTeamsHeadhunter.Text);
-			_mapInfo.MapInformation.MaxTeamsJuggernaut = Byte.Parse(txtTeamsJuggernaut.Text);
-			_mapInfo.MapInformation.MaxTeamsTerritories = Byte.Parse(txtTeamsTerritories.Text);
-			_mapInfo.MapInformation.MaxTeamsAssault = Byte.Parse(txtTeamsAssault.Text);
-			_mapInfo.MapInformation.MaxTeamsVIP = Byte.Parse(txtTeamsVIP.Text);
-			_mapInfo.MapInformation.MaxTeamsInfection = Byte.Parse(txtTeamsInfection.Text);
-
-			// Update Internal Name
-			_mapInfo.MapInformation.InternalName = txtMapInternalName.Text;
-
-			// Update Physical Name
-			_mapInfo.MapInformation.PhysicalName = txtMapPhysicalName.Text;
-
-			// Update Current Map Name/Descrption Language Selection
-			_mapInfo.MapInformation.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
-			_mapInfo.MapInformation.MapDescriptions[cbLanguages.SelectedIndex] = txtMapDesc.Text;
-
-			// Update Flags
-			_mapInfo.MapInformation.Flags = LevelFlags.None;
-			if (cbType.SelectedIndex == 0)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsMainMenu;
-			if (cbType.SelectedIndex == 1)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsMultiplayer;
-			if (cbType.SelectedIndex == 2)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsCampaign;
-			if (cbType.SelectedIndex == 4)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsFirefight;
-			if (cbType.SelectedIndex == 3)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsCinematic;
-			if (cbVisible.IsChecked == true)
-				_mapInfo.MapInformation.Flags |= LevelFlags.Visible;
-			if (cbGeneratesFilm.IsChecked == true)
-				_mapInfo.MapInformation.Flags |= LevelFlags.GeneratesFilm;
-			if (cbDLC.IsChecked == true)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsDLC;
-			if (cbForgeOnly.IsChecked == true)
-				_mapInfo.MapInformation.Flags |= LevelFlags.IsForgeOnly;
-
-			// Update MP Objects
-			if (_mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo3 && _mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo3ODST)
-				UpdateMPObjects();
-
-			// Update Insertion Points
-			UpdateInsertionPoints();
-
-			// Update Default Author
-			_mapInfo.MapInformation.DefaultAuthor = txtDefaultAuthor.Text;
-
-			// Write all changes to file
-			_mapInfo.UpdateMapInfo();
-			Close();
-			MetroMessageBox.Show("Save Successful", "Your MapInfo has been saved.");
-			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
 
 		private int CheckTextBoxValidity(TextBox textbox, string culprit)
@@ -506,8 +513,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		// Load Languages
 		private void LoadLanguages()
 		{
+			int tempLanguageIndex = cbLanguages.SelectedIndex;
+			int tempInsertLanguageIndex = cbInsertLanguages.SelectedIndex;
 			// If the game is Halo 4, use that set of languages, if not, use the default set.
-			switch (_mapInfo.MapInformation.Game)
+			switch (game)
 			{
 				case MapInfo.GameIdentifier.Halo4:
 					_languageset = _halo4languages;
@@ -518,11 +527,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			cbLanguages.DataContext = _languageset;
 			cbInsertLanguages.DataContext = _languageset;
+
+			if (tempLanguageIndex < 12)
+				cbLanguages.SelectedIndex = tempLanguageIndex;
+			else
+				cbLanguages.SelectedIndex = 0;
+			if (tempInsertLanguageIndex < 12)
+				cbInsertLanguages.SelectedIndex = tempInsertLanguageIndex;
+			else
+				cbInsertLanguages.SelectedIndex = 0;
 		}
 
 		private void LoadMPObjects()
 		{
-			if (_mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo3 && _mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo3ODST)
+			if (game != MapInfo.GameIdentifier.Halo3 && game != MapInfo.GameIdentifier.Halo3ODST)
 			{
 				// Create a checkbox for each item
 				IList<CheckBox> CheckBoxes = new List<CheckBox>();
@@ -566,7 +584,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				cb_firebomb_grenade.Content = "firebomb__grenade";
 				CheckBoxes.Add(cb_firebomb_grenade);
 				CheckBox cb_dmr = new CheckBox();
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.HaloReachBetas)
+				if (game == MapInfo.GameIdentifier.HaloReachBetas)
 					cb_dmr.Content = "br";
 				else
 					cb_dmr.Content = "dmr";
@@ -710,14 +728,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				cb_ctf_flag_spawn_point.Content = "ctf__flag__spawn__point";
 				CheckBoxes.Add(cb_ctf_flag_spawn_point);
 				CheckBox cb_respawn_zone = new CheckBox();
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.HaloReachBetas)
+				if (game == MapInfo.GameIdentifier.HaloReachBetas)
 					cb_respawn_zone.Content = "territories__respawn__zone__bfg";
 				else
 					cb_respawn_zone.Content = "respawn__zone";
 				CheckBoxes.Add(cb_respawn_zone);
 				CheckBox cb_territories_respawn_zone = new CheckBox();
 				cb_territories_respawn_zone.Content = "territories__respawn__zone";
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.HaloReachBetas)
+				if (game == MapInfo.GameIdentifier.HaloReachBetas)
 					CheckBoxes.Add(cb_territories_respawn_zone);
 				CheckBox cb_invasion_elite_buy = new CheckBox();
 				cb_invasion_elite_buy.Content = "invasion__elite__buy";
@@ -1109,7 +1127,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				CheckBox cb_shade_plasma = new CheckBox();
 				cb_shade_plasma.Content = "shade__plasma";
 				CheckBoxes.Add(cb_shade_plasma);
-				if (_mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo4)
+				if (game != MapInfo.GameIdentifier.Halo4)
 				{
 					CheckBox cb_killball = new CheckBox();
 					cb_killball.Content = "killball";
@@ -1196,7 +1214,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					cb_cov_powermodule_stand.Content = "cov__powermodule__stand";
 					CheckBoxes.Add(cb_cov_powermodule_stand);
 				}
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.Halo4)
+				if (game == MapInfo.GameIdentifier.Halo4)
 				{
 					CheckBox cb_stasis_field = new CheckBox();
 					cb_stasis_field.Content = "stasis__field";
@@ -1313,7 +1331,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				CheckBox cb_blam_device = new CheckBox();
 				cb_blam_device.Content = "blam__device";
 				CheckBoxes.Add(cb_blam_device);
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.Halo4NetworkTest)
+				if (game == MapInfo.GameIdentifier.Halo4NetworkTest)
 				{
 					CheckBox cb_blam_crate_med = new CheckBox();
 					cb_blam_crate_med.Content = "blam__crate__med";
@@ -1509,118 +1527,67 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				cb_auto_turret_vehicle_knight.Content = "auto__turret__vehicle__knight";
 				CheckBoxes.Add(cb_auto_turret_vehicle_knight);
 
-				// This is necessary to make the code after this work without throwing an
-				// an exception if there are bits enabled beyond the valid entries. 
-				CheckBox cb_generic = new CheckBox();
-				for (int i = 0; CheckBoxes.Count < 2048; i++)
-					CheckBoxes.Add(cb_generic);
-
-				// Check the checkbox if its corresponding bit is enabled
-				for (int i = 0; i < 64; i++)
+				// Save the currently checked items
+				checkedIndices.Clear();
+				for (int i = 0; i < Bitfield_MPObjects.Items.Count; i++)
 				{
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object0))
-						CheckBoxes[(i * 32)].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object1))
-						CheckBoxes[(i * 32) + 1].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object2))
-						CheckBoxes[(i * 32) + 2].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object3))
-						CheckBoxes[(i * 32) + 3].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object4))
-						CheckBoxes[(i * 32) + 4].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object5))
-						CheckBoxes[(i * 32) + 5].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object6))
-						CheckBoxes[(i * 32) + 6].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object7))
-						CheckBoxes[(i * 32) + 7].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object8))
-						CheckBoxes[(i * 32) + 8].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object9))
-						CheckBoxes[(i * 32) + 9].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object10))
-						CheckBoxes[(i * 32) + 10].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object11))
-						CheckBoxes[(i * 32) + 11].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object12))
-						CheckBoxes[(i * 32) + 12].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object13))
-						CheckBoxes[(i * 32) + 13].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object14))
-						CheckBoxes[(i * 32) + 14].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object15))
-						CheckBoxes[(i * 32) + 15].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object16))
-						CheckBoxes[(i * 32) + 16].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object17))
-						CheckBoxes[(i * 32) + 17].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object18))
-						CheckBoxes[(i * 32) + 18].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object19))
-						CheckBoxes[(i * 32) + 19].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object20))
-						CheckBoxes[(i * 32) + 20].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object21))
-						CheckBoxes[(i * 32) + 21].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object22))
-						CheckBoxes[(i * 32) + 22].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object23))
-						CheckBoxes[(i * 32) + 23].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object24))
-						CheckBoxes[(i * 32) + 24].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object25))
-						CheckBoxes[(i * 32) + 25].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object26))
-						CheckBoxes[(i * 32) + 26].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object27))
-						CheckBoxes[(i * 32) + 27].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object28))
-						CheckBoxes[(i * 32) + 28].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object29))
-						CheckBoxes[(i * 32) + 29].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object30))
-						CheckBoxes[(i * 32) + 30].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object31))
-						CheckBoxes[(i * 32) + 31].IsChecked = true;
+					CheckBox cb = (CheckBox)Bitfield_MPObjects.Items[i];
+					if (cb.IsChecked == true)
+					{
+						checkedIndices.Add(i);
+					}
 				}
 
 				// Add the checkboxes to the UI
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.HaloReachBetas)
+				Bitfield_MPObjects.Items.Clear();
+				if (game == MapInfo.GameIdentifier.HaloReachBetas)
 					for (int i = 0; i < 161; i++)
 						Bitfield_MPObjects.Items.Add(CheckBoxes[i]);
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.HaloReach)
+				if (game == MapInfo.GameIdentifier.HaloReach)
 					for (int i = 0; i < 219; i++)
 						Bitfield_MPObjects.Items.Add(CheckBoxes[i]);
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.Halo4NetworkTest)
+				if (game == MapInfo.GameIdentifier.Halo4NetworkTest)
 					for (int i = 0; i < 244; i++)
 						Bitfield_MPObjects.Items.Add(CheckBoxes[i]);
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.Halo4)
+				if (game == MapInfo.GameIdentifier.Halo4)
 					for (int i = 0; i < 289; i++)
 						Bitfield_MPObjects.Items.Add(CheckBoxes[i]);
+
+				// Recheck the checked items
+				foreach (int i in checkedIndices)
+				{
+					if (i <= Bitfield_MPObjects.Items.Count)
+					{
+						CheckBox cb = (CheckBox)Bitfield_MPObjects.Items[i];
+						cb.IsChecked = true;
+					}
+				}
 			}
 		}
 
 		private void LoadInsertionPoints()
 		{
-			// Create blank insertion points
-			for (int i = 0; i < 12; i++)
+			if (InsertionPointList.Count == 0)
 			{
-				InsertionPointList.Add(new InsertionPoint());
-				InsertionPointList[i].ZoneName = "";
-				InsertionPointList[i].IPEnabled = false;
-				InsertionPointList[i].IPVisible = false;
-				IList<string> ipNames = new List<string>();
-				IList<string> ipDescs = new List<string>();
-				InsertionPointList[i].IPNames = ipNames;
-				InsertionPointList[i].IPDescriptions = ipDescs;
-				for (int ni = 0; ni < 17; ni++)
+				for (int i = 0; i < 12; i++)
 				{
-					InsertionPointList[i].IPNames.Add("");
-					InsertionPointList[i].IPDescriptions.Add("");
+					InsertionPointList.Add(new InsertionPoint());
+					InsertionPointList[i].ZoneName = "";
+					InsertionPointList[i].IPEnabled = false;
+					InsertionPointList[i].IPVisible = false;
+					IList<string> ipNames = new List<string>();
+					IList<string> ipDescs = new List<string>();
+					InsertionPointList[i].IPNames = ipNames;
+					InsertionPointList[i].IPDescriptions = ipDescs;
+					for (int ni = 0; ni < 17; ni++)
+					{
+						InsertionPointList[i].IPNames.Add("");
+						InsertionPointList[i].IPDescriptions.Add("");
+					}
 				}
 			}
 
-			switch (_mapInfo.MapInformation.Game)
+			switch (game)
 			{
 				case MapInfo.GameIdentifier.Halo3:
 					insertionPointCount = 4;
@@ -1628,6 +1595,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					cbInsertUsed.Visibility = Visibility.Collapsed;
 					txtZoneName.IsEnabled = false;
 					txtZoneName.Visibility = Visibility.Collapsed;
+					txtZoneIndex.IsEnabled = true;
+					txtZoneIndex.Visibility = Visibility.Visible;
 					lblZoneName.Text = "Zone Index:";
 					break;
 				case MapInfo.GameIdentifier.Halo3ODST:
@@ -1636,6 +1605,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					cbInsertUsed.Visibility = Visibility.Collapsed;
 					txtZoneName.IsEnabled = false;
 					txtZoneName.Visibility = Visibility.Collapsed;
+					txtZoneIndex.IsEnabled = true;
+					txtZoneIndex.Visibility = Visibility.Visible;
 					lblZoneName.Text = "Zone Index:";
 					break;
 				case MapInfo.GameIdentifier.HaloReachBetas:
@@ -1643,8 +1614,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				case MapInfo.GameIdentifier.Halo4NetworkTest:
 				case MapInfo.GameIdentifier.Halo4:
 					insertionPointCount = 12;
+					cbInsertUsed.IsEnabled = true;
+					cbInsertUsed.Visibility = Visibility.Visible;
+					txtZoneName.IsEnabled = true;
+					txtZoneName.Visibility = Visibility.Visible;
 					txtZoneIndex.IsEnabled = false;
 					txtZoneIndex.Visibility = Visibility.Collapsed;
+					lblZoneName.Text = "Zone Name:";
 					break;
 			}
 
@@ -1656,53 +1632,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					cbi.IsEnabled = false;
 					cbi.Visibility = System.Windows.Visibility.Collapsed;
 				}
-			}
-
-			for (int i = 0; i < insertionPointCount; i++)
-			{
-				InsertionPointList[i].ZoneName = _mapInfo.MapInformation.MapCheckpoints[i].ZoneName;
-				InsertionPointList[i].ZoneIndex = _mapInfo.MapInformation.MapCheckpoints[i].ZoneIndex;
-				if (_mapInfo.MapInformation.MapCheckpoints[i].IsUsed == true)
-					InsertionPointList[i].IPEnabled = true;
-				if (_mapInfo.MapInformation.MapCheckpoints[i].IsUsed == false)
-					InsertionPointList[i].IPEnabled = false;
-				if (_mapInfo.MapInformation.MapCheckpoints[i].IsVisible == true)
-					InsertionPointList[i].IPVisible = true;
-				if (_mapInfo.MapInformation.MapCheckpoints[i].IsVisible == false)
-					InsertionPointList[i].IPVisible = false;
-
-				if (_mapInfo.MapInformation.Game != MapInfo.GameIdentifier.Halo4)
+				else
 				{
-					for (int n = 0; n < 12; n++)
-					{
-						InsertionPointList[i].IPNames[n] = _mapInfo.MapInformation.MapCheckpoints[i].CheckpointName[n];
-						InsertionPointList[i].IPDescriptions[n] = _mapInfo.MapInformation.MapCheckpoints[i].CheckpointDescription[n];
-					}
-				}
-
-				if (_mapInfo.MapInformation.Game == MapInfo.GameIdentifier.Halo4)
-				{
-					for (int n = 0; n < 17; n++)
-					{
-						InsertionPointList[i].IPNames[n] = _mapInfo.MapInformation.MapCheckpoints[i].CheckpointName[n];
-						InsertionPointList[i].IPDescriptions[n] = _mapInfo.MapInformation.MapCheckpoints[i].CheckpointDescription[n];
-					}
-				}
-
-				if (cbInsertIndex.SelectedIndex != -1)
-				{
-					txtZoneName.Text = InsertionPointList[cbInsertIndex.SelectedIndex].ZoneName;
-					txtZoneIndex.Text = InsertionPointList[cbInsertIndex.SelectedIndex].ZoneIndex.ToString();
-					if (_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsUsed == true)
-						cbInsertUsed.IsChecked = true;
-					if (_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsUsed == false)
-						cbInsertUsed.IsChecked = false;
-					if (_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsVisible == true)
-						cbInsertVisible.IsChecked = true;
-					if (_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsVisible == false)
-						cbInsertVisible.IsChecked = false;
-					txtInsertName.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[cbInsertLanguages.SelectedIndex];
-					txtInsertDesc.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[cbInsertLanguages.SelectedIndex];
+					cbi.IsEnabled = true;
+					cbi.Visibility = System.Windows.Visibility.Visible;
 				}
 			}
 		}
@@ -1792,32 +1725,38 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		private void SaveCurrentInsertionIndex()
+		{
+			if (cbInsertIndex.SelectedIndex > -1)
+			{
+				// Save the current Index Values
+				InsertionPointList[cbInsertIndex.SelectedIndex].ZoneName = txtZoneName.Text.Trim();
+				if (!Equals(txtZoneIndex.BorderBrush, FindResource("ExtryzeAccentBrush")))
+					InsertionPointList[cbInsertIndex.SelectedIndex].ZoneIndex = Byte.Parse(txtZoneIndex.Text);
+
+				if (Equals(txtZoneIndex.BorderBrush, FindResource("ExtryzeAccentBrush")))
+				{
+					Close();
+					MetroMessageBox.Show("MapInfo Not Saved", "The MapInfo could not be saved because the Zone Index is invalid.");
+					return;
+				}
+
+				if (cbInsertVisible.IsChecked == true)
+					InsertionPointList[cbInsertIndex.SelectedIndex].IPVisible = true;
+				if (cbInsertVisible.IsChecked == false)
+					InsertionPointList[cbInsertIndex.SelectedIndex].IPVisible = false;
+				if (cbInsertUsed.IsChecked == true)
+					InsertionPointList[cbInsertIndex.SelectedIndex].IPEnabled = true;
+				if (cbInsertUsed.IsChecked == false)
+					InsertionPointList[cbInsertIndex.SelectedIndex].IPEnabled = false;
+
+				InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[cbInsertLanguages.SelectedIndex] = txtInsertName.Text;
+				InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[cbInsertLanguages.SelectedIndex] = txtInsertDesc.Text;
+			}
+		}
+
 		private void UpdateInsertionPoints()
 		{
-			// Save the current Index Values
-			InsertionPointList[cbInsertIndex.SelectedIndex].ZoneName = txtZoneName.Text.Trim();
-			if (!Equals(txtZoneIndex.BorderBrush, FindResource("ExtryzeAccentBrush")))
-				InsertionPointList[cbInsertIndex.SelectedIndex].ZoneIndex = Byte.Parse(txtZoneIndex.Text);
-
-			if (Equals(txtZoneIndex.BorderBrush, FindResource("ExtryzeAccentBrush")))
-			{
-				Close();
-				MetroMessageBox.Show("MapInfo Not Saved", "The MapInfo could not be saved because the Zone Index is invalid.");
-				return;
-			}
-			
-			if (cbInsertVisible.IsChecked == true)
-				InsertionPointList[cbInsertIndex.SelectedIndex].IPVisible = true;
-			if (cbInsertVisible.IsChecked == false)
-				InsertionPointList[cbInsertIndex.SelectedIndex].IPVisible = false;
-			if (cbInsertUsed.IsChecked == true)
-				InsertionPointList[cbInsertIndex.SelectedIndex].IPEnabled = true;
-			if (cbInsertUsed.IsChecked == false)
-				InsertionPointList[cbInsertIndex.SelectedIndex].IPEnabled = false;
-
-			InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[cbInsertLanguages.SelectedIndex] = txtInsertName.Text;
-			InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[cbInsertLanguages.SelectedIndex] = txtInsertDesc.Text;
-
 			// Update the Insertion Points
 			for (int i = 0; i < insertionPointCount; i++)
 			{
@@ -1858,9 +1797,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Update insertionOldLanguage int
 			insertionOldLanguage = cbInsertLanguages.SelectedIndex;
 
+
 			// Update UI
-			txtInsertName.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[insertionOldLanguage];
-			txtInsertDesc.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[insertionOldLanguage];
+			if (insertionOldLanguage != -1)
+			{
+				txtInsertName.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[insertionOldLanguage];
+				txtInsertDesc.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[insertionOldLanguage];
+			}
 		}
 
 		private void cbInsertIndex_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1923,6 +1866,40 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				txtInsertName.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPNames[insertionOldLanguage];
 				txtInsertDesc.Text = InsertionPointList[cbInsertIndex.SelectedIndex].IPDescriptions[insertionOldLanguage];
 			}
+		}
+
+		private void cbGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
+
+			if (cbGame.SelectedIndex == 0)
+				game = MapInfo.GameIdentifier.Halo3;
+			if (cbGame.SelectedIndex == 1)
+				game = MapInfo.GameIdentifier.Halo3ODST;
+			if (cbGame.SelectedIndex == 2)
+				game = MapInfo.GameIdentifier.HaloReachBetas;
+			if (cbGame.SelectedIndex == 3)
+				game = MapInfo.GameIdentifier.HaloReach;
+			if (cbGame.SelectedIndex == 4)
+				game = MapInfo.GameIdentifier.Halo4NetworkTest;
+			if (cbGame.SelectedIndex == 5)
+				game = MapInfo.GameIdentifier.Halo4;
+
+			if ((oldTypeIndex > 2) && (game == MapInfo.GameIdentifier.Halo3 || game == MapInfo.GameIdentifier.Halo3ODST))
+				cbType.SelectedIndex = 0;
+			if ((oldIndex > 3 && game == MapInfo.GameIdentifier.Halo3) || (oldIndex > 8 && game == MapInfo.GameIdentifier.Halo3ODST))
+				cbInsertIndex.SelectedIndex = 0;
+			if (mapInfoSelection.SelectedIndex == 3 && (game == MapInfo.GameIdentifier.Halo3 || game == MapInfo.GameIdentifier.Halo3ODST))
+				mapInfoSelection.SelectedIndex = 0;
+			if (mapInfoSelection.SelectedIndex == 2 && (game != MapInfo.GameIdentifier.Halo3 && game != MapInfo.GameIdentifier.Halo3ODST))
+				mapInfoSelection.SelectedIndex = 0;
+			SaveCurrentInsertionIndex();
+			SwitchGameBasedUI();
+		}
+
+		private void cbType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			oldTypeIndex = cbType.SelectedIndex;
 		}
 	}
 }
