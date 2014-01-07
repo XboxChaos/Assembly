@@ -13,7 +13,17 @@ namespace Atlas.Converters
 		{
 			var cacheEditor = (CacheEditorNode)value;
 
-			return Application.Current.FindResource("HierarchyGenericTag");
+			switch (cacheEditor.Type)
+			{
+				case CacheEditorType.Model:
+					return Application.Current.FindResource("HierarchySpecializedModeTag");
+
+				case CacheEditorType.Sound:
+					return Application.Current.FindResource("HierarchySpecializedSnd!Tag");
+
+				default:
+					return Application.Current.FindResource("HierarchyGenericTag");
+			}
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
