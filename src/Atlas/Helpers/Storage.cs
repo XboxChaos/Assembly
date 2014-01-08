@@ -6,12 +6,14 @@ namespace Atlas.Helpers
 {
 	public class Storage : Base
 	{
+		private const string SettingsPath = @"\Storage\Settings.json"; 
+
 		public Storage()
 		{
 			// Get File Path
 			string jsonString = null;
-			if (File.Exists("Settings.json"))
-				jsonString = File.ReadAllText("Settings.json");
+			if (File.Exists(SettingsPath))
+				jsonString = File.ReadAllText(SettingsPath);
 
 			try
 			{
@@ -41,7 +43,7 @@ namespace Atlas.Helpers
 				var jsonData = JsonConvert.SerializeObject(value);
 
 				// Get File Path
-				File.WriteAllText("Settings.json", jsonData);
+				File.WriteAllText(SettingsPath, jsonData);
 			}
 		}
 		private Settings _settings = new Settings();
