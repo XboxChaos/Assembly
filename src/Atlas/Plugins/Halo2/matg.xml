@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2" baseSize="0x284">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
+		<revision author="Iron_Forge" version="2">Added some known values...</revision>
+		<revision author="XZodia" version="3">Added grenades, fp models, damage calls</revision>
+		<revision author="km00" version="4">Updated a load of stuff</revision>
+		<revision author="XZodia" version="5">Completed</revision>
+	</revisions>
+	<enum32 name="Language" offset="0xAC" visible="true" />
+	<reflexive name="Havok Cleanup Resources" offset="0xB0" visible="true" entrySize="0x8">
+		<tagRef name="Object Cleanup Effect" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Collision Damage" offset="0xB8" visible="true" entrySize="0x48">
+		<tagRef name="Collision Damage" offset="0x0" visible="true" />
+		<float32 name="Min Game Acc (Default)" offset="0x8" visible="true" />
+		<float32 name="Max Game Acc (Default)" offset="0xC" visible="true" />
+		<float32 name="Min Gam Scale (Default)" offset="0x74" visible="true" />
+		<float32 name="Max Gam Scale (Default)" offset="0x14" visible="true" />
+		<float32 name="Min abs Acc (Default)" offset="0x18" visible="true" />
+		<float32 name="Max abs Acc (Default)" offset="0x1C" visible="true" />
+		<float32 name="Min abs Scale (Default)" offset="0x20" visible="true" />
+		<float32 name="Max abs Scale (Default)" offset="0x24" visible="true" />
+	</reflexive>
+	<reflexive name="Sound Info" offset="0xC0" visible="true" entrySize="0x24">
+		<tagRef name="Sound Class" offset="0x0" visible="true" />
+		<tagRef name="Sound FX" offset="0x8" visible="true" />
+		<tagRef name="Sound Mix" offset="0x10" visible="true" />
+		<tagRef name="Sound Combat Dialogue" offset="0x18" visible="true" />
+	</reflexive>
+	<reflexive name="AI Information" offset="0xC8" visible="true" entrySize="0x168">
+		<float32 name="Danger Broadly Facing" offset="0x0" visible="true" />
+		<float32 name="Danger Shooting Near" offset="0x8" visible="true" />
+		<float32 name="Danger Shooting At" offset="0x10" visible="true" />
+		<float32 name="Danger Extremely Close" offset="0x18" visible="true" />
+		<float32 name="Danger Sheild Damage" offset="0x20" visible="true" />
+		<float32 name="Danger Extended Shield Damage" offset="0x24" visible="true" />
+		<float32 name="Danger Body Damage" offset="0x28" visible="true" />
+		<float32 name="Danger Extended Body Damage" offset="0x2C" visible="true" />
+		<tagRef name="AI Dialog" offset="0x60" visible="true" />
+		<float32 name="Jump Down" offset="0x80" visible="true" />
+		<float32 name="Jump Step" offset="0x84" visible="true" />
+		<float32 name="Jump Crouch" offset="0x88" visible="true" />
+		<float32 name="Jump Stand" offset="0x8C" visible="true" />
+		<float32 name="Jump Storey" offset="0x90" visible="true" />
+		<float32 name="Jump Tower" offset="0x94" visible="true" />
+		<float32 name="Max Jump Down Height Down" offset="0x98" visible="true" />
+		<float32 name="Max Jump Down Height Step" offset="0x9C" visible="true" />
+		<float32 name="Max Jump Down Height Crouch" offset="0xA0" visible="true" />
+		<float32 name="Max Jump Down Height Stand" offset="0xA4" visible="true" />
+		<float32 name="Max Jump Down Height Storey" offset="0xA8" visible="true" />
+		<float32 name="Max Jump Down Height Tower" offset="0xAC" visible="true" />
+		<float32 name="Hoist Step" offset="0xB0" visible="true" />
+		<float32 name="...To" offset="0xB4" visible="true" />
+		<float32 name="Hoist Crouch" offset="0xB8" visible="true" />
+		<float32 name="...To" offset="0xBC" visible="true" />
+		<float32 name="Hoist Stand" offset="0xC0" visible="true" />
+		<float32 name="...To" offset="0xC4" visible="true" />
+		<float32 name="Vault Step" offset="0xE0" visible="true" />
+		<float32 name="...To" offset="0xE4" visible="true" />
+		<float32 name="Vault Crouch" offset="0xE8" visible="true" />
+		<float32 name="...To" offset="0xEC" visible="true" />
+		<reflexive name="Gravemind Properties" offset="0x120" visible="true" entrySize="0xC">
+			<float32 name="Min Retreat Time" offset="0x0" visible="true" />
+			<float32 name="Ideal Retreat Time" offset="0x4" visible="true" />
+			<float32 name="Max Retreat Time" offset="0x8" visible="true" />
+		</reflexive>
+		<float32 name="Scary Target Threhold" offset="0x158" visible="true" />
+		<float32 name="Scary Weapon Threhold" offset="0x15C" visible="true" />
+		<float32 name="Player Scariness" offset="0x160" visible="true" />
+		<float32 name="Berserking Actor Scariness" offset="0x164" visible="true" />
+	</reflexive>
+	<reflexive name="Damage Table" offset="0xD0" visible="true" entrySize="0x8">
+		<reflexive name="Damage Groups" offset="0x0" visible="true" entrySize="0xC">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<reflexive name="Armor Modifiers" offset="0x4" visible="true" entrySize="0x8">
+				<stringId name="Name" offset="0x0" visible="true" />
+				<float32 name="Damage Multiplier" offset="0x4" visible="true" />
+			</reflexive>
+		</reflexive>
+	</reflexive>
+	<reflexive name="Sounds (Obsolete)" offset="0xE0" visible="true" entrySize="0x8">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Camera" offset="0xE8" visible="true" entrySize="0x14">
+		<tagRef name="Default Unit Camera Track" offset="0x0" visible="true" />
+		<float32 name="Default Change Pause" offset="0x8" visible="true" />
+		<float32 name="1st Person Change Pause" offset="0xC" visible="true" />
+		<float32 name="Following Camera Change Pause" offset="0x10" visible="true" />
+	</reflexive>
+	<reflexive name="Player Control" offset="0xF0" visible="true" entrySize="0x80">
+		<float32 name="Magnetism Friction" offset="0x0" visible="true" />
+		<float32 name="Magnetism Adhesion" offset="0x4" visible="true" />
+		<float32 name="Inconsequential Target Scale" offset="0x8" visible="true" />
+		<float32 name="Crosshair Location X" offset="0x18" visible="true" />
+		<float32 name="Crosshair Location Y" offset="0x1C" visible="true" />
+		<float32 name="Seconds To Start" offset="0x20" visible="true" />
+		<float32 name="Seconds To Full Speed" offset="0x24" visible="true" />
+		<float32 name="Decay Rate" offset="0x28" visible="true" />
+		<float32 name="Full Speed Multiplier" offset="0x2C" visible="true" />
+		<float32 name="Pegged Magnitude" offset="0x30" visible="true" />
+		<float32 name="Pegged Angular Threshold" offset="0x34" visible="true" />
+		<float32 name="Look Default Pitch Rate" offset="0x40" visible="true" />
+		<float32 name="Look Default Yaw Rate" offset="0x44" visible="true" />
+		<float32 name="Look Peg Threshold" offset="0x48" visible="true" />
+		<float32 name="Look Yaw Acceleration Time" offset="0x4C" visible="true" />
+		<float32 name="Look Yaw Acceleration Scale" offset="0x50" visible="true" />
+		<float32 name="Look Pitch Acceleration Time" offset="0x54" visible="true" />
+		<float32 name="Look Pitch Acceleration Scale" offset="0x58" visible="true" />
+		<float32 name="Look Auto-leveling Scale" offset="0x5C" visible="true" />
+		<int16 name="Min Weapon Swap Ticks" offset="0x6C" visible="true" />
+		<int16 name="Min Autoleveling Ticks" offset="0x6E" visible="true" />
+		<float32 name="Gravity Scale" offset="0x70" visible="true" />
+		<reflexive name="Look Function" offset="0x74" visible="true" entrySize="0x4">
+			<float32 name="Scale" offset="0x0" visible="true" />
+		</reflexive>
+		<float32 name="Minimmum Action Hold Time" offset="0x7C" visible="true" />
+	</reflexive>
+	<reflexive name="Difficulty" offset="0xF8" visible="true" entrySize="0x284">
+		<float32 name="Easy Enemy Damage" offset="0x0" visible="true" />
+		<float32 name="Normal Enemy Damage" offset="0x4" visible="true" />
+		<float32 name="Heroic Enemy Damage" offset="0x8" visible="true" />
+		<float32 name="Legendary Enemy Damage" offset="0xC" visible="true" />
+		<float32 name="Easy Enemy Vitality" offset="0x10" visible="true" />
+		<float32 name="Normal Enemy Vitality" offset="0x14" visible="true" />
+		<float32 name="Heroic Enemy Vitality" offset="0x18" visible="true" />
+		<float32 name="Legendary Enemy Vitality" offset="0x1C" visible="true" />
+		<float32 name="Easy Enemy Sheild" offset="0x20" visible="true" />
+		<float32 name="Normal Enemy Sheild" offset="0x24" visible="true" />
+		<float32 name="Heroic Enemy Sheild" offset="0x28" visible="true" />
+		<float32 name="Legendary Enemy Sheild" offset="0x2C" visible="true" />
+		<float32 name="Easy Enemy Recharge" offset="0x30" visible="true" />
+		<float32 name="Normal Enemy Recharge" offset="0x34" visible="true" />
+		<float32 name="Heroic Enemy Recharge" offset="0x38" visible="true" />
+		<float32 name="Legendary Enemy Recharge" offset="0x3C" visible="true" />
+		<float32 name="Easy Friend Damage" offset="0x40" visible="true" />
+		<float32 name="Normal Friend Damage" offset="0x44" visible="true" />
+		<float32 name="Heroic Friend Damage" offset="0x48" visible="true" />
+		<float32 name="Legendary Friend Damage" offset="0x4C" visible="true" />
+		<float32 name="Easy Friend Vitality" offset="0x50" visible="true" />
+		<float32 name="Normal Friend Vitality" offset="0x54" visible="true" />
+		<float32 name="Heroic Friend Vitality" offset="0x58" visible="true" />
+		<float32 name="Legendary Friend Vitality" offset="0x5C" visible="true" />
+		<float32 name="Easy Friend Sheild" offset="0x60" visible="true" />
+		<float32 name="Normal Friend Sheild" offset="0x64" visible="true" />
+		<float32 name="Heroic Friend Sheild" offset="0x68" visible="true" />
+		<float32 name="Legendary Friend Sheild" offset="0x6C" visible="true" />
+		<float32 name="Easy Friend Recharge" offset="0x70" visible="true" />
+		<float32 name="Normal Friend Recharge" offset="0x74" visible="true" />
+		<float32 name="Heroic Friend Recharge" offset="0x78" visible="true" />
+		<float32 name="Legendary Friend Recharge" offset="0x7C" visible="true" />
+		<float32 name="Easy Infection Forms" offset="0x80" visible="true" />
+		<float32 name="Normal Infection Forms" offset="0x84" visible="true" />
+		<float32 name="Heroic Infection Forms" offset="0x88" visible="true" />
+		<float32 name="Legendary Infection Forms" offset="0x8C" visible="true" />
+		<float32 name="Easy Rate Of Fire" offset="0xA0" visible="true" />
+		<float32 name="Normal Rate Of Fire" offset="0xA4" visible="true" />
+		<float32 name="Heroic Rate Of Fire" offset="0xA8" visible="true" />
+		<float32 name="Legendary Rate Of Fire" offset="0xAC" visible="true" />
+		<float32 name="Easy Projectile Error" offset="0xB0" visible="true" />
+		<float32 name="Normal Projectile Error" offset="0xB4" visible="true" />
+		<float32 name="Heroic Projectile Error" offset="0xB8" visible="true" />
+		<float32 name="Legendary Projectile Error" offset="0xBC" visible="true" />
+		<float32 name="Easy Burst Error" offset="0xC0" visible="true" />
+		<float32 name="Normal Burst Error" offset="0xC4" visible="true" />
+		<float32 name="Heroic Burst Error" offset="0xC8" visible="true" />
+		<float32 name="Legendary Burst Error" offset="0xCC" visible="true" />
+		<float32 name="Easy New Target Delay" offset="0xD0" visible="true" />
+		<float32 name="Normal New Target Delay" offset="0xD4" visible="true" />
+		<float32 name="Heroic New Target Delay" offset="0xD8" visible="true" />
+		<float32 name="Legendary New Target Delay" offset="0xDC" visible="true" />
+		<float32 name="Easy Burst Separation" offset="0xE0" visible="true" />
+		<float32 name="Normal Burst Separation" offset="0xE4" visible="true" />
+		<float32 name="Heroic Burst Separation" offset="0xE8" visible="true" />
+		<float32 name="Legendary Burst Separation" offset="0xEC" visible="true" />
+		<float32 name="Easy Target Tracking" offset="0xF0" visible="true" />
+		<float32 name="Normal Target Tracking" offset="0xF4" visible="true" />
+		<float32 name="Heroic Target Tracking" offset="0xF8" visible="true" />
+		<float32 name="Legendary Target Tracking" offset="0xFC" visible="true" />
+		<float32 name="Easy Target Leading" offset="0x100" visible="true" />
+		<float32 name="Normal Target Leading" offset="0x104" visible="true" />
+		<float32 name="Heroic Target Leading" offset="0x108" visible="true" />
+		<float32 name="Legendary Target Leading" offset="0x10C" visible="true" />
+		<float32 name="Easy Overcharge Chance" offset="0x110" visible="true" />
+		<float32 name="Normal Overcharge Chance" offset="0x114" visible="true" />
+		<float32 name="Heroic Overcharge Chance" offset="0x118" visible="true" />
+		<float32 name="Legendary Overcharge Chance" offset="0x11C" visible="true" />
+		<float32 name="Easy Special Fire Delay" offset="0x120" visible="true" />
+		<float32 name="Normal Special Fire Delay" offset="0x124" visible="true" />
+		<float32 name="Heroic Special Fire Delay" offset="0x128" visible="true" />
+		<float32 name="Legendary Special Fire Delay" offset="0x12C" visible="true" />
+		<float32 name="Easy Guidance Vs Player" offset="0x130" visible="true" />
+		<float32 name="Normal Guidance Vs Player" offset="0x134" visible="true" />
+		<float32 name="Heroic Guidance Vs Player" offset="0x138" visible="true" />
+		<float32 name="Legendary Guidance Vs Player" offset="0x13C" visible="true" />
+		<float32 name="Easy Melee Delay Base" offset="0x140" visible="true" />
+		<float32 name="Normal Melee Delay Base" offset="0x144" visible="true" />
+		<float32 name="Heroic Melee Delay Base" offset="0x148" visible="true" />
+		<float32 name="Legendary Melee Delay Base" offset="0x14C" visible="true" />
+		<float32 name="Easy Melee Delay Scale" offset="0x150" visible="true" />
+		<float32 name="Normal Melee Delay Scale" offset="0x154" visible="true" />
+		<float32 name="Heroic Melee Delay Scale" offset="0x158" visible="true" />
+		<float32 name="Legendary Melee Delay Scale" offset="0x15C" visible="true" />
+		<float32 name="Easy Grenade Chance Scale" offset="0x170" visible="true" />
+		<float32 name="Normal Grenade Chance Scale" offset="0x174" visible="true" />
+		<float32 name="Heroic Grenade Chance Scale" offset="0x178" visible="true" />
+		<float32 name="Legendary Grenade Chance Scale" offset="0x17C" visible="true" />
+		<float32 name="Easy Grenade Timer Scale" offset="0x180" visible="true" />
+		<float32 name="Normal Grenade Timer Scale" offset="0x184" visible="true" />
+		<float32 name="Heroic Grenade Timer Scale" offset="0x188" visible="true" />
+		<float32 name="Legendary Grenade Timer Scale" offset="0x18C" visible="true" />
+		<float32 name="Easy Major Upgrade (Normal)" offset="0x1C0" visible="true" />
+		<float32 name="Normal Major Upgrade (Normal)" offset="0x1C4" visible="true" />
+		<float32 name="Heroic Major Upgrade (Normal)" offset="0x1C8" visible="true" />
+		<float32 name="Legendary Major Upgrade (Normal)" offset="0x1CC" visible="true" />
+		<float32 name="Easy Major Upgrade (Few)" offset="0x1D0" visible="true" />
+		<float32 name="Normal Major Upgrade (Few)" offset="0x1D4" visible="true" />
+		<float32 name="Heroic Major Upgrade (Few)" offset="0x1D8" visible="true" />
+		<float32 name="Legendary Major Upgrade (Few)" offset="0x1DC" visible="true" />
+		<float32 name="Easy Major Upgrade (Many)" offset="0x1E0" visible="true" />
+		<float32 name="Normal Major Upgrade (Many)" offset="0x1E4" visible="true" />
+		<float32 name="Heroic Major Upgrade (Many)" offset="0x1E8" visible="true" />
+		<float32 name="Legendary Major Upgrade (Many)" offset="0x1EC" visible="true" />
+		<float32 name="Easy Player Vehicle Ram Chance" offset="0x1F0" visible="true" />
+		<float32 name="Normal Player Vehicle Ram Chance" offset="0x1F4" visible="true" />
+		<float32 name="Heroic Player Vehicle Ram Chance" offset="0x1F8" visible="true" />
+		<float32 name="Legendary Player Vehicle Ram Chance" offset="0x1FC" visible="true" />
+	</reflexive>
+	<reflexive name="Grenades" offset="0x100" visible="true" entrySize="0x2C">
+		<int16 name="Max Count" offset="0x0" visible="true" />
+		<tagRef name="Throwing Effect" offset="0x4" visible="true" />
+		<tagRef name="Equipment" offset="0x1C" visible="true" />
+		<tagRef name="Projectile" offset="0x24" visible="true" />
+	</reflexive>
+	<reflexive name="Rasterizer Data" offset="0x108" visible="true" entrySize="0x108">
+		<tagRef name="Distance Attenuation" offset="0x0" visible="true" />
+		<tagRef name="Vector Normalization" offset="0x8" visible="true" />
+		<tagRef name="Gradients" offset="0x10" visible="true" />
+		<tagRef name="Loading Screen" offset="0x18" visible="true" />
+		<tagRef name="Loading Screen Sweep" offset="0x20" visible="true" />
+		<tagRef name="Loading Screen Spinner" offset="0x28" visible="true" />
+		<tagRef name="Glow" offset="0x30" visible="true" />
+		<tagRef name="Loading Screen Logos" offset="0x38" visible="true" />
+		<tagRef name="Loading Screen Tickers" offset="0x40" visible="true" />
+		<reflexive name="Global Vertex Shaders" offset="0x58" visible="true" entrySize="0x8">
+			<tagRef name="Vertex Shader" offset="0x0" visible="true" />
+		</reflexive>
+		<tagRef name="Default 2D" offset="0x60" visible="true" />
+		<tagRef name="Default 3D" offset="0x68" visible="true" />
+		<tagRef name="Default Cube Map" offset="0x70" visible="true" />
+		<tagRef name="Global Shader" offset="0xCC" visible="true" />
+		<bitfield32 name="Flags" offset="0xD4" visible="true">
+			<bit name="Tint Edge Density" index="0" />
+		</bitfield32>
+		<float32 name="Active Camo Refraction Amount" offset="0xD8" visible="true" />
+		<float32 name="Active Camo Distance Falloff" offset="0xDC" visible="true" />
+		<float32 name="Active Camo Tint Color R" offset="0xE0" visible="true" />
+		<float32 name="Active Camo Tint Color G" offset="0xE4" visible="true" />
+		<float32 name="Active Camo Tint Color B" offset="0xE8" visible="true" />
+		<float32 name="Active Camo Hyper Stealth Refraction" offset="0xEC" visible="true" />
+		<float32 name="Active Camo Hyper Stealth Distance Falloff" offset="0xF0" visible="true" />
+		<float32 name="Active Camo Hyper Stealth Tint  R" offset="0xF4" visible="true" />
+		<float32 name="Active Camo Hyper Stealth Tint G" offset="0xF8" visible="true" />
+		<float32 name="Active Camo Hyper Stealth Tint B" offset="0xFC" visible="true" />
+		<tagRef name="unused" offset="0x100" visible="true" />
+	</reflexive>
+	<reflexive name="Interface Tag Refernces" offset="0x110" visible="true" entrySize="0x98">
+		<tagRef name="Font System" offset="0x0" visible="true" />
+		<tagRef name="Font Terminal" offset="0x8" visible="true" />
+		<tagRef name="Screen Color Table" offset="0x10" visible="true" />
+		<tagRef name="Hud Color Table" offset="0x18" visible="true" />
+		<tagRef name="Editor Color Table" offset="0x20" visible="true" />
+		<tagRef name="Dialog Color Table" offset="0x28" visible="true" />
+		<tagRef name="Hud Globals" offset="0x30" visible="true" />
+		<tagRef name="Motion Sensor Sweep Bitmap" offset="0x38" visible="true" />
+		<tagRef name="Motion Sensor Sweep Bitmap Mask" offset="0x40" visible="true" />
+		<tagRef name="Multiplayer Hud Bitmap" offset="0x48" visible="true" />
+		<tagRef name="Hud Digits Definition" offset="0x58" visible="true" />
+		<tagRef name="Motion Sensor Blip Bitmap" offset="0x60" visible="true" />
+		<tagRef name="Interface Goo Map 1" offset="0x68" visible="true" />
+		<tagRef name="Interface Goo Map 2" offset="0x70" visible="true" />
+		<tagRef name="Interface Goo Map 3" offset="0x78" visible="true" />
+		<tagRef name="Mainmenu UI Globals" offset="0x80" visible="true" />
+		<tagRef name="Singleplayer UI Globals" offset="0x88" visible="true" />
+		<tagRef name="Multiplayer UI Globals" offset="0x90" visible="true" />
+	</reflexive>
+	<reflexive name="Weapon List (To Do With Hard Coded Enum)" offset="0x128" visible="true" entrySize="0x98">
+		<tagRef name="Weapon" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Cheat Powerups" offset="0x128" visible="true" entrySize="0x98">
+		<tagRef name="Powerup" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Multiplayer Information (depricated)" offset="0x128" visible="true" entrySize="0x98">
+		<tagRef name="Flag" offset="0x0" visible="true" />
+		<tagRef name="Unit" offset="0x8" visible="true" />
+		<tagRef name="Hill Shader" offset="0x18" visible="true" />
+		<tagRef name="Flag Shader" offset="0x20" visible="true" />
+		<tagRef name="Ball" offset="0x28" visible="true" />
+	</reflexive>
+	<reflexive name="Player Information" offset="0x130" visible="true" entrySize="0x11C">
+		<tagRef name="unused" offset="0x0" visible="true" />
+		<float32 name="Walking Speed" offset="0x24" visible="true" />
+		<float32 name="Forward Run Speed" offset="0x2C" visible="true" />
+		<float32 name="Backward Run Speed" offset="0x30" visible="true" />
+		<float32 name="Sideways Run Speed" offset="0x34" visible="true" />
+		<float32 name="Run Acceleration" offset="0x38" visible="true" />
+		<float32 name="Forward Crouch Speed" offset="0x3C" visible="true" />
+		<float32 name="Backward Crouch Speed" offset="0x40" visible="true" />
+		<float32 name="Sideways Crouch Speed" offset="0x44" visible="true" />
+		<float32 name="Crouch Acceleration" offset="0x48" visible="true" />
+		<float32 name="Airborn Acceleration" offset="0x4C" visible="true" />
+		<float32 name="Grenade Origin X" offset="0x60" visible="true" />
+		<float32 name="Grenade Origin Y" offset="0x64" visible="true" />
+		<float32 name="Grenade Origin Z" offset="0x68" visible="true" />
+		<float32 name="Stun Penalty Movement" offset="0x78" visible="true" />
+		<float32 name="Stun Penalty Turning" offset="0x7C" visible="true" />
+		<float32 name="Stun Penalty Jumping" offset="0x80" visible="true" />
+		<float32 name="Min Stun Time" offset="0x84" visible="true" />
+		<float32 name="Max Stun Time" offset="0x88" visible="true" />
+		<float32 name="Fp Idle Time" offset="0x94" visible="true" />
+		<float32 name="...To" offset="0x98" visible="true" />
+		<float32 name="Fp Skip Fraction" offset="0x9C" visible="true" />
+		<tagRef name="Coop Respawn Effect" offset="0xB0" visible="true" />
+		<float32 name="Binoculars Zoom Count" offset="0xB8" visible="true" />
+		<float32 name="Binoculars Zoom Range" offset="0xBC" visible="true" />
+		<float32 name="...To" offset="0xC0" visible="true" />
+		<tagRef name="Binoculars Zoom In Sound" offset="0xC4" visible="true" />
+		<tagRef name="Binoculars Zoom Out Sound" offset="0xCC" visible="true" />
+		<tagRef name="Active Camo On" offset="0xE4" visible="true" />
+		<tagRef name="Active Camo Off" offset="0xEC" visible="true" />
+		<tagRef name="Active Camo Error" offset="0xF4" visible="true" />
+		<tagRef name="Active Camo Ready" offset="0xFC" visible="true" />
+		<tagRef name="Flashlight On" offset="0x104" visible="true" />
+		<tagRef name="Flashlight Off" offset="0x10C" visible="true" />
+		<tagRef name="Ice Cream" offset="0x114" visible="true" />
+	</reflexive>
+	<reflexive name="Player Representation" offset="0x138" visible="true" entrySize="0xBC">
+		<tagRef name="1st Person Hands" offset="0x0" visible="true" />
+		<tagRef name="1st Person Body" offset="0x8" visible="true" />
+		<tagRef name="3rd Person Unit" offset="0xB0" visible="true" />
+		<stringId name="3rd Person Unit Variant" offset="0xB8" visible="true" />
+	</reflexive>
+	<reflexive name="Falling Damage" offset="0x140" visible="true" entrySize="0x68">
+		<float32 name="Harmful Falling Distance" offset="0x8" visible="true" />
+		<float32 name="...To" offset="0xC" visible="true" />
+		<tagRef name="Falling Damage" offset="0x10" visible="true" />
+		<float32 name="Maximum Falling Distance" offset="0x20" visible="true" />
+		<tagRef name="Distance Damage" offset="0x24" visible="true" />
+		<tagRef name="Vehicle Environment Collision Damage" offset="0x2C" visible="true" />
+		<tagRef name="Vehicle Killed Unit Damage Effect" offset="0x34" visible="true" />
+		<tagRef name="Vehicle Collision Damage" offset="0x3C" visible="true" />
+		<tagRef name="Flaming Death Damage" offset="0x44" visible="true" />
+	</reflexive>
+	<reflexive name="Old Materials" offset="0x148" visible="true" entrySize="0x24">
+		<stringId name="Material Name" offset="0x0" visible="true" />
+		<stringId name="General Material Name" offset="0x4" visible="true" />
+		<float32 name="Ground Friction Scale" offset="0x8" visible="true" />
+		<float32 name="Ground Friction Normal K0 Scale" offset="0xC" visible="true" />
+		<float32 name="Ground Friction Normal K1 Scale" offset="0x10" visible="true" />
+		<float32 name="Ground Depth Scale" offset="0x14" visible="true" />
+		<float32 name="Ground Damp Fraction Scale" offset="0x18" visible="true" />
+		<tagRef name="Melee Hit Sound" offset="0x1C" visible="true" />
+	</reflexive>
+	<reflexive name="Materials" offset="0x150" visible="true" entrySize="0xB4">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<stringId name="Parent Name" offset="0x4" visible="true" />
+		<bitfield32 name="Flags" offset="0x8" visible="true" />
+		<enum32 name="Old Material Type" offset="0xC" visible="true">
+			<option name="Dirt" value="0x0" />
+			<option name="Sand" value="0x1" />
+			<option name="Stone" value="0x2" />
+			<option name="Snow" value="0x3" />
+			<option name="Wood" value="0x4" />
+			<option name="Metal (hollow)" value="0x5" />
+			<option name="Metal (thin)" value="0x6" />
+			<option name="Metal (thick)" value="0x7" />
+			<option name="Rubber" value="0x8" />
+			<option name="Glass" value="0x9" />
+			<option name="Force Field" value="0xA" />
+			<option name="Grunt" value="0xB" />
+			<option name="Hunter Armor" value="0xC" />
+			<option name="Hunter Skin" value="0xD" />
+			<option name="Elite" value="0xE" />
+			<option name="Jackal" value="0xF" />
+			<option name="Jackal Energy Shield" value="0x10" />
+			<option name="Engineer Skin" value="0x11" />
+			<option name="Engineer Force Field" value="0x12" />
+			<option name="Flood Combat Form" value="0x13" />
+			<option name="Flood Carrier Form" value="0x14" />
+			<option name="Cyborg Armor" value="0x15" />
+			<option name="Cyborg Energy Shield" value="0x16" />
+			<option name="Human Armor" value="0x17" />
+			<option name="Human Skin" value="0x18" />
+			<option name="Sentinel" value="0x19" />
+			<option name="Monitor" value="0x1A" />
+			<option name="Plastic" value="0x1B" />
+			<option name="Water" value="0x1C" />
+			<option name="Leaves" value="0x1D" />
+			<option name="Elite Energy Shield" value="0x1E" />
+			<option name="Ice" value="0x1F" />
+			<option name="Hunter Shield" value="0x20" />
+		</enum32>
+		<stringId name="General Armor" offset="0x10" visible="true" />
+		<stringId name="Specific Armor" offset="0x14" visible="true" />
+		<float32 name="Friction" offset="0x1C" visible="true" />
+		<float32 name="Restitution" offset="0x20" visible="true" />
+		<float32 name="Density" offset="0x24" visible="true" />
+		<tagRef name="Old Material Physics" offset="0x28" visible="true" />
+		<tagRef name="Breakable Surface" offset="0x30" visible="true" />
+		<tagRef name="Sound Sweetener (small)" offset="0x38" visible="true" />
+		<tagRef name="Sound Sweetener (medium)" offset="0x40" visible="true" />
+		<tagRef name="Sound Sweetener (large)" offset="0x48" visible="true" />
+		<tagRef name="Sound Sweetener Rolling" offset="0x50" visible="true" />
+		<tagRef name="Sound Sweetener Grinding" offset="0x58" visible="true" />
+		<tagRef name="Sound Sweetener (melee)" offset="0x60" visible="true" />
+		<tagRef name="Effect Sweetener (small)" offset="0x70" visible="true" />
+		<tagRef name="Effect Sweetener (medium)" offset="0x78" visible="true" />
+		<tagRef name="Effect Sweetener (large)" offset="0x80" visible="true" />
+		<tagRef name="Effect Sweetener Rolling" offset="0x88" visible="true" />
+		<tagRef name="Effect Sweetener Grinding" offset="0x90" visible="true" />
+		<tagRef name="Effect Sweetener (melee)" offset="0x98" visible="true" />
+		<bitfield32 name="Sweetener Inheritance Flags" offset="0xA8" visible="true">
+			<bit name="Sound Small" index="0" />
+			<bit name="Sound Medium" index="1" />
+			<bit name="Sound Large" index="2" />
+			<bit name="Sound Rolling" index="3" />
+			<bit name="Sound Grinding" index="4" />
+			<bit name="Sound Melee" index="4" />
+			<bit name="" index="5" />
+			<bit name="Effect Small" index="6" />
+			<bit name="Effect Medium" index="7" />
+			<bit name="Effect Large" index="8" />
+			<bit name="Effect Rolling" index="9" />
+			<bit name="Effect Grinding" index="10" />
+			<bit name="Effect Melee" index="11" />
+		</bitfield32>
+		<tagRef name="Material Effects" offset="0xAC" visible="true" />
+	</reflexive>
+	<reflexive name="Multiplayer UI (obsolete)" offset="0x158" visible="true" entrySize="0x20" />
+	<reflexive name="Profile Colors" offset="0x160" visible="true" entrySize="0xC">
+		<colourf name="Color" offset="0x0" format="rgb" visible="true" />
+	</reflexive>
+	<tagRef name="Multiplayer Globals" offset="0x168" visible="true" />
+	<reflexive name="Runtime Level Data" offset="0x170" visible="true" entrySize="0x8">
+		<reflexive name="Campaign Levels" offset="0x0" visible="true" entrySize="0x108">
+			<int32 name="Campaign ID" offset="0x0" visible="true" />
+			<int32 name="Map ID" offset="0x4" visible="true" />
+			<ascii name="Scenario Path" offset="0x8" visible="true" size="0x100" />
+		</reflexive>
+	</reflexive>
+	<reflexive name="UI Level Data" offset="0x178" visible="true" entrySize="0x18">
+		<reflexive name="Campaigns" offset="0x0" visible="true" entrySize="0xB44">
+			<int32 name="Campaign ID" offset="0x0" visible="true" />
+		</reflexive>
+		<reflexive name="Campaign Levels" offset="0x8" visible="true" entrySize="0xB50">
+			<int32 name="Campaign ID" offset="0x0" visible="true" />
+			<int32 name="Map ID" offset="0x4" visible="true" />
+			<tagRef name="Preview Image" offset="0x8" visible="true" />
+			<utf16 name="English Name" offset="0x10" visible="true" size="0x40" />
+			<utf16 name="Japanese Name" offset="0x50" visible="true" size="0x40" />
+			<utf16 name="German Name" offset="0x90" visible="true" size="0x40" />
+			<utf16 name="French Name" offset="0xD0" visible="true" size="0x40" />
+			<utf16 name="Spanish Name" offset="0x110" visible="true" size="0x40" />
+			<utf16 name="Italian Name" offset="0x150" visible="true" size="0x40" />
+			<utf16 name="Korean Name" offset="0x190" visible="true" size="0x40" />
+			<utf16 name="Chinese Name" offset="0x1D0" visible="true" size="0x40" />
+			<utf16 name="Portuguese Name" offset="0x210" visible="true" size="0x40" />
+			<utf16 name="English Description" offset="0x250" visible="true" size="0x100" />
+			<utf16 name="Japanese Description" offset="0x350" visible="true" size="0x100" />
+			<utf16 name="German Description" offset="0x450" visible="true" size="0x100" />
+			<utf16 name="French Description" offset="0x550" visible="true" size="0x100" />
+			<utf16 name="Spanish Description" offset="0x650" visible="true" size="0x100" />
+			<utf16 name="Italian Description" offset="0x750" visible="true" size="0x100" />
+			<utf16 name="Korean Description" offset="0x850" visible="true" size="0x100" />
+			<utf16 name="Chinese Description" offset="0x950" visible="true" size="0x100" />
+			<utf16 name="Portuguese Description" offset="0xA50" visible="true" size="0x100" />
+		</reflexive>
+		<reflexive name="Multiplayer" offset="0x10" visible="true" entrySize="0xC64">
+			<int32 name="Map ID" offset="0x0" visible="true" />
+			<tagRef name="Preview Image" offset="0x4" visible="true" />
+			<utf16 name="English Name" offset="0xC" visible="true" size="0x40" />
+			<utf16 name="Japanese Name" offset="0x4C" visible="true" size="0x40" />
+			<utf16 name="German Name" offset="0x8C" visible="true" size="0x40" />
+			<utf16 name="French Name" offset="0xCC" visible="true" size="0x40" />
+			<utf16 name="Spanish Name" offset="0x10C" visible="true" size="0x40" />
+			<utf16 name="Italian Name" offset="0x14C" visible="true" size="0x40" />
+			<utf16 name="Korean Name" offset="0x18C" visible="true" size="0x40" />
+			<utf16 name="Chinese Name" offset="0x1CC" visible="true" size="0x40" />
+			<utf16 name="Portuguese Name" offset="0x20C" visible="true" size="0x40" />
+			<utf16 name="English Description" offset="0x24C" visible="true" size="0x100" />
+			<utf16 name="Japanese Description" offset="0x34C" visible="true" size="0x100" />
+			<utf16 name="German Description" offset="0x44C" visible="true" size="0x100" />
+			<utf16 name="French Description" offset="0x54C" visible="true" size="0x100" />
+			<utf16 name="Spanish Description" offset="0x64C" visible="true" size="0x100" />
+			<utf16 name="Italian Description" offset="0x74C" visible="true" size="0x100" />
+			<utf16 name="Korean Description" offset="0x84C" visible="true" size="0x100" />
+			<utf16 name="Chinese Description" offset="0x94C" visible="true" size="0x100" />
+			<utf16 name="Portuguese Description" offset="0xA4C" visible="true" size="0x100" />
+			<ascii name="Scenario Path" offset="0xB4C" visible="true" size="0x100" />
+			<int32 name="Sort Order" offset="0xC4C" visible="true" />
+			<bitfield32 name="Flags" offset="0xC50" visible="true">
+				<bit name="Unlockable" index="1" />
+			</bitfield32>
+			<uint8 name="Max Teams None" offset="0xC54" visible="true" />
+			<uint8 name="Max Teams CTF" offset="0xC55" visible="true" />
+			<uint8 name="Max Teams Slayer" offset="0xC56" visible="true" />
+			<uint8 name="Max Teams Oddball" offset="0xC57" visible="true" />
+			<uint8 name="Max Teams KOTH" offset="0xC58" visible="true" />
+			<uint8 name="Max Teams Race" offset="0xC59" visible="true" />
+			<uint8 name="Max Teams Headhunter" offset="0xC5A" visible="true" />
+			<uint8 name="Max Teams Juggernaught" offset="0xC5B" visible="true" />
+			<uint8 name="Max Teams Territories" offset="0xC5C" visible="true" />
+			<uint8 name="Max Teams Assault" offset="0xC5D" visible="true" />
+			<uint8 name="Max Teams Stub 10" offset="0xC5E" visible="true" />
+			<uint8 name="Max Teams Stub 11" offset="0xC5F" visible="true" />
+			<uint8 name="Max Teams Stub 12" offset="0xC60" visible="true" />
+			<uint8 name="Max Teams Stub 13" offset="0xC61" visible="true" />
+			<uint8 name="Max Teams Stub 14" offset="0xC62" visible="true" />
+			<uint8 name="Max Teams Stub 15" offset="0xC63" visible="true" />
+		</reflexive>
+	</reflexive>
+	<tagRef name="Default Global Lighting" offset="0x180" visible="true" />
+	<int32 name="English String Count" offset="0x190" visible="true" />
+	<int32 name="English String Table Size" offset="0x194" visible="true" />
+	<int32 name="English String Index Offset" offset="0x198" visible="true" />
+	<int32 name="English String Table Offset" offset="0x19C" visible="true" />
+	<int32 name="Unknown" offset="0x1A0" visible="false" />
+	<int32 name="Japanese String Count" offset="0x1AC" visible="true" />
+	<int32 name="Japanese String Table Size" offset="0x1B0" visible="true" />
+	<int32 name="Japanese String Index Offset" offset="0x1B4" visible="true" />
+	<int32 name="Japanese String Table Offset" offset="0x1B8" visible="true" />
+	<int32 name="Unknown" offset="0x1BC" visible="false" />
+	<int32 name="German String Count" offset="0x1C8" visible="true" />
+	<int32 name="German String Table Size" offset="0x1CC" visible="true" />
+	<int32 name="German String Index Offset" offset="0x1D0" visible="true" />
+	<int32 name="German String Table Offset" offset="0x1D4" visible="true" />
+	<int32 name="Unknown" offset="0x1D8" visible="false" />
+	<int32 name="French String Count" offset="0x1E4" visible="true" />
+	<int32 name="French String Table Size" offset="0x1E8" visible="true" />
+	<int32 name="French String Index Offset" offset="0x1EC" visible="true" />
+	<int32 name="French String Table Offset" offset="0x1F0" visible="true" />
+	<int32 name="Unknown" offset="0x1F4" visible="false" />
+	<int32 name="Spanish String Count" offset="0x200" visible="true" />
+	<int32 name="Spanish String Table Size" offset="0x204" visible="true" />
+	<int32 name="Spanish String Index Offset" offset="0x208" visible="true" />
+	<int32 name="Spanish String Table Offset" offset="0x20C" visible="true" />
+	<int32 name="Unknown" offset="0x210" visible="false" />
+	<int32 name="Italian String Count" offset="0x21C" visible="true" />
+	<int32 name="Italian String Table Size" offset="0x220" visible="true" />
+	<int32 name="Italian String Index Offset" offset="0x224" visible="true" />
+	<int32 name="Italian String Table Offset" offset="0x228" visible="true" />
+	<int32 name="Unknown" offset="0x22C" visible="false" />
+	<int32 name="Korean String Count" offset="0x238" visible="true" />
+	<int32 name="Korean String Table Size" offset="0x23C" visible="true" />
+	<int32 name="Korean String Index Offset" offset="0x240" visible="true" />
+	<int32 name="Korean String Table Offset" offset="0x244" visible="true" />
+	<int32 name="Unknown" offset="0x248" visible="false" />
+	<int32 name="Chinese String Count" offset="0x254" visible="true" />
+	<int32 name="Chinese String Table Size" offset="0x258" visible="true" />
+	<int32 name="Chinese String Index Offset" offset="0x25C" visible="true" />
+	<int32 name="Chinese String Table Offset" offset="0x260" visible="true" />
+	<int32 name="Unknown" offset="0x264" visible="false" />
+	<int32 name="Portuguese String Count" offset="0x270" visible="true" />
+	<int32 name="Portuguese String Table Size" offset="0x274" visible="true" />
+	<int32 name="Portuguese String Index Offset" offset="0x278" visible="true" />
+	<int32 name="Portuguese String Table Offset" offset="0x27C" visible="true" />
+	<int32 name="Unknown" offset="0x280" visible="false" />
+</plugin>
