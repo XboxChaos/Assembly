@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\DLLs\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -46,6 +49,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLLs\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +65,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLLs\WPFToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
@@ -70,8 +81,7 @@
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Xceed.Wpf.DataGrid">
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.0.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit">
@@ -92,9 +102,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Compile>
     <Compile Include="Converters\LeftMarginMultiplierConverter.cs" />
+    <Compile Include="Converters\LowercaseConverter.cs" />
     <Compile Include="Converters\QueenifyStringConverter.cs" />
     <Compile Include="Converters\TagHierarchyContextMenuConverter.cs" />
     <Compile Include="Converters\WindowTitleConverter.cs" />
+    <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Helpers\Storage.cs" />
     <Compile Include="Helpers\Tags\ClassTagHierarchy.cs" />
@@ -107,6 +119,10 @@
     <Compile Include="Metro\Controls\Custom\MetroWatermarkTextbox.cs" />
     <Compile Include="Metro\Controls\Custom\MetroWindow.cs" />
     <Compile Include="Metro\Controls\Helpers\TreeViewItemExtensions.cs" />
+    <Compile Include="Metro\Controls\Helpers\InputBindingsManager.cs" />
+    <Compile Include="Metro\Controls\StringIDInput.xaml.cs">
+      <DependentUpon>StringIDInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Vectors\CloseModule.xaml.cs">
       <DependentUpon>CloseModule.xaml</DependentUpon>
     </Compile>
@@ -133,6 +149,73 @@
     <Compile Include="Pages\CacheEditors\TagEditor.xaml.cs">
       <DependentUpon>TagEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\AsciiValue.xaml.cs">
+      <DependentUpon>AsciiValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Bitfield.xaml.cs">
+      <DependentUpon>Bitfield.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\ColourValue.xaml.cs">
+      <DependentUpon>ColourValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Comment.xaml.cs">
+      <DependentUpon>Comment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\DegreeValue.xaml.cs">
+      <DependentUpon>DegreeValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Enumeration.xaml.cs">
+      <DependentUpon>Enumeration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\IntValue.xaml.cs">
+      <DependentUpon>IntValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\TagBlocks.xaml.cs">
+      <DependentUpon>TagBlocks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\RangeValue.xaml.cs">
+      <DependentUpon>RangeValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\RawBlock.xaml.cs">
+      <DependentUpon>RawBlock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Shader.xaml.cs">
+      <DependentUpon>Shader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\StringIDValue.xaml.cs">
+      <DependentUpon>StringIDValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\TagValue.xaml.cs">
+      <DependentUpon>TagValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\VectorValue.xaml.cs">
+      <DependentUpon>VectorValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\BitfieldData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\ColourData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\CommentData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\DataRef.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\DegreeData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\EnumData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\FieldChangeSet.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\FieldChangeTracker.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\IMetaFieldVisitor.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\MetaField.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\MetaFilterer.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\MetaReader.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\MetaWriter.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\NumberData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\RawData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\ReflexiveData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\ReflexiveFlattener.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\ShaderRef.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\StringData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\StringIDData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\TagRefData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\ValueField.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\VectorData.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\WidthCalculator.cs" />
+    <Compile Include="Pages\CacheEditors\TagEditorComponents\Data\WrappedReflexiveEntry.cs" />
     <Compile Include="Pages\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>
@@ -251,6 +334,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Metro\Controls\StringIDInput.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Metro\Themes\Dark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -302,6 +389,66 @@
     <Page Include="Pages\CacheEditors\TagEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\AsciiValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\Bitfield.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\ColourValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\Comment.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\ComponentDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\DegreeValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\Enumeration.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\IntValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\TagBlocks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\RangeValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\RawBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\Shader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\StringIDValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\TagValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CacheEditors\TagEditorComponents\VectorValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\CachePage.xaml">
       <SubType>Designer</SubType>

@@ -12,6 +12,8 @@ namespace Atlas.Helpers
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 
 		private TagSort _cacheEditorTagSortMethod = TagSort.PathHierarchy;
+		private bool _showPluginInformation = true;
+		private string _xsdPath = "";
 
 		[JsonIgnore]
 		public bool Loaded { get; set; }
@@ -36,6 +38,18 @@ namespace Atlas.Helpers
 		{
 			get { return _cacheEditorTagSortMethod; }
 			set { SetField(ref _cacheEditorTagSortMethod, value); }
+		}
+
+		public bool ShowPluginInformation
+		{
+			get { return _showPluginInformation; }
+			set { SetField(ref _showPluginInformation, value); }
+		}
+
+		public string XsdPath
+		{
+			get { return _xsdPath; }
+			set { SetField(ref _xsdPath, value); }
 		}
 
 		#endregion
