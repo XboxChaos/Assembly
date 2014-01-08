@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
+using Atlas.Pages.CacheEditors;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -17,6 +16,13 @@ namespace Atlas.ViewModels
 {
 	public class CachePageViewModel : Base
 	{
+		public CachePageViewModel()
+		{
+			_editors = new ObservableCollection<ICacheEditor>();
+		}
+
+		#region Properties
+
 		public string CacheLocation
 		{
 			get { return _cacheLocation; }
@@ -34,7 +40,6 @@ namespace Atlas.ViewModels
 		public EngineDescription EngineDescription
 		{
 			get { return _engineDescription; }
-			private set { SetField(ref _engineDescription, value); }
 		}
 		private EngineDescription _engineDescription;
 
@@ -72,6 +77,20 @@ namespace Atlas.ViewModels
 			private set { SetField(ref _cacheHeaderInformation, value); }
 		}
 		private CacheHeaderInformation _cacheHeaderInformation;
+
+		#endregion
+
+		#region UI
+
+		public ObservableCollection<ICacheEditor> Editors
+		{
+			get { return _editors; }
+			private set { SetField(ref _editors, value); }
+		}
+
+		private ObservableCollection<ICacheEditor> _editors;
+
+		#endregion
 
 		public void LoadCache(string cacheLocation)
 		{
@@ -120,7 +139,7 @@ namespace Atlas.ViewModels
 			if (CacheFile.TagClasses == null || CacheFile.Tags == null)
 				return;
 
-			_classHierarchy = new ClassTagHierarchy(_cacheFile);
+			ClassHierarchy = new ClassTagHierarchy(_cacheFile);
 			PopulateHierarchy(_classHierarchy);
 
 			switch (App.Storage.Settings.CacheEditorTagSortMethod)
@@ -139,6 +158,15 @@ namespace Atlas.ViewModels
 			}
 		}
 
+		#region Modio Hex Codes (Editor Management)
+
+		public void LoadTagEditor(TagHierarchyNode tagHierarchyNode)
+		{
+			Editors.Add(new TagEditor(this, tagHierarchyNode));
+		}
+
+		#endregion
+
 		#region Helpers
 
 		/// <summary>
@@ -147,7 +175,7 @@ namespace Atlas.ViewModels
 		/// <param name="hierarchy"></param>
 		private void PopulateHierarchy(TagHierarchy hierarchy)
 		{
-			foreach (var tag in _cacheFile.Tags.Where((t) => t != null && t.Class != null && t.MetaLocation != null))
+			foreach (var tag in _cacheFile.Tags.Where(t => t != null && t.Class != null && t.MetaLocation != null))
 				hierarchy.AddTag(tag, GetTagName(tag));
 		}
 
