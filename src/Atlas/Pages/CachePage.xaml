@@ -6,10 +6,24 @@
 	xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
 	xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
 	xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:models="clr-namespace:Atlas.Models"
+	xmlns:converters="clr-namespace:Atlas.Converters"
+	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
+	xmlns:cacheEditors="clr-namespace:Atlas.Pages.CacheEditors"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
+	<UserControl.Resources>
+		<ContextMenu x:Key="TagHierarchyContextMenu" DataContext="{Binding PlacementTarget.(FrameworkElement.DataContext), RelativeSource={RelativeSource Self}}">
+			<MenuItem Header="Open" Uid="opentagcontext" Click="OpenTagContextMenu_OnClick" />
+			<MenuItem Header="Rename" Uid="renametagcontext" Click="RenameNodeContextMenu_OnClick" />
+			<Separator />
+			<MenuItem Header="Extract" Uid="extracttagcontext" Click="ExtractTagContextMenu_OnClick" />
+		</ContextMenu>
+		<ContextMenu x:Key="FolderHierarchyContextMenu" DataContext="{Binding PlacementTarget.(FrameworkElement.DataContext), RelativeSource={RelativeSource Self}}">
+			<MenuItem Header="Rename" Uid="renametagcontext" Click="RenameNodeContextMenu_OnClick" />
+		</ContextMenu>
+		<converters:TagHierarchyContextMenuConverter x:Key="IValueConverterTagHierarchyContextMenu" TagContextMenu="{StaticResource TagHierarchyContextMenu}" FolderContextMenu="{StaticResource FolderHierarchyContextMenu}" />
+	</UserControl.Resources>
 	<Grid>
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -20,7 +34,14 @@
 
 			<Grid x:Name="MainContentGrid" Grid.Column="0">
 				<TabControl Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
-				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" />
+				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" 
+							ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
+					<TabControl.ItemTemplate>
+						<DataTemplate>
+							<TabItem Header="{Binding Path=(cacheEditors:ICacheEditor.EditorTitle), FallbackValue='Editor Title'}" />
+						</DataTemplate>
+					</TabControl.ItemTemplate>
+				</TabControl>
 			</Grid>
 
 			<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
@@ -72,11 +93,12 @@
 											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
 										<TreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Babies}">
-												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20">
+												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" 
+															ContextMenu="{Binding Converter={StaticResource IValueConverterTagHierarchyContextMenu}}">
 													<ContentControl Template="{Binding Converter={StaticResource IValueConverterHierarchyNodeToIcon}}" />
 													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
 															   VerticalAlignment="Center">
-														<Run Text="{Binding Name, Mode=OneWay}" />
+														<Run Text="{Binding Name, Mode=OneWay}" Foreground="White" />
 														<Run Text="{Binding Suffix, Mode=OneWay}" Foreground="#e5e5e5" />
 													</TextBlock>
 												</StackPanel>
@@ -86,7 +108,7 @@
 													<ContentControl Template="{Binding Converter={StaticResource IValueConverterCacheEditorNodeToIcon}}" />
 													<TextBlock FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" Margin="0,-2,0,0" 
 															   VerticalAlignment="Center">
-														<Run Text="{Binding Name, Mode=OneWay}" />
+														<Run Text="{Binding Name, Mode=OneWay}" Foreground="White" />
 														<Run Text=" - Specialized Editor" Foreground="#e5e5e5" />
 													</TextBlock>
 												</StackPanel>
