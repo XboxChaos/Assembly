@@ -38,14 +38,14 @@ namespace Atlas.Pages.CacheEditors
 			private set { SetField(ref _editorTitle, value); }
 		}
 		private string _editorTitle;
-		private const string EditorFormat = "Tag - {0}.{1}";
+		private const string EditorFormat = "Tag - {0}";
 
 		public TagEditor(CachePageViewModel cachePageViewModel, TagHierarchyNode tagHierarchyNode)
 		{
 			DataContext = _cachePageViewModel = cachePageViewModel;
 			_tagHierarchyNode = tagHierarchyNode;
 			_fileManager = _cachePageViewModel.MapStreamManager;
-			EditorTitle = string.Format(EditorFormat, _tagHierarchyNode.Name, CharConstant.ToString(_tagHierarchyNode.TagClass.Magic));
+			EditorTitle = string.Format(EditorFormat, _tagHierarchyNode.Name);
 
 			InitializeComponent();
 

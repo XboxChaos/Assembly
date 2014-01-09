@@ -85,7 +85,7 @@ namespace Atlas.Helpers.Tags
 		}
 
 		/// <summary>
-		/// Gets or sets the node's name.
+		/// Gets or sets the node's name. (If it's a tag, it will include the class as an extention. ie; masterchief.bipd)
 		/// </summary>
 		public string Name
 		{
