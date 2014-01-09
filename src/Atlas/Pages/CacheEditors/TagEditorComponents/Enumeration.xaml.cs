@@ -1,17 +1,15 @@
-﻿using System.Windows.Controls;
-
-namespace Atlas.Pages.CacheEditors.TagEditorComponents
+﻿namespace Atlas.Pages.CacheEditors.TagEditorComponents
 {
 	/// <summary>
 	///     Interaction logic for Enumeration.xaml
 	/// </summary>
-	public partial class Enumeration : UserControl
+	public partial class Enumeration
 	{
 		public Enumeration()
 		{
 			InitializeComponent();
 
-			indexToggle.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
+			indexToggle.IsChecked = App.Storage.Settings.TagEditorShowEnumIndex;
 		}
 	}
 }
