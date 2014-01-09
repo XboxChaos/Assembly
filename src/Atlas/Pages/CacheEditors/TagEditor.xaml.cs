@@ -8,7 +8,6 @@ using Atlas.Helpers.Plugins;
 using Atlas.Helpers.Tags;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
-using Blamite.Blam;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
