@@ -36,11 +36,12 @@
 				<TabControl Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
 				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" 
 							ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
-					<TabControl.ItemTemplate>
-						<DataTemplate>
-							<TabItem Header="{Binding Path=(cacheEditors:ICacheEditor.EditorTitle), FallbackValue='Editor Title'}" />
-						</DataTemplate>
-					</TabControl.ItemTemplate>
+					<TabControl.ItemContainerStyle>
+						<Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="{x:Type TabItem}">
+							<Setter Property="Header" Value="{Binding (cacheEditors:ICacheEditor.EditorTitle)}"/>
+							<Setter Property="Content" Value="{Binding}"/>
+						</Style>
+					</TabControl.ItemContainerStyle>
 				</TabControl>
 			</Grid>
 
