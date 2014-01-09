@@ -3,10 +3,79 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="300" d:DesignWidth="300">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="TagEditorComponents/ComponentDictionary.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
 	<Grid>
-		<TextBlock Text="{Binding Path=(viewModels:CachePageViewModel.CacheFile).InternalName, FallbackValue=Test}" />
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="40px" />
+		</Grid.RowDefinitions>
+		<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,30,0,30"
+				 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+				 ScrollViewer.CanContentScroll="True"
+				 Padding="0,7,0,7">
+			<ListBox.LayoutTransform>
+				<ScaleTransform ScaleX="{Binding Path=Value, ElementName=TagDataZoomSLider}" 
+								ScaleY="{Binding Path=Value, ElementName=TagDataZoomSLider}" />
+			</ListBox.LayoutTransform>
+			<ListBox.Template>
+				<ControlTemplate>
+					<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+						<ItemsPresenter />
+					</ScrollViewer>
+				</ControlTemplate>
+			</ListBox.Template>
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate>
+								<Grid Background="{TemplateBinding ListBoxItem.Background}">
+									<ContentPresenter Name="PART_Content"
+														  Content="{TemplateBinding ContentControl.Content}"
+														  Margin="20,0,20,0"
+														  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+														  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+														  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+														  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+														  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+									<!--<Grid.ContextMenu>
+											<ContextMenu Name="metaFieldMenu">
+												<ContextMenu.CommandBindings>
+													<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+																	CanExecute="ViewValueAsCommand_CanExecute"
+																	Executed="ViewValueAsCommand_Executed" />
+
+													<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
+																	CanExecute="GoToPlugin_CanExecute"
+																	Executed="GoToPlugin_Executed" />
+												</ContextMenu.CommandBindings>
+												<MenuItem Header="View Value As..." Foreground="White"
+														  Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
+												<MenuItem Header="Go to plugin line..." Foreground="White" Command="{x:Static local:MetaEditor.GoToPlugin}"
+														  CommandParameter="{Binding}" />
+											</ContextMenu>
+										</Grid.ContextMenu>-->
+								</Grid>
+								<ControlTemplate.Triggers>
+									<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+										<Setter Property="Background" Value="#FF181818" />
+									</DataTrigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
+
+		<Slider Grid.Row="1" Name="TagDataZoomSLider" Value="1" Minimum="0.1" Maximum="1" />
 	</Grid>
 </UserControl>
