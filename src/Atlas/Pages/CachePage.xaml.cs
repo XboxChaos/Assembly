@@ -43,7 +43,6 @@ namespace Atlas.Pages
 		{
 			throw new NotImplementedException();
 		}
-
 		private void RenameNodeContextMenu_OnClick(object sender, RoutedEventArgs e)
 		{
 			throw new NotImplementedException();

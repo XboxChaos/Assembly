@@ -2,6 +2,7 @@
 using System.Windows;
 using Atlas.Dialogs;
 using Atlas.Native;
+using Atlas.Pages;
 using Atlas.ViewModels;
 
 namespace Atlas.Windows
@@ -16,12 +17,11 @@ namespace Atlas.Windows
 		public Home()
 		{
 			InitializeComponent();
+			App.Storage.HomeWindow = this;
 
 			ViewModel = new HomeViewModel();
-			DataContext = ViewModel;
-
-			App.Storage.HomeWindow = this;
-			App.Storage.HomeWindowViewModel = ViewModel;
+			DataContext = App.Storage.HomeWindowViewModel = ViewModel;
+			ViewModel.AssemblyPage = new StartPage();
 
 #if !DEBUG
 			DebugMenuItems.Visibility = Visibility.Collapsed;

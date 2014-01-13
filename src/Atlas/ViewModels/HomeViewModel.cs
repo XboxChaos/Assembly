@@ -79,13 +79,14 @@ namespace Atlas.ViewModels
 			set
 			{
 				// try closing current page
-				if (!_assemblyPage.Close()) return;
+				if (_assemblyPage != null)
+					if (!_assemblyPage.Close()) return;
 
 				// aite, we can
 				SetField(ref _assemblyPage, value);
 			}
 		}
-		private IAssemblyPage _assemblyPage = new StartPage();
+		private IAssemblyPage _assemblyPage;
 		#endregion
 
 		#endregion
@@ -140,6 +141,11 @@ namespace Atlas.ViewModels
 		#endregion
 
 		#region Helpers
+
+		public void UpdateStatus(string status)
+		{
+			ApplicationTitle = App.Storage.HomeWindow.Title = String.Format("{0} - Assembly", status);
+		}
 
 		public enum Type
 		{

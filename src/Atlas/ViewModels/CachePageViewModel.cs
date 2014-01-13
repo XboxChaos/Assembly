@@ -98,6 +98,7 @@ namespace Atlas.ViewModels
 
 			using (var fileStream = File.OpenRead(CacheLocation))
 			{
+				var fileInfo = new FileInfo(CacheLocation);
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
 				CacheFile = CacheFileLoader.LoadCacheFile(reader, App.Storage.Settings.DefaultDatabase,
 					out _engineDescription);
@@ -110,6 +111,9 @@ namespace Atlas.ViewModels
 
 				LoadHeader();
 				LoadTags();
+
+				App.Storage.HomeWindowViewModel.UpdateStatus(
+					String.Format("{0} ({1})", CacheFile.InternalName, fileInfo.Name));
 			}
 		}
 
