@@ -110,7 +110,7 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="TabActiveButtons" TargetType="Button">
+	<Style x:Key="TabActiveButtons" TargetType="{x:Type Button}">
 		<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrush}" />
 		<Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
 		<Setter Property="FontSize" Value="12" />
@@ -127,12 +127,14 @@
 					<Grid x:Name="Grid">
 						<Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
 						        BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" />
-						<ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
+						<ContentPresenter x:Name="ContentPresenter" TextBlock.Foreground="{DynamicResource AssemblyAccentBrush}" 
+										  HorizontalAlignment="Left" VerticalAlignment="Center" RecognizesAccessKey="True" />
 					</Grid>
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="true">
-							<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+							<Setter Property="TextBlock.Foreground" TargetName="ContentPresenter" 
+									Value="{DynamicResource AssemblyAccentBrushSecondary}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
