@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Windows;
+using Atlas.Dialogs;
 using Atlas.Native;
-using Atlas.Pages;
 using Atlas.ViewModels;
 
 namespace Atlas.Windows
@@ -18,6 +19,13 @@ namespace Atlas.Windows
 
 			ViewModel = new HomeViewModel();
 			DataContext = ViewModel;
+
+			App.Storage.HomeWindow = this;
+			App.Storage.HomeWindowViewModel = ViewModel;
+
+#if !DEBUG
+			DebugMenuItems.Visibility = Visibility.Collapsed;
+#endif
 		}
 
 		protected override void OnStateChanged(EventArgs e)
@@ -34,9 +42,19 @@ namespace Atlas.Windows
 			base.OnSourceInitialized(e);
 		}
 
-		private void OpenCacheMenuItem_OnClick(object sender, System.Windows.RoutedEventArgs e)
+		private void OpenCacheMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
 			ViewModel.OpenFile(HomeViewModel.Type.BlamCache);
 		}
+
+		#region Debug Menu
+
+		private void MessageBoxDiaogTextMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			MetroMessageBox.Show("Message Box Title",
+				"Haxx0r ipsum L0phtCrack January 1, 1970 spoof epoch continue suitably small values tunnel in. Worm fail packet sniffer for ascii giga nak double flood linux boolean int gcc. Cd I'm compiling overflow fopen endif default system break James T. Kirk bar vi hexadecimal unix rsa ack. ");
+		}
+
+		#endregion
 	}
 }

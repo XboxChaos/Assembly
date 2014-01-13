@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using Atlas.Models;
+using Atlas.ViewModels;
+using Atlas.Windows;
 using Newtonsoft.Json;
 
 namespace Atlas.Helpers
@@ -47,5 +49,15 @@ namespace Atlas.Helpers
 			}
 		}
 		private Settings _settings = new Settings();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Home HomeWindow { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public HomeViewModel HomeWindowViewModel { get; set; }
 	}
 }
