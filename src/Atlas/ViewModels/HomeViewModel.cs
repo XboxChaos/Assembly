@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Forms;
-using Atlas.Metro.Controls.Custom;
+using Atlas.Models;
 using Atlas.Pages;
 
 namespace Atlas.ViewModels
 {
-	public class HomeViewModel : MetroWindow, INotifyPropertyChanged
+	public class HomeViewModel : Base
 	{
 		#region Properties
 
@@ -118,23 +115,28 @@ namespace Atlas.ViewModels
 
 		#endregion
 
-		#region Binding
+		#region Dialog Management
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void OnPropertyChanged(string propertyName)
+		private int _maskCount;
+
+		public void ShowDialog(bool showMask = true)
 		{
-			if (PropertyChanged != null)
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-		protected bool SetField<T>(ref T field, T value,
-			[CallerMemberName] string propertyName = "")
-		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-			field = value;
-			OnPropertyChanged(propertyName);
-			return true;
+			if (showMask)
+				_maskCount++;
+
+			if (_maskCount > 0)
+				MaskVisibility = Visibility.Visible;
 		}
 
+		public void HideDialog(bool maskShown = true)
+		{
+			if (maskShown)
+				_maskCount--;
+
+			if (_maskCount == 0)
+				MaskVisibility = Visibility.Collapsed;
+		}
+		
 		#endregion
 
 		#region Helpers
@@ -163,7 +165,7 @@ namespace Atlas.ViewModels
 				FilterIndex = (int) type
 			};
 
-			if (openFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
 				return;
 
 			// TODO: process type, and open in the correct editor
