@@ -76,7 +76,127 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
+
+	<Style TargetType="{x:Type ToggleButton}" x:Key="ToggleTabChooser">
+		<Setter Property="Foreground" Value="#999999" />
+		<Setter Property="Background" Value="#222222" />
+		<Setter Property="BorderBrush" Value="#616161" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding" Value="0,-2,0,0" />
+		<Setter Property="Height" Value="22" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<Border>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="20" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<Path x:Name="VectorIcon" Data="M 0,10 L 10,20 10,0 0,10" Fill="#FF9E9E9E" 
+								  RenderTransformOrigin="0.5,0.5" Margin="12,7.125,4.172,7.75" Stretch="Fill"
+								  Visibility="Collapsed">
+								<Path.RenderTransform>
+									<TransformGroup>
+										<ScaleTransform />
+										<SkewTransform />
+										<RotateTransform Angle="180" />
+										<TranslateTransform />
+									</TransformGroup>
+								</Path.RenderTransform>
+							</Path>
+							<ContentPresenter Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							                  Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+							                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsKeyboardFocused" Value="true" />
+
+						<Trigger Property="IsChecked" Value="true">
+							<Setter TargetName="VectorIcon" Property="Visibility" Value="Visible" />
+						</Trigger>
+
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Foreground" Value="#ADADAD" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="{x:Type ToggleButton}">
+		<Setter Property="Foreground" Value="#FF999999" />
+		<Setter Property="Background" Value="#FF222222" />
+		<Setter Property="BorderBrush" Value="#FF616161" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding" Value="0,0,0,0" />
+		<Setter Property="Height" Value="22" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+							BorderThickness="{TemplateBinding BorderThickness}" 
+							Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+						<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+										  Content="{TemplateBinding Content}" 
+										  ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+										  Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+										  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<!-- Checked Button -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsChecked" Value="true" />
+								<Condition Property="IsEnabled" Value="true" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" Value="#393939" TargetName="border" />
+						</MultiTrigger>
+
+						<!-- Mouse Over -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+								<Condition Property="IsPressed" Value="false" />
+								<Condition Property="IsEnabled" Value="true" />
+							</MultiTrigger.Conditions>
+							<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrushSecondary}" 
+									TargetName="border" />
+						</MultiTrigger>
+
+						<!-- Mouse Pressed -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+								<Condition Property="IsPressed" Value="true" />
+								<Condition Property="IsEnabled" Value="true" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" Value="#333333" TargetName="border" />
+							<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrushSecondary}" 
+									TargetName="border" />
+						</MultiTrigger>
+
+						<!-- Disabled -->
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Background" Value="#FF575757" TargetName="border" />
+							<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<Style x:Key="WindowActionButton" TargetType="{x:Type Button}">
 		<Setter Property="Foreground" Value="{DynamicResource TextBrushPrimary}" />
 		<Setter Property="FontFamily" Value="{DynamicResource MetroFontSemiBold}" />
