@@ -10,7 +10,6 @@
 	xmlns:converters="clr-namespace:Atlas.Converters"
 	xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 	xmlns:cacheEditors="clr-namespace:Atlas.Pages.CacheEditors"
-	xmlns:system="clr-namespace:System;assembly=mscorlib"
 	mc:Ignorable="d" 
 	d:DesignHeight="800" d:DesignWidth="1200">
 	<UserControl.Resources>
@@ -27,13 +26,54 @@
 	</UserControl.Resources>
 	<Grid>
 		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition x:Name="GridLeftColumnDefinition" Width="*" MinWidth="30" />
 				<ColumnDefinition Width="4" />
 				<ColumnDefinition x:Name="GridRightColumnDefinition" Width="350" MinWidth="30" />
 			</Grid.ColumnDefinitions>
 
-			<Grid x:Name="MainContentGrid" Grid.Column="0">
+			<Grid Margin="8,10" Grid.ColumnSpan="3">
+				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed">
+					<ToggleButton x:Name="EditorHistoryToggleButton" ToolTip="Editor History">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<Grid Margin="0">
+								<Ellipse Fill="#7ac1ff" Width="14" Height="14" />
+								<Path Fill="#313135" Data="M 0,2 L 3,0 4,0 3,2 7,2 7,4 3,4 4,6 3,6 0,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+							</Grid>
+							<Path x:Name="Arrow" Grid.Column="1" Data="M 0,0 L 3,3 6,0 Z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+						</Grid>
+					</ToggleButton>
+					<Popup IsOpen="{Binding ElementName=EditorHistoryToggleButton, Path=IsChecked}">
+						<StackPanel>
+							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+						</StackPanel>
+					</Popup>
+					
+					<Separator />
+
+					<ComboBox SelectedIndex="0" ItemsSource="{Binding Path=(viewModels:CachePageViewModel.EngineMemory).EngineVersions}" Style="{StaticResource {x:Type ComboBox}}">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding VersionFriendly}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+				</custom:MetroToolBar>
+			</Grid>
+			
+			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<TabControl Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
 				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" 
 							ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
@@ -46,9 +86,9 @@
 				</TabControl>
 			</Grid>
 
-			<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
+			<GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
 
-			<Grid x:Name="SideContentGrid" Grid.Column="2">
+			<Grid x:Name="SideContentGrid" Grid.Column="2" Grid.Row="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="0.6*" />
 					<RowDefinition Height="4" />
