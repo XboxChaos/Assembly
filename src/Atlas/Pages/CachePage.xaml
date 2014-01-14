@@ -36,9 +36,10 @@
 				<ColumnDefinition x:Name="GridRightColumnDefinition" Width="350" MinWidth="30" />
 			</Grid.ColumnDefinitions>
 
-			<Grid Margin="8,10" Grid.ColumnSpan="3">
+			<StackPanel Margin="8,10" Grid.ColumnSpan="3" Orientation="Horizontal">
+				<!-- Recents and Engine Version Selection -->
 				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed">
-					<ToggleButton x:Name="EditorHistoryToggleButton" ToolTip="Editor History">
+					<xctk:DropDownButton>
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto"/>
@@ -49,18 +50,17 @@
 								<Ellipse Fill="#7ac1ff" Width="14" Height="14" />
 								<Path Fill="#313135" Data="M 0,2 L 3,0 4,0 3,2 7,2 7,4 3,4 4,6 3,6 0,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
 							</Grid>
-							<Path x:Name="Arrow" Grid.Column="1" Data="M 0,0 L 3,3 6,0 Z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
 						</Grid>
-					</ToggleButton>
-					<Popup IsOpen="{Binding ElementName=EditorHistoryToggleButton, Path=IsChecked}">
-						<StackPanel>
-							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
-							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
-							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
-							<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
-						</StackPanel>
-					</Popup>
-					
+						<xctk:DropDownButton.DropDownContent>
+							<StackPanel>
+								<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+								<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+								<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+								<MenuItem Header="Tag Editor - characters\marine_armoured\bitmaps\face_johnson_sarge" />
+							</StackPanel>
+						</xctk:DropDownButton.DropDownContent>
+					</xctk:DropDownButton>
+
 					<Separator />
 
 					<ComboBox SelectedIndex="0" ItemsSource="{Binding Path=(viewModels:CachePageViewModel.EngineMemory).EngineVersions}" Style="{StaticResource {x:Type ComboBox}}">
@@ -71,7 +71,17 @@
 						</ComboBox.ItemTemplate>
 					</ComboBox>
 				</custom:MetroToolBar>
-			</Grid>
+				
+				<!-- Quick XBDM shortcuts -->
+				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed">
+					
+				</custom:MetroToolBar>
+
+				<!-- Engine Memory Quick Options (Only if the engine version supports this shit -->
+				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed" Visibility="{Binding Path=(viewModels:CachePageViewModel.BuildHasEngineMemory), Converter={StaticResource InverseBoolConverter}}">
+
+				</custom:MetroToolBar>
+			</StackPanel>
 			
 			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<TabControl Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
@@ -96,7 +106,7 @@
 				</Grid.RowDefinitions>
 
 				<Grid Grid.Row="0" Background="#2d2d30">
-					<TabControl TabStripPlacement="Bottom">
+					<TabControl x:Name="EditorsTabControl" TabStripPlacement="Bottom">
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
 							<custom:MetroContainer x:Name="TagExplorerMetroContainer" Title="{Binding FallbackValue='Tag Explorer (internal)', StringFormat='Tag Explorer ({0})'}">
 								<Grid>

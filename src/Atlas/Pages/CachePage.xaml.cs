@@ -15,7 +15,7 @@ namespace Atlas.Pages
 
 		public CachePage(string cacheLocation)
 		{
-			ViewModel = new CachePageViewModel();
+			ViewModel = new CachePageViewModel(this);
 			ViewModel.LoadCache(cacheLocation);
 			DataContext = ViewModel;
 			InitializeComponent();

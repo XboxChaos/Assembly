@@ -6,6 +6,7 @@ using System.Linq;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
+using Atlas.Pages;
 using Atlas.Pages.CacheEditors;
 using Blamite.Blam;
 using Blamite.Flexibility;
@@ -17,9 +18,12 @@ namespace Atlas.ViewModels
 {
 	public class CachePageViewModel : Base
 	{
-		public CachePageViewModel()
+		public CachePage CachePage { get; private set; }
+
+		public CachePageViewModel(CachePage cachePage)
 		{
-			_editors = new ObservableCollection<ICacheEditor>();
+			CachePage = cachePage;
+			Editors = new ObservableCollection<ICacheEditor>();
 		}
 
 		#region Properties
@@ -30,13 +34,6 @@ namespace Atlas.ViewModels
 			set { SetField(ref _engineMemory, value); }
 		}
 		private EngineMemory _engineMemory;
-		
-		public bool BuildHasEngineMemory
-		{
-			get { return _buildHasEngineMemoryTools; }
-			set { SetField(ref _buildHasEngineMemoryTools, value); }
-		}
-		private bool _buildHasEngineMemoryTools;
 
 		public string CacheLocation
 		{
@@ -96,6 +93,13 @@ namespace Atlas.ViewModels
 		#endregion
 
 		#region UI
+
+		public bool BuildHasEngineMemory
+		{
+			get { return _buildHasEngineMemoryTools; }
+			set { SetField(ref _buildHasEngineMemoryTools, value); }
+		}
+		private bool _buildHasEngineMemoryTools;
 
 		public ObservableCollection<ICacheEditor> Editors
 		{
@@ -202,7 +206,9 @@ namespace Atlas.ViewModels
 
 		public void LoadTagEditor(TagHierarchyNode tagHierarchyNode)
 		{
-			Editors.Add(new TagEditor(this, tagHierarchyNode));
+			var editor = new TagEditor(this, tagHierarchyNode);
+			Editors.Add(editor);
+			CachePage.EditorsTabControl.SelectedItem = editor;
 		}
 
 		#endregion
