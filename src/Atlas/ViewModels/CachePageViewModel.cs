@@ -11,6 +11,7 @@ using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Util;
+using Newtonsoft.Json;
 
 namespace Atlas.ViewModels
 {
@@ -22,6 +23,20 @@ namespace Atlas.ViewModels
 		}
 
 		#region Properties
+
+		public EngineMemory EngineMemory
+		{
+			get { return _engineMemory; }
+			set { SetField(ref _engineMemory, value); }
+		}
+		private EngineMemory _engineMemory;
+		
+		public bool BuildHasEngineMemory
+		{
+			get { return _buildHasEngineMemoryTools; }
+			set { SetField(ref _buildHasEngineMemoryTools, value); }
+		}
+		private bool _buildHasEngineMemoryTools;
 
 		public string CacheLocation
 		{
@@ -111,6 +126,7 @@ namespace Atlas.ViewModels
 
 				LoadHeader();
 				LoadTags();
+				LoadEngineMemory();
 
 				App.Storage.HomeWindowViewModel.UpdateStatus(
 					String.Format("{0} ({1})", CacheFile.InternalName, fileInfo.Name));
@@ -159,6 +175,26 @@ namespace Atlas.ViewModels
 
 				default:
 					throw new NotImplementedException();
+			}
+		}
+
+		private void LoadEngineMemory()
+		{
+			var memoryPath = String.Format(@"{0}/{1}/{2}/EngineMemory.json",
+				VariousFunctions.GetApplicationLocation(), "Storage",
+				EngineDescription.Settings.GetSetting<string>("memory"));
+
+			try
+			{
+				if (!File.Exists(memoryPath))
+					throw new FileNotFoundException();
+
+				EngineMemory = JsonConvert.DeserializeObject<EngineMemory>(File.ReadAllText(memoryPath));
+				BuildHasEngineMemory = true;
+			}
+			catch
+			{
+				BuildHasEngineMemory = false;
 			}
 		}
 
