@@ -139,8 +139,11 @@
 						<selectors:XbdmQuickOptionsButtonTypeSelector x:Key="DataTemplateSelectorXbdmQuickOptionsButtonType" />
 
 						<DataTemplate x:Key="Toggle">
-							<ToggleButton Content="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" 
-										  Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" Click="QuickOptionButton_OnClick">
+							<ToggleButton Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" Width="25" 
+										  Click="QuickOptionButton_OnClick">
+								<ToggleButton.Content>
+									<ContentControl Template="{Binding Path= (models:EngineMemory+EngineVersion+QuickOption.IconResourceKey),Converter={StaticResource IValueConverterStringToResource}}" />
+								</ToggleButton.Content>
 								<ToggleButton.ToolTip>
 									<TextBlock>
 											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
@@ -151,8 +154,11 @@
 							</ToggleButton>
 						</DataTemplate>
 						<DataTemplate x:Key="NotToggle">
-							<Button Content="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" 
-									Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Click="QuickOptionButton_OnClick">
+							<Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="25" 
+										Click="QuickOptionButton_OnClick">
+								<Button.Content>
+									<ContentControl Template="{Binding Path= (models:EngineMemory+EngineVersion+QuickOption.IconResourceKey),Converter={StaticResource IValueConverterStringToResource}}" />
+								</Button.Content>
 								<Button.ToolTip>
 									<TextBlock>
 											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
