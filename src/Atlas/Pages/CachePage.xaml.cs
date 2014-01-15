@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using Atlas.Dialogs;
 using Atlas.Helpers.Tags;
+using Atlas.Models;
 using Atlas.ViewModels;
 using XBDMCommunicator;
 
@@ -95,6 +98,30 @@ namespace Atlas.Pages
 		private void XbdmToolbarActiveTitleRebootButton_OnClick(object sender, RoutedEventArgs e)
 		{
 			ViewModel.RebootConsole(Xbdm.RebootType.ActiveTitle);
+		}
+
+		#endregion
+
+		#region Xbdm Quick Options
+
+		private void QuickOptionButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			var element = (FrameworkElement)sender;
+			if (element == null) return;
+			var quickOption = element.DataContext as EngineMemory.EngineVersion.QuickOption;
+			if (quickOption == null) return;
+
+			if (quickOption.CarefulMode)
+				MetroMessageBox.Show("careful", "this could fuck shit up.");
+
+			byte value = 0x01;
+			if (quickOption.IsToggle)
+			{
+				var toggleButton = element as ToggleButton;
+				if (toggleButton != null && !(toggleButton.IsChecked ?? true))
+					value = 0x00;
+			}
+			ViewModel.PokeByte(quickOption.Address, value);
 		}
 
 		#endregion

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.RightsManagement;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
@@ -285,6 +286,14 @@ namespace Atlas.ViewModels
 		{
 			SetupXbdm();
 			XboxDebugManager.Reboot(rebootType);
+		}
+
+		// TODO: make this nicer m8
+		public void PokeByte(UInt32 offset, byte value)
+		{
+			SetupXbdm();
+			XboxDebugManager.MemoryStream.Seek(offset, SeekOrigin.Begin);
+			XboxDebugManager.MemoryStream.WriteByte(value);
 		}
 
 		#endregion
