@@ -4,7 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Atlas.Dialogs;
 using Atlas.Helpers.Tags;
+using Atlas.Metro.Controls.Custom;
 using Atlas.Models;
+using Atlas.Pages.CacheEditors;
 using Atlas.ViewModels;
 using XBDMCommunicator;
 
@@ -29,6 +31,9 @@ namespace Atlas.Pages
 			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
 			CacheInformationPropertyGrid.SelectedObject = ViewModel.CacheHeaderInformation;
 			XdkIpAddressTextBox.DataContext = App.Storage.Settings;
+
+			// woo
+			AddHandler(MetroClosableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
 		}
 
 		public bool Close()
@@ -134,5 +139,12 @@ namespace Atlas.Pages
 		}
 
 		#endregion
+
+		private void CloseTab(object source, RoutedEventArgs args)
+		{
+			var editor = ((MetroClosableTabItem) args.OriginalSource).Content as ICacheEditor;
+			if (editor == null) return;
+			if (editor.Close()) ViewModel.Editors.Remove(editor);
+		}
 	}
 }

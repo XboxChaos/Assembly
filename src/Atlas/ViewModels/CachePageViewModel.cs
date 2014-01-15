@@ -227,20 +227,19 @@ namespace Atlas.ViewModels
 		public void LoadTagEditor(TagHierarchyNode tagHierarchyNode)
 		{
 			var editor = new TagEditor(this, tagHierarchyNode);
+			Editors.Add(editor);
 			CachePage.EditorsTabControl.SelectedItem = editor;
 		}
 
 		public void LoadAdvancedMemoryEditor()
 		{
 			var editor = Editors.FirstOrDefault(e => e is AdvancedMemoryEditor);
-			if (editor != null)
+			if (editor == null)
 			{
-				CachePage.EditorsTabControl.SelectedItem = editor;
-				return;
+				editor = new AdvancedMemoryEditor(this);
+				Editors.Add(editor);
 			}
-
-			editor = new AdvancedMemoryEditor(this);
-			Editors.Add(editor);
+			CachePage.EditorsTabControl.SelectedItem = editor;
 		}
 
 		#endregion

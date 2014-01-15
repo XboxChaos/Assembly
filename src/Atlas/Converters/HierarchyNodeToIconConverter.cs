@@ -13,8 +13,7 @@ namespace Atlas.Converters
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var tagHierarchyNode = (TagHierarchyNode) value;
-
-			if (tagHierarchyNode.IsFolder || !tagHierarchyNode.IsTag)
+			if (tagHierarchyNode.IsFolder)
 				return Application.Current.FindResource("HierarchyClosedFolder");
 
 			var ext = (Path.GetExtension(tagHierarchyNode.Name) ?? "").ToLower();
