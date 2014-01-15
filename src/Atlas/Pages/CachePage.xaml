@@ -273,10 +273,23 @@
 						</TabItem>
 						<TabItem Header="Memory" Style="{DynamicResource MetroTabControlBottom}">
 							<custom:MetroContainer Title="Memory">
-								<StackPanel Margin="20">
-									<TextBlock Text="Xbox Development kit IP Address:" />
-									<TextBox x:Name="XdkIpAddressTextBox" Margin="0,2,0,0" Text="{Binding Path=(helpers:Settings.XdkIpAddress), FallbackValue='192.168.1.86'}" />
-								</StackPanel>
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<StackPanel Margin="20">
+										<TextBlock Text="Xbox Development Kit IP Address:" />
+										<TextBox x:Name="XdkIpAddressTextBox" Margin="0,2,0,0" Text="{Binding Path=(helpers:Settings.XdkIpAddress), FallbackValue='192.168.1.86'}" />
+									</StackPanel>
+
+									<StackPanel Grid.Row="1" Margin="20,0">
+										<TextBlock Text="Memory Tools:" />
+										<Button Content="File Browser" Margin="0,5"/>
+										<Button Content="Network Session" Margin="0,5"/>
+										<Button x:Name="AdvancedMemoryModificationButton" Content="Advance Memory Modification" Margin="0,5" Click="AdvancedMemoryModificationButton_OnClick"/>
+									</StackPanel>
+								</Grid>
 							</custom:MetroContainer>
 						</TabItem>
 					</TabControl>

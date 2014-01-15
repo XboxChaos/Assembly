@@ -18,16 +18,17 @@
 						<Border x:Name="Bd" BorderBrush="Transparent" BorderThickness="1,0,1,1" Margin="{TemplateBinding Margin}"
 						        Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
 							<ContentPresenter x:Name="Content" ContentSource="Header"
-							                  HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
-							                  RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-							                  VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+											  HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+											  RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+											  TextElement.Foreground="{TemplateBinding Foreground}"
+											  VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
 						</Border>
 					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsSelected" Value="true">
 							<Setter Property="Panel.ZIndex" Value="1" />
 							<Setter Property="Background" TargetName="Bd" Value="#252526" />
-							<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrush}" />
+							<Setter Property="TextElement.Foreground" TargetName="Content" Value="{DynamicResource AssemblyAccentBrush}" />
 							<Setter TargetName="Bd" Property="BorderBrush" Value="#3f3f41" />
 							<Setter TargetName="Bd" Property="Margin" Value="-1,-2,0,0" />
 						</Trigger>
@@ -38,7 +39,7 @@
 								<Condition Property="IsMouseOver" Value="true" />
 							</MultiTrigger.Conditions>
 							<Setter Property="Background" TargetName="Bd" Value="#3f3f41" />
-							<Setter Property="Foreground" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
+							<Setter Property="TextElement.Foreground" TargetName="Content" Value="{DynamicResource AssemblyAccentBrushSecondary}" />
 						</MultiTrigger>
 						<MultiTrigger>
 							<MultiTrigger.Conditions>

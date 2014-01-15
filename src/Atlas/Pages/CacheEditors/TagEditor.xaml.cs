@@ -31,6 +31,8 @@ namespace Atlas.Pages.CacheEditors
 		private string _pluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
 
+		public bool IsSingleInstance { get { return false; } }
+
 		public string EditorTitle
 		{
 			get { return _editorTitle; }
