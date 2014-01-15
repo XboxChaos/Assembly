@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Atlas.Helpers.Tags;
 using Atlas.ViewModels;
+using XBDMCommunicator;
 
 namespace Atlas.Pages
 {
@@ -24,6 +25,7 @@ namespace Atlas.Pages
 			TagExplorerMetroContainer.DataContext = TagExplorerSearchTextbox.DataContext = ViewModel.CacheFile.InternalName;
 			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
 			CacheInformationPropertyGrid.SelectedObject = ViewModel.CacheHeaderInformation;
+			XdkIpAddressTextBox.DataContext = App.Storage.Settings;
 		}
 
 		public bool Close()
@@ -59,6 +61,40 @@ namespace Atlas.Pages
 			if (contextMenu == null) return null;
 
 			return contextMenu.DataContext as TagHierarchyNode;
+		}
+
+		#endregion
+
+		#region Xbdm Toolbar
+
+		private void XbdmToolbarFreezeButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.FreezeConsole();
+		}
+
+		private void XbdmToolbarUnfreezeButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.UnfreezeConsole();
+		}
+
+		private void XbdmToolbarScreenshotButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void XbdmToolbarColdRebootButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.RebootConsole(Xbdm.RebootType.Cold);
+		}
+
+		private void XbdmToolbarTitleRebootButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.RebootConsole(Xbdm.RebootType.Title);
+		}
+
+		private void XbdmToolbarActiveTitleRebootButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.RebootConsole(Xbdm.RebootType.ActiveTitle);
 		}
 
 		#endregion
