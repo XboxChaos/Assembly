@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Atlas.ViewModels;
 
 namespace Atlas.Pages.CacheEditors
 {
@@ -9,10 +10,16 @@ namespace Atlas.Pages.CacheEditors
 	/// </summary>
 	public partial class AdvancedMemoryEditor : ICacheEditor
 	{
-		public AdvancedMemoryEditor()
+		private CachePageViewModel _cachePageViewModel;
+
+		public AdvancedMemoryEditor(CachePageViewModel cachePageViewModel)
 		{
+			_cachePageViewModel = cachePageViewModel;
+
 			InitializeComponent();
 			EditorTitle = "Advanced Memory Editor";
+
+			MemoryDataGrid.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
 		}
 
 		public bool IsSingleInstance { get { return true; } }
