@@ -337,4 +337,55 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="{x:Type Button}">
+		<Setter Property="Foreground" Value="White" />
+		<Setter Property="Background" Value="{x:Null}" />
+		<Setter Property="BorderBrush" Value="{x:Null}" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Padding" Value="2,2" />
+		<Setter Property="Margin" Value="2,0" />
+		<Setter Property="Height" Value="22" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Grid x:Name="Grid" Background="Transparent">
+						<Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+													BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" />
+						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+													Margin="{TemplateBinding Padding}"
+													VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True" />
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<!-- Mouse Over -->
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background" Value="#3e3e40" TargetName="Border" />
+						</Trigger>
+
+						<!-- Mouse Pressed, but not over -->
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsPressed" Value="True" />
+								<Condition Property="IsMouseOver" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter Property="Background" Value="#3e3e40" TargetName="Border" />
+						</MultiTrigger>
+
+						<!-- Mouse Pressed -->
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background" Value="{DynamicResource AssemblyAccentBrush}" TargetName="Border" />
+						</Trigger>
+
+						<!-- Disabled -->
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter Property="Background" Value="#FF575757" TargetName="Border" />
+							<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="Border" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 </ResourceDictionary>

@@ -13,6 +13,7 @@ using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Util;
 using Newtonsoft.Json;
+using XBDMCommunicator;
 
 namespace Atlas.ViewModels
 {
@@ -24,6 +25,8 @@ namespace Atlas.ViewModels
 		{
 			CachePage = cachePage;
 			Editors = new ObservableCollection<ICacheEditor>();
+
+			SetupXbdm();
 		}
 
 		#region Properties
@@ -34,6 +37,13 @@ namespace Atlas.ViewModels
 			set { SetField(ref _engineMemory, value); }
 		}
 		private EngineMemory _engineMemory;
+
+		public EngineMemory.EngineVersion SelectedEngineMemoryVersion
+		{
+			get { return _selectedEngineMemoryVersion; }
+			set { SetField(ref _selectedEngineMemoryVersion, value); }
+		}
+		private EngineMemory.EngineVersion _selectedEngineMemoryVersion;
 
 		public string CacheLocation
 		{
@@ -89,6 +99,12 @@ namespace Atlas.ViewModels
 			private set { SetField(ref _cacheHeaderInformation, value); }
 		}
 		private CacheHeaderInformation _cacheHeaderInformation;
+
+		#endregion
+
+		#region Xbox Memory
+
+		private Xbdm XboxDebugManager { get; set; }
 
 		#endregion
 
@@ -194,6 +210,10 @@ namespace Atlas.ViewModels
 					throw new FileNotFoundException();
 
 				EngineMemory = JsonConvert.DeserializeObject<EngineMemory>(File.ReadAllText(memoryPath));
+				if (EngineMemory.EngineVersions == null || EngineMemory.EngineVersions.Any())
+					throw new InvalidDataException();
+
+				SelectedEngineMemoryVersion = EngineMemory.EngineVersions.First();
 				BuildHasEngineMemory = true;
 			}
 			catch
@@ -234,6 +254,37 @@ namespace Atlas.ViewModels
 		{
 			var name = _cacheFile.FileNames.GetTagName(tag);
 			return string.IsNullOrWhiteSpace(name) ? tag.Index.ToString() : name;
+		}
+
+		#endregion
+
+		#region XDK
+
+		/// <summary>
+		/// Sets up the Xbox 360 Developer Debug Manager
+		/// </summary>
+		private void SetupXbdm()
+		{
+			if (XboxDebugManager == null || XboxDebugManager.DeviceIdent != App.Storage.Settings.XdkIpAddress)
+				XboxDebugManager = new Xbdm(App.Storage.Settings.XdkIpAddress);
+		}
+
+		public void FreezeConsole()
+		{
+			SetupXbdm();
+			XboxDebugManager.Freeze();
+		}
+
+		public void UnfreezeConsole()
+		{
+			SetupXbdm();
+			XboxDebugManager.Unfreeze();
+		}
+
+		public void RebootConsole(Xbdm.RebootType rebootType)
+		{
+			SetupXbdm();
+			XboxDebugManager.Reboot(rebootType);
 		}
 
 		#endregion

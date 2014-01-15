@@ -17,6 +17,8 @@ namespace Atlas.Helpers
 		private bool _tagEditorShowInvisibles = true;
 		private string _xsdPath = "";
 
+		private string _xdkIpAddress = "192.168.1.86";
+
 		[JsonIgnore]
 		public bool Loaded { get; set; }
 
@@ -64,6 +66,16 @@ namespace Atlas.Helpers
 		{
 			get { return _xsdPath; }
 			set { SetField(ref _xsdPath, value); }
+		}
+
+		#endregion
+
+		#region XDK
+
+		public string XdkIpAddress
+		{
+			get { return _xdkIpAddress; }
+			set { SetField(ref _xdkIpAddress, value); }
 		}
 
 		#endregion
