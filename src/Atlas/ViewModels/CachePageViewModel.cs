@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.RightsManagement;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
@@ -228,8 +227,20 @@ namespace Atlas.ViewModels
 		public void LoadTagEditor(TagHierarchyNode tagHierarchyNode)
 		{
 			var editor = new TagEditor(this, tagHierarchyNode);
-			Editors.Add(editor);
 			CachePage.EditorsTabControl.SelectedItem = editor;
+		}
+
+		public void LoadAdvancedMemoryEditor()
+		{
+			var editor = Editors.FirstOrDefault(e => e is AdvancedMemoryEditor);
+			if (editor != null)
+			{
+				CachePage.EditorsTabControl.SelectedItem = editor;
+				return;
+			}
+
+			editor = new AdvancedMemoryEditor();
+			Editors.Add(editor);
 		}
 
 		#endregion

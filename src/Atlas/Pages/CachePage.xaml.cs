@@ -125,5 +125,14 @@ namespace Atlas.Pages
 		}
 
 		#endregion
+
+		#region Xbdm Sidebar
+
+		private void AdvancedMemoryModificationButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.LoadAdvancedMemoryEditor();
+		}
+
+		#endregion
 	}
 }
