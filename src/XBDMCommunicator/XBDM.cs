@@ -9,7 +9,8 @@ namespace XBDMCommunicator
 		public enum RebootType
 		{
 			Cold,
-			Title
+			Title,
+			ActiveTitle
 		}
 
 		private readonly XboxMemoryStream _xboxMemoryStream;
@@ -117,13 +118,31 @@ namespace XBDMCommunicator
 		{
 			if (!Connect())
 				return null;
+			try
+			{
+				string response;
+				_xboxConsole.SendTextCommand(_xboxConnectionCode, command, out response);
 
-			string response;
-			_xboxConsole.SendTextCommand(_xboxConnectionCode, command, out response);
-			//if (!(response.Contains("202") | response.Contains("203")))
-			return response;
-			/*else
-                throw new Exception("String command wasn't accepted by the Xbox 360 Console. It might not be valid or the Xbox is just being annoying. The response was:\n" + response);*/
+				if (response == null || (!response.StartsWith("202") && !response.StartsWith("203"))) return response;
+
+				while (true)
+				{
+					string tempResponseHolder;
+					_xboxConsole.ReceiveSocketLine(_xboxConnectionCode, out tempResponseHolder);
+
+					if (String.IsNullOrEmpty(tempResponseHolder)) continue;
+
+					if (tempResponseHolder[0] == '.') break;
+
+					response += Environment.NewLine + tempResponseHolder;
+				}
+
+				return response;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -160,10 +179,14 @@ namespace XBDMCommunicator
 			switch (rebootType)
 			{
 				case RebootType.Cold:
-					SendStringCommand("reboot");
+					SendStringCommand("magicboot COLD");
 					break;
 				case RebootType.Title:
-					SendStringCommand("reboot");
+					SendStringCommand("magicboot");
+					break;
+				case RebootType.ActiveTitle:
+					var xbePath = _xboxConsole.RunningProcessInfo.ProgramName;
+					SendStringCommand(string.Format("magicboot title=\"{0}\" directory=\"{1}\"", xbePath, GetDirectoryOfXbe(xbePath)));
 					break;
 			}
 		}
@@ -205,6 +228,46 @@ namespace XBDMCommunicator
 
 			return true;
 		}
+
+		// Helpers
+		#region Helpers
+
+		private static string GetDataFromMultiLine(string data, string fieldNeeded)
+		{
+			string extractedData = null;
+			var splitData = data.Split(new [] {"\r\n"}, StringSplitOptions.None);
+			foreach (var line in splitData)
+			{
+				var index = line.IndexOf(fieldNeeded, StringComparison.Ordinal);
+				if (index == -1)
+					continue;
+
+				// get got data, read it.
+				extractedData = line.Remove(0, index);
+				extractedData = extractedData.Remove(0, string.Format("{0}=", fieldNeeded).Length);
+				if (extractedData.StartsWith("\"")) // Is a string
+				{
+					extractedData = extractedData.Remove(0, 1);
+					var closingIndex = extractedData.IndexOf('"');
+					extractedData = extractedData.Remove(closingIndex);
+				}
+				else // isn't
+				{
+					var closingIndex = extractedData.IndexOf(' ');
+					extractedData = extractedData.Remove(closingIndex);
+				}
+			}
+			return extractedData;
+		}
+
+		private static string GetDirectoryOfXbe(string xbePath)
+		{
+			var indexOfDirectory = xbePath.LastIndexOf("\\", StringComparison.Ordinal);
+
+			return indexOfDirectory == -1 ? xbePath : xbePath.Remove(indexOfDirectory);
+		}
+
+		#endregion
 
 		// Enum Declaration
 
