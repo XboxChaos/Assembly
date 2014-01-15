@@ -11,7 +11,8 @@
 			xmlns:viewModels="clr-namespace:Atlas.ViewModels"
 			xmlns:cacheEditors="clr-namespace:Atlas.Pages.CacheEditors"
 			xmlns:helpers="clr-namespace:Atlas.Helpers"
-			 mc:Ignorable="d" 
+			xmlns:selectors="clr-namespace:Atlas.Selectors"
+			mc:Ignorable="d" 
 			 d:DesignHeight="800" d:DesignWidth="1200">
 	<UserControl.Resources>
 		<ContextMenu x:Key="TagHierarchyContextMenu" DataContext="{Binding PlacementTarget.(FrameworkElement.DataContext), RelativeSource={RelativeSource Self}}">
@@ -75,22 +76,22 @@
 
 				<!-- Quick XBDM shortcuts -->
 				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed">
-					<Button x:Name="XbdmToolbarFreezeButton" Click="XbdmToolbarFreezeButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarFreezeButton" Click="XbdmToolbarFreezeButton_OnClick" Width="25" ToolTip="Freezes the Xbox 360 Development Kit.">
 						<Path Width="19" Height="17" Stretch="Fill" StrokeThickness="0.7" Stroke="#2d2d30" Fill="White" 
 							  Data="F1 M 25.4694,11.9965L 24.8297,10.8603L 22.0015,10.8603L 23.2343,8.67055L 22.5947,7.53406L 21.315,7.53406L 19.4422,10.8603L 15.2536,10.8603L 17.3479,7.1411L 21.0935,7.1411L 21.7332,6.00461L 21.0935,4.86847L 18.6272,4.86847L 20.0417,2.35717L 19.402,1.22108L 18.122,1.22108L 16.7082,3.73233L 15.4748,1.54255L 14.1954,1.54255L 13.5555,2.67869L 15.4282,6.00461L 13.3339,9.72384L 11.2396,6.00461L 13.1125,2.67869L 12.4728,1.54255L 11.1932,1.54255L 9.9603,3.73233L 8.54587,1.22108L 7.26652,1.22108L 6.62652,2.35717L 8.04065,4.86847L 5.57438,4.86847L 4.93468,6.00461L 5.57438,7.1411L 9.3203,7.1411L 11.4146,10.8603L 7.22597,10.86L 5.35316,7.53406L 4.07351,7.53406L 3.43351,8.67055L 4.66667,10.86L 1.83846,10.86L 1.1985,11.9965L 1.83846,13.1326L 4.66667,13.1326L 3.43351,15.3224L 4.07351,16.4589L 5.35316,16.4585L 7.22597,13.1326L 11.4146,13.1326L 9.3203,16.8518L 5.57438,16.8518L 4.93468,17.988L 5.57438,19.1241L 8.04065,19.1241L 6.62652,21.6354L 7.26617,22.7719L 8.54587,22.7719L 9.9603,20.2602L 11.1932,22.4504L 12.4728,22.4504L 13.1128,21.3139L 11.2396,17.988L 13.3339,14.2687L 15.4282,17.988L 13.5558,21.3139L 14.1954,22.4504L 15.4748,22.4504L 16.7079,20.2606L 18.122,22.7719L 19.402,22.7719L 20.0417,21.6357L 18.6272,19.1241L 21.0935,19.1241L 21.7335,17.988L 21.0935,16.8518L 17.3479,16.8518L 15.2536,13.1326L 19.4422,13.1326L 21.315,16.4585L 22.5947,16.4585L 23.2343,15.3224L 22.0015,13.1326L 24.8297,13.1326L 25.4694,11.9965 Z "/>
 					</Button>
-					<Button x:Name="XbdmToolbarUnfreezeButton" Click="XbdmToolbarUnfreezeButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarUnfreezeButton" Click="XbdmToolbarUnfreezeButton_OnClick" Width="25" ToolTip="Unfreeze the Xbox 360 Development Kit.">
 						<Path Width="8.861" Height="14.5" Stretch="Fill" StrokeThickness="0.7" Stroke="#2d2d30" Fill="White"
 							  Data="F1 M 15.9635,17.4657C 15.9635,21.8007 12.3943,25.314 7.99158,25.314C 3.58883,25.314 0.0196498,21.8007 0.0196498,17.4657C 0.0196498,13.1317 7.99158,0.0252209 7.99158,0.0252209C 7.99158,0.0252209 15.9635,13.1317 15.9635,17.4657 Z "/>
 					</Button>
-					<Button x:Name="XbdmToolbarScreenshotButton" Click="XbdmToolbarScreenshotButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarScreenshotButton" Click="XbdmToolbarScreenshotButton_OnClick" Width="25" ToolTip="Screenshots the Xbox 360 Development Kit.">
 						<Canvas Width="16" Height="16">
 							<Ellipse Height="4.187" Width="4.188" Canvas.Left="5.887" Canvas.Top="6.688" Fill="#2d2d30" />
 							<Path Width="14.876" Height="10.068" Canvas.Top="3.011" Stretch="Fill" StrokeThickness="0.5" Stroke="#2d2d30" Fill="White"
 								  Data="F1 M 10.3099,4.98859C 8.58648,4.98859 7.18944,6.33386 7.18944,7.99335C 7.18944,9.65283 8.58648,10.998 10.3099,10.998C 12.0332,10.998 13.4303,9.65283 13.4303,7.99335C 13.4303,6.33386 12.0332,4.98859 10.3099,4.98859 Z M 19.4074,13.6219L 1.21235,13.6219C 0.726901,13.6219 0.333333,13.243 0.333333,12.7755L 0.333333,3.12646C 0.333333,2.65906 0.726901,2.28003 1.21235,2.28003L 3.05822,2.28003L 3.05822,0.333374L 7.18944,0.333374L 7.18944,2.28003L 19.4074,2.28003C 19.8928,2.28003 20.2864,2.65906 20.2864,3.12646L 20.2864,12.7755C 20.2864,13.243 19.8928,13.6219 19.4074,13.6219 Z " Canvas.Left="0.562"/>
 						</Canvas>
 					</Button>
-					<Button x:Name="XbdmToolbarColdRebootButton" Click="XbdmToolbarColdRebootButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarColdRebootButton" Click="XbdmToolbarColdRebootButton_OnClick" Width="25" ToolTip="Cold Reboot's the Xbox 360 Development Kit.">
 						<Canvas Width="16" Height="16">
 							<Path Width="6.69" Height="12.382" Canvas.Left="1.847" Canvas.Top="1.236" Stretch="Fill" Fill="White"
 								  Data="F1 M 1.80676,12.776C 1.80676,12.776 1.39172,9.35567 6.38079,4.46625C 6.38079,4.46625 4.95655,2.75458 3.04594,1.87855L 4.10289,1.1314C 4.10289,1.1314 5.3386,0.902606 8.16667,2.86261L 8.16667,6.01522C 8.16667,6.01522 3.9499,9.45858 2.18945,13.2498L 1.80676,12.776 Z "/>
@@ -98,7 +99,7 @@
 								  Data="F1 M 14.2071,12.8009C 14.2071,12.8009 14.6221,9.38055 9.63303,4.49113C 9.63303,4.49113 11.0573,2.77944 12.9679,1.90343L 11.9109,1.15628C 11.9109,1.15628 10.6752,0.927485 7.84715,2.88748L 7.84715,6.0401C 7.84715,6.0401 12.0639,9.48346 13.8244,13.2747L 14.2071,12.8009 Z "/>
 						</Canvas>
 					</Button>
-					<Button x:Name="XbdmToolbarTitleRebootButton" Click="XbdmToolbarTitleRebootButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarTitleRebootButton" Click="XbdmToolbarTitleRebootButton_OnClick" Width="25" ToolTip="Reboots the Xbox 360 Development Kit to the Title menu.">
 						<Canvas Width="16" Height="16">
 							<Ellipse Width="16" Height="16" Stretch="Fill" StrokeThickness="0.4" Fill="White" Stroke="#2d2d30"/>
 							<Path Width="6.378" Height="11.804" Canvas.Left="1.83" Canvas.Top="1.316" Stretch="Fill" Fill="#2d2d30"
@@ -107,7 +108,7 @@
 								  Data="F1 M 14.2071,12.8009C 14.2071,12.8009 14.6221,9.38055 9.63303,4.49113C 9.63303,4.49113 11.0573,2.77944 12.9679,1.90343L 11.9109,1.15628C 11.9109,1.15628 10.6752,0.927485 7.84715,2.88748L 7.84715,6.0401C 7.84715,6.0401 12.0639,9.48346 13.8244,13.2747L 14.2071,12.8009 Z "/>
 						</Canvas>
 					</Button>
-					<Button x:Name="XbdmToolbarActiveTitleRebootButton" Click="XbdmToolbarActiveTitleRebootButton_OnClick" Width="25">
+					<Button x:Name="XbdmToolbarActiveTitleRebootButton" Click="XbdmToolbarActiveTitleRebootButton_OnClick" Width="25" ToolTip="Reboots the Xbox 360 Development Kit back to the currently active title.">
 						<Canvas Width="6.66667" Height="20" RenderTransformOrigin="0.5,0.5">
 							<Canvas.RenderTransform>
 								<TransformGroup>
@@ -132,18 +133,41 @@
 				</custom:MetroToolBar>
 
 				<!-- Engine Memory Quick Options (Only if the engine version supports this shit -->
-				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed" Visibility="{Binding Path=(viewModels:CachePageViewModel.BuildHasEngineMemory), Converter={StaticResource InverseBoolConverter}}">
-					<ItemsControl ItemsSource="{Binding Path=(viewModels:CachePageViewModel.SelectedEngineMemoryVersion).QuickOptions}">
+				<custom:MetroToolBar ToolBarTray.IsLocked="False" DropDownVisibility="Collapsed" 
+									 Visibility="{Binding Path=(viewModels:CachePageViewModel.BuildHasEngineMemory), Converter={StaticResource InverseBoolConverter}}">
+					<custom:MetroToolBar.Resources>
+						<selectors:XbdmQuickOptionsButtonTypeSelector x:Key="DataTemplateSelectorXbdmQuickOptionsButtonType" />
+
+						<DataTemplate x:Key="Toggle">
+							<ToggleButton Content="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}">
+								<ToggleButton.ToolTip>
+									<TextBlock>
+											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
+											<Run Text=" - " />
+											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Description)}" />
+									</TextBlock>
+								</ToggleButton.ToolTip>
+							</ToggleButton>
+						</DataTemplate>
+						<DataTemplate x:Key="NotToggle">
+							<Button Content="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+								<Button.ToolTip>
+									<TextBlock>
+											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
+											<Run Text=" - " />
+											<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Description)}" />
+									</TextBlock>
+								</Button.ToolTip>
+							</Button>
+						</DataTemplate>
+					</custom:MetroToolBar.Resources>
+					<ItemsControl ItemsSource="{Binding Path=(viewModels:CachePageViewModel.SelectedEngineMemoryVersion).QuickOptions}"
+								  ItemTemplateSelector="{StaticResource DataTemplateSelectorXbdmQuickOptionsButtonType}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<VirtualizingStackPanel Orientation="Horizontal"/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Button Content="{Binding Path=Name}"></Button>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</custom:MetroToolBar>
 			</StackPanel>
