@@ -25,6 +25,8 @@ namespace Atlas.Models
 
 				public UInt32 Address { get; set; }
 
+				public string IconResourceKey { get; set; }
+
 				public bool IsToggle { get; set; }
 
 				public bool CarefulMode { get; set; }
