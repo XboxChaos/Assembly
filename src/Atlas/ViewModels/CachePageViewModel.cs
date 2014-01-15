@@ -239,7 +239,7 @@ namespace Atlas.ViewModels
 				return;
 			}
 
-			editor = new AdvancedMemoryEditor();
+			editor = new AdvancedMemoryEditor(this);
 			Editors.Add(editor);
 		}
 

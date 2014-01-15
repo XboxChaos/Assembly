@@ -276,18 +276,33 @@
 								<Grid>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
 										<RowDefinition Height="*"/>
 									</Grid.RowDefinitions>
-									<StackPanel Margin="20">
+									<custom:MetroToolBar ToolBarTray.IsLocked="True" DropDownVisibility="Visible">
+										<Button ToolTip="Xbox 360 Development File Browser" Width="20" Click="AdvancedMemoryModificationButton_OnClick">
+											<ContentControl Template="{StaticResource MenuVectorXbox360FileBrowser}" />
+										</Button>
+										<Button ToolTip="Advance Memory Modification" Width="20">
+											<ContentControl Template="{StaticResource MenuVectorAdvancedMemoryMod}" />
+										</Button>
+										
+										<Separator />
+
+										<Button ToolTip="Network Session" Width="20">
+											<ContentControl Template="{StaticResource MenuVectorNetworkSession}" />
+										</Button>
+									</custom:MetroToolBar>
+									
+									<StackPanel Margin="20" Grid.Row="1">
 										<TextBlock Text="Xbox Development Kit IP Address:" />
 										<TextBox x:Name="XdkIpAddressTextBox" Margin="0,2,0,0" Text="{Binding Path=(helpers:Settings.XdkIpAddress), FallbackValue='192.168.1.86'}" />
 									</StackPanel>
 
-									<StackPanel Grid.Row="1" Margin="20,0">
+									<StackPanel Grid.Row="2" Margin="20,0">
 										<TextBlock Text="Memory Tools:" />
 										<Button Content="File Browser" Margin="0,5"/>
 										<Button Content="Network Session" Margin="0,5"/>
-										<Button x:Name="AdvancedMemoryModificationButton" Content="Advance Memory Modification" Margin="0,5" Click="AdvancedMemoryModificationButton_OnClick"/>
 									</StackPanel>
 								</Grid>
 							</custom:MetroContainer>
