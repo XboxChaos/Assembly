@@ -147,7 +147,7 @@ namespace Atlas.ViewModels.CacheEditors
 			// Load Plugin File
 			using (var xml = XmlReader.Create(_pluginPath))
 			{
-				PluginVisitor = new ThirdGenPluginVisitor(CachePageViewModel.ActiveHierarchy, CachePageViewModel.StringIdTrie,
+				PluginVisitor = new ThirdGenPluginVisitor(CachePageViewModel.ClassHierarchy, CachePageViewModel.StringIdTrie,
 					CachePageViewModel.CacheFile.MetaArea, App.Storage.Settings.TagEditorShowInvisibles);
 				AssemblyPluginLoader.LoadPlugin(xml, PluginVisitor);
 			}
