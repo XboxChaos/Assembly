@@ -52,16 +52,20 @@
 				<ControlTemplate TargetType="{x:Type ToggleButton}">
 					<Border x:Name="Bd" SnapsToDevicePixels="true" CornerRadius="0" Background="{TemplateBinding Background}">
 						<Canvas Width="6" VerticalAlignment="Bottom" SnapsToDevicePixels="true" Margin="7,2,2,2" Height="7" HorizontalAlignment="Right">
-							<Path Data="M 0 0.5 L 5 0.5" Stroke="#999999"/>
-							<Path Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" Fill="#999999"/>
+							<Path x:Name="PathBar" Data="M 0 0.5 L 5 0.5" Stroke="#999999"/>
+							<Path x:Name="PathDropDown" Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" Fill="#999999"/>
 						</Canvas>
 					</Border>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="true">
-							<Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+							<Setter Property="Background" TargetName="Bd" Value="#3f3f41"/>
+							<Setter Property="Stroke" TargetName="PathBar" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
+							<Setter Property="Fill" TargetName="PathDropDown" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
 						</Trigger>
 						<Trigger Property="IsKeyboardFocused" Value="true">
-							<Setter Property="Background" TargetName="Bd" Value="{StaticResource ToolBarButtonHover}"/>
+							<Setter Property="Background" TargetName="Bd" Value="#3f3f41"/>
+							<Setter Property="Stroke" TargetName="PathBar" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
+							<Setter Property="Fill" TargetName="PathDropDown" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
 						</Trigger>
 						<Trigger Property="IsEnabled" Value="false">
 							<Setter Property="Foreground" Value="{StaticResource ToolBarGripper}"/>
@@ -111,7 +115,7 @@
 		<Setter Property="CornerRadius" Value="0"/>
 		<Style.Triggers>
 			<DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
-				<Setter Property="CornerRadius" Value="0,0,0,0"/>
+				<Setter Property="CornerRadius" Value="4"/>
 			</DataTrigger>
 		</Style.Triggers>
 	</Style>
@@ -127,7 +131,7 @@
 							<ToggleButton x:Name="OverflowButton" ClickMode="Press" FocusVisualStyle="{x:Null}" IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" IsEnabled="{TemplateBinding HasOverflowItems}" Style="{StaticResource ToolBarHorizontalOverflowButtonStyle}"/>
 							<Popup x:Name="OverflowPopup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" StaysOpen="false">
 								<themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
-									<Border x:Name="ToolBarSubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}" RenderOptions.ClearTypeHint="Enabled">
+									<Border x:Name="ToolBarSubMenuBorder" BorderBrush="#333337" BorderThickness="1" Background="#1b1b1c" RenderOptions.ClearTypeHint="Enabled">
 										<ToolBarOverflowPanel x:Name="PART_ToolBarOverflowPanel" KeyboardNavigation.DirectionalNavigation="Cycle" FocusVisualStyle="{x:Null}" Focusable="true" Margin="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle" WrapWidth="200"/>
 									</Border>
 								</themes:SystemDropShadowChrome>

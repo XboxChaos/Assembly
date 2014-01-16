@@ -9,8 +9,10 @@ namespace Atlas.Helpers
 {
 	public class Settings : Base
 	{
+		// Misc
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
-
+		
+		// Cache Editor
 		private TagSort _cacheEditorTagSortMethod = TagSort.PathHierarchy;
 		private bool _tagEditorShowBlockInformation = true;
 		private bool _tagEditorShowEnumIndex = true;
@@ -18,6 +20,7 @@ namespace Atlas.Helpers
 		private bool _tagEditorShowComments = true;
 		private string _xsdPath = "";
 
+		// Xbox 360 XDK
 		private string _xdkIpAddress = "192.168.1.86";
 
 		[JsonIgnore]
