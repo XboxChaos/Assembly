@@ -53,9 +53,9 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Attaches to a collection of fields, listening for changes on them.
 		/// </summary>
 		/// <param name="fields">The collection of fields to attach to.</param>
-		public void Attach(IEnumerable<MetaField> fields)
+		public void Attach(IEnumerable<TagDataField> fields)
 		{
-			foreach (MetaField field in fields)
+			foreach (TagDataField field in fields)
 				AttachTo(field);
 		}
 
@@ -63,7 +63,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Attaches to a single field, listening for changes made to it.
 		/// </summary>
 		/// <param name="field">The field to attach to.</param>
-		public void AttachTo(MetaField field)
+		public void AttachTo(TagDataField field)
 		{
 			field.PropertyChanged += field_PropertyChanged;
 
@@ -84,7 +84,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Marks a field as changed in all registered change sets.
 		/// </summary>
 		/// <param name="field">The field to mark as changed.</param>
-		public void MarkChanged(MetaField field)
+		public void MarkChanged(TagDataField field)
 		{
 			foreach (FieldChangeSet set in _changeSets)
 				set.MarkChanged(field);
@@ -94,7 +94,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Marks a field as unchanged in all registered change sets.
 		/// </summary>
 		/// <param name="field">The field to mark as unchanged.</param>
-		public void MarkUnchanged(MetaField field)
+		public void MarkUnchanged(TagDataField field)
 		{
 			foreach (FieldChangeSet set in _changeSets)
 				set.MarkUnchanged(field);
@@ -103,7 +103,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		private void field_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (Enabled && _propertyNames.Contains(e.PropertyName))
-				MarkChanged((MetaField) sender);
+				MarkChanged((TagDataField) sender);
 		}
 
 		/// <summary>
@@ -120,9 +120,9 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			// but IOnPropertyChanged has that problem anyway...
 			_propertyNames.Add("Value");
 			_propertyNames.Add("DataAddress"); // Datarefs
-			_propertyNames.Add("Length"); // Reflexives
-			_propertyNames.Add("EntrySize"); // Reflexives
-			_propertyNames.Add("FirstEntryAddress"); // Reflexives
+			_propertyNames.Add("Length"); // Tag Blocks
+			_propertyNames.Add("EntrySize"); // Tag Blocks
+			_propertyNames.Add("FirstEntryAddress"); // Tag Blocks
 			_propertyNames.Add("Class"); // Tagrefs
 			_propertyNames.Add("Degree"); // Degrees
 			_propertyNames.Add("Radian"); // Degrees

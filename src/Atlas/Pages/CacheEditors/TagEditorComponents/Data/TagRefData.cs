@@ -60,12 +60,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			get { return _allTags; }
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitTagRef(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showJumpTo, _withClass, base.PluginLine)
 			{

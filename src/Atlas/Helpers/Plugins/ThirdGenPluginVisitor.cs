@@ -17,22 +17,22 @@ namespace Atlas.Helpers.Plugins
 
 		private readonly FileSegmentGroup _metaArea;
 		private readonly IList<PluginRevision> _pluginRevisions = new List<PluginRevision>();
-		private readonly List<ReflexiveData> _reflexives = new List<ReflexiveData>();
+		private readonly List<TagBlockData> _tagBlocks = new List<TagBlockData>();
 		private readonly bool _showInvisibles;
-		private readonly Trie _stringIDTrie;
+		private readonly Trie _stringIdTrie;
 		private readonly TagHierarchy _tags;
 		private BitfieldData _currentBitfield;
 		private EnumData _currentEnum;
-		private ReflexiveData _currentReflexive;
+		private TagBlockData _currentTagBlock;
 
 		public ThirdGenPluginVisitor(TagHierarchy tags, Trie stringIdTrie, FileSegmentGroup metaArea, bool showInvisibles)
 		{
 			_tags = tags;
-			_stringIDTrie = stringIdTrie;
+			_stringIdTrie = stringIdTrie;
 			_metaArea = metaArea;
 
-			Values = new ObservableCollection<MetaField>();
-			Reflexives = new ObservableCollection<ReflexiveData>();
+			Values = new ObservableCollection<TagDataField>();
+			TagBlocks = new ObservableCollection<TagBlockData>();
 			_showInvisibles = showInvisibles;
 		}
 
@@ -42,8 +42,8 @@ namespace Atlas.Helpers.Plugins
 			get { return _pluginRevisions; }
 		}
 
-		public ObservableCollection<MetaField> Values { get; private set; }
-		public ObservableCollection<ReflexiveData> Reflexives { get; private set; }
+		public ObservableCollection<TagDataField> Values { get; private set; }
+		public ObservableCollection<TagBlockData> TagBlocks { get; private set; }
 
 		public bool EnterPlugin(int baseSize)
 		{
@@ -75,9 +75,9 @@ namespace Atlas.Helpers.Plugins
 			double smallchange, double largechange, uint pluginLine)
 		{
 			/*TrackBar metaComponents = new TrackBar();
-            metaComponents.LoadValues(name, type, minval, maxval, smallchange, largechange);
+			metaComponents.LoadValues(name, type, minval, maxval, smallchange, largechange);
 
-            AddUIElement(metaComponents, visible);*/
+			AddUIElement(metaComponents, visible);*/
 		}
 
 		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
@@ -95,7 +95,7 @@ namespace Atlas.Helpers.Plugins
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new StringIDData(name, offset, 0, "", _stringIDTrie, pluginLine));
+				AddValue(new StringIDData(name, offset, 0, "", _stringIdTrie, pluginLine));
 		}
 
 		public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
@@ -231,18 +231,18 @@ namespace Atlas.Helpers.Plugins
 
 		#endregion
 
-		#region Reflexive
+		#region TagBlock
 
 		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new ReflexiveData(name, offset, 0, entrySize, pluginLine, _metaArea);
+				var data = new TagBlockData(name, offset, 0, entrySize, pluginLine, _metaArea);
 				AddValue(data);
 
-				_reflexives.Add(data);
-				Reflexives.Add(data);
-				_currentReflexive = data;
+				_tagBlocks.Add(data);
+				TagBlocks.Add(data);
+				_currentTagBlock = data;
 				return true;
 			}
 			return false;
@@ -250,11 +250,11 @@ namespace Atlas.Helpers.Plugins
 
 		public void LeaveReflexive()
 		{
-			if (_currentReflexive == null)
-				throw new InvalidOperationException("Not in a reflexive");
+			if (_currentTagBlock == null)
+				throw new InvalidOperationException("Not in a tag block");
 
-			_reflexives.RemoveAt(_reflexives.Count - 1);
-			_currentReflexive = _reflexives.Count > 0 ? _reflexives[_reflexives.Count - 1] : null;
+			_tagBlocks.RemoveAt(_tagBlocks.Count - 1);
+			_currentTagBlock = _tagBlocks.Count > 0 ? _tagBlocks[_tagBlocks.Count - 1] : null;
 		}
 
 		#endregion
@@ -329,23 +329,12 @@ namespace Atlas.Helpers.Plugins
 
 		#endregion
 
-		private void AddValue(MetaField value)
+		private void AddValue(TagDataField value)
 		{
-			if (_reflexives.Count > 0)
-				_reflexives[_reflexives.Count - 1].Template.Add(value);
+			if (_tagBlocks.Count > 0)
+				_tagBlocks[_tagBlocks.Count - 1].Template.Add(value);
 			else
 				Values.Add(value);
-			/*MetaField wrappedValue = value;
-            for (int i = _reflexives.Count - 1; i >= 0; i--)
-            {
-                ReflexiveData reflexive = _reflexives[i];
-                reflexive.Pages[0].Fields.Add(wrappedValue);
-
-                // hax, use a null parent for now so MetaReader doesn't have to cause it to unsubscribe
-                wrappedValue = new WrappedReflexiveEntry(null, reflexive.Pages[0].Fields.Count - 1);
-            }
-
-            Values.Add(wrappedValue);*/
 		}
 	}
 }

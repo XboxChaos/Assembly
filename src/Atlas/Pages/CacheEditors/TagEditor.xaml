@@ -4,6 +4,8 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+			 xmlns:helpers="clr-namespace:Atlas.Helpers"
+			 xmlns:cacheEditors="clr-namespace:Atlas.ViewModels.CacheEditors"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="600" d:DesignWidth="900">
 	<UserControl.Resources>
@@ -33,7 +35,7 @@
 
 				<TextBlock Text="Search:" VerticalAlignment="Center"/>
 
-				<TextBox Text="" Margin="5" VerticalAlignment="Center" Grid.Column="1"/>
+				<TextBox Text="" Margin="5" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" VerticalAlignment="Center" Grid.Column="1"/>
 
 				<Button Content="Reset" IsEnabled="False" Margin="5" Grid.Column="2" />
 				<Button Content="Next" IsEnabled="False" Margin="5" Grid.Column="3" />
@@ -116,14 +118,14 @@
 				</Grid.ColumnDefinitions>
 
 				<StackPanel Orientation="Horizontal">
-					<Button Content="Revisions" Padding="8,0" Margin="5,0" />
+					<Button x:Name="PluginRevisionViewerButton" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" Content="Revisions" Padding="8,0" Margin="5,0" />
 					<xctk:DropDownButton Margin="5,0" Content="Options" VerticalAlignment="Center">
 						<xctk:DropDownButton.DropDownContent>
 							<StackPanel>
-								<MenuItem Header="Show Invisibles" IsCheckable="True"/>
-								<MenuItem Header="Show Block Information" IsCheckable="True"/>
-								<MenuItem Header="Show Enum Indices" IsCheckable="True"/>
-								<MenuItem Header="Show Comments" IsCheckable="True"/>
+								<MenuItem x:Name="ShowInvisiblesMenuItem" Header="Show Invisibles" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowInvisibles)}"/>
+								<MenuItem x:Name="ShowBlockInformationMenuItem" Header="Show Block Information" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowBlockInformation)}"/>
+								<MenuItem x:Name="ShowEnumIndicesMenuItem" Header="Show Enum Indices" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowEnumIndex)}"/>
+								<MenuItem x:Name="ShowCommentsMenuItem" Header="Show Comments" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowComments)}"/>
 							</StackPanel>
 						</xctk:DropDownButton.DropDownContent>
 					</xctk:DropDownButton>
@@ -135,7 +137,7 @@
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Text="Zoom:" Margin="5,0" VerticalAlignment="Center" />
-					<Slider Name="TagDataZoomSlider" Grid.Column="1" VerticalAlignment="Center" Value="1" Minimum="0.1" Maximum="1" />
+					<Slider Name="TagDataZoomSlider" Grid.Column="1" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" VerticalAlignment="Center" Value="1" Minimum="0.1" Maximum="1" />
 				</Grid>
 			</Grid>
 		</Border>

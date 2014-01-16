@@ -14,7 +14,8 @@ namespace Atlas.Helpers
 		private TagSort _cacheEditorTagSortMethod = TagSort.PathHierarchy;
 		private bool _tagEditorShowBlockInformation = true;
 		private bool _tagEditorShowEnumIndex = true;
-		private bool _tagEditorShowInvisibles = true;
+		private bool _tagEditorShowInvisibles;
+		private bool _tagEditorShowComments = true;
 		private string _xsdPath = "";
 
 		private string _xdkIpAddress = "192.168.1.86";
@@ -60,6 +61,12 @@ namespace Atlas.Helpers
 		{
 			get { return _tagEditorShowInvisibles; }
 			set { SetField(ref _tagEditorShowInvisibles, value); }
+		}
+
+		public bool TagEditorShowComments
+		{
+			get { return _tagEditorShowComments; }
+			set { SetField(ref _tagEditorShowComments, value); }
 		}
 
 		public string XsdPath

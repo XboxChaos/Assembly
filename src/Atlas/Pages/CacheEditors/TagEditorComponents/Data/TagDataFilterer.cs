@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	public class MetaFilterer : IMetaFieldVisitor
+	public class TagDataFilterer : ITagDataFieldVisitor
 	{
-		public delegate void FieldHighlighter(MetaField field, bool highlight);
+		public delegate void FieldHighlighter(TagDataField field, bool highlight);
 
-		public delegate void ResultCollector(MetaField foundField, MetaField listField, ReflexiveData parent);
+		public delegate void ResultCollector(TagDataField foundField, TagDataField listField, TagBlockData parent);
 
-		private readonly ReflexiveFlattener _flattener;
+		private readonly TagBlockFlattener _flattener;
 		private readonly FieldHighlighter _highlighter;
 		private readonly ResultCollector _resultCollector;
 
-		private ReflexiveData _currentReflexive;
+		private TagBlockData _currentTagBlocks;
 		private string _filter;
 		private int _highlightLevel; // If greater than zero, then always highlight fields
 		private float? _numberFilter;
-		private MetaField _topLevelField;
+		private TagDataField _topLevelField;
 
-		public MetaFilterer(ReflexiveFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
+		public TagDataFilterer(TagBlockFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
 		{
 			_flattener = flattener;
 			_resultCollector = resultCollector;
@@ -96,28 +95,28 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				FilterString(field, field.Value);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitReflexive(TagBlockData field)
 		{
 			// Don't enter empty reflexives
-			ReflexiveData oldReflexive = _currentReflexive;
-			_currentReflexive = field;
+			var oldTagBlock = _currentTagBlocks;
+			_currentTagBlocks = field;
 
 			if (FilterString(field, field.Name) && field.Length > 0)
 			{
 				// Forcibly highlight everything inside it
 				_highlightLevel++;
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 				_highlightLevel--;
 			}
 			else if (field.Length > 0)
 			{
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 			}
 
-			_currentReflexive = oldReflexive;
+			_currentTagBlocks = oldTagBlock;
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitReflexiveEntry(WrappedTagBlockEntry field)
 		{
 			// Ignore - wrapper handling is done inside VisitReflexive/HandleWrapper to ensure that
 			// closed reflexives aren't skipped over
@@ -139,7 +138,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 			// AvalonEdit doesn't let us access the text from a different thread
 			/*if (!FilterString(field, field.Name))
-                FilterString(field, field.Value);*/
+				FilterString(field, field.Value);*/
 			FilterString(field, field.Name);
 		}
 
@@ -147,7 +146,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 			// AvalonEdit doesn't let us access the text from a different thread
 			/*if (!FilterString(field, field.Name))
-                FilterString(field, field.Value);*/
+				FilterString(field, field.Value);*/
 			FilterString(field, field.Name);
 		}
 
@@ -189,7 +188,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				FilterString(field, field.DatabasePath);
 		}
 
-		public void FilterFields(IEnumerable<MetaField> fields, string filter)
+		public void FilterFields(IEnumerable<TagDataField> fields, string filter)
 		{
 			_filter = filter.ToLower();
 
@@ -197,22 +196,22 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			if (float.TryParse(filter, out numberValue))
 				_numberFilter = numberValue;
 
-			foreach (MetaField field in fields)
+			foreach (TagDataField field in fields)
 			{
 				_topLevelField = field;
 				field.Accept(this);
 			}
 		}
 
-		// Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
-		private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
+		// Passed as the callback to TagBlockFlattener.EnumWrappers in VisitReflexive
+		private void TagBlockFlattener_HandleWrapper(WrappedTagBlockEntry wrapper)
 		{
-			_topLevelField = _flattener.GetTopLevelWrapper(_currentReflexive, wrapper);
+			_topLevelField = _flattener.GetTopLevelWrapper(_currentTagBlocks, wrapper);
 			_highlighter(wrapper, _highlightLevel > 0);
 			wrapper.WrappedField.Accept(this);
 		}
 
-		private bool FilterString(MetaField field, string fieldName)
+		private bool FilterString(TagDataField field, string fieldName)
 		{
 			if (fieldName.ToLower().Contains(_filter))
 			{
@@ -223,7 +222,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			return false;
 		}
 
-		private bool FilterNumber(MetaField field, float value)
+		private bool FilterNumber(TagDataField field, float value)
 		{
 			if (_numberFilter.HasValue && value == _numberFilter.Value)
 			{
@@ -234,13 +233,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			return false;
 		}
 
-		private void AcceptField(MetaField field)
+		private void AcceptField(TagDataField field)
 		{
 			_highlighter(field, true);
-			_resultCollector(field, _topLevelField, _currentReflexive);
+			_resultCollector(field, _topLevelField, _currentTagBlocks);
 		}
 
-		private void RejectField(MetaField field)
+		private void RejectField(TagDataField field)
 		{
 			_highlighter(field, _highlightLevel > 0);
 		}

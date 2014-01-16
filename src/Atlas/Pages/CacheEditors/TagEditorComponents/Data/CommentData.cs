@@ -1,6 +1,6 @@
 ﻿namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	public class CommentData : MetaField
+	public class CommentData : TagDataField
 	{
 		private string _name, _text;
 
@@ -31,12 +31,12 @@
 			}
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitComment(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new CommentData(_name, _text, PluginLine);
 		}

@@ -2,32 +2,31 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	internal class FlattenedReflexive
+	internal class FlattenedTagBlock
 	{
 		private readonly FieldChangeSet _changes;
 		private readonly List<bool> _fieldVisibility = new List<bool>();
-		private readonly ObservableCollection<MetaField> _loadedFields = new ObservableCollection<MetaField>();
-		private readonly FlattenedReflexive _parent;
-		private readonly List<ReflexiveData> _synchronizedReflexives = new List<ReflexiveData>();
-		private readonly ReflexiveData _template;
-		private readonly ObservableCollection<MetaField> _topLevelFields;
+		private readonly ObservableCollection<TagDataField> _loadedFields = new ObservableCollection<TagDataField>();
+		private readonly FlattenedTagBlock _parent;
+		private readonly List<TagBlockData> _synchronizedTagBlocks = new List<TagBlockData>();
+		private readonly TagBlockData _template;
+		private readonly ObservableCollection<TagDataField> _topLevelFields;
 		private readonly FieldChangeTracker _tracker;
-		private readonly List<WrappedReflexiveEntry> _wrappers = new List<WrappedReflexiveEntry>();
-		private ReflexiveData _activeReflexive;
+		private readonly List<WrappedTagBlockEntry> _wrappers = new List<WrappedTagBlockEntry>();
+		private TagBlockData _activeTagBlock;
 		private bool _expanded = true;
-		private ReflexivePage _lastPage;
+		private TagBlockPage _lastPage;
 
-		public FlattenedReflexive(FlattenedReflexive parent, ReflexiveData template,
-			ObservableCollection<MetaField> topLevelFields, FieldChangeTracker tracker, FieldChangeSet changes)
+		public FlattenedTagBlock(FlattenedTagBlock parent, TagBlockData template,
+			ObservableCollection<TagDataField> topLevelFields, FieldChangeTracker tracker, FieldChangeSet changes)
 		{
 			_parent = parent;
 			_template = template;
-			_activeReflexive = template;
-			_synchronizedReflexives.Add(template);
+			_activeTagBlock = template;
+			_synchronizedTagBlocks.Add(template);
 			if (template.HasChildren)
 				_lastPage = template.Pages[template.CurrentIndex];
 			_topLevelFields = topLevelFields;
@@ -35,17 +34,17 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			_changes = changes;
 		}
 
-		public FlattenedReflexive Parent
+		public FlattenedTagBlock Parent
 		{
 			get { return _parent; }
 		}
 
-		public ObservableCollection<MetaField> LoadedFields
+		public ObservableCollection<TagDataField> LoadedFields
 		{
 			get { return _loadedFields; }
 		}
 
-		public IList<WrappedReflexiveEntry> Wrappers
+		public IList<WrappedTagBlockEntry> Wrappers
 		{
 			get { return _wrappers.AsReadOnly(); }
 		}
@@ -54,25 +53,25 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Synchronizes the expansion state of a reflexive with the expansion state of this FlattenedReflexive.
 		/// </summary>
 		/// <param name="other">The ReflexiveData to synchronize the expansion state of.</param>
-		public void SynchronizeWith(ReflexiveData other)
+		public void SynchronizeWith(TagBlockData other)
 		{
-			_synchronizedReflexives.Add(other);
+			_synchronizedTagBlocks.Add(other);
 		}
 
-		public WrappedReflexiveEntry WrapField(MetaField field, double width, bool last)
+		public WrappedTagBlockEntry WrapField(TagDataField field, double width, bool last)
 		{
 			_loadedFields.Add(field);
 			_fieldVisibility.Add(true);
 			_tracker.AttachTo(field);
 
-			var wrapper = new WrappedReflexiveEntry(_loadedFields, _wrappers.Count, width, last);
+			var wrapper = new WrappedTagBlockEntry(_loadedFields, _wrappers.Count, width, last);
 			_wrappers.Add(wrapper);
 			return wrapper;
 		}
 
 		public bool Expand()
 		{
-			if (_expanded || _activeReflexive.Length == 0)
+			if (_expanded || _activeTagBlock.Length == 0)
 				return false;
 
 			_expanded = true;
@@ -94,31 +93,31 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			return true;
 		}
 
-		public void LoadPage(ReflexiveData reflexive, int index)
+		public void LoadPage(TagBlockData tagBlock, int index)
 		{
-			_activeReflexive = reflexive;
-			if (!reflexive.HasChildren)
+			_activeTagBlock = tagBlock;
+			if (!tagBlock.HasChildren)
 				return;
 
-			if (index >= 0 && index < reflexive.Length && reflexive.Pages[index] == _lastPage)
+			if (index >= 0 && index < tagBlock.Length && tagBlock.Pages[index] == _lastPage)
 				return;
 
 			UnloadPage();
-			if (index < 0 || index >= reflexive.Length)
+			if (index < 0 || index >= tagBlock.Length)
 			{
 				_lastPage = null;
 				return;
 			}
 
-			_lastPage = reflexive.Pages[index];
+			_lastPage = tagBlock.Pages[index];
 			for (int i = 0; i < _lastPage.Fields.Length; i++)
 			{
 				// if _lastPage.Fields[i] is null, then we can just re-use the field from the template
-				MetaField newField;
+				TagDataField newField;
 				if (_lastPage.Fields[i] != null)
 					newField = _lastPage.Fields[i];
 				else
-					newField = reflexive.Template[i];
+					newField = tagBlock.Template[i];
 
 				// HACK: synchronize the opacity
 				newField.Opacity = _loadedFields[i].Opacity;
@@ -127,15 +126,15 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public WrappedReflexiveEntry GetTopLevelWrapper(WrappedReflexiveEntry wrapper)
+		public WrappedTagBlockEntry GetTopLevelWrapper(WrappedTagBlockEntry wrapper)
 		{
-			WrappedReflexiveEntry result = wrapper;
-			FlattenedReflexive reflexive = _parent;
-			while (reflexive != null)
+			WrappedTagBlockEntry result = wrapper;
+			FlattenedTagBlock tagBlock = _parent;
+			while (tagBlock != null)
 			{
-				int index = reflexive._template.Template.IndexOf(result);
-				result = reflexive._wrappers[index];
-				reflexive = reflexive._parent;
+				int index = tagBlock._template.Template.IndexOf(result);
+				result = tagBlock._wrappers[index];
+				tagBlock = tagBlock._parent;
 			}
 			return result;
 		}
@@ -149,11 +148,11 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 
 		private void SynchronizeExpansion()
 		{
-			foreach (ReflexiveData reflexive in _synchronizedReflexives)
+			foreach (TagBlockData reflexive in _synchronizedTagBlocks)
 				reflexive.IsExpanded = _expanded;
 		}
 
-		private void ShowFields(FlattenedReflexive reflexive, int start, int end)
+		private void ShowFields(FlattenedTagBlock reflexive, int start, int end)
 		{
 			if (end <= start)
 				return;
@@ -195,33 +194,33 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		private void HideFields(FlattenedReflexive reflexive, int start, int end)
+		private void HideFields(FlattenedTagBlock TagBlock, int start, int end)
 		{
 			if (end <= start)
 				return;
 
-			if (reflexive != null)
+			if (TagBlock != null)
 			{
-				int baseIndex = reflexive._template.Template.IndexOf(_template) + 1;
-				if (reflexive._expanded)
-					reflexive.HideFields(reflexive._parent, baseIndex + start, baseIndex + end);
+				int baseIndex = TagBlock._template.Template.IndexOf(_template) + 1;
+				if (TagBlock._expanded)
+					TagBlock.HideFields(TagBlock._parent, baseIndex + start, baseIndex + end);
 
 				bool adjustLast = false;
 				for (int i = start; i < end; i++)
 				{
-					reflexive._fieldVisibility[baseIndex + i] = false;
-					if (reflexive._wrappers[baseIndex + i].IsLast)
+					TagBlock._fieldVisibility[baseIndex + i] = false;
+					if (TagBlock._wrappers[baseIndex + i].IsLast)
 					{
-						reflexive._wrappers[baseIndex + i].IsLast = false;
+						TagBlock._wrappers[baseIndex + i].IsLast = false;
 						adjustLast = true;
 					}
 				}
 
 				if (adjustLast && start + baseIndex > 0)
 				{
-					int lastVisible = reflexive._fieldVisibility.FindLastIndex(start + baseIndex - 1, v => v);
+					int lastVisible = TagBlock._fieldVisibility.FindLastIndex(start + baseIndex - 1, v => v);
 					if (lastVisible >= 0)
-						reflexive._wrappers[lastVisible].IsLast = true;
+						TagBlock._wrappers[lastVisible].IsLast = true;
 				}
 			}
 			else
@@ -247,22 +246,22 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		}
 	}
 
-	public class ReflexiveFlattener : IMetaFieldVisitor
+	public class TagBlockFlattener : ITagDataFieldVisitor
 	{
 		private readonly FieldChangeSet _changes;
 
-		private readonly Dictionary<ReflexiveData, FlattenedReflexive> _flattenInfo =
-			new Dictionary<ReflexiveData, FlattenedReflexive>();
+		private readonly Dictionary<TagBlockData, FlattenedTagBlock> _flattenInfo =
+			new Dictionary<TagBlockData, FlattenedTagBlock>();
 
-		private readonly MetaReader _reader;
+		private readonly TagDataReader _reader;
 		private readonly FieldChangeTracker _tracker;
-		private ObservableCollection<MetaField> _fields;
-		private FlattenedReflexive _flatParent;
+		private ObservableCollection<TagDataField> _fields;
+		private FlattenedTagBlock _flatParent;
 		private int _index;
 		private bool _loading;
-		private ObservableCollection<MetaField> _topLevelFields;
+		private ObservableCollection<TagDataField> _topLevelFields;
 
-		public ReflexiveFlattener(MetaReader reader, FieldChangeTracker tracker, FieldChangeSet changes)
+		public TagBlockFlattener(TagDataReader reader, FieldChangeTracker tracker, FieldChangeSet changes)
 		{
 			_reader = reader;
 			_tracker = tracker;
@@ -317,13 +316,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitReflexive(TagBlockData field)
 		{
 			// Create flatten information for the reflexive and attach event handlers to it
-			var flattened = new FlattenedReflexive(_flatParent, field, _topLevelFields, _tracker, _changes);
+			var flattened = new FlattenedTagBlock(_flatParent, field, _topLevelFields, _tracker, _changes);
 			AttachTo(field, flattened);
 
-			FlattenedReflexive oldParent = _flatParent;
+			FlattenedTagBlock oldParent = _flatParent;
 			_flatParent = flattened;
 			Flatten(field.Template);
 			field.UpdateWidth();
@@ -331,13 +330,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 
 			for (int i = 0; i < field.Template.Count; i++)
 			{
-				WrappedReflexiveEntry wrapper = flattened.WrapField(field.Template[i], field.Width, i == field.Template.Count - 1);
+				WrappedTagBlockEntry wrapper = flattened.WrapField(field.Template[i], field.Width, i == field.Template.Count - 1);
 				_index++;
 				_fields.Insert(_index, wrapper);
 			}
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitReflexiveEntry(WrappedTagBlockEntry field)
 		{
 		}
 
@@ -373,13 +372,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public void Flatten(ObservableCollection<MetaField> fields)
+		public void Flatten(ObservableCollection<TagDataField> fields)
 		{
 			if (_topLevelFields == null)
 				_topLevelFields = fields;
 
 			int oldIndex = _index;
-			ObservableCollection<MetaField> oldFields = _fields;
+			ObservableCollection<TagDataField> oldFields = _fields;
 
 			_fields = fields;
 			for (_index = 0; _index < fields.Count; _index++)
@@ -392,59 +391,59 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				_topLevelFields = null;
 		}
 
-		public void EnumWrappers(ReflexiveData reflexive, Action<WrappedReflexiveEntry> wrapperProcessor)
+		public void EnumWrappers(TagBlockData tagBlock, Action<WrappedTagBlockEntry> wrapperProcessor)
 		{
-			FlattenedReflexive flattened;
-			if (!_flattenInfo.TryGetValue(reflexive, out flattened))
+			FlattenedTagBlock flattened;
+			if (!_flattenInfo.TryGetValue(tagBlock, out flattened))
 				return;
 
-			foreach (WrappedReflexiveEntry wrapper in flattened.Wrappers)
+			foreach (WrappedTagBlockEntry wrapper in flattened.Wrappers)
 				wrapperProcessor(wrapper);
 		}
 
-		public WrappedReflexiveEntry GetTopLevelWrapper(ReflexiveData reflexive, WrappedReflexiveEntry wrapper)
+		public WrappedTagBlockEntry GetTopLevelWrapper(TagBlockData tagBlock, WrappedTagBlockEntry wrapper)
 		{
-			FlattenedReflexive flattened;
-			if (_flattenInfo.TryGetValue(reflexive, out flattened))
+			FlattenedTagBlock flattened;
+			if (_flattenInfo.TryGetValue(tagBlock, out flattened))
 				return flattened.GetTopLevelWrapper(wrapper);
 			return null;
 		}
 
 		/// <summary>
-		///     Forcibly expands a reflexive and all of its ancestors.
+		///     Forcibly expands a tagBlock and all of its ancestors.
 		/// </summary>
-		/// <param name="reflexive">The reflexive to make visible.</param>
-		public void ForceVisible(ReflexiveData reflexive)
+		/// <param name="tagBlock">The tagBlock to make visible.</param>
+		public void ForceVisible(TagBlockData tagBlock)
 		{
-			FlattenedReflexive flattened;
-			if (!_flattenInfo.TryGetValue(reflexive, out flattened))
+			FlattenedTagBlock flattened;
+			if (!_flattenInfo.TryGetValue(tagBlock, out flattened))
 				return;
 
 			while (flattened != null && flattened.Expand())
 				flattened = flattened.Parent;
 		}
 
-		private void AttachTo(ReflexiveData field, FlattenedReflexive flattened)
+		private void AttachTo(TagBlockData field, FlattenedTagBlock flattened)
 		{
-			field.PropertyChanged += ReflexivePropertyChanged;
-			field.Cloned += ReflexiveCloned;
+			field.PropertyChanged += TagBlockPropertyChanged;
+			field.Cloned += TagBlockCloned;
 			_flattenInfo[field] = flattened;
 		}
 
-		private void ReflexiveCloned(object sender, ReflexiveClonedEventArgs e)
+		private void TagBlockCloned(object sender, TagBlockClonedEventArgs e)
 		{
-			FlattenedReflexive flattened = _flattenInfo[e.Old];
+			FlattenedTagBlock flattened = _flattenInfo[e.Old];
 			AttachTo(e.Clone, flattened);
 			flattened.SynchronizeWith(e.Clone);
 		}
 
-		private void ReflexivePropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void TagBlockPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var reflexive = (ReflexiveData) sender;
-			FlattenedReflexive flattenedField = _flattenInfo[reflexive];
+			var tagBlock = (TagBlockData)sender;
+			FlattenedTagBlock flattenedField = _flattenInfo[tagBlock];
 			if (e.PropertyName == "IsExpanded")
 			{
-				if (reflexive.IsExpanded)
+				if (tagBlock.IsExpanded)
 					flattenedField.Expand();
 				else
 					flattenedField.Contract();
@@ -459,10 +458,10 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				{
 					// Throw out any cached changes and reset the current index
 					RecursiveReset(flattenedField.LoadedFields);
-					if (reflexive.Length > 0)
-						reflexive.CurrentIndex = 0;
+					if (tagBlock.Length > 0)
+						tagBlock.CurrentIndex = 0;
 					else
-						reflexive.CurrentIndex = -1;
+						tagBlock.CurrentIndex = -1;
 				}
 				else
 				{
@@ -471,10 +470,10 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				}
 
 				// Load the new page in
-				flattenedField.LoadPage(reflexive, reflexive.CurrentIndex);
+				flattenedField.LoadPage(tagBlock, tagBlock.CurrentIndex);
 
 				// Read any non-cached fields in the page
-				_reader.ReadReflexiveChildren(reflexive);
+				_reader.ReadTagBlockChildren(tagBlock);
 				RecursiveLoad(flattenedField.LoadedFields);
 
 				_tracker.Enabled = true;
@@ -482,47 +481,44 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		private void RecursiveUnload(IEnumerable<MetaField> fields)
+		private void RecursiveUnload(IEnumerable<TagDataField> fields)
 		{
-			foreach (MetaField field in fields)
+			foreach (var field in fields)
 			{
-				var reflexive = field as ReflexiveData;
-				if (reflexive != null)
-				{
-					FlattenedReflexive flattened = _flattenInfo[reflexive];
-					RecursiveUnload(flattened.LoadedFields);
-					_flattenInfo[reflexive].UnloadPage();
-				}
+				var tagBlock = field as TagBlockData;
+				if (tagBlock == null) continue;
+
+				var flattened = _flattenInfo[tagBlock];
+				RecursiveUnload(flattened.LoadedFields);
+				_flattenInfo[tagBlock].UnloadPage();
 			}
 		}
 
-		private void RecursiveReset(IEnumerable<MetaField> fields)
+		private void RecursiveReset(IEnumerable<TagDataField> fields)
 		{
-			foreach (MetaField field in fields)
+			foreach (var field in fields)
 			{
 				_tracker.MarkUnchanged(field);
 
-				var reflexive = field as ReflexiveData;
-				if (reflexive != null)
-				{
-					FlattenedReflexive flattened = _flattenInfo[reflexive];
-					RecursiveReset(flattened.LoadedFields);
-					reflexive.ResetPages();
-				}
+				var tagBlock = field as TagBlockData;
+				if (tagBlock == null) continue;
+
+				var flattened = _flattenInfo[tagBlock];
+				RecursiveReset(flattened.LoadedFields);
+				tagBlock.ResetPages();
 			}
 		}
 
-		private void RecursiveLoad(IEnumerable<MetaField> fields)
+		private void RecursiveLoad(IEnumerable<TagDataField> fields)
 		{
-			foreach (MetaField field in fields)
+			foreach (var field in fields)
 			{
-				var reflexive = field as ReflexiveData;
-				if (reflexive != null)
-				{
-					FlattenedReflexive flattened = _flattenInfo[reflexive];
-					_flattenInfo[reflexive].LoadPage(reflexive, reflexive.CurrentIndex);
-					RecursiveLoad(flattened.LoadedFields);
-				}
+				var tagBlock = field as TagBlockData;
+				if (tagBlock == null) continue;
+
+				var flattened = _flattenInfo[tagBlock];
+				_flattenInfo[tagBlock].LoadPage(tagBlock, tagBlock.CurrentIndex);
+				RecursiveLoad(flattened.LoadedFields);
 			}
 		}
 	}

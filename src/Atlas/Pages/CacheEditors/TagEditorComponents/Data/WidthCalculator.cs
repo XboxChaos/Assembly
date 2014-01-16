@@ -6,14 +6,14 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 	/// <summary>
 	///     Calculates meta control widths.
 	/// </summary>
-	public class WidthCalculator : IMetaFieldVisitor
+	public class WidthCalculator : ITagDataFieldVisitor
 	{
-		private const double ReflexiveSubEntryLeftPadding = 20;
-		private const double ReflexiveSubEntryRightPadding = 20;
-		private const double ReflexiveSubEntryBorderWidth = 1;
+		private const double TagBlockSubEntryLeftPadding = 20;
+		private const double TagBlockSubEntryRightPadding = 20;
+		private const double TagBlockSubEntryBorderWidth = 1;
 
-		private const double ReflexiveSubEntryExtraWidth =
-			ReflexiveSubEntryLeftPadding + ReflexiveSubEntryRightPadding + ReflexiveSubEntryBorderWidth*2;
+		private const double TagBlockSubEntryExtraWidth =
+			TagBlockSubEntryLeftPadding + TagBlockSubEntryRightPadding + TagBlockSubEntryBorderWidth*2;
 
 		private static readonly AsciiValue _asciiControl = new AsciiValue();
 		private static readonly Bitfield _bitfieldControl = new Bitfield();
@@ -85,12 +85,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			AddWidth(_intControl.Width);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitReflexive(TagBlockData field)
 		{
 			AddWidth(field.Width);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitReflexiveEntry(WrappedTagBlockEntry field)
 		{
 			// Save our state and recurse into it
 			double oldTotal = _totalWidth;
@@ -100,7 +100,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			double entryWidth = _totalWidth;
 			_totalWidth = oldTotal;
 
-			AddWidth(entryWidth + ReflexiveSubEntryExtraWidth);
+			AddWidth(entryWidth + TagBlockSubEntryExtraWidth);
 		}
 
 		public void VisitString(StringData field)
@@ -153,14 +153,14 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			AddWidth(_shader.Width);
 		}
 
-		public void Add(MetaField field)
+		public void Add(TagDataField field)
 		{
 			field.Accept(this);
 		}
 
-		public void Add(IEnumerable<MetaField> fields)
+		public void Add(IEnumerable<TagDataField> fields)
 		{
-			foreach (MetaField field in fields)
+			foreach (TagDataField field in fields)
 				Add(field);
 		}
 

@@ -95,12 +95,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			get { return _format == "bytes" ? _length*2 : _length; }
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitRawData(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new RawData(Name, Offset, FieldAddress, _document.Text, _length, PluginLine);
 		}

@@ -49,12 +49,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitUint8(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Uint8Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -70,12 +70,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitInt8(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Int8Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -91,12 +91,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitUint16(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Uint16Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -112,12 +112,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitInt16(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Int16Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -133,12 +133,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitUint32(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Uint32Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -154,12 +154,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitInt32(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Int32Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
@@ -175,12 +175,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		{
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitFloat32(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new Float32Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
 		}
