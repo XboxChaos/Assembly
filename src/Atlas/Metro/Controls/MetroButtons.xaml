@@ -263,6 +263,91 @@
 	</Style>
 
 	<Style TargetType="{x:Type xctk:DropDownButton}">
+		<Setter Property="Foreground" Value="#999999" />
+		<Setter Property="Background" Value="#222222" />
+		<Setter Property="BorderBrush" Value="#616161" />
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Padding" Value="4,0"/>
+		<Setter Property="IsTabStop" Value="False"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type xctk:DropDownButton}">
+					<Grid x:Name="MainGrid" SnapsToDevicePixels="True">
+						<ToggleButton x:Name="PART_DropDownButton" IsChecked="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							<ToggleButton.IsHitTestVisible>
+								<Binding Path="IsOpen" RelativeSource="{RelativeSource TemplatedParent}">
+									<Binding.Converter>
+										<xctk:InverseBoolConverter/>
+									</Binding.Converter>
+								</Binding>
+							</ToggleButton.IsHitTestVisible>
+							<ToggleButton.Template>
+								<ControlTemplate TargetType="{x:Type ToggleButton}">
+									<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}"/>
+								</ControlTemplate>
+							</ToggleButton.Template>
+							<Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+								<Grid>
+									<xctk:ButtonChrome x:Name="ToggleButtonChrome" RenderEnabled="{TemplateBinding IsEnabled}"
+													   Background="{TemplateBinding Background}" BorderThickness="0">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="1"/>
+												<ColumnDefinition Width="Auto"/>
+											</Grid.ColumnDefinitions>
+											<ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" 
+															  Content="{TemplateBinding Content}" 
+															  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+															  Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+															  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+											<Grid x:Name="ButtonChromeSeparator"  Background="#2d2d30" Grid.Column="1" />
+											<Grid x:Name="arrowGlyph" Grid.Column="2" IsHitTestVisible="False" Margin="4,3">
+												<Path x:Name="Arrow" Data="M 0,0 L 3,3 6,0 Z" Fill="#989898" Height="4" Width="7"/>
+											</Grid>
+										</Grid>
+									</xctk:ButtonChrome>
+								</Grid>
+							</Border>
+						</ToggleButton>
+						<Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" HorizontalOffset="1" IsOpen="{Binding IsChecked, ElementName=PART_DropDownButton}" Placement="Bottom" StaysOpen="False" VerticalOffset="1">
+							<Border BorderBrush="#333337" Background="#1b1b1c" BorderThickness="1">
+								<ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding DropDownContent}"/>
+							</Border>
+						</Popup>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Fill" TargetName="Arrow" Value="{DynamicResource AssemblyAccentBrush}"/>
+							<Setter Property="Background" TargetName="ToggleButtonChrome" Value="#333337"/>
+							<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrushSecondary}" TargetName="Border" />
+						</Trigger>
+
+						<Trigger Property="IsPressed" SourceName="PART_DropDownButton" Value="True">
+							<Setter Property="Fill" TargetName="Arrow" Value="White"/>
+							<Setter Property="Background" TargetName="ToggleButtonChrome" Value="#444"/>
+							<Setter Property="Background" TargetName="ButtonChromeSeparator" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
+						</Trigger>
+
+						<Trigger Property="IsOpen" Value="True">
+							<Setter Property="Fill" TargetName="Arrow" Value="White"/>
+							<Setter Property="Background" TargetName="ToggleButtonChrome" Value="#444"/>
+							<Setter Property="Background" TargetName="ButtonChromeSeparator" Value="{DynamicResource AssemblyAccentBrushSecondary}"/>
+						</Trigger>
+
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Fill" TargetName="Arrow" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+							<Setter Property="Foreground" TargetName="ToggleButtonChrome" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="ToolbarDropDownButtonStyle" TargetType="{x:Type xctk:DropDownButton}">
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
