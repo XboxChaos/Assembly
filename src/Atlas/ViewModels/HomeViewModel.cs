@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Atlas.Models;
 using Atlas.Pages;
 
@@ -8,6 +9,11 @@ namespace Atlas.ViewModels
 {
 	public class HomeViewModel : Base
 	{
+		public HomeViewModel()
+		{
+			_statusResetTimer.Tick += (sender, args) => { Status = "Ready..."; };
+		}
+
 		#region Properties
 
 		#region Application Stuff
@@ -15,9 +21,18 @@ namespace Atlas.ViewModels
 		public string Status
 		{
 			get { return _status; }
-			set { SetField(ref _status, value); }
+			set
+			{
+				if (!value.EndsWith("..."))
+					value += "...";
+
+				_statusResetTimer.Stop();
+				SetField(ref _status, value);
+				_statusResetTimer.Start();
+			}
 		}
 		private string _status = "Ready...";
+		private readonly DispatcherTimer _statusResetTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 5) };
 
 		public string ApplicationTitle
 		{

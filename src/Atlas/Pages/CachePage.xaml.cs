@@ -160,12 +160,28 @@ namespace Atlas.Pages
 
 		private void TagEditorPokeModifiedMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+			var editor = ViewModel.SelectedEditor as TagEditor;
+			if (editor == null) return;
+			editor.ViewModel.SaveTagData(TagDataWriter.SaveType.Memory);
 		}
-
 		private void TagEditorPokeAllMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+			var editor = ViewModel.SelectedEditor as TagEditor;
+			if (editor == null) return;
+			editor.ViewModel.SaveTagData(TagDataWriter.SaveType.Memory, false);
+		}
+
+		private void TagEditorReloadLocalMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			var editor = ViewModel.SelectedEditor as TagEditor;
+			if (editor == null) return;
+			editor.ViewModel.LoadTagData(TagDataReader.LoadType.File, editor);
+		}
+		private void TagEditorReloadMemoryMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			var editor = ViewModel.SelectedEditor as TagEditor;
+			if (editor == null) return;
+			editor.ViewModel.LoadTagData(TagDataReader.LoadType.Memory, editor);
 		}
 
 		#endregion
