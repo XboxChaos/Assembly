@@ -7,7 +7,7 @@ namespace XBDMCommunicator
 	/// <summary>
 	///     An XBDM real-time editing provider.
 	/// </summary>
-	public class XBDMRTEProvider : IRTEProvider
+	public class XbdmRteProvider : IRteProvider
 	{
 		private readonly Xbdm _xbdm;
 
@@ -15,7 +15,7 @@ namespace XBDMCommunicator
 		///     Constructs a new XBDMRTEProvider based off of an Xbdm object.
 		/// </summary>
 		/// <param name="xbdm">The Xbdm object to use to connect to the console.</param>
-		public XBDMRTEProvider(Xbdm xbdm)
+		public XbdmRteProvider(Xbdm xbdm)
 		{
 			_xbdm = xbdm;
 		}
@@ -23,9 +23,9 @@ namespace XBDMCommunicator
 		/// <summary>
 		///     The type of connection that the provider will establish.
 		/// </summary>
-		public RTEConnectionType ConnectionType
+		public RteConnectionType ConnectionType
 		{
-			get { return RTEConnectionType.ConsoleX360; }
+			get { return RteConnectionType.ConsoleX360; }
 		}
 
 		/// <summary>

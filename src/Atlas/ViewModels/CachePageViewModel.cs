@@ -11,6 +11,8 @@ using Atlas.Pages.CacheEditors;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
+using Blamite.RTE;
+using Blamite.RTE.H2Vista;
 using Blamite.Util;
 using Newtonsoft.Json;
 using XBDMCommunicator;
@@ -86,6 +88,13 @@ namespace Atlas.ViewModels
 		}
 		private TagHierarchy _classHierarchy;
 
+		public IRteProvider RteProvider
+		{
+			get { return _rteProvider; }
+			set { SetField(ref _rteProvider, value); }
+		}
+		private IRteProvider _rteProvider;
+
 		public TagHierarchy ActiveHierarchy
 		{
 			get { return _activeHierarchy; }
@@ -149,6 +158,18 @@ namespace Atlas.ViewModels
 				StringIdTrie = new Trie();
 				if (CacheFile.StringIDs != null)
 					StringIdTrie.AddRange(CacheFile.StringIDs);
+
+				// Set up RTE
+				switch (CacheFile.Engine)
+				{
+					case EngineType.SecondGeneration:
+						RteProvider = new H2VistaRteProvider("halo2.exe");
+						break;
+
+					case EngineType.ThirdGeneration:
+						RteProvider = new XbdmRteProvider(XboxDebugManager);
+						break;
+				}
 
 				LoadHeader();
 				LoadTags();
@@ -227,6 +248,7 @@ namespace Atlas.ViewModels
 				BuildHasEngineMemory = false;
 			}
 		}
+
 
 		#region Modio Hex Codes (Editor Management)
 
