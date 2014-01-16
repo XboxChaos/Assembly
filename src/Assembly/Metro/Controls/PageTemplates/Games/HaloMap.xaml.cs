@@ -64,7 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
-		private IRTEProvider _rteProvider;
+		private IRteProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private Settings.TagOpenMode _tagOpenMode;
 
@@ -200,11 +200,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.SecondGeneration:
-						_rteProvider = new H2VistaRTEProvider("halo2.exe");
+						_rteProvider = new H2VistaRteProvider("halo2.exe");
 						break;
 
 					case EngineType.ThirdGeneration:
-						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						_rteProvider = new XbdmRteProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
 						break;
 				}
 

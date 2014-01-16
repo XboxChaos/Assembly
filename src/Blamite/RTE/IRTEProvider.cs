@@ -6,7 +6,7 @@ namespace Blamite.RTE
 	/// <summary>
 	///     Real-time editing connection types.
 	/// </summary>
-	public enum RTEConnectionType
+	public enum RteConnectionType
 	{
 		ConsoleX360,
 		LocalProcess
@@ -15,12 +15,12 @@ namespace Blamite.RTE
 	/// <summary>
 	///     The interface for an RTE (real-time editing) provider.
 	/// </summary>
-	public interface IRTEProvider
+	public interface IRteProvider
 	{
 		/// <summary>
 		///     The type of connection that the provider will establish.
 		/// </summary>
-		RTEConnectionType ConnectionType { get; }
+		RteConnectionType ConnectionType { get; }
 
 		/// <summary>
 		///     Obtains a stream which can be used to read and write a cache file's meta in realtime.

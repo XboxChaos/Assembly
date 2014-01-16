@@ -6,12 +6,12 @@ namespace Blamite.RTE
 	/// <summary>
 	///     An implementation of IStreamManager which returns streams opened from an IRTEProvider.
 	/// </summary>
-	public class RTEStreamManager : IStreamManager
+	public class RteStreamManager : IStreamManager
 	{
 		private readonly ICacheFile _cacheFile;
-		private readonly IRTEProvider _provider;
+		private readonly IRteProvider _provider;
 
-		public RTEStreamManager(IRTEProvider provider, ICacheFile cacheFile)
+		public RteStreamManager(IRteProvider provider, ICacheFile cacheFile)
 		{
 			_provider = provider;
 			_cacheFile = cacheFile;

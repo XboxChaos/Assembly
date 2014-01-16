@@ -57,7 +57,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly IStreamManager _fileManager;
 		private readonly MetaContainer _parentMetaContainer;
 		private readonly Dictionary<MetaField, int> _resultIndices = new Dictionary<MetaField, int>();
-		private readonly IRTEProvider _rteProvider;
+		private readonly IRteProvider _rteProvider;
 		private readonly Timer _searchTimer;
 		private readonly Trie _stringIdTrie;
 		private readonly TagHierarchy _tags;
@@ -72,8 +72,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private ObservableCollection<SearchResult> _searchResults;
 		private ITag _tag;
 
+		#region useless shit
+
 		public MetaEditor(EngineDescription buildInfo, ITag tag, MetaContainer parentContainer, TagHierarchy tags,
-			ICacheFile cache, IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+			ICacheFile cache, IStreamManager streamManager, IRteProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
@@ -122,7 +124,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						return;
 					}
 
-					streamManager = new RTEStreamManager(_rteProvider, _cache);
+					streamManager = new RteStreamManager(_rteProvider, _cache);
 					baseOffset = _tag.MetaLocation.AsPointer();
 					break;
 
@@ -255,12 +257,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			switch (_rteProvider.ConnectionType)
 			{
-				case RTEConnectionType.ConsoleX360:
+				case RteConnectionType.ConsoleX360:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
 					break;
 
-				case RTEConnectionType.LocalProcess:
+				case RteConnectionType.LocalProcess:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
 					break;
@@ -517,6 +519,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
 			return true;
 		}
+
+		#endregion
+
+
 
 		#region Searching
 

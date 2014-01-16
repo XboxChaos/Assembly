@@ -10,29 +10,29 @@ namespace Blamite.RTE.H2Vista
 	/// <summary>
 	///     A real-time editing provider which connects to Halo 2 Vista.
 	/// </summary>
-	public class H2VistaRTEProvider : IRTEProvider
+	public class H2VistaRteProvider : IRteProvider
 	{
 		/// <summary>
 		///     Constructs a new H2VistaRTEProvider.
 		/// </summary>
 		/// <param name="exeName">The name of the executable to connect to.</param>
-		public H2VistaRTEProvider(string exeName)
+		public H2VistaRteProvider(string exeName)
 		{
-			EXEName = exeName;
+			ExeName = exeName;
 		}
 
 		/// <summary>
 		///     Gets or sets the name of the executable to connect to.
 		/// </summary>
-		public string EXEName { get; set; }
+		public string ExeName { get; set; }
 
 		/// <summary>
 		///     The type of connection that the provider will establish.
 		///     Always RTEConnectionType.LocalProcess.
 		/// </summary>
-		public RTEConnectionType ConnectionType
+		public RteConnectionType ConnectionType
 		{
-			get { return RTEConnectionType.LocalProcess; }
+			get { return RteConnectionType.LocalProcess; }
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Blamite.RTE.H2Vista
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
 		public IStream GetMetaStream(ICacheFile cacheFile)
 		{
-			Process gameProcess = FindGameProcess();
+			var gameProcess = FindGameProcess();
 			if (gameProcess == null)
 				return null;
 
@@ -81,7 +81,7 @@ namespace Blamite.RTE.H2Vista
 
 		private Process FindGameProcess()
 		{
-			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(EXEName));
+			var processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ExeName));
 			return processes.Length > 0 ? processes[0] : null;
 		}
 	}

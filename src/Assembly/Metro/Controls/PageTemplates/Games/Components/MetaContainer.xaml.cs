@@ -21,14 +21,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private MetaEditor _metaEditor;
 		private MetaInformation _metaInformation;
 		private PluginEditor _pluginEditor;
-		private IRTEProvider _rteProvider;
+		private IRteProvider _rteProvider;
 		private IStreamManager _streamManager;
 		private string _cacheLocation;
 		private Trie _stringIDTrie;
 		private TagHierarchy _tags;
 
 		public MetaContainer(EngineDescription buildInfo, string cacheLocation, ITag tag, TagHierarchy tags, ICacheFile cache,
-			IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
+			IStreamManager streamManager, IRteProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 

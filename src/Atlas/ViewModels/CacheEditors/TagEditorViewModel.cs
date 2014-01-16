@@ -47,13 +47,6 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private TagHierarchyNode _tagHierarchyNode;
 
-		public IRTEProvider RteProvider
-		{
-			get { return _rteProvider; }
-			set { SetField(ref _rteProvider, value); }
-		}
-		private IRTEProvider _rteProvider;
-
 		public FieldChangeTracker ChangeTracker
 		{
 			get { return _changeTracker; }
@@ -133,16 +126,16 @@ namespace Atlas.ViewModels.CacheEditors
 					break;
 
 				case TagDataReader.LoadType.Memory:
-					if (_rteProvider == null)
+					if (CachePageViewModel.RteProvider == null)
 						goto default;
 
-					if (_rteProvider.GetMetaStream(_cachePageViewModel.CacheFile) == null)
+					if (CachePageViewModel.RteProvider.GetMetaStream(_cachePageViewModel.CacheFile) == null)
 					{
 						ShowConnectionError();
 						return;
 					}
 
-					streamManager = new RTEStreamManager(_rteProvider, _cachePageViewModel.CacheFile);
+					streamManager = new RteStreamManager(CachePageViewModel.RteProvider, _cachePageViewModel.CacheFile);
 					baseOffset = _tagHierarchyNode.Tag.MetaLocation.AsPointer();
 					break;
 
@@ -177,13 +170,13 @@ namespace Atlas.ViewModels.CacheEditors
 			if (type == TagDataReader.LoadType.File)
 				App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from cache file";
 			else
-				switch (RteProvider.ConnectionType)
+				switch (CachePageViewModel.RteProvider.ConnectionType)
 				{
-					case RTEConnectionType.ConsoleX360:
+					case RteConnectionType.ConsoleX360:
 						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Xbox 360 Development Console's memory";
 						break;
 
-					case RTEConnectionType.LocalProcess:
+					case RteConnectionType.LocalProcess:
 						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Local Machine's memory ";
 						break;
 				}
@@ -226,13 +219,13 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private void SaveTagDataToMemory(bool onlySaveChanged = true)
 		{
-			if (RteProvider == null)
+			if (CachePageViewModel.RteProvider == null)
 			{
 				MetroMessageBox.Show("Unable to Save Changes", "The Real Time Provider that assembly creates to send data to the correct console/device is null. This shouldn't happen. Try re-opening the cache file.");
 				return;
 			}
 
-			using (var stream = RteProvider.GetMetaStream(CachePageViewModel.CacheFile))
+			using (var stream = CachePageViewModel.RteProvider.GetMetaStream(CachePageViewModel.CacheFile))
 			{
 				if (stream == null)
 				{
@@ -246,13 +239,13 @@ namespace Atlas.ViewModels.CacheEditors
 					CachePageViewModel.StringIdTrie);
 				tagDataUpdate.WriteFields(PluginVisitor.Values);
 
-				switch (RteProvider.ConnectionType)
+				switch (CachePageViewModel.RteProvider.ConnectionType)
 				{
-					case RTEConnectionType.ConsoleX360:
+					case RteConnectionType.ConsoleX360:
 						App.Storage.HomeWindowViewModel.Status = "Successfully written changes to Xbox 360 Development Console's memory";
 						break;
 
-					case RTEConnectionType.LocalProcess:
+					case RteConnectionType.LocalProcess:
 						App.Storage.HomeWindowViewModel.Status = "Successfully written changes to Local Machine's memory";
 						break;
 				}
@@ -269,14 +262,14 @@ namespace Atlas.ViewModels.CacheEditors
 
 		private void ShowConnectionError()
 		{
-			switch (_rteProvider.ConnectionType)
+			switch (CachePageViewModel.RteProvider.ConnectionType)
 			{
-				case RTEConnectionType.ConsoleX360:
+				case RteConnectionType.ConsoleX360:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to your Xbox 360 console. Make sure that XBDM is enabled, you have the Xbox 360 SDK installed, and that your console's IP has been set correctly.");
 					break;
 
-				case RTEConnectionType.LocalProcess:
+				case RteConnectionType.LocalProcess:
 					MetroMessageBox.Show("Connection Error",
 						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
 					break;
