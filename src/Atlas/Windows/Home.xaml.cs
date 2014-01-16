@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using Atlas.Dialogs;
 using Atlas.Native;
@@ -49,10 +50,17 @@ namespace Atlas.Windows
 
 		#region Debug Menu
 
-		private void MessageBoxDiaogTextMenuItem_OnClick(object sender, RoutedEventArgs e)
+		private void MessageBoxDialogTextMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
 			MetroMessageBox.Show("Message Box Title",
 				"Haxx0r ipsum L0phtCrack January 1, 1970 spoof epoch continue suitably small values tunnel in. Worm fail packet sniffer for ascii giga nak double flood linux boolean int gcc. Cd I'm compiling overflow fopen endif default system break James T. Kirk bar vi hexadecimal unix rsa ack. ");
+		}
+		private void MessageBoxOptionMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			var answer = MetroMessageBox.Show("Message Box Title", "wots ur answer?", 
+				new List<MetroMessageBox.MessageBoxButton> { MetroMessageBox.MessageBoxButton.Aite, MetroMessageBox.MessageBoxButton.Okay, MetroMessageBox.MessageBoxButton.Cancel });
+
+			MetroMessageBox.Show("answer", answer.ToString());
 		}
 
 		#endregion

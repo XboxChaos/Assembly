@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Atlas.ViewModels.Dialog;
 
 namespace Atlas.Dialogs.Controls
@@ -16,7 +17,20 @@ namespace Atlas.Dialogs.Controls
 			InitializeComponent();
 		}
 
-		private void WindowCloseButton_OnClick(object sender, RoutedEventArgs e) { Close(); }
-		private void OkayButton_OnClick(object sender, RoutedEventArgs e) { Close(); }
+		public MetroMessageBox.MessageBoxButton ExitButtonType = MetroMessageBox.MessageBoxButton.Okay;
+
+		private void ExitButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			var button = (Button) sender;
+			if (button != null && button.Tag is MetroMessageBox.MessageBoxButton)
+				ExitButtonType = (MetroMessageBox.MessageBoxButton) button.Tag;
+
+			Close();
+		}
+
+		private void WindowCloseButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
 	}
 }

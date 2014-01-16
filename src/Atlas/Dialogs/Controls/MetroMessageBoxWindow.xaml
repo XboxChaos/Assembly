@@ -30,11 +30,20 @@
 			<TextBlock Text="{Binding Path=(dialog:MessageBoxViewModel.Message), Mode=OneWay, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor auctor arcu sit amet adipiscing. Vestibulum nec aliquet massa, at pellentesque leo. Curabitur non fermentum diam, ut faucibus nulla. Nulla placerat orci elit, eu bibendum justo dignissim id. Quisque vel. '}" 
 					   TextWrapping="Wrap" />
 		</ScrollViewer>
-		
+
 		<Grid x:Name="ButtonOptions" Grid.Row="2" Background="#FF424244">
-			<StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
-				<Button x:Name="OkayButton" Click="OkayButton_OnClick" Width="45">Okay</Button>
-			</StackPanel>
+			<ItemsControl ItemsSource="{Binding Path=(dialog:MessageBoxViewModel.Buttons)}" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Button Padding="8,0" Margin="0,0,10,0" Content="{Binding}" Tag="{Binding}" Click="ExitButton_OnClick" />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 		</Grid>
 	</Grid>
 </custom:MetroDialogWindow>
