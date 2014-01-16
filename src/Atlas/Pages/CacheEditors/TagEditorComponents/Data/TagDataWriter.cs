@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
@@ -9,7 +8,7 @@ using Blamite.Util;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	internal class MetaWriter : IMetaFieldVisitor
+	public class TagDataWriter : ITagDataFieldVisitor
 	{
 		public enum SaveType
 		{
@@ -20,7 +19,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		private readonly ICacheFile _cache;
 		private readonly FieldChangeSet _changes;
 		private readonly StructureLayout _dataRefLayout;
-		private readonly StructureLayout _reflexiveLayout;
+		private readonly StructureLayout _tagBlockLayout;
 		private readonly Trie _stringIdTrie;
 		private readonly StructureLayout _tagRefLayout;
 		private readonly SaveType _type;
@@ -32,7 +31,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		/// <summary>
 		///     Save meta to the Blam Cache File
 		/// </summary>
-		public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
+		public TagDataWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
 			FieldChangeSet changes, Trie stringIdTrie)
 		{
 			_writer = writer;
@@ -43,7 +42,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			_stringIdTrie = stringIdTrie;
 
 			// Load layouts
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+			_tagBlockLayout = buildInfo.Layouts.GetLayout("reflexive");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
@@ -196,17 +195,17 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitReflexive(TagBlockData field)
 		{
 			var values = new StructureValueCollection();
 			values.SetInteger("entry count", (uint) field.Length);
 			values.SetInteger("pointer", field.FirstEntryAddress);
 
 			SeekToOffset(field.Offset);
-			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
+			StructureWriter.WriteStructure(values, _tagBlockLayout, _writer);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitReflexiveEntry(WrappedTagBlockEntry field)
 		{
 		}
 
@@ -327,55 +326,55 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			// Don't do anything
 		}
 
-		public void WriteFields(IList<MetaField> fields)
+		public void WriteFields(IList<TagDataField> fields)
 		{
-			foreach (MetaField t in fields)
+			foreach (var t in fields)
 				WriteField(t);
 		}
 
-		private void WriteField(MetaField field)
+		private void WriteField(TagDataField field)
 		{
 			if (_changes == null || _changes.HasChanged(field))
 				field.Accept(this);
 
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
-				WriteReflexiveChildren(reflexive);
+			var tagBlock = field as TagBlockData;
+			if (tagBlock != null)
+				WriteTagBlockChildren(tagBlock);
 		}
 
-		public void WriteReflexiveChildren(ReflexiveData field)
+		public void WriteTagBlockChildren(TagBlockData field)
 		{
 			if (field.CurrentIndex < 0 || !field.HasChildren)
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
-			uint newBaseOffset = field.FirstEntryAddress;
+			var newBaseOffset = field.FirstEntryAddress;
 			if (_type == SaveType.File)
 				newBaseOffset = (uint) _cache.MetaArea.PointerToOffset(newBaseOffset);
 
 			// Save the old base offset and set the base offset to the reflexive's base
-			uint oldBaseOffset = _baseOffset;
+			var oldBaseOffset = _baseOffset;
 			_baseOffset = newBaseOffset;
 
 			// Write each page
-			int _oldIndex = field.CurrentIndex;
-			bool _oldPokeTemplates = _pokeTemplateFields;
-			for (int i = 0; i < field.Length; i++)
+			var oldIndex = field.CurrentIndex;
+			var oldPokeTemplates = _pokeTemplateFields;
+			for (var i = 0; i < field.Length; i++)
 			{
 				// If we're saving everything, then change the active page so the values get loaded from the file
 				if (_changes == null && field.CurrentIndex != i)
 					field.CurrentIndex = i;
 
-				// If we're not saving everything, then we can only poke template fields in reflexives
+				// If we're not saving everything, then we can only poke template fields in tag blocks
 				// if the current indices all line up
-				if (i != _oldIndex)
+				if (i != oldIndex)
 					_pokeTemplateFields = false;
 
 				// Get each field in the page and write it
-				ReflexivePage page = field.Pages[i];
-				for (int j = 0; j < page.Fields.Length; j++)
+				var page = field.Pages[i];
+				for (var j = 0; j < page.Fields.Length; j++)
 				{
-					MetaField pageField = page.Fields[j];
+					var pageField = page.Fields[j];
 					// The field in the page takes precedence over the field in the reflexive's template
 					if (pageField == null && (_changes == null || _pokeTemplateFields))
 						pageField = field.Template[j]; // Get it from the template
@@ -385,10 +384,10 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 
 				// Advance to the next chunk
 				_baseOffset += field.EntrySize;
-				_pokeTemplateFields = _oldPokeTemplates;
+				_pokeTemplateFields = oldPokeTemplates;
 			}
-			if (!Equals(field.CurrentIndex, _oldIndex))
-				field.CurrentIndex = _oldIndex;
+			if (!Equals(field.CurrentIndex, oldIndex))
+				field.CurrentIndex = oldIndex;
 
 			// Restore the old base offset
 			_baseOffset = oldBaseOffset;

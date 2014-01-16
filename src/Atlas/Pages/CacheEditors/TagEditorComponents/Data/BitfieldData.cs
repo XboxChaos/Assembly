@@ -69,12 +69,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			_bits[index] = data;
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitBitfield(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			var result = new BitfieldData(Name, Offset, FieldAddress, _type, base.PluginLine);
 			foreach (var bit in _bits)

@@ -15,12 +15,12 @@
 			get { return "dataref " + Format; }
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitDataRef(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine);
 			return result;

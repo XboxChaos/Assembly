@@ -50,7 +50,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			if (DataType == "int")
 				visitor.VisitColourInt(this);
@@ -58,7 +58,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				visitor.VisitColourFloat(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new ColourData(Name, Offset, FieldAddress, Format, DataType, Value, PluginLine);
 		}

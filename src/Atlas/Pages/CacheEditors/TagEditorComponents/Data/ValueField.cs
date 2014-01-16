@@ -3,7 +3,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 	/// <summary>
 	///     Abstract base class for meta fields that have values associated with them.
 	/// </summary>
-	public abstract class ValueField : MetaField
+	public abstract class ValueField : TagDataField
 	{
 		private uint _address;
 		private string _name;

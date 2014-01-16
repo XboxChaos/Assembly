@@ -6,15 +6,15 @@ using Blamite.IO;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	public class ReflexivePage : Base
+	public class TagBlockPage : Base
 	{
-		private readonly MetaField[] _fields;
+		private readonly TagDataField[] _fields;
 		private int _index;
 
-		public ReflexivePage(int index, int size)
+		public TagBlockPage(int index, int size)
 		{
 			_index = index;
-			_fields = new MetaField[size];
+			_fields = new TagDataField[size];
 		}
 
 		public int Index
@@ -27,20 +27,20 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public MetaField[] Fields
+		public TagDataField[] Fields
 		{
 			get { return _fields; }
 		}
 
-		public void CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker,
+		public void CloneChanges(ObservableCollection<TagDataField> changedFields, FieldChangeTracker tracker,
 			FieldChangeSet changes)
 		{
 			for (int i = 0; i < changedFields.Count; i++)
 			{
-				MetaField field = changedFields[i];
-				var reflexive = field as ReflexiveData;
+				TagDataField field = changedFields[i];
+				var tagBlock = field as TagBlockData;
 				bool changed = changes.HasChanged(field);
-				if (field != null && (changed || reflexive != null))
+				if (field != null && (changed || tagBlock != null))
 				{
 					if (_fields[i] == null)
 					{
@@ -50,8 +50,8 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 							tracker.MarkChanged(_fields[i]);
 						tracker.MarkUnchanged(field);
 
-						if (reflexive != null)
-							reflexive.ResetPages();
+						if (tagBlock != null)
+							tagBlock.ResetPages();
 					}
 					else if (field != _fields[i])
 					{
@@ -67,39 +67,39 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				_fields[i] = null;
 		}
 
-		public ReflexivePage CloneValue()
+		public TagBlockPage CloneValue()
 		{
-			var result = new ReflexivePage(_index, _fields.Length);
+			var result = new TagBlockPage(_index, _fields.Length);
 			Array.Copy(_fields, result._fields, _fields.Length);
 			return result;
 		}
 	}
 
-	public class ReflexiveClonedEventArgs : EventArgs
+	public class TagBlockClonedEventArgs : EventArgs
 	{
-		public ReflexiveClonedEventArgs(ReflexiveData old, ReflexiveData clone)
+		public TagBlockClonedEventArgs(TagBlockData old, TagBlockData clone)
 		{
 			Old = old;
 			Clone = clone;
 		}
 
-		public ReflexiveData Old { get; private set; }
-		public ReflexiveData Clone { get; private set; }
+		public TagBlockData Old { get; private set; }
+		public TagBlockData Clone { get; private set; }
 	}
 
-	public class ReflexiveData : ValueField
+	public class TagBlockData : ValueField
 	{
 		private const double MinWidth = 525; // The minimum width that a reflexive can have
 		private readonly FileSegmentGroup _metaArea;
-		private readonly ObservableCollection<ReflexivePage> _pages = new ObservableCollection<ReflexivePage>();
-		private readonly ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
+		private readonly ObservableCollection<TagBlockPage> _pages = new ObservableCollection<TagBlockPage>();
+		private readonly ObservableCollection<TagDataField> _template = new ObservableCollection<TagDataField>();
 		private int _currentIndex;
 		private uint _entrySize;
 		private bool _expanded;
 		private uint _firstEntryAddr;
 		private double _width = MinWidth;
 
-		public ReflexiveData(string name, uint offset, uint address, uint entrySize, uint pluginLine,
+		public TagBlockData(string name, uint offset, uint address, uint entrySize, uint pluginLine,
 			FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{
@@ -185,18 +185,18 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public ObservableCollection<ReflexivePage> Pages
+		public ObservableCollection<TagBlockPage> Pages
 		{
 			get { return _pages; }
 		}
 
-		public ObservableCollection<MetaField> Template
+		public ObservableCollection<TagDataField> Template
 		{
 			get { return _template; }
 		}
 
 		/// <summary>
-		///     Recalculates the reflexive's width.
+		///     Recalculates the tag block's width.
 		/// </summary>
 		public void UpdateWidth()
 		{
@@ -207,34 +207,36 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		}
 
 		/// <summary>
-		///     Throws out any fields that have been cached by the reflexive.
+		///     Throws out any fields that have been cached by the tag blocks.
 		/// </summary>
 		public void ResetPages()
 		{
-			foreach (ReflexivePage page in _pages)
+			foreach (var page in _pages)
 				page.Reset();
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitReflexive(this);
 		}
 
-		public event EventHandler<ReflexiveClonedEventArgs> Cloned;
+		public event EventHandler<TagBlockClonedEventArgs> Cloned;
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
-			var result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, base.PluginLine, _metaArea);
-			result._expanded = _expanded;
-			result._width = _width;
-			result._currentIndex = _currentIndex;
-			result._firstEntryAddr = _firstEntryAddr;
-			foreach (MetaField field in _template)
+			var result = new TagBlockData(Name, Offset, FieldAddress, EntrySize, PluginLine, _metaArea)
+			{
+				_expanded = _expanded,
+				_width = _width,
+				_currentIndex = _currentIndex,
+				_firstEntryAddr = _firstEntryAddr
+			};
+			foreach (var field in _template)
 				result._template.Add(field);
-			foreach (ReflexivePage page in _pages)
+			foreach (var page in _pages)
 				result._pages.Add(page.CloneValue());
 			if (Cloned != null)
-				Cloned(this, new ReflexiveClonedEventArgs(this, result));
+				Cloned(this, new TagBlockClonedEventArgs(this, result));
 			return result;
 		}
 
@@ -264,7 +266,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			{
 				// Add new pages
 				for (int i = _pages.Count; i < count; i++)
-					_pages.Add(new ReflexivePage(i, _template.Count));
+					_pages.Add(new TagBlockPage(i, _template.Count));
 				if (CurrentIndex < 0)
 					CurrentIndex = 0;
 			}

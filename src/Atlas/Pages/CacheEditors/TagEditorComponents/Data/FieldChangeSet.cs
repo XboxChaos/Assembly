@@ -7,9 +7,9 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 	///     A set of fields that have been changed.
 	/// </summary>
 	/// <seealso cref="FieldChangeTracker" />
-	public class FieldChangeSet : IEnumerable<MetaField>
+	public class FieldChangeSet : IEnumerable<TagDataField>
 	{
-		private readonly HashSet<MetaField> _fields = new HashSet<MetaField>();
+		private readonly HashSet<TagDataField> _fields = new HashSet<TagDataField>();
 
 		/// <summary>
 		///     Returns an enumerator that iterates through the collection.
@@ -17,7 +17,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		/// <returns>
 		///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
 		/// </returns>
-		public IEnumerator<MetaField> GetEnumerator()
+		public IEnumerator<TagDataField> GetEnumerator()
 		{
 			return _fields.GetEnumerator();
 		}
@@ -37,7 +37,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Marks a field as changed.
 		/// </summary>
 		/// <param name="field">The field to mark as changed.</param>
-		public void MarkChanged(MetaField field)
+		public void MarkChanged(TagDataField field)
 		{
 			_fields.Add(field);
 		}
@@ -46,7 +46,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		///     Marks a field as unchanged.
 		/// </summary>
 		/// <param name="field">The field to mark as unchanged.</param>
-		public void MarkUnchanged(MetaField field)
+		public void MarkUnchanged(TagDataField field)
 		{
 			_fields.Remove(field);
 		}
@@ -56,7 +56,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		/// </summary>
 		/// <param name="field">The field to check.</param>
 		/// <returns>true if the field has been marked as changed.</returns>
-		public bool HasChanged(MetaField field)
+		public bool HasChanged(TagDataField field)
 		{
 			return _fields.Contains(field);
 		}

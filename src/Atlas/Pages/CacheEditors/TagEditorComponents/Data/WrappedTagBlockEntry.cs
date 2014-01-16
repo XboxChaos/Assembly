@@ -3,15 +3,15 @@ using System.Collections.Specialized;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	public class WrappedReflexiveEntry : MetaField
+	public class WrappedTagBlockEntry : TagDataField
 	{
 		private readonly int _index;
-		private readonly ObservableCollection<MetaField> _visibleItems;
+		private readonly ObservableCollection<TagDataField> _visibleItems;
 		private readonly double _width;
 		private bool _last;
-		private MetaField _wrappedField;
+		private TagDataField _wrappedField;
 
-		public WrappedReflexiveEntry(ObservableCollection<MetaField> visibleItems, int index, double width, bool last)
+		public WrappedTagBlockEntry(ObservableCollection<TagDataField> visibleItems, int index, double width, bool last)
 		{
 			_index = index;
 			_width = width;
@@ -21,7 +21,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			visibleItems.CollectionChanged += visibleItems_CollectionChanged;
 		}
 
-		public MetaField WrappedField
+		public TagDataField WrappedField
 		{
 			get { return _wrappedField; }
 			private set
@@ -51,17 +51,17 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			// This is necessary in order for the OnPropertyChanged on WrappedField to work
 			if ((e.Action == NotifyCollectionChangedAction.Replace || e.Action == NotifyCollectionChangedAction.Add) &&
 			    e.NewStartingIndex == _index)
-				WrappedField = (MetaField) e.NewItems[0];
+				WrappedField = (TagDataField) e.NewItems[0];
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitReflexiveEntry(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
-			return new WrappedReflexiveEntry(_visibleItems, _index, _width, _last);
+			return new WrappedTagBlockEntry(_visibleItems, _index, _width, _last);
 		}
 	}
 }

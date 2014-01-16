@@ -44,12 +44,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitVector(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			return new VectorData(Name, Offset, FieldAddress, _x, _y, _z, base.PluginLine);
 		}

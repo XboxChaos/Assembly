@@ -7,7 +7,7 @@ using Blamite.Util;
 
 namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 {
-	public class MetaReader : IMetaFieldVisitor
+	public class TagDataReader : ITagDataFieldVisitor
 	{
 		public enum LoadType
 		{
@@ -18,13 +18,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 		private readonly ICacheFile _cache;
 		private readonly StructureLayout _dataRefLayout;
 		private readonly FieldChangeSet _ignoredFields;
-		private readonly StructureLayout _reflexiveLayout;
+		private readonly StructureLayout _tagBlockLayout;
 		private readonly IStreamManager _streamManager;
 		private readonly StructureLayout _tagRefLayout;
 		private readonly LoadType _type;
 		private IReader _reader;
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
+		public TagDataReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
 			LoadType type, FieldChangeSet ignore)
 		{
 			_streamManager = streamManager;
@@ -34,7 +34,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			_type = type;
 
 			// Load layouts
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+			_tagBlockLayout = buildInfo.Layouts.GetLayout("reflexive");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
@@ -291,10 +291,10 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			field.Radian = _reader.ReadFloat();
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitReflexive(TagBlockData field)
 		{
 			SeekToOffset(field.Offset);
-			StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var length = (int) values.GetInteger("entry count");
 			uint pointer = values.GetInteger("pointer");
 
@@ -317,11 +317,11 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 				field.Shader = _cache.ShaderStreamer.ReadShader(_reader, field.Type);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitReflexiveEntry(WrappedTagBlockEntry field)
 		{
 		}
 
-		private void ReadField(MetaField field)
+		private void ReadField(TagDataField field)
 		{
 			// Update the field's memory address
 			var valueField = field as ValueField;
@@ -336,13 +336,13 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
 				field.Accept(this);
 
-			// If it's a reflexive, read its children
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
-				ReadReflexiveChildren(reflexive);
+			// If it's a tagBlock, read its children
+			var tagBlock = field as TagBlockData;
+			if (tagBlock != null)
+				ReadTagBlockChildren(tagBlock);
 		}
 
-		public void ReadFields(IList<MetaField> fields)
+		public void ReadFields(IList<TagDataField> fields)
 		{
 			bool opened = OpenReader();
 			if (_reader == null)
@@ -362,9 +362,9 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			}
 		}
 
-		public void ReadReflexiveChildren(ReflexiveData reflexive)
+		public void ReadTagBlockChildren(TagBlockData tagBlock)
 		{
-			if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
+			if (!tagBlock.HasChildren || tagBlock.CurrentIndex < 0)
 				return;
 
 			bool opened = OpenReader();
@@ -375,15 +375,15 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 			{
 				// Calculate the base offset to read from
 				uint oldBaseOffset = BaseOffset;
-				uint dataOffset = reflexive.FirstEntryAddress;
+				uint dataOffset = tagBlock.FirstEntryAddress;
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
-				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
+				BaseOffset = (uint) (dataOffset + tagBlock.CurrentIndex*tagBlock.EntrySize);
 
-				ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
+				TagBlockPage page = tagBlock.Pages[tagBlock.CurrentIndex];
 				for (int i = 0; i < page.Fields.Length; i++)
 				{
-					ReadField(page.Fields[i] ?? reflexive.Template[i]);
+					ReadField(page.Fields[i] ?? tagBlock.Template[i]);
 				}
 
 				BaseOffset = oldBaseOffset;

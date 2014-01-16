@@ -188,7 +188,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				}
 
 				btnPluginRevisionViewer.Visibility = Visibility.Visible;
-				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 			else
 			{
@@ -199,8 +198,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				sbPluginPoke.Visibility = Visibility.Collapsed;
 				btnPluginRevisionViewer.Visibility = Visibility.Collapsed;
 				miPluginRefreshMem.Visibility = Visibility.Collapsed;
-
-				sbPluginRefresh.Visibility = Visibility.Visible;
 			}
 		}
 

@@ -64,12 +64,12 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 
 		public ObservableCollection<EnumValue> Values { get; private set; }
 
-		public override void Accept(IMetaFieldVisitor visitor)
+		public override void Accept(ITagDataFieldVisitor visitor)
 		{
 			visitor.VisitEnum(this);
 		}
 
-		public override MetaField CloneValue()
+		public override TagDataField CloneValue()
 		{
 			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, base.PluginLine);
 			foreach (EnumValue option in Values)
