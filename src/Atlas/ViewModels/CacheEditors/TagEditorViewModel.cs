@@ -174,9 +174,25 @@ namespace Atlas.ViewModels.CacheEditors
 			ChangeTracker.RegisterChangeSet(MemoryChanges);
 			ChangeTracker.Attach(PluginVisitor.Values);
 
+			if (type == TagDataReader.LoadType.File)
+				App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from cache file";
+			else
+				switch (RteProvider.ConnectionType)
+				{
+					case RTEConnectionType.ConsoleX360:
+						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Xbox 360 Development Console's memory";
+						break;
+
+					case RTEConnectionType.LocalProcess:
+						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Local Machine's memory ";
+						break;
+				}
+
+
+
 			RefreshUserInterface();
 		}
-
+		
 		public void SaveTagData(TagDataWriter.SaveType type, bool onlySaveChanged = true)
 		{
 			switch (type)
@@ -190,7 +206,6 @@ namespace Atlas.ViewModels.CacheEditors
 					break;
 			}
 		}
-
 		private void SaveTagDataToFile()
 		{
 			if (!ConfirmNewStringIds())
@@ -206,10 +221,9 @@ namespace Atlas.ViewModels.CacheEditors
 				CachePageViewModel.CacheFile.SaveChanges(stream);
 				FieldChanges.MarkAllUnchanged();
 
-				// TODO: update window status...
+				App.Storage.HomeWindowViewModel.Status = "Successfully written changes to cache file";
 			}
 		}
-
 		private void SaveTagDataToMemory(bool onlySaveChanged = true)
 		{
 			if (RteProvider == null)
@@ -232,7 +246,16 @@ namespace Atlas.ViewModels.CacheEditors
 					CachePageViewModel.StringIdTrie);
 				tagDataUpdate.WriteFields(PluginVisitor.Values);
 
-				// TODO: update window status...
+				switch (RteProvider.ConnectionType)
+				{
+					case RTEConnectionType.ConsoleX360:
+						App.Storage.HomeWindowViewModel.Status = "Successfully written changes to Xbox 360 Development Console's memory";
+						break;
+
+					case RTEConnectionType.LocalProcess:
+						App.Storage.HomeWindowViewModel.Status = "Successfully written changes to Local Machine's memory";
+						break;
+				}
 			}
 		}
 
