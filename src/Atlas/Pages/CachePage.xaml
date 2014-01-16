@@ -181,7 +181,7 @@
 				<!-- Tag Editor Toolbar -->
 				<custom:MetroToolBar ToolBarTray.IsLocked="False" Band="1" BandIndex="1" ToolBar.OverflowMode="Never"
 									 Visibility="{Binding ElementName=EditorTabControl, Mode=OneWay, Path=SelectedItem, Converter={StaticResource IValueConverterTagEditorToolbarVisibility}}">
-					<Button Width="25" ToolTip="Saves the modified tag data back into the cache.">
+					<Button x:Name="TagEditorSaveButton"  Width="25" ToolTip="Saves the modified tag data back into the cache." Click="TagEditorSaveButton_OnClick">
 						<ContentControl Template="{StaticResource MenuVectorIconSaveData}" />
 					</Button>
 					<xctk:DropDownButton Margin="4,0" Style="{StaticResource ToolbarDropDownButtonStyle}">
@@ -191,10 +191,10 @@
 						</StackPanel>
 						<xctk:DropDownButton.DropDownContent>
 							<StackPanel>
-								<MenuItem Padding="4,2" Header="Poke Modified"
+								<MenuItem x:Name="TagEditorPokeModifiedMenuItem" Padding="4,2" Header="Poke Modified" Click="TagEditorPokeModifiedMenuItem_OnClick"
 											ToolTip="Pokes all modified tag data into the currently loaded cache file on your xbox 360 development kit."
 											HorizontalContentAlignment="Left" />
-								<MenuItem Padding="4,2" Header="Poke All"
+								<MenuItem x:Name="TagEditorPokeAllMenuItem" Padding="4,2" Header="Poke All" Click="TagEditorPokeAllMenuItem_OnClick"
 											ToolTip="Pokes all tag data into the currently loaded cache file on your xbox 360 development kit."
 											HorizontalContentAlignment="Left" />
 							</StackPanel>
@@ -221,7 +221,7 @@
 
 			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<custom:MetroClosableTabControl x:Name="EditorTabControl" Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
-				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" 
+				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=(viewModels:CachePageViewModel.SelectedEditor), Mode=TwoWay}"
 							ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
 					<custom:MetroClosableTabControl.ItemContainerStyle>
 						<Style BasedOn="{StaticResource {x:Type custom:MetroClosableTabItem}}" TargetType="{x:Type custom:MetroClosableTabItem}">

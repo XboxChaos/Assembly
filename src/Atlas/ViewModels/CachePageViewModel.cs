@@ -122,8 +122,14 @@ namespace Atlas.ViewModels
 			get { return _editors; }
 			private set { SetField(ref _editors, value); }
 		}
-
 		private ObservableCollection<ICacheEditor> _editors;
+
+		public ICacheEditor SelectedEditor
+		{
+			get { return _selectedEditor; }
+			set { SetField(ref _selectedEditor, value); }
+		}
+		private ICacheEditor _selectedEditor;
 
 		#endregion
 
@@ -228,7 +234,7 @@ namespace Atlas.ViewModels
 		{
 			var editor = new TagEditor(this, tagHierarchyNode);
 			Editors.Add(editor);
-			CachePage.EditorsTabControl.SelectedItem = editor;
+			SelectedEditor = editor;
 		}
 
 		public void LoadAdvancedMemoryEditor()
@@ -239,7 +245,7 @@ namespace Atlas.ViewModels
 				editor = new AdvancedMemoryEditor(this);
 				Editors.Add(editor);
 			}
-			CachePage.EditorsTabControl.SelectedItem = editor;
+			SelectedEditor = editor;
 		}
 
 		#endregion

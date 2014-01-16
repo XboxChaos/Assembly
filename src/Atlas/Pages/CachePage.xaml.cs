@@ -7,6 +7,7 @@ using Atlas.Helpers.Tags;
 using Atlas.Metro.Controls.Custom;
 using Atlas.Models;
 using Atlas.Pages.CacheEditors;
+using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
 using XBDMCommunicator;
 
@@ -147,5 +148,26 @@ namespace Atlas.Pages
 			if (editor == null) return;
 			if (editor.Close()) ViewModel.Editors.Remove(editor);
 		}
+
+		#region Tag Editor Toolbar Buttons
+
+		private void TagEditorSaveButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			var editor = ViewModel.SelectedEditor as TagEditor;
+			if (editor == null) return;
+			editor.ViewModel.SaveTagData(TagDataWriter.SaveType.File);
+		}
+
+		private void TagEditorPokeModifiedMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void TagEditorPokeAllMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }
