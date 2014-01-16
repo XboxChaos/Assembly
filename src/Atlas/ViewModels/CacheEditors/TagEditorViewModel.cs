@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Xml;
 using Atlas.Dialogs;
 using Atlas.Helpers;
@@ -176,9 +177,63 @@ namespace Atlas.ViewModels.CacheEditors
 			RefreshUserInterface();
 		}
 
-		public void SaveTagData(TagDataWriter.SaveType type, TagEditor editor)
+		public void SaveTagData(TagDataWriter.SaveType type, bool onlySaveChanged = true)
 		{
-			
+			switch (type)
+			{
+				case TagDataWriter.SaveType.File:
+					SaveTagDataToFile();
+					break;
+
+				case TagDataWriter.SaveType.Memory:
+					SaveTagDataToMemory(onlySaveChanged);
+					break;
+			}
+		}
+
+		private void SaveTagDataToFile()
+		{
+			if (!ConfirmNewStringIds())
+				return;
+
+			using (var stream = FileManager.OpenReadWrite())
+			{
+				var tagDataUpdate = new TagDataWriter(stream, (uint) TagHierarchyNode.Tag.MetaLocation.AsOffset(),
+					CachePageViewModel.CacheFile, CachePageViewModel.EngineDescription, TagDataWriter.SaveType.File, FieldChanges,
+					CachePageViewModel.StringIdTrie);
+
+				tagDataUpdate.WriteFields(PluginVisitor.Values);
+				CachePageViewModel.CacheFile.SaveChanges(stream);
+				FieldChanges.MarkAllUnchanged();
+
+				// TODO: update window status...
+			}
+		}
+
+		private void SaveTagDataToMemory(bool onlySaveChanged = true)
+		{
+			if (RteProvider == null)
+			{
+				MetroMessageBox.Show("Unable to Save Changes", "The Real Time Provider that assembly creates to send data to the correct console/device is null. This shouldn't happen. Try re-opening the cache file.");
+				return;
+			}
+
+			using (var stream = RteProvider.GetMetaStream(CachePageViewModel.CacheFile))
+			{
+				if (stream == null)
+				{
+					ShowConnectionError();
+					return;
+				}
+
+				var changes = onlySaveChanged ? _memoryChanges : null;
+				var tagDataUpdate = new TagDataWriter(stream, TagHierarchyNode.Tag.MetaLocation.AsPointer(),
+					CachePageViewModel.CacheFile, CachePageViewModel.EngineDescription, TagDataWriter.SaveType.Memory, changes,
+					CachePageViewModel.StringIdTrie);
+				tagDataUpdate.WriteFields(PluginVisitor.Values);
+
+				// TODO: update window status...
+			}
 		}
 
 		public void RefreshUserInterface()
@@ -203,6 +258,17 @@ namespace Atlas.ViewModels.CacheEditors
 						"Unable to connect to the game. Make sure that it is running on your computer and that the map you are poking to is currently loaded.");
 					break;
 			}
+		}
+
+		private bool ConfirmNewStringIds()
+		{
+			var newStrings = (from stringIdField in FieldChanges.OfType<StringIDData>() where !CachePageViewModel.StringIdTrie.Contains(stringIdField.Value) select stringIdField.Value).ToList();
+
+			if (newStrings.Count > 0)
+				return MetroMessageBoxList.Show("New StringIds",
+					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
+
+			return true;
 		}
 	}
 }

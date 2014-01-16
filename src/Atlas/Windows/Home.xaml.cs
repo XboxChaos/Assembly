@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 using Atlas.Dialogs;
 using Atlas.Native;
 using Atlas.Pages;
@@ -60,6 +61,12 @@ namespace Atlas.Windows
 			var answer = MetroMessageBox.Show("Message Box Title", "wots ur answer?", 
 				new List<MetroMessageBox.MessageBoxButton> { MetroMessageBox.MessageBoxButton.Aite, MetroMessageBox.MessageBoxButton.Okay, MetroMessageBox.MessageBoxButton.Cancel });
 
+			MetroMessageBox.Show("answer", answer.ToString());
+		}
+
+		private void MessageBoxListMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			var answer = MetroMessageBoxList.Show("Message Box Title", "le lists", new List<string> { "item1", "item2", "item3", "gerrit" });
 			MetroMessageBox.Show("answer", answer.ToString());
 		}
 

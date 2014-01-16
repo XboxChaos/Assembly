@@ -1,0 +1,45 @@
+﻿<custom:MetroDialogWindow x:Class="Atlas.Dialogs.Controls.MetroMessageBoxListWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Name="DialogWindow"
+		xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:native="clr-namespace:Atlas.Native"
+		xmlns:vectors="clr-namespace:Atlas.Metro.Vectors"
+		xmlns:dialog="clr-namespace:Atlas.ViewModels.Dialog"
+		mc:Ignorable="d" native:WindowMovement.IsDraggable="True"
+		MaxWidth="455" MinWidth="455"
+		Style="{StaticResource MetroDialogWindowStyle}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="Auto" MaxHeight="300" MinHeight="120" />
+			<RowDefinition Height="45" />
+		</Grid.RowDefinitions>
+
+		<Grid native:WindowMovement.DragsWindow="True">
+			<Button x:Name="WindowCloseButton" ToolTip="Close" VerticalAlignment="Top" 
+					HorizontalAlignment="Right" Style="{DynamicResource WindowActionButton}" 
+					Click="WindowCloseButton_OnClick">
+				<vectors:CloseModule />
+			</Button>
+		</Grid>
+
+		<ScrollViewer Grid.Row="1" Margin="0,20" Padding="15,0" VerticalScrollBarVisibility="Auto">
+			<StackPanel>
+				<TextBlock Text="{Binding Path=(dialog:MessageBoxListViewModel.Message), Mode=OneWay, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor auctor arcu sit amet adipiscing. Vestibulum nec aliquet massa, at pellentesque leo. Curabitur non fermentum diam, ut faucibus nulla. Nulla placerat orci elit, eu bibendum justo dignissim id. Quisque vel. '}" 
+						   TextWrapping="Wrap" />
+
+				<ListBox x:Name="ListBox" Margin="20,12,20,0" Background="Transparent" />
+			</StackPanel>
+		</ScrollViewer>
+
+		<Grid x:Name="ButtonOptions" Grid.Row="2" Background="#FF424244">
+			<StackPanel Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+				<Button x:Name="ContinueButton" Padding="8,0" Margin="0,0,10,0" Content="Continue" Tag="{Binding}" Click="ContinueButton_Click" />
+				<Button x:Name="CancelButton" Padding="8,0" Margin="0,0,10,0" Content="Cancel" Tag="{Binding}" Click="CancelButton_Click" />
+			</StackPanel>
+		</Grid>
+	</Grid>
+</custom:MetroDialogWindow>
