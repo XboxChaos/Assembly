@@ -67,7 +67,7 @@ namespace Atlas.Pages.CacheEditors.TagEditorComponents.Data
 
 		public override TagDataField CloneValue()
 		{
-			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showJumpTo, _withClass, base.PluginLine)
+			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showJumpTo, _withClass, PluginLine)
 			{
 				Class = _class,
 				Value = _value

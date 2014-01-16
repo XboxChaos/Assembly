@@ -171,6 +171,8 @@ namespace Atlas.Pages
 			var editor = ViewModel.SelectedEditor as TagEditor;
 			if (editor == null) return;
 			editor.ViewModel.SaveTagData(TagDataWriter.SaveType.Memory, false);
+			TagEditorPokeDropDownButton.IsOpen = false;
+			editor.Focus();
 		}
 
 		private void TagEditorReloadLocalMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -178,7 +180,7 @@ namespace Atlas.Pages
 			var editor = ViewModel.SelectedEditor as TagEditor;
 			if (editor == null) return;
 			editor.ViewModel.LoadTagData(TagDataReader.LoadType.File, editor);
-			TagEditorPokeDropDownButton.IsOpen = false;
+			TagEditorReloadDropDownButton.IsOpen = false;
 			editor.Focus();
 		}
 		private void TagEditorReloadMemoryMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -186,6 +188,8 @@ namespace Atlas.Pages
 			var editor = ViewModel.SelectedEditor as TagEditor;
 			if (editor == null) return;
 			editor.ViewModel.LoadTagData(TagDataReader.LoadType.Memory, editor);
+			TagEditorReloadDropDownButton.IsOpen = false;
+			editor.Focus();
 		}
 
 		#endregion
