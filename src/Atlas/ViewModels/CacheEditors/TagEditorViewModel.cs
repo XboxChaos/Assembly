@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -338,9 +337,9 @@ namespace Atlas.ViewModels.CacheEditors
 			ResultIndices[listField] = SearchResults.Count;
 			SearchResults.Add(new TagDataSearchResult(foundField, listField, parent));
 		}
-		private void TagDataFilterer_HighlightField(TagDataField field, bool highlight)
+		private static void TagDataFilterer_HighlightField(TagDataField field, bool highlight)
 		{
-			field.Opacity = highlight ? 1f : 0.3f;
+			field.Opacity = highlight ? 1f : .15f;
 		}
 
 		private void SearchTimer(object state)
@@ -406,22 +405,25 @@ namespace Atlas.ViewModels.CacheEditors
 				ShowField(child);
 		}
 
-		private int FindResultByListField(TagDataField field)
+		public int FindResultByListField(TagDataField field)
 		{
 			int index;
 			if (field != null && _resultIndices.TryGetValue(field, out index))
 				return index;
 			return -1;
 		}
-		private void SelectField(TagDataField field)
+		public void SelectField(TagDataField field)
 		{
-			Application.Current.Dispatcher.Invoke(new Action(delegate
+			Application.Current.Dispatcher.Invoke(delegate
 			{
-				if (field != null)
-					TagEditor.TagDataViewer.ScrollIntoView(field);
-			}));
+				if (field == null)
+					return;
+
+				TagEditor.TagDataViewer.ScrollIntoView(field);
+				TagEditor.TagDataViewer.SelectedItem = field;
+			});
 		}
-		private void SelectResult(TagDataSearchResult result)
+		public void SelectResult(TagDataSearchResult result)
 		{
 			var tagBlock = result.TagBlock;
 			if (tagBlock != null)
