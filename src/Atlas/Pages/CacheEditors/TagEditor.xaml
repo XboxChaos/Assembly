@@ -34,7 +34,7 @@
 
 				<TextBlock Text="Search:" VerticalAlignment="Center"/>
 
-				<TextBox Text="{Binding Path=SearchQuery}" Margin="5" IsEnabled="{Binding Path=PluginExists}" VerticalAlignment="Center" Grid.Column="1"/>
+				<TextBox Text="{Binding Path=SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="5" IsEnabled="{Binding Path=PluginExists}" VerticalAlignment="Center" Grid.Column="1"/>
 
 				<Button x:Name="ResetSearchTagDataButton" Content="Reset" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" 
 						Margin="5" Grid.Column="2" />
@@ -44,7 +44,7 @@
 						Margin="5" Grid.Column="4" Click="PreviousSearchTagDataButton_Click" />
 
 				<ComboBox Name="DataSearchResultsComboBox" Margin="5,0,0,0" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" Grid.Column="5"
-						  ItemsSource="{Binding Path=SearchResults}" SelectedItem="{Binding Path=SelectedSearchResult}">
+						  ItemsSource="{Binding Path=SearchResults}" SelectedItem="{Binding Path=SelectedSearchResult}" SelectionChanged="DataSearchResultsComboBox_SelectionChanged">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Field.Name}" />
@@ -56,7 +56,7 @@
 
 		<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1"
 				 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
-				 ScrollViewer.CanContentScroll="True"
+				 ScrollViewer.CanContentScroll="True" SelectionChanged="TagDataViewer_OnSelectionChanged"
 				 Padding="0,7,0,7">
 			<ListBox.LayoutTransform>
 				<ScaleTransform ScaleX="{Binding Path=Value, ElementName=TagDataZoomSlider}" 

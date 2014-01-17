@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using Atlas.Helpers.Tags;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
@@ -51,6 +52,47 @@ namespace Atlas.Pages.CacheEditors
 			return true;
 		}
 
+		#region Data Search Events
+
+		private void NextSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			if (DataSearchResultsComboBox.SelectedIndex > ViewModel.SearchResults.Count - 1)
+				ViewModel.SelectResult(ViewModel.SearchResults[DataSearchResultsComboBox.SelectedIndex + 1]);
+		}
+		private void PreviousSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			if (DataSearchResultsComboBox.SelectedIndex > 0)
+				ViewModel.SelectResult(ViewModel.SearchResults[DataSearchResultsComboBox.SelectedIndex - 1]);
+		}
+		private void TagDataViewer_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ViewModel.SearchResults.Any())
+			{
+				var field = TagDataViewer.SelectedItem as TagDataField;
+				if (field == null || e.RemovedItems.Count <= 0 || ViewModel.FindResultByListField(field) != -1) return;
+
+				// Disallow selecting filtered items and reflexive wrappers
+				// as long as this wouldn't cause an infinite loop of selection changes
+				var oldField = e.RemovedItems[0] as TagDataField;
+				if (oldField != null && ViewModel.FindResultByListField(oldField) != -1)
+				{
+					TagDataViewer.SelectedItem = oldField;
+				}
+				else
+					TagDataViewer.SelectedItem = null;
+			}
+			else
+				TagDataViewer.SelectedItem = null;
+		}
+		private void DataSearchResultsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var selectedResult = ViewModel.SelectedSearchResult;
+			if (selectedResult != null)
+				ViewModel.SelectResult(selectedResult);
+		}
+
+		#endregion
+
 		#region Inpc Helpers
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -69,15 +111,5 @@ namespace Atlas.Pages.CacheEditors
 		}
 
 		#endregion
-
-		private void NextSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
-		{
-
-		}
-
-		private void PreviousSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
-		{
-
-		}
 	}
 }
