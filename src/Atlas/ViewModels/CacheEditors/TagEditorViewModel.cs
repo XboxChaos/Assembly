@@ -8,6 +8,7 @@ using System.Xml;
 using Atlas.Dialogs;
 using Atlas.Helpers;
 using Atlas.Helpers.Plugins;
+using Atlas.Helpers.SyntaxHighlighting;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
 using Atlas.Models.CacheEditors;
@@ -17,6 +18,7 @@ using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.Util;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace Atlas.ViewModels.CacheEditors
 {
@@ -39,6 +41,14 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 
 		#region Properties
+
+		public IHighlightingDefinition SyntaxHighlightingDefinition
+		{
+			get
+			{
+				return HighlightLoader.LoadEmbeddedDefinition("XMLBlue.xshd");
+			}
+		}
 
 		public CachePageViewModel CachePageViewModel
 		{
