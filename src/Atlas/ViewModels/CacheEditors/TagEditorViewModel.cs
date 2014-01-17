@@ -1,11 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 using System.Xml;
 using Atlas.Dialogs;
 using Atlas.Helpers;
 using Atlas.Helpers.Plugins;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
+using Atlas.Models.CacheEditors;
 using Atlas.Pages.CacheEditors;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Blamite.IO;
@@ -17,18 +23,18 @@ namespace Atlas.ViewModels.CacheEditors
 {
 	public class TagEditorViewModel : Base
 	{
-		public TagEditorViewModel(CachePageViewModel cachePageViewModel, TagHierarchyNode tagHierarchyNode)
+		public TagEditorViewModel(CachePageViewModel cachePageViewModel, TagHierarchyNode tagHierarchyNode, TagEditor tagEditor)
 		{
 			CachePageViewModel = cachePageViewModel;
 			TagHierarchyNode = tagHierarchyNode;
-			FileManager = _cachePageViewModel.MapStreamManager;
+			TagEditor = tagEditor;
+			FileManager = CachePageViewModel.MapStreamManager;
+			_searchTimer = new Timer(SearchTimer);
 
 			// Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(TagHierarchyNode.TagClass.Magic)).Trim();
 			PluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"), className);
-
-			RefreshUserInterface();
 		}
 
 		#region Properties
@@ -46,6 +52,13 @@ namespace Atlas.ViewModels.CacheEditors
 			set { SetField(ref _tagHierarchyNode, value); }
 		}
 		private TagHierarchyNode _tagHierarchyNode;
+
+		public TagEditor TagEditor
+		{
+			get { return _tagEditor; }
+			set { SetField(ref _tagEditor, value); }
+		}
+		private TagEditor _tagEditor;
 
 		public FieldChangeTracker ChangeTracker
 		{
@@ -102,15 +115,49 @@ namespace Atlas.ViewModels.CacheEditors
 			set { SetField(ref _pluginExists, value); }
 		}
 		private bool _pluginExists = true;
+		
+		public string SearchQuery
+		{
+			get { return _searchQuery; }
+			set
+			{
+				SetField(ref _searchQuery, value);
+				_searchTimer.Change(100, Timeout.Infinite);
+			}
+		}
+		private string _searchQuery;
+		private readonly Timer _searchTimer;
+
+		public ObservableCollection<TagDataSearchResult> SearchResults
+		{
+			get { return _searchResults ?? new ObservableCollection<TagDataSearchResult>(); }
+			set { SetField(ref _searchResults, value); }
+		}
+		private ObservableCollection<TagDataSearchResult> _searchResults;
+
+		public TagDataSearchResult SelectedSearchResult
+		{
+			get { return _selectedSearchResult; }
+			set { SetField(ref _selectedSearchResult, value); }
+		}
+		private TagDataSearchResult _selectedSearchResult;
+
+		public Dictionary<TagDataField, int> ResultIndices
+		{
+			get { return _resultIndices; }
+			set { SetField(ref _resultIndices, value); }
+		}
+		private Dictionary<TagDataField, int> _resultIndices = new Dictionary<TagDataField, int>(); 
 
 		#endregion
+
+		#region Transporting Tag Data
 
 		public void LoadTagData(TagDataReader.LoadType type, TagEditor editor)
 		{
 			if (!File.Exists(PluginPath))
 			{
 				PluginExists = false;
-				RefreshUserInterface();
 				MetroMessageBox.Show("Plugin doesn't exist. It can't be loaded for this tag.");
 				return;
 			}
@@ -180,10 +227,6 @@ namespace Atlas.ViewModels.CacheEditors
 						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Local Machine's memory ";
 						break;
 				}
-
-
-
-			RefreshUserInterface();
 		}
 		
 		public void SaveTagData(TagDataWriter.SaveType type, bool onlySaveChanged = true)
@@ -252,13 +295,7 @@ namespace Atlas.ViewModels.CacheEditors
 			}
 		}
 
-		public void RefreshUserInterface()
-		{
-			if (PluginExists)
-			{
-
-			}
-		}
+		#endregion
 
 		private void ShowConnectionError()
 		{
@@ -275,7 +312,6 @@ namespace Atlas.ViewModels.CacheEditors
 					break;
 			}
 		}
-
 		private bool ConfirmNewStringIds()
 		{
 			var newStrings = (from stringIdField in FieldChanges.OfType<StringIDData>() where !CachePageViewModel.StringIdTrie.Contains(stringIdField.Value) select stringIdField.Value).ToList();
@@ -286,5 +322,113 @@ namespace Atlas.ViewModels.CacheEditors
 
 			return true;
 		}
+
+		#region Search Helpers
+
+		private void FilterAndHighlightTagData()
+		{
+			SearchResults = new ObservableCollection<TagDataSearchResult>();
+			ResultIndices.Clear();
+			var filterer = new TagDataFilterer(Flattener, TagDataFilterer_CollectResult, TagDataFilterer_HighlightField);
+			filterer.FilterFields(PluginVisitor.Values, SearchQuery);
+			SelectedSearchResult = SearchResults.FirstOrDefault();
+		}
+		private void TagDataFilterer_CollectResult(TagDataField foundField, TagDataField listField, TagBlockData parent)
+		{
+			ResultIndices[listField] = SearchResults.Count;
+			SearchResults.Add(new TagDataSearchResult(foundField, listField, parent));
+		}
+		private void TagDataFilterer_HighlightField(TagDataField field, bool highlight)
+		{
+			field.Opacity = highlight ? 1f : 0.3f;
+		}
+
+		private void SearchTimer(object state)
+		{
+			lock (_searchTimer)
+			{
+				if (string.IsNullOrEmpty(SearchQuery))
+				{
+					ResetSearch();
+					return;
+				}
+
+				Application.Current.Dispatcher.Invoke(delegate
+				{
+					FilterAndHighlightTagData();
+					SelectFirstResult();
+				});
+			}
+		}
+		private void ResetSearch()
+		{
+			SearchResults = null;
+			ResultIndices.Clear();
+			ShowAll();
+			SelectField(null);
+		}
+		private void SelectFirstResult()
+		{
+			if (SearchResults.Any())
+			{
+				Application.Current.Dispatcher.Invoke(delegate
+				{
+					if (FindResultByListField(SelectedSearchResult.Field) == -1)
+						SelectResult(SearchResults[0]);
+					else
+						TagEditor.TagDataViewer.ScrollIntoView(SelectedSearchResult);
+				});
+			}
+		}
+
+		private void ShowAll()
+		{
+			foreach (var field in PluginVisitor.Values)
+				ShowField(field);
+		}
+		private void ShowField(TagDataField field)
+		{
+			field.Opacity = 1.0f;
+
+			// If the field is a tag block, recursively set the opacity of its children
+			var tagBlock = field as TagBlockData;
+			if (tagBlock == null) return;
+
+			// Show wrappers
+			Flattener.EnumWrappers(tagBlock, ShowField);
+
+			// Show template fields
+			foreach(var child in tagBlock.Template)
+				ShowField(child);
+
+			// Show modified fields
+			foreach (var child in tagBlock.Pages.SelectMany(page => page.Fields.Where(child => child != null)))
+				ShowField(child);
+		}
+
+		private int FindResultByListField(TagDataField field)
+		{
+			int index;
+			if (field != null && _resultIndices.TryGetValue(field, out index))
+				return index;
+			return -1;
+		}
+		private void SelectField(TagDataField field)
+		{
+			Application.Current.Dispatcher.Invoke(new Action(delegate
+			{
+				if (field != null)
+					TagEditor.TagDataViewer.ScrollIntoView(field);
+			}));
+		}
+		private void SelectResult(TagDataSearchResult result)
+		{
+			var tagBlock = result.TagBlock;
+			if (tagBlock != null)
+				Flattener.ForceVisible(tagBlock);
+			SelectField(result.ListField);
+		}
+
+		#endregion
 	}
 }

@@ -29,11 +29,11 @@ namespace Atlas.Pages.CacheEditors
 
 		public TagEditor(CachePageViewModel cachePageViewModel, TagHierarchyNode tagHierarchyNode)
 		{
-			DataContext = ViewModel = new TagEditorViewModel(cachePageViewModel, tagHierarchyNode);
-			EditorTitle = string.Format(EditorFormat, ViewModel.TagHierarchyNode.Name);
-
 			InitializeComponent();
 
+			DataContext = ViewModel = new TagEditorViewModel(cachePageViewModel, tagHierarchyNode, this);
+			EditorTitle = string.Format(EditorFormat, ViewModel.TagHierarchyNode.Name);
+			
 			// Set Option boxes
 			ShowEnumIndicesMenuItem.DataContext =
 				ShowBlockInformationMenuItem.DataContext =
@@ -69,5 +69,15 @@ namespace Atlas.Pages.CacheEditors
 		}
 
 		#endregion
+
+		private void NextSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+
+		}
+
+		private void PreviousSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+
+		}
 	}
 }

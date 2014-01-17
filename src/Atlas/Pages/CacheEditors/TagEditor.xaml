@@ -4,7 +4,6 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-			 xmlns:helpers="clr-namespace:Atlas.Helpers"
 			 xmlns:cacheEditors="clr-namespace:Atlas.ViewModels.CacheEditors"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="600" d:DesignWidth="900">
@@ -35,13 +34,17 @@
 
 				<TextBlock Text="Search:" VerticalAlignment="Center"/>
 
-				<TextBox Text="" Margin="5" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" VerticalAlignment="Center" Grid.Column="1"/>
+				<TextBox Text="{Binding Path=SearchQuery}" Margin="5" IsEnabled="{Binding Path=PluginExists}" VerticalAlignment="Center" Grid.Column="1"/>
 
-				<Button Content="Reset" IsEnabled="False" Margin="5" Grid.Column="2" />
-				<Button Content="Next" IsEnabled="False" Margin="5" Grid.Column="3" />
-				<Button Content="Previous" IsEnabled="False" Margin="5" Grid.Column="4" />
+				<Button x:Name="ResetSearchTagDataButton" Content="Reset" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" 
+						Margin="5" Grid.Column="2" />
+				<Button x:Name="NextSearchTagDataButton" Content="Next" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" 
+						Margin="5" Grid.Column="3" Click="NextSearchTagDataButton_Click" />
+				<Button x:Name="PreviousSearchTagDataButton" Content="Previous" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" 
+						Margin="5" Grid.Column="4" Click="PreviousSearchTagDataButton_Click" />
 
-				<ComboBox Name="DataSearchResultsComboBox" Margin="5,0,0,0" IsEnabled="False" Grid.Column="5">
+				<ComboBox Name="DataSearchResultsComboBox" Margin="5,0,0,0" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" Grid.Column="5"
+						  ItemsSource="{Binding Path=SearchResults}" SelectedItem="{Binding Path=SelectedSearchResult}">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Field.Name}" />
@@ -118,14 +121,14 @@
 				</Grid.ColumnDefinitions>
 
 				<StackPanel Orientation="Horizontal">
-					<Button x:Name="PluginRevisionViewerButton" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" Content="Revisions" Padding="8,0" Margin="5,0" />
-					<xctk:DropDownButton Margin="5,0" Content="Options" VerticalAlignment="Center">
+					<Button x:Name="PluginRevisionViewerButton" IsEnabled="{Binding Path=PluginExists}" Content="Revisions" Padding="8,0" Margin="5,0" />
+					<xctk:DropDownButton Margin="5,0" Padding="8,0" Content="Options" VerticalAlignment="Center">
 						<xctk:DropDownButton.DropDownContent>
 							<StackPanel>
-								<MenuItem x:Name="ShowInvisiblesMenuItem" Header="Show Invisibles" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowInvisibles)}"/>
-								<MenuItem x:Name="ShowBlockInformationMenuItem" Header="Show Block Information" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowBlockInformation)}"/>
-								<MenuItem x:Name="ShowEnumIndicesMenuItem" Header="Show Enum Indices" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowEnumIndex)}"/>
-								<MenuItem x:Name="ShowCommentsMenuItem" Header="Show Comments" IsCheckable="True" IsChecked="{Binding (helpers:Settings.TagEditorShowComments)}"/>
+								<MenuItem x:Name="ShowInvisiblesMenuItem" Header="Show Invisibles" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowInvisibles}"/>
+								<MenuItem x:Name="ShowBlockInformationMenuItem" Header="Show Block Information" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowBlockInformation}"/>
+								<MenuItem x:Name="ShowEnumIndicesMenuItem" Header="Show Enum Indices" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowEnumIndex}"/>
+								<MenuItem x:Name="ShowCommentsMenuItem" Header="Show Comments" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowComments}"/>
 							</StackPanel>
 						</xctk:DropDownButton.DropDownContent>
 					</xctk:DropDownButton>
@@ -137,7 +140,7 @@
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Text="Zoom:" Margin="5,0" VerticalAlignment="Center" />
-					<Slider Name="TagDataZoomSlider" Grid.Column="1" IsEnabled="{Binding Path=(cacheEditors:TagEditorViewModel.PluginExists)}" VerticalAlignment="Center" Value="1" Minimum="0.1" Maximum="1" />
+					<Slider Name="TagDataZoomSlider" Grid.Column="1" IsEnabled="{Binding Path=PluginExists}" VerticalAlignment="Center" Value="1" Minimum="0.1" Maximum="1" />
 				</Grid>
 			</Grid>
 		</Border>
