@@ -3,8 +3,9 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-			 xmlns:cacheEditors="clr-namespace:Atlas.ViewModels.CacheEditors"
+			 xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+			 xmlns:behavior="clr-namespace:Atlas.Metro.Controls.Behavior"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="600" d:DesignWidth="900">
 	<UserControl.Resources>
@@ -17,8 +18,8 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="0" />
 			<RowDefinition />
-			<RowDefinition Height="35px" />
 		</Grid.RowDefinitions>
 
 		<Border Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="#434346" Background="#303032" Padding="8,0">
@@ -54,28 +55,40 @@
 			</Grid>
 		</Border>
 
-		<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Row="1"
+		<Grid Margin="0" Grid.Row="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="0.6*" />
+				<RowDefinition Height="2" />
+				<RowDefinition Height="0.4*" />
+			</Grid.RowDefinitions>
+			
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition Height="17px" />
+				</Grid.RowDefinitions>
+				<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0"
 				 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 				 ScrollViewer.CanContentScroll="True" SelectionChanged="TagDataViewer_OnSelectionChanged"
 				 Padding="0,7,0,7">
-			<ListBox.LayoutTransform>
-				<ScaleTransform ScaleX="{Binding Path=Value, ElementName=TagDataZoomSlider}" 
+					<ListBox.LayoutTransform>
+						<ScaleTransform ScaleX="{Binding Path=Value, ElementName=TagDataZoomSlider}" 
 								ScaleY="{Binding Path=Value, ElementName=TagDataZoomSlider}" />
-			</ListBox.LayoutTransform>
-			<ListBox.Template>
-				<ControlTemplate>
-					<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-						<ItemsPresenter />
-					</ScrollViewer>
-				</ControlTemplate>
-			</ListBox.Template>
-			<ListBox.ItemContainerStyle>
-				<Style TargetType="{x:Type ListBoxItem}">
-					<Setter Property="Template">
-						<Setter.Value>
-							<ControlTemplate>
-								<Grid Background="{TemplateBinding ListBoxItem.Background}">
-									<ContentPresenter Name="PART_Content"
+					</ListBox.LayoutTransform>
+					<ListBox.Template>
+						<ControlTemplate>
+							<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+								<ItemsPresenter />
+							</ScrollViewer>
+						</ControlTemplate>
+					</ListBox.Template>
+					<ListBox.ItemContainerStyle>
+						<Style TargetType="{x:Type ListBoxItem}">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate>
+										<Grid Background="{TemplateBinding ListBoxItem.Background}">
+											<ContentPresenter Name="PART_Content"
 														  Content="{TemplateBinding ContentControl.Content}"
 														  Margin="20,0,20,0"
 														  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
@@ -83,7 +96,7 @@
 														  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 														  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 														  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-									<!--<Grid.ContextMenu>
+											<!--<Grid.ContextMenu>
 											<ContextMenu Name="metaFieldMenu">
 												<ContextMenu.CommandBindings>
 													<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
@@ -100,49 +113,325 @@
 														  CommandParameter="{Binding}" />
 											</ContextMenu>
 										</Grid.ContextMenu>-->
+										</Grid>
+										<ControlTemplate.Triggers>
+											<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+												<Setter Property="Background" Value="#FF181818" />
+											</DataTrigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</ListBox.ItemContainerStyle>
+				</ListBox>
+
+				<Grid Grid.Row="1" Background="#2d2d30">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="65px" />
+							<ColumnDefinition Width="23px" />
+							<ColumnDefinition Width="23px" />
+							<ColumnDefinition Width="23px" />
+							<ColumnDefinition Width="23px" />
+							<ColumnDefinition Width="23px" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.Resources>
+							<ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="EditorComboBoxToggleButtonTemplate">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition Width="16" />
+									</Grid.ColumnDefinitions>
+									<Border BorderBrush="#434346" CornerRadius="0" BorderThickness="1"
+											Name="Border" Background="#333337" Grid.ColumnSpan="2" />
+									<Border Margin="1,1,1,1" Name="TargetBorder" BorderBrush="Transparent"
+											CornerRadius="0" BorderThickness="0,0,1,0" Background="#333337" Grid.Column="0" />
+									<Path Margin="0,0,3,0" Data="M0,0L4,4 8,0z" HorizontalAlignment="Center"
+										  Fill="#989898" Name="Arrow" VerticalAlignment="Center" Width="8"
+										  Grid.Column="1" />
 								</Grid>
 								<ControlTemplate.Triggers>
-									<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
-										<Setter Property="Background" Value="#FF181818" />
-									</DataTrigger>
+									<Trigger Property="UIElement.IsMouseOver" Value="True">
+										<Setter Property="Background" TargetName="Border" Value="#1f1f20" />
+										<Setter Property="Background" TargetName="TargetBorder" Value="#3f3f46" />
+										<Setter Property="BorderBrush" TargetName="TargetBorder" Value="{DynamicResource AssemblyAccentBrush}" />
+										<Setter Property="Fill" TargetName="Arrow" Value="White" />
+									</Trigger>
+
+									<Trigger Property="ToggleButton.IsChecked" Value="True">
+										<Setter Property="Background" TargetName="Border" Value="#1f1f20" />
+										<Setter Property="Background" TargetName="TargetBorder" Value="#3f3f46" />
+										<Setter Property="BorderBrush" TargetName="TargetBorder" Value="{DynamicResource AssemblyAccentBrush}" />
+										<Setter Property="Fill" TargetName="Arrow" Value="White" />
+									</Trigger>
+									<Trigger Property="UIElement.IsEnabled" Value="False">
+										<Setter Property="Panel.Background" TargetName="Border" Value="#FF555558" />
+										<Setter Property="Border.BorderBrush" TargetName="Border" Value="#FF555558" />
+										<Setter Property="TextElement.Foreground" Value="#FFc4c4c4" />
+										<Setter Property="Shape.Fill" TargetName="Arrow" Value="#66FFFFFF" />
+									</Trigger>
 								</ControlTemplate.Triggers>
 							</ControlTemplate>
-						</Setter.Value>
-					</Setter>
-				</Style>
-			</ListBox.ItemContainerStyle>
-		</ListBox>
+							
+							<Style TargetType="{x:Type ToggleButton}">
+								<Setter Property="Background" Value="#252526" />
+								<Setter Property="BorderBrush" Value="#252526" />
+								<Setter Property="BorderThickness" Value="1" />
+								<Setter Property="Width" Value="22px" />
+								<Setter Property="Height" Value="17px" />
+								<Setter Property="Padding" Value="0" />
+								<Setter Property="Margin" Value="1,0,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Center"/>
+								<Setter Property="VerticalContentAlignment" Value="Center"/>
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="{x:Type ToggleButton}">
+											<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+													BorderThickness="{TemplateBinding BorderThickness}"
+													Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+												<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+																  Content="{TemplateBinding Content}" 
+																  ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+																  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+																  RecognizesAccessKey="True" 
+																  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+																  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+											</Border>
+											<ControlTemplate.Triggers>
+												<!-- Mouse Over // Not Checked -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+														<Condition Property="IsPressed" Value="false" />
+														<Condition Property="IsEnabled" Value="true" />
+														<Condition Property="IsChecked" Value="false" />
+													</MultiTrigger.Conditions>
+													<Setter Property="Background" Value="#3e3e42" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#3e3e42" TargetName="border" />
+												</MultiTrigger>
+												
+												<!-- Checked Button -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsChecked" Value="true" />
+														<Condition Property="IsEnabled" Value="true" />
+													</MultiTrigger.Conditions>
+													<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrush}" TargetName="border" />
+												</MultiTrigger>
 
-		<Border Grid.Row="2" BorderThickness="0,2,0,0" BorderBrush="#434346" Background="#303032" Padding="10,0">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition MinWidth="100" MaxWidth="175" />
-				</Grid.ColumnDefinitions>
+												<!-- Disabled -->
+												<Trigger Property="IsEnabled" Value="false">
+													<Setter Property="Background" Value="#FF575757" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+							<Style TargetType="{x:Type Button}">
+								<Setter Property="Background" Value="#252526" />
+								<Setter Property="BorderBrush" Value="#252526" />
+								<Setter Property="BorderThickness" Value="1" />
+								<Setter Property="Width" Value="22px" />
+								<Setter Property="Height" Value="17px" />
+								<Setter Property="Padding" Value="0" />
+								<Setter Property="Margin" Value="1,0,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+								<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="{x:Type Button}">
+											<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+													BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
+													Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+												<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+																  Content="{TemplateBinding Content}" 
+																  ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+																  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+																  RecognizesAccessKey="True" 
+																  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+																  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+											</Border>
+											<ControlTemplate.Triggers>
+												<!-- Mouse Over // Not Pressed -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+														<Condition Property="IsPressed" Value="false" />
+													</MultiTrigger.Conditions>
+													<Setter Property="Background" Value="#3e3e42" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#3e3e42" TargetName="border" />
+												</MultiTrigger>
+												
+												<!-- Pressed -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsPressed" Value="true" />
+													</MultiTrigger.Conditions>
+													<Setter Property="Background" Value="{DynamicResource AssemblyAccentBrush}" TargetName="border" />
+												</MultiTrigger>
 
-				<StackPanel Orientation="Horizontal">
-					<Button x:Name="PluginRevisionViewerButton" IsEnabled="{Binding Path=PluginExists}" Content="Revisions" Padding="8,0" Margin="5,0" />
-					<xctk:DropDownButton Margin="5,0" Padding="8,0" Content="Options" VerticalAlignment="Center">
-						<xctk:DropDownButton.DropDownContent>
-							<StackPanel>
-								<MenuItem x:Name="ShowInvisiblesMenuItem" Header="Show Invisibles" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowInvisibles}"/>
-								<MenuItem x:Name="ShowBlockInformationMenuItem" Header="Show Block Information" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowBlockInformation}"/>
-								<MenuItem x:Name="ShowEnumIndicesMenuItem" Header="Show Enum Indices" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowEnumIndex}"/>
-								<MenuItem x:Name="ShowCommentsMenuItem" Header="Show Comments" IsCheckable="True" IsChecked="{Binding Path=TagEditorShowComments}"/>
-							</StackPanel>
-						</xctk:DropDownButton.DropDownContent>
-					</xctk:DropDownButton>
-				</StackPanel>
+												<!-- Disabled -->
+												<Trigger Property="IsEnabled" Value="false">
+													<Setter Property="Background" Value="#FF575757" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+							<Style TargetType="{x:Type ComboBox}">
+								<Setter Property="SnapsToDevicePixels" Value="True" />
+								<Setter Property="OverridesDefaultStyle" Value="True" />
+								<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+								<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+								<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+								<Setter Property="TextElement.Foreground" Value="{StaticResource NormalForegroundBrush}" />
+								<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+								<Setter Property="Foreground" Value="White" />
+								<Setter Property="FontSize" Value="12" />
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="ComboBox">
+											<Grid>
+												<ToggleButton ClickMode="Press" Name="ToggleButton" IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+													Focusable="False" Template="{StaticResource EditorComboBoxToggleButtonTemplate}" Margin="0" Width="Auto" />
+												<Grid VerticalAlignment="Center">
+													<ContentPresenter Margin="5,1,23,0" HorizontalAlignment="Left"
+																	  Name="ContentSite" VerticalAlignment="Center"
+																	  ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+																	  ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
+																	  Content="{TemplateBinding ComboBox.SelectionBoxItem}" TextElement.FontSize="11"
+																	  IsHitTestVisible="False" />
+												</Grid>
+												<TextBox Margin="3,3,23,3" Visibility="Hidden" HorizontalAlignment="Left"
+														 Name="PART_EditableTextBox" Background="Transparent" VerticalAlignment="Center"
+														 Style="{x:Null}" IsReadOnly="False" Focusable="True" xml:space="preserve"
+														 Template="{StaticResource ComboBoxTextBoxTemplate}" />
+												<Popup Placement="Bottom" Name="Popup" Focusable="False" IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
+													   PopupAnimation="Slide">
+													<Grid MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+														  MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}"
+														  Name="DropDown" SnapsToDevicePixels="True">
+														<Border BorderBrush="#323236" BorderThickness="1,1,1,1" 
+																Name="DropDownBorder" Background="#1b1b1c" />
+														<ScrollViewer Name="DropDownScrollViewer" Margin="4,6,4,6"
+																	  SnapsToDevicePixels="True">
+															<ItemsPresenter Name="ItemsPresenter"
+																			KeyboardNavigation.DirectionalNavigation="Contained" />
+														</ScrollViewer>
+													</Grid>
+												</Popup>
+											</Grid>
+											<ControlTemplate.Triggers>
+												<Trigger Property="ItemsControl.HasItems" Value="False">
+													<Setter Property="FrameworkElement.MinHeight" TargetName="DropDownBorder" Value="95" />
+												</Trigger>
+												<Trigger Property="UIElement.IsEnabled" Value="False">
+													<Setter Property="TextElement.Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+												</Trigger>
+												<Trigger Property="ItemsControl.IsGrouping" Value="True">
+													<Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+												</Trigger>
+												<Trigger Property="ComboBox.IsEditable" Value="True">
+													<Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
+													<Setter Property="UIElement.Visibility" TargetName="PART_EditableTextBox" Value="Visible" />
+													<Setter Property="UIElement.Visibility" TargetName="ContentSite" Value="Hidden" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</Grid.Resources>
+						<ComboBox SelectedIndex="3" Width="62" Margin="0,0,3,0">
+							<ComboBoxItem>20%</ComboBoxItem>
+							<ComboBoxItem>50%</ComboBoxItem>
+							<ComboBoxItem>70%</ComboBoxItem>
+							<ComboBoxItem>100%</ComboBoxItem>
+						</ComboBox>
+						<ToggleButton x:Name="ShowInvisiblesToggleButton" Grid.Column="1" ToolTip="Toggle the visibility unknown (unmapped) values in the Tag Editor">
+							<ToggleButton.Content>
+								<Grid Width="20" Height="15">
+									<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 
+										  Data="M 3,3 L 7,3 7,7 3,7 Z
+												M 8,3 L 12,3 12,7 8,7 Z
+												M 13,3 L 17,3 17,7 13,7 Z
+												M 3,8 L 3,12 7,12 7,8 Z
+												M 8,8 L 12,8 12,12 8,12 Z
+												M 13,8 L 17,8 17,12 13,12 Z" />
 
-				<Grid Grid.Column="1">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<TextBlock Text="Zoom:" Margin="5,0" VerticalAlignment="Center" />
-					<Slider Name="TagDataZoomSlider" Grid.Column="1" IsEnabled="{Binding Path=PluginExists}" VerticalAlignment="Center" Value="1" Minimum="0.1" Maximum="1" />
+
+									<Path Fill="#252526" SnapsToDevicePixels="True" 
+										  Data="M 9,4 L 11,4 11,6 9,6 Z
+												M 4,9 L 6,9 6,11 4,11 Z
+												M 14,9 L 16,9 16,11 14,11 Z" />
+								</Grid>
+							</ToggleButton.Content>
+						</ToggleButton>
+						<ToggleButton x:Name="ShowTagBlockInfoToggleButton" Grid.Column="2" ToolTip="Toggle the default visibility of Tag Block Information">
+							<ToggleButton.Content>
+								<TextBlock Foreground="#FFC5C5C5" FontSize="11">i(**)</TextBlock>
+							</ToggleButton.Content>
+						</ToggleButton>
+						<ToggleButton x:Name="ShowEnumIndicesToggleButton" Grid.Column="3" ToolTip="Toggle the visibility of Enum Indices">
+							<ToggleButton.Content>
+								<TextBlock Foreground="#FFC5C5C5" FontSize="11">e(#)</TextBlock>
+							</ToggleButton.Content>
+						</ToggleButton>
+						<ToggleButton x:Name="ShowCommentsToggleButton" Grid.Column="4" ToolTip="Toggle the visibility of Comments">
+							<ToggleButton.Content>
+								<Grid Width="20" Height="15">
+									<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 
+										  Data="M 3,3 L 7,3 7,7 3,7 Z
+												M 8,3 L 12,3 12,7 8,7 Z
+												M 13,3 L 17,3 17,7 13,7 Z
+												M 3,8 L 17,8 17,12 3,12 Z" />
+								</Grid>
+							</ToggleButton.Content>
+						</ToggleButton>
+						<Button Grid.Column="5" ToolTip="Shows the Revision History for the plugin used to display the Tag Data.">
+							<Button.Content>
+								<Grid>
+									<Ellipse Width="6" Height="6" Margin="5,4,0,0" VerticalAlignment="Top" 
+											 HorizontalAlignment="Left" StrokeThickness="1" Stroke="#c5c5c5" />
+									
+									<Path Fill="#c5c5c5" SnapsToDevicePixels="True"
+										Data="M 7,1 L 9,1 9,5 7,5 Z
+											  M 3,6 L 6,6 6,8 3,8 Z
+											  M 7,9 L 9,9 9,13 7,13 Z
+											  M 10,6 L 17,6 17,8 10,8 Z" />
+								</Grid>
+							</Button.Content>
+						</Button>
+						<Grid Grid.Column="6" Background="#3e3e42" />
+					</Grid>
 				</Grid>
 			</Grid>
-		</Border>
+			
+			<GridSplitter Grid.Row="1" Background="#2d2d30" ResizeDirection="Rows" HorizontalAlignment="Stretch" />
+
+			<Grid Grid.Row="2">
+				<avalonedit:TextEditor Height="Auto" Margin="0"
+									   FontFamily="Consolas" FontSize="10pt"
+									   Background="#252526" BorderBrush="#FF595959" Foreground="White"
+									   ShowLineNumbers="True">
+					<i:Interaction.Behaviors>
+						<behavior:AvalonEditBehavior GiveMeTheText="{Binding Path=PluginContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+					</i:Interaction.Behaviors>
+					<avalonedit:TextEditor.ContextMenu>
+						<ContextMenu FontSize="12">
+							<MenuItem Command="Cut"/>
+							<MenuItem Command="Copy"/>
+							<MenuItem Command="Paste"/>
+						</ContextMenu>
+					</avalonedit:TextEditor.ContextMenu>
+				</avalonedit:TextEditor>
+			</Grid>
+		</Grid>
 	</Grid>
 </UserControl>

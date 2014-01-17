@@ -36,10 +36,10 @@ namespace Atlas.Pages.CacheEditors
 			EditorTitle = string.Format(EditorFormat, ViewModel.TagHierarchyNode.Name);
 			
 			// Set Option boxes
-			ShowEnumIndicesMenuItem.DataContext =
-				ShowBlockInformationMenuItem.DataContext =
-				ShowCommentsMenuItem.DataContext = 
-				ShowInvisiblesMenuItem.DataContext = App.Storage.Settings;
+			ShowCommentsToggleButton.DataContext =
+				ShowEnumIndicesToggleButton.DataContext =
+				ShowInvisiblesToggleButton.DataContext = 
+				ShowTagBlockInfoToggleButton.DataContext = App.Storage.Settings;
 
 			ViewModel.LoadTagData(TagDataReader.LoadType.File, this);
 		}

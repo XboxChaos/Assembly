@@ -34,6 +34,8 @@ namespace Atlas.ViewModels.CacheEditors
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(TagHierarchyNode.TagClass.Magic)).Trim();
 			PluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 				CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"), className);
+
+			PluginContent = File.ReadAllText(PluginPath);
 		}
 
 		#region Properties
@@ -146,7 +148,14 @@ namespace Atlas.ViewModels.CacheEditors
 			get { return _resultIndices; }
 			set { SetField(ref _resultIndices, value); }
 		}
-		private Dictionary<TagDataField, int> _resultIndices = new Dictionary<TagDataField, int>(); 
+		private Dictionary<TagDataField, int> _resultIndices = new Dictionary<TagDataField, int>();
+
+		public string PluginContent
+		{
+			get { return _pluginContent; }
+			set { SetField(ref _pluginContent, value); }
+		}
+		private string _pluginContent;
 
 		#endregion
 
