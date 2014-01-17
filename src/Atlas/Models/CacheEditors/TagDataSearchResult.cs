@@ -17,11 +17,11 @@ namespace Atlas.Models.CacheEditors
 		{
 			ListField = listField;
 			Field = foundField;
-			Reflexive = parent;
+			TagBlock = parent;
 		}
 
 		public TagDataField Field { get; private set; }
 		public TagDataField ListField { get; private set; }
-		public TagBlockData Reflexive { get; private set; }
+		public TagBlockData TagBlock { get; private set; }
 	}
 }
