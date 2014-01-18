@@ -34,8 +34,8 @@ namespace Atlas.ViewModels.CacheEditors
 
 			// Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(TagHierarchyNode.TagClass.Magic)).Trim();
-			PluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"), className);
+			PluginRelativePath = string.Format("{0}\\{1}.xml", CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"), className);
+			PluginPath = string.Format("{0}\\{1}", VariousFunctions.GetApplicationLocation() + @"Plugins", PluginRelativePath);
 
 			PluginContent = File.ReadAllText(PluginPath);
 		}
@@ -136,6 +136,13 @@ namespace Atlas.ViewModels.CacheEditors
 			set { SetField(ref _pluginPath, value); }
 		}
 		private string _pluginPath;
+
+		public string PluginRelativePath
+		{
+			get { return _pluginRelativePath; }
+			set { SetField(ref _pluginRelativePath, value); }	
+		}
+		private string _pluginRelativePath;
 		
 		public ThirdGenPluginVisitor PluginVisitor
 		{
