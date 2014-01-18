@@ -113,6 +113,13 @@ namespace Atlas.Pages.CacheEditors
 
 			var line = (int) field.PluginLine;
 			var selectedLineDetails = PluginTextEditor.Document.GetLineByNumber(line);
+
+			if (ViewModel.PluginGridLength.Value <= 1.0)
+			{
+				ViewModel.EditorGridLength = new GridLength(0.7, GridUnitType.Star);
+				ViewModel.PluginGridLength = new GridLength(0.3, GridUnitType.Star);
+			}
+
 			PluginTextEditor.ScrollToLine(line);
 			PluginTextEditor.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
 			PluginTextEditor.Focus();
