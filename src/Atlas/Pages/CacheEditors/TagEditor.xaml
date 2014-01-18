@@ -6,6 +6,7 @@
 			 xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:behavior="clr-namespace:Atlas.Metro.Controls.Behavior"
+			 xmlns:local="clr-namespace:Atlas.Pages.CacheEditors"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="600" d:DesignWidth="900">
 	<UserControl.Resources>
@@ -101,23 +102,25 @@
 														  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 														  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 														  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-												<!--<Grid.ContextMenu>
+												<Grid.ContextMenu>
 											<ContextMenu Name="metaFieldMenu">
 												<ContextMenu.CommandBindings>
-													<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+													<!--<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
 																	CanExecute="ViewValueAsCommand_CanExecute"
-																	Executed="ViewValueAsCommand_Executed" />
+																	Executed="ViewValueAsCommand_Executed" />-->
 
-													<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
+													<CommandBinding Command="{x:Static local:TagEditor.GoToPlugin}"
 																	CanExecute="GoToPlugin_CanExecute"
 																	Executed="GoToPlugin_Executed" />
 												</ContextMenu.CommandBindings>
-												<MenuItem Header="View Value As..." Foreground="White"
-														  Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
-												<MenuItem Header="Go to plugin line..." Foreground="White" Command="{x:Static local:MetaEditor.GoToPlugin}"
+												<!--<MenuItem Header="View Value As..." Foreground="White"
+														  Command="{x:Static local:MetaEditor.ViewValueAsCommand}" 
+														  CommandParameter="{Binding}" />-->
+												<MenuItem Header="Go to plugin line..." Foreground="White" 
+														  Command="{x:Static local:TagEditor.GoToPlugin}"
 														  CommandParameter="{Binding}" />
 											</ContextMenu>
-										</Grid.ContextMenu>-->
+										</Grid.ContextMenu>
 											</Grid>
 											<ControlTemplate.Triggers>
 												<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
@@ -424,8 +427,8 @@
 				<GridSplitter Grid.Row="1" Background="#2d2d30" ResizeDirection="Rows" HorizontalAlignment="Stretch" />
 
 				<Grid Grid.Row="2">
-					<avalonedit:TextEditor Height="Auto" Margin="0" SyntaxHighlighting="{Binding SyntaxHighlightingDefinition}"
-									   FontFamily="Consolas" FontSize="10pt"
+					<avalonedit:TextEditor x:Name="PluginTextEditor" Height="Auto" Margin="0" SyntaxHighlighting="{Binding SyntaxHighlightingDefinition}"
+									   FontFamily="Consolas" FontSize="10pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
 									   Background="#252526" BorderBrush="#FF595959" Foreground="White"
 									   ShowLineNumbers="True" LineNumbersForeground="#FF237CAD">
 						<i:Interaction.Behaviors>
@@ -442,7 +445,7 @@
 				</Grid>
 			</Grid>
 			
-			<Grid Grid.Row="1" Height="20">
+			<Grid Grid.Row="1" Height="20" Visibility="Collapsed">
 				
 			</Grid>
 		</Grid>
