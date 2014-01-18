@@ -57,6 +57,26 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private CachePageViewModel _cachePageViewModel;
 
+		#region UI Layout
+
+		public GridLength EditorGridLength
+		{
+			get { return _editorGridLength; }
+			set { SetField(ref _editorGridLength, value); }
+		}
+		private GridLength _editorGridLength = new GridLength(0.7, GridUnitType.Star);
+
+		public GridLength PluginGridLength
+		{
+			get { return _pluginGridLength; }
+			set { SetField(ref _pluginGridLength, value); }
+		}
+		private GridLength _pluginGridLength = new GridLength(0.3, GridUnitType.Star);
+
+		#endregion
+
+		#region Tag Editor Stuff
+
 		public TagHierarchyNode TagHierarchyNode
 		{
 			get { return _tagHierarchyNode; }
@@ -105,7 +125,11 @@ namespace Atlas.ViewModels.CacheEditors
 			set { SetField(ref _memoryChanges, value); }
 		}
 		private FieldChangeSet _memoryChanges;
-		
+
+		#endregion
+
+		#region Plugin Stuff
+
 		public string PluginPath
 		{
 			get { return _pluginPath; }
@@ -126,7 +150,18 @@ namespace Atlas.ViewModels.CacheEditors
 			set { SetField(ref _pluginExists, value); }
 		}
 		private bool _pluginExists = true;
-		
+
+		public string PluginContent
+		{
+			get { return _pluginContent; }
+			set { SetField(ref _pluginContent, value); }
+		}
+		private string _pluginContent;
+
+		#endregion
+
+		#region Search
+
 		public string SearchQuery
 		{
 			get { return _searchQuery; }
@@ -160,12 +195,7 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private Dictionary<TagDataField, int> _resultIndices = new Dictionary<TagDataField, int>();
 
-		public string PluginContent
-		{
-			get { return _pluginContent; }
-			set { SetField(ref _pluginContent, value); }
-		}
-		private string _pluginContent;
+		#endregion
 
 		#endregion
 
