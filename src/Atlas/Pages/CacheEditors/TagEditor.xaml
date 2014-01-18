@@ -358,11 +358,11 @@
 							</Grid.Resources>
 							<ComboBox x:Name="TagEditorZoomSelectorComboBox" SelectedIndex="6" Width="62" Margin="0,0,3,0">
 								<ComboBoxItem Tag="20" Content="20%" />
-								<ComboBoxItem Tag="20" Content="35%" />
+								<ComboBoxItem Tag="35" Content="35%" />
 								<ComboBoxItem Tag="50" Content="50%" />
-								<ComboBoxItem Tag="50" Content="65%" />
+								<ComboBoxItem Tag="65" Content="65%" />
 								<ComboBoxItem Tag="70" Content="70%" />
-								<ComboBoxItem Tag="70" Content="85%" />
+								<ComboBoxItem Tag="85" Content="85%" />
 								<ComboBoxItem Tag="100" Content="100%" />
 							</ComboBox>
 							<ToggleButton x:Name="ShowInvisiblesToggleButton" Grid.Column="1" ToolTip="Toggle the visibility unknown (unmapped) values in the Tag Editor">
@@ -427,6 +427,11 @@
 				<GridSplitter Grid.Row="1" Background="#2d2d30" ResizeDirection="Rows" HorizontalAlignment="Stretch" />
 
 				<Grid Grid.Row="2">
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="17px" />
+					</Grid.RowDefinitions>
+					
 					<avalonedit:TextEditor x:Name="PluginTextEditor" Height="Auto" Margin="0" SyntaxHighlighting="{Binding SyntaxHighlightingDefinition}"
 									   FontFamily="Consolas" FontSize="10pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
 									   Background="#252526" BorderBrush="#FF595959" Foreground="White"
@@ -434,6 +439,10 @@
 						<i:Interaction.Behaviors>
 							<behavior:AvalonEditBehavior GiveMeTheText="{Binding Path=PluginContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 						</i:Interaction.Behaviors>
+						<avalonedit:TextEditor.LayoutTransform>
+							<ScaleTransform ScaleX="{Binding Path=SelectedItem.Tag, Converter={StaticResource IValueConverterPercentileToDecimal}, ElementName=PluginEditorZoomSelectorComboBox}" 
+								ScaleY="{Binding Path=SelectedItem.Tag, Converter={StaticResource IValueConverterPercentileToDecimal}, ElementName=PluginEditorZoomSelectorComboBox}" />
+						</avalonedit:TextEditor.LayoutTransform>
 						<avalonedit:TextEditor.ContextMenu>
 							<ContextMenu FontSize="12">
 								<MenuItem Command="Cut"/>
@@ -442,6 +451,234 @@
 							</ContextMenu>
 						</avalonedit:TextEditor.ContextMenu>
 					</avalonedit:TextEditor>
+
+					<Grid Grid.Row="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="65px" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.Resources>
+							<ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="EditorComboBoxToggleButtonTemplate">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition Width="16" />
+									</Grid.ColumnDefinitions>
+									<Border BorderBrush="#434346" CornerRadius="0" BorderThickness="1"
+											Name="Border" Background="#333337" Grid.ColumnSpan="2" />
+									<Border Margin="1,1,1,1" Name="TargetBorder" BorderBrush="Transparent"
+											CornerRadius="0" BorderThickness="0,0,1,0" Background="#333337" Grid.Column="0" />
+									<Path Margin="0,0,3,0" Data="M0,0L4,4 8,0z" HorizontalAlignment="Center"
+										  Fill="#989898" Name="Arrow" VerticalAlignment="Center" Width="8"
+										  Grid.Column="1" />
+								</Grid>
+								<ControlTemplate.Triggers>
+									<Trigger Property="UIElement.IsMouseOver" Value="True">
+										<Setter Property="Background" TargetName="Border" Value="#1f1f20" />
+										<Setter Property="Background" TargetName="TargetBorder" Value="#3f3f46" />
+										<Setter Property="BorderBrush" TargetName="TargetBorder" Value="{DynamicResource AssemblyAccentBrush}" />
+										<Setter Property="Fill" TargetName="Arrow" Value="White" />
+									</Trigger>
+
+									<Trigger Property="ToggleButton.IsChecked" Value="True">
+										<Setter Property="Background" TargetName="Border" Value="#1f1f20" />
+										<Setter Property="Background" TargetName="TargetBorder" Value="#3f3f46" />
+										<Setter Property="BorderBrush" TargetName="TargetBorder" Value="{DynamicResource AssemblyAccentBrush}" />
+										<Setter Property="Fill" TargetName="Arrow" Value="White" />
+									</Trigger>
+									<Trigger Property="UIElement.IsEnabled" Value="False">
+										<Setter Property="Panel.Background" TargetName="Border" Value="#FF555558" />
+										<Setter Property="Border.BorderBrush" TargetName="Border" Value="#FF555558" />
+										<Setter Property="TextElement.Foreground" Value="#FFc4c4c4" />
+										<Setter Property="Shape.Fill" TargetName="Arrow" Value="#66FFFFFF" />
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+
+							<Style TargetType="{x:Type ToggleButton}">
+								<Setter Property="Background" Value="#252526" />
+								<Setter Property="BorderBrush" Value="#252526" />
+								<Setter Property="BorderThickness" Value="1" />
+								<Setter Property="Width" Value="22px" />
+								<Setter Property="Height" Value="17px" />
+								<Setter Property="Padding" Value="0" />
+								<Setter Property="Margin" Value="1,0,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Center"/>
+								<Setter Property="VerticalContentAlignment" Value="Center"/>
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="{x:Type ToggleButton}">
+											<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+													BorderThickness="{TemplateBinding BorderThickness}"
+													Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+												<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+																  Content="{TemplateBinding Content}" 
+																  ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+																  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+																  RecognizesAccessKey="True" 
+																  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+																  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+											</Border>
+											<ControlTemplate.Triggers>
+												<!-- Mouse Over // Not Checked -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+														<Condition Property="IsPressed" Value="false" />
+														<Condition Property="IsEnabled" Value="true" />
+														<Condition Property="IsChecked" Value="false" />
+													</MultiTrigger.Conditions>
+													<Setter Property="Background" Value="#3e3e42" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#3e3e42" TargetName="border" />
+												</MultiTrigger>
+
+												<!-- Checked Button -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsChecked" Value="true" />
+														<Condition Property="IsEnabled" Value="true" />
+													</MultiTrigger.Conditions>
+													<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrush}" TargetName="border" />
+												</MultiTrigger>
+
+												<!-- Disabled -->
+												<Trigger Property="IsEnabled" Value="false">
+													<Setter Property="Background" Value="#FF575757" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+							<Style TargetType="{x:Type Button}">
+								<Setter Property="Background" Value="#252526" />
+								<Setter Property="BorderBrush" Value="#252526" />
+								<Setter Property="BorderThickness" Value="1" />
+								<Setter Property="Width" Value="22px" />
+								<Setter Property="Height" Value="17px" />
+								<Setter Property="Padding" Value="0" />
+								<Setter Property="Margin" Value="1,0,0,0" />
+								<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+								<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="{x:Type Button}">
+											<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" 
+													BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
+													Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+												<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+																  Content="{TemplateBinding Content}" 
+																  ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" 
+																  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+																  RecognizesAccessKey="True" 
+																  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+																  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+											</Border>
+											<ControlTemplate.Triggers>
+												<!-- Mouse Over // Not Pressed -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsMouseOver" Value="true" SourceName="border" />
+														<Condition Property="IsPressed" Value="false" />
+													</MultiTrigger.Conditions>
+													<Setter Property="Background" Value="#3e3e42" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#3e3e42" TargetName="border" />
+												</MultiTrigger>
+
+												<!-- Pressed -->
+												<MultiTrigger>
+													<MultiTrigger.Conditions>
+														<Condition Property="IsPressed" Value="true" />
+													</MultiTrigger.Conditions>
+													<Setter Property="BorderBrush" Value="{DynamicResource AssemblyAccentBrush}" TargetName="border" />
+												</MultiTrigger>
+
+												<!-- Disabled -->
+												<Trigger Property="IsEnabled" Value="false">
+													<Setter Property="Background" Value="#FF575757" TargetName="border" />
+													<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+							<Style TargetType="{x:Type ComboBox}">
+								<Setter Property="SnapsToDevicePixels" Value="True" />
+								<Setter Property="OverridesDefaultStyle" Value="True" />
+								<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+								<Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+								<Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+								<Setter Property="TextElement.Foreground" Value="{StaticResource NormalForegroundBrush}" />
+								<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+								<Setter Property="Foreground" Value="White" />
+								<Setter Property="FontSize" Value="12" />
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="ComboBox">
+											<Grid>
+												<ToggleButton ClickMode="Press" Name="ToggleButton" IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+													Focusable="False" Template="{StaticResource EditorComboBoxToggleButtonTemplate}" Margin="0" Width="Auto" />
+												<Grid VerticalAlignment="Center">
+													<ContentPresenter Margin="5,0,23,0" HorizontalAlignment="Left"
+																	  Name="ContentSite" VerticalAlignment="Center"
+																	  ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+																	  ContentStringFormat="{TemplateBinding ComboBox.SelectionBoxItemStringFormat}"
+																	  Content="{TemplateBinding ComboBox.SelectionBoxItem}" TextElement.FontSize="11"
+																	  IsHitTestVisible="False" />
+												</Grid>
+												<TextBox Margin="3,3,23,3" Visibility="Hidden" HorizontalAlignment="Left"
+														 Name="PART_EditableTextBox" Background="Transparent" VerticalAlignment="Center"
+														 Style="{x:Null}" IsReadOnly="False" Focusable="True" xml:space="preserve"
+														 Template="{StaticResource ComboBoxTextBoxTemplate}" />
+												<Popup Placement="Bottom" Name="Popup" Focusable="False" IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
+													   PopupAnimation="Slide">
+													<Grid MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+														  MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}"
+														  Name="DropDown" SnapsToDevicePixels="True">
+														<Border BorderBrush="#323236" BorderThickness="1,1,1,1" 
+																Name="DropDownBorder" Background="#1b1b1c" />
+														<ScrollViewer Name="DropDownScrollViewer" Margin="4,6,4,6"
+																	  SnapsToDevicePixels="True">
+															<ItemsPresenter Name="ItemsPresenter"
+																			KeyboardNavigation.DirectionalNavigation="Contained" />
+														</ScrollViewer>
+													</Grid>
+												</Popup>
+											</Grid>
+											<ControlTemplate.Triggers>
+												<Trigger Property="ItemsControl.HasItems" Value="False">
+													<Setter Property="FrameworkElement.MinHeight" TargetName="DropDownBorder" Value="95" />
+												</Trigger>
+												<Trigger Property="UIElement.IsEnabled" Value="False">
+													<Setter Property="TextElement.Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+												</Trigger>
+												<Trigger Property="ItemsControl.IsGrouping" Value="True">
+													<Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+												</Trigger>
+												<Trigger Property="ComboBox.IsEditable" Value="True">
+													<Setter Property="KeyboardNavigation.IsTabStop" Value="False" />
+													<Setter Property="UIElement.Visibility" TargetName="PART_EditableTextBox" Value="Visible" />
+													<Setter Property="UIElement.Visibility" TargetName="ContentSite" Value="Hidden" />
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</Grid.Resources>
+						<ComboBox x:Name="PluginEditorZoomSelectorComboBox" SelectedIndex="6" Width="62" Margin="0,0,3,0">
+							<ComboBoxItem Tag="20" Content="20%" />
+							<ComboBoxItem Tag="35" Content="35%" />
+							<ComboBoxItem Tag="50" Content="50%" />
+							<ComboBoxItem Tag="65" Content="65%" />
+							<ComboBoxItem Tag="70" Content="70%" />
+							<ComboBoxItem Tag="85" Content="85%" />
+							<ComboBoxItem Tag="100" Content="100%" />
+						</ComboBox>
+						<Grid Grid.Column="1" Background="#3e3e42" />
+					</Grid>
 				</Grid>
 			</Grid>
 			
