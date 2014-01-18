@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Atlas.Helpers.Tags;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
@@ -16,6 +18,9 @@ namespace Atlas.Pages.CacheEditors
 	/// </summary>
 	public partial class TagEditor : ICacheEditor
 	{
+		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
+		public static RoutedCommand GoToPlugin = new RoutedCommand();
+
 		public TagEditorViewModel ViewModel { get; private set; }
 
 		public bool IsSingleInstance { get { return false; } }
@@ -89,6 +94,68 @@ namespace Atlas.Pages.CacheEditors
 			var selectedResult = ViewModel.SelectedSearchResult;
 			if (selectedResult != null)
 				ViewModel.SelectResult(selectedResult);
+		}
+
+		#endregion
+
+		#region Tag Data Viewer Helpers
+
+		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			var field = GetWrappedField(e.Source);
+			e.CanExecute = (field != null && field.PluginLine > 0);
+		}
+
+		private void GoToPlugin_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			var field = GetWrappedField(e.Source);
+			if (field == null) return;
+
+			var line = (int) field.PluginLine;
+			var selectedLineDetails = PluginTextEditor.Document.GetLineByNumber(line);
+			PluginTextEditor.ScrollToLine(line);
+			PluginTextEditor.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
+			PluginTextEditor.Focus();
+		}
+
+		private static TagDataField GetWrappedField(TagDataField field)
+		{
+			while (true)
+			{
+				var wrapper = field as WrappedTagBlockEntry;
+				if (wrapper == null)
+					return field;
+				field = wrapper.WrappedField;
+			}
+		}
+		private static TagDataField GetWrappedField(object elem)
+		{
+			// Get the FrameworkElement
+			var source = elem as FrameworkElement;
+			if (source == null)
+				return null;
+
+			// Get the field
+			var field = source.DataContext as TagDataField;
+			return field == null ? null : GetWrappedField(field);
+		}
+
+		/// <summary>
+		///     Given a source element, retrieves the ValueField it represents.
+		/// </summary>
+		/// <param name="elem">The FrameworkElement to get the ValueField for.</param>
+		/// <returns>The ValueField if elem's data context is set to one, or null otherwise.</returns>
+		private static ValueField GetValueField(object elem)
+		{
+			var field = GetWrappedField(elem);
+			var valueField = field as ValueField;
+			if (valueField != null) return valueField;
+
+			var wrapper = field as WrappedTagBlockEntry;
+			if (wrapper != null)
+				valueField = GetWrappedField(wrapper) as ValueField;
+
+			return valueField;
 		}
 
 		#endregion
