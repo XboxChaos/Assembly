@@ -22,7 +22,8 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Border Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="#434346" Background="#303032" Padding="8,0">
+		<Border Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="#434346" Background="#303032" 
+				Padding="8,0" Visibility="Collapsed">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="40" />
@@ -73,28 +74,33 @@
 						<RowDefinition />
 						<RowDefinition Height="17px" />
 					</Grid.RowDefinitions>
-					<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0"
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition MinWidth="240px" Width="240px" />
+						</Grid.ColumnDefinitions>
+						<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Column="0" Grid.ColumnSpan="2"
 							 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 							 ScrollViewer.CanContentScroll="True" SelectionChanged="TagDataViewer_OnSelectionChanged"
 							 Padding="0,7,0,7">
-						<ListBox.LayoutTransform>
-							<ScaleTransform ScaleX="{Binding Path=SelectedItem.Tag, Converter={StaticResource IValueConverterPercentileToDecimal}, ElementName=TagEditorZoomSelectorComboBox}" 
+							<ListBox.LayoutTransform>
+								<ScaleTransform ScaleX="{Binding Path=SelectedItem.Tag, Converter={StaticResource IValueConverterPercentileToDecimal}, ElementName=TagEditorZoomSelectorComboBox}" 
 								ScaleY="{Binding Path=SelectedItem.Tag, Converter={StaticResource IValueConverterPercentileToDecimal}, ElementName=TagEditorZoomSelectorComboBox}" />
-						</ListBox.LayoutTransform>
-						<ListBox.Template>
-							<ControlTemplate>
-								<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-									<ItemsPresenter />
-								</ScrollViewer>
-							</ControlTemplate>
-						</ListBox.Template>
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="{x:Type ListBoxItem}">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate>
-											<Grid Background="{TemplateBinding ListBoxItem.Background}">
-												<ContentPresenter Name="PART_Content"
+							</ListBox.LayoutTransform>
+							<ListBox.Template>
+								<ControlTemplate>
+									<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+										<ItemsPresenter />
+									</ScrollViewer>
+								</ControlTemplate>
+							</ListBox.Template>
+							<ListBox.ItemContainerStyle>
+								<Style TargetType="{x:Type ListBoxItem}">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate>
+												<Grid Background="{TemplateBinding ListBoxItem.Background}">
+													<ContentPresenter Name="PART_Content"
 														  Content="{TemplateBinding ContentControl.Content}"
 														  Margin="20,0,20,0"
 														  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
@@ -102,37 +108,56 @@
 														  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 														  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 														  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-												<Grid.ContextMenu>
-											<ContextMenu Name="metaFieldMenu">
-												<ContextMenu.CommandBindings>
-													<!--<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+													<Grid.ContextMenu>
+														<ContextMenu Name="metaFieldMenu">
+															<ContextMenu.CommandBindings>
+																<!--<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
 																	CanExecute="ViewValueAsCommand_CanExecute"
 																	Executed="ViewValueAsCommand_Executed" />-->
 
-													<CommandBinding Command="{x:Static local:TagEditor.GoToPlugin}"
+																<CommandBinding Command="{x:Static local:TagEditor.GoToPlugin}"
 																	CanExecute="GoToPlugin_CanExecute"
 																	Executed="GoToPlugin_Executed" />
-												</ContextMenu.CommandBindings>
-												<!--<MenuItem Header="View Value As..." Foreground="White"
+															</ContextMenu.CommandBindings>
+															<!--<MenuItem Header="View Value As..." Foreground="White"
 														  Command="{x:Static local:MetaEditor.ViewValueAsCommand}" 
 														  CommandParameter="{Binding}" />-->
-												<MenuItem Header="Go to plugin line..." Foreground="White" 
+															<MenuItem Header="Go to plugin line..." Foreground="White" 
 														  Command="{x:Static local:TagEditor.GoToPlugin}"
 														  CommandParameter="{Binding}" />
-											</ContextMenu>
-										</Grid.ContextMenu>
-											</Grid>
-											<ControlTemplate.Triggers>
-												<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
-													<Setter Property="Background" Value="#FF181818" />
-												</DataTrigger>
-											</ControlTemplate.Triggers>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ListBox.ItemContainerStyle>
-					</ListBox>
+														</ContextMenu>
+													</Grid.ContextMenu>
+												</Grid>
+												<ControlTemplate.Triggers>
+													<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+														<Setter Property="Background" Value="#FF181818" />
+													</DataTrigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</ListBox.ItemContainerStyle>
+						</ListBox>
+						
+						<Border x:Name="SearchBoxBorder" Grid.Column="1" Height="60" VerticalAlignment="Top" 
+								HorizontalAlignment="Stretch" BorderThickness="0,0,0,4"
+								BorderBrush="{DynamicResource AssemblyAccentBrush}" Background="#2d2d30">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="35" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="20" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="30" />
+								</Grid.ColumnDefinitions>
+								
+								<TextBox Text="{Binding Path=SearchQuery, FallbackValue='Search Query'}" Grid.Column="1" Margin="0,2,0,0" />
+							</Grid>
+						</Border>
+					</Grid>
 
 					<Grid Grid.Row="1" Background="#2d2d30">
 						<Grid>
