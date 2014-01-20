@@ -484,6 +484,8 @@ namespace Atlas.ViewModels.CacheEditors
 			var tagBlock = result.TagBlock;
 			if (tagBlock != null)
 				Flattener.ForceVisible(tagBlock);
+
+			SelectedSearchResult = result;
 			SelectField(result.ListField);
 		}
 

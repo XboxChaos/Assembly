@@ -8,6 +8,7 @@
 			 xmlns:behavior="clr-namespace:Atlas.Metro.Controls.Behavior"
 			 xmlns:local="clr-namespace:Atlas.Pages.CacheEditors"
 			 mc:Ignorable="d" 
+			 Background="#252526"
 			 d:DesignHeight="600" d:DesignWidth="900">
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -22,7 +23,7 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Border Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="#434346" Background="#303032" 
+		<!--<Border Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="#434346" Background="#303032" 
 				Padding="8,0" Visibility="Collapsed">
 			<Grid>
 				<Grid.ColumnDefinitions>
@@ -54,7 +55,7 @@
 					</ComboBox.ItemTemplate>
 				</ComboBox>
 			</Grid>
-		</Border>
+		</Border>-->
 		
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>
@@ -77,9 +78,10 @@
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition />
+							<ColumnDefinition Width="2px" />
 							<ColumnDefinition MinWidth="240px" Width="240px" />
 						</Grid.ColumnDefinitions>
-						<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Column="0" Grid.ColumnSpan="2"
+						<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Column="0" Grid.ColumnSpan="3"
 							 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 							 ScrollViewer.CanContentScroll="True" SelectionChanged="TagDataViewer_OnSelectionChanged"
 							 Padding="0,7,0,7">
@@ -139,24 +141,150 @@
 								</Style>
 							</ListBox.ItemContainerStyle>
 						</ListBox>
+
+						<GridSplitter Grid.Column="1" Height="66" ResizeDirection="Columns" Margin="0,0,0,0"
+									  VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" />
 						
-						<Border x:Name="SearchBoxBorder" Grid.Column="1" Height="60" VerticalAlignment="Top" 
-								HorizontalAlignment="Stretch" BorderThickness="0,0,0,4"
+						<Border x:Name="SearchBoxBorder" Grid.Column="2" VerticalAlignment="Top" 
+								HorizontalAlignment="Stretch" BorderThickness="0,0,0,4" Margin="0,0,18,0"
 								BorderBrush="{DynamicResource AssemblyAccentBrush}" Background="#2d2d30">
 							<Grid>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="35" />
-									<RowDefinition Height="*" />
+									<RowDefinition Height="25" />
+									<RowDefinition Height="6" />
 								</Grid.RowDefinitions>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="20" />
 									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="30" />
 								</Grid.ColumnDefinitions>
-								
-								<TextBox Text="{Binding Path=SearchQuery, FallbackValue='Search Query'}" Grid.Column="1" Margin="0,2,0,0" />
 
-								<Path Grid.Row="1" Grid.Column="0" SnapsToDevicePixels="True" Fill="#999999" 
+								<TextBox Text="{Binding Path=SearchQuery, UpdateSourceTrigger=PropertyChanged, FallbackValue='Search Query'}" Grid.Column="1" Margin="0,2,0,0" />
+								<Button Grid.Column="2" Grid.Row="0">
+									<Button.Style>
+										<Style TargetType="{x:Type Button}">
+											<Setter Property="Background" Value="Transparent" />
+											<Setter Property="Foreground" Value="#999999" />
+											<Setter Property="Height" Value="18" />
+											<Setter Property="Width" Value="18" />
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="{x:Type Button}">
+														<Grid x:Name="ContainerGrid" Background="{TemplateBinding Background}">
+															<Path x:Name="CrossPath" Stroke="{TemplateBinding Foreground}" 
+																  StrokeThickness="1.5" SnapsToDevicePixels="True"
+																  VerticalAlignment="Center" HorizontalAlignment="Center"
+																  Data="M0,0 L8,8 M0,8 L8,0" />
+														</Grid>
+														<ControlTemplate.Triggers>
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter Property="Background" TargetName="ContainerGrid" Value="#3e3e40" />
+																<Setter Property="Stroke" TargetName="CrossPath" Value="{DynamicResource AssemblyAccentBrush}" />
+															</Trigger>
+
+															<Trigger Property="IsPressed" Value="True">
+																<Setter Property="Background" TargetName="ContainerGrid" Value="{DynamicResource AssemblyAccentBrush}" />
+																<Setter Property="Stroke" TargetName="CrossPath" Value="White" />
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Button.Style>
+								</Button>
+								
+								<Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="20" />
+										<ColumnDefinition Width="4" />
+									</Grid.ColumnDefinitions>
+
+									<ComboBox Name="DataSearchResultsComboBox" Grid.Column="0" Margin="0,0,5,0" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}" 
+											   ItemsSource="{Binding Path=SearchResults}" SelectedItem="{Binding Path=SelectedSearchResult}" 
+											  SelectionChanged="DataSearchResultsComboBox_SelectionChanged">
+										<ComboBox.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Field.Name}" />
+											</DataTemplate>
+										</ComboBox.ItemTemplate>
+									</ComboBox>
+									
+									<Button Grid.Column="1" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}"
+											Click="PreviousSearchTagDataButton_Click">
+										<Button.Style>
+											<Style TargetType="{x:Type Button}">
+												<Setter Property="Background" Value="Transparent" />
+												<Setter Property="Foreground" Value="#999999" />
+												<Setter Property="Height" Value="18" />
+												<Setter Property="Width" Value="18" />
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type Button}">
+															<Grid x:Name="ContainerGrid" Background="{TemplateBinding Background}">
+																<Path x:Name="Path" Stroke="{TemplateBinding Foreground}" 
+																  StrokeThickness="1.5" SnapsToDevicePixels="True"
+																  VerticalAlignment="Center" HorizontalAlignment="Center"
+																  Data="M 2,0 L 0,2 2,4 Z" />
+															</Grid>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter Property="Background" TargetName="ContainerGrid" Value="#3e3e40" />
+																	<Setter Property="Stroke" TargetName="Path" Value="{DynamicResource AssemblyAccentBrush}" />
+																</Trigger>
+
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter Property="Background" TargetName="ContainerGrid" Value="{DynamicResource AssemblyAccentBrush}" />
+																	<Setter Property="Stroke" TargetName="Path" Value="White" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</Button.Style>
+									</Button>
+
+									<Button Grid.Column="2" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}"
+											Click="NextSearchTagDataButton_Click">
+										<Button.Style>
+											<Style TargetType="{x:Type Button}">
+												<Setter Property="Background" Value="Transparent" />
+												<Setter Property="Foreground" Value="#999999" />
+												<Setter Property="Height" Value="18" />
+												<Setter Property="Width" Value="18" />
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type Button}">
+															<Grid x:Name="ContainerGrid" Background="{TemplateBinding Background}">
+																<Path x:Name="Path" Stroke="{TemplateBinding Foreground}" 
+																  StrokeThickness="1.5" SnapsToDevicePixels="True"
+																  VerticalAlignment="Center" HorizontalAlignment="Center"
+																  Data="M 0,0 L 2,2 0,4 Z" />
+															</Grid>
+															<ControlTemplate.Triggers>
+																<Trigger Property="IsMouseOver" Value="True">
+																	<Setter Property="Background" TargetName="ContainerGrid" Value="#3e3e40" />
+																	<Setter Property="Stroke" TargetName="Path" Value="{DynamicResource AssemblyAccentBrush}" />
+																</Trigger>
+
+																<Trigger Property="IsPressed" Value="True">
+																	<Setter Property="Background" TargetName="ContainerGrid" Value="{DynamicResource AssemblyAccentBrush}" />
+																	<Setter Property="Stroke" TargetName="Path" Value="White" />
+																</Trigger>
+															</ControlTemplate.Triggers>
+														</ControlTemplate>
+													</Setter.Value>
+												</Setter>
+											</Style>
+										</Button.Style>
+									</Button>
+								</Grid>
+								
+								<Path Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" SnapsToDevicePixels="True" Fill="#999999" 
 									  Margin="4,0,0,4" VerticalAlignment="Bottom"
 									  Data="M 0,0 L 0,1 1,1 1,0 Z
 											M 0,3 L 1,3 1,4 0,4 Z
