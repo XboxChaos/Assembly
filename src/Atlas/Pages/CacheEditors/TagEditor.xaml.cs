@@ -59,12 +59,12 @@ namespace Atlas.Pages.CacheEditors
 
 		#region Data Search Events
 
-		private void NextSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void NextSearchTagDataButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (DataSearchResultsComboBox.SelectedIndex > ViewModel.SearchResults.Count - 1)
+			if (DataSearchResultsComboBox.SelectedIndex < ViewModel.SearchResults.Count - 1)
 				ViewModel.SelectResult(ViewModel.SearchResults[DataSearchResultsComboBox.SelectedIndex + 1]);
 		}
-		private void PreviousSearchTagDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void PreviousSearchTagDataButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (DataSearchResultsComboBox.SelectedIndex > 0)
 				ViewModel.SelectResult(ViewModel.SearchResults[DataSearchResultsComboBox.SelectedIndex - 1]);
