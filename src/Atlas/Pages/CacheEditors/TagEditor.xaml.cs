@@ -47,6 +47,9 @@ namespace Atlas.Pages.CacheEditors
 				ShowTagBlockInfoToggleButton.DataContext = App.Storage.Settings;
 
 			ViewModel.LoadTagData(TagDataReader.LoadType.File, this);
+
+			// Global Event Handling
+			AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
 		}
 
 		public bool Close()
@@ -57,7 +60,44 @@ namespace Atlas.Pages.CacheEditors
 			return true;
 		}
 
+		#region Events
+
+		private void HandleKeyDownEvent(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+				StartSearching();
+
+			if (e.Key == Key.Escape)
+				DataSearchResetButton_Click(null, null);
+		}
+
+		private void SearchQueryTextBox_OnKeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key != Key.Enter && e.Key != Key.Return) return;
+
+			if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+				PreviousSearchTagDataButton_Click(null, null);
+			else
+				NextSearchTagDataButton_Click(null, null);
+		}
+
+		#endregion
+
 		#region Data Search Events
+
+		private void StartSearching()
+		{
+			SearchBoxBorder.Visibility = Visibility.Visible;
+			SearchQueryTextBox.Focus();
+		}
+
+		private void DataSearchResetButton_Click(object sender, RoutedEventArgs e)
+		{
+			SearchBoxBorder.Visibility = Visibility.Collapsed;
+			ViewModel.SearchQuery = "";
+			TagDataViewer.SelectedItem = null;
+			TagDataViewer.Focus();
+		}
 
 		private void NextSearchTagDataButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -97,7 +137,7 @@ namespace Atlas.Pages.CacheEditors
 		}
 
 		#endregion
-
+		
 		#region Tag Data Viewer Helpers
 
 		private void GoToPlugin_CanExecute(object sender, CanExecuteRoutedEventArgs e)
