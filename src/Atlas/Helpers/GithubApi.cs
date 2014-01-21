@@ -13,6 +13,8 @@ namespace Atlas.Helpers
 
 		public static async Task<PluginRevisionHistory[]> GetRepoFileCommitHistory(string filePath, string owner, string repo)
 		{
+			filePath = filePath.Replace("\\", "/");
+
 			var url = String.Format("{0}?path={1}", String.Format(ApiV3Url, owner, repo, "commits"),
 				HttpUtility.UrlDecode(filePath));
 
@@ -24,6 +26,9 @@ namespace Atlas.Helpers
 		{
 			var httpClient = new HttpClient();
 			var request = new HttpRequestMessage(HttpMethod.Get, url);
+			request.Headers.Add("KeepAlive", "true");
+			request.Headers.Add("User-Agent", "Assembly-App");
+
 			var response = await httpClient.SendAsync(request);
 			return await response.Content.ReadAsStringAsync();
 		}

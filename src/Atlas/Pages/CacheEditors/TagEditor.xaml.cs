@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Atlas.Dialogs;
 using Atlas.Helpers.Tags;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
@@ -222,6 +223,15 @@ namespace Atlas.Pages.CacheEditors
 			field = value;
 			OnPropertyChanged(propertyName);
 			return true;
+		}
+
+		#endregion
+
+		#region Plugin Revision
+
+		private void ShowPluginRevisionButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			MetroPluginRevisionViewer.Show(ViewModel.TagHierarchyNode.Name, ViewModel.PluginVisitor.PluginRevisions);
 		}
 
 		#endregion
