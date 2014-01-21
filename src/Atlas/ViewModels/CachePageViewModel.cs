@@ -9,6 +9,7 @@ using Atlas.Models;
 using Atlas.Pages;
 using Atlas.Pages.CacheEditors;
 using Blamite.Blam;
+using Blamite.Blam.Scripting;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.RTE;
@@ -256,6 +257,20 @@ namespace Atlas.ViewModels
 		{
 			var editor = new TagEditor(this, tagHierarchyNode);
 			Editors.Add(editor);
+			SelectedEditor = editor;
+		}
+
+		public void LoadScriptEditor(IScriptFile scriptFile)
+		{
+			ICacheEditor editor = null;
+			foreach (var edi in from edi in Editors let parsedEditor = edi as ScriptEditor where parsedEditor != null where parsedEditor.ViewModel.ScriptFile == scriptFile select edi)
+				editor = edi;
+
+			if (editor == null)
+			{
+				editor = new ScriptEditor(this, scriptFile);
+				Editors.Add(editor);
+			}
 			SelectedEditor = editor;
 		}
 

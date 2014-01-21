@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,6 +11,7 @@ using Atlas.Models;
 using Atlas.Pages.CacheEditors;
 using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
 using Atlas.ViewModels;
+using Blamite.Blam.Scripting;
 using XBDMCommunicator;
 
 namespace Atlas.Pages
@@ -40,8 +43,22 @@ namespace Atlas.Pages
 
 		public bool Close()
 		{
-			// Ask for user permission to close
-			throw new NotImplementedException();
+			var letsContinue = ViewModel.Editors.All(editor => editor.Close());
+
+			if (!letsContinue)
+				return false;
+
+			// r u shure
+			var result = MetroMessageBox.Show("Are you sure?",
+				"Are you sure you want to close this cache? Unsaved changes will be lost.",
+				new List<MetroMessageBox.MessageBoxButton>
+				{
+					MetroMessageBox.MessageBoxButton.Yes,
+					MetroMessageBox.MessageBoxButton.No,
+					MetroMessageBox.MessageBoxButton.Cancel
+				});
+
+			return (result == MetroMessageBox.MessageBoxButton.No);
 		}
 
 		private void OpenTagContextMenu_OnClick(object sender, RoutedEventArgs e)
@@ -59,6 +76,15 @@ namespace Atlas.Pages
 		{
 			throw new NotImplementedException();
 		}
+
+		private void ScriptButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			var button = sender as Button;
+			if (button == null) return;
+
+			ViewModel.LoadScriptEditor(button.DataContext as IScriptFile);
+		}
+
 
 		#region Helpers
 
@@ -142,12 +168,6 @@ namespace Atlas.Pages
 
 		#endregion
 
-		private void CloseTab(object source, RoutedEventArgs args)
-		{
-			var editor = ((MetroClosableTabItem) args.OriginalSource).Content as ICacheEditor;
-			if (editor == null) return;
-			if (editor.Close()) ViewModel.Editors.Remove(editor);
-		}
 
 		#region Tag Editor Toolbar Buttons
 
@@ -193,5 +213,24 @@ namespace Atlas.Pages
 		}
 
 		#endregion
+
+		#region Script Editor Toolbar Buttons
+
+		private void ScriptEditorExportButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			var editor = ViewModel.SelectedEditor as ScriptEditor;
+			if (editor == null) return;
+			editor.ViewModel.ExportScript();
+		}
+
+		#endregion
+
+
+		private void CloseTab(object source, RoutedEventArgs args)
+		{
+			var editor = ((MetroClosableTabItem)args.OriginalSource).Content as ICacheEditor;
+			if (editor == null) return;
+			if (editor.Close()) ViewModel.Editors.Remove(editor);
+		}
 	}
 }
