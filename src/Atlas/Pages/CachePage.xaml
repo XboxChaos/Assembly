@@ -178,6 +178,8 @@
 					</ItemsControl>
 				</custom:MetroToolBar>
 				
+				<!-- Toolbars -->
+				
 				<!-- Tag Editor Toolbar -->
 				<custom:MetroToolBar ToolBarTray.IsLocked="False" Band="1" BandIndex="1" ToolBar.OverflowMode="Never"
 									 Visibility="{Binding ElementName=EditorTabControl, Mode=OneWay, Path=SelectedItem, Converter={StaticResource IValueConverterTagEditorToolbarVisibility}}">
@@ -220,12 +222,27 @@
 						<ContentControl Template="{StaticResource MenuVectorIconSaveData}" />
 					</Button>
 				</custom:MetroToolBar>
+				
+				<!-- Tag Editor Toolbar -->
+				<custom:MetroToolBar ToolBarTray.IsLocked="False" Band="1" BandIndex="1" ToolBar.OverflowMode="Never"
+									 Visibility="{Binding ElementName=EditorTabControl, Mode=OneWay, Path=SelectedItem, Converter={StaticResource IValueConverterScriptEditorToolbarVisibility}}">
+
+					<Button x:Name="ScriptEditorExportButton" Width="20" ToolTip="Exports the Script to your local machine" Margin="0"
+							Click="ScriptEditorExportButton_OnClick">
+						<ContentControl Template="{StaticResource MenuVectorIconPlaceholder}" />
+					</Button>
+
+					<Button x:Name="ScriptEditorCompileButton" IsEnabled="False" Width="20" ToolTip="Saves and Compiles the script into the cache file">
+						<ContentControl Template="{StaticResource MenuVectorIconPlaceholder}" />
+					</Button>
+
+				</custom:MetroToolBar>
 			</ToolBarTray>
 
 			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<custom:MetroClosableTabControl x:Name="EditorTabControl" Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
-				            Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=(viewModels:CachePageViewModel.SelectedEditor), Mode=TwoWay}"
-							ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
+												Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=(viewModels:CachePageViewModel.SelectedEditor), Mode=TwoWay}"
+												ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
 					<custom:MetroClosableTabControl.ItemContainerStyle>
 						<Style BasedOn="{StaticResource {x:Type custom:MetroClosableTabItem}}" TargetType="{x:Type custom:MetroClosableTabItem}">
 							<Setter Property="Header" Value="{Binding (cacheEditors:ICacheEditor.EditorTitle)}"/>
@@ -316,7 +333,15 @@
 						</TabItem>
 						<TabItem Header="Scripts" Style="{DynamicResource MetroTabControlBottom}">
 							<custom:MetroContainer Title="Scripts">
-
+								<ItemsControl ItemsSource="{Binding Path=CacheFile.ScriptFiles}" Margin="20">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Button HorizontalAlignment="Right" Content="{Binding Path=Name, FallbackValue='Script Filename'}" 
+													Style="{StaticResource MetroContainerListButtonStyle}" 
+													Click="ScriptButton_OnClick"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
 							</custom:MetroContainer>
 						</TabItem>
 						<TabItem Header="Memory" Style="{DynamicResource MetroTabControlBottom}">
