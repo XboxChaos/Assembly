@@ -90,6 +90,7 @@ namespace Atlas.Pages.CacheEditors
 		{
 			SearchBoxBorder.Visibility = Visibility.Visible;
 			SearchQueryTextBox.Focus();
+			SearchQueryTextBox.SelectAll();
 		}
 
 		private void DataSearchResetButton_Click(object sender, RoutedEventArgs e)
@@ -208,6 +209,15 @@ namespace Atlas.Pages.CacheEditors
 
 		#endregion
 
+		#region Plugin Revision
+
+		private void ShowPluginRevisionButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			MetroPluginRevisionViewer.Show(ViewModel.TagHierarchyNode.Name, ViewModel.PluginVisitor.PluginRevisions);
+		}
+
+		#endregion
+
 		#region Inpc Helpers
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -227,13 +237,5 @@ namespace Atlas.Pages.CacheEditors
 
 		#endregion
 
-		#region Plugin Revision
-
-		private void ShowPluginRevisionButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			MetroPluginRevisionViewer.Show(ViewModel.TagHierarchyNode.Name, ViewModel.PluginVisitor.PluginRevisions);
-		}
-
-		#endregion
 	}
 }
