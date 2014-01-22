@@ -14,11 +14,11 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40" />
-			<RowDefinition Height="Auto" MaxHeight="300" MinHeight="120" />
+			<RowDefinition Height="Auto" MaxHeight="300" MinHeight="80" />
 			<RowDefinition Height="45" />
 		</Grid.RowDefinitions>
 
-		<Grid native:WindowMovement.DragsWindow="True">
+		<Grid native:WindowMovement.DragsWindow="True" IsHitTestVisible="True" Background="Transparent">
 			<Button x:Name="WindowCloseButton" ToolTip="Close" VerticalAlignment="Top" 
 					HorizontalAlignment="Right" Style="{DynamicResource WindowActionButton}" 
 					Click="WindowCloseButton_OnClick">
@@ -26,9 +26,9 @@
 			</Button>
 		</Grid>
 
-		<ScrollViewer Grid.Row="1" Margin="0,20" Padding="15,0" VerticalScrollBarVisibility="Auto">
+		<ScrollViewer Grid.Row="1" Margin="0,20" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
-				<TextBlock Text="{Binding Path=(dialog:MessageBoxListViewModel.Message), Mode=OneWay, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor auctor arcu sit amet adipiscing. Vestibulum nec aliquet massa, at pellentesque leo. Curabitur non fermentum diam, ut faucibus nulla. Nulla placerat orci elit, eu bibendum justo dignissim id. Quisque vel. '}" 
+				<TextBlock Margin="15,5" Text="{Binding Path=(dialog:MessageBoxListViewModel.Message), Mode=OneWay, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor auctor arcu sit amet adipiscing. Vestibulum nec aliquet massa, at pellentesque leo. Curabitur non fermentum diam, ut faucibus nulla. Nulla placerat orci elit, eu bibendum justo dignissim id. Quisque vel. '}" 
 						   TextWrapping="Wrap" />
 
 				<ListBox x:Name="ListBox" Margin="20,12,20,0" Background="Transparent" />
