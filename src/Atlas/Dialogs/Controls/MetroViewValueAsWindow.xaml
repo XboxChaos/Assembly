@@ -61,6 +61,7 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40" />
+			<RowDefinition Height="40" />
 			<RowDefinition MinHeight="120" />
 			<RowDefinition Height="25" />
 		</Grid.RowDefinitions>
@@ -73,7 +74,20 @@
 			</Button>
 		</Grid>
 
-		<ScrollViewer Margin="0,20" Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible">
+		<Border Grid.Row="1" BorderThickness="0,0,0,2" BorderBrush="#3e3e42">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="File Offset:" VerticalAlignment="Center" Margin="20,0,10,0" />
+				<TextBox Text="{Binding Path=CacheOffset, FallbackValue=0xDEADBEEF, StringFormat=0x{0:X8}}" Width="175" />
+
+				<Button x:Name="SeekBackButton" Content="&lt;" Width="20" Margin="2,0,0,0" Height="22" Click="SeekBackButton_Click" />
+				<Button x:Name="SeekForwardButton" Content="&gt;" Width="20" Margin="2,0,0,0" Height="22" Click="SeekForwardButton_Click" />
+
+				<Button x:Name="RefreshDataButton" Content="Refresh" Width="60" Margin="7,0,0,0" Height="22" Click="RefreshDataButton_Click" />
+				<Button x:Name="ResetSeekButton" Content="Reset" Width="60" Margin="7,0,0,0" Height="22" Click="ResetSeekButton_Click" />
+			</StackPanel>
+		</Border>
+		
+		<ScrollViewer Margin="0,20" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 			<ListBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 					 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 					 ScrollViewer.CanContentScroll="True" Padding="0,7,0,7"
@@ -117,7 +131,7 @@
 			</ListBox>
 		</ScrollViewer>
 
-		<Grid x:Name="ResizingGrid" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" Margin="-1,-1,-1,0" Visibility="{Binding Path=ResizingVisibility, FallbackValue=Visible}">
+		<Grid x:Name="ResizingGrid" Grid.Row="0" Grid.RowSpan="4" VerticalAlignment="Stretch" Margin="-1,-1,-1,0" Visibility="{Binding Path=ResizingVisibility, FallbackValue=Visible}">
 			<vectors:ResizeModule VerticalAlignment="Bottom" HorizontalAlignment="Right" 
 														  Margin="0,0,5,5" />
 
