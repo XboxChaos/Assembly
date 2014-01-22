@@ -17,7 +17,7 @@ namespace Atlas.Dialogs.Controls
 
 			DwmDropShadow.DropShadowToWindow(this);
 			DataContext = ViewModel = viewModel;
-			Title = ViewModel.Title;
+			WindowTitle = Title = ViewModel.Title;
 
 			ViewModel.RefreshTagData();
 		}
