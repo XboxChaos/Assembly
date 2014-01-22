@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 using Atlas.Dialogs;
 using Atlas.Native;
 using Atlas.Pages;

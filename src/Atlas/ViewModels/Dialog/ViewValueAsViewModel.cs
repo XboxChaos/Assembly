@@ -7,7 +7,7 @@ namespace Atlas.ViewModels.Dialog
 	public class ViewValueAsViewModel : Base
 	{
 		public ViewValueAsViewModel(CachePageViewModel cachePageViewModel, uint cacheOffsetOriginal,
-			IList<TagDataField> tagDataFieldList, string title = "View Value As...")
+			IList<TagDataField> tagDataFieldList, string title = "View Value As")
 		{
 			CachePageViewModel = cachePageViewModel;
 			CacheOffset = CacheOffsetOriginal = cacheOffsetOriginal;
