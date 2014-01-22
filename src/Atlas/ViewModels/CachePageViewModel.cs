@@ -230,7 +230,7 @@ namespace Atlas.ViewModels
 		{
 			var memoryPath = String.Format(@"{0}/{1}/{2}/EngineMemory.json",
 				VariousFunctions.GetApplicationLocation(), "Storage",
-				EngineDescription.Settings.GetSetting<string>("memory"));
+				EngineDescription.Settings.GetSettingOrDefault<string>("memory", null));
 
 			try
 			{
