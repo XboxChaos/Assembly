@@ -352,6 +352,19 @@ namespace Atlas.ViewModels.CacheEditors
 
 		#endregion
 
+		public IList<TagDataField> LoadViewValueAsPlugin()
+		{
+			var path = string.Format("{0}\\Examples\\ThirdGenExample.xml",
+				VariousFunctions.GetApplicationLocation() + @"Plugins");
+			var reader = XmlReader.Create(path);
+
+			var plugin = new ThirdGenPluginVisitor(CachePageViewModel.ClassHierarchy, CachePageViewModel.StringIdTrie, CachePageViewModel.CacheFile.MetaArea, true);
+			AssemblyPluginLoader.LoadPlugin(reader, plugin);
+			reader.Close();
+
+			return plugin.Values;
+		}
+
 		private void ShowConnectionError()
 		{
 			switch (CachePageViewModel.RteProvider.ConnectionType)

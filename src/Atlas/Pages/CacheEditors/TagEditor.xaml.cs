@@ -20,7 +20,7 @@ namespace Atlas.Pages.CacheEditors
 	public partial class TagEditor : ICacheEditor
 	{
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
-		public static RoutedCommand GoToPlugin = new RoutedCommand();
+		public static RoutedCommand GoToPluginCommand = new RoutedCommand();
 
 		public TagEditorViewModel ViewModel { get; private set; }
 
@@ -165,6 +165,22 @@ namespace Atlas.Pages.CacheEditors
 			PluginTextEditor.ScrollToLine(line);
 			PluginTextEditor.Select(selectedLineDetails.Offset, selectedLineDetails.Length);
 			PluginTextEditor.Focus();
+		}
+
+		private void ViewValueAsCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			var field = GetValueField(e.Source);
+			e.CanExecute = (field != null);
+		}
+
+		private void ViewValueAsCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			var field = GetValueField(e.Source);
+			if (field == null) return;
+
+			var viewValueAsFieldList = ViewModel.LoadViewValueAsPlugin();
+			var offset = (uint)ViewModel.CachePageViewModel.CacheFile.MetaArea.PointerToOffset(field.FieldAddress);
+			MetroViewValueAs.Show(ViewModel.CachePageViewModel, offset, viewValueAsFieldList);
 		}
 
 		private static TagDataField GetWrappedField(TagDataField field)
