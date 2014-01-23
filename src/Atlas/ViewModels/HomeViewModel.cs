@@ -181,7 +181,8 @@ namespace Atlas.ViewModels
 		/// 
 		/// </summary>
 		/// <param name="type"></param>
-		public void ValidateFile(Type type)
+		/// <returns></returns>
+		public string FindFile(Type type = Type.Other)
 		{
 			var openFileDialog = new OpenFileDialog
 			{
@@ -191,16 +192,24 @@ namespace Atlas.ViewModels
 						"Blam Campaign (*.campaign)|*.campaign|" +
 						"Assembly Patch (*.asmp)|*.asmp|" +
 						"All Files (*.*)|*.*",
-				FilterIndex = (int) type
+				FilterIndex = (int)type
 			};
 
-			if (openFileDialog.ShowDialog() != DialogResult.OK)
-				return;
+			return openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : null;
+		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <param name="type"></param>
+		public void ValidateFile(string filePath, Type type)
+		{
+			// try via type
 			switch (type)
 			{
 				case Type.BlamCache:
-					OpenFile(openFileDialog.FileName, type);
+					OpenFile(filePath, type);
 					return;
 
 				case Type.MapInfo:
@@ -211,11 +220,11 @@ namespace Atlas.ViewModels
 			}
 
 			// try via file extension
-			var fileInfo = new FileInfo(openFileDialog.FileName);
+			var fileInfo = new FileInfo(filePath);
 			switch (fileInfo.Extension.Remove(0, 1))
 			{
 				case "map":
-					OpenFile(openFileDialog.FileName, Type.BlamCache);
+					OpenFile(filePath, Type.BlamCache);
 					break;
 
 				case "mapinfo":
@@ -227,8 +236,8 @@ namespace Atlas.ViewModels
 
 			// ugh, try via magic
 			string magic;
-			using (var reader = 
-				new EndianReader(new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read),
+			using (var reader =
+				new EndianReader(new FileStream(filePath, FileMode.Open, FileAccess.Read),
 					Endian.BigEndian))
 				magic = reader.ReadAscii(0x04);
 
@@ -236,7 +245,7 @@ namespace Atlas.ViewModels
 			{
 				case "head":
 				case "daeh":
-					OpenFile(openFileDialog.FileName, Type.BlamCache);
+					OpenFile(filePath, Type.BlamCache);
 					break;
 
 				case "asmp":
