@@ -245,9 +245,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 				_stream.SeekTo(0x1152);
 				_mapInformation.MaxTeamsKOTH = _stream.ReadByte();
 				_stream.SeekTo(0x1153);
-				_mapInformation.MaxTeamsRace = _stream.ReadByte();
+				_mapInformation.MaxTeamsEditor = _stream.ReadByte();
 				_stream.SeekTo(0x1154);
-				_mapInformation.MaxTeamsHeadhunter = _stream.ReadByte();
+				_mapInformation.MaxTeamsVIP = _stream.ReadByte();
 				_stream.SeekTo(0x1155);
 				_mapInformation.MaxTeamsJuggernaut = _stream.ReadByte();
 				_stream.SeekTo(0x1156);
@@ -255,8 +255,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 				_stream.SeekTo(0x1157);
 				_mapInformation.MaxTeamsAssault = _stream.ReadByte();
 				_stream.SeekTo(0x1158);
-				_mapInformation.MaxTeamsVIP = _stream.ReadByte();
-				_stream.SeekTo(0x1159);
 				_mapInformation.MaxTeamsInfection = _stream.ReadByte();
 			}
 		}
@@ -525,9 +523,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 				_stream.SeekTo(0x1152);
 				_stream.WriteByte(_mapInformation.MaxTeamsKOTH);
 				_stream.SeekTo(0x1153);
-				_stream.WriteByte(_mapInformation.MaxTeamsRace);
+				_stream.WriteByte(_mapInformation.MaxTeamsEditor);
 				_stream.SeekTo(0x1154);
-				_stream.WriteByte(_mapInformation.MaxTeamsHeadhunter);
+				_stream.WriteByte(_mapInformation.MaxTeamsVIP);
 				_stream.SeekTo(0x1155);
 				_stream.WriteByte(_mapInformation.MaxTeamsJuggernaut);
 				_stream.SeekTo(0x1156);
@@ -535,8 +533,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 				_stream.SeekTo(0x1157);
 				_stream.WriteByte(_mapInformation.MaxTeamsAssault);
 				_stream.SeekTo(0x1158);
-				_stream.WriteByte(_mapInformation.MaxTeamsVIP);
-				_stream.SeekTo(0x1159);
 				_stream.WriteByte(_mapInformation.MaxTeamsInfection);
 			}
 		}
@@ -734,12 +730,11 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public byte MaxTeamsSlayer { get; set; }
 			public byte MaxTeamsOddball { get; set; }
 			public byte MaxTeamsKOTH { get; set; }
-			public byte MaxTeamsRace { get; set; }
-			public byte MaxTeamsHeadhunter { get; set; }
+			public byte MaxTeamsEditor { get; set; }
+			public byte MaxTeamsVIP { get; set; }
 			public byte MaxTeamsJuggernaut { get; set; }
 			public byte MaxTeamsTerritories { get; set; }
 			public byte MaxTeamsAssault { get; set; }
-			public byte MaxTeamsVIP { get; set; }
 			public byte MaxTeamsInfection { get; set; }
 			public IList<EnabledObjects> ObjectTable = new List<EnabledObjects>();
 			public IList<Checkpoint> MapCheckpoints = new List<Checkpoint>();

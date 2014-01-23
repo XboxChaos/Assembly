@@ -200,12 +200,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					txtTeamsSlayer.Text = "0";
 					txtTeamsOddball.Text = "0";
 					txtTeamsKOTH.Text = "0";
-					txtTeamsRace.Text = "0";
-					txtTeamsHeadhunter.Text = "0";
+					txtTeamsEditor.Text = "0";
+					txtTeamsVIP.Text = "0";
 					txtTeamsJuggernaut.Text = "0";
 					txtTeamsTerritories.Text = "0";
 					txtTeamsAssault.Text = "0";
-					txtTeamsVIP.Text = "0";
 					txtTeamsInfection.Text = "0";
 
 					// Load Insertion Points
@@ -300,14 +299,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			CheckTextAsByte(txtTeamsKOTH);
 		}
 
-		private void txtTeamsRace_TextChanged(object sender, TextChangedEventArgs e)
+		private void txtTeamsEditor_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			CheckTextAsByte(txtTeamsRace);
+			CheckTextAsByte(txtTeamsEditor);
 		}
 
-		private void txtTeamsHeadhunter_TextChanged(object sender, TextChangedEventArgs e)
+		private void txtTeamsVIP_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			CheckTextAsByte(txtTeamsHeadhunter);
+			CheckTextAsByte(txtTeamsVIP);
 		}
 
 		private void txtTeamsJuggernaut_TextChanged(object sender, TextChangedEventArgs e)
@@ -323,11 +322,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void txtTeamsAssault_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			CheckTextAsByte(txtTeamsAssault);
-		}
-
-		private void txtTeamsVIP_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			CheckTextAsByte(txtTeamsVIP);
 		}
 
 		private void txtTeamsInfection_TextChanged(object sender, TextChangedEventArgs e)
@@ -391,12 +385,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				txtErrorCount += CheckTextBoxValidity(txtTeamsSlayer, "Slayer Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsOddball, "Oddball Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsKOTH, "KOTH Max Teams");
-				txtErrorCount += CheckTextBoxValidity(txtTeamsRace, "Race Max Teams");
-				txtErrorCount += CheckTextBoxValidity(txtTeamsHeadhunter, "Headhunter Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsEditor, "Editor Max Teams");
+				txtErrorCount += CheckTextBoxValidity(txtTeamsVIP, "VIP Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsJuggernaut, "Juggernaut Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsTerritories, "Territories Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsAssault, "Assault Max Teams");
-				txtErrorCount += CheckTextBoxValidity(txtTeamsVIP, "VIP Max Teams");
 				txtErrorCount += CheckTextBoxValidity(txtTeamsInfection, "Infection Max Teams");
 
 				if (txtErrorCount == 1)
@@ -420,12 +413,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_mapInfo.MapInformation.MaxTeamsSlayer = Byte.Parse(txtTeamsSlayer.Text);
 				_mapInfo.MapInformation.MaxTeamsOddball = Byte.Parse(txtTeamsOddball.Text);
 				_mapInfo.MapInformation.MaxTeamsKOTH = Byte.Parse(txtTeamsKOTH.Text);
-				_mapInfo.MapInformation.MaxTeamsRace = Byte.Parse(txtTeamsRace.Text);
-				_mapInfo.MapInformation.MaxTeamsHeadhunter = Byte.Parse(txtTeamsHeadhunter.Text);
+				_mapInfo.MapInformation.MaxTeamsEditor = Byte.Parse(txtTeamsEditor.Text);
+				_mapInfo.MapInformation.MaxTeamsVIP = Byte.Parse(txtTeamsVIP.Text);
 				_mapInfo.MapInformation.MaxTeamsJuggernaut = Byte.Parse(txtTeamsJuggernaut.Text);
 				_mapInfo.MapInformation.MaxTeamsTerritories = Byte.Parse(txtTeamsTerritories.Text);
 				_mapInfo.MapInformation.MaxTeamsAssault = Byte.Parse(txtTeamsAssault.Text);
-				_mapInfo.MapInformation.MaxTeamsVIP = Byte.Parse(txtTeamsVIP.Text);
 				_mapInfo.MapInformation.MaxTeamsInfection = Byte.Parse(txtTeamsInfection.Text);
 
 				// Update Internal Name
