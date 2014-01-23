@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Atlas.ViewModels;
+using System;
 
 namespace Atlas.Pages.CacheEditors
 {
@@ -19,7 +20,8 @@ namespace Atlas.Pages.CacheEditors
 			InitializeComponent();
 			EditorTitle = "Advanced Memory Editor";
 
-			MemoryDataGrid.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
+			// MemoryDataGrid.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
+			MemoryDataControl.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
 		}
 
 		public bool IsSingleInstance { get { return true; } }
@@ -33,9 +35,16 @@ namespace Atlas.Pages.CacheEditors
 
 		public bool Close()
 		{
-			throw new System.NotImplementedException();
+			// if pending pokes?
+			// throw new InvalidOperationException();
+
+			return true;
 		}
 
+		private void LoadDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			//
+		}
 
 		#region Inpc Helpers
 
