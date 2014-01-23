@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using Atlas.ViewModels;
-using System;
 
 namespace Atlas.Pages.CacheEditors
 {
@@ -11,17 +12,13 @@ namespace Atlas.Pages.CacheEditors
 	/// </summary>
 	public partial class AdvancedMemoryEditor : ICacheEditor
 	{
-		private CachePageViewModel _cachePageViewModel;
+		public CachePageViewModel ViewModel { get; private set; }
 
 		public AdvancedMemoryEditor(CachePageViewModel cachePageViewModel)
 		{
-			_cachePageViewModel = cachePageViewModel;
-
 			InitializeComponent();
+			DataContext = ViewModel = cachePageViewModel;
 			EditorTitle = "Advanced Memory Editor";
-
-			// MemoryDataGrid.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
-			MemoryDataControl.DataContext = _cachePageViewModel.SelectedEngineMemoryVersion;
 		}
 
 		public bool IsSingleInstance { get { return true; } }
@@ -35,15 +32,13 @@ namespace Atlas.Pages.CacheEditors
 
 		public bool Close()
 		{
-			// if pending pokes?
-			// throw new InvalidOperationException();
-
-			return true;
+			// lets leave this hear until the editor is finished. It'll remind us to add this feature when it's done, if it's needed
+			throw new NotImplementedException();
 		}
 
-		private void LoadDataButton_Click(object sender, System.Windows.RoutedEventArgs e)
+		private void LoadDataButton_Click(object sender, RoutedEventArgs e)
 		{
-			//
+			throw new NotImplementedException();
 		}
 
 		#region Inpc Helpers

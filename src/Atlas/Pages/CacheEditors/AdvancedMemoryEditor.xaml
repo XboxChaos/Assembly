@@ -3,12 +3,11 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:models="clr-namespace:Atlas.Models"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="600" d:DesignWidth="800">
 	<Grid>
 		<ScrollViewer>
-			<ItemsControl x:Name="MemoryDataControl" ItemsSource="{Binding Path=(models:EngineMemory+EngineVersion.MemoryValues)}">
+			<ItemsControl x:Name="MemoryDataControl" ItemsSource="{Binding Path=SelectedEngineMemoryVersion.MemoryValues}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<Grid Margin="5,5,5,0">
@@ -23,10 +22,10 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock Text="{Binding Path=Name, FallbackValue=Name}" Margin="0,0,5,0" TextWrapping="Wrap" />
-							<Button x:Name="LoadDataButton" Grid.RowSpan="2" Grid.Column="1" Content="Load Into Poker" Click="LoadDataButton_Click" Margin="0,0,8,0" IsEnabled="False" />
-							<TextBlock Grid.Row="1" Text="{Binding Path=Description, FallbackValue=Description}" Margin="8,0,5,0" TextWrapping="Wrap" />
-							
-							<Rectangle Grid.Row="2" Grid.ColumnSpan="2" Margin="15,2,15,0" Height="1" Fill="#FF6D7385" />
+							<Button x:Name="LoadDataButton" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Content="Load Into Poker" Click="LoadDataButton_Click" Margin="0,0,8,0" IsEnabled="False" />
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Description, FallbackValue=Description}" Margin="8,0,5,0" TextWrapping="Wrap" />
+
+							<Rectangle Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="15,2,15,0" Height="1" Fill="#FF6D7385" />
 						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
