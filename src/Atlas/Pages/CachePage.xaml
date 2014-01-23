@@ -8,9 +8,6 @@
 			xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 			xmlns:models="clr-namespace:Atlas.Models"
 			xmlns:converters="clr-namespace:Atlas.Converters"
-			xmlns:viewModels="clr-namespace:Atlas.ViewModels"
-			xmlns:cacheEditors="clr-namespace:Atlas.Pages.CacheEditors"
-			xmlns:helpers="clr-namespace:Atlas.Helpers"
 			xmlns:selectors="clr-namespace:Atlas.Selectors"
 			mc:Ignorable="d" 
 			 d:DesignHeight="800" d:DesignWidth="1200">
@@ -64,7 +61,7 @@
 
 					<Separator />
 
-					<ComboBox SelectedIndex="0" SelectedItem="{Binding Path=(viewModels:CachePageViewModel.SelectedEngineMemoryVersion)}" ItemsSource="{Binding Path=(viewModels:CachePageViewModel.EngineMemory).EngineVersions}" Style="{StaticResource {x:Type ComboBox}}" MinWidth="60">
+					<ComboBox SelectedIndex="0" SelectedItem="{Binding Path=SelectedEngineMemoryVersion}" ItemsSource="{Binding Path=EngineMemory.EngineVersions}" Style="{StaticResource {x:Type ComboBox}}" MinWidth="60">
 						<ComboBox.ItemTemplate>
 							<DataTemplate>
 								<TextBlock Text="{Binding VersionFriendly}" />
@@ -133,7 +130,7 @@
 
 				<!-- Engine Memory Quick Options (Only if the engine version supports this shit -->
 				<custom:MetroToolBar ToolBarTray.IsLocked="False" Band="0" BandIndex="3" ToolBar.OverflowMode="Never" 
-									Visibility="{Binding Path=(viewModels:CachePageViewModel.BuildHasEngineMemory), Converter={StaticResource InverseBoolConverter}}">
+									Visibility="{Binding Path=CachePageViewModel.BuildHasEngineMemory, Converter={StaticResource InverseBoolConverter}}">
 					<custom:MetroToolBar.Resources>
 						<selectors:XbdmQuickOptionsButtonTypeSelector x:Key="DataTemplateSelectorXbdmQuickOptionsButtonType" />
 
@@ -141,13 +138,13 @@
 							<ToggleButton Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" Width="25" 
 										Click="QuickOptionButton_OnClick">
 								<ToggleButton.Content>
-									<ContentControl Template="{Binding Path= (models:EngineMemory+EngineVersion+QuickOption.IconResourceKey),Converter={StaticResource IValueConverterStringToResource}}" />
+									<ContentControl Template="{Binding Path= IconResourceKey,Converter={StaticResource IValueConverterStringToResource}}" />
 								</ToggleButton.Content>
 								<ToggleButton.ToolTip>
 									<TextBlock>
-										<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
+										<Run Text="{Binding Path=Name}" />
 										<Run Text=" - " />
-										<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Description)}" />
+										<Run Text="{Binding Path=Description}" />
 									</TextBlock>
 								</ToggleButton.ToolTip>
 							</ToggleButton>
@@ -156,19 +153,19 @@
 							<Button Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="25" 
 									Click="QuickOptionButton_OnClick">
 								<Button.Content>
-									<ContentControl Template="{Binding Path= (models:EngineMemory+EngineVersion+QuickOption.IconResourceKey),Converter={StaticResource IValueConverterStringToResource}}" />
+									<ContentControl Template="{Binding Path= IconResourceKey,Converter={StaticResource IValueConverterStringToResource}}" />
 								</Button.Content>
 								<Button.ToolTip>
 									<TextBlock>
-										<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Name)}" />
+										<Run Text="{Binding Path=Name}" />
 										<Run Text=" - " />
-										<Run Text="{Binding Path=(models:EngineMemory+EngineVersion+QuickOption.Description)}" />
+										<Run Text="{Binding Path=Description}" />
 									</TextBlock>
 								</Button.ToolTip>
 							</Button>
 						</DataTemplate>
 					</custom:MetroToolBar.Resources>
-					<ItemsControl ItemsSource="{Binding Path=(viewModels:CachePageViewModel.SelectedEngineMemoryVersion).QuickOptions}"
+					<ItemsControl ItemsSource="{Binding Path=SelectedEngineMemoryVersion.QuickOptions}"
 								ItemTemplateSelector="{StaticResource DataTemplateSelectorXbdmQuickOptionsButtonType}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -241,11 +238,11 @@
 
 			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<custom:MetroClosableTabControl x:Name="EditorTabControl" Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
-												Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=(viewModels:CachePageViewModel.SelectedEditor), Mode=TwoWay}"
-												ItemsSource="{Binding Path=(viewModels:CachePageViewModel.Editors)}">
+												Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=SelectedEditor, Mode=TwoWay}"
+												ItemsSource="{Binding Path=Editors}">
 					<custom:MetroClosableTabControl.ItemContainerStyle>
 						<Style BasedOn="{StaticResource {x:Type custom:MetroClosableTabItem}}" TargetType="{x:Type custom:MetroClosableTabItem}">
-							<Setter Property="Header" Value="{Binding (cacheEditors:ICacheEditor.EditorTitle)}"/>
+							<Setter Property="Header" Value="{Binding EditorTitle}"/>
 							<Setter Property="Content" Value="{Binding}"/>
 						</Style>
 					</custom:MetroClosableTabControl.ItemContainerStyle>
@@ -264,7 +261,7 @@
 				<Grid Grid.Row="0" Background="#2d2d30">
 					<TabControl x:Name="EditorsTabControl" TabStripPlacement="Bottom">
 						<TabItem Header="Tag Explorer" Style="{DynamicResource MetroTabControlBottom}">
-							<custom:MetroContainer x:Name="TagExplorerMetroContainer" Title="{Binding FallbackValue='Tag Explorer (internal)', StringFormat='Tag Explorer ({0})'}">
+							<custom:MetroContainer x:Name="TagExplorerMetroContainer" Title="{Binding Path=CacheFile.InternalName, FallbackValue='Tag Explorer (internal)', StringFormat='Tag Explorer ({0})'}">
 								<Grid>
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -295,10 +292,10 @@
 										</Button>
 										<Separator />
 									</custom:MetroToolBar>
-									<custom:MetroWatermarkTextbox x:Name="TagExplorerSearchTextbox" Grid.Row="1" Watermark="{Binding FallbackValue='Search Tag Explorer - internal (Ctrl+;)', StringFormat='Search Tag Explorer - {0} (Ctrl+;)'}" />
-									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding (dataBind:TagHierarchy.Nodes)}" 
+									<custom:MetroWatermarkTextbox x:Name="TagExplorerSearchTextbox" Grid.Row="1" Watermark="{Binding Path=CacheFile.InternalName, FallbackValue='Search Tag Explorer - internal (Ctrl+;)', StringFormat='Search Tag Explorer - {0} (Ctrl+;)'}" />
+									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding Nodes}" 
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
-											  VirtualizingStackPanel.IsVirtualizing="False" VirtualizingStackPanel.VirtualizationMode="Standard">
+											  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
 										<TreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Babies}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" 
@@ -369,7 +366,7 @@
 									
 									<StackPanel Margin="20" Grid.Row="1">
 										<TextBlock Text="Xbox Development Kit IP Address:" />
-										<TextBox x:Name="XdkIpAddressTextBox" Margin="0,2,0,0" Text="{Binding Path=(helpers:Settings.XdkIpAddress), UpdateSourceTrigger=PropertyChanged, FallbackValue='192.168.1.86'}" />
+										<TextBox x:Name="XdkIpAddressTextBox" Margin="0,2,0,0" Text="{Binding Path=XdkIpAddress, UpdateSourceTrigger=PropertyChanged, FallbackValue='192.168.1.86'}" />
 									</StackPanel>
 								</Grid>
 							</custom:MetroContainer>
@@ -379,7 +376,7 @@
 				<GridSplitter Grid.Row="1" Background="#3f3f46" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
 				<Grid Grid.Row="2">
 					<custom:MetroContainer Title="Cache Information">
-						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" ShowSortOptions="False" AutoGenerateProperties="True">
+						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" SelectedObject="{Binding Path=CacheHeaderInformation}" ShowSortOptions="False" AutoGenerateProperties="True">
 							<!-- TODO: Get custom editors working (replace shitty textbox) - 
 									http://wpftoolkit.codeplex.com/wikipage?title=PropertyGrid -->
 						</xctk:PropertyGrid>
