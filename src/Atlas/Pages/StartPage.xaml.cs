@@ -14,6 +14,8 @@ namespace Atlas.Pages
 			InitializeComponent();
 
 			DataContext = ViewModel = new StartViewModel();
+
+			RecentsControl.DataContext = App.Storage.Settings;
 		}
 
 		public bool Close()

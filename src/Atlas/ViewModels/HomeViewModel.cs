@@ -1,9 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using Atlas.Dialogs;
 using Atlas.Models;
 using Atlas.Pages;
+using Blamite.IO;
 
 namespace Atlas.ViewModels
 {
@@ -173,24 +177,102 @@ namespace Atlas.ViewModels
 			Other
 		}
 
-		public void OpenFile(Type type)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="type"></param>
+		public void ValidateFile(Type type)
 		{
 			var openFileDialog = new OpenFileDialog
 			{
 				Filter = "Blam Cache Files (*.map)|*.map|" +
-				         "Blam Map Info (*.mapinfo)|*.mapinfo|" +
-				         "Blam Map Image (*.blf)|*.blf|" +
-				         "Blam Campaign (*.campaign)|*.campaign|" +
-				         "Assembly Patch (*.asmp)|*.asmp|" +
-				         "All Files (*.*)|*.*",
+						"Blam Map Info (*.mapinfo)|*.mapinfo|" +
+						"Blam Map Image (*.blf)|*.blf|" +
+						"Blam Campaign (*.campaign)|*.campaign|" +
+						"Assembly Patch (*.asmp)|*.asmp|" +
+						"All Files (*.*)|*.*",
 				FilterIndex = (int) type
 			};
 
 			if (openFileDialog.ShowDialog() != DialogResult.OK)
 				return;
 
-			// TODO: process type, and open in the correct editor
-			AssemblyPage = new CachePage(openFileDialog.FileName);
+			switch (type)
+			{
+				case Type.BlamCache:
+					OpenFile(openFileDialog.FileName, type);
+					return;
+
+				case Type.MapInfo:
+				case Type.MapImage:
+				case Type.Campaign:
+				case Type.Patch:
+					throw new NotImplementedException();
+			}
+
+			// try via file extension
+			var fileInfo = new FileInfo(openFileDialog.FileName);
+			switch (fileInfo.Extension.Remove(0, 1))
+			{
+				case "map":
+					OpenFile(openFileDialog.FileName, Type.BlamCache);
+					break;
+
+				case "mapinfo":
+				case "blf":
+				case "campaign":
+				case "asmp":
+					throw new NotImplementedException();
+			}
+
+			// ugh, try via magic
+			string magic;
+			using (var reader = 
+				new EndianReader(new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read),
+					Endian.BigEndian))
+				magic = reader.ReadAscii(0x04);
+
+			switch (magic.Trim())
+			{
+				case "head":
+				case "daeh":
+					OpenFile(openFileDialog.FileName, Type.BlamCache);
+					break;
+
+				case "asmp":
+				case "blf":
+					throw new NotImplementedException();
+			}
+
+			// just fuck this
+			MetroMessageBox.Show("This type of file is not supported by Assembly.");
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <param name="type"></param>
+		public void OpenFile(string filePath, Type type)
+		{
+			switch (type)
+			{
+				case Type.BlamCache:
+					AssemblyPage = new CachePage(filePath);
+					break;
+
+				case Type.MapInfo:
+				case Type.MapImage:
+				case Type.Campaign:
+				case Type.Patch:
+				default:
+					throw new NotImplementedException();
+			}
+
+			var existing = App.Storage.Settings.RecentFiles.FirstOrDefault(r => r.Type == type && r.FilePath == filePath);
+			if (existing != null)
+				App.Storage.Settings.RecentFiles.Remove(existing);
+			App.Storage.Settings.RecentFiles.Add(new RecentFile(filePath, type));
 		}
 
 		#endregion
