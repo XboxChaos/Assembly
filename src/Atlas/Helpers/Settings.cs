@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Atlas.Models;
 using Blamite.Flexibility;
@@ -7,11 +10,18 @@ using Newtonsoft.Json;
 
 namespace Atlas.Helpers
 {
-	public class Settings : Base
+	public class Settings : INotifyPropertyChanged
 	{
+		public Settings()
+		{
+			RecentFiles.CollectionChanged +=
+				(sender, args) => SetFieldExplicit(ref _recentFiles, sender as ObservableCollection<RecentFile>, "RecentFiles", true);
+		}
+
 		// Misc
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
-		
+		private ObservableCollection<RecentFile> _recentFiles = new ObservableCollection<RecentFile>(); 
+
 		// Cache Editor
 		private TagSort _cacheEditorTagSortMethod = TagSort.PathHierarchy;
 		private bool _tagEditorShowBlockInformation = true;
@@ -26,6 +36,7 @@ namespace Atlas.Helpers
 		[JsonIgnore]
 		public bool Loaded { get; set; }
 
+
 		#region Misc
 
 		/// <summary>
@@ -36,6 +47,15 @@ namespace Atlas.Helpers
 		{
 			get { return _defaultDatabase; }
 			set { SetField(ref _defaultDatabase, value); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public ObservableCollection<RecentFile> RecentFiles
+		{
+			get { return _recentFiles; }
+			set { SetField(ref _recentFiles, value); }
 		}
 
 		#endregion
@@ -90,6 +110,7 @@ namespace Atlas.Helpers
 
 		#endregion
 
+
 		#region Enums
 
 		public enum TagSort
@@ -100,13 +121,41 @@ namespace Atlas.Helpers
 
 		#endregion
 
-		public override bool SetField<T>(ref T field, T value, 
-			[CallerMemberName] string propertyName = "")
+		#region Inpc
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void OnPropertyChanged(string propertyName)
 		{
-			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		public bool SetField<T>(ref T field, T value,
+			[CallerMemberName] string propertyName = "", bool overrideChecks = false)
+		{
+			return SetFieldExplicit(ref field, value, propertyName, overrideChecks);
+		}
+
+		public bool SetFieldExplicit<T>(ref T field, T value, 
+			string propertyName, bool overrideChecks)
+		{
+			if (!overrideChecks)
+				if (EqualityComparer<T>.Default.Equals(field, value))
+					return false;
+
 			field = value;
 			OnPropertyChanged(propertyName);
+
+			if (!Loaded)
+				return true;
+
+			// Write Changes
+			var jsonData = JsonConvert.SerializeObject(this);
+			File.WriteAllText(Storage.SettingsPath, jsonData);
+
 			return true;
 		}
+
+		#endregion
 	}
 }

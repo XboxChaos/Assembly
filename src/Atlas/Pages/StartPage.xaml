@@ -46,7 +46,14 @@
 				<StackPanel Grid.Row="1" Margin="25,0,15,0">
 					<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Recent" Foreground="White" FontSize="16" VerticalAlignment="Top" />
 					<ScrollViewer VerticalScrollBarVisibility="Auto">
-						<StackPanel x:Name="RecentsPanel" Margin="-5,15,0,10" />
+						<ItemsControl x:Name="RecentsControl" ItemsSource="{Binding RecentFiles}" Margin="0,20,0,0">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Button Style="{StaticResource TabActiveButtons}" ToolTip="{Binding Path=FilePath}" Content="{Binding Path=FriendlyName}">
+									</Button>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
 					</ScrollViewer>
 
 					<Rectangle Fill="#FF363639" Height="1" Margin="0,20,0,15" VerticalAlignment="Top" d:LayoutOverrides="Height" />

@@ -8,7 +8,7 @@ namespace Atlas.Helpers
 {
 	public class Storage : Base
 	{
-		private const string SettingsPath = @"\Storage\Settings.json"; 
+		public const string SettingsPath = @"Storage\Settings.json"; 
 
 		public Storage()
 		{
