@@ -25,16 +25,13 @@ namespace Atlas.Pages
 
 		public CachePage(string cacheLocation)
 		{
-			ViewModel = new CachePageViewModel(this);
-			ViewModel.LoadCache(cacheLocation);
-			DataContext = ViewModel;
-
 			InitializeComponent();
 
+			ViewModel = new CachePageViewModel(this);
+			DataContext = ViewModel;
+			ViewModel.LoadCache(cacheLocation);
+
 			// Set Datacontext's
-			TagExplorerMetroContainer.DataContext = TagExplorerSearchTextbox.DataContext = ViewModel.CacheFile.InternalName;
-			TagTreeView.DataContext = ViewModel.ActiveHierarchy;
-			CacheInformationPropertyGrid.SelectedObject = ViewModel.CacheHeaderInformation;
 			XdkIpAddressTextBox.DataContext = App.Storage.Settings;
 
 			// woo

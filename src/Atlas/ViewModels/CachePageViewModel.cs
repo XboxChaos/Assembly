@@ -3,6 +3,9 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows;
+using Atlas.Dialogs;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
@@ -145,40 +148,56 @@ namespace Atlas.ViewModels
 
 		public void LoadCache(string cacheLocation)
 		{
-			CacheLocation = cacheLocation;
+			//App.Storage.HomeWindowViewModel.AssemblyPage = null;
+			var dialog = MetroBusyAlertBox.Show();
 
-			using (var fileStream = File.OpenRead(CacheLocation))
+			var thread = new Thread(() =>
 			{
-				var fileInfo = new FileInfo(CacheLocation);
-				var reader = new EndianReader(fileStream, Endian.BigEndian);
-				CacheFile = CacheFileLoader.LoadCacheFile(reader, App.Storage.Settings.DefaultDatabase,
-					out _engineDescription);
+				CacheLocation = cacheLocation;
 
-				MapStreamManager = new FileStreamManager(CacheLocation, reader.Endianness);
-
-				StringIdTrie = new Trie();
-				if (CacheFile.StringIDs != null)
-					StringIdTrie.AddRange(CacheFile.StringIDs);
-
-				// Set up RTE
-				switch (CacheFile.Engine)
+				using (var fileStream = File.OpenRead(CacheLocation))
 				{
-					case EngineType.SecondGeneration:
-						RteProvider = new H2VistaRteProvider("halo2.exe");
-						break;
+					var fileInfo = new FileInfo(CacheLocation);
+					var reader = new EndianReader(fileStream, Endian.BigEndian);
+					CacheFile = CacheFileLoader.LoadCacheFile(reader, App.Storage.Settings.DefaultDatabase,
+						out _engineDescription);
 
-					case EngineType.ThirdGeneration:
-						RteProvider = new XbdmRteProvider(XboxDebugManager);
-						break;
+					MapStreamManager = new FileStreamManager(CacheLocation, reader.Endianness);
+
+					StringIdTrie = new Trie();
+					if (CacheFile.StringIDs != null)
+						StringIdTrie.AddRange(CacheFile.StringIDs);
+
+					// Set up RTE
+					switch (CacheFile.Engine)
+					{
+						case EngineType.SecondGeneration:
+							RteProvider = new H2VistaRteProvider("halo2.exe");
+							break;
+
+						case EngineType.ThirdGeneration:
+							RteProvider = new XbdmRteProvider(XboxDebugManager);
+							break;
+					}
+
+					LoadHeader();
+					LoadTags();
+					LoadEngineMemory();
+
+					Application.Current.Dispatcher.Invoke(delegate
+					{
+						App.Storage.HomeWindowViewModel.UpdateStatus(
+						   String.Format("{0} ({1})", CacheFile.InternalName, fileInfo.Name));
+
+						dialog.ViewModel.CanClose = true;
+						dialog.Close();
+						App.Storage.HomeWindowViewModel.HideDialog();
+						//App.Storage.HomeWindowViewModel.AssemblyPage = CachePage;
+					});
+
 				}
-
-				LoadHeader();
-				LoadTags();
-				LoadEngineMemory();
-
-				App.Storage.HomeWindowViewModel.UpdateStatus(
-					String.Format("{0} ({1})", CacheFile.InternalName, fileInfo.Name));
-			}
+			});
+			thread.Start();
 		}
 
 		private void LoadHeader()
@@ -209,21 +228,25 @@ namespace Atlas.ViewModels
 
 			ClassHierarchy = new ClassTagHierarchy(_cacheFile);
 			PopulateHierarchy(_classHierarchy);
-
-			switch (App.Storage.Settings.CacheEditorTagSortMethod)
+			Application.Current.Dispatcher.Invoke(delegate
 			{
-				case Settings.TagSort.TagClass:
-					ActiveHierarchy = ClassHierarchy;
-					break;
+				switch (App.Storage.Settings.CacheEditorTagSortMethod)
+				{
+					case Settings.TagSort.TagClass:
+						ActiveHierarchy = ClassHierarchy;
+						break;
 
-				case Settings.TagSort.PathHierarchy:
-					ActiveHierarchy = new PathTagHierarchy(CacheFile);
-					PopulateHierarchy(ActiveHierarchy);
-					break;
+					case Settings.TagSort.PathHierarchy:
+						ActiveHierarchy = new PathTagHierarchy(CacheFile);
+						PopulateHierarchy(ActiveHierarchy);
+						break;
 
-				default:
-					throw new NotImplementedException();
-			}
+					default:
+						throw new NotImplementedException();
+				}
+
+				CachePage.TagTreeView.DataContext = ActiveHierarchy;
+			});
 		}
 
 		private void LoadEngineMemory()

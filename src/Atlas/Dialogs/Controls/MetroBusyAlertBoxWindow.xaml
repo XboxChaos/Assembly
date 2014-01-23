@@ -1,0 +1,32 @@
+﻿<custom:MetroDialogWindow x:Class="Atlas.Dialogs.Controls.MetroBusyAlertBoxWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Name="DialogWindow"
+		xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:native="clr-namespace:Atlas.Native"
+		xmlns:dialog="clr-namespace:Atlas.ViewModels.Dialog"
+		mc:Ignorable="d" native:WindowMovement.IsDraggable="True"
+		MaxWidth="455" MinWidth="455"
+		Style="{StaticResource MetroDialogWindowStyle}">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="Auto" MinHeight="80" />
+			<RowDefinition Height="45" />
+		</Grid.RowDefinitions>
+
+		<ScrollViewer Grid.Row="1" Margin="15,20" VerticalScrollBarVisibility="Auto">
+			<StackPanel>
+				<TextBlock Text="{Binding Path=Message, Mode=OneWay, FallbackValue='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor auctor arcu sit amet adipiscing. Vestibulum nec aliquet massa, at pellentesque leo. Curabitur non fermentum diam, ut faucibus nulla. Nulla placerat orci elit, eu bibendum justo dignissim id. Quisque vel. '}" 
+						   TextWrapping="Wrap" />
+				<ProgressBar IsIndeterminate="True" Height="18" Margin="0,10,0,0" />
+			</StackPanel>
+		</ScrollViewer>
+
+		<Grid x:Name="ButtonOptions" Grid.Row="2" Background="#FF424244">
+			
+		</Grid>
+	</Grid>
+</custom:MetroDialogWindow>

@@ -46,7 +46,7 @@ namespace Atlas.ViewModels.CacheEditors
 		{
 			get
 			{
-				return HighlightLoader.LoadEmbeddedDefinition("XMLBlue.xshd");
+				return HighlightLoader.LoadEmbeddedDefinition("XmlBlue.xshd");
 			}
 		}
 
