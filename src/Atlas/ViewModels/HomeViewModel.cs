@@ -272,7 +272,7 @@ namespace Atlas.ViewModels
 			var existing = App.Storage.Settings.RecentFiles.FirstOrDefault(r => r.Type == type && r.FilePath == filePath);
 			if (existing != null)
 				App.Storage.Settings.RecentFiles.Remove(existing);
-			App.Storage.Settings.RecentFiles.Add(new RecentFile(filePath, type));
+			App.Storage.Settings.RecentFiles.Insert(0, new RecentFile(filePath, type));
 		}
 
 		#endregion
