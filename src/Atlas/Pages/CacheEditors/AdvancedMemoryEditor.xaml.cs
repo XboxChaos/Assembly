@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using System.Windows;
+using Atlas.Models;
 using Atlas.ViewModels;
 
 namespace Atlas.Pages.CacheEditors
@@ -38,7 +40,113 @@ namespace Atlas.Pages.CacheEditors
 
 		private void LoadDataButton_Click(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+			var button = sender as Button;
+			if (button == null) return;
+
+			var value = button.DataContext as EngineMemory.EngineVersion.MemoryValue;
+
+			MemoryOffsetTextbox.Text = "0x" + value.Address.ToString("X8");
+			MemoryDataTextBox.Text = value.Data;
+
+			switch (value.Type)
+			{
+				case "sbyte":
+				case "int8":
+					MemoryTypeComboBox.SelectedIndex = 0;
+					break;
+				case "byte":
+				case "uint8":
+					MemoryTypeComboBox.SelectedIndex = 1;
+					break;
+				case "short":
+				case "int16":
+					MemoryTypeComboBox.SelectedIndex = 2;
+					break;
+				case "ushort":
+				case "uint16":
+					MemoryTypeComboBox.SelectedIndex = 3;
+					break;
+				case "int":
+				case "int32":
+					MemoryTypeComboBox.SelectedIndex = 4;
+					break;
+				case "uint":
+				case "uint32":
+					MemoryTypeComboBox.SelectedIndex = 5;
+					break;
+				case "long":
+				case "int64":
+					MemoryTypeComboBox.SelectedIndex = 6;
+					break;
+				case "ulong":
+				case "uint64":
+					MemoryTypeComboBox.SelectedIndex = 7;
+					break;
+				case "float":
+					MemoryTypeComboBox.SelectedIndex = 8;
+					break;
+				case "double":
+					MemoryTypeComboBox.SelectedIndex = 9;
+					break;
+				case "ascii":
+				case "string":
+					MemoryTypeComboBox.SelectedIndex = 10;
+					break;
+				case "utf":
+				case "unicode":
+					MemoryTypeComboBox.SelectedIndex = 11;
+					break;
+				case "bytes":
+					MemoryTypeComboBox.SelectedIndex = 12;
+					break;
+			}
+		}
+
+		private void MemoryTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			switch (MemoryTypeComboBox.SelectedIndex)
+			{
+				case 0:
+				case 1:
+					MemoryByteCountTextBox.Text = "1";
+					MemoryByteCountTextBox.IsReadOnly = true;
+					break;
+				case 2:
+				case 3:
+					MemoryByteCountTextBox.Text = "2";
+					MemoryByteCountTextBox.IsReadOnly = true;
+					break;
+				case 4:
+				case 5:
+				case 8:
+					MemoryByteCountTextBox.Text = "4";
+					MemoryByteCountTextBox.IsReadOnly = true;
+					break;
+				case 6:
+				case 7:
+				case 9:
+					MemoryByteCountTextBox.Text = "8";
+					MemoryByteCountTextBox.IsReadOnly = true;
+					break;
+				case 10:
+				case 11:
+				case 12:
+					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
+					MemoryByteCountTextBox.IsReadOnly = false;
+					break;
+			}
+		}
+
+		private void MemoryDataTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			switch (MemoryTypeComboBox.SelectedIndex)
+			{
+				case 10:
+				case 11:
+				case 12:
+					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
+					break;
+			}
 		}
 
 		#region Inpc Helpers
