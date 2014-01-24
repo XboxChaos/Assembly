@@ -99,6 +99,9 @@ namespace Atlas.Pages.CacheEditors
 				case "bytes":
 					MemoryTypeComboBox.SelectedIndex = 12;
 					break;
+					
+				default:
+					throw new InvalidDataException();
 			}
 		}
 
