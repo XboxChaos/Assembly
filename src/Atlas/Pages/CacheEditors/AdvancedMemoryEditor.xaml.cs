@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows;
@@ -133,6 +134,9 @@ namespace Atlas.Pages.CacheEditors
 					break;
 				case 10:
 				case 11:
+					MemoryByteCountTextBox.Text = MemoryDataTextBox.Text.Length.ToString();
+					MemoryByteCountTextBox.IsReadOnly = false;
+					break;
 				case 12:
 					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
 					MemoryByteCountTextBox.IsReadOnly = false;
@@ -146,8 +150,12 @@ namespace Atlas.Pages.CacheEditors
 			{
 				case 10:
 				case 11:
+					MemoryByteCountTextBox.Text = MemoryDataTextBox.Text.Length.ToString();
+					MemoryByteCountTextBox.IsReadOnly = false;
+					break;
 				case 12:
 					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
+					MemoryByteCountTextBox.IsReadOnly = false;
 					break;
 			}
 		}
