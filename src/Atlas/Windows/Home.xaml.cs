@@ -45,7 +45,7 @@ namespace Atlas.Windows
 
 		private void OpenCacheMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
-			ViewModel.FindFile(HomeViewModel.Type.BlamCache);
+			ViewModel.ValidateFile(ViewModel.FindFile(HomeViewModel.Type.BlamCache));
 		}
 
 		#region Debug Menu

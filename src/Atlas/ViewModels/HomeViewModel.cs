@@ -203,7 +203,7 @@ namespace Atlas.ViewModels
 		/// </summary>
 		/// <param name="filePath"></param>
 		/// <param name="type"></param>
-		public void ValidateFile(string filePath, Type type)
+		public void ValidateFile(string filePath, Type type = Type.Other)
 		{
 			// try via type
 			switch (type)
@@ -225,7 +225,7 @@ namespace Atlas.ViewModels
 			{
 				case "map":
 					OpenFile(filePath, Type.BlamCache);
-					break;
+					return;
 
 				case "mapinfo":
 				case "blf":
@@ -246,7 +246,7 @@ namespace Atlas.ViewModels
 				case "head":
 				case "daeh":
 					OpenFile(filePath, Type.BlamCache);
-					break;
+					return;
 
 				case "asmp":
 				case "blf":
