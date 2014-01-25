@@ -46,7 +46,7 @@
 						<ColumnDefinition Width="80"/>
 					</Grid.ColumnDefinitions>
 					<TextBlock Text="Offset:" VerticalAlignment="Center" Margin="5,0,0,0" />
-					<TextBox x:Name="MemoryOffsetTextbox" Grid.Column="1" Margin="2,1" Text="0x0" />
+					<TextBox x:Name="MemoryOffsetTextBox" Grid.Column="1" Margin="2,1" Text="0x0" TextChanged="MemoryOffsetTextbox_TextChanged" />
 					<ComboBox x:Name="MemoryTypeComboBox" Grid.Column="2" Margin="2,1" SelectionChanged="MemoryTypeComboBox_SelectionChanged" >
 						<ComboBoxItem Content="Int8" />
 						<ComboBoxItem Content="UInt8" />
@@ -63,7 +63,7 @@
 						<ComboBoxItem Content="Bytes" />
 					</ComboBox>
 					<TextBlock Grid.Column="3" Text="Byte/Character Count:" VerticalAlignment="Center" Margin="5,0,0,0" />
-					<TextBox x:Name="MemoryByteCountTextBox" Grid.Column="4" Margin="2,1" IsReadOnly="False" />
+					<TextBox x:Name="MemoryByteCountTextBox" Grid.Column="4" Margin="2,1" IsReadOnly="True" TextChanged="MemoryByteCountTextBox_TextChanged" />
 				</Grid>
 				<Grid Margin="4,0">
 					<Grid.ColumnDefinitions>
@@ -74,8 +74,8 @@
 					</Grid.ColumnDefinitions>
 					<TextBlock Text="Data:" VerticalAlignment="Center" Margin="5,0,0,0" />
 					<TextBox x:Name="MemoryDataTextBox" Grid.Column="1" Margin="2,1" TextChanged="MemoryDataTextBox_TextChanged" />
-					<Button x:Name="MemoryPeekButton" Grid.Column="2" Content="Peek" Margin="2,1" IsEnabled="False" />
-					<Button x:Name="MemoryPokeButton" Grid.Column="3" Content="Poke" Margin="2,1" IsEnabled="False" />
+					<Button x:Name="MemoryPeekButton" Grid.Column="2" Content="Peek" Margin="2,1" IsEnabled="False" Click="MemoryPeekButton_Click" />
+					<Button x:Name="MemoryPokeButton" Grid.Column="3" Content="Poke" Margin="2,1" IsEnabled="False" Click="MemoryPokeButton_Click" />
 				</Grid>
 			</StackPanel>
 		</Border>

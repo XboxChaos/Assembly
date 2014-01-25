@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Atlas.Models;
 using Atlas.ViewModels;
 
@@ -46,7 +48,7 @@ namespace Atlas.Pages.CacheEditors
 
 			var value = button.DataContext as EngineMemory.EngineVersion.MemoryValue;
 
-			MemoryOffsetTextbox.Text = "0x" + value.Address.ToString("X8");
+			MemoryOffsetTextBox.Text = "0x" + value.Address.ToString("X8");
 			MemoryDataTextBox.Text = value.Data;
 
 			switch (value.Type)
@@ -92,18 +94,32 @@ namespace Atlas.Pages.CacheEditors
 				case "ascii":
 				case "string":
 					MemoryTypeComboBox.SelectedIndex = 10;
+					MemoryByteCountTextBox.Text = value.Data.Length.ToString();
 					break;
 				case "utf":
 				case "unicode":
 					MemoryTypeComboBox.SelectedIndex = 11;
+					MemoryByteCountTextBox.Text = value.Data.Length.ToString();
 					break;
 				case "bytes":
 					MemoryTypeComboBox.SelectedIndex = 12;
+					MemoryByteCountTextBox.Text = (value.Data.Length / 2).ToString();
 					break;
 					
 				default:
 					throw new InvalidDataException();
 			}
+
+			ValidateOffset();
+			ValidateByteCount();
+			CheckDataForType();
+		}
+
+		private void MemoryOffsetTextbox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ValidateOffset();
+			CanWePeek();
+			CanWePoke();
 		}
 
 		private void MemoryTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -134,30 +150,234 @@ namespace Atlas.Pages.CacheEditors
 					break;
 				case 10:
 				case 11:
-					MemoryByteCountTextBox.Text = MemoryDataTextBox.Text.Length.ToString();
-					MemoryByteCountTextBox.IsReadOnly = false;
-					break;
 				case 12:
-					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
 					MemoryByteCountTextBox.IsReadOnly = false;
 					break;
 			}
+
+			CheckDataForType();
+			CanWePeek();
+			CanWePoke();
+		}
+
+		private void MemoryByteCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ValidateByteCount();
+			CheckDataForType();
+			CanWePeek();
+			CanWePoke();
 		}
 
 		private void MemoryDataTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
+			ValidateByteCount();
+			CheckDataForType();
+			CanWePoke();
+		}
+
+		private void ValidateOffset()
+		{
+			UInt32 tmpU32;
+			bool successfulParse;
+
+			var offset = MemoryOffsetTextBox.Text;
+			if (offset.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+			{
+				offset = offset.Substring(2);
+				successfulParse = UInt32.TryParse(offset, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out tmpU32);
+			}
+			else
+				successfulParse = UInt32.TryParse(offset, out tmpU32);
+
+			if (successfulParse == true)
+				MemoryOffsetTextBox.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
+			else
+				MemoryOffsetTextBox.BorderBrush = (Brush)FindResource("AssemblyAccentBrush");
+		}
+
+		private void ValidateByteCount()
+		{
+			// Should we keep a limit for the byte/character count?
+			UInt16 tmpU16;
+			if (UInt16.TryParse(MemoryByteCountTextBox.Text, out tmpU16))
+				MemoryByteCountTextBox.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
+			else
+				MemoryByteCountTextBox.BorderBrush = (Brush)FindResource("AssemblyAccentBrush");
+		}
+
+		private void CheckDataForType()
+		{
+			int byteCount = -1;
+			if (!Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryByteCountTextBox.Text.Length != 0)
+				byteCount = UInt16.Parse(MemoryByteCountTextBox.Text);
+			if (Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
+				byteCount = 0;
+
+			Brush validBorderBrush = new BrushConverter().ConvertFromString("#FF595959") as Brush;
+			Brush invalidBorderBrush = FindResource("AssemblyAccentBrush") as Brush;
+
+			Byte tmpByte;
+			SByte tmpSByte;
+			Int16 tmp16;
+			UInt16 tmpU16;
+			Int32 tmp32;
+			UInt32 tmpU32;
+			Int64 tmp64;
+			UInt64 tmpU64;
+			Single tmpFloat;
+			Double tmpDouble;
+			List<Byte> tmpBytes = new List<Byte>();
 			switch (MemoryTypeComboBox.SelectedIndex)
 			{
+				case 0:
+					if (SByte.TryParse(MemoryDataTextBox.Text, out tmpSByte))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 1:
+					if (Byte.TryParse(MemoryDataTextBox.Text, out tmpByte))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 2:
+					if (Int16.TryParse(MemoryDataTextBox.Text, out tmp16))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 3:
+					if (UInt16.TryParse(MemoryDataTextBox.Text, out tmpU16))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 4:
+					if (Int32.TryParse(MemoryDataTextBox.Text, out tmp32))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 5:
+					if (UInt32.TryParse(MemoryDataTextBox.Text, out tmpU32))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 6:
+					if (Int64.TryParse(MemoryDataTextBox.Text, out tmp64))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 7:
+					if (UInt64.TryParse(MemoryDataTextBox.Text, out tmpU64))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 8:
+					if (Single.TryParse(MemoryDataTextBox.Text, out tmpFloat))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
+				case 9:
+					if (Double.TryParse(MemoryDataTextBox.Text, out tmpDouble))
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					break;
 				case 10:
+					if (MemoryDataTextBox.Text.Length != byteCount)
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
+					break;
 				case 11:
-					MemoryByteCountTextBox.Text = MemoryDataTextBox.Text.Length.ToString();
-					MemoryByteCountTextBox.IsReadOnly = false;
+					if (MemoryDataTextBox.Text.Length != byteCount)
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+					else
+						MemoryDataTextBox.BorderBrush = validBorderBrush;
 					break;
 				case 12:
-					MemoryByteCountTextBox.Text = (MemoryDataTextBox.Text.Length / 2).ToString();
-					MemoryByteCountTextBox.IsReadOnly = false;
+					var hex = MemoryDataTextBox.Text;
+
+					if (hex.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+					{
+						hex = hex.Substring(2);
+					}
+
+					if (byteCount * 2 != hex.Length)
+					{
+						MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+						return;
+					}
+
+					char[] chars = hex.ToCharArray();
+					for (int i = 0; i < (byteCount * 2); i += 2)
+					{
+						List<char> charList = new List<char>();
+						try
+						{
+							charList.Add(chars[i]);
+							charList.Add(chars[i + 1]);
+							char[] charsAsArray = charList.ToArray();
+							string charsAsString = new string(charsAsArray);
+							if (Byte.TryParse(charsAsString, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out tmpByte))
+								tmpBytes.Add(tmpByte);
+							else
+							{
+								MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+								return;
+							}
+						}
+						catch
+						{
+							MemoryDataTextBox.BorderBrush = invalidBorderBrush;
+							return;
+						}
+					}
+					MemoryDataTextBox.BorderBrush = validBorderBrush;
+					break;
+
+				default:
+					MemoryDataTextBox.BorderBrush = invalidBorderBrush;
 					break;
 			}
+		}
+
+		private void CanWePeek()
+		{
+			if (MemoryPeekButton != null)
+			{
+				if (!Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryTypeComboBox.SelectedIndex != -1 && !Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
+					MemoryPeekButton.IsEnabled = true;
+				if (Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) || MemoryTypeComboBox.SelectedIndex == -1 || Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
+					MemoryPeekButton.IsEnabled = false;
+			}
+		}
+
+		private void CanWePoke()
+		{
+			if (MemoryPokeButton != null)
+			{
+				if (!Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryTypeComboBox.SelectedIndex != -1 && !Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && !Equals(MemoryDataTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
+					MemoryPokeButton.IsEnabled = true;
+				if (Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) || MemoryTypeComboBox.SelectedIndex == -1 || Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) || Equals(MemoryDataTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
+					MemoryPokeButton.IsEnabled = false;
+			}
+		}
+
+		private void MemoryPeekButton_Click(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void MemoryPokeButton_Click(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		#region Inpc Helpers
