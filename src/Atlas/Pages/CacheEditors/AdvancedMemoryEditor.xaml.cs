@@ -157,6 +157,7 @@ namespace Atlas.Pages.CacheEditors
 			}
 
 			CheckDataForType();
+			ValidateByteCount();
 			CanWePeek();
 			CanWePoke();
 		}
@@ -199,10 +200,17 @@ namespace Atlas.Pages.CacheEditors
 		private void ValidateByteCount()
 		{
 			// Should we keep a limit for the byte/character count?
-			UInt16 tmpU16;
-			if (UInt16.TryParse(MemoryByteCountTextBox.Text, out tmpU16))
+			if (MemoryByteCountTextBox.Text.Length != 0)
+			{
+				UInt16 tmpU16;
+				if (UInt16.TryParse(MemoryByteCountTextBox.Text, out tmpU16))
+					MemoryByteCountTextBox.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
+				else
+					MemoryByteCountTextBox.BorderBrush = (Brush)FindResource("AssemblyAccentBrush");
+			}
+			if (MemoryByteCountTextBox.Text.Length == 0 && (MemoryTypeComboBox.SelectedIndex == 10 || MemoryTypeComboBox.SelectedIndex == 11))
 				MemoryByteCountTextBox.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
-			else
+			if (MemoryByteCountTextBox.Text.Length == 0 && MemoryTypeComboBox.SelectedIndex == 12)
 				MemoryByteCountTextBox.BorderBrush = (Brush)FindResource("AssemblyAccentBrush");
 		}
 
@@ -211,8 +219,6 @@ namespace Atlas.Pages.CacheEditors
 			int byteCount = -1;
 			if (!Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryByteCountTextBox.Text.Length != 0)
 				byteCount = UInt16.Parse(MemoryByteCountTextBox.Text);
-			if (Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
-				byteCount = 0;
 
 			Brush validBorderBrush = new BrushConverter().ConvertFromString("#FF595959") as Brush;
 			Brush invalidBorderBrush = FindResource("AssemblyAccentBrush") as Brush;
@@ -351,8 +357,6 @@ namespace Atlas.Pages.CacheEditors
 
 		private void CanWePeek()
 		{
-			// Might as well keep it disabled till it's working
-			/*
 			if (MemoryPeekButton != null)
 			{
 				if (!Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryTypeComboBox.SelectedIndex != -1 && !Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
@@ -360,7 +364,6 @@ namespace Atlas.Pages.CacheEditors
 				if (Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) || MemoryTypeComboBox.SelectedIndex == -1 || Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
 					MemoryPeekButton.IsEnabled = false;
 			}
-			*/
 		}
 
 		private void CanWePoke()
@@ -376,7 +379,125 @@ namespace Atlas.Pages.CacheEditors
 
 		private void MemoryPeekButton_Click(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+			uint offset;
+			int byteOrCharCount;
+			byte[] data;
+
+			if (MemoryOffsetTextBox.Text.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+			{
+				string hex = MemoryOffsetTextBox.Text.Substring(2);
+				offset = UInt32.Parse(hex, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture);
+			}
+			else
+				offset = UInt32.Parse(MemoryOffsetTextBox.Text);
+
+			switch (MemoryTypeComboBox.SelectedIndex)
+			{
+				case 0:
+					MemoryDataTextBox.Text = ((sbyte)ViewModel.PeekBytes(offset, 1)[0]).ToString();
+					break;
+				case 1:
+					MemoryDataTextBox.Text = ViewModel.PeekBytes(offset, 1)[0].ToString();
+					break;
+				case 2:
+					data = ViewModel.PeekBytes(offset, 2);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToInt16(data, 0).ToString();
+					break;
+				case 3:
+					data = ViewModel.PeekBytes(offset, 2);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToUInt16(data, 0).ToString();
+					break;
+				case 4:
+					data = ViewModel.PeekBytes(offset, 4);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToInt32(data, 0).ToString();
+					break;
+				case 5:
+					data = ViewModel.PeekBytes(offset, 4);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToUInt32(data, 0).ToString();
+					break;
+				case 6:
+					data = ViewModel.PeekBytes(offset, 8);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToInt64(data, 0).ToString();
+					break;
+				case 7:
+					data = ViewModel.PeekBytes(offset, 8);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToUInt64(data, 0).ToString();
+					break;
+				case 8:
+					data = ViewModel.PeekBytes(offset, 4);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToSingle(data, 0).ToString();
+					break;
+				case 9:
+					data = ViewModel.PeekBytes(offset, 8);
+					Array.Reverse(data);
+					MemoryDataTextBox.Text = BitConverter.ToDouble(data, 0).ToString();
+					break;
+				case 10:
+					if (MemoryByteCountTextBox.Text.Length != 0)
+					{
+						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
+						MemoryDataTextBox.Text = Encoding.ASCII.GetString(ViewModel.PeekBytes(offset, byteOrCharCount));
+					}
+					else
+					{
+						// Guesses string length, is there any way to speed this up?
+						List<byte> bytesList = new List<byte>();
+						for (uint i = 0; ; i++)
+						{
+							byte byteI = ViewModel.PeekByte(offset + i);
+							if (byteI == 0)
+								break;
+							else
+								bytesList.Add(byteI);
+						}
+						byte[] byteArray = bytesList.ToArray();
+						MemoryDataTextBox.Text = Encoding.ASCII.GetString(byteArray);
+						MemoryByteCountTextBox.Text = byteArray.Length.ToString();
+					}
+					break;
+				case 11:
+					offset += 1;
+					if (MemoryByteCountTextBox.Text.Length != 0)
+					{
+						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
+						MemoryDataTextBox.Text = Encoding.Unicode.GetString(ViewModel.PeekBytes(offset, byteOrCharCount * 2));
+					}
+					else
+					{
+						// Guesses string length, is there any way to speed this up?
+						List<byte> bytesList = new List<byte>();
+						for (uint i = 0; ; i++)
+						{
+							byte byteI = ViewModel.PeekByte(offset + i);
+							byte byteIplus1 = ViewModel.PeekByte(offset + i + 1);
+							if (byteI == 0 && byteIplus1 == 0)
+							{
+								bytesList.Add(byteIplus1);
+								break;
+							}
+							else
+								bytesList.Add(byteI);
+						}
+						byte[] byteArray = bytesList.ToArray();
+						MemoryDataTextBox.Text = Encoding.Unicode.GetString(byteArray);
+						MemoryByteCountTextBox.Text = (byteArray.Length / 2).ToString();
+					}
+					break;
+				case 12:
+						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
+						MemoryDataTextBox.Text = BitConverter.ToString(ViewModel.PeekBytes(offset, byteOrCharCount)).Replace("-", "");
+					break;
+				default:
+					data = new byte[] { 0 };
+					break;
+			}
 		}
 
 		private void MemoryPokeButton_Click(object sender, RoutedEventArgs e)

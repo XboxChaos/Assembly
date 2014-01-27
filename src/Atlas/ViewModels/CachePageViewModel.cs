@@ -364,6 +364,26 @@ namespace Atlas.ViewModels
 			XboxDebugManager.Reboot(rebootType);
 		}
 
+		public byte PeekByte(UInt32 offset)
+		{
+			SetupXbdm();
+			XboxDebugManager.MemoryStream.Flush();
+			XboxDebugManager.MemoryStream.Seek(offset, SeekOrigin.Begin);
+			return (byte)XboxDebugManager.MemoryStream.ReadByte();
+		}
+
+		public byte[] PeekBytes(UInt32 offset, int byteCount)
+		{
+			byte[] buffer = new byte[byteCount];
+
+			SetupXbdm();
+			XboxDebugManager.MemoryStream.Flush();
+			XboxDebugManager.MemoryStream.Seek(offset, SeekOrigin.Begin);
+			XboxDebugManager.MemoryStream.Read(buffer, 0x00, byteCount);
+
+			return buffer;
+		}
+
 		// TODO: make this nicer m8
 		public void PokeByte(UInt32 offset, byte value)
 		{
