@@ -61,6 +61,7 @@ namespace Atlas.Pages.CacheEditors
 			return true;
 		}
 
+
 		#region Events
 
 		private void HandleKeyDownEvent(object sender, KeyEventArgs e)
@@ -253,5 +254,42 @@ namespace Atlas.Pages.CacheEditors
 
 		#endregion
 
+		#region Split Helpers
+
+		private void TagEditorHighlightButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			// TODO: Fix this
+			//TagDataViewer.Focus();
+
+			if (!(ViewModel.EditorGridLength.Value < 0.1)) return;
+
+			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
+			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
+		}
+
+		private void TagEditorHighlightButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
+			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
+		}
+
+		private void PluginEditorHighlightButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			// TODO: Fix this
+			//PluginEditorGrid.Focus();
+
+			if (!(ViewModel.PluginGridLength.Value < 0.1)) return;
+
+			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
+			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
+		}
+
+		private void PluginEditorHighlightButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
+			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
+		}
+
+		#endregion
 	}
 }
