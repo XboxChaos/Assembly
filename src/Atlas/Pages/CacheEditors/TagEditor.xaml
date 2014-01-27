@@ -7,6 +7,7 @@
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:behavior="clr-namespace:Atlas.Metro.Controls.Behavior"
 			 xmlns:local="clr-namespace:Atlas.Pages.CacheEditors"
+			 xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
 			 mc:Ignorable="d" 
 			 Background="#252526"
 			 d:DesignHeight="600" d:DesignWidth="900">
@@ -22,15 +23,15 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-			
+
 		<Grid Margin="0">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{Binding Path=EditorGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.7*}" />
-				<RowDefinition Height="2" />
+				<RowDefinition Height="22" />
 				<RowDefinition Height="{Binding Path=PluginGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.3*}" />
 			</Grid.RowDefinitions>
 
-			<Grid>
+			<Grid x:Name="TagEditorGrid">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition Height="17px" />
@@ -84,7 +85,7 @@
 														<MenuItem Header="View Value As..." Foreground="White"
 																  Command="{x:Static local:TagEditor.ViewValueAsCommand}" 
 																  CommandParameter="{Binding}" />
-														
+
 														<MenuItem Header="Go to plugin line..." Foreground="White" 
 																  Command="{x:Static local:TagEditor.GoToPluginCommand}"
 																  CommandParameter="{Binding}" />
@@ -105,7 +106,7 @@
 
 					<GridSplitter Grid.Column="1" Height="66" ResizeDirection="Columns" Margin="0,0,0,0"
 									VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="Transparent" />
-						
+
 					<Border x:Name="SearchBoxBorder" Grid.Column="2" VerticalAlignment="Top" Visibility="Collapsed"
 							HorizontalAlignment="Stretch" BorderThickness="0,0,0,4" Margin="0,0,18,0"
 							BorderBrush="{DynamicResource AssemblyAccentBrush}" Background="#2d2d30">
@@ -156,7 +157,7 @@
 									</Style>
 								</Button.Style>
 							</Button>
-								
+
 							<Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition />
@@ -174,7 +175,7 @@
 										</DataTemplate>
 									</ComboBox.ItemTemplate>
 								</ComboBox>
-									
+
 								<Button Grid.Column="1" IsEnabled="{Binding Path=SearchResults.Count, Converter={StaticResource IValueConverterIntegerToBoolean}}"
 										Click="PreviousSearchTagDataButton_Click">
 									<Button.Style>
@@ -245,7 +246,7 @@
 									</Button.Style>
 								</Button>
 							</Grid>
-								
+
 							<Path Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" SnapsToDevicePixels="True" Fill="#999999" 
 									Margin="4,0,0,4" VerticalAlignment="Bottom"
 									Data="M 0,0 L 0,1 1,1 1,0 Z
@@ -549,14 +550,99 @@
 				</Grid>
 			</Grid>
 
-			<GridSplitter Grid.Row="1" Background="#2d2d30" ResizeDirection="Rows" HorizontalAlignment="Stretch" />
+			<GridSplitter Grid.Row="1" Background="#2d2d30" ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+			<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,0,0">
+				<StackPanel.Resources>
+					<Style TargetType="{x:Type custom:MetroHighlightButton}">
+						<Setter Property="Margin" Value="0,0,4,0" />
+						<Setter Property="Padding" Value="2,0" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="{x:Type custom:MetroHighlightButton}">
+									<Grid Margin="{TemplateBinding Margin}">
+										<StackPanel Orientation="Horizontal">
+											<Path x:Name="FirstPath" Width="17" Height="18" Fill="#333337"
+												  Data="M 0,15 L 0,18 17,18 17,0 14,1 Z" Visibility="{TemplateBinding IsFlipped, Converter={StaticResource IValueConverterBooleanToVisibility}}" />
+											<Path x:Name="SecondPath" Width="2" Height="18" Fill="#333337"
+												  Data="M 0,18 L 2,18 L 2,0 0,2 Z" Visibility="{TemplateBinding IsFlipped, Converter={StaticResource IValueConverterBooleanToVisibilityInverted}}" RenderTransformOrigin="0.5,0.5">
+												<Path.RenderTransform>
+													<TransformGroup>
+														<ScaleTransform ScaleY="-1" ScaleX="1"/>
+														<SkewTransform AngleY="0" AngleX="0"/>
+														<RotateTransform Angle="0"/>
+														<TranslateTransform/>
+													</TransformGroup>
+												</Path.RenderTransform>
+											</Path>
 
-			<Grid Grid.Row="2">
+											<Grid x:Name="ContentGrid" Width="Auto" MinWidth="50" Height="18" Background="#333337">
+												<ContentPresenter Margin="{TemplateBinding Padding}" />
+											</Grid>
+
+											<Path x:Name="ThirdPath" Width="17" Height="18" Fill="#333337"
+												  Data="M 0,0 L 3,1 15,15 15,18 0,18 Z" Visibility="{TemplateBinding IsFlipped, Converter={StaticResource IValueConverterBooleanToVisibilityInverted}}" RenderTransformOrigin="0.5,0.5" >
+												<Path.RenderTransform>
+													<TransformGroup>
+														<ScaleTransform ScaleY="-1" ScaleX="1"/>
+														<SkewTransform AngleY="0" AngleX="0"/>
+														<RotateTransform Angle="0"/>
+														<TranslateTransform/>
+													</TransformGroup>
+												</Path.RenderTransform>
+											</Path>
+											<Path x:Name="FourthPath" Width="2" Height="18" Fill="#333337"
+												  Data="M 0,0 L 2,2 2,18 0,18 Z" Visibility="{TemplateBinding IsFlipped, Converter={StaticResource IValueConverterBooleanToVisibility}}"/>
+										</StackPanel>
+									</Grid>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsHighlighted" Value="True">
+											<Setter Property="Background" TargetName="ContentGrid" Value="#434346" />
+											<Setter Property="Fill" TargetName="FirstPath" Value="#434346" />
+											<Setter Property="Fill" TargetName="SecondPath" Value="#434346" />
+											<Setter Property="Fill" TargetName="ThirdPath" Value="#434346" />
+											<Setter Property="Fill" TargetName="FourthPath" Value="#434346" />
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</StackPanel.Resources>
+
+				<custom:MetroHighlightButton x:Name="TagEditorHighlightButton" Margin="0,-2,0,0" IsHighlighted="{Binding ElementName=TagDataViewer, Path=IsFocused, Mode=OneWay}" IsFlipped="False"
+											 Click="TagEditorHighlightButton_OnClick" MouseDoubleClick="TagEditorHighlightButton_OnMouseDoubleClick">
+					<StackPanel Orientation="Horizontal">
+						<Grid Width="11" Height="11" VerticalAlignment="Center" Margin="2,1,4,0">
+							<Path Width="10" Height="10" Fill="#fff"
+								  Data="M 0,0 L 10,0 10,10 0,10 0,1 1,1 1,9 9,9 9,1 0,1 Z
+										M 2,2 L 8,2 8,8 2,8 Z" />
+
+							<Ellipse Width="6" Height="6" StrokeThickness="1" Stroke="#fff" Fill="#424242" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+						</Grid>
+						<TextBlock FontSize="11" VerticalAlignment="Center" Margin="0,-1,0,0" Text="Tag Editor" />
+					</StackPanel>
+				</custom:MetroHighlightButton>
+
+				<custom:MetroHighlightButton x:Name="PluginEditorHighlightButton" Margin="0,0,0,-2" IsHighlighted="{Binding ElementName=PluginTextEditor, Path=IsFocused, Mode=OneWay}" IsFlipped="True"
+											 Click="PluginEditorHighlightButton_OnClick" MouseDoubleClick="PluginEditorHighlightButton_OnMouseDoubleClick">
+					<StackPanel Orientation="Horizontal">
+						<Grid Width="9" Height="9" VerticalAlignment="Center" Margin="0,1,4,0">
+							<Path Width="9" Height="9" Fill="#fff"
+									  Data="M 0,0 L 9,0 9,9 0,9 0,1 1,1 1,8 8,8 8,1 0,1 Z
+											M 3,3 L 4,3 4,4 3,4 3,5 4,5 4,6 3,6 3,5 2,5 2,4 3,4 Z
+											M 5,3 L 6,3 6,4 7,4 7,5 6,5 6,6 5,6 5,5 6,5 6,4 5,4 Z" />
+						</Grid>
+						<TextBlock FontSize="11" VerticalAlignment="Center" Margin="0,-1,0,0" Text="Plugin Editor" />
+					</StackPanel>
+				</custom:MetroHighlightButton>
+			</StackPanel>
+
+			<Grid Grid.Row="2" x:Name="PluginEditorGrid">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition Height="17px" />
 				</Grid.RowDefinitions>
-					
+
 				<avalonedit:TextEditor x:Name="PluginTextEditor" Height="Auto" Margin="0" SyntaxHighlighting="{Binding SyntaxHighlightingDefinition}"
 									FontFamily="Consolas" FontSize="10pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
 									Background="#252526" BorderBrush="#FF595959" Foreground="White"
@@ -579,7 +665,7 @@
 
 				<Grid Grid.Row="1">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="65px" />
+						<ColumnDefinition Width="66px" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 					<Grid.Resources>
@@ -793,7 +879,7 @@
 							</Setter>
 						</Style>
 					</Grid.Resources>
-					<ComboBox x:Name="PluginEditorZoomSelectorComboBox" SelectedIndex="6" Width="62" Margin="0,0,3,0">
+					<ComboBox x:Name="PluginEditorZoomSelectorComboBox" SelectedIndex="6" Width="62" Margin="0,0,3,0" HorizontalAlignment="Left">
 						<ComboBoxItem Tag="20" Content="20%" />
 						<ComboBoxItem Tag="35" Content="35%" />
 						<ComboBoxItem Tag="50" Content="50%" />
