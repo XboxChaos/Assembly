@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -350,6 +351,8 @@ namespace Atlas.Pages.CacheEditors
 
 		private void CanWePeek()
 		{
+			// Might as well keep it disabled till it's working
+			/*
 			if (MemoryPeekButton != null)
 			{
 				if (!Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryTypeComboBox.SelectedIndex != -1 && !Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
@@ -357,6 +360,7 @@ namespace Atlas.Pages.CacheEditors
 				if (Equals(MemoryOffsetTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) || MemoryTypeComboBox.SelectedIndex == -1 || Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")))
 					MemoryPeekButton.IsEnabled = false;
 			}
+			*/
 		}
 
 		private void CanWePoke()
@@ -377,7 +381,90 @@ namespace Atlas.Pages.CacheEditors
 
 		private void MemoryPokeButton_Click(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+			uint offset;
+			byte[] data;
+
+			if (MemoryOffsetTextBox.Text.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+			{
+				string hex = MemoryOffsetTextBox.Text.Substring(2);
+				offset = UInt32.Parse(hex, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture);
+			}
+			else
+				offset = UInt32.Parse(MemoryOffsetTextBox.Text);
+
+			switch (MemoryTypeComboBox.SelectedIndex)
+			{
+				case 0:
+					data = new byte[] { (byte)SByte.Parse(MemoryDataTextBox.Text) };
+					break;
+				case 1:
+					data = new byte[] { Byte.Parse(MemoryDataTextBox.Text) };
+					break;
+				case 2:
+					data = BitConverter.GetBytes(Int16.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 3:
+					data = BitConverter.GetBytes(UInt16.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 4:
+					data = BitConverter.GetBytes(Int32.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 5:
+					data = BitConverter.GetBytes(UInt32.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 6:
+					data = BitConverter.GetBytes(Int64.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 7:
+					data = BitConverter.GetBytes(UInt64.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 8:
+					data = BitConverter.GetBytes(Single.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 9:
+					data = BitConverter.GetBytes(Double.Parse(MemoryDataTextBox.Text));
+					Array.Reverse(data);
+					break;
+				case 10:
+					data = Encoding.ASCII.GetBytes(MemoryDataTextBox.Text);
+					break;
+				case 11:
+					data = Encoding.Unicode.GetBytes(MemoryDataTextBox.Text);
+					offset += 1;
+					break;
+				case 12:
+					var hex = MemoryDataTextBox.Text;
+
+					if (hex.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
+						hex = hex.Substring(2);
+
+					char[] chars = hex.ToCharArray();
+					List<byte> byteList = new List<byte>();
+					for (int i = 0; i < hex.Length; i += 2)
+					{
+						List<char> tmpChars = new List<char>();
+						tmpChars.Add(chars[i]);
+						tmpChars.Add(chars[i + 1]);
+						char[] tmpCharsAsArray = tmpChars.ToArray();
+						string charsAsString = new string(tmpCharsAsArray);
+						byte tmpByte = Byte.Parse(charsAsString, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture);
+						byteList.Add(tmpByte);
+					}
+					data = byteList.ToArray();
+					break;
+				default:
+					data = new byte[] { 0 };
+					break;
+			}
+
+			ViewModel.PokeBytes(offset, data);
 		}
 
 		#region Inpc Helpers

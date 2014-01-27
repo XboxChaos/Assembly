@@ -372,6 +372,13 @@ namespace Atlas.ViewModels
 			XboxDebugManager.MemoryStream.WriteByte(value);
 		}
 
+		public void PokeBytes(UInt32 offset, byte[] data)
+		{
+			SetupXbdm();
+			XboxDebugManager.MemoryStream.Seek(offset, SeekOrigin.Begin);
+			XboxDebugManager.MemoryStream.Write(data, 0x00, data.Length);
+		}
+
 		#endregion
 	}
 }
