@@ -308,6 +308,9 @@ namespace XBDMCommunicator
 
 			public override void Flush()
 			{
+				// TODO: Make a more efficient flush
+				_xbdm.Disconnect();
+				_xbdm.Connect();
 			}
 
 			public override int Read(byte[] buffer, int offset, int count)
