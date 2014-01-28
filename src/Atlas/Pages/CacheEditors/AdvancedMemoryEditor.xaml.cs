@@ -199,11 +199,10 @@ namespace Atlas.Pages.CacheEditors
 
 		private void ValidateByteCount()
 		{
-			// Should we keep a limit for the byte/character count?
 			if (MemoryByteCountTextBox.Text.Length != 0)
 			{
-				UInt16 tmpU16;
-				if (UInt16.TryParse(MemoryByteCountTextBox.Text, out tmpU16))
+				Int32 tmp32;
+				if (Int32.TryParse(MemoryByteCountTextBox.Text, out tmp32))
 					MemoryByteCountTextBox.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#FF595959");
 				else
 					MemoryByteCountTextBox.BorderBrush = (Brush)FindResource("AssemblyAccentBrush");
@@ -218,7 +217,7 @@ namespace Atlas.Pages.CacheEditors
 		{
 			int byteCount = -1;
 			if (!Equals(MemoryByteCountTextBox.BorderBrush, FindResource("AssemblyAccentBrush")) && MemoryByteCountTextBox.Text.Length != 0)
-				byteCount = UInt16.Parse(MemoryByteCountTextBox.Text);
+				byteCount = Int32.Parse(MemoryByteCountTextBox.Text);
 
 			Brush validBorderBrush = new BrushConverter().ConvertFromString("#FF595959") as Brush;
 			Brush invalidBorderBrush = FindResource("AssemblyAccentBrush") as Brush;
@@ -425,7 +424,7 @@ namespace Atlas.Pages.CacheEditors
 					break;
 				case 10:
 					if (MemoryByteCountTextBox.Text.Length != 0)
-						MemoryDataTextBox.Text = Encoding.ASCII.GetString(PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text), false));
+						MemoryDataTextBox.Text = Encoding.ASCII.GetString(PeekBytes(offset, Int32.Parse(MemoryByteCountTextBox.Text), false));
 					else
 					{
 						// Guesses string length, is there any way to speed this up?
@@ -446,7 +445,7 @@ namespace Atlas.Pages.CacheEditors
 				case 11:
 					offset += 1;
 					if (MemoryByteCountTextBox.Text.Length != 0)
-						MemoryDataTextBox.Text = Encoding.Unicode.GetString(PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text) * 2, false));
+						MemoryDataTextBox.Text = Encoding.Unicode.GetString(PeekBytes(offset, Int32.Parse(MemoryByteCountTextBox.Text) * 2, false));
 					else
 					{
 						// Guesses string length, is there any way to speed this up?
@@ -469,7 +468,7 @@ namespace Atlas.Pages.CacheEditors
 					}
 					break;
 				case 12:
-						MemoryDataTextBox.Text = BitConverter.ToString(ViewModel.PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text))).Replace("-", "");
+						MemoryDataTextBox.Text = BitConverter.ToString(ViewModel.PeekBytes(offset, Int32.Parse(MemoryByteCountTextBox.Text))).Replace("-", "");
 					break;
 				default:
 					data = new byte[] { 0 };
