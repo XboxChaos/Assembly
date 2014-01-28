@@ -394,57 +394,38 @@ namespace Atlas.Pages.CacheEditors
 			switch (MemoryTypeComboBox.SelectedIndex)
 			{
 				case 0:
-					MemoryDataTextBox.Text = ((sbyte)ViewModel.PeekBytes(offset, 1)[0]).ToString();
+					MemoryDataTextBox.Text = ((sbyte)ViewModel.PeekByte(offset)).ToString();
 					break;
 				case 1:
-					MemoryDataTextBox.Text = ViewModel.PeekBytes(offset, 1)[0].ToString();
+					MemoryDataTextBox.Text = ViewModel.PeekByte(offset).ToString();
 					break;
 				case 2:
-					data = ViewModel.PeekBytes(offset, 2);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToInt16(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToInt16(PeekBytes(offset, 2, true), 0).ToString();
 					break;
 				case 3:
-					data = ViewModel.PeekBytes(offset, 2);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToUInt16(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToUInt16(PeekBytes(offset, 2, true), 0).ToString();
 					break;
 				case 4:
-					data = ViewModel.PeekBytes(offset, 4);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToInt32(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToInt32(PeekBytes(offset, 4, true), 0).ToString();
 					break;
 				case 5:
-					data = ViewModel.PeekBytes(offset, 4);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToUInt32(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToUInt32(PeekBytes(offset, 4, true), 0).ToString();
 					break;
 				case 6:
-					data = ViewModel.PeekBytes(offset, 8);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToInt64(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToInt64(PeekBytes(offset, 8, true), 0).ToString();
 					break;
 				case 7:
-					data = ViewModel.PeekBytes(offset, 8);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToUInt64(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToUInt64(PeekBytes(offset, 8, true), 0).ToString();
 					break;
 				case 8:
-					data = ViewModel.PeekBytes(offset, 4);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToSingle(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToSingle(PeekBytes(offset, 4, true), 0).ToString();
 					break;
 				case 9:
-					data = ViewModel.PeekBytes(offset, 8);
-					Array.Reverse(data);
-					MemoryDataTextBox.Text = BitConverter.ToDouble(data, 0).ToString();
+					MemoryDataTextBox.Text = BitConverter.ToDouble(PeekBytes(offset, 8, true), 0).ToString();
 					break;
 				case 10:
 					if (MemoryByteCountTextBox.Text.Length != 0)
-					{
-						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
-						MemoryDataTextBox.Text = Encoding.ASCII.GetString(ViewModel.PeekBytes(offset, byteOrCharCount));
-					}
+						MemoryDataTextBox.Text = Encoding.ASCII.GetString(PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text), false));
 					else
 					{
 						// Guesses string length, is there any way to speed this up?
@@ -465,10 +446,7 @@ namespace Atlas.Pages.CacheEditors
 				case 11:
 					offset += 1;
 					if (MemoryByteCountTextBox.Text.Length != 0)
-					{
-						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
-						MemoryDataTextBox.Text = Encoding.Unicode.GetString(ViewModel.PeekBytes(offset, byteOrCharCount * 2));
-					}
+						MemoryDataTextBox.Text = Encoding.Unicode.GetString(PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text) * 2, false));
 					else
 					{
 						// Guesses string length, is there any way to speed this up?
@@ -491,8 +469,7 @@ namespace Atlas.Pages.CacheEditors
 					}
 					break;
 				case 12:
-						byteOrCharCount = UInt16.Parse(MemoryByteCountTextBox.Text);
-						MemoryDataTextBox.Text = BitConverter.ToString(ViewModel.PeekBytes(offset, byteOrCharCount)).Replace("-", "");
+						MemoryDataTextBox.Text = BitConverter.ToString(ViewModel.PeekBytes(offset, UInt16.Parse(MemoryByteCountTextBox.Text))).Replace("-", "");
 					break;
 				default:
 					data = new byte[] { 0 };
@@ -586,6 +563,17 @@ namespace Atlas.Pages.CacheEditors
 			}
 
 			ViewModel.PokeBytes(offset, data);
+		}
+
+		private byte[] PeekBytes(uint offset, int byteCount, bool reverseArray)
+		{
+			byte[] data;
+
+			data = ViewModel.PeekBytes(offset, byteCount);
+			if (reverseArray == true)
+				Array.Reverse(data);
+
+			return data;
 		}
 
 		#region Inpc Helpers
