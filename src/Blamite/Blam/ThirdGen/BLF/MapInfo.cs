@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Blamite.IO;
@@ -25,44 +26,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 		Unknown13 = 1 << 13,
 		Unknown14 = 1 << 14,
 		Unknown15 = 1 << 15,
-	}
-
-	[Flags]
-	public enum EnabledObjects
-	{
-		None = 0,
-		Object0 = 1 << 0,
-		Object1 = 1 << 1,
-		Object2 = 1 << 2,
-		Object3 = 1 << 3,
-		Object4 = 1 << 4,
-		Object5 = 1 << 5,
-		Object6 = 1 << 6,
-		Object7 = 1 << 7,
-		Object8 = 1 << 8,
-		Object9 = 1 << 9,
-		Object10 = 1 << 10,
-		Object11 = 1 << 11,
-		Object12 = 1 << 12,
-		Object13 = 1 << 13,
-		Object14 = 1 << 14,
-		Object15 = 1 << 15,
-		Object16 = 1 << 16,
-		Object17 = 1 << 17,
-		Object18 = 1 << 18,
-		Object19 = 1 << 19,
-		Object20 = 1 << 20,
-		Object21 = 1 << 21,
-		Object22 = 1 << 22,
-		Object23 = 1 << 23,
-		Object24 = 1 << 24,
-		Object25 = 1 << 25,
-		Object26 = 1 << 26,
-		Object27 = 1 << 27,
-		Object28 = 1 << 28,
-		Object29 = 1 << 29,
-		Object30 = 1 << 30,
-		Object31 = 1 << 31,
 	}
 
 	public class MapInfo
@@ -206,7 +169,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		}
 
-		public void LoadMapNames()
+		private void LoadMapNames()
 		{
 			_mapInformation.MapNames.Clear();
 
@@ -218,7 +181,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void LoadMapDescriptions()
+		private void LoadMapDescriptions()
 		{
 			_mapInformation.MapDescriptions.Clear();
 
@@ -230,49 +193,41 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void LoadMapMaxTeams()
+		private void LoadMapMaxTeams()
 		{
 			if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
 			{
 				_stream.SeekTo(0x114E);
 				_mapInformation.MaxTeamsNone = _stream.ReadByte();
-				_stream.SeekTo(0x114F);
 				_mapInformation.MaxTeamsCTF = _stream.ReadByte();
-				_stream.SeekTo(0x1150);
 				_mapInformation.MaxTeamsSlayer = _stream.ReadByte();
-				_stream.SeekTo(0x1151);
 				_mapInformation.MaxTeamsOddball = _stream.ReadByte();
-				_stream.SeekTo(0x1152);
 				_mapInformation.MaxTeamsKOTH = _stream.ReadByte();
-				_stream.SeekTo(0x1153);
 				_mapInformation.MaxTeamsEditor = _stream.ReadByte();
-				_stream.SeekTo(0x1154);
 				_mapInformation.MaxTeamsVIP = _stream.ReadByte();
-				_stream.SeekTo(0x1155);
 				_mapInformation.MaxTeamsJuggernaut = _stream.ReadByte();
-				_stream.SeekTo(0x1156);
 				_mapInformation.MaxTeamsTerritories = _stream.ReadByte();
-				_stream.SeekTo(0x1157);
 				_mapInformation.MaxTeamsAssault = _stream.ReadByte();
-				_stream.SeekTo(0x1158);
 				_mapInformation.MaxTeamsInfection = _stream.ReadByte();
 			}
 		}
 
-		public void LoadMPObjectTable()
+		private void LoadMPObjectTable()
 		{
 			if (_mapInformation.Game != GameIdentifier.Halo3 && _mapInformation.Game != GameIdentifier.Halo3ODST)
 			{
 				int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x1798 : 0x1158;
+				List<int> intList = new List<int>();
 				for (int i = 0; i < 64; i++)
 				{
 					_stream.SeekTo(baseOffset + (i * 4));
-					_mapInformation.ObjectTable.Add((EnabledObjects)_stream.ReadInt32());
+					intList.Add(_stream.ReadInt32());
 				}
+				_mapInformation.ObjectTable = new BitArray(intList.ToArray());
 			}
 		}
 
-		public void LoadInsertionPoints()
+		private void LoadInsertionPoints()
 		{
 			_mapInformation.MapCheckpoints.Clear();
 
@@ -418,7 +373,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void LoadDefaultAuthor()
+		private void LoadDefaultAuthor()
 		{
 			if (_mapInformation.Game == GameIdentifier.HaloReach)
 			{
@@ -482,7 +437,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			UpdateDefaultAuthor();
 		}
 
-		public void UpdateMapNames()
+		private void UpdateMapNames()
 		{
 			int seekVal = 0;
 			int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x44 : 0x44;
@@ -495,7 +450,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void UpdateMapDescriptions()
+		private void UpdateMapDescriptions()
 		{
 			int seekVal = 0;
 			int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x0484 : 0x0344;
@@ -508,36 +463,26 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void UpdateMapMaxTeams()
+		private void UpdateMapMaxTeams()
 		{
 			if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
 			{
 				_stream.SeekTo(0x114E);
 				_stream.WriteByte(_mapInformation.MaxTeamsNone);
-				_stream.SeekTo(0x114F);
 				_stream.WriteByte(_mapInformation.MaxTeamsCTF);
-				_stream.SeekTo(0x1150);
 				_stream.WriteByte(_mapInformation.MaxTeamsSlayer);
-				_stream.SeekTo(0x1151);
 				_stream.WriteByte(_mapInformation.MaxTeamsOddball);
-				_stream.SeekTo(0x1152);
 				_stream.WriteByte(_mapInformation.MaxTeamsKOTH);
-				_stream.SeekTo(0x1153);
 				_stream.WriteByte(_mapInformation.MaxTeamsEditor);
-				_stream.SeekTo(0x1154);
 				_stream.WriteByte(_mapInformation.MaxTeamsVIP);
-				_stream.SeekTo(0x1155);
 				_stream.WriteByte(_mapInformation.MaxTeamsJuggernaut);
-				_stream.SeekTo(0x1156);
 				_stream.WriteByte(_mapInformation.MaxTeamsTerritories);
-				_stream.SeekTo(0x1157);
 				_stream.WriteByte(_mapInformation.MaxTeamsAssault);
-				_stream.SeekTo(0x1158);
 				_stream.WriteByte(_mapInformation.MaxTeamsInfection);
 			}
 		}
 
-		public void UpdateMPObjectTable()
+		private void UpdateMPObjectTable()
 		{
 			if (_mapInformation.Game != GameIdentifier.Halo3 && _mapInformation.Game != GameIdentifier.Halo3ODST)
 			{
@@ -547,12 +492,14 @@ namespace Blamite.Blam.ThirdGen.BLF
 				{
 					seekVal = baseOffset + (i * 4);
 					_stream.SeekTo(seekVal);
-					_stream.WriteInt32((int)_mapInformation.ObjectTable[i]);
+					int[] buffer = new int[1];
+					_mapInformation.ObjectTable.CopyTo(buffer, i * 32);
+					_stream.WriteInt32(buffer[0]);
 				}
 			}
 		}
 
-		public void UpdateInsertionPoints()
+		private void UpdateInsertionPoints()
 		{
 			int nameSeek = 0;
 			int descriptionSeek = 0;
@@ -698,7 +645,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void UpdateDefaultAuthor()
+		private void UpdateDefaultAuthor()
 		{
 			if (_mapInformation.Game == GameIdentifier.HaloReach)
 			{
@@ -736,7 +683,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public byte MaxTeamsTerritories { get; set; }
 			public byte MaxTeamsAssault { get; set; }
 			public byte MaxTeamsInfection { get; set; }
-			public IList<EnabledObjects> ObjectTable = new List<EnabledObjects>();
+			public BitArray ObjectTable { get; set; }
 			public IList<Checkpoint> MapCheckpoints = new List<Checkpoint>();
 			public string DefaultAuthor { get; set; }
 		}

@@ -83,7 +83,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		public int insertionPointCount = 4;
 		public string culpritTextString;
 		public List<InsertionPoint> InsertionPointList = new List<InsertionPoint>();
-		
+
 		public HaloInfo(string infoLocation, LayoutDocument tab)
 		{
 			InitializeComponent();
@@ -1509,72 +1509,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					CheckBoxes.Add(cb_generic);
 
 				// Check the checkbox if its corresponding bit is enabled
-				for (int i = 0; i < 64; i++)
+				for (int i = 0; i < 2048; i++)
 				{
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object0))
-						CheckBoxes[(i * 32)].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object1))
-						CheckBoxes[(i * 32) + 1].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object2))
-						CheckBoxes[(i * 32) + 2].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object3))
-						CheckBoxes[(i * 32) + 3].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object4))
-						CheckBoxes[(i * 32) + 4].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object5))
-						CheckBoxes[(i * 32) + 5].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object6))
-						CheckBoxes[(i * 32) + 6].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object7))
-						CheckBoxes[(i * 32) + 7].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object8))
-						CheckBoxes[(i * 32) + 8].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object9))
-						CheckBoxes[(i * 32) + 9].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object10))
-						CheckBoxes[(i * 32) + 10].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object11))
-						CheckBoxes[(i * 32) + 11].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object12))
-						CheckBoxes[(i * 32) + 12].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object13))
-						CheckBoxes[(i * 32) + 13].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object14))
-						CheckBoxes[(i * 32) + 14].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object15))
-						CheckBoxes[(i * 32) + 15].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object16))
-						CheckBoxes[(i * 32) + 16].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object17))
-						CheckBoxes[(i * 32) + 17].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object18))
-						CheckBoxes[(i * 32) + 18].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object19))
-						CheckBoxes[(i * 32) + 19].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object20))
-						CheckBoxes[(i * 32) + 20].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object21))
-						CheckBoxes[(i * 32) + 21].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object22))
-						CheckBoxes[(i * 32) + 22].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object23))
-						CheckBoxes[(i * 32) + 23].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object24))
-						CheckBoxes[(i * 32) + 24].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object25))
-						CheckBoxes[(i * 32) + 25].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object26))
-						CheckBoxes[(i * 32) + 26].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object27))
-						CheckBoxes[(i * 32) + 27].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object28))
-						CheckBoxes[(i * 32) + 28].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object29))
-						CheckBoxes[(i * 32) + 29].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object30))
-						CheckBoxes[(i * 32) + 30].IsChecked = true;
-					if (_mapInfo.MapInformation.ObjectTable[i].HasFlag(EnabledObjects.Object31))
-						CheckBoxes[(i * 32) + 31].IsChecked = true;
+					if (_mapInfo.MapInformation.ObjectTable[i] == true)
+						CheckBoxes[i].IsChecked = true;
+					else
+						CheckBoxes[i].IsChecked = false;
 				}
 
 				// Add the checkboxes to the UI
@@ -1702,86 +1642,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void UpdateMPObjects()
 		{
-			// Set the flags for each int in the array to None so the rest can be added later
-			for (int i = 0; i < 64; i++)
-				_mapInfo.MapInformation.ObjectTable[i] = EnabledObjects.None;
-
 			for (int i = 0; i < Bitfield_MPObjects.Items.Count; i++)
 			{
-				// Calculate the index of the bit to enable
-				int flagToCheck = i;
-				for (int f = flagToCheck; flagToCheck > 31; )
-				{
-					if (flagToCheck > 31)
-						flagToCheck -= 32;
-				}
-				
-				// Enable the bit if the checkbox is checked
 				CheckBox cb = (CheckBox)Bitfield_MPObjects.Items[i];
-				if (cb.IsChecked == true && flagToCheck == 0)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object0);
-				if (cb.IsChecked == true && flagToCheck == 1)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object1);
-				if (cb.IsChecked == true && flagToCheck == 2)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object2);
-				if (cb.IsChecked == true && flagToCheck == 3)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object3);
-				if (cb.IsChecked == true && flagToCheck == 4)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object4);
-				if (cb.IsChecked == true && flagToCheck == 5)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object5);
-				if (cb.IsChecked == true && flagToCheck == 6)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object6);
-				if (cb.IsChecked == true && flagToCheck == 7)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object7);
-				if (cb.IsChecked == true && flagToCheck == 8)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object8);
-				if (cb.IsChecked == true && flagToCheck == 9)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object9);
-				if (cb.IsChecked == true && flagToCheck == 10)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object10);
-				if (cb.IsChecked == true && flagToCheck == 11)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object11);
-				if (cb.IsChecked == true && flagToCheck == 12)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object12);
-				if (cb.IsChecked == true && flagToCheck == 13)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object13);
-				if (cb.IsChecked == true && flagToCheck == 14)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object14);
-				if (cb.IsChecked == true && flagToCheck == 15)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object15);
-				if (cb.IsChecked == true && flagToCheck == 16)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object16);
-				if (cb.IsChecked == true && flagToCheck == 17)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object17);
-				if (cb.IsChecked == true && flagToCheck == 18)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object18);
-				if (cb.IsChecked == true && flagToCheck == 19)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object19);
-				if (cb.IsChecked == true && flagToCheck == 20)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object20);
-				if (cb.IsChecked == true && flagToCheck == 21)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object21);
-				if (cb.IsChecked == true && flagToCheck == 22)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object22);
-				if (cb.IsChecked == true && flagToCheck == 23)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object23);
-				if (cb.IsChecked == true && flagToCheck == 24)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object24);
-				if (cb.IsChecked == true && flagToCheck == 25)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object25);
-				if (cb.IsChecked == true && flagToCheck == 26)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object26);
-				if (cb.IsChecked == true && flagToCheck == 27)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object27);
-				if (cb.IsChecked == true && flagToCheck == 28)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object28);
-				if (cb.IsChecked == true && flagToCheck == 29)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object29);
-				if (cb.IsChecked == true && flagToCheck == 30)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object30);
-				if (cb.IsChecked == true && flagToCheck == 31)
-					_mapInfo.MapInformation.ObjectTable[(int)Math.Ceiling((decimal)(i - 31) / 32)] |= (EnabledObjects.Object31);
+				if (cb.IsChecked == true)
+					_mapInfo.MapInformation.ObjectTable[i] = true;
+				else
+					_mapInfo.MapInformation.ObjectTable[i] = false;
 			}
 		}
 
@@ -1798,7 +1665,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				MetroMessageBox.Show("MapInfo Not Saved", "The MapInfo could not be saved because the Zone Index is invalid.");
 				return;
 			}
-			
+
 			if (cbInsertVisible.IsChecked == true)
 				InsertionPointList[cbInsertIndex.SelectedIndex].IPVisible = true;
 			if (cbInsertVisible.IsChecked == false)
