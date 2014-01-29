@@ -379,7 +379,6 @@ namespace Atlas.Pages.CacheEditors
 		private void MemoryPeekButton_Click(object sender, RoutedEventArgs e)
 		{
 			uint offset;
-			int byteOrCharCount;
 			byte[] data;
 
 			if (MemoryOffsetTextBox.Text.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase))
