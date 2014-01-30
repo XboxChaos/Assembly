@@ -209,10 +209,10 @@ namespace Atlas.ViewModels
 			switch (type)
 			{
 				case Type.BlamCache:
+				case Type.MapInfo:
 					OpenFile(filePath, type);
 					return;
 
-				case Type.MapInfo:
 				case Type.MapImage:
 				case Type.Campaign:
 				case Type.Patch:
@@ -228,6 +228,9 @@ namespace Atlas.ViewModels
 					return;
 
 				case "mapinfo":
+					OpenFile(filePath, Type.MapInfo);
+					return;
+
 				case "blf":
 				case "campaign":
 				case "asmp":
@@ -271,6 +274,9 @@ namespace Atlas.ViewModels
 					break;
 
 				case Type.MapInfo:
+					AssemblyPage = new MapInfoPage(filePath);
+					break;
+
 				case Type.MapImage:
 				case Type.Campaign:
 				case Type.Patch:
