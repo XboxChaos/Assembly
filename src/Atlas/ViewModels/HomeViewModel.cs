@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Atlas.Dialogs;
 using Atlas.Models;
 using Atlas.Pages;
+using Atlas.Pages.BLF;
 using Blamite.IO;
 
 namespace Atlas.ViewModels
@@ -210,11 +211,11 @@ namespace Atlas.ViewModels
 			{
 				case Type.BlamCache:
 				case Type.MapInfo:
+				case Type.MapImage:
+				case Type.Campaign:
 					OpenFile(filePath, type);
 					return;
 
-				case Type.MapImage:
-				case Type.Campaign:
 				case Type.Patch:
 					throw new NotImplementedException();
 			}
@@ -232,7 +233,13 @@ namespace Atlas.ViewModels
 					return;
 
 				case "blf":
+					OpenFile(filePath, Type.MapImage);
+					return;
+
 				case "campaign":
+					OpenFile(filePath, Type.Campaign);
+					return;
+
 				case "asmp":
 					throw new NotImplementedException();
 			}
@@ -278,7 +285,13 @@ namespace Atlas.ViewModels
 					break;
 
 				case Type.MapImage:
+					AssemblyPage = new MapImagePage(filePath);
+					break;
+
 				case Type.Campaign:
+					AssemblyPage = new CampaignPage(filePath);
+					break;
+
 				case Type.Patch:
 				default:
 					throw new NotImplementedException();

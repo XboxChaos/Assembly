@@ -48,9 +48,19 @@ namespace Atlas.Windows
 			ViewModel.ValidateFile(ViewModel.FindFile(HomeViewModel.Type.BlamCache));
 		}
 
-		private void OpenMapInfoMenuItem_Click(object sender, RoutedEventArgs e)
+		private void OpenMapImageMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.ValidateFile(ViewModel.FindFile(HomeViewModel.Type.MapImage));
+		}
+
+		private void OpenMapInfoMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
 			ViewModel.ValidateFile(ViewModel.FindFile(HomeViewModel.Type.MapInfo));
+		}
+
+		private void OpenCampaignMenuItem_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.ValidateFile(ViewModel.FindFile(HomeViewModel.Type.Campaign));
 		}
 
 		#region Debug Menu

@@ -2,7 +2,7 @@
 
 namespace Atlas.Models.BLF
 {
-	public class MapInfoBLF : Base
+	public class CampaignBLF : Base
 	{
 		[Category("BLF")]
 		[Description("The game the file is intended for.")]
@@ -34,24 +34,24 @@ namespace Atlas.Models.BLF
 		}
 		private string _length;
 
-		[Category("MapInfo Chunk")]
-		[Description("The number of bytes in the Map Info (levl) chunk.")]
+		[Category("Campaign Chunk")]
+		[Description("The number of bytes in the Campaign (cmpn) chunk.")]
 		[DisplayName("Size")]
-		public string LevlLength
+		public string CmpnLength
 		{
-			get { return _levlLength; }
-			set { SetField(ref _levlLength, value); }
+			get { return _cmpnLength; }
+			set { SetField(ref _cmpnLength, value); }
 		}
-		private string _levlLength;
+		private string _cmpnLength;
 
-		[Category("MapInfo Chunk")]
-		[Description("The version of the Map Info (levl) chunk.")]
+		[Category("Campaign Chunk")]
+		[Description("The version of the Campaign (cmpn) chunk.")]
 		[DisplayName("Version")]
-		public string LevlVersion
+		public string CmpnVersion
 		{
-			get { return _levlVersion; }
-			set { SetField(ref _levlVersion, value); }
+			get { return _cmpnVersion; }
+			set { SetField(ref _cmpnVersion, value); }
 		}
-		private string _levlVersion;
+		private string _cmpnVersion;
 	}
 }

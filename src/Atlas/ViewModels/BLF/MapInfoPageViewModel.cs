@@ -1,30 +1,15 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using Atlas.Dialogs;
-using Atlas.Helpers;
-using Atlas.Helpers.Tags;
 using Atlas.Models;
 using Atlas.Models.BLF;
-using Atlas.Pages;
-using Atlas.Pages.CacheEditors;
-using Blamite.Blam;
+using Atlas.Pages.BLF;
 using Blamite.Blam.ThirdGen;
 using Blamite.Blam.ThirdGen.BLF;
-using Blamite.Blam.Scripting;
-using Blamite.Flexibility;
-using Blamite.IO;
-using Blamite.RTE;
-using Blamite.RTE.H2Vista;
-using Blamite.Util;
-using Newtonsoft.Json;
-using XBDMCommunicator;
 
-namespace Atlas.ViewModels
+namespace Atlas.ViewModels.BLF
 {
 	public class MapInfoPageViewModel : Base
 	{
@@ -73,12 +58,12 @@ namespace Atlas.ViewModels
 				// Validate the BLF file, add info to the Model
 				PureBLF _blf = new PureBLF(MapInfoLocation);
 				if (_blf.BLFChunks[1].ChunkMagic != "levl")
-					throw new Exception("The selected Map Info BLF is not a valid Map Info file.");
+					throw new Exception("The selected BLF is not a valid Map Info file.");
 
 				MapInfoBLF.ChunkCount = _blf.BLFChunks.Count.ToString();
 				MapInfoBLF.Length = "0x" + _blf.BLFStream.Length.ToString("X8");
 				MapInfoBLF.LevlLength = "0x" + _blf.BLFChunks[1].ChunkLength.ToString("X8");
-				MapInfoBLF.LevlVersion = BitConverter.ToInt16(BitConverter.GetBytes(_blf.BLFChunks[1].ChunkFlags), 0).ToString();
+				MapInfoBLF.LevlVersion = BitConverter.ToInt16(BitConverter.GetBytes(_blf.BLFChunks[1].ChunkFlags), 2).ToString();
 
 				_blf.Close();
 
