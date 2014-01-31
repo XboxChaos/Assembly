@@ -2,7 +2,7 @@
 
 namespace Atlas.Models.BLF
 {
-	public class MapInfoBLF : Base
+	public class MapImageBLF : Base
 	{
 		[Category("BLF")]
 		[Description("The game the file is intended for.")]
@@ -34,24 +34,24 @@ namespace Atlas.Models.BLF
 		}
 		private string _length;
 
-		[Category("MapInfo Chunk")]
-		[Description("The number of bytes in the Map Info (levl) chunk.")]
+		[Category("MapImage Chunk")]
+		[Description("The number of bytes in the Map Image (mapi) chunk.")]
 		[DisplayName("Size")]
-		public string LevlLength
+		public string MapiLength
 		{
-			get { return _levlLength; }
-			set { SetField(ref _levlLength, value); }
+			get { return _mapiLength; }
+			set { SetField(ref _mapiLength, value); }
 		}
-		private string _levlLength;
+		private string _mapiLength;
 
-		[Category("MapInfo Chunk")]
-		[Description("The version of the Map Info (levl) chunk.")]
+		[Category("MapImage Chunk")]
+		[Description("The version of the Map Image (mapi) chunk.")]
 		[DisplayName("Version")]
-		public string LevlVersion
+		public string MapiVersion
 		{
-			get { return _levlVersion; }
-			set { SetField(ref _levlVersion, value); }
+			get { return _mapiVersion; }
+			set { SetField(ref _mapiVersion, value); }
 		}
-		private string _levlVersion;
+		private string _mapiVersion;
 	}
 }

@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+﻿using System.Collections.Generic;
 using Atlas.Dialogs;
-using Atlas.Helpers.Tags;
-using Atlas.Metro.Controls.Custom;
-using Atlas.Models;
-using Atlas.Pages.CacheEditors;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
-using Atlas.ViewModels;
-using Blamite.Blam.Scripting;
-using XBDMCommunicator;
+using Atlas.ViewModels.BLF;
 
-namespace Atlas.Pages
+namespace Atlas.Pages.BLF
 {
 	/// <summary>
 	/// Interaction logic for MapInfoPage.xaml
