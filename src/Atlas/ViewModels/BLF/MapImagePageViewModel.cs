@@ -112,7 +112,7 @@ namespace Atlas.ViewModels.BLF
 						stream.WriteInt32(0x111);
 						stream.WriteInt16(1);
 						stream.WriteInt16(1);
-						stream.WriteInt32(0);
+						stream.WriteInt32(newMapiLength + 0x30);
 						stream.WriteByte(3);
 						stream.WriteBlock(new byte[0x100]);
 
