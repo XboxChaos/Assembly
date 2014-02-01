@@ -73,26 +73,64 @@ namespace Atlas.ViewModels.BLF
 				MapImageLocation = mapInfoLocation;
 				MapImageBLF = new MapImageBLF();
 
-				// Validate the BLF file, add info to the Model
-				PureBLF _blf = new PureBLF(MapImageLocation);
-				if (_blf.BLFChunks[1].ChunkMagic != "mapi")
+				var file = File.Open(mapInfoLocation, FileMode.Open, FileAccess.ReadWrite);
+				var stream = new EndianStream(file, Endian.BigEndian);
+				stream.BaseStream.Position = 0x0;
+
+				// Extremely basic checks to ensure the file is indeed a BLF and Map Image file
+				if (stream.ReadInt32() != 0x5F626C66)
+					throw new Exception("The selected file is not a valid BLF file.");
+
+				stream.BaseStream.Position = 0x30;
+				if (stream.ReadInt32() != 0x6D617069)
 					throw new Exception("The selected BLF is not a valid Map Image file.");
 
-				var imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
-				imgChunkData.RemoveRange(0, 0x08);
-				ImageBytes = imgChunkData;
+				// Since our checks tell us it's okay, an exception thrown by validation will likely be due to incorrect mapi and image lengths
+				try
+				{
+					ValidateBLF(file);
+				}
+				// So if we get an exception, let's offer to fix that
+				catch
+				{
+					// TODO: Update this to MetroMessageBox (Error was thrown about needing to be some other thread type)
+					var answer = MessageBox.Show("The BLF file you selected had some errors. Would you like me to try to fix it for you?", "Invalid BLF Chunks", MessageBoxButton.YesNo);
 
-				UpdateBLF(_blf);
+					if (answer == MessageBoxResult.Yes)
+					{
+						// This assumes the file was made via the old image replacing technique, are there any other potential problems?
+						stream.BaseStream.Position = 0x34;
+						int newMapiLength = (int)stream.Length - 0x30;
+						stream.WriteInt32(newMapiLength);
 
-				_blf.Close();
+						stream.BaseStream.Position = 0x40;
+						stream.WriteInt32(newMapiLength - 0x14);
 
-				// Find out whether the file is a PNG or JPEG
-				if (imgChunkData[0] == 0xFF && imgChunkData[1] == 0xD8)
-					ImageFormat = "JPEG";
-				else if (imgChunkData[0] == 0x89 && imgChunkData[1] == 0x50 & imgChunkData[2] == 0x4E && imgChunkData[3] == 0x47)
-					ImageFormat = "PNG";
-				else
-					ImageFormat = "Unrecognized";
+						stream.BaseStream.Position = newMapiLength + 0x30;
+						stream.WriteAscii("_eof");
+						stream.BaseStream.Position = newMapiLength + 0x34;
+						stream.WriteInt32(0x111);
+						stream.WriteInt16(1);
+						stream.WriteInt16(1);
+						stream.WriteInt32(0);
+						stream.WriteByte(3);
+						stream.WriteBlock(new byte[0x100]);
+
+						try
+						{
+							ValidateBLF(file);
+						}
+						catch
+						{
+							// TODO: Also update thos to MetroMessageBox
+							MessageBox.Show("The problem could not be fixed. Sorry.", "Problem Persists", MessageBoxButton.OK);
+						}
+					}
+
+					if (answer == MessageBoxResult.No)
+					//	Close();
+						return;
+				}
 
 				var fileInfo = new FileInfo(MapImageLocation);
 
@@ -138,6 +176,30 @@ namespace Atlas.ViewModels.BLF
 				});
 			});
 			thread.Start();
+		}
+
+		private void ValidateBLF(Stream file)
+		{
+			PureBLF _blf = new PureBLF(file);
+
+			if (_blf.BLFChunks[1].ChunkMagic != "mapi")
+				throw new Exception("The selected BLF is not a valid Map Image file.");
+
+			var imgChunkData = new List<byte>(_blf.BLFChunks[1].ChunkData);
+			imgChunkData.RemoveRange(0, 0x08);
+			ImageBytes = imgChunkData;
+
+			UpdateBLF(_blf);
+
+			_blf.Close();
+
+			// Find out whether the file is a PNG or JPEG
+			if (imgChunkData[0] == 0xFF && imgChunkData[1] == 0xD8)
+				ImageFormat = "JPEG";
+			else if (imgChunkData[0] == 0x89 && imgChunkData[1] == 0x50 & imgChunkData[2] == 0x4E && imgChunkData[3] == 0x47)
+				ImageFormat = "PNG";
+			else
+				ImageFormat = "Unrecognized";
 		}
 
 		public void ReplaceImage()
