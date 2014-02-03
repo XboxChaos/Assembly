@@ -256,26 +256,40 @@ namespace Atlas.Pages.CacheEditors
 
 		#region Split Helpers
 
+		private bool _tagEditorExpanded;
 		private void TagEditorButton_OnClick(object sender, RoutedEventArgs e)
 		{
+			if (_tagEditorExpanded)
+			{
+				_tagEditorExpanded = false;
+				return;
+			}
+
 			ViewModel.EditorGridLength = new GridLength(0.7, GridUnitType.Star);
 			ViewModel.PluginGridLength = new GridLength(0.3, GridUnitType.Star);
 		}
-
 		private void TagEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
+			_tagEditorExpanded = true;
 			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
 			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
 		}
 
+		private bool _pluginEditorExpanded;
 		private void PluginEditorButton_OnClick(object sender, RoutedEventArgs e)
 		{
+			if (_pluginEditorExpanded)
+			{
+				_pluginEditorExpanded = false;
+				return;
+			}
+
 			ViewModel.EditorGridLength = new GridLength(0.3, GridUnitType.Star);
 			ViewModel.PluginGridLength = new GridLength(0.7, GridUnitType.Star);
 		}
-
 		private void PluginEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
+			_pluginEditorExpanded = true;
 			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
 			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
 		}
