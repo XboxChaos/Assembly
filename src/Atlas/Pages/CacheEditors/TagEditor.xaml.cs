@@ -256,35 +256,25 @@ namespace Atlas.Pages.CacheEditors
 
 		#region Split Helpers
 
-		private void TagEditorHighlightButton_OnClick(object sender, RoutedEventArgs e)
+		private void TagEditorButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			// TODO: Fix this
-			//TagDataViewer.Focus();
-
-			if (!(ViewModel.EditorGridLength.Value < 0.1)) return;
-
-			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
-			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
+			ViewModel.EditorGridLength = new GridLength(0.7, GridUnitType.Star);
+			ViewModel.PluginGridLength = new GridLength(0.3, GridUnitType.Star);
 		}
 
-		private void TagEditorHighlightButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void TagEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
 			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
 		}
 
-		private void PluginEditorHighlightButton_OnClick(object sender, RoutedEventArgs e)
+		private void PluginEditorButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			// TODO: Fix this
-			//PluginEditorGrid.Focus();
-
-			if (!(ViewModel.PluginGridLength.Value < 0.1)) return;
-
-			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
-			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
+			ViewModel.EditorGridLength = new GridLength(0.3, GridUnitType.Star);
+			ViewModel.PluginGridLength = new GridLength(0.7, GridUnitType.Star);
 		}
 
-		private void PluginEditorHighlightButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void PluginEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
 			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
