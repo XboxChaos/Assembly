@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using Atlas.Models;
 using Blamite.Flexibility;
 using Blamite.Flexibility.Settings;
@@ -22,6 +25,9 @@ namespace Atlas.Helpers
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 		private ObservableCollection<RecentFile> _recentFiles = new ObservableCollection<RecentFile>(); 
 
+		// UI
+		private Accent _assemblyAccent = Accent.Blue;
+
 		// Cache Editor
 		private TagSort _cacheEditorTagSortMethod = TagSort.PathHierarchy;
 		private bool _tagEditorShowBlockInformation = true;
@@ -29,6 +35,8 @@ namespace Atlas.Helpers
 		private bool _tagEditorShowInvisibles;
 		private bool _tagEditorShowComments = true;
 		private string _xsdPath = "";
+		private GridLength _tagEditorGridLength = new GridLength(0.7, GridUnitType.Star);
+		private GridLength _tagEditorPluginGridLength = new GridLength(0.3, GridUnitType.Star);
 
 		// Xbox 360 XDK
 		private string _xdkIpAddress = "192.168.1.86";
@@ -36,6 +44,38 @@ namespace Atlas.Helpers
 		[JsonIgnore]
 		public bool Loaded { get; set; }
 
+
+		#region User Interface
+
+		public Accent AssemblyAccent
+		{
+			get { return _assemblyAccent; }
+			set
+			{
+				SetField(ref _assemblyAccent, value);
+
+				// set accent
+				var accent =
+					CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Enum.Parse(typeof (Accent), _assemblyAccent.ToString()).ToString());
+
+				try
+				{
+					Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+					{
+						Source = new Uri("/Atlas;component/Metro/Accents/" + accent + ".xaml", UriKind.Relative)
+					});
+				}
+				catch
+				{
+					Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+					{
+						Source = new Uri("/Assembly;component/Metro/Accents/Blue.xaml", UriKind.Relative)
+					});
+				}
+			}
+		}
+
+		#endregion
 
 		#region Misc
 
@@ -98,6 +138,18 @@ namespace Atlas.Helpers
 			set { SetField(ref _xsdPath, value); }
 		}
 
+		public GridLength TagEditorGridLength
+		{
+			get { return _tagEditorGridLength; }
+			set { SetField(ref _tagEditorGridLength, value); }
+		}
+
+		public GridLength TagEditorPluginGridLength
+		{
+			get { return _tagEditorPluginGridLength; }
+			set { SetField(ref _tagEditorPluginGridLength, value); }
+		}
+
 		#endregion
 
 		#region XDK
@@ -117,6 +169,14 @@ namespace Atlas.Helpers
 		{
 			TagClass,
 			PathHierarchy
+		}
+
+		public enum Accent
+		{
+			Blue,
+			Green,
+			Orange,
+			Purple
 		}
 
 		#endregion

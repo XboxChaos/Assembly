@@ -42,7 +42,10 @@ namespace Atlas.Pages.CacheEditors
 			EditorTitle = string.Format(EditorFormat, ViewModel.TagHierarchyNode.Name);
 			
 			// Set Option boxes
-			ShowCommentsToggleButton.DataContext =
+			TagEditorRowDefinition.DataContext =
+				PluginEditorRowDefinition.DataContext =
+				
+				ShowCommentsToggleButton.DataContext =
 				ShowEnumIndicesToggleButton.DataContext =
 				ShowInvisiblesToggleButton.DataContext = 
 				ShowTagBlockInfoToggleButton.DataContext = App.Storage.Settings;
@@ -157,10 +160,10 @@ namespace Atlas.Pages.CacheEditors
 			var line = (int) field.PluginLine;
 			var selectedLineDetails = PluginTextEditor.Document.GetLineByNumber(line);
 
-			if (ViewModel.PluginGridLength.Value <= 1.0)
+			if (App.Storage.Settings.TagEditorPluginGridLength.Value <= 1.0)
 			{
-				ViewModel.EditorGridLength = new GridLength(0.7, GridUnitType.Star);
-				ViewModel.PluginGridLength = new GridLength(0.3, GridUnitType.Star);
+				App.Storage.Settings.TagEditorGridLength = new GridLength(0.7, GridUnitType.Star);
+				App.Storage.Settings.TagEditorPluginGridLength = new GridLength(0.3, GridUnitType.Star);
 			}
 
 			PluginTextEditor.ScrollToLine(line);
@@ -265,14 +268,14 @@ namespace Atlas.Pages.CacheEditors
 				return;
 			}
 
-			ViewModel.EditorGridLength = new GridLength(0.7, GridUnitType.Star);
-			ViewModel.PluginGridLength = new GridLength(0.3, GridUnitType.Star);
+			App.Storage.Settings.TagEditorGridLength = new GridLength(0.7, GridUnitType.Star);
+			App.Storage.Settings.TagEditorPluginGridLength = new GridLength(0.3, GridUnitType.Star);
 		}
 		private void TagEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			_tagEditorExpanded = true;
-			ViewModel.EditorGridLength = new GridLength(1.0, GridUnitType.Star);
-			ViewModel.PluginGridLength = new GridLength(0.0, GridUnitType.Star);
+			App.Storage.Settings.TagEditorGridLength = new GridLength(1.0, GridUnitType.Star);
+			App.Storage.Settings.TagEditorPluginGridLength = new GridLength(0.0, GridUnitType.Star);
 		}
 
 		private bool _pluginEditorExpanded;
@@ -284,14 +287,14 @@ namespace Atlas.Pages.CacheEditors
 				return;
 			}
 
-			ViewModel.EditorGridLength = new GridLength(0.3, GridUnitType.Star);
-			ViewModel.PluginGridLength = new GridLength(0.7, GridUnitType.Star);
+			App.Storage.Settings.TagEditorGridLength = new GridLength(0.3, GridUnitType.Star);
+			App.Storage.Settings.TagEditorPluginGridLength = new GridLength(0.7, GridUnitType.Star);
 		}
 		private void PluginEditorButton_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			_pluginEditorExpanded = true;
-			ViewModel.PluginGridLength = new GridLength(1.0, GridUnitType.Star);
-			ViewModel.EditorGridLength = new GridLength(0.0, GridUnitType.Star);
+			App.Storage.Settings.TagEditorPluginGridLength = new GridLength(1.0, GridUnitType.Star);
+			App.Storage.Settings.TagEditorGridLength = new GridLength(0.0, GridUnitType.Star);
 		}
 
 		#endregion

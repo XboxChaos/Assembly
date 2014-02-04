@@ -7,7 +7,6 @@
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:behavior="clr-namespace:Atlas.Metro.Controls.Behavior"
 			 xmlns:local="clr-namespace:Atlas.Pages.CacheEditors"
-			 xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
 			 mc:Ignorable="d" 
 			 Background="#252526"
 			 d:DesignHeight="600" d:DesignWidth="900">
@@ -20,9 +19,9 @@
 	</UserControl.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="{Binding Path=EditorGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.7*}" />
+			<RowDefinition x:Name="TagEditorRowDefinition" Height="{Binding Path=TagEditorGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.7*}" />
 			<RowDefinition Height="5" />
-			<RowDefinition Height="{Binding Path=PluginGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.3*}" />
+			<RowDefinition x:Name="PluginEditorRowDefinition" Height="{Binding Path=TagEditorPluginGridLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0.3*}" />
 			<RowDefinition Height="5" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -489,7 +488,8 @@
 						<ComboBoxItem Tag="85" Content="85%" />
 						<ComboBoxItem Tag="100" Content="100%" />
 					</ComboBox>
-					<ToggleButton x:Name="ShowInvisiblesToggleButton" Grid.Column="1" ToolTip="Toggle the visibility unknown (unmapped) values in the Tag Editor">
+					<ToggleButton x:Name="ShowInvisiblesToggleButton" Grid.Column="1" ToolTip="Toggle the visibility unknown (unmapped) values in the Tag Editor"
+								  IsChecked="{Binding Path=TagEditorShowInvisibles}">
 						<ToggleButton.Content>
 							<Grid Width="20" Height="15">
 								<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 
@@ -508,17 +508,20 @@
 							</Grid>
 						</ToggleButton.Content>
 					</ToggleButton>
-					<ToggleButton x:Name="ShowTagBlockInfoToggleButton" Grid.Column="2" ToolTip="Toggle the default visibility of Tag Block Information">
+					<ToggleButton x:Name="ShowTagBlockInfoToggleButton" Grid.Column="2" ToolTip="Toggle the default visibility of Tag Block Information"
+								  IsChecked="{Binding Path=TagEditorShowBlockInformation}">
 						<ToggleButton.Content>
 							<TextBlock Foreground="#FFC5C5C5" FontSize="11">i(**)</TextBlock>
 						</ToggleButton.Content>
 					</ToggleButton>
-					<ToggleButton x:Name="ShowEnumIndicesToggleButton" Grid.Column="3" ToolTip="Toggle the visibility of Enum Indices">
+					<ToggleButton x:Name="ShowEnumIndicesToggleButton" Grid.Column="3" ToolTip="Toggle the visibility of Enum Indices"
+								  IsChecked="{Binding Path=TagEditorShowEnumIndex}">
 						<ToggleButton.Content>
 							<TextBlock Foreground="#FFC5C5C5" FontSize="11">e(#)</TextBlock>
 						</ToggleButton.Content>
 					</ToggleButton>
-					<ToggleButton x:Name="ShowCommentsToggleButton" Grid.Column="4" ToolTip="Toggle the visibility of Comments">
+					<ToggleButton x:Name="ShowCommentsToggleButton" Grid.Column="4" ToolTip="Toggle the visibility of Comments"
+								  IsChecked="{Binding Path=TagEditorShowComments}">
 						<ToggleButton.Content>
 							<Grid Width="20" Height="15">
 								<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 
@@ -530,7 +533,7 @@
 						</ToggleButton.Content>
 					</ToggleButton>
 					<Button x:Name="ShowPluginRevisionButton" Grid.Column="5" ToolTip="Shows the Revision History for the plugin used to display the Tag Data."
-								Click="ShowPluginRevisionButton_OnClick">
+							Click="ShowPluginRevisionButton_OnClick">
 						<Button.Content>
 							<Grid>
 								<Ellipse Width="6" Height="6" Margin="5,4,0,0" VerticalAlignment="Top" 
