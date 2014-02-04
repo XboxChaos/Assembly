@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
+using Atlas.Extensions;
 using Atlas.Models;
 using Atlas.ViewModels;
 using Atlas.Windows;
@@ -8,27 +10,59 @@ namespace Atlas.Helpers
 {
 	public class Storage : Base
 	{
+		public const string StoragePath = @"Storage\";
 		public const string SettingsPath = @"Storage\Settings.json"; 
 
 		public Storage()
 		{
-			// Get File Path
-			string jsonString = null;
-			if (File.Exists(SettingsPath))
-				jsonString = File.ReadAllText(SettingsPath);
+			LoadSettings();
+		}
 
+		private void LoadSettings()
+		{
+			ParseSettings();
+
+			// Set up file Watching
+			if (!File.Exists(SettingsPath))
+				return;
+
+			var fileWatcher = new FileSystemWatcher(StoragePath)
+			{
+				NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.LastAccess
+			};
+			fileWatcher.Changed += (sender, args) =>
+			{
+				ParseSettings();
+			};
+			fileWatcher.EnableRaisingEvents = true;
+		}
+
+		private void ParseSettings()
+		{
 			try
 			{
-				if (jsonString == null)
+				// Get File Path
+				string jsonString = null;
+				if (File.Exists(SettingsPath))
+					jsonString = File.ReadAllText(SettingsPath);
+
+				try
+				{
+					if (jsonString == null)
+						_settings = new Settings();
+					else
+						_settings = JsonConvert.DeserializeObject<Settings>(jsonString) ?? new Settings();
+				}
+				catch (JsonSerializationException)
+				{
 					_settings = new Settings();
-				else
-					_settings = JsonConvert.DeserializeObject<Settings>(jsonString) ?? new Settings();
+				}
+				_settings.Loaded = true;
 			}
-			catch (JsonSerializationException)
+			catch (IOException ex)
 			{
-				_settings = new Settings();
+				Trace.TraceError(ex.ToString());
 			}
-			_settings.Loaded = true;
 		}
 
 		/// <summary>

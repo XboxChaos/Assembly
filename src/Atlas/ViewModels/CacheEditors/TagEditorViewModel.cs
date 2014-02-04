@@ -57,24 +57,6 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private CachePageViewModel _cachePageViewModel;
 
-		#region UI Layout
-
-		public GridLength EditorGridLength
-		{
-			get { return _editorGridLength; }
-			set { SetField(ref _editorGridLength, value); }
-		}
-		private GridLength _editorGridLength = new GridLength(0.7, GridUnitType.Star);
-
-		public GridLength PluginGridLength
-		{
-			get { return _pluginGridLength; }
-			set { SetField(ref _pluginGridLength, value); }
-		}
-		private GridLength _pluginGridLength = new GridLength(0.3, GridUnitType.Star);
-
-		#endregion
-
 		#region Tag Editor Stuff
 
 		public TagHierarchyNode TagHierarchyNode
