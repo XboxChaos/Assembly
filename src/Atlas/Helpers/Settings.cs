@@ -44,6 +44,9 @@ namespace Atlas.Helpers
 		[JsonIgnore]
 		public bool Loaded { get; set; }
 
+		[JsonIgnore]
+		public bool Changed { get; set; }
+
 
 		#region User Interface
 
@@ -203,6 +206,7 @@ namespace Atlas.Helpers
 				if (EqualityComparer<T>.Default.Equals(field, value))
 					return false;
 
+			Changed = true;
 			field = value;
 			OnPropertyChanged(propertyName);
 
