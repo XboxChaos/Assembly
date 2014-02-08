@@ -206,6 +206,9 @@ namespace Atlas.ViewModels
 		/// <param name="type"></param>
 		public void ValidateFile(string filePath, Type type = Type.Other)
 		{
+			if (filePath == null)
+				return;
+
 			// try via type
 			switch (type)
 			{

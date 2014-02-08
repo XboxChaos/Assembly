@@ -32,6 +32,11 @@ namespace Atlas.Helpers
 			};
 			fileWatcher.Changed += (sender, args) =>
 			{
+				if (Settings != null && Settings.Changed)
+				{
+					Settings.Changed = false;
+					return;
+				}
 				ParseSettings();
 			};
 			fileWatcher.EnableRaisingEvents = true;
