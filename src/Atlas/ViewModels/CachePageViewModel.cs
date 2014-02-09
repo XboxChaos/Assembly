@@ -308,6 +308,17 @@ namespace Atlas.ViewModels
 			SelectedEditor = editor;
 		}
 
+		public void LoadNetworkSessionEditor()
+		{
+			var editor = Editors.FirstOrDefault(e => e is NetworkSessionEditor);
+			if (editor == null)
+			{
+				editor = new NetworkSessionEditor(this);
+				Editors.Add(editor);
+			}
+			SelectedEditor = editor;
+		}
+
 		#endregion
 
 		#region Helpers

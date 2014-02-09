@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using Atlas.Dialogs;
 using Atlas.Native;
@@ -24,9 +25,16 @@ namespace Atlas.Windows
 			DataContext = App.Storage.HomeWindowViewModel = ViewModel;
 			ViewModel.AssemblyPage = new StartPage();
 
+			Closing += OnClosing;
+
 #if !DEBUG
 			DebugMenuItems.Visibility = Visibility.Collapsed;
 #endif
+		}
+
+		private static void OnClosing(object sender, CancelEventArgs cancelEventArgs)
+		{
+			cancelEventArgs.Cancel = !App.Storage.HomeWindowViewModel.AssemblyPage.Close();
 		}
 
 		protected override void OnStateChanged(EventArgs e)
