@@ -13,7 +13,7 @@ namespace Atlas
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			Storage = new Storage();
-
+			
 			base.OnStartup(e);
 		}
 	}

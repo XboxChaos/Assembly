@@ -163,6 +163,11 @@ namespace Atlas.Pages
 			ViewModel.LoadAdvancedMemoryEditor();
 		}
 
+		private void NetworkSessionButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.LoadNetworkSessionEditor();
+		}
+
 		#endregion
 
 

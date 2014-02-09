@@ -9,6 +9,7 @@ namespace Atlas.Metro.Controls.Custom
 	{
 		public static DependencyProperty WatermarkProperty;
 		public static DependencyProperty WatermarkForegroundProperty;
+		public static DependencyProperty SearchIconVisibilityProperty;
 
 		/// <summary>
 		/// 
@@ -17,6 +18,7 @@ namespace Atlas.Metro.Controls.Custom
 		{
 			WatermarkProperty = DependencyProperty.Register("Watermark", typeof(String), typeof(MetroWatermarkTextbox));
 			WatermarkForegroundProperty = DependencyProperty.Register("WatermarkForeground", typeof(SolidColorBrush), typeof(MetroWatermarkTextbox));
+			SearchIconVisibilityProperty = DependencyProperty.Register("SearchIconVisibility", typeof(Visibility), typeof(MetroWatermarkTextbox));
 		}
 
 		/// <summary>
@@ -48,6 +50,15 @@ namespace Atlas.Metro.Controls.Custom
 		{
 			get { return (SolidColorBrush)GetValue(WatermarkForegroundProperty); }
 			set { SetValue(WatermarkForegroundProperty, value); }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Visibility SearchIconVisibility
+		{
+			get { return (Visibility)GetValue(SearchIconVisibilityProperty); }
+			set { SetValue(SearchIconVisibilityProperty, value); }
 		}
 
 		#endregion
