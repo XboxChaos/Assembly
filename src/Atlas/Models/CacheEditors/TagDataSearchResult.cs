@@ -1,4 +1,4 @@
-﻿using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
+﻿using Atlas.Views.CacheEditors.TagEditorComponents.Data;
 
 namespace Atlas.Models.CacheEditors
 {

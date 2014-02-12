@@ -21,6 +21,16 @@ namespace Atlas.Helpers
 		}
 
 		/// <summary>
+		/// Gets the path of a plugin
+		/// </summary>
+		/// <param name="gamePluginName">The name of the plugin folder for that game.</param>
+		/// <param name="className">The name of the class for that plugin.</param>
+		public static string GetPluginPath(string gamePluginName, string className)
+		{
+			 return string.Format("{0}\\{1}\\{2}.xml", GetApplicationLocation() + @"Plugins", gamePluginName, className);
+		}
+
+		/// <summary>
 		///     Gets the location of the applications assembly (lulz, assembly.exe)
 		/// </summary>
 		public static string GetApplicationAssemblyLocation()

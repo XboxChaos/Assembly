@@ -12,8 +12,8 @@ using Atlas.Helpers.SyntaxHighlighting;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
 using Atlas.Models.CacheEditors;
-using Atlas.Pages.CacheEditors;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
+using Atlas.Views.CacheEditors;
+using Atlas.Views.CacheEditors.TagEditorComponents.Data;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
@@ -34,9 +34,9 @@ namespace Atlas.ViewModels.CacheEditors
 
 			// Load Plugin Path
 			var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(TagHierarchyNode.TagClass.Magic)).Trim();
-			PluginRelativePath = string.Format("{0}\\{1}.xml", CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"), className);
-			PluginPath = string.Format("{0}\\{1}", VariousFunctions.GetApplicationLocation() + @"Plugins", PluginRelativePath);
-
+			PluginPath =
+				VariousFunctions.GetPluginPath(CachePageViewModel.EngineDescription.Settings.GetSetting<string>("plugins"),
+					className);
 			PluginContent = File.ReadAllText(PluginPath);
 		}
 
@@ -119,13 +119,6 @@ namespace Atlas.ViewModels.CacheEditors
 		}
 		private string _pluginPath;
 
-		public string PluginRelativePath
-		{
-			get { return _pluginRelativePath; }
-			set { SetField(ref _pluginRelativePath, value); }	
-		}
-		private string _pluginRelativePath;
-		
 		public ThirdGenPluginVisitor PluginVisitor
 		{
 			get { return _pluginVisitor; }

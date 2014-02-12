@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Atlas.Models;
-using Atlas.Pages.CacheEditors.TagEditorComponents.Data;
+using Atlas.Views.CacheEditors.TagEditorComponents.Data;
 
 namespace Atlas.ViewModels.Dialog
 {

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using Atlas.Dialogs;
 using Atlas.Native;
-using Atlas.Pages;
+using Atlas.Views;
 using Atlas.ViewModels;
 
 namespace Atlas.Windows

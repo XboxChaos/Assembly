@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using Atlas.Pages.CacheEditors;
+using Atlas.Views.CacheEditors;
 
 namespace Atlas.Converters
 {

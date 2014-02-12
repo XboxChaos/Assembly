@@ -5,7 +5,7 @@ using System.Windows;
 using Atlas.Dialogs;
 using Atlas.Models;
 using Atlas.Models.BLF;
-using Atlas.Pages.BLF;
+using Atlas.Views.BLF;
 using Blamite.Blam.ThirdGen;
 using Blamite.Blam.ThirdGen.BLF;
 

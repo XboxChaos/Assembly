@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="Atlas.Views.BLF.MapInfoPage"
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+			xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
+			xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+			xmlns:models="clr-namespace:Atlas.Models"
+			xmlns:converters="clr-namespace:Atlas.Converters"
+			xmlns:selectors="clr-namespace:Atlas.Selectors"
+			mc:Ignorable="d" 
+			 d:DesignHeight="800" d:DesignWidth="1200">
+	<UserControl.Resources>
+	</UserControl.Resources>
+	<Grid>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition x:Name="GridLeftColumnDefinition" Width="*" MinWidth="30" />
+				<ColumnDefinition Width="4" />
+				<ColumnDefinition x:Name="GridRightColumnDefinition" Width="350" MinWidth="30" />
+			</Grid.ColumnDefinitions>
+			<ToolBarTray Margin="8,10" Grid.ColumnSpan="3" Background="{x:Null}">
+			</ToolBarTray>
+
+			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
+				<custom:MetroClosableTabControl x:Name="EditorTabControl" Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
+												Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=SelectedEditor, Mode=TwoWay}"
+												ItemsSource="{Binding Path=Editors}">
+					<custom:MetroClosableTabControl.ItemContainerStyle>
+						<Style BasedOn="{StaticResource {x:Type custom:MetroClosableTabItem}}" TargetType="{x:Type custom:MetroClosableTabItem}">
+							<Setter Property="Header" Value="{Binding EditorTitle}"/>
+							<Setter Property="Content" Value="{Binding}"/>
+						</Style>
+					</custom:MetroClosableTabControl.ItemContainerStyle>
+				</custom:MetroClosableTabControl>
+			</Grid>
+
+			<GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
+
+			<Grid x:Name="SideContentGrid" Grid.Column="2" Grid.Row="1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0.6*" />
+					<RowDefinition Height="4" />
+					<RowDefinition Height="0.4*" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" Background="#2d2d30">
+					<TabControl x:Name="EditorsTabControl" TabStripPlacement="Bottom">
+						<TabItem Header="Meta" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="Meta">
+
+							</custom:MetroContainer>
+						</TabItem>
+						<TabItem Header="Localization" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="Localization">
+
+							</custom:MetroContainer>
+						</TabItem>
+						<TabItem Header="Max Teams" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="Max Teams">
+								
+							</custom:MetroContainer>
+						</TabItem>
+						<TabItem Header="MP Objects" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="MP Objects">
+								
+							</custom:MetroContainer>
+						</TabItem>
+						<TabItem Header="Insertion Points" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="Insertion Points">
+
+							</custom:MetroContainer>
+						</TabItem>
+					</TabControl>
+				</Grid>
+				<GridSplitter Grid.Row="1" Background="#3f3f46" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
+				<Grid Grid.Row="2">
+					<custom:MetroContainer Title="Map Information">
+						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" SelectedObject="{Binding Path=MapInfoBLF}" ShowSortOptions="False" AutoGenerateProperties="True">
+							<!-- TODO: Get custom editors working (replace shitty textbox) - 
+									http://wpftoolkit.codeplex.com/wikipage?title=PropertyGrid -->
+						</xctk:PropertyGrid>
+					</custom:MetroContainer>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>
