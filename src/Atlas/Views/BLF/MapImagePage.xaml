@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="Atlas.Views.BLF.MapImagePage"
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+			xmlns:dataBind="clr-namespace:Atlas.Helpers.Tags"
+			xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+			xmlns:models="clr-namespace:Atlas.Models"
+			xmlns:converters="clr-namespace:Atlas.Converters"
+			xmlns:selectors="clr-namespace:Atlas.Selectors"
+			mc:Ignorable="d" 
+			 d:DesignHeight="800" d:DesignWidth="1200">
+	<UserControl.Resources>
+	</UserControl.Resources>
+	<Grid>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition x:Name="GridLeftColumnDefinition" Width="*" MinWidth="30" />
+				<ColumnDefinition Width="4" />
+				<ColumnDefinition x:Name="GridRightColumnDefinition" Width="350" MinWidth="30" />
+			</Grid.ColumnDefinitions>
+			<Grid Margin="8,10" Grid.ColumnSpan="3" Background="{x:Null}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+					<ColumnDefinition Width="20" />
+					<ColumnDefinition Width="200" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Button x:Name="ReplaceImageButton" Grid.Column="1" Content="Replace Image" BorderThickness="1" BorderBrush="#FF0079CB" Margin="2,0" Click="ReplaceImageButton_Click" />
+				<Separator Grid.Column="2" />
+				<Button x:Name="ExtractImageButton" Grid.Column="3" Content="Extract Image" BorderThickness="1" BorderBrush="#FF0079CB" Margin="2,0" Click="ExtractImageButton_Click" />
+			</Grid>
+
+			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
+				<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+					<Image Source="{Binding Path=Image, UpdateSourceTrigger=PropertyChanged}" Width="{Binding Path=Image.PixelWidth, UpdateSourceTrigger=PropertyChanged}" Height="{Binding Path=Image.PixelHeight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+				</ScrollViewer>
+			</Grid>
+
+			<GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Background="#2d2d30" ResizeDirection="Columns" />
+
+			<Grid x:Name="SideContentGrid" Grid.Column="2" Grid.Row="1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0.6*" />
+					<RowDefinition Height="4" />
+					<RowDefinition Height="0.4*" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" Background="#2d2d30">
+					<TabControl x:Name="EditorsTabControl" TabStripPlacement="Bottom">
+						<TabItem Header="Image Properties" Style="{DynamicResource MetroTabControlBottom}">
+							<custom:MetroContainer Title="Image Properties">
+								<StackPanel Margin="10">
+									<TextBlock Text="{Binding Path=ImageFormat, StringFormat=Format: {0}, FallbackValue=Format: Null, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+									<TextBlock TextWrapping="Wrap" >
+										<TextBlock.Text>
+											<MultiBinding StringFormat="Image Dimensions: {0}x{1} pixels">
+												<Binding Path="Image.PixelWidth" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+												<Binding Path="Image.PixelHeight" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+									<TextBlock TextWrapping="Wrap" >
+										<TextBlock.Text>
+											<MultiBinding StringFormat="DPI: {0}x{1}">
+												<Binding Path="Image.DpiX" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+												<Binding Path="Image.DpiY" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+											</MultiBinding>
+										</TextBlock.Text>
+									</TextBlock>
+								</StackPanel>
+							</custom:MetroContainer>
+						</TabItem>
+					</TabControl>
+				</Grid>
+				<GridSplitter Grid.Row="1" Background="#3f3f46" HorizontalAlignment="Stretch" ResizeDirection="Rows" />
+				<Grid Grid.Row="2">
+					<custom:MetroContainer Title="Campaign Information">
+						<xctk:PropertyGrid x:Name="CacheInformationPropertyGrid" SelectedObject="{Binding Path=MapImageBLF, UpdateSourceTrigger=PropertyChanged}" ShowSortOptions="False" AutoGenerateProperties="True">
+							<!-- TODO: Get custom editors working (replace shitty textbox) - 
+									http://wpftoolkit.codeplex.com/wikipage?title=PropertyGrid -->
+						</xctk:PropertyGrid>
+					</custom:MetroContainer>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

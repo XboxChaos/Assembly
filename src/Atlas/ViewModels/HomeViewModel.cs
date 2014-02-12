@@ -6,8 +6,8 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Atlas.Dialogs;
 using Atlas.Models;
-using Atlas.Pages;
-using Atlas.Pages.BLF;
+using Atlas.Views;
+using Atlas.Views.BLF;
 using Blamite.IO;
 
 namespace Atlas.ViewModels
