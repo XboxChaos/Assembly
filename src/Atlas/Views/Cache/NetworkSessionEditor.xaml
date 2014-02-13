@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Atlas.Views.Cache.NetworkSessionEditor"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+			 mc:Ignorable="d" 
+			 d:DesignHeight="500" d:DesignWidth="900">
+	<Grid>
+		<Grid x:Name="SessionTypeGrid">
+			<Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="560">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="1" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<Grid.Resources>
+					<Style x:Key="PaddingGridStyle" TargetType="{x:Type Grid}">
+						<Setter Property="Margin" Value="10" />
+					</Style>
+				</Grid.Resources>
+
+				<Grid x:Name="CreateSessionGrid" Margin="20" Width="250">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="35" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<TextBlock Text="Create Session" FontFamily="{DynamicResource MetroFontLight}" FontSize="25" HorizontalAlignment="Center" />
+
+					<StackPanel Grid.Row="1" Margin="20" VerticalAlignment="Center">
+						<Button x:Name="CreateSessionButton">
+							Create...
+						</Button>
+					</StackPanel>
+				</Grid>
+				<Grid Grid.Column="1" Background="Gray" />
+				<Grid x:Name="JoinSessionGrid" Grid.Column="2" Margin="20" Width="250">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="35" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<TextBlock Text="Join Session" FontFamily="{DynamicResource MetroFontLight}" FontSize="25" HorizontalAlignment="Center" />
+
+					<StackPanel Grid.Row="1" Margin="20">
+						<TextBlock Text="IP Address of Host:" />
+						<custom:MetroWatermarkTextbox SearchIconVisibility="Collapsed" Watermark="127.0.0.1" />
+						<Grid Style="{StaticResource PaddingGridStyle}" />
+						
+						<TextBlock Text="Port of Host (Leave as Default):" Visibility="Collapsed" />
+						<custom:MetroWatermarkTextbox SearchIconVisibility="Collapsed" Text="19002" Watermark="19002" Visibility="Collapsed" />
+						<Grid Style="{StaticResource PaddingGridStyle}" Visibility="Collapsed" />
+						
+						<Button x:Name="ConnectToSessionButton">
+							Connect...
+						</Button>
+					</StackPanel>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

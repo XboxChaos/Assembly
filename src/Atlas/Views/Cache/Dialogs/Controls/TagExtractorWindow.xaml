@@ -1,0 +1,65 @@
+﻿<custom:MetroDialogWindow x:Class="Atlas.Views.Cache.Dialogs.Controls.TagExtractorWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Name="DialogWindow"
+		xmlns:custom="clr-namespace:Atlas.Metro.Controls.Custom"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:native="clr-namespace:Atlas.Native"
+		xmlns:vectors="clr-namespace:Atlas.Metro.Vectors"
+		mc:Ignorable="d" native:WindowMovement.IsDraggable="True"
+		Style="{StaticResource MetroDialogWindowStyle}"
+		Height="490" Width="769" SizeToContent="Manual">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="50" />
+		</Grid.RowDefinitions>
+
+		<Grid native:WindowMovement.DragsWindow="True" IsHitTestVisible="True" Background="Transparent">
+			<Button x:Name="WindowCloseButton" ToolTip="Close" VerticalAlignment="Top" 
+					HorizontalAlignment="Right" Style="{DynamicResource WindowActionButton}" 
+					Click="WindowCloseButton_OnClick">
+				<vectors:CloseModule />
+			</Button>
+		</Grid>
+
+		<Grid Grid.Row="1" Margin="15,20">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<TabControl Background="Transparent">
+				<TabControl.Resources>
+					<Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroHeaderTabItem}">
+						<Setter Property="Padding" Value="0,10,0,0" />
+					</Style>
+				</TabControl.Resources>
+				<TabItem Header="Tags">
+					<DataGrid ItemsSource="{Binding RelevantTags}" Background="{x:Null}" Margin="0,10,0,0" FontSize="12" Padding="0"
+					  BorderThickness="0" VerticalAlignment="Stretch"
+					  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+					  AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
+					  CanUserAddRows="False" CanUserResizeColumns="True">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn Header="Extract" Width="50" Binding="{Binding Path=Extract, Mode=TwoWay}" IsReadOnly="False" CanUserSort="True" />
+							<DataGridTextColumn Header="Class" Width="60" Binding="{Binding Path=ExtractedTag.Class, Converter={StaticResource IValueConverterIntegerToCharConstant}, Mode=OneWay}" IsReadOnly="True" CanUserSort="True" />
+							<DataGridTextColumn Header="Tag Name" Width="450" Binding="{Binding Path=ExtractedTag.Name, Mode=OneWay}" IsReadOnly="True" CanUserSort="True" />
+							<DataGridTextColumn Header="Original Address" Width="100" Binding="{Binding Path=ExtractedTag.OriginalAddress, Mode=OneWay, StringFormat={}0x{0:X8}}" IsReadOnly="True" CanUserSort="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</TabItem>
+				<TabItem Header="Resources">
+					
+				</TabItem>
+			</TabControl>
+		</Grid>
+
+		<Grid x:Name="ButtonOptions" Grid.Row="2" Background="#FF424244">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button x:Name="ExtractButton" Padding="8,0" Margin="0,0,10,0" Content="Extract" Tag="{Binding}" Click="ExtractButton_OnClick" />
+			</StackPanel>
+		</Grid>
+	</Grid>
+</custom:MetroDialogWindow>

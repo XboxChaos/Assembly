@@ -9,8 +9,9 @@ using Atlas.Helpers.Tags;
 using Atlas.Metro.Controls.Custom;
 using Atlas.Models;
 using Atlas.ViewModels;
-using Atlas.Views.CacheEditors;
-using Atlas.Views.CacheEditors.TagEditorComponents.Data;
+using Atlas.Views.Cache;
+using Atlas.Views.Cache.Dialogs;
+using Atlas.Views.Cache.TagEditorComponents.Data;
 using Blamite.Blam.Scripting;
 using XBDMCommunicator;
 
@@ -70,7 +71,7 @@ namespace Atlas.Views
 			var tagHierarchyNode = NodeFromContextMenu(sender);
 			if (tagHierarchyNode == null) return;
 
-			// yea
+			MetroTagExtractor.Show(ViewModel.CacheFile, ViewModel.EngineDescription, ViewModel.MapStreamManager, tagHierarchyNode);
 		}
 		private void RenameNodeContextMenu_OnClick(object sender, RoutedEventArgs e)
 		{

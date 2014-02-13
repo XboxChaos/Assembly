@@ -10,7 +10,7 @@ using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
 using Atlas.Views;
-using Atlas.Views.CacheEditors;
+using Atlas.Views.Cache;
 using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Flexibility;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Atlas.Dialogs.Controls;
-using Atlas.Views.CacheEditors.TagEditorComponents.Data;
+using Atlas.Views.Cache.TagEditorComponents.Data;
 using Atlas.ViewModels;
 using Atlas.ViewModels.Dialog;
 

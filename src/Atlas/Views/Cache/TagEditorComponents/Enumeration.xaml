@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="Atlas.Views.Cache.TagEditorComponents.Enumeration"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" Height="28" Width="580"
+             HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<BooleanToVisibilityConverter x:Key="b2v" />
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock x:Name="lblEnumName" Text="{Binding Name}" ToolTip="{Binding Path=Name}"
+			            Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
+			           TextTrimming="CharacterEllipsis" />
+			<ComboBox x:Name="cbEnumOptions"
+			          ItemsSource="{Binding Values}"
+			          SelectedValue="{Binding SelectedValue}"
+			          HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Width="250">
+				<ComboBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+						                        VirtualizingStackPanel.VirtualizationMode="Recycling" />
+					</ItemsPanelTemplate>
+				</ComboBox.ItemsPanel>
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding Value}" Visibility="{Binding IsChecked, ElementName=indexToggle, Converter={StaticResource b2v}}"/>
+							<TextBlock Text=". " Visibility="{Binding IsChecked, ElementName=indexToggle, Converter={StaticResource b2v}}"/>
+							<TextBlock Text="{Binding Name}" />
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
+			<ToggleButton x:Name="indexToggle" Width="16" Content="#" Visibility="Collapsed" Margin="5,0,0,0"/>
+			<TextBlock x:Name="lblType" Text="{Binding TypeStr}" 
+			           VerticalAlignment="Center" Width="150" Margin="20,0,0,0" />
+		</StackPanel>
+
+	</Grid>
+</UserControl>

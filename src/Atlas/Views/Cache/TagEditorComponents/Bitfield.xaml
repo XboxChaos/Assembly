@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Atlas.Views.Cache.TagEditorComponents.Bitfield"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" Width="680"
+             MaxHeight="146"
+             HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<Style x:Key="BitfieldItemStyle" TargetType="{x:Type ListBoxItem}">
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="Height" Value="17" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ListBoxItem}">
+						<Grid>
+							<Border x:Name="BorderOutline" BorderThickness="2,1,1,1" />
+							<Border x:Name="BorderInline" BorderThickness="0" />
+							<Grid Background="Black" Opacity="0" />
+							<ContentPresenter VerticalAlignment="Center" />
+						</Grid>
+						<ControlTemplate.Triggers>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsMouseOver" Value="True" />
+									<Condition Property="IsSelected" Value="False" />
+								</MultiTrigger.Conditions>
+								<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+								<Setter Property="Opacity" Value="0.8" TargetName="BorderOutline" />
+								<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+								<Setter Property="Opacity" Value="0.2" TargetName="BorderInline" />
+							</MultiTrigger>
+							<Trigger Property="IsSelected" Value="True">
+								<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+								<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+								<Setter Property="Opacity" Value="0.4" TargetName="BorderInline" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="MetroBitField" TargetType="{x:Type ListBox}">
+			<Setter Property="ItemContainerStyle" Value="{StaticResource BitfieldItemStyle}" />
+			<Setter Property="Margin" Value="3,3,2,1" />
+		</Style>
+
+		<Style x:Key="MetroBitCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
+			<Setter Property="Foreground" Value="#999999" />
+			<Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+			<Setter Property="FontSize" Value="12" />
+		</Style>
+	</UserControl.Resources>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}"
+			            Width="180" VerticalAlignment="Top" Margin="0,3,0,0"
+			           TextTrimming="CharacterEllipsis" />
+			<ListBox x:Name="bitfieldEntries" Style="{StaticResource MetroBitField}" ItemsSource="{Binding Path=Bits}"
+			         Width="350" Margin="20,3,0,3" ScrollViewer.CanContentScroll="True"
+			         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+			         Background="{x:Null}" BorderBrush="#FF3C3C3C" Foreground="{x:Null}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<CheckBox x:Name="cbBitChecked" Content="{Binding Name}" IsChecked="{Binding IsSet}"
+						          Style="{StaticResource MetroBitCheckBox}" Margin="5,0,0,0" VerticalAlignment="Center"
+						          VerticalContentAlignment="Center" HorizontalAlignment="Stretch" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+				<ListBox.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Check All" Command="{Binding CheckAllCommand}" />
+						<MenuItem Header="Uncheck All" Command="{Binding UncheckAllCommand}" />
+					</ContextMenu>
+				</ListBox.ContextMenu>
+			</ListBox>
+			<TextBlock x:Name="lblType" Text="{Binding TypeStr}" 
+			           VerticalAlignment="Top" Width="125" Margin="20,3,0,0" />
+		</StackPanel>
+	</Grid>
+</UserControl>

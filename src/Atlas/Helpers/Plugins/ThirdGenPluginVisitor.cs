@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Atlas.Helpers.Tags;
-using Atlas.Views.CacheEditors.TagEditorComponents.Data;
+using Atlas.Views.Cache.TagEditorComponents.Data;
 using Blamite.Blam.Shaders;
 using Blamite.IO;
 using Blamite.Plugins;
