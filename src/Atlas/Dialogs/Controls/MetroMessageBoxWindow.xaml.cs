@@ -11,10 +11,10 @@ namespace Atlas.Dialogs.Controls
 	{
 		public MetroMessageBoxWindow(MessageBoxViewModel viewModel)
 		{
+			InitializeComponent();
+
 			DataContext = viewModel;
 			Title = WindowTitle = viewModel.Title;
-
-			InitializeComponent();
 		}
 
 		public MetroMessageBox.MessageBoxButton ExitButtonType = MetroMessageBox.MessageBoxButton.Okay;

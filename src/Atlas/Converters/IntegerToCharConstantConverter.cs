@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
-using Atlas.Views.Cache;
+using Blamite.Util;
 
 namespace Atlas.Converters
 {
-	[ValueConversion(typeof(ICacheEditor), typeof(Visibility))]
-	public class ScriptEditorToolbarVisibilityConverter : IValueConverter
+	[ValueConversion(typeof(int), typeof(string))]
+	public class IntegerToCharConstantConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var editor = value as ICacheEditor;
-			if (editor == null) return Visibility.Collapsed;
-
-			return (editor is ScriptEditor) ? Visibility.Visible : Visibility.Collapsed;
+			return CharConstant.ToString((int) value);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

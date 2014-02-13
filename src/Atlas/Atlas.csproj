@@ -112,6 +112,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\IntegerToCharConstantConverter.cs" />
     <Compile Include="Converters\PercentileToDecimalConverter.cs" />
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\StringToResourceConverter.cs" />
@@ -191,7 +192,8 @@
     <Compile Include="Models\BLF\MapImageBLF.cs" />
     <Compile Include="Models\BLF\MapInfoBLF.cs" />
     <Compile Include="Models\CacheEditorNode.cs" />
-    <Compile Include="Models\CacheEditors\TagDataSearchResult.cs" />
+    <Compile Include="Models\Cache\ExtractingTagEntry.cs" />
+    <Compile Include="Models\Cache\TagDataSearchResult.cs" />
     <Compile Include="Models\CacheHeaderInformation.cs" />
     <Compile Include="Models\EngineMemory.cs" />
     <Compile Include="Models\Github\GitHubRequest.cs" />
@@ -201,92 +203,97 @@
     <Compile Include="Native\Monitor_Workarea.cs" />
     <Compile Include="Native\ShellChanges.cs" />
     <Compile Include="Native\WindowMovement.cs" />
+    <Compile Include="ViewModels\Cache\TagEditorViewModel.cs" />
     <Compile Include="Views\BLF\MapImagePage.xaml.cs">
       <DependentUpon>MapImagePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\BLF\CampaignPage.xaml.cs">
       <DependentUpon>CampaignPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\AdvancedMemoryEditor.xaml.cs">
+    <Compile Include="Views\Cache\AdvancedMemoryEditor.xaml.cs">
       <DependentUpon>AdvancedMemoryEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\ICacheEditor.cs" />
-    <Compile Include="Views\CacheEditors\NetworkSessionEditor.xaml.cs">
+    <Compile Include="Views\Cache\Dialogs\Controls\TagExtractorWindow.xaml.cs">
+      <DependentUpon>TagExtractorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Cache\Dialogs\MetroTagExtractor.cs" />
+    <Compile Include="Views\Cache\ICacheEditor.cs" />
+    <Compile Include="Views\Cache\NetworkSessionEditor.xaml.cs">
       <DependentUpon>NetworkSessionEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\ScriptEditor.xaml.cs">
+    <Compile Include="Views\Cache\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditor.xaml.cs">
+    <Compile Include="Views\Cache\TagEditor.xaml.cs">
       <DependentUpon>TagEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\AsciiValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\AsciiValue.xaml.cs">
       <DependentUpon>AsciiValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Bitfield.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\Bitfield.xaml.cs">
       <DependentUpon>Bitfield.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\ColourValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\ColourValue.xaml.cs">
       <DependentUpon>ColourValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Comment.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\Comment.xaml.cs">
       <DependentUpon>Comment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\DegreeValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\DegreeValue.xaml.cs">
       <DependentUpon>DegreeValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Enumeration.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\Enumeration.xaml.cs">
       <DependentUpon>Enumeration.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\IntValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\IntValue.xaml.cs">
       <DependentUpon>IntValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\TagBlock.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\TagBlock.xaml.cs">
       <DependentUpon>TagBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\RangeValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\RangeValue.xaml.cs">
       <DependentUpon>RangeValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\RawBlock.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\RawBlock.xaml.cs">
       <DependentUpon>RawBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Shader.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\Shader.xaml.cs">
       <DependentUpon>Shader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\StringIDValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\StringIDValue.xaml.cs">
       <DependentUpon>StringIDValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\TagValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\TagValue.xaml.cs">
       <DependentUpon>TagValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\VectorValue.xaml.cs">
+    <Compile Include="Views\Cache\TagEditorComponents\VectorValue.xaml.cs">
       <DependentUpon>VectorValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\BitfieldData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\ColourData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\CommentData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\DataRef.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\DegreeData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\EnumData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\FieldChangeSet.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\FieldChangeTracker.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\ITagDataFieldVisitor.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagDataField.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagDataFilterer.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagDataReader.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagDataWriter.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\NumberData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\RawData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagBlock.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagBlockFlattener.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\ShaderRef.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\StringData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\StringIDData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\TagRefData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\ValueField.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\VectorData.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\WidthCalculator.cs" />
-    <Compile Include="Views\CacheEditors\TagEditorComponents\Data\WrappedTagBlockEntry.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\BitfieldData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\ColourData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\CommentData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\DataRef.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\DegreeData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\EnumData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\FieldChangeSet.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\FieldChangeTracker.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\ITagDataFieldVisitor.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagDataField.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagDataFilterer.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagDataReader.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagDataWriter.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\NumberData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\RawData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagBlock.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagBlockFlattener.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\ShaderRef.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\StringData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\StringIDData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\TagRefData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\ValueField.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\VectorData.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\WidthCalculator.cs" />
+    <Compile Include="Views\Cache\TagEditorComponents\Data\WrappedTagBlockEntry.cs" />
     <Compile Include="Views\CachePage.xaml.cs">
       <DependentUpon>CachePage.xaml</DependentUpon>
     </Compile>
@@ -300,10 +307,9 @@
     <Compile Include="Selectors\XbdmQuickOptionsButtonTypeSelector.cs" />
     <Compile Include="ViewModels\BLF\CampaignPageViewModel.cs" />
     <Compile Include="ViewModels\BLF\MapInfoPageViewModel.cs" />
-    <Compile Include="ViewModels\CacheEditors\Dialogs\TagExtractionViewModel.cs" />
-    <Compile Include="ViewModels\CacheEditors\NetworkSessionEditorViewModel.cs" />
-    <Compile Include="ViewModels\CacheEditors\ScriptEditorViewModel.cs" />
-    <Compile Include="ViewModels\CacheEditors\TagEditorViewModel.cs" />
+    <Compile Include="ViewModels\Cache\Dialog\TagExtractorViewModel.cs" />
+    <Compile Include="ViewModels\Cache\NetworkSessionEditorViewModel.cs" />
+    <Compile Include="ViewModels\Cache\ScriptEditorViewModel.cs" />
     <Compile Include="ViewModels\BLF\MapImagePageViewModel.cs" />
     <Compile Include="ViewModels\CachePageViewModel.cs" />
     <Compile Include="ViewModels\Dialog\BusyAlertBoxViewModel.cs" />
@@ -558,79 +564,83 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\AdvancedMemoryEditor.xaml">
+    <Page Include="Views\Cache\AdvancedMemoryEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CacheEditors\NetworkSessionEditor.xaml">
+    <Page Include="Views\Cache\Dialogs\Controls\TagExtractorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CacheEditors\ScriptEditor.xaml">
+    <Page Include="Views\Cache\NetworkSessionEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditor.xaml">
+    <Page Include="Views\Cache\ScriptEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\AsciiValue.xaml">
+    <Page Include="Views\Cache\TagEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Cache\TagEditorComponents\AsciiValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\Bitfield.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\Bitfield.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\ColourValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\ColourValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\Comment.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\Comment.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\ComponentDictionary.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\ComponentDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\DegreeValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\DegreeValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\Enumeration.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\Enumeration.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\IntValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\IntValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\TagBlock.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\TagBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\RangeValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\RangeValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\RawBlock.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\RawBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\Shader.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\Shader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\StringIDValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\StringIDValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\TagValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\TagValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CacheEditors\TagEditorComponents\VectorValue.xaml">
+    <Page Include="Views\Cache\TagEditorComponents\VectorValue.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

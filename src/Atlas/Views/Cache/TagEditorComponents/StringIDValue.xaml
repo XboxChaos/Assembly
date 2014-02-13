@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Atlas.Views.Cache.TagEditorComponents.StringIDValue"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+             xmlns:c="clr-namespace:Assembly.Metro.Controls"
+             mc:Ignorable="d" Height="28" Width="580">
+	<UserControl.Resources>
+		<ItemsPanelTemplate x:Key="VirtualPanel">
+			<VirtualizingStackPanel />
+		</ItemsPanelTemplate>
+	</UserControl.Resources>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"
+			            Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
+			           TextTrimming="CharacterEllipsis" />
+			<c:StringIDInput x:Name="cbStringIDs" Text="{Binding Value}" SearchTrie="{Binding AutocompleteTrie}" Width="250"
+			                 VerticalAlignment="Center" Margin="20,0,0,0" Focusable="True" />
+			<TextBlock Text="StringID"  VerticalAlignment="Center" Width="150"
+			           Margin="20,0,0,0" />
+		</StackPanel>
+	</Grid>
+</UserControl>

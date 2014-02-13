@@ -1,0 +1,102 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:data="clr-namespace:Atlas.Views.Cache.TagEditorComponents.Data"
+                    xmlns:components="clr-namespace:Atlas.Views.Cache.TagEditorComponents">
+	<DataTemplate DataType="{x:Type data:Uint8Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Int8Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Uint16Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Int16Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Uint32Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Int32Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:Float32Data}">
+		<components:IntValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:VectorData}">
+		<components:VectorValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:DegreeData}">
+		<components:DegreeValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:ColourData}">
+		<components:ColourValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type data:StringIDData}">
+		<components:StringIDValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:CommentData}">
+		<components:Comment Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:StringData}">
+		<components:AsciiValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:DataRef}">
+		<components:rawBlock Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:RawData}">
+		<components:rawBlock Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:TagRefData}">
+		<components:TagValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:BitfieldData}">
+		<components:Bitfield Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type data:EnumData}">
+		<components:Enumeration Opacity="{Binding Opacity}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type data:TagBlockData}">
+		<components:TagBlock HorizontalAlignment="Left" Opacity="{Binding Opacity}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type data:ShaderRef}">
+		<components:Shader Opacity="{Binding Opacity}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type data:WrappedTagBlockEntry}">
+		<!-- Moving this into a UserControl causes severe lag for some reason :S -->
+		<Grid>
+			<Border Width="{Binding Width}" HorizontalAlignment="Left" VerticalAlignment="Stretch" BorderBrush="#474747"
+			        Opacity="{Binding Opacity}">
+				<Border.Style>
+					<Style TargetType="Border">
+						<Setter Property="Margin" Value="0" />
+						<Setter Property="BorderThickness" Value="1,0,1,0" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsLast}" Value="True">
+								<Setter Property="Margin" Value="0,0,0,4" />
+								<Setter Property="BorderThickness" Value="1,0,1,1" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Border.Style>
+			</Border>
+			<ContentControl Content="{Binding WrappedField}"
+			                HorizontalAlignment="Left">
+				<ContentControl.Style>
+					<Style TargetType="ContentControl">
+						<Setter Property="Margin" Value="20,0,0,0" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding IsLast}" Value="True">
+								<Setter Property="Margin" Value="20,0,0,12" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</ContentControl.Style>
+			</ContentControl>
+		</Grid>
+	</DataTemplate>
+</ResourceDictionary>
