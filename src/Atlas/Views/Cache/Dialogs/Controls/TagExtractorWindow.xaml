@@ -10,6 +10,11 @@
 		mc:Ignorable="d" native:WindowMovement.IsDraggable="True"
 		Style="{StaticResource MetroDialogWindowStyle}"
 		Height="490" Width="769" SizeToContent="Manual">
+	<custom:MetroDialogWindow.Triggers>
+		<DataTrigger Binding="{Binding ElementName=TagsTreeView, Path=SelectedItem}" Value="{x:Null}">
+			<Setter Property="Visibility" Value="Collapsed" TargetName="TagEditorTabControl" />
+		</DataTrigger>
+	</custom:MetroDialogWindow.Triggers>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40" />
@@ -27,31 +32,45 @@
 
 		<Grid Grid.Row="1" Margin="15,20">
 			<Grid.RowDefinitions>
+				<RowDefinition Height="200" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
-			<TabControl Background="Transparent">
+			<TreeView x:Name="TagsTreeView" ItemsSource="{Binding Path=RelevantTags}" Background="#252526" BorderBrush="{StaticResource AssemblyAccentBrush}" BorderThickness="2" VerticalAlignment="Stretch" Padding="0,10,0,0" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
+				<TreeView.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+							<TextBlock Text="{Binding Path=ExtractedTag.Class, Converter={StaticResource IValueConverterIntegerToCharConstant}, Mode=OneWay}" />
+							<TextBlock Text=" -- " Margin="5,0,5,0" />
+							<TextBlock Text="{Binding Path=ExtractedTag.Name, Mode=OneWay}"/>
+						</StackPanel>
+					</DataTemplate>
+				</TreeView.ItemTemplate>
+			</TreeView>
+			
+			<TabControl x:Name="TagEditorTabControl" Grid.Row="1" Margin="0,15,0,0" Background="Transparent">
 				<TabControl.Resources>
 					<Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroHeaderTabItem}">
 						<Setter Property="Padding" Value="0,10,0,0" />
 					</Style>
 				</TabControl.Resources>
-				<TabItem Header="Tags">
-					<DataGrid ItemsSource="{Binding RelevantTags}" Background="{x:Null}" Margin="0,10,0,0" FontSize="12" Padding="0"
-					  BorderThickness="0" VerticalAlignment="Stretch"
-					  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
-					  AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
-					  CanUserAddRows="False" CanUserResizeColumns="True">
-						<DataGrid.Columns>
-							<DataGridCheckBoxColumn Header="Extract" Width="50" Binding="{Binding Path=Extract, Mode=TwoWay}" IsReadOnly="False" CanUserSort="True" />
-							<DataGridTextColumn Header="Class" Width="60" Binding="{Binding Path=ExtractedTag.Class, Converter={StaticResource IValueConverterIntegerToCharConstant}, Mode=OneWay}" IsReadOnly="True" CanUserSort="True" />
-							<DataGridTextColumn Header="Tag Name" Width="450" Binding="{Binding Path=ExtractedTag.Name, Mode=OneWay}" IsReadOnly="True" CanUserSort="True" />
-							<DataGridTextColumn Header="Original Address" Width="100" Binding="{Binding Path=ExtractedTag.OriginalAddress, Mode=OneWay, StringFormat={}0x{0:X8}}" IsReadOnly="True" CanUserSort="True" />
-						</DataGrid.Columns>
-					</DataGrid>
+				<TabItem Header="Tag Data">
+					<Grid>
+						<Grid Margin="5,0,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30" />
+								<ColumnDefinition Width="25" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock Text="bipd" />
+							<TextBlock Text=" -- " Grid.Column="1" />
+							<TextBlock Text="sfsdofhsdoufhosuljdnfb;osdu7g" Grid.Column="2" />
+						</Grid>
+					</Grid>
 				</TabItem>
-				<TabItem Header="Resources">
-					
+				<TabItem Header="Resource Data">
+					<Grid></Grid>
 				</TabItem>
 			</TabControl>
 		</Grid>

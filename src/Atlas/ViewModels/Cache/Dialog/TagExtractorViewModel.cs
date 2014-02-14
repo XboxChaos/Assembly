@@ -31,7 +31,9 @@ namespace Atlas.ViewModels.Cache.Dialog
 			ResourcesToProcess = new Queue<DatumIndex>();
 			ResourcesProcessed = new HashSet<DatumIndex>();
 			ResourcePagesProcessed = new HashSet<ResourcePage>();
+
 			RelevantTags = new List<ExtractingTagEntry>();
+			RelevantResources = new List<ExtractingResourceEntry>();
 
 			// Check what we're going to extract
 			ProcessTags();
@@ -81,113 +83,20 @@ namespace Atlas.ViewModels.Cache.Dialog
 
 			// Extract resource info
 			if (resources == null)
-				Debug.WriteLine("No resources need to be extracted...");
+				return;
 
 			#region Resources, commented out for now
 
-			//while (ResourcesToProcess.Count > 0)
-			//{
-			//	var index = ResourcesToProcess.Dequeue();
-			//	if (ResourcesProcessed.Contains(index))
-			//		continue;
+			while (ResourcesToProcess.Count > 0)
+			{
+				var index = ResourcesToProcess.Dequeue();
+				if (ResourcesProcessed.Contains(index))
+					continue;
 
-			//	// Add the resource
-			//	var resource = resources.Resources[index.Index];
-			//	TagContainer.AddResource(new ExtractedResourceInfo(resource));
-
-			//	// Add data for its pages
-			//	if (resource.Location == null) continue;
-
-			//	if (resource.Location.PrimaryPage != null &&
-			//		!ResourcePagesProcessed.Contains(resource.Location.PrimaryPage))
-			//	{
-			//		TagContainer.AddResourcePage(resource.Location.PrimaryPage);
-			//		ResourcePagesProcessed.Add(resource.Location.PrimaryPage);
-
-			//		using (var fileStream = File.OpenRead(_cacheLocation))
-			//		{
-			//			var resourceFile = _cacheFile;
-			//			Stream resourceStream = fileStream;
-			//			if (resource.Location.PrimaryPage.FilePath != null)
-			//			{
-			//				var resourceCacheInfo =
-			//				App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-			//					r => r.EngineName == EngineDescription.Name);
-
-			//				var resourceCachePath = (resourceCacheInfo != null)
-			//					? resourceCacheInfo.ResourceCachePath
-			//					: Path.GetDirectoryName(_cacheLocation);
-
-			//				resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.PrimaryPage.FilePath));
-
-			//				if (!File.Exists(resourceCachePath))
-			//				{
-			//					MetroMessageBox.Show("Unable to extract tag",
-			//						"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
-			//					return;
-			//				}
-
-			//				resourceStream =
-			//					File.OpenRead(resourceCachePath);
-			//				resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), EngineDescription,
-			//					_cacheFile.BuildString);
-			//			}
-
-			//			var extractor = new ResourcePageExtractor(resourceFile);
-			//			var path = Path.GetTempFileName();
-			//			var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-			//			extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
-			//			pageStream.Close();
-			//			TagContainer.AddExtractedResourcePage(
-			//				new ExtractedPage(File.ReadAllBytes(path),
-			//					resource.Location.PrimaryPage.Index));
-			//		}
-			//	}
-
-			//	if (resource.Location.SecondaryPage == null || ResourcePagesProcessed.Contains(resource.Location.SecondaryPage)) continue;
-			//	TagContainer.AddResourcePage(resource.Location.SecondaryPage);
-			//	ResourcePagesProcessed.Add(resource.Location.SecondaryPage);
-
-			//	using (var fileStream = File.OpenRead(_cacheLocation))
-			//	{
-			//		var resourceFile = _cacheFile;
-			//		Stream resourceStream = fileStream;
-			//		if (resource.Location.SecondaryPage.FilePath != null)
-			//		{
-			//			var resourceCacheInfo =
-			//				App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-			//					r => r.EngineName == EngineDescription.Name);
-
-			//			var resourceCachePath = (resourceCacheInfo != null)
-			//				? resourceCacheInfo.ResourceCachePath
-			//				: Path.GetDirectoryName(_cacheLocation);
-
-			//			resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.SecondaryPage.FilePath));
-
-			//			if (!File.Exists(resourceCachePath))
-			//			{
-			//				MetroMessageBox.Show("Unable to extract tag",
-			//					"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
-			//				return;
-			//			}
-
-			//			resourceStream =
-			//				File.OpenRead(resourceCachePath);
-			//			resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), EngineDescription,
-			//				_cacheFile.BuildString);
-			//		}
-
-			//		var extractor = new ResourcePageExtractor(resourceFile);
-			//		var path = Path.GetTempFileName();
-			//		var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-			//		extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
-			//		pageStream.Close();
-
-			//		TagContainer.AddExtractedResourcePage(
-			//			new ExtractedPage(File.ReadAllBytes(path),
-			//				resource.Location.SecondaryPage.Index));
-			//	}
-			//}
+				// Add the resource
+				var resource = resources.Resources[index.Index];
+				RelevantResources.Add(new ExtractingResourceEntry(true, resource, new ExtractedResourceInfo(resource)));
+			}
 
 			#endregion
 		}
@@ -274,6 +183,13 @@ namespace Atlas.ViewModels.Cache.Dialog
 			set { SetField(ref _relevantTags, value); }
 		}
 		private List<ExtractingTagEntry> _relevantTags;
+
+		public List<ExtractingResourceEntry> RelevantResources
+		{
+			get { return _relevantResources; }
+			set { SetField(ref _relevantResources, value); }
+		}
+		private List<ExtractingResourceEntry> _relevantResources;
 
 		#endregion
 	}
