@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using Atlas.Helpers;
 using Atlas.Helpers.Tags;
 using Atlas.Models;
@@ -183,6 +182,13 @@ namespace Atlas.ViewModels.Cache.Dialog
 			set { SetField(ref _relevantTags, value); }
 		}
 		private List<ExtractingTagEntry> _relevantTags;
+
+		public ExtractingTagEntry SelectedRelevantTag
+		{
+			get { return _selectedRelevantTag; }
+			set { SetField(ref _selectedRelevantTag, value); }
+		}
+		private ExtractingTagEntry _selectedRelevantTag;
 
 		public List<ExtractingResourceEntry> RelevantResources
 		{

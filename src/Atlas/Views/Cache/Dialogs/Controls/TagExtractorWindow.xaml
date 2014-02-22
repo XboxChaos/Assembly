@@ -10,11 +10,6 @@
 		mc:Ignorable="d" native:WindowMovement.IsDraggable="True"
 		Style="{StaticResource MetroDialogWindowStyle}"
 		Height="490" Width="769" SizeToContent="Manual">
-	<custom:MetroDialogWindow.Triggers>
-		<DataTrigger Binding="{Binding ElementName=TagsTreeView, Path=SelectedItem}" Value="{x:Null}">
-			<Setter Property="Visibility" Value="Collapsed" TargetName="TagEditorTabControl" />
-		</DataTrigger>
-	</custom:MetroDialogWindow.Triggers>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40" />
@@ -36,8 +31,12 @@
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
-			<TreeView x:Name="TagsTreeView" ItemsSource="{Binding Path=RelevantTags}" Background="#252526" BorderBrush="{StaticResource AssemblyAccentBrush}" BorderThickness="2" VerticalAlignment="Stretch" Padding="0,10,0,0" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
-				<TreeView.ItemTemplate>
+			<custom:MetroTreeView x:Name="TagsTreeView" ItemsSource="{Binding Path=RelevantTags}" 
+								  InpcSelectedItem="{Binding Path=SelectedRelevantTag}" Background="#252526" 
+								  BorderBrush="{StaticResource AssemblyAccentBrush}" BorderThickness="2" 
+								  VerticalAlignment="Stretch" Padding="0,10,0,0" VirtualizingStackPanel.IsVirtualizing="True" 
+								  VirtualizingStackPanel.VirtualizationMode="Standard">
+				<custom:MetroTreeView.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Margin="0,0,0,0" Orientation="Horizontal">
 							<TextBlock Text="{Binding Path=ExtractedTag.Class, Converter={StaticResource IValueConverterIntegerToCharConstant}, Mode=OneWay}" />
@@ -45,8 +44,8 @@
 							<TextBlock Text="{Binding Path=ExtractedTag.Name, Mode=OneWay}"/>
 						</StackPanel>
 					</DataTemplate>
-				</TreeView.ItemTemplate>
-			</TreeView>
+				</custom:MetroTreeView.ItemTemplate>
+			</custom:MetroTreeView>
 			
 			<TabControl x:Name="TagEditorTabControl" Grid.Row="1" Margin="0,15,0,0" Background="Transparent">
 				<TabControl.Resources>
@@ -56,17 +55,7 @@
 				</TabControl.Resources>
 				<TabItem Header="Tag Data">
 					<Grid>
-						<Grid Margin="5,0,0,0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="30" />
-								<ColumnDefinition Width="25" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-
-							<TextBlock Text="bipd" />
-							<TextBlock Text=" -- " Grid.Column="1" />
-							<TextBlock Text="sfsdofhsdoufhosuljdnfb;osdu7g" Grid.Column="2" />
-						</Grid>
+						<TextBlock Text="{Binding Path=SelectedRelevantTag.ExtractedTag.Class, Converter={StaticResource IValueConverterIntegerToCharConstant}, Mode=OneWay}" />
 					</Grid>
 				</TabItem>
 				<TabItem Header="Resource Data">
@@ -77,7 +66,9 @@
 
 		<Grid x:Name="ButtonOptions" Grid.Row="2" Background="#FF424244">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button x:Name="ExtractButton" Padding="8,0" Margin="0,0,10,0" Content="Extract" Tag="{Binding}" Click="ExtractButton_OnClick" />
+				<Rectangle Fill="#FF2E2E31" Width="2" />
+				<Button x:Name="ExtractButton" Padding="8,0" Margin="15,0" Content="Extract" Tag="{Binding}" 
+						Click="ExtractButton_OnClick" />
 			</StackPanel>
 		</Grid>
 	</Grid>
