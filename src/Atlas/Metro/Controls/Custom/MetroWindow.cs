@@ -71,9 +71,22 @@ namespace Atlas.Metro.Controls.Custom
 			var xAdjust = Width + e.HorizontalChange;
 
 			if (xAdjust > MinWidth)
+			{
 				Width = xAdjust;
+			}
+			else
+			{
+				Width = MinWidth;
+			}
+
 			if (yAdjust > MinHeight)
+			{
 				Height = yAdjust;
+			}
+			else
+			{
+				Height = MinHeight;
+			}
 		}
 
 		public void ResizeRightThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
@@ -81,7 +94,13 @@ namespace Atlas.Metro.Controls.Custom
 			var xAdjust = Width + e.HorizontalChange;
 
 			if (xAdjust > MinWidth)
+			{
 				Width = xAdjust;
+			}
+			else
+			{
+				Width = MinWidth;
+			}
 		}
 
 		public void ResizeBottomThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
@@ -89,7 +108,63 @@ namespace Atlas.Metro.Controls.Custom
 			var yAdjust = Height + e.VerticalChange;
 
 			if (yAdjust > MinHeight)
+			{
 				Height = yAdjust;
+			}
+			else
+			{
+				Height = MinHeight;
+			}
+		}
+
+		public void ResizeLeftThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+		{
+			var xAdjust = Width - e.HorizontalChange;
+
+			if (xAdjust > MinWidth)
+			{
+				Width -= e.HorizontalChange;
+				Left += e.HorizontalChange;
+			}
+			else
+			{
+				var diff = Width - MinWidth;
+				if (diff > 0)
+				{
+					Width -= diff;  // Width = MinWidth
+					Left += diff;   // mirror that^ change
+				}
+				else
+				{
+					Width += diff;  // Width = MinWidth
+					Left -= diff;   // mirror that^ change
+				}
+			}
+		}
+
+		public void ResizeTopThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+		{
+			var yAdjust = Height - e.VerticalChange;
+
+			if (yAdjust > MinHeight)
+			{
+				Height -= e.VerticalChange;
+				Top += e.VerticalChange;
+			}
+			else
+			{
+				var diff = Height - MinHeight;
+				if (diff > 0)
+				{
+					Height -= diff; // Height = MinHeight
+					Top += diff;	// mirror that^ change
+				}
+				else
+				{
+					Height += diff; // Height = MinHeight
+					Top -= diff;	// mirror that^ change
+				}
+			}
 		}
 
 		#endregion
