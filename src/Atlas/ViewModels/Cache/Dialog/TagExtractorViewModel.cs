@@ -40,7 +40,7 @@ namespace Atlas.ViewModels.Cache.Dialog
 
 		private void ProcessTags()
 		{
-			// Recursively extract tags
+			// Recursively process tags
 			TagsToProcess.Enqueue(Tag.Tag);
 
 			ResourceTable resources = null;
@@ -56,12 +56,11 @@ namespace Atlas.ViewModels.Cache.Dialog
 					var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
 					var pluginPath = VariousFunctions.GetPluginPath(EngineDescription.Settings.GetSetting<string>("plugins"), className);
 
-					// Extract dem data blocks
 					var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, CacheFile, EngineDescription);
 					using (var pluginReader = XmlReader.Create(pluginPath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
-					// Add data for the tag that was extracted
+					// Add data for the tag that was processed
 					var tagName = CacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
 					var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic,
 						tagName);
@@ -84,7 +83,7 @@ namespace Atlas.ViewModels.Cache.Dialog
 			if (resources == null)
 				return;
 
-			#region Resources, commented out for now
+			#region Resources
 
 			while (ResourcesToProcess.Count > 0)
 			{
