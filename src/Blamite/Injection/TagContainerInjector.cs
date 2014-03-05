@@ -4,11 +4,13 @@ using System.IO;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Injection
 {
 	public class TagContainerInjector
 	{
+		private static int SoundClass = CharConstant.FromString("snd!");
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
 
@@ -90,6 +92,10 @@ namespace Blamite.Injection
 			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
 			if (existingTag != null)
 				return existingTag.Index;
+
+			// If the tag has made it this far but is a sound, make everyone (especially gerit) shut up.
+			if (tag.Class == SoundClass)
+				return DatumIndex.Null;
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
