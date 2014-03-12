@@ -32,25 +32,25 @@
 	</reflexive>
 	<reflexive name="Phantom Types" offset="0x34" visible="true" entrySize="0x68">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
+			<bit name="Generates Effects" index="0" />
+			<bit name="Use Acceleration As Force" index="1" />
+			<bit name="Negates Gravity" index="2" />
+			<bit name="Ignores Players" index="3" />
+			<bit name="Ignores NonPlayers" index="4" />
+			<bit name="Ignores Bipeds" index="5" />
+			<bit name="Ignores Vehicles" index="6" />
+			<bit name="Ignores Weapons" index="7" />
+			<bit name="Ignores Equipment" index="8" />
+			<bit name="Ignores Terminals" index="9" />
+			<bit name="Ignores Projectiles" index="10" />
+			<bit name="Ignores Scenery" index="11" />
+			<bit name="Ignores Machines" index="12" />
+			<bit name="Ignores Controls" index="13" />
+			<bit name="Ignores Sound Scenery" index="14" />
+			<bit name="Ignores Crates" index="15" />
+			<bit name="Ignores Creatures" index="16" />
+			<bit name="Ignores Giants" index="17" />
+			<bit name="Ignores Effect Scenery" index="18" />
 			<bit name="Bit 19" index="19" />
 			<bit name="Bit 20" index="20" />
 			<bit name="Bit 21" index="21" />
@@ -87,14 +87,14 @@
 		<stringid name="Alignment Marker Name" offset="0xC" visible="True" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<float32 name="Hooke's Law 'E'" offset="0x18" visible="True" />
+		<float32 name="Linear Dead Radius" offset="0x1C" visible="True" />
+		<float32 name="Center Acceleration" offset="0x20" visible="True" />
+		<float32 name="Center Max Level" offset="0x24" visible="True" />
+		<float32 name="Axis Acceleration" offset="0x28" visible="True" />
+		<float32 name="Axis Max Velocity" offset="0x2C" visible="True" />
+		<float32 name="Direction Acceleration" offset="0x30" visible="true" />
+		<float32 name="Direction Max Velocity" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -102,11 +102,11 @@
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Alignment Hooke's Law 'E'" offset="0x54" visible="True" />
+		<degree name="Alignment Acceleration" offset="0x58" visible="True" />
+		<degree name="Alignment Max Velocity" offset="0x5C" visible="True" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
+		<undefined name="Unknown-" offset="0x64" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x40" visible="false" entrySize="0x18">
 		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x2" align="0x8">
@@ -191,7 +191,7 @@
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
+			<bit name="Does Not Interact With Environment" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
@@ -224,11 +224,11 @@
 			<option name="Extra Huge" value="0x6" />
 		</enum16>
 		<undefined name="Inertia Tensor Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Linear Dampening" offset="0x24" visible="true" />
+		<undefined name="Angular Dampening" offset="0x28" visible="true" />
+		<undefined name="Center Of Mass Offset X" offset="0x2C" visible="true" />
+		<undefined name="Center Of Mass Offset Y" offset="0x30" visible="true" />
+		<undefined name="Center Of Mass Offset Z" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -279,7 +279,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<undefined name="Inertia Tensor z j" offset="0x94" visible="True" />
 		<undefined name="Inertia Tensor z k" offset="0x98" visible="True" />
 		<undefined name="Inertia Tensor z Radius" offset="0x9C" visible="True" />
-		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<undefined name="Bounding Sphere Pad" offset="0xA0" visible="true" />
 		<undefined name="Unknown" offset="0xA4" visible="false" />
 		<undefined name="Unknown" offset="0xA8" visible="false" />
 		<undefined name="Unknown" offset="0xAC" visible="false" />
@@ -300,7 +300,8 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<bitfield8 name="Interaction Flags" offset="0x1F" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -309,27 +310,19 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</bitfield8>
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
 		<int32 name="Unknown" offset="0x2C" visible="True" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<int32 name="Size" offset="0x40" visible="true" />
+		<int32 name="Count" offset="0x44" visible="true" />
+		<int32 name="Offset" offset="0x48" visible="true" />
+		<int32 name="Unknown" offset="0x4C" visible="true" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
@@ -352,7 +345,8 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<bitfield8 name="Interaction Flags" offset="0x1F" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -361,15 +355,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</bitfield8>
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -397,7 +383,8 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<bitfield8 name="Interaction Flags" offset="0x1F" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -406,15 +393,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</bitfield8>
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -462,7 +441,8 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<bitfield8 name="Interaction Flags" offset="0x1F" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -471,15 +451,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</bitfield8>
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -515,7 +487,8 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<bitfield8 name="Interaction Flags" offset="0x1F" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -524,15 +497,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</bitfield8>
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -785,7 +750,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 	<undefined name="Unknown" offset="0x180" visible="false" />
 	<undefined name="Unknown" offset="0x184" visible="false" />
 	<undefined name="Unknown" offset="0x188" visible="false" />
-	<reflexive name="? Shapes" offset="0x18C" visible="True" entrySize="0x2C" align="0x10">
+	<reflexive name="Phantoms" offset="0x18C" visible="True" entrySize="0x2C" align="0x10">
 		<int32 name="Size" offset="0x0" visible="True" />
 		<int32 name="Count" offset="0x4" visible="True" />
 		<int32 name="Offset" offset="0x8" visible="True" />

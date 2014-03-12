@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x7E4">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -408,7 +408,7 @@
 		<int16 name="Spawn Time" offset="0x18" visible="true" />
 		<int16 name="Unknown Time" offset="0x1A" visible="true" />
 		<bitfield16 name="Flags" offset="0x1C" visible="true">
-			<bit name="Editor Object" index="0" />
+			<bit name="Editor Only" index="0" />
 			<bit name="Phased Physics" index="1" />
 			<bit name="3" index="2" />
 			<bit name="4" index="3" />
@@ -556,23 +556,25 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<tagref name="Hologram" offset="0x210" visible="true" />
-	<reflexive name="Incident Helpers" offset="0x220" visible="true" entrySize="0x8">
-		<int8 name="Unknown" offset="0x0" visible="false" />
-		<enum8 name="Unit Kind" offset="0x1" visible="true">
-			<option name="Any" value="0xFFFFFFFF" />
+	<reflexive name="Metagame Properties" offset="0x220" visible="true" entrySize="0x8">
+		<enum8 name="Unit Kind" offset="0x0" visible="true">
+			<option name="Actor" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+		</enum8>
+		<enum8 name="Unit" offset="0x1" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />
 			<option name="Jackal" value="0x2" />
 			<option name="Skirmisher" value="0x3" />
 			<option name="Marine" value="0x4" />
 			<option name="Spartan" value="0x5" />
-			<option name="Bugger" value="0x6" />
+			<option name="Drone" value="0x6" />
 			<option name="Hunter" value="0x7" />
 			<option name="Null Covenenant" value="0x8" />
 			<option name="Null Human" value="0x9" />
-			<option name="Unknown 10" value="0xA" />
-			<option name="Unknown 11" value="0xB" />
-			<option name="Sentinel/Monitor" value="0xC" />
+			<option name="Unknown" value="0xA" />
+			<option name="Unknown" value="0xB" />
+			<option name="Forerunner" value="0xC" />
 			<option name="Elite" value="0xD" />
 			<option name="Engineer" value="0xE" />
 			<option name="Mule" value="0xF" />
@@ -585,16 +587,16 @@
 			<option name="Revenant" value="0x16" />
 			<option name="Seraph" value="0x17" />
 			<option name="Shade" value="0x18" />
-			<option name="Unknown 25" value="0x19" />
+			<option name="Unknown" value="0x19" />
 			<option name="Ghost" value="0x1A" />
-			<option name="Unknown 27" value="0x1B" />
-			<option name="Unknown 28" value="0x1C" />
+			<option name="Space Banshee" value="0x1B" />
+			<option name="Unknown" value="0x1C" />
 			<option name="Wraith" value="0x1D" />
 			<option name="Banshee" value="0x1E" />
 			<option name="Phantom" value="0x1F" />
 			<option name="Scarab" value="0x20" />
-			<option name="Unknown 33" value="0x21" />
-			<option name="Spirit" value="0x22" />
+			<option name="Unknown" value="0x21" />
+			<option name="Tuning Fork" value="0x22" />
 			<option name="Broadsword" value="0x23" />
 			<option name="Mammoth" value="0x24" />
 			<option name="Lich" value="0x25" />
@@ -604,17 +606,20 @@
 			<option name="Watcher" value="0x29" />
 			<option name="Knight" value="0x2A" />
 			<option name="Pawn" value="0x2B" />
-			<option name="Unknown 44" value="0x2C" />
-			<option name="Unknown 45" value="0x2D" />
-			<option name="Unknown 46" value="0x2E" />
-			<option name="Unknown 47" value="0x2F" />
 		</enum8>
-		<int8 name="Unknown" offset="0x2" visible="false" />
+		<enum8 name="Classification" offset="0x2" visible="true">
+			<option name="Infantry" value="0x0" />
+			<option name="Leader" value="0x1" />
+			<option name="Hero" value="0x2" />
+			<option name="Specialist" value="0x3" />
+			<option name="Light Vehicle" value="0x4" />
+			<option name="Heavy Vehicle" value="0x5" />
+			<option name="Giant Vehicle" value="0x6" />
+			<option name="Medium Vehicle" value="0x7" />
+		</enum8>
 		<int8 name="Unknown" offset="0x3" visible="false" />
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int8 name="Unknown" offset="0x6" visible="false" />
-		<int8 name="Unknown" offset="0x7" visible="false" />
+		<int16 name="Base Point Worth" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<reflexive name="Screen Effects" offset="0x22C" visible="true" entrySize="0x10">
 		<tagRef name="Effect" offset="0x0" visible="true" />

@@ -2,7 +2,7 @@
 <plugin game="ReachBeta" baseSize="0x40">
 	<!-- Automatically generated plugin -->
 	<revisions>
-		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Yeah Buddy.</revision>
 	</revisions>
 	<undefined name="Unknown" offset="0x0" visible="false" />
@@ -72,7 +72,7 @@
 				<option name="150%" value="0xD" />
 				<option name="200%" value="0xE" />
 			</enum8>
-			<int8 name="Unknown" offset="0x5" visible="false" />
+			<int8 name="Vampirism" offset="0x5" visible="false" />
 			<enum8 name="Headshot Immunity" offset="0x6" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Disabled" value="0x1" />
@@ -209,9 +209,9 @@
 				<option name="No Gunner" value="0x7" />
 				<option name="Full Use" value="0x8" />
 			</enum8>
-			<int8 name="Unknown" offset="0x3" visible="false" />
-			<int8 name="Unknown" offset="0x4" visible="false" />
-			<int8 name="Unknown" offset="0x5" visible="false" />
+			<int8 name="Double Jump" offset="0x3" visible="true" />
+			<int8 name="Sprint" offset="0x4" visible="true" />
+			<int8 name="Equipment Usage" offset="0x5" visible="true" />
 			<int8 name="Unknown" offset="0x6" visible="false" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 		</reflexive>
@@ -280,22 +280,88 @@
 				<option name="100 Meters" value="0x6" />
 				<option name="150 Meters" value="0x7" />
 			</enum8>
-			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Directional Damage" offset="0x2" visible="false" />
 			<int8 name="Unknown" offset="0x3" visible="false" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="AI Trait Profiles" offset="0x10" visible="true" entrySize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int8 name="Unknown" offset="0x6" visible="false" />
-		<int8 name="Unknown" offset="0x7" visible="false" />
-		<int8 name="Unknown" offset="0x8" visible="false" />
-		<int8 name="Unknown" offset="0x9" visible="false" />
-		<int8 name="Unknown" offset="0xA" visible="false" />
-		<int8 name="Unknown" offset="0xB" visible="false" />
-		<int8 name="Unknown" offset="0xC" visible="false" />
-		<int8 name="Unknown" offset="0xD" visible="false" />
+		<enum8 name="Vision" offset="0x4" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Near Sighted" value="0x3" />
+			<option name="Eagle Eye" value="0x4" />
+		</enum8>
+		<enum8 name="Hearing" offset="0x5" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Deaf" value="0x2" />
+			<option name="Sharp" value="0x3" />
+		</enum8>
+		<enum8 name="Luck" offset="0x6" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Unlucky" value="0x2" />
+			<option name="Lucky" value="0x3" />
+			<option name="Leprechaun" value="0x4" />
+		</enum8>
+		<enum8 name="Shootiness" offset="0x7" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="Marksman" value="0x2" />
+			<option name="Trigger Happy" value="0x3" />
+		</enum8>
+		<enum8 name="Grenades" offset="0x8" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Normal" value="0x1" />
+			<option name="None" value="0x2" />
+			<option name="Catch" value="0x3" />
+		</enum8>
+		<enum8 name="Equipment Drop" offset="0x9" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Enabled" value="0x1" />
+			<option name="Disabled" value="0x2" />
+		</enum8>
+		<enum8 name="Assassination Immunity" offset="0xA" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Disabled" value="0x1" />
+			<option name="Enabled" value="0x2" />
+		</enum8>
+		<enum8 name="Headshot Immunity" offset="0xB" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Disabled" value="0x1" />
+			<option name="Enabled" value="0x2" />
+		</enum8>
+		<enum8 name="Damage Resistance" offset="0xC" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="10%" value="0x1" />
+			<option name="50%" value="0x2" />
+			<option name="90%" value="0x3" />
+			<option name="100%" value="0x4" />
+			<option name="110%" value="0x5" />
+			<option name="150%" value="0x6" />
+			<option name="200%" value="0x7" />
+			<option name="300%" value="0x8" />
+			<option name="500%" value="0x9" />
+			<option name="1000%" value="0xA" />
+			<option name="2000%" value="0xB" />
+			<option name="Invulnerable" value="0xC" />
+		</enum8>
+		<enum8 name="Damage Modifier" offset="0xD" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="0%" value="0x1" />
+			<option name="25%" value="0x2" />
+			<option name="50%" value="0x3" />
+			<option name="75%" value="0x4" />
+			<option name="90%" value="0x5" />
+			<option name="100%" value="0x6" />
+			<option name="110%" value="0x7" />
+			<option name="125%" value="0x8" />
+			<option name="150%" value="0x9" />
+			<option name="200%" value="0xA" />
+			<option name="300%" value="0xB" />
+			<option name="Instant Kill" value="0xC" />
+		</enum8>
 		<int8 name="Unknown" offset="0xE" visible="false" />
 		<int8 name="Unknown" offset="0xF" visible="false" />
 	</reflexive>
@@ -307,11 +373,6 @@
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int8 name="Time Limit" offset="0x2" visible="true" />
@@ -327,18 +388,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -362,30 +411,6 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x2C" visible="true" entrySize="0x1C">
@@ -405,8 +430,6 @@
 				<bit name="Powerups On Map" index="3" />
 				<bit name="Turrets On Map" index="4" />
 				<bit name="Indestructable Vehicles" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 		</reflexive>
 		<reflexive name="Teams" offset="0x38" visible="true" entrySize="0xA4">
@@ -426,10 +449,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x5" visible="true" />
 			<enum8 name="Team Model" offset="0x6" visible="true">
@@ -449,10 +468,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x19" visible="true" />
 			<enum8 name="Team Model" offset="0x1A" visible="true">
@@ -472,10 +487,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x2D" visible="true" />
 			<enum8 name="Team Model" offset="0x2E" visible="true">
@@ -495,10 +506,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x41" visible="true" />
 			<enum8 name="Team Model" offset="0x42" visible="true">
@@ -518,10 +525,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x55" visible="true" />
 			<enum8 name="Team Model" offset="0x56" visible="true">
@@ -541,10 +544,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x69" visible="true" />
 			<enum8 name="Team Model" offset="0x6A" visible="true">
@@ -564,10 +563,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x7D" visible="true" />
 			<enum8 name="Team Model" offset="0x7E" visible="true">
@@ -587,10 +582,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x91" visible="true" />
 			<enum8 name="Team Model" offset="0x92" visible="true">
@@ -627,11 +618,6 @@
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int8 name="Time Limit" offset="0x2" visible="true" />
@@ -647,18 +633,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -682,30 +656,6 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x2C" visible="true" entrySize="0x1C">
@@ -725,8 +675,6 @@
 				<bit name="Powerups On Map" index="3" />
 				<bit name="Turrets On Map" index="4" />
 				<bit name="Indestructable Vehicles" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 		</reflexive>
 		<reflexive name="Teams" offset="0x38" visible="true" entrySize="0xA4">
@@ -746,10 +694,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x5" visible="true" />
 			<enum8 name="Team Model" offset="0x6" visible="true">
@@ -769,10 +713,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x19" visible="true" />
 			<enum8 name="Team Model" offset="0x1A" visible="true">
@@ -792,10 +732,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x2D" visible="true" />
 			<enum8 name="Team Model" offset="0x2E" visible="true">
@@ -815,10 +751,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x41" visible="true" />
 			<enum8 name="Team Model" offset="0x42" visible="true">
@@ -838,10 +770,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x55" visible="true" />
 			<enum8 name="Team Model" offset="0x56" visible="true">
@@ -861,10 +789,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x69" visible="true" />
 			<enum8 name="Team Model" offset="0x6A" visible="true">
@@ -884,10 +808,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x7D" visible="true" />
 			<enum8 name="Team Model" offset="0x7E" visible="true">
@@ -907,10 +827,6 @@
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override UI Color" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
 			</bitfield8>
 			<int8 name="Team Index" offset="0x91" visible="true" />
 			<enum8 name="Team Model" offset="0x92" visible="true">
@@ -931,12 +847,11 @@
 		<int8 name="Unknown" offset="0x47" visible="false" />
 		<int8 name="Round Count" offset="0x48" visible="true" />
 		<int8 name="Unknown" offset="0x49" visible="false" />
-		<int8 name="Unknown" offset="0x4A" visible="false" />
-		<int8 name="Unknown" offset="0x4B" visible="false" />
+		<int16 name="Bonus Target" offset="0x4A" visible="false" />
 		<int16 name="Spartan Elite Kill Bonus" offset="0x4C" visible="true" />
 		<int16 name="Unknown" offset="0x4E" visible="false" />
 		<int16 name="Spartan Starting Lives" offset="0x50" visible="true" />
-		<int16 name="Elite Starting Lives" offset="0x52" visible="true" />
+		<int16 name="Extra Life Score Target" offset="0x52" visible="true" />
 		<int16 name="Spartan Maximum Extra Lives" offset="0x54" visible="true" />
 		<int16 name="Generator Count" offset="0x56" visible="true" />
 		<stringid name="Spartan Trait Profile" offset="0x58" visible="true" />
@@ -948,18 +863,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -992,47 +895,39 @@
 				<bit name="Cowbell" index="11" />
 				<bit name="Grunt Brithday" index="12" />
 				<bit name="IWHBYD" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<comment title="Initial Wave"></comment>
-			<enum8 name="Uses Dropship" offset="0x4" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
-			</enum8>
-			<enum8 name="Squad Selection Order" offset="0x5" visible="true">
-				<option name="Random" value="0x0" />
-				<option name="Ordered" value="0x1" />
-			</enum8>
+			<bitfield8 name="Wave Flags" offset="0x4" visible="true">
+				<bit name="Uses Dropship" index="0" />
+			</bitfield8>
+			<bitfield8 name="Squad Advance Type" offset="0x5" visible="true">
+				<bit name="Ordered" index="0" />
+			</bitfield8>
 			<int8 name="Unknown" offset="0x6" visible="false" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 			<reflexive name="Squads" offset="0x8" visible="true" entrySize="0x4">
 				<stringid name="Enemy" offset="0x0" visible="true" />
 			</reflexive>
 			<comment title="Main Wave"></comment>
-			<enum8 name="Uses Dropship" offset="0x14" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
-			</enum8>
-			<enum8 name="Squad Selection Order" offset="0x15" visible="true">
-				<option name="Random" value="0x0" />
-				<option name="Ordered" value="0x1" />
-			</enum8>
+			<bitfield8 name="Wave Flags" offset="0x14" visible="true">
+				<bit name="Uses Dropship" index="0" />
+			</bitfield8>
+			<bitfield8 name="Squad Advance Type" offset="0x15" visible="true">
+				<bit name="Ordered" index="0" />
+			</bitfield8>
 			<int8 name="Unknown" offset="0x16" visible="false" />
 			<int8 name="Unknown" offset="0x17" visible="false" />
 			<reflexive name="Squads" offset="0x18" visible="true" entrySize="0x4">
 				<stringid name="Enemy" offset="0x0" visible="true" />
 			</reflexive>
 			<comment title="Boss Wave"></comment>
-			<enum8 name="Uses Dropship" offset="0x24" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
-			</enum8>
-			<enum8 name="Squad Selection Order" offset="0x25" visible="true">
-				<option name="Random" value="0x0" />
-				<option name="Ordered" value="0x1" />
-			</enum8>
+			<bitfield8 name="Wave Flags" offset="0x24" visible="true">
+				<bit name="Uses Dropship" index="0" />
+			</bitfield8>
+			<bitfield8 name="Squad Advance Type" offset="0x25" visible="true">
+				<bit name="Ordered" index="0" />
+			</bitfield8>
 			<int8 name="Unknown" offset="0x26" visible="false" />
 			<int8 name="Unknown" offset="0x27" visible="false" />
 			<reflexive name="Squads" offset="0x28" visible="true" entrySize="0x4">
@@ -1054,18 +949,14 @@
 			<bit name="Cowbell" index="11" />
 			<bit name="Grunt Brithday" index="12" />
 			<bit name="IWHBYD" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</bitfield16>
 		<int16 name="Bonus Round Duration" offset="0x8A" visible="true" />
-		<enum8 name="Bonus Round Uses Dropship" offset="0x8C" visible="true">
-			<option name="No" value="0x0" />
-			<option name="Yes" value="0x1" />
-		</enum8>
-		<enum8 name="Bonus Round Squad Selection Order" offset="0x8D" visible="true">
-			<option name="Random" value="0x0" />
-			<option name="Ordered" value="0x1" />
-		</enum8>
+		<bitfield8 name="Wave Flags" offset="0x8C" visible="true">
+			<bit name="Uses Dropship" index="0" />
+		</bitfield8>
+		<bitfield8 name="Squad Advance Type" offset="0x8D" visible="true">
+			<bit name="Ordered" index="0" />
+		</bitfield8>
 		<int8 name="Unknown" offset="0x8E" visible="false" />
 		<int8 name="Unknown" offset="0x8F" visible="false" />
 		<reflexive name="Bonus Round Squads" offset="0x90" visible="true" entrySize="0x4">

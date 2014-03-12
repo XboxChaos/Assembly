@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Reach" baseSize="0x694">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -379,7 +379,7 @@
 		<int16 name="Default Spawn Time" offset="0x16" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="true" />
 		<bitfield16 name="Flags" offset="0x1A" visible="true">
-			<bit name="1" index="0" />
+			<bit name="Editor Only" index="0" />
 			<bit name="Phased Physics" index="1" />
 			<bit name="3" index="2" />
 			<bit name="4" index="3" />
@@ -467,15 +467,61 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<tagRef name="Hologram" offset="0x180" visible="true" />
-	<reflexive name="Incident Helpers" offset="0x190" visible="true" entrySize="0x8">
-		<int8 name="Unknown" offset="0x0" visible="false" />
-		<uint8 name="Unit Kind" offset="0x1" visible="true" />
-		<int8 name="Unknown" offset="0x2" visible="false" />
+	<reflexive name="Metagame Properties" offset="0x190" visible="true" entrySize="0x8">
+		<enum8 name="Unit Kind" offset="0x0" visible="true">
+			<option name="Actor" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+		</enum8>
+		<enum8 name="Unit" offset="0x1" visible="true">
+			<option name="Brute" value="0x0" />
+			<option name="Grunt" value="0x1" />
+			<option name="Jackal" value="0x2" />
+			<option name="Skirmisher" value="0x3" />
+			<option name="Marine" value="0x4" />
+			<option name="Spartan" value="0x5" />
+			<option name="Drone" value="0x6" />
+			<option name="Hunter" value="0x7" />
+			<option name="Null Covenenant" value="0x8" />
+			<option name="Null Human" value="0x9" />
+			<option name="Unknown" value="0xA" />
+			<option name="Unknown" value="0xB" />
+			<option name="Forerunner" value="0xC" />
+			<option name="Elite" value="0xD" />
+			<option name="Engineer" value="0xE" />
+			<option name="Mule" value="0xF" />
+			<option name="Turret" value="0x10" />
+			<option name="Mongoose" value="0x11" />
+			<option name="Warthog" value="0x12" />
+			<option name="Scorpion" value="0x13" />
+			<option name="Falcon" value="0x14" />
+			<option name="Pelican" value="0x15" />
+			<option name="Revenant" value="0x16" />
+			<option name="Seraph" value="0x17" />
+			<option name="Shade" value="0x18" />
+			<option name="Unknown" value="0x19" />
+			<option name="Ghost" value="0x1A" />
+			<option name="Space Banshee" value="0x1B" />
+			<option name="Unknown" value="0x1C" />
+			<option name="Wraith" value="0x1D" />
+			<option name="Banshee" value="0x1E" />
+			<option name="Phantom" value="0x1F" />
+			<option name="Scarab" value="0x20" />
+			<option name="Unknown" value="0x21" />
+			<option name="Tuning Fork" value="0x22" />
+		</enum8>
+		<enum8 name="Classification" offset="0x2" visible="true">
+			<option name="Infantry" value="0x0" />
+			<option name="Leader" value="0x1" />
+			<option name="Hero" value="0x2" />
+			<option name="Specialist" value="0x3" />
+			<option name="Light Vehicle" value="0x4" />
+			<option name="Heavy Vehicle" value="0x5" />
+			<option name="Giant Vehicle" value="0x6" />
+			<option name="Medium Vehicle" value="0x7" />
+		</enum8>
 		<int8 name="Unknown" offset="0x3" visible="false" />
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int8 name="Unknown" offset="0x6" visible="false" />
-		<int8 name="Unknown" offset="0x7" visible="false" />
+		<int16 name="Base Point Worth" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<reflexive name="Screen Effects" offset="0x19C" visible="true" entrySize="0x10">
 		<tagRef name="Effect" offset="0x0" visible="true" />
@@ -1295,9 +1341,49 @@
 		<float32 name="Unknown" offset="0xC8" visible="false" />
 		<float32 name="Unknown" offset="0xCC" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x588" visible="false" />
-	<undefined name="Unknown" offset="0x58C" visible="false" />
-	<undefined name="Unknown" offset="0x590" visible="false" />
+	<reflexive name="Antigravity Engine Motion Properties" offset="0x588" visible="true" entrySize="0x70">
+		<degree name="Unknown" offset="0x0" visible="true" />
+		<float32 name="Unknown (turning related)" offset="0x4" visible="true" />
+		<degree name="Maximum Left Turn" offset="0x8" visible="true" />
+		<degree name="Maximum Right Turn (negative)" offset="0xC" visible="true" />
+		<degree name="Turn Rate" offset="0x10" visible="true" />
+		<float32 name="Engine Momentum" offset="0x14" visible="true" />
+		<float32 name="Engine Max Angular Velocity" offset="0x18" visible="true" />
+		<reflexive name="Gears" offset="0x1C" visible="true" entrySize="0x44">
+			<undefined name="Loaded Min Torque" offset="0x0" visible="true" />
+			<undefined name="Loaded Max Torque" offset="0x4" visible="true" />
+			<undefined name="Loaded Peak Torque Scale" offset="0x8" visible="true" />
+			<undefined name="Loaded Past Peak Torque Exponent" offset="0xC" visible="true" />
+			<undefined name="Loaded Torque at Max Angular Velovity" offset="0x10" visible="true" />
+			<undefined name="Loaded Torque at 2x Max Angular Velocity" offset="0x14" visible="true" />
+			<undefined name="Cruising Min Torque" offset="0x18" visible="true" />
+			<undefined name="Cruising Max Torque" offset="0x1C" visible="true" />
+			<undefined name="Cruising Peak Torque Scale" offset="0x20" visible="true" />
+			<undefined name="Cruising Past Peak Torque Exponent" offset="0x24" visible="true" />
+			<undefined name="Cruising Torque at Max Angular Velovity" offset="0x28" visible="true" />
+			<undefined name="Cruising Torque at 2x Max Angular Velocity" offset="0x2C" visible="true" />
+			<undefined name="Min Time to Upshift" offset="0x30" visible="true" />
+			<undefined name="Engine Upshift Scale" offset="0x34" visible="true" />
+			<undefined name="Gear Ratio" offset="0x38" visible="true" />
+			<undefined name="Min Time to Downshift" offset="0x3C" visible="true" />
+			<undefined name="Engine Downshift Scale" offset="0x40" visible="true" />
+		</reflexive>
+		<tagRef name="Change Gear Sound" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x38" visible="true" />
+		<stringid name="Unknown" offset="0x3C" visible="true" />
+		<undefined name="Unknown" offset="0x40" visible="true" />
+		<undefined name="Unknown" offset="0x44" visible="true" />
+		<undefined name="Unknown" offset="0x48" visible="true" />
+		<undefined name="Unknown" offset="0x4C" visible="true" />
+		<undefined name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="true" />
+		<degree name="Unknown" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x5C" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="true" />
+		<undefined name="Unknown" offset="0x64" visible="true" />
+		<undefined name="Unknown" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="true" />
+	</reflexive>
 	<undefined name="Unknown" offset="0x594" visible="false" />
 	<undefined name="Unknown" offset="0x598" visible="false" />
 	<undefined name="Unknown" offset="0x59C" visible="false" />
