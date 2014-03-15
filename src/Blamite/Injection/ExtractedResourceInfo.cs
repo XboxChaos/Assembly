@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
+using System;
 
 namespace Blamite.Injection
 {
@@ -70,10 +71,25 @@ namespace Blamite.Injection
 		/// <summary>
 		///     Initializes a new instance of the <see cref="ExtractedResourceInfo" /> class.
 		/// </summary>
-		/// <param name="baseResource">The <see cref="Resource" /> to initialize the instance with.</param>
-		public ExtractedResourceInfo(Resource baseResource)
+		/// <param name="originalIndex">The original datum index of the resource.</param>
+		public ExtractedResourceInfo(DatumIndex originalIndex)
 		{
-			OriginalIndex = baseResource.Index;
+			OriginalIndex = originalIndex;
+			ResourceFixups = new List<ResourceFixup>();
+			DefinitionFixups = new List<ResourceDefinitionFixup>();
+		}
+
+		/// <summary>
+		///     Initializes a new instance of the <see cref="ExtractedResourceInfo" /> class.
+		/// </summary>
+		/// <param name="originalIndex">The original datum index of the resource.</param>
+		/// <param name="baseResource">The <see cref="Resource" /> to initialize the instance with.</param>
+		public ExtractedResourceInfo(DatumIndex originalIndex, Resource baseResource)
+		{
+			if (originalIndex.Index != baseResource.Index.Index)
+				throw new InvalidOperationException("originalIndex.Index != baseResource.Index.Index");
+
+			OriginalIndex = originalIndex;
 			Flags = baseResource.Flags;
 			Type = baseResource.Type;
 			Info = baseResource.Info;
@@ -87,18 +103,7 @@ namespace Blamite.Injection
 		}
 
 		/// <summary>
-		///     Initializes a new instance of the <see cref="ExtractedResourceInfo" /> class.
-		/// </summary>
-		/// <param name="originalIndex">The original datum index of the resource.</param>
-		public ExtractedResourceInfo(DatumIndex originalIndex)
-		{
-			OriginalIndex = originalIndex;
-			ResourceFixups = new List<ResourceFixup>();
-			DefinitionFixups = new List<ResourceDefinitionFixup>();
-		}
-
-		/// <summary>
-		///     Gets the original datum index of the resource.
+		///     Gets the original datum index used to reference the resource.
 		/// </summary>
 		public DatumIndex OriginalIndex { get; private set; }
 
