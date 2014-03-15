@@ -5,22 +5,39 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="OrangeMohawk" version="2">Standardizing.</revision>
 	</revisions>
-<reflexive name="Universal" offset="0x0" visible="true" entrySize="0xB4">
+	<reflexive name="Universal" offset="0x0" visible="true" entrySize="0xB4">
 		<tagRef name="Random Player Name Strings" offset="0x0" visible="true" />
 		<tagRef name="Team Name Strings" offset="0x10" visible="true" />
 		<reflexive name="Team Colors" offset="0x20" visible="true" entrySize="0xC">
 			<colourf name="Color" offset="0x0" format="rgb" visible="true" />
 		</reflexive>
 		<reflexive name="Armor Customization" offset="0x2C" visible="true" entrySize="0x10">
-			<stringid name="Biped Name" offset="0x0" visible="true" />
+			<stringid name="Character Name" offset="0x0" visible="true" />
 			<reflexive name="Regions" offset="0x4" visible="true" entrySize="0x10">
 				<stringid name="Name" offset="0x0" visible="true" />
 				<reflexive name="Permuations" offset="0x4" visible="true" entrySize="0x1C">
 					<stringid name="Name" offset="0x0" visible="true" />
 					<stringid name="Description" offset="0x4" visible="true" />
-					<int16 name="Unknown" offset="0x8" visible="true" />
+					<bitfield16 name="Flags" offset="0x8" visible="true">
+						<bit name="Has Requirement" index="0" />
+						<bit name="Has Special Requirement" index="1" />
+						<bit name="Bit 2" index="2" />
+						<bit name="Bit 3" index="3" />
+						<bit name="Bit 4" index="4" />
+						<bit name="Bit 5" index="5" />
+						<bit name="Bit 6" index="6" />
+						<bit name="Bit 7" index="7" />
+						<bit name="Bit 8" index="8" />
+						<bit name="Bit 9" index="9" />
+						<bit name="Bit 10" index="10" />
+						<bit name="Bit 11" index="11" />
+						<bit name="Bit 12" index="12" />
+						<bit name="Bit 13" index="13" />
+						<bit name="Bit 14" index="14" />
+						<bit name="Bit 15" index="15" />
+					</bitfield16>
 					<int16 name="Unknown" offset="0xA" visible="true" />
-					<stringid name="Requirement" offset="0xC" visible="true" />
+					<stringid name="Achievement Requirement" offset="0xC" visible="true" />
 					<reflexive name="Variant" offset="0x10" visible="true" entrySize="0x8">
 						<stringId name="Region" offset="0x0" visible="true" />
 						<stringId name="Permutation" offset="0x4" visible="true" />
@@ -30,32 +47,32 @@
 		</reflexive>
 		<tagRef name="Multiplayer Strings" offset="0x38" visible="true" />
 		<tagRef name="Sandbox UI Strings" offset="0x48" visible="true" />
-		<tagRef name="Forge Object Properties" offset="0x58" visible="true" />
-		<reflexive name="Weapons" offset="0x68" visible="true" entrySize="0x18">
+		<tagRef name="Sandbox UI Properties" offset="0x58" visible="true" />
+		<reflexive name="Multiplayer Weapons" offset="0x68" visible="true" entrySize="0x18">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Random Chance" offset="0x4" visible="true" />
 			<tagRef name="Weapon" offset="0x8" visible="true" />
 		</reflexive>
-		<reflexive name="Vehicles" offset="0x74" visible="true" entrySize="0x14">
+		<reflexive name="Multiplayer Vehicles" offset="0x74" visible="true" entrySize="0x14">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<tagRef name="Vehicle" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Grenades" offset="0x80" visible="true" entrySize="0x14">
+		<reflexive name="Multiplayer Equipment" offset="0x80" visible="true" entrySize="0x14">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<tagRef name="Grenade" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Weapons on Map" offset="0x8C" visible="true" entrySize="0x10">
-			<stringId name="Type" offset="0x0" visible="true" />
-			<reflexive name="On Map" offset="0x4" visible="true" entrySize="0x8">
-				<stringId name="Old" offset="0x0" visible="true" />
-				<stringId name="New" offset="0x4" visible="true" />
+		<reflexive name="Multiplayer Weapon Filters" offset="0x8C" visible="true" entrySize="0x10">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<reflexive name="Substitutions" offset="0x4" visible="true" entrySize="0x8">
+				<stringId name="Original Weapon" offset="0x0" visible="true" />
+				<stringId name="Substituted Weapon" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
-		<reflexive name="Vehicles on Map" offset="0x98" visible="true" entrySize="0x10">
-			<stringId name="Type" offset="0x0" visible="true" />
-			<reflexive name="On Map" offset="0x4" visible="true" entrySize="0x8">
-				<stringId name="Old" offset="0x0" visible="true" />
-				<stringId name="New" offset="0x4" visible="true" />
+		<reflexive name="Multiplayer Vehicle Filters" offset="0x98" visible="true" entrySize="0x10">
+			<stringId name="Name" offset="0x0" visible="true" />
+			<reflexive name="Substitutions" offset="0x4" visible="true" entrySize="0x8">
+				<stringId name="Original Vehicle" offset="0x0" visible="true" />
+				<stringId name="Substituted Vehicle" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
 		<tagRef name="Engine Settings" offset="0xA4" visible="true" />
@@ -155,16 +172,42 @@
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<int16 name="Unknown" offset="0x18" visible="false" />
-			<int16 name="Unknown" offset="0x1A" visible="false" />
-			<stringid name="Sudden Death Text" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -174,8 +217,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -263,11 +306,6 @@
 				<option name="All" value="0x4" />
 			</enum16>
 			<undefined name="Unknown" offset="0x8" visible="false" />
-			<enum16 name="Text Only" offset="0xC" visible="true" >
-				<option name="False" value="0x0" />
-				<option name="True" value="0x2" />
-			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
 			<enum16 name="Team" offset="0xC" visible="true">
 				<option name="None (Player Only)" value="0x0" />
 				<option name="Cause" value="0x1" />
@@ -277,15 +315,42 @@
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -295,8 +360,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -339,15 +404,42 @@
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -357,8 +449,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -405,18 +497,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -426,14 +545,10 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
-			<undefined name="Unknown" offset="0xF0" visible="false" />
-			<undefined name="Unknown" offset="0xF4" visible="false" />
-			<undefined name="Unknown" offset="0xF8" visible="false" />
-			<undefined name="Unknown" offset="0xFC" visible="false" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
 			<undefined name="Unknown" offset="0xF4" visible="false" />
 			<undefined name="Unknown" offset="0xF8" visible="false" />
@@ -476,21 +591,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<enum32 name="On Oddball Pickup/Drop" offset="0x18" visible="true">
-				<option name="False" value="0x0" />
-				<option name="True" value="0x1" />
-			</enum32>
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -500,14 +639,10 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
-			<undefined name="Unknown" offset="0xF0" visible="false" />
-			<undefined name="Unknown" offset="0xF4" visible="false" />
-			<undefined name="Unknown" offset="0xF8" visible="false" />
-			<undefined name="Unknown" offset="0xFC" visible="false" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
 			<undefined name="Unknown" offset="0xF4" visible="false" />
 			<undefined name="Unknown" offset="0xF8" visible="false" />
@@ -550,18 +685,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -571,8 +733,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -617,18 +779,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -638,8 +827,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -681,18 +870,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -702,8 +918,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -744,18 +960,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -765,8 +1008,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -813,18 +1056,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -834,8 +1104,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -878,18 +1148,45 @@
 				<option name="Effect" value="0x2" />
 				<option name="All" value="0x3" />
 			</enum16>
-			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
 			<stringid name="Text" offset="0x10" visible="true" />
 			<stringid name="Medal" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<enum16 name="Has Sound" offset="0x2C" visible="true">
-				<option name="No" value="0x0" />
-				<option name="Yes" value="0x1" />
+			<enum16 name="Required Field" offset="0x18" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
 			</enum16>
+			<enum16 name="Excluded Audience" offset="0x1A" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Cause Player" value="0x1" />
+				<option name="Cause Team" value="0x2" />
+				<option name="Effect Player" value="0x3" />
+				<option name="Effect Team" value="0x4" />
+			</enum16>
+			<stringid name="Primary String" offset="0x1C" visible="true" />
+			<float32 name="Primary String Duration" offset="0x20" visible="true" />
+			<stringid name="Plural Display String" offset="0x24" visible="true" />
+			<float32 name="Sound Delay" offset="0x28" visible="true" />
+			<bitfield16 name="Sound Flags" offset="0x2C" visible="true">
+				<bit name="Announcer Sound" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2E" visible="false" />
 			<tagRef name="English Sound" offset="0x30" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x40" visible="true" />
@@ -899,8 +1196,8 @@
 			<tagRef name="Latin American Spanish Sound" offset="0x80" visible="true" />
 			<tagRef name="Italian Sound" offset="0x90" visible="true" />
 			<tagRef name="Korean Sound" offset="0xA0" visible="true" />
-			<tagRef name="Chinese Sound" offset="0xB0" visible="true" />
-			<tagRef name="Extra Sound" offset="0xC0" visible="true" />
+			<tagRef name="Chinese Traditional Sound" offset="0xB0" visible="true" />
+			<tagRef name="Chinese Simplified Sound" offset="0xC0" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0xD0" visible="true" />
 			<tagRef name="Polish Sound" offset="0xE0" visible="true" />
 			<undefined name="Unknown" offset="0xF0" visible="false" />
@@ -908,9 +1205,9 @@
 			<undefined name="Unknown" offset="0xF8" visible="false" />
 			<undefined name="Unknown" offset="0xFC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x10C" visible="false" />
-		<undefined name="Unknown" offset="0x110" visible="false" />
-		<reflexive name="Unknown" offset="0x114" visible="false" entrySize="0x208">
+		<int32 name="Unknown" offset="0x10C" visible="false" />
+		<int32 name="Unknown" offset="0x110" visible="false" />
+		<reflexive name="Multiplayer Constants" offset="0x114" visible="true" entrySize="0x208">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -1001,51 +1298,51 @@
 			<undefined name="Unknown" offset="0x12C" visible="false" />
 			<undefined name="Unknown" offset="0x130" visible="false" />
 			<undefined name="Unknown" offset="0x134" visible="false" />
-			<undefined name="Unknown" offset="0x138" visible="false" />
-			<undefined name="Unknown" offset="0x13C" visible="false" />
-			<undefined name="Unknown" offset="0x140" visible="false" />
-			<undefined name="Unknown" offset="0x144" visible="false" />
-			<undefined name="Unknown" offset="0x148" visible="false" />
-			<undefined name="Unknown" offset="0x14C" visible="false" />
-			<undefined name="Unknown" offset="0x150" visible="false" />
-			<undefined name="Unknown" offset="0x154" visible="false" />
-			<undefined name="Unknown" offset="0x158" visible="false" />
-			<undefined name="Unknown" offset="0x15C" visible="false" />
-			<undefined name="Unknown" offset="0x160" visible="false" />
-			<tagRef name="Unknown" offset="0x164" visible="false" />
+			<undefined name="Maximum Random Spawn Bias" offset="0x138" visible="true" />
+			<undefined name="Teleporter Recharge Time" offset="0x13C" visible="true" />
+			<undefined name="Grenade Danger Weight" offset="0x140" visible="true" />
+			<undefined name="Grenade Danger Inner Radius" offset="0x144" visible="true" />
+			<undefined name="Grenade Danger Outer Radius" offset="0x148" visible="true" />
+			<undefined name="Grenade Danger Lead Time" offset="0x14C" visible="true" />
+			<undefined name="Vehicle Danger Minimum Speed" offset="0x150" visible="true" />
+			<undefined name="Vehicle Danger Weight" offset="0x154" visible="true" />
+			<undefined name="Vehicle Danger Radius" offset="0x158" visible="true" />
+			<undefined name="Vehicle Danger Lead Time" offset="0x15C" visible="true" />
+			<undefined name="Vehicle Nearby Player Distance" offset="0x160" visible="true" />
+			<tagRef name="Hill Shader" offset="0x164" visible="true" />
 			<undefined name="Unknown" offset="0x174" visible="false" />
 			<undefined name="Unknown" offset="0x178" visible="false" />
 			<undefined name="Unknown" offset="0x17C" visible="false" />
-			<tagRef name="Unknown" offset="0x180" visible="false" />
-			<tagRef name="Unknown" offset="0x190" visible="false" />
-			<tagRef name="Unknown" offset="0x1A0" visible="false" />
-			<tagRef name="Unknown" offset="0x1B0" visible="false" />
-			<stringid name="Unknown" offset="0x1C0" visible="false" />
-			<stringid name="Unknown" offset="0x1C4" visible="false" />
+			<tagRef name="Bomb Explode Effect" offset="0x180" visible="true" />
+			<tagRef name="Bomb Explode Damage" offset="0x190" visible="true" />
+			<tagRef name="Unknown" offset="0x1A0" visible="true" />
+			<tagRef name="Cursor Impact Effect" offset="0x1B0" visible="true" />
+			<stringId name="Bomb Defusal String" offset="0x1C0" visible="true" />
+			<stringId name="Blocked Teleporter String" offset="0x1C4" visible="true" />
 			<stringid name="Unknown" offset="0x1C8" visible="false" />
-			<stringid name="Unknown" offset="0x1CC" visible="false" />
-			<stringid name="Unknown" offset="0x1D0" visible="false" />
-			<stringid name="Unknown" offset="0x1D4" visible="false" />
-			<stringid name="Unknown" offset="0x1D8" visible="false" />
-			<stringid name="Unknown" offset="0x1DC" visible="false" />
-			<stringid name="Unknown" offset="0x1E0" visible="false" />
-			<stringid name="Unknown" offset="0x1E4" visible="false" />
-			<stringid name="Unknown" offset="0x1E8" visible="false" />
-			<stringid name="Unknown" offset="0x1EC" visible="false" />
-			<stringid name="Unknown" offset="0x1F0" visible="false" />
-			<stringid name="Unknown" offset="0x1F4" visible="false" />
-			<stringid name="Unknown" offset="0x1F8" visible="false" />
-			<stringid name="Unknown" offset="0x1FC" visible="false" />
-			<stringid name="Unknown" offset="0x200" visible="false" />
-			<stringid name="Unknown" offset="0x204" visible="false" />
+			<stringId name="Spawn Allowed Default Respawn String" offset="0x1CC" visible="true" />
+			<stringId name="Spawn At Player Looking At Self String" offset="0x1D0" visible="true" />
+			<stringId name="Spawn At Player Looking At Target String" offset="0x1D4" visible="true" />
+			<stringId name="Spawn At Player Looking At Potential Target String" offset="0x1D8" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Target String" offset="0x1DC" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Potential Target String" offset="0x1E0" visible="true" />
+			<stringId name="Player Out Of Lives String" offset="0x1E4" visible="true" />
+			<stringId name="Invalid Spawn Target String" offset="0x1E8" visible="true" />
+			<stringId name="Targetted Player Enemies Nearby String" offset="0x1EC" visible="true" />
+			<stringId name="Targetted Player Unfriendly Team String" offset="0x1F0" visible="true" />
+			<stringId name="Targetted Player Is Dead String" offset="0x1F4" visible="true" />
+			<stringId name="Targetted Player In Combat String" offset="0x1F8" visible="true" />
+			<stringId name="Targetted Player Too Far From Owned Flag String" offset="0x1FC" visible="true" />
+			<stringId name="No Available Netpoints String" offset="0x200" visible="true" />
+			<stringId name="Netpoint Contested String" offset="0x204" visible="true" />
 		</reflexive>
-		<reflexive name="States" offset="0x120" visible="true" entrySize="0x24">
+		<reflexive name="State Responses" offset="0x120" visible="true" entrySize="0x24">
 			<undefined name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Index" offset="0x4" visible="true" />
+			<int16 name="State" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
-			<stringid name="Free for All" offset="0x8" visible="true" />
-			<stringId name="Team" offset="0xC" visible="true" />
-			<tagRef name="Unknown" offset="0x10" visible="false" />
+			<stringid name="Free for All Message" offset="0x8" visible="true" />
+			<stringId name="Team Message" offset="0xC" visible="true" />
+			<tagRef name="Unknown" offset="0x10" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 		</reflexive>
 		<tagRef name="Scoreboard Emblem" offset="0x12C" visible="true" />

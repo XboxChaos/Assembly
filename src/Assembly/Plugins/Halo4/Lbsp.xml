@@ -1,10 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x3E8">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<float32 name="Shadow Edge Clarity" offset="0x0" visible="true" />
-	<undefined name="Unknown" offset="0x4" visible="true" />
+	<int16 name="Unknown" offset="0x0" visible="false" />
+	<int16 name="BSP Index" offset="0x2" visible="true" />
+	<uint32 name="Structure Checksum" offset="0x4" visible="true" />
 	<undefined name="Unknown" offset="0x8" visible="true" />
 	<undefined name="Unknown" offset="0xC" visible="true" />
 	<undefined name="Unknown" offset="0x10" visible="true" />
@@ -16,14 +17,14 @@
 	<degree name="Direction Y" offset="0x28" visible="true" />
 	<degree name="Direction Z" offset="0x2C" visible="true" />
 	<colourf name="Color" offset="0x30" format="rgb" visible="true" />
-	<tagref name="Colormap" offset="0x3C" visible="true" />
-	<tagref name="Shadow Color Intensity" offset="0x4C" visible="true" />
-	<tagref name="Light Color Intensity" offset="0x5C" visible="true" />
-	<tagref name="Shadow Overlay Micro?" offset="0x6C" visible="true" />
-	<tagref name="Shadow Overlay Macro?" offset="0x7C" visible="true" />
-	<tagref name="Shadow Refinement?" offset="0x8C" visible="true" />
-	<tagref name="BSP Model Colormap" offset="0x9C" visible="true" />
-	<tagref name="BSP Model Color Intensity" offset="0xaC" visible="true" />
+	<tagRef name="Intensity Map" offset="0x3C" visible="true" />
+	<tagRef name="Direction Map" offset="0x4C" visible="true" />
+	<tagRef name="Analytic Map" offset="0x5C" visible="true" />
+	<tagRef name="Overlay Micro Map" offset="0x6C" visible="true" />
+	<tagRef name="Overlay Macro Map" offset="0x7C" visible="true" />
+	<tagRef name="Refinement Map" offset="0x8C" visible="true" />
+	<tagRef name="Vertex Map" offset="0x9C" visible="true" />
+	<tagRef name="Vertex AO Map" offset="0xAC" visible="true" />
 	<reflexive name="Unknown" offset="0xBC" visible="true" entrySize="0x8">
 		<int32 name="Unknown" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
@@ -92,59 +93,70 @@
 	<int16 name="Unknown" offset="0x138" visible="false" />
 	<int16 name="Unknown" offset="0x13A" visible="false" />
 	<int32 name="Unknown" offset="0x13C" visible="false" />
-	<reflexive name="BSP Pieces" offset="0x140" visible="false" entrySize="0x70">
-		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x18">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
-			<int32 name="Unknown" offset="0x8" visible="false" />
-			<int32 name="Unknown" offset="0xC" visible="false" />
-			<int32 name="Unknown" offset="0x10" visible="false" />
-			<int32 name="Unknown" offset="0x14" visible="false" />
+	<reflexive name="Sections" offset="0x140" visible="true" entrySize="0x70">
+		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
+			<int16 name="Shader Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
+			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
+			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
+			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown" offset="0x11" visible="false" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
+			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x10">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
-			<int32 name="Unknown" offset="0x8" visible="false" />
+		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
+			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
+			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-	</reflexive>
-	<undefined name="struct here 2" offset="0x14C" visible="false" />
-	<undefined name="struct here 2" offset="0x150" visible="false" />
-	<undefined name="struct here 2" offset="0x154" visible="false" />
-	<reflexive name="Unknown" offset="0x158" visible="false" entrySize="0x34">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="true" />
+		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
+			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
+			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
+			<reflexive name="Instanced Geometry Section Contents" offset="0x4" visible="true" entrySize="0x2">
+				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
+			</reflexive>
+		</reflexive>
+		<reflexive name="Unknown Water" offset="0x44" visible="false" entrySize="0x2">
+			<int16 name="Unknown" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="true" />
+		<undefined name="Unknown" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x5C" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="true" />
+		<undefined name="Unknown" offset="0x64" visible="true" />
+		<undefined name="Unknown" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="true" />
+	</reflexive>
+	<undefined name="struct here 2" offset="0x14C" visible="false" />
+	<undefined name="struct here 2" offset="0x150" visible="false" />
+	<undefined name="struct here 2" offset="0x154" visible="false" />
+	<reflexive name="Compression Info" offset="0x158" visible="true" entrySize="0x34">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Position Bounds X min" offset="0x4" visible="true" />
+		<float32 name="Position Bounds X max" offset="0x8" visible="true" />
+		<float32 name="Position Bounds Y min" offset="0xC" visible="true" />
+		<float32 name="Position Bounds Y max" offset="0x10" visible="true" />
+		<float32 name="Position Bounds Z min" offset="0x14" visible="true" />
+		<float32 name="Position Bounds Z max" offset="0x18" visible="true" />
+		<float32 name="Texcoord Bounds X min" offset="0x1C" visible="true" />
+		<float32 name="Texcoord Bounds X max" offset="0x20" visible="true" />
+		<float32 name="Texcoord Bounds Y min" offset="0x24" visible="true" />
+		<float32 name="Texcoord Bounds Y max" offset="0x28" visible="true" />
 		<undefined name="Unknown" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
@@ -200,61 +212,72 @@
 	<undefined name="struct here 3" offset="0x1f4" visible="false" />
 	<undefined name="struct here 3" offset="0x1f8" visible="false" />
 	<int32 name="Unknown" offset="0x1fC" visible="false" />
-	<reflexive name="Unknown" offset="0x200" visible="false" entrySize="0x70">
-		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x18">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
+	<reflexive name="Sections" offset="0x200" visible="true" entrySize="0x70">
+		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
+			<int16 name="Shader Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
+			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
+			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
+			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown" offset="0x11" visible="false" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
+			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
+		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
+			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
+			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
+			<int32 name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="true" />
+		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
+			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
+			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
+			<reflexive name="Instanced Geometry Section Contents" offset="0x4" visible="true" entrySize="0x2">
+				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
+			</reflexive>
+		</reflexive>
+		<reflexive name="Unknown Water" offset="0x44" visible="false" entrySize="0x2">
+			<int16 name="Unknown" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="true" />
+		<undefined name="Unknown" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x5C" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="true" />
+		<undefined name="Unknown" offset="0x64" visible="true" />
+		<undefined name="Unknown" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x20C" visible="false" />
 	<undefined name="Unknown" offset="0x210" visible="false" />
 	<undefined name="Unknown" offset="0x214" visible="false" />
-	<reflexive name="Unknown" offset="0x218" visible="false" entrySize="0x34">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+	<reflexive name="Compression Info" offset="0x218" visible="true" entrySize="0x34">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Position Bounds X min" offset="0x4" visible="true" />
+		<float32 name="Position Bounds X max" offset="0x8" visible="true" />
+		<float32 name="Position Bounds Y min" offset="0xC" visible="true" />
+		<float32 name="Position Bounds Y max" offset="0x10" visible="true" />
+		<float32 name="Position Bounds Z min" offset="0x14" visible="true" />
+		<float32 name="Position Bounds Z max" offset="0x18" visible="true" />
+		<float32 name="Texcoord Bounds X min" offset="0x1C" visible="true" />
+		<float32 name="Texcoord Bounds X max" offset="0x20" visible="true" />
+		<float32 name="Texcoord Bounds Y min" offset="0x24" visible="true" />
+		<float32 name="Texcoord Bounds Y max" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x224" visible="false" />
 	<undefined name="Unknown" offset="0x228" visible="false" />
@@ -293,47 +316,73 @@
 	<undefined name="Unknown" offset="0x2a8" visible="false" />
 	<undefined name="Unknown" offset="0x2aC" visible="false" />
 	<int32 name="Unknown" offset="0x2b0" visible="false" />
-	<reflexive name="Unknown" offset="0x2B4" visible="false" entrySize="0x70">
-		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x18">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
+	<reflexive name="Sections" offset="0x2B4" visible="true" entrySize="0x70">
+		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
+			<int16 name="Shader Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
+			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
+			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
+			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown" offset="0x11" visible="false" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
+			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
+			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
+			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
+			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
+			<int32 name="Unknown" offset="0xC" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="true" />
+		<undefined name="Unknown" offset="0x34" visible="true" />
+		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
+			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
+			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
+			<reflexive name="Instanced Geometry Section Contents" offset="0x4" visible="true" entrySize="0x2">
+				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
+			</reflexive>
+		</reflexive>
+		<reflexive name="Unknown Water" offset="0x44" visible="false" entrySize="0x2">
+			<int16 name="Unknown" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x50" visible="true" />
+		<undefined name="Unknown" offset="0x54" visible="true" />
+		<undefined name="Unknown" offset="0x58" visible="true" />
+		<undefined name="Unknown" offset="0x5C" visible="true" />
+		<undefined name="Unknown" offset="0x60" visible="true" />
+		<undefined name="Unknown" offset="0x64" visible="true" />
+		<undefined name="Unknown" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x2c0" visible="false" />
 	<undefined name="Unknown" offset="0x2c4" visible="false" />
 	<undefined name="Unknown" offset="0x2c8" visible="false" />
-	<undefined name="Unknown" offset="0x2cC" visible="false" />
-	<undefined name="Unknown" offset="0x2d0" visible="false" />
-	<undefined name="Unknown" offset="0x2d4" visible="false" />
+	<reflexive name="Compression Info" offset="0x2CC" visible="true" entrySize="0x34">
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Position Bounds X min" offset="0x4" visible="true" />
+		<float32 name="Position Bounds X max" offset="0x8" visible="true" />
+		<float32 name="Position Bounds Y min" offset="0xC" visible="true" />
+		<float32 name="Position Bounds Y max" offset="0x10" visible="true" />
+		<float32 name="Position Bounds Z min" offset="0x14" visible="true" />
+		<float32 name="Position Bounds Z max" offset="0x18" visible="true" />
+		<float32 name="Texcoord Bounds X min" offset="0x1C" visible="true" />
+		<float32 name="Texcoord Bounds X max" offset="0x20" visible="true" />
+		<float32 name="Texcoord Bounds Y min" offset="0x24" visible="true" />
+		<float32 name="Texcoord Bounds Y max" offset="0x28" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="true" />
+	</reflexive>
 	<undefined name="Unknown" offset="0x2d8" visible="false" />
 	<undefined name="Unknown" offset="0x2dC" visible="false" />
 	<undefined name="Unknown" offset="0x2e0" visible="false" />

@@ -115,20 +115,20 @@ namespace Blamite.Injection
 		///     Finds the data block which has a specified original address.
 		/// </summary>
 		/// <param name="originalAddress">The original address of the data block to find.</param>
-		/// <returns>The <see cref="DataBlock" /> with the original address if found, or <c>null</c> otherwise.</returns>
+		/// <returns>The <see cref="DataBlock" /> with the original address.</returns>
 		public DataBlock FindDataBlock(uint originalAddress)
 		{
-			return Find(_dataBlocksByAddress, originalAddress);
+			return _dataBlocksByAddress[originalAddress];
 		}
 
 		/// <summary>
 		///     Finds the tag which has a specified original datum index.
 		/// </summary>
 		/// <param name="originalIndex">The original datum index of the tag to find.</param>
-		/// <returns>The <see cref="ExtractedTag" /> with the original datum index if found, or <c>null</c> otherwise.</returns>
+		/// <returns>The <see cref="ExtractedTag" /> with the original datum index.</returns>
 		public ExtractedTag FindTag(DatumIndex originalIndex)
 		{
-			return Find(_tagsByIndex, originalIndex);
+			return _tagsByIndex[originalIndex];
 		}
 
 		/// <summary>
@@ -138,42 +138,27 @@ namespace Blamite.Injection
 		/// <returns></returns>
 		public ExtractedPage FindExtractedResourcePage(int originalIndex)
 		{
-			return Find(_extractedResourcePageByPageIndex, originalIndex);
+			return _extractedResourcePageByPageIndex[originalIndex];
 		}
 
 		/// <summary>
 		///     Finds the resource page which has a specified original index.
 		/// </summary>
 		/// <param name="originalIndex">The original index of the resource page to find.</param>
-		/// <returns>The <see cref="ResourcePage" /> with the original index if found, or <c>null</c> otherwise.</returns>
+		/// <returns>The <see cref="ResourcePage" /> with the original index.</returns>
 		public ResourcePage FindResourcePage(int originalIndex)
 		{
-			return Find(_pagesByIndex, originalIndex);
+			return _pagesByIndex[originalIndex];
 		}
 
 		/// <summary>
 		///     Finds the resource which has a specified original datum index.
 		/// </summary>
 		/// <param name="originalIndex">The original datum index of the resource to find.</param>
-		/// <returns>The <see cref="ExtractedResourceInfo" /> with the original datum index if found, or <c>null</c> otherwise.</returns>
+		/// <returns>The <see cref="ExtractedResourceInfo" /> with the original datum index.</returns>
 		public ExtractedResourceInfo FindResource(DatumIndex originalIndex)
 		{
-			return Find(_resourcesByIndex, originalIndex);
-		}
-
-		/// <summary>
-		///     Attempts to find a value in a <see><cref>Dictionary</cref></see>, returning the type's default value if not found.
-		/// </summary>
-		/// <typeparam name="TKey">The type of the dictionary's keys.</typeparam>
-		/// <typeparam name="TValue">The type of the dictionary's values.</typeparam>
-		/// <param name="dict">The dictionary to search in.</param>
-		/// <param name="key">The key to search for.</param>
-		/// <returns>The value with the corresponding key if found, or <typeparamref name="TValue" />'s default value if not found.</returns>
-		private static TValue Find<TKey, TValue>(IDictionary<TKey, TValue> dict, TKey key)
-		{
-			TValue result;
-			dict.TryGetValue(key, out result);
-			return result;
+			return _resourcesByIndex[originalIndex];
 		}
 	}
 }

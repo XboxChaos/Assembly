@@ -39,23 +39,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -63,18 +54,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -98,66 +77,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -176,22 +101,22 @@
 			<option name="Maximum Score" value="0x2" />
 		</enum16>
 		<int16 name="Points To Win" offset="0x152" visible="true" />
-			<int8 name="Kill Points" offset="0x154" visible="true" />
-			<int8 name="Assist Points" offset="0x155" visible="true" />
-			<int8 name="Death Points" offset="0x156" visible="true" />
-			<int8 name="Suicide Points" offset="0x157" visible="true" />
-			<int8 name="Betrayal Points" offset="0x158" visible="true" />
-			<int8 name="Leader Kill Bonus" offset="0x159" visible="true" />
-			<int8 name="Elimination Bonus" offset="0x15A" visible="true" />
-			<int8 name="Assassination Bonus" offset="0x15B" visible="true" />
-			<int8 name="Headshot Bonus" offset="0x15C" visible="true" />
-			<int8 name="Beatdown Bonus" offset="0x15D" visible="true" />
-			<int8 name="Sticky Bonus" offset="0x15E" visible="true" />
-			<int8 name="Splatter Bonus" offset="0x15F" visible="true" />
-			<int8 name="Spree Bonus" offset="0x160" visible="true" />
-			<int8 name="Unknown" offset="0x161" visible="false" />
-			<int8 name="Unknown" offset="0x162" visible="false" />
-			<int8 name="Unknown" offset="0x163" visible="false" />
+		<int8 name="Kill Points" offset="0x154" visible="true" />
+		<int8 name="Assist Points" offset="0x155" visible="true" />
+		<int8 name="Death Points" offset="0x156" visible="true" />
+		<int8 name="Suicide Points" offset="0x157" visible="true" />
+		<int8 name="Betrayal Points" offset="0x158" visible="true" />
+		<int8 name="Leader Kill Bonus" offset="0x159" visible="true" />
+		<int8 name="Elimination Bonus" offset="0x15A" visible="true" />
+		<int8 name="Assassination Bonus" offset="0x15B" visible="true" />
+		<int8 name="Headshot Bonus" offset="0x15C" visible="true" />
+		<int8 name="Beatdown Bonus" offset="0x15D" visible="true" />
+		<int8 name="Sticky Bonus" offset="0x15E" visible="true" />
+		<int8 name="Splatter Bonus" offset="0x15F" visible="true" />
+		<int8 name="Spree Bonus" offset="0x160" visible="true" />
+		<int8 name="Unknown" offset="0x161" visible="false" />
+		<int8 name="Unknown" offset="0x162" visible="false" />
+		<int8 name="Unknown" offset="0x163" visible="false" />
 		<stringid name="Leader Trait Profile" offset="0x164" visible="true" />
 		<stringid name="Leading Team Trait Profile" offset="0x168" visible="true" />
 	</reflexive>
@@ -199,23 +124,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -223,18 +139,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -258,66 +162,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -333,36 +183,6 @@
 		<bitfield32 name="Flags" offset="0x150" visible="true">
 			<bit name="Autopickup Enabled" index="0" />
 			<bit name="Ball Effect Enabled" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<enum16 name="Team Scoring" offset="0x154" visible="true">
 			<option name="Sum of Team" value="0x0" />
@@ -386,23 +206,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -410,18 +221,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -445,66 +244,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -517,41 +262,32 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Unknown" offset="0x152" visible="false" />
-		<int16 name="Unknown" offset="0x154" visible="false" />
-		<int16 name="Number of Flags" offset="0x156" visible="true" />
-		<int16 name="Unknown" offset="0x158" visible="false" />
-		<int16 name="Unknown" offset="0x15A" visible="false" />
-		<int16 name="Unknown" offset="0x15C" visible="false" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Flag At Home To Score" index="0" />
+		</bitfield32>
+		<int16 name="Home Flag Waypoint" offset="0x154" visible="true" />
+		<int16 name="Game Mode" offset="0x156" visible="true" />
+		<int16 name="Respawn" offset="0x158" visible="true" />
+		<int16 name="Flag Return Time" offset="0x15A" visible="true" />
+		<int16 name="Sudden Death" offset="0x16C" visible="true" />
 		<int16 name="Score To Win" offset="0x15E" visible="true" />
-		<int8 name="Unknown" offset="0x160" visible="false" />
-		<int8 name="Unknown" offset="0x161" visible="false" />
+		<int16 name="Flag Reset Time" offset="0x160" visible="true" />
 		<int8 name="Unknown" offset="0x162" visible="false" />
 		<int8 name="Unknown" offset="0x163" visible="false" />
-		<stringid name="Flag Carrier Trait Profile" offset="0x164" visible="true" />
+		<stringId name="Flag Carrier Trait Profile" offset="0x164" visible="true" />
 	</reflexive>
 	<reflexive name="Assault Variants" offset="0x34" visible="true" entrySize="0x170">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -559,18 +295,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -594,66 +318,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -666,11 +336,12 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Reset On Disarm" offset="0x152" visible="true" />
-		<int16 name="Unknown" offset="0x154" visible="false" />
-		<int16 name="Bomb Mode" offset="0x156" visible="true" />
-		<int16 name="Unknown" offset="0x158" visible="false" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Reset on Disarm" index="0" />
+		</bitfield32>
+		<int16 name="Respawn" offset="0x154" visible="true" />
+		<int16 name="Game Mode" offset="0x156" visible="true" />
+		<int16 name="Enemy Bomb Waypoint" offset="0x158" visible="true" />
 		<int16 name="Sudden Death" offset="0x15A" visible="true" />
 		<int16 name="Detonations To Win" offset="0x15C" visible="true" />
 		<int16 name="Bomb Reset Time" offset="0x15E" visible="true" />
@@ -685,23 +356,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -709,18 +371,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -744,66 +394,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -816,15 +412,16 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Unknown" offset="0x152" visible="false" />
-		<int16 name="Unknown" offset="0x154" visible="false" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Respawn on Haven Move" index="0" />
+		</bitfield32>
+		<int16 name="Safe Havens" offset="0x154" visible="true" />
 		<int16 name="Next Zombie" offset="0x156" visible="true" />
 		<int16 name="Initial Zombie Count" offset="0x158" visible="true" />
-		<int16 name="Unknown" offset="0x15A" visible="false" />
+		<int16 name="Safe Haven Movement Time" offset="0x15A" visible="true" />
 		<int8 name="Zombie Kill Points" offset="0x15C" visible="true" />
 		<int8 name="Infection Points" offset="0x15D" visible="true" />
-		<int8 name="Unknown" offset="0x15E" visible="false" />
+		<int8 name="Safe Haven Arrival Points" offset="0x15E" visible="true" />
 		<int8 name="Suicide Points" offset="0x15F" visible="true" />
 		<int8 name="Betrayal Points" offset="0x160" visible="true" />
 		<int8 name="Last Man Standing Bonus" offset="0x161" visible="true" />
@@ -839,23 +436,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -863,18 +451,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -898,66 +474,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -970,8 +492,9 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Unknown" offset="0x152" visible="false" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Opaque Hill" index="0" />
+		</bitfield32>
 		<int16 name="Score To Win" offset="0x154" visible="true" />
 		<int16 name="Team Scoring" offset="0x156" visible="true" />
 		<int16 name="Hill Movement" offset="0x158" visible="true" />
@@ -986,23 +509,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -1010,18 +524,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -1045,66 +547,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -1117,8 +565,10 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="One-Sided Territories" offset="0x152" visible="true" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="One Sided" index="0" />
+			<bit name="Lock After First Capture" index="1" />
+		</bitfield32>
 		<int16 name="Respawn On Capture" offset="0x154" visible="true" />
 		<int16 name="Territory Capture Time" offset="0x156" visible="true" />
 		<int16 name="Sudden Death" offset="0x158" visible="true" />
@@ -1130,23 +580,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -1154,18 +595,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -1189,66 +618,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -1261,8 +636,11 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Allied Against Juggernaut" offset="0x152" visible="true" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Allied Against Juggernaut" index="0" />
+			<bit name="Respawn on Lone Juggernaut" index="1" />
+			<bit name="Destination Zones Enabled" index="2" />
+		</bitfield32>
 		<int16 name="First Juggernaut" offset="0x154" visible="true" />
 		<int16 name="Next Juggernaut" ofset="0x156" visible="true" />
 		<int16 name="Goal Zone Movement" offset="0x158" visible="true" />
@@ -1284,23 +662,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -1308,18 +677,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -1343,66 +700,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -1415,8 +718,11 @@
 			<int8 name="Agility Trait Duration" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="false" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x150" visible="false" />
-		<int16 name="Single VIP" offset="0x152" visible="true" />
+		<bitfield32 name="Flags" offset="0x150" visible="true">
+			<bit name="Single VIP" index="0" />
+			<bit name="Destination Zones Enabled" index="1" />
+			<bit name="End Round on VIP Death" index="2" />
+		</bitfield32>
 		<int16 name="Score To Win" offset="0x154" visible="true" />
 		<int16 name="Next VIP" offset="0x156" visible="true" />
 		<int16 name="Goal Movement" offset="0x158" visible="true" />
@@ -1441,23 +747,14 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<ascii name="Description" offset="0x20" length="0x100" visible="true" />
 		<reflexive name="General Settings" offset="0x120" visible="true" entrySize="0x8">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<bitfield8 name="Flags" offset="0x3" visible="true">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x12C" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -1465,18 +762,6 @@
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
@@ -1500,66 +785,12 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 		</reflexive>
 		<reflexive name="Map Overrides" offset="0x144" visible="true" entrySize="0x20">
 			<bitfield32 name="Flags" offset="0x0" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Indestructable Vehicles" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<stringId name="Base Player Trait Profile" offset="0x4" visible="true" />
 			<stringId name="Weapon Set" offset="0x8" visible="true" />
@@ -1574,37 +805,6 @@
 		</reflexive>
 		<bitfield32 name="Flags" offset="0x150" visible="true">
 			<bit name="Open Channel Voice Enabled" index="0" />
-			<bit name="Unknown 2" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<int16 name="Edit Mode" offset="0x154" visible="true" />
 		<int16 name="Editor Respawn Time" offset="0x156" visible="true" />

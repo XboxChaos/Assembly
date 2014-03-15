@@ -278,7 +278,7 @@ namespace Blamite.Injection
 			foreach (var addrFixup in block.AddressFixups)
 			{
 				var subBlock = _container.FindDataBlock(addrFixup.OriginalAddress);
-				if (subBlock != null && BlockNeedsResources(subBlock))
+				if (BlockNeedsResources(subBlock))
 					return true;
 			}
 			return false;

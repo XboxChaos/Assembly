@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Reach" baseSize="0x54">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -10,18 +10,22 @@
 	<undefined name="Unknown" offset="0x8" visible="false" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
 	<int32 name="Unknown" offset="0x10" visible="false" />
-	<reflexive name="Materials" offset="0x14" visible="false" entrySize="0x4">
-		<stringid name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Materials" offset="0x14" visible="true" entrySize="0x4">
+		<stringid name="Material" offset="0x0" visible="True" />
 	</reflexive>
 	<reflexive name="Regions" offset="0x20" visible="true" entrySize="0x10">
-		<stringid name="Unknown" offset="0x0" visible="false" />
+		<stringid name="Name" offset="0x0" visible="true" />
 		<reflexive name="Permutations" offset="0x4" visible="true" entrySize="0x28">
-			<stringid name="Unknown" offset="0x0" visible="false" />
-			<reflexive name="BSP" offset="0x4" visible="false" entrySize="0x70">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<reflexive name="Unknown" offset="0x4" visible="false" entrySize="0x8" align="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
+			<stringid name="Name" offset="0x0" visible="true" />
+			<reflexive name="BSPs" offset="0x4" visible="true" entrySize="0x70">
+				<int16 name="Node Index" offset="0x0" visible="True" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<reflexive name="BSP 3D Nodes" offset="0x4" visible="True" entrySize="0x8" align="0x8">
+					<int16 name="Unknown" offset="0x0" visible="false" />
+					<int8 name="Unknown" offset="0x2" visible="false" />
+					<int8 name="Unknown" offset="0x3" visible="false" />
+					<int16 name="Left Child" offset="0x4" visible="True" />
+					<int16 name="Right Child" offset="0x6" visible="True" />
 				</reflexive>
 				<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x80" align="0x80">
 					<undefined name="Unknown" offset="0x0" visible="false" />
@@ -57,49 +61,64 @@
 					<undefined name="Unknown" offset="0x78" visible="false" />
 					<undefined name="Unknown" offset="0x7C" visible="false" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x1C" visible="false" entrySize="0x10" align="0x10">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
-					<undefined name="Unknown" offset="0xC" visible="false" />
+				<reflexive name="Planes" offset="0x1C" visible="true" entrySize="0x10" align="0x10">
+					<undefined name="Plane i" offset="0x0" visible="True" />
+					<undefined name="Plane j" offset="0x4" visible="True" />
+					<undefined name="Plane k" offset="0x8" visible="True" />
+					<undefined name="Plane d" offset="0xC" visible="True" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x28" visible="false" entrySize="0x8" align="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
+				<reflexive name="Leaves" offset="0x28" visible="true" entrySize="0x8" align="0x8">
+					<int16 name="Flags" offset="0x0" visible="True" />
+					<int16 name="BSP 2D Reference Count" offset="0x2" visible="True" />
+					<int16 name="First BSP 2D Reference" offset="0x4" visible="True" />
+					<int16 name="Unknown" offset="0x6" visible="false" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x34" visible="false" entrySize="0x4" align="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+				<reflexive name="BSP 2D References" offset="0x34" visible="true" entrySize="0x4" align="0x8">
+					<int16 name="Plane" offset="0x0" visible="True" />
+					<int16 name="BSP 2D Node" offset="0x2" visible="True" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x40" visible="false" entrySize="0x10" align="0x10">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
-					<undefined name="Unknown" offset="0xC" visible="false" />
+				<reflexive name="BSP 2D Nodes" offset="0x40" visible="true" entrySize="0x10" align="0x10">
+					<undefined name="Plane i" offset="0x0" visible="True" />
+					<undefined name="Plane j" offset="0x4" visible="True" />
+					<undefined name="Plane d" offset="0x8" visible="True" />
+					<int16 name="Left Child" offset="0xC" visible="True" />
+					<int16 name="Right Child" offset="0xE" visible="True" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x4C" visible="false" entrySize="0xC">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
+				<reflexive name="Surfaces" offset="0x4C" visible="true" entrySize="0xC">
+					<int16 name="Plane" offset="0x0" visible="True" />
+					<int16 name="First Edge" offset="0x2" visible="True" />
+					<int16 name="Unknown" offset="0x4" visible="false" />
+					<int16 name="Unknown" offset="0x6" visible="false" />
+					<int16 name="Unknown" offset="0x8" visible="false" />
+					<int16 name="Material" offset="0xA" visible="True" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x58" visible="false" entrySize="0xC">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
+				<reflexive name="Edges" offset="0x58" visible="true" entrySize="0xC">
+					<int16 name="Start Vertex" offset="0x0" visible="True" />
+					<int16 name="End Vertex" offset="0x2" visible="True" />
+					<int16 name="Forward Edge" offset="0x4" visible="True" />
+					<int16 name="Reverse Edge" offset="0x6" visible="True" />
+					<int16 name="Left Surface" offset="0x8" visible="True" />
+					<int16 name="Right Surface" offset="0xA" visible="True" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x64" visible="false" entrySize="0x10" align="0x10">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
-					<undefined name="Unknown" offset="0xC" visible="false" />
+				<reflexive name="Verticies" offset="0x64" visible="true" entrySize="0x10" align="0x10">
+					<undefined name="Point x" offset="0x0" visible="True" />
+					<undefined name="Point y" offset="0x4" visible="True" />
+					<undefined name="Point z" offset="0x8" visible="True" />
+					<int16 name="First Edge" offset="0xC" visible="True" />
+					<int16 name="Unknown" offset="0xE" visible="false" />
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 4" offset="0x10" visible="false" entrySize="0xB0" align="0x10">
+			<reflexive name="BSP Physics" offset="0x10" visible="false" entrySize="0xB0" align="0x10">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
 				<undefined name="Unknown" offset="0x10" visible="false" />
-				<dataRef name="Unknown" offset="0x14" visible="false" align="0x1" />
+				<undefined name="Unknown" offset="0x14" visible="false" />
+				<undefined name="Unknown" offset="0x18" visible="false" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
 				<undefined name="Unknown" offset="0x28" visible="false" />
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
@@ -135,21 +154,24 @@
 				<undefined name="Unknown" offset="0xA8" visible="false" />
 				<undefined name="Unknown" offset="0xAC" visible="false" />
 			</reflexive>
-			<reflexive name="Unknown 5" offset="0x1C" visible="false" entrySize="0x40" align="0x10">
-				<reflexive name="Unknown 6" offset="0x0" visible="false" entrySize="0x1">
-					<uint8 name="Unknown" offset="0x0" visible="false" />
-				</reflexive>
+			<reflexive name="BSP Mopp Codes" offset="0x1C" visible="true" entrySize="0x40" align="0x10">
+				<int32 name="Size" offset="0x0" visible="true" />
+				<int32 name="Count" offset="0x4" visible="true" />
+				<int32 name="Offset" offset="0x8" visible="true" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
-				<reflexive name="Unknown 7" offset="0x10" visible="false" entrySize="0x1">
-					<uint8 name="Unknown" offset="0x0" visible="false" />
-				</reflexive>
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<reflexive name="Unknown 8" offset="0x20" visible="false" entrySize="0x1">
-					<uint8 name="Unknown" offset="0x0" visible="false" />
-				</reflexive>
-				<undefined name="Unknown" offset="0x2C" visible="false" />
-				<reflexive name="Unknown 9" offset="0x30" visible="false" entrySize="0x1">
-					<uint8 name="Unknown" offset="0x0" visible="false" />
+				<float32 name="Offset X" offset="0x10" visible="true" />
+				<float32 name="Offset Y" offset="0x14" visible="true" />
+				<float32 name="Offset Z" offset="0x18" visible="true" />
+				<float32 name="Offset Scale" offset="0x1C" visible="true" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<int32 name="Data Size" offset="0x24" visible="true" />
+				<uint32 name="Data Capacity" offset="0x28" visible="true" />
+				<int8 name="Unknown" offset="0x2C" visible="false" />
+				<int8 name="Unknown" offset="0x2D" visible="false" />
+				<int8 name="Unknown" offset="0x2E" visible="false" />
+				<int8 name="Unknown" offset="0x2F" visible="false" />
+				<reflexive name="Data" offset="0x30" visible="true" entrySize="0x1">
+					<uint8 name="Data Byte" offset="0x0" visible="true" />
 				</reflexive>
 				<undefined name="Unknown" offset="0x3C" visible="false" />
 			</reflexive>
@@ -158,17 +180,20 @@
 	<undefined name="Unknown" offset="0x2C" visible="false" />
 	<undefined name="Unknown" offset="0x30" visible="false" />
 	<undefined name="Unknown" offset="0x34" visible="false" />
-	<reflexive name="Unknown 2" offset="0x38" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Path Finding Spheres" offset="0x38" visible="true" entrySize="0x14">
+		<int16 name="Node Index" offset="0x0" visible="true" />
+		<int16 name="Flags" offset="0x2" visible="True" />
+		<float32 name="Center x" offset="0x4" visible="true" />
+		<float32 name="Center y" offset="0x8" visible="true" />
+		<float32 name="Center z" offset="0xC" visible="true" />
+		<float32 name="Radius" offset="0x10" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 3" offset="0x44" visible="false" entrySize="0xC">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Nodes" offset="0x44" visible="true" entrySize="0xC">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Parent Node" offset="0x6" visible="true" />
+		<int16 name="Next Sibling Node" offset="0x8" visible="true" />
+		<int16 name="First Child Node" offset="0xA" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x50" visible="false" />
 </plugin>

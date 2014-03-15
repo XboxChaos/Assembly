@@ -737,7 +737,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Add the resource
 					var resource = resources.Resources[index.Index];
-					container.AddResource(new ExtractedResourceInfo(resource));
+					container.AddResource(new ExtractedResourceInfo(index, resource));
 
 					// Add data for its pages
 					if (resource.Location == null) continue;

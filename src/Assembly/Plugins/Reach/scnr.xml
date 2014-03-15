@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Reach" baseSize="0x86C">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -49,7 +49,7 @@
 	<reflexive name="Structure BSPs" offset="0x4C" visible="true" entrySize="0xAC">
 		<tagRef name="Structure BSP" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
-		<tagRef name="Lightmap" offset="0x20" visible="true" />
+		<tagRef name="Structure Lighting" offset="0x20" visible="true" />
 		<tagRef name="Unknown" offset="0x30" visible="true" />
 		<int32 name="Unknown" offset="0x40" visible="false" />
 		<float32 name="Unknown" offset="0x44" visible="false" />
@@ -97,74 +97,175 @@
 		<float32 name="Unknown" offset="0x18" visible="false" />
 		<tagRef name="Unknown" offset="0x1C" visible="true" />
 		<int16 name="Object Name Index" offset="0x2C" visible="true" />
-		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<bitfield16 name="Active BSPs" offset="0x2E" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
+		</bitfield16>
 	</reflexive>
-	<reflexive name="Unknown" offset="0x90" visible="false" entrySize="0x2C">
-		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
-		<reflexive name="Unknown 4" offset="0x8" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Unknown" offset="0x2" visible="false" />
+	<reflexive name="BSP Groups" offset="0x90" visible="true" entrySize="0x2C">
+		<bitfield32 name="Included BSPs" offset="0x0" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
+			<bit name="BSP 16" index="16" />
+			<bit name="BSP 17" index="17" />
+			<bit name="BSP 18" index="18" />
+			<bit name="BSP 19" index="19" />
+			<bit name="BSP 20" index="20" />
+			<bit name="BSP 21" index="21" />
+			<bit name="BSP 22" index="22" />
+			<bit name="BSP 23" index="23" />
+			<bit name="BSP 24" index="24" />
+			<bit name="BSP 25" index="25" />
+			<bit name="BSP 26" index="26" />
+			<bit name="BSP 27" index="27" />
+			<bit name="BSP 28" index="28" />
+			<bit name="BSP 29" index="29" />
+			<bit name="BSP 30" index="30" />
+			<bit name="BSP 31" index="31" />
+		</bitfield32>
+		<int32 name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="BSP Checksums" offset="0x8" visible="true" entrySize="0x4">
+			<uint32 name="Structure Checksum" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 5" offset="0x14" visible="false" entrySize="0x48">
-			<reflexive name="Unknown 6" offset="0x0" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 7" offset="0x0" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0x4">
-						<int8 name="Unknown" offset="0x0" visible="false" />
-						<int8 name="Unknown" offset="0x1" visible="false" />
-						<int8 name="Unknown" offset="0x2" visible="false" />
-						<int8 name="Unknown" offset="0x3" visible="false" />
+		<reflexive name="BSPs" offset="0x14" visible="false" entrySize="0x48">
+			<reflexive name="Clusters" offset="0x0" visible="true" entrySize="0xC">
+				<reflexive name="BSPs" offset="0x0" visible="true" entrySize="0xC">
+					<reflexive name="Unknown" offset="0x0" visible="true" entrySize="0x4">
+						<bitfield32 name="Allow..." offset="0x0" visible="true">
+							<bit name="Bit 0" index="0" />
+							<bit name="Bit 1" index="1" />
+							<bit name="Bit 2" index="2" />
+							<bit name="Bit 3" index="3" />
+							<bit name="Bit 4" index="4" />
+							<bit name="Effects" index="5" />
+							<bit name="Bit 6" index="6" />
+							<bit name="Bit 7" index="7" />
+							<bit name="Bit 8" index="8" />
+							<bit name="Bit 9" index="9" />
+							<bit name="Bit 10" index="10" />
+							<bit name="Bit 11" index="11" />
+							<bit name="Bit 12" index="12" />
+							<bit name="Bit 13" index="13" />
+							<bit name="Bit 14" index="14" />
+							<bit name="Bit 15" index="15" />
+							<bit name="Firing Effects?" index="16" />
+							<bit name="Bit 17" index="17" />
+							<bit name="Bit 18" index="18" />
+							<bit name="Bit 19" index="19" />
+							<bit name="Bit 20" index="20" />
+							<bit name="Bit 21" index="21" />
+							<bit name="Bit 22" index="22" />
+							<bit name="Bit 23" index="23" />
+							<bit name="Decals" index="24" />
+							<bit name="Bit 25" index="25" />
+							<bit name="Bit 26" index="26" />
+							<bit name="Bit 27" index="27" />
+							<bit name="Bit 28" index="28" />
+							<bit name="Bit 29" index="29" />
+							<bit name="Bit 30" index="30" />
+							<bit name="Bit 31" index="31" />
+						</bitfield32>
 					</reflexive>
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 7" offset="0xC" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 9" offset="0x0" visible="false" entrySize="0x4">
-						<int8 name="Unknown" offset="0x0" visible="false" />
-						<int8 name="Unknown" offset="0x1" visible="false" />
-						<int8 name="Unknown" offset="0x2" visible="false" />
-						<int8 name="Unknown" offset="0x3" visible="false" />
+			<reflexive name="Clusters" offset="0xC" visible="true" entrySize="0xC">
+				<reflexive name="BSPs" offset="0x0" visible="true" entrySize="0xC">
+					<reflexive name="Unknown" offset="0x0" visible="true" entrySize="0x4">
+						<bitfield32 name="Show..." offset="0x0" visible="true">
+							<bit name="Bit 0" index="0" />
+							<bit name="Bit 1" index="1" />
+							<bit name="Bit 2" index="2" />
+							<bit name="Bit 3" index="3" />
+							<bit name="Bit 4" index="4" />
+							<bit name="Effects" index="5" />
+							<bit name="Bit 6" index="6" />
+							<bit name="Bit 7" index="7" />
+							<bit name="Bit 8" index="8" />
+							<bit name="Bit 9" index="9" />
+							<bit name="Bit 10" index="10" />
+							<bit name="Bit 11" index="11" />
+							<bit name="Bit 12" index="12" />
+							<bit name="Bit 13" index="13" />
+							<bit name="Bit 14" index="14" />
+							<bit name="Bit 15" index="15" />
+							<bit name="Firing Effects?" index="16" />
+							<bit name="Bit 17" index="17" />
+							<bit name="Bit 18" index="18" />
+							<bit name="Bit 19" index="19" />
+							<bit name="Bit 20" index="20" />
+							<bit name="Bit 21" index="21" />
+							<bit name="Bit 22" index="22" />
+							<bit name="Bit 23" index="23" />
+							<bit name="Decals" index="24" />
+							<bit name="Bit 25" index="25" />
+							<bit name="Bit 26" index="26" />
+							<bit name="Bit 27" index="27" />
+							<bit name="Bit 28" index="28" />
+							<bit name="Bit 29" index="29" />
+							<bit name="Bit 30" index="30" />
+							<bit name="Bit 31" index="31" />
+						</bitfield32>
 					</reflexive>
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 8" offset="0x18" visible="false" entrySize="0x4">
-				<int8 name="Unknown" offset="0x0" visible="false" />
-				<int8 name="Unknown" offset="0x1" visible="false" />
-				<int8 name="Unknown" offset="0x2" visible="false" />
-				<int8 name="Unknown" offset="0x3" visible="false" />
+			<reflexive name="Cluster Skies" offset="0x18" visible="true" entrySize="0x1">
+				<int8 name="Sky Index" offset="0x0" visible="true" />
 			</reflexive>
-			<reflexive name="Unknown 9" offset="0x24" visible="false" entrySize="0x4">
-				<int16 name="Unknown" offset="0x0" visible="false" />
-				<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Cluster Visible Skies" offset="0x24" visible="true" entrySize="0x1">
+				<int8 name="Sky Index" offset="0x0" visible="true" />
 			</reflexive>
 			<reflexive name="Unknown 10" offset="0x30" visible="false" entrySize="0x4">
-				<int32 name="Unknown" offset="0x0" visible="false" />
+				<undefined name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
-			<reflexive name="Unknown 11" offset="0x3C" visible="false" entrySize="0x24">
+			<reflexive name="Clusters" offset="0x3C" visible="false" entrySize="0x24">
 				<reflexive name="Unknown 12" offset="0x0" visible="false" entrySize="0x4">
-					<int16 name="Unknown" offset="0x0" visible="false" />
-					<int16 name="Unknown" offset="0x2" visible="false" />
+					<undefined name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
 				<reflexive name="Unknown 13" offset="0xC" visible="false" entrySize="0x4">
-					<int16 name="Unknown" offset="0x0" visible="false" />
-					<int16 name="Unknown" offset="0x2" visible="false" />
+					<undefined name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
 				<reflexive name="Unknown 14" offset="0x18" visible="false" entrySize="0x4">
-					<int16 name="Unknown" offset="0x0" visible="false" />
-					<int16 name="Unknown" offset="0x2" visible="false" />
+					<undefined name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
 			</reflexive>
 		</reflexive>
-		<reflexive name="Unknown 6" offset="0x20" visible="false" entrySize="0x24">
-			<reflexive name="Unknown 7" offset="0x0" visible="false" entrySize="0xC">
+		<reflexive name="BSPs" offset="0x20" visible="false" entrySize="0x24">
+			<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0xC">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
 				<int32 name="Unknown" offset="0x4" visible="false" />
 				<int16 name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Unknown" offset="0xA" visible="false" />
 			</reflexive>
-			<reflexive name="Unknown 8" offset="0xC" visible="false" entrySize="0x2">
+			<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x2">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x18" visible="false" />
@@ -172,52 +273,223 @@
 			<undefined name="Unknown" offset="0x20" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Zoneset Information" offset="0x9C" visible="false" entrySize="0x64">
+	<reflexive name="Scenario Zoneset BSPs" offset="0x9C" visible="true" entrySize="0x64">
 		<int32 name="Unknown" offset="0x0" visible="false" />
-		<int32 name="Unknown" offset="0x4" visible="false" />
+		<int32 name="Unique Cluster Count" offset="0x4" visible="true" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<reflexive name="Unknown 5" offset="0x10" visible="false" entrySize="0x4">
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x4">
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+		</reflexive>
+		<reflexive name="Unique Clusters" offset="0x1C" visible="false" entrySize="0x4">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 6" offset="0x1C" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x28" visible="false" entrySize="0x4">
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 7" offset="0x28" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-		</reflexive>
-		<reflexive name="Unknown 8" offset="0x34" visible="false" entrySize="0x1">
+		<reflexive name="Unknown" offset="0x34" visible="false" entrySize="0x1">
 			<uint8 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 9" offset="0x40" visible="false" entrySize="0x8">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="BSPs" offset="0x40" visible="true" entrySize="0x8">
+			<int32 name="Start" offset="0x0" visible="true" />
+			<int32 name="Count" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 10" offset="0x4C" visible="false" entrySize="0x8">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="BSP Cluster List" offset="0x4C" visible="true" entrySize="0x8">
+			<int32 name="Start Index" offset="0x0" visible="true" />
+			<int32 name="Cluster Count" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 11" offset="0x58" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Cluster Mapping" offset="0x58" visible="true" entrySize="0x2">
+			<int16 name="Index" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Zonesets" offset="0xA8" visible="true" entrySize="0x13C">
+	<reflexive name="Scenario Zoneset Groups" offset="0xA8" visible="true" entrySize="0x13C">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<ascii name="Name String" offset="0x4" visible="true" length="0x100" />
-		<int32 name="BSP?" offset="0x104" visible="true" />
+		<int32 name="BSP Group Index" offset="0x104" visible="true" />
 		<int32 name="Unknown" offset="0x108" visible="false" />
-		<int32 name="Unknown" offset="0x10C" visible="true" />
+		<bitfield32 name="Loaded BSPs 1" offset="0x10C" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
+			<bit name="BSP 16" index="16" />
+			<bit name="BSP 17" index="17" />
+			<bit name="BSP 18" index="18" />
+			<bit name="BSP 19" index="19" />
+			<bit name="BSP 20" index="20" />
+			<bit name="BSP 21" index="21" />
+			<bit name="BSP 22" index="22" />
+			<bit name="BSP 23" index="23" />
+			<bit name="BSP 24" index="24" />
+			<bit name="BSP 25" index="25" />
+			<bit name="BSP 26" index="26" />
+			<bit name="BSP 27" index="27" />
+			<bit name="BSP 28" index="28" />
+			<bit name="BSP 29" index="29" />
+			<bit name="BSP 30" index="30" />
+			<bit name="BSP 31" index="31" />
+		</bitfield32>
 		<int32 name="Unknown" offset="0x110" visible="true" />
-		<int32 name="Unknown" offset="0x114" visible="true" />
+		<bitfield32 name="Loaded BSPs 2" offset="0x114" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
+			<bit name="BSP 16" index="16" />
+			<bit name="BSP 17" index="17" />
+			<bit name="BSP 18" index="18" />
+			<bit name="BSP 19" index="19" />
+			<bit name="BSP 20" index="20" />
+			<bit name="BSP 21" index="21" />
+			<bit name="BSP 22" index="22" />
+			<bit name="BSP 23" index="23" />
+			<bit name="BSP 24" index="24" />
+			<bit name="BSP 25" index="25" />
+			<bit name="BSP 26" index="26" />
+			<bit name="BSP 27" index="27" />
+			<bit name="BSP 28" index="28" />
+			<bit name="BSP 29" index="29" />
+			<bit name="BSP 30" index="30" />
+			<bit name="BSP 31" index="31" />
+		</bitfield32>
 		<int32 name="Unknown" offset="0x118" visible="true" />
-		<int32 name="HERE -1" offset="0x11C" visible="true" />
-		<int32 name="HERE 0" offset="0x120" visible="true" />
-		<int32 name="HERE -1" offset="0x124" visible="true" />
-		<int32 name="HERE -1" offset="0x128" visible="true" />
-		<int32 name="Unknown" offset="0x12C" visible="true" />
+		<bitfield32 name="Loaded Designer Zonesets" offset="0x11C" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+			<bit name="Set 16" index="16" />
+			<bit name="Set 17" index="17" />
+			<bit name="Set 18" index="18" />
+			<bit name="Set 19" index="19" />
+			<bit name="Set 20" index="20" />
+			<bit name="Set 21" index="21" />
+			<bit name="Set 22" index="22" />
+			<bit name="Set 23" index="23" />
+			<bit name="Set 24" index="24" />
+			<bit name="Set 25" index="25" />
+			<bit name="Set 26" index="26" />
+			<bit name="Set 27" index="27" />
+			<bit name="Set 28" index="28" />
+			<bit name="Set 29" index="29" />
+			<bit name="Set 30" index="30" />
+			<bit name="Set 31" index="31" />
+		</bitfield32>
+		<bitfield32 name="Unloaded Designer Zonesets" offset="0x120" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+			<bit name="Set 16" index="16" />
+			<bit name="Set 17" index="17" />
+			<bit name="Set 18" index="18" />
+			<bit name="Set 19" index="19" />
+			<bit name="Set 20" index="20" />
+			<bit name="Set 21" index="21" />
+			<bit name="Set 22" index="22" />
+			<bit name="Set 23" index="23" />
+			<bit name="Set 24" index="24" />
+			<bit name="Set 25" index="25" />
+			<bit name="Set 26" index="26" />
+			<bit name="Set 27" index="27" />
+			<bit name="Set 28" index="28" />
+			<bit name="Set 29" index="29" />
+			<bit name="Set 30" index="30" />
+			<bit name="Set 31" index="31" />
+		</bitfield32>
+		<bitfield32 name="Loaded Cinematic Zonesets" offset="0x124" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+			<bit name="Set 16" index="16" />
+			<bit name="Set 17" index="17" />
+			<bit name="Set 18" index="18" />
+			<bit name="Set 19" index="19" />
+			<bit name="Set 20" index="20" />
+			<bit name="Set 21" index="21" />
+			<bit name="Set 22" index="22" />
+			<bit name="Set 23" index="23" />
+			<bit name="Set 24" index="24" />
+			<bit name="Set 25" index="25" />
+			<bit name="Set 26" index="26" />
+			<bit name="Set 27" index="27" />
+			<bit name="Set 28" index="28" />
+			<bit name="Set 29" index="29" />
+			<bit name="Set 30" index="30" />
+			<bit name="Set 31" index="31" />
+		</bitfield32>
+		<int32 name="Parent Scenario Zoneset" offset="0x128" visible="true" />
+		<int32 name="Scenario Zoneset Index" offset="0x12C" visible="true" />
 		<reflexive name="Unknown 6" offset="0x130" visible="false" entrySize="0xC">
-			<reflexive name="Unknown 7" offset="0x0" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0xC">
+			<reflexive name="BSPs" offset="0x0" visible="false" entrySize="0xC">
+				<reflexive name="Clusters" offset="0x0" visible="false" entrySize="0xC">
 					<reflexive name="Unknown 6" offset="0x0" visible="false" entrySize="0x4">
 						<undefined name="Unknown" offset="0x0" visible="false" />
 					</reflexive>
@@ -3135,7 +3407,7 @@
 			<int32 name="Unknown" offset="0x4C" visible="false" />
 			<int16 name="Unknown" offset="0x50" visible="false" />
 			<int16 name="Unknown" offset="0x52" visible="false" />
-			<int32 name="Unknown" offset="0x54" visible="false" />
+			<stringid name="Unknown" offset="0x54" visible="false" />
 			<undefined name="Unknown" offset="0x58" visible="false" />
 			<int16 name="Unknown" offset="0x5C" visible="false" />
 			<int16 name="Unknown" offset="0x5E" visible="false" />
@@ -3196,7 +3468,7 @@
 			<undefined name="Unknown" offset="0x68" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="AI Encounters" offset="0x3B8" visible="true" entrySize="0x40">
+	<reflexive name="Zones" offset="0x3B8" visible="true" entrySize="0x40">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<int16 name="Unknown" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="true" />
@@ -4035,23 +4307,26 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x3" visible="false" />
 	</reflexive>
-	<reflexive name="Kill/Safe Zone Shapes" offset="0x4F4" visible="true" entrySize="0x10">
+	<reflexive name="Kill/Safe Zone Mopp Codes" offset="0x4F4" visible="true" entrySize="0x10">
 		<int32 name="Unknown" offset="0x0" visible="true" />
-		<reflexive name="Shape" offset="0x4" visible="true" entrySize="0x40" align="0x10">
-			<undefined name="Size" offset="0x0" visible="false" />
-			<int32 name="Count" offset="0x4" visible="false" />
-			<int32 name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
-			<float32 name="X" offset="0x10" visible="true" />
-			<float32 name="Y" offset="0x14" visible="true" />
-			<float32 name="Z" offset="0x18" visible="true" />
-			<float32 name="Radius" offset="0x1C" visible="false" />
-			<float32 name="Unknown" offset="0x20" visible="false" />
-			<uint32 name="Unknown Size" offset="0x24" visible="false" />
-			<uint32 name="Unknown Capacity" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<reflexive name="Unknown 48" offset="0x30" visible="false" entrySize="0x1">
-				<uint8 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Mopp Codes" offset="0x4" visible="true" entrySize="0x40" align="0x10">
+			<int32 name="Size" offset="0x0" visible="true" />
+			<int32 name="Count" offset="0x4" visible="true" />
+			<int32 name="Offset" offset="0x8" visible="true" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<float32 name="Offset X" offset="0x10" visible="true" />
+			<float32 name="Offset Y" offset="0x14" visible="true" />
+			<float32 name="Offset Z" offset="0x18" visible="true" />
+			<float32 name="Offset Scale" offset="0x1C" visible="true" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<int32 name="Data Size" offset="0x24" visible="true" />
+			<uint32 name="Data Capacity" offset="0x28" visible="true" />
+			<int8 name="Unknown" offset="0x2C" visible="false" />
+			<int8 name="Unknown" offset="0x2D" visible="false" />
+			<int8 name="Unknown" offset="0x2E" visible="false" />
+			<int8 name="Unknown" offset="0x2F" visible="false" />
+			<reflexive name="Data" offset="0x30" visible="true" entrySize="0x1">
+				<uint8 name="Data Byte" offset="0x0" visible="true" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 		</reflexive>
@@ -4174,7 +4449,7 @@
 	<undefined name="Unknown" offset="0x530" visible="false" />
 	<undefined name="Unknown" offset="0x534" visible="false" />
 	<undefined name="Unknown" offset="0x538" visible="false" />
-	<reflexive name="Background Sound Palette" offset="0x53C" visible="true" entrySize="0x78">
+	<reflexive name="Background Sound Environment Palette" offset="0x53C" visible="true" entrySize="0x78">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound Environment" offset="0x4" visible="true" />
 		<int32 name="Unknown" offset="0x14" visible="false" />
@@ -4247,28 +4522,27 @@
 	</reflexive>
 	<reflexive name="Scenario Cluster Data" offset="0x56C" visible="true" entrySize="0x54">
 		<tagRef name="BSP" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
-		<reflexive name="Cluster Centroids" offset="0x14" visible="false" entrySize="0xC">
-			<float32 name="Centroid X" offset="0x0" visible="false" />
-			<float32 name="Centroid Y" offset="0x4" visible="false" />
-			<float32 name="Centroid Z" offset="0x8" visible="false" />
+		<uint32 name="BSP Checksum" offset="0x10" visible="true" />
+		<reflexive name="Cluster Centroids" offset="0x14" visible="true" entrySize="0xC">
+			<float32 name="Centroid X" offset="0x0" visible="true" />
+			<float32 name="Centroid Y" offset="0x4" visible="true" />
+			<float32 name="Centroid Z" offset="0x8" visible="true" />
 		</reflexive>
-		<uint32 name="BSP Checksum" offset="0x20" visible="false" />
-		<reflexive name="Unknown 53" offset="0x24" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Unknown" offset="0x20" visible="false" />
+		<reflexive name="Background Sound Environments" offset="0x24" visible="true" entrySize="0x4">
+			<int16 name="Background Sound Environment Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 54" offset="0x30" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Fog" offset="0x30" visible="true" entrySize="0x4">
+			<int16 name="Fog Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x3C" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Camera FX" offset="0x3C" visible="true" entrySize="0x4">
+			<int16 name="Camera FX Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 56" offset="0x48" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Weather" offset="0x48" visible="true" entrySize="0x4">
+			<int16 name="Weather Index" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
 	</reflexive>
@@ -4634,8 +4908,7 @@
 			<int16 name="Unknown" offset="0x3A" visible="false" />
 			<int16 name="Unknown" offset="0x3C" visible="false" />
 			<int16 name="Unknown" offset="0x3E" visible="false" />
-			<int16 name="Unknown" offset="0x40" visible="false" />
-			<int16 name="Unknown" offset="0x42" visible="false" />
+			<stringid name="Unknown" offset="0x40" visible="true" />
 			<int16 name="Unknown" offset="0x44" visible="false" />
 			<int16 name="Unknown" offset="0x46" visible="false" />
 			<int16 name="Unknown" offset="0x48" visible="false" />
@@ -4678,50 +4951,50 @@
 			</reflexive>
 		</reflexive>
 	</reflexive>
-	<reflexive name="Designer Zonesets" offset="0x76C" visible="false" entrySize="0xBC">
-		<stringid name="Name" offset="0x0" visible="false" />
+	<reflexive name="Designer Zonesets" offset="0x76C" visible="true" entrySize="0xBC">
+		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<reflexive name="Bipeds" offset="0x8" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Bipeds" offset="0x8" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Vehicles" offset="0x14" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Vehicles" offset="0x14" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Weapons" offset="0x20" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Weapons" offset="0x20" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Equipment" offset="0x2C" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Equipment" offset="0x2C" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Scenery" offset="0x38" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Scenery" offset="0x38" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Machines" offset="0x44" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Machines" offset="0x44" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Terminals" offset="0x50" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Terminals" offset="0x50" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Controls" offset="0x5C" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Controls" offset="0x5C" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="Unknown" offset="0x68" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Crates" offset="0x74" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Crates" offset="0x74" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Creatures" offset="0x80" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Creatures" offset="0x80" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Giants" offset="0x8C" visible="false" entrySize="0x2" align="0x8">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Giants" offset="0x8C" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="Unknown" offset="0x98" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Characters" offset="0xA4" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Characters" offset="0xA4" visible="true" entrySize="0x2">
+			<int16 name="Palette Index" offset="0x0" visible="true" />
 		</reflexive>
 		<undefined name="Unknown" offset="0xB0" visible="false" />
 		<undefined name="Unknown" offset="0xB4" visible="false" />
@@ -4757,11 +5030,11 @@
 	<undefined name="Unknown" offset="0x7C0" visible="false" />
 	<undefined name="Unknown" offset="0x7C4" visible="false" />
 	<undefined name="Unknown" offset="0x7C8" visible="false" />
-	<reflexive name="Unknown 63" offset="0x7CC" visible="false" entrySize="0x10">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<reflexive name="Unknown 64" offset="0x4" visible="false" entrySize="0x8">
-			<float32 name="Unknown" offset="0x0" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Metagame Scoring" offset="0x7CC" visible="true" entrySize="0x10">
+		<float32 name="Performance Bonus Goal" offset="0x0" visible="true" />
+		<reflexive name="Time-Based Multipliers" offset="0x4" visible="true" entrySize="0x8">
+			<float32 name="Time" offset="0x0" visible="true" />
+			<float32 name="Applied Multiplier" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Unknown 64" offset="0x7D8" visible="false" entrySize="0x18">
@@ -4815,7 +5088,8 @@
 		<reflexive name="Unknown 87" offset="0x20" visible="true" entrySize="0x64">
 			<stringid name="Unknown" offset="0x0" visible="false" />
 			<int32 name="Unknown" offset="0x4" visible="false" />
-			<int32 name="Unknown" offset="0x8" visible="false" />
+			<int16 name="Unknown" offset="0x8" visible="false" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 			<reflexive name="Script" offset="0x10" visible="true" entrySize="0x204">
 				<int16 name="Unknown" offset="0x0" visible="false" />
@@ -4868,9 +5142,8 @@
 		<degree name="Unknown" offset="0x40" visible="false" />
 		<degree name="Unknown" offset="0x44" visible="false" />
 		<degree name="Unknown" offset="0x48" visible="false" />
-		<int32 name="Unknown" offset="0x4C" visible="false" />
-		<int16 name="Unknown" offset="0x50" visible="false" />
-		<int16 name="Unknown" offset="0x52" visible="false" />
+		<stringid name="Unknown" offset="0x4C" visible="false" />
+		<tagref name="Performance Template" offset="0x50" withClass="false" visible="true" />
 		<reflexive name="Unknown 85" offset="0x54" visible="false" entrySize="0x4">
 			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>

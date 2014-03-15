@@ -4,16 +4,20 @@
 	<revisions>
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 	</revisions>
-	<tagref name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
+	<tagRef name="Parent" offset="0x0" visible="true" />
+	<int16 name="Unknown" offset="0x10" visible="false" />
+	<int16 name="Animation Codec Pack" offset="0x12" visible="true" />
+	<int16 name="Unknown" offset="0x14" visible="false" />
+	<int16 name="Unknown" offset="0x16" visible="false" />
 	<reflexive name="Unknown 0" offset="0x18" visible="false" entrySize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown 1" offset="0x24" visible="false" entrySize="0x30">
 		<stringid name="Unknown" offset="0x0" visible="false" />
 		<reflexive name="Unknown 2" offset="0x4" visible="false" entrySize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -24,9 +28,9 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 2" offset="0x30" visible="false" entrySize="0x18">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<dataRef name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Pain" offset="0x30" visible="true" entrySize="0x18">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<dataRef name="Data" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 3" offset="0x3C" visible="false" entrySize="0x10">
 		<stringid name="Unknown" offset="0x0" visible="false" />
@@ -35,86 +39,161 @@
 			<stringid name="Unknown" offset="0x4" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Bones" offset="0x48" visible="true" entrySize="0x2C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<reflexive name="Skeleton Nodes" offset="0x48" visible="true" entrySize="0x2C">
+		<stringId name="Bone" offset="0x0" visible="true" />
+		<int16 name="Next Sibling" offset="0x4" visible="true" />
+		<int16 name="First Child" offset="0x6" visible="true" />
+		<int16 name="Parent" offset="0x8" visible="true" />
+		<bitfield8 name="Model Flags" offset="0xA" visible="true">
+			<bit name="Primary Model" index="0" />
+			<bit name="Secondary Model" index="1" />
+			<bit name="Local Root" index="2" />
+			<bit name="Left Hand" index="3" />
+			<bit name="Right Hand" index="4" />
+			<bit name="Left Arm Member" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<bitfield8 name="Node Joint Flags" offset="0xB" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int16 name="Unknown" offset="0xC" visible="true" />
+		<int16 name="Unknown" offset="0xE" visible="true" />
+		<undefined name="Base Vector i" offset="0x10" visible="true" />
+		<undefined name="Base Vector j" offset="0x14" visible="true" />
+		<undefined name="Base Vector k" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="z Position" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 5" offset="0x54" visible="false" entrySize="0x14">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Sound References" offset="0x54" visible="true" entrySize="0x14">
+		<tagRef name="Sound" offset="0x0" visible="true" />
+		<bitfield16 name="Flags" offset="0x10" visible="true">
+			<bit name="Allow on Player" index="0" />
+			<bit name="Left Arm Only" index="1" />
+			<bit name="Right Arm Only" index="2" />
+			<bit name="First Person Only" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 6" offset="0x60" visible="false" entrySize="0x14">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Effect References" offset="0x60" visible="true" entrySize="0x14">
+		<tagRef name="Effect" offset="0x0" visible="true" />
+		<bitfield16 name="Flags" offset="0x10" visible="true">
+			<bit name="Allow on Player" index="0" />
+			<bit name="Left Arm Only" index="1" />
+			<bit name="Right Arm Only" index="2" />
+			<bit name="First Person Only" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 7" offset="0x6C" visible="false" entrySize="0x1C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<reflexive name="Blend Screens" offset="0x6C" visible="true" entrySize="0x1C">
+		<stringid name="Label" offset="0x0" visible="True" />
+		<degree name="Right Yaw per Frame" offset="0x4" visible="True" />
+		<degree name="Left Yaw per Frame" offset="0x8" visible="True" />
+		<int16 name="Right Frame Count" offset="0xC" visible="True" />
+		<int16 name="Left Frame Count" offset="0xE" visible="True" />
+		<degree name="Down Pitch per Frame" offset="0x10" visible="True" />
+		<degree name="Up Pitch per Frame" offset="0x14" visible="True" />
+		<int16 name="Down Pitch Frame Count" offset="0x18" visible="True" />
+		<int16 name="Up Pitch Frame Count" offset="0x1A" visible="True" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x78" visible="false" />
 	<undefined name="Unknown" offset="0x7C" visible="false" />
 	<undefined name="Unknown" offset="0x80" visible="false" />
-	<tagRef name="Unknown" offset="0x84" visible="false" />
-	<reflexive name="Unknown 8" offset="0x94" visible="false" entrySize="0x38">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<tagRef name="Frame Events" offset="0x84" visible="true" />
+	<reflexive name="Animations" offset="0x94" visible="true" entrySize="0x38">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<undefined name="Weight" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<int16 name="Previous Variant Sibling" offset="0x10" visible="true" />
+		<int16 name="Next Variant Sibling" offset="0x12" visible="true" />
+		<int16 name="Unknown" offset="0x14" visible="false" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
 		<tagRef name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
-		<reflexive name="Unknown 9" offset="0x2C" visible="false" entrySize="0xD0">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
+		<reflexive name="Unknown 9" offset="0x2C" visible="true" entrySize="0xD0">
+			<int8 name="Node Count" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<int16 name="Unknown" offset="0x8" visible="false" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<int16 name="Unknown" offset="0x18" visible="false" />
+			<int16 name="Unknown" offset="0x1A" visible="false" />
+			<int16 name="Raw Information Index" offset="0x1C" visible="true" />
+			<int16 name="Raw Information Sub-Index" offset="0x1E" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
-			<reflexive name="Unknown 10" offset="0x34" visible="false" entrySize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="false" />
+			<reflexive name="Frame Events" offset="0x34" visible="true" entrySize="0x4">
+				<int16 name="Type" offset="0x0" visible="True" />
+				<int16 name="Frame" offset="0x2" visible="True" />
 			</reflexive>
-			<reflexive name="Unknown 11" offset="0x40" visible="false" entrySize="0x8">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="Sound Events" offset="0x40" visible="true" entrySize="0x8">
+				<int16 name="Sound" offset="0x0" visible="True" />
+				<int16 name="Frame" offset="0x2" visible="True" />
+				<stringid name="Marker Name" offset="0x4" visible="True" />
 			</reflexive>
-			<reflexive name="Unknown 12" offset="0x4C" visible="false" entrySize="0xC">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="Effect Events" offset="0x4C" visible="true" entrySize="0xC">
+				<int16 name="Effect" offset="0x0" visible="True" />
+				<int16 name="Frame" offset="0x2" visible="True" />
+				<stringid name="Marker Name" offset="0x4" visible="True" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x58" visible="false" />
 			<undefined name="Unknown" offset="0x5C" visible="false" />
 			<undefined name="Unknown" offset="0x60" visible="false" />
-			<reflexive name="Unknown 13" offset="0x64" visible="false" entrySize="0x1C">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
+			<reflexive name="Object-Space Parent Nodes" offset="0x64" visible="true" entrySize="0x1C">
+				<int16 name="Node Index" offset="0x0" visible="True" />
+				<int16 name="Component Flags" offset="0x0" visible="True" />
+				<int16 name="Rotation x" offset="0x4" visible="True" />
+				<int16 name="Rotation y" offset="0x6" visible="True" />
+				<int16 name="Rotation z" offset="0x8" visible="True" />
+				<int16 name="Rotation w" offset="0xA" visible="True" />
+				<undefined name="Default Translation x" offset="0xC" visible="True" />
+				<undefined name="Default Translation y" offset="0x10" visible="True" />
+				<undefined name="Default Translation z" offset="0x14" visible="True" />
+				<undefined name="Default Scale" offset="0x18" visible="True" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x70" visible="false" />
 			<undefined name="Unknown" offset="0x74" visible="false" />
@@ -151,43 +230,51 @@
 			<undefined name="Unknown" offset="0xCC" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown 9" offset="0xA0" visible="false" entrySize="0x2C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Animations 2" offset="0xA0" visible="true" entrySize="0x2C">
+		<stringId name="Label" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<int32 name="Unknown" offset="0x10" visible="false" />
+		<int16 name="Unknown" offset="0x14" visible="false" />
+		<int16 name="Unknown" offset="0x16" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<stringid name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
+		<stringid name="Function" offset="0x20" visible="true" />
+		<int16 name="Unknown" offset="0x24" visible="false" />
+		<int16 name="Unknown" offset="0x26" visible="false" />
+		<int16 name="Graph Index" offset="0x28" visible="true" />
+		<int16 name="Animation" offset="0x2A" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 10" offset="0xAC" visible="false" entrySize="0x14">
-		<stringId name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Trigger Animations" offset="0xAC" visible="true" entrySize="0x14">
+		<stringId name="Label" offset="0x0" visible="true" />
+		<stringid name="Function" offset="0x4" visible="true" />
+		<stringid name="Function" offset="0x8" visible="true" />
+		<stringid name="Unknown" offset="0xC" visible="true" />
+		<int16 name="Graph Index" offset="0x10" visible="true" />
+		<int16 name="Animation" offset="0x12" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 11" offset="0xB8" visible="false" entrySize="0x1C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Animations 3" offset="0xB8" visible="true" entrySize="0x1C">
+		<stringid name="Unknown" offset="0x0" visible="true" />
 		<reflexive name="Unknown 12" offset="0x4" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown 13" offset="0x10" visible="false" entrySize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown 12" offset="0xC4" visible="false" entrySize="0x18">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<stringid name="Unknown" offset="0x4" visible="false" />
-		<stringid name="Unknown" offset="0x8" visible="false" />
-		<stringid name="Unknown" offset="0xC" visible="false" />
-		<stringid name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+	<reflexive name="Movement" offset="0xC4" visible="true" entrySize="0x18">
+		<stringid name="Unknown" offset="0x0" visible="true" />
+		<stringid name="Unknown" offset="0x4" visible="true" />
+		<stringid name="Unknown" offset="0x8" visible="true" />
+		<stringid name="Unknown" offset="0xC" visible="true" />
+		<stringid name="Unknown" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x16" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 13" offset="0xD0" visible="false" entrySize="0x1C">
 		<stringid name="Unknown" offset="0x0" visible="false" />
@@ -204,45 +291,53 @@
 			<undefined name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown 15" offset="0xE8" visible="false" entrySize="0x10">
-		<stringid name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Limb Positioning" offset="0xE8" visible="true" entrySize="0x10">
+		<stringId name="Limb" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<int16 name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<int16 name="Unknown" offset="0xC" visible="false" />
+		<int16 name="Unknown" offset="0xE" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 16" offset="0xF4" visible="false" entrySize="0x30">
-		<stringId name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<reflexive name="Unknown 17" offset="0xC" visible="false" entrySize="0x38">
-			<stringId name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<reflexive name="Unknown 18" offset="0x8" visible="false" entrySize="0x14">
-				<stringId name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<reflexive name="Unknown 19" offset="0x8" visible="false" entrySize="0x38">
-					<stringId name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Modes" offset="0xF4" visible="true" entrySize="0x30">
+		<stringId name="Label" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int32 name="Unknown" offset="0x8" visible="false" />
+		<reflexive name="Weapon Class" offset="0xC" visible="true" entrySize="0x38">
+			<stringId name="Label" offset="0x0" visible="true" />
+			<int32 name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="Weapon Type" offset="0x8" visible="true" entrySize="0x14">
+				<stringId name="Label" offset="0x0" visible="true" />
+				<int32 name="Unknown" offset="0x4" visible="false" />
+				<reflexive name="Unknown" offset="0x8" visible="true" entrySize="0x38">
+					<stringId name="Label" offset="0x0" visible="true" />
 					<undefined name="Unknown" offset="0x4" visible="false" />
-					<reflexive name="Unknown 20" offset="0x8" visible="false" entrySize="0xC">
-						<stringId name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
-						<undefined name="Unknown" offset="0x8" visible="false" />
+					<reflexive name="Actions" offset="0x8" visible="true" entrySize="0xC">
+						<stringId name="Label" offset="0x0" visible="true" />
+						<int16 name="Animation 3" offset="0x4" visible="true" />
+						<int16 name="Unknown" offset="0x6" visible="false" />
+						<int16 name="Unknown" offset="0x8" visible="false" />
+						<int16 name="Animation" offset="0xA" visible="true" />
 					</reflexive>
-					<reflexive name="Unknown 21" offset="0x14" visible="false" entrySize="0xC">
-						<stringId name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
-						<undefined name="Unknown" offset="0x8" visible="false" />
+					<reflexive name="Overlays" offset="0x14" visible="true" entrySize="0xC">
+						<stringId name="Label" offset="0x0" visible="true" />
+						<int16 name="Animation 3" offset="0x4" visible="true" />
+						<int16 name="Unknown" offset="0x6" visible="false" />
+						<int16 name="Unknown" offset="0x8" visible="false" />
+						<int16 name="Animation" offset="0xA" visible="true" />
 					</reflexive>
-					<reflexive name="Unknown 22" offset="0x20" visible="false" entrySize="0x10">
-						<stringid name="Unknown" offset="0x0" visible="false" />
-						<reflexive name="Unknown 23" offset="0x4" visible="false" entrySize="0xC">
-							<reflexive name="Unknown 24" offset="0x0" visible="false" entrySize="0x4">
-								<undefined name="Unknown" offset="0x0" visible="false" />
+					<reflexive name="Death And Damage" offset="0x20" visible="true" entrySize="0x10">
+						<stringId name="Label" offset="0x0" visible="true" />
+						<reflexive name="Directions" offset="0x4" visible="true" entrySize="0xC">
+							<reflexive name="Regions" offset="0x0" visible="true" entrySize="0x4">
+								<int16 name="Graph Index" offset="0x0" visible="True" />
+								<int16 name="Animation" offset="0x2" visible="true" />
 							</reflexive>
 						</reflexive>
 					</reflexive>
 					<reflexive name="Unknown 23" offset="0x2C" visible="false" entrySize="0x10">
-						<stringid name="Unknown" offset="0x0" visible="false" />
+						<stringid name="Label" offset="0x0" visible="false" />
 						<reflexive name="Unknown 24" offset="0x4" visible="false" entrySize="0xC">
 							<stringid name="Unknown" offset="0x0" visible="false" />
 							<stringid name="Unknown" offset="0x4" visible="false" />
@@ -251,17 +346,17 @@
 					</reflexive>
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 19" offset="0x14" visible="false" entrySize="0x8">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="Weapon ik" offset="0x14" visible="true" entrySize="0x8">
+				<stringid name="Marker" offset="0x0" visible="true" />
+				<stringid name="Attach To Marker" offset="0x4" visible="true" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
-			<reflexive name="Unknown 20" offset="0x2C" visible="false" entrySize="0x10">
-				<stringid name="Unknown" offset="0x0" visible="false" />
-				<reflexive name="Unknown 21" offset="0x4" visible="false" entrySize="0x1C">
-					<stringid name="Unknown" offset="0x0" visible="false" />
+			<reflexive name="Special Animations" offset="0x2C" visible="true" entrySize="0x10">
+				<stringId name="Type" offset="0x0" visible="true" />
+				<reflexive name="Class" offset="0x4" visible="true" entrySize="0x1C">
+					<stringId name="Name" offset="0x0" visible="true" />
 					<reflexive name="Unknown 22" offset="0x4" visible="false" entrySize="0x24">
 						<undefined name="Unknown" offset="0x0" visible="false" />
 						<undefined name="Unknown" offset="0x4" visible="false" />
@@ -273,48 +368,50 @@
 						<undefined name="Unknown" offset="0x1C" visible="false" />
 						<undefined name="Unknown" offset="0x20" visible="false" />
 					</reflexive>
-					<reflexive name="Unknown 23" offset="0x10" visible="false" entrySize="0x14">
+					<reflexive name="Opposing Biped" offset="0x10" visible="true" entrySize="0x14">
 						<undefined name="Unknown" offset="0x0" visible="false" />
-						<tagRef name="Unknown" offset="0x4" visible="false" />
+						<tagRef name="Biped" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
 			</reflexive>
 		</reflexive>
-		<reflexive name="Unknown 18" offset="0x18" visible="false" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Mode ik" offset="0x18" visible="true" entrySize="0x8">
+			<stringid name="Marker" offset="0x0" visible="true" />
+			<stringid name="Attach To Marker" offset="0x4" visible="true" />
 		</reflexive>
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 17" offset="0x100" visible="false" entrySize="0x30">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+	<reflexive name="Vehicle Suspension" offset="0x100" visible="true" entrySize="0x30">
+		<stringid name="Label" offset="0x0" visible="true" />
+		<int16 name="Graph Index" offset="0x4" visible="true" />
+		<int16 name="Animation" offset="0x6" visible="true" />
+		<stringid name="Function" offset="0x8" visible="true" />
+		<stringid name="Marker Name" offset="0xC" visible="true" />
+		<stringid name="Unknown Marker Name" offset="0x10" visible="true" />
+		<undefined name="Mass Point Offset" offset="0x14" visible="true" />
+		<undefined name="Full Extension Ground Depth" offset="0x18" visible="true" />
+		<undefined name="Full Compression Ground Depth" offset="0x1C" visible="true" />
+		<stringid name="Region Name" offset="0x20" visible="true" />
+		<undefined name="Destroyed Mass Point Offset" offset="0x24" visible="true" />
+		<undefined name="Destroyed Full Extension Ground Depth" offset="0x28" visible="true" />
+		<undefined name="Destroyed Full Compression Ground Depth" offset="0x2C" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 18" offset="0x10C" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Object Overlays" offset="0x10C" visible="true" entrySize="0x14" align="0x8">
+		<stringid name="Label" offset="0x0" visible="True" />
+		<int16 name="Graph Index" offset="0x4" visible="True" />
+		<int16 name="Animation" offset="0x6" visible="True" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<stringid name="Function" offset="0xC" visible="True" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x118" visible="false" />
 	<undefined name="Unknown" offset="0x11C" visible="false" />
 	<undefined name="Unknown" offset="0x120" visible="false" />
-	<reflexive name="Unknown 19" offset="0x124" visible="false" entrySize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Weapon List" offset="0x124" visible="true" entrySize="0x8">
+		<stringid name="Weapon Name" offset="0x0" visible="true" />
+		<stringid name="Weapon Class" offset="0x4" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x130" visible="false" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
@@ -341,7 +438,7 @@
 	<undefined name="Unknown" offset="0x188" visible="false" />
 	<undefined name="Unknown" offset="0x18C" visible="false" />
 	<reflexive name="Raw Information" offset="0x190" visible="true" entrySize="0xC">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int32 name="Animation Count" offset="0x0" visible="true" />
 		<uint16 name="[zone] Asset Salt" offset="0x4" visible="true" />
 		<uint16 name="[zone] Asset Index" offset="0x6" visible="true" />
 		<int32 name="Useless Padding" offset="0x8" visible="false" />
