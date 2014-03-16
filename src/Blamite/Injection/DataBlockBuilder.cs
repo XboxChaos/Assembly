@@ -5,6 +5,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Flexibility;
 using Blamite.IO;
 using Blamite.Plugins;
+using Blamite.Plugins.Old;
 
 namespace Blamite.Injection
 {

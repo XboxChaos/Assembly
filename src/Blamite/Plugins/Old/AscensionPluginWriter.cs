@@ -2,25 +2,25 @@
 using System.Xml;
 using Blamite.Blam.Shaders;
 
-namespace Blamite.Plugins
+namespace Blamite.Plugins.Old
 {
-	public class AssemblyPluginWriter : IPluginVisitor
+	public class AscensionPluginWriter : IPluginVisitor
 	{
-		private readonly string _game;
+		private readonly string _className;
 		private readonly XmlWriter _output;
 
-		public AssemblyPluginWriter(XmlWriter output, string game)
+		public AscensionPluginWriter(XmlWriter output, string className)
 		{
 			_output = output;
-			_game = game;
+			_className = className;
 		}
 
 		public bool EnterPlugin(int baseSize)
 		{
 			_output.WriteStartDocument();
 			_output.WriteStartElement("plugin");
-			_output.WriteAttributeString("game", _game);
-			_output.WriteAttributeString("baseSize", ToHexString(baseSize));
+			_output.WriteAttributeString("class", _className);
+			_output.WriteAttributeString("headersize", baseSize.ToString(CultureInfo.InvariantCulture));
 			_output.WriteComment(" Automatically generated plugin ");
 			return true;
 		}
@@ -33,7 +33,6 @@ namespace Blamite.Plugins
 
 		public bool EnterRevisions()
 		{
-			_output.WriteStartElement("revisions");
 			return true;
 		}
 
@@ -48,13 +47,13 @@ namespace Blamite.Plugins
 
 		public void LeaveRevisions()
 		{
-			_output.WriteEndElement();
 		}
 
 		public void VisitComment(string title, string text, uint pluginLine)
 		{
 			_output.WriteStartElement("comment");
 			_output.WriteAttributeString("title", title);
+			_output.WriteAttributeString("visible", "True"); // Oops, Assembly doesn't store this yet...
 			_output.WriteString(text);
 			_output.WriteEndElement();
 		}
@@ -91,7 +90,7 @@ namespace Blamite.Plugins
 
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteBasicValue("float32", name, offset, visible);
+			WriteBasicValue("float", name, offset, visible);
 		}
 
 		public void VisitUndefined(string name, uint offset, bool visible, uint pluginLine)
@@ -101,7 +100,9 @@ namespace Blamite.Plugins
 
 		public void VisitVector3(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteBasicValue("vector3", name, offset, visible);
+			WriteBasicValue("float", name + " X", offset, visible);
+			WriteBasicValue("float", name + " Y", offset + 4, visible);
+			WriteBasicValue("float", name + " Z", offset + 8, visible);
 		}
 
 		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
@@ -111,103 +112,87 @@ namespace Blamite.Plugins
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteBasicValue("stringId", name, offset, visible);
+			WriteBasicValue("stringid", name, offset, visible);
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
 		{
-			WriteValueStart("tagRef", name, offset, visible);
 			if (!withClass)
-				_output.WriteAttributeString("withClass", "false");
-			if (!showJumpTo)
-				_output.WriteAttributeString("showJumpTo", "false");
-			_output.WriteEndElement();
-		}
-
-		public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
-		{
-			WriteValueStart("ascii", name, offset, visible);
-			_output.WriteAttributeString("size", ToHexString(size));
-			_output.WriteEndElement();
-		}
-
-		public void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
-		{
-			WriteValueStart("utf16", name, offset, visible);
-			_output.WriteAttributeString("size", ToHexString(size));
-			_output.WriteEndElement();
+				WriteBasicValue("uint32", name + " Tag ID", offset, visible);
+			else
+				WriteBasicValue("tagref", name, offset, visible);
 		}
 
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
-			WriteValueStart("dataRef", name, offset, visible);
+			WriteValueStart("tagdata", name, offset, visible);
 			_output.WriteAttributeString("format", format);
-			if (align != 4)
-				_output.WriteAttributeString("align", ToHexString(align));
 			_output.WriteEndElement();
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			WriteValueStart("raw", name, offset, visible);
-			_output.WriteAttributeString("size", ToHexString(size));
+			WriteValueStart("bytearray", name, offset, visible);
+			_output.WriteAttributeString("length", size.ToString(CultureInfo.InvariantCulture));
 			_output.WriteEndElement();
+		}
+
+		public void VisitRange(string name, uint offset, bool visible, string type, double min, double max, double smallChange,
+			double largeChange, uint pluginLine)
+		{
+		}
+
+		public void VisitAscii(string name, uint offset, bool visible, int length, uint pluginLine)
+		{
+			WriteValueStart("string", name, offset, visible);
+			_output.WriteAttributeString("length", length.ToString(CultureInfo.InvariantCulture));
+			_output.WriteEndElement();
+		}
+
+		public void VisitUtf16(string name, uint offset, bool visible, int length, uint pluginLine)
+		{
+			// TODO: does Ascension support this?
 		}
 
 		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
-			string element;
-			switch (format.Length)
-			{
-				case 1:
-					element = "color8";
-					break;
-				case 2:
-					element = "color16";
-					break;
-				case 3:
-					element = "color24";
-					break;
-				default:
-					element = "color32";
-					break;
-			}
-
-			WriteValueStart(element, name, offset, visible);
-			_output.WriteAttributeString("format", format);
+			WriteValueStart("color8", name, offset, visible);
+			_output.WriteAttributeString("order", format.ToUpper());
+			_output.WriteAttributeString("real", "True"); // What does this do?
 			_output.WriteEndElement();
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
 			WriteValueStart("colorf", name, offset, visible);
-			_output.WriteAttributeString("format", format);
+			_output.WriteAttributeString("order", format.ToUpper());
+			_output.WriteAttributeString("real", "True"); // What does this do?
 			_output.WriteEndElement();
 		}
 
 		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield8", name, offset, visible);
+			WriteValueStart("bitmask8", name, offset, visible);
 			return true;
 		}
 
 		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield16", name, offset, visible);
+			WriteValueStart("bitmask16", name, offset, visible);
 			return true;
 		}
 
 		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield32", name, offset, visible);
+			WriteValueStart("bitmask32", name, offset, visible);
 			return true;
 		}
 
 		public void VisitBit(string name, int index)
 		{
-			_output.WriteStartElement("bit");
+			_output.WriteStartElement("option");
 			_output.WriteAttributeString("name", name);
-			_output.WriteAttributeString("index", index.ToString(CultureInfo.InvariantCulture));
+			_output.WriteAttributeString("value", index.ToString(CultureInfo.InvariantCulture));
 			_output.WriteEndElement();
 		}
 
@@ -238,7 +223,7 @@ namespace Blamite.Plugins
 		{
 			_output.WriteStartElement("option");
 			_output.WriteAttributeString("name", name);
-			_output.WriteAttributeString("value", ToHexString(value));
+			_output.WriteAttributeString("value", value.ToString(CultureInfo.InvariantCulture));
 			_output.WriteEndElement();
 		}
 
@@ -249,10 +234,8 @@ namespace Blamite.Plugins
 
 		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
-			WriteValueStart("reflexive", name, offset, visible);
-			_output.WriteAttributeString("entrySize", ToHexString(entrySize));
-			if (align != 4)
-				_output.WriteAttributeString("align", ToHexString(align));
+			WriteValueStart("struct", name, offset, visible);
+			_output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));
 			return true;
 		}
 
@@ -261,50 +244,23 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitRange(string name, uint offset, bool visible, string type, double min, double max, double smallChange,
-			double largeChange, uint pluginLine)
-		{
-			//throw new FakUExcepetion("accually is dolan");
-			// I just found this, fucking genius.
-
-			WriteValueStart("range", name, offset, visible);
-			_output.WriteAttributeString("type", type);
-			_output.WriteAttributeString("min", min.ToString(CultureInfo.InvariantCulture));
-			_output.WriteAttributeString("max", max.ToString(CultureInfo.InvariantCulture));
-			_output.WriteAttributeString("smallChange", smallChange.ToString(CultureInfo.InvariantCulture));
-			_output.WriteAttributeString("largeChange", largeChange.ToString(CultureInfo.InvariantCulture));
-			_output.WriteEndElement();
-		}
-
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
 		{
-			WriteValueStart("shader", name, offset, visible);
-			_output.WriteAttributeString("type", (type == ShaderType.Pixel) ? "pixel" : "vertex");
-			_output.WriteEndElement();
+			WriteBasicValue("uint32", name, offset, visible);
 		}
 
 		private void WriteValueStart(string element, string name, uint offset, bool visible)
 		{
 			_output.WriteStartElement(element);
 			_output.WriteAttributeString("name", name);
-			_output.WriteAttributeString("offset", ToHexString(offset));
-			_output.WriteAttributeString("visible", visible.ToString().ToLower());
+			_output.WriteAttributeString("offset", offset.ToString(CultureInfo.InvariantCulture));
+			_output.WriteAttributeString("visible", visible.ToString());
 		}
 
 		private void WriteBasicValue(string element, string name, uint offset, bool visible)
 		{
 			WriteValueStart(element, name, offset, visible);
 			_output.WriteEndElement();
-		}
-
-		private static string ToHexString(int num)
-		{
-			return "0x" + num.ToString("X");
-		}
-
-		private static string ToHexString(uint num)
-		{
-			return "0x" + num.ToString("X");
 		}
 	}
 }

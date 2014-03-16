@@ -1,4 +1,4 @@
-﻿namespace Blamite.Plugins
+﻿namespace Blamite.Plugins.Old
 {
 	public class PluginRevision
 	{

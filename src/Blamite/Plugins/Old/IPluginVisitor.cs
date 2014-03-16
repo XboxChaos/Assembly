@@ -1,5 +1,6 @@
 ﻿using Blamite.Blam.Shaders;
-namespace Blamite.Plugins
+
+namespace Blamite.Plugins.Old
 {
 	/// <summary>
 	///     An interface for a class which handles data read from plugins.

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Blamite.Blam.Shaders;
 
-namespace Blamite.Plugins
+namespace Blamite.Plugins.Old
 {
 	public class TestPluginVisitor : IPluginVisitor
 	{

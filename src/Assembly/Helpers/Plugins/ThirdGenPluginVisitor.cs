@@ -8,6 +8,7 @@ using Blamite.Blam.Shaders;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Util;
+using Blamite.Plugins.Old;
 
 namespace Assembly.Helpers.Plugins
 {

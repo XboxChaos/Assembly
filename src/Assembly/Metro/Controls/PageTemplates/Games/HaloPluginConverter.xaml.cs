@@ -11,6 +11,7 @@ using System.Xml;
 using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Plugins;
+using Blamite.Plugins.Old;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

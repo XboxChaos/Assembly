@@ -33,6 +33,7 @@ using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
+using Blamite.Plugins.Old;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

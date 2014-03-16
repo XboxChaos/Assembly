@@ -16,6 +16,7 @@ using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Plugins.Generation;
 using Blamite.Util;
+using Blamite.Plugins.Old;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {

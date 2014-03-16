@@ -2,6 +2,7 @@
 using System.Windows;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using Blamite.Plugins;
+using Blamite.Plugins.Old;
 
 namespace Assembly.Metro.Dialogs
 {
