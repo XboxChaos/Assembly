@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo3" baseSize="0xF0">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -11,27 +11,27 @@
 			<option name="Monitor" value="0x2" />
 		</enum32>
 		<int8 name="Unknown" offset="0x4" visible="false" />
-		<colour24 name="Unknown" offset="0x5" format="rgb" visible="true" />
+		<colour24 name="HUD Disabled" offset="0x5" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x8" visible="false" />
-		<colour24 name="Unknown" offset="0x9" format="rgb" visible="true" />
+		<colour24 name="HUD Primary" offset="0x9" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0xC" visible="false" />
-		<colour24 name="Unknown" offset="0xD" format="rgb" visible="true" />
+		<colour24 name="HUD Foreground" offset="0xD" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x10" visible="false" />
-		<colour24 name="Unknown" offset="0x11" format="rgb" visible="true" />
+		<colour24 name="HUD Warning" offset="0x11" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x14" visible="false" />
-		<colour24 name="Unknown" offset="0x15" format="rgb" visible="true" />
+		<colour24 name="Neutral Reticule" offset="0x15" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x18" visible="false" />
-		<colour24 name="Unknown" offset="0x19" format="rgb" visible="true" />
+		<colour24 name="Hostile Reticule" offset="0x19" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x1C" visible="false" />
-		<colour24 name="Unknown" offset="0x1D" format="rgb" visible="true" />
+		<colour24 name="Friendly Reticule" offset="0x1D" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x20" visible="false" />
 		<colour24 name="Unknown" offset="0x21" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x24" visible="false" />
-		<colour24 name="Unknown" offset="0x25" format="rgb" visible="true" />
+		<colour24 name="Neutral Blip" offset="0x25" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x28" visible="false" />
-		<colour24 name="Unknown" offset="0x29" format="rgb" visible="true" />
+		<colour24 name="Hostile Blip" offset="0x29" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x2C" visible="false" />
-		<colour24 name="Unknown" offset="0x2D" format="rgb" visible="true" />
+		<colour24 name="Friendly Blip" offset="0x2D" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x30" visible="false" />
 		<colour24 name="Unknown" offset="0x31" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x34" visible="false" />
@@ -67,8 +67,41 @@
 		<int8 name="Unknown" offset="0x70" visible="false" />
 		<colour24 name="Unknown" offset="0x71" format="rgb" visible="true" />
 		<reflexive name="Screen Attributes" offset="0x74" visible="true" entrySize="0x60">
-			<int32 name="Unknown" offset="0x0" visible="true" />
-			<float32 name="Warp A" offset="0x4" visible="true" />
+			<bitfield32 name="Flags" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<degree name="Warp A" offset="0x4" visible="true" />
 			<float32 name="Warp B" offset="0x8" visible="true" />
 			<float32 name="Warp C" offset="0xC" visible="true" />
 			<uint32 name="Resolution Width" offset="0x10" visible="true" />
@@ -209,14 +242,31 @@
 			<tagRef name="Unknown" offset="0xD4" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown" offset="0x30" visible="false" entrySize="0x14">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Player Training Data" offset="0x30" visible="true" entrySize="0x14">
+		<stringid name="Display String" offset="0x0" visible="true" />
+		<int16 name="Max Display Time" offset="0x4" visible="true" />
+		<int16 name="Display Count" offset="0x6" visible="true" />
+		<int16 name="Disappear Delay" offset="0x8" visible="true" />
+		<int16 name="Redisplay Delay" offset="0xA" visible="true" />
+		<float32 name="Dispay Delay" offset="0xC" visible="true" />
+		<bitfield16 name="Flags" offset="0x10" visible="true">
+			<bit name="Not In Multiplayer" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
 	<tagRef name="Start Menu Emblems UI" offset="0x3C" visible="true" />
