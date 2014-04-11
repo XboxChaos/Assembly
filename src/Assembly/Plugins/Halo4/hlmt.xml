@@ -3,6 +3,7 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="Lord Zedd" version="2">Lots of updates</revision>
+		<revision author="Lord Zedd" version="3">Named Omaha damage</revision>
 	</revisions>
 	<tagRef name="Model" offset="0x0" visible="true" />
 	<tagRef name="Collision Model" offset="0x10" visible="true" />
@@ -94,7 +95,8 @@
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="true" entrySize="0xC">
 					<stringid name="Name" offset="0x0" visible="true" />
-					<bitfield16 name="Property Flags" offset="0x4" visible="true">
+					<int8 name="Unknown" offset="0x4" visible="false" />
+					<bitfield8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
 						<bit name="Shielded" index="2" />
@@ -103,15 +105,7 @@
 						<bit name="Bit 5" index="5" />
 						<bit name="Bit 6" index="6" />
 						<bit name="Bit 7" index="7" />
-						<bit name="Bit 8" index="8" />
-						<bit name="Bit 9" index="9" />
-						<bit name="Bit 10" index="10" />
-						<bit name="Bit 11" index="11" />
-						<bit name="Bit 12" index="12" />
-						<bit name="Bit 13" index="13" />
-						<bit name="Bit 14" index="14" />
-						<bit name="Bit 15" index="15" />
-					</bitfield16>
+					</bitfield8>
 					<enum16 name="State" offset="0x6" visible="true">
 						<option name="Default" value="0x0" />
 						<option name="Minor Damage" value="0x1" />
@@ -159,7 +153,7 @@
 			</bitfield8>
 			<int8 name="Unknown" offset="0x23" visible="true" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<int32 name="Unknown" offset="0x3C" visible="false" />
 		<reflexive name="Unknown" offset="0x40" visible="false" entrySize="0x4">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
@@ -183,7 +177,7 @@
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<reflexive name="Materials" offset="0xE8" visible="true" entrySize="0x14">
+	<reflexive name="Omaha Materials" offset="0xE8" visible="true" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="true" />
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
@@ -229,7 +223,8 @@
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<stringId name="Global Indirect Material" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int16 name="Indirect Damage Section" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<enum8 name="Collision Damage Reporting Type" offset="0x10" visible="true">
 			<option name="Guardians (Unknown)" value="0x0" />
@@ -445,8 +440,8 @@
 				<bit name="Cannot Die With Riders" index="2" />
 				<bit name="Takes Full Damage When Object Destroyed" index="3" />
 				<bit name="Restored On Ressurection" index="4" />
-				<bit name="unused" index="5" />
-				<bit name="unused" index="6" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
 				<bit name="Headshotable" index="7" />
 				<bit name="Ignores Shields" index="8" />
 				<bit name="Bit 9" index="9" />
@@ -475,35 +470,90 @@
 			</bitfield32>
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 			<reflexive name="Instant Responses" offset="0xC" visible="false" entrySize="0x98">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
+				<enum16 name="Response Type" offset="0x0" visible="true">
+					<option name="Recieves All Damage" value="0x0" />
+					<option name="Recieves Area Effect Damage" value="0x1" />
+					<option name="Recieves Local Damage" value="0x2" />
+				</enum16>
+				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Destroy One of Group" value="0x1" />
+					<option name="Destroy Entire Group" value="0x2" />
+					<option name="Loosen One of Group" value="0x3" />
+					<option name="Loosen Entire Group" value="0x4" />
+				</enum16>
+				<stringid name="Trigger" offset="0x4" visible="true" />
+				<bitfield32 name="Flags" offset="0x8" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+					<bit name="Bit 16" index="16" />
+					<bit name="Bit 17" index="17" />
+					<bit name="Bit 18" index="18" />
+					<bit name="Bit 19" index="19" />
+					<bit name="Bit 20" index="20" />
+					<bit name="Bit 21" index="21" />
+					<bit name="Bit 22" index="22" />
+					<bit name="Bit 23" index="23" />
+					<bit name="Bit 24" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield32>
 				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<tagref name="Unknown" offset="0x1C" visible="true" />
-				<tagref name="Unknown" offset="0x2C" visible="true" />
-				<tagref name="Unknown" offset="0x3C" visible="true" />
+				<float32 name="Damage Threshold" offset="0x10" visible="true" />
+				<int32 name="Unknown" offset="0x14" visible="false" />
+				<float32 name="Unknown" offset="0x18" visible="false" />
+				<tagref name="Primary Transition Effect" offset="0x1C" visible="true" />
+				<tagref name="Secondary Transition Effect" offset="0x2C" visible="true" />
+				<tagref name="Transition Damage Effect" offset="0x3C" visible="true" />
 				<stringid name="Region" offset="0x4C" visible="true" />
-				<int16 name="New State" offset="0x50" visible="true" />
+				<enum16 name="New State" offset="0x50" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
 				<int16 name="Runtime Region Index" offset="0x52" visible="true" />
 				<stringid name="Unknown" offset="0x54" visible="true" />
 				<int16 name="Unknown" offset="0x58" visible="true" />
 				<int16 name="Unknown" offset="0x5A" visible="true" />
 				<int16 name="Unknown" offset="0x5C" visible="true" />
-				<int16 name="Unknown" offset="0x5E" visible="true" />
-				<stringid name="Effect Marker Name" offset="0x60" visible="true" />
-				<stringid name="Damage Effect Marker Name" offset="0x64" visible="true" />
-				<undefined name="Unknown" offset="0x68" visible="true" />
-				<undefined name="Unknown" offset="0x6C" visible="true" />
+				<enum16 name="Unknown Special Damage" offset="0x5E" visible="true">
+					<option name="None" value="0x0" />
+					<option name="1" value="0x1" />
+					<option name="2" value="0x2" />
+					<option name="3" value="0x3" />
+				</enum16>
+				<stringid name="Special Damage Case" offset="0x60" visible="true" />
+				<stringid name="Effect Marker Name" offset="0x64" visible="true" />
+				<stringid name="Damage Effect Marker Name" offset="0x68" visible="true" />
+				<float32 name="Response Delay" offset="0x6C" visible="true" />
 				<tagref name="Delay Effect" offset="0x70" visible="true" />
 				<stringid name="Delay Effect Marker Name" offset="0x80" visible="true" />
 				<undefined name="Unknown" offset="0x84" visible="false" />
-				<undefined name="Unknown" offset="0x88" visible="false" />
-				<undefined name="Unknown" offset="0x8C" visible="false" />
-				<undefined name="Unknown" offset="0x90" visible="false" />
-				<undefined name="Unknown" offset="0x94" visible="false" />
+				<stringid name="Ejecting Seat Label" offset="0x88" visible="true" />
+				<float32 name="Skip Fraction" offset="0x8C" visible="true" />
+				<stringid name="Destroyed Child Object Marker Name" offset="0x90" visible="true" />
+				<float32 name="Total Damage Threshold" offset="0x94" visible="true" />
 			</reflexive>
 			<undefined name="struct here 1" offset="0x18" visible="false" />
 			<undefined name="struct here 1" offset="0x1C" visible="false" />
@@ -511,11 +561,12 @@
 			<undefined name="struct here 2" offset="0x24" visible="false" />
 			<undefined name="struct here 2" offset="0x28" visible="false" />
 			<undefined name="struct here 2" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
+			<float32 name="Stun Time" offset="0x30" visible="true" />
+			<float32 name="Recharge Time" offset="0x34" visible="true" />
+			<float32 name="Unknown" offset="0x38" visible="false" />
+			<stringid name="Resurrection Region Name" offset="0x3C" visible="true" />
+			<int16 name="Ressurection Region Runtime Index" offset="0x40" visible="true" />
+			<int16 name="Unknown" offset="0x42" visible="false" />
 		</reflexive>
 		<reflexive name="Nodes" offset="0xD8" visible="false" entrySize="0x10">
 			<int16 name="Unknown" offset="0x0" visible="false" />
@@ -558,7 +609,42 @@
 			<int16 name="Unknown" offset="0x12" visible="false" />
 		</reflexive>
 	</reflexive>
-	<int32 name="Unknown" offset="0x100" visible="true" />
+	<comment title="Omaha Damage Info">
+"New Damage Info" above is obsolete, all the good stuff is gonna be under here.</comment>
+	<bitfield32 name="Flags" offset="0x100" visible="true">
+		<bit name="Takes Damage For Children" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Cannot Die From Damage" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
 	<float32 name="Base Vitality" offset="0x104" visible="true" />
 	<stringid name="Base Global Material" offset="0x108" visible="true" />
 	<int16 name="Unknown" offset="0x10C" visible="false" />
@@ -732,7 +818,7 @@
 		<option name="Flood Talon" value="0x61" />
 	</enum8>
 	<int16 name="Unknown" offset="0x112" visible="false" />
-	<reflexive name="New Damage Sections" offset="0x114" visible="true" entrySize="0xB4">
+	<reflexive name="Omaha Damage Sections" offset="0x114" visible="true" entrySize="0xB4">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<bitfield32 name="Flags" offset="0x4" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -770,68 +856,119 @@
 		</bitfield32>
 		<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 		<stringid name="Global Material" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Health Recharge Delay" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<reflexive name="Unknown 6" offset="0x1C" visible="false" entrySize="0x14">
-			<dataRef name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Unknown" offset="0x18" visible="true" />
+		<reflexive name="Health Functions" offset="0x1C" visible="true" entrySize="0x14">
+			<dataRef name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown 7" offset="0x28" visible="false" entrySize="0x4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Health Levels" offset="0x28" visible="true" entrySize="0x4">
+			<float32 name="Percentage" offset="0x0" visible="true" />
 		</reflexive>
 		<tagRef name="Recharge Effect" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
+		<float32 name="Unknown" offset="0x44" visible="false" />
 		<tagRef name="Precharge Effect" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x58" visible="true" />
-		<tagref name="Unknown" offset="0x5C" visible="true" />
-		<undefined name="Unknown" offset="0x6C" visible="true" />
-		<undefined name="Unknown" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="true" />
-		<undefined name="Unknown" offset="0x78" visible="true" />
-		<undefined name="Unknown" offset="0x7C" visible="true" />
-		<undefined name="Unknown" offset="0x80" visible="true" />
-		<reflexive name="Unknown" offset="0x84" visible="false" entrySize="0xB4">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Unknown" offset="0x58" visible="false" />
+		<tagRef name="Unknown" offset="0x5C" visible="true" />
+		<float32 name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<float32 name="Unknown" offset="0x78" visible="false" />
+		<float32 name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<reflexive name="Omaha Instant Responses" offset="0x84" visible="true" entrySize="0xB4">
+			<bitfield32 name="Flags" offset="0x0" visible="true">
+				<bit name="Kills Object" index="0" />
+				<bit name="Inhibits Melee Attack" index="1" />
+				<bit name="Inhibits Weapon Attack" index="2" />
+				<bit name="Inhibits Walking" index="3" />
+				<bit name="Forces Drop Weapon" index="4" />
+				<bit name="Kills Weapon Primary Trigger" index="5" />
+				<bit name="Kills Weapon Secondary Trigger" index="6" />
+				<bit name="Destroys Object" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
 			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<tagRef name="Unknown" offset="0x10" visible="false" />
-			<stringid name="Unknown" offset="0x20" visible="false" />
-			<tagRef name="Unknown" offset="0x24" visible="false" />
-			<stringid name="Unknown" offset="0x34" visible="false" />
-			<tagRef name="Unknown" offset="0x38" visible="false" />
-			<stringid name="Unknown" offset="0x48" visible="false" />
-			<tagRef name="Unknown" offset="0x4C" visible="false" />
-			<reflexive name="Unknown" offset="0x5C" visible="false" entrySize="0x8">
-				<stringid name="Unknown" offset="0x0" visible="false" />
-				<int16 name="Unknown" offset="0x4" visible="false" />
-				<int16 name="Unknown" offset="0x6" visible="false" />
+			<stringid name="Trigger" offset="0x8" visible="true" />
+			<float32 name="Damage Threshold" offset="0xC" visible="true" />
+			<tagRef name="Primary Transition Effect" offset="0x10" visible="true" />
+			<stringid name="Primary Transition Effect Marker Name" offset="0x20" visible="true" />
+			<tagRef name="Secondary Transition Effect" offset="0x24" visible="true" />
+			<stringid name="Secondary Transition Effect Marker Name" offset="0x34" visible="true" />
+			<tagRef name="Transition Damage Effect" offset="0x38" visible="true" />
+			<stringid name="Transition Damage Effect Marker Name" offset="0x48" visible="true" />
+			<tagRef name="Constant Effect" offset="0x4C" visible="true" />
+			<reflexive name="Region State Changes" offset="0x5C" visible="true" entrySize="0x8">
+				<stringid name="Region" offset="0x0" visible="true" />
+				<enum16 name="New State" offset="0x4" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
+				<int16 name="Runtime Region Index" offset="0x6" visible="true" />
 			</reflexive>
 			<reflexive name="Unknown" offset="0x68" visible="false" entrySize="0x10">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int32 name="Unknown" offset="0x0" visible="false" />
+				<float32 name="Unknown" offset="0x4" visible="false" />
 				<int16 name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Unknown" offset="0xA" visible="false" />
 				<stringid name="Seat Label" offset="0xC" visible="true" />
 			</reflexive>
 			<int16 name="Unknown" offset="0x74" visible="false" />
-			<int16 name="Unknown" offset="0x76" visible="false" />
-			<undefined name="Unknown" offset="0x78" visible="false" />
-			<undefined name="Unknown" offset="0x7C" visible="false" />
-			<tagRef name="Unknown" offset="0x80" visible="false" />
-			<undefined name="Unknown" offset="0x90" visible="false" />
-			<reflexive name="Unknown" offset="0x94" visible="false" entrySize="0x4">
-				<stringid name="Seat Label" offset="0x0" visible="true" />
+			<enum16 name="Unknown Special Damage" offset="0x76" visible="true">
+				<option name="None" value="0x0" />
+				<option name="1" value="0x1" />
+				<option name="2" value="0x2" />
+				<option name="3" value="0x3" />
+			</enum16>
+			<stringid name="Special Damage Case" offset="0x78" visible="true" />
+			<float32 name="Response Delay" offset="0x7C" visible="true" />
+			<tagRef name="Delay Effect" offset="0x80" visible="true" />
+			<stringid name="Delay Effect Marker Name" offset="0x90" visible="true" />
+			<reflexive name="Seat Ejaculation" offset="0x94" visible="true" entrySize="0x4">
+				<stringid name="Ejecting Seat Label" offset="0x0" visible="true" />
 			</reflexive>
-			<undefined name="Unknown" offset="0xA0" visible="false" />
-			<undefined name="Unknown" offset="0xA4" visible="false" />
-			<undefined name="Unknown" offset="0xA8" visible="false" />
-			<undefined name="Unknown" offset="0xAC" visible="false" />
-			<undefined name="Unknown" offset="0xB0" visible="false" />
+			<float32 name="Skip Fraction" offset="0xA0" visible="true" />
+			<stringid name="Destroyed Child Object Marker Name" offset="0xA4" visible="true" />
+			<float32 name="Total Damage Threshold" offset="0xA8" visible="true" />
+			<stringid name="Constraint Group Name" offset="0xAC" visible="true" />
+			<enum16 name="Constraint Damage Type" offset="0xB0" visible="true">
+				<option name="None" value="0x0" />
+				<option name="Destroy One of Group" value="0x1" />
+				<option name="Destroy Entire Group" value="0x2" />
+				<option name="Loosen One of Group" value="0x3" />
+				<option name="Loosen Entire Group" value="0x4" />
+			</enum16>
+			<int16 name="Unknown" offset="0xB2" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown 9" offset="0x90" visible="false" entrySize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="false" />
 			<int16 name="Unknown" offset="0x8" visible="false" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<stringid name="Seat Label" offset="0xC" visible="true" />
@@ -840,28 +977,29 @@
 			<tagRef name="Third Person" offset="0x0" visible="true" />
 			<tagRef name="First Person" offset="0x10" visible="true" />
 		</reflexive>
-		<undefined name="Unknown" offset="0xA8" visible="true" />
-		<undefined name="Unknown" offset="0xAC" visible="true" />
-		<int16 name="Unknown" offset="0xB0" visible="false" />
+		<float32 name="Recharge Time" offset="0xA8" visible="true" />
+		<stringid name="Resurrection Region Name" offset="0xAC" visible="true" />
+		<int16 name="Ressurection Region Runtime Index" offset="0xB0" visible="true" />
 		<int16 name="Global Material Index" offset="0xB2" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 6" offset="0x120" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Omaha Damage Constraints" offset="0x120" visible="true" entrySize="0x14">
+		<stringid name="Physics Model Constraint Name" offset="0x0" visible="true" />
+		<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
+		<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
+		<float32 name="Group Probability Scale" offset="0xC" visible="true" />
+		<int16 name="Unknown" offset="0x10" visible="false" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown Nodes" offset="0x12C" visible="false" entrySize="0x10">
+	<reflexive name="Omaha Nodes" offset="0x12C" visible="false" entrySize="0x10">
 		<int16 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 	</reflexive>
-	<int16 name="Base Global Materal Index" offset="0x128" visible="true" />
+	<int16 name="Base Global Materal Index" offset="0x138" visible="true" />
 	<int16 name="Unknown" offset="0x13A" visible="false" />
-	<reflexive name="Targets 1" offset="0x13C" visible="true" entrySize="0x24">
+	<reflexive name="Targets" offset="0x13C" visible="true" entrySize="0x24">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
 		<float32 name="Size" offset="0x4" visible="true" />
 		<degree name="Cone Angle" offset="0x8" visible="false" />
@@ -904,10 +1042,13 @@
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Lock-On Distance" offset="0x1C" visible="true" />
-		<stringid name="Parent Filter" offset="0x20" visible="true" />
+		<stringid name="Target Filter" offset="0x20" visible="true" />
 	</reflexive>
-	<reflexive name="Targets 2" offset="0x148" visible="true" entrySize="0x28">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Omaha Targets" offset="0x148" visible="true" entrySize="0x28">
+		<int8 name="Unknown" offset="0x0" visible="false" />
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int8 name="Unknown" offset="0x2" visible="false" />
+		<int8 name="Unknown" offset="0x3" visible="false" />
 		<stringid name="Marker Name" offset="0x4" visible="true" />
 		<float32 name="Size" offset="0x8" visible="true" />
 		<degree name="Cone Angle" offset="0xC" visible="false" />
@@ -950,7 +1091,7 @@
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<float32 name="Lock-On Distance" offset="0x20" visible="true" />
-		<stringid name="Parent Filter" offset="0x24" visible="true" />
+		<stringid name="Target Filter" offset="0x24" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown Regions" offset="0x154" visible="false" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />

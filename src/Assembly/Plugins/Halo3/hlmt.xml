@@ -59,7 +59,8 @@
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="true" entrySize="0x20">
 					<stringId name="Name" offset="0x0" visible="true" />
-					<bitfield16 name="Property Flags" offset="0x4" visible="true">
+					<int8 name="Unknown" offset="0x4" visible="false" />
+					<bitfield8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
 						<bit name="Shielded" index="2" />
@@ -68,15 +69,7 @@
 						<bit name="Bit 5" index="5" />
 						<bit name="Bit 6" index="6" />
 						<bit name="Bit 7" index="7" />
-						<bit name="Bit 8" index="8" />
-						<bit name="Bit 9" index="9" />
-						<bit name="Bit 10" index="10" />
-						<bit name="Bit 11" index="11" />
-						<bit name="Bit 12" index="12" />
-						<bit name="Bit 13" index="13" />
-						<bit name="Bit 14" index="14" />
-						<bit name="Bit 15" index="15" />
-					</bitfield16>
+					</bitfield8>
 					<enum16 name="State" offset="0x6" visible="true">
 						<option name="Default" value="0x0" />
 						<option name="Minor Damage" value="0x1" />
@@ -414,8 +407,8 @@
 				<bit name="Cannot Die With Riders" index="2" />
 				<bit name="Takes Full Damage When Object Destroyed" index="3" />
 				<bit name="Restored On Ressurection" index="4" />
-				<bit name="unused" index="5" />
-				<bit name="unused" index="6" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
 				<bit name="Headshotable" index="7" />
 				<bit name="Ignores Shields" index="8" />
 				<bit name="Bit 9" index="9" />
@@ -444,31 +437,86 @@
 			</bitfield32>
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 			<reflexive name="Instant Responses" offset="0xC" visible="true" entrySize="0x88">
-				<undefined name="Unknown" offset="0x0" visible="true" />
-				<stringid name="Unknown" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="true" />
-				<undefined name="Unknown" offset="0xC" visible="true" />
-				<tagref name="Unknown" offset="0x10" visible="true" />
-				<tagref name="Unknown" offset="0x20" visible="true" />
-				<tagref name="Unknown" offset="0x30" visible="true" />
+				<enum16 name="Response Type" offset="0x0" visible="true">
+					<option name="Recieves All Damage" value="0x0" />
+					<option name="Recieves Area Effect Damage" value="0x1" />
+					<option name="Recieves Local Damage" value="0x2" />
+				</enum16>
+				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Destroy One of Group" value="0x1" />
+					<option name="Destroy Entire Group" value="0x2" />
+					<option name="Loosen One of Group" value="0x3" />
+					<option name="Loosen Entire Group" value="0x4" />
+				</enum16>
+				<stringid name="Trigger" offset="0x4" visible="true" />
+				<bitfield32 name="Flags" offset="0x8" visible="true">
+					<bit name="Kills Object" index="0" />
+					<bit name="Inhibits Melee Attack" index="1" />
+					<bit name="Inhibits Weapon Attack" index="2" />
+					<bit name="Inhibits Walking" index="3" />
+					<bit name="Forces Drop Weapon" index="4" />
+					<bit name="Kills Weapon Primary Trigger" index="5" />
+					<bit name="Kills Weapon Secondary Trigger" index="6" />
+					<bit name="Destroys Object" index="7" />
+					<bit name="Damages Weapon Primary Trigger" index="8" />
+					<bit name="Damages Weapon Secondary Trigger" index="9" />
+					<bit name="Light Damage Left Turn" index="10" />
+					<bit name="Major Damage Left Turn" index="11" />
+					<bit name="Light Damage Right Turn" index="12" />
+					<bit name="Major Damage Right Turn" index="13" />
+					<bit name="Light Damage Engine" index="14" />
+					<bit name="Major Damage Engine" index="15" />
+					<bit name="Kills Object (No Player Solo)" index="16" />
+					<bit name="Causes Detonation" index="17" />
+					<bit name="Destroy All Group Constraints" index="18" />
+					<bit name="Kills Variant Objects" index="19" />
+					<bit name="Force Unattached Effects" index="20" />
+					<bit name="Fires Under Threshold" index="21" />
+					<bit name="Triggers Special Death" index="22" />
+					<bit name="Only On Special Death" index="23" />
+					<bit name="Only NOT On Special Death" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield32>
+				<float32 name="Damage Threshold" offset="0xC" visible="true" />
+				<tagref name="Primary Transition Effect" offset="0x10" visible="true" />
+				<tagref name="Secondary Transition Effect" offset="0x20" visible="true" />
+				<tagref name="Transition Damage Effect" offset="0x30" visible="true" />
 				<stringid name="Region" offset="0x40" visible="true" />
-				<int16 name="New State" offset="0x44" visible="true" />
+				<enum16 name="New State" offset="0x44" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
 				<int16 name="Runtime Region Index" offset="0x46" visible="true" />
 				<stringid name="Unknown" offset="0x48" visible="true" />
 				<int16 name="Unknown" offset="0x4C" visible="true" />
 				<int16 name="Unknown" offset="0x4E" visible="true" />
 				<int16 name="Unknown" offset="0x50" visible="true" />
-				<int16 name="Unknown" offset="0x52" visible="true" />
-				<stringid name="Effect Marker Name" offset="0x54" visible="true" />
-				<stringid name="Damage Effect Marker Name" offset="0x58" visible="true" />
-				<undefined name="Unknown" offset="0x5C" visible="true" />
-				<undefined name="Unknown" offset="0x60" visible="true" />
+				<enum16 name="Unknown Special Damage" offset="0x52" visible="true">
+					<option name="None" value="0x0" />
+					<option name="1" value="0x1" />
+					<option name="2" value="0x2" />
+					<option name="3" value="0x3" />
+				</enum16>
+				<stringid name="Special Damage Case" offset="0x54" visible="true" />
+				<stringid name="Effect Marker Name" offset="0x58" visible="true" />
+				<stringid name="Damage Effect Marker Name" offset="0x5C" visible="true" />
+				<float32 name="Response Delay" offset="0x60" visible="true" />
 				<tagref name="Delay Effect" offset="0x64" visible="true" />
 				<stringid name="Delay Effect Marker Name" offset="0x74" visible="true" />
-				<undefined name="Unknown" offset="0x78" visible="true" />
-				<undefined name="Unknown" offset="0x7C" visible="true" />
-				<undefined name="Unknown" offset="0x80" visible="true" />
-				<undefined name="Unknown" offset="0x84" visible="true" />
+				<stringid name="Ejecting Seat Label" offset="0x78" visible="true" />
+				<float32 name="Skip Fraction" offset="0x7C" visible="true" />
+				<stringid name="Destroyed Child Object Marker Name" offset="0x80" visible="true" />
+				<float32 name="Total Damage Threshold" offset="0x84" visible="true" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -476,11 +524,12 @@
 			<undefined name="Unknown" offset="0x24" visible="false" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
+			<float32 name="Stun Time" offset="0x30" visible="true" />
+			<float32 name="Recharge Time" offset="0x34" visible="true" />
+			<float32 name="Unknown" offset="0x38" visible="false" />
+			<stringid name="Resurrection Region Name" offset="0x3C" visible="true" />
+			<int16 name="Ressurection Region Runtime Index" offset="0x40" visible="true" />
+			<int16 name="Unknown" offset="0x42" visible="false" />
 		</reflexive>
 		<reflexive name="Nodes" offset="0xD0" visible="false" entrySize="0x10">
 			<int16 name="Unknown" offset="0x0" visible="false" />
@@ -491,8 +540,8 @@
 		</reflexive>
 		<int16 name="Global Shield Material Index" offset="0xDC" visible="true" />
 		<int16 name="Global Indirect Material Index" offset="0xDE" visible="true" />
-		<undefined name="Unknown" offset="0xE0" visible="false" />
-		<undefined name="Unknown" offset="0xE4" visible="false" />
+		<float32 name="Unknown" offset="0xE0" visible="false" />
+		<float32 name="Unknown" offset="0xE4" visible="false" />
 		<reflexive name="Damage Seats" offset="0xE8" visible="true" entrySize="0x20">
 			<stringid name="Seat Label" offset="0x0" visible="true" />
 			<float32 name="Direct Damage Scale" offset="0x4" visible="true" />
