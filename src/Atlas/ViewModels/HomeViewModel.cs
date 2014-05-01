@@ -193,7 +193,7 @@ namespace Atlas.ViewModels
 						"Blam Campaign (*.campaign)|*.campaign|" +
 						"Assembly Patch (*.asmp)|*.asmp|" +
 						"All Files (*.*)|*.*",
-				FilterIndex = (int)type
+				FilterIndex = 1 + (int)type
 			};
 
 			return openFileDialog.ShowDialog() == DialogResult.OK ? openFileDialog.FileName : null;
