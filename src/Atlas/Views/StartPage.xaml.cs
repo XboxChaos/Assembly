@@ -52,5 +52,25 @@ namespace Atlas.Views
 			}
 			App.Storage.HomeWindowViewModel.OpenFile(recentFile.FilePath, recentFile.Type);
 		}
+
+		private void OpenCacheButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.OpenFile(HomeViewModel.Type.BlamCache);
+		}
+
+		private void OpenMapImageButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.OpenFile(HomeViewModel.Type.MapImage);
+		}
+
+		private void OpenMapInfoButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.OpenFile(HomeViewModel.Type.MapInfo);
+		}
+
+		private void OpenCampaignButton_OnClick(object sender, RoutedEventArgs e)
+		{
+			ViewModel.OpenFile(HomeViewModel.Type.Campaign);
+		}
 	}
 }
