@@ -15,8 +15,7 @@ namespace Atlas.Views.BLF
 		{
 			InitializeComponent();
 
-			ViewModel = new CampaignPageViewModel(this);
-			DataContext = ViewModel;
+			DataContext = ViewModel = new CampaignPageViewModel(this);
 			ViewModel.LoadCampaign(mapInfoLocation);
 		}
 

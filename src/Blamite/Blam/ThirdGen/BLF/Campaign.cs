@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using Blamite.IO;
 
@@ -91,7 +92,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		public void LoadCampaignNames()
 		{
-			_campaign.MapNames.Clear();
+			_campaign.MapNames = new ObservableCollection<string>();
 
 			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x44 : 0x44;
 			for (int i = 0; i < languageCount; i++)
@@ -103,7 +104,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		public void LoadCampaignDescriptions()
 		{
-			_campaign.MapDescriptions.Clear();
+			_campaign.MapDescriptions = new ObservableCollection<string>();
 
 			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x8C4 : 0x644;
 			for (int i = 0; i < languageCount; i++)
@@ -115,6 +116,8 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		public void LoadMapIDs()
 		{
+			_campaign.MapIDs = new ObservableCollection<int>();
+
 			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x19C4 : 0x1244;
 			for (int i = 0; i < mapIDcount; i++)
 			{
@@ -188,9 +191,9 @@ namespace Blamite.Blam.ThirdGen.BLF
 		public class CmpnInfo
 		{
 			public GameIdentifier Game { get; set; }
-			public IList<string> MapDescriptions = new List<string>();
-			public IList<string> MapNames = new List<string>();
-			public IList<int> MapIDs = new List<int>();
+			public ObservableCollection<string> MapDescriptions { get; set; }
+			public ObservableCollection<string> MapNames { get; set; }
+			public ObservableCollection<int> MapIDs { get; set; }
 		}
 	}
 }
