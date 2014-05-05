@@ -3,16 +3,17 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">Names and things</revision>
 	</revisions>
 	<reflexive name="Sound References" offset="0x0" visible="true" entrySize="0x14">
 		<tagRef name="Sound" offset="0x0" visible="true" />
 		<bitfield16 name="Flags" offset="0x10" visible="true">
 			<bit name="Allow on Player" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
+			<bit name="Left Arm Only" index="1" />
+			<bit name="Right Arm Only" index="2" />
+			<bit name="First Person Only" index="3" />
+			<bit name="Forward Only" index="4" />
+			<bit name="Reverse Only" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
@@ -30,11 +31,11 @@
 		<tagRef name="Effect" offset="0x0" visible="true" />
 		<bitfield16 name="Flags" offset="0x10" visible="true">
 			<bit name="Allow on Player" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
+			<bit name="Left Arm Only" index="1" />
+			<bit name="Right Arm Only" index="2" />
+			<bit name="First Person Only" index="3" />
+			<bit name="Forward Only" index="4" />
+			<bit name="Reverse Only" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
@@ -48,36 +49,42 @@
 		</bitfield16>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 2" offset="0x18" visible="true" entrySize="0x38">
-		<stringid name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<reflexive name="Unknown 3" offset="0x8" visible="true" entrySize="0x14">
-			<stringid name="Unknown" offset="0x0" visible="true" />
-			<stringid name="Unknown" offset="0x4" visible="true" />
-			<int16 name="Unknown" offset="0x8" visible="true" />
-			<int16 name="Unknown" offset="0xA" visible="true" />
-			<int16 name="Unknown" offset="0xC" visible="true" />
-			<int16 name="Unknown" offset="0xE" visible="true" />
-			<int32 name="Unknown" offset="0x10" visible="true" />
+	<reflexive name="Animations" offset="0x18" visible="true" entrySize="0x38">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int32 name="Frame Count" offset="0x4" visible="true" />
+		<reflexive name="Frame Events" offset="0x8" visible="true" entrySize="0x14">
+			<stringid name="Event" offset="0x0" visible="true" />
+			<stringid name="Full Name" offset="0x4" visible="true" />
+			<int16 name="Frame" offset="0x8" visible="true" />
+			<int16 name="Unknown" offset="0xA" visible="fals" />
+			<int16 name="Frame" offset="0xC" visible="true" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
+			<uint16 name="Unknown" offset="0x10" visible="false" />
+			<uint16 name="Unknown" offset="0x12" visible="false" />
 		</reflexive>
 		<reflexive name="Sound Events" offset="0x14" visible="true" entrySize="0xC">
-			<int16 name="Unknown" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int16 name="Sound" offset="0x4" visible="True" />
 			<int16 name="Frame" offset="0x6" visible="True" />
 			<stringid name="Marker Name" offset="0x8" visible="True" />
 		</reflexive>
 		<reflexive name="Effect Events" offset="0x20" visible="true" entrySize="0x10">
-			<int16 name="Unknown" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int16 name="Effect" offset="0x4" visible="True" />
 			<int16 name="Frame" offset="0x6" visible="True" />
 			<stringid name="Marker Name" offset="0x8" visible="True" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
+			<int8 name="Unknown" offset="0xC" visible="true" />
+			<int8 name="Unknown" offset="0xD" visible="false" />
+			<int8 name="Unknown" offset="0xE" visible="false" />
+			<int8 name="Unknown" offset="0xF" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 6" offset="0x2C" visible="true" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
+		<reflexive name="Sync Events" offset="0x2C" visible="true" entrySize="0x8">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Frame" offset="0x2" visible="true" />
+			<int16 name="Frame" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
 		</reflexive>
 	</reflexive>
 </plugin>
