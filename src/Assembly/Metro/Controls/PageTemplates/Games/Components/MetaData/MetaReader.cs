@@ -192,7 +192,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 			field.DataAddress = field.FieldAddress;
-			field.Value = FunctionHelpers.BytesToHexLines(_reader.ReadBlock(field.Length), 27);
+			field.Value = FunctionHelpers.BytesToHexString(_reader.ReadBlock(field.Length));
 		}
 
 		public void VisitDataRef(DataRef field)
@@ -218,7 +218,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				{
 					default:
 						byte[] data = _reader.ReadBlock(field.Length);
-						field.Value = FunctionHelpers.BytesToHexLines(data, 27);
+						field.Value = FunctionHelpers.BytesToHexString(data);
 						break;
 					case "unicode":
 						field.Value = _reader.ReadUTF16(field.Length);
