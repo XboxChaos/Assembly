@@ -31,17 +31,17 @@
 		<int8 name="Unknown" offset="0x28" visible="false" />
 		<colour24 name="Hostile Blip" offset="0x29" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x2C" visible="false" />
-		<colour24 name="Friendly Blip" offset="0x2D" format="rgb" visible="true" />
+		<colour24 name="Friendly Player Blip" offset="0x2D" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x30" visible="false" />
-		<colour24 name="Unknown" offset="0x31" format="rgb" visible="true" />
+		<colour24 name="Friendly AI Blip" offset="0x31" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x34" visible="false" />
 		<colour24 name="Unknown" offset="0x35" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x38" visible="false" />
-		<colour24 name="Unknown" offset="0x39" format="rgb" visible="true" />
+		<colour24 name="Waypoint Blip" offset="0x39" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x3C" visible="false" />
-		<colour24 name="Unknown" offset="0x3D" format="rgb" visible="true" />
+		<colour24 name="Distant Waypoint Blip" offset="0x3D" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x40" visible="false" />
-		<colour24 name="Unknown" offset="0x41" format="rgb" visible="true" />
+		<colour24 name="Waypoint" offset="0x41" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x44" visible="false" />
 		<colour24 name="Unknown" offset="0x45" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x48" visible="false" />
@@ -55,7 +55,7 @@
 		<int8 name="Unknown" offset="0x58" visible="false" />
 		<colour24 name="Unknown" offset="0x59" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x5C" visible="false" />
-		<colour24 name="Unknown" offset="0x5D" format="rgb" visible="true" />
+		<colour24 name="Text Fade-In" offset="0x5D" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x60" visible="false" />
 		<colour24 name="Unknown" offset="0x61" format="rgb" visible="true" />
 		<int8 name="Unknown" offset="0x64" visible="false" />
@@ -127,8 +127,41 @@
 		</reflexive>
 		<reflexive name="Biped HUD Sounds" offset="0x80" visible="true" entrySize="0x28">
 			<tagRef name="Biped A Resource" offset="0x0" visible="true" />
-			<int32 name="Instant" offset="0x10" visible="true" />
-			<int32 name="Instant2" offset="0x14" visible="true" />
+				<bitfield32 name="Unknown" offset="0x10" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+					<bit name="Bit 16" index="16" />
+					<bit name="Bit 17" index="17" />
+					<bit name="Bit 18" index="18" />
+					<bit name="Bit 19" index="19" />
+					<bit name="Bit 20" index="20" />
+					<bit name="Bit 21" index="21" />
+					<bit name="Bit 22" index="22" />
+					<bit name="Bit 23" index="23" />
+					<bit name="Bit 24" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield32>
+			<int32 name="Unknown" offset="0x14" visible="true" />
 			<tagRef name="Biped B Resource" offset="0x18" visible="true" />
 		</reflexive>
 		<tagRef name="Unknown" offset="0x8C" visible="false" />
@@ -248,7 +281,7 @@
 		<int16 name="Display Count" offset="0x6" visible="true" />
 		<int16 name="Disappear Delay" offset="0x8" visible="true" />
 		<int16 name="Redisplay Delay" offset="0xA" visible="true" />
-		<float32 name="Dispay Delay" offset="0xC" visible="true" />
+		<float32 name="Display Delay" offset="0xC" visible="true" />
 		<bitfield16 name="Flags" offset="0x10" visible="true">
 			<bit name="Not In Multiplayer" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -271,13 +304,13 @@
 	</reflexive>
 	<tagRef name="Start Menu Emblems UI" offset="0x3C" visible="true" />
 	<tagRef name="Campaign Metals" offset="0x4C" visible="true" />
-	<tagRef name="Metal Animation" offset="0x5C" visible="true" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<undefined name="Unknown" offset="0x70" visible="false" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
-	<undefined name="Unknown" offset="0x78" visible="false" />
-	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
+	<tagRef name="Medal Animation" offset="0x5C" visible="true" />
+	<float32 name="Unknown" offset="0x6C" visible="false" />
+	<float32 name="Unknown" offset="0x70" visible="false" />
+	<float32 name="Unknown" offset="0x74" visible="false" />
+	<float32 name="Unknown" offset="0x78" visible="false" />
+	<float32 name="Unknown" offset="0x7C" visible="false" />
+	<float32 name="Unknown" offset="0x80" visible="false" />
 	<tagRef name="Unit Damage Grid" offset="0x84" visible="true" />
 	<float32 name="Micro Texture Tile Amount" offset="0x94" visible="true" />
 	<float32 name="Medium Sensor Blip Scale" offset="0x98" visible="true" />

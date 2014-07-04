@@ -125,7 +125,14 @@
 		<int16 name="Node A" offset="0x4" visible="True" />
 		<int16 name="Node B" offset="0x6" visible="True" />
 		<reflexive name="Constraints" offset="0x8" visible="True" entrySize="0x24">
-			<int16 name="Type" offset="0x0" visible="True" />
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Hinge" value="0x0" />
+				<option name="Limited Hinge" value="0x1" />
+				<option name="Ragdoll" value="0x2" />
+				<option name="Stiff Spring" value="0x3" />
+				<option name="Ball and Socket" value="0x4" />
+				<option name="Prismatic" value="0x5" />
+			</enum16>
 			<int16 name="Index" offset="0x2" visible="True" />
 			<bitfield32 name="Flags" offset="0x4" visible="true">
 				<bit name="Bit 0" index="0" />
@@ -194,7 +201,7 @@
 			<bit name="Does Not Interact With Environment" index="3" />
 			<bit name="Best Early Mover Body" index="4" />
 			<bit name="Has No Phantom Power Version" index="5" />
-			<bit name="Bit 6" index="6" />
+			<bit name="Locked In Place" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
 			<bit name="Bit 9" index="9" />
@@ -648,7 +655,24 @@ If you want to poke it, use the raw field below it and paste the memory address 
 	</reflexive>
 	<reflexive name="Nodes" offset="0x138" visible="True" entrySize="0xC">
 		<stringid name="Name" offset="0x0" visible="True" />
-		<int16 name="Flags" offset="0x4" visible="True" />
+		<bitfield16 name="Flags" offset="0x4" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<int16 name="Parent" offset="0x6" visible="True" />
 		<int16 name="Sibling" offset="0x8" visible="True" />
 		<int16 name="Child" offset="0xA" visible="True" />
@@ -696,15 +720,15 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<undefined name="Limit Min Angle" offset="0x7C" visible="True" />
 		<undefined name="Limit Max Angle" offset="0x80" visible="True" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x168" visible="false" />
-	<undefined name="Unknown" offset="0x16C" visible="false" />
-	<undefined name="Unknown" offset="0x170" visible="false" />
-	<undefined name="Unknown" offset="0x174" visible="false" />
-	<undefined name="Unknown" offset="0x178" visible="false" />
-	<undefined name="Unknown" offset="0x17C" visible="false" />
-	<undefined name="Unknown" offset="0x180" visible="false" />
-	<undefined name="Unknown" offset="0x184" visible="false" />
-	<undefined name="Unknown" offset="0x188" visible="false" />
+	<undefined name="Ball And Socket Constraint Block" offset="0x168" visible="false" />
+	<undefined name="Ball And Socket Constraint Block" offset="0x16C" visible="false" />
+	<undefined name="Ball And Socket Constraint Block" offset="0x170" visible="false" />
+	<undefined name="Stiff Spring Constraint Block" offset="0x174" visible="false" />
+	<undefined name="Stiff Spring Constraint Block" offset="0x178" visible="false" />
+	<undefined name="Stiff Spring Constraint Block" offset="0x17C" visible="false" />
+	<undefined name="Prismatic Constraint Block" offset="0x180" visible="false" />
+	<undefined name="Prismatic Constraint Block" offset="0x184" visible="false" />
+	<undefined name="Prismatic Constraint Block" offset="0x188" visible="false" />
 	<reflexive name="Phantoms" offset="0x18C" visible="True" entrySize="0x2C" align="0x10">
 		<int32 name="Size" offset="0x0" visible="True" />
 		<int32 name="Count" offset="0x4" visible="True" />

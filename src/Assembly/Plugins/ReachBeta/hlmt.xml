@@ -959,17 +959,26 @@
 		<float32 name="Lock-On Distance" offset="0x20" visible="true" />
 		<stringid name="Target Filter" offset="0x24" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown Regions" offset="0x114" visible="false" entrySize="0x14">
+	<reflexive name="Collision Regions" offset="0x114" visible="true" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int8 name="Collision Region Index" offset="0x4" visible="true" />
+		<int8 name="Physics Region Index" offset="0x5" visible="true" />
 		<int8 name="Unknown" offset="0x6" visible="false" />
 		<int8 name="Unknown" offset="0x7" visible="false" />
 		<reflexive name="Permutations" offset="0x8" visible="true" entrySize="0x8">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<int8 name="Unknown" offset="0x4" visible="false" />
-			<int8 name="Unknown" offset="0x5" visible="false" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
+			<bitfield8 name="Flags" offset="0x0" visible="true">
+				<bit name="Cannot Be Chosen Randomly" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<int8 name="Collision Permutation Index" offset="0x5" visible="true" />
+			<int8 name="Physics Permutation Index" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 		</reflexive>
 	</reflexive>
@@ -1325,8 +1334,8 @@
 	<undefined name="Unknown" offset="0x1A8" visible="false" />
 	<undefined name="Unknown" offset="0x1AC" visible="false" />
 	<reflexive name="Unknown 12" offset="0x1B0" visible="false" entrySize="0x8">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<stringid name="Region" offset="0x0" visible="true" />
+		<stringid name="Permutation" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 13" offset="0x1BC" visible="false" entrySize="0x8">
 		<stringid name="Unknown" offset="0x0" visible="false" />
