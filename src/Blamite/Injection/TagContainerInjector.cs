@@ -24,7 +24,7 @@ namespace Blamite.Injection
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
 		
-		private static HashSet<string> _simulationClasses = new HashSet<string>(new string[] { "jpt!", "scen", "bloc", "effe", "bipd", "vehi", "weap", "proj", "eqip", "mach", "ctrl", "ssce", "crea" });
+		private static HashSet<string> _simulationClasses = new HashSet<string>(new string[] { "jpt!", "effe", "argd", "bipd", "bloc", "crea", "ctrl", "efsc", "eqip", "gint", "mach", "proj", "scen", "ssce", "term", "vehi", "weap" });
 
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
