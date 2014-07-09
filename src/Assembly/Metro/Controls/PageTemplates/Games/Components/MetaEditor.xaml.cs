@@ -303,11 +303,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void btnPluginRefresh_Click(object sender, RoutedEventArgs e)
 		{
 			RefreshEditor(MetaReader.LoadType.File);
+			sbPluginRefresh.IsOpen = false;
 		}
 
 		private void btnPluginRefreshFromMemory_Click(object sender, RoutedEventArgs e)
 		{
 			RefreshEditor(MetaReader.LoadType.Memory);
+			sbPluginRefresh.IsOpen = false;
 		}
 
 		private void btnPluginRevisionViewer_Click(object sender, RoutedEventArgs e)
@@ -327,6 +329,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			
 				App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles = (bool) cbShowInvisibles.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
+			btnOptions.IsChecked = false;
 		}
 
 		private void cbShowComments_Altered(object sender, RoutedEventArgs e)
@@ -336,6 +339,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowComments = (bool)cbShowComments.IsChecked;
 			RefreshEditor(MetaReader.LoadType.File);
+			btnOptions.IsChecked = false;
 		}
 
 		private void cbShowEnumIndex_Altered(object sender, RoutedEventArgs e)
@@ -344,6 +348,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex = (bool)cbShowEnumIndex.IsChecked;
+			btnOptions.IsChecked = false;
 		}
 
 		private void cbShowInformation_Altered(object sender, RoutedEventArgs e)
@@ -352,6 +357,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
+			btnOptions.IsChecked = false;
 		}
 
 		private void cbReflexives_SelectionChanged(object sender, SelectionChangedEventArgs e)

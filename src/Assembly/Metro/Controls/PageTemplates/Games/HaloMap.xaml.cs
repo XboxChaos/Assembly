@@ -324,8 +324,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void LoadTags()
 		{
-			if (_cacheFile.TagClasses == null || _cacheFile.Tags == null)
+			if (_cacheFile.TagClasses.Count == 0)
+			{
+				// Cache file does not support tags
+				Dispatcher.Invoke(new Action(() => tabTags.Visibility = Visibility.Collapsed));
 				return;
+			}
 
 			// Only allow tag importing if resource data is available
 			if (_cacheFile.Resources == null)
@@ -387,6 +391,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (ILanguage language in _cache.Languages)
 				totalStrings += language.StringCount;
 			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
+
+			if (!_cacheFile.Languages.AvailableLanguages.Any())
+			{
+				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
+				return;
+			}
 
 			// TODO: Define the language names in an XML file or something
 			AddLanguage("English", GameLanguage.English);

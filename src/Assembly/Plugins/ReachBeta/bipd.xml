@@ -25,7 +25,7 @@
 	<bitfield16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps" index="1" />
-		<bit name="unused" index="2" />
+		<bit name="Bit 2" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
 		<bit name="Extension Of Parent" index="4" />
 		<bit name="Does Not Cause Collision Damage" index="5" />
@@ -67,8 +67,7 @@
 		<option name="More Still" value="0x5" />
 		<option name="Lots More" value="0x6" />
 	</enum8>
-	<int16 name="Unknown" offset="0x24" visible="false" />
-	<int16 name="Unknown" offset="0x26" visible="false" />
+	<int32 name="Unknown" offset="0x24" visible="false" />
 	<float32 name="Dynamic Light Sphere Radius" offset="0x28" visible="true" />
 	<float32 name="Dynamic Light Sphere Offset X" offset="0x2C" visible="true" />
 	<float32 name="Dynamic Light Sphere Offset Y" offset="0x30" visible="true" />
@@ -289,7 +288,7 @@
 		<int16 name="Resource Index" offset="0x2" visible="true" />
 		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
 	</reflexive>
-	<reflexive name="Object Attributes" offset="0x150" visible="true" entrySize="0xBC">
+	<reflexive name="Multiplayer Object Properties" offset="0x150" visible="true" entrySize="0xBC">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<enum8 name="Type" offset="0x1" visible="true">
 			<option name="ordinary" value="0x0" />
@@ -367,7 +366,7 @@
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<tagRef name="Child Object" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<int32 name="Unknown" offset="0x38" visible="true" />
 		<tagRef name="Shape Shader" offset="0x3C" visible="true" />
 		<tagRef name="Shader 2" offset="0x4C" visible="true" />
 		<tagRef name="Unknown" offset="0x5C" visible="true" />
@@ -407,7 +406,7 @@
 		<bit name="Ignored By AutoAiming" index="21" />
 		<bit name="Shields Fry Infection Forms" index="22" />
 		<bit name="Able to Dual Wield Weapons" index="23" />
-		<bit name="unused" index="24" />
+		<bit name="Bit 24" index="24" />
 		<bit name="Acts As Gunner For Parent" index="25" />
 		<bit name="Controlled By Parent Gunner" index="26" />
 		<bit name="Parent's Primary Weapon" index="27" />
@@ -522,8 +521,8 @@
 	<degree name="Pitch Range (min)" offset="0x180" visible="true" />
 	<degree name="Pitch Range (max)" offset="0x184" visible="true" />
 	<reflexive name="Camera Tracks" offset="0x188" visible="true" entrySize="0x20">
-		<tagRef name="Camera" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Track" offset="0x0" visible="true" />
+		<tagRef name="Screen Effect" offset="0x10" visible="true" />
 	</reflexive>
 	<degree name="Camera Tightness (min)" offset="0x194" visible="true" />
 	<degree name="Camera Tightness (max)" offset="0x198" visible="true" />
@@ -626,8 +625,8 @@
 	<degree name="Assassination Pitch Range (min)" offset="0x1F4" visible="true" />
 	<degree name="Assassination Pitch Range (max)" offset="0x1F8" visible="true" />
 	<reflexive name="Assasination Camera Tracks" offset="0x1FC" visible="true" entrySize="0x20">
-		<tagRef name="Camera" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Track" offset="0x0" visible="true" />
+		<tagRef name="Screen Effect" offset="0x10" visible="true" />
 	</reflexive>
 	<degree name="Assassination Camera Tightness (min)" offset="0x208" visible="true" />
 	<degree name="Assassination Camera Tightness (max)" offset="0x20C" visible="true" />
@@ -858,8 +857,8 @@
 			<bit name="AI Firing Disabled By Max Acceleration" index="12" />
 			<bit name="Boarding Enters Seat" index="13" />
 			<bit name="Boarding Need Any Passenger" index="14" />
-			<bit name="Invaild For Player" index="15" />
-			<bit name="Invaild For Non-Player" index="16" />
+			<bit name="Invalid For Player" index="15" />
+			<bit name="Invalid For Non-Player" index="16" />
 			<bit name="Gunner (Player Only)" index="17" />
 			<bit name="Invisible Under Major Damage" index="18" />
 			<bit name="Bit 19" index="19" />
@@ -945,7 +944,7 @@
 		<degree name="Pitch Range (max)" offset="0x74" visible="true" />
 		<reflexive name="Camera Tracks" offset="0x78" visible="true" entrySize="0x20">
 			<tagRef name="Track" offset="0x0" visible="true" />
-			<tagRef name="Unknown" offset="0x10" visible="true" />
+			<tagRef name="Screen Effect" offset="0x10" visible="true" />
 		</reflexive>
 		<degree name="Camera Tightness (min)" offset="0x84" visible="true" />
 		<degree name="Camera Tightness (max)" offset="0x88" visible="true" />
@@ -1051,9 +1050,9 @@
 		<bit name="Immune To Falling Damage" index="2" />
 		<bit name="Rotate While Airborne" index="3" />
 		<bit name="Use Limp Body Physics" index="4" />
-		<bit name="unused" index="5" />
+		<bit name="Bit 5" index="5" />
 		<bit name="Random Speed Increase" index="6" />
-		<bit name="unused" index="7" />
+		<bit name="Bit 7" index="7" />
 		<bit name="Spawn Death Children On Destroy" index="8" />
 		<bit name="Stunned by emp damage" index="9" />
 		<bit name="Dead Physics When Stunned" index="10" />
@@ -1099,10 +1098,10 @@
 	<float32 name="Static Crouching Camera Height" offset="0x510" visible="true" />
 	<float32 name="Crouch Transition Time" offset="0x514" visible="true" />
 	<dataRef name="Crouch Camera Data" offset="0x518" visible="true" />
-	<reflexive name="Weapon Related" offset="0x52C" visible="false" entrySize="0xC">
-		<stringId name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Weapon Camera Height" offset="0x52C" visible="true" entrySize="0xC">
+		<stringid name="Class" offset="0x0" visible="true" />
+		<float32 name="Standing Height Percentage" offset="0x4" visible="true" />
+		<float32 name="Crouching Height Percentage" offset="0x8" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x538" visible="false" />
 	<undefined name="Unknown" offset="0x53C" visible="false" />
@@ -1184,7 +1183,7 @@
 		<bit name="Not Physical" index="5" />
 		<bit name="Dead Character Collision Group" index="6" />
 		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
+		<bit name="Never Rests" index="8" />
 		<bit name="Bit 9" index="9" />
 		<bit name="Bit 10" index="10" />
 		<bit name="Bit 11" index="11" />
@@ -1227,24 +1226,8 @@
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<int8 name="Interaction Unknown" offset="0x1F" visible="True" />
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -1276,24 +1259,8 @@
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<int8 name="Interaction Unknown" offset="0x1F" visible="True" />
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />
@@ -1321,24 +1288,8 @@
 		<float32 name="Volume" offset="0x14" visible="True" />
 		<float32 name="Mass" offset="0x18" visible="True" />
 		<int16 name="Overall Shape Index" offset="0x1C" visible="True" />
-		<bitfield16 name="Interaction Flags" offset="0x1E" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		<int8 name="Phantom Index" offset="0x1E" visible="True" />
+		<int8 name="Interaction Unknown" offset="0x1F" visible="True" />
 		<int32 name="Size" offset="0x20" visible="True" />
 		<int32 name="Count" offset="0x24" visible="True" />
 		<int32 name="Offset" offset="0x28" visible="True" />

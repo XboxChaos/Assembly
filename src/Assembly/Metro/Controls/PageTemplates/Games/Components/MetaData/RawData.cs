@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using System.Globalization;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -77,6 +78,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public string DataAddressHex
 		{
 			get { return "0x" + DataAddress.ToString("X"); }
+			set
+			{
+				if (value.StartsWith("0x"))
+					value = value.Substring(2);
+				DataAddress = uint.Parse(value, NumberStyles.HexNumber);
+			}
 		}
 
 		public int Length

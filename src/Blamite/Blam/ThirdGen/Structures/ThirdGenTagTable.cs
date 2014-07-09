@@ -41,6 +41,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public ThirdGenTagTable()
 		{
 			_tags = new List<ITag>();
+			Classes = new List<ITagClass>();
 		}
 
 		public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea,

@@ -180,6 +180,11 @@ namespace Blamite.Blam
 		IShaderStreamer ShaderStreamer { get; }
 
 		/// <summary>
+		/// The simulation definition table for the cache file. Can be <c>null</c> if none.
+		/// </summary>
+		ISimulationDefinitionTable SimulationDefinitions { get; }
+
+		/// <summary>
 		///     Saves any changes that were made to the file.
 		/// </summary>
 		/// <param name="stream">The stream to write changes to.</param>

@@ -3,6 +3,7 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Got most things</revision>
 	</revisions>
 	<int16 name="Inc. Text Update Period" offset="0x0" visible="true" />
 	<int16 name="Inc. Text Block Character" offset="0x2" visible="true" />
@@ -11,10 +12,10 @@
 	<float32 name="Far Clip Plane Distance" offset="0xC" visible="true" />
 	<tagRef name="Global Strings" offset="0x10" visible="true" />
 	<tagRef name="Damage Type Strings" offset="0x20" visible="true" />
-	<tagRef name="UI Background Sound Loop" offset="0x30" visible="true" />
-	<int32 name="Unknown" offset="0x40" visible="false" />
+	<tagRef name="Main Menu Music" offset="0x30" visible="true" />
+	<int32 name="Music Fade Time" offset="0x40" visible="true" />
 	<colorf name="Color" offset="0x44" visible="true" format="argb" />
-	<colorf name="Color" offset="0x54" visible="true" format="argb" />
+	<colorf name="Text Stroke Color" offset="0x54" visible="true" format="argb" />
 	<reflexive name="Text Colors" offset="0x64" visible="true" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<colorf name="Color" offset="0x4" visible="true" format="argb" />
@@ -36,31 +37,54 @@
 	<tagRef name="UI Sounds" offset="0x7C" visible="true" />
 	<reflexive name="Alerts" offset="0x8C" visible="true" entrySize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
+		<bitfield8 name="Flags" offset="0x4" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x5" visible="true" />
+		<enum8 name="Icon" offset="0x6" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Download" value="0x1" />
+			<option name="Pause" value="0x2" />
+			<option name="Upload" value="0x3" />
+			<option name="Checkbox" value="0x4" />
+		</enum8>
+		<int8 name="Unknown" offset="0x7" visible="false" />
 		<stringid name="Title" offset="0x8" visible="true" />
 		<stringid name="Body" offset="0xC" visible="true" />
 	</reflexive>
 	<reflexive name="Dialogs" offset="0x98" visible="true" entrySize="0x28">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="false" />
 		<stringid name="Title" offset="0x8" visible="true" />
 		<stringid name="Body" offset="0xC" visible="true" />
 		<stringid name="Option 1" offset="0x10" visible="true" />
 		<stringid name="Option 2" offset="0x14" visible="true" />
 		<stringid name="Option 3" offset="0x18" visible="true" />
 		<stringid name="Option 4" offset="0x1C" visible="true" />
-		<stringid name="Unknown" offset="0x20" visible="true" />
-		<int16 name="Unknown" offset="0x24" visible="true" />
-		<int16 name="Unknown" offset="0x26" visible="true" />
+		<stringid name="Key Legend" offset="0x20" visible="true" />
+		<enum16 name="Default Option" offset="0x24" visible="true">
+			<option name="Option 1" value="0x0" />
+			<option name="Option 2" value="0x1" />
+			<option name="Option 3" value="0x2" />
+			<option name="Option 4" value="0x3" />
+		</enum16>
+		<int16 name="Unknown" offset="0x26" visible="false" />
 	</reflexive>
-	<reflexive name="Data Sources" offset="0xA4" visible="true" entrySize="0x10">
-		<tagRef name="DSRC" offset="0x0" visible="true" />
+	<reflexive name="Global Data Sources" offset="0xA4" visible="true" entrySize="0x10">
+		<tagRef name="Data Source" offset="0x0" visible="true" />
 	</reflexive>
-	<float32 name="Scale X" offset="0xB0" visible="true" />
-	<float32 name="Scale Y" offset="0xB4" visible="true" />
-	<undefined name="Unknown" offset="0xB8" visible="false" />
-	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<float32 name="Widescreen Bitmap Scale X" offset="0xB0" visible="true" />
+	<float32 name="Widescreen Bitmap Scale Y" offset="0xB4" visible="true" />
+	<float32 name="Standard Bitmap Scale X" offset="0xB8" visible="true" />
+	<float32 name="Standard Bitmap Scale Y" offset="0xBC" visible="true" />
 	<float32 name="Menu Blur X" offset="0xC0" visible="true" />
 	<float32 name="Menu Blur Y" offset="0xC4" visible="true" />
 	<reflexive name="Unknown" offset="0xC8" visible="false" entrySize="0x154">
@@ -78,28 +102,28 @@
 	<stringid name="Player 2" offset="0xD8" visible="false" />
 	<stringid name="Player 3" offset="0xDC" visible="false" />
 	<stringid name="Player 4" offset="0xE0" visible="false" />
-	<ascii name="Elite" offset="0xE4" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x124" visible="false" />
-	<ascii name="ODST 1" offset="0x128" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x168" visible="false" />
-	<ascii name="Mickey" offset="0x16C" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x1AC" visible="false" />
-	<ascii name="Romeo" offset="0x1B0" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x1F0" visible="false" />
-	<ascii name="Dutch" offset="0x1F4" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x234" visible="false" />
-	<ascii name="Sargeant Johnson" offset="0x238" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x278" visible="false" />
-	<ascii name="ODST 2" offset="0x27C" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x2BC" visible="false" />
-	<ascii name="ODST 3" offset="0x2C0" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x300" visible="false" />
-	<ascii name="ODST 4" offset="0x304" length="0x40" visible="true" />
-	<undefined name="Unknown" offset="0x344" visible="false" />
-	<int32 name="DPad Scroll Speed" offset="0x348" visible="true" />
-	<int32 name="Unknown" offset="0x34C" visible="false" />
-	<int32 name="Analog Scroll Speed" offset="0x350" visible="true" />
-	<int32 name="Unknown" offset="0x354" visible="false" />
+	<ascii name="UI Elite" offset="0xE4" length="0x40" visible="true" />
+	<stringid name="Default Elite Variant" offset="0x124" visible="true" />
+	<ascii name="UI ODST 1" offset="0x128" length="0x40" visible="true" />
+	<stringid name="Default ODST 1 Variant" offset="0x168" visible="true" />
+	<ascii name="UI Mickey" offset="0x16C" length="0x40" visible="true" />
+	<stringid name="Default Mickey Variant" offset="0x1AC" visible="true" />
+	<ascii name="UI Romeo" offset="0x1B0" length="0x40" visible="true" />
+	<stringid name="Default Romeo Variant" offset="0x1F0" visible="true" />
+	<ascii name="UI Dutch" offset="0x1F4" length="0x40" visible="true" />
+	<stringid name="Default Dutch Variant" offset="0x234" visible="true" />
+	<ascii name="UI Sargeant Johnson" offset="0x238" length="0x40" visible="true" />
+	<stringid name="Default Johnson Variant" offset="0x278" visible="true" />
+	<ascii name="UI ODST 2" offset="0x27C" length="0x40" visible="true" />
+	<stringid name="Default ODST 2 Variant" offset="0x2BC" visible="true" />
+	<ascii name="UI ODST 3" offset="0x2C0" length="0x40" visible="true" />
+	<stringid name="Default ODST 3 Variant" offset="0x300" visible="true" />
+	<ascii name="UI ODST 4" offset="0x304" length="0x40" visible="true" />
+	<stringid name="Default ODST 4 Variant" offset="0x344" visible="true" />
+	<int32 name="Single Scroll Speed" offset="0x348" visible="true" />
+	<int32 name="Scroll Speed Transition Wait Time" offset="0x34C" visible="true" />
+	<int32 name="Held Scroll Speed" offset="0x350" visible="true" />
+	<int32 name="Attract Video Idle Wait" offset="0x354" visible="true" />
 	<dataRef name="Unknown" offset="0x358" visible="false" />
 	<undefined name="Unknown" offset="0x36C" visible="false" />
 	<undefined name="Unknown" offset="0x370" visible="false" />

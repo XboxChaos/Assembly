@@ -3,6 +3,7 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Lots of updates</revision>
 	</revisions>
 	<tagRef name="Model" offset="0x0" visible="true" />
 	<tagRef name="Collision Model" offset="0x10" visible="true" />
@@ -13,25 +14,43 @@
 	<float32 name="Reduce To L3 (medium)" offset="0x48" visible="true" />
 	<float32 name="Reduce To L4 (high)" offset="0x4C" visible="true" />
 	<float32 name="Reduce To L5 (super high)" offset="0x50" visible="true" />
-	<tagRef name="Unknown" offset="0x54" visible="false" />
+	<tagRef name="LOD Model" offset="0x54" visible="true" />
 	<reflexive name="Variants" offset="0x64" visible="true" entrySize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
+		<tagRef name="Variant Dialogue" offset="0x4" visible="true" />
+		<stringid name="Default Dialog Effect" offset="0x14" visible="true" />
+		<int8 name="Unknown" offset="0x18" visible="false" />
+		<int8 name="Unknown" offset="0x19" visible="false" />
+		<int8 name="Unknown" offset="0x1A" visible="false" />
+		<int8 name="Unknown" offset="0x1B" visible="false" />
+		<int8 name="Model Region 0 Index" offset="0x1C" visible="true" />
+		<int8 name="Model Region 1 Index" offset="0x1D" visible="true" />
+		<int8 name="Model Region 2 Index" offset="0x1E" visible="true" />
+		<int8 name="Model Region 3 Index" offset="0x1F" visible="true" />
+		<int8 name="Model Region 4 Index" offset="0x20" visible="true" />
+		<int8 name="Model Region 5 Index" offset="0x21" visible="true" />
+		<int8 name="Model Region 6 Index" offset="0x22" visible="true" />
+		<int8 name="Model Region 7 Index" offset="0x23" visible="true" />
+		<int8 name="Model Region 8 Index" offset="0x24" visible="true" />
+		<int8 name="Model Region 9 Index" offset="0x25" visible="true" />
+		<int8 name="Model Region 10 Index" offset="0x26" visible="true" />
+		<int8 name="Model Region 11 Index" offset="0x27" visible="true" />
+		<int8 name="Model Region 12 Index" offset="0x28" visible="true" />
+		<int8 name="Model Region 13 Index" offset="0x29" visible="true" />
+		<int8 name="Model Region 14 Index" offset="0x2A" visible="true" />
+		<int8 name="Model Region 15 Index" offset="0x2B" visible="true" />
 		<reflexive name="Regions" offset="0x2C" visible="true" entrySize="0x18">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<int8 name="Unknown" offset="0x4" visible="false" />
+			<int8 name="Model Region Index" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
 			<int8 name="Unknown" offset="0x6" visible="false" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 			<reflexive name="Permutations" offset="0x8" visible="true" entrySize="0x24">
-				<stringId name="Unknown" offset="0x0" visible="false" />
-				<bitfield32 name="Flags" offset="0x4" visible="true">
+				<stringId name="Name" offset="0x0" visible="true" />
+				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+				<int8 name="Unknown" offset="0x5" visible="false" />
+				<int8 name="Unknown" offset="0x6" visible="false" />
+				<bitfield8 name="Flags" offset="0x7" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -40,35 +59,12 @@
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
-				</bitfield32>
+				</bitfield8>
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="true" entrySize="0x20">
 					<stringId name="Name" offset="0x0" visible="true" />
-					<bitfield16 name="Property Flags" offset="0x4" visible="true">
+					<int8 name="Unknown" offset="0x4" visible="false" />
+					<bitfield8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
 						<bit name="Shielded" index="2" />
@@ -77,15 +73,7 @@
 						<bit name="Bit 5" index="5" />
 						<bit name="Bit 6" index="6" />
 						<bit name="Bit 7" index="7" />
-						<bit name="Bit 8" index="8" />
-						<bit name="Bit 9" index="9" />
-						<bit name="Bit 10" index="10" />
-						<bit name="Bit 11" index="11" />
-						<bit name="Bit 12" index="12" />
-						<bit name="Bit 13" index="13" />
-						<bit name="Bit 14" index="14" />
-						<bit name="Bit 15" index="15" />
-					</bitfield16>
+					</bitfield8>
 					<enum16 name="State" offset="0x6" visible="true">
 						<option name="Default" value="0x0" />
 						<option name="Minor Damage" value="0x1" />
@@ -122,7 +110,7 @@
 			<stringid name="Child Variant" offset="0x8" visible="true" />
 			<tagRef name="Child Object" offset="0xC" visible="true" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x44" visible="false" />
+		<int32 name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 	</reflexive>
@@ -212,14 +200,14 @@
 	<reflexive name="Materials" offset="0x88" visible="true" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int16 name="Damage Section Index" offset="0x6" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
 		<stringid name="Material Name" offset="0xC" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</reflexive>
-	<reflexive name="Health/Damage Properties" offset="0x94" visible="true" entrySize="0x100">
+	<reflexive name="New Damage Info" offset="0x94" visible="true" entrySize="0x100">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Takes Shield Damage For Children" index="0" />
 			<bit name="Takes Body Damage For Children" index="1" />
@@ -430,8 +418,8 @@
 				<bit name="Cannot Die With Riders" index="2" />
 				<bit name="Takes Full Damage When Object Destroyed" index="3" />
 				<bit name="Restored On Ressurection" index="4" />
-				<bit name="unused" index="5" />
-				<bit name="unused" index="6" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
 				<bit name="Headshotable" index="7" />
 				<bit name="Ignores Shields" index="8" />
 				<bit name="Bit 9" index="9" />
@@ -460,28 +448,86 @@
 			</bitfield32>
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 			<reflexive name="Instant Responses" offset="0xC" visible="true" entrySize="0x88">
-				<undefined name="Unknown" offset="0x0" visible="true" />
-				<undefined name="Unknown" offset="0x4" visible="true" />
-				<undefined name="Unknown" offset="0x8" visible="true" />
-				<undefined name="Unknown" offset="0xC" visible="true" />
-				<tagref name="Unknown" offset="0x10" visible="true" />
-				<tagref name="Unknown" offset="0x20" visible="true" />
-				<tagref name="Unknown" offset="0x30" visible="true" />
-				<stringid name="Unknown" offset="0x40" visible="true" />
-				<undefined name="Unknown" offset="0x44" visible="true" />
+				<enum16 name="Response Type" offset="0x0" visible="true">
+					<option name="Recieves All Damage" value="0x0" />
+					<option name="Recieves Area Effect Damage" value="0x1" />
+					<option name="Recieves Local Damage" value="0x2" />
+				</enum16>
+				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Destroy One of Group" value="0x1" />
+					<option name="Destroy Entire Group" value="0x2" />
+					<option name="Loosen One of Group" value="0x3" />
+					<option name="Loosen Entire Group" value="0x4" />
+				</enum16>
+				<stringid name="Trigger" offset="0x4" visible="true" />
+				<bitfield32 name="Flags" offset="0x8" visible="true">
+					<bit name="Kills Object" index="0" />
+					<bit name="Inhibits Melee Attack" index="1" />
+					<bit name="Inhibits Weapon Attack" index="2" />
+					<bit name="Inhibits Walking" index="3" />
+					<bit name="Forces Drop Weapon" index="4" />
+					<bit name="Kills Weapon Primary Trigger" index="5" />
+					<bit name="Kills Weapon Secondary Trigger" index="6" />
+					<bit name="Destroys Object" index="7" />
+					<bit name="Damages Weapon Primary Trigger" index="8" />
+					<bit name="Damages Weapon Secondary Trigger" index="9" />
+					<bit name="Light Damage Left Turn" index="10" />
+					<bit name="Major Damage Left Turn" index="11" />
+					<bit name="Light Damage Right Turn" index="12" />
+					<bit name="Major Damage Right Turn" index="13" />
+					<bit name="Light Damage Engine" index="14" />
+					<bit name="Major Damage Engine" index="15" />
+					<bit name="Kills Object (No Player Solo)" index="16" />
+					<bit name="Causes Detonation" index="17" />
+					<bit name="Destroy All Group Constraints" index="18" />
+					<bit name="Kills Variant Objects" index="19" />
+					<bit name="Force Unattached Effects" index="20" />
+					<bit name="Fires Under Threshold" index="21" />
+					<bit name="Triggers Special Death" index="22" />
+					<bit name="Only On Special Death" index="23" />
+					<bit name="Only NOT On Special Death" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield32>
+				<float32 name="Damage Threshold" offset="0xC" visible="true" />
+				<tagref name="Primary Transition Effect" offset="0x10" visible="true" />
+				<tagref name="Secondary Transition Effect" offset="0x20" visible="true" />
+				<tagref name="Transition Damage Effect" offset="0x30" visible="true" />
+				<stringid name="Region" offset="0x40" visible="true" />
+				<enum16 name="New State" offset="0x44" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
+				<int16 name="Runtime Region Index" offset="0x46" visible="true" />
 				<stringid name="Unknown" offset="0x48" visible="true" />
-				<undefined name="Unknown" offset="0x4C" visible="true" />
-				<undefined name="Unknown" offset="0x50" visible="true" />
-				<stringid name="Unknown" offset="0x54" visible="true" />
-				<stringid name="Unknown" offset="0x58" visible="true" />
-				<undefined name="Unknown" offset="0x5C" visible="true" />
-				<undefined name="Unknown" offset="0x60" visible="true" />
-				<tagref name="Unknown" offset="0x64" visible="true" />
-				<stringid name="Unknown" offset="0x74" visible="true" />
-				<undefined name="Unknown" offset="0x78" visible="true" />
-				<undefined name="Unknown" offset="0x7C" visible="true" />
-				<undefined name="Unknown" offset="0x80" visible="true" />
-				<undefined name="Unknown" offset="0x84" visible="true" />
+				<int16 name="Unknown" offset="0x4C" visible="true" />
+				<int16 name="Unknown" offset="0x4E" visible="true" />
+				<int16 name="Unknown" offset="0x50" visible="true" />
+				<enum16 name="Unknown Special Damage" offset="0x52" visible="true">
+					<option name="None" value="0x0" />
+					<option name="1" value="0x1" />
+					<option name="2" value="0x2" />
+					<option name="3" value="0x3" />
+				</enum16>
+				<stringid name="Special Damage Case" offset="0x54" visible="true" />
+				<stringid name="Effect Marker Name" offset="0x58" visible="true" />
+				<stringid name="Damage Effect Marker Name" offset="0x5C" visible="true" />
+				<float32 name="Response Delay" offset="0x60" visible="true" />
+				<tagref name="Delay Effect" offset="0x64" visible="true" />
+				<stringid name="Delay Effect Marker Name" offset="0x74" visible="true" />
+				<stringid name="Ejecting Seat Label" offset="0x78" visible="true" />
+				<float32 name="Skip Fraction" offset="0x7C" visible="true" />
+				<stringid name="Destroyed Child Object Marker Name" offset="0x80" visible="true" />
+				<float32 name="Total Damage Threshold" offset="0x84" visible="true" />
 			</reflexive>
 			<undefined name="Unknown" offset="0x18" visible="false" />
 			<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -489,29 +535,32 @@
 			<undefined name="Unknown" offset="0x24" visible="false" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
+			<float32 name="Stun Time" offset="0x30" visible="true" />
+			<float32 name="Recharge Time" offset="0x34" visible="true" />
+			<float32 name="Unknown" offset="0x38" visible="false" />
+			<stringid name="Resurrection Region Name" offset="0x3C" visible="true" />
+			<int16 name="Ressurection Region Runtime Index" offset="0x40" visible="true" />
+			<int16 name="Unknown" offset="0x42" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0xD0" visible="false" entrySize="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Nodes" offset="0xD0" visible="false" entrySize="0x10">
+			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<int16 name="Global Shield Material Index" offset="0xDC" visible="true" />
+		<int16 name="Global Indirect Material Index" offset="0xDE" visible="true" />
 		<undefined name="Unknown" offset="0xE0" visible="false" />
 		<undefined name="Unknown" offset="0xE4" visible="false" />
-		<reflexive name="Unknown" offset="0xE8" visible="false" entrySize="0x20">
-			<stringid name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
+		<reflexive name="Damage Seats" offset="0xE8" visible="true" entrySize="0x20">
+			<stringid name="Seat Label" offset="0x0" visible="true" />
+			<float32 name="Direct Damage Scale" offset="0x4" visible="true" />
+			<float32 name="Damage Transfer Fall-Off Radius" offset="0x8" visible="true" />
+			<float32 name="Maximum Transfer Damage Scale" offset="0xC" visible="true" />
+			<float32 name="Minimum Transfer-Damage Scale" offset="0x10" visible="true" />
 			<reflexive name="Unknown" offset="0x14" visible="false" entrySize="0x2C">
-				<stringid name="Unknown" offset="0x0" visible="false" />
+				<stringid name="Node" offset="0x0" visible="true" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
@@ -524,12 +573,13 @@
 				<undefined name="Unknown" offset="0x28" visible="false" />
 			</reflexive>
 		</reflexive>
-		<reflexive name="Unknown" offset="0xF4" visible="false" entrySize="0x14">
-			<stringid name="Unknown" offset="0x0" visible="false" />
-			<stringid name="Unknown" offset="0x4" visible="false" />
-			<stringid name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
+		<reflexive name="Damage Constraints" offset="0xF4" visible="true" entrySize="0x14">
+			<stringid name="Physics Model Constraint Name" offset="0x0" visible="true" />
+			<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
+			<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
+			<float32 name="Group Probability Scale" offset="0xC" visible="true" />
+			<int16 name="Unknown" offset="0x10" visible="false" />
+			<int16 name="Unknown" offset="0x12" visible="false" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Targets" offset="0xA0" visible="false" entrySize="0x20">
@@ -580,60 +630,378 @@
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 	</reflexive>
-	<reflexive name="Model Variations" offset="0xB8" visible="false" entrySize="0x14">
-		<stringid name="Type" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x8">
-			<stringid name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Collision Regions" offset="0xB8" visible="true" entrySize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Collision Region Index" offset="0x4" visible="true" />
+		<int8 name="Physics Region Index" offset="0x5" visible="true" />
+		<int8 name="Unknown" offset="0x6" visible="false" />
+		<int8 name="Unknown" offset="0x7" visible="false" />
+		<reflexive name="Permutations" offset="0x8" visible="true" entrySize="0x8">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<bitfield8 name="Flags" offset="0x0" visible="true">
+				<bit name="Cannot Be Chosen Randomly" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<int8 name="Collision Permutation Index" offset="0x5" visible="true" />
+			<int8 name="Physics Permutation Index" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Unknown" offset="0xC4" visible="false" entrySize="0x5C">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
+	<reflexive name="Nodes" offset="0xC4" visible="true" entrySize="0x5C">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<int16 name="Parent Node" offset="0x4" visible="true" />
+		<int16 name="First Child Node" offset="0x6" visible="true" />
+		<int16 name="Next Sibling Node" offset="0x8" visible="true" />
+		<int16 name="Import Node Index" offset="0xA" visible="true" />
+		<float32 name="Default Translation x" offset="0xC" visible="true" />
+		<float32 name="Default Translation y" offset="0x10" visible="true" />
+		<float32 name="Default Translation z" offset="0x14" visible="true" />
+		<float32 name="Default Rotation i" offset="0x18" visible="true" />
+		<float32 name="Default Rotation j" offset="0x1C" visible="true" />
+		<float32 name="Default Rotation k" offset="0x20" visible="true" />
+		<float32 name="Default Rotation w" offset="0x24" visible="true" />
+		<float32 name="Default Scale" offset="0x28" visible="true" />
+		<float32 name="Inverse Forward i" offset="0x2C" visible="true" />
+		<float32 name="Inverse Forward j" offset="0x30" visible="true" />
+		<float32 name="Inverse Forward k" offset="0x34" visible="true" />
+		<float32 name="Inverse Left i" offset="0x38" visible="true" />
+		<float32 name="Inverse Left j" offset="0x3C" visible="true" />
+		<float32 name="Inverse Left k" offset="0x40" visible="true" />
+		<float32 name="Inverse Up i" offset="0x44" visible="true" />
+		<float32 name="Inverse Up j" offset="0x48" visible="true" />
+		<float32 name="Inverse Up k" offset="0x4C" visible="true" />
+		<float32 name="Inverse Position x" offset="0x50" visible="true" />
+		<float32 name="Inverse Position y" offset="0x54" visible="true" />
+		<float32 name="Inverse Position z" offset="0x58" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0xD0" visible="false" />
-	<reflexive name="Unknown" offset="0xD4" visible="false" entrySize="0x14">
-		<int16 name="Type" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="true" />
-		<float32 name="X" offset="0x4" visible="true" />
-		<float32 name="Y" offset="0x8" visible="true" />
-		<float32 name="Z" offset="0xC" visible="true" />
+	<reflexive name="Model Object Data" offset="0xD4" visible="true" entrySize="0x14">
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Not Set" value="0x0" />
+			<option name="User Defined" value="0x1" />
+			<option name="Auto Generated" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Offset X" offset="0x4" visible="true" />
+		<float32 name="Offset Y" offset="0x8" visible="true" />
+		<float32 name="Offset Z" offset="0xC" visible="true" />
 		<float32 name="Radius" offset="0x10" visible="true" />
 	</reflexive>
-	<tagRef name="Unknown" offset="0xE0" visible="false" />
-	<tagRef name="Unknown" offset="0xF0" visible="false" />
-	<undefined name="Unknown" offset="0x100" visible="false" />
-	<undefined name="Unknown" offset="0x104" visible="false" />
-	<undefined name="Unknown" offset="0x108" visible="false" />
-	<undefined name="Unknown" offset="0x10C" visible="false" />
-	<undefined name="Unknown" offset="0x110" visible="false" />
-	<undefined name="Unknown" offset="0x114" visible="false" />
-	<undefined name="Unknown" offset="0x118" visible="false" />
-	<undefined name="Unknown" offset="0x11C" visible="false" />
-	<undefined name="Unknown" offset="0x120" visible="false" />
-	<undefined name="Unknown" offset="0x124" visible="false" />
+	<tagRef name="Primary Dialogue" offset="0xE0" visible="true" />
+	<tagRef name="Secondary Dialogue" offset="0xF0" visible="true" />
+	<bitfield32 name="Flags" offset="0x100" visible="true">
+		<bit name="Active Camo Always On" index="0" />
+		<bit name="Active Camo Always Merge" index="1" />
+		<bit name="Active Camo Never Merge" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<stringid name="Default Dialogue Effect" offset="0x104" visible="true" />
+	<bitfield32 name="Unknown Digits 1" offset="0x108" visible="false">
+		<bit name="Node 0" index="0" />
+		<bit name="Node 1" index="1" />
+		<bit name="Node 2" index="2" />
+		<bit name="Node 3" index="3" />
+		<bit name="Node 4" index="4" />
+		<bit name="Node 5" index="5" />
+		<bit name="Node 6" index="6" />
+		<bit name="Node 7" index="7" />
+		<bit name="Node 8" index="8" />
+		<bit name="Node 9" index="9" />
+		<bit name="Node 10" index="10" />
+		<bit name="Node 11" index="11" />
+		<bit name="Node 12" index="12" />
+		<bit name="Node 13" index="13" />
+		<bit name="Node 14" index="14" />
+		<bit name="Node 15" index="15" />
+		<bit name="Node 16" index="16" />
+		<bit name="Node 17" index="17" />
+		<bit name="Node 18" index="18" />
+		<bit name="Node 19" index="19" />
+		<bit name="Node 20" index="20" />
+		<bit name="Node 21" index="21" />
+		<bit name="Node 22" index="22" />
+		<bit name="Node 23" index="23" />
+		<bit name="Node 24" index="24" />
+		<bit name="Node 25" index="25" />
+		<bit name="Node 26" index="26" />
+		<bit name="Node 27" index="27" />
+		<bit name="Node 28" index="28" />
+		<bit name="Node 29" index="29" />
+		<bit name="Node 30" index="30" />
+		<bit name="Node 31" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 2" offset="0x10C" visible="false">
+		<bit name="Node 32" index="0" />
+		<bit name="Node 33" index="1" />
+		<bit name="Node 34" index="2" />
+		<bit name="Node 35" index="3" />
+		<bit name="Node 36" index="4" />
+		<bit name="Node 37" index="5" />
+		<bit name="Node 38" index="6" />
+		<bit name="Node 39" index="7" />
+		<bit name="Node 40" index="8" />
+		<bit name="Node 41" index="9" />
+		<bit name="Node 42" index="10" />
+		<bit name="Node 43" index="11" />
+		<bit name="Node 44" index="12" />
+		<bit name="Node 45" index="13" />
+		<bit name="Node 46" index="14" />
+		<bit name="Node 47" index="15" />
+		<bit name="Node 48" index="16" />
+		<bit name="Node 49" index="17" />
+		<bit name="Node 50" index="18" />
+		<bit name="Node 51" index="19" />
+		<bit name="Node 52" index="20" />
+		<bit name="Node 53" index="21" />
+		<bit name="Node 54" index="22" />
+		<bit name="Node 55" index="23" />
+		<bit name="Node 56" index="24" />
+		<bit name="Node 57" index="25" />
+		<bit name="Node 58" index="26" />
+		<bit name="Node 59" index="27" />
+		<bit name="Node 60" index="28" />
+		<bit name="Node 61" index="29" />
+		<bit name="Node 62" index="30" />
+		<bit name="Node 63" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 3" offset="0x110" visible="false">
+		<bit name="Node 64" index="0" />
+		<bit name="Node 65" index="1" />
+		<bit name="Node 66" index="2" />
+		<bit name="Node 67" index="3" />
+		<bit name="Node 68" index="4" />
+		<bit name="Node 69" index="5" />
+		<bit name="Node 70" index="6" />
+		<bit name="Node 71" index="7" />
+		<bit name="Node 72" index="8" />
+		<bit name="Node 73" index="9" />
+		<bit name="Node 74" index="10" />
+		<bit name="Node 75" index="11" />
+		<bit name="Node 76" index="12" />
+		<bit name="Node 77" index="13" />
+		<bit name="Node 78" index="14" />
+		<bit name="Node 79" index="15" />
+		<bit name="Node 80" index="16" />
+		<bit name="Node 81" index="17" />
+		<bit name="Node 82" index="18" />
+		<bit name="Node 83" index="19" />
+		<bit name="Node 84" index="20" />
+		<bit name="Node 85" index="21" />
+		<bit name="Node 86" index="22" />
+		<bit name="Node 87" index="23" />
+		<bit name="Node 88" index="24" />
+		<bit name="Node 89" index="25" />
+		<bit name="Node 90" index="26" />
+		<bit name="Node 91" index="27" />
+		<bit name="Node 92" index="28" />
+		<bit name="Node 93" index="29" />
+		<bit name="Node 94" index="30" />
+		<bit name="Node 95" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 4" offset="0x114" visible="false">
+		<bit name="Node 96" index="0" />
+		<bit name="Node 97" index="1" />
+		<bit name="Node 98" index="2" />
+		<bit name="Node 99" index="3" />
+		<bit name="Node 100" index="4" />
+		<bit name="Node 101" index="5" />
+		<bit name="Node 102" index="6" />
+		<bit name="Node 103" index="7" />
+		<bit name="Node 104" index="8" />
+		<bit name="Node 105" index="9" />
+		<bit name="Node 106" index="10" />
+		<bit name="Node 107" index="11" />
+		<bit name="Node 108" index="12" />
+		<bit name="Node 109" index="13" />
+		<bit name="Node 110" index="14" />
+		<bit name="Node 111" index="15" />
+		<bit name="Node 112" index="16" />
+		<bit name="Node 113" index="17" />
+		<bit name="Node 114" index="18" />
+		<bit name="Node 115" index="19" />
+		<bit name="Node 116" index="20" />
+		<bit name="Node 117" index="21" />
+		<bit name="Node 118" index="22" />
+		<bit name="Node 119" index="23" />
+		<bit name="Node 120" index="24" />
+		<bit name="Node 121" index="25" />
+		<bit name="Node 122" index="26" />
+		<bit name="Node 123" index="27" />
+		<bit name="Node 124" index="28" />
+		<bit name="Node 125" index="29" />
+		<bit name="Node 126" index="30" />
+		<bit name="Node 127" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 5" offset="0x118" visible="false">
+		<bit name="Node 128" index="0" />
+		<bit name="Node 129" index="1" />
+		<bit name="Node 130" index="2" />
+		<bit name="Node 131" index="3" />
+		<bit name="Node 132" index="4" />
+		<bit name="Node 133" index="5" />
+		<bit name="Node 134" index="6" />
+		<bit name="Node 135" index="7" />
+		<bit name="Node 136" index="8" />
+		<bit name="Node 137" index="9" />
+		<bit name="Node 138" index="10" />
+		<bit name="Node 139" index="11" />
+		<bit name="Node 140" index="12" />
+		<bit name="Node 141" index="13" />
+		<bit name="Node 142" index="14" />
+		<bit name="Node 143" index="15" />
+		<bit name="Node 144" index="16" />
+		<bit name="Node 145" index="17" />
+		<bit name="Node 146" index="18" />
+		<bit name="Node 147" index="19" />
+		<bit name="Node 148" index="20" />
+		<bit name="Node 149" index="21" />
+		<bit name="Node 150" index="22" />
+		<bit name="Node 151" index="23" />
+		<bit name="Node 152" index="24" />
+		<bit name="Node 153" index="25" />
+		<bit name="Node 154" index="26" />
+		<bit name="Node 155" index="27" />
+		<bit name="Node 156" index="28" />
+		<bit name="Node 157" index="29" />
+		<bit name="Node 158" index="30" />
+		<bit name="Node 159" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 6" offset="0x11C" visible="false">
+		<bit name="Node 160" index="0" />
+		<bit name="Node 161" index="1" />
+		<bit name="Node 162" index="2" />
+		<bit name="Node 163" index="3" />
+		<bit name="Node 164" index="4" />
+		<bit name="Node 165" index="5" />
+		<bit name="Node 166" index="6" />
+		<bit name="Node 167" index="7" />
+		<bit name="Node 168" index="8" />
+		<bit name="Node 169" index="9" />
+		<bit name="Node 170" index="10" />
+		<bit name="Node 171" index="11" />
+		<bit name="Node 172" index="12" />
+		<bit name="Node 173" index="13" />
+		<bit name="Node 174" index="14" />
+		<bit name="Node 175" index="15" />
+		<bit name="Node 176" index="16" />
+		<bit name="Node 177" index="17" />
+		<bit name="Node 178" index="18" />
+		<bit name="Node 179" index="19" />
+		<bit name="Node 180" index="20" />
+		<bit name="Node 181" index="21" />
+		<bit name="Node 182" index="22" />
+		<bit name="Node 183" index="23" />
+		<bit name="Node 184" index="24" />
+		<bit name="Node 185" index="25" />
+		<bit name="Node 186" index="26" />
+		<bit name="Node 187" index="27" />
+		<bit name="Node 188" index="28" />
+		<bit name="Node 189" index="29" />
+		<bit name="Node 190" index="30" />
+		<bit name="Node 191" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 7" offset="0x120" visible="false">
+		<bit name="Node 192" index="0" />
+		<bit name="Node 193" index="1" />
+		<bit name="Node 194" index="2" />
+		<bit name="Node 195" index="3" />
+		<bit name="Node 196" index="4" />
+		<bit name="Node 197" index="5" />
+		<bit name="Node 198" index="6" />
+		<bit name="Node 199" index="7" />
+		<bit name="Node 200" index="8" />
+		<bit name="Node 201" index="9" />
+		<bit name="Node 202" index="10" />
+		<bit name="Node 203" index="11" />
+		<bit name="Node 204" index="12" />
+		<bit name="Node 205" index="13" />
+		<bit name="Node 206" index="14" />
+		<bit name="Node 207" index="15" />
+		<bit name="Node 208" index="16" />
+		<bit name="Node 209" index="17" />
+		<bit name="Node 210" index="18" />
+		<bit name="Node 211" index="19" />
+		<bit name="Node 212" index="20" />
+		<bit name="Node 213" index="21" />
+		<bit name="Node 214" index="22" />
+		<bit name="Node 215" index="23" />
+		<bit name="Node 216" index="24" />
+		<bit name="Node 217" index="25" />
+		<bit name="Node 218" index="26" />
+		<bit name="Node 219" index="27" />
+		<bit name="Node 220" index="28" />
+		<bit name="Node 221" index="29" />
+		<bit name="Node 222" index="30" />
+		<bit name="Node 223" index="31" />
+	</bitfield32>
+	<bitfield32 name="Unknown Digits 8" offset="0x124" visible="false">
+		<bit name="Node 224" index="0" />
+		<bit name="Node 225" index="1" />
+		<bit name="Node 226" index="2" />
+		<bit name="Node 227" index="3" />
+		<bit name="Node 228" index="4" />
+		<bit name="Node 229" index="5" />
+		<bit name="Node 230" index="6" />
+		<bit name="Node 231" index="7" />
+		<bit name="Node 232" index="8" />
+		<bit name="Node 233" index="9" />
+		<bit name="Node 234" index="10" />
+		<bit name="Node 235" index="11" />
+		<bit name="Node 236" index="12" />
+		<bit name="Node 237" index="13" />
+		<bit name="Node 238" index="14" />
+		<bit name="Node 239" index="15" />
+		<bit name="Node 240" index="16" />
+		<bit name="Node 241" index="17" />
+		<bit name="Node 242" index="18" />
+		<bit name="Node 243" index="19" />
+		<bit name="Node 244" index="20" />
+		<bit name="Node 245" index="21" />
+		<bit name="Node 246" index="22" />
+		<bit name="Node 247" index="23" />
+		<bit name="Node 248" index="24" />
+		<bit name="Node 249" index="25" />
+		<bit name="Node 250" index="26" />
+		<bit name="Node 251" index="27" />
+		<bit name="Node 252" index="28" />
+		<bit name="Node 253" index="29" />
+		<bit name="Node 254" index="30" />
+		<bit name="Node 255" index="31" />
+	</bitfield32>
 	<undefined name="Unknown" offset="0x128" visible="false" />
 	<undefined name="Unknown" offset="0x12C" visible="false" />
 	<undefined name="Unknown" offset="0x130" visible="false" />
@@ -648,8 +1016,8 @@
 	<undefined name="Unknown" offset="0x154" visible="false" />
 	<undefined name="Unknown" offset="0x158" visible="false" />
 	<reflexive name="Unknown" offset="0x15C" visible="false" entrySize="0x8">
-		<stringid name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<stringid name="Region" offset="0x0" visible="true" />
+		<stringid name="Permutation" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x168" visible="false" entrySize="0x8">
 		<stringid name="Unknown" offset="0x0" visible="false" />
@@ -662,6 +1030,6 @@
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
-	<tagRef name="Unknown" offset="0x180" visible="false" />
-	<tagRef name="Unknown" offset="0x190" visible="false" />
+	<tagRef name="Shield Impact Third Person" offset="0x180" visible="true" />
+	<tagRef name="Shield Impact First Person" offset="0x190" visible="true" />
 </plugin>

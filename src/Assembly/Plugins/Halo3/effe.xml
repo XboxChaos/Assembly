@@ -5,34 +5,86 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="-DeToX-" version="2">Fixed some Reflexives..</revision>
 		<revision author="-DeToX-" version="3">Named some values..</revision>
+		<revision author="Lord Zedd" version="4">Enums, better names, etc.</revision>
 	</revisions>
-	<int32 name="Unknown" offset="0x0" visible="false" />
-	<undefined name="Unknown" offset="0x4" visible="false" />
-	<undefined name="Unknown" offset="0x8" visible="false" />
+	<bitfield32 name="Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Dark Casings?" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<int32 name="Unknown" offset="0x4" visible="false" />
+	<float32 name="Unknown" offset="0x8" visible="false" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<int16 name="Unknown" offset="0x18" visible="false" />
+	<float32 name="Unknown" offset="0x10" visible="false" />
+	<int8 name="Unknown" offset="0x14" visible="false" />
+	<int8 name="Unknown" offset="0x15" visible="false" />
+	<int8 name="Unknown" offset="0x16" visible="false" />
+	<int8 name="Unknown" offset="0x17" visible="false" />
+	<int16 name="Loop Start Event" offset="0x18" visible="true" />
 	<int16 name="Unknown" offset="0x1A" visible="false" />
 	<undefined name="Unknown" offset="0x1C" visible="false" />
 	<reflexive name="Locations" offset="0x20" visible="true" entrySize="0xC">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
+		<int8 name="Unknown" offset="0x8" visible="false" />
+		<int8 name="Unknown" offset="0x9" visible="false" />
+		<int8 name="Unknown" offset="0xA" visible="false" />
+		<int8 name="Unknown" offset="0xB" visible="false" />
 	</reflexive>
 	<reflexive name="Events" offset="0x2C" visible="true" entrySize="0x44">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int32 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+		<int8 name="Unknown" offset="0x8" visible="false" />
+		<int8 name="Unknown" offset="0x9" visible="false" />
+		<int8 name="Unknown" offset="0xA" visible="false" />
+		<int8 name="Unknown" offset="0xB" visible="false" />
+		<float32 name="Skip Fraction" offset="0xC" visible="true" />
 		<float32 name="Delay Bounds min" offset="0x10" visible="true" />
 		<float32 name="Delay Bounds max" offset="0x14" visible="true" />
 		<float32 name="Duration Bounds min" offset="0x18" visible="true" />
 		<float32 name="Duration Bounds max" offset="0x1C" visible="true" />
 		<reflexive name="Parts" offset="0x20" visible="true" entrySize="0x60">
-			<int32 name="Unknown" offset="0x0" visible="false" />
-			<int16 name="Location Index" offset="0x4" visible="false" />
+			<enum16 name="Create In Environment" offset="0x0" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Create In Disposition" offset="0x2" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="Nonviolent Mode Only" value="0x2" />
+			</enum16>
+			<int16 name="Location Index" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
 			<int16 name="Unknown" offset="0x8" visible="false" />
 			<int16 name="Unknown" offset="0xA" visible="false" />
@@ -41,57 +93,216 @@
 			</comment>
 			<ascii name="Anticipated Tag Class" offset="0xC" visible="true" length="0x4" />
 			<tagRef name="Spawned Tag" offset="0x10" visible="true" />
-			<float32 name="Velocity Bound (Min)" offset="0x20" visible="true" />
-			<float32 name="Velocity Bound (Max)" offset="0x24" visible="true" />
+			<float32 name="Velocity Bounds min" offset="0x20" visible="true" />
+			<float32 name="Velocity Bounds max" offset="0x24" visible="true" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<degree name="Velocity Cone Angle" offset="0x30" visible="true" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x44" visible="false" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
-			<undefined name="Unknown" offset="0x4C" visible="false" />
-			<undefined name="Unknown" offset="0x50" visible="false" />
-			<undefined name="Unknown" offset="0x54" visible="false" />
-			<undefined name="Unknown" offset="0x58" visible="false" />
-			<undefined name="Unknown" offset="0x5C" visible="false" />
+			<degree name="Angular Velocity Bounds min" offset="0x34" visible="true" />
+			<degree name="Angular Velocity Bounds max" offset="0x38" visible="true" />
+			<float32 name="Radius Modifier Bounds min" offset="0x3C" visible="true" />
+			<float32 name="Radius Modifier Bounds max" offset="0x40" visible="true" />
+			<float32 name="Origin Offset X" offset="0x44" visible="true" />
+			<float32 name="Origin Offset Y" offset="0x48" visible="true" />
+			<float32 name="Origin Offset Z" offset="0x4C" visible="true" />
+			<degree name="Origin Rotation i" offset="0x50" visible="true" />
+			<degree name="Origin Rotation j" offset="0x54" visible="true" />
+			<bitfield32 name="A Scales Values" offset="0x58" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<bitfield32 name="B Scales Values" offset="0x5C" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
 		</reflexive>
-		<reflexive name="Unknown" offset="0x2C" visible="false" entrySize="0x14">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<reflexive name="Unknown" offset="0x4" visible="false" entrySize="0x0" align="0x1" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
+		<reflexive name="Accelerations" offset="0x2C" visible="true" entrySize="0x14">
+			<enum16 name="Create In Environment" offset="0x0" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Create In Disposition" offset="0x2" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="Nonviolent Mode Only" value="0x2" />
+			</enum16>
+			<int16 name="Location Index" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<float32 name="Acceleration" offset="0x8" visible="true" />
+			<float32 name="Inner Cone Angle" offset="0xC" visible="true" />
+			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
 		</reflexive>
-		<reflexive name="Particles" offset="0x38" visible="true" entrySize="0x5C">
-			<undefined name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Particle Systems" offset="0x38" visible="true" entrySize="0x5C">
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
 			<tagRef name="Particle" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x14" visible="false" />
-			<int16 name="Location Index" offset="0x16" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<int16 name="Unknown" offset="0x1C" visible="false" />
-			<int16 name="Unknown" offset="0x1E" visible="false" />
-			<int16 name="Unknown" offset="0x20" visible="false" />
-			<int16 name="Unknown" offset="0x22" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
+			<int16 name="Location Index" offset="0x16" visible="true" />
+			<enum16 name="Coordinate System" offset="0x18" visible="true">
+				<option name="World" value="0x0" />
+				<option name="Local" value="0x1" />
+				<option name="Parent" value="0x2" />
+			</enum16>
+			<enum16 name="Environment" offset="0x1A" visible="true">
+				<option name="Any Environment" value="0x0" />
+				<option name="Air Only" value="0x1" />
+				<option name="Water Only" value="0x2" />
+				<option name="Space Only" value="0x3" />
+			</enum16>
+			<enum16 name="Disposition" offset="0x1C" visible="true">
+				<option name="Either Mode" value="0x0" />
+				<option name="Violent Mode Only" value="0x1" />
+				<option name="Nonviolent Mode Only" value="0x2" />
+			</enum16>
+			<enum16 name="Camera Mode" offset="0x1E" visible="true">
+				<option name="Independent Of Camera Mode" value="0x0" />
+				<option name="First Person Only" value="0x1" />
+				<option name="Third Person Only" value="0x2" />
+				<option name="Both First And Third" value="0x3" />
+			</enum16>
+			<int16 name="Sort Bias" offset="0x20" visible="true" />
+			<bitfield16 name="Flags" offset="0x22" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<float32 name="Unknown" offset="0x24" visible="false" />
+			<float32 name="Unknown" offset="0x28" visible="false" />
+			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<float32 name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
+			<float32 name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Amount/Size" offset="0x3C" visible="true" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x44" visible="false" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
+			<float32 name="Unknown" offset="0x40" visible="false" />
+			<float32 name="LOD In Distance" offset="0x44" visible="true" />
+			<float32 name="LOD Feather In Delta" offset="0x48" visible="true" />
 			<reflexive name="Emitters" offset="0x4C" visible="true" entrySize="0x2F0">
-				<stringid name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<stringid name="Name" offset="0x0" visible="true" />
+				<bitfield16 name="Unknown" offset="0x4" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+					<bit name="Bit 16" index="16" />
+					<bit name="Bit 17" index="17" />
+					<bit name="Bit 18" index="18" />
+					<bit name="Bit 19" index="19" />
+					<bit name="Bit 20" index="20" />
+					<bit name="Bit 21" index="21" />
+					<bit name="Bit 22" index="22" />
+					<bit name="Bit 23" index="23" />
+					<bit name="Bit 24" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield16>
+				<int16 name="Unknown" offset="0x6" visible="false" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
 				<undefined name="Unknown" offset="0x10" visible="false" />
 				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<dataRef name="Unknown" offset="0x1C" visible="false" />
+				<int8 name="Input" offset="0x18" visible="true" />
+				<int8 name="Input Range" offset="0x19" visible="true" />
+				<enum8 name="Output Kind" offset="0x1A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x1B" visible="true" />
+				<dataRef name="Unknown" offset="0x1C" visible="true" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
 				<undefined name="Unknown" offset="0x38" visible="false" />
@@ -100,8 +311,15 @@
 				<undefined name="Unknown" offset="0x44" visible="false" />
 				<undefined name="Unknown" offset="0x48" visible="false" />
 				<undefined name="Unknown" offset="0x4C" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<dataRef name="Unknown" offset="0x54" visible="false" />
+				<int8 name="Input" offset="0x50" visible="true" />
+				<int8 name="Input Range" offset="0x51" visible="true" />
+				<enum8 name="Output Kind" offset="0x52" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x53" visible="true" />
+				<dataRef name="Unknown" offset="0x54" visible="true" />
 				<undefined name="Unknown" offset="0x68" visible="false" />
 				<undefined name="Unknown" offset="0x6C" visible="false" />
 				<undefined name="Unknown" offset="0x70" visible="false" />
@@ -110,50 +328,116 @@
 				<undefined name="Unknown" offset="0x7C" visible="false" />
 				<undefined name="Unknown" offset="0x80" visible="false" />
 				<undefined name="Unknown" offset="0x84" visible="false" />
-				<undefined name="Unknown" offset="0x88" visible="false" />
-				<dataRef name="Unknown" offset="0x8C" visible="false" />
+				<int8 name="Input" offset="0x88" visible="true" />
+				<int8 name="Input Range" offset="0x89" visible="true" />
+				<enum8 name="Output Kind" offset="0x8A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x8B" visible="true" />
+				<dataRef name="Unknown" offset="0x8C" visible="true" />
 				<undefined name="Unknown" offset="0xA0" visible="false" />
 				<undefined name="Unknown" offset="0xA4" visible="false" />
-				<undefined name="Unknown" offset="0xA8" visible="false" />
-				<dataRef name="Unknown" offset="0xAC" visible="false" />
+				<int8 name="Input" offset="0xA8" visible="true" />
+				<int8 name="Input Range" offset="0xA9" visible="true" />
+				<enum8 name="Output Kind" offset="0xAA" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0xAB" visible="true" />
+				<dataRef name="Unknown" offset="0xAC" visible="true" />
 				<undefined name="Unknown" offset="0xC0" visible="false" />
 				<undefined name="Unknown" offset="0xC4" visible="false" />
-				<undefined name="Unknown" offset="0xC8" visible="false" />
-				<dataRef name="Unknown" offset="0xCC" visible="false" />
+				<int8 name="Input" offset="0xC8" visible="true" />
+				<int8 name="Input Range" offset="0xC9" visible="true" />
+				<enum8 name="Output Kind" offset="0xCA" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0xCB" visible="true" />
+				<dataRef name="Unknown" offset="0xCC" visible="true" />
 				<undefined name="Unknown" offset="0xE0" visible="false" />
 				<undefined name="Unknown" offset="0xE4" visible="false" />
-				<undefined name="Unknown" offset="0xE8" visible="false" />
-				<dataRef name="Unknown" offset="0xEC" visible="false" />
+				<int8 name="Input" offset="0xE8" visible="true" />
+				<int8 name="Input Range" offset="0xE9" visible="true" />
+				<enum8 name="Output Kind" offset="0xEA" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0xEB" visible="true" />
+				<dataRef name="Unknown" offset="0xEC" visible="true" />
 				<undefined name="Unknown" offset="0x100" visible="false" />
 				<undefined name="Unknown" offset="0x104" visible="false" />
-				<undefined name="Unknown" offset="0x108" visible="false" />
-				<dataRef name="Unknown" offset="0x10C" visible="false" />
+				<int8 name="Input" offset="0x108" visible="true" />
+				<int8 name="Input Range" offset="0x109" visible="true" />
+				<enum8 name="Output Kind" offset="0x10A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x10B" visible="true" />
+				<dataRef name="Unknown" offset="0x10C" visible="true" />
 				<undefined name="Unknown" offset="0x120" visible="false" />
 				<undefined name="Unknown" offset="0x124" visible="false" />
-				<undefined name="Unknown" offset="0x128" visible="false" />
-				<dataRef name="Unknown" offset="0x12C" visible="false" />
+				<int8 name="Input" offset="0x128" visible="true" />
+				<int8 name="Input Range" offset="0x129" visible="true" />
+				<enum8 name="Output Kind" offset="0x12A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x12B" visible="true" />
+				<dataRef name="Unknown" offset="0x12C" visible="true" />
 				<undefined name="Unknown" offset="0x140" visible="false" />
 				<undefined name="Unknown" offset="0x144" visible="false" />
-				<undefined name="Unknown" offset="0x148" visible="false" />
-				<dataRef name="Unknown" offset="0x14C" visible="false" />
+				<int8 name="Input" offset="0x148" visible="true" />
+				<int8 name="Input Range" offset="0x149" visible="true" />
+				<enum8 name="Output Kind" offset="0x14A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x14B" visible="true" />
+				<dataRef name="Unknown" offset="0x14C" visible="true" />
 				<undefined name="Unknown" offset="0x160" visible="false" />
 				<undefined name="Unknown" offset="0x164" visible="false" />
 				<tagRef name="Particle Physics" offset="0x168" visible="true" />
-				<undefined name="Unknown" offset="0x178" visible="false" />
+				<int8 name="Unknown" offset="0x178" visible="false" />
+				<int8 name="Unknown" offset="0x179" visible="false" />
+				<int8 name="Unknown" offset="0x17A" visible="false" />
+				<int8 name="Unknown" offset="0x17B" visible="false" />
 				<reflexive name="Unknown" offset="0x17C" visible="false" entrySize="0x18">
 					<undefined name="Unknown" offset="0x0" visible="false" />
 					<reflexive name="Unknown" offset="0x4" visible="false" entrySize="0x24">
 						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
-						<dataRef name="Unknown" offset="0x8" visible="false" />
+						<int8 name="Input" offset="0x4" visible="true" />
+						<int8 name="Input Range" offset="0x5" visible="true" />
+						<enum8 name="Output Kind" offset="0x6" visible="true">
+							<option name="None" value="0x0" />
+							<option name="Plus" value="0x1" />
+							<option name="Times" value="0x2" />
+						</enum8>
+						<int8 name="Output" offset="0x7" visible="true" />
+						<dataRef name="Unknown" offset="0x8" visible="true" />
 						<undefined name="Unknown" offset="0x1C" visible="false" />
 						<undefined name="Unknown" offset="0x20" visible="false" />
 					</reflexive>
 					<undefined name="Unknown" offset="0x10" visible="false" />
 					<undefined name="Unknown" offset="0x14" visible="false" />
 				</reflexive>
-				<undefined name="Unknown" offset="0x188" visible="false" />
-				<dataRef name="Unknown" offset="0x18C" visible="false" />
+				<int8 name="Input" offset="0x188" visible="true" />
+				<int8 name="Input Range" offset="0x189" visible="true" />
+				<enum8 name="Output Kind" offset="0x18A" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x18B" visible="true" />
+				<dataRef name="Unknown" offset="0x18C" visible="true" />
 				<undefined name="Unknown" offset="0x1A0" visible="false" />
 				<undefined name="Unknown" offset="0x1A4" visible="false" />
 				<undefined name="Unknown" offset="0x1A8" visible="false" />
@@ -162,89 +446,172 @@
 				<undefined name="Unknown" offset="0x1B4" visible="false" />
 				<undefined name="Unknown" offset="0x1B8" visible="false" />
 				<undefined name="Unknown" offset="0x1BC" visible="false" />
-				<int16 name="Unknown" offset="0x1C0" visible="false" />
-				<int16 name="Unknown" offset="0x1C2" visible="false" />
-				<dataRef name="Unknown" offset="0x1C4" visible="false" />
+				<int8 name="Input" offset="0x1C0" visible="true" />
+				<int8 name="Input Range" offset="0x1C1" visible="true" />
+				<enum8 name="Output Kind" offset="0x1C2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x1C3" visible="true" />
+				<dataRef name="Unknown" offset="0x1C4" visible="true" />
 				<undefined name="Unknown" offset="0x1D8" visible="false" />
 				<undefined name="Unknown" offset="0x1DC" visible="false" />
-				<int16 name="Unknown" offset="0x1E0" visible="false" />
-				<int16 name="Unknown" offset="0x1E2" visible="false" />
-				<dataRef name="Unknown" offset="0x1E4" visible="false" />
+				<int8 name="Input" offset="0x1E0" visible="true" />
+				<int8 name="Input Range" offset="0x1E1" visible="true" />
+				<enum8 name="Output Kind" offset="0x1E2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x1E3" visible="true" />
+				<dataRef name="Unknown" offset="0x1E4" visible="true" />
 				<undefined name="Unknown" offset="0x1F8" visible="false" />
 				<undefined name="Unknown" offset="0x1FC" visible="false" />
-				<int16 name="Unknown" offset="0x200" visible="false" />
-				<int16 name="Unknown" offset="0x202" visible="false" />
-				<dataRef name="Unknown" offset="0x204" visible="false" />
+				<int8 name="Input" offset="0x200" visible="true" />
+				<int8 name="Input Range" offset="0x201" visible="true" />
+				<enum8 name="Output Kind" offset="0x202" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x203" visible="true" />
+				<dataRef name="Unknown" offset="0x204" visible="true" />
 				<undefined name="Unknown" offset="0x218" visible="false" />
 				<undefined name="Unknown" offset="0x21C" visible="false" />
-				<int16 name="Unknown" offset="0x220" visible="false" />
-				<int16 name="Unknown" offset="0x222" visible="false" />
-				<dataRef name="Unknown" offset="0x224" visible="false" />
+				<int8 name="Input" offset="0x220" visible="true" />
+				<int8 name="Input Range" offset="0x221" visible="true" />
+				<enum8 name="Output Kind" offset="0x222" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x223" visible="true" />
+				<dataRef name="Unknown" offset="0x224" visible="true" />
 				<undefined name="Unknown" offset="0x238" visible="false" />
 				<undefined name="Unknown" offset="0x23C" visible="false" />
-				<int16 name="Unknown" offset="0x240" visible="false" />
-				<int16 name="Unknown" offset="0x242" visible="false" />
-				<dataRef name="Particle Size" offset="0x244" visible="false" />
+				<int8 name="Input" offset="0x240" visible="true" />
+				<int8 name="Input Range" offset="0x241" visible="true" />
+				<enum8 name="Output Kind" offset="0x242" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x243" visible="true" />
+				<dataRef name="Particle Scale" offset="0x244" visible="true" />
 				<undefined name="Unknown" offset="0x258" visible="false" />
 				<undefined name="Unknown" offset="0x25C" visible="false" />
-				<int16 name="Unknown" offset="0x260" visible="false" />
-				<int16 name="Unknown" offset="0x262" visible="false" />
-				<dataRef name="Particle Tint" offset="0x264" visible="false" />
+				<int8 name="Input" offset="0x260" visible="true" />
+				<int8 name="Input Range" offset="0x261" visible="true" />
+				<enum8 name="Output Kind" offset="0x262" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x263" visible="true" />
+				<dataRef name="Particle Tint" offset="0x264" visible="true" />
 				<undefined name="Unknown" offset="0x278" visible="false" />
 				<undefined name="Unknown" offset="0x27C" visible="false" />
-				<int16 name="Unknown" offset="0x280" visible="false" />
-				<int16 name="Unknown" offset="0x282" visible="false" />
-				<dataRef name="Particle Alpha" offset="0x284" visible="false" />
+				<int8 name="Input" offset="0x280" visible="true" />
+				<int8 name="Input Range" offset="0x281" visible="true" />
+				<enum8 name="Output Kind" offset="0x282" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x283" visible="true" />
+				<dataRef name="Particle Alpha" offset="0x284" visible="true" />
 				<undefined name="Unknown" offset="0x298" visible="false" />
 				<undefined name="Unknown" offset="0x29C" visible="false" />
-				<int16 name="Unknown" offset="0x2A0" visible="false" />
-				<int16 name="Unknown" offset="0x2A2" visible="false" />
-				<dataRef name="Particle Alpha Black Point" offset="0x2A4" visible="false" />
+				<int8 name="Input" offset="0x2A0" visible="true" />
+				<int8 name="Input Range" offset="0x2A1" visible="true" />
+				<enum8 name="Output Kind" offset="0x2A2" visible="true">
+					<option name="None" value="0x0" />
+					<option name="Plus" value="0x1" />
+					<option name="Times" value="0x2" />
+				</enum8>
+				<int8 name="Output" offset="0x2A3" visible="true" />
+				<dataRef name="Particle Alpha Black Point" offset="0x2A4" visible="true" />
 				<undefined name="Unknown" offset="0x2B8" visible="false" />
 				<undefined name="Unknown" offset="0x2BC" visible="false" />
-				<undefined name="Unknown" offset="0x2C0" visible="false" />
-				<undefined name="Unknown" offset="0x2C4" visible="false" />
-				<undefined name="Unknown" offset="0x2C8" visible="false" />
+				<int32 name="Unknown" offset="0x2C0" visible="false" />
+				<int32 name="Unknown" offset="0x2C4" visible="false" />
+				<bitfield32 name="Unknown" offset="0x2C8" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+					<bit name="Bit 8" index="8" />
+					<bit name="Bit 9" index="9" />
+					<bit name="Bit 10" index="10" />
+					<bit name="Bit 11" index="11" />
+					<bit name="Bit 12" index="12" />
+					<bit name="Bit 13" index="13" />
+					<bit name="Bit 14" index="14" />
+					<bit name="Bit 15" index="15" />
+					<bit name="Bit 16" index="16" />
+					<bit name="Bit 17" index="17" />
+					<bit name="Bit 18" index="18" />
+					<bit name="Bit 19" index="19" />
+					<bit name="Bit 20" index="20" />
+					<bit name="Bit 21" index="21" />
+					<bit name="Bit 22" index="22" />
+					<bit name="Bit 23" index="23" />
+					<bit name="Bit 24" index="24" />
+					<bit name="Bit 25" index="25" />
+					<bit name="Bit 26" index="26" />
+					<bit name="Bit 27" index="27" />
+					<bit name="Bit 28" index="28" />
+					<bit name="Bit 29" index="29" />
+					<bit name="Bit 30" index="30" />
+					<bit name="Bit 31" index="31" />
+				</bitfield32>
 				<reflexive name="Unknown" offset="0x2CC" visible="false" entrySize="0x10" align="0x10">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
-					<undefined name="Unknown" offset="0xC" visible="false" />
+					<float32 name="Unknown" offset="0x0" visible="false" />
+					<float32 name="Unknown" offset="0x4" visible="false" />
+					<float32 name="Unknown" offset="0x8" visible="false" />
+					<float32 name="Unknown" offset="0xC" visible="false" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x2D8" visible="false" entrySize="0x40" align="0x10">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
-					<undefined name="Unknown" offset="0xC" visible="false" />
-					<undefined name="Unknown" offset="0x10" visible="false" />
-					<undefined name="Unknown" offset="0x14" visible="false" />
-					<undefined name="Unknown" offset="0x18" visible="false" />
-					<undefined name="Unknown" offset="0x1C" visible="false" />
-					<undefined name="Unknown" offset="0x20" visible="false" />
-					<undefined name="Unknown" offset="0x24" visible="false" />
-					<undefined name="Unknown" offset="0x28" visible="false" />
-					<undefined name="Unknown" offset="0x2C" visible="false" />
-					<undefined name="Unknown" offset="0x30" visible="false" />
-					<undefined name="Unknown" offset="0x34" visible="false" />
-					<undefined name="Unknown" offset="0x38" visible="false" />
-					<undefined name="Unknown" offset="0x3C" visible="false" />
+				<reflexive name="Compiled Functions" offset="0x2D8" visible="false" entrySize="0x40" align="0x10">
+					<float32 name="Unknown" offset="0x0" visible="false" />
+					<float32 name="Unknown" offset="0x4" visible="false" />
+					<float32 name="Unknown" offset="0x8" visible="false" />
+					<float32 name="Unknown" offset="0xC" visible="false" />
+					<float32 name="Unknown" offset="0x10" visible="false" />
+					<float32 name="Unknown" offset="0x14" visible="false" />
+					<float32 name="Unknown" offset="0x18" visible="false" />
+					<float32 name="Unknown" offset="0x1C" visible="false" />
+					<float32 name="Unknown" offset="0x20" visible="false" />
+					<float32 name="Unknown" offset="0x24" visible="false" />
+					<float32 name="Unknown" offset="0x28" visible="false" />
+					<float32 name="Unknown" offset="0x2C" visible="false" />
+					<float32 name="Unknown" offset="0x30" visible="false" />
+					<float32 name="Unknown" offset="0x34" visible="false" />
+					<float32 name="Unknown" offset="0x38" visible="false" />
+					<float32 name="Unknown" offset="0x3C" visible="false" />
 				</reflexive>
-				<reflexive name="Particle Color" offset="0x2E4" visible="true" entrySize="0x10" align="0x10">
+				<reflexive name="Compiled Color Values" offset="0x2E4" visible="true" entrySize="0x10" align="0x10">
 					<float32 name="Red" offset="0x0" visible="true" />
 					<float32 name="Green" offset="0x4" visible="true" />
 					<float32 name="Blue" offset="0x8" visible="true" />
-					<float32 name="Alpha" offset="0xC" visible="true" />
+					<float32 name="Magnitude" offset="0xC" visible="true" />
 				</reflexive>
 			</reflexive>
-			<undefined name="Unknown" offset="0x58" visible="false" />
+			<float32 name="Unknown" offset="0x58" visible="false" />
 		</reflexive>
 	</reflexive>
-	<tagRef name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
-	<undefined name="Unknown" offset="0x54" visible="false" />
-	<undefined name="Unknown" offset="0x58" visible="false" />
+	<tagRef name="Looping Sound" offset="0x38" visible="true" />
+	<int8 name="Location Index" offset="0x48" visible="true" />
+	<int8 name="Unknown" offset="0x49" visible="false" />
+	<int16 name="Unknown" offset="0x4A" visible="false" />
+	<float32 name="Always Play Distance" offset="0x4C" visible="true" />
+	<float32 name="Never Play Distance" offset="0x50" visible="true" />
+	<float32 name="Unknown" offset="0x54" visible="false" />
+	<float32 name="Unknown" offset="0x58" visible="false" />
 	<reflexive name="Unknown" offset="0x5C" visible="false" entrySize="0xC">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
