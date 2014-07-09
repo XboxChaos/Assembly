@@ -34,7 +34,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public void Add(ITag tag)
 		{
 			// Insert the tag in order by datum index
-			var index = ListSearching.BinarySearch(_table, tag.Index.Value, (t) => t.Index.Value);
+			// NOTE: Casting the datum index to a signed value is necessary because that's what the XEX does
+			var index = ListSearching.BinarySearch(_table, (int)tag.Index.Value, (t) => (int)t.Index.Value);
 			if (index >= 0)
 				return;
 			index = ~index;
