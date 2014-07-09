@@ -28,6 +28,7 @@ namespace Blamite.Blam.ThirdGen
 		private IResourceManager _resources;
 		private IndexedStringIDSource _stringIds;
 		private ThirdGenTagTable _tags;
+		private ThirdGenSimulationDefinitionTable _simulationDefinitions;
 
 		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
@@ -47,6 +48,8 @@ namespace Blamite.Blam.ThirdGen
 			_tags.SaveChanges(stream);
 			_fileNames.SaveChanges(stream);
 			_stringIds.SaveChanges(stream);
+			if (_simulationDefinitions != null)
+				_simulationDefinitions.SaveChanges(stream);
 			WriteHeader(stream);
 			WriteLanguageInfo(stream);
 		}
@@ -189,6 +192,11 @@ namespace Blamite.Blam.ThirdGen
 
 		public IShaderStreamer ShaderStreamer { get; private set; }
 
+		public ISimulationDefinitionTable SimulationDefinitions
+		{
+			get { return _simulationDefinitions; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -198,6 +206,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadLanguageGlobals(reader);
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
+			LoadSimulationDefinitions(reader);
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
 		}
 
@@ -316,6 +325,16 @@ namespace Blamite.Blam.ThirdGen
 				}
 			}
 			ScriptFiles = new IScriptFile[0];
+		}
+
+		private void LoadSimulationDefinitions(IReader reader)
+		{
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table entry"))
+			{
+				ITag scnr = _tags.FindTagByClass("scnr");
+				if (scnr != null)
+					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo);
+			}
 		}
 
 		private void WriteHeader(IWriter writer)

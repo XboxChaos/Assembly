@@ -179,6 +179,11 @@ namespace Blamite.Blam.SecondGen
 			get { return null; }
 		}
 
+		public ISimulationDefinitionTable SimulationDefinitions
+		{
+			get { return null; }
+		}
+
 		private void Load(IReader reader, EngineDescription buildInfo, string buildString)
 		{
 			_header = LoadHeader(reader, buildInfo, buildString);

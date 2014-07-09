@@ -4,6 +4,7 @@ using System.IO;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Injection
 {
@@ -22,6 +23,8 @@ namespace Blamite.Injection
 		private readonly Dictionary<ExtractedTag, DatumIndex> _tagIndices = new Dictionary<ExtractedTag, DatumIndex>();
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
+		
+		private static HashSet<string> _simulationClasses = new HashSet<string>(new string[] { "jpt!", "scen", "bloc", "effe", "bipd", "vehi", "weap", "proj", "eqip", "mach", "ctrl", "ssce", "crea" });
 
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
@@ -105,6 +108,10 @@ namespace Blamite.Injection
 			LoadZoneSets(stream);
 			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
 				_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+
+			// If its class matches one of the valid simulation class names, add it to the simulation definition table
+			if (_cacheFile.SimulationDefinitions != null && _simulationClasses.Contains(CharConstant.ToString(newTag.Class.Magic)))
+				_cacheFile.SimulationDefinitions.Add(newTag);
 
 			return newTag.Index;
 		}
