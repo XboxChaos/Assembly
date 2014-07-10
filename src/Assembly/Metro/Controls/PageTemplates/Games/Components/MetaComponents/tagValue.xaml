@@ -46,26 +46,15 @@
 
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="btnNullTag" Content="Ø" Margin="5,0,0,0" Width="20" Click="btnNullTag_Click" ToolTip="Nulls this tag reference."/>
-				<Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
+                <Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
 			        Visibility="{Binding ShowJumpTo}" ToolTip="Opens this tag in a new tab."
 			        Command="{x:Static local:tagValue.JumpToCommand}" CommandParameter="{Binding Value}"
 			        CommandTarget="{Binding ElementName=control}">
-					<StackPanel>
-						<TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
-					</StackPanel>
-				</Button>
-				<StackPanel.Style>
-					<Style>
-						<Setter Property="Button.Visibility" Value="Collapsed" />
-						<Setter Property="ComboBox.Width" Value="550"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding ElementName=TagValue, Path=IsMouseOver}" Value="True">
-								<Setter Property="Button.Visibility" Value="Visible"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</StackPanel.Style>
-			</StackPanel>
+                    <StackPanel>
+                        <TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>
