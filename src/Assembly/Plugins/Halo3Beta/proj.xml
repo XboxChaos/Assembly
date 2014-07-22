@@ -346,7 +346,7 @@
 		<tagRef name="Unknown" offset="0xA4" visible="true" />
 		<tagRef name="Unknown" offset="0xB4" visible="true" />
 	</reflexive>
-	<comment title="PROJECTILE"></comment>
+	<comment title="PROJECTILE" />
 	<bitfield32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Oriented Along Velocity" index="0" />
 		<bit name="AI Must Use Ballistic Aiming" index="1" />
@@ -532,13 +532,29 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</bitfield16>
-		<int16 name="Response" offset="0x2" visible="true" />
+		<enum16 name="Default Response" offset="0x2" visible="true">
+			<option name="Impact (Detonate)" value="0x0" />
+			<option name="Fizzle" value="0x1" />
+			<option name="Overpenetrate" value="0x2" />
+			<option name="Attach" value="0x3" />
+			<option name="Bounce" value="0x4" />
+			<option name="Bounce (Dud)" value="0x5" />
+			<option name="Fizzle (Ricochet)" value="0x6" />
+		</enum16>
 		<tagref name="Unused Effect" offset="0x4" visible="true" />
 		<stringid name="Material Name" offset="0x14" visible="true" />
 		<int16 name="Global Material Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
-		<int16 name="Response" offset="0x1C" visible="true" />
-		<bitfield16 name="Flags" offset="0x1E" visible="true">
+		<enum16 name="Potential Response" offset="0xC" visible="true">
+			<option name="Impact (Detonate)" value="0x0" />
+			<option name="Fizzle" value="0x1" />
+			<option name="Overpenetrate" value="0x2" />
+			<option name="Attach" value="0x3" />
+			<option name="Bounce" value="0x4" />
+			<option name="Bounce (Dud)" value="0x5" />
+			<option name="Fizzle (Ricochet)" value="0x6" />
+		</enum16>
+		<bitfield16 name="Potential Flags" offset="0x1E" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -556,21 +572,24 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</bitfield16>
-		<float32 name="Chance Fraction" offset="0x20" visible="true" />
-		<degree name="Between Min" offset="0x24" visible="true" />
-		<degree name="Between Max" offset="0x28" visible="true" />
-		<float32 name="And Min" offset="0x2C" visible="true" />
-		<float32 name="And Max" offset="0x30" visible="true" />
+		<float32 name="Potential Chance Fraction" offset="0x20" visible="true" />
+		<degree name="Potential Between Angle min" offset="0x24" visible="true" />
+		<degree name="Potential Between Angle max" offset="0x28" visible="true" />
+		<float32 name="Potential And Velocity min" offset="0x2C" visible="true" />
+		<float32 name="Potential And Velocity max" offset="0x30" visible="true" />
 		<tagref name="Unused Effect" offset="0x34" visible="true" />
-		<int16 name="Scale Effects By" offset="0x44" visible="true" />
+		<enum16 name="Scale Effects By" offset="0x44" visible="true">
+			<option name="Damage" value="0x0" />
+			<option name="Angle" value="0x1" />
+		</enum16>
 		<int16 name="Unknown" offset="0x46" visible="true" />
 		<degree name="Angular Noise" offset="0x48" visible="true" />
 		<float32 name="Velocity Noise" offset="0x4C" visible="true" />
 		<tagref name="Unused Detonation Effect" offset="0x50" visible="true" />
-		<float32 name="Initial Friction" offset="0x60" visible="true" />
-		<float32 name="Maximum Distance" offset="0x64" visible="true" />
-		<float32 name="Parallel Friction" offset="0x68" visible="true" />
-		<float32 name="Perpendicular Friction" offset="0x6C" visible="true" />
+		<float32 name="Penetration Initial Friction" offset="0x60" visible="true" />
+		<float32 name="Penetration Maximum Distance" offset="0x64" visible="true" />
+		<float32 name="Reflection Parallel Friction" offset="0x68" visible="true" />
+		<float32 name="Reflection Perpendicular Friction" offset="0x6C" visible="true" />
 	</reflexive>
 	<reflexive name="Impact Properties" offset="0x27C" visible="true" entrySize="0x30">
 		<degree name="Unknown" offset="0x0" visible="true" />
@@ -590,6 +609,6 @@
 		<int16 name="Amount" offset="0x0" visible="true" />
 		<int16 name="Distance" offset="0x2" visible="true" />
 		<float32 name="Accuracy" offset="0x4" visible="true" />
-		<float32 name="Bullet Spread" offset="0x8" visible="true" />
+		<degree name="Spread Cone Angle" offset="0x8" visible="true" />
 	</reflexive>
 </plugin>

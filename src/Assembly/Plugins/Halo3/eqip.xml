@@ -347,7 +347,7 @@
 		<tagRef name="Unknown" offset="0xA4" visible="true" />
 		<tagRef name="Unknown" offset="0xB4" visible="true" />
 	</reflexive>
-	<comment title="ITEM"></comment>
+	<comment title="ITEM" />
 	<bitfield32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Always Maintains Z Up" index="0" />
 		<bit name="Destroyed by Explosions" index="1" />
@@ -415,69 +415,91 @@
 	<undefined name="Unknown" offset="0x1A0" visible="false" />
 	<undefined name="Unknown" offset="0x1A4" visible="false" />
 	<undefined name="Unknown" offset="0x1A8" visible="false" />
-	<comment title="EQUIPMENT"></comment>
-	<float32 name="Use Cooldown Time" offset="0x1AC" visible="false" />
+	<comment title="EQUIPMENT" />
+	<float32 name="Use Duration" offset="0x1AC" visible="true" />
 	<float32 name="Unknown" offset="0x1B0" visible="false" />
-	<int16 name="Uses" offset="0x1B4" visible="false" />
-	<int16 name="Unknown" offset="0x1B6" visible="false" />
+	<int16 name="Number Of Uses" offset="0x1B4" visible="true" />
+	<bitfield16 name="Flags" offset="0x1B6" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</bitfield16>
 	<float32 name="Unknown" offset="0x1B8" visible="false" />
 	<float32 name="Unknown" offset="0x1BC" visible="false" />
 	<float32 name="Unknown" offset="0x1C0" visible="false" />
-	<reflexive name="Health Pack?" offset="0x1C4" visible="true" entrySize="0x3C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Health Pack" offset="0x1C4" visible="true" entrySize="0x3C">
+		<float32 name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Unknown" offset="0x4" visible="false" />
+		<float32 name="Shields Given" offset="0x8" visible="true" />
 		<tagRef name="Unknown" offset="0xC" visible="true" />
 		<tagRef name="Unknown" offset="0x1C" visible="true" />
 		<tagRef name="Unknown" offset="0x2C" visible="true" />
 	</reflexive>
-	<reflexive name="Powerup Color" offset="0x1D0" visible="true" entrySize="0x4">
-		<int32 name="Trait Set Index" offset="0x0" visible="true" />
+	<reflexive name="Powerup" offset="0x1D0" visible="true" entrySize="0x4">
+		<enum32 name="Powerup Trait Set" offset="0x0" visible="true">
+			<option name="Red" value="0x0" />
+			<option name="Blue" value="0x1" />
+			<option name="Yellow" value="0x2" />
+		</enum32>
 	</reflexive>
-	<reflexive name="Equipment Projectile" offset="0x1DC" visible="true" entrySize="0x34">
-		<tagRef name="Projectile" offset="0x0" visible="true" />
-		<tagRef name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+	<reflexive name="Object Creation" offset="0x1DC" visible="true" entrySize="0x34">
+		<tagRef name="Object" offset="0x0" visible="true" />
+		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Unknown" offset="0x20" visible="false" />
+		<float32 name="Unknown" offset="0x24" visible="false" />
+		<float32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Object Force" offset="0x2C" visible="true" />
+		<float32 name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Death Properties" offset="0x1E8" visible="true" entrySize="0x30">
-		<tagRef name="Unknown" offset="0x0" visible="false" />
-		<tagRef name="Explosion Damage" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Self Destruction Time (seconds)" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+	<reflexive name="Destruction" offset="0x1E8" visible="true" entrySize="0x30">
+		<tagRef name="Destroy Effect" offset="0x0" visible="true" />
+		<tagRef name="Destroy Damage Effect" offset="0x10" visible="true" />
+		<float32 name="Unknown" offset="0x20" visible="false" />
+		<float32 name="Self Destruction Time" offset="0x24" visible="true" />
+		<float32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Radar Jamming" offset="0x1F4" visible="false" entrySize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<int32 name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
+	<reflexive name="Radar Manipulation" offset="0x1F4" visible="true" entrySize="0x10">
+		<float32 name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Fake Blip Radius" offset="0x4" visible="true" />
+		<int32 name="Fake Blip Count" offset="0x8" visible="true" />
+		<float32 name="Unknown" offset="0xC" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x200" visible="false" />
 	<undefined name="Unknown" offset="0x204" visible="false" />
 	<undefined name="Unknown" offset="0x208" visible="false" />
-	<reflexive name="Invincibilty?/Invisibility" offset="0x20C" visible="false" entrySize="0x8">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Invisibility" offset="0x20C" visible="true" entrySize="0x8">
+		<float32 name="Unknown" offset="0x0" visible="true" />
+		<float32 name="Unknown" offset="0x4" visible="true" />
 	</reflexive>
-	<reflexive name="Invincibility?" offset="0x218" visible="false" entrySize="0x3C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+	<reflexive name="Invincibility" offset="0x218" visible="true" entrySize="0x3C">
+		<stringid name="Material Name" offset="0x0" visible="true" />
+		<int16 name="Global Material Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
-		<tagRef name="Unknown" offset="0xC" visible="false" />
-		<tagRef name="Unknown" offset="0x1C" visible="false" />
-		<tagRef name="Unknown" offset="0x2C" visible="false" />
+		<tagRef name="Activation Effect" offset="0xC" visible="true" />
+		<tagRef name="Active Effect" offset="0x1C" visible="true" />
+		<tagRef name="Deactivation Effect" offset="0x2C" visible="true" />
 	</reflexive>
-	<reflexive name="Regen?" offset="0x224" visible="false" entrySize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Regenerator" offset="0x224" visible="true" entrySize="0x4">
+		<float32 name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<tagRef name="Heads Up Display" offset="0x230" visible="true" />
+	<tagRef name="HUD" offset="0x230" visible="true" />
 	<tagRef name="Pickup Sound" offset="0x240" visible="true" />
-	<tagRef name="Activation Sound" offset="0x250" visible="true" />
-	<tagRef name="Unknown" offset="0x260" visible="true" />
-	<tagRef name="Deactivation Sound" offset="0x270" visible="true" />
+	<tagRef name="Activation Effect" offset="0x250" visible="true" />
+	<tagRef name="Active Effect" offset="0x260" visible="true" />
+	<tagRef name="Deactivation Effect" offset="0x270" visible="true" />
 </plugin>

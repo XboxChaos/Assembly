@@ -650,8 +650,18 @@
 		<colour32 name="Tertiary Color" offset="0x64" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x68" format="argb" visible="true" />
 		<comment title="Scenery" />
-		<int16 name="Pathfinding Policy" offset="0x6C" visible="true" />
-		<int16 name="Lightmapping Policy" offset="0x6E" visible="true" />
+		<enum16 name="Pathfinding Policy" offset="0x6C" visible="true">
+			<option name="Tag Default" value="0x0" />
+			<option name="Dynamic" value="0x1" />
+			<option name="Cut-Out" value="0x2" />
+			<option name="Standard" value="0x3" />
+			<option name="None" value="0x4" />
+		</enum16>
+		<enum16 name="Lightmapping Policy" offset="0x6E" visible="true">
+			<option name="Tag Default" value="0x0" />
+			<option name="Dynamic" value="0x1" />
+			<option name="Per-Vertex" value="0x2" />
+		</enum16>
 		<reflexive name="Pathfinding References" offset="0x70" visible="true" entrySize="0x4">
 			<int16 name="BSP Index" offset="0x0" visible="true" />
 			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
@@ -1834,7 +1844,13 @@
 			<int16 name="BSP Index" offset="0x0" visible="true" />
 			<int16 name="Pathfinding Object Index" offset="0x0" visible="true" />
 		</reflexive>
-		<int16 name="Unknown" offset="0x84" visible="true" />
+		<enum16 name="Pathfinding Policy" offset="0x84" visible="true">
+			<option name="Tag Default" value="0x0" />
+			<option name="Cut-Out" value="0x1" />
+			<option name="Sectors" value="0x2" />
+			<option name="Discs" value="0x3" />
+			<option name="None" value="0x4" />
+		</enum16>
 		<int16 name="Unknown" offset="0x86" visible="true" />
 	</reflexive>
 	<reflexive name="Machine Palette" offset="0x174" visible="true" entrySize="0x30">
