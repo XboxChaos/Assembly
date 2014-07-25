@@ -45,7 +45,7 @@
 				<option name="110%" value="0x8" />
 				<option name="200%" value="0x9" />
 			</enum8>
-			<enum8 name="Immune To Headshots" offset="0x3" visible="true">
+			<enum8 name="Headshot Immunity" offset="0x3" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="Enabled" value="0x1" />
 				<option name="Disabled" value="0x2" />
@@ -136,14 +136,14 @@
 		<reflexive name="Appearance" offset="0x28" visible="true" entrySize="0x4">
 			<enum8 name="Active Camo" offset="0x0" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Off" value="0x1" />
-				<option name="Poor Camo (Unused)" value="0x2" />
+				<option name="Disabled" value="0x1" />
+				<option name="Bad Camo" value="0x2" />
 				<option name="Poor Camo" value="0x3" />
 				<option name="Good Camo" value="0x4" />
 			</enum8>
 			<enum8 name="Waypoint" offset="0x1" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="No Waypoint" value="0x1" />
+				<option name="None" value="0x1" />
 				<option name="Visible To Allies" value="0x2" />
 				<option name="Visible To Everyone" value="0x3" />
 			</enum8>
@@ -174,15 +174,15 @@
 		<reflexive name="Sensors" offset="0x34" visible="true" entrySize="0x8">
 			<enum32 name="Motion Tracker Mode" offset="0x0" visible="true">
 				<option name="Unchanged" value="0x0" />
-				<option name="Off" value="0x1" />
-				<option name="Allies Only" value="0x2" />
-				<option name="Normal" value="0x3" />
-				<option name="Enhanced" value="0x4" />
+				<option name="Disabled" value="0x1" />
+				<option name="Ally Movement" value="0x2" />
+				<option name="Player Movement" value="0x3" />
+				<option name="Player Locations" value="0x4" />
 			</enum32>
 			<enum32 name="Motion Tracker Range" offset="0x4" visible="true">
 				<option name="Unchanged" value="0x0" />
 				<option name="10m" value="0x1" />
-				<option name="15m/20m" value="0x2" />
+				<option name="20m" value="0x2" />
 				<option name="25m" value="0x3" />
 				<option name="50m" value="0x4" />
 				<option name="75m" value="0x5" />
@@ -202,7 +202,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -287,7 +288,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -370,7 +372,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -458,7 +461,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -548,7 +552,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -638,7 +643,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -729,7 +735,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -805,7 +812,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -864,7 +872,7 @@
 			<option name="First Kill" value="0x1" />
 			<option name="First Death" value="0x2" />
 		</enum16>
-		<enum16 name="Nect Juggernaut" offset="0x3E" visible="true">
+		<enum16 name="Next Juggernaut" offset="0x3E" visible="true">
 			<option name="Killer" value="0x0" />
 			<option name="Killed" value="0x1" />
 			<option name="Unchanged" value="0x2" />
@@ -911,7 +919,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -983,7 +992,7 @@
 			<option name="After 4 Minutes" value="0x7" />
 			<option name="After 5 Minutes" value="0x8" />
 			<option name="On Arrival" value="0x9" />
-			<option name="On New Juggernaut" value="0xA" />
+			<option name="On New VIP" value="0xA" />
 		</enum16>
 		<enum16 name="Goal Zone Movement Order" offset="0x42" visible="true">
 			<option name="Random" value="0x0" />
@@ -1016,7 +1025,8 @@
 			</bitfield32>
 			<int8 name="Time Limit" offset="0x4" visible="true" />
 			<int8 name="Number of Rounds" offset="0x5" visible="true" />
-			<int16 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Early Victory Win Count" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" /><!-- Only valid options are 0-2 whatever this is -->
 		</reflexive>
 		<reflexive name="Respawn Settings" offset="0x14" visible="true" entrySize="0x10">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
