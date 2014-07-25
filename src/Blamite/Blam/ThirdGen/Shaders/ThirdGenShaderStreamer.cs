@@ -122,7 +122,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 				return true;
 			}
 
-			var pointerOffset = stream.Position;
+			var pointerOffset = stream.Position + _cacheFile.MetaArea.OffsetToPointer(0);
 			using (var reader = new EndianReader(new MemoryStream(serializedShader), Endian.BigEndian))
 			{
 				// Check the magic
@@ -173,7 +173,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 				stream.WriteBlock(debugInfo);
 
 				// Finally, write the shader pointer
-				stream.SeekTo(pointerOffset);
+				stream.SeekTo(pointerOffset - _cacheFile.MetaArea.OffsetToPointer(0));
 				stream.WriteUInt32(infoAddr);
 			}
 			return true;
