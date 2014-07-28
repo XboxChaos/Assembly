@@ -41,7 +41,7 @@
 					<ColumnDefinition MinWidth="240px" Width="240px" />
 				</Grid.ColumnDefinitions>
 				<ListBox Name="TagDataViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0" Grid.Column="0" Grid.ColumnSpan="3"
-							VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+							VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
 							ScrollViewer.CanContentScroll="True" SelectionChanged="TagDataViewer_OnSelectionChanged"
 							Padding="0,7,0,7">
 					<ListBox.LayoutTransform>
@@ -489,7 +489,7 @@
 						<ComboBoxItem Tag="100" Content="100%" />
 					</ComboBox>
 					<ToggleButton x:Name="ShowInvisiblesToggleButton" Grid.Column="1" ToolTip="Toggle the visibility unknown (unmapped) values in the Tag Editor"
-								  IsChecked="{Binding Path=TagEditorShowInvisibles}">
+								  IsChecked="{Binding Path=TagEditorShowInvisibles}" Checked="PluginOptionToggleButton_OnChanged" Unchecked="PluginOptionToggleButton_OnChanged">
 						<ToggleButton.Content>
 							<Grid Width="20" Height="15">
 								<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 
@@ -509,19 +509,19 @@
 						</ToggleButton.Content>
 					</ToggleButton>
 					<ToggleButton x:Name="ShowTagBlockInfoToggleButton" Grid.Column="2" ToolTip="Toggle the default visibility of Tag Block Information"
-								  IsChecked="{Binding Path=TagEditorShowBlockInformation}">
+								  IsChecked="{Binding Path=TagEditorShowBlockInformation}" Checked="PluginOptionToggleButton_OnChanged" Unchecked="PluginOptionToggleButton_OnChanged">
 						<ToggleButton.Content>
 							<TextBlock Foreground="#FFC5C5C5" FontSize="11">i(**)</TextBlock>
 						</ToggleButton.Content>
 					</ToggleButton>
 					<ToggleButton x:Name="ShowEnumIndicesToggleButton" Grid.Column="3" ToolTip="Toggle the visibility of Enum Indices"
-								  IsChecked="{Binding Path=TagEditorShowEnumIndex}">
+								  IsChecked="{Binding Path=TagEditorShowEnumIndex}" Checked="PluginOptionToggleButton_OnChanged" Unchecked="PluginOptionToggleButton_OnChanged">
 						<ToggleButton.Content>
 							<TextBlock Foreground="#FFC5C5C5" FontSize="11">e(#)</TextBlock>
 						</ToggleButton.Content>
 					</ToggleButton>
 					<ToggleButton x:Name="ShowCommentsToggleButton" Grid.Column="4" ToolTip="Toggle the visibility of Comments"
-								  IsChecked="{Binding Path=TagEditorShowComments}">
+								  IsChecked="{Binding Path=TagEditorShowComments}" Checked="PluginOptionToggleButton_OnChanged" Unchecked="PluginOptionToggleButton_OnChanged">
 						<ToggleButton.Content>
 							<Grid Width="20" Height="15">
 								<Path Fill="#c5c5c5" SnapsToDevicePixels="True" 

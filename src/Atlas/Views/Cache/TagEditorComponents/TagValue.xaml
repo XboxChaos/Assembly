@@ -5,7 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:local="clr-namespace:Atlas.Views.Cache.TagEditorComponents"
 			 xmlns:tags="clr-namespace:Atlas.Helpers.Tags"
-			 mc:Ignorable="d" Height="28" Width="785"
+			 mc:Ignorable="d" Height="28" Width="795"
 			 x:Name="TagValueControl"
 			 HorizontalAlignment="Left">
 	<UserControl.Resources>
@@ -24,7 +24,10 @@
 			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"
 						Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
 					   TextTrimming="CharacterEllipsis" />
-			<ComboBox x:Name="cbTagClass" Width="65" VerticalAlignment="Center" Margin="20,0,0,0"
+
+			<Button x:Name="NullTagButton" Content="Ø" Margin="20,0,0,0" Width="20" Click="NullTagButton_OnClick" ToolTip="Nulls this tag reference."/>
+			
+			<ComboBox x:Name="cbTagClass" Width="65" VerticalAlignment="Center" Margin="5,0,0,0"
 					  SelectionChanged="cbTagClass_SelectionChanged"
 					  ItemsSource="{DynamicResource classList}"
 					  SelectedIndex="{Binding Class, Mode=TwoWay, Converter={StaticResource classToIndexConverter}}">
@@ -41,28 +44,12 @@
 					  SelectedItem="{Binding Value, Mode=TwoWay}"
 					  SelectionChanged="cbTagEntry_SelectionChanged" />
 
-			<StackPanel Orientation="Horizontal">
-				<Button x:Name="btnNullTag" Content="Ø" Margin="5,0,0,0" Width="20" Click="btnNullTag_Click" ToolTip="Nulls this tag reference."/>
-				<Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
-					Visibility="{Binding ShowJumpTo}" ToolTip="Opens this tag in a new tab."
-					Command="{x:Static local:TagValue.JumpToCommand}" CommandParameter="{Binding Value}"
-					CommandTarget="{Binding ElementName=control}">
-					<StackPanel>
-						<TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
-					</StackPanel>
-				</Button>
-				<StackPanel.Style>
-					<Style>
-						<Setter Property="Button.Visibility" Value="Collapsed" />
-						<Setter Property="ComboBox.Width" Value="550"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding ElementName=TagValue, Path=IsMouseOver}" Value="True">
-								<Setter Property="Button.Visibility" Value="Visible"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</StackPanel.Style>
-			</StackPanel>
+			<Button x:Name="JumpToTagButton" Margin="5,0,0,0" Height="22" Width="35"
+						Visibility="{Binding ShowJumpTo}" ToolTip="Opens this tag in a new tab."
+						Command="{x:Static local:TagValue.JumpToCommand}" CommandParameter="{Binding Value}"
+						CommandTarget="{Binding ElementName=control}">
+				<TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
+			</Button>
 		</StackPanel>
 	</Grid>
 </UserControl>

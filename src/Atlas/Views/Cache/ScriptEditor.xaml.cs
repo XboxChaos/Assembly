@@ -33,10 +33,10 @@ namespace Atlas.Views.Cache
 			EditorTitle = String.Format(EditorFormat, scriptFile.Name);
 		}
 
-
 		public bool Close()
 		{
-			throw new NotImplementedException();
+			App.Storage.HomeWindowViewModel.AddRecentEditor(ViewModel.CachePageViewModel, this, ViewModel.ScriptFile, ViewModel.ScriptText);
+			return true;
 		}
 
 		#region Inpc Helpers

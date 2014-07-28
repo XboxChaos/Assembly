@@ -34,9 +34,11 @@ namespace Atlas.Helpers.Tags
 			// Create folders for everything but the tag's name
 			var components = name.Split('\\', '/');
 			var parentNode = Root;
+			var parentDirectory = "";
 			for (var i = 0; i < components.Length - 1; i++)
 			{
-				var node = new TagHierarchyNode(components[i], null, _cacheFile);
+				parentDirectory += components[i] + "\\";
+				var node = new TagHierarchyNode(components[i], null, _cacheFile, parentDirectory);
 				parentNode = parentNode.InsertChildSorted(node);
 			}
 
@@ -54,7 +56,7 @@ namespace Atlas.Helpers.Tags
 				extension = CharConstant.ToString(tag.Class.Magic);
 			}
 			var nodeName = components[components.Length - 1] + "." + extension;
-			return parentNode.InsertChildSorted(new TagHierarchyNode(nodeName, suffix, _cacheFile, tag));
+			return parentNode.InsertChildSorted(new TagHierarchyNode(nodeName, suffix, _cacheFile, tag, parentDirectory + nodeName));
 		}
 
 		/// <summary>

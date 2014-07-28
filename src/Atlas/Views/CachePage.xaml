@@ -9,6 +9,7 @@
 			xmlns:models="clr-namespace:Atlas.Models"
 			xmlns:converters="clr-namespace:Atlas.Converters"
 			xmlns:selectors="clr-namespace:Atlas.Selectors"
+			xmlns:local="clr-namespace:Atlas.Views.Cache.TagEditorComponents"
 			mc:Ignorable="d" 
 			 d:DesignHeight="800" d:DesignWidth="1200">
 	<UserControl.Resources>
@@ -23,6 +24,10 @@
 		</ContextMenu>
 		<converters:TagHierarchyContextMenuConverter x:Key="IValueConverterTagHierarchyContextMenu" TagContextMenu="{StaticResource TagHierarchyContextMenu}" FolderContextMenu="{StaticResource FolderHierarchyContextMenu}" />
 	</UserControl.Resources>
+	<UserControl.CommandBindings>
+		<CommandBinding Command="{x:Static local:TagValue.JumpToCommand}"
+		                Executed="JumpToTagCommand_OnExecuted" />
+	</UserControl.CommandBindings>
 	<Grid>
 		<Grid>
 			<Grid.RowDefinitions>
@@ -238,7 +243,7 @@
 
 			<Grid x:Name="MainContentGrid" Grid.Column="0" Grid.Row="1">
 				<custom:MetroClosableTabControl x:Name="EditorTabControl" Background="{x:Null}" BorderBrush="{DynamicResource AssemblyAccentBrush}"
-												Foreground="White" BorderThickness="0,2,0,0" Margin="0" Padding="2" SelectedItem="{Binding Path=SelectedEditor, Mode=TwoWay}"
+												Foreground="White" BorderThickness="0,2,0,0" Margin="3,-4,-3,4" Padding="2" SelectedItem="{Binding Path=SelectedEditor, Mode=TwoWay}"
 												ItemsSource="{Binding Path=Editors}">
 					<custom:MetroClosableTabControl.ItemContainerStyle>
 						<Style BasedOn="{StaticResource {x:Type custom:MetroClosableTabItem}}" TargetType="{x:Type custom:MetroClosableTabItem}">
@@ -295,7 +300,7 @@
 									<custom:MetroWatermarkTextbox x:Name="TagExplorerSearchTextbox" Grid.Row="1" Watermark="{Binding Path=CacheFile.InternalName, FallbackValue='Search Tag Explorer - internal (Ctrl+;)', StringFormat='Search Tag Explorer - {0} (Ctrl+;)'}" />
 									<TreeView x:Name="TagTreeView" Grid.Row="2" ItemsSource="{Binding Nodes}" 
 											  Background="{x:Null}" VerticalAlignment="Stretch" BorderThickness="0" Padding="0,10,0,0" 
-											  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard">
+											  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard" MouseDoubleClick="TagTreeView_MouseDoubleClick">
 										<TreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type dataBind:TagHierarchyNode}" ItemsSource="{Binding Babies}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" 

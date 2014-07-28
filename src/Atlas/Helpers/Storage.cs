@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using Atlas.Extensions;
 using Atlas.Models;
 using Atlas.ViewModels;
 using Atlas.Windows;

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Atlas.Metro.Controls.Custom
 {
@@ -29,12 +30,15 @@ namespace Atlas.Metro.Controls.Custom
 
 			var closeButton = GetTemplateChild("PART_Close") as Button;
 			if (closeButton != null)
-				closeButton.Click += closeButton_Click;
-		}
+				closeButton.Click += (sender, args) => RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
 
-		private void closeButton_Click(object sender, RoutedEventArgs e)
-		{
-			RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
+			var element = GetTemplateChild("ContainerGrid") as Grid;
+			if (element != null)
+				element.MouseDown += (sender, args) =>
+				{
+					if (args.MiddleButton == MouseButtonState.Pressed)
+						RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
+				};
 		}
 	}
 }

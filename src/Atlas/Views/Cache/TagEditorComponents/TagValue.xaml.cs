@@ -23,10 +23,10 @@ namespace Atlas.Views.Cache.TagEditorComponents
 
 		private void cbTagClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			bool enable = (cbTagClass.SelectedIndex > 0);
+			var enable = (cbTagClass.SelectedIndex > 0);
 			cbTagEntry.IsEnabled = enable;
-			btnNullTag.IsEnabled = enable;
-			btnJumpToTag.IsEnabled = enable;
+			NullTagButton.IsEnabled = enable;
+			JumpToTagButton.IsEnabled = enable;
 		}
 
 		private void cbTagEntry_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -41,7 +41,7 @@ namespace Atlas.Views.Cache.TagEditorComponents
 			e.CanExecute = true;
 		}
 
-		private void btnNullTag_Click(object sender, RoutedEventArgs e)
+		private void NullTagButton_OnClick(object sender, RoutedEventArgs e)
 		{
 			cbTagClass.SelectedIndex = 0;
 		}
@@ -87,9 +87,7 @@ namespace Atlas.Views.Cache.TagEditorComponents
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var sourceClass = value as TagHierarchyNode;
-			if (sourceClass == null)
-				return null;
-			return sourceClass.Children;
+			return sourceClass == null ? null : sourceClass.Children;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -17,7 +17,7 @@ namespace Atlas.Helpers.Tags
 		/// </summary>
 		protected TagHierarchy()
 		{
-			Root = new TagHierarchyNode("(root)", null, null);
+			Root = new TagHierarchyNode("(root)", null, null, "");
 		}
 
 		/// <summary>

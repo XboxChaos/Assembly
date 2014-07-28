@@ -61,9 +61,10 @@ namespace Atlas.Views.Cache
 			if (ViewModel.FieldChanges.Any())
 				throw new InvalidOperationException();
 
+			App.Storage.HomeWindowViewModel.AddRecentEditor(ViewModel.CachePageViewModel, this, ViewModel.TagHierarchyNode, ViewModel.TagHierarchyNode.FullPath);
+
 			return true;
 		}
-
 
 		#region Events
 
@@ -74,6 +75,12 @@ namespace Atlas.Views.Cache
 
 			if (e.Key == Key.Escape)
 				DataSearchResetButton_Click(null, null);
+
+			if (e.Key == Key.S && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+				ViewModel.SaveTagData(TagDataWriter.SaveType.File);
+
+			if (e.Key == Key.P && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+				ViewModel.SaveTagData(TagDataWriter.SaveType.Memory);
 		}
 
 		private void SearchQueryTextBox_OnKeyUp(object sender, KeyEventArgs e)
@@ -84,6 +91,11 @@ namespace Atlas.Views.Cache
 				PreviousSearchTagDataButton_Click(null, null);
 			else
 				NextSearchTagDataButton_Click(null, null);
+		}
+
+		private void PluginOptionToggleButton_OnChanged(object sender, RoutedEventArgs e)
+		{
+			ViewModel.LoadTagData(TagDataReader.LoadType.File, this);
 		}
 
 		#endregion

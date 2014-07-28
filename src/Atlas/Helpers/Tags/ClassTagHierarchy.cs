@@ -45,7 +45,7 @@ namespace Atlas.Helpers.Tags
 			var classNode = _nodesByClass[tag.Class];
 
 			// Insert the node
-			var node = new TagHierarchyNode(name, null, _cacheFile, tag);
+			var node = new TagHierarchyNode(name, null, _cacheFile, tag, null);
 			return classNode.InsertChildSorted(node);
 		}
 
@@ -108,7 +108,7 @@ namespace Atlas.Helpers.Tags
 			if (suffix != null)
 				suffix = " - " + suffix;
 
-			return new TagHierarchyNode(name, suffix, _cacheFile, tagClass);
+			return new TagHierarchyNode(name, suffix, _cacheFile, tagClass, null);
 		}
 
 		/// <summary>
