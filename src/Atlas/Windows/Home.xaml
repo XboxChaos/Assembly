@@ -46,7 +46,7 @@
 									</Thumb>
 
 									<Thumb x:Name="ResizeRightThumb" Opacity="0" Background="{x:Null}" 
-										   Foreground="{x:Null}" Width="8" Margin="0,28,0,11"
+										   Foreground="{x:Null}" Width="3" Margin="0,28,0,11"
 										   HorizontalAlignment="Right" VerticalAlignment="Stretch" Cursor="SizeWE">
 										<Thumb.Style>
 											<Style TargetType="{x:Type Thumb}">
@@ -56,7 +56,7 @@
 									</Thumb>
 
 									<Thumb x:Name="ResizeLeftThumb" Opacity="0" Background="{x:Null}" 
-										   Foreground="{x:Null}" Width="8" Margin="0,28,0,11"
+										   Foreground="{x:Null}" Width="3" Margin="0,28,0,11"
 										   HorizontalAlignment="Left" VerticalAlignment="Stretch" Cursor="SizeWE">
 										<Thumb.Style>
 											<Style TargetType="{x:Type Thumb}">
@@ -76,7 +76,7 @@
 									</Thumb>
 
 									<Thumb x:Name="ResizeTopThumb" Opacity="0" Background="{x:Null}" 
-										   Foreground="{x:Null}" Height="8" Margin="0,0,11,0"
+										   Foreground="{x:Null}" Height="3" Margin="0,0,11,0"
 										   HorizontalAlignment="Stretch" VerticalAlignment="Top" Cursor="SizeNS">
 										<Thumb.Style>
 											<Style TargetType="{x:Type Thumb}">
@@ -175,12 +175,15 @@
 
 					<Separator />
 
-					<MenuItem Header="Recently Closed Editors" FontFamily="{DynamicResource MetroFontLight}">
-						<MenuItem Header="1 riverworld://obejcts/multi/masterchief/masterchief.bipd - Data Editor" FontFamily="{DynamicResource MetroFontLight}" />
-						<MenuItem Header="2 riverworld://obejcts/multi/masterchief/masterchief.snd! - Sound Editor" FontFamily="{DynamicResource MetroFontLight}" />
-						<MenuItem Header="3 riverworld://obejcts/multi/masterchief/masterchief.hlmt - Data Editor" FontFamily="{DynamicResource MetroFontLight}" />
-						<MenuItem Header="4 riverworld://obejcts/multi/masterchief/masterchief.bitm - Bitmap Editor" FontFamily="{DynamicResource MetroFontLight}" />
-						<MenuItem Header="5 riverworld://obejcts/multi/masterchief/masterchief.hlmt - Data Editor" FontFamily="{DynamicResource MetroFontLight}" />
+					<MenuItem Header="Recently Closed Editors" FontFamily="{DynamicResource MetroFontLight}" ItemsSource="{Binding Path=RecentEditors}">
+						<MenuItem.ItemContainerStyle>
+							<Style TargetType="{x:Type MenuItem}">
+								<Setter Property="Header" Value="{Binding Path=FriendlyName}" />
+								<Setter Property="FontFamily" Value="{DynamicResource MetroFontLight}" />
+								<Setter Property="Command" Value="{Binding Path=OpenCommand}" />
+								<Setter Property="CommandParameter" Value="{Binding}" />
+							</Style>
+						</MenuItem.ItemContainerStyle>
 					</MenuItem>
 					<MenuItem Header="Recent Files" FontFamily="{DynamicResource MetroFontLight}">
 						<MenuItem Header="1 C:/filepath" FontFamily="{DynamicResource MetroFontLight}" />

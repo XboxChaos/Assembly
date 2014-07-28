@@ -27,8 +27,11 @@ namespace Atlas.ViewModels
 	{
 		public CachePage CachePage { get; private set; }
 
+		public static CachePageViewModel Singleton { get; private set; }
+
 		public CachePageViewModel(CachePage cachePage)
 		{
+			Singleton = this;
 			CachePage = cachePage;
 			Editors = new ObservableCollection<ICacheEditor>();
 
@@ -286,7 +289,11 @@ namespace Atlas.ViewModels
 		public void LoadScriptEditor(IScriptFile scriptFile)
 		{
 			ICacheEditor editor = null;
-			foreach (var edi in from edi in Editors let parsedEditor = edi as ScriptEditor where parsedEditor != null where parsedEditor.ViewModel.ScriptFile == scriptFile select edi)
+			foreach (var edi in from edi in Editors 
+								let parsedEditor = edi as ScriptEditor 
+								where parsedEditor != null 
+								where parsedEditor.ViewModel.ScriptFile == scriptFile 
+								select edi)
 				editor = edi;
 
 			if (editor == null)

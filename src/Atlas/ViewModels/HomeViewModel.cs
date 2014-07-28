@@ -1,13 +1,20 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Threading;
+using Atlas.Common;
 using Atlas.Dialogs;
+using Atlas.Helpers.Tags;
 using Atlas.Models;
+using Atlas.Models.Cache;
 using Atlas.Views;
 using Atlas.Views.BLF;
+using Atlas.Views.Cache;
+using Blamite.Blam.Scripting;
 using Blamite.IO;
 
 namespace Atlas.ViewModels
@@ -17,6 +24,10 @@ namespace Atlas.ViewModels
 		public HomeViewModel()
 		{
 			_statusResetTimer.Tick += (sender, args) => { Status = "Ready..."; };
+
+			_recentEditors.CollectionChanged += delegate { OnPropertyChanged("RecentEditors"); };
+
+			OpenRecentEditorCommand = new RelayCommand<RecentEditor>(OpenRecentEditor);
 		}
 
 		#region Properties
@@ -99,8 +110,8 @@ namespace Atlas.ViewModels
 			set
 			{
 				// try closing current page
-				if (_assemblyPage != null)
-					if (!_assemblyPage.Close()) return;
+				if (_assemblyPage != null && !_assemblyPage.Close())
+					return;
 
 				// aite, we can
 				SetField(ref _assemblyPage, value);
@@ -295,7 +306,7 @@ namespace Atlas.ViewModels
 					AssemblyPage = new CampaignPage(filePath);
 					break;
 
-				case Type.Patch:
+				//case Type.Patch:
 				default:
 					throw new NotImplementedException();
 			}
@@ -305,6 +316,78 @@ namespace Atlas.ViewModels
 				App.Storage.Settings.RecentFiles.Remove(existing);
 			App.Storage.Settings.RecentFiles.Insert(0, new RecentFile(filePath, type));
 		}
+
+		#endregion
+
+
+		#region Commands
+
+		public ICommand OpenRecentEditorCommand
+		{
+			get { return _openRecentEditorCommand; }
+			set { SetField(ref _openRecentEditorCommand, value); }
+		}
+		private ICommand _openRecentEditorCommand;
+
+		#endregion
+
+		#region Menu
+
+		private const string TagEditorName = "Tag Editor";
+		private const string ScriptEditorName = "Script Editor";
+		private const string UnknownEditorName = "Unknown Editor";
+		public void AddRecentEditor(CachePageViewModel cachePageViewModel, ICacheEditor editor, object editorParamater, string tagPath)
+		{
+			string editorName;
+			if (editor is TagEditor)
+				editorName = TagEditorName;
+			else if (editor is ScriptEditor)
+				editorName = ScriptEditorName;
+			else
+				editorName = UnknownEditorName;
+
+			RecentEditors.Insert(0,
+				new RecentEditor
+				{
+					EditorName = editorName,
+					EditorParamater = editorParamater,
+					InternalName = cachePageViewModel.CacheFile.InternalName,
+					TagPath = tagPath,
+					OpenCommand = OpenRecentEditorCommand
+				});
+
+			while (RecentEditors.Count > 10)
+				RecentEditors.RemoveAt(10);
+		}
+
+		public void OpenRecentEditor(RecentEditor recentEditor)
+		{
+			var cachePage = AssemblyPage as CachePage;
+			if (cachePage == null) return;
+			switch (recentEditor.EditorName)
+			{
+				case TagEditorName:
+					cachePage.ViewModel.LoadTagEditor((TagHierarchyNode)recentEditor.EditorParamater);
+					break;
+
+				case ScriptEditorName:
+					cachePage.ViewModel.LoadScriptEditor((IScriptFile)recentEditor.EditorParamater);
+					break;
+			}
+			RemoveRecentEditor(recentEditor);
+		}
+
+		public void RemoveRecentEditor(RecentEditor recentEditor)
+		{
+			RecentEditors.Remove(recentEditor);
+		}
+
+		public ObservableCollection<RecentEditor> RecentEditors
+		{
+			get { return _recentEditors; }
+			set { SetField(ref _recentEditors, value); }
+		}
+		private ObservableCollection<RecentEditor> _recentEditors = new ObservableCollection<RecentEditor>();
 
 		#endregion
 	}

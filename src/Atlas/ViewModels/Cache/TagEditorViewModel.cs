@@ -233,7 +233,8 @@ namespace Atlas.ViewModels.Cache
 			FieldChanges = new FieldChangeSet();
 			MemoryChanges = new FieldChangeSet();
 
-			var tagDataReader = new TagDataReader(streamManager, baseOffset, CachePageViewModel.CacheFile, CachePageViewModel.EngineDescription, type, FieldChanges);
+			var tagDataReader = new TagDataReader(streamManager, baseOffset, CachePageViewModel.CacheFile,
+				CachePageViewModel.EngineDescription, type, FieldChanges);
 			Flattener = new TagBlockFlattener(tagDataReader, ChangeTracker, FieldChanges);
 			Flattener.Flatten(PluginVisitor.Values);
 			tagDataReader.ReadFields(PluginVisitor.Values);
@@ -250,7 +251,8 @@ namespace Atlas.ViewModels.Cache
 				switch (CachePageViewModel.RteProvider.ConnectionType)
 				{
 					case RteConnectionType.ConsoleX360:
-						App.Storage.HomeWindowViewModel.Status = "Successfully loaded tag data from Xbox 360 Development Console's memory";
+						App.Storage.HomeWindowViewModel.Status =
+							"Successfully loaded tag data from Xbox 360 Development Console's memory";
 						break;
 
 					case RteConnectionType.LocalProcess:

@@ -28,8 +28,10 @@ namespace Atlas.Helpers.Tags
 		/// <param name="name">The node's name.</param>
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
 		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
-		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile)
+		/// <param name="path">The node's file path. Can be <c>null</c>.</param>
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, string path)
 		{
+			FullPath = path;
 			CacheFile = cacheFile;
 			Name = name;
 			Suffix = suffix;
@@ -46,8 +48,9 @@ namespace Atlas.Helpers.Tags
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
 		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
 		/// <param name="tag">The tag to associate with the node.</param>
-		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITag tag)
-			: this(name, suffix, cacheFile)
+		/// <param name="path">The node's file path. Can be <c>null</c>.</param>
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITag tag, string path)
+			: this(name, suffix, cacheFile, path)
 		{
 			Tag = tag;
 			TagClass = Tag.Class;
@@ -63,8 +66,9 @@ namespace Atlas.Helpers.Tags
 		/// <param name="suffix">The node's suffix. Can be <c>null</c>.</param>
 		/// <param name="cacheFile">The cache file the hierarchy belongs to. Can be <c>null</c>.</param>
 		/// <param name="tagClass">The tag class to associate with the node.</param>
-		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITagClass tagClass)
-			: this(name, suffix, cacheFile)
+		/// <param name="path">The node's file path. Can be <c>null</c>.</param>
+		public TagHierarchyNode(string name, string suffix, ICacheFile cacheFile, ITagClass tagClass, string path)
+			: this(name, suffix, cacheFile, path)
 		{
 			TagClass = tagClass;
 
@@ -109,6 +113,11 @@ namespace Atlas.Helpers.Tags
 		{
 			get { return !string.IsNullOrEmpty(Suffix); }
 		}
+
+		/// <summary>
+		/// Gets the full path (including tag name if applicable) of the node.
+		/// </summary>
+		public string FullPath { get; private set; }
 
 		public ICacheFile CacheFile { get; private set; }
 
@@ -217,7 +226,7 @@ namespace Atlas.Helpers.Tags
 				throw new ArgumentException("The node is not a direct child node");
 
 			// Create a temporary node to determine its new index in the list
-			var temp = new TagHierarchyNode(newName, child.Suffix, CacheFile, child.Tag);
+			var temp = new TagHierarchyNode(newName, child.Suffix, CacheFile, child.FullPath.Replace(child.Name, newName));
 			var newPos = ListSearching.BinarySearch(Children, temp, _sortComparison);
 			if (newPos >= 0)
 				throw new InvalidOperationException("A node with the new name already exists");

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Atlas.Dialogs;
 using Atlas.Helpers.Tags;
 using Atlas.Metro.Controls.Custom;
@@ -56,7 +57,9 @@ namespace Atlas.Views
 					MetroMessageBox.MessageBoxButton.Cancel
 				});
 
-			return (result == MetroMessageBox.MessageBoxButton.No);
+			var close = result == MetroMessageBox.MessageBoxButton.Yes;
+			if (close) App.Storage.HomeWindowViewModel.RecentEditors.Clear();
+			return close;
 		}
 
 		private void OpenTagContextMenu_OnClick(object sender, RoutedEventArgs e)
@@ -65,6 +68,21 @@ namespace Atlas.Views
 			if (tagHierarchyNode == null) return;
 
 			ViewModel.LoadTagEditor(tagHierarchyNode);
+		}
+		private void TagTreeView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			var treeView = sender as TreeView;
+			if (treeView == null) return;
+			var node = treeView.SelectedItem as TagHierarchyNode;
+			if (node == null) return;
+			if (node.IsFolder) return;
+			ViewModel.LoadTagEditor(node);
+
+		}
+		private void JumpToTagCommand_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var tag = e.Parameter as TagHierarchyNode;
+			if (tag != null) ViewModel.LoadTagEditor(tag);
 		}
 		private void ExtractTagContextMenu_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -243,7 +261,8 @@ namespace Atlas.Views
 		{
 			var editor = ((MetroClosableTabItem)args.OriginalSource).Content as ICacheEditor;
 			if (editor == null) return;
-			if (editor.Close()) ViewModel.Editors.Remove(editor);
+			if (editor.Close())
+				ViewModel.Editors.Remove(editor);
 		}
 	}
 }
