@@ -111,5 +111,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				NotifyPropertyChanged("Value");
 			}
 		}
+		
+		public bool ShowValue
+		{
+		get { return App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex; }
+		}
 	}
 }
