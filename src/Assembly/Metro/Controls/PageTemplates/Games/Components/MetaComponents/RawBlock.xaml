@@ -5,40 +5,28 @@
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:Components="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components" mc:Ignorable="d"
-             Height="169" Width="595"
+             xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
+			 mc:Ignorable="d"
+             Height="164" Width="606"
              HorizontalAlignment="Left">
 	<Grid>
 		<TextBlock x:Name="lblValueName" Text="{Binding Name}" ToolTip="{Binding Name}"
 		           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left"
 		           Margin="0,5,0,0" Width="180" TextTrimming="CharacterEllipsis" />
-		<Border BorderBrush="#595959" BorderThickness="1" Margin="200,3,10,0" VerticalAlignment="Top" Height="135">
-			<avalonEdit:TextEditor x:Name="txtValue" Document="{Binding Document}" Padding="4,2,0,2"
-			                       HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"
-			                       FontFamily="Consolas" FontSize="12" Background="#414141" Foreground="White"
-			                       MouseRightButtonDown="txtValue_MouseRightButtonDown_1" HorizontalScrollBarVisibility="Auto" WordWrap="True">
-				<avalonEdit:TextEditor.ContextMenu>
-					<ContextMenu>
-						<MenuItem Name="cutItem" Command="Cut"/>
-						<MenuItem Name="copyItem" Command="Copy"/>
-						<MenuItem Name="pasteItem" Command="Paste"/>
-						<Separator/>
-						<MenuItem Name="selectItem" Command="SelectAll"/>
-					</ContextMenu>
-				</avalonEdit:TextEditor.ContextMenu>
-			</avalonEdit:TextEditor>
-		</Border>
+		<TextBox Text="{Binding Value}" x:Name="txtValue" Height="130" Margin="200,0,4,28" MaxLength="{Binding MaxLength}"
+			                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+			                       FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" />
 
-		<Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="385" Margin="0,0,10,3">
+		<Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="385" Margin="0,0,4,3">
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<TextBlock Text="{Binding Kind}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 				           HorizontalAlignment="Left" Margin="0,0,13,0" Width="110" TextTrimming="CharacterEllipsis" />
 				<TextBlock Text="Length: " Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 				           HorizontalAlignment="Left" Margin="0,0,0,0" Width="50" TextTrimming="CharacterEllipsis" />
-				<TextBox Text="{Binding Length}" Width="80" Margin="-4,0,0,0" IsReadOnly="True" />
+				<TextBox Text="{Binding Length}" Width="80" Margin="-4,0,0,0" IsReadOnly="True"/>
 				<TextBlock Text="Offset: " Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 				           HorizontalAlignment="Left" Margin="13,0,0,0" Width="50" TextTrimming="CharacterEllipsis" />
-				<TextBox Text="{Binding DataAddressHex}" Width="80" Margin="-8,0,0,0" IsReadOnly="True" />
+				<TextBox Text="{Binding DataAddressHex}" Width="80" Margin="-8,0,0,0" IsReadOnly="True"/>
 			</StackPanel>
 		</Grid>
 
