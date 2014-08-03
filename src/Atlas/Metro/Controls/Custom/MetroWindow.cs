@@ -65,106 +65,91 @@ namespace Atlas.Metro.Controls.Custom
 
 		#region Resizing
 
-		public void ResizeCornerThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+		public void ResizeBottomRightThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var yAdjust = Height + e.VerticalChange;
-			var xAdjust = Width + e.HorizontalChange;
+            var yAdjust = Height + e.VerticalChange;
+            var xAdjust = Width + e.HorizontalChange;
 
-			if (xAdjust > MinWidth)
-			{
-				Width = xAdjust;
-			}
-			else
-			{
-				Width = MinWidth;
-			}
-
-			if (yAdjust > MinHeight)
-			{
-				Height = yAdjust;
-			}
-			else
-			{
-				Height = MinHeight;
-			}
+            Width = xAdjust > MinWidth ? xAdjust : MinWidth;
+            Height = yAdjust > MinHeight ? yAdjust : MinHeight;
 		}
 
 		public void ResizeRightThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var xAdjust = Width + e.HorizontalChange;
+            var xAdjust = Width + e.HorizontalChange;
 
-			if (xAdjust > MinWidth)
-			{
-				Width = xAdjust;
-			}
-			else
-			{
-				Width = MinWidth;
-			}
+            if (xAdjust > MinWidth)
+            {
+                Width = xAdjust;
+            }
+            else
+            {
+                Width = MinWidth;
+            }
 		}
 
 		public void ResizeBottomThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var yAdjust = Height + e.VerticalChange;
+            var yAdjust = Height + e.VerticalChange;
 
-			if (yAdjust > MinHeight)
-			{
-				Height = yAdjust;
-			}
-			else
-			{
-				Height = MinHeight;
-			}
+            if (yAdjust > MinHeight)
+            {
+                Height = yAdjust;
+            }
+            else
+            {
+                Height = MinHeight;
+            }
 		}
 
 		public void ResizeLeftThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var xAdjust = Width - e.HorizontalChange;
+            var xAdjust = Width - e.HorizontalChange;
 
-			if (xAdjust > MinWidth)
-			{
-				Width -= e.HorizontalChange;
-				Left += e.HorizontalChange;
-			}
-			else
-			{
-				var diff = Width - MinWidth;
-				if (diff > 0)
-				{
-					Width -= diff;  // Width = MinWidth
-					Left += diff;   // mirror that^ change
-				}
-				else
-				{
-					Width += diff;  // Width = MinWidth
-					Left -= diff;   // mirror that^ change
-				}
-			}
+            if (xAdjust > MinWidth)
+            {
+                Left += e.HorizontalChange;
+                Width -= e.HorizontalChange;
+            }
+            else
+            {
+                var diff = Width - MinWidth;
+                if (diff > 0)
+                {
+                    Left += diff; // mirror following change
+                    Width -= diff; // Width = MinWidth
+                }
+                else
+                {
+                    Left -= diff; // mirror following change
+                    Width += diff; // Width = MinWidth
+                }
+            }
 		}
 
 		public void ResizeTopThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var yAdjust = Height - e.VerticalChange;
+            var yAdjust = Height - e.VerticalChange;
 
-			if (yAdjust > MinHeight)
-			{
-				Height -= e.VerticalChange;
-				Top += e.VerticalChange;
-			}
-			else
-			{
-				var diff = Height - MinHeight;
-				if (diff > 0)
-				{
-					Height -= diff; // Height = MinHeight
-					Top += diff;	// mirror that^ change
-				}
-				else
-				{
-					Height += diff; // Height = MinHeight
-					Top -= diff;	// mirror that^ change
-				}
-			}
+            if (yAdjust > MinHeight)
+            {
+                Top += e.VerticalChange;
+                Height -= e.VerticalChange;
+            }
+            else
+            {
+                var diff = Height - MinHeight;
+                if (diff > 0)
+                {
+                    Top += diff;	// mirror following change
+                    Height -= diff; // Height = MinHeight
+                }
+                else
+                {
+                    Top -= diff;	// mirror following change
+                    Height += diff; // Height = MinHeight
+                }
+            }
 		}
 
 		#endregion

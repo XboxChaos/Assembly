@@ -14,11 +14,8 @@ namespace Atlas.Dialogs.Controls
 		public MetroViewValueAsWindow(ViewValueAsViewModel viewModel)
 		{
 			InitializeComponent();
-
-			DwmDropShadow.DropShadowToWindow(this);
 			DataContext = ViewModel = viewModel;
 			WindowTitle = Title = ViewModel.Title;
-
 			ViewModel.RefreshTagData();
 		}
 

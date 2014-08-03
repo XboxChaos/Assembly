@@ -46,7 +46,6 @@ namespace Atlas.Windows
 		protected override void OnSourceInitialized(EventArgs e)
 		{
 			OnStateChanged(null);
-			DwmDropShadow.DropShadowToWindow(this);
 
 			base.OnSourceInitialized(e);
 		}
