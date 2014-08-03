@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo4" baseSize="0x74">
+	<revisions>
+		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+		<revision author="SnipeStyle" version="2">Source, Names, Globals, Variables, Tags, Syntax, String Table.</revision>
+		<revision author="SnipeStyle" version="3">Updated Value Types And Modifiers.</revision>
+		<revision author="SnipeStyle" version="4">Shared Functions.</revision>
+		<revision author="SnipeStyle" version="5">Added External Syntax Types, Corrected File Index.</revision>
+		<revision author="kornman00" version="6">Mark of the beast</revision>
+	</revisions>
+	<reflexive name="Source Files" offset="0x0" visible="true" entrySize="0x38">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<dataRef name="Data" format="asciiz" offset="0x20" visible="true" />
+		<bitfield32 name="Flags" offset="0x34" visible="true">
+			<bit name="Auto Generated Script" index="0" />
+			<bit name="AI Objective Fragments" index="1" />
+			<bit name="AI Performance Fragments" index="2" />
+		</bitfield32>
+	</reflexive>
+	<reflexive name="Scripts" offset="0xC" visible="true" entrySize="0x20">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<enum16 name="Type" offset="0x4" visible="true">
+			<option name="Startup" value="0x0" />
+			<option name="Dormant" value="0x1" />
+			<option name="Continous" value="0x2" />
+			<option name="Static" value="0x3" />
+			<option name="Command Script" value="0x4" />
+			<option name="Stub" value="0x5" />
+		</enum16>
+		<bitfield16 name="Flags" offset="0x6" visible="true">
+			<bit name="Instanced" index="0" />
+			<bit name="Cinema" index="1" />
+		</bitfield16>
+		<enum32 name="Return Type" offset="0x8" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="string_id" value="0xB" />
+			<option name="unit_seat_mapping" value="0xC" />
+			<option name="trigger_volume" value="0xD" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
+			<option name="animation_graph" value="0x28" />
+			<option name="damage_effect" value="0x29" />
+			<option name="object_definition" value="0x2A" />
+			<option name="bitmap" value="0x2B" />
+			<option name="shader" value="0x2C" />
+			<option name="render_model" value="0x2D" />
+			<option name="structure_definition" value="0x2E" />
+			<option name="lightmap_definition" value="0x2F" />
+			<option name="cinematic_definition" value="0x30" />
+			<option name="cinematic_scene_definition" value="0x31" />
+			<option name="cinematic_scene_data_definition" value="0x32" />
+			<option name="cinematic_transition_definition" value="0x33" />
+			<option name="bink_definition" value="0x34" />
+			<option name="cui_screen_definition" value="0x35" />
+			<option name="any_tag" value="0x36" />
+			<option name="any_tag_not_resolving" value="0x37" />
+			<option name="game_difficulty" value="0x38" />
+			<option name="team" value="0x39" />
+			<option name="mp_team" value="0x3A" />
+			<option name="controller" value="0x3B" />
+			<option name="button_preset" value="0x3C" />
+			<option name="joystick_preset" value="0x3D" />
+			<option name="player_color" value="0x3E" />
+			<option name="player_model_choice" value="0x3F" />
+			<option name="voice_output_setting" value="0x40" />
+			<option name="voice_mask" value="0x41" />
+			<option name="subtitle_setting" value="0x42" />
+			<option name="havok_group" value="0x43" />
+			<option name="actor_type" value="0x44" />
+			<option name="model_state" value="0x45" />
+			<option name="event" value="0x46" />
+			<option name="character_physics" value="0x47" />
+			<option name="skull" value="0x48" />
+			<option name="firing_point_evaluator" value="0x49" />
+			<option name="damage_region" value="0x4A" />
+			<option name="currency_type" value="0x4B" />
+			<option name="delivery_method" value="0x4C" />
+			<option name="wave_difficulty" value="0x4D" />
+			<option name="firefight_goal" value="0x4E" />
+			<option name="firefight_wave_type" value="0x4F" />
+			<option name="font" value="0x50" />
+			<option name="text_justification" value="0x51" />
+			<option name="text_alignment" value="0x52" />
+			<option name="text_drop_shadow_type" value="0x53" />
+			<option name="object" value="0x54" />
+			<option name="unit" value="0x55" />
+			<option name="vehicle" value="0x56" />
+			<option name="weapon" value="0x57" />
+			<option name="device" value="0x58" />
+			<option name="scenery" value="0x59" />
+			<option name="effect_scenery" value="0x5A" />
+			<option name="object_name" value="0x5B" />
+			<option name="unit_name" value="0x5C" />
+			<option name="vehicle_name" value="0x5D" />
+			<option name="weapon_name" value="0x5E" />
+			<option name="device_name" value="0x5F" />
+			<option name="scenery_name" value="0x60" />
+			<option name="effect_scenery_name" value="0x61" />
+			<option name="cinematic_lightprobe" value="0x62" />
+			<option name="animation_budget_reference" value="0x63" />
+			<option name="looping_sound_budget_reference" value="0x64" />
+			<option name="sound_budget_reference" value="0x65" />
+		</enum32>
+		<uint16 name="Root Expression Salt" offset="0xC" visible="true" />
+		<uint16 name="Root Expression Index" offset="0xE" visible="true" />
+		<int32 name="Locals Allocation Size" offset="0x10" visible="true" />
+		<reflexive name="Parameters" offset="0x14" visible="true" entrySize="0x24">
+			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+			<enum32 name="Type" offset="0x20" visible="true">
+				<option name="unparsed" value="0x0" />
+				<option name="special_form" value="0x1" />
+				<option name="function_name" value="0x2" />
+				<option name="passthrough" value="0x3" />
+				<option name="void" value="0x4" />
+				<option name="boolean" value="0x5" />
+				<option name="real" value="0x6" />
+				<option name="short" value="0x7" />
+				<option name="long" value="0x8" />
+				<option name="string" value="0x9" />
+				<option name="script" value="0xA" />
+				<option name="string_id" value="0xB" />
+				<option name="unit_seat_mapping" value="0xC" />
+				<option name="trigger_volume" value="0xD" />
+				<option name="sound_event" value="0xE" />
+				<option name="cutscene_flag" value="0xF" />
+				<option name="cutscene_camera_point" value="0x10" />
+				<option name="cutscene_title" value="0x11" />
+				<option name="cutscene_recording" value="0x12" />
+				<option name="device_group" value="0x13" />
+				<option name="ai" value="0x14" />
+				<option name="ai_command_list" value="0x15" />
+				<option name="ai_command_script" value="0x16" />
+				<option name="ai_behavior" value="0x17" />
+				<option name="ai_orders" value="0x18" />
+				<option name="ai_line" value="0x19" />
+				<option name="starting_profile" value="0x1A" />
+				<option name="conversation" value="0x1B" />
+				<option name="player" value="0x1C" />
+				<option name="zone_set" value="0x1D" />
+				<option name="designer_zone" value="0x1E" />
+				<option name="point_reference" value="0x1F" />
+				<option name="point_set_reference" value="0x20" />
+				<option name="style" value="0x21" />
+				<option name="object_list" value="0x22" />
+				<option name="folder" value="0x23" />
+				<option name="sound" value="0x24" />
+				<option name="effect" value="0x25" />
+				<option name="damage" value="0x26" />
+				<option name="looping_sound" value="0x27" />
+				<option name="animation_graph" value="0x28" />
+				<option name="damage_effect" value="0x29" />
+				<option name="object_definition" value="0x2A" />
+				<option name="bitmap" value="0x2B" />
+				<option name="shader" value="0x2C" />
+				<option name="render_model" value="0x2D" />
+				<option name="structure_definition" value="0x2E" />
+				<option name="lightmap_definition" value="0x2F" />
+				<option name="cinematic_definition" value="0x30" />
+				<option name="cinematic_scene_definition" value="0x31" />
+				<option name="cinematic_scene_data_definition" value="0x32" />
+				<option name="cinematic_transition_definition" value="0x33" />
+				<option name="bink_definition" value="0x34" />
+				<option name="cui_screen_definition" value="0x35" />
+				<option name="any_tag" value="0x36" />
+				<option name="any_tag_not_resolving" value="0x37" />
+				<option name="game_difficulty" value="0x38" />
+				<option name="team" value="0x39" />
+				<option name="mp_team" value="0x3A" />
+				<option name="controller" value="0x3B" />
+				<option name="button_preset" value="0x3C" />
+				<option name="joystick_preset" value="0x3D" />
+				<option name="player_color" value="0x3E" />
+				<option name="player_model_choice" value="0x3F" />
+				<option name="voice_output_setting" value="0x40" />
+				<option name="voice_mask" value="0x41" />
+				<option name="subtitle_setting" value="0x42" />
+				<option name="havok_group" value="0x43" />
+				<option name="actor_type" value="0x44" />
+				<option name="model_state" value="0x45" />
+				<option name="event" value="0x46" />
+				<option name="character_physics" value="0x47" />
+				<option name="skull" value="0x48" />
+				<option name="firing_point_evaluator" value="0x49" />
+				<option name="damage_region" value="0x4A" />
+				<option name="currency_type" value="0x4B" />
+				<option name="delivery_method" value="0x4C" />
+				<option name="wave_difficulty" value="0x4D" />
+				<option name="firefight_goal" value="0x4E" />
+				<option name="firefight_wave_type" value="0x4F" />
+				<option name="font" value="0x50" />
+				<option name="text_justification" value="0x51" />
+				<option name="text_alignment" value="0x52" />
+				<option name="text_drop_shadow_type" value="0x53" />
+				<option name="object" value="0x54" />
+				<option name="unit" value="0x55" />
+				<option name="vehicle" value="0x56" />
+				<option name="weapon" value="0x57" />
+				<option name="device" value="0x58" />
+				<option name="scenery" value="0x59" />
+				<option name="effect_scenery" value="0x5A" />
+				<option name="object_name" value="0x5B" />
+				<option name="unit_name" value="0x5C" />
+				<option name="vehicle_name" value="0x5D" />
+				<option name="weapon_name" value="0x5E" />
+				<option name="device_name" value="0x5F" />
+				<option name="scenery_name" value="0x60" />
+				<option name="effect_scenery_name" value="0x61" />
+				<option name="cinematic_lightprobe" value="0x62" />
+				<option name="animation_budget_reference" value="0x63" />
+				<option name="looping_sound_budget_reference" value="0x64" />
+				<option name="sound_budget_reference" value="0x65" />
+			</enum32>
+		</reflexive>
+	</reflexive>
+	<reflexive name="Globals" offset="0x18" visible="true" entrySize="0xC">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<enum32 name="Type" offset="0x4" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="string_id" value="0xB" />
+			<option name="unit_seat_mapping" value="0xC" />
+			<option name="trigger_volume" value="0xD" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
+			<option name="animation_graph" value="0x28" />
+			<option name="damage_effect" value="0x29" />
+			<option name="object_definition" value="0x2A" />
+			<option name="bitmap" value="0x2B" />
+			<option name="shader" value="0x2C" />
+			<option name="render_model" value="0x2D" />
+			<option name="structure_definition" value="0x2E" />
+			<option name="lightmap_definition" value="0x2F" />
+			<option name="cinematic_definition" value="0x30" />
+			<option name="cinematic_scene_definition" value="0x31" />
+			<option name="cinematic_scene_data_definition" value="0x32" />
+			<option name="cinematic_transition_definition" value="0x33" />
+			<option name="bink_definition" value="0x34" />
+			<option name="cui_screen_definition" value="0x35" />
+			<option name="any_tag" value="0x36" />
+			<option name="any_tag_not_resolving" value="0x37" />
+			<option name="game_difficulty" value="0x38" />
+			<option name="team" value="0x39" />
+			<option name="mp_team" value="0x3A" />
+			<option name="controller" value="0x3B" />
+			<option name="button_preset" value="0x3C" />
+			<option name="joystick_preset" value="0x3D" />
+			<option name="player_color" value="0x3E" />
+			<option name="player_model_choice" value="0x3F" />
+			<option name="voice_output_setting" value="0x40" />
+			<option name="voice_mask" value="0x41" />
+			<option name="subtitle_setting" value="0x42" />
+			<option name="havok_group" value="0x43" />
+			<option name="actor_type" value="0x44" />
+			<option name="model_state" value="0x45" />
+			<option name="event" value="0x46" />
+			<option name="character_physics" value="0x47" />
+			<option name="skull" value="0x48" />
+			<option name="firing_point_evaluator" value="0x49" />
+			<option name="damage_region" value="0x4A" />
+			<option name="currency_type" value="0x4B" />
+			<option name="delivery_method" value="0x4C" />
+			<option name="wave_difficulty" value="0x4D" />
+			<option name="firefight_goal" value="0x4E" />
+			<option name="firefight_wave_type" value="0x4F" />
+			<option name="font" value="0x50" />
+			<option name="text_justification" value="0x51" />
+			<option name="text_alignment" value="0x52" />
+			<option name="text_drop_shadow_type" value="0x53" />
+			<option name="object" value="0x54" />
+			<option name="unit" value="0x55" />
+			<option name="vehicle" value="0x56" />
+			<option name="weapon" value="0x57" />
+			<option name="device" value="0x58" />
+			<option name="scenery" value="0x59" />
+			<option name="effect_scenery" value="0x5A" />
+			<option name="object_name" value="0x5B" />
+			<option name="unit_name" value="0x5C" />
+			<option name="vehicle_name" value="0x5D" />
+			<option name="weapon_name" value="0x5E" />
+			<option name="device_name" value="0x5F" />
+			<option name="scenery_name" value="0x60" />
+			<option name="effect_scenery_name" value="0x61" />
+			<option name="cinematic_lightprobe" value="0x62" />
+			<option name="animation_budget_reference" value="0x63" />
+			<option name="looping_sound_budget_reference" value="0x64" />
+			<option name="sound_budget_reference" value="0x65" />
+		</enum32>
+		<uint16 name="Initialization Expression Salt" offset="0x8" visible="true" />
+		<uint16 name="Initialization Expression Index" offset="0xA" visible="true" />
+	</reflexive>
+	<reflexive name="Instanced Variables" offset="0x24" visible="true" entrySize="0xC">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<enum32 name="Type" offset="0x4" visible="true">
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="string_id" value="0xB" />
+			<option name="unit_seat_mapping" value="0xC" />
+			<option name="trigger_volume" value="0xD" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
+			<option name="animation_graph" value="0x28" />
+			<option name="damage_effect" value="0x29" />
+			<option name="object_definition" value="0x2A" />
+			<option name="bitmap" value="0x2B" />
+			<option name="shader" value="0x2C" />
+			<option name="render_model" value="0x2D" />
+			<option name="structure_definition" value="0x2E" />
+			<option name="lightmap_definition" value="0x2F" />
+			<option name="cinematic_definition" value="0x30" />
+			<option name="cinematic_scene_definition" value="0x31" />
+			<option name="cinematic_scene_data_definition" value="0x32" />
+			<option name="cinematic_transition_definition" value="0x33" />
+			<option name="bink_definition" value="0x34" />
+			<option name="cui_screen_definition" value="0x35" />
+			<option name="any_tag" value="0x36" />
+			<option name="any_tag_not_resolving" value="0x37" />
+			<option name="game_difficulty" value="0x38" />
+			<option name="team" value="0x39" />
+			<option name="mp_team" value="0x3A" />
+			<option name="controller" value="0x3B" />
+			<option name="button_preset" value="0x3C" />
+			<option name="joystick_preset" value="0x3D" />
+			<option name="player_color" value="0x3E" />
+			<option name="player_model_choice" value="0x3F" />
+			<option name="voice_output_setting" value="0x40" />
+			<option name="voice_mask" value="0x41" />
+			<option name="subtitle_setting" value="0x42" />
+			<option name="havok_group" value="0x43" />
+			<option name="actor_type" value="0x44" />
+			<option name="model_state" value="0x45" />
+			<option name="event" value="0x46" />
+			<option name="character_physics" value="0x47" />
+			<option name="skull" value="0x48" />
+			<option name="firing_point_evaluator" value="0x49" />
+			<option name="damage_region" value="0x4A" />
+			<option name="currency_type" value="0x4B" />
+			<option name="delivery_method" value="0x4C" />
+			<option name="wave_difficulty" value="0x4D" />
+			<option name="firefight_goal" value="0x4E" />
+			<option name="firefight_wave_type" value="0x4F" />
+			<option name="font" value="0x50" />
+			<option name="text_justification" value="0x51" />
+			<option name="text_alignment" value="0x52" />
+			<option name="text_drop_shadow_type" value="0x53" />
+			<option name="object" value="0x54" />
+			<option name="unit" value="0x55" />
+			<option name="vehicle" value="0x56" />
+			<option name="weapon" value="0x57" />
+			<option name="device" value="0x58" />
+			<option name="scenery" value="0x59" />
+			<option name="effect_scenery" value="0x5A" />
+			<option name="object_name" value="0x5B" />
+			<option name="unit_name" value="0x5C" />
+			<option name="vehicle_name" value="0x5D" />
+			<option name="weapon_name" value="0x5E" />
+			<option name="device_name" value="0x5F" />
+			<option name="scenery_name" value="0x60" />
+			<option name="effect_scenery_name" value="0x61" />
+			<option name="cinematic_lightprobe" value="0x62" />
+			<option name="animation_budget_reference" value="0x63" />
+			<option name="looping_sound_budget_reference" value="0x64" />
+			<option name="sound_budget_reference" value="0x65" />
+		</enum32>
+		<uint16 name="Expression Salt" offset="0x8" visible="true" />
+		<uint16 name="Expression Index" offset="0xA" visible="true" />
+	</reflexive>
+	<reflexive name="References" offset="0x30" visible="true" entrySize="0x10">
+		<tagRef name="Reference" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Unit Seats Mapping" offset="0x3C" visible="true" entrySize="0xC">
+		<tagref name="Unit" offset="0x0" withClass="true" visible="true" />
+		<bitfield32 name="Seats Bitvector" offset="0x4" visible="true">
+			<bit name="Seat 0" index="0" />
+			<bit name="Seat 1" index="1" />
+			<bit name="Seat 2" index="2" />
+			<bit name="Seat 3" index="3" />
+			<bit name="Seat 4" index="4" />
+			<bit name="Seat 5" index="5" />
+			<bit name="Seat 6" index="6" />
+			<bit name="Seat 7" index="7" />
+			<bit name="Seat 8" index="8" />
+			<bit name="Seat 9" index="9" />
+			<bit name="Seat 10" index="10" />
+			<bit name="Seat 11" index="11" />
+			<bit name="Seat 12" index="12" />
+			<bit name="Seat 13" index="13" />
+			<bit name="Seat 14" index="14" />
+			<bit name="Seat 15" index="15" />
+			<bit name="Seat 16" index="16" />
+			<bit name="Seat 17" index="17" />
+			<bit name="Seat 18" index="18" />
+			<bit name="Seat 19" index="19" />
+			<bit name="Seat 20" index="20" />
+			<bit name="Seat 21" index="21" />
+			<bit name="Seat 22" index="22" />
+			<bit name="Seat 23" index="23" />
+			<bit name="Seat 24" index="24" />
+			<bit name="Seat 25" index="25" />
+			<bit name="Seat 26" index="26" />
+			<bit name="Seat 27" index="27" />
+			<bit name="Seat 28" index="28" />
+			<bit name="Seat 29" index="29" />
+			<bit name="Seat 30" index="30" />
+			<bit name="Seat 31" index="31" />
+		</bitfield32>
+		<undefined name="Unknown" offset="0x8" visible="false" />
+	</reflexive>
+	<reflexive name="Expressions" offset="0x48" visible="true" entrySize="0x1C">
+		<!-- node body is filled with 0xBA when datum isn't valid, while header is zero (normal sentinel for invalid datums) -->
+		<uint16 name="Salt (0 means unused)" offset="0x0" visible="true" />
+		<!-- constant_type / function_index / script_index -->
+		<int16 name="Opcode" offset="0x2" visible="true" />
+		<uint16 name="Next Expression Salt" offset="0x4" visible="true" />
+		<uint16 name="Next Expression Index" offset="0x6" visible="true" />
+		<!-- Set value to -2 for 'this' values -->
+		<uint8 name="Value 03 (MSB)" offset="0x8" visible="true" />
+		<uint8 name="Value 02" offset="0x9" visible="true" />
+		<uint8 name="Value 01" offset="0xA" visible="true" />
+		<uint8 name="Value 00 (LSB)" offset="0xB" visible="true" />
+		<uint32 name="String Address" offset="0xC" visible="true" />
+		<enum32 name="Value Type" offset="0x10" visible="true">
+			<option name="INVALID" value="0xBABA" />
+
+			<option name="unparsed" value="0x0" />
+			<option name="special_form" value="0x1" />
+			<option name="function_name" value="0x2" />
+			<option name="passthrough" value="0x3" />
+			<option name="void" value="0x4" />
+			<option name="boolean" value="0x5" />
+			<option name="real" value="0x6" />
+			<option name="short" value="0x7" />
+			<option name="long" value="0x8" />
+			<option name="string" value="0x9" />
+			<option name="script" value="0xA" />
+			<option name="string_id" value="0xB" />
+			<option name="unit_seat_mapping" value="0xC" />
+			<option name="trigger_volume" value="0xD" />
+			<option name="sound_event" value="0xE" />
+			<option name="cutscene_flag" value="0xF" />
+			<option name="cutscene_camera_point" value="0x10" />
+			<option name="cutscene_title" value="0x11" />
+			<option name="cutscene_recording" value="0x12" />
+			<option name="device_group" value="0x13" />
+			<option name="ai" value="0x14" />
+			<option name="ai_command_list" value="0x15" />
+			<option name="ai_command_script" value="0x16" />
+			<option name="ai_behavior" value="0x17" />
+			<option name="ai_orders" value="0x18" />
+			<option name="ai_line" value="0x19" />
+			<option name="starting_profile" value="0x1A" />
+			<option name="conversation" value="0x1B" />
+			<option name="player" value="0x1C" />
+			<option name="zone_set" value="0x1D" />
+			<option name="designer_zone" value="0x1E" />
+			<option name="point_reference" value="0x1F" />
+			<option name="point_set_reference" value="0x20" />
+			<option name="style" value="0x21" />
+			<option name="object_list" value="0x22" />
+			<option name="folder" value="0x23" />
+			<option name="sound" value="0x24" />
+			<option name="effect" value="0x25" />
+			<option name="damage" value="0x26" />
+			<option name="looping_sound" value="0x27" />
+			<option name="animation_graph" value="0x28" />
+			<option name="damage_effect" value="0x29" />
+			<option name="object_definition" value="0x2A" />
+			<option name="bitmap" value="0x2B" />
+			<option name="shader" value="0x2C" />
+			<option name="render_model" value="0x2D" />
+			<option name="structure_definition" value="0x2E" />
+			<option name="lightmap_definition" value="0x2F" />
+			<option name="cinematic_definition" value="0x30" />
+			<option name="cinematic_scene_definition" value="0x31" />
+			<option name="cinematic_scene_data_definition" value="0x32" />
+			<option name="cinematic_transition_definition" value="0x33" />
+			<option name="bink_definition" value="0x34" />
+			<option name="cui_screen_definition" value="0x35" />
+			<option name="any_tag" value="0x36" />
+			<option name="any_tag_not_resolving" value="0x37" />
+			<option name="game_difficulty" value="0x38" />
+			<option name="team" value="0x39" />
+			<option name="mp_team" value="0x3A" />
+			<option name="controller" value="0x3B" />
+			<option name="button_preset" value="0x3C" />
+			<option name="joystick_preset" value="0x3D" />
+			<option name="player_color" value="0x3E" />
+			<option name="player_model_choice" value="0x3F" />
+			<option name="voice_output_setting" value="0x40" />
+			<option name="voice_mask" value="0x41" />
+			<option name="subtitle_setting" value="0x42" />
+			<option name="havok_group" value="0x43" />
+			<option name="actor_type" value="0x44" />
+			<option name="model_state" value="0x45" />
+			<option name="event" value="0x46" />
+			<option name="character_physics" value="0x47" />
+			<option name="skull" value="0x48" />
+			<option name="firing_point_evaluator" value="0x49" />
+			<option name="damage_region" value="0x4A" />
+			<option name="currency_type" value="0x4B" />
+			<option name="delivery_method" value="0x4C" />
+			<option name="wave_difficulty" value="0x4D" />
+			<option name="firefight_goal" value="0x4E" />
+			<option name="firefight_wave_type" value="0x4F" />
+			<option name="font" value="0x50" />
+			<option name="text_justification" value="0x51" />
+			<option name="text_alignment" value="0x52" />
+			<option name="text_drop_shadow_type" value="0x53" />
+			<option name="object" value="0x54" />
+			<option name="unit" value="0x55" />
+			<option name="vehicle" value="0x56" />
+			<option name="weapon" value="0x57" />
+			<option name="device" value="0x58" />
+			<option name="scenery" value="0x59" />
+			<option name="effect_scenery" value="0x5A" />
+			<option name="object_name" value="0x5B" />
+			<option name="unit_name" value="0x5C" />
+			<option name="vehicle_name" value="0x5D" />
+			<option name="weapon_name" value="0x5E" />
+			<option name="device_name" value="0x5F" />
+			<option name="scenery_name" value="0x60" />
+			<option name="effect_scenery_name" value="0x61" />
+			<option name="cinematic_lightprobe" value="0x62" />
+			<option name="animation_budget_reference" value="0x63" />
+			<option name="looping_sound_budget_reference" value="0x64" />
+			<option name="sound_budget_reference" value="0x65" />
+		</enum32>
+		<bitfield16 name="Flags" offset="0x14" visible="true">
+			<bit name="Primitive" index="0" />
+			<bit name="Script Index" index="1" />
+			<bit name="Object member script" index="2" /> <!--requires script index bit-->
+			<bit name="Variable index" index="3" /> <!--"global index" when no other variable-type bits are set-->
+			<bit name="Instance variable" index="4" /> <!--requires variable index bit-->
+			<bit name="Parsed?" index="5" /> <!--all syntax nodes have this set. pretty sure it's just a flag used to designate that a node has been parsed, or maybe touched already in a certain pass-->
+			<bit name="Parameter variable" index="6" /> <!--requires variable index bit-->
+			<bit name="24 Unused?" index="7" />
+			<bit name="23 Unused?" index="8" />
+			<bit name="Import" index="9" /> <!-- script or global index is from the imports section -->
+			<bit name="Local variable" index="10" /> <!--requires variable index bit-->
+			<!--haven't seen bits after here used or referenced in code-->
+		</bitfield16>
+		<int16 name="Source File Index" offset="0x16" visible="true" />
+		<int32 name="Source File Offset" offset="0x18" visible="true" />
+	</reflexive>
+	<dataRef name="String Constants" offset="0x54" visible="true" />
+	<reflexive name="Imports" offset="0x68" visible="true" entrySize="0x1C">
+		<tagRef name="Source" offset="0x0" visible="true" withClass="false" />
+		<reflexive name="Scripts" offset="0x4" visible="true" entrySize="0xC">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<int32 name="Number Of Parameters" offset="0x4" visible="true" />
+			<int32 name="Script Index" offset="0x8" visible="true" />
+		</reflexive>
+		<reflexive name="Globals" offset="0x10" visible="true" entrySize="0xC">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<int32 name="Library Index" offset="0x4" visible="true" />
+			<int32 name="Global Index" offset="0x8" visible="true" />
+		</reflexive>
+	</reflexive>
+</plugin>
