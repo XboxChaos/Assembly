@@ -1,8 +1,6 @@
-# Assembly #
+# Assembly # <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
 ### Multi-Generation Blam Engine Research Tool ###
-
-__Build Status:__ <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
 __An Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
 
