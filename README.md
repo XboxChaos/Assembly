@@ -2,6 +2,8 @@
 
 ### Multi-Generation Blam Engine Research Tool ###
 
+__Build Status:__ <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
+
 __An Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
 
 Assembly is a free, open-source Halo cache file (.map) editor that was built from the ground up. It allows users to create and distribute creative patches for game content.
@@ -17,7 +19,6 @@ Assembly was designed with three goals in mind:
 Stable releases are made available through [GitHub's release system](https://github.com/XboxChaos/Assembly/releases).
 
 Automatically-compiled bleeding-edge builds of the master branch can be found over at [Xeraxic's Build Distribution system](http://builds.xeraxic.com/).
-__Build Status:__ <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
 ## Compiling ##
 
