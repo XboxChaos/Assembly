@@ -25,4 +25,4 @@ See [Compiling Assembly from Source](https://github.com/XboxChaos/Assembly/wiki/
 
 ## Bug Reports ##
 
-Assembly isn't perfect. If you encounter any issues, you are encouraged to submit bug reports through our [https://github.com/XboxChaos/Assembly/issues/new](issue tracker). Please make your reports as detailed as possible. Be sure to include any exception messages you get (if any), what map the error occurred on, and give steps showing how we can reproduce the behavior you encountered.
+Assembly isn't perfect. If you encounter any issues, you are encouraged to submit bug reports through our [issue tracker](https://github.com/XboxChaos/Assembly/issues/new). Please make your reports as detailed as possible. Be sure to include any exception messages you get (if any), what map the error occurred on, and give steps showing how we can reproduce the behavior you encountered.
