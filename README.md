@@ -1,4 +1,4 @@
-# Assembly # <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
+# Assembly <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
 ### Multi-Generation Blam Engine Research Tool ###
 
