@@ -326,7 +326,7 @@ namespace Blamite.Injection
 				var classMagic = (int) values.GetInteger("class magic");
 				index = new DatumIndex(values.GetInteger("datum index"));
 				fixupOffset = (int) offset + _tagRefLayout.GetFieldOffset("datum index");
-				valid = _cacheFile.Tags.IsValidIndex(index, classMagic);
+				valid = _cacheFile.Tags.IsValidIndex(index);
 			}
 			else
 			{

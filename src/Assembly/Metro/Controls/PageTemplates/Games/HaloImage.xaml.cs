@@ -22,8 +22,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloImage
 	{
+		private readonly LayoutDocument _tab;
 		private readonly string _blfLocation;
 		private PureBLF _blf;
+		private string blfImageFormat;
 
 		public HaloImage(string imageLocation, LayoutDocument tab)
 		{
@@ -34,6 +36,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var fi = new FileInfo(_blfLocation);
 			tab.Title = fi.Name;
 
+			_tab = tab;
+			
 			lblBLFname.Text = fi.Name;
 
 			var thrd = new Thread(loadBLF);
@@ -58,9 +62,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					imgBLF.Source = image;
 
+					var stream = new EndianStream(new MemoryStream(imgChunkData.ToArray<byte>()), Endian.BigEndian);
+					stream.SeekTo(0x0);
+					ushort imageMagic = stream.ReadUInt16();
+
+					switch (imageMagic)
+					{
+						case 0xFFD8:
+							blfImageFormat = "JPEG";
+							break;
+						case 0x8950:
+							blfImageFormat = "PNG";
+							break;
+						case 0x424D:
+							blfImageFormat = "BMP";
+							break;
+						default:
+							blfImageFormat = "Unknown";
+							break;
+					}
+
 					// Add Image Info
-					paneImageInfo.Children.Insert(0, new MapHeaderEntry("Image Width:", image.PixelWidth + "px"));
-					paneImageInfo.Children.Insert(1, new MapHeaderEntry("Image Height", image.PixelHeight + "px"));
+					paneImageInfo.Children.Insert(0, new MapHeaderEntry("Image Format:", blfImageFormat));
+					paneImageInfo.Children.Insert(1, new MapHeaderEntry("Image Width:", image.PixelWidth + "px"));
+					paneImageInfo.Children.Insert(2, new MapHeaderEntry("Image Height", image.PixelHeight + "px"));
 
 					// Add BLF Info
 					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _blf.BLFStream.Length.ToString("X")));
@@ -107,8 +132,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_blf = new PureBLF(_blfLocation);
 				var ofd = new OpenFileDialog
 				{
-					Title = "Opem an image to be injected",
-					Filter = "JPEG Image (*.jpg)|*.jpg|JPEG Image (*.jpeg)|*.jpeg"
+					Title = "Open an image to be injected",
+					Filter = "JPEG Image (*.jpg,*.jpeg,)|*.jpg;*.jpeg|PNG Image [H3/ODST]|*.png|BMP Image [H3/ODST]|*.bmp"
 				};
 
 				if (!((bool)ofd.ShowDialog()))
@@ -119,13 +144,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				byte[] newImage = File.ReadAllBytes(ofd.FileName);
 				var stream = new EndianStream(new MemoryStream(newImage), Endian.BigEndian);
 
-				// To-do: Allow PNGs
-
-				// Check if it's a JIFI
+				// Check if it's a supported image
 				stream.SeekTo(0x0);
 				ushort imageMagic = stream.ReadUInt16();
-				if (imageMagic != 0xFFD8)
-					throw new Exception("Invalid image type, it has to be a JPEG (JFIF in the header).");
+				if (imageMagic != 0xFFD8 && imageMagic != 0x8950 && imageMagic != 0x424D)
+					throw new Exception("Invalid image type. Only JPEG, PNG, and BMP are supported.");
 
 				// Check if it's the right size
 				var image = new BitmapImage();
@@ -135,11 +158,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				if (image.PixelWidth != ((BitmapImage)imgBLF.Source).PixelWidth ||
 					image.PixelHeight != ((BitmapImage)imgBLF.Source).PixelHeight)
-					throw new Exception(string.Format("Image isn't the right size. It must be {0}x{1}",
-						((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight));
+					if (MetroMessageBox.Show("Confirm New Dimensions",
+						String.Format("The dimensions of the new image ({0}x{1}) are not the same as the dimensions of the original image ({2}x{3}). This blf may appear stretched or not appear at all as a result. Inject anyway?",
+						image.PixelWidth, image.PixelHeight, ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight),
+						MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
+						{
+							Close();
+							return;
+						}
 
 				// It's the right everything! Let's inject
-
 
 				var newImageChunkData = new List<byte>();
 				newImageChunkData.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00 });
@@ -154,10 +182,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_blf.RefreshRelativeChunkData();
 				_blf.UpdateChunkTable();
 
-				imgBLF.Source = image;
+				// Update eof offset value
+				var eofstream = new EndianStream(new MemoryStream(_blf.BLFChunks[2].ChunkData), Endian.BigEndian);
 
-				MetroMessageBox.Show("Injected!", "The BLF Image has been injected.");
+				uint eofFixup = (uint)_blf.BLFStream.Length - 0x111; //real cheap but hey it works and is always the same in all games
+
+				eofstream.SeekTo(0);
+				eofstream.WriteUInt32(eofFixup);
+
+				_blf.RefreshRelativeChunkData();
+				_blf.UpdateChunkTable();
+
 				Close();
+				MetroMessageBox.Show("Injected!", "The BLF Image has been injected. This image tab will now close.");
+				App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 			}
 			catch (Exception ex)
 			{
@@ -174,9 +212,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var sfd = new SaveFileDialog
 				{
 					Title = "Save the extracted BLF Image",
-					Filter = "JPEG Image (*.jpg)|*.jpg",
 					FileName = lblBLFname.Text.Replace(".blf", "")
 				};
+				
+				//Check if the blf image is a not JPG and set the filter accordingly
+				switch (blfImageFormat)
+				{
+					case "PNG":
+						sfd.Filter = "PNG Image (*.png)|*.png";
+						break;
+					case "BMP":
+						sfd.Filter = "BMP Image (*.bmp)|*.bmp";
+						break;
+					default:
+						sfd.Filter = "JPEG Image (*.jpg)|*.jpg";
+						break;
+				}
 
 				if (!((bool)sfd.ShowDialog()))
 				{

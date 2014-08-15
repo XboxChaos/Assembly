@@ -25,6 +25,11 @@ namespace Assembly.Helpers.Plugins
 		private EnumData _currentEnum;
 		private ReflexiveData _currentReflexive;
 
+		public bool ShowComments
+		{
+			get { return App.AssemblyStorage.AssemblySettings.PluginsShowComments; }
+		}
+		
 		public ThirdGenPluginVisitor(TagHierarchy tags, Trie stringIDTrie, FileSegmentGroup metaArea, bool showInvisibles)
 		{
 			_tags = tags;
@@ -56,7 +61,8 @@ namespace Assembly.Helpers.Plugins
 
 		public void VisitComment(string title, string text, uint pluginLine)
 		{
-			AddValue(new CommentData(title, text, pluginLine));
+			if (ShowComments)
+				AddValue(new CommentData(title, text, pluginLine));
 		}
 
 		public void VisitVector3(string name, uint offset, bool visible, uint pluginLine)

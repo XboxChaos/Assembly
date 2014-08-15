@@ -237,7 +237,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
 			lblCreatePatchTitleblf1.Tag = "blf_film";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
-			lblCreatePatchTitleblf4.Text = "Modified blf_varient:";
+			lblCreatePatchTitleblf4.Text = "Modified blf_variant:";
 
 			// Reset fields
 			txtCreatePatchMapInfo.Text = "";
@@ -435,6 +435,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 							patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name,
 								File.ReadAllBytes(blfFileInfo.FullName)));
 						}
+						if (PatchCreationBlfOption4.Visibility == Visibility.Visible && cbHasblf4.IsChecked == true)
+							{
+								blfFileInfo = new FileInfo(txtCreatePatchblf4.Text);
+								patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name,
+									File.ReadAllBytes(blfFileInfo.FullName)));
+							}
 
 						#endregion
 					}
