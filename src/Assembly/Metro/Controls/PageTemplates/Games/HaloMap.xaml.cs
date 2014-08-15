@@ -670,7 +670,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
-
 			var tag = item.DataContext as TagEntry;
 			if (tag == null)
 				return;
@@ -823,6 +822,65 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_cacheFile.SaveChanges(stream);
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
+		}
+
+		private void contextDuplicate_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// TODO: Make this into a dialog with more options
+			string newName;
+			while (true)
+			{
+				newName = MetroInputBox.Show("Duplicate Tag", "Please enter a name for the new tag.", tag.TagFileName, "Enter a name.");
+				if (newName == null)
+					return;
+				if (newName != tag.TagFileName && _cacheFile.Tags.FindTagByName(newName, tag.RawTag.Class, _cacheFile.FileNames) == null)
+					break;
+				MetroMessageBox.Show("Duplicate Tag", "Please enter a name that is different from the original and that is not in use.");
+			}
+
+			// Make a tag container for the tag and then inject it
+			// TODO: A lot of this was copied and pasted from the tag extraction code...need to clean things up
+			var container = new TagContainer();
+			using (var stream = _mapManager.OpenReadWrite())
+			{
+				// Get the plugin path
+				string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+				string pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("plugins"), className);
+
+				// Extract data blocks
+				var builder = new DataBlockBuilder(stream, tag.RawTag.MetaLocation, _cacheFile, _buildInfo);
+				using (XmlReader pluginReader = XmlReader.Create(pluginPath))
+					AssemblyPluginLoader.LoadPlugin(pluginReader, builder);
+				foreach (var block in builder.DataBlocks)
+				{
+					// Remove non-datablock fixups because those are still valid
+					// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
+					block.StringIDFixups.Clear();
+					block.ShaderFixups.Clear();
+					block.ResourceFixups.Clear();
+					block.TagFixups.Clear();
+					container.AddDataBlock(block);
+				}
+				var extracted = new ExtractedTag(tag.RawTag.Index, tag.RawTag.MetaLocation.AsPointer(), tag.RawTag.Class.Magic, newName);
+				container.AddTag(extracted);
+
+				// Now inject the container
+				var injector = new TagContainerInjector(_cacheFile, container);
+				injector.InjectTag(extracted, stream);
+				injector.SaveChanges(stream);
+			}
+
+			LoadTags();
+			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
 		}
 
 		#region Tag List
