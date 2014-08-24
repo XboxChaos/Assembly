@@ -119,7 +119,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new RawData(name, offset, 0, "", size, pluginLine));
+				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine));
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)

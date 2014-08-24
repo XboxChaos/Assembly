@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using ICSharpCode.AvalonEdit;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
