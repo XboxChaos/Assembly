@@ -1,328 +1,3424 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="ReachBeta" baseSize="0x28">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">Overhauled.</revision>
 	</revisions>
-	<reflexive name="Unknown 0" offset="0x0" visible="false" entrySize="0xDC">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<tagref name="Unknown" offset="0xC" visible="false" />
-		<reflexive name="Unknown 1" offset="0x1C" visible="false" entrySize="0x38">
-			<reflexive name="Unknown 2" offset="0x0" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 3" offset="0x0" visible="false" entrySize="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
+	<comment title="Reach HUDs Are Annoying">The inputs are not defined where they were for Halo 3, but instead are in the "Compiled Widget Data" block at the bottom, along with the 3 blocks within "State Data".
+
+...Unless the State Data block is part of HUD Widgets not Bitmap/Text Widgets, which THOSE states are defined at the bottom of the HUD Widgets block.
+
+There is no outright index for Compiled Widget Data so use the Import Inputs/States and counting (Bitmap and Text Widgets only!) to find it.
+
+Mapping the Trigger indexes will take time. There is a block at the bottom of CHGD with an unsorted list of triggers with a vague category, which has been sorted into a comment about the block.
+
+As for Placement Data, each index likely refers to each "HUD Attributes" index in CHGD to change depending on resolution.</comment>
+	<reflexive name="HUD Widgets" offset="0x0" visible="true" entrySize="0xDC">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<enum8 name="Special HUD Type" offset="0x4" visible="true">
+			<option name="Unspecial" value="0x0" />
+			<option name="Ammo" value="0x1" />
+			<option name="Crosshair and Scope" value="0x2" />
+			<option name="Unit Shield Meter" value="0x3" />
+			<option name="Grenades" value="0x4" />
+			<option name="Gametype" value="0x5" />
+			<option name="Motion Sensor" value="0x6" />
+		</enum8>
+		<uint8 name="Unknown" offset="0x5" visible="false" />
+		<uint8 name="Unknown" offset="0x6" visible="false" />
+		<uint8 name="Unknown" offset="0x7" visible="false" />
+		<enum16 name="Import Input" offset="0x8" visible="true">
+			<option name="Zero" value="0x0" />
+			<option name="One" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Time" value="0x5" />
+			<option name="Fade" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+			<option name="Unknown 8" value="0x8" />
+			<option name="Unknown 9" value="0x9" />
+			<option name="Unknown 10" value="0xA" />
+			<option name="Transmission Incoming" value="0xB" />
+			<option name="Unknown 12" value="0xC" />
+			<option name="Unknown 13" value="0xD" />
+			<option name="Unknown 14" value="0xE" />
+			<option name="Unknown 15" value="0xF" />
+			<option name="Unknown 16" value="0x10" />
+			<option name="Unit Health Current" value="0x11" />
+			<option name="Unit Health" value="0x12" />
+			<option name="Unit Shield Current" value="0x13" />
+			<option name="Unit 1x Overshield Current" value="0x14" />
+			<option name="Unit 2x Overshield Current" value="0x15" />
+			<option name="Unit 2x Overshield Current" value="0x16" />
+			<option name="Unit Shield" value="0x17" />
+			<option name="Unit 1x Overshield" value="0x18" />
+			<option name="Unit 2x Overshield" value="0x19" />
+			<option name="Unit 3x Overshield" value="0x1A" />
+			<option name="Unknown 27" value="0x1B" />
+			<option name="Unknown 28" value="0x1C" />
+			<option name="Aim Yaw" value="0x1D" />
+			<option name="Aim Pitch" value="0x1E" />
+			<option name="Unknown 31" value="0x1F" />
+			<option name="Sensor Range" value="0x20" />
+			<option name="Unit Altitude 1" value="0x21" />
+			<option name="Unit Altitude 2" value="0x22" />
+			<option name="Unknown 35" value="0x23" />
+			<option name="Softkill Timer" value="0x24" />
+			<option name="Clip Ammo Fraction" value="0x25" />
+			<option name="Total Ammo Fraction" value="0x26" />
+			<option name="Pickup" value="0x27" />
+			<option name="Heat Fraction" value="0x28" />
+			<option name="Battery Fraction" value="0x29" />
+			<option name="Unknown 42" value="0x2A" />
+			<option name="Unknown 43" value="0x2B" />
+			<option name="Weapon Error" value="0x2C" />
+			<option name="Unknown Weapon Error" value="0x2D" />
+			<option name="Unit Autoaimed" value="0x2E" />
+			<option name="Unknown 47" value="0x2F" />
+			<option name="Unknown 48" value="0x30" />
+			<option name="Grenade Fraction" value="0x31" />
+			<option name="Unknown 50" value="0x32" />
+			<option name="Charge Fraction" value="0x33" />
+			<option name="Unknown 52" value="0x34" />
+			<option name="Trigger Cooldown" value="0x35" />
+			<option name="Trigger Remote Detonate Fraction" value="0x36" />
+			<option name="Trigger Locked On" value="0x37" />
+			<option name="Target Distance" value="0x38" />
+			<option name="Target Elevation" value="0x39" />
+			<option name="Equipment Energy Fraction" value="0x3A" />
+			<option name="Unknown 59" value="0x3B" />
+			<option name="Unknown 60" value="0x3C" />
+			<option name="Unknown 61" value="0x3D" />
+			<option name="Unknown 62" value="0x3E" />
+			<option name="Unknown 63" value="0x3F" />
+			<option name="Unknown 64" value="0x40" />
+			<option name="Medal Commendation" value="0x41" />
+			<option name="Generator Health Current" value="0x42" />
+			<option name="Generator Health" value="0x43" />
+			<option name="Unknown 68" value="0x44" />
+			<option name="Waypoint" value="0x45" />
+			<option name="Unknown 70" value="0x46" />
+			<option name="Unknown 71" value="0x47" />
+			<option name="Waypoint Onscreen" value="0x48" />
+			<option name="Waypoint Offscreen" value="0x49" />
+			<option name="Gametype Plate" value="0x4A" />
+			<option name="Offense Defense" value="0x4B" />
+			<option name="Metagame Time" value="0x4C" />
+			<option name="Metagame Score Transient" value="0x4D" />
+			<option name="Metagame Score Player 1" value="0x4E" />
+			<option name="Metagame Score Player 2" value="0x4F" />
+			<option name="Metagame Score Player 3" value="0x50" />
+			<option name="Metagame Score Player 4" value="0x51" />
+			<option name="Unknown 82" value="0x52" />
+			<option name="Survival Multiplier" value="0x53" />
+			<option name="Unknown 84" value="0x54" />
+			<option name="Unknown 85" value="0x55" />
+			<option name="Metagame Score Negative" value="0x56" />
+			<option name="Unknown 87" value="0x57" />
+			<option name="Unknown 88" value="0x58" />
+			<option name="Unknown 89" value="0x59" />
+			<option name="Unknown 90" value="0x5A" />
+			<option name="Unknown 91" value="0x5B" />
+			<option name="Unknown 92" value="0x5C" />
+			<option name="Unknown 93" value="0x5D" />
+			<option name="Unknown 94" value="0x5E" />
+			<option name="Friendly Score" value="0x5F" />
+			<option name="Enemy Score" value="0x60" />
+			<option name="Score To Win" value="0x61" />
+			<option name="Arming Fraction" value="0x62" />
+			<option name="Possession Icon" value="0x63" />
+			<option name="Arming Unknown" value="0x64" />
+			<option name="Omniwidget Icon" value="0x65" />
+			<option name="Unknown 102" value="0x66" />
+			<option name="Fireteam Health" value="0x67" />
+			<option name="Unknown 104" value="0x68" />
+			<option name="Unknown 105" value="0x69" />
+			<option name="Unknown 106" value="0x6A" />
+			<option name="Fireteam Current Shield" value="0x6B" />
+			<option name="Unknown 108" value="0x6C" />
+			<option name="Unknown 109" value="0x6D" />
+			<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+			<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+			<option name="Unknown 112" value="0x70" />
+			<option name="Fireteam 1 Directional Arrow" value="0x71" />
+			<option name="Fireteam 2 Directional Arrow" value="0x72" />
+			<option name="Unknown 115" value="0x73" />
+			<option name="Unknown 116" value="0x74" />
+			<option name="Unknown 117" value="0x75" />
+			<option name="Unknown 118" value="0x76" />
+			<option name="Unknown 119" value="0x77" />
+			<option name="Unknown 120" value="0x78" />
+			<option name="Unknown 121" value="0x79" />
+			<option name="Unknown 122" value="0x7A" />
+			<option name="Editor Budget" value="0x7B" />
+			<option name="Editor Budget Cost" value="0x7C" />
+			<option name="Film Total Time" value="0x7D" />
+			<option name="Film Current Time" value="0x7E" />
+			<option name="Unknown 127" value="0x7F" />
+			<option name="Film Timeline Fraction 1" value="0x80" />
+			<option name="Film Timeline Fraction 2" value="0x81" />
+			<option name="Unknown 130" value="0x82" />
+			<option name="Unknown 131" value="0x83" />
+			<option name="NetDebug Latency" value="0x84" />
+			<option name="NetDebug Latency Quality" value="0x85" />
+			<option name="NetDebug Host Quality" value="0x86" />
+			<option name="NetDebug Local Quality" value="0x87" />
+		</enum16>
+		<enum16 name="Import Range Input" offset="0xA" visible="true">
+			<option name="Zero" value="0x0" />
+			<option name="One" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Time" value="0x5" />
+			<option name="Fade" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+			<option name="Unknown 8" value="0x8" />
+			<option name="Unknown 9" value="0x9" />
+			<option name="Unknown 10" value="0xA" />
+			<option name="Transmission Incoming" value="0xB" />
+			<option name="Unknown 12" value="0xC" />
+			<option name="Unknown 13" value="0xD" />
+			<option name="Unknown 14" value="0xE" />
+			<option name="Unknown 15" value="0xF" />
+			<option name="Unknown 16" value="0x10" />
+			<option name="Unit Health Current" value="0x11" />
+			<option name="Unit Health" value="0x12" />
+			<option name="Unit Shield Current" value="0x13" />
+			<option name="Unit 1x Overshield Current" value="0x14" />
+			<option name="Unit 2x Overshield Current" value="0x15" />
+			<option name="Unit 2x Overshield Current" value="0x16" />
+			<option name="Unit Shield" value="0x17" />
+			<option name="Unit 1x Overshield" value="0x18" />
+			<option name="Unit 2x Overshield" value="0x19" />
+			<option name="Unit 3x Overshield" value="0x1A" />
+			<option name="Unknown 27" value="0x1B" />
+			<option name="Unknown 28" value="0x1C" />
+			<option name="Aim Yaw" value="0x1D" />
+			<option name="Aim Pitch" value="0x1E" />
+			<option name="Unknown 31" value="0x1F" />
+			<option name="Sensor Range" value="0x20" />
+			<option name="Unit Altitude 1" value="0x21" />
+			<option name="Unit Altitude 2" value="0x22" />
+			<option name="Unknown 35" value="0x23" />
+			<option name="Softkill Timer" value="0x24" />
+			<option name="Clip Ammo Fraction" value="0x25" />
+			<option name="Total Ammo Fraction" value="0x26" />
+			<option name="Pickup" value="0x27" />
+			<option name="Heat Fraction" value="0x28" />
+			<option name="Battery Fraction" value="0x29" />
+			<option name="Unknown 42" value="0x2A" />
+			<option name="Unknown 43" value="0x2B" />
+			<option name="Weapon Error" value="0x2C" />
+			<option name="Unknown Weapon Error" value="0x2D" />
+			<option name="Unit Autoaimed" value="0x2E" />
+			<option name="Unknown 47" value="0x2F" />
+			<option name="Unknown 48" value="0x30" />
+			<option name="Grenade Fraction" value="0x31" />
+			<option name="Unknown 50" value="0x32" />
+			<option name="Charge Fraction" value="0x33" />
+			<option name="Unknown 52" value="0x34" />
+			<option name="Trigger Cooldown" value="0x35" />
+			<option name="Trigger Remote Detonate Fraction" value="0x36" />
+			<option name="Trigger Locked On" value="0x37" />
+			<option name="Target Distance" value="0x38" />
+			<option name="Target Elevation" value="0x39" />
+			<option name="Equipment Energy Fraction" value="0x3A" />
+			<option name="Unknown 59" value="0x3B" />
+			<option name="Unknown 60" value="0x3C" />
+			<option name="Unknown 61" value="0x3D" />
+			<option name="Unknown 62" value="0x3E" />
+			<option name="Unknown 63" value="0x3F" />
+			<option name="Unknown 64" value="0x40" />
+			<option name="Medal Commendation" value="0x41" />
+			<option name="Generator Health Current" value="0x42" />
+			<option name="Generator Health" value="0x43" />
+			<option name="Unknown 68" value="0x44" />
+			<option name="Waypoint" value="0x45" />
+			<option name="Unknown 70" value="0x46" />
+			<option name="Unknown 71" value="0x47" />
+			<option name="Waypoint Onscreen" value="0x48" />
+			<option name="Waypoint Offscreen" value="0x49" />
+			<option name="Gametype Plate" value="0x4A" />
+			<option name="Offense Defense" value="0x4B" />
+			<option name="Metagame Time" value="0x4C" />
+			<option name="Metagame Score Transient" value="0x4D" />
+			<option name="Metagame Score Player 1" value="0x4E" />
+			<option name="Metagame Score Player 2" value="0x4F" />
+			<option name="Metagame Score Player 3" value="0x50" />
+			<option name="Metagame Score Player 4" value="0x51" />
+			<option name="Unknown 82" value="0x52" />
+			<option name="Survival Multiplier" value="0x53" />
+			<option name="Unknown 84" value="0x54" />
+			<option name="Unknown 85" value="0x55" />
+			<option name="Metagame Score Negative" value="0x56" />
+			<option name="Unknown 87" value="0x57" />
+			<option name="Unknown 88" value="0x58" />
+			<option name="Unknown 89" value="0x59" />
+			<option name="Unknown 90" value="0x5A" />
+			<option name="Unknown 91" value="0x5B" />
+			<option name="Unknown 92" value="0x5C" />
+			<option name="Unknown 93" value="0x5D" />
+			<option name="Unknown 94" value="0x5E" />
+			<option name="Friendly Score" value="0x5F" />
+			<option name="Enemy Score" value="0x60" />
+			<option name="Score To Win" value="0x61" />
+			<option name="Arming Fraction" value="0x62" />
+			<option name="Possession Icon" value="0x63" />
+			<option name="Arming Unknown" value="0x64" />
+			<option name="Omniwidget Icon" value="0x65" />
+			<option name="Unknown 102" value="0x66" />
+			<option name="Fireteam Health" value="0x67" />
+			<option name="Unknown 104" value="0x68" />
+			<option name="Unknown 105" value="0x69" />
+			<option name="Unknown 106" value="0x6A" />
+			<option name="Fireteam Current Shield" value="0x6B" />
+			<option name="Unknown 108" value="0x6C" />
+			<option name="Unknown 109" value="0x6D" />
+			<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+			<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+			<option name="Unknown 112" value="0x70" />
+			<option name="Fireteam 1 Directional Arrow" value="0x71" />
+			<option name="Fireteam 2 Directional Arrow" value="0x72" />
+			<option name="Unknown 115" value="0x73" />
+			<option name="Unknown 116" value="0x74" />
+			<option name="Unknown 117" value="0x75" />
+			<option name="Unknown 118" value="0x76" />
+			<option name="Unknown 119" value="0x77" />
+			<option name="Unknown 120" value="0x78" />
+			<option name="Unknown 121" value="0x79" />
+			<option name="Unknown 122" value="0x7A" />
+			<option name="Editor Budget" value="0x7B" />
+			<option name="Editor Budget Cost" value="0x7C" />
+			<option name="Film Total Time" value="0x7D" />
+			<option name="Film Current Time" value="0x7E" />
+			<option name="Unknown 127" value="0x7F" />
+			<option name="Film Timeline Fraction 1" value="0x80" />
+			<option name="Film Timeline Fraction 2" value="0x81" />
+			<option name="Unknown 130" value="0x82" />
+			<option name="Unknown 131" value="0x83" />
+			<option name="NetDebug Latency" value="0x84" />
+			<option name="NetDebug Latency Quality" value="0x85" />
+			<option name="NetDebug Host Quality" value="0x86" />
+			<option name="NetDebug Local Quality" value="0x87" />
+		</enum16>
+		<tagRef name="State Data Template" offset="0xC" visible="true" />
+		<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+			<comment title="State Data Note">The following blocks are import data.</comment>
+			<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
+				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					<bitfield8 name="Flag" offset="0x0" visible="true">
+						<bit name="Input Variable" index="0" />
+					</bitfield8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<int8 name="Unknown" offset="0x2" visible="false" />
+					<int8 name="Unknown" offset="0x3" visible="false" />
+					<int32 name="Trigger Index" offset="0x4" visible="true" />
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 3" offset="0xC" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 4" offset="0x0" visible="false" entrySize="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
+				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					<bitfield8 name="Flag" offset="0x0" visible="true">
+						<bit name="Input Variable" index="0" />
+					</bitfield8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<int8 name="Unknown" offset="0x2" visible="false" />
+					<int8 name="Unknown" offset="0x3" visible="false" />
+					<int32 name="Trigger Index" offset="0x4" visible="true" />
 				</reflexive>
 			</reflexive>
-			<reflexive name="Unknown 4" offset="0x18" visible="false" entrySize="0xC">
-				<reflexive name="Unknown 5" offset="0x0" visible="false" entrySize="0x8">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
+			<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
+				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					<bitfield8 name="Flag" offset="0x0" visible="true">
+						<bit name="Input Variable" index="0" />
+					</bitfield8>
+					<int8 name="Unknown" offset="0x1" visible="false" />
+					<int8 name="Unknown" offset="0x2" visible="false" />
+					<int8 name="Unknown" offset="0x3" visible="false" />
+					<int32 name="Trigger Index" offset="0x4" visible="true" />
 				</reflexive>
 			</reflexive>
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
+			<int16 name="Unknown" offset="0x24" visible="false" />
+			<int16 name="Unknown" offset="0x26" visible="false" />
+			<int16 name="Unknown" offset="0x28" visible="false" />
+			<int16 name="Unknown" offset="0x2A" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
 		</reflexive>
-		<tagref name="Unknown" offset="0x28" visible="false" />
-		<reflexive name="Unknown 2" offset="0x38" visible="false" entrySize="0x1C">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
+		<tagref name="Placement Data Template" offset="0x28" visible="true" />
+		<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+			<bitfield8 name="Unknown" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<enum8 name="Anchor" offset="0x1" visible="true">
+				<option name="Unknown" value="0x0" />
+				<option name="Top, Left" value="0x1" />
+				<option name="Top, Middle" value="0x2" />
+				<option name="Top, Right" value="0x3" />
+				<option name="Center, Middle" value="0x4" />
+				<option name="Bottom, Left" value="0x5" />
+				<option name="Bottom, Middle" value="0x6" />
+				<option name="Bottom, Right" value="0x7" />
+				<option name="Motion Sensor" value="0x8" />
+				<option name="Crosshair A" value="0x9" />
+				<option name="Ability" value="0xA" />
+				<option name="Weapon Left" value="0xB" />
+				<option name="Weapon Right" value="0xC" />
+				<option name="Health and Shield" value="0xD" />
+				<option name="Unknown" value="0xE" />
+				<option name="Top, Left B" value="0xF" />
+				<option name="Unknown" value="0x10" />
+				<option name="Crosshair B" value="0x11" />
+				<option name="Top, Left C" value="0x12" />
+				<option name="Top, Left D" value="0x13" />
+				<option name="Top, Left E" value="0x14" />
+				<option name="Crosshair B" value="0x15" />
+				<option name="Top, Left F" value="0x16" />
+				<option name="Unknown" value="0x17" />
+				<option name="Top, Left G" value="0x18" />
+				<option name="Unknown" value="0x19" />
+				<option name="Top, Left F" value="0x1A" />
+				<option name="Score" value="0x1B" />
+				<option name="Score B" value="0x1C" />
+				<option name="Score C" value="0x1D" />
+				<option name="Score D" value="0x1E" />
+				<option name="Score E" value="0x1F" />
+				<option name="Score F" value="0x20" />
+				<option name="Score G" value="0x21" />
+				<option name="Unknown" value="0x22" />
+				<option name="Unknown" value="0x23" />
+				<option name="Unknown" value="0x24" />
+			</enum8>
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Mirror Offset X" offset="0x4" visible="true" />
+			<float32 name="Mirror Offset Y" offset="0x8" visible="true" />
+			<float32 name="Offset X" offset="0xC" visible="true" />
+			<float32 name="Offset Y" offset="0x10" visible="true" />
+			<float32 name="Scale X" offset="0x14" visible="true" />
+			<float32 name="Scale Y" offset="0x18" visible="true" />
 		</reflexive>
-		<tagref name="Unknown" offset="0x44" visible="false" />
-		<reflexive name="Unknown 3" offset="0x54" visible="false" entrySize="0x64">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<tagRef name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<tagRef name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<tagRef name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<tagRef name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x50" visible="false" />
-			<tagRef name="Unknown" offset="0x54" visible="false" />
+		<tagRef name="Animation Data Template" offset="0x44" visible="true" />
+		<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+			<enum16 name="Unknown" offset="0x0" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+			</enum16>
+			<enum16 name="Unknown" offset="0x2" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+			</enum16>
+			<tagRef name="Animation 1" offset="0x4" visible="true" />
+			<enum16 name="Unknown" offset="0x14" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+			</enum16>
+			<enum16 name="Unknown" offset="0x16" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+			</enum16>
+			<tagRef name="Animation 2" offset="0x18" visible="true" />
+			<enum16 name="Unknown" offset="0x28" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+			</enum16>
+			<enum16 name="Unknown" offset="0x2A" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+			</enum16>
+			<tagRef name="Animation 3" offset="0x2C" visible="true" />
+			<enum16 name="Unknown" offset="0x3C" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+			</enum16>
+			<enum16 name="Unknown" offset="0x3E" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+			</enum16>
+			<tagRef name="Animation 4" offset="0x40" visible="true" />
+			<enum16 name="Unknown" offset="0x50" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+			</enum16>
+			<enum16 name="Unknown" offset="0x52" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+			</enum16>
+			<tagRef name="Animation 5" offset="0x54" visible="true" />
 		</reflexive>
-		<tagref name="Unknown" offset="0x60" visible="false" />
-		<reflexive name="Unknown 4" offset="0x70" visible="false" entrySize="0x78">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
-			<undefined name="Unknown" offset="0x38" visible="false" />
-			<undefined name="Unknown" offset="0x3C" visible="false" />
-			<undefined name="Unknown" offset="0x40" visible="false" />
-			<undefined name="Unknown" offset="0x44" visible="false" />
-			<undefined name="Unknown" offset="0x48" visible="false" />
-			<undefined name="Unknown" offset="0x4C" visible="false" />
-			<undefined name="Unknown" offset="0x50" visible="false" />
-			<undefined name="Unknown" offset="0x54" visible="false" />
-			<undefined name="Unknown" offset="0x58" visible="false" />
-			<undefined name="Unknown" offset="0x5C" visible="false" />
-			<undefined name="Unknown" offset="0x60" visible="false" />
-			<undefined name="Unknown" offset="0x64" visible="false" />
-			<undefined name="Unknown" offset="0x68" visible="false" />
+		<tagRef name="Render Data Template" offset="0x60" visible="true" />
+		<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+			<bitfield8 name="Flags" offset="0x0" visible="true">
+				<bit name="Enabled" index="0" />
+				<bit name="Apply Alpha Function" index="1" />
+				<bit name="Apply Color Change Function" index="2" />
+				<bit name="Apply Meter Function" index="3" />
+				<bit name="Apply Emblem Function" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<float32 name="Local Color Alpha 0" offset="0x4" visible="true" />
+			<Colorf name="Local Color 0" offset="0x8" format="rgb" visible="true" />
+			<float32 name="Local Color Alpha 1" offset="0x14" visible="true" />
+			<Colorf name="Local Color 1" offset="0x18" format="rgb" visible="true" />
+			<float32 name="Local Color Alpha 2" offset="0x24" visible="true" />
+			<Colorf name="Local Color 2" offset="0x28" format="rgb" visible="true" />
+			<float32 name="Local Color Alpha 3" offset="0x34" visible="true" />
+			<Colorf name="Local Color 3" offset="0x38" format="rgb" visible="true" />
+			<float32 name="Function Value 1" offset="0x44" visible="true" />
+			<float32 name="Function Value 2" offset="0x48" visible="true" />
+			<float32 name="Function Value 3" offset="0x4C" visible="true" />
+			<float32 name="Function Value 4" offset="0x50" visible="true" />
+			<enum16 name="Color 1" offset="0x54" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Color 2" offset="0x56" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Color 3" offset="0x58" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Color 4" offset="0x5A" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Color 5" offset="0x5C" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Color 6" offset="0x5E" visible="true">
+				<option name="Local 0" value="0x0" />
+				<option name="Local 1" value="0x1" />
+				<option name="Local 2" value="0x2" />
+				<option name="Local 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Scoreboard Friendly" value="0x6" />
+				<option name="Scoreboard Enemy" value="0x7" />
+				<option name="Arming Team" value="0x8" />
+				<option name="Metagame Player 1" value="0x9" />
+				<option name="Metagame Player 2" value="0xA" />
+				<option name="Metagame Player 3" value="0xB" />
+				<option name="Metagame Player 4" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unknown 17" value="0x11" />
+				<option name="Global Dynamic 0" value="0x12" />
+				<option name="Global Dynamic 1" value="0x13" />
+				<option name="Global Dynamic 2" value="0x14" />
+				<option name="Global Dynamic 3" value="0x15" />
+				<option name="Global Dynamic 4" value="0x16" />
+				<option name="Global Dynamic 5" value="0x17" />
+				<option name="Global Dynamic 6" value="0x18" />
+				<option name="Global Dynamic 7" value="0x19" />
+				<option name="Global Dynamic 8" value="0x1A" />
+				<option name="Global Dynamic 9" value="0x1B" />
+				<option name="Global Dynamic 10" value="0x1C" />
+				<option name="Global Dynamic 11" value="0x1D" />
+				<option name="Global Dynamic 12" value="0x1E" />
+				<option name="Global Dynamic 13" value="0x1F" />
+				<option name="Global Dynamic 14" value="0x20" />
+				<option name="Global Dynamic 15" value="0x21" />
+				<option name="Global Dynamic 16" value="0x22" />
+				<option name="Global Dynamic 17" value="0x23" />
+				<option name="Global Dynamic 18" value="0x24" />
+				<option name="Global Dynamic 19" value="0x25" />
+				<option name="Global Dynamic 20" value="0x26" />
+				<option name="Global Dynamic 21" value="0x27" />
+				<option name="Global Dynamic 22" value="0x28" />
+				<option name="Global Dynamic 23" value="0x29" />
+				<option name="Global Dynamic 24" value="0x2A" />
+				<option name="Global Dynamic 25" value="0x2B" />
+				<option name="Global Dynamic 26" value="0x2C" />
+				<option name="Global Dynamic 27" value="0x2D" />
+				<option name="Global Dynamic 28" value="0x2E" />
+				<option name="Global Dynamic 29" value="0x2F" />
+				<option name="Global Dynamic 30" value="0x30" />
+				<option name="Global Dynamic 31" value="0x31" />
+				<option name="Global Dynamic 32" value="0x32" />
+				<option name="Global Dynamic 33" value="0x33" />
+				<option name="Global Dynamic 34" value="0x34" />
+				<option name="Global Dynamic 35" value="0x35" />
+				<option name="Global Dynamic 36" value="0x36" />
+				<option name="Global Dynamic 37" value="0x37" />
+				<option name="Global Dynamic 38" value="0x38" />
+				<option name="Global Dynamic 39" value="0x39" />
+				<option name="Global Dynamic 40" value="0x3A" />
+				<option name="Global Dynamic 41" value="0x3B" />
+				<option name="Global Dynamic 42" value="0x3C" />
+			</enum16>
+			<enum16 name="Modifier 1" offset="0x60" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
+			<enum16 name="Modifier 2" offset="0x62" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
+			<enum16 name="Modifier 3" offset="0x64" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
+			<enum16 name="Modifier 4" offset="0x66" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
+			<enum16 name="Modifier 5" offset="0x68" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
+			<enum16 name="Modifier 6" offset="0x6A" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Input" value="0x2" />
+				<option name="Range Input" value="0x3" />
+				<option name="Function Value 1" value="0x4" />
+				<option name="Function Value 2" value="0x5" />
+				<option name="Function Value 3" value="0x6" />
+				<option name="Function Value 4" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+			</enum16>
 			<undefined name="Unknown" offset="0x6C" visible="false" />
 			<undefined name="Unknown" offset="0x70" visible="false" />
-			<undefined name="Unknown" offset="0x74" visible="false" />
+			<int16 name="Unknown" offset="0x74" visible="false" />
+			<int16 name="Unknown" offset="0x76" visible="false" />
 		</reflexive>
-		<tagref name="Unknown" offset="0x7C" visible="false" />
-		<reflexive name="Unknown 5" offset="0x8C" visible="false" entrySize="0x20">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
+		<tagRef name="Datasource Template" offset="0x7C" visible="true" />
+		<reflexive name="Datasource" offset="0x8C" visible="true" entrySize="0x20">
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int16 name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
-			<reflexive name="Unknown 6" offset="0x14" visible="false" entrySize="0x10">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
+			<reflexive name="Unknown 6" offset="0x14" visible="true" entrySize="0x10">
+				<float32 name="Unknown" offset="0x0" visible="true" />
+				<float32 name="Unknown" offset="0x4" visible="true" />
+				<float32 name="Unknown" offset="0x8" visible="true" />
+				<float32 name="Unknown" offset="0xC" visible="true" />
 			</reflexive>
 		</reflexive>
-		<reflexive name="Unknown 6" offset="0x98" visible="false" entrySize="0x9C">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<tagref name="Unknown" offset="0xC" visible="false" />
-			<reflexive name="Unknown 7" offset="0x1C" visible="false" entrySize="0x38">
-				<reflexive name="Unknown 8" offset="0x0" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 9" offset="0x0" visible="false" entrySize="0x8">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Bitmap Widgets" offset="0x98" visible="true" entrySize="0x9C">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<enum8 name="Special HUD Type" offset="0x4" visible="true">
+				<option name="Unspecial" value="0x0" />
+				<option name="Ammo" value="0x1" />
+				<option name="Crosshair and Scope" value="0x2" />
+				<option name="Unit Shield Meter" value="0x3" />
+				<option name="Grenades" value="0x4" />
+				<option name="Gametype" value="0x5" />
+				<option name="Motion Sensor" value="0x6" />
+			</enum8>
+			<uint8 name="Unknown" offset="0x5" visible="false" />
+			<uint8 name="Unknown" offset="0x6" visible="false" />
+			<uint8 name="Unknown" offset="0x7" visible="false" />
+			<enum16 name="Import Input" offset="0x8" visible="true">
+				<option name="Zero" value="0x0" />
+				<option name="One" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Time" value="0x5" />
+				<option name="Fade" value="0x6" />
+				<option name="Unknown 7" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+				<option name="Unknown 10" value="0xA" />
+				<option name="Transmission Incoming" value="0xB" />
+				<option name="Unknown 12" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unit Health Current" value="0x11" />
+				<option name="Unit Health" value="0x12" />
+				<option name="Unit Shield Current" value="0x13" />
+				<option name="Unit 1x Overshield Current" value="0x14" />
+				<option name="Unit 2x Overshield Current" value="0x15" />
+				<option name="Unit 2x Overshield Current" value="0x16" />
+				<option name="Unit Shield" value="0x17" />
+				<option name="Unit 1x Overshield" value="0x18" />
+				<option name="Unit 2x Overshield" value="0x19" />
+				<option name="Unit 3x Overshield" value="0x1A" />
+				<option name="Unknown 27" value="0x1B" />
+				<option name="Unknown 28" value="0x1C" />
+				<option name="Aim Yaw" value="0x1D" />
+				<option name="Aim Pitch" value="0x1E" />
+				<option name="Unknown 31" value="0x1F" />
+				<option name="Sensor Range" value="0x20" />
+				<option name="Unit Altitude 1" value="0x21" />
+				<option name="Unit Altitude 2" value="0x22" />
+				<option name="Unknown 35" value="0x23" />
+				<option name="Softkill Timer" value="0x24" />
+				<option name="Clip Ammo Fraction" value="0x25" />
+				<option name="Total Ammo Fraction" value="0x26" />
+				<option name="Pickup" value="0x27" />
+				<option name="Heat Fraction" value="0x28" />
+				<option name="Battery Fraction" value="0x29" />
+				<option name="Unknown 42" value="0x2A" />
+				<option name="Unknown 43" value="0x2B" />
+				<option name="Weapon Error" value="0x2C" />
+				<option name="Unknown Weapon Error" value="0x2D" />
+				<option name="Unit Autoaimed" value="0x2E" />
+				<option name="Unknown 47" value="0x2F" />
+				<option name="Unknown 48" value="0x30" />
+				<option name="Grenade Fraction" value="0x31" />
+				<option name="Unknown 50" value="0x32" />
+				<option name="Charge Fraction" value="0x33" />
+				<option name="Unknown 52" value="0x34" />
+				<option name="Trigger Cooldown" value="0x35" />
+				<option name="Trigger Remote Detonate Fraction" value="0x36" />
+				<option name="Trigger Locked On" value="0x37" />
+				<option name="Target Distance" value="0x38" />
+				<option name="Target Elevation" value="0x39" />
+				<option name="Equipment Energy Fraction" value="0x3A" />
+				<option name="Unknown 59" value="0x3B" />
+				<option name="Unknown 60" value="0x3C" />
+				<option name="Unknown 61" value="0x3D" />
+				<option name="Unknown 62" value="0x3E" />
+				<option name="Unknown 63" value="0x3F" />
+				<option name="Unknown 64" value="0x40" />
+				<option name="Medal Commendation" value="0x41" />
+				<option name="Generator Health Current" value="0x42" />
+				<option name="Generator Health" value="0x43" />
+				<option name="Unknown 68" value="0x44" />
+				<option name="Waypoint" value="0x45" />
+				<option name="Unknown 70" value="0x46" />
+				<option name="Unknown 71" value="0x47" />
+				<option name="Waypoint Onscreen" value="0x48" />
+				<option name="Waypoint Offscreen" value="0x49" />
+				<option name="Gametype Plate" value="0x4A" />
+				<option name="Offense Defense" value="0x4B" />
+				<option name="Metagame Time" value="0x4C" />
+				<option name="Metagame Score Transient" value="0x4D" />
+				<option name="Metagame Score Player 1" value="0x4E" />
+				<option name="Metagame Score Player 2" value="0x4F" />
+				<option name="Metagame Score Player 3" value="0x50" />
+				<option name="Metagame Score Player 4" value="0x51" />
+				<option name="Unknown 82" value="0x52" />
+				<option name="Survival Multiplier" value="0x53" />
+				<option name="Unknown 84" value="0x54" />
+				<option name="Unknown 85" value="0x55" />
+				<option name="Metagame Score Negative" value="0x56" />
+				<option name="Unknown 87" value="0x57" />
+				<option name="Unknown 88" value="0x58" />
+				<option name="Unknown 89" value="0x59" />
+				<option name="Unknown 90" value="0x5A" />
+				<option name="Unknown 91" value="0x5B" />
+				<option name="Unknown 92" value="0x5C" />
+				<option name="Unknown 93" value="0x5D" />
+				<option name="Unknown 94" value="0x5E" />
+				<option name="Friendly Score" value="0x5F" />
+				<option name="Enemy Score" value="0x60" />
+				<option name="Score To Win" value="0x61" />
+				<option name="Arming Fraction" value="0x62" />
+				<option name="Possession Icon" value="0x63" />
+				<option name="Arming Unknown" value="0x64" />
+				<option name="Omniwidget Icon" value="0x65" />
+				<option name="Unknown 102" value="0x66" />
+				<option name="Fireteam Health" value="0x67" />
+				<option name="Unknown 104" value="0x68" />
+				<option name="Unknown 105" value="0x69" />
+				<option name="Unknown 106" value="0x6A" />
+				<option name="Fireteam Current Shield" value="0x6B" />
+				<option name="Unknown 108" value="0x6C" />
+				<option name="Unknown 109" value="0x6D" />
+				<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+				<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+				<option name="Unknown 112" value="0x70" />
+				<option name="Fireteam 1 Directional Arrow" value="0x71" />
+				<option name="Fireteam 2 Directional Arrow" value="0x72" />
+				<option name="Unknown 115" value="0x73" />
+				<option name="Unknown 116" value="0x74" />
+				<option name="Unknown 117" value="0x75" />
+				<option name="Unknown 118" value="0x76" />
+				<option name="Unknown 119" value="0x77" />
+				<option name="Unknown 120" value="0x78" />
+				<option name="Unknown 121" value="0x79" />
+				<option name="Unknown 122" value="0x7A" />
+				<option name="Editor Budget" value="0x7B" />
+				<option name="Editor Budget Cost" value="0x7C" />
+				<option name="Film Total Time" value="0x7D" />
+				<option name="Film Current Time" value="0x7E" />
+				<option name="Unknown 127" value="0x7F" />
+				<option name="Film Timeline Fraction 1" value="0x80" />
+				<option name="Film Timeline Fraction 2" value="0x81" />
+				<option name="Unknown 130" value="0x82" />
+				<option name="Unknown 131" value="0x83" />
+				<option name="NetDebug Latency" value="0x84" />
+				<option name="NetDebug Latency Quality" value="0x85" />
+				<option name="NetDebug Host Quality" value="0x86" />
+				<option name="NetDebug Local Quality" value="0x87" />
+			</enum16>
+			<enum16 name="Import Range Input" offset="0xA" visible="true">
+				<option name="Zero" value="0x0" />
+				<option name="One" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Time" value="0x5" />
+				<option name="Fade" value="0x6" />
+				<option name="Unknown 7" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+				<option name="Unknown 10" value="0xA" />
+				<option name="Transmission Incoming" value="0xB" />
+				<option name="Unknown 12" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unit Health Current" value="0x11" />
+				<option name="Unit Health" value="0x12" />
+				<option name="Unit Shield Current" value="0x13" />
+				<option name="Unit 1x Overshield Current" value="0x14" />
+				<option name="Unit 2x Overshield Current" value="0x15" />
+				<option name="Unit 2x Overshield Current" value="0x16" />
+				<option name="Unit Shield" value="0x17" />
+				<option name="Unit 1x Overshield" value="0x18" />
+				<option name="Unit 2x Overshield" value="0x19" />
+				<option name="Unit 3x Overshield" value="0x1A" />
+				<option name="Unknown 27" value="0x1B" />
+				<option name="Unknown 28" value="0x1C" />
+				<option name="Aim Yaw" value="0x1D" />
+				<option name="Aim Pitch" value="0x1E" />
+				<option name="Unknown 31" value="0x1F" />
+				<option name="Sensor Range" value="0x20" />
+				<option name="Unit Altitude 1" value="0x21" />
+				<option name="Unit Altitude 2" value="0x22" />
+				<option name="Unknown 35" value="0x23" />
+				<option name="Softkill Timer" value="0x24" />
+				<option name="Clip Ammo Fraction" value="0x25" />
+				<option name="Total Ammo Fraction" value="0x26" />
+				<option name="Pickup" value="0x27" />
+				<option name="Heat Fraction" value="0x28" />
+				<option name="Battery Fraction" value="0x29" />
+				<option name="Unknown 42" value="0x2A" />
+				<option name="Unknown 43" value="0x2B" />
+				<option name="Weapon Error" value="0x2C" />
+				<option name="Unknown Weapon Error" value="0x2D" />
+				<option name="Unit Autoaimed" value="0x2E" />
+				<option name="Unknown 47" value="0x2F" />
+				<option name="Unknown 48" value="0x30" />
+				<option name="Grenade Fraction" value="0x31" />
+				<option name="Unknown 50" value="0x32" />
+				<option name="Charge Fraction" value="0x33" />
+				<option name="Unknown 52" value="0x34" />
+				<option name="Trigger Cooldown" value="0x35" />
+				<option name="Trigger Remote Detonate Fraction" value="0x36" />
+				<option name="Trigger Locked On" value="0x37" />
+				<option name="Target Distance" value="0x38" />
+				<option name="Target Elevation" value="0x39" />
+				<option name="Equipment Energy Fraction" value="0x3A" />
+				<option name="Unknown 59" value="0x3B" />
+				<option name="Unknown 60" value="0x3C" />
+				<option name="Unknown 61" value="0x3D" />
+				<option name="Unknown 62" value="0x3E" />
+				<option name="Unknown 63" value="0x3F" />
+				<option name="Unknown 64" value="0x40" />
+				<option name="Medal Commendation" value="0x41" />
+				<option name="Generator Health Current" value="0x42" />
+				<option name="Generator Health" value="0x43" />
+				<option name="Unknown 68" value="0x44" />
+				<option name="Waypoint" value="0x45" />
+				<option name="Unknown 70" value="0x46" />
+				<option name="Unknown 71" value="0x47" />
+				<option name="Waypoint Onscreen" value="0x48" />
+				<option name="Waypoint Offscreen" value="0x49" />
+				<option name="Gametype Plate" value="0x4A" />
+				<option name="Offense Defense" value="0x4B" />
+				<option name="Metagame Time" value="0x4C" />
+				<option name="Metagame Score Transient" value="0x4D" />
+				<option name="Metagame Score Player 1" value="0x4E" />
+				<option name="Metagame Score Player 2" value="0x4F" />
+				<option name="Metagame Score Player 3" value="0x50" />
+				<option name="Metagame Score Player 4" value="0x51" />
+				<option name="Unknown 82" value="0x52" />
+				<option name="Survival Multiplier" value="0x53" />
+				<option name="Unknown 84" value="0x54" />
+				<option name="Unknown 85" value="0x55" />
+				<option name="Metagame Score Negative" value="0x56" />
+				<option name="Unknown 87" value="0x57" />
+				<option name="Unknown 88" value="0x58" />
+				<option name="Unknown 89" value="0x59" />
+				<option name="Unknown 90" value="0x5A" />
+				<option name="Unknown 91" value="0x5B" />
+				<option name="Unknown 92" value="0x5C" />
+				<option name="Unknown 93" value="0x5D" />
+				<option name="Unknown 94" value="0x5E" />
+				<option name="Friendly Score" value="0x5F" />
+				<option name="Enemy Score" value="0x60" />
+				<option name="Score To Win" value="0x61" />
+				<option name="Arming Fraction" value="0x62" />
+				<option name="Possession Icon" value="0x63" />
+				<option name="Arming Unknown" value="0x64" />
+				<option name="Omniwidget Icon" value="0x65" />
+				<option name="Unknown 102" value="0x66" />
+				<option name="Fireteam Health" value="0x67" />
+				<option name="Unknown 104" value="0x68" />
+				<option name="Unknown 105" value="0x69" />
+				<option name="Unknown 106" value="0x6A" />
+				<option name="Fireteam Current Shield" value="0x6B" />
+				<option name="Unknown 108" value="0x6C" />
+				<option name="Unknown 109" value="0x6D" />
+				<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+				<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+				<option name="Unknown 112" value="0x70" />
+				<option name="Fireteam 1 Directional Arrow" value="0x71" />
+				<option name="Fireteam 2 Directional Arrow" value="0x72" />
+				<option name="Unknown 115" value="0x73" />
+				<option name="Unknown 116" value="0x74" />
+				<option name="Unknown 117" value="0x75" />
+				<option name="Unknown 118" value="0x76" />
+				<option name="Unknown 119" value="0x77" />
+				<option name="Unknown 120" value="0x78" />
+				<option name="Unknown 121" value="0x79" />
+				<option name="Unknown 122" value="0x7A" />
+				<option name="Editor Budget" value="0x7B" />
+				<option name="Editor Budget Cost" value="0x7C" />
+				<option name="Film Total Time" value="0x7D" />
+				<option name="Film Current Time" value="0x7E" />
+				<option name="Unknown 127" value="0x7F" />
+				<option name="Film Timeline Fraction 1" value="0x80" />
+				<option name="Film Timeline Fraction 2" value="0x81" />
+				<option name="Unknown 130" value="0x82" />
+				<option name="Unknown 131" value="0x83" />
+				<option name="NetDebug Latency" value="0x84" />
+				<option name="NetDebug Latency Quality" value="0x85" />
+				<option name="NetDebug Host Quality" value="0x86" />
+				<option name="NetDebug Local Quality" value="0x87" />
+			</enum16>
+			<tagRef name="State Data Template" offset="0xC" visible="true" />
+			<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+				<comment title="State Data Note">The following blocks are import data.</comment>
+				<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
-				<reflexive name="Unknown 9" offset="0xC" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 10" offset="0x0" visible="false" entrySize="0x8">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
+				<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
-				<reflexive name="Unknown 10" offset="0x18" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 11" offset="0x0" visible="false" entrySize="0x8">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
+				<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
+				<int16 name="Unknown" offset="0x24" visible="false" />
+				<int16 name="Unknown" offset="0x26" visible="false" />
+				<int16 name="Unknown" offset="0x28" visible="false" />
+				<int16 name="Unknown" offset="0x2A" visible="false" />
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x28" visible="false" />
-			<reflexive name="Unknown 8" offset="0x38" visible="false" entrySize="0x1C">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
+			<tagref name="Placement Data Template" offset="0x28" visible="true" />
+			<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+				<bitfield8 name="Unknown" offset="0x0" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+				</bitfield8>
+				<enum8 name="Anchor" offset="0x1" visible="true">
+					<option name="Unknown" value="0x0" />
+					<option name="Top, Left" value="0x1" />
+					<option name="Top, Middle" value="0x2" />
+					<option name="Top, Right" value="0x3" />
+					<option name="Center, Middle" value="0x4" />
+					<option name="Bottom, Left" value="0x5" />
+					<option name="Bottom, Middle" value="0x6" />
+					<option name="Bottom, Right" value="0x7" />
+					<option name="Motion Sensor" value="0x8" />
+					<option name="Crosshair A" value="0x9" />
+					<option name="Ability" value="0xA" />
+					<option name="Weapon Left" value="0xB" />
+					<option name="Weapon Right" value="0xC" />
+					<option name="Health and Shield" value="0xD" />
+					<option name="Unknown" value="0xE" />
+					<option name="Top, Left B" value="0xF" />
+					<option name="Unknown" value="0x10" />
+					<option name="Crosshair B" value="0x11" />
+					<option name="Top, Left C" value="0x12" />
+					<option name="Top, Left D" value="0x13" />
+					<option name="Top, Left E" value="0x14" />
+					<option name="Crosshair B" value="0x15" />
+					<option name="Top, Left F" value="0x16" />
+					<option name="Unknown" value="0x17" />
+					<option name="Top, Left G" value="0x18" />
+					<option name="Unknown" value="0x19" />
+					<option name="Top, Left F" value="0x1A" />
+					<option name="Score" value="0x1B" />
+					<option name="Score B" value="0x1C" />
+					<option name="Score C" value="0x1D" />
+					<option name="Score D" value="0x1E" />
+					<option name="Score E" value="0x1F" />
+					<option name="Score F" value="0x20" />
+					<option name="Score G" value="0x21" />
+					<option name="Unknown" value="0x22" />
+					<option name="Unknown" value="0x23" />
+					<option name="Unknown" value="0x24" />
+				</enum8>
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<float32 name="Mirror Offset X" offset="0x4" visible="true" />
+				<float32 name="Mirror Offset Y" offset="0x8" visible="true" />
+				<float32 name="Offset X" offset="0xC" visible="true" />
+				<float32 name="Offset Y" offset="0x10" visible="true" />
+				<float32 name="Scale X" offset="0x14" visible="true" />
+				<float32 name="Scale Y" offset="0x18" visible="true" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x44" visible="false" />
-			<reflexive name="Unknown 9" offset="0x54" visible="false" entrySize="0x64">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<tagRef name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<tagRef name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
-				<tagRef name="Unknown" offset="0x2C" visible="false" />
-				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<tagRef name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<tagRef name="Unknown" offset="0x54" visible="false" />
+			<tagRef name="Animation Data Template" offset="0x44" visible="true" />
+			<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+				<enum16 name="Unknown" offset="0x0" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x2" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 1" offset="0x4" visible="true" />
+				<enum16 name="Unknown" offset="0x14" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x16" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 2" offset="0x18" visible="true" />
+				<enum16 name="Unknown" offset="0x28" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x2A" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 3" offset="0x2C" visible="true" />
+				<enum16 name="Unknown" offset="0x3C" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x3E" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 4" offset="0x40" visible="true" />
+				<enum16 name="Unknown" offset="0x50" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x52" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 5" offset="0x54" visible="true" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x60" visible="false" />
-			<reflexive name="Unknown 10" offset="0x70" visible="false" entrySize="0x78">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
-				<undefined name="Unknown" offset="0x2C" visible="false" />
-				<undefined name="Unknown" offset="0x30" visible="false" />
-				<undefined name="Unknown" offset="0x34" visible="false" />
-				<undefined name="Unknown" offset="0x38" visible="false" />
-				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<undefined name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x44" visible="false" />
-				<undefined name="Unknown" offset="0x48" visible="false" />
-				<undefined name="Unknown" offset="0x4C" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<undefined name="Unknown" offset="0x54" visible="false" />
-				<undefined name="Unknown" offset="0x58" visible="false" />
-				<undefined name="Unknown" offset="0x5C" visible="false" />
-				<undefined name="Unknown" offset="0x60" visible="false" />
-				<undefined name="Unknown" offset="0x64" visible="false" />
-				<undefined name="Unknown" offset="0x68" visible="false" />
+			<tagRef name="Render Data Template" offset="0x60" visible="true" />
+			<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Enabled" index="0" />
+					<bit name="Apply Alpha Function" index="1" />
+					<bit name="Apply Color Change Function" index="2" />
+					<bit name="Apply Meter Function" index="3" />
+					<bit name="Apply Emblem Function" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+				</bitfield8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int8 name="Unknown" offset="0x2" visible="false" />
+				<int8 name="Unknown" offset="0x3" visible="false" />
+				<float32 name="Local Color Alpha 0" offset="0x4" visible="true" />
+				<Colorf name="Local Color 0" offset="0x8" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 1" offset="0x14" visible="true" />
+				<Colorf name="Local Color 1" offset="0x18" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 2" offset="0x24" visible="true" />
+				<Colorf name="Local Color 2" offset="0x28" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 3" offset="0x34" visible="true" />
+				<Colorf name="Local Color 3" offset="0x38" format="rgb" visible="true" />
+				<float32 name="Function Value 1" offset="0x44" visible="true" />
+				<float32 name="Function Value 2" offset="0x48" visible="true" />
+				<float32 name="Function Value 3" offset="0x4C" visible="true" />
+				<float32 name="Function Value 4" offset="0x50" visible="true" />
+				<enum16 name="Color 1" offset="0x54" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 2" offset="0x56" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 3" offset="0x58" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 4" offset="0x5A" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 5" offset="0x5C" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 6" offset="0x5E" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Modifier 1" offset="0x60" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 2" offset="0x62" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 3" offset="0x64" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 4" offset="0x66" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 5" offset="0x68" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 6" offset="0x6A" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
 				<undefined name="Unknown" offset="0x6C" visible="false" />
 				<undefined name="Unknown" offset="0x70" visible="false" />
-				<undefined name="Unknown" offset="0x74" visible="false" />
+				<int16 name="Unknown" offset="0x74" visible="false" />
+				<int16 name="Unknown" offset="0x76" visible="false" />
 			</reflexive>
-			<undefined name="Unknown" offset="0x7C" visible="false" />
-			<tagRef name="Unknown" offset="0x80" visible="false" />
-			<undefined name="Unknown" offset="0x90" visible="false" />
+			<bitfield32 name="Flags" offset="0x7C" visible="true">
+				<bit name="Mirror Horizontally" index="0" />
+				<bit name="Mirror Vertically" index="1" />
+				<bit name="Stretch Edges" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Looping" index="4" />
+				<bit name="Posession Icon" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Player 1 Emblem" index="8" />
+				<bit name="Player 2 Emblem" index="9" />
+				<bit name="Player 3 Emblem" index="10" />
+				<bit name="Player 4 Emblem" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<tagRef name="Bitmap" offset="0x80" visible="true" />
+			<uint8 name="Bitmap Sprite Index" offset="0x90" visible="true" />
+			<uint8 name="Unknown" offset="0x91" visible="false" />
+			<uint8 name="Unknown" offset="0x92" visible="false" />
+			<uint8 name="Unknown" offset="0x93" visible="false" />
 			<undefined name="Unknown" offset="0x94" visible="false" />
 			<undefined name="Unknown" offset="0x98" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 7" offset="0xA4" visible="false" entrySize="0x84">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<tagref name="Unknown" offset="0xC" visible="false" />
-			<reflexive name="Unknown 8" offset="0x1C" visible="false" entrySize="0x38">
-				<reflexive name="Unknown 9" offset="0x0" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 10" offset="0x0" visible="false" entrySize="0x8">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
+		<reflexive name="Text Widgets" offset="0xA4" visible="true" entrySize="0x84">
+			<stringid name="Name" offset="0x0" visible="true" />
+			<enum8 name="Special HUD Type" offset="0x4" visible="true">
+				<option name="Unspecial" value="0x0" />
+				<option name="Ammo" value="0x1" />
+				<option name="Crosshair and Scope" value="0x2" />
+				<option name="Unit Shield Meter" value="0x3" />
+				<option name="Grenades" value="0x4" />
+				<option name="Gametype" value="0x5" />
+				<option name="Motion Sensor" value="0x6" />
+			</enum8>
+			<uint8 name="Unknown" offset="0x5" visible="false" />
+			<uint8 name="Unknown" offset="0x6" visible="false" />
+			<uint8 name="Unknown" offset="0x7" visible="false" />
+			<enum16 name="Import Input" offset="0x8" visible="true">
+				<option name="Zero" value="0x0" />
+				<option name="One" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Time" value="0x5" />
+				<option name="Fade" value="0x6" />
+				<option name="Unknown 7" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+				<option name="Unknown 10" value="0xA" />
+				<option name="Transmission Incoming" value="0xB" />
+				<option name="Unknown 12" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unit Health Current" value="0x11" />
+				<option name="Unit Health" value="0x12" />
+				<option name="Unit Shield Current" value="0x13" />
+				<option name="Unit 1x Overshield Current" value="0x14" />
+				<option name="Unit 2x Overshield Current" value="0x15" />
+				<option name="Unit 2x Overshield Current" value="0x16" />
+				<option name="Unit Shield" value="0x17" />
+				<option name="Unit 1x Overshield" value="0x18" />
+				<option name="Unit 2x Overshield" value="0x19" />
+				<option name="Unit 3x Overshield" value="0x1A" />
+				<option name="Unknown 27" value="0x1B" />
+				<option name="Unknown 28" value="0x1C" />
+				<option name="Aim Yaw" value="0x1D" />
+				<option name="Aim Pitch" value="0x1E" />
+				<option name="Unknown 31" value="0x1F" />
+				<option name="Sensor Range" value="0x20" />
+				<option name="Unit Altitude 1" value="0x21" />
+				<option name="Unit Altitude 2" value="0x22" />
+				<option name="Unknown 35" value="0x23" />
+				<option name="Softkill Timer" value="0x24" />
+				<option name="Clip Ammo Fraction" value="0x25" />
+				<option name="Total Ammo Fraction" value="0x26" />
+				<option name="Pickup" value="0x27" />
+				<option name="Heat Fraction" value="0x28" />
+				<option name="Battery Fraction" value="0x29" />
+				<option name="Unknown 42" value="0x2A" />
+				<option name="Unknown 43" value="0x2B" />
+				<option name="Weapon Error" value="0x2C" />
+				<option name="Unknown Weapon Error" value="0x2D" />
+				<option name="Unit Autoaimed" value="0x2E" />
+				<option name="Unknown 47" value="0x2F" />
+				<option name="Unknown 48" value="0x30" />
+				<option name="Grenade Fraction" value="0x31" />
+				<option name="Unknown 50" value="0x32" />
+				<option name="Charge Fraction" value="0x33" />
+				<option name="Unknown 52" value="0x34" />
+				<option name="Trigger Cooldown" value="0x35" />
+				<option name="Trigger Remote Detonate Fraction" value="0x36" />
+				<option name="Trigger Locked On" value="0x37" />
+				<option name="Target Distance" value="0x38" />
+				<option name="Target Elevation" value="0x39" />
+				<option name="Equipment Energy Fraction" value="0x3A" />
+				<option name="Unknown 59" value="0x3B" />
+				<option name="Unknown 60" value="0x3C" />
+				<option name="Unknown 61" value="0x3D" />
+				<option name="Unknown 62" value="0x3E" />
+				<option name="Unknown 63" value="0x3F" />
+				<option name="Unknown 64" value="0x40" />
+				<option name="Medal Commendation" value="0x41" />
+				<option name="Generator Health Current" value="0x42" />
+				<option name="Generator Health" value="0x43" />
+				<option name="Unknown 68" value="0x44" />
+				<option name="Waypoint" value="0x45" />
+				<option name="Unknown 70" value="0x46" />
+				<option name="Unknown 71" value="0x47" />
+				<option name="Waypoint Onscreen" value="0x48" />
+				<option name="Waypoint Offscreen" value="0x49" />
+				<option name="Gametype Plate" value="0x4A" />
+				<option name="Offense Defense" value="0x4B" />
+				<option name="Metagame Time" value="0x4C" />
+				<option name="Metagame Score Transient" value="0x4D" />
+				<option name="Metagame Score Player 1" value="0x4E" />
+				<option name="Metagame Score Player 2" value="0x4F" />
+				<option name="Metagame Score Player 3" value="0x50" />
+				<option name="Metagame Score Player 4" value="0x51" />
+				<option name="Unknown 82" value="0x52" />
+				<option name="Survival Multiplier" value="0x53" />
+				<option name="Unknown 84" value="0x54" />
+				<option name="Unknown 85" value="0x55" />
+				<option name="Metagame Score Negative" value="0x56" />
+				<option name="Unknown 87" value="0x57" />
+				<option name="Unknown 88" value="0x58" />
+				<option name="Unknown 89" value="0x59" />
+				<option name="Unknown 90" value="0x5A" />
+				<option name="Unknown 91" value="0x5B" />
+				<option name="Unknown 92" value="0x5C" />
+				<option name="Unknown 93" value="0x5D" />
+				<option name="Unknown 94" value="0x5E" />
+				<option name="Friendly Score" value="0x5F" />
+				<option name="Enemy Score" value="0x60" />
+				<option name="Score To Win" value="0x61" />
+				<option name="Arming Fraction" value="0x62" />
+				<option name="Possession Icon" value="0x63" />
+				<option name="Arming Unknown" value="0x64" />
+				<option name="Omniwidget Icon" value="0x65" />
+				<option name="Unknown 102" value="0x66" />
+				<option name="Fireteam Health" value="0x67" />
+				<option name="Unknown 104" value="0x68" />
+				<option name="Unknown 105" value="0x69" />
+				<option name="Unknown 106" value="0x6A" />
+				<option name="Fireteam Current Shield" value="0x6B" />
+				<option name="Unknown 108" value="0x6C" />
+				<option name="Unknown 109" value="0x6D" />
+				<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+				<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+				<option name="Unknown 112" value="0x70" />
+				<option name="Fireteam 1 Directional Arrow" value="0x71" />
+				<option name="Fireteam 2 Directional Arrow" value="0x72" />
+				<option name="Unknown 115" value="0x73" />
+				<option name="Unknown 116" value="0x74" />
+				<option name="Unknown 117" value="0x75" />
+				<option name="Unknown 118" value="0x76" />
+				<option name="Unknown 119" value="0x77" />
+				<option name="Unknown 120" value="0x78" />
+				<option name="Unknown 121" value="0x79" />
+				<option name="Unknown 122" value="0x7A" />
+				<option name="Editor Budget" value="0x7B" />
+				<option name="Editor Budget Cost" value="0x7C" />
+				<option name="Film Total Time" value="0x7D" />
+				<option name="Film Current Time" value="0x7E" />
+				<option name="Unknown 127" value="0x7F" />
+				<option name="Film Timeline Fraction 1" value="0x80" />
+				<option name="Film Timeline Fraction 2" value="0x81" />
+				<option name="Unknown 130" value="0x82" />
+				<option name="Unknown 131" value="0x83" />
+				<option name="NetDebug Latency" value="0x84" />
+				<option name="NetDebug Latency Quality" value="0x85" />
+				<option name="NetDebug Host Quality" value="0x86" />
+				<option name="NetDebug Local Quality" value="0x87" />
+			</enum16>
+			<enum16 name="Import Range Input" offset="0xA" visible="true">
+				<option name="Zero" value="0x0" />
+				<option name="One" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Time" value="0x5" />
+				<option name="Fade" value="0x6" />
+				<option name="Unknown 7" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+				<option name="Unknown 10" value="0xA" />
+				<option name="Transmission Incoming" value="0xB" />
+				<option name="Unknown 12" value="0xC" />
+				<option name="Unknown 13" value="0xD" />
+				<option name="Unknown 14" value="0xE" />
+				<option name="Unknown 15" value="0xF" />
+				<option name="Unknown 16" value="0x10" />
+				<option name="Unit Health Current" value="0x11" />
+				<option name="Unit Health" value="0x12" />
+				<option name="Unit Shield Current" value="0x13" />
+				<option name="Unit 1x Overshield Current" value="0x14" />
+				<option name="Unit 2x Overshield Current" value="0x15" />
+				<option name="Unit 2x Overshield Current" value="0x16" />
+				<option name="Unit Shield" value="0x17" />
+				<option name="Unit 1x Overshield" value="0x18" />
+				<option name="Unit 2x Overshield" value="0x19" />
+				<option name="Unit 3x Overshield" value="0x1A" />
+				<option name="Unknown 27" value="0x1B" />
+				<option name="Unknown 28" value="0x1C" />
+				<option name="Aim Yaw" value="0x1D" />
+				<option name="Aim Pitch" value="0x1E" />
+				<option name="Unknown 31" value="0x1F" />
+				<option name="Sensor Range" value="0x20" />
+				<option name="Unit Altitude 1" value="0x21" />
+				<option name="Unit Altitude 2" value="0x22" />
+				<option name="Unknown 35" value="0x23" />
+				<option name="Softkill Timer" value="0x24" />
+				<option name="Clip Ammo Fraction" value="0x25" />
+				<option name="Total Ammo Fraction" value="0x26" />
+				<option name="Pickup" value="0x27" />
+				<option name="Heat Fraction" value="0x28" />
+				<option name="Battery Fraction" value="0x29" />
+				<option name="Unknown 42" value="0x2A" />
+				<option name="Unknown 43" value="0x2B" />
+				<option name="Weapon Error" value="0x2C" />
+				<option name="Unknown Weapon Error" value="0x2D" />
+				<option name="Unit Autoaimed" value="0x2E" />
+				<option name="Unknown 47" value="0x2F" />
+				<option name="Unknown 48" value="0x30" />
+				<option name="Grenade Fraction" value="0x31" />
+				<option name="Unknown 50" value="0x32" />
+				<option name="Charge Fraction" value="0x33" />
+				<option name="Unknown 52" value="0x34" />
+				<option name="Trigger Cooldown" value="0x35" />
+				<option name="Trigger Remote Detonate Fraction" value="0x36" />
+				<option name="Trigger Locked On" value="0x37" />
+				<option name="Target Distance" value="0x38" />
+				<option name="Target Elevation" value="0x39" />
+				<option name="Equipment Energy Fraction" value="0x3A" />
+				<option name="Unknown 59" value="0x3B" />
+				<option name="Unknown 60" value="0x3C" />
+				<option name="Unknown 61" value="0x3D" />
+				<option name="Unknown 62" value="0x3E" />
+				<option name="Unknown 63" value="0x3F" />
+				<option name="Unknown 64" value="0x40" />
+				<option name="Medal Commendation" value="0x41" />
+				<option name="Generator Health Current" value="0x42" />
+				<option name="Generator Health" value="0x43" />
+				<option name="Unknown 68" value="0x44" />
+				<option name="Waypoint" value="0x45" />
+				<option name="Unknown 70" value="0x46" />
+				<option name="Unknown 71" value="0x47" />
+				<option name="Waypoint Onscreen" value="0x48" />
+				<option name="Waypoint Offscreen" value="0x49" />
+				<option name="Gametype Plate" value="0x4A" />
+				<option name="Offense Defense" value="0x4B" />
+				<option name="Metagame Time" value="0x4C" />
+				<option name="Metagame Score Transient" value="0x4D" />
+				<option name="Metagame Score Player 1" value="0x4E" />
+				<option name="Metagame Score Player 2" value="0x4F" />
+				<option name="Metagame Score Player 3" value="0x50" />
+				<option name="Metagame Score Player 4" value="0x51" />
+				<option name="Unknown 82" value="0x52" />
+				<option name="Survival Multiplier" value="0x53" />
+				<option name="Unknown 84" value="0x54" />
+				<option name="Unknown 85" value="0x55" />
+				<option name="Metagame Score Negative" value="0x56" />
+				<option name="Unknown 87" value="0x57" />
+				<option name="Unknown 88" value="0x58" />
+				<option name="Unknown 89" value="0x59" />
+				<option name="Unknown 90" value="0x5A" />
+				<option name="Unknown 91" value="0x5B" />
+				<option name="Unknown 92" value="0x5C" />
+				<option name="Unknown 93" value="0x5D" />
+				<option name="Unknown 94" value="0x5E" />
+				<option name="Friendly Score" value="0x5F" />
+				<option name="Enemy Score" value="0x60" />
+				<option name="Score To Win" value="0x61" />
+				<option name="Arming Fraction" value="0x62" />
+				<option name="Possession Icon" value="0x63" />
+				<option name="Arming Unknown" value="0x64" />
+				<option name="Omniwidget Icon" value="0x65" />
+				<option name="Unknown 102" value="0x66" />
+				<option name="Fireteam Health" value="0x67" />
+				<option name="Unknown 104" value="0x68" />
+				<option name="Unknown 105" value="0x69" />
+				<option name="Unknown 106" value="0x6A" />
+				<option name="Fireteam Current Shield" value="0x6B" />
+				<option name="Unknown 108" value="0x6C" />
+				<option name="Unknown 109" value="0x6D" />
+				<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+				<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+				<option name="Unknown 112" value="0x70" />
+				<option name="Fireteam 1 Directional Arrow" value="0x71" />
+				<option name="Fireteam 2 Directional Arrow" value="0x72" />
+				<option name="Unknown 115" value="0x73" />
+				<option name="Unknown 116" value="0x74" />
+				<option name="Unknown 117" value="0x75" />
+				<option name="Unknown 118" value="0x76" />
+				<option name="Unknown 119" value="0x77" />
+				<option name="Unknown 120" value="0x78" />
+				<option name="Unknown 121" value="0x79" />
+				<option name="Unknown 122" value="0x7A" />
+				<option name="Editor Budget" value="0x7B" />
+				<option name="Editor Budget Cost" value="0x7C" />
+				<option name="Film Total Time" value="0x7D" />
+				<option name="Film Current Time" value="0x7E" />
+				<option name="Unknown 127" value="0x7F" />
+				<option name="Film Timeline Fraction 1" value="0x80" />
+				<option name="Film Timeline Fraction 2" value="0x81" />
+				<option name="Unknown 130" value="0x82" />
+				<option name="Unknown 131" value="0x83" />
+				<option name="NetDebug Latency" value="0x84" />
+				<option name="NetDebug Latency Quality" value="0x85" />
+				<option name="NetDebug Host Quality" value="0x86" />
+				<option name="NetDebug Local Quality" value="0x87" />
+			</enum16>
+			<tagRef name="State Data Template" offset="0xC" visible="true" />
+			<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+				<comment title="State Data Note">The following blocks are import data.</comment>
+				<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
-				<reflexive name="Unknown 10" offset="0xC" visible="false" entrySize="0xC">
-					<reflexive name="Unknown 11" offset="0x0" visible="false" entrySize="0x8">
-						<undefined name="Unknown" offset="0x0" visible="false" />
-						<undefined name="Unknown" offset="0x4" visible="false" />
+				<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
 					</reflexive>
 				</reflexive>
-				<reflexive name="Unknown" offset="0x18" visible="false" entrySize="0xC">
-					<undefined name="Unknown" offset="0x0" visible="false" />
-					<undefined name="Unknown" offset="0x4" visible="false" />
-					<undefined name="Unknown" offset="0x8" visible="false" />
+				<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
+					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+						<bitfield8 name="Flag" offset="0x0" visible="true">
+							<bit name="Input Variable" index="0" />
+						</bitfield8>
+						<int8 name="Unknown" offset="0x1" visible="false" />
+						<int8 name="Unknown" offset="0x2" visible="false" />
+						<int8 name="Unknown" offset="0x3" visible="false" />
+						<int32 name="Trigger Index" offset="0x4" visible="true" />
+					</reflexive>
 				</reflexive>
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
+				<int16 name="Unknown" offset="0x24" visible="false" />
+				<int16 name="Unknown" offset="0x26" visible="false" />
+				<int16 name="Unknown" offset="0x28" visible="false" />
+				<int16 name="Unknown" offset="0x2A" visible="false" />
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x28" visible="false" />
-			<reflexive name="Unknown 9" offset="0x38" visible="false" entrySize="0x1C">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
+			<tagref name="Placement Data Template" offset="0x28" visible="true" />
+			<comment title="Placement Data Note"></comment>
+			<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+				<bitfield8 name="Unknown" offset="0x0" visible="true">
+					<bit name="Bit 0" index="0" />
+					<bit name="Bit 1" index="1" />
+					<bit name="Bit 2" index="2" />
+					<bit name="Bit 3" index="3" />
+					<bit name="Bit 4" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+				</bitfield8>
+				<enum8 name="Anchor" offset="0x1" visible="true">
+					<option name="Unknown" value="0x0" />
+					<option name="Top, Left" value="0x1" />
+					<option name="Top, Middle" value="0x2" />
+					<option name="Top, Right" value="0x3" />
+					<option name="Center, Middle" value="0x4" />
+					<option name="Bottom, Left" value="0x5" />
+					<option name="Bottom, Middle" value="0x6" />
+					<option name="Bottom, Right" value="0x7" />
+					<option name="Motion Sensor" value="0x8" />
+					<option name="Crosshair A" value="0x9" />
+					<option name="Ability" value="0xA" />
+					<option name="Weapon Left" value="0xB" />
+					<option name="Weapon Right" value="0xC" />
+					<option name="Health and Shield" value="0xD" />
+					<option name="Unknown" value="0xE" />
+					<option name="Top, Left B" value="0xF" />
+					<option name="Unknown" value="0x10" />
+					<option name="Crosshair B" value="0x11" />
+					<option name="Top, Left C" value="0x12" />
+					<option name="Top, Left D" value="0x13" />
+					<option name="Top, Left E" value="0x14" />
+					<option name="Crosshair B" value="0x15" />
+					<option name="Top, Left F" value="0x16" />
+					<option name="Unknown" value="0x17" />
+					<option name="Top, Left G" value="0x18" />
+					<option name="Unknown" value="0x19" />
+					<option name="Top, Left F" value="0x1A" />
+					<option name="Score" value="0x1B" />
+					<option name="Score B" value="0x1C" />
+					<option name="Score C" value="0x1D" />
+					<option name="Score D" value="0x1E" />
+					<option name="Score E" value="0x1F" />
+					<option name="Score F" value="0x20" />
+					<option name="Score G" value="0x21" />
+					<option name="Unknown" value="0x22" />
+					<option name="Unknown" value="0x23" />
+					<option name="Unknown" value="0x24" />
+				</enum8>
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<float32 name="Mirror Offset X" offset="0x4" visible="true" />
+				<float32 name="Mirror Offset Y" offset="0x8" visible="true" />
+				<float32 name="Offset X" offset="0xC" visible="true" />
+				<float32 name="Offset Y" offset="0x10" visible="true" />
+				<float32 name="Scale X" offset="0x14" visible="true" />
+				<float32 name="Scale Y" offset="0x18" visible="true" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x44" visible="false" />
-			<reflexive name="Unknown 10" offset="0x54" visible="false" entrySize="0x64">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<tagRef name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<tagRef name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
-				<tagRef name="Unknown" offset="0x2C" visible="false" />
-				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<tagRef name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<tagRef name="Unknown" offset="0x54" visible="false" />
+			<tagRef name="Animation Data Template" offset="0x44" visible="true" />
+			<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+				<enum16 name="Unknown" offset="0x0" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x2" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 1" offset="0x4" visible="true" />
+				<enum16 name="Unknown" offset="0x14" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x16" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 2" offset="0x18" visible="true" />
+				<enum16 name="Unknown" offset="0x28" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x2A" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 3" offset="0x2C" visible="true" />
+				<enum16 name="Unknown" offset="0x3C" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x3E" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 4" offset="0x40" visible="true" />
+				<enum16 name="Unknown" offset="0x50" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+				</enum16>
+				<enum16 name="Unknown" offset="0x52" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Unknown 2" value="0x2" />
+					<option name="Unknown 3" value="0x3" />
+				</enum16>
+				<tagRef name="Animation 5" offset="0x54" visible="true" />
 			</reflexive>
-			<tagref name="Unknown" offset="0x60" visible="false" />
-			<reflexive name="Unknown 11" offset="0x70" visible="false" entrySize="0x78">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
-				<undefined name="Unknown" offset="0x2C" visible="false" />
-				<undefined name="Unknown" offset="0x30" visible="false" />
-				<undefined name="Unknown" offset="0x34" visible="false" />
-				<undefined name="Unknown" offset="0x38" visible="false" />
-				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<undefined name="Unknown" offset="0x40" visible="false" />
-				<undefined name="Unknown" offset="0x44" visible="false" />
-				<undefined name="Unknown" offset="0x48" visible="false" />
-				<undefined name="Unknown" offset="0x4C" visible="false" />
-				<undefined name="Unknown" offset="0x50" visible="false" />
-				<undefined name="Unknown" offset="0x54" visible="false" />
-				<undefined name="Unknown" offset="0x58" visible="false" />
-				<undefined name="Unknown" offset="0x5C" visible="false" />
-				<undefined name="Unknown" offset="0x60" visible="false" />
-				<undefined name="Unknown" offset="0x64" visible="false" />
-				<undefined name="Unknown" offset="0x68" visible="false" />
+			<tagRef name="Render Data Template" offset="0x60" visible="true" />
+			<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Enabled" index="0" />
+					<bit name="Apply Alpha Function" index="1" />
+					<bit name="Apply Color Change Function" index="2" />
+					<bit name="Apply Meter Function" index="3" />
+					<bit name="Apply Emblem Function" index="4" />
+					<bit name="Bit 5" index="5" />
+					<bit name="Bit 6" index="6" />
+					<bit name="Bit 7" index="7" />
+				</bitfield8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int8 name="Unknown" offset="0x2" visible="false" />
+				<int8 name="Unknown" offset="0x3" visible="false" />
+				<float32 name="Local Color Alpha 0" offset="0x4" visible="true" />
+				<Colorf name="Local Color 0" offset="0x8" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 1" offset="0x14" visible="true" />
+				<Colorf name="Local Color 1" offset="0x18" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 2" offset="0x24" visible="true" />
+				<Colorf name="Local Color 2" offset="0x28" format="rgb" visible="true" />
+				<float32 name="Local Color Alpha 3" offset="0x34" visible="true" />
+				<Colorf name="Local Color 3" offset="0x38" format="rgb" visible="true" />
+				<float32 name="Function Value 1" offset="0x44" visible="true" />
+				<float32 name="Function Value 2" offset="0x48" visible="true" />
+				<float32 name="Function Value 3" offset="0x4C" visible="true" />
+				<float32 name="Function Value 4" offset="0x50" visible="true" />
+				<enum16 name="Color 1" offset="0x54" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 2" offset="0x56" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 3" offset="0x58" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 4" offset="0x5A" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 5" offset="0x5C" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Color 6" offset="0x5E" visible="true">
+					<option name="Local 0" value="0x0" />
+					<option name="Local 1" value="0x1" />
+					<option name="Local 2" value="0x2" />
+					<option name="Local 3" value="0x3" />
+					<option name="Unknown 4" value="0x4" />
+					<option name="Unknown 5" value="0x5" />
+					<option name="Scoreboard Friendly" value="0x6" />
+					<option name="Scoreboard Enemy" value="0x7" />
+					<option name="Arming Team" value="0x8" />
+					<option name="Metagame Player 1" value="0x9" />
+					<option name="Metagame Player 2" value="0xA" />
+					<option name="Metagame Player 3" value="0xB" />
+					<option name="Metagame Player 4" value="0xC" />
+					<option name="Unknown 13" value="0xD" />
+					<option name="Unknown 14" value="0xE" />
+					<option name="Unknown 15" value="0xF" />
+					<option name="Unknown 16" value="0x10" />
+					<option name="Unknown 17" value="0x11" />
+					<option name="Global Dynamic 0" value="0x12" />
+					<option name="Global Dynamic 1" value="0x13" />
+					<option name="Global Dynamic 2" value="0x14" />
+					<option name="Global Dynamic 3" value="0x15" />
+					<option name="Global Dynamic 4" value="0x16" />
+					<option name="Global Dynamic 5" value="0x17" />
+					<option name="Global Dynamic 6" value="0x18" />
+					<option name="Global Dynamic 7" value="0x19" />
+					<option name="Global Dynamic 8" value="0x1A" />
+					<option name="Global Dynamic 9" value="0x1B" />
+					<option name="Global Dynamic 10" value="0x1C" />
+					<option name="Global Dynamic 11" value="0x1D" />
+					<option name="Global Dynamic 12" value="0x1E" />
+					<option name="Global Dynamic 13" value="0x1F" />
+					<option name="Global Dynamic 14" value="0x20" />
+					<option name="Global Dynamic 15" value="0x21" />
+					<option name="Global Dynamic 16" value="0x22" />
+					<option name="Global Dynamic 17" value="0x23" />
+					<option name="Global Dynamic 18" value="0x24" />
+					<option name="Global Dynamic 19" value="0x25" />
+					<option name="Global Dynamic 20" value="0x26" />
+					<option name="Global Dynamic 21" value="0x27" />
+					<option name="Global Dynamic 22" value="0x28" />
+					<option name="Global Dynamic 23" value="0x29" />
+					<option name="Global Dynamic 24" value="0x2A" />
+					<option name="Global Dynamic 25" value="0x2B" />
+					<option name="Global Dynamic 26" value="0x2C" />
+					<option name="Global Dynamic 27" value="0x2D" />
+					<option name="Global Dynamic 28" value="0x2E" />
+					<option name="Global Dynamic 29" value="0x2F" />
+					<option name="Global Dynamic 30" value="0x30" />
+					<option name="Global Dynamic 31" value="0x31" />
+					<option name="Global Dynamic 32" value="0x32" />
+					<option name="Global Dynamic 33" value="0x33" />
+					<option name="Global Dynamic 34" value="0x34" />
+					<option name="Global Dynamic 35" value="0x35" />
+					<option name="Global Dynamic 36" value="0x36" />
+					<option name="Global Dynamic 37" value="0x37" />
+					<option name="Global Dynamic 38" value="0x38" />
+					<option name="Global Dynamic 39" value="0x39" />
+					<option name="Global Dynamic 40" value="0x3A" />
+					<option name="Global Dynamic 41" value="0x3B" />
+					<option name="Global Dynamic 42" value="0x3C" />
+				</enum16>
+				<enum16 name="Modifier 1" offset="0x60" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 2" offset="0x62" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 3" offset="0x64" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 4" offset="0x66" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 5" offset="0x68" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
+				<enum16 name="Modifier 6" offset="0x6A" visible="true">
+					<option name="Unknown 0" value="0x0" />
+					<option name="Unknown 1" value="0x1" />
+					<option name="Input" value="0x2" />
+					<option name="Range Input" value="0x3" />
+					<option name="Function Value 1" value="0x4" />
+					<option name="Function Value 2" value="0x5" />
+					<option name="Function Value 3" value="0x6" />
+					<option name="Function Value 4" value="0x7" />
+					<option name="Unknown 8" value="0x8" />
+					<option name="Unknown 9" value="0x9" />
+				</enum16>
 				<undefined name="Unknown" offset="0x6C" visible="false" />
 				<undefined name="Unknown" offset="0x70" visible="false" />
-				<undefined name="Unknown" offset="0x74" visible="false" />
+				<int16 name="Unknown" offset="0x74" visible="false" />
+				<int16 name="Unknown" offset="0x76" visible="false" />
 			</reflexive>
-			<undefined name="Unknown" offset="0x7C" visible="false" />
-			<undefined name="Unknown" offset="0x80" visible="false" />
+			<bitfield16 name="Flags" offset="0x7C" visible="true">
+				<bit name="String Is A Number" index="0" />
+				<bit name="Force 2-Digit" index="1" />
+				<bit name="Force 3-Digit" index="2" />
+				<bit name="'+' Prefix" index="3" />
+				<bit name="'m' Suffix" index="4" />
+				<bit name="Tenths Decimal" index="5" />
+				<bit name="Hundredths Decimal" index="6" />
+				<bit name="Thousandths Decimal" index="7" />
+				<bit name="Hundred Thousandths Decimal" index="8" />
+				<bit name="Only A Number" index="9" />
+				<bit name="'x' Suffix" index="10" />
+				<bit name="In Brackets" index="11" />
+				<bit name="Time Format S:MS" index="12" />
+				<bit name="Time Format H:M:S" index="13" />
+				<bit name="Money Format" index="14" />
+				<bit name="'-' Prefix" index="15" />
+			</bitfield16>
+			<enum16 name="Font Index" offset="0x7E" visible="true">
+				<option name="Unknown 0" value="0x0" />
+				<option name="Unknown 1" value="0x1" />
+				<option name="Unknown 2" value="0x2" />
+				<option name="Unknown 3" value="0x3" />
+				<option name="Unknown 4" value="0x4" />
+				<option name="Unknown 5" value="0x5" />
+				<option name="Unknown 6" value="0x6" />
+				<option name="Unknown 7" value="0x7" />
+				<option name="Unknown 8" value="0x8" />
+				<option name="Unknown 9" value="0x9" />
+				<option name="Unknown 10" value="0xA" />
+			</enum16>
+			<stringId name="String" offset="0x80" visible="true" />
 		</reflexive>
-		<undefined name="Unknown" offset="0xB0" visible="false" />
-		<undefined name="Unknown" offset="0xB4" visible="false" />
-		<undefined name="Unknown" offset="0xB8" visible="false" />
-		<undefined name="Unknown" offset="0xBC" visible="false" />
-		<undefined name="Unknown" offset="0xC0" visible="false" />
-		<undefined name="Unknown" offset="0xC4" visible="false" />
-		<undefined name="Unknown" offset="0xC8" visible="false" />
-		<undefined name="Unknown" offset="0xCC" visible="false" />
-		<undefined name="Unknown" offset="0xD0" visible="false" />
-		<undefined name="Unknown" offset="0xD4" visible="false" />
-		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<int32 name="Unknown" offset="0xB0" visible="false" />
+		<int16 name="Unknown" offset="0xB4" visible="false" />
+		<int16 name="Unknown" offset="0xB6" visible="false" />
+		<int16 name="Unknown" offset="0xB8" visible="false" />
+		<int16 name="Unknown" offset="0xBA" visible="false" />
+		<comment title="Block Starting Value"> Since the states values are dynamic, this enum is used to determine where the next "X States" data starts, even if the block was empty.</comment>
+		<enum8 name="Second State-Block Starting Value" offset="0xBC" visible="true">
+			<option name="Value 0" value="0" />
+			<option name="Value 1" value="1" />
+			<option name="Value 2" value="2" />
+			<option name="Value 3" value="3" />
+			<option name="Value 4" value="4" />
+			<option name="Value 5" value="5" />
+			<option name="Value 6" value="6" />
+			<option name="Value 7" value="7" />
+			<option name="Value 8" value="8" />
+			<option name="Value 9" value="9" />
+			<option name="Value 10" value="10" />
+			<option name="Value 11" value="11" />
+			<option name="Value 12" value="12" />
+		</enum8>
+		<int8 name="Unknown" offset="0xBD" visible="false" />
+		<int8 name="Unknown" offset="0xBE" visible="false" />
+		<int8 name="Unknown" offset="0xBF" visible="false" />
+		<comment title="Input Variable Triggers">Since the states values are dynamic, these bits are used to determine where the triggers that have the "Input Variable" flag checked are.</comment>
+		<bitfield16 name="Input Variable Triggers" offset="0xC0" visible="true">
+			<bit name="Value 0" index="0" />
+			<bit name="Value 1" index="1" />
+			<bit name="Value 2" index="2" />
+			<bit name="Value 3" index="3" />
+			<bit name="Value 4" index="4" />
+			<bit name="Value 5" index="5" />
+			<bit name="Value 6" index="6" />
+			<bit name="Value 7" index="7" />
+			<bit name="Value 8" index="8" />
+			<bit name="Value 9" index="9" />
+			<bit name="Value 10" index="10" />
+			<bit name="Value 11" index="11" />
+			<bit name="Value 12" index="12" />
+		</bitfield16>
+		<comment title="Compiled States (HUD Widgets)">Uses this format:
+
+-States (Yes, No) Count ("Unknown" States not used here!)
+Then for every States count:
+-Triggers Count
+Then for every Triggers count:
+-Trigger Index
+
+Repeats for both States blocks. Use a 0 if the block is null.
+It is currently unknown what the criteria is for more than one "X States" index.
+Check existing tags for examples, good luck.</comment>
+		<int16 name="0" offset="0xC2" visible="true" />
+		<int16 name="1" offset="0xC4" visible="true" />
+		<int16 name="2" offset="0xC6" visible="true" />
+		<int16 name="3" offset="0xC8" visible="true" />
+		<int16 name="4" offset="0xCA" visible="true" />
+		<int16 name="5" offset="0xCC" visible="true" />
+		<int16 name="6" offset="0xCE" visible="true" />
+		<int16 name="7" offset="0xD0" visible="true" />
+		<int16 name="8" offset="0xD2" visible="true" />
+		<int16 name="9" offset="0xD4" visible="true" />
+		<int16 name="10" offset="0xD6" visible="true" />
+		<int16 name="11" offset="0xD8" visible="true" />
+		<int16 name="12" offset="0xDA" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0xC" visible="false" />
-	<undefined name="Unknown" offset="0x10" visible="false" />
-	<undefined name="Unknown" offset="0x14" visible="false" />
-	<undefined name="Unknown" offset="0x18" visible="false" />
-	<reflexive name="Unknown 1" offset="0x1C" visible="false" entrySize="0x5C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
+	<int32 name="Low Clip Cutoff" offset="0xC" visible="true" />
+	<int32 name="Low Ammo Cutoff" offset="0x10" visible="true" />
+	<int32 name="Age Cutoff" offset="0x14" visible="true" />
+	<int32 name="Sword Age Cutoff" offset="0x18" visible="true" />
+	<reflexive name="Compiled Widget Data" offset="0x1C" visible="true" entrySize="0x5C">
+		<enum8 name="Special HUD Type" offset="0x0" visible="true">
+			<option name="Unspecial" value="0x0" />
+			<option name="Ammo" value="0x1" />
+			<option name="Crosshair and Scope" value="0x2" />
+			<option name="Unit Shield Meter" value="0x3" />
+			<option name="Grenades" value="0x4" />
+			<option name="Gametype" value="0x5" />
+			<option name="Motion Sensor" value="0x6" />
+		</enum8>
+		<uint8 name="Unknown" offset="0x1" visible="false" />
+		<uint8 name="Unknown" offset="0x2" visible="false" />
+		<uint8 name="Unknown" offset="0x3" visible="false" />
+		<float32 name="Animation 1 Frame Count" offset="0x4" visible="true" />
+		<float32 name="Animation 2 Frame Count" offset="0x8" visible="true" />
+		<float32 name="Animation 3 Frame Count" offset="0xC" visible="true" />
+		<float32 name="Animation 4 Frame Count" offset="0x10" visible="true" />
+		<float32 name="Animation 5 Frame Count" offset="0x14" visible="true" />
+		<enum16 name="Input" offset="0x18" visible="true">
+			<option name="Zero" value="0x0" />
+			<option name="One" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Time" value="0x5" />
+			<option name="Fade" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+			<option name="Unknown 8" value="0x8" />
+			<option name="Unknown 9" value="0x9" />
+			<option name="Unknown 10" value="0xA" />
+			<option name="Transmission Incoming" value="0xB" />
+			<option name="Unknown 12" value="0xC" />
+			<option name="Unknown 13" value="0xD" />
+			<option name="Unknown 14" value="0xE" />
+			<option name="Unknown 15" value="0xF" />
+			<option name="Unknown 16" value="0x10" />
+			<option name="Unit Health Current" value="0x11" />
+			<option name="Unit Health" value="0x12" />
+			<option name="Unit Shield Current" value="0x13" />
+			<option name="Unit 1x Overshield Current" value="0x14" />
+			<option name="Unit 2x Overshield Current" value="0x15" />
+			<option name="Unit 2x Overshield Current" value="0x16" />
+			<option name="Unit Shield" value="0x17" />
+			<option name="Unit 1x Overshield" value="0x18" />
+			<option name="Unit 2x Overshield" value="0x19" />
+			<option name="Unit 3x Overshield" value="0x1A" />
+			<option name="Unknown 27" value="0x1B" />
+			<option name="Unknown 28" value="0x1C" />
+			<option name="Aim Yaw" value="0x1D" />
+			<option name="Aim Pitch" value="0x1E" />
+			<option name="Unknown 31" value="0x1F" />
+			<option name="Sensor Range" value="0x20" />
+			<option name="Unit Altitude 1" value="0x21" />
+			<option name="Unit Altitude 2" value="0x22" />
+			<option name="Unknown 35" value="0x23" />
+			<option name="Softkill Timer" value="0x24" />
+			<option name="Clip Ammo Fraction" value="0x25" />
+			<option name="Total Ammo Fraction" value="0x26" />
+			<option name="Pickup" value="0x27" />
+			<option name="Heat Fraction" value="0x28" />
+			<option name="Battery Fraction" value="0x29" />
+			<option name="Unknown 42" value="0x2A" />
+			<option name="Unknown 43" value="0x2B" />
+			<option name="Weapon Error" value="0x2C" />
+			<option name="Unknown Weapon Error" value="0x2D" />
+			<option name="Unit Autoaimed" value="0x2E" />
+			<option name="Unknown 47" value="0x2F" />
+			<option name="Unknown 48" value="0x30" />
+			<option name="Grenade Fraction" value="0x31" />
+			<option name="Unknown 50" value="0x32" />
+			<option name="Charge Fraction" value="0x33" />
+			<option name="Unknown 52" value="0x34" />
+			<option name="Trigger Cooldown" value="0x35" />
+			<option name="Trigger Remote Detonate Fraction" value="0x36" />
+			<option name="Trigger Locked On" value="0x37" />
+			<option name="Target Distance" value="0x38" />
+			<option name="Target Elevation" value="0x39" />
+			<option name="Equipment Energy Fraction" value="0x3A" />
+			<option name="Unknown 59" value="0x3B" />
+			<option name="Unknown 60" value="0x3C" />
+			<option name="Unknown 61" value="0x3D" />
+			<option name="Unknown 62" value="0x3E" />
+			<option name="Unknown 63" value="0x3F" />
+			<option name="Unknown 64" value="0x40" />
+			<option name="Medal Commendation" value="0x41" />
+			<option name="Generator Health Current" value="0x42" />
+			<option name="Generator Health" value="0x43" />
+			<option name="Unknown 68" value="0x44" />
+			<option name="Waypoint" value="0x45" />
+			<option name="Unknown 70" value="0x46" />
+			<option name="Unknown 71" value="0x47" />
+			<option name="Waypoint Onscreen" value="0x48" />
+			<option name="Waypoint Offscreen" value="0x49" />
+			<option name="Gametype Plate" value="0x4A" />
+			<option name="Offense Defense" value="0x4B" />
+			<option name="Metagame Time" value="0x4C" />
+			<option name="Metagame Score Transient" value="0x4D" />
+			<option name="Metagame Score Player 1" value="0x4E" />
+			<option name="Metagame Score Player 2" value="0x4F" />
+			<option name="Metagame Score Player 3" value="0x50" />
+			<option name="Metagame Score Player 4" value="0x51" />
+			<option name="Unknown 82" value="0x52" />
+			<option name="Survival Multiplier" value="0x53" />
+			<option name="Unknown 84" value="0x54" />
+			<option name="Unknown 85" value="0x55" />
+			<option name="Metagame Score Negative" value="0x56" />
+			<option name="Unknown 87" value="0x57" />
+			<option name="Unknown 88" value="0x58" />
+			<option name="Unknown 89" value="0x59" />
+			<option name="Unknown 90" value="0x5A" />
+			<option name="Unknown 91" value="0x5B" />
+			<option name="Unknown 92" value="0x5C" />
+			<option name="Unknown 93" value="0x5D" />
+			<option name="Unknown 94" value="0x5E" />
+			<option name="Friendly Score" value="0x5F" />
+			<option name="Enemy Score" value="0x60" />
+			<option name="Score To Win" value="0x61" />
+			<option name="Arming Fraction" value="0x62" />
+			<option name="Possession Icon" value="0x63" />
+			<option name="Arming Unknown" value="0x64" />
+			<option name="Omniwidget Icon" value="0x65" />
+			<option name="Unknown 102" value="0x66" />
+			<option name="Fireteam Health" value="0x67" />
+			<option name="Unknown 104" value="0x68" />
+			<option name="Unknown 105" value="0x69" />
+			<option name="Unknown 106" value="0x6A" />
+			<option name="Fireteam Current Shield" value="0x6B" />
+			<option name="Unknown 108" value="0x6C" />
+			<option name="Unknown 109" value="0x6D" />
+			<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+			<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+			<option name="Unknown 112" value="0x70" />
+			<option name="Fireteam 1 Directional Arrow" value="0x71" />
+			<option name="Fireteam 2 Directional Arrow" value="0x72" />
+			<option name="Unknown 115" value="0x73" />
+			<option name="Unknown 116" value="0x74" />
+			<option name="Unknown 117" value="0x75" />
+			<option name="Unknown 118" value="0x76" />
+			<option name="Unknown 119" value="0x77" />
+			<option name="Unknown 120" value="0x78" />
+			<option name="Unknown 121" value="0x79" />
+			<option name="Unknown 122" value="0x7A" />
+			<option name="Editor Budget" value="0x7B" />
+			<option name="Editor Budget Cost" value="0x7C" />
+			<option name="Film Total Time" value="0x7D" />
+			<option name="Film Current Time" value="0x7E" />
+			<option name="Unknown 127" value="0x7F" />
+			<option name="Film Timeline Fraction 1" value="0x80" />
+			<option name="Film Timeline Fraction 2" value="0x81" />
+			<option name="Unknown 130" value="0x82" />
+			<option name="Unknown 131" value="0x83" />
+			<option name="NetDebug Latency" value="0x84" />
+			<option name="NetDebug Latency Quality" value="0x85" />
+			<option name="NetDebug Host Quality" value="0x86" />
+			<option name="NetDebug Local Quality" value="0x87" />
+		</enum16>
+		<enum16 name="Range Input" offset="0x1A" visible="true">
+			<option name="Zero" value="0x0" />
+			<option name="One" value="0x1" />
+			<option name="Unknown 2" value="0x2" />
+			<option name="Unknown 3" value="0x3" />
+			<option name="Unknown 4" value="0x4" />
+			<option name="Time" value="0x5" />
+			<option name="Fade" value="0x6" />
+			<option name="Unknown 7" value="0x7" />
+			<option name="Unknown 8" value="0x8" />
+			<option name="Unknown 9" value="0x9" />
+			<option name="Unknown 10" value="0xA" />
+			<option name="Transmission Incoming" value="0xB" />
+			<option name="Unknown 12" value="0xC" />
+			<option name="Unknown 13" value="0xD" />
+			<option name="Unknown 14" value="0xE" />
+			<option name="Unknown 15" value="0xF" />
+			<option name="Unknown 16" value="0x10" />
+			<option name="Unit Health Current" value="0x11" />
+			<option name="Unit Health" value="0x12" />
+			<option name="Unit Shield Current" value="0x13" />
+			<option name="Unit 1x Overshield Current" value="0x14" />
+			<option name="Unit 2x Overshield Current" value="0x15" />
+			<option name="Unit 2x Overshield Current" value="0x16" />
+			<option name="Unit Shield" value="0x17" />
+			<option name="Unit 1x Overshield" value="0x18" />
+			<option name="Unit 2x Overshield" value="0x19" />
+			<option name="Unit 3x Overshield" value="0x1A" />
+			<option name="Unknown 27" value="0x1B" />
+			<option name="Unknown 28" value="0x1C" />
+			<option name="Aim Yaw" value="0x1D" />
+			<option name="Aim Pitch" value="0x1E" />
+			<option name="Unknown 31" value="0x1F" />
+			<option name="Sensor Range" value="0x20" />
+			<option name="Unit Altitude 1" value="0x21" />
+			<option name="Unit Altitude 2" value="0x22" />
+			<option name="Unknown 35" value="0x23" />
+			<option name="Softkill Timer" value="0x24" />
+			<option name="Clip Ammo Fraction" value="0x25" />
+			<option name="Total Ammo Fraction" value="0x26" />
+			<option name="Pickup" value="0x27" />
+			<option name="Heat Fraction" value="0x28" />
+			<option name="Battery Fraction" value="0x29" />
+			<option name="Unknown 42" value="0x2A" />
+			<option name="Unknown 43" value="0x2B" />
+			<option name="Weapon Error" value="0x2C" />
+			<option name="Unknown Weapon Error" value="0x2D" />
+			<option name="Unit Autoaimed" value="0x2E" />
+			<option name="Unknown 47" value="0x2F" />
+			<option name="Unknown 48" value="0x30" />
+			<option name="Grenade Fraction" value="0x31" />
+			<option name="Unknown 50" value="0x32" />
+			<option name="Charge Fraction" value="0x33" />
+			<option name="Unknown 52" value="0x34" />
+			<option name="Trigger Cooldown" value="0x35" />
+			<option name="Trigger Remote Detonate Fraction" value="0x36" />
+			<option name="Trigger Locked On" value="0x37" />
+			<option name="Target Distance" value="0x38" />
+			<option name="Target Elevation" value="0x39" />
+			<option name="Equipment Energy Fraction" value="0x3A" />
+			<option name="Unknown 59" value="0x3B" />
+			<option name="Unknown 60" value="0x3C" />
+			<option name="Unknown 61" value="0x3D" />
+			<option name="Unknown 62" value="0x3E" />
+			<option name="Unknown 63" value="0x3F" />
+			<option name="Unknown 64" value="0x40" />
+			<option name="Medal Commendation" value="0x41" />
+			<option name="Generator Health Current" value="0x42" />
+			<option name="Generator Health" value="0x43" />
+			<option name="Unknown 68" value="0x44" />
+			<option name="Waypoint" value="0x45" />
+			<option name="Unknown 70" value="0x46" />
+			<option name="Unknown 71" value="0x47" />
+			<option name="Waypoint Onscreen" value="0x48" />
+			<option name="Waypoint Offscreen" value="0x49" />
+			<option name="Gametype Plate" value="0x4A" />
+			<option name="Offense Defense" value="0x4B" />
+			<option name="Metagame Time" value="0x4C" />
+			<option name="Metagame Score Transient" value="0x4D" />
+			<option name="Metagame Score Player 1" value="0x4E" />
+			<option name="Metagame Score Player 2" value="0x4F" />
+			<option name="Metagame Score Player 3" value="0x50" />
+			<option name="Metagame Score Player 4" value="0x51" />
+			<option name="Unknown 82" value="0x52" />
+			<option name="Survival Multiplier" value="0x53" />
+			<option name="Unknown 84" value="0x54" />
+			<option name="Unknown 85" value="0x55" />
+			<option name="Metagame Score Negative" value="0x56" />
+			<option name="Unknown 87" value="0x57" />
+			<option name="Unknown 88" value="0x58" />
+			<option name="Unknown 89" value="0x59" />
+			<option name="Unknown 90" value="0x5A" />
+			<option name="Unknown 91" value="0x5B" />
+			<option name="Unknown 92" value="0x5C" />
+			<option name="Unknown 93" value="0x5D" />
+			<option name="Unknown 94" value="0x5E" />
+			<option name="Friendly Score" value="0x5F" />
+			<option name="Enemy Score" value="0x60" />
+			<option name="Score To Win" value="0x61" />
+			<option name="Arming Fraction" value="0x62" />
+			<option name="Possession Icon" value="0x63" />
+			<option name="Arming Unknown" value="0x64" />
+			<option name="Omniwidget Icon" value="0x65" />
+			<option name="Unknown 102" value="0x66" />
+			<option name="Fireteam Health" value="0x67" />
+			<option name="Unknown 104" value="0x68" />
+			<option name="Unknown 105" value="0x69" />
+			<option name="Unknown 106" value="0x6A" />
+			<option name="Fireteam Current Shield" value="0x6B" />
+			<option name="Unknown 108" value="0x6C" />
+			<option name="Unknown 109" value="0x6D" />
+			<option name="Fireteam 1 Arming Fraction" value="0x6E" />
+			<option name="Fireteam 2 Arming Fraction" value="0x6F" />
+			<option name="Unknown 112" value="0x70" />
+			<option name="Fireteam 1 Directional Arrow" value="0x71" />
+			<option name="Fireteam 2 Directional Arrow" value="0x72" />
+			<option name="Unknown 115" value="0x73" />
+			<option name="Unknown 116" value="0x74" />
+			<option name="Unknown 117" value="0x75" />
+			<option name="Unknown 118" value="0x76" />
+			<option name="Unknown 119" value="0x77" />
+			<option name="Unknown 120" value="0x78" />
+			<option name="Unknown 121" value="0x79" />
+			<option name="Unknown 122" value="0x7A" />
+			<option name="Editor Budget" value="0x7B" />
+			<option name="Editor Budget Cost" value="0x7C" />
+			<option name="Film Total Time" value="0x7D" />
+			<option name="Film Current Time" value="0x7E" />
+			<option name="Unknown 127" value="0x7F" />
+			<option name="Film Timeline Fraction 1" value="0x80" />
+			<option name="Film Timeline Fraction 2" value="0x81" />
+			<option name="Unknown 130" value="0x82" />
+			<option name="Unknown 131" value="0x83" />
+			<option name="NetDebug Latency" value="0x84" />
+			<option name="NetDebug Latency Quality" value="0x85" />
+			<option name="NetDebug Host Quality" value="0x86" />
+			<option name="NetDebug Local Quality" value="0x87" />
+		</enum16>
+		<comment title="Input Variable Triggers">Since the states values are dynamic, these bits are used to determine where the triggers that have the "Input Variable" flag checked are.</comment>
+		<bitfield32 name="Input Variable Triggers" offset="0x1C" visible="true">
+			<bit name="Value 0" index="0" />
+			<bit name="Value 1" index="1" />
+			<bit name="Value 2" index="2" />
+			<bit name="Value 3" index="3" />
+			<bit name="Value 4" index="4" />
+			<bit name="Value 5" index="5" />
+			<bit name="Value 6" index="6" />
+			<bit name="Value 7" index="7" />
+			<bit name="Value 8" index="8" />
+			<bit name="Value 9" index="9" />
+			<bit name="Value 10" index="10" />
+			<bit name="Value 11" index="11" />
+			<bit name="Value 12" index="12" />
+			<bit name="Value 13" index="13" />
+			<bit name="Value 14" index="14" />
+			<bit name="Value 15" index="15" />
+			<bit name="Value 16" index="16" />
+			<bit name="Value 17" index="17" />
+			<bit name="Value 18" index="18" />
+			<bit name="Value 19" index="19" />
+			<bit name="Value 20" index="20" />
+			<bit name="Value 21" index="21" />
+			<bit name="Value 22" index="22" />
+			<bit name="Value 23" index="23" />
+			<bit name="Value 24" index="24" />
+			<bit name="Value 25" index="25" />
+			<bit name="Value 26" index="26" />
+			<bit name="Value 27" index="27" />
+			<bit name="Value 28" index="28" />
+		</bitfield32>
+		<comment title="Block Starting Value"> Since the states values are dynamic, this enum is used to determine where the next "X States" data starts, even if the block was empty.</comment>
+		<enum8 name="Second State-Block Start Value" offset="0x20" visible="true">
+			<option name="Value 0" value="0" />
+			<option name="Value 1" value="1" />
+			<option name="Value 2" value="2" />
+			<option name="Value 3" value="3" />
+			<option name="Value 4" value="4" />
+			<option name="Value 5" value="5" />
+			<option name="Value 6" value="6" />
+			<option name="Value 7" value="7" />
+			<option name="Value 8" value="8" />
+			<option name="Value 9" value="9" />
+			<option name="Value 10" value="10" />
+			<option name="Value 11" value="11" />
+			<option name="Value 12" value="12" />
+			<option name="Value 13" value="13" />
+			<option name="Value 14" value="14" />
+			<option name="Value 15" value="15" />
+			<option name="Value 16" value="16" />
+			<option name="Value 17" value="17" />
+			<option name="Value 18" value="18" />
+			<option name="Value 19" value="19" />
+			<option name="Value 20" value="20" />
+			<option name="Value 21" value="21" />
+			<option name="Value 22" value="22" />
+			<option name="Value 23" value="23" />
+			<option name="Value 24" value="24" />
+			<option name="Value 25" value="25" />
+			<option name="Value 26" value="26" />
+			<option name="Value 27" value="27" />
+			<option name="Value 28" value="28" />
+		</enum8>
+		<enum8 name="Third State-Block Start Value" offset="0x21" visible="true">
+			<option name="Value 0" value="0" />
+			<option name="Value 1" value="1" />
+			<option name="Value 2" value="2" />
+			<option name="Value 3" value="3" />
+			<option name="Value 4" value="4" />
+			<option name="Value 5" value="5" />
+			<option name="Value 6" value="6" />
+			<option name="Value 7" value="7" />
+			<option name="Value 8" value="8" />
+			<option name="Value 9" value="9" />
+			<option name="Value 10" value="10" />
+			<option name="Value 11" value="11" />
+			<option name="Value 12" value="12" />
+			<option name="Value 13" value="13" />
+			<option name="Value 14" value="14" />
+			<option name="Value 15" value="15" />
+			<option name="Value 16" value="16" />
+			<option name="Value 17" value="17" />
+			<option name="Value 18" value="18" />
+			<option name="Value 19" value="19" />
+			<option name="Value 20" value="20" />
+			<option name="Value 21" value="21" />
+			<option name="Value 22" value="22" />
+			<option name="Value 23" value="23" />
+			<option name="Value 24" value="24" />
+			<option name="Value 25" value="25" />
+			<option name="Value 26" value="26" />
+			<option name="Value 27" value="27" />
+			<option name="Value 28" value="28" />
+		</enum8>
+		<comment title="Compiled States (Bitmap/Text Widgets)">Uses this format:
+
+-States (Yes, Unknown, No) Count
+Then for every States count:
+-Triggers Count
+Then for every Triggers count:
+-Trigger Index
+
+Repeats for all 3 States blocks. Use a 0 if the block is null.
+It is currently unknown what the criteria is for more than one "X States" index.
+Check existing tags for examples, good luck.</comment>
+		<int16 name="0" offset="0x22" visible="true" />
+		<int16 name="1" offset="0x24" visible="true" />
+		<int16 name="2" offset="0x26" visible="true" />
+		<int16 name="3" offset="0x28" visible="true" />
+		<int16 name="4" offset="0x2A" visible="true" />
+		<int16 name="5" offset="0x2C" visible="true" />
+		<int16 name="6" offset="0x2E" visible="true" />
+		<int16 name="7" offset="0x30" visible="true" />
+		<int16 name="8" offset="0x32" visible="true" />
+		<int16 name="9" offset="0x34" visible="true" />
+		<int16 name="10" offset="0x36" visible="true" />
+		<int16 name="11" offset="0x38" visible="true" />
+		<int16 name="12" offset="0x3A" visible="true" />
+		<int16 name="13" offset="0x3C" visible="true" />
+		<int16 name="14" offset="0x3E" visible="true" />
+		<int16 name="15" offset="0x40" visible="true" />
+		<int16 name="16" offset="0x42" visible="true" />
+		<int16 name="17" offset="0x44" visible="true" />
+		<int16 name="18" offset="0x46" visible="true" />
+		<int16 name="19" offset="0x48" visible="true" />
+		<int16 name="20" offset="0x4A" visible="true" />
+		<int16 name="21" offset="0x4C" visible="true" />
+		<int16 name="22" offset="0x4E" visible="true" />
+		<int16 name="23" offset="0x50" visible="true" />
+		<int16 name="24" offset="0x52" visible="true" />
+		<int16 name="25" offset="0x54" visible="true" />
+		<int16 name="26" offset="0x56" visible="true" />
+		<int16 name="27" offset="0x58" visible="true" />
+		<int16 name="28" offset="0x5A" visible="true" />
 	</reflexive>
 </plugin>

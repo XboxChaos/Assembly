@@ -3,49 +3,52 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 	</revisions>
-	<reflexive name="Unknown" offset="0x0" visible="true" entrySize="0x30">
-		<stringid name="Unknown" offset="0x0" visible="true" />
-		<stringid name="Unknown" offset="0x4" visible="true" />
-		<tagref name="Unknown" offset="0x8" visible="true" />
-		<tagref name="Unknown" offset="0x18" visible="true" />
+	<reflexive name="Puppets" offset="0x0" visible="true" entrySize="0x30">
+		<stringid name="Import Name" offset="0x0" visible="true" />
+		<stringid name="Name" offset="0x4" visible="true" />
+		<tagref name="Puppet Animation" offset="0x8" visible="true" />
+		<tagref name="Puppet Object" offset="0x18" visible="true" />
 		<int32 name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0xC" visible="true" entrySize="0x4C">
+	<reflexive name="Shots" offset="0xC" visible="true" entrySize="0x4C">
 		<reflexive name="Sounds" offset="0x0" visible="true" entrySize="0x3C">
-			<tagref name="Unknown" offset="0x0" visible="true" />
-			<tagref name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="true" />
+			<tagRef name="Sound" offset="0x0" visible="true" />
+			<tagRef name="Sound" offset="0x10" visible="true" />
+			<int32 name="Frame" offset="0x20" visible="true" />
+			<float32 name="Unknown" offset="0x24" visible="false" />
 			<stringid name="Unknown" offset="0x28" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="true" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<stringid name="Unknown" offset="0x30" visible="true" />
 			<stringid name="Unknown" offset="0x34" visible="true" />
-			<undefined name="Unknown" offset="0x38" visible="true" />
+			<stringid name="Unknown" offset="0x38" visible="true" />
 		</reflexive>
 		<reflexive name="Effects" offset="0xC" visible="true" entrySize="0x34">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<tagref name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<stringid name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
-			<undefined name="Unknown" offset="0x24" visible="true" />
-			<undefined name="Unknown" offset="0x28" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="true" />
-			<undefined name="Unknown" offset="0x30" visible="true" />
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<tagRef name="Effect" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x14" visible="true" />
+			<int32 name="Frame" offset="0x18" visible="true" />
+			<stringid name="Marker" offset="0x1C" visible="true" />
+			<int32 name="Owner Puppet Index" offset="0x20" visible="true" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<undefined name="Unknown" offset="0x28" visible="false" />
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
 		</reflexive>
-		<reflexive name="Scripts" offset="0x18" visible="true" entrySize="0x24">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
-			<dataref name="Script" format="asciiz" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<undefined name="Unknown" offset="0x20" visible="true" />
+		<reflexive name="Import Scripts" offset="0x18" visible="true" entrySize="0x24">
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<int32 name="Frame" offset="0x4" visible="true" />
+			<dataRef name="Import Script" format="asciiz" offset="0x8" visible="true" />
+			<uint32 name="Unknown" offset="0x1C" visible="false" />
+			<int32 name="Unknown" offset="0x20" visible="false" />
 		</reflexive>
-		<int32 name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
+		<int32 name="Loaded Frame Count" offset="0x24" visible="true" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Camera Frames" offset="0x34" visible="true" entrySize="0x24">
 			<undefined name="X" offset="0x0" visible="true" />
 			<undefined name="Y" offset="0x4" visible="true" />
@@ -57,9 +60,9 @@
 			<undefined name="Unknown" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="true" />
 		</reflexive>
-		<reflexive name="FOV Frames" offset="0x40" visible="true" entrySize="0x24">
+		<reflexive name="Depth Of Field Frames" offset="0x40" visible="true" entrySize="0x24">
 			<int32 name="Frame" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
+			<float32 name="FOV" offset="0x4" visible="true" />
 			<int32 name="Unknown" offset="0x8" visible="true" />
 			<undefined name="Unknown" offset="0xC" visible="true" />
 			<undefined name="Unknown" offset="0x10" visible="true" />
@@ -69,8 +72,8 @@
 			<undefined name="Unknown" offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
-	<undefined name="Unknown" offset="0x18" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
-	<undefined name="Unknown" offset="0x20" visible="true" />
-	<undefined name="Unknown" offset="0x24" visible="true" />
+	<undefined name="probably texture camera block" offset="0x18" visible="true" />
+	<undefined name="probably texture camera block" offset="0x1C" visible="true" />
+	<undefined name="probably texture camera block" offset="0x20" visible="true" />
+	<undefined name="Unknown" offset="0x24" visible="false" />
 </plugin>

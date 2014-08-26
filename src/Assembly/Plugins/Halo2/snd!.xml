@@ -1,35 +1,54 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2" baseSize="0x14">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="TfAv1228" version="2">Named Some Unknowns</revision>
 		<revision author="Shalted" version="3">No Comment</revision>
+		<revision author="Lord Zedd" version="4">Standardized</revision>
 	</revisions>
 	<bitfield16 name="Flags" offset="0x0" visible="true">
-		<bit name="Split into premutations" index="1" />
-		<bit name="3rd Person?" index="10" />
-		<bit name="3rd Person?" index="11" />
-		<bit name="Unknown" index="12" />
+		<bit name="Fit To ADPCM Blocksize" index="0" />
+		<bit name="Split Long Sound Into Permutations" index="1" />
+		<bit name="Always Spatialize" index="2" />
+		<bit name="Never Obstruct" index="3" />
+		<bit name="Internal Don't Touch" index="4" />
+		<bit name="Use Huge Sound Transmission" index="5" />
+		<bit name="Link Count To Owner Unit" index="6" />
+		<bit name="Pitch Range Is Language" index="7" />
+		<bit name="Don't Use Sound Class Speaker Flag" index="8" />
+		<bit name="Don't Use Lipsync Data" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<int16 name="Sound Class" offset="0x2" visible="true" />
-	<enum8 name="Format" offset="0x4" visible="true">
-		<option name="Mono 22050kbps" value="0x0" />
-		<option name="Stero 44100kbps" value="0x1" />
-		<option name="WMA Specific" value="0x2" />
+	<int8 name="Sound Class" offset="0x2" visible="true" />
+	<enum8 name="Sample Rate" offset="0x3" visible="true">
+		<option name="22kHz" value="0x0" />
+		<option name="44kHz" value="0x1" />
+		<option name="32kHz" value="0x2" />
 	</enum8>
-	<enum8 name="Compression" offset="0x4" visible="true">
-		<option name="None" value="0x0" />
-		<option name="XBox ADPCM" value="0x1" />
-		<option name="ima adpcm?" value="0x2" />
-		<option name="ogg?" value="0x3" />
+	<enum8 name="Encoding" offset="0x4" visible="true">
+		<option name="Mono" value="0x0" />
+		<option name="Stereo" value="0x1" />
+		<option name="Codec" value="0x2" />
+	</enum8>
+	<enum8 name="Compression" offset="0x5" visible="true">
+		<option name="None (Big Endian)" value="0x0" />
+		<option name="Xbox ADPCM" value="0x1" />
+		<option name="IMA ADPCM" value="0x2" />
+		<option name="None (Little Endian)" value="0x3" />
 		<option name="WMA" value="0x4" />
 	</enum8>
-	<int16 name="Index to Sound Properties" offset="0x6" visible="true" />
-	<int16 name="Index to Sound Premutations" offset="0x8" visible="true" />
-	<uint8 name="Premutation Chunk Count" offset="0xA" visible="true" />
-	<uint8 name="Index to Sound Unknown17" offset="0xB" visible="false" />
-	<int16 name="Not Index :D" offset="0x6" visible="true" />
-	<int16 name="Index to Combat Dialog Raw" offset="0x8" visible="true" />
-	<int32 name="Not Index :D" offset="0x10" visible="false" />
+	<int16 name="[ugh!] Playback Parameter Index" offset="0x6" visible="true" />
+	<int16 name="[ugh!] Pitch Range Index" offset="0x8" visible="true" />
+	<int8 name="Unknown" offset="0xA" visible="false" />
+	<int8 name="[ugh!] Scale Index" offset="0xB" visible="true" />
+	<int8 name="[ugh!] Promotion Index" offset="0xC" visible="true" />
+	<int8 name="[ugh!] Custom Playback Index" offset="0xD" visible="true" />
+	<int16 name="[ugh!] Extra Info Index" offset="0xE" visible="true" />
+	<int32 name="Maximum Play Time" offset="0x10" visible="true" />
 </plugin>

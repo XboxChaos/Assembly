@@ -1,93 +1,148 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2" baseSize="0x58">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="Iron_Forge" version="2">Fixed up basic layout...</revision>
+		<revision author="Lord Zedd" version="3">Standardized</revision>
 	</revisions>
-	<reflexive name="Unknown4" offset="0x0" visible="false" entrySize="0x38">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Unknown" offset="0x10" visible="false" />
-		<float32 name="Unknown" offset="0x14" visible="false" />
-		<int16 name="" offset="0x18" visible="false" />
-		<int16 name="" offset="0x1A" visible="false" />
-		<float32 name="Pi" offset="0x1C" visible="true" />
-		<float32 name="Pi" offset="0x20" visible="true" />
+	<reflexive name="Playback Parameters" offset="0x0" visible="true" entrySize="0x38">
+		<comment title="Distances" />
+		<float32 name="Minimum Distance" offset="0x0" visible="true" />
+		<float32 name="Maximum Distance" offset="0x4" visible="true" />
+		<float32 name="Skip Fraction" offset="0x8" visible="true" />
+		<float32 name="Maximum Bend Per Second" offset="0xC" visible="true" />
+		<comment title="Randomization" />
+		<float32 name="Gain Base" offset="0x10" visible="true" />
+		<float32 name="Gain Variance" offset="0x14" visible="true" />
+		<int16 name="Random Pitch Bounds min" offset="0x18" visible="true" />
+		<int16 name="Random Pitch Bounds max" offset="0x1A" visible="true" />
+		<comment title="Directional Sounds" />
+		<degree name="Inner Cone Angle" offset="0x1C" visible="true" />
+		<degree name="Outer Cone Angle" offset="0x20" visible="true" />
+		<float32 name="Outer Cone Gain" offset="0x24" visible="true" />
+		<comment title="Scripted Location Override" />
+		<bitfield32 name="Flags" offset="0x28" visible="true">
+			<bit name="Override Azimuth" index="0" />
+			<bit name="Override 3D Gain" index="1" />
+			<bit name="Override Speaker Gain" index="2" />
+		</bitfield32>
+		<float32 name="Azimuth" offset="0x2C" visible="true" />
+		<float32 name="Positional Gain" offset="0x30" visible="true" />
+		<float32 name="First Person Gain" offset="0x34" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown17" offset="0x8" visible="false" entrySize="0x14">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="" offset="0x8" visible="false" />
-		<int16 name="" offset="0xA" visible="false" />
-		<float32 name="One" offset="0xC" visible="false" />
-		<float32 name="One" offset="0x10" visible="false" />
+	<reflexive name="Scales" offset="0x8" visible="true" entrySize="0x14">
+		<float32 name="Gain Modifier min" offset="0x0" visible="true" />
+		<float32 name="Gain Modifier max" offset="0x4" visible="true" />
+		<int16 name="Pitch Modifier min" offset="0x8" visible="true" />
+		<int16 name="Pitch Modifier max" offset="0xA" visible="true" />
+		<float32 name="Skip Fraction Modifier min" offset="0xC" visible="true" />
+		<float32 name="Skip Fraction Modifier max" offset="0x10" visible="true" />
 	</reflexive>
-	<reflexive name="Sound Names25" offset="0x10" visible="true" entrySize="0x4">
+	<reflexive name="Import Names" offset="0x10" visible="true" entrySize="0x4">
 		<stringId name="Name" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown28" offset="0x18" visible="false" entrySize="0xA">
-		<int16 name="" offset="0x0" visible="true" />
-		<int16 name="" offset="0x2" visible="true" />
-		<int16 name="" offset="0x4" visible="true" />
-		<int16 name="" offset="0x6" visible="true" />
-		<int16 name="" offset="0x8" visible="true" />
+	<reflexive name="Pitch Range Parameters" offset="0x18" visible="false" entrySize="0xA">
+		<int16 name="Natural Pitch" offset="0x0" visible="true" />
+		<int16 name="Bend Bounds min" offset="0x2" visible="true" />
+		<int16 name="Bend Bounds max" offset="0x4" visible="true" />
+		<int16 name="Max Gain Pitch Bounds min" offset="0x6" visible="true" />
+		<int16 name="Max Gain Pitch Bounds max" offset="0x8" visible="true" />
 	</reflexive>
-	<reflexive name="Sound Permutations35" offset="0x20" visible="true" entrySize="0xC">
-		<int16 name="" offset="0x0" visible="true" />
-		<int16 name="" offset="0x2" visible="true" />
-		<uint8 name="" offset="0x4" visible="true" />
-		<uint8 name="Chunk" offset="0x5" visible="true" />
-		<int16 name="" offset="0x6" visible="true" />
-		<int16 name="Index" offset="0x8" visible="true" />
-		<int16 name="chunkCount" offset="0xA" visible="true" />
+	<reflexive name="Pitch Ranges" offset="0x20" visible="true" entrySize="0xC">
+		<int16 name="Import Name Index" offset="0x0" visible="true" />
+		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
+		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
+		<int16 name="Encoded Runtime Permutation Flag Index" offset="0x6" visible="true" />
+		<int16 name="First Permutation" offset="0x8" visible="true" />
+		<int16 name="Permutation Count" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Sound Choices44" offset="0x28" visible="true" entrySize="0x10">
-		<uint32 name="Name Index" offset="0x0" visible="true" />
+	<reflexive name="Permutations" offset="0x28" visible="true" entrySize="0x10">
+		<int16 name="Import Name Index" offset="0x0" visible="true" />
+		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
+		<int8 name="Gain" offset="0x4" visible="true" />
+		<int8 name="Permutation Info Index" offset="0x5" visible="true" />
+		<int16 name="Language Neutral Time" offset="0x6" visible="true" />
+		<uint32 name="Sample Size" offset="0x8" visible="true" />
+		<int16 name="First Chunk" offset="0xC" visible="true" />
+		<int16 name="Chunk Count" offset="0xE" visible="true" />
+	</reflexive>
+	<reflexive name="Custom Playbacks" offset="0x30" visible="true" entrySize="0x34">
+		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Index" offset="0xC" visible="true" />
-		<int16 name="chunkCount" offset="0xE" visible="true" />
+		<bitfield32 name="Flags" offset="0x8" visible="true">
+			<bit name="Use 3D Radio Hack" index="0" />
+		</bitfield32>
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<reflexive name="Filter" offset="0x14" visible="true" entrySize="0x48">
+			<int32 name="Filter Type" offset="0x0" visible="true" />
+			<int32 name="Filter Width" offset="0x4" visible="true" />
+			<comment title="Left Filter Frequency"/>
+			<float32 name="Scale Bounds min" offset="0x8" visible="true" />
+			<float32 name="Scale Bounds max" offset="0xC" visible="true" />
+			<float32 name="Random Base" offset="0x10" visible="true" />
+			<float32 name="Random Variance" offset="0x14" visible="true" />
+			<comment title="Left Filter Gain"/>
+			<float32 name="Scale Bounds min" offset="0x18" visible="true" />
+			<float32 name="Scale Bounds max" offset="0x1C" visible="true" />
+			<float32 name="Random Base" offset="0x20" visible="true" />
+			<float32 name="Random Variance" offset="0x24" visible="true" />
+			<comment title="Right Filter Frequency"/>
+			<float32 name="Scale Bounds min" offset="0x28" visible="true" />
+			<float32 name="Scale Bounds max" offset="0x2C" visible="true" />
+			<float32 name="Random Base" offset="0x30" visible="true" />
+			<float32 name="Random Variance" offset="0x34" visible="true" />
+			<comment title="Right Filter Gain"/>
+			<float32 name="Scale Bounds min" offset="0x38" visible="true" />
+			<float32 name="Scale Bounds max" offset="0x3C" visible="true" />
+			<float32 name="Random Base" offset="0x40" visible="true" />
+			<float32 name="Random Variance" offset="0x44" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown51" offset="0x30" visible="false" entrySize="0x34">
-		<reflexive name="Unknown53" offset="0x14" visible="false" entrySize="0x48">
-			<undefined name="One" offset="0x0" visible="false" />
-			<float32 name="800" offset="0x8" visible="false" />
-			<float32 name="8000" offset="0xC" visible="false" />
-			<float32 name="800" offset="0x28" visible="false" />
-			<float32 name="8000" offset="0x2C" visible="false" />
+	<reflexive name="Runtime Permutation Flags" offset="0x38" visible="true" entrySize="0x1">
+		<int8 name="Unknown" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Permutation Chunks" offset="0x40" visible="true" entrySize="0xC">
+		<uint32 name="File Offset" offset="0x0" visible="true" />
+		<uint16 name="Flags" offset="0x4" visible="true" />
+		<uint16 name="Size" offset="0x6" visible="true" />
+		<int32 name="Runtime Index" offset="0x8" visible="true" />
+	</reflexive>
+	<reflexive name="Promotions" offset="0x48" visible="false" entrySize="0x1C">
+		<reflexive name="Rules" offset="0x0" visible="false" entrySize="0x10">
+			<int16 name="Pitch Range Index" offset="0x0" visible="true" />
+			<int16 name="Maximum Playing Count" offset="0x2" visible="true" />
+			<float32 name="Suppression Time" offset="0x4" visible="true" />
+			<int32 name="Unknown" offset="0x8" visible="false" />
+			<int32 name="Unknown" offset="0xC" visible="false" />
+		</reflexive>
+		<reflexive name="Runtime Timers" offset="0x8" visible="true" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Zero65" offset="0x38" visible="false" entrySize="0x1" />
-	<reflexive name="Sound Raw Data68" offset="0x40" visible="true" entrySize="0xC">
-		<uint32 name="Raw Offset" offset="0x0" visible="true" />
-		<uint32 name="Size" offset="0x4" visible="true" />
-	</reflexive>
-	<reflexive name="Unknown73" offset="0x48" visible="false" entrySize="0x1C">
-		<reflexive name="Unknown74" offset="0x0" visible="false" entrySize="0x10">
-			<int16 name="" offset="0x0" visible="true" />
-			<int16 name="" offset="0x2" visible="true" />
-			<float32 name="" offset="0x4" visible="true" />
-			<undefined name="" offset="0x8" visible="true" />
-			<undefined name="" offset="0xC" visible="true" />
+	<reflexive name="Extra Info" offset="0x50" visible="false" entrySize="0x2C">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<uint32 name="Block Offset" offset="0x8" visible="false" />
+		<uint32 name="Block Size" offset="0xC" visible="false" />
+		<uint32 name="Section Data Size" offset="0x10" visible="false" />
+		<uint32 name="Resource Data Size" offset="0x14" visible="false" />
+		<reflexive name="Resources" offset="0x18" visible="true" entrySize="0x10">
+			<int8 name="Type" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<int16 name="Primary Locator" offset="0x4" visible="true" />
+			<int16 name="Secondary Locator" offset="0x6" visible="true" />
+			<uint32 name="Resource Data Size" offset="0x8" visible="true" />
+			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown81" offset="0x8" visible="false" entrySize="0x4" />
-	</reflexive>
-	<reflexive name="Diff Model Raw Data87" offset="0x50" visible="false" entrySize="0x2C">
-		<uint32 name="Raw Offset" offset="0x8" visible="true" />
-		<uint32 name="Size" offset="0xC" visible="true" />
-		<int32 name="One" offset="0x10" visible="true" />
-		<uint32 name="Data Size" offset="0x14" visible="true" />
-		<reflexive name="rsrcs93" offset="0x18" visible="true" entrySize="0x10">
-			<int16 name="" offset="0x0" visible="true" />
-			<int16 name="" offset="0x2" visible="true" />
-			<int16 name="" offset="0x4" visible="true" />
-			<int16 name="" offset="0x6" visible="true" />
-			<uint32 name="Size" offset="0x8" visible="true" />
-			<uint32 name="Offset" offset="0xC" visible="true" />
-		</reflexive>
+		<tagref name="Sound Gestalt" offset="0x20" withClass="false" visible="true" />
 		<undefined name="Constant" offset="0x24" visible="true" />
 		<undefined name="Constant" offset="0x28" visible="true" />
 	</reflexive>

@@ -533,9 +533,15 @@
 					<option name="Destroyed" value="0x4" />
 				</enum16>
 				<int16 name="Runtime Region Index" offset="0x52" visible="true" />
-				<stringid name="Unknown" offset="0x54" visible="true" />
-				<int16 name="Unknown" offset="0x58" visible="true" />
-				<int16 name="Unknown" offset="0x5A" visible="true" />
+				<stringid name="Secondary Region" offset="0x54" visible="true" />
+				<enum16 name="Secondary New State" offset="0x58" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Minor Damage" value="0x1" />
+					<option name="Medium Damage" value="0x2" />
+					<option name="Major Damage" value="0x3" />
+					<option name="Destroyed" value="0x4" />
+				</enum16>
+				<int16 name="Secondary Runtime Region Index" offset="0x5A" visible="true" />
 				<int16 name="Unknown" offset="0x5C" visible="true" />
 				<enum16 name="Unknown Special Damage" offset="0x5E" visible="true">
 					<option name="None" value="0x0" />
@@ -605,8 +611,15 @@
 			<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
 			<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
 			<float32 name="Group Probability Scale" offset="0xC" visible="true" />
-			<int16 name="Unknown" offset="0x10" visible="false" />
-			<int16 name="Unknown" offset="0x12" visible="false" />
+			<enum16 name="Type" offset="0x10" visible="true">
+				<option name="Hinge" value="0x0" />
+				<option name="Limited Hinge" value="0x1" />
+				<option name="Ragdoll" value="0x2" />
+				<option name="Stiff Spring" value="0x3" />
+				<option name="Ball and Socket" value="0x4" />
+				<option name="Prismatic" value="0x5" />
+			</enum16>
+			<int16 name="Index" offset="0x12" visible="True" />
 		</reflexive>
 	</reflexive>
 	<comment title="Omaha Damage Info">"New Damage Info" above is obsolete, all the good stuff is gonna be under here.</comment>
@@ -986,8 +999,15 @@
 		<stringid name="Damage Constraint Name" offset="0x4" visible="true" />
 		<stringid name="Damage Constraint Group Name" offset="0x8" visible="true" />
 		<float32 name="Group Probability Scale" offset="0xC" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
+		<enum16 name="Type" offset="0x10" visible="true">
+			<option name="Hinge" value="0x0" />
+			<option name="Limited Hinge" value="0x1" />
+			<option name="Ragdoll" value="0x2" />
+			<option name="Stiff Spring" value="0x3" />
+			<option name="Ball and Socket" value="0x4" />
+			<option name="Prismatic" value="0x5" />
+		</enum16>
+		<int16 name="Index" offset="0x12" visible="True" />
 	</reflexive>
 	<reflexive name="Omaha Nodes" offset="0x12C" visible="false" entrySize="0x10">
 		<int16 name="Unknown" offset="0x0" visible="false" />
@@ -1180,7 +1200,7 @@
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<stringid name="Default Dialogue Effect" offset="0x194" visible="true" />
-	<bitfield32 name="Unknown Digits 1" offset="0x198" visible="false">
+	<bitfield32 name="Render-Only Node Flags 1" offset="0x198" visible="false">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -1214,7 +1234,7 @@
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 2" offset="0x19C" visible="false">
+	<bitfield32 name="Render-Only Node Flags 2" offset="0x19C" visible="false">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -1248,7 +1268,7 @@
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 3" offset="0x1A0" visible="false">
+	<bitfield32 name="Render-Only Node Flags 3" offset="0x1A0" visible="false">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -1282,7 +1302,7 @@
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 4" offset="0x1A4" visible="false">
+	<bitfield32 name="Render-Only Node Flags 4" offset="0x1A4" visible="false">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -1316,7 +1336,7 @@
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 5" offset="0x1A8" visible="false">
+	<bitfield32 name="Render-Only Node Flags 5" offset="0x1A8" visible="false">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -1350,7 +1370,7 @@
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 6" offset="0x1AC" visible="false">
+	<bitfield32 name="Render-Only Node Flags 6" offset="0x1AC" visible="false">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -1384,7 +1404,7 @@
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 7" offset="0x1B0" visible="false">
+	<bitfield32 name="Render-Only Node Flags 7" offset="0x1B0" visible="false">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -1418,7 +1438,7 @@
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
 	</bitfield32>
-	<bitfield32 name="Unknown Digits 8" offset="0x1B4" visible="false">
+	<bitfield32 name="Render-Only Node Flags 8" offset="0x1B4" visible="false">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />
@@ -1452,27 +1472,325 @@
 		<bit name="Node 254" index="30" />
 		<bit name="Node 255" index="31" />
 	</bitfield32>
-	<undefined name="Unknown" offset="0x1b8" visible="false" />
-	<undefined name="Unknown" offset="0x1bC" visible="false" />
-	<undefined name="Unknown" offset="0x1c0" visible="false" />
-	<undefined name="Unknown" offset="0x1c4" visible="false" />
-	<undefined name="Unknown" offset="0x1c8" visible="false" />
-	<undefined name="Unknown" offset="0x1cC" visible="false" />
-	<undefined name="Unknown" offset="0x1d0" visible="false" />
-	<undefined name="Unknown" offset="0x1d4" visible="false" />
-	<undefined name="Unknown" offset="0x1d8" visible="false" />
-	<undefined name="block here" offset="0x1dC" visible="false" />
-	<undefined name="block here" offset="0x1e0" visible="false" />
-	<undefined name="block here" offset="0x1e4" visible="false" />
-	<undefined name="block here 2" offset="0x1e8" visible="false" />
-	<undefined name="block here 2" offset="0x1eC" visible="false" />
-	<undefined name="block here 2" offset="0x1f0" visible="false" />
-	<undefined name="Unknown" offset="0x1f4" visible="false" />
-	<undefined name="Unknown" offset="0x1f8" visible="false" />
-	<undefined name="Unknown" offset="0x1fC" visible="false" />
+	<bitfield32 name="Render-Only Section Flags 1" offset="0x1B8" visible="false">
+		<bit name="Section 0" index="0" />
+		<bit name="Section 1" index="1" />
+		<bit name="Section 2" index="2" />
+		<bit name="Section 3" index="3" />
+		<bit name="Section 4" index="4" />
+		<bit name="Section 5" index="5" />
+		<bit name="Section 6" index="6" />
+		<bit name="Section 7" index="7" />
+		<bit name="Section 8" index="8" />
+		<bit name="Section 9" index="9" />
+		<bit name="Section 10" index="10" />
+		<bit name="Section 11" index="11" />
+		<bit name="Section 12" index="12" />
+		<bit name="Section 13" index="13" />
+		<bit name="Section 14" index="14" />
+		<bit name="Section 15" index="15" />
+		<bit name="Section 16" index="16" />
+		<bit name="Section 17" index="17" />
+		<bit name="Section 18" index="18" />
+		<bit name="Section 19" index="19" />
+		<bit name="Section 20" index="20" />
+		<bit name="Section 21" index="21" />
+		<bit name="Section 22" index="22" />
+		<bit name="Section 23" index="23" />
+		<bit name="Section 24" index="24" />
+		<bit name="Section 25" index="25" />
+		<bit name="Section 26" index="26" />
+		<bit name="Section 27" index="27" />
+		<bit name="Section 28" index="28" />
+		<bit name="Section 29" index="29" />
+		<bit name="Section 30" index="30" />
+		<bit name="Section 31" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 2" offset="0x1BC" visible="false">
+		<bit name="Section 32" index="0" />
+		<bit name="Section 33" index="1" />
+		<bit name="Section 34" index="2" />
+		<bit name="Section 35" index="3" />
+		<bit name="Section 36" index="4" />
+		<bit name="Section 37" index="5" />
+		<bit name="Section 38" index="6" />
+		<bit name="Section 39" index="7" />
+		<bit name="Section 40" index="8" />
+		<bit name="Section 41" index="9" />
+		<bit name="Section 42" index="10" />
+		<bit name="Section 43" index="11" />
+		<bit name="Section 44" index="12" />
+		<bit name="Section 45" index="13" />
+		<bit name="Section 46" index="14" />
+		<bit name="Section 47" index="15" />
+		<bit name="Section 48" index="16" />
+		<bit name="Section 49" index="17" />
+		<bit name="Section 50" index="18" />
+		<bit name="Section 51" index="19" />
+		<bit name="Section 52" index="20" />
+		<bit name="Section 53" index="21" />
+		<bit name="Section 54" index="22" />
+		<bit name="Section 55" index="23" />
+		<bit name="Section 56" index="24" />
+		<bit name="Section 57" index="25" />
+		<bit name="Section 58" index="26" />
+		<bit name="Section 59" index="27" />
+		<bit name="Section 60" index="28" />
+		<bit name="Section 61" index="29" />
+		<bit name="Section 62" index="30" />
+		<bit name="Section 63" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 3" offset="0x1C0" visible="false">
+		<bit name="Section 64" index="0" />
+		<bit name="Section 65" index="1" />
+		<bit name="Section 66" index="2" />
+		<bit name="Section 67" index="3" />
+		<bit name="Section 68" index="4" />
+		<bit name="Section 69" index="5" />
+		<bit name="Section 70" index="6" />
+		<bit name="Section 71" index="7" />
+		<bit name="Section 72" index="8" />
+		<bit name="Section 73" index="9" />
+		<bit name="Section 74" index="10" />
+		<bit name="Section 75" index="11" />
+		<bit name="Section 76" index="12" />
+		<bit name="Section 77" index="13" />
+		<bit name="Section 78" index="14" />
+		<bit name="Section 79" index="15" />
+		<bit name="Section 80" index="16" />
+		<bit name="Section 81" index="17" />
+		<bit name="Section 82" index="18" />
+		<bit name="Section 83" index="19" />
+		<bit name="Section 84" index="20" />
+		<bit name="Section 85" index="21" />
+		<bit name="Section 86" index="22" />
+		<bit name="Section 87" index="23" />
+		<bit name="Section 88" index="24" />
+		<bit name="Section 89" index="25" />
+		<bit name="Section 90" index="26" />
+		<bit name="Section 91" index="27" />
+		<bit name="Section 92" index="28" />
+		<bit name="Section 93" index="29" />
+		<bit name="Section 94" index="30" />
+		<bit name="Section 95" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 4" offset="0x1C4" visible="false">
+		<bit name="Section 96" index="0" />
+		<bit name="Section 97" index="1" />
+		<bit name="Section 98" index="2" />
+		<bit name="Section 99" index="3" />
+		<bit name="Section 100" index="4" />
+		<bit name="Section 101" index="5" />
+		<bit name="Section 102" index="6" />
+		<bit name="Section 103" index="7" />
+		<bit name="Section 104" index="8" />
+		<bit name="Section 105" index="9" />
+		<bit name="Section 106" index="10" />
+		<bit name="Section 107" index="11" />
+		<bit name="Section 108" index="12" />
+		<bit name="Section 109" index="13" />
+		<bit name="Section 110" index="14" />
+		<bit name="Section 111" index="15" />
+		<bit name="Section 112" index="16" />
+		<bit name="Section 113" index="17" />
+		<bit name="Section 114" index="18" />
+		<bit name="Section 115" index="19" />
+		<bit name="Section 116" index="20" />
+		<bit name="Section 117" index="21" />
+		<bit name="Section 118" index="22" />
+		<bit name="Section 119" index="23" />
+		<bit name="Section 120" index="24" />
+		<bit name="Section 121" index="25" />
+		<bit name="Section 122" index="26" />
+		<bit name="Section 123" index="27" />
+		<bit name="Section 124" index="28" />
+		<bit name="Section 125" index="29" />
+		<bit name="Section 126" index="30" />
+		<bit name="Section 127" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 5" offset="0x1C8" visible="false">
+		<bit name="Section 128" index="0" />
+		<bit name="Section 129" index="1" />
+		<bit name="Section 130" index="2" />
+		<bit name="Section 131" index="3" />
+		<bit name="Section 132" index="4" />
+		<bit name="Section 133" index="5" />
+		<bit name="Section 134" index="6" />
+		<bit name="Section 135" index="7" />
+		<bit name="Section 136" index="8" />
+		<bit name="Section 137" index="9" />
+		<bit name="Section 138" index="10" />
+		<bit name="Section 139" index="11" />
+		<bit name="Section 140" index="12" />
+		<bit name="Section 141" index="13" />
+		<bit name="Section 142" index="14" />
+		<bit name="Section 143" index="15" />
+		<bit name="Section 144" index="16" />
+		<bit name="Section 145" index="17" />
+		<bit name="Section 146" index="18" />
+		<bit name="Section 147" index="19" />
+		<bit name="Section 148" index="20" />
+		<bit name="Section 149" index="21" />
+		<bit name="Section 150" index="22" />
+		<bit name="Section 151" index="23" />
+		<bit name="Section 152" index="24" />
+		<bit name="Section 153" index="25" />
+		<bit name="Section 154" index="26" />
+		<bit name="Section 155" index="27" />
+		<bit name="Section 156" index="28" />
+		<bit name="Section 157" index="29" />
+		<bit name="Section 158" index="30" />
+		<bit name="Section 159" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 6" offset="0x1CC" visible="false">
+		<bit name="Section 160" index="0" />
+		<bit name="Section 161" index="1" />
+		<bit name="Section 162" index="2" />
+		<bit name="Section 163" index="3" />
+		<bit name="Section 164" index="4" />
+		<bit name="Section 165" index="5" />
+		<bit name="Section 166" index="6" />
+		<bit name="Section 167" index="7" />
+		<bit name="Section 168" index="8" />
+		<bit name="Section 169" index="9" />
+		<bit name="Section 170" index="10" />
+		<bit name="Section 171" index="11" />
+		<bit name="Section 172" index="12" />
+		<bit name="Section 173" index="13" />
+		<bit name="Section 174" index="14" />
+		<bit name="Section 175" index="15" />
+		<bit name="Section 176" index="16" />
+		<bit name="Section 177" index="17" />
+		<bit name="Section 178" index="18" />
+		<bit name="Section 179" index="19" />
+		<bit name="Section 180" index="20" />
+		<bit name="Section 181" index="21" />
+		<bit name="Section 182" index="22" />
+		<bit name="Section 183" index="23" />
+		<bit name="Section 184" index="24" />
+		<bit name="Section 185" index="25" />
+		<bit name="Section 186" index="26" />
+		<bit name="Section 187" index="27" />
+		<bit name="Section 188" index="28" />
+		<bit name="Section 189" index="29" />
+		<bit name="Section 190" index="30" />
+		<bit name="Section 191" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 7" offset="0x1D0" visible="false">
+		<bit name="Section 192" index="0" />
+		<bit name="Section 193" index="1" />
+		<bit name="Section 194" index="2" />
+		<bit name="Section 195" index="3" />
+		<bit name="Section 196" index="4" />
+		<bit name="Section 197" index="5" />
+		<bit name="Section 198" index="6" />
+		<bit name="Section 199" index="7" />
+		<bit name="Section 200" index="8" />
+		<bit name="Section 201" index="9" />
+		<bit name="Section 202" index="10" />
+		<bit name="Section 203" index="11" />
+		<bit name="Section 204" index="12" />
+		<bit name="Section 205" index="13" />
+		<bit name="Section 206" index="14" />
+		<bit name="Section 207" index="15" />
+		<bit name="Section 208" index="16" />
+		<bit name="Section 209" index="17" />
+		<bit name="Section 210" index="18" />
+		<bit name="Section 211" index="19" />
+		<bit name="Section 212" index="20" />
+		<bit name="Section 213" index="21" />
+		<bit name="Section 214" index="22" />
+		<bit name="Section 215" index="23" />
+		<bit name="Section 216" index="24" />
+		<bit name="Section 217" index="25" />
+		<bit name="Section 218" index="26" />
+		<bit name="Section 219" index="27" />
+		<bit name="Section 220" index="28" />
+		<bit name="Section 221" index="29" />
+		<bit name="Section 222" index="30" />
+		<bit name="Section 223" index="31" />
+	</bitfield32>
+	<bitfield32 name="Render-Only Section Flags 8" offset="0x1D4" visible="false">
+		<bit name="Section 224" index="0" />
+		<bit name="Section 225" index="1" />
+		<bit name="Section 226" index="2" />
+		<bit name="Section 227" index="3" />
+		<bit name="Section 228" index="4" />
+		<bit name="Section 229" index="5" />
+		<bit name="Section 230" index="6" />
+		<bit name="Section 231" index="7" />
+		<bit name="Section 232" index="8" />
+		<bit name="Section 233" index="9" />
+		<bit name="Section 234" index="10" />
+		<bit name="Section 235" index="11" />
+		<bit name="Section 236" index="12" />
+		<bit name="Section 237" index="13" />
+		<bit name="Section 238" index="14" />
+		<bit name="Section 239" index="15" />
+		<bit name="Section 240" index="16" />
+		<bit name="Section 241" index="17" />
+		<bit name="Section 242" index="18" />
+		<bit name="Section 243" index="19" />
+		<bit name="Section 244" index="20" />
+		<bit name="Section 245" index="21" />
+		<bit name="Section 246" index="22" />
+		<bit name="Section 247" index="23" />
+		<bit name="Section 248" index="24" />
+		<bit name="Section 249" index="25" />
+		<bit name="Section 250" index="26" />
+		<bit name="Section 251" index="27" />
+		<bit name="Section 252" index="28" />
+		<bit name="Section 253" index="29" />
+		<bit name="Section 254" index="30" />
+		<bit name="Section 255" index="31" />
+	</bitfield32>
+	<bitfield32 name="Runtime Flags" offset="0x1D8" visible="false">
+		<bit name="Contains Runtime Nodes" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<undefined name="block here" offset="0x1DC" visible="false" />
+	<undefined name="block here" offset="0x1E0" visible="false" />
+	<undefined name="block here" offset="0x1E4" visible="false" />
+	<undefined name="block here 2" offset="0x1E8" visible="false" />
+	<undefined name="block here 2" offset="0x1EC" visible="false" />
+	<undefined name="block here 2" offset="0x1F0" visible="false" />
+	<undefined name="Unknown" offset="0x1F4" visible="false" />
+	<undefined name="Unknown" offset="0x1F8" visible="false" />
+	<undefined name="Unknown" offset="0x1FC" visible="false" />
 	<undefined name="Unknown" offset="0x200" visible="false" />
 	<undefined name="Unknown" offset="0x204" visible="false" />
-	<undefined name="Unknown" offset="0x208" visible="false" />
+	<int16 name="Unknown" offset="0x208" visible="false" />
+	<int16 name="Unknown" offset="0x20A" visible="false" />
 	<reflexive name="Unknown 12" offset="0x20C" visible="false" entrySize="0x8">
 		<stringid name="Region" offset="0x0" visible="true" />
 		<stringid name="Permutation" offset="0x4" visible="true" />
@@ -1482,9 +1800,9 @@
 		<undefined name="Unknown" offset="0x4" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown 14" offset="0x224" visible="false" entrySize="0x14" align="0x40">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<stringid name="Marker" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<stringid name="Marker" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
