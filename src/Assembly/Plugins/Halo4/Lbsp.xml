@@ -2,10 +2,11 @@
 <plugin game="Halo4" baseSize="0x3E8">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+		<revision author="Lord Zedd" version="2">Standardized model data and updated</revision>
 	</revisions>
 	<int16 name="Unknown" offset="0x0" visible="false" />
 	<int16 name="BSP Index" offset="0x2" visible="true" />
-	<uint32 name="Structure Checksum" offset="0x4" visible="true" />
+	<int32 name="Structure Checksum" offset="0x4" visible="true" />
 	<undefined name="Unknown" offset="0x8" visible="true" />
 	<undefined name="Unknown" offset="0xC" visible="true" />
 	<undefined name="Unknown" offset="0x10" visible="true" />
@@ -30,12 +31,15 @@
 		<undefined name="Unknown" offset="0x4" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0xC8" visible="false" entrySize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
+		<int16 name="Unknown" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="true" />
+		<int16 name="Unknown" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="true" />
+		<int16 name="Unknown" offset="0x8" visible="true" />
+		<int16 name="Unknown" offset="0xA" visible="true" />
+		<int32 name="Unknown" offset="0xC" visible="true" />
+		<int32 name="Unknown" offset="0x10" visible="true" />
+		<int32 name="Unknown" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="true" />
@@ -95,33 +99,105 @@
 	<int32 name="Unknown" offset="0x13C" visible="false" />
 	<reflexive name="Sections" offset="0x140" visible="true" entrySize="0x70">
 		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
-			<int16 name="Shader Index" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Material Index" offset="0x0" visible="true" />
+			<int16 name="'Unknown Nodey' Index" offset="0x2" visible="false" />
 			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
 			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
 			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
-			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown Enum?" offset="0x10" visible="false" /><!-- value of 4 enables above x2 index-->
 			<int8 name="Unknown" offset="0x11" visible="false" />
-			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x13" visible="false" />
 			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
 			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
 		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
 			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
-			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Parent Submesh Index" offset="0x8" visible="true" />
 			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
+		<int16 name="Valid Mesh Index" offset="0x18" visible="true" />
+		<int16 name="Valid World Mesh Index?" offset="0x1A" visible="false" />
+		<int16 name="Valid Transparent 3 Mesh Index?" offset="0x1C" visible="false" />
+		<int16 name="Valid Opaque Mesh Index?" offset="0x1E" visible="false" />
+		<int32 name="Raw ID?" offset="0x20" visible="false" />
+		<int16 name="Valid Water Mesh Index 1" offset="0x24" visible="false" />
+		<int16 name="Valid Water Mesh Index 2" offset="0x26" visible="false" />
+		<int16 name="Unknown" offset="0x28" visible="false" />
+		<int16 name="Valid Section Index" offset="0x2A" visible="true" />
+		<int16 name="Valid Water Section Index?" offset="0x2C" visible="false" />
+		<int8 name="Unknown" offset="0x2E" visible="false" />
+		<int8 name="Transparent Nodes Per Vertex?" offset="0x2F" visible="false" />
+		<int8 name="Rigid Node" offset="0x30" visible="true" />
+		<enum8 name="Mesh Type" offset="0x31" visible="true">
+			<option name="World" value="0x0" />
+			<option name="Rigid" value="0x1" />
+			<option name="Skinned" value="0x2" />
+			<option name="Particle Model" value="0x3" />
+			<option name="Flat World" value="0x4" />
+			<option name="Flat Rigid" value="0x5" />
+			<option name="Flat Skinned" value="0x6" />
+			<option name="Screen" value="0x7" />
+			<option name="Debug" value="0x8" />
+			<option name="Transparent" value="0x9" />
+			<option name="Particle" value="0xA" />
+			<option name="Contrail" value="0xB" />
+			<option name="Light Volume" value="0xC" />
+			<option name="Chud Simple" value="0xD" />
+			<option name="Chud Fancy" value="0xE" />
+			<option name="Decorator" value="0xF" />
+			<option name="Tiny Position" value="0x10" />
+			<option name="Patchy Fog" value="0x11" />
+			<option name="Water" value="0x12" />
+			<option name="Ripple" value="0x13" />
+			<option name="Implicit" value="0x14" />
+			<option name="Beam" value="0x15" />
+			<option name="World Tessellated" value="0x16" />
+			<option name="Rigid Tessellated" value="0x17" />
+			<option name="Skinned Tessellated" value="0x18" />
+			<option name="Shader Cache" value="0x19" />
+			<option name="Structure Instance Imposter" value="0x1A" />
+			<option name="Object Imposter" value="0x1B" />
+			<option name="Rigid Compressed" value="0x1C" />
+			<option name="Skinned Compressed" value="0x1D" />
+			<option name="Light Volume Precompiled" value="0x1E" />
+			<option name="Blendshape Rigid" value="0x1F" />
+			<option name="Blendshape Rigid Blendshaped" value="0x20" />
+			<option name="Rigid Blendshaped" value="0x21" />
+			<option name="Blendshape Skinned" value="0x22" />
+			<option name="Blendshape Skinned Blendshaped" value="0x23" />
+			<option name="Skinned Blendshaped" value="0x24" />
+			<option name="Virtual Geometry Hwtess" value="0x25" />
+			<option name="Virtual Geometry Memexport" value="0x26" />
+			<option name="Position Only" value="0x27" />
+			<option name="Virtual Geometry Debug" value="0x28" />
+			<option name="Blendshape Rigid Compressed" value="0x29" />
+			<option name="Skinned Uncompressed Blendshaped" value="0x2A" />
+			<option name="Blendshape Skinned Uncompressed" value="0x2B" />
+			<option name="Tracer" value="0x2C" />
+			<option name="Polyart" value="0x2D" />
+			<option name="Vectorart" value="0x2E" />
+			<option name="Rigid Boned" value="0x2F" />
+			<option name="Rigid Boned 2UV" value="0x30" />
+			<option name="Blendshape Skinned 2UV" value="0x31" />
+			<option name="Blendshape Skinned 2UV Blendshaped" value="0x32" />
+			<option name="Skinned 2UV Blendshaped" value="0x33" />
+			<option name="Polyart UV" value="0x34" />
+			<option name="Blendshape Skinned Uncompressed Blendshaped" value="0x35" />
+		</enum8>
+		<int8 name="Opaque Max Nodes/Vertex" offset="0x32" visible="true" />
+		<enum8 name="Opaque Node Format?" offset="0x33" visible="true">
+			<option name="Float3" value="0" />
+			<option name="None?" value="1" />
+			<option name="Byte" value="2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x34" visible="false" />
+		<int8 name="Unknown" offset="0x35" visible="false" />
+		<int8 name="Unknown" offset="0x36" visible="false" />
+		<int8 name="Unknown" offset="0x37" visible="false" />
 		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
 			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
 			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
@@ -160,7 +236,7 @@
 		<undefined name="Unknown" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x164" visible="false" entrySize="0x30">
+	<reflexive name="Unknown Nodey" offset="0x164" visible="false" entrySize="0x30">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
@@ -229,24 +305,25 @@
 	<undefined name="block here 3" offset="0x1aC" visible="false" />
 	<undefined name="block here 3" offset="0x1b0" visible="false" />
 	<undefined name="block here 3" offset="0x1b4" visible="false" />
-	<reflexive name="Glass" offset="0x1B8" visible="false" entrySize="0x1C">
+	<reflexive name="Unknown Yo" offset="0x1B8" visible="true" entrySize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Unknown" offset="0x18" visible="false" />
+		<int16 name="Unknown Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x1C4" visible="false" entrySize="0x1C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<reflexive name="Water Sections" offset="0x1C4" visible="true" entrySize="0x1C">
+		<int16 name="Section Index" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="X Min" offset="0x4" visible="true" />
+		<float32 name="X Max" offset="0x8" visible="true" />
+		<float32 name="Y Min" offset="0xC" visible="true" />
+		<float32 name="Y Max" offset="0x10" visible="true" />
+		<float32 name="Z Min" offset="0x14" visible="true" />
+		<float32 name="Z Max" offset="0x18" visible="true" />
 	</reflexive>
 	<uint16 name="[zone] Asset Salt" offset="0x1D0" visible="true" />
 	<uint16 name="[zone] Asset Index" offset="0x1D2" visible="true" />
@@ -263,33 +340,105 @@
 	<int32 name="Unknown" offset="0x1fC" visible="false" />
 	<reflexive name="Sections" offset="0x200" visible="true" entrySize="0x70">
 		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
-			<int16 name="Shader Index" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Material Index" offset="0x0" visible="true" />
+			<int16 name="'Unknown Nodey' Index" offset="0x2" visible="false" />
 			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
 			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
 			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
-			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown Enum?" offset="0x10" visible="false" /><!-- value of 4 enables above x2 index-->
 			<int8 name="Unknown" offset="0x11" visible="false" />
-			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x13" visible="false" />
 			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
 			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
 		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
 			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
-			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Parent Submesh Index" offset="0x8" visible="true" />
 			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
+		<int16 name="Valid Mesh Index" offset="0x18" visible="true" />
+		<int16 name="Valid World Mesh Index?" offset="0x1A" visible="false" />
+		<int16 name="Valid Transparent 3 Mesh Index?" offset="0x1C" visible="false" />
+		<int16 name="Valid Opaque Mesh Index?" offset="0x1E" visible="false" />
+		<int32 name="Raw ID?" offset="0x20" visible="false" />
+		<int16 name="Valid Water Mesh Index 1" offset="0x24" visible="false" />
+		<int16 name="Valid Water Mesh Index 2" offset="0x26" visible="false" />
+		<int16 name="Unknown" offset="0x28" visible="false" />
+		<int16 name="Valid Section Index" offset="0x2A" visible="true" />
+		<int16 name="Valid Water Section Index?" offset="0x2C" visible="false" />
+		<int8 name="Unknown" offset="0x2E" visible="false" />
+		<int8 name="Transparent Nodes Per Vertex?" offset="0x2F" visible="false" />
+		<int8 name="Rigid Node" offset="0x30" visible="true" />
+		<enum8 name="Mesh Type" offset="0x31" visible="true">
+			<option name="World" value="0x0" />
+			<option name="Rigid" value="0x1" />
+			<option name="Skinned" value="0x2" />
+			<option name="Particle Model" value="0x3" />
+			<option name="Flat World" value="0x4" />
+			<option name="Flat Rigid" value="0x5" />
+			<option name="Flat Skinned" value="0x6" />
+			<option name="Screen" value="0x7" />
+			<option name="Debug" value="0x8" />
+			<option name="Transparent" value="0x9" />
+			<option name="Particle" value="0xA" />
+			<option name="Contrail" value="0xB" />
+			<option name="Light Volume" value="0xC" />
+			<option name="Chud Simple" value="0xD" />
+			<option name="Chud Fancy" value="0xE" />
+			<option name="Decorator" value="0xF" />
+			<option name="Tiny Position" value="0x10" />
+			<option name="Patchy Fog" value="0x11" />
+			<option name="Water" value="0x12" />
+			<option name="Ripple" value="0x13" />
+			<option name="Implicit" value="0x14" />
+			<option name="Beam" value="0x15" />
+			<option name="World Tessellated" value="0x16" />
+			<option name="Rigid Tessellated" value="0x17" />
+			<option name="Skinned Tessellated" value="0x18" />
+			<option name="Shader Cache" value="0x19" />
+			<option name="Structure Instance Imposter" value="0x1A" />
+			<option name="Object Imposter" value="0x1B" />
+			<option name="Rigid Compressed" value="0x1C" />
+			<option name="Skinned Compressed" value="0x1D" />
+			<option name="Light Volume Precompiled" value="0x1E" />
+			<option name="Blendshape Rigid" value="0x1F" />
+			<option name="Blendshape Rigid Blendshaped" value="0x20" />
+			<option name="Rigid Blendshaped" value="0x21" />
+			<option name="Blendshape Skinned" value="0x22" />
+			<option name="Blendshape Skinned Blendshaped" value="0x23" />
+			<option name="Skinned Blendshaped" value="0x24" />
+			<option name="Virtual Geometry Hwtess" value="0x25" />
+			<option name="Virtual Geometry Memexport" value="0x26" />
+			<option name="Position Only" value="0x27" />
+			<option name="Virtual Geometry Debug" value="0x28" />
+			<option name="Blendshape Rigid Compressed" value="0x29" />
+			<option name="Skinned Uncompressed Blendshaped" value="0x2A" />
+			<option name="Blendshape Skinned Uncompressed" value="0x2B" />
+			<option name="Tracer" value="0x2C" />
+			<option name="Polyart" value="0x2D" />
+			<option name="Vectorart" value="0x2E" />
+			<option name="Rigid Boned" value="0x2F" />
+			<option name="Rigid Boned 2UV" value="0x30" />
+			<option name="Blendshape Skinned 2UV" value="0x31" />
+			<option name="Blendshape Skinned 2UV Blendshaped" value="0x32" />
+			<option name="Skinned 2UV Blendshaped" value="0x33" />
+			<option name="Polyart UV" value="0x34" />
+			<option name="Blendshape Skinned Uncompressed Blendshaped" value="0x35" />
+		</enum8>
+		<int8 name="Opaque Max Nodes/Vertex" offset="0x32" visible="true" />
+		<enum8 name="Opaque Node Format?" offset="0x33" visible="true">
+			<option name="Float3" value="0" />
+			<option name="None?" value="1" />
+			<option name="Byte" value="2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x34" visible="false" />
+		<int8 name="Unknown" offset="0x35" visible="false" />
+		<int8 name="Unknown" offset="0x36" visible="false" />
+		<int8 name="Unknown" offset="0x37" visible="false" />
 		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
 			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
 			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
@@ -328,7 +477,7 @@
 		<undefined name="Unknown" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x224" visible="false" entrySize="0x30">
+	<reflexive name="Unknown Nodey" offset="0x224" visible="false" entrySize="0x30">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
@@ -397,24 +546,25 @@
 	<undefined name="Unknown" offset="0x26C" visible="false" />
 	<undefined name="Unknown" offset="0x270" visible="false" />
 	<undefined name="Unknown" offset="0x274" visible="false" />
-	<reflexive name="Unknown" offset="0x278" visible="false" entrySize="0x1C">
+	<reflexive name="Unknown Yo" offset="0x278" visible="true" entrySize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Unknown" offset="0x18" visible="false" />
+		<int16 name="Unknown Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x284" visible="false" entrySize="0x1C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<reflexive name="Water Sections" offset="0x184" visible="true" entrySize="0x1C">
+		<int16 name="Section Index" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="X Min" offset="0x4" visible="true" />
+		<float32 name="X Max" offset="0x8" visible="true" />
+		<float32 name="Y Min" offset="0xC" visible="true" />
+		<float32 name="Y Max" offset="0x10" visible="true" />
+		<float32 name="Z Min" offset="0x14" visible="true" />
+		<float32 name="Z Max" offset="0x18" visible="true" />
 	</reflexive>
 	<uint16 name="[zone] Asset Salt 2" offset="0x290" visible="true" />
 	<uint16 name="[zone] Asset Index 2" offset="0x292" visible="true" />
@@ -428,33 +578,105 @@
 	<int32 name="Unknown" offset="0x2b0" visible="false" />
 	<reflexive name="Sections" offset="0x2B4" visible="true" entrySize="0x70">
 		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x18">
-			<int16 name="Shader Index" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x2" visible="true" />
+			<int16 name="Material Index" offset="0x0" visible="true" />
+			<int16 name="'Unknown Nodey' Index" offset="0x2" visible="false" />
 			<int32 name="Index Buffer Start" offset="0x4" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x8" visible="true" />
 			<int16 name="Vertex Group Start" offset="0xC" visible="true" />
 			<int16 name="Vertex Group Count" offset="0xE" visible="true" />
-			<int8 name="Unknown" offset="0x10" visible="false" />
+			<int8 name="Unknown Enum?" offset="0x10" visible="false" /><!-- value of 4 enables above x2 index-->
 			<int8 name="Unknown" offset="0x11" visible="false" />
-			<int16 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x13" visible="false" />
 			<int16 name="Vertex Buffer Count" offset="0x14" visible="true" />
 			<int16 name="Unknown" offset="0x16" visible="false" />
 		</reflexive>
 		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x10">
 			<int32 name="Index Buffer Start" offset="0x0" visible="true" />
 			<int32 name="Index Buffer Count" offset="0x4" visible="true" />
-			<int16 name="Parent Submesh" offset="0x8" visible="true" />
+			<int16 name="Parent Submesh Index" offset="0x8" visible="true" />
 			<int16 name="Vertex Buffer Count" offset="0xA" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
+		<int16 name="Valid Mesh Index" offset="0x18" visible="true" />
+		<int16 name="Valid World Mesh Index?" offset="0x1A" visible="false" />
+		<int16 name="Valid Transparent 3 Mesh Index?" offset="0x1C" visible="false" />
+		<int16 name="Valid Opaque Mesh Index?" offset="0x1E" visible="false" />
+		<int32 name="Raw ID?" offset="0x20" visible="false" />
+		<int16 name="Valid Water Mesh Index 1" offset="0x24" visible="false" />
+		<int16 name="Valid Water Mesh Index 2" offset="0x26" visible="false" />
+		<int16 name="Unknown" offset="0x28" visible="false" />
+		<int16 name="Valid Section Index" offset="0x2A" visible="true" />
+		<int16 name="Valid Water Section Index?" offset="0x2C" visible="false" />
+		<int8 name="Unknown" offset="0x2E" visible="false" />
+		<int8 name="Transparent Nodes Per Vertex?" offset="0x2F" visible="false" />
+		<int8 name="Rigid Node" offset="0x30" visible="true" />
+		<enum8 name="Mesh Type" offset="0x31" visible="true">
+			<option name="World" value="0x0" />
+			<option name="Rigid" value="0x1" />
+			<option name="Skinned" value="0x2" />
+			<option name="Particle Model" value="0x3" />
+			<option name="Flat World" value="0x4" />
+			<option name="Flat Rigid" value="0x5" />
+			<option name="Flat Skinned" value="0x6" />
+			<option name="Screen" value="0x7" />
+			<option name="Debug" value="0x8" />
+			<option name="Transparent" value="0x9" />
+			<option name="Particle" value="0xA" />
+			<option name="Contrail" value="0xB" />
+			<option name="Light Volume" value="0xC" />
+			<option name="Chud Simple" value="0xD" />
+			<option name="Chud Fancy" value="0xE" />
+			<option name="Decorator" value="0xF" />
+			<option name="Tiny Position" value="0x10" />
+			<option name="Patchy Fog" value="0x11" />
+			<option name="Water" value="0x12" />
+			<option name="Ripple" value="0x13" />
+			<option name="Implicit" value="0x14" />
+			<option name="Beam" value="0x15" />
+			<option name="World Tessellated" value="0x16" />
+			<option name="Rigid Tessellated" value="0x17" />
+			<option name="Skinned Tessellated" value="0x18" />
+			<option name="Shader Cache" value="0x19" />
+			<option name="Structure Instance Imposter" value="0x1A" />
+			<option name="Object Imposter" value="0x1B" />
+			<option name="Rigid Compressed" value="0x1C" />
+			<option name="Skinned Compressed" value="0x1D" />
+			<option name="Light Volume Precompiled" value="0x1E" />
+			<option name="Blendshape Rigid" value="0x1F" />
+			<option name="Blendshape Rigid Blendshaped" value="0x20" />
+			<option name="Rigid Blendshaped" value="0x21" />
+			<option name="Blendshape Skinned" value="0x22" />
+			<option name="Blendshape Skinned Blendshaped" value="0x23" />
+			<option name="Skinned Blendshaped" value="0x24" />
+			<option name="Virtual Geometry Hwtess" value="0x25" />
+			<option name="Virtual Geometry Memexport" value="0x26" />
+			<option name="Position Only" value="0x27" />
+			<option name="Virtual Geometry Debug" value="0x28" />
+			<option name="Blendshape Rigid Compressed" value="0x29" />
+			<option name="Skinned Uncompressed Blendshaped" value="0x2A" />
+			<option name="Blendshape Skinned Uncompressed" value="0x2B" />
+			<option name="Tracer" value="0x2C" />
+			<option name="Polyart" value="0x2D" />
+			<option name="Vectorart" value="0x2E" />
+			<option name="Rigid Boned" value="0x2F" />
+			<option name="Rigid Boned 2UV" value="0x30" />
+			<option name="Blendshape Skinned 2UV" value="0x31" />
+			<option name="Blendshape Skinned 2UV Blendshaped" value="0x32" />
+			<option name="Skinned 2UV Blendshaped" value="0x33" />
+			<option name="Polyart UV" value="0x34" />
+			<option name="Blendshape Skinned Uncompressed Blendshaped" value="0x35" />
+		</enum8>
+		<int8 name="Opaque Max Nodes/Vertex" offset="0x32" visible="true" />
+		<enum8 name="Opaque Node Format?" offset="0x33" visible="true">
+			<option name="Float3" value="0" />
+			<option name="None?" value="1" />
+			<option name="Byte" value="2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x34" visible="false" />
+		<int8 name="Unknown" offset="0x35" visible="false" />
+		<int8 name="Unknown" offset="0x36" visible="false" />
+		<int8 name="Unknown" offset="0x37" visible="false" />
 		<reflexive name="Instanced Geometry Indices" offset="0x38" visible="true" entrySize="0x10">
 			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
 			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
@@ -493,7 +715,7 @@
 		<undefined name="Unknown" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x2D8" visible="false" entrySize="0x30">
+	<reflexive name="Unknown Nodey" offset="0x2D8" visible="false" entrySize="0x30">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
@@ -562,24 +784,25 @@
 	<undefined name="Unknown" offset="0x320" visible="false" />
 	<undefined name="Unknown" offset="0x324" visible="false" />
 	<undefined name="Unknown" offset="0x328" visible="false" />
-	<reflexive name="Unknown" offset="0x32C" visible="false" entrySize="0x1C">
+	<reflexive name="Unknown Yo" offset="0x32C" visible="true" entrySize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Unknown" offset="0x18" visible="false" />
+		<int16 name="Unknown Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x338" visible="false" entrySize="0x1C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+	<reflexive name="Water Sections" offset="0x338" visible="true" entrySize="0x1C">
+		<int16 name="Section Index" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="X Min" offset="0x4" visible="true" />
+		<float32 name="X Max" offset="0x8" visible="true" />
+		<float32 name="Y Min" offset="0xC" visible="true" />
+		<float32 name="Y Max" offset="0x10" visible="true" />
+		<float32 name="Z Min" offset="0x14" visible="true" />
+		<float32 name="Z Max" offset="0x18" visible="true" />
 	</reflexive>
 	<uint16 name="[zone] Asset Salt 3" offset="0x344" visible="true" />
 	<uint16 name="[zone] Asset Index 3" offset="0x346" visible="true" />

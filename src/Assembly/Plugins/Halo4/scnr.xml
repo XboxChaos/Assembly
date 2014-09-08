@@ -205,7 +205,7 @@
 		</bitfield32>
 		<int32 name="Unknown" offset="0x4" visible="false" />
 		<reflexive name="BSP Checksums" offset="0x8" visible="true" entrySize="0x4">
-			<uint32 name="Structure Checksum" offset="0x0" visible="true" />
+			<int32 name="Structure Checksum" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="BSPs" offset="0x14" visible="ture" entrySize="0x24">
 			<reflexive name="Clusters" offset="0x0" visible="ture" entrySize="0xC">
@@ -319,28 +319,22 @@
 			<undefined name="block here 3" offset="0x20" visible="false" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Scenario Zoneset BSPs" offset="0xF0" visible="true" entrySize="0x64">
-		<int32 name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Scenario Zoneset Group Audibility" offset="0xF0" visible="true" entrySize="0x64">
+		<int32 name="Door Portal Count" offset="0x0" visible="true" />
 		<int32 name="Unique Cluster Count" offset="0x4" visible="true" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x4">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+		<float32 name="Cluster Distance Bounds min" offset="0x8" visible="true" />
+		<float32 name="Cluster Distance Bounds max" offset="0xC" visible="true" />
+		<reflexive name="Encoded Door PAS" offset="0x10" visible="true" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unique Clusters" offset="0x1C" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Cluster Door Portal Encoded PAS" offset="0x1C" visible="true" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x28" visible="false" entrySize="0x4">
-			<int8 name="Unknown" offset="0x0" visible="false" />
-			<int8 name="Unknown" offset="0x1" visible="false" />
-			<int8 name="Unknown" offset="0x2" visible="false" />
-			<int8 name="Unknown" offset="0x3" visible="false" />
+		<reflexive name="AI Deafening PAS" offset="0x28" visible="true" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x34" visible="false" entrySize="0x1">
-			<uint8 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Cluster Distances" offset="0x34" visible="true" entrySize="0x1">
+			<int8 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="BSPs" offset="0x40" visible="true" entrySize="0x8">
 			<int32 name="Start" offset="0x0" visible="true" />
@@ -359,7 +353,7 @@
 		<ascii name="Name String" offset="0x4" visible="true" length="0x100" />
 		<int32 name="BSP Group Index" offset="0x104" visible="true" />
 		<int32 name="Unknown" offset="0x108" visible="false" />
-<bitfield32 name="Loaded BSPs 1" offset="0x10C" visible="true">
+		<bitfield32 name="Loaded BSPs 1" offset="0x10C" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
 			<bit name="BSP 2" index="2" />
@@ -3773,22 +3767,23 @@
 		<stringId name="Name" offset="0x14" visible="true" />
 	</reflexive>
 	<tagref name="Default Spawn Settings" offset="0x390" visible="true" />
-	<reflexive name="Decals" offset="0x3a0" visible="true" entrySize="0x3C">
+	<reflexive name="Decals" offset="0x3A0" visible="true" entrySize="0x3C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int8 name="Yaw" offset="0x2" visible="true" />
+		<int8 name="Pitch" offset="0x3" visible="true" />
 		<undefined name="block here" offset="0x4" visible="false" />
 		<undefined name="block here" offset="0x8" visible="false" />
 		<undefined name="block here" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="i" offset="0x14" visible="true" />
-		<undefined name="j" offset="0x18" visible="true" />
-		<undefined name="k" offset="0x1C" visible="true" />
-		<undefined name="w" offset="0x20" visible="true" />
-		<undefined name="X" offset="0x24" visible="true" />
-		<undefined name="Y" offset="0x28" visible="true" />
-		<undefined name="Z" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<float32 name="i" offset="0x14" visible="true" />
+		<float32 name="j" offset="0x18" visible="true" />
+		<float32 name="k" offset="0x1C" visible="true" />
+		<float32 name="w" offset="0x20" visible="true" />
+		<float32 name="X" offset="0x24" visible="true" />
+		<float32 name="Y" offset="0x28" visible="true" />
+		<float32 name="Z" offset="0x2C" visible="true" />
+		<float32 name="Scale min" offset="0x30" visible="true" />
+		<float32 name="Scale max" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 	</reflexive>
 	<reflexive name="Decal Palette" offset="0x3ac" visible="true" entrySize="0x14">
@@ -4662,7 +4657,7 @@
 	</reflexive>
 	<reflexive name="Scenario Cluster Data" offset="0x5A8" visible="true" entrySize="0x54">
 		<tagRef name="BSP" offset="0x0" visible="true" />
-		<uint32 name="BSP Checksum" offset="0x10" visible="true" />
+		<int32 name="BSP Checksum" offset="0x10" visible="true" />
 		<reflexive name="Cluster Centroids" offset="0x14" visible="true" entrySize="0xC">
 			<float32 name="Centroid X" offset="0x0" visible="true" />
 			<float32 name="Centroid Y" offset="0x4" visible="true" />
