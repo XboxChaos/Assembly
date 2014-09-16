@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     A collection of StructureLayouts which can be accessed by name.

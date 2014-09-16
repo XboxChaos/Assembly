@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
-using Blamite.Flexibility;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization;
+using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Util;
 

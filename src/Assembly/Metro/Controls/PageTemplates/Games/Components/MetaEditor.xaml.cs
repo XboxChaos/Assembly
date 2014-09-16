@@ -13,7 +13,7 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;

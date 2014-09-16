@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.Resources.Models

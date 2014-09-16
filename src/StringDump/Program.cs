@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Blamite.Blam;
 using Blamite.Blam.LanguagePack;
-using Blamite.Flexibility;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization;
+using Blamite.Serialization.Settings;
 using Blamite.IO;
 
 namespace StringDump

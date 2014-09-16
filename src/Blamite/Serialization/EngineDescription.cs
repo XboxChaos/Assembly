@@ -1,9 +1,9 @@
 ﻿using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Util;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization.Settings;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Describes information about a supported engine.

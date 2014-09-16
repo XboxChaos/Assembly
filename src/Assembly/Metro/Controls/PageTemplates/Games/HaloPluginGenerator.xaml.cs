@@ -11,7 +11,7 @@ using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Plugins.Generation;

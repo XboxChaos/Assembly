@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Loads vertex layouts defined in an XML document.

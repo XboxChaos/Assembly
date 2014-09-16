@@ -2,7 +2,7 @@
 using System.IO;
 using Blamite.Blam;
 using Blamite.Blam.ThirdGen;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization.Settings;
 using Blamite.IO;
 
 namespace MapExpandDotNet

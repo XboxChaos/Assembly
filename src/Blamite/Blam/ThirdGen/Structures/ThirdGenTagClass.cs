@@ -16,7 +16,7 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Blamite.Flexibility;
+using Blamite.Serialization;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {

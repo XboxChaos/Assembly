@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	public class LocaleSymbolCollection
 	{

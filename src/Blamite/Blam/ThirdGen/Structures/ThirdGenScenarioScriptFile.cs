@@ -4,7 +4,7 @@ using System.Linq;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
 using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.Structures

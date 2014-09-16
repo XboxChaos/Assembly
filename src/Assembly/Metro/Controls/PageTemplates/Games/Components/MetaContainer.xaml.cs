@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using Assembly.Helpers;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.RTE;
 using Blamite.Util;

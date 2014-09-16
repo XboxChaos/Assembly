@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.Windows.Controls;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {

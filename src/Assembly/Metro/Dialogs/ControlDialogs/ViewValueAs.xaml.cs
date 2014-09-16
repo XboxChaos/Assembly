@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Assembly.Helpers.Native;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs

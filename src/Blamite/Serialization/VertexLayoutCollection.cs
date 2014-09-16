@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     A collection of vertex layouts which allows layouts to be looked up by type or name.

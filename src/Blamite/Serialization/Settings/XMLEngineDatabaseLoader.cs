@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Loads engine databases from XML data.

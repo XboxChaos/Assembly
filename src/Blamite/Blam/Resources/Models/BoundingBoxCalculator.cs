@@ -1,5 +1,5 @@
 ﻿using System;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 
 namespace Blamite.Blam.Resources.Models
 {

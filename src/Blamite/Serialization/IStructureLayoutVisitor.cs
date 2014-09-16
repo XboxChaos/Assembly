@@ -1,4 +1,4 @@
-﻿namespace Blamite.Flexibility
+﻿namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Defines the interface for a class which acts as a visitor for fields in

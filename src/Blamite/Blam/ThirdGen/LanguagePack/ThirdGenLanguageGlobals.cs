@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Blamite.Blam.LanguagePack;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.LanguagePack

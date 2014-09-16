@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     A group of settings.

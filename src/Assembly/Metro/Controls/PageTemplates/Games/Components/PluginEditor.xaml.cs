@@ -7,7 +7,7 @@ using Assembly.Helpers;
 using Assembly.Helpers.CodeCompletion.XML;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.SyntaxHighlighting;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.Util;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;

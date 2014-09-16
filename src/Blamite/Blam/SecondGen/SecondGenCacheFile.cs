@@ -5,7 +5,7 @@ using Blamite.Blam.Scripting;
 using Blamite.Blam.SecondGen.Structures;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.SecondGen

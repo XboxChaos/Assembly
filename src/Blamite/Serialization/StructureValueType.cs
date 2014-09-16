@@ -16,7 +16,7 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     The different types of basic values that a structure field can hold.

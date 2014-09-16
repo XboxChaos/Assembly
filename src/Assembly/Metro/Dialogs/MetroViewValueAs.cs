@@ -3,7 +3,7 @@ using System.Windows;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Assembly.Metro.Dialogs.ControlDialogs;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Assembly.Metro.Dialogs

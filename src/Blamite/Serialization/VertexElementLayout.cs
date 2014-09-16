@@ -1,4 +1,4 @@
-﻿namespace Blamite.Flexibility
+﻿namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Value types for vertex elements.

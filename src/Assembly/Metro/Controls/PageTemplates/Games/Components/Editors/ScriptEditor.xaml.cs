@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.Scripting;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Microsoft.Win32;
 

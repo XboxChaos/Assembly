@@ -22,7 +22,7 @@ using Blamite.Blam;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.Injection;
 using Blamite.IO;
 using Blamite.Plugins;

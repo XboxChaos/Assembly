@@ -1,4 +1,4 @@
-﻿namespace Blamite.Flexibility.Settings
+﻿namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Loads complex setting data from external files.

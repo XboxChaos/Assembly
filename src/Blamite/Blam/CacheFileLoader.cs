@@ -1,7 +1,7 @@
 ﻿using System;
 using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam
