@@ -17,7 +17,7 @@ namespace Blamite.Injection
 		private readonly ICacheFile _cacheFile;
 		private readonly StructureLayout _dataRefLayout;
 		private readonly IReader _reader;
-		private readonly StructureLayout _reflexiveLayout;
+		private readonly StructureLayout _tagBlockLayout;
 		private readonly SegmentPointer _tagLocation;
 		private readonly StructureLayout _tagRefLayout;
 		private List<DataBlock> _reflexiveBlocks;
@@ -35,7 +35,7 @@ namespace Blamite.Injection
 			_tagLocation = tagLocation;
 			_cacheFile = cacheFile;
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 
 			DataBlocks = new List<DataBlock>();
@@ -373,7 +373,7 @@ namespace Blamite.Injection
 		{
 			// Read the count and pointer
 			SeekToOffset(block, offset);
-			StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var count = (int) values.GetInteger("entry count");
 			uint pointer = values.GetInteger("pointer");
 
@@ -382,7 +382,7 @@ namespace Blamite.Injection
 				DataBlock newBlock = ReadDataBlock(pointer, (int) entrySize, count, align);
 
 				// Now create a fixup for the block
-				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _reflexiveLayout.GetFieldOffset("pointer"));
+				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
 				block.AddressFixups.Add(fixup);
 
 				// Add it to _reflexiveBlocks so it'll be recursed into

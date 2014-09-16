@@ -1,22 +1,4 @@
-﻿/* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
- * 
- * This file is part of ExtryzeDLL.
- * 
- * Extryze is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Extryze is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Blamite.IO;
+﻿using Blamite.IO;
 
 namespace Blamite.Flexibility
 {
@@ -111,6 +93,20 @@ namespace Blamite.Flexibility
 			SeekWriter(offset);
 			_writer.WriteBlock(_collection.GetRaw(name), 0, size);
 			_offset += size;
+		}
+
+		public void VisitStructField(string name, int offset, StructureLayout layout)
+		{
+			if (!_collection.HasStruct(name))
+				return;
+
+			SeekWriter(offset);
+			WriteStructure(_collection.GetStruct(name), layout, _writer);
+
+			if (layout.Size > 0)
+				_offset += layout.Size;
+			else
+				_offset = _writer.Position;
 		}
 
 		public static void WriteStructure(StructureValueCollection values, StructureLayout layout, IWriter writer)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Linq;
+using System.Collections.Generic;
 using Blamite.Util;
 
 namespace Blamite.Flexibility.Settings
@@ -10,6 +11,8 @@ namespace Blamite.Flexibility.Settings
 	/// </summary>
 	public class XMLLayoutLoader : IComplexSettingLoader
 	{
+		private Queue<QueuedStructure> _structs = new Queue<QueuedStructure>();
+
 		/// <summary>
 		///     Loads setting data from a path.
 		/// </summary>
@@ -19,9 +22,13 @@ namespace Blamite.Flexibility.Settings
 		/// </returns>
 		public object LoadSetting(string path)
 		{
+			StructureLayoutCollection result;
 			if (Directory.Exists(path))
-				return LoadLayoutsFromDirectory(path);
-			return LoadLayouts(path);
+				result = LoadLayoutsFromDirectory(path);
+			else
+				result = LoadLayouts(path);
+			ProcessStructReferences(result);
+			return result;
 		}
 
 		/// <summary>
@@ -29,7 +36,7 @@ namespace Blamite.Flexibility.Settings
 		/// </summary>
 		/// <param name="layoutDocument">The XML document to load structure layouts from.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		public static StructureLayoutCollection LoadLayouts(XDocument layoutDocument)
+		private StructureLayoutCollection LoadLayouts(XDocument layoutDocument)
 		{
 			// Make sure there is a root <layouts> tag
 			XContainer layoutContainer = layoutDocument.Element("layouts");
@@ -53,7 +60,7 @@ namespace Blamite.Flexibility.Settings
 		/// </summary>
 		/// <param name="documentPath">The path to the XML document to load.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		public static StructureLayoutCollection LoadLayouts(string documentPath)
+		private StructureLayoutCollection LoadLayouts(string documentPath)
 		{
 			return LoadLayouts(XDocument.Load(documentPath));
 		}
@@ -63,7 +70,7 @@ namespace Blamite.Flexibility.Settings
 		/// </summary>
 		/// <param name="dirPath">The path to the directory to load XML files from.</param>
 		/// <returns>The layouts that were loaded.</returns>
-		public static StructureLayoutCollection LoadLayoutsFromDirectory(string dirPath)
+		private StructureLayoutCollection LoadLayoutsFromDirectory(string dirPath)
 		{
 			var result = new StructureLayoutCollection();
 			foreach (string file in Directory.EnumerateFiles(dirPath, "*.xml"))
@@ -80,7 +87,7 @@ namespace Blamite.Flexibility.Settings
 		/// <param name="parentElement">The element containing the value elements to parse.</param>
 		/// <param name="size">The size of the structure in bytes.</param>
 		/// <returns>The structure layout that was loaded.</returns>
-		public static StructureLayout LoadLayout(XElement parentElement, int size)
+		private StructureLayout LoadLayout(XElement parentElement, int size)
 		{
 			var layout = new StructureLayout(size);
 			foreach (XElement element in parentElement.Elements())
@@ -94,7 +101,7 @@ namespace Blamite.Flexibility.Settings
 		/// </summary>
 		/// <param name="layout">The layout to add the parsed field to.</param>
 		/// <param name="element">The element to parse.</param>
-		private static void HandleElement(StructureLayout layout, XElement element)
+		private void HandleElement(StructureLayout layout, XElement element)
 		{
 			// Every structure field at least has a name and an offset
 			string name = XMLUtil.GetStringAttribute(element, "name");
@@ -104,6 +111,8 @@ namespace Blamite.Flexibility.Settings
 				HandleArrayElement(layout, element, name, offset);
 			else if (IsRawElement(element))
 				HandleRawElement(layout, element, name, offset);
+			else if (IsStructElement(element))
+				HandleStructElement(layout, element, name, offset);
 			else
 				HandleBasicElement(layout, element, name, offset);
 		}
@@ -116,7 +125,7 @@ namespace Blamite.Flexibility.Settings
 		/// <param name="element">The XML element to parse.</param>
 		/// <param name="name">The name of the field to add.</param>
 		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
-		private static void HandleBasicElement(StructureLayout layout, XElement element, string name, int offset)
+		private void HandleBasicElement(StructureLayout layout, XElement element, string name, int offset)
 		{
 			StructureValueType type = IdentifyValueType(element.Name.LocalName);
 			layout.AddBasicField(name, type, offset);
@@ -130,7 +139,7 @@ namespace Blamite.Flexibility.Settings
 		/// <param name="element">The XML element to parse.</param>
 		/// <param name="name">The name of the field to add.</param>
 		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
-		private static void HandleArrayElement(StructureLayout layout, XElement element, string name, int offset)
+		private void HandleArrayElement(StructureLayout layout, XElement element, string name, int offset)
 		{
 			int count = XMLUtil.GetNumericAttribute(element, "count");
 			int entrySize = XMLUtil.GetNumericAttribute(element, "entrySize");
@@ -145,10 +154,43 @@ namespace Blamite.Flexibility.Settings
 		/// <param name="element">The XML element to parse.</param>
 		/// <param name="name">The name of the field to add.</param>
 		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
-		private static void HandleRawElement(StructureLayout layout, XElement element, string name, int offset)
+		private void HandleRawElement(StructureLayout layout, XElement element, string name, int offset)
 		{
 			int size = XMLUtil.GetNumericAttribute(element, "size");
 			layout.AddRawField(name, offset, size);
+		}
+
+		/// <summary>
+		///     Parses an XML element representing an embedded structure and
+		///     adds the field information to a structure layout.
+		/// </summary>
+		/// <param name="layout">The structure layout to add the field's information to.</param>
+		/// <param name="element">The XML element to parse.</param>
+		/// <param name="name">The name of the field to add.</param>
+		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+		private void HandleStructElement(StructureLayout layout, XElement element, string name, int offset)
+		{
+			string layoutName = XMLUtil.GetStringAttribute(element, "layout");
+
+			// Queue the structure to have its layout resolved later after all layouts have been loaded
+			_structs.Enqueue(new QueuedStructure(name, offset, layoutName, layout));
+		}
+
+		/// <summary>
+		/// Processes the queued structure list, resolving the layout referenced by each structure.
+		/// </summary>
+		/// <param name="layouts">The layout collection to search for layouts in.</param>
+		private void ProcessStructReferences(StructureLayoutCollection layouts)
+		{
+			// Resolve each struct field's layout reference
+			while (_structs.Count > 0)
+			{
+				var queuedStruct = _structs.Dequeue();
+				if (!layouts.HasLayout(queuedStruct.LayoutName))
+					throw new InvalidOperationException("Unable to find layout \"" + queuedStruct.LayoutName + "\" referenced by structure \"" + queuedStruct.Name + "\"");
+				var layout = layouts.GetLayout(queuedStruct.LayoutName);
+				queuedStruct.Owner.AddStructField(queuedStruct.Name, queuedStruct.Offset, layout);
+			}
 		}
 
 		/// <summary>
@@ -199,6 +241,50 @@ namespace Blamite.Flexibility.Settings
 		private static bool IsRawElement(XElement element)
 		{
 			return (element.Name == "raw");
+		}
+
+		/// <summary>
+		/// Determines whether or not an element represents an embedded structure.
+		/// </summary>
+		/// <param name="element">The XML element to parse.</param>
+		/// <returns><c>true</c> if the element represents an embedded structure.</returns>
+		private static bool IsStructElement(XElement element)
+		{
+			return (element.Name == "struct");
+		}
+
+		/// <summary>
+		/// Represents a structure which needs to have a layout reference resolved and then be added to a layout.
+		/// </summary>
+		private class QueuedStructure
+		{
+			public QueuedStructure(string name, int offset, string layoutName, StructureLayout owner)
+			{
+				Name = name;
+				Offset = offset;
+				LayoutName = layoutName;
+				Owner = owner;
+			}
+
+			/// <summary>
+			/// Gets the name of the structure field.
+			/// </summary>
+			public string Name { get; private set; }
+
+			/// <summary>
+			/// Gets the offset of the structure field within its layout.
+			/// </summary>
+			public int Offset { get; private set; }
+
+			/// <summary>
+			/// Gets the name of the layout referenced by the structure.
+			/// </summary>
+			public string LayoutName { get; private set; }
+
+			/// <summary>
+			/// Gets the layout that the structure field should be added to.
+			/// </summary>
+			public StructureLayout Owner { get; private set; }
 		}
 	}
 }

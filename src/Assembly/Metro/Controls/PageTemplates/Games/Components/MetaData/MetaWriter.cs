@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_stringIdTrie = stringIdTrie;
 
 			// Load layouts
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+			_reflexiveLayout = buildInfo.Layouts.GetLayout("tag block");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}

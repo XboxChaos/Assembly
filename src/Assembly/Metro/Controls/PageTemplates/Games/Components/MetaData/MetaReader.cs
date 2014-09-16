@@ -19,7 +19,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly ICacheFile _cache;
 		private readonly StructureLayout _dataRefLayout;
 		private readonly FieldChangeSet _ignoredFields;
-		private readonly StructureLayout _reflexiveLayout;
+		private readonly StructureLayout _tagBlockLayout;
 		private readonly IStreamManager _streamManager;
 		private readonly StructureLayout _tagRefLayout;
 		private readonly LoadType _type;
@@ -35,7 +35,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_type = type;
 
 			// Load layouts
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("reflexive");
+			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
@@ -296,7 +296,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitReflexive(ReflexiveData field)
 		{
 			SeekToOffset(field.Offset);
-			StructureValueCollection values = StructureReader.ReadStructure(_reader, _reflexiveLayout);
+			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var length = (int) values.GetInteger("entry count");
 			uint pointer = values.GetInteger("pointer");
 

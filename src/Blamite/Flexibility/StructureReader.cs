@@ -1,22 +1,4 @@
-﻿/* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
- * 
- * This file is part of ExtryzeDLL.
- * 
- * Extryze is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Extryze is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Blamite.IO;
+﻿using Blamite.IO;
 
 namespace Blamite.Flexibility
 {
@@ -123,6 +105,25 @@ namespace Blamite.Flexibility
 			byte[] data = _reader.ReadBlock(size);
 			_collection.SetRaw(name, data);
 			_offset += data.Length;
+		}
+
+		/// <summary>
+		///     Reads a structure from the stream and adds it to the value
+		///     collection which is currently being built.
+		/// </summary>
+		/// <param name="name">The name of the field.</param>
+		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
+		/// <param name="layout">The layout of the data in the structure.</param>
+		public void VisitStructField(string name, int offset, StructureLayout layout)
+		{
+			SeekReader(offset);
+			var values = ReadStructure(_reader, layout);
+			_collection.SetStruct(name, values);
+			
+			if (layout.Size > 0)
+				_offset += layout.Size;
+			else
+				_offset = _reader.Position;
 		}
 
 		/// <summary>

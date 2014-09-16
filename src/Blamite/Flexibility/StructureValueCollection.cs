@@ -31,9 +31,9 @@ namespace Blamite.Flexibility
 
 		private readonly Dictionary<string, float> _floatValues = new Dictionary<string, float>();
 		private readonly Dictionary<string, uint> _intValues = new Dictionary<string, uint>();
-
 		private readonly Dictionary<string, byte[]> _rawValues = new Dictionary<string, byte[]>();
 		private readonly Dictionary<string, string> _stringValues = new Dictionary<string, string>();
+		private readonly Dictionary<string, StructureValueCollection> _structValues = new Dictionary<string, StructureValueCollection>();
 
 		/// <summary>
 		///     Checks if an integer field is present in the value collection.
@@ -83,6 +83,16 @@ namespace Blamite.Flexibility
 		public bool HasRaw(string name)
 		{
 			return _rawValues.ContainsKey(name);
+		}
+
+		/// <summary>
+		///		Checks if a structure field is present in the value collection.
+		/// </summary>
+		/// <param name="name">The name of the structure field to search for.</param>
+		/// <returns>true if the field is present.</returns>
+		public bool HasStruct(string name)
+		{
+			return _structValues.ContainsKey(name);
 		}
 
 		/// <summary>
@@ -137,6 +147,16 @@ namespace Blamite.Flexibility
 		public void SetRaw(string name, byte[] value)
 		{
 			_rawValues[name] = value;
+		}
+
+		/// <summary>
+		///     Sets the value of a named struct field in a structure.
+		/// </summary>
+		/// <param name="name">The name of the struct field to set.</param>
+		/// <param name="value">The collection of values to assign to the structure.</param>
+		public void SetStruct(string name, StructureValueCollection value)
+		{
+			_structValues[name] = value;
 		}
 
 		/// <summary>
@@ -195,6 +215,17 @@ namespace Blamite.Flexibility
 		}
 
 		/// <summary>
+		///     Finds a struct field with a given name and retrieves its value if it is found.
+		/// </summary>
+		/// <param name="name">The name of the struct field to find.</param>
+		/// <param name="value">The variable to store the field's value to (if the field exists).</param>
+		/// <returns>true if the field was found.</returns>
+		public bool FindStruct(string name, out StructureValueCollection value)
+		{
+			return _structValues.TryGetValue(name, out value);
+		}
+
+		/// <summary>
 		///     Retrieves the value of an integer field,
 		///     throwing an exception if the field does not exist.
 		/// </summary>
@@ -204,7 +235,7 @@ namespace Blamite.Flexibility
 		public uint GetInteger(string name)
 		{
 			if (!HasInteger(name))
-				throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+				ThrowMissingFieldException(name);
 			return _intValues[name];
 		}
 
@@ -218,7 +249,7 @@ namespace Blamite.Flexibility
 		public float GetFloat(string name)
 		{
 			if (!HasFloat(name))
-				throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+				ThrowMissingFieldException(name);
 			return _floatValues[name];
 		}
 
@@ -232,7 +263,7 @@ namespace Blamite.Flexibility
 		public string GetString(string name)
 		{
 			if (!HasString(name))
-				throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+				ThrowMissingFieldException(name);
 			return _stringValues[name];
 		}
 
@@ -246,7 +277,7 @@ namespace Blamite.Flexibility
 		public StructureValueCollection[] GetArray(string name)
 		{
 			if (!HasArray(name))
-				throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+				ThrowMissingFieldException(name);
 			return _arrayValues[name];
 		}
 
@@ -260,8 +291,22 @@ namespace Blamite.Flexibility
 		public byte[] GetRaw(string name)
 		{
 			if (!HasRaw(name))
-				throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
+				ThrowMissingFieldException(name);
 			return _rawValues[name];
+		}
+
+		/// <summary>
+		///     Retrieves the value of a struct field,
+		///     throwing an exception if the field does not exist.
+		/// </summary>
+		/// <param name="name">The name of the struct field to retrieve the value of.</param>
+		/// <returns>The field's value.</returns>
+		/// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
+		public StructureValueCollection GetStruct(string name)
+		{
+			if (!HasStruct(name))
+				ThrowMissingFieldException(name);
+			return _structValues[name];
 		}
 
 		/// <summary>
@@ -307,6 +352,11 @@ namespace Blamite.Flexibility
 			if (FindString(name, out value))
 				return value;
 			return defaultValue;
+		}
+
+		private void ThrowMissingFieldException(string name)
+		{
+			throw new ArgumentException("The structure is missing the required \"" + name + "\" field.");
 		}
 	}
 }
