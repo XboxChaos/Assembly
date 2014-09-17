@@ -141,7 +141,7 @@ namespace Blamite.Plugins
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			WriteValueStart("dataRef", name, offset, visible);
-			_output.WriteAttributeString("format", format);
+			//_output.WriteAttributeString("format", format);
 			if (align != 4)
 				_output.WriteAttributeString("align", ToHexString(align));
 			_output.WriteEndElement();
