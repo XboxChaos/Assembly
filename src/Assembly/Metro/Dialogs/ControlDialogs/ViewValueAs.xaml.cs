@@ -8,6 +8,9 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 using Blamite.Blam;
 using Blamite.Flexibility;
 using Blamite.IO;
+using System;
+using System.Threading;
+using WMPLib;
 
 namespace Assembly.Metro.Dialogs.ControlDialogs
 {
@@ -84,17 +87,25 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				success = int.TryParse(txtOffset.Text, out offset);
 			}
 
+			if (Egg((uint)offset))
+				return;
+
 			if (!success || offset < _cacheFile.MetaArea.Offset ||
 			    offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size)
 			{
-				MetroMessageBox.Show(
-					"Invalid offset.",
-					"The meta offset you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
-					);
+				ShowInvalidOffsetError();
 			}
 
 			_reader.BaseOffset = (uint) offset;
 			RefreshMeta();
+		}
+
+		private void ShowInvalidOffsetError()
+		{
+			MetroMessageBox.Show(
+					"Invalid offset.",
+					"The meta offset you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					);
 		}
 
 		private void txtOffset_KeyDown(object sender, KeyEventArgs e)
@@ -123,5 +134,64 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
 			RefreshMeta();
 		}
+
+		#region Egg
+		private static WindowsMediaPlayer _eggPlayer;
+		private static uint[] _eggNumbers = new uint[] { 0x4A4F484E, 0x43454E41 };
+		private static int _eggIndex = 0;
+
+		private bool Egg(uint x)
+		{
+			if (_eggIndex >= _eggNumbers.Length)
+				return false;
+			if (x == _eggNumbers[_eggIndex])
+			{
+				_eggIndex++;
+			}
+			else
+			{
+				_eggIndex = 0;
+				return false;
+			}
+
+			if (_eggIndex == _eggNumbers.Length)
+			{
+				var result = MetroMessageBox.Show("I have just one question for you.", "Are you ready?", MetroMessageBox.MessageBoxButtons.YesNo);
+				if (result == MetroMessageBox.MessageBoxResult.Yes)
+				{
+					if (_eggPlayer == null)
+						_eggPlayer = new WindowsMediaPlayer();
+					_eggPlayer.URL = @"http://www.xboxchaos.com/assembly/kbdata/MyTimeIsNow.wma";
+					_eggPlayer.MarkerHit += _eggPlayer_MarkerHit;
+					_eggPlayer.controls.play();
+				}
+				else
+				{
+					_eggIndex = 0;
+				}
+				return true;
+			}
+			else
+			{
+				ShowInvalidOffsetError();
+				return true;
+			}
+		}
+
+		void _eggPlayer_MarkerHit(int MarkerNum)
+		{
+			myTimeIsNowImage.Visibility = Visibility.Visible;
+		}
+
+		private void Window_Closed(object sender, EventArgs e)
+		{
+			if (_eggPlayer != null)
+			{
+				_eggPlayer.controls.stop();
+				_eggPlayer.close();
+				_eggIndex = 0;
+			}
+		}
+		#endregion
 	}
 }
