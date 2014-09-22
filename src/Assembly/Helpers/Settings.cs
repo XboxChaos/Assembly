@@ -8,8 +8,8 @@ using System.Linq;
 using System.Windows;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using Blamite.Flexibility;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization;
+using Blamite.Serialization.Settings;
 using Newtonsoft.Json;
 using XBDMCommunicator;
 

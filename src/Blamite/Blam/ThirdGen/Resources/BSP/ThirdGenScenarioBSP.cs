@@ -3,7 +3,7 @@ using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
 using Blamite.Blam.ThirdGen.Resources.Models;
 using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.Resources.BSP

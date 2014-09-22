@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.Blam.Shaders;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
 

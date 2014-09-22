@@ -1,4 +1,4 @@
-﻿namespace Blamite.Flexibility
+﻿namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Defines the sizes of the three values in a stringID.

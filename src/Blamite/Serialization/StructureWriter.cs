@@ -1,6 +1,6 @@
 ﻿using Blamite.IO;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Provides a means to write values to an IWriter based off of a predefined

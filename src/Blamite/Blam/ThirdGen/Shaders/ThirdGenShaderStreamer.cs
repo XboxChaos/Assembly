@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Blamite.Blam.Shaders;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 

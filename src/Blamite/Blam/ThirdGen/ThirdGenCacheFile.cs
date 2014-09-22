@@ -8,7 +8,7 @@ using Blamite.Blam.ThirdGen.Resources;
 using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen

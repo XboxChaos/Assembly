@@ -11,7 +11,7 @@ using System.Windows.Input;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
 using Blamite.Blam.LanguagePack;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 

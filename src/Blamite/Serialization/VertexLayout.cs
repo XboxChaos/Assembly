@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Defines the layout of a vertex in a vertex buffer.

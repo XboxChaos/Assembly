@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Provides a means of loading a structure layout from an XML file.

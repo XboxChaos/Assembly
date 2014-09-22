@@ -3,7 +3,7 @@ using System.Text;
 using System.Xml.Linq;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Loads locale symbol data from XML files.

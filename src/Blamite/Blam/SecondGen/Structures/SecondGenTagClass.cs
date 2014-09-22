@@ -1,4 +1,4 @@
-﻿using Blamite.Flexibility;
+﻿using Blamite.Serialization;
 
 namespace Blamite.Blam.SecondGen.Structures
 {

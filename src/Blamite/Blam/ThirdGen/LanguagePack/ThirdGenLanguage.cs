@@ -2,7 +2,7 @@
 using System.IO;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 

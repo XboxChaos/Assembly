@@ -1,5 +1,5 @@
 ﻿using Blamite.Blam.Util;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 using System;

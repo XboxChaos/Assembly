@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using Blamite.Blam.Resources.Models;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 
 namespace Assembly.Helpers.Models
 {

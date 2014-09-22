@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Blamite.Blam;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Util;
 

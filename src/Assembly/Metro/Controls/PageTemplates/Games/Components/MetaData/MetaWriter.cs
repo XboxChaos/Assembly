@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Blamite.Blam;
-using Blamite.Flexibility;
+using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 

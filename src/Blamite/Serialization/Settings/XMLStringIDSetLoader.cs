@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using Blamite.Blam;
 using Blamite.Util;
 
-namespace Blamite.Flexibility.Settings
+namespace Blamite.Serialization.Settings
 {
 	/// <summary>
 	///     Loads stringID set definitions from XML data.

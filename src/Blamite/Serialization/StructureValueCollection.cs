@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Blamite.Flexibility
+namespace Blamite.Serialization
 {
 	/// <summary>
 	///     Represents a collection of values read from a structure.

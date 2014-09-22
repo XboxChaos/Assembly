@@ -6,8 +6,8 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
-using Blamite.Flexibility;
-using Blamite.Flexibility.Settings;
+using Blamite.Serialization;
+using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Patching;
 
