@@ -2,9 +2,16 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Blamite.IO;
+using System.Collections.Generic;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
+    public class CachedFieldInfo
+    {
+        public MetaField Old { get; set; }
+        public MetaField Clone { get; set; }
+    }
+
 	public class ReflexivePage : PropertyChangeNotifier
 	{
 		private readonly MetaField[] _fields;
@@ -31,8 +38,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _fields; }
 		}
 
-		public void CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker, FieldChangeSet changes)
+		public List<CachedFieldInfo> CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker, FieldChangeSet changes)
 		{
+            var result = new List<CachedFieldInfo>();
 			for (int i = 0; i < changedFields.Count; i++)
 			{
 				MetaField field = changedFields[i];
@@ -43,6 +51,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					if (_fields[i] == null)
 					{
 						_fields[i] = field.CloneValue();
+                        result.Add(new CachedFieldInfo() { Old = field, Clone = _fields[i] });
 						tracker.AttachTo(_fields[i]);
 						if (changed)
 							tracker.MarkChanged(_fields[i]);
@@ -57,6 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					}
 				}
 			}
+            return result;
 		}
 
 		public void Reset()
@@ -71,18 +81,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			Array.Copy(_fields, result._fields, _fields.Length);
 			return result;
 		}
-	}
-
-	public class FieldCachedEventArgs : EventArgs
-	{
-		public FieldCachedEventArgs(MetaField old, MetaField clone)
-		{
-			Old = old;
-			Clone = clone;
-		}
-
-		public MetaField Old { get; private set; }
-		public MetaField Clone { get; private set; }
 	}
 
 	public class ReflexiveData : ValueField
@@ -218,11 +216,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			visitor.VisitReflexive(this);
 		}
 
-		/// <summary>
-		/// Fired when a field is duplicated to have its value cached.
-		/// </summary>
-		public event EventHandler<FieldCachedEventArgs> FieldCached;
-
 		public override MetaField CloneValue()
 		{
 			var result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, base.PluginLine, _metaArea);
@@ -270,12 +263,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			NotifyPropertyChanged("Length");
 			NotifyPropertyChanged("LastChunkIndex");
 			NotifyPropertyChanged("HasChildren");
-		}
-
-		protected void OnFieldCached(MetaField field, MetaField clone)
-		{
-			if (FieldCached != null)
-				FieldCached(this, new FieldCachedEventArgs(field, clone));
 		}
 	}
 }
