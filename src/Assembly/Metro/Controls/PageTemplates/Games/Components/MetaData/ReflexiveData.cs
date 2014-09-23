@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-    public class CachedFieldInfo
-    {
-        public MetaField Old { get; set; }
-        public MetaField Clone { get; set; }
-    }
+	public class CachedFieldInfo
+	{
+		public MetaField Old { get; set; }
+		public MetaField Clone { get; set; }
+	}
 
 	public class ReflexivePage : PropertyChangeNotifier
 	{
@@ -40,7 +40,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public List<CachedFieldInfo> CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker, FieldChangeSet changes)
 		{
-            var result = new List<CachedFieldInfo>();
+			var result = new List<CachedFieldInfo>();
 			for (int i = 0; i < changedFields.Count; i++)
 			{
 				MetaField field = changedFields[i];
@@ -51,7 +51,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					if (_fields[i] == null)
 					{
 						_fields[i] = field.CloneValue();
-                        result.Add(new CachedFieldInfo() { Old = field, Clone = _fields[i] });
+						result.Add(new CachedFieldInfo() { Old = field, Clone = _fields[i] });
 						tracker.AttachTo(_fields[i]);
 						if (changed)
 							tracker.MarkChanged(_fields[i]);
@@ -66,7 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					}
 				}
 			}
-            return result;
+			return result;
 		}
 
 		public void Reset()

@@ -141,11 +141,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public List<CachedFieldInfo> UnloadPage()
 		{
-            List<CachedFieldInfo> result = null;
+			List<CachedFieldInfo> result = null;
 			if (_lastPage != null)
 				result = _lastPage.CloneChanges(_loadedFields, _tracker, _changes);
 			_lastPage = null;
-            return result;
+			return result;
 		}
 
 		private void SynchronizeExpansion()
@@ -427,12 +427,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		private void AttachTo(ReflexiveData field, FlattenedReflexive flattened)
 		{
-            if (!_flattenInfo.ContainsKey(field))
-            {
-                field.PropertyChanged += ReflexivePropertyChanged;
-                //field.Cloned += ReflexiveCloned;
-                _flattenInfo[field] = flattened;
-            }
+			if (!_flattenInfo.ContainsKey(field))
+			{
+				field.PropertyChanged += ReflexivePropertyChanged;
+				//field.Cloned += ReflexiveCloned;
+				_flattenInfo[field] = flattened;
+			}
 		}
 
 		/*private void ReflexiveCloned(object sender, FieldCachedEventArgs e)
@@ -444,7 +444,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		private void ReflexivePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			var reflexive = (ReflexiveData) sender;
+			var reflexive = (ReflexiveData)sender;
 			FlattenedReflexive flattenedField = _flattenInfo[reflexive];
 			if (e.PropertyName == "IsExpanded")
 			{
@@ -486,20 +486,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-        private void AttachToCopiedFields(IEnumerable<CachedFieldInfo> cacheInfo)
-        {
-            foreach (var cache in cacheInfo)
-            {
-                var oldReflexive = cache.Old as ReflexiveData;
-                if (oldReflexive != null)
-                {
-                    var newReflexive = (ReflexiveData)cache.Clone;
-                    var flattened = _flattenInfo[oldReflexive];
-                    AttachTo(newReflexive, flattened);
-                    flattened.SynchronizeWith(newReflexive);
-                }
-            }
-        }
+		private void AttachToCopiedFields(IEnumerable<CachedFieldInfo> cacheInfo)
+		{
+			foreach (var cache in cacheInfo)
+			{
+				var oldReflexive = cache.Old as ReflexiveData;
+				if (oldReflexive != null)
+				{
+					var newReflexive = (ReflexiveData)cache.Clone;
+					var flattened = _flattenInfo[oldReflexive];
+					AttachTo(newReflexive, flattened);
+					flattened.SynchronizeWith(newReflexive);
+				}
+			}
+		}
 
 		private void RecursiveUnload(IEnumerable<MetaField> fields)
 		{
@@ -511,8 +511,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					FlattenedReflexive flattened = _flattenInfo[reflexive];
 					RecursiveUnload(flattened.LoadedFields);
 					var cacheInfo = _flattenInfo[reflexive].UnloadPage();
-                    if (cacheInfo != null)
-                        AttachToCopiedFields(cacheInfo);
+					if (cacheInfo != null)
+						AttachToCopiedFields(cacheInfo);
 				}
 			}
 		}
