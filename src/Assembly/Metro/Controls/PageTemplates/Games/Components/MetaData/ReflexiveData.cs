@@ -31,8 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _fields; }
 		}
 
-		public void CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker,
-			FieldChangeSet changes)
+		public void CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker, FieldChangeSet changes)
 		{
 			for (int i = 0; i < changedFields.Count; i++)
 			{
@@ -74,16 +73,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 	}
 
-	public class ReflexiveClonedEventArgs : EventArgs
+	public class FieldCachedEventArgs : EventArgs
 	{
-		public ReflexiveClonedEventArgs(ReflexiveData old, ReflexiveData clone)
+		public FieldCachedEventArgs(MetaField old, MetaField clone)
 		{
 			Old = old;
 			Clone = clone;
 		}
 
-		public ReflexiveData Old { get; private set; }
-		public ReflexiveData Clone { get; private set; }
+		public MetaField Old { get; private set; }
+		public MetaField Clone { get; private set; }
 	}
 
 	public class ReflexiveData : ValueField
@@ -219,7 +218,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			visitor.VisitReflexive(this);
 		}
 
-		public event EventHandler<ReflexiveClonedEventArgs> Cloned;
+		/// <summary>
+		/// Fired when a field is duplicated to have its value cached.
+		/// </summary>
+		public event EventHandler<FieldCachedEventArgs> FieldCached;
 
 		public override MetaField CloneValue()
 		{
@@ -232,8 +234,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				result._template.Add(field);
 			foreach (ReflexivePage page in _pages)
 				result._pages.Add(page.CloneValue());
-			if (Cloned != null)
-				Cloned(this, new ReflexiveClonedEventArgs(this, result));
 			return result;
 		}
 
@@ -270,6 +270,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			NotifyPropertyChanged("Length");
 			NotifyPropertyChanged("LastChunkIndex");
 			NotifyPropertyChanged("HasChildren");
+		}
+
+		protected void OnFieldCached(MetaField field, MetaField clone)
+		{
+			if (FieldCached != null)
+				FieldCached(this, new FieldCachedEventArgs(field, clone));
 		}
 	}
 }

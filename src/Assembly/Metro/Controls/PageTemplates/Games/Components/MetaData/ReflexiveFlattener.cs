@@ -430,7 +430,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_flattenInfo[field] = flattened;
 		}
 
-		private void ReflexiveCloned(object sender, ReflexiveClonedEventArgs e)
+		private void ReflexiveCloned(object sender, FieldCachedEventArgs e)
 		{
 			FlattenedReflexive flattened = _flattenInfo[e.Old];
 			AttachTo(e.Clone, flattened);
@@ -448,8 +448,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				else
 					flattenedField.Contract();
 			}
-			else if (!_loading &&
-			         (e.PropertyName == "CurrentIndex" || e.PropertyName == "FirstEntryAddress" || e.PropertyName == "EntrySize"))
+			else if (!_loading && (e.PropertyName == "CurrentIndex" || e.PropertyName == "FirstEntryAddress" || e.PropertyName == "EntrySize"))
 			{
 				_loading = true;
 				_tracker.Enabled = false;
@@ -473,7 +472,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				flattenedField.LoadPage(reflexive, reflexive.CurrentIndex);
 
 				// Read any non-cached fields in the page
-				_reader.ReadReflexiveChildren(reflexive);
+				if (_reader != null)
+					_reader.ReadReflexiveChildren(reflexive);
 				RecursiveLoad(flattenedField.LoadedFields);
 
 				_tracker.Enabled = true;

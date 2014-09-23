@@ -18,6 +18,7 @@ using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.Util;
+using Assembly.Metro.Dialogs.ControlDialogs;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -536,6 +537,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return MetroMessageBoxList.Show("New StringIDs",
 					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
 			return true;
+		}
+
+		private void EditTagBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void EditTagBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			var dialog = new TagBlockEditor((ReflexiveData)((FrameworkElement)e.OriginalSource).DataContext, null);
+			dialog.ShowDialog();
 		}
 
 		#region Searching

@@ -296,15 +296,8 @@
 										                 Storyboard.TargetName="FocusRectangle" />
 									</Storyboard>
 								</VisualState>
-								<VisualState x:Name="Disabled">
-									<Storyboard>
-										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
-										                               Storyboard.TargetName="DisabledVisualElement">
-											<SplineDoubleKeyFrame KeyTime="0" Value="1" />
-										</DoubleAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="ReadOnly">
+                                <VisualState x:Name="Disabled" />
+                                <VisualState x:Name="ReadOnly">
 									<Storyboard>
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
 										                               Storyboard.TargetName="ReadOnlyVisualElement">
@@ -349,16 +342,14 @@
 						<Rectangle x:Name="FocusInnerRectangle" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="0"
 						           Margin="1" Stroke="{x:Null}" />
 						<Rectangle x:Name="InvalidContentValidation" StrokeThickness="1" Opacity="0" Margin="1" Stroke="Red" />
-						<Grid Margin="0,1,0,0">
-							<Border x:Name="ReadOnlyVisualElement" Background="{x:Null}" Opacity="0" />
-							<Grid>
-								<ScrollViewer x:Name="PART_ContentHost" BorderThickness="0" IsTabStop="False" Margin="4,2,2,2"
+                        <Grid Margin="0,1,0,0">
+                            <Border x:Name="ReadOnlyVisualElement" Background="{x:Null}" Opacity="0" />
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" BorderThickness="0" IsTabStop="False" Margin="4,2,2,2"
 								              VerticalAlignment="Stretch" Background="{x:Null}" />
-							</Grid>
-						</Grid>
-						<Rectangle x:Name="DisabledVisualElement" Stroke="#FF999999" StrokeThickness="{TemplateBinding BorderThickness}"
-						           Fill="#FF999999" IsHitTestVisible="False" Opacity="0" />
-						<Border x:Name="ValidationErrorElement" BorderBrush="{x:Null}" BorderThickness="1" Visibility="Collapsed">
+                            </Grid>
+                        </Grid>
+                        <Border x:Name="ValidationErrorElement" BorderBrush="{x:Null}" BorderThickness="1" Visibility="Collapsed">
 							<ToolTipService.ToolTip>
 								<ToolTip x:Name="validationTooltip" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
 								         Placement="Right" PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
@@ -390,7 +381,10 @@
 					</Grid>
 
 					<ControlTemplate.Triggers>
-						<MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" TargetName="PART_ContentHost" Value="0.5" />
+                        </Trigger>
+                        <MultiTrigger>
 							<MultiTrigger.Conditions>
 								<Condition Property="IsEnabled" Value="false" />
 							</MultiTrigger.Conditions>

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -7,6 +8,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	/// </summary>
 	public partial class MetaChunk : UserControl
 	{
+		public static RoutedCommand EditTagBlockCommand = new RoutedCommand();
+
 		public MetaChunk()
 		{
 			InitializeComponent();

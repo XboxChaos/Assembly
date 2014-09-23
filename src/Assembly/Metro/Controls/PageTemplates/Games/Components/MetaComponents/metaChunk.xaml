@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
+             xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              mc:Ignorable="d"
              HorizontalAlignment="Stretch"
              x:Name="metaChunk"
@@ -105,16 +106,22 @@
 		<Grid>
 			<Grid>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20" />
 					<ColumnDefinition Width="20" />
 				</Grid.ColumnDefinitions>
 				<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
 					IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
-				<ToggleButton x:Name="infoToggle" Grid.Column="2" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
+                <Button Grid.Column="2" Content="+" Margin="4,0,0,0" VerticalAlignment="Top" Command="{x:Static local:MetaChunk.EditTagBlockCommand}">
+                    <Button.ToolTip>
+                        <TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
+                    </Button.ToolTip>
+                </Button>
+                <ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
 					<!--Tooltips inheriting text styles is dumb -->
 					<ToggleButton.ToolTip>
-						<TextBlock Text="Show/Hide Information" FontStyle="Normal" />
+						<TextBlock Text="Show/hide information" FontStyle="Normal" />
 					</ToggleButton.ToolTip>
 				</ToggleButton>
 				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
