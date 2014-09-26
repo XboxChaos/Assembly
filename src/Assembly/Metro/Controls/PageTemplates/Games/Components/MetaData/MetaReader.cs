@@ -295,7 +295,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitReflexive(ReflexiveData field)
 		{
-			SeekToOffset(field.Offset);
+			/*SeekToOffset(field.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var length = (int) values.GetInteger("entry count");
 			uint pointer = values.GetInteger("pointer");
@@ -309,7 +309,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			field.Length = length;
 			if (pointer != field.FirstEntryAddress)
-				field.FirstEntryAddress = pointer;
+				field.FirstEntryAddress = pointer;*/
 		}
 
 		public void VisitShaderRef(ShaderRef field)
@@ -317,10 +317,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 			if (_cache.ShaderStreamer != null)
 				field.Shader = _cache.ShaderStreamer.ReadShader(_reader, field.Type);
-		}
-
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
-		{
 		}
 
 		private void ReadField(MetaField field)
@@ -366,7 +362,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void ReadReflexiveChildren(ReflexiveData reflexive)
 		{
-			if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
+			/*if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
 				return;
 
 			bool opened = OpenReader();
@@ -394,7 +390,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				if (opened)
 					CloseReader();
-			}
+			}*/
 		}
 
 		/// <summary>

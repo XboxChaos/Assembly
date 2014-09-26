@@ -62,41 +62,7 @@
 		<MetaComps:MetaChunk HorizontalAlignment="Left" Opacity="{Binding Opacity}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type types:ShaderRef}">
-		<MetaComps:Shader Opacity="{Binding Opacity}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type types:WrappedReflexiveEntry}">
-		<!-- Moving this into a UserControl causes severe lag for some reason :S -->
-		<Grid>
-			<Border Width="{Binding Width}" HorizontalAlignment="Left" VerticalAlignment="Stretch" BorderBrush="#474747"
-			        Opacity="{Binding Opacity}">
-				<Border.Style>
-					<Style TargetType="Border">
-						<Setter Property="Margin" Value="0" />
-						<Setter Property="BorderThickness" Value="1,0,1,0" />
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding IsLast}" Value="True">
-								<Setter Property="Margin" Value="0,0,0,4" />
-								<Setter Property="BorderThickness" Value="1,0,1,1" />
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</Border.Style>
-			</Border>
-			<ContentControl Content="{Binding WrappedField}"
-			                HorizontalAlignment="Left">
-				<ContentControl.Style>
-					<Style TargetType="ContentControl">
-						<Setter Property="Margin" Value="20,0,0,0" />
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding IsLast}" Value="True">
-								<Setter Property="Margin" Value="20,0,0,12" />
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</ContentControl.Style>
-			</ContentControl>
-		</Grid>
-	</DataTemplate>
+    <DataTemplate DataType="{x:Type types:ShaderRef}">
+        <MetaComps:Shader Opacity="{Binding Opacity}" />
+    </DataTemplate>
 </ResourceDictionary>

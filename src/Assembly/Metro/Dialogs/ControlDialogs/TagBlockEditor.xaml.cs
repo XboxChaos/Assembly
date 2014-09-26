@@ -37,16 +37,16 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void LoadPreviewFields()
 		{
 			// Duplicate the tag block's template to use for preview fields
-			foreach (var field in _tagBlock.Template)
-				_previewFields.Add(field.CloneValue());
+			/*foreach (var field in _tagBlock.Template)
+				_previewFields.Add(field.CloneValue());*/
 
 			panelMetaComponents.ItemsSource = _previewFields;
 		}
 
 		private void LoadEntryList()
 		{
-			foreach (var entry in _tagBlock.Pages)
-				entryList.Items.Add(new ListBoxItem() { Content = string.Format("{0} - {1} ({2})", entry.Index, _tagBlock.LastChunkIndex, _tagBlock.Length) });
+			/*foreach (var entry in _tagBlock.Pages)
+				entryList.Items.Add(new ListBoxItem() { Content = string.Format("{0} - {1} ({2})", entry.Index, _tagBlock.LastChunkIndex, _tagBlock.Length) });*/
 		}
 	}
 }

@@ -197,16 +197,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitReflexive(ReflexiveData field)
 		{
-			var values = new StructureValueCollection();
+			/*var values = new StructureValueCollection();
 			values.SetInteger("entry count", (uint) field.Length);
 			values.SetInteger("pointer", field.FirstEntryAddress);
 
 			SeekToOffset(field.Offset);
-			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
-		}
-
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
-		{
+			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);*/
 		}
 
 		public void VisitString(StringData field)
@@ -344,7 +340,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void WriteReflexiveChildren(ReflexiveData field)
 		{
-			if (field.CurrentIndex < 0 || !field.HasChildren)
+			/*if (field.CurrentIndex < 0 || !field.HasChildren)
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
@@ -390,7 +386,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				field.CurrentIndex = _oldIndex;
 
 			// Restore the old base offset
-			_baseOffset = oldBaseOffset;
+			_baseOffset = oldBaseOffset;*/
 		}
 
 		private void SeekToOffset(uint offset)

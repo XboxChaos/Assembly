@@ -337,9 +337,10 @@ namespace Assembly.Helpers.Plugins
 
 		private void AddValue(MetaField value)
 		{
-			if (_reflexives.Count > 0)
+			/*if (_reflexives.Count > 0)
 				_reflexives[_reflexives.Count - 1].Template.Add(value);
-			else
+			else*/
+			if (_reflexives.Count == 0)
 				Values.Add(value);
 			/*MetaField wrappedValue = value;
             for (int i = _reflexives.Count - 1; i >= 0; i--)

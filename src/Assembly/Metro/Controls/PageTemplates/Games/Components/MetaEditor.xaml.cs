@@ -65,7 +65,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private FieldChangeTracker _changeTracker;
 		private FieldChangeSet _fileChanges;
-		private ReflexiveFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
@@ -156,8 +155,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_memoryChanges = new FieldChangeSet();
 
 			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
-			_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
-			_flattener.Flatten(_pluginVisitor.Values);
+			/*_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+			_flattener.Flatten(_pluginVisitor.Values);*/
 			metaReader.ReadFields(_pluginVisitor.Values);
 			panelMetaComponents.ItemsSource = _pluginVisitor.Values;
 
@@ -461,14 +460,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private static MetaField GetWrappedField(MetaField field)
 		{
-			WrappedReflexiveEntry wrapper = null;
+			/*WrappedReflexiveEntry wrapper = null;
 			while (true)
 			{
 				wrapper = field as WrappedReflexiveEntry;
 				if (wrapper == null)
 					return field;
 				field = wrapper.WrappedField;
-			}
+			}*/
+			return field;
 		}
 
 		private static MetaField GetWrappedField(object elem)
@@ -495,12 +495,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			MetaField field = GetWrappedField(elem);
 			var valueField = field as ValueField;
-			if (valueField == null)
+			/*if (valueField == null)
 			{
 				var wrapper = field as WrappedReflexiveEntry;
 				if (wrapper != null)
 					valueField = GetWrappedField(wrapper) as ValueField;
-			}
+			}*/
 			return valueField;
 		}
 
@@ -584,7 +584,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			_searchResults = new ObservableCollection<SearchResult>();
 			_resultIndices.Clear();
-			var filterer = new MetaFilterer(_flattener, MetaFilterer_CollectResult, MetaFilterer_HighlightField);
+			var filterer = new MetaFilterer(MetaFilterer_CollectResult, MetaFilterer_HighlightField);
 			filterer.FilterFields(_pluginVisitor.Values, text);
 		}
 
@@ -668,7 +668,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (reflexive != null)
 			{
 				// Show wrappers
-				_flattener.EnumWrappers(reflexive, ShowField);
+				/*_flattener.EnumWrappers(reflexive, ShowField);
 
 				// Show template fields
 				foreach (MetaField child in reflexive.Template)
@@ -682,7 +682,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						if (child != null)
 							ShowField(child);
 					}
-				}
+				}*/
 			}
 		}
 
@@ -751,9 +751,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		// Thread-safe
 		private void SelectResult(SearchResult result)
 		{
-			ReflexiveData reflexive = result.Reflexive;
+			/*ReflexiveData reflexive = result.Reflexive;
 			if (reflexive != null)
-				_flattener.ForceVisible(reflexive);
+				_flattener.ForceVisible(reflexive);*/
 			SelectField(result.ListField);
 		}
 

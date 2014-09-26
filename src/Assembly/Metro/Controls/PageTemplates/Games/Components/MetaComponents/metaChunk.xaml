@@ -13,6 +13,7 @@
 
 	<UserControl.Style>
 		<Style TargetType="UserControl">
+            <!--
 			<Setter Property="Width" Value="{Binding Width}" />
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding IsExpanded}" Value="False">
@@ -21,7 +22,7 @@
 				<DataTrigger Binding="{Binding HasChildren}" Value="False">
 					<Setter Property="Width" Value="{Binding ElementName=metaChunk, Path=MinWidth}" />
 				</DataTrigger>
-			</Style.Triggers>
+			</Style.Triggers>-->
 		</Style>
 	</UserControl.Style>
 
@@ -37,7 +38,8 @@
 						<ControlTemplate TargetType="{x:Type Expander}">
 							<Border Background="#FF474747"  SnapsToDevicePixels="True">
 								<DockPanel>
-									<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="2,0,0,0" VerticalContentAlignment="Center" Height="20">
+									<!--<ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" MinWidth="0" MinHeight="0" Padding="2,0,0,0" VerticalContentAlignment="Center" Height="20">-->
+                                    <ToggleButton x:Name="HeaderSite" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" DockPanel.Dock="Top" FontSize="12" FontFamily="{DynamicResource MetroFontRegular}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1" MinWidth="0" MinHeight="0" Padding="2,0,0,0" VerticalContentAlignment="Center" Height="20">
 										<ToggleButton.Style>
 											<Style TargetType="{x:Type ToggleButton}">
 												<Setter Property="Template">
@@ -89,9 +91,9 @@
 	<Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
 		<Border.Style>
 			<Style TargetType="Border">
-				<Setter Property="BorderThickness" Value="1,1,1,0" />
+				<Setter Property="BorderThickness" Value="1,1,1,1" />
 				<Setter Property="Margin" Value="0,4,0,0" />
-				<Style.Triggers>
+				<!--<Style.Triggers>
 					<DataTrigger Binding="{Binding IsExpanded}" Value="False">
 						<Setter Property="BorderThickness" Value="1" />
 						<Setter Property="Margin" Value="0,4,0,4" />
@@ -100,7 +102,7 @@
 						<Setter Property="BorderThickness" Value="1" />
 						<Setter Property="Margin" Value="0,4,0,4" />
 					</DataTrigger>
-				</Style.Triggers>
+				</Style.Triggers>-->
 			</Style>
 		</Border.Style>
 		<Grid>
@@ -111,8 +113,10 @@
                     <ColumnDefinition Width="20" />
 					<ColumnDefinition Width="20" />
 				</Grid.ColumnDefinitions>
-				<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-					IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
+				<!--<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />-->
+                <Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                          Style="{DynamicResource customBlockExpander}" />
                 <Button Grid.Column="2" Content="+" Margin="4,0,0,0" VerticalAlignment="Top" Command="{x:Static local:MetaChunk.EditTagBlockCommand}">
                     <Button.ToolTip>
                         <TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
@@ -124,7 +128,7 @@
 						<TextBlock Text="Show/hide information" FontStyle="Normal" />
 					</ToggleButton.ToolTip>
 				</ToggleButton>
-				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
+				<!--<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
 				          VerticalAlignment="Top" ItemsSource="{Binding Pages}"
 				          SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 				          IsEnabled="{Binding HasChildren}">
@@ -140,9 +144,9 @@
 							<VirtualizingStackPanel IsVirtualizing="True" />
 						</ItemsPanelTemplate>
 					</ComboBox.ItemsPanel>
-				</ComboBox>
+				</ComboBox>-->
 			</Grid>
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0" Visibility="{Binding IsChecked, ElementName=infoToggle, Converter={StaticResource b2v}}">
+			<!--<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0" Visibility="{Binding IsChecked, ElementName=infoToggle, Converter={StaticResource b2v}}">
 				<Grid Height="28">
 					<Border Background="#333337">
 						<Grid>
@@ -177,7 +181,7 @@
 						</Grid>
 					</Border>
 				</Grid>
-			</StackPanel>
+			</StackPanel>-->
 		</Grid>
 	</Border>
 </UserControl>

@@ -8,7 +8,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public delegate void ResultCollector(MetaField foundField, MetaField listField, ReflexiveData parent);
 
-		private readonly ReflexiveFlattener _flattener;
 		private readonly FieldHighlighter _highlighter;
 		private readonly ResultCollector _resultCollector;
 
@@ -18,9 +17,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private float? _numberFilter;
 		private MetaField _topLevelField;
 
-		public MetaFilterer(ReflexiveFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
+		public MetaFilterer(ResultCollector resultCollector, FieldHighlighter highlighter)
 		{
-			_flattener = flattener;
 			_resultCollector = resultCollector;
 			_highlighter = highlighter;
 		}
@@ -97,7 +95,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitReflexive(ReflexiveData field)
 		{
-			// Don't enter empty reflexives
+			/*// Don't enter empty reflexives
 			ReflexiveData oldReflexive = _currentReflexive;
 			_currentReflexive = field;
 
@@ -113,13 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
 			}
 
-			_currentReflexive = oldReflexive;
-		}
-
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
-		{
-			// Ignore - wrapper handling is done inside VisitReflexive/HandleWrapper to ensure that
-			// closed reflexives aren't skipped over
+			_currentReflexive = oldReflexive;*/
 		}
 
 		public void VisitString(StringData field)
@@ -204,12 +196,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		// Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
-		private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
+		/*private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
 		{
 			_topLevelField = _flattener.GetTopLevelWrapper(_currentReflexive, wrapper);
 			_highlighter(wrapper, _highlightLevel > 0);
 			wrapper.WrappedField.Accept(this);
-		}
+		}*/
 
 		private bool FilterString(MetaField field, string fieldName)
 		{

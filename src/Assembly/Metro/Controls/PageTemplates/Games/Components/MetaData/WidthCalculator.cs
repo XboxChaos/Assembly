@@ -88,20 +88,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitReflexive(ReflexiveData field)
 		{
-			AddWidth(field.Width);
-		}
-
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
-		{
-			// Save our state and recurse into it
-			double oldTotal = _totalWidth;
-			_totalWidth = 0;
-			Add(field.WrappedField);
-
-			double entryWidth = _totalWidth;
-			_totalWidth = oldTotal;
-
-			AddWidth(entryWidth + ReflexiveSubEntryExtraWidth);
+			//AddWidth(field.Width);
 		}
 
 		public void VisitString(StringData field)
