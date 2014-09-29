@@ -249,6 +249,15 @@ namespace Blamite.Plugins
 			WriteBasicValue("uint32", name, offset, visible);
 		}
 
+		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
+		{
+			for (var i = 0; i < languages; i++)
+			{
+				WriteBasicValue("uint16", "Language " + i + " " + name + " Index", (uint)(offset + i * 4), visible);
+				WriteBasicValue("uint16", "Language " + i + " " + name + " Count", (uint)(offset + i * 4 + 2), visible);
+			}
+		}
+
 		private void WriteValueStart(string element, string name, uint offset, bool visible)
 		{
 			_output.WriteStartElement(element);

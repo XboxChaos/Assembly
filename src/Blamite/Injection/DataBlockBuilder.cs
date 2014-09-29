@@ -268,6 +268,11 @@ namespace Blamite.Injection
 			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
 		}
 
+		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
+		{
+			// TODO: Implement
+		}
+
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
 		{
 			List<DataBlock> blocks = _blockStack.Peek();

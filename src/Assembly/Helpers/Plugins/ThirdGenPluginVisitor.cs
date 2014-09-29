@@ -145,6 +145,17 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new ShaderRef(name, offset, 0, type, null, pluginLine));
 		}
 
+		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
+		{
+			if (!visible && !_showInvisibles)
+				return;
+			for (var i = 0; i < languages; i++)
+			{
+				AddValue(new Uint16Data("Language " + i + " " + name + " Index", (uint)(offset + i * 4), 0, "uint16", 0, pluginLine));
+				AddValue(new Uint16Data("Language " + i + " " + name + " Count", (uint)(offset + i * 4 + 2), 0, "uint16", 0, pluginLine));
+			}
+		}
+
 		#region Bitfield
 
 		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
