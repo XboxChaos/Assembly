@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blamite.Blam;
 using Blamite.Blam.Shaders;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
+using Blamite.Blam.LanguagePack;
 
 namespace Blamite.Injection
 {
@@ -18,21 +20,22 @@ namespace Blamite.Injection
 		private readonly StructureLayout _dataRefLayout;
 		private readonly IReader _reader;
 		private readonly StructureLayout _tagBlockLayout;
-		private readonly SegmentPointer _tagLocation;
+		private readonly ITag _tag;
 		private readonly StructureLayout _tagRefLayout;
+		private Dictionary<int, ILanguagePack> _languagePacks = new Dictionary<int, ILanguagePack>();
 		private List<DataBlock> _reflexiveBlocks;
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="DataBlockBuilder" /> class.
 		/// </summary>
 		/// <param name="reader">The stream to read from.</param>
-		/// <param name="tagLocation">The location of the tag to load data blocks for.</param>
+		/// <param name="tag">The tag to load data blocks for.</param>
 		/// <param name="cacheFile">The cache file.</param>
 		/// <param name="buildInfo">The build info for the cache file.</param>
-		public DataBlockBuilder(IReader reader, SegmentPointer tagLocation, ICacheFile cacheFile, EngineDescription buildInfo)
+		public DataBlockBuilder(IReader reader, ITag tag, ICacheFile cacheFile, EngineDescription buildInfo)
 		{
 			_reader = reader;
-			_tagLocation = tagLocation;
+			_tag = tag;
 			_cacheFile = cacheFile;
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
@@ -61,11 +64,11 @@ namespace Blamite.Injection
 		public bool EnterPlugin(int baseSize)
 		{
 			// Read the tag data in based off the base size
-			_reader.SeekTo(_tagLocation.AsOffset());
+			_reader.SeekTo(_tag.MetaLocation.AsOffset());
 			byte[] data = _reader.ReadBlock(baseSize);
 
 			// Create a block for it and push it onto the block stack
-			var block = new DataBlock(_tagLocation.AsPointer(), 1, 4, data);
+			var block = new DataBlock(_tag.MetaLocation.AsPointer(), 1, 4, data);
 			DataBlocks.Add(block);
 
 			var blockList = new List<DataBlock>();
@@ -268,9 +271,28 @@ namespace Blamite.Injection
 			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
 		}
 
+		private UnicListFixupString CreateFixupString(LocalizedString str)
+		{
+			if (_cacheFile.StringIDs != null)
+			{
+				var stringId = _cacheFile.StringIDs.GetString(str.Key);
+				if (stringId != null)
+					return new UnicListFixupString(stringId, str.Value);
+			}
+			return new UnicListFixupString("", str.Value);
+		}
+
 		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
 		{
-			// TODO: Implement
+			for (var i = 0; i < languages; i++)
+			{
+				var strings = LoadStringList(i, _tag);
+				if (strings == null)
+					continue;
+				var fixupStrings = strings.Strings.Select(s => CreateFixupString(s)).ToArray();
+				var fixup = new DataBlockUnicListFixup((int)(offset + i * 4), fixupStrings);
+				_blockStack.Peek()[0].UnicListFixups.Add(fixup); // These will never be in tag blocks and I don't want to deal with it
+			}
 		}
 
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
@@ -401,6 +423,21 @@ namespace Blamite.Injection
 			var data = _cacheFile.ShaderStreamer.ExportShader(_reader, type);
 			var fixup = new DataBlockShaderFixup((int)offset, data);
 			block.ShaderFixups.Add(fixup);
+		}
+
+		private LocalizedStringList LoadStringList(int languageIndex, ITag stringList)
+		{
+			ILanguagePack result;
+			if (!_languagePacks.TryGetValue(languageIndex, out result))
+			{
+				if (_cacheFile.Languages == null)
+					return null;
+				result = _cacheFile.Languages.LoadLanguage((GameLanguage)languageIndex, _reader);
+				if (result == null)
+					return null;
+				_languagePacks[languageIndex] = result;
+			}
+			return result.StringLists.FirstOrDefault(l => l.SourceTag == stringList);
 		}
 
 		private void SeekToOffset(DataBlock block, uint offset)

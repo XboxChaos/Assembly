@@ -710,7 +710,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
 					// Extract dem data blocks
-					var blockBuilder = new DataBlockBuilder(reader, currentTag.MetaLocation, _cacheFile, _buildInfo);
+					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
 					using (XmlReader pluginReader = XmlReader.Create(pluginPath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
@@ -857,7 +857,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
 				// Extract data blocks
-				var builder = new DataBlockBuilder(stream, tag.RawTag.MetaLocation, _cacheFile, _buildInfo);
+				var builder = new DataBlockBuilder(stream, tag.RawTag, _cacheFile, _buildInfo);
 				using (XmlReader pluginReader = XmlReader.Create(pluginPath))
 					AssemblyPluginLoader.LoadPlugin(pluginReader, builder);
 				foreach (var block in builder.DataBlocks)
