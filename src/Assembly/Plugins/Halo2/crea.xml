@@ -5,11 +5,27 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="XZodia" version="2">Added cool stuff</revision>
 		<revision author="XZodia" version="3">Complete</revision>
+		<revision author="Lord Zedd" version="4">Fully completed</revision>
 	</revisions>
+	<enum16 name="Object Type" offset="0x0" visible="true">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Garbage" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Light Fixture" value="0x9" />
+		<option name="Sound Scenery" value="0xA" />
+		<option name="Crate" value="0xB" />
+		<option name="Creature" value="0xC" />
+	</enum16>
 	<bitfield32 name="Flags" offset="0x0" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps" index="1" />
-		<bit name="unused" index="2" />
+		<bit name="Bit 2" index="2" />
 		<bit name="Not A Pathfinding Obstacle" index="3" />
 		<bit name="Extension Of Parent" index="4" />
 		<bit name="Does Not Cause Collision Damage" index="5" />
@@ -20,23 +36,25 @@
 		<bit name="Inherits Player's Appearance" index="10" />
 		<bit name="Dead Bipeds Can't Localize" index="11" />
 		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
-		<bit name="Effects Created By This Object Do Not" index="13" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
 	</bitfield32>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" />
 	<float32 name="Bounding Offset X" offset="0x8" visible="true" />
 	<float32 name="Bounding Offset Y" offset="0xC" visible="true" />
 	<float32 name="Bounding Offset Z" offset="0x10" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
-	<enum32 name="Lightmap Shadow Mode" offset="0x18" visible="true">
+	<enum16 name="Lightmap Shadow Mode" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
 		<option name="Always" value="0x2" />
-	</enum32>
-	<enum32 name="Sweetener Size" offset="0x1C" visible="true">
+	</enum16>
+	<enum8 name="Sweetener Size" offset="0x1A" visible="true">
 		<option name="Small" value="0x0" />
 		<option name="Medium" value="0x1" />
 		<option name="Large" value="0x2" />
-	</enum32>
+	</enum8>
+	<int8 name="Unknown" offset="0x1B" visible="false" />
+	<int32 name="Unknown" offset="0x1C" visible="false" />
 	<float32 name="Dynamic Light Sphere Radius" offset="0x20" visible="true" />
 	<float32 name="Dynamic Light Sphere Offset X" offset="0x24" visible="true" />
 	<float32 name="Dynamic Light Sphere Offset Y" offset="0x28" visible="true" />
@@ -47,14 +65,15 @@
 	<tagRef name="Modifier Shader" offset="0x44" visible="true" />
 	<tagRef name="Creation Effect" offset="0x4C" visible="true" />
 	<tagRef name="Material Effects" offset="0x54" visible="true" />
-	<reflexive name="Ai Properties" offset="0x5C" visible="true" entrySize="0x10">
+	<reflexive name="AI Properties" offset="0x5C" visible="true" entrySize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
 		</bitfield32>
-		<stringId name="Type Name" offset="0x4" visible="true" />
-		<enum32 name="Size" offset="0x8" visible="true">
+		<stringId name="AI Type Name" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<enum16 name="Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -62,8 +81,8 @@
 			<option name="Large" value="0x4" />
 			<option name="Huge" value="0x5" />
 			<option name="Immobile" value="0x6" />
-		</enum32>
-		<enum32 name="Leap Jump Speed" offset="0xC" visible="true">
+		</enum16>
+		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Down" value="0x1" />
 			<option name="Step" value="0x2" />
@@ -72,7 +91,7 @@
 			<option name="Storey" value="0x5" />
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
-		</enum32>
+		</enum16>
 	</reflexive>
 	<reflexive name="Functions" offset="0x64" visible="true" entrySize="0x20">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
@@ -84,42 +103,65 @@
 		<stringId name="Import Name" offset="0x4" visible="true" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
-		<float32 name="Min Value" offset="0x10" visible="true" />
-		<reflexive name="Function Type (Graph)" offset="0x14" visible="true" entrySize="0x1">
-			<uint8 name="Data" offset="0x0" visible="true" />
-		</reflexive>
+		<float32 name="Minimum Value" offset="0x10" visible="true" />
+		<dataref name="Default Function" offset="0x14" visible="true" />
 		<stringId name="Scale By" offset="0x1C" visible="true" />
 	</reflexive>
 	<float32 name="Apply Collision Damage Scale" offset="0x6C" visible="true" />
-	<float32 name="Min Game Acc (Default)" offset="0x70" visible="true" />
-	<float32 name="Max Game Acc (Default)" offset="0x74" visible="true" />
-	<float32 name="Min Gam Scale (Default)" offset="0x78" visible="true" />
-	<float32 name="Max Gam Scale (Default)" offset="0x7C" visible="true" />
-	<float32 name="Min abs Acc (Default)" offset="0x80" visible="true" />
-	<float32 name="Max abs Acc (Default)" offset="0x84" visible="true" />
-	<float32 name="Min abs Scale (Default)" offset="0x88" visible="true" />
-	<float32 name="Max abs Scale (Default)" offset="0x8C" visible="true" />
-	<int16 name="Hud Text Message Index" offset="0x90" visible="true" />
+	<float32 name="Min Game Acceleration" offset="0x70" visible="true" />
+	<float32 name="Max Game Acceleration" offset="0x74" visible="true" />
+	<float32 name="Min Game Scale" offset="0x78" visible="true" />
+	<float32 name="Max Game Scale" offset="0x7C" visible="true" />
+	<float32 name="Min Absolute Acceleration" offset="0x80" visible="true" />
+	<float32 name="Max Absolute Acceleration" offset="0x84" visible="true" />
+	<float32 name="Min Absolute Scale" offset="0x88" visible="true" />
+	<float32 name="Max Absolute Scale" offset="0x8C" visible="true" />
+	<int16 name="HUD Text Message Index" offset="0x90" visible="true" />
+	<int16 name="Unknown" offset="0x92" visible="false" />
 	<reflexive name="Attachments" offset="0x94" visible="true" entrySize="0x18">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringId name="Marker" offset="0x8" visible="true" />
-		<stringId name="Change Color" offset="0xC" visible="true" />
+		<enum16 name="Change Color" offset="0xC" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0xE" visible="false" />
 		<stringId name="Primary Scale" offset="0x10" visible="true" />
 		<stringId name="Secondary Scale" offset="0x14" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0x9C" visible="true" entrySize="0x8">
 		<tagRef name="Type" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Old Functions" offset="0xA4" visible="true" entrySize="0x8" />
+	<reflexive name="Old Functions" offset="0xA4" visible="false" entrySize="0x50">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<undefined name="Unknown" offset="0x18" visible="false" />
+		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+	</reflexive>
 	<reflexive name="Change Colors" offset="0xAC" visible="true" entrySize="0x10">
 		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
-			<float32 name="Color Lower Bound R" offset="0x4" visible="true" />
-			<float32 name="Color Lower Bound G" offset="0x8" visible="true" />
-			<float32 name="Color Lower Bound B" offset="0xC" visible="true" />
-			<float32 name="Color Upper Bound R" offset="0x10" visible="true" />
-			<float32 name="Color Upper Bound G" offset="0x14" visible="true" />
-			<float32 name="Color Upper Bound B" offset="0x18" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
 		<reflexive name="Functions" offset="0x8" visible="true" entrySize="0x20">
@@ -127,22 +169,30 @@
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
 			</bitfield32>
-			<float32 name="Color Lower Bound R" offset="0x4" visible="true" />
-			<float32 name="Color Lower Bound G" offset="0x8" visible="true" />
-			<float32 name="Color Lower Bound B" offset="0xC" visible="true" />
-			<float32 name="Color Upper Bound R" offset="0x10" visible="true" />
-			<float32 name="Color Upper Bound G" offset="0x14" visible="true" />
-			<float32 name="Color Upper Bound B" offset="0x18" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
 			<stringId name="Darken By" offset="0x1C" visible="true" />
 			<stringId name="Scale By" offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resource" offset="0xB4" visible="true" entrySize="0x8">
-		<int16 name="Type" offset="0x0" visible="true" />
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Bitmap" value="0x0" />
+			<option name="Sound" value="0x1" />
+			<option name="Render Model Geometry" value="0x2" />
+			<option name="Cluster Geometry" value="0x3" />
+			<option name="Cluster Instanced Geometry" value="0x4" />
+			<option name="Lightmap Geometry Object Buckets" value="0x5" />
+			<option name="Lightmap Geometry Instance Buckets" value="0x6" />
+			<option name="Lightmap Cluster Bitmaps" value="0x7" />
+			<option name="Lightmap Instance Bitmaps" value="0x8" />
+		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
 	</reflexive>
+	<comment title="CREATURE" />
 	<bitfield32 name="Flags" offset="0xBC" visible="true">
-		<bit name="unused" index="0" />
+		<bit name="Bit 0" index="0" />
 		<bit name="Infection Form" index="1" />
 		<bit name="Immune To Falling Damage" index="2" />
 		<bit name="Rotate While Airborne" index="3" />
@@ -151,7 +201,7 @@
 		<bit name="Not On Motion Sensor" index="6" />
 	</bitfield32>
 	<enum16 name="Default Team" offset="0xC0" visible="true">
-		<option name="Deafult" value="0x0" />
+		<option name="Default" value="0x0" />
 		<option name="Player" value="0x1" />
 		<option name="Human" value="0x2" />
 		<option name="Covenant" value="0x3" />
@@ -159,16 +209,25 @@
 		<option name="Sentinel" value="0x5" />
 		<option name="Heretic" value="0x6" />
 		<option name="Prophet" value="0x7" />
+		<option name="Unused8" value="0x8" />
+		<option name="Unused9" value="0x9" />
+		<option name="Unused10" value="0xA" />
+		<option name="Unused11" value="0xB" />
+		<option name="Unused12" value="0xC" />
+		<option name="Unused13" value="0xD" />
+		<option name="Unused14" value="0xE" />
+		<option name="Unused15" value="0xF" />
 	</enum16>
 	<enum16 name="Motion Sensor Blip Size" offset="0xC2" visible="true">
 		<option name="Medium" value="0x0" />
 		<option name="Small" value="0x1" />
 		<option name="Large" value="0x2" />
 	</enum16>
-	<float32 name="Turning Velocity Max" offset="0xC4" visible="true" />
-	<float32 name="Turning Acceleration Max" offset="0xC8" visible="true" />
+	<degree name="Turning Velocity Maximum" offset="0xC4" visible="true" />
+	<degree name="Turning Acceleration Maximum" offset="0xC8" visible="true" />
 	<float32 name="Casual Turing Modifer" offset="0xCC" visible="true" />
 	<float32 name="Autoaim Width" offset="0xD0" visible="true" />
+	<comment title="Physics" />
 	<bitfield32 name="Flags" offset="0xD4" visible="true">
 		<bit name="Centered At Origin" index="0" />
 		<bit name="Shape Sperical" index="1" />
@@ -184,109 +243,142 @@
 	<float32 name="Mass" offset="0xE4" visible="true" />
 	<stringId name="Living Material Name" offset="0xE8" visible="true" />
 	<stringId name="Dead Material Name" offset="0xEC" visible="true" />
+	<int16 name="Living Global Material Index" offset="0xF0" visible="true" />
+	<int16 name="Dead Global Material Index" offset="0xF2" visible="true" />
 	<reflexive name="Dead Sphere Shapes" offset="0xF4" visible="true" entrySize="0x80">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
+		<int16 name="Global Material Index" offset="0x4" visible="true" />
+		<bitfield16 name="Flags" offset="0x6" visible="true">
+			<bit name="Bit 0" index="0" />
+		</bitfield16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<float32 name="Rotation i i" offset="0x2A" visible="true" />
-		<float32 name="Rotation i j" offset="0x2E" visible="true" />
-		<float32 name="Rotation i k" offset="0x32" visible="true" />
-		<float32 name="Rotation j i" offset="0x36" visible="true" />
-		<float32 name="Rotation j j" offset="0x3A" visible="true" />
-		<float32 name="Rotation j k" offset="0x3E" visible="true" />
-		<float32 name="Rotation k i" offset="0x42" visible="true" />
-		<float32 name="Rotation k j" offset="0x46" visible="true" />
-		<float32 name="Rotation k k" offset="0x4A" visible="true" />
-		<float32 name="Translation i" offset="0x4E" visible="true" />
-		<float32 name="Translation j" offset="0x52" visible="true" />
-		<float32 name="Translation  k" offset="0x56" visible="true" />
+		<int16 name="Unknown" offset="0x1C" visible="false" />
+		<int16 name="Phantom" offset="0x1E" visible="true" />
+		<int32 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Radius" offset="0x2C" visible="true" />
+		<int32 name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Size" offset="0x34" visible="true" />
+		<int16 name="Count" offset="0x36" visible="true" />
+		<int32 name="Unknown" offset="0x38" visible="false" />
+		<int32 name="Offset" offset="0x3C" visible="true" />
+		<float32 name="Rotation i i" offset="0x40" visible="true" />
+		<float32 name="Rotation i j" offset="0x44" visible="true" />
+		<float32 name="Rotation i k" offset="0x48" visible="true" />
+		<float32 name="Rotation i Radius" offset="0x4C" visible="true" />
+		<float32 name="Rotation j i" offset="0x50" visible="true" />
+		<float32 name="Rotation j j" offset="0x54" visible="true" />
+		<float32 name="Rotation j k" offset="0x58" visible="true" />
+		<float32 name="Rotation j Radius" offset="0x5C" visible="true" />
+		<float32 name="Rotation k i" offset="0x60" visible="true" />
+		<float32 name="Rotation k j" offset="0x64" visible="true" />
+		<float32 name="Rotation k k" offset="0x68" visible="true" />
+		<float32 name="Rotation k Radius" offset="0x6C" visible="true" />
+		<float32 name="Translation i" offset="0x70" visible="true" />
+		<float32 name="Translation j" offset="0x74" visible="true" />
+		<float32 name="Translation k" offset="0x78" visible="true" />
+		<float32 name="Translation Radius" offset="0x7C" visible="true" />
 	</reflexive>
 	<reflexive name="Pill Shapes" offset="0xFC" visible="true" entrySize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
+		<int16 name="Global Material Index" offset="0x4" visible="true" />
+		<bitfield16 name="Flags" offset="0x6" visible="true">
+			<bit name="Bit 0" index="0" />
+		</bitfield16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<float32 name="Bottom i" offset="0x2A" visible="true" />
-		<float32 name="Bottom j" offset="0x2E" visible="true" />
-		<float32 name="Bottom k" offset="0x32" visible="true" />
-		<float32 name="Top i" offset="0x36" visible="true" />
-		<float32 name="Top j" offset="0x3A" visible="true" />
-		<float32 name="Top k" offset="0x3E" visible="true" />
+		<int16 name="Unknown" offset="0x1C" visible="false" />
+		<int16 name="Phantom" offset="0x1E" visible="true" />
+		<int32 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Radius" offset="0x2C" visible="true" />
+		<float32 name="Bottom i" offset="0x30" visible="true" />
+		<float32 name="Bottom j" offset="0x34" visible="true" />
+		<float32 name="Bottom k" offset="0x38" visible="true" />
+		<float32 name="Bottom Radius" offset="0x3C" visible="true" />
+		<float32 name="Top i" offset="0x40" visible="true" />
+		<float32 name="Top j" offset="0x44" visible="true" />
+		<float32 name="Top k" offset="0x48" visible="true" />
+		<float32 name="Top Radius" offset="0x4C" visible="true" />
 	</reflexive>
 	<reflexive name="Sphere Shapes" offset="0x104" visible="true" entrySize="0x80">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Material #" offset="0x4" visible="true" />
-		<enum16 name="Flags" offset="0x6" visible="true">
-			<option name="unused" value="0x0" />
-		</enum16>
+		<int16 name="Global Material Index" offset="0x4" visible="true" />
+		<bitfield16 name="Flags" offset="0x6" visible="true">
+			<bit name="Bit 0" index="0" />
+		</bitfield16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Phantom" offset="0x1C" visible="true" />
-		<int16 name="Size" offset="0x1E" visible="true" />
-		<int16 name="Count" offset="0x20" visible="true" />
-		<float32 name="Radius" offset="0x22" visible="true" />
-		<int16 name="Size" offset="0x26" visible="true" />
-		<int16 name="Count" offset="0x28" visible="true" />
-		<float32 name="Rotation i i" offset="0x2A" visible="true" />
-		<float32 name="Rotation i j" offset="0x2E" visible="true" />
-		<float32 name="Rotation i k" offset="0x32" visible="true" />
-		<float32 name="Rotation j i" offset="0x36" visible="true" />
-		<float32 name="Rotation j j" offset="0x3A" visible="true" />
-		<float32 name="Rotation j k" offset="0x3E" visible="true" />
-		<float32 name="Rotation k i" offset="0x42" visible="true" />
-		<float32 name="Rotation k j" offset="0x46" visible="true" />
-		<float32 name="Rotation k k" offset="0x4A" visible="true" />
-		<float32 name="Translation i" offset="0x4E" visible="true" />
-		<float32 name="Translation j" offset="0x52" visible="true" />
-		<float32 name="Translation  k" offset="0x56" visible="true" />
+		<int16 name="Unknown" offset="0x1C" visible="false" />
+		<int16 name="Phantom" offset="0x1E" visible="true" />
+		<int32 name="Unknown" offset="0x20" visible="true" />
+		<int16 name="Size" offset="0x24" visible="true" />
+		<int16 name="Count" offset="0x26" visible="true" />
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Radius" offset="0x2C" visible="true" />
+		<int32 name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Size" offset="0x34" visible="true" />
+		<int16 name="Count" offset="0x36" visible="true" />
+		<int32 name="Unknown" offset="0x38" visible="false" />
+		<int32 name="Offset" offset="0x3C" visible="true" />
+		<float32 name="Rotation i i" offset="0x40" visible="true" />
+		<float32 name="Rotation i j" offset="0x44" visible="true" />
+		<float32 name="Rotation i k" offset="0x48" visible="true" />
+		<float32 name="Rotation i Radius" offset="0x4C" visible="true" />
+		<float32 name="Rotation j i" offset="0x50" visible="true" />
+		<float32 name="Rotation j j" offset="0x54" visible="true" />
+		<float32 name="Rotation j k" offset="0x58" visible="true" />
+		<float32 name="Rotation j Radius" offset="0x5C" visible="true" />
+		<float32 name="Rotation k i" offset="0x60" visible="true" />
+		<float32 name="Rotation k j" offset="0x64" visible="true" />
+		<float32 name="Rotation k k" offset="0x68" visible="true" />
+		<float32 name="Rotation k Radius" offset="0x6C" visible="true" />
+		<float32 name="Translation i" offset="0x70" visible="true" />
+		<float32 name="Translation j" offset="0x74" visible="true" />
+		<float32 name="Translation k" offset="0x78" visible="true" />
+		<float32 name="Translation Radius" offset="0x7C" visible="true" />
 	</reflexive>
-	<degree name="Max Slope Angle" offset="0x10C" visible="true" />
+	<comment title="Ground" />
+	<degree name="Maximum Slope Angle" offset="0x10C" visible="true" />
 	<degree name="Downhill Falloff Angle" offset="0x110" visible="true" />
 	<degree name="Downhill Cutoff Angle" offset="0x114" visible="true" />
 	<degree name="Uphill Falloff Angle" offset="0x118" visible="true" />
 	<degree name="Uphill Cutoff Angle" offset="0x11C" visible="true" />
-	<degree name="Downhill Velocity Angle" offset="0x120" visible="true" />
+	<float32 name="Downhill Velocity Angle" offset="0x120" visible="true" />
 	<float32 name="Uphill Velocity Scale" offset="0x124" visible="true" />
-	<degree name="Flying Bank Angle" offset="0x128" visible="true" />
-	<float32 name="Flying Bank Apply Time" offset="0x12C" visible="true" />
-	<float32 name="Flying Pitch Ratio" offset="0x130" visible="true" />
-	<float32 name="Flying Max Velocity" offset="0x134" visible="true" />
-	<float32 name="Flying Max Sidestep Velocity" offset="0x138" visible="true" />
-	<float32 name="Flying Acceleration" offset="0x13C" visible="true" />
-	<float32 name="Flying Deceleration" offset="0x140" visible="true" />
-	<float32 name="Flying Angular Velocity Max" offset="0x144" visible="true" />
-	<float32 name="Flying Angular Acceleration Max" offset="0x148" visible="true" />
-	<float32 name="Flying Crouch Velocity Modifier" offset="0x14C" visible="true" />
-	<tagRef name="Sentinal Impact Damage" offset="0x168" visible="true" />
-	<tagRef name="Sentinal Shield Impact Damage" offset="0x170" visible="true" />
-	<float32 name="Destroy After Death Time" offset="0x178" visible="true" />
-	<float32 name="...To" offset="0x17C" visible="true" />
+	<float32 name="Unknown" offset="0x128" visible="false" />
+	<float32 name="Unknown" offset="0x12C" visible="false" />
+	<float32 name="Unknown" offset="0x130" visible="false" />
+	<float32 name="Unknown" offset="0x134" visible="false" />
+	<float32 name="Unknown" offset="0x138" visible="false" />
+	<float32 name="Unknown" offset="0x13C" visible="false" />
+	<comment title="Flying" />
+	<degree name="Bank Angle" offset="0x140" visible="true" />
+	<float32 name="Bank Apply Time" offset="0x144" visible="true" />
+	<float32 name="Pitch Ratio" offset="0x148" visible="true" />
+	<float32 name="Maximum Velocity" offset="0x14C" visible="true" />
+	<float32 name="Maximum Sidestep Velocity" offset="0x150" visible="true" />
+	<float32 name="Acceleration" offset="0x154" visible="true" />
+	<float32 name="Deceleration" offset="0x158" visible="true" />
+	<degree name="Angular Velocity Maximum" offset="0x15C" visible="true" />
+	<degree name="Angular Acceleration Maximum" offset="0x160" visible="true" />
+	<float32 name="Crouch Velocity Modifier" offset="0x164" visible="true" />
+	<tagRef name="Impact Damage" offset="0x168" visible="true" />
+	<tagRef name="Impact Shield Damage" offset="0x170" visible="true" />
+	<float32 name="Destroy After Death Time min" offset="0x178" visible="true" />
+	<float32 name="Destroy After Death Time max" offset="0x17C" visible="true" />
 </plugin>

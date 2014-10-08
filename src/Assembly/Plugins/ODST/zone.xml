@@ -7,7 +7,7 @@
 		<revision author="Lord Zedd" version="3">Matching Zonesets</revision>
 	</revisions>
 	<enum8 name="Map Type" offset="0x0" visible="true">
-		<option name="Campaign" value="0x0" />
+		<option name="Single Player" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum8>
@@ -2179,7 +2179,40 @@ If a bit is enabled then that member will be loaded.</comment>
 	<reflexive name="Scenario Zoneset Groups" offset="0x100" visible="true" entrySize="0x24">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int32 name="BSP Group Index" offset="0x4" visible="true" />
-		<int32 name="Unknown" offset="0x8" visible="false" />
+		<bitfield32 name="Import Loaded BSPs" offset="0x8" visible="true">
+			<bit name="BSP 0" index="0" />
+			<bit name="BSP 1" index="1" />
+			<bit name="BSP 2" index="2" />
+			<bit name="BSP 3" index="3" />
+			<bit name="BSP 4" index="4" />
+			<bit name="BSP 5" index="5" />
+			<bit name="BSP 6" index="6" />
+			<bit name="BSP 7" index="7" />
+			<bit name="BSP 8" index="8" />
+			<bit name="BSP 9" index="9" />
+			<bit name="BSP 10" index="10" />
+			<bit name="BSP 11" index="11" />
+			<bit name="BSP 12" index="12" />
+			<bit name="BSP 13" index="13" />
+			<bit name="BSP 14" index="14" />
+			<bit name="BSP 15" index="15" />
+			<bit name="BSP 16" index="16" />
+			<bit name="BSP 17" index="17" />
+			<bit name="BSP 18" index="18" />
+			<bit name="BSP 19" index="19" />
+			<bit name="BSP 20" index="20" />
+			<bit name="BSP 21" index="21" />
+			<bit name="BSP 22" index="22" />
+			<bit name="BSP 23" index="23" />
+			<bit name="BSP 24" index="24" />
+			<bit name="BSP 25" index="25" />
+			<bit name="BSP 26" index="26" />
+			<bit name="BSP 27" index="27" />
+			<bit name="BSP 28" index="28" />
+			<bit name="BSP 29" index="29" />
+			<bit name="BSP 30" index="30" />
+			<bit name="BSP 31" index="31" />
+		</bitfield32>
 		<bitfield32 name="Loaded BSPs" offset="0xC" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -2248,7 +2281,7 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
 		</bitfield32>
-		<bitfield32 name="Unloaded Designer Zonesets" offset="0x14" visible="true">
+		<bitfield32 name="Unknown Loaded Designer Zonesets" offset="0x14" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2282,7 +2315,7 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
 		</bitfield32>
-		<bitfield32 name="Loaded Cinematic Zonesets" offset="0x18" visible="true">
+		<bitfield32 name="Unloaded Designer Zonesets" offset="0x18" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2316,10 +2349,43 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
 		</bitfield32>
-		<int32 name="Parent Scenario Zoneset" offset="0x1C" visible="true" />
-		<int32 name="Scenario Zoneset Index" offset="0x20" visible="true" />
+		<bitfield32 name="Loaded Cinematic Zonesets" offset="0x1C" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+			<bit name="Set 16" index="16" />
+			<bit name="Set 17" index="17" />
+			<bit name="Set 18" index="18" />
+			<bit name="Set 19" index="19" />
+			<bit name="Set 20" index="20" />
+			<bit name="Set 21" index="21" />
+			<bit name="Set 22" index="22" />
+			<bit name="Set 23" index="23" />
+			<bit name="Set 24" index="24" />
+			<bit name="Set 25" index="25" />
+			<bit name="Set 26" index="26" />
+			<bit name="Set 27" index="27" />
+			<bit name="Set 28" index="28" />
+			<bit name="Set 29" index="29" />
+			<bit name="Set 30" index="30" />
+			<bit name="Set 31" index="31" />
+		</bitfield32>
+		<int32 name="BSP Atlas Index" offset="0x20" visible="true" />
 	</reflexive>
-	<reflexive name="BSP References" offset="0x10C" visible="true" entrySize="0x10">
+	<reflexive name="Scenario BSPs" offset="0x10C" visible="true" entrySize="0x10">
 		<tagRef name="BSP" offset="0x0" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x118" visible="false" />
