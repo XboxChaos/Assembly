@@ -673,6 +673,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tag == null)
 				return;
 
+			// Passing true so raw is extracted as well
+			extractTags(true, tag);
+		}
+
+		private void contextExtractClassic_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// Passing false so raw is not extracted
+			extractTags(false, tag);
+		}
+
+		private void extractTags(bool withRaw, TagEntry tag)
+		{
 			// Ask where to save the extracted tag collection
 			var sfd = new SaveFileDialog
 			{
@@ -752,26 +772,77 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (resource.Location == null) continue;
 
 					if (resource.Location.PrimaryPage != null &&
-					    !resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+						!resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
 					{
 						container.AddResourcePage(resource.Location.PrimaryPage);
 						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
 
+						if (withRaw)
+						{
+							using (var fileStream = File.OpenRead(_cacheLocation))
+							{
+								var resourceFile = _cacheFile;
+								Stream resourceStream = fileStream;
+								if (resource.Location.PrimaryPage.FilePath != null)
+								{
+									var resourceCacheInfo =
+									App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+										r => r.EngineName == _buildInfo.Name);
+
+									var resourceCachePath = (resourceCacheInfo != null)
+										? resourceCacheInfo.ResourceCachePath
+										: Path.GetDirectoryName(_cacheLocation);
+
+									resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.PrimaryPage.FilePath));
+
+									if (!File.Exists(resourceCachePath))
+									{
+										MetroMessageBox.Show("Unable to extract tag",
+											"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+										return;
+									}
+
+									resourceStream =
+										File.OpenRead(resourceCachePath);
+									resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+										_cacheFile.BuildString);
+								}
+
+								var extractor = new ResourcePageExtractor(resourceFile);
+								var path = Path.GetTempFileName();
+								var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
+								extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
+								pageStream.Close();
+
+								container.AddExtractedResourcePage(
+									new ExtractedPage(File.ReadAllBytes(path),
+										resource.Location.PrimaryPage.Index));
+							}
+						}
+					}
+					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+						continue;
+
+					container.AddResourcePage(resource.Location.SecondaryPage);
+					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+
+					if (withRaw)
+					{
 						using (var fileStream = File.OpenRead(_cacheLocation))
 						{
 							var resourceFile = _cacheFile;
 							Stream resourceStream = fileStream;
-							if (resource.Location.PrimaryPage.FilePath != null)
+							if (resource.Location.SecondaryPage.FilePath != null)
 							{
 								var resourceCacheInfo =
-								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-									r => r.EngineName == _buildInfo.Name);
+									App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+										r => r.EngineName == _buildInfo.Name);
 
 								var resourceCachePath = (resourceCacheInfo != null)
 									? resourceCacheInfo.ResourceCachePath
 									: Path.GetDirectoryName(_cacheLocation);
 
-								resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.PrimaryPage.FilePath));
+								resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.SecondaryPage.FilePath));
 
 								if (!File.Exists(resourceCachePath))
 								{
@@ -789,58 +860,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							var extractor = new ResourcePageExtractor(resourceFile);
 							var path = Path.GetTempFileName();
 							var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-							extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
+							extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
 							pageStream.Close();
 
 							container.AddExtractedResourcePage(
 								new ExtractedPage(File.ReadAllBytes(path),
-									resource.Location.PrimaryPage.Index));
+									resource.Location.SecondaryPage.Index));
 						}
-					}
-					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
-						continue;
-
-					container.AddResourcePage(resource.Location.SecondaryPage);
-					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
-
-					using (var fileStream = File.OpenRead(_cacheLocation))
-					{
-						var resourceFile = _cacheFile;
-						Stream resourceStream = fileStream;
-						if (resource.Location.SecondaryPage.FilePath != null)
-						{
-							var resourceCacheInfo =
-								App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-									r => r.EngineName == _buildInfo.Name);
-
-							var resourceCachePath = (resourceCacheInfo != null)
-								? resourceCacheInfo.ResourceCachePath
-								: Path.GetDirectoryName(_cacheLocation);
-
-							resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.SecondaryPage.FilePath));
-
-							if (!File.Exists(resourceCachePath))
-							{
-								MetroMessageBox.Show("Unable to extract tag",
-									"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
-								return;
-							}
-
-							resourceStream =
-								File.OpenRead(resourceCachePath);
-							resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
-								_cacheFile.BuildString);
-						}
-
-						var extractor = new ResourcePageExtractor(resourceFile);
-						var path = Path.GetTempFileName();
-						var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-						extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
-						pageStream.Close();
-
-						container.AddExtractedResourcePage(
-							new ExtractedPage(File.ReadAllBytes(path),
-								resource.Location.SecondaryPage.Index));
 					}
 				}
 			}
@@ -851,11 +877,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// YAY!
 			MetroMessageBox.Show("Extraction Successful",
-				"Extracted " + 
+				"Extracted " +
 				container.Tags.Count + " tag(s), " +
 				container.DataBlocks.Count + " data block(s), " +
 				container.ResourcePages.Count + " resource page pointer(s), " +
-				container.ExtractedResourcePages.Count + " extracted resource page(s), and " + 
+				container.ExtractedResourcePages.Count + " extracted resource page(s), and " +
 				container.Resources.Count + " resource pointer(s).");
 		}
 
