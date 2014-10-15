@@ -113,8 +113,8 @@ namespace Blamite.Injection
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
 
-			// Write the data
-			WriteDataBlock(tagData, newTag.MetaLocation, stream);
+			// Write the data but with a hack to skip the address check so tags with shared addresses get filled in and not left blank
+			WriteDataBlock(tagData, newTag.MetaLocation, stream, true);
 
 			// Make the tag load
 			LoadZoneSets(stream);
@@ -290,11 +290,11 @@ namespace Blamite.Injection
 			return false;
 		}
 
-		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream)
+		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream, bool isTag = false)
 		{
-			// Don't write anything if the block has already been written
-			if (_dataBlockAddresses.ContainsKey(block))
-				return;
+			if (!isTag)
+				if (_dataBlockAddresses.ContainsKey(block)) // Don't write anything if the block has already been written
+					return;
 
 			// Associate the location with the block
 			_dataBlockAddresses[block] = location.AsPointer();
