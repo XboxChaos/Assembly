@@ -5,7 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
 	<enum16 name="Map Type" offset="0x0" visible="true">
-		<option name="Campaign" value="0x0" />
+		<option name="Single Player" value="0x0" />
 		<option name="Multiplayer" value="0x1" />
 		<option name="Main Menu" value="0x2" />
 	</enum16>
@@ -47,7 +47,7 @@
 	<tagRef name="Unknown" offset="0x18" visible="true" />
 	<reflexive name="Sky References" offset="0x28" visible="true" entrySize="0x14">
 		<tagRef name="Sky Object" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x10" visible="true" />
+		<int16 name="Name Index" offset="0x10" visible="true" />
 		<bitfield16 name="Active BSPs" offset="0x12" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
@@ -260,14 +260,14 @@
 	<undefined name="Unknown" offset="0x70" visible="false" />
 	<undefined name="Unknown" offset="0x74" visible="false" />
 	<undefined name="Unknown" offset="0x78" visible="false" />
-	<dataref name="Editor Data" offset="0x7C" visible="true" />
+	<dataref name="Editor Scenario Data" offset="0x7C" visible="true" />
 	<undefined name="Unknown" offset="0x90" visible="false" />
 	<undefined name="Unknown" offset="0x94" visible="false" />
 	<undefined name="Unknown" offset="0x98" visible="false" />
 	<reflexive name="Object Names" offset="0x9C" visible="true" entrySize="0x24">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<enum16 name="Type" offset="0x20" visible="true">
-			<option name="Null" value="0xFFFFFFFF" />
+			<option name="Null" value="0xFFFF" />
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -288,7 +288,7 @@
 	</reflexive>
 	<reflexive name="Scenery" offset="0xA8" visible="true" entrySize="0xA0">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -323,21 +323,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -368,38 +386,34 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Permutation" />
+		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
 		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int8 name="Unknown" offset="0x51" visible="false" />
 		<int8 name="Unknown" offset="0x52" visible="false" />
@@ -408,7 +422,7 @@
 		<colour32 name="Secondary Color" offset="0x58" format="argb" visible="true" />
 		<colour32 name="Tertiary Color" offset="0x5C" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x60" format="argb" visible="true" />
-		<comment title="Scenery" />
+		<comment title="Scenery Data" />
 		<enum16 name="Pathfinding Policy" offset="0x64" visible="true">
 			<option name="Tag Default" value="0x0" />
 			<option name="Dynamic" value="0x1" />
@@ -427,12 +441,27 @@
 		</reflexive>
 		<int16 name="Unknown" offset="0x74" visible="true" />
 		<int16 name="Unknown" offset="0x76" visible="true" />
-		<comment title="Sandbox" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<int8 name="Unknown" offset="0x7C" visible="false" />
-		<int8 name="Unknown" offset="0x7D" visible="false" />
-		<int8 name="Unknown" offset="0x7E" visible="false" />
-		<enum8 name="Team" offset="0x7F" visible="true">
+		<comment title="Multiplayer Data" />
+		<int16 name="Unknown" offset="0x78" visible="false" />
+		<int8 name="Unknown" offset="0x7A" visible="false" />
+		<enum8 name="Symmetry" offset="0x7B" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Symmetric" value="0x1" />
+			<option name="Asymmetric" value="0x2" />
+		</enum8>
+		<bitfield16 name="Engine Flags" offset="0x7C" visible="true">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Bit 9" index="9" />
+		</bitfield16>
+		<enum16 name="Team" offset="0x7E" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Green" value="0x2" />
@@ -442,10 +471,10 @@
 			<option name="Brown" value="0x6" />
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
-		</enum8>
-		<int8 name="Unknown" offset="0x80" visible="false" />
-		<int8 name="Unknown" offset="0x81" visible="false" />
-		<int8 name="Unknown" offset="0x82" visible="false" />
+		</enum16>
+		<int8 name="Spawn Sequence" offset="0x80" visible="true" />
+		<int8 name="Runtime Minimum" offset="0x81" visible="true" />
+		<int8 name="Runtime Maximum" offset="0x82" visible="true" />
 		<bitfield8 name="Sandbox Flags" offset="0x83" visible="true">
 			<bit name="Is Unique Object" index="0" />
 			<bit name="Not Placed At Start" index="1" />
@@ -457,7 +486,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x84" visible="true" />
-		<int16 name="Unknown" offset="0x86" visible="false" />
+		<int16 name="Unknown Spawn Time" offset="0x86" visible="true" />
 		<int8 name="Unknown" offset="0x88" visible="false" />
 		<enum8 name="Shape" offset="0x89" visible="true">
 			<option name="None" value="0x0" />
@@ -486,7 +515,7 @@
 	</reflexive>
 	<reflexive name="Bipeds" offset="0xC0" visible="true" entrySize="0x6C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -521,21 +550,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -566,38 +613,34 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Permutation" />
+		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
 		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int8 name="Unknown" offset="0x51" visible="false" />
 		<int8 name="Unknown" offset="0x52" visible="false" />
@@ -606,7 +649,7 @@
 		<colour32 name="Secondary Color" offset="0x58" format="argb" visible="true" />
 		<colour32 name="Tertiary Color" offset="0x5C" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x60" format="argb" visible="true" />
-		<comment title="Unit" />
+		<comment title="Unit Data" />
 		<float32 name="Body Vitality Percentage" offset="0x64" visible="true" />
 		<bitfield32 name="Flags" offset="0x68" visible="true">
 			<bit name="Dead" index="0" />
@@ -656,7 +699,7 @@
 	</reflexive>
 	<reflexive name="Vehicles" offset="0xD8" visible="true" entrySize="0x94">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -691,21 +734,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -736,38 +797,34 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Permutation" />
+		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
 		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int8 name="Unknown" offset="0x51" visible="false" />
 		<int8 name="Unknown" offset="0x52" visible="false" />
@@ -776,7 +833,7 @@
 		<colour32 name="Secondary Color" offset="0x58" format="argb" visible="true" />
 		<colour32 name="Tertiary Color" offset="0x5C" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x60" format="argb" visible="true" />
-		<comment title="Unit" />
+		<comment title="Unit Data" />
 		<float32 name="Body Vitality Percentage" offset="0x64" visible="true" />
 		<bitfield32 name="Flags" offset="0x68" visible="true">
 			<bit name="Dead" index="0" />
@@ -812,12 +869,27 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Sandbox" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<int8 name="Unknown" offset="0x70" visible="false" />
-		<int8 name="Unknown" offset="0x71" visible="false" />
-		<int8 name="Unknown" offset="0x72" visible="false" />
-		<enum8 name="Team" offset="0x73" visible="true">
+		<comment title="Multiplayer Data" />
+		<int16 name="Unknown" offset="0x6C" visible="false" />
+		<int8 name="Unknown" offset="0x6E" visible="false" />
+		<enum8 name="Symmetry" offset="0x6F" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Symmetric" value="0x1" />
+			<option name="Asymmetric" value="0x2" />
+		</enum8>
+		<bitfield16 name="Engine Flags" offset="0x70" visible="true">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Bit 9" index="9" />
+		</bitfield16>
+		<enum16 name="Team" offset="0x72" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Green" value="0x2" />
@@ -827,10 +899,10 @@
 			<option name="Brown" value="0x6" />
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
-		</enum8>
-		<int8 name="Unknown" offset="0x74" visible="false" />
-		<int8 name="Unknown" offset="0x75" visible="false" />
-		<int8 name="Unknown" offset="0x76" visible="false" />
+		</enum16>
+		<int8 name="Spawn Sequence" offset="0x74" visible="true" />
+		<int8 name="Runtime Minimum" offset="0x75" visible="true" />
+		<int8 name="Runtime Maximum" offset="0x76" visible="true" />
 		<bitfield8 name="Sandbox Flags" offset="0x77" visible="true">
 			<bit name="Is Unique Object" index="0" />
 			<bit name="Not Placed At Start" index="1" />
@@ -842,7 +914,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x78" visible="true" />
-		<int16 name="Unknown" offset="0x7A" visible="false" />
+		<int16 name="Unknown Spawn Time" offset="0x7A" visible="true" />
 		<int8 name="Unknown" offset="0x7C" visible="false" />
 		<enum8 name="Shape" offset="0x7D" visible="true">
 			<option name="None" value="0x0" />
@@ -871,7 +943,7 @@
 	</reflexive>
 	<reflexive name="Equipment" offset="0xF0" visible="true" entrySize="0x78">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -906,21 +978,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -951,28 +1041,28 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Equipment" />
+		<comment title="Equipment Data" />
 		<bitfield32 name="Equipment Flags" offset="0x4C" visible="true">
 			<bit name="Initially At Rest (Does Not Fall)" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -1007,12 +1097,27 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Sandbox" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<int8 name="Unknown" offset="0x54" visible="false" />
-		<int8 name="Unknown" offset="0x55" visible="false" />
-		<int8 name="Unknown" offset="0x56" visible="false" />
-		<enum8 name="Team" offset="0x57" visible="true">
+		<comment title="Multiplayer Data" />
+		<int16 name="Unknown" offset="0x50" visible="false" />
+		<int8 name="Unknown" offset="0x52" visible="false" />
+		<enum8 name="Symmetry" offset="0x53" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Symmetric" value="0x1" />
+			<option name="Asymmetric" value="0x2" />
+		</enum8>
+		<bitfield16 name="Engine Flags" offset="0x54" visible="true">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Bit 9" index="9" />
+		</bitfield16>
+		<enum16 name="Team" offset="0x56" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Green" value="0x2" />
@@ -1022,10 +1127,10 @@
 			<option name="Brown" value="0x6" />
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
-		</enum8>
-		<int8 name="Unknown" offset="0x58" visible="false" />
-		<int8 name="Unknown" offset="0x59" visible="false" />
-		<int8 name="Unknown" offset="0x5A" visible="false" />
+		</enum16>
+		<int8 name="Spawn Sequence" offset="0x58" visible="true" />
+		<int8 name="Runtime Minimum" offset="0x59" visible="true" />
+		<int8 name="Runtime Maximum" offset="0x5A" visible="true" />
 		<bitfield8 name="Sandbox Flags" offset="0x5B" visible="true">
 			<bit name="Is Unique Object" index="0" />
 			<bit name="Not Placed At Start" index="1" />
@@ -1037,7 +1142,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x5C" visible="true" />
-		<int16 name="Unknown" offset="0x5E" visible="false" />
+		<int16 name="Unknown Spawn Time" offset="0x5E" visible="true" />
 		<int8 name="Unknown" offset="0x60" visible="false" />
 		<enum8 name="Shape" offset="0x61" visible="true">
 			<option name="None" value="0x0" />
@@ -1066,7 +1171,7 @@
 	</reflexive>
 	<reflexive name="Weapons" offset="0x108" visible="true" entrySize="0x94">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -1101,21 +1206,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -1146,38 +1269,34 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Permutation" />
+		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
 		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int8 name="Unknown" offset="0x51" visible="false" />
 		<int8 name="Unknown" offset="0x52" visible="false" />
@@ -1186,7 +1305,7 @@
 		<colour32 name="Secondary Color" offset="0x58" format="argb" visible="true" />
 		<colour32 name="Tertiary Color" offset="0x5C" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x60" format="argb" visible="true" />
-		<comment title="Weapon" />
+		<comment title="Weapon Data" />
 		<int16 name="Rounds Left" offset="0x64" visible="true" />
 		<int16 name="Rounds Loaded" offset="0x66" visible="true" />
 		<bitfield32 name="Weapon Flags" offset="0x68" visible="true">
@@ -1223,12 +1342,27 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Sandbox" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<int8 name="Unknown" offset="0x70" visible="false" />
-		<int8 name="Unknown" offset="0x71" visible="false" />
-		<int8 name="Unknown" offset="0x72" visible="false" />
-		<enum8 name="Team" offset="0x73" visible="true">
+		<comment title="Multiplayer Data" />
+		<int16 name="Unknown" offset="0x6C" visible="false" />
+		<int8 name="Unknown" offset="0x6E" visible="false" />
+		<enum8 name="Symmetry" offset="0x6F" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Symmetric" value="0x1" />
+			<option name="Asymmetric" value="0x2" />
+		</enum8>
+		<bitfield16 name="Engine Flags" offset="0x70" visible="true">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Bit 9" index="9" />
+		</bitfield16>
+		<enum16 name="Team" offset="0x72" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Green" value="0x2" />
@@ -1238,10 +1372,10 @@
 			<option name="Brown" value="0x6" />
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
-		</enum8>
-		<int8 name="Unknown" offset="0x74" visible="false" />
-		<int8 name="Unknown" offset="0x75" visible="false" />
-		<int8 name="Unknown" offset="0x76" visible="false" />
+		</enum16>
+		<int8 name="Spawn Sequence" offset="0x74" visible="true" />
+		<int8 name="Runtime Minimum" offset="0x75" visible="true" />
+		<int8 name="Runtime Maximum" offset="0x76" visible="true" />
 		<bitfield8 name="Sandbox Flags" offset="0x77" visible="true">
 			<bit name="Is Unique Object" index="0" />
 			<bit name="Not Placed At Start" index="1" />
@@ -1253,7 +1387,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x78" visible="true" />
-		<int16 name="Unknown" offset="0x7A" visible="false" />
+		<int16 name="Unknown Spawn Time" offset="0x7A" visible="true" />
 		<int8 name="Unknown" offset="0x7C" visible="false" />
 		<enum8 name="Shape" offset="0x7D" visible="true">
 			<option name="None" value="0x0" />
@@ -1320,7 +1454,7 @@
 	</reflexive>
 	<reflexive name="Machines" offset="0x12C" visible="true" entrySize="0x64">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -1355,21 +1489,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -1400,28 +1552,28 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Device" />
+		<comment title="Device Data" />
 		<int16 name="Power Group" offset="0x4C" visible="true" />
 		<int16 name="Position Group" offset="0x4E" visible="true" />
 		<bitfield32 name="Device Flags" offset="0x50" visible="true">
@@ -1458,7 +1610,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Machine" />
+		<comment title="Machine Data" />
 		<bitfield32 name="Machine Flags" offset="0x54" visible="true">
 			<bit name="Does Not Operate Automatically" index="0" />
 			<bit name="One-Sided" index="1" />
@@ -1525,7 +1677,7 @@
 	</reflexive>
 	<reflexive name="Controls" offset="0x15C" visible="true" entrySize="0x5C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -1560,21 +1712,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -1605,28 +1775,28 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Device" />
+		<comment title="Device Data" />
 		<int16 name="Power Group" offset="0x4C" visible="true" />
 		<int16 name="Position Group" offset="0x4E" visible="true" />
 		<bitfield32 name="Device Flags" offset="0x50" visible="true">
@@ -1663,7 +1833,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Control" />
+		<comment title="Control Data" />
 		<bitfield32 name="Control Flags" offset="0x54" visible="true">
 			<bit name="Usable From Both Sides" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -1728,7 +1898,7 @@
 	</reflexive>
 	<reflexive name="Sound Scenery" offset="0x18C" visible="true" entrySize="0x68">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -1763,21 +1933,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -1808,28 +1996,28 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Sound Scenery" />
+		<comment title="Sound Scenery Data" />
 		<int32 name="Volume Type" offset="0x4C" visible="true" />
 		<float32 name="Height" offset="0x50" visible="true" />
 		<float32 name="Override Distance min" offset="0x54" visible="true" />
@@ -1863,9 +2051,9 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 	</reflexive>
-	<reflexive name="Lights" offset="0x1BC" visible="false" entrySize="0x84">
+	<reflexive name="Light Volumes" offset="0x1BC" visible="true" entrySize="0x84">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -1900,21 +2088,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -1945,28 +2151,28 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Device" />
+		<comment title="Device Data" />
 		<int16 name="Power Group" offset="0x4C" visible="true" />
 		<int16 name="Position Group" offset="0x4E" visible="true" />
 		<bitfield32 name="Device Flags" offset="0x50" visible="true">
@@ -2003,24 +2209,38 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<comment title="Light" />
-		<int16 name="Type" offset="0x54" visible="true" />
-		<int16 name="Flags" offset="0x56" visible="true" />
-		<int16 name="Lightmap Type" offset="0x58" visible="true" />
-		<int16 name="Lightmap Flags" offset="0x5A" visible="true" />
-		<undefined name="Lightmap Half Life" offset="0x5C" visible="true" />
-		<undefined name="Lightmap Light Scale" offset="0x60" visible="true" />
-		<undefined name="X" offset="0x64" visible="true" />
-		<undefined name="Y" offset="0x68" visible="true" />
-		<undefined name="Z" offset="0x6C" visible="true" />
-		<undefined name="Width" offset="0x70" visible="true" />
-		<undefined name="Height Scale" offset="0x74" visible="true" />
+		<comment title="Light Data" />
+		<enum16 name="Type" offset="0x54" visible="true">
+			<option name="Sphere" value="0x0" />
+			<option name="Projective" value="0x1" />
+		</enum16>
+		<bitfield16 name="Flags" offset="0x56" visible="true">
+			<bit name="Custom Geometry" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Cinematic Only" index="2" />
+		</bitfield16>
+		<enum16 name="Lightmap Type" offset="0x58" visible="true">
+			<option name="Use Light Tag Setting" value="0x0" />
+			<option name="Dynamic Only" value="0x1" />
+			<option name="Dynamic With Lightmaps" value="0x2" />
+			<option name="Lightmaps Only" value="0x3" />
+		</enum16>
+		<bitfield16 name="Lightmap Flags" offset="0x5A" visible="true">
+			<bit name="Bit 0" index="0" />
+		</bitfield16>
+		<float32 name="Lightmap Half Life" offset="0x5C" visible="true" />
+		<float32 name="Lightmap Light Scale" offset="0x60" visible="true" />
+		<float32 name="X" offset="0x64" visible="true" />
+		<float32 name="Y" offset="0x68" visible="true" />
+		<float32 name="Z" offset="0x6C" visible="true" />
+		<float32 name="Width" offset="0x70" visible="true" />
+		<float32 name="Height Scale" offset="0x74" visible="true" />
 		<degree name="Field of View" offset="0x78" visible="true" />
-		<undefined name="Falloff Distance" offset="0x7C" visible="true" />
-		<undefined name="Cutoff Distance" offset="0x80" visible="true" />
+		<float32 name="Falloff Distance" offset="0x7C" visible="true" />
+		<float32 name="Cutoff Distance" offset="0x80" visible="true" />
 	</reflexive>
-	<reflexive name="Light Palette" offset="0x1C8" visible="true" entrySize="0x30">
-		<tagRef name="Light" offset="0x0" visible="true" />
+	<reflexive name="Light Volumes Palette" offset="0x1C8" visible="true" entrySize="0x30">
+		<tagRef name="Light Volume" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -2081,7 +2301,7 @@
 		<int16 name="Unknown" offset="0x8" visible="true" />
 		<int16 name="Unknown" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Starting Profiles" offset="0x210" visible="false" entrySize="0x54">
+	<reflexive name="Player Starting Profile" offset="0x210" visible="false" entrySize="0x54">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<float32 name="Starting Health Damage" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Damage" offset="0x24" visible="true" />
@@ -2089,25 +2309,31 @@
 		<int16 name="Rounds Loaded" offset="0x38" visible="true" />
 		<int16 name="Rounds Total" offset="0x3A" visible="true" />
 		<tagRef name="Secondary Weapon" offset="0x3C" visible="true" />
-		<int16 name="Rounds in Clip" offset="0x4C" visible="true" />
-		<int16 name="Starting Rounds" offset="0x4E" visible="true" />
-		<int8 name="Frag Grenade Count" offset="0x50" visible="true" />
-		<int8 name="Plasma Grenade Count" offset="0x51" visible="true" />
-		<int8 name="Spike Grenade Count" offset="0x52" visible="true" />
-		<int8 name="Firebomb Grenade Count" offset="0x53" visible="true" />
+		<int16 name="Rounds Loaded" offset="0x4C" visible="true" />
+		<int16 name="Rounds Total" offset="0x4E" visible="true" />
+		<uint8 name="Starting Frag Grenade Count" offset="0x50" visible="true" />
+		<uint8 name="Starting Plasma Grenade Count" offset="0x51" visible="true" />
+		<uint8 name="Starting Spike Grenade Count" offset="0x52" visible="true" />
+		<uint8 name="Starting Firebomb Grenade Count" offset="0x53" visible="true" />
 	</reflexive>
-	<reflexive name="Starting Locations" offset="0x21C" visible="true" entrySize="0x18">
-		<float32 name="X" offset="0x0" visible="true" />
-		<float32 name="Y" offset="0x4" visible="true" />
-		<float32 name="Z" offset="0x8" visible="true" />
-		<degree name="Facing Y" offset="0xC" visible="true" />
-		<degree name="Facing P" offset="0x10" visible="true" />
+	<reflexive name="Player Starting Locations" offset="0x21C" visible="true" entrySize="0x18">
+		<float32 name="Position x" offset="0x0" visible="true" />
+		<float32 name="Position y" offset="0x4" visible="true" />
+		<float32 name="Position z" offset="0x8" visible="true" />
+		<degree name="Facing y" offset="0xC" visible="true" />
+		<degree name="Facing p" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Player Representation Index" offset="0x16" visible="true" />
+		<enum16 name="Campaign Player Type" offset="0x16" visible="true">
+			<option name="Masterchief" value="0x0" />
+			<option name="Dervish" value="0x1" />
+			<option name="Chief Multiplayer" value="0x2" />
+			<option name="Elite Multiplayer" value="0x3" />
+			<option name="Elite Coop" value="0x4" />
+		</enum16>
 	</reflexive>
 	<reflexive name="Trigger Volumes" offset="0x228" visible="true" entrySize="0x44">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x4" visible="true" />
+		<int16 name="Object Name" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<stringId name="Node Name" offset="0x8" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
@@ -2116,14 +2342,14 @@
 		<float32 name="Unknown" offset="0x18" visible="false" />
 		<float32 name="Unknown" offset="0x1C" visible="false" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Position X" offset="0x24" visible="true" />
-		<float32 name="Position Y" offset="0x28" visible="true" />
-		<float32 name="Position Z" offset="0x2C" visible="true" />
-		<float32 name="Extents X" offset="0x30" visible="true" />
-		<float32 name="Extents Y" offset="0x34" visible="true" />
-		<float32 name="Extents Z" offset="0x38" visible="true" />
+		<float32 name="Position x" offset="0x24" visible="true" />
+		<float32 name="Position y" offset="0x28" visible="true" />
+		<float32 name="Position z" offset="0x2C" visible="true" />
+		<float32 name="Extents x" offset="0x30" visible="true" />
+		<float32 name="Extents y" offset="0x34" visible="true" />
+		<float32 name="Extents z" offset="0x38" visible="true" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<int16 name="Kill Zone Index" offset="0x40" visible="true" />
+		<int16 name="Kill Volume" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x234" visible="false" />
@@ -2296,13 +2522,13 @@
 			<undefined name="Multi-State Block" offset="0x48" visible="false" />
 			<undefined name="Multi-State Block" offset="0x4C" visible="false" />
 			<undefined name="Multi-State Block" offset="0x50" visible="false" />
-			<reflexive name="Starting Locations" offset="0x54" visible="true" entrySize="0x88">
+			<reflexive name="Player Starting Locations" offset="0x54" visible="true" entrySize="0x88">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
 				<stringid name="Name" offset="0x4" visible="true" />
-				<float32 name="Position X" offset="0x8" visible="true" />
-				<float32 name="Position Y" offset="0xC" visible="true" />
-				<float32 name="Position Z" offset="0x10" visible="true" />
+				<float32 name="Position x" offset="0x8" visible="true" />
+				<float32 name="Position y" offset="0xC" visible="true" />
+				<float32 name="Position z" offset="0x10" visible="true" />
 				<int16 name="Reference Frame" offset="0x14" visible="true" />
 				<int16 name="Unknown" offset="0x16" visible="false" />
 				<degree name="Facing i" offset="0x18" visible="true" />
@@ -2370,7 +2596,11 @@
 				<int16 name="Emitter Vehicle" offset="0x44" visible="true" />
 				<int16 name="Emitter Giant" offset="0x46" visible="true" />
 				<int16 name="Emitter Biped" offset="0x48" visible="true" />
-				<int16 name="Unknown" offset="0x4A" visible="false" />
+				<enum16 name="Initial Movement Mode" offset="0x4A" visible="true">
+					<option name="Default" value="0x0" />
+					<option name="Climbing" value="0x1" />
+					<option name="Flying" value="0x2" />
+				</enum16>
 				<ascii name="Command Script Name" offset="0x4C" visible="true" length="0x20" />
 				<int16 name="Command Script Index" offset="0x6C" visible="true" />
 				<int16 name="Unknown" offset="0x6E" visible="false" />
@@ -2399,7 +2629,7 @@
 	<undefined name="Unknown" offset="0x384" visible="false" />
 	<undefined name="Unknown" offset="0x388" visible="false" />
 	<undefined name="Unknown" offset="0x38C" visible="false" />
-	<reflexive name="Unknown" offset="0x390" visible="false" entrySize="0x6C">
+	<reflexive name="AI Pathfinding Data" offset="0x390" visible="false" entrySize="0x6C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -2710,7 +2940,7 @@
 		<uint16 name="Initialization Expression Salt" offset="0x24" visible="true" />
 		<uint16 name="Initialization Expression Index" offset="0x26" visible="true" />
 	</reflexive>
-	<reflexive name="References" offset="0x3D4" visible="true" entrySize="0x10">
+	<reflexive name="Script References" offset="0x3D4" visible="true" entrySize="0x10">
 		<tagRef name="Reference" offset="0x0" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x3E0" visible="false" />
@@ -2721,14 +2951,14 @@
 			<ascii name="Name" offset="0x0" length="32" visible="true"/>
 			<reflexive name="Points" offset="0x20" visible="true" entrySize="0x3C">
 				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-				<float name="X" offset="0x20" visible="true" />
-				<float name="Y" offset="0x24" visible="true" />
-				<float name="Z" offset="0x28" visible="true" />
+				<float name="Position x" offset="0x20" visible="true" />
+				<float name="Position y" offset="0x24" visible="true" />
+				<float name="Position z" offset="0x28" visible="true" />
 				<int16 name="Reference Frame" offset="0x2C" visible="true" />
 				<int16 name="Unknown" offset="0x2E" visible="false" />
 				<int32 name="Surface Index" offset="0x30" visible="true" />
-				<degree name="Facing Y" offset="0x34" visible="true" />
-				<degree name="Facing P" offset="0x38" visible="true" />
+				<degree name="Facing Direction y" offset="0x34" visible="true" />
+				<degree name="Facing Direction p" offset="0x38" visible="true" />
 			</reflexive>
 			<int16 name="BSP Index" offset="0x2C" visible="true" />
 			<int16 name="Manual Reference Frame" offset="0x2E" visible="true" />
@@ -2801,11 +3031,11 @@
 	<reflexive name="Cutscene Flags" offset="0x3F8" visible="true" entrySize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<stringid name="Name" offset="0x4" visible="true" />
-		<float name="X" offset="0x8" visible="true" />
-		<float name="Y" offset="0xC" visible="true" />
-		<float name="Z" offset="0x10" visible="true" />
-		<degree name="Facing Y" offset="0x14" visible="true" />
-		<degree name="Facing P" offset="0x18" visible="true" />
+		<float name="Position x" offset="0x8" visible="true" />
+		<float name="Position y" offset="0xC" visible="true" />
+		<float name="Position z" offset="0x10" visible="true" />
+		<degree name="Facing y" offset="0x14" visible="true" />
+		<degree name="Facing p" offset="0x18" visible="true" />
 	</reflexive>
 	<reflexive name="Cutcene Camera Points" offset="0x404" visible="true" entrySize="0x40">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -2826,15 +3056,20 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</bitfield16>
-		<int16 name="Type" offset="0x0" visible="true" />
+		<enum16 name="Type" offset="0x2" visible="true">
+			<option name="Normal" value="0x0" />
+			<option name="Ignore Target Orientation" value="0x1" />
+			<option name="Dolly" value="0x2" />
+			<option name="Ignore Target Updates" value="0x3" />
+		</enum16>
 		<ascii name="Name" offset="0x4" visible="true" length="0x20" />
 		<int32 name="Unknown" offset="0x24" visible="false" />
-		<float32 name="X" offset="0x28" visible="true" />
-		<float32 name="Y" offset="0x2C" visible="true" />
-		<float32 name="Z" offset="0x30" visible="true" />
-		<degree name="Yaw" offset="0x34" visible="true" />
-		<degree name="Pitch" offset="0x38" visible="true" />
-		<degree name="Roll" offset="0x3C" visible="true" />
+		<float32 name="Position x" offset="0x28" visible="true" />
+		<float32 name="Position y" offset="0x2C" visible="true" />
+		<float32 name="Position z" offset="0x30" visible="true" />
+		<degree name="Orientation y" offset="0x34" visible="true" />
+		<degree name="Orientation p" offset="0x38" visible="true" />
+		<degree name="Orientation r" offset="0x3C" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x410" visible="false" />
 	<undefined name="Unknown" offset="0x414" visible="false" />
@@ -2872,8 +3107,8 @@
 	<undefined name="Unknown" offset="0x448" visible="false" />
 	<undefined name="Unknown" offset="0x44C" visible="false" />
 	<undefined name="Unknown" offset="0x450" visible="false" />
-	<reflexive name="Kill Zones" offset="0x454" visible="true" entrySize="0x2">
-		<int16 name="Trigger Volume Index" offset="0x0" visible="true" />
+	<reflexive name="Scenario Kill Triggers" offset="0x454" visible="true" entrySize="0x2">
+		<int16 name="Trigger Volume" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Script Expressions" offset="0x460" visible="true" entrySize="0x18">
 		<uint16 name="Salt" offset="0x0" visible="true" />
@@ -3083,39 +3318,39 @@
 	<undefined name="Unknown" offset="0x4FC" visible="false" />
 	<undefined name="Unknown" offset="0x500" visible="false" />
 	<undefined name="Unknown" offset="0x504" visible="false" />
-	<undefined name="Unknown" offset="0x508" visible="false" />
-	<undefined name="Unknown" offset="0x50C" visible="false" />
-	<undefined name="Unknown" offset="0x510" visible="false" />
-	<undefined name="Unknown" offset="0x514" visible="false" />
-	<undefined name="Unknown" offset="0x518" visible="false" />
-	<undefined name="Unknown" offset="0x51C" visible="false" />
-	<undefined name="Unknown" offset="0x520" visible="false" />
-	<undefined name="Unknown" offset="0x524" visible="false" />
-	<undefined name="Unknown" offset="0x528" visible="false" />
-	<undefined name="Unknown" offset="0x52C" visible="false" />
-	<undefined name="Unknown" offset="0x530" visible="false" />
-	<undefined name="Unknown" offset="0x534" visible="false" />
-	<undefined name="Unknown" offset="0x538" visible="false" />
-	<undefined name="Unknown" offset="0x53C" visible="false" />
-	<undefined name="Unknown" offset="0x540" visible="false" />
-	<undefined name="Unknown" offset="0x544" visible="false" />
-	<undefined name="Unknown" offset="0x548" visible="false" />
-	<undefined name="Unknown" offset="0x54C" visible="false" />
-	<undefined name="Unknown" offset="0x550" visible="false" />
-	<undefined name="Unknown" offset="0x554" visible="false" />
-	<undefined name="Unknown" offset="0x558" visible="false" />
-	<undefined name="Unknown" offset="0x55C" visible="false" />
-	<undefined name="Unknown" offset="0x560" visible="false" />
-	<undefined name="Unknown" offset="0x564" visible="false" />
-	<undefined name="Unknown" offset="0x568" visible="false" />
-	<undefined name="Unknown" offset="0x56C" visible="false" />
-	<undefined name="Unknown" offset="0x570" visible="false" />
-	<undefined name="Unknown" offset="0x574" visible="false" />
-	<undefined name="Unknown" offset="0x578" visible="false" />
-	<undefined name="Unknown" offset="0x57C" visible="false" />
-	<undefined name="Unknown" offset="0x580" visible="false" />
-	<undefined name="Unknown" offset="0x584" visible="false" />
-	<reflexive name="Spawn Zone Data" offset="0x588" visible="true" entrySize="0x6C">
+	<int32 name="Object Salts 1" offset="0x508" visible="false" />
+	<int32 name="Object Salts 2" offset="0x50C" visible="false" />
+	<int32 name="Object Salts 3" offset="0x510" visible="false" />
+	<int32 name="Object Salts 4" offset="0x514" visible="false" />
+	<int32 name="Object Salts 5" offset="0x518" visible="false" />
+	<int32 name="Object Salts 6" offset="0x51C" visible="false" />
+	<int32 name="Object Salts 7" offset="0x520" visible="false" />
+	<int32 name="Object Salts 8" offset="0x524" visible="false" />
+	<int32 name="Object Salts 9" offset="0x528" visible="false" />
+	<int32 name="Object Salts 10" offset="0x52C" visible="false" />
+	<int32 name="Object Salts 11" offset="0x530" visible="false" />
+	<int32 name="Object Salts 12" offset="0x534" visible="false" />
+	<int32 name="Object Salts 13" offset="0x538" visible="false" />
+	<int32 name="Object Salts 14" offset="0x53C" visible="false" />
+	<int32 name="Object Salts 15" offset="0x540" visible="false" />
+	<int32 name="Object Salts 16" offset="0x544" visible="false" />
+	<int32 name="Object Salts 17" offset="0x548" visible="false" />
+	<int32 name="Object Salts 18" offset="0x54C" visible="false" />
+	<int32 name="Object Salts 19" offset="0x550" visible="false" />
+	<int32 name="Object Salts 20" offset="0x554" visible="false" />
+	<int32 name="Object Salts 21" offset="0x558" visible="false" />
+	<int32 name="Object Salts 22" offset="0x55C" visible="false" />
+	<int32 name="Object Salts 23" offset="0x560" visible="false" />
+	<int32 name="Object Salts 24" offset="0x564" visible="false" />
+	<int32 name="Object Salts 25" offset="0x568" visible="false" />
+	<int32 name="Object Salts 26" offset="0x56C" visible="false" />
+	<int32 name="Object Salts 27" offset="0x570" visible="false" />
+	<int32 name="Object Salts 28" offset="0x574" visible="false" />
+	<int32 name="Object Salts 29" offset="0x578" visible="false" />
+	<int32 name="Object Salts 30" offset="0x57C" visible="false" />
+	<int32 name="Object Salts 31" offset="0x580" visible="false" />
+	<int32 name="Object Salts 32" offset="0x584" visible="false" />
+	<reflexive name="Spawn Data" offset="0x588" visible="true" entrySize="0x6C">
 		<float32 name="Dynamic Spawn Lower Height" offset="0x0" visible="true" />
 		<float32 name="Dynamic Spawn Upper Height" offset="0x4" visible="true" />
 		<float32 name="Game Object Reset Height" offset="0x8" visible="true" />
@@ -3143,7 +3378,7 @@
 		</reflexive>
 		<reflexive name="Static Respawn Zones" offset="0x54" visible="true" entrySize="0x30">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<bitfield32 name="Relevant Teams" offset="0x0" visible="true">
+			<bitfield32 name="Relevant Teams" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
 				<bit name="Blue" index="1" />
 				<bit name="Green" index="2" />
@@ -3153,29 +3388,6 @@
 				<bit name="Brown" index="6" />
 				<bit name="Pink" index="7" />
 				<bit name="Neutral" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<bitfield32 name="Relevant Games" offset="0x8" visible="true">
 				<bit name="Bit 0" index="0" />
@@ -3245,9 +3457,9 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</bitfield32>
-			<float32 name="X" offset="0x10" visible="true" />
-			<float32 name="Y" offset="0x14" visible="true" />
-			<float32 name="Z" offset="0x18" visible="true" />
+			<float32 name="Position x" offset="0x10" visible="true" />
+			<float32 name="Position y" offset="0x14" visible="true" />
+			<float32 name="Position z" offset="0x18" visible="true" />
 			<float32 name="Lower Height" offset="0x1C" visible="true" />
 			<float32 name="Upper Height" offset="0x20" visible="true" />
 			<float32 name="Inner Radius" offset="0x24" visible="true" />
@@ -3256,7 +3468,7 @@
 		</reflexive>
 		<reflexive name="Static Initial Spawn Zones" offset="0x60" visible="true" entrySize="0x30">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<bitfield32 name="Relevant Teams" offset="0x0" visible="true">
+			<bitfield32 name="Relevant Teams" offset="0x4" visible="true">
 				<bit name="Red" index="0" />
 				<bit name="Blue" index="1" />
 				<bit name="Green" index="2" />
@@ -3266,29 +3478,6 @@
 				<bit name="Brown" index="6" />
 				<bit name="Pink" index="7" />
 				<bit name="Neutral" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
 			<bitfield32 name="Relevant Games" offset="0x8" visible="true">
 				<bit name="Bit 0" index="0" />
@@ -3358,9 +3547,9 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</bitfield32>
-			<float32 name="X" offset="0x10" visible="true" />
-			<float32 name="Y" offset="0x14" visible="true" />
-			<float32 name="Z" offset="0x18" visible="true" />
+			<float32 name="Position x" offset="0x10" visible="true" />
+			<float32 name="Position y" offset="0x14" visible="true" />
+			<float32 name="Position z" offset="0x18" visible="true" />
 			<float32 name="Lower Height" offset="0x1C" visible="true" />
 			<float32 name="Upper Height" offset="0x20" visible="true" />
 			<float32 name="Inner Radius" offset="0x24" visible="true" />
@@ -3371,7 +3560,7 @@
 	<tagRef name="Sound Effects Collection" offset="0x594" visible="true" />
 	<reflexive name="Crates" offset="0x5A4" visible="true" entrySize="0x9C">
 		<int16 name="Palette Index" offset="0x0" visible="true" />
-		<int16 name="Object Name Index" offset="0x2" visible="true" />
+		<int16 name="Name Index" offset="0x2" visible="true" />
 		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Not On Easy" index="1" />
@@ -3406,21 +3595,39 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<float32 name="Position X" offset="0x8" visible="true" />
-		<float32 name="Position Y" offset="0xC" visible="true" />
-		<float32 name="Position Z" offset="0x10" visible="true" />
-		<float32 name="Yaw" offset="0x14" visible="true" />
-		<float32 name="Pitch" offset="0x18" visible="true" />
-		<float32 name="Roll" offset="0x1C" visible="true" />
+		<float32 name="Position x" offset="0x8" visible="true" />
+		<float32 name="Position y" offset="0xC" visible="true" />
+		<float32 name="Position z" offset="0x10" visible="true" />
+		<degree name="Rotation i" offset="0x14" visible="true" />
+		<degree name="Rotation j" offset="0x18" visible="true" />
+		<degree name="Rotation k" offset="0x1C" visible="true" />
 		<Float32 name="Scale" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<int16 name="Unknown" offset="0x30" visible="false" />
+		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
+		</bitfield16>
 		<uint16 name="Unique ID Salt" offset="0x34" visible="true" />
 		<uint16 name="Unique ID Index" offset="0x36" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x38" visible="true" />
-		<enum8 name="Object Type" offset="0x3A" visible="true">
+		<enum8 name="Type" offset="0x3A" visible="true">
 			<option name="Biped" value="0x0" />
 			<option name="Vehicle" value="0x1" />
 			<option name="Weapon" value="0x2" />
@@ -3451,38 +3658,34 @@
 		<int8 name="Unknown" offset="0x3D" visible="false" />
 		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
-		<int16 name="Parent Object Name Index" offset="0x42" visible="true" />
+		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
-		<bitfield16 name="Parent Zoneset" offset="0x48" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
+		<bitfield16 name="Allowed Zonesets" offset="0x48" visible="true">
+			<bit name="Set 0" index="0" />
+			<bit name="Set 1" index="1" />
+			<bit name="Set 2" index="2" />
+			<bit name="Set 3" index="3" />
+			<bit name="Set 4" index="4" />
+			<bit name="Set 5" index="5" />
+			<bit name="Set 6" index="6" />
+			<bit name="Set 7" index="7" />
+			<bit name="Set 8" index="8" />
+			<bit name="Set 9" index="9" />
+			<bit name="Set 10" index="10" />
+			<bit name="Set 11" index="11" />
+			<bit name="Set 12" index="12" />
+			<bit name="Set 13" index="13" />
+			<bit name="Set 14" index="14" />
+			<bit name="Set 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-		<comment title="Permutation" />
+		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
 		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int8 name="Unknown" offset="0x51" visible="false" />
 		<int8 name="Unknown" offset="0x52" visible="false" />
@@ -3491,17 +3694,32 @@
 		<colour32 name="Secondary Color" offset="0x58" format="argb" visible="true" />
 		<colour32 name="Tertiary Color" offset="0x5C" format="argb" visible="true" />
 		<colour32 name="Quaternary Color" offset="0x60" format="argb" visible="true" />
-		<comment title="Crate" />
+		<comment title="Crate Data" />
 		<undefined name="Unknown" offset="0x64" visible="true" />
 		<reflexive name="Unknown" offset="0x68" visible="true" entrySize="0x4">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
-		<comment title="Sandbox" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<int8 name="Unknown" offset="0x78" visible="false" />
-		<int8 name="Unknown" offset="0x79" visible="false" />
-		<int8 name="Unknown" offset="0x7A" visible="false" />
-		<enum8 name="Team" offset="0x7B" visible="true">
+		<comment title="Multiplayer Data" />
+		<int16 name="Unknown" offset="0x74" visible="false" />
+		<int8 name="Unknown" offset="0x76" visible="false" />
+		<enum8 name="Symmetry" offset="0x77" visible="true">
+			<option name="Both" value="0x0" />
+			<option name="Symmetric" value="0x1" />
+			<option name="Asymmetric" value="0x2" />
+		</enum8>
+		<bitfield16 name="Engine Flags" offset="0x78" visible="true">
+			<bit name="Capture The Flag" index="0" />
+			<bit name="Slayer" index="1" />
+			<bit name="Oddball" index="2" />
+			<bit name="King Of The Hill" index="3" />
+			<bit name="Juggernaut" index="4" />
+			<bit name="Territories" index="5" />
+			<bit name="Assault" index="6" />
+			<bit name="VIP" index="7" />
+			<bit name="Infection" index="8" />
+			<bit name="Bit 9" index="9" />
+		</bitfield16>
+		<enum16 name="Team" offset="0x7A" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Green" value="0x2" />
@@ -3511,10 +3729,10 @@
 			<option name="Brown" value="0x6" />
 			<option name="Pink" value="0x7" />
 			<option name="Neutral" value="0x8" />
-		</enum8>
-		<int8 name="Unknown" offset="0x7C" visible="false" />
-		<int8 name="Unknown" offset="0x7D" visible="false" />
-		<int8 name="Unknown" offset="0x7E" visible="false" />
+		</enum16>
+		<int8 name="Spawn Sequence" offset="0x7C" visible="true" />
+		<int8 name="Runtime Minimum" offset="0x7D" visible="true" />
+		<int8 name="Runtime Maximum" offset="0x7E" visible="true" />
 		<bitfield8 name="Sandbox Flags" offset="0x7F" visible="true">
 			<bit name="Is Unique Object" index="0" />
 			<bit name="Not Placed At Start" index="1" />
@@ -3526,7 +3744,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x80" visible="true" />
-		<int16 name="Unknown" offset="0x82" visible="false" />
+		<int16 name="Unknown Spawn Time" offset="0x82" visible="true" />
 		<int8 name="Unknown" offset="0x84" visible="false" />
 		<enum8 name="Shape" offset="0x85" visible="true">
 			<option name="None" value="0x0" />
@@ -3774,16 +3992,16 @@
 				<int16 name="Unknown" offset="0x6" visible="false" />
 				<int16 name="Unknown" offset="0x8" visible="false" />
 			</reflexive>
-			<reflexive name="Unknown" offset="0xC0" visible="false" entrySize="0x20">
-				<float32 name="Unknown" offset="0x0" visible="false" />
-				<float32 name="Unknown" offset="0x4" visible="false" />
-				<float32 name="Unknown" offset="0x8" visible="false" />
-				<int16 name="Unknown" offset="0xC" visible="false" />
+			<reflexive name="Point Geometry" offset="0xC0" visible="true" entrySize="0x20">
+				<float32 name="Point 0 X" offset="0x0" visible="true" />
+				<float32 name="Point 0 Y" offset="0x4" visible="true" />
+				<float32 name="Point 0 Z" offset="0x8" visible="true" />
+				<int16 name="Reference Frame" offset="0xC" visible="true" />
 				<int16 name="Unknown" offset="0xE" visible="false" />
-				<float32 name="Unknown" offset="0x10" visible="false" />
-				<float32 name="Unknown" offset="0x14" visible="false" />
-				<float32 name="Unknown" offset="0x18" visible="false" />
-				<int16 name="Unknown" offset="0x1C" visible="false" />
+				<float32 name="Point 1 X" offset="0x10" visible="true" />
+				<float32 name="Point 1 Y" offset="0x14" visible="true" />
+				<float32 name="Point 1 Z" offset="0x18" visible="true" />
+				<int16 name="Reference Frame" offset="0x1C" visible="true" />
 				<int16 name="Unknown" offset="0x1E" visible="false" />
 			</reflexive>
 		</reflexive>

@@ -5,7 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">poopoo</revision>
 	</revisions>
-	<enum16 name="Object Category" offset="0x0" visible="true">
+	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
 		<option name="Vehicle" value="0x1" />
 		<option name="Weapon" value="0x2" />
@@ -71,7 +71,7 @@
 	<float32 name="Dynamic Light Sphere Offset Y" offset="0x28" visible="true" />
 	<float32 name="Dynamic Light Sphere Offset Z" offset="0x2C" visible="true" />
 	<stringId name="Default Model Variant" offset="0x30" visible="true" />
-	<tagRef name="Object Properties" offset="0x34" visible="true" />
+	<tagRef name="Model" offset="0x34" visible="true" />
 	<tagRef name="Crate Object" offset="0x44" visible="true" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
 	<reflexive name="Early Mover Properties" offset="0x64" visible="true" entrySize="0x28">
@@ -124,8 +124,8 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<stringId name="Type Name" offset="0x4" visible="true" />
-		<enum16 name="AI Size" offset="0x8" visible="true">
+		<stringId name="AI Type Name" offset="0x4" visible="true" />
+		<enum16 name="Size" offset="0x8" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Tiny" value="0x1" />
 			<option name="Small" value="0x2" />
@@ -184,7 +184,7 @@
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
 		<float32 name="Minimum Value" offset="0x10" visible="true" />
-		<dataRef name="Data" offset="0x14" visible="true" />
+		<dataRef name="Default Function" offset="0x14" visible="true" />
 		<stringid name="Scale By" offset="0x28" visible="true" />
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
@@ -205,7 +205,7 @@
 		<stringId name="Secondary Scale" offset="0x20" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
-		<tagRef name="Antenna" offset="0x0" visible="true" />
+		<tagRef name="Type" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Change Colors" offset="0xD4" visible="false" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="false" entrySize="0x20">
@@ -255,13 +255,13 @@
 			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Predicted Resources" offset="0xE0" visible="true" entrySize="0x8">
+	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x8">
 		<int16 name="Type" offset="0x0" visible="true" />
 		<int16 name="Resource Index" offset="0x2" visible="true" />
 		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
 	</reflexive>
 	<reflexive name="Multiplayer Object Properties" offset="0xEC" visible="true" entrySize="0xC4">
-		<bitfield16 name="Editor Filter" offset="0x0" visible="true">
+		<bitfield16 name="Engine Flags" offset="0x0" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
 			<bit name="Oddball" index="2" />
@@ -272,40 +272,40 @@
 			<bit name="VIP" index="7" />
 			<bit name="Infection" index="8" />
 			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
 		</bitfield16>
-		<enum8 name="Type" offset="0x2" visible="true">
-			<option name="ordinary" value="0x0" />
-			<option name="weapon" value="0x1" />
-			<option name="grenade" value="0x2" />
-			<option name="projectile" value="0x3" />
-			<option name="powerup" value="0x4" />
-			<option name="equipment" value="0x5" />
-			<option name="light land vehicle" value="0x6" />
-			<option name="heavy land vehicle" value="0x7" />
-			<option name="flying vehicle" value="0x8" />
-			<option name="teleporter 2way" value="0x9" />
-			<option name="teleporter sender" value="0xA" />
-			<option name="teleporter receiver" value="0xB" />
-			<option name="player spawn location" value="0xC" />
-			<option name="player respawn zone" value="0xD" />
-			<option name="hold spawn objective" value="0xE" />
-			<option name="capture spawn objective" value="0xF" />
-			<option name="hold destination objective" value="0x10" />
-			<option name="capture destination objective" value="0x11" />
-			<option name="hill objective" value="0x12" />
-			<option name="infection haven objective" value="0x13" />
-			<option name="territory objective" value="0x14" />
-			<option name="vip boundary objective" value="0x15" />
-			<option name="vip destination objective" value="0x16" />
-			<option name="juggernaut destination objective" value="0x17" />
+		<enum8 name="Object Type" offset="0x2" visible="true">
+			<option name="Ordinary" value="0x0" />
+			<option name="Weapon" value="0x1" />
+			<option name="Grenade" value="0x2" />
+			<option name="Projectile" value="0x3" />
+			<option name="Powerup" value="0x4" />
+			<option name="Equipment" value="0x5" />
+			<option name="Light Land Vehicle" value="0x6" />
+			<option name="Heavy Land Vehicle" value="0x7" />
+			<option name="Flying Vehicle" value="0x8" />
+			<option name="Teleporter 2Way" value="0x9" />
+			<option name="Teleporter Sender" value="0xA" />
+			<option name="Teleporter Receiver" value="0xB" />
+			<option name="Player Spawn Location" value="0xC" />
+			<option name="Player Respawn Zone" value="0xD" />
+			<option name="Hold Spawn Objective" value="0xE" />
+			<option name="Capture Spawn Objective" value="0xF" />
+			<option name="Hold Destination Objective" value="0x10" />
+			<option name="Capture Destination Objective" value="0x11" />
+			<option name="Hill Objective" value="0x12" />
+			<option name="Infection Haven Objective" value="0x13" />
+			<option name="Territory Objective" value="0x14" />
+			<option name="VIP Boundary Objective" value="0x15" />
+			<option name="VIP Destination Objective" value="0x16" />
+			<option name="Juggernaut Destination Objective" value="0x17" />
 		</enum8>
-		<int8 name="Unknown" offset="0x3" visible="false" />
+		<bitfield8 name="Teleporter Flags" offset="0x3" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Allows Projectiles" index="4" />
+		</bitfield8>
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<bitfield8 name="Flags" offset="0x5" visible="true">
 			<bit name="Editor Only" index="0" />
@@ -323,10 +323,13 @@
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
-		<int8 name="Unknown" offset="0x7" visible="false" />
+		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
+			<option name="Default (One)" value="0x0" />
+			<option name="Multiple" value="0x1" />
+		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Time" offset="0xA" visible="true" />
-		<float32 name="Radius / Width" offset="0xC" visible="true" />
+		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
 		<float32 name="Bottom" offset="0x18" visible="true" />
