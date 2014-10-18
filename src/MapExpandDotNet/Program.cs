@@ -11,9 +11,9 @@ namespace MapExpandDotNet
 	{
 		private static void Main(string[] args)
 		{
-			if (args.Length != 4)
+			if (args.Length != 3 && args.Length != 4)
 			{
-				CustomConsole.WriteLine("Usage: mapexpand <map file> <section> <page count> <verbose>");
+				CustomConsole.WriteLine("Usage: mapexpand <map file> <section> <page count> <verbose*>");
 				CustomConsole.WriteLine();
 				CustomConsole.WriteLine("Available sections:");
 				CustomConsole.WriteLine("  stringidindex");
@@ -23,7 +23,7 @@ namespace MapExpandDotNet
 				CustomConsole.WriteLine("  resource");
 				CustomConsole.WriteLine("  tag");
 				CustomConsole.WriteLine();
-				CustomConsole.WriteLine("Verbose Options:");
+				CustomConsole.WriteLine("*Verbose Options: (Optional, default is 0)");
 				CustomConsole.WriteLine("  0 - Turns off logging to a local text file.");
 				CustomConsole.WriteLine("  1 - Turns on logging to a local text file.");
 				CustomConsole.WriteLine();
@@ -37,12 +37,18 @@ namespace MapExpandDotNet
 				return;
 			}
 
-			if (args[3] != "1" && args[3] != "0")
+			var verbose = false;
+
+			if (args.Length == 4)
 			{
-				CustomConsole.WriteLine("Invalid verbose option. It must be either `0`, or `1`.");
-				return;
+				if (args[3] != "1" && args[3] != "0")
+				{
+					CustomConsole.WriteLine("Invalid verbose option. It must be either `0`, or `1`.");
+					return;
+				}
+
+				verbose = (args[3] == "1");
 			}
-			var verbose = (args[3] == "1");
 
 			CustomConsole.WriteLine("Reading...");
 
