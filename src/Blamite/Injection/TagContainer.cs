@@ -115,20 +115,24 @@ namespace Blamite.Injection
 		///     Finds the data block which has a specified original address.
 		/// </summary>
 		/// <param name="originalAddress">The original address of the data block to find.</param>
-		/// <returns>The <see cref="DataBlock" /> with the original address.</returns>
+		/// <returns>The <see cref="DataBlock" /> with the original address, or <c>null</c> if not found.</returns>
 		public DataBlock FindDataBlock(uint originalAddress)
 		{
-			return _dataBlocksByAddress[originalAddress];
+			DataBlock result;
+			_dataBlocksByAddress.TryGetValue(originalAddress, out result);
+			return result;
 		}
 
 		/// <summary>
 		///     Finds the tag which has a specified original datum index.
 		/// </summary>
 		/// <param name="originalIndex">The original datum index of the tag to find.</param>
-		/// <returns>The <see cref="ExtractedTag" /> with the original datum index.</returns>
+		/// <returns>The <see cref="ExtractedTag" /> with the original datum index, or <c>null</c> if not found.</returns>
 		public ExtractedTag FindTag(DatumIndex originalIndex)
 		{
-			return _tagsByIndex[originalIndex];
+			ExtractedTag result;
+			_tagsByIndex.TryGetValue(originalIndex, out result);
+			return result;
 		}
 
 		/// <summary>
@@ -138,27 +142,33 @@ namespace Blamite.Injection
 		/// <returns></returns>
 		public ExtractedPage FindExtractedResourcePage(int originalIndex)
 		{
-			return _extractedResourcePageByPageIndex[originalIndex];
+			ExtractedPage result;
+			_extractedResourcePageByPageIndex.TryGetValue(originalIndex, out result);
+			return result;
 		}
 
 		/// <summary>
 		///     Finds the resource page which has a specified original index.
 		/// </summary>
 		/// <param name="originalIndex">The original index of the resource page to find.</param>
-		/// <returns>The <see cref="ResourcePage" /> with the original index.</returns>
+		/// <returns>The <see cref="ResourcePage" /> with the original index, or <c>null</c> if not found.</returns>
 		public ResourcePage FindResourcePage(int originalIndex)
 		{
-			return _pagesByIndex[originalIndex];
+			ResourcePage result;
+			_pagesByIndex.TryGetValue(originalIndex, out result);
+			return result;
 		}
 
 		/// <summary>
 		///     Finds the resource which has a specified original datum index.
 		/// </summary>
 		/// <param name="originalIndex">The original datum index of the resource to find.</param>
-		/// <returns>The <see cref="ExtractedResourceInfo" /> with the original datum index.</returns>
+		/// <returns>The <see cref="ExtractedResourceInfo" /> with the original datum index, or <c>null</c> if not found.</returns>
 		public ExtractedResourceInfo FindResource(DatumIndex originalIndex)
 		{
-			return _resourcesByIndex[originalIndex];
+			ExtractedResourceInfo result;
+			_resourcesByIndex.TryGetValue(originalIndex, out result);
+			return result;
 		}
 	}
 }
