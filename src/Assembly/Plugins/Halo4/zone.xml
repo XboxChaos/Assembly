@@ -109,19 +109,19 @@
 		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="true" />
 	</reflexive>
-	<int32 name="Raw Sizes Here" offset="0x40" visible="false" />
-	<int32 name="Raw Sizes Here" offset="0x44" visible="false" />
-	<int32 name="Raw Sizes Here" offset="0x48" visible="false" />
-	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x18">
-		<int32 name="Required Page Offset" offset="0x0" visible="true" />
-		<int32 name="Optional Page Offset" offset="0x4" visible="true" />
-		<int32 name="Other Optional Page Offset" offset="0x8" visible="true" />
-		<int16 name="Required Page Index" offset="0xC" visible="true" />
-		<int16 name="Optional Page Index" offset="0xE" visible="true" />
-		<int16 name="Other Optional Page Index" offset="0x10" visible="true" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
-		<int16 name="Size DatumIndex 1" offset="0x14" visible="true" />
-		<int16 name="Size DatumIndex 2" offset="0x16" visible="true" />
+	<int32 name="Sizes Block" offset="0x40" visible="false" />
+	<int32 name="Sizes Block" offset="0x44" visible="false" />
+	<int32 name="Sizes Block" offset="0x48" visible="false" />
+	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x18" align="0x8">
+		<int32 name="Primary Page Offset" offset="0x0" visible="true" />
+		<int32 name="Secondary Page Offset" offset="0x4" visible="true" />
+		<int32 name="Tertiary Page Offset" offset="0x8" visible="true" />
+		<int16 name="Primary Page Index" offset="0xC" visible="true" />
+		<int16 name="Secondary Page Index" offset="0xE" visible="true" />
+		<int16 name="Tertiary Page Index" offset="0x10" visible="true" />
+		<int16 name="Primary Size Index" offset="0x12" visible="true" />
+		<int16 name="Secondary Size Index" offset="0x14" visible="true" />
+		<int16 name="Tertiary Size Index" offset="0x16" visible="true" />
 	</reflexive>
 	<reflexive name="Tag Resources" offset="0x58" visible="true" entrySize="0x44">
 		<tagRef name="Item" offset="0x0" visible="true" />
@@ -140,9 +140,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<reflexive name="Resource Definition Fixups" offset="0x2C" visible="true" entrySize="0x8">
 			<int32 name="Offset" offset="0x0" visible="true" />
-			<int32 name="Resource Type Index" offset="0x4" visible="true" />
+			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
 		</reflexive>
-		<reflexive name="Fixup Information Location" offset="0x38" visible="true" entrySize="0x4">
+		<reflexive name="Fixup Information Locations" offset="0x38" visible="true" entrySize="0x4">
 			<int32 name="Offset" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>

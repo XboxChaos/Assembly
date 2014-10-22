@@ -117,20 +117,20 @@
 		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="true" />
 	</reflexive>
-	<reflexive name="Raw Sizes" offset="0x40" visible="true" entrySize="0x10">
-		<int32 name="Unknown" offset="0x0" visible="true" />
-		<reflexive name="Unknown" offset="0x4" visible="true" entrySize="0x8">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
+	<reflexive name="Sizes" offset="0x40" visible="true" entrySize="0x10" align="0x8">
+		<int32 name="Overall Size" offset="0x0" visible="true" />
+		<reflexive name="Parts" offset="0x4" visible="true" entrySize="0x8" align="0x8">
+			<int32 name="Unknown" offset="0x0" visible="true" />
+			<int32 name="Size" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x10">
-		<int16 name="Required Page Index" offset="0x0" visible="true" />
-		<int16 name="Optional Page Index" offset="0x2" visible="true" />
-		<int32 name="Required Segment Offset" offset="0x4" visible="true" />
-		<int32 name="Optional Segment Offset" offset="0x8" visible="true" />
-		<int16 name="Size DatumIndex 1" offset="0xC" visible="true" />
-		<int16 name="Size DatumIndex 2" offset="0xE" visible="true" />
+	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x10" align="0x8">
+		<int16 name="Primary Page Index" offset="0x0" visible="true" />
+		<int16 name="Secondary Page Index" offset="0x2" visible="true" />
+		<int32 name="Primary Segment Offset" offset="0x4" visible="true" />
+		<int32 name="Secondary Segment Offset" offset="0x8" visible="true" />
+		<int16 name="Primary Size Index" offset="0xC" visible="true" />
+		<int16 name="Secondary Size Index" offset="0xE" visible="true" />
 	</reflexive>
 	<reflexive name="Tag Resources" offset="0x58" visible="true" entrySize="0x40">
 		<tagRef name="Parent Tag" offset="0x0" visible="true" />
@@ -139,7 +139,7 @@
 		<uint8 name="Flags" offset="0x13" visible="true" />
 		<int32 name="Fixup Information Offset" offset="0x14" visible="true" />
 		<int32 name="Fixup Information Length" offset="0x18" visible="true" />
-		<int32 name="Optional Fixup Information Offset" offset="0x1C" visible="true" />
+		<int32 name="Secondary Fixup Information Offset" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x20" visible="true" />
 		<int16 name="[play] Segment Index" offset="0x22" visible="true" />
 		<uint32 name="Unknown" offset="0x24" visible="true" />
@@ -151,7 +151,7 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		</reflexive>
 		<reflexive name="Resource Definition Fixups" offset="0x34" visible="true" entrySize="0x8">
 			<int32 name="Offset" offset="0x0" visible="true" />
-			<int32 name="Resource Type Index" offset="0x4" visible="true" />
+			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
 	<comment title="Active Pool Members">Pools are divided up into 32-bit groups per chunk.

@@ -3,18 +3,38 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Updating</revision>
 	</revisions>
-	<undefined name="Unknown" offset="0x0" visible="false" />
-	<tagRef name="Ingame Strings" offset="0x4" visible="true" />
-	<tagRef name="Respawn Count Sound" offset="0x14" visible="true" />
-	<tagRef name="Respawn Sound" offset="0x24" visible="true" />
+	<float32 name="Unknown" offset="0x0" visible="false" />
+	<tagRef name="In Game Strings" offset="0x4" visible="true" />
+	<tagRef name="Timer Sound" offset="0x14" visible="true" />
+	<tagRef name="Timer Sound Zero" offset="0x24" visible="true" />
 	<reflexive name="Survival Events" offset="0x34" visible="true" entrySize="0x108">
-		<enum32 name="Type" offset="0x0" visible="true">
+		<bitfield16 name="Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
+		<enum16 name="Type" offset="0x2" visible="true">
 			<option name="General" value="0x0" />
 			<option name="Flavor" value="0x1" />
 			<option name="Slayer" value="0x2" />
 			<option name="Capture the Flag" value="0x3" />
 			<option name="Oddball" value="0x4" />
+			<option name="Unused" value="0x5" />
 			<option name="King of the Hill" value="0x6" />
 			<option name="VIP" value="0x7" />
 			<option name="Juggernaut" value="0x8" />
@@ -22,7 +42,7 @@
 			<option name="Assault" value="0xA" />
 			<option name="Infection" value="0xB" />
 			<option name="Survival" value="0xC" />
-		</enum32>
+		</enum16>
 		<stringId name="Event" offset="0x4" visible="true" />
 		<enum16 name="Audience" offset="0x8" visible="true">
 			<option name="Cause Player" value="0x0" />
@@ -41,13 +61,39 @@
 		</enum16>
 		<stringid name="Display String" offset="0x10" visible="true" />
 		<stringid name="Display Medal" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
+		<float32 name="Display Duration" offset="0x18" visible="true" />
+		<enum16 name="Required Field" offset="0x1C" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Cause Player" value="0x1" />
+			<option name="Cause Team" value="0x2" />
+			<option name="Effect Player" value="0x3" />
+			<option name="Effect Team" value="0x4" />
+		</enum16>
+		<enum16 name="Excluded Audience" offset="0x1E" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Cause Player" value="0x1" />
+			<option name="Cause Team" value="0x2" />
+			<option name="Effect Player" value="0x3" />
+			<option name="Effect Team" value="0x4" />
+		</enum16>
+		<enum16 name="Required Field 2" offset="0x20" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Cause Player" value="0x1" />
+			<option name="Cause Team" value="0x2" />
+			<option name="Effect Player" value="0x3" />
+			<option name="Effect Team" value="0x4" />
+		</enum16>
+		<enum16 name="Excluded Audience 2" offset="0x22" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Cause Player" value="0x1" />
+			<option name="Cause Team" value="0x2" />
+			<option name="Effect Player" value="0x3" />
+			<option name="Effect Team" value="0x4" />
+		</enum16>
+		<stringid name="Primary String" offset="0x24" visible="true" />
+		<int32 name="Primary String Duration" offset="0x28" visible="true" />
+		<stringid name="Plural Display String" offset="0x2C" visible="true" />
+		<float32 name="Sound Delay (Announcer Only)" offset="0x30" visible="true" />
 		<bitfield16 name="Sound Flags" offset="0x34" visible="true">
 			<bit name="Announcer Sound" index="0" />
 			<bit name="Bit 1" index="1" />
