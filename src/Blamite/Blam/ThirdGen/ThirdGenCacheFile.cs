@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam.LanguagePack;
 using Blamite.Blam.Resources;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
 using Blamite.Blam.ThirdGen.LanguagePack;
 using Blamite.Blam.ThirdGen.Resources;
+using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Shaders;
 using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
@@ -309,6 +311,27 @@ namespace Blamite.Blam.ThirdGen
 
 				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <returns></returns>
+		public ISoundResourceGestalt LoadSoundResourceGestaltData(IReader reader)
+		{
+			if (_tags == null || !_buildInfo.Layouts.HasLayout("sound resource gestalt"))
+				return null;
+
+			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
+
+			var ugh = _tags.FindTagByClass("ugh!");
+			if (ugh == null)
+				return null;
+
+			reader.SeekTo(ugh.MetaLocation.AsOffset());
+			var values = StructureReader.ReadStructure(reader, layout);
+			return new ThirdGenSoundResourceGestalt(values, reader, MetaArea, _buildInfo);
 		}
 
 		private void LoadScriptFiles(IReader reader)

@@ -22,12 +22,24 @@ namespace Blamite.Blam.Resources
 		}
 
 		/// <summary>
-		///     Extracts and decompresses a page, copying it to an output stream.
+		///     Extracts a page, copying it to an output stream.
 		/// </summary>
 		/// <param name="page">The page to decompress and extract.</param>
 		/// <param name="inStream">The Stream open on the extractor's cache file to read the page from.</param>
 		/// <param name="outStream">The Stream to write the extracted page to.</param>
 		public void ExtractPage(ResourcePage page, Stream inStream, Stream outStream)
+		{
+			inStream.Position = _rawTable.Offset + page.Offset;
+			StreamUtil.Copy(inStream, outStream, page.CompressedSize);
+		}
+
+		/// <summary>
+		///     Extracts and decompresses a page, copying it to an output stream.
+		/// </summary>
+		/// <param name="page">The page to decompress and extract.</param>
+		/// <param name="inStream">The Stream open on the extractor's cache file to read the page from.</param>
+		/// <param name="outStream">The Stream to write the extracted page to.</param>
+		public void ExtractDecompressPage(ResourcePage page, Stream inStream, Stream outStream)
 		{
 			inStream.Position = _rawTable.Offset + page.Offset;
 

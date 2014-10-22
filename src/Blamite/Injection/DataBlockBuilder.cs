@@ -65,14 +65,13 @@ namespace Blamite.Injection
 		{
 			// Read the tag data in based off the base size
 			_reader.SeekTo(_tag.MetaLocation.AsOffset());
-			byte[] data = _reader.ReadBlock(baseSize);
+			var data = _reader.ReadBlock(baseSize);
 
 			// Create a block for it and push it onto the block stack
 			var block = new DataBlock(_tag.MetaLocation.AsPointer(), 1, 4, data);
 			DataBlocks.Add(block);
 
-			var blockList = new List<DataBlock>();
-			blockList.Add(block);
+			var blockList = new List<DataBlock> {block};
 			_blockStack.Push(blockList);
 
 			return true;
@@ -112,13 +111,13 @@ namespace Blamite.Injection
 		{
 			// haxhaxhaxhax
 			// TODO: Fix this if/when cross-tag references are added to plugins
-			string lowerName = name.ToLower();
+			var lowerName = name.ToLower();
 			if (lowerName.Contains("asset salt")
 			    || lowerName.Contains("resource salt")
 			    || lowerName.Contains("asset datum salt")
 			    || lowerName.Contains("resource datum salt"))
 			{
-				ReadReferences(offset, (b, o) => ReadResourceFixup(b, o));
+				ReadReferences(offset, ReadResourceFixup);
 			}
 		}
 
@@ -131,13 +130,13 @@ namespace Blamite.Injection
 		{
 			// haxhaxhaxhax
 			// TODO: Fix this if/when cross-tag references are added to plugins
-			string lowerName = name.ToLower();
+			var lowerName = name.ToLower();
 			if (lowerName.Contains("asset index")
 			    || lowerName.Contains("resource index")
 			    || lowerName.Contains("asset datum")
 			    || lowerName.Contains("resource datum"))
 			{
-				ReadReferences(offset, (b, o) => ReadResourceFixup(b, o));
+				ReadReferences(offset, ReadResourceFixup);
 			}
 		}
 
@@ -164,7 +163,7 @@ namespace Blamite.Injection
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)
 		{
-			ReadReferences(offset, (b, o) => ReadStringID(b, o));
+			ReadReferences(offset, ReadStringId);
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
@@ -252,12 +251,9 @@ namespace Blamite.Injection
 		{
 			_reflexiveBlocks = new List<DataBlock>();
 			ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize, align));
-			if (_reflexiveBlocks.Count > 0)
-			{
-				_blockStack.Push(_reflexiveBlocks);
-				return true;
-			}
-			return false;
+			if (_reflexiveBlocks.Count <= 0) return false;
+			_blockStack.Push(_reflexiveBlocks);
+			return true;
 		}
 
 		public void LeaveReflexive()
@@ -297,11 +293,11 @@ namespace Blamite.Injection
 
 		private void ReadReferences(uint offset, Action<DataBlock, uint> processor)
 		{
-			List<DataBlock> blocks = _blockStack.Peek();
-			foreach (DataBlock block in blocks)
+			var blocks = _blockStack.Peek();
+			foreach (var block in blocks)
 			{
-				uint currentOffset = offset;
-				for (int i = 0; i < block.EntryCount; i++)
+				var currentOffset = offset;
+				for (var i = 0; i < block.EntryCount; i++)
 				{
 					processor(block, currentOffset);
 					currentOffset += (uint) block.EntrySize;
@@ -309,37 +305,34 @@ namespace Blamite.Injection
 			}
 		}
 
-		private void ReadStringID(DataBlock block, uint offset)
+		private void ReadStringId(DataBlock block, uint offset)
 		{
 			SeekToOffset(block, offset);
 			var sid = new StringID(_reader.ReadUInt32());
-			if (sid != StringID.Null)
-			{
-				string str = _cacheFile.StringIDs.GetString(sid);
-				if (str != null)
-				{
-					var fixup = new DataBlockStringIDFixup(str, (int) offset);
-					block.StringIDFixups.Add(fixup);
-				}
-			}
+			if (sid == StringID.Null) return;
+
+			var str = _cacheFile.StringIDs.GetString(sid);
+			if (str == null) return;
+
+			var fixup = new DataBlockStringIDFixup(str, (int) offset);
+			block.StringIDFixups.Add(fixup);
 		}
 
 		private void ReadResourceFixup(DataBlock block, uint offset)
 		{
 			SeekToOffset(block, offset);
 			var index = new DatumIndex(_reader.ReadUInt32());
-			if (index.IsValid)
-			{
-				var fixup = new DataBlockResourceFixup(index, (int) offset);
-				block.ResourceFixups.Add(fixup);
-				ReferencedResources.Add(index);
-			}
+			if (!index.IsValid) return;
+
+			var fixup = new DataBlockResourceFixup(index, (int) offset);
+			block.ResourceFixups.Add(fixup);
+			ReferencedResources.Add(index);
 		}
 
 		private DataBlock ReadDataBlock(uint pointer, int entrySize, int entryCount, int align)
 		{
 			_reader.SeekTo(_cacheFile.MetaArea.PointerToOffset(pointer));
-			byte[] data = _reader.ReadBlock(entrySize*entryCount);
+			var data = _reader.ReadBlock(entrySize*entryCount);
 
 			var block = new DataBlock(pointer, entryCount, align, data);
 			DataBlocks.Add(block);
@@ -356,7 +349,7 @@ namespace Blamite.Injection
 			if (withClass)
 			{
 				// Class info - do a flexible structure read to get the index
-				StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
+				var values = StructureReader.ReadStructure(_reader, _tagRefLayout);
 				var classMagic = (int) values.GetInteger("class magic");
 				index = new DatumIndex(values.GetInteger("datum index"));
 				fixupOffset = (int) offset + _tagRefLayout.GetFieldOffset("datum index");
@@ -370,51 +363,48 @@ namespace Blamite.Injection
 				valid = _cacheFile.Tags.IsValidIndex(index);
 			}
 
-			if (valid)
-			{
-				// Add the tagref fixup to the block
-				var fixup = new DataBlockTagFixup(index, fixupOffset);
-				block.TagFixups.Add(fixup);
-				ReferencedTags.Add(index);
-			}
+			if (!valid) return;
+
+			// Add the tagref fixup to the block
+			var fixup = new DataBlockTagFixup(index, fixupOffset);
+			block.TagFixups.Add(fixup);
+			ReferencedTags.Add(index);
 		}
 
 		private void ReadDataReference(DataBlock block, uint offset, int align)
 		{
 			// Read the size and pointer
 			SeekToOffset(block, offset);
-			StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
+			var values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 			var size = (int) values.GetInteger("size");
-			uint pointer = values.GetInteger("pointer");
+			var pointer = values.GetInteger("pointer");
 
-			if (size > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, size))
-			{
-				// Read the block and create a fixup for it
-				ReadDataBlock(pointer, size, 1, align);
-				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _dataRefLayout.GetFieldOffset("pointer"));
-				block.AddressFixups.Add(fixup);
-			}
+			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(pointer, size)) return;
+
+			// Read the block and create a fixup for it
+			ReadDataBlock(pointer, size, 1, align);
+			var fixup = new DataBlockAddressFixup(pointer, (int) offset + _dataRefLayout.GetFieldOffset("pointer"));
+			block.AddressFixups.Add(fixup);
 		}
 
 		private void ReadReflexive(DataBlock block, uint offset, uint entrySize, int align)
 		{
 			// Read the count and pointer
 			SeekToOffset(block, offset);
-			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
+			var values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var count = (int) values.GetInteger("entry count");
-			uint pointer = values.GetInteger("pointer");
+			var pointer = values.GetInteger("pointer");
 
-			if (count > 0 && _cacheFile.MetaArea.ContainsBlockPointer(pointer, (int) (count*entrySize)))
-			{
-				DataBlock newBlock = ReadDataBlock(pointer, (int) entrySize, count, align);
+			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(pointer, (int) (count*entrySize))) return;
 
-				// Now create a fixup for the block
+			var newBlock = ReadDataBlock(pointer, (int)entrySize, count, align);
+
+			// Now create a fixup for the block
 				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
-				block.AddressFixups.Add(fixup);
+			block.AddressFixups.Add(fixup);
 
-				// Add it to _reflexiveBlocks so it'll be recursed into
-				_reflexiveBlocks.Add(newBlock);
-			}
+			// Add it to _reflexiveBlocks so it'll be recursed into
+			_reflexiveBlocks.Add(newBlock);
 		}
 
 		private void ReadShader(DataBlock block, uint offset, ShaderType type)
@@ -442,7 +432,7 @@ namespace Blamite.Injection
 
 		private void SeekToOffset(DataBlock block, uint offset)
 		{
-			int baseOffset = _cacheFile.MetaArea.PointerToOffset(block.OriginalAddress);
+			var baseOffset = _cacheFile.MetaArea.PointerToOffset(block.OriginalAddress);
 			_reader.SeekTo(baseOffset + offset);
 		}
 	}

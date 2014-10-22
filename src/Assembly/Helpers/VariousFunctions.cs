@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -97,8 +98,7 @@ namespace Assembly.Helpers
 				return new Bitmap(bitmap);
 			}
 		}
-
-
+		
 		public static byte[] StreamToByteArray(Stream input)
 		{
 			var buffer = new byte[16*1024];
@@ -113,6 +113,33 @@ namespace Assembly.Helpers
 			}
 		}
 
+		/// <summary>
+		/// Silently executes a program and waits for it to finish.
+		/// </summary>
+		/// <param name="path">The path to the program to execute.</param>
+		/// <param name="arguments">Command-line arguments to pass to the program.</param>
+		/// <param name="workingDirectory">The working directory to run in the program in.</param>
+		public static string RunProgramSilently(string path, string arguments, string workingDirectory)
+		{
+			var info = new ProcessStartInfo(path, arguments)
+			{
+				CreateNoWindow = true,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true,
+				UseShellExecute = false,
+				WorkingDirectory = workingDirectory
+			};
+
+
+			var proc = Process.Start(info);
+			if (proc == null)
+				throw new InvalidOperationException();
+			proc.WaitForExit();
+
+
+			return proc.StandardError.ReadToEnd();
+		}
+		
 		public static bool CheckIfFileLocked(FileInfo file)
 		{
 			FileStream stream = null;

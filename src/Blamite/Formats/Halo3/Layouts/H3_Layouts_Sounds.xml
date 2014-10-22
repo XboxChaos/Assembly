@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+	<!-- snd! (sound)-->
+	<layout for="sound">
+		<int16 name="flags" offset="0x0" />
+		<byte name="sound class" offset="0x2" />
+		<byte name="sample rate" offset="0x3" />
+		<byte name="encoding" offset="0x4" />
+		<byte name="codec index" offset="0x5" />
+		<int16 name="playback index" offset="0x6" />
+		<byte name="permutation chunk count" offset="0x8" />
+		<int16 name="first pitch range index" offset="0xC" />
+		<byte name="pitch range index" offset="0xE" />
+		<byte name="scale index" offset="0xF" />
+		<byte name="promotion index" offset="0x10" />
+		<byte name="custom playback index" offset="0x11" />
+		<int16 name="extra info index" offset="0x12" />
+		<uint32 name="resource datum index" offset="0x18" />
+		<int32 name="max playtime" offset="0x1C" />
+	</layout>
+
+	<!-- ugh! (sound_cache_file_gestalt) -->
+	<layout for="sound resource gestalt">
+		<int32 name="number of platform codecs" offset="0x00" />
+		<uint32 name="platform codecs table address" offset="0x04" />
+		
+		<int32 name="number of playback parameters" offset="0x0C" />
+		<uint32 name="playback parameters table address" offset="0x10" />
+
+		<int32 name="number of scales" offset="0x18" />
+		<uint32 name="scales table address" offset="0x1C" />
+		
+		<int32 name="number of sound names" offset="0x24" />
+		<uint32 name="sound name table address" offset="0x28" />
+		
+		<int32 name="number of pitch range paramters" offset="0x30" />
+		<uint32 name="pitch range paramters table address" offset="0x34" />
+
+		<int32 name="number of playbacks" offset="0x3C" />
+		<uint32 name="playback table address" offset="0x40" />
+
+		<int32 name="number of sound permutations" offset="0x48" />
+		<uint32 name="sound permutation table address" offset="0x4C" />
+
+		<int32 name="number of custom playbacks" offset="0x54" />
+		<uint32 name="custom playback table address" offset="0x58" />
+
+		<int32 name="number of languages" offset="0x60" />
+		<uint32 name="languages table address" offset="0x64" />
+
+		<int32 name="number of permutation chunks" offset="0x94" />
+		<uint32 name="permutation chunk table address" offset="0x98" />
+
+		<int32 name="number of promotions" offset="0xA0" />
+		<uint32 name="promotions table address" offset="0xA4" />
+	</layout>
+
+	<layout for="sound platform codecs" size="0x3">
+		<byte name="unknown1" offset="0x0" />
+		<byte name="channel" offset="0x1" />
+		<byte name="unknown2" offset="0x2" />
+	</layout>
+	
+	<layout for="sound playback parameters" size="0x44">
+		<int16 name="unknown" offset="0x0" />
+		<int16 name="unknwon 1" offset="0x02" />
+		<int32 name="minimum distance" offset="0x04" />
+		<int32 name="distance 2" offset="0x08" />
+		<int32 name="distance 3" offset="0x0C" />
+		<int32 name="maximum distance" offset="0x10" />
+		<int32 name="unknown 4" offset="0x14" />
+		<int32 name="unknown 5" offset="0x18" />
+		<int32 name="gain base" offset="0x1C" />
+		<int32 name="gain variance" offset="0x20" />
+		<int16 name="random pitch bounds min" offset="0x24" />
+		<int16 name="random pitch bounds max" offset="0x26" />
+		<int32 name="inner cone angle" offset="0x28" />
+		<int32 name="outer cone angle" offset="0x2C" />
+		<int32 name="outer cone gain" offset="0x30" />
+		<int32 name="flags" offset="0x34" />
+		<int32 name="azimuth" offset="0x38" />
+		<int32 name="positional gain" offset="0x3C" />
+		<int32 name="first person gain" offset="0x40" />
+	</layout>
+	
+	<layout for="sound scales" size="0x14">
+		<int32 name="gain min" offset="0x0" />
+		<int32 name="gain max" offset="0x4" />
+		<int16 name="pitch min" offset="0x8" />
+		<int16 name="pitch max" offset="0xA" />
+		<int32 name="skip fraction min" offset="0xC" />
+		<int32 name="skip fraction max" offset="0x10" />
+	</layout>
+
+	<layout for="sound names" size="0x4">
+		<int32 name="name index" offset="0x0" />
+	</layout>
+	
+	<layout for="sound pitch range paramters" size="0xE">
+		<int16 name="natural pitch" offset="0x0" />
+		<int16 name="bend min" offset="0x2" />
+		<int16 name="bend max" offset="0x4" />
+		<int16 name="max gain pitch min" offset="0x6" />
+		<int16 name="max gain pitch max" offset="0x8" />
+		<int16 name="unknown min" offset="0xA" />
+		<int16 name="unknown max" offset="0xC" />
+	</layout>
+	
+	<layout for="sound playbacks" size="0xC">
+		<uint16 name="sound name index" offset="0x0" />
+		<uint16 name="parameters index" offset="0x2" />
+		<uint16 name="unknown1" offset="0x4" />
+		<int16 name="first runtime permutation flag index" offset="0x6" />
+		<int16 name="encoded permutation count" offset="0x8" />
+		<uint16 name="first permutation index" offset="0xA" />
+	</layout>
+	
+	<layout for="sound permutations" size="0x10">
+		<int16 name="sound name index" offset="0x0" />
+		<int16 name="encoded skip fraction" offset="0x2" />
+		<byte name="encoded gain" offset="0x4" />
+		<byte name="permutation info index" offset="0x5" />
+		<int16 name="language neutral time" offset="0x6" />
+		<uint32 name="raw chunk index" offset="0x8" />
+		<uint16 name="chunk count" offset="0xC" />
+		<int16 name="encoded permutation index" offset="0xE" />
+	</layout>
+
+	<layout for="sound custom playbacks" size="0x48">
+		<int32 name="unknown1" offset="0x00" />
+		<int32 name="unknown2" offset="0x04" />
+		<int32 name="unknown3" offset="0x08" />
+		<int32 name="unknown4" offset="0x0C" />
+		<int32 name="unknown5" offset="0x10" />
+		<int32 name="unknown6" offset="0x14" />
+
+		<int32 name="number of platform sound filters" offset="0x18" />
+		<uint32 name="platform sound filter table address" offset="0x1C" />
+		
+		<int32 name="unknown7" offset="0x24" />
+		<int32 name="unknown8" offset="0x28" />
+		<int32 name="unknown9" offset="0x2C" />
+		<int32 name="unknown10" offset="030" />
+		<int32 name="unknown11" offset="0x34" />
+		<int32 name="unknown12" offset="0x38" />
+		<int32 name="unknown13" offset="0x3C" />
+		<int32 name="unknown14" offset="0x40" />
+		<int32 name="unknown15" offset="0x44" />
+	</layout>
+	<layout for="sound platform sound filter" size="0x48">
+		<int32 name="unknown1" offset="0x00" />
+		<int32 name="unknown2" offset="0x04" />
+		<int32 name="unknown3" offset="0x08" />
+		<int32 name="unknown4" offset="0x0C" />
+		<int32 name="unknown5" offset="0x10" />
+		<int32 name="unknown6" offset="0x14" />
+		<int32 name="unknown1" offset="0x18" />
+		<int32 name="unknown2" offset="0x1C" />
+		<int32 name="unknown3" offset="0x20" />
+		<int32 name="unknown4" offset="0x24" />
+		<int32 name="unknown5" offset="0x28" />
+		<int32 name="unknown6" offset="0x2C" />
+		<int32 name="unknown1" offset="0x30" />
+		<int32 name="unknown2" offset="0x34" />
+		<int32 name="unknown3" offset="0x38" />
+		<int32 name="unknown4" offset="0x3C" />
+		<int32 name="unknown5" offset="0x40" />
+		<int32 name="unknown6" offset="0x44" />
+	</layout>
+
+	<layout for="sound languages" size="0x1C">
+		<int32 name="languages index" offset="0x00" />
+
+		<int32 name="number of language unknown a" offset="0x04" />
+		<uint32 name="language unknown a table address" offset="0x08" />
+
+		<int32 name="number of language unknown b" offset="0x10" />
+		<uint32 name="language unknown b table address" offset="0x14" />
+	</layout>
+	<layout for="sound language unknown a" size="0x2">
+		<int16 name="unknown" offset="0x00" />
+	</layout>
+	<layout for="sound language unknown b" size="0x2">
+		<int16 name="unknown a first chunk" offset="0x00" />
+		<int16 name="unknown b chunk count" offset="0x02" />
+	</layout>
+
+	<layout for="sound permutation chunks" size="0x14">
+		<uint32 name="offset" offset="0x0" />
+		<uint16 name="size" offset="0x6" />
+		<int32 name="runtime index" offset="0x8" />
+	</layout>
+
+	<layout for="sound promotions" size="0x24">
+		<int32 name="number of promotion rules" offset="0x00" />
+		<uint32 name="promotion rules table address" offset="0x04" />
+
+		<int32 name="number of promotion runtime timers" offset="0x0C" />
+		<uint32 name="promotion runtime timers table address" offset="0x10" />
+
+		<int32 name="unknown1" offset="0x18" />
+		<int32 name="unknown2" offset="0x1C" />
+		<int32 name="unknown3" offset="0x20" />
+	</layout>
+	<layout for="sound promotion rules" size="0x10">
+		<int16 name="pitch range index" offset="0x00" />
+		<int32 name="maximum playing count" offset="0x02" />
+		<int32 name="suppression time" offset="0x04" />
+		<int32 name="unknown1" offset="0x08" />
+		<int32 name="unknown2" offset="0x0C" />
+	</layout>
+	<layout for="sound promotion runtime timers" size="0x04">
+		<int32 name="unknown" offset="0x00" />
+	</layout>
+	
+	<!-- TODO: Map Extra Info -->
+</layouts>
