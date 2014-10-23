@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Blamite.Blam;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
@@ -33,7 +33,7 @@ namespace StringDump
 
 			EngineDatabase engineDb = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
 			ICacheFile cacheFile;
-			ILanguagePack locales;
+			LanguagePack locales;
 			using (IReader reader = new EndianReader(File.OpenRead(mapPath), Endian.BigEndian))
 			{
 				Console.WriteLine("Loading cache file...");

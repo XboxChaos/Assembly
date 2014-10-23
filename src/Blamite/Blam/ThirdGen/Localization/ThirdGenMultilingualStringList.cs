@@ -2,7 +2,7 @@
 using Blamite.Serialization;
 using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen.LanguagePack
+namespace Blamite.Blam.ThirdGen.Localization
 {
 	/// <summary>
 	///     A range of strings in a string table.
@@ -64,10 +64,16 @@ namespace Blamite.Blam.ThirdGen.LanguagePack
 
 		public ThirdGenMultilingualStringList(IReader reader, ITag tag, EngineDescription buildInfo)
 		{
-			Tag = tag;
 			_layout = buildInfo.Layouts.GetLayout("unic");
-
+			Tag = tag;
 			Load(reader);
+		}
+
+		public ThirdGenMultilingualStringList(ITag tag, StringRange[] ranges, EngineDescription buildInfo)
+		{
+			_layout = buildInfo.Layouts.GetLayout("unic");
+			Tag = tag;
+			Ranges = ranges;
 		}
 
 		/// <summary>

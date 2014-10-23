@@ -5,6 +5,7 @@ using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.IO;
 using Blamite.Util;
+using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {
@@ -24,6 +25,7 @@ namespace Blamite.Injection
 			new Dictionary<ExtractedResourceInfo, DatumIndex>();
 
 		private readonly Dictionary<ExtractedTag, DatumIndex> _tagIndices = new Dictionary<ExtractedTag, DatumIndex>();
+		private CachedLanguagePackLoader _languageCache;
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
 		
@@ -32,6 +34,7 @@ namespace Blamite.Injection
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
 			_cacheFile = cacheFile;
+			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
 			_container = container;
 		}
 
@@ -77,6 +80,8 @@ namespace Blamite.Injection
 				_zoneSets.SaveChanges(stream);
 				_zoneSets = null;
 			}
+			_languageCache.SaveAll(stream);
+			_languageCache.ClearCache();
 			_cacheFile.SaveChanges(stream);
 		}
 
@@ -113,8 +118,8 @@ namespace Blamite.Injection
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
 
-			// Write the data but with a hack to skip the address check so tags with shared addresses get filled in and not left blank
-			WriteDataBlock(tagData, newTag.MetaLocation, stream, true);
+			// Write the data
+			WriteDataBlock(tagData, newTag.MetaLocation, stream, newTag);
 
 			// Make the tag load
 			LoadZoneSets(stream);
@@ -290,11 +295,10 @@ namespace Blamite.Injection
 			return false;
 		}
 
-		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream, bool isTag = false)
+		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream, ITag tag = null)
 		{
-			if (!isTag)
-				if (_dataBlockAddresses.ContainsKey(block)) // Don't write anything if the block has already been written
-					return;
+			if (tag == null && _dataBlockAddresses.ContainsKey(block)) // Don't write anything if the block has already been written
+				return;
 
 			// Associate the location with the block
 			_dataBlockAddresses[block] = location.AsPointer();
@@ -310,6 +314,8 @@ namespace Blamite.Injection
 				FixTagReferences(block, bufferWriter, stream);
 				FixResourceReferences(block, bufferWriter, stream);
 				FixStringIdReferences(block, bufferWriter);
+				if (tag != null)
+					FixUnicListReferences(block, tag, bufferWriter, stream);
 
 				// Write the buffer to the file
 				stream.SeekTo(location.AsOffset());
@@ -354,14 +360,7 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlockStringIDFixup fixup in block.StringIDFixups)
 			{
-				// Try to find the string, and if it's not found, inject it
-				StringID newSID = _cacheFile.StringIDs.FindStringID(fixup.OriginalString);
-				if (newSID == StringID.Null)
-				{
-					newSID = _cacheFile.StringIDs.AddString(fixup.OriginalString);
-					_injectedStrings.Add(newSID);
-				}
-
+				StringID newSID = InjectStringID(fixup.OriginalString);
 				buffer.SeekTo(fixup.WriteOffset);
 				buffer.WriteUInt32(newSID.Value);
 			}
@@ -374,6 +373,33 @@ namespace Blamite.Injection
 				stream.SeekTo(baseOffset.AsOffset() + fixup.WriteOffset);
 				_cacheFile.ShaderStreamer.ImportShader(fixup.Data, stream);
 			}
+		}
+
+		private void FixUnicListReferences(DataBlock block, ITag tag, IWriter buffer, IStream stream)
+		{
+			foreach (DataBlockUnicListFixup fixup in block.UnicListFixups)
+			{
+				var pack = _languageCache.LoadLanguage((GameLanguage)fixup.LanguageIndex, stream);
+				var stringList = new LocalizedStringList(tag);
+				foreach (var str in fixup.Strings)
+				{
+					var id = InjectStringID(str.StringID);
+					stringList.Strings.Add(new LocalizedString(id, str.String));
+				}
+				pack.AddStringList(stringList);
+			}
+		}
+
+		private StringID InjectStringID(string str)
+		{
+			// Try to find the string, and if it's not found, inject it
+			StringID newSID = _cacheFile.StringIDs.FindStringID(str);
+			if (newSID == StringID.Null)
+			{
+				newSID = _cacheFile.StringIDs.AddString(str);
+				_injectedStrings.Add(newSID);
+			}
+			return newSID;
 		}
 
 		private void LoadResourceTable(IReader reader)

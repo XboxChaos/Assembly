@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Shaders;
-using Blamite.Blam.ThirdGen.LanguagePack;
+using Blamite.Blam.ThirdGen.Localization;
 using Blamite.Blam.ThirdGen.Resources;
 using Blamite.Blam.ThirdGen.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Shaders;

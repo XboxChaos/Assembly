@@ -10,7 +10,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
@@ -30,7 +30,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private readonly IStreamManager _streamManager;
 		private readonly LocaleSymbolCollection _symbols;
 		private LocalizedStringList _currentGroup;
-		private ILanguagePack _currentPack;
+		private LanguagePack _currentPack;
 		private string _searchText;
 		private LocalizedStringTableView _stringView;
 		private List<StringEntry> _strings;
@@ -252,7 +252,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 			using (IStream stream = _streamManager.OpenReadWrite())
 			{
-				_currentPack.SaveChanges(stream);
+				_cache.Languages.SaveLanguage(_currentPack, stream);
 				_cache.SaveChanges(stream);
 			}
 		}

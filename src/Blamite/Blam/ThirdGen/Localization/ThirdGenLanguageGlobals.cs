@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Serialization;
 using Blamite.IO;
 
-namespace Blamite.Blam.ThirdGen.LanguagePack
+namespace Blamite.Blam.ThirdGen.Localization
 {
 	/// <summary>
 	///     Loads language data from MATG and PATG tags.

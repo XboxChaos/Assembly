@@ -6,7 +6,7 @@ using Blamite.Blam.Shaders;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Plugins;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {
@@ -22,7 +22,7 @@ namespace Blamite.Injection
 		private readonly StructureLayout _tagBlockLayout;
 		private readonly ITag _tag;
 		private readonly StructureLayout _tagRefLayout;
-		private Dictionary<int, ILanguagePack> _languagePacks = new Dictionary<int, ILanguagePack>();
+		private CachedLanguagePackLoader _languageCache;
 		private List<DataBlock> _reflexiveBlocks;
 
 		/// <summary>
@@ -37,6 +37,7 @@ namespace Blamite.Injection
 			_reader = reader;
 			_tag = tag;
 			_cacheFile = cacheFile;
+			_languageCache = new CachedLanguagePackLoader(_cacheFile.Languages);
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
@@ -285,8 +286,8 @@ namespace Blamite.Injection
 				var strings = LoadStringList(i, _tag);
 				if (strings == null)
 					continue;
-				var fixupStrings = strings.Strings.Select(s => CreateFixupString(s)).ToArray();
-				var fixup = new DataBlockUnicListFixup((int)(offset + i * 4), fixupStrings);
+				var fixupStrings = strings.Strings.Select(CreateFixupString).ToArray();
+				var fixup = new DataBlockUnicListFixup(i, (int)(offset + i * 4), fixupStrings);
 				_blockStack.Peek()[0].UnicListFixups.Add(fixup); // These will never be in tag blocks and I don't want to deal with it
 			}
 		}
@@ -400,7 +401,7 @@ namespace Blamite.Injection
 			var newBlock = ReadDataBlock(pointer, (int)entrySize, count, align);
 
 			// Now create a fixup for the block
-				var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
+			var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
 			block.AddressFixups.Add(fixup);
 
 			// Add it to _reflexiveBlocks so it'll be recursed into
@@ -415,19 +416,12 @@ namespace Blamite.Injection
 			block.ShaderFixups.Add(fixup);
 		}
 
-		private LocalizedStringList LoadStringList(int languageIndex, ITag stringList)
+		private LocalizedStringList LoadStringList(int languageIndex, ITag tag)
 		{
-			ILanguagePack result;
-			if (!_languagePacks.TryGetValue(languageIndex, out result))
-			{
-				if (_cacheFile.Languages == null)
-					return null;
-				result = _cacheFile.Languages.LoadLanguage((GameLanguage)languageIndex, _reader);
-				if (result == null)
-					return null;
-				_languagePacks[languageIndex] = result;
-			}
-			return result.StringLists.FirstOrDefault(l => l.SourceTag == stringList);
+			var pack = _languageCache.LoadLanguage((GameLanguage)languageIndex, _reader);
+			if (pack == null)
+				return null;
+			return pack.FindStringListByTag(tag);
 		}
 
 		private void SeekToOffset(DataBlock block, uint offset)

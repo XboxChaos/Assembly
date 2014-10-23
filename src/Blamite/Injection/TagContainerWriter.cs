@@ -23,7 +23,7 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlock dataBlock in tags.DataBlocks)
 			{
-				container.StartBlock("data", 5);
+				container.StartBlock("data", 6);
 
 				// Main data
 				writer.WriteUInt32(dataBlock.OriginalAddress);
@@ -83,6 +83,7 @@ namespace Blamite.Injection
 				writer.WriteInt32(dataBlock.UnicListFixups.Count);
 				foreach (DataBlockUnicListFixup unicList in dataBlock.UnicListFixups)
 				{
+					writer.WriteInt32(unicList.LanguageIndex);
 					writer.WriteInt32(unicList.WriteOffset);
 					writer.WriteInt32(unicList.Strings.Length);
 					foreach (UnicListFixupString str in unicList.Strings)

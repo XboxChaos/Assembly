@@ -17,7 +17,7 @@ using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using AvalonDock.Layout;
 using Blamite.Blam;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Scripting;
 using Blamite.Serialization;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Blamite.Blam.LanguagePack
+namespace Blamite.Blam.Localization
 {
 	/// <summary>
 	///     Contains localized strings loaded from a tag.

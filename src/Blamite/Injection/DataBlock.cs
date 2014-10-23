@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {
@@ -169,11 +169,17 @@ namespace Blamite.Injection
 		/// </summary>
 		/// <param name="writeOffset">The write offset.</param>
 		/// <param name="strings">The strings.</param>
-		public DataBlockUnicListFixup(int writeOffset, UnicListFixupString[] strings)
+		public DataBlockUnicListFixup(int languageIndex, int writeOffset, UnicListFixupString[] strings)
 		{
+			LanguageIndex = languageIndex;
 			WriteOffset = writeOffset;
 			Strings = strings;
 		}
+
+		/// <summary>
+		/// Gets the index of the language that the fixup contains strings for.
+		/// </summary>
+		public int LanguageIndex { get; private set; }
 
 		/// <summary>
 		/// Gets the offset to write the updated list info to.
