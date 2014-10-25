@@ -121,6 +121,9 @@ namespace Assembly.Windows
 				if (tab != null && tab.Title == "Start Page")
 					((StartPage) tab.Content).UpdateRecents();
 
+				if (tab != null && tab.Title == "Imgur History")
+					((ImgurHistoryPage)tab.Content).UpdateHistory();
+
 				if (tab == null)
 				{
 					documentManager.SelectedContentIndex = 0;
@@ -168,6 +171,11 @@ namespace Assembly.Windows
 		private void menuViewStartPage_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.StartPage);
+		}
+
+		private void menuViewImgurHistoryPage_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.ImgurHistory);
 		}
 
 		private void menuPatches_Click(object sender, RoutedEventArgs e)
@@ -484,6 +492,7 @@ namespace Assembly.Windows
 			PluginGenerator,
 			Welcome,
 			PluginConverter,
+			ImgurHistory,
 
 			MemoryManager,
 			VoxelConverter,
@@ -681,6 +690,10 @@ namespace Assembly.Windows
 				case TabGenre.PluginConverter:
 					tab.Title = "Plugin Converter";
 					tab.Content = new HaloPluginConverter();
+					break;
+				case TabGenre.ImgurHistory:
+					tab.Title = "Imgur History";
+					tab.Content = new ImgurHistoryPage();
 					break;
 
 

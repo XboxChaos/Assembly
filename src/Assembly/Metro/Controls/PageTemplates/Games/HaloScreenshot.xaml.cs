@@ -138,7 +138,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_imageID = null;
 			}
 			else
+			{
 				MetroImgurUpload.Show(_imageID);
+
+				string _thumburl = string.Format("http://i.imgur.com/{0}b.jpg", _imageID);
+				string _url = string.Format("http://i.imgur.com/{0}.jpg", _imageID);
+
+				Dispatcher.Invoke(new Action(delegate
+				{
+					ImgurHistory.AddNewEntry(_datetime_long, _thumburl, _url);
+				}));
+			}
 		}
 	}
 }
