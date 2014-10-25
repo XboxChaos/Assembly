@@ -73,78 +73,61 @@ namespace Assembly.Helpers.PostGeneration
 
 			// Attributes
 			string attributeList = "";
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.WeaponEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Weapon Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.WeaponBalances ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Weapon Balances", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.WeatherEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Weather Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.TextureEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Texture Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.ProjectileEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Projectile Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.MachineEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Machine Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.SceneryEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Scenery Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.BipdEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Bipd Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.VehicleEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Vehicle Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.LighingEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Lighing Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.JmadEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Jmad Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.EffectEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Effect Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.ModelEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Model Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.PhysicsEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Physics Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.BarrierEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Barrier Edits", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.AiEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) + " ] Ai Edits",
-					true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.BlfMapinfoEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Custom Blf/Mapinfos", true);
-			attributeList +=
-				BBCodeListOption(
-					"[ " + BBCodeBold(PostInfo.OtherEdits ? BBCodeColour("Yes", "009900") : BBCodeColour("No", "FF0000")) +
-					" ] Other Edits", true);
+
+			if (PostInfo.BSPEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] BSP Edits", true);
+			if (PostInfo.InjectedTags)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Injected Tags", true);
+			if (PostInfo.WeaponEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Weapon Edits", true);
+			if (PostInfo.WeaponBalances)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Weapon Balances", true);
+			if (PostInfo.WeatherEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Weather Edits", true);
+			if (PostInfo.TextureEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Texture Edits", true);
+			if (PostInfo.ProjectileEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Projectile Edits", true);
+			if (PostInfo.BipdEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Biped Edits", true);
+			if (PostInfo.VehicleEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Vehicle Edits", true);
+			if (PostInfo.LighingEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Lighing Edits", true);
+			if (PostInfo.JmadEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Animation Edits", true);
+			if (PostInfo.EffectEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Effect Edits", true);
+			if (PostInfo.ModelEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Model Edits", true);
+			if (PostInfo.PhysicsEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Physics Edits", true);
+			if (PostInfo.BarrierEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Barrier Edits", true);
+			if (PostInfo.AiEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] AI Edits", true);
+			if (PostInfo.BlfMapinfoEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Custom BLFs/Mapinfo", true);
+			if (PostInfo.OtherEdits)
+				attributeList +=
+					BBCodeListOption("[ " + BBCodeBold(BBCodeColour("Yes", "009900")) + " ] Other Edits", true);
 
 			output += BBCodeList(attributeList, true);
 
@@ -215,7 +198,7 @@ namespace Assembly.Helpers.PostGeneration
 
 			output += BBCodeSize(
 				BBCodeColour("This post was generated by the Blamite Post Generator, which is part of " +
-				             BBCodeUrl("Assembly", "https://sourceforge.net/projects/assembly/") + " by " +
+							 BBCodeUrl("Assembly", "https://github.com/xboxchaos/assembly") + " by " +
 				             BBCodeUrl("XboxChaos", "http://www.xboxchaos.com/topic/3263-assembly-blam-research-tool/"),
 					"#008000"), 2, true);
 
