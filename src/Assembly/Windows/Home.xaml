@@ -3,7 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
 	xmlns:CloseableTab="clr-namespace:CloseableTabItemDemo"
-	xmlns:Sidebar="clr-namespace:Assembly.Metro.Controls.Sidebar"
 	xmlns:n="clr-namespace:Assembly.Helpers.Native"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
@@ -110,6 +109,45 @@
 							<Separator />
 							<MenuItem Header="Settings" x:Name="menuOpenSettings" Click="menuOpenSettings_Click" />
 						</MenuItem>
+						<MenuItem Margin="5,0,0,0" Header="XBOX" Foreground="White" FontFamily="{DynamicResource MetroFontLight}"
+						          BorderBrush="{x:Null}" FontSize="12">
+							<MenuItem Header="Take Screenshot" x:Name="menuScreenshot" Click="menuScreenshot_Click">
+								<MenuItem.Icon>
+									<Vectors:ScreenshotModule />
+								</MenuItem.Icon>
+							</MenuItem>
+							<Separator />
+							<MenuItem Header="Freeze" x:Name="menuFreeze" Click="menuFreeze_Click" >
+								<MenuItem.Icon>
+									<Vectors:FreezeModule />
+								</MenuItem.Icon>
+							</MenuItem>
+							<MenuItem Header="Unfreeze" x:Name="menuUnfreeze" Click="menuUnfreeze_Click" >
+								<MenuItem.Icon>
+									<Vectors:UnFreezeModule />
+								</MenuItem.Icon>
+							</MenuItem>
+							<Separator />
+							<MenuItem Header="Title Reboot" x:Name="menuRebootTitle" Click="menuRebootTitle_Click" >
+								<MenuItem.Icon>
+									<Vectors:RebootVector />
+								</MenuItem.Icon>
+							</MenuItem>
+							<MenuItem Header="Cold Reboot" x:Name="menuRebootCold" Click="menuRebootCold_Click" >
+								<MenuItem.Icon>
+									<Vectors:RebootVector RenderTransformOrigin="0.5,0.5">
+										<Vectors:RebootVector.RenderTransform>
+											<TransformGroup>
+												<ScaleTransform />
+												<SkewTransform />
+												<RotateTransform Angle="-180" />
+												<TranslateTransform />
+											</TransformGroup>
+										</Vectors:RebootVector.RenderTransform>
+									</Vectors:RebootVector>
+								</MenuItem.Icon>
+							</MenuItem>
+						</MenuItem>
 						<MenuItem Margin="5,0,0,0" Header="HELP" Foreground="White" FontFamily="{DynamicResource MetroFontLight}"
 						          BorderBrush="{x:Null}" FontSize="12">
 							<MenuItem Header="Check for Updates" x:Name="menuHelpUpdater" Click="menuHelpUpdater_Click" />
@@ -131,19 +169,10 @@
 									<avalonDock:LayoutDocumentPaneGroup>
 										<avalonDock:LayoutDocumentPane x:Name="documentManager" />
 									</avalonDock:LayoutDocumentPaneGroup>
-									<avalonDock:LayoutAnchorablePaneGroup DockWidth="33">
-										<avalonDock:LayoutAnchorablePane>
-											<avalonDock:LayoutAnchorable ContentId="xbdm" Title="Xbox Memory" CanFloat="True" CanClose="True"
-											                             CanAutoHide="False" CanHide="False">
-												<Sidebar:XbdmSidebar />
-											</avalonDock:LayoutAnchorable>
-										</avalonDock:LayoutAnchorablePane>
-									</avalonDock:LayoutAnchorablePaneGroup>
 								</avalonDock:LayoutPanel>
 							</avalonDock:LayoutRoot>
 						</avalonDock:DockingManager>
 					</Grid>
-					<Grid x:Name="xbdmContent" HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Stretch" />
 				</Grid>
 			</Grid>
 
