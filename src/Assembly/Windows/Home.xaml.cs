@@ -112,7 +112,8 @@ namespace Assembly.Windows
 			if (e.PropertyName == "ActiveContent")
 			{
 				if (activeContent.Content != null)
-					UpdateTitleText(activeContent.Title.Replace("__", "_").Replace(".map", ""));
+					UpdateTitleText(activeContent.Title.Replace("__", "_")
+						.Replace(".mapinfo", "").Replace(".map", "").Replace(".campaign", "").Replace(".blf", ""));
 
 				if (activeContent != null && activeContent.Title == "Start Page")
 					((StartPage)activeContent.Content).UpdateRecents();
