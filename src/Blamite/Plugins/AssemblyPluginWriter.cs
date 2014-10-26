@@ -283,6 +283,13 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
+		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
+		{
+			WriteValueStart("unicList", name, offset ,visible);
+			_output.WriteAttributeString("languages", languages.ToString());
+			_output.WriteEndElement();
+		}
+
 		private void WriteValueStart(string element, string name, uint offset, bool visible)
 		{
 			_output.WriteStartElement(element);

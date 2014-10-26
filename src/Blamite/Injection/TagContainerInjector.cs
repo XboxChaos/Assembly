@@ -5,11 +5,13 @@ using Blamite.Blam;
 using Blamite.Blam.Resources;
 using Blamite.IO;
 using Blamite.Util;
+using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {
 	public class TagContainerInjector
 	{
+		private static int SoundClass = CharConstant.FromString("snd!");
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
 
@@ -17,10 +19,13 @@ namespace Blamite.Injection
 		private readonly List<StringID> _injectedStrings = new List<StringID>();
 		private readonly Dictionary<ResourcePage, int> _pageIndices = new Dictionary<ResourcePage, int>();
 
+		private readonly Dictionary<ExtractedPage, int> _extractedResourcePages = new Dictionary<ExtractedPage, int>();
+
 		private readonly Dictionary<ExtractedResourceInfo, DatumIndex> _resourceIndices =
 			new Dictionary<ExtractedResourceInfo, DatumIndex>();
 
 		private readonly Dictionary<ExtractedTag, DatumIndex> _tagIndices = new Dictionary<ExtractedTag, DatumIndex>();
+		private CachedLanguagePackLoader _languageCache;
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
 		
@@ -29,6 +34,7 @@ namespace Blamite.Injection
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
 			_cacheFile = cacheFile;
+			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
 			_container = container;
 		}
 
@@ -45,6 +51,11 @@ namespace Blamite.Injection
 		public ICollection<ResourcePage> InjectedPages
 		{
 			get { return _pageIndices.Keys; }
+		}
+
+		public ICollection<ExtractedPage> InjectedExtractedResourcePages
+		{
+			get { return _extractedResourcePages.Keys; }
 		}
 
 		public ICollection<ExtractedResourceInfo> InjectedResources
@@ -69,6 +80,8 @@ namespace Blamite.Injection
 				_zoneSets.SaveChanges(stream);
 				_zoneSets = null;
 			}
+			_languageCache.SaveAll(stream);
+			_languageCache.ClearCache();
 			_cacheFile.SaveChanges(stream);
 		}
 
@@ -87,6 +100,10 @@ namespace Blamite.Injection
 			if (existingTag != null)
 				return existingTag.Index;
 
+			// If the tag has made it this far but is a sound, make everyone (especially gerit) shut up.
+			if (tag.Class == SoundClass)
+				return DatumIndex.Null;
+
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
 			if (_resources == null && BlockNeedsResources(tagData))
@@ -102,7 +119,7 @@ namespace Blamite.Injection
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
 
 			// Write the data
-			WriteDataBlock(tagData, newTag.MetaLocation, stream);
+			WriteDataBlock(tagData, newTag.MetaLocation, stream, newTag);
 
 			// Make the tag load
 			LoadZoneSets(stream);
@@ -143,7 +160,7 @@ namespace Blamite.Injection
 			return InjectDataBlock(_container.FindDataBlock(originalAddress), stream);
 		}
 
-		public int InjectResourcePage(ResourcePage page, IReader reader)
+		public int InjectResourcePage(ResourcePage page, IStream stream)
 		{
 			if (_resources == null)
 				return -1;
@@ -156,17 +173,40 @@ namespace Blamite.Injection
 				return newIndex;
 
 			// Add the page and associate its new index with it
+			var extractedRaw = _container.FindExtractedResourcePage(page.Index);
 			newIndex = _resources.Pages.Count;
-			page.Index = newIndex; // haxhaxhax
-			LoadResourceTable(reader);
+			page.Index = newIndex; // haxhaxhax, oh aaron
+			LoadResourceTable(stream);
+
+			// Inject?
+			if (extractedRaw != null)
+			{
+				var rawOffset = InjectExtractedResourcePage(page, extractedRaw, stream);
+				page.Offset = rawOffset;
+				page.FilePath = null;
+			}
+
 			_resources.Pages.Add(page);
 			_pageIndices[page] = newIndex;
 			return newIndex;
 		}
 
-		public int InjectResourcePage(int originalIndex, IReader reader)
+		public int InjectResourcePage(int originalIndex, IStream stream)
 		{
-			return InjectResourcePage(_container.FindResourcePage(originalIndex), reader);
+			return InjectResourcePage(_container.FindResourcePage(originalIndex), stream);
+		}
+
+		public int InjectExtractedResourcePage(ResourcePage resourcePage, ExtractedPage extractedPage, IStream stream)
+		{
+			if (extractedPage == null)
+				throw new ArgumentNullException("extractedPage");
+
+			var injector = new ResourcePageInjector(_cacheFile);
+			var rawOffset = injector.InjectPage(stream, resourcePage, extractedPage.ExtractedPageData);
+			
+			_extractedResourcePages[extractedPage] = extractedPage.ResourcePageIndex;
+
+			return rawOffset;
 		}
 
 		public DatumIndex InjectResource(ExtractedResourceInfo resource, IStream stream)
@@ -255,10 +295,9 @@ namespace Blamite.Injection
 			return false;
 		}
 
-		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream)
+		private void WriteDataBlock(DataBlock block, SegmentPointer location, IStream stream, ITag tag = null)
 		{
-			// Don't write anything if the block has already been written
-			if (_dataBlockAddresses.ContainsKey(block))
+			if (tag == null && _dataBlockAddresses.ContainsKey(block)) // Don't write anything if the block has already been written
 				return;
 
 			// Associate the location with the block
@@ -274,7 +313,9 @@ namespace Blamite.Injection
 				FixBlockReferences(block, bufferWriter, stream);
 				FixTagReferences(block, bufferWriter, stream);
 				FixResourceReferences(block, bufferWriter, stream);
-				FixStringIDReferences(block, bufferWriter);
+				FixStringIdReferences(block, bufferWriter);
+				if (tag != null)
+					FixUnicListReferences(block, tag, bufferWriter, stream);
 
 				// Write the buffer to the file
 				stream.SeekTo(location.AsOffset());
@@ -315,18 +356,11 @@ namespace Blamite.Injection
 			}
 		}
 
-		private void FixStringIDReferences(DataBlock block, IWriter buffer)
+		private void FixStringIdReferences(DataBlock block, IWriter buffer)
 		{
 			foreach (DataBlockStringIDFixup fixup in block.StringIDFixups)
 			{
-				// Try to find the string, and if it's not found, inject it
-				StringID newSID = _cacheFile.StringIDs.FindStringID(fixup.OriginalString);
-				if (newSID == StringID.Null)
-				{
-					newSID = _cacheFile.StringIDs.AddString(fixup.OriginalString);
-					_injectedStrings.Add(newSID);
-				}
-
+				StringID newSID = InjectStringID(fixup.OriginalString);
 				buffer.SeekTo(fixup.WriteOffset);
 				buffer.WriteUInt32(newSID.Value);
 			}
@@ -339,6 +373,33 @@ namespace Blamite.Injection
 				stream.SeekTo(baseOffset.AsOffset() + fixup.WriteOffset);
 				_cacheFile.ShaderStreamer.ImportShader(fixup.Data, stream);
 			}
+		}
+
+		private void FixUnicListReferences(DataBlock block, ITag tag, IWriter buffer, IStream stream)
+		{
+			foreach (DataBlockUnicListFixup fixup in block.UnicListFixups)
+			{
+				var pack = _languageCache.LoadLanguage((GameLanguage)fixup.LanguageIndex, stream);
+				var stringList = new LocalizedStringList(tag);
+				foreach (var str in fixup.Strings)
+				{
+					var id = InjectStringID(str.StringID);
+					stringList.Strings.Add(new LocalizedString(id, str.String));
+				}
+				pack.AddStringList(stringList);
+			}
+		}
+
+		private StringID InjectStringID(string str)
+		{
+			// Try to find the string, and if it's not found, inject it
+			StringID newSID = _cacheFile.StringIDs.FindStringID(str);
+			if (newSID == StringID.Null)
+			{
+				newSID = _cacheFile.StringIDs.AddString(str);
+				_injectedStrings.Add(newSID);
+			}
+			return newSID;
 		}
 
 		private void LoadResourceTable(IReader reader)

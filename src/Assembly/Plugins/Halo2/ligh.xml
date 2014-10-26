@@ -1,19 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo2" baseSize="0xE4">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="MT" version="2">Added some values found by Turk</revision>
 		<revision author="XZodia" version="3">Completed</revision>
+		<revision author="Lord Zedd" version="4">Emum fixes</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="false">
+	<bitfield32 name="Flags" offset="0x0" visible="true">
 		<bit name="No Illumination" index="0" />
 		<bit name="No Specular" index="1" />
 		<bit name="Force Cast Environment Shadow" index="2" />
 		<bit name="No Shadow" index="3" />
 		<bit name="Force Frustum Visibility On Small" index="4" />
-		<bit name="Only Render In 1st Person" index="5" />
-		<bit name="Only Render In 3rd Person" index="6" />
+		<bit name="Only Render In First Person" index="5" />
+		<bit name="Only Render In Third Person" index="6" />
 		<bit name="Don't Fade When Invisible" index="7" />
 		<bit name="Multiplayer Override" index="8" />
 		<bit name="Animated Gel" index="9" />
@@ -23,96 +24,104 @@
 		<bit name="Ignore All Parents" index="13" />
 		<bit name="March Milestone Hack" index="14" />
 		<bit name="Force Light Inside World" index="15" />
-		<bit name="Environment Doesn't Cast Stencil Shadow" index="16" />
-		<bit name="1st Person From Camera" index="17" />
-		<bit name="Texture Camera Gel" index="18" />
-		<bit name="Light Framerate Killer" index="19" />
-		<bit name="Allowed In Splitscreen" index="20" />
-		<bit name="Only On Parent Bipeds" index="21" />
+		<bit name="Environment Doesn't Cast Stencil Shadows" index="16" />
+		<bit name="Objects Don't Cast Stencil Shadows" index="17" />
+		<bit name="1st Person From Camera" index="18" />
+		<bit name="Texture Camera Gel" index="19" />
+		<bit name="Light Framerate Killer" index="20" />
+		<bit name="Allowed In Splitscreen" index="21" />
+		<bit name="Only On Parent Bipeds" index="22" />
 	</bitfield32>
-	<enum32 name="Type" offset="0x4" visible="false">
+	<comment title="Shape"/>
+	<enum16 name="Type" offset="0x4" visible="true">
 		<option name="Sphere" value="0x0" />
 		<option name="Orthogonal" value="0x1" />
 		<option name="Projective" value="0x2" />
 		<option name="Pyramid" value="0x3" />
-	</enum32>
-	<float32 name="Size Modifier" offset="0x8" visible="true" />
-	<float32 name="...To" offset="0xC" visible="true" />
-	<float32 name="Shadow Quality Bias" offset="0x10" visible="false" />
-	<enum32 name="Shadow Tap Bias" offset="0x14" visible="false">
+	</enum16>
+	<int16 name="Unknown" offset="0x6" visible="false" />
+	<float32 name="Size Modifier min" offset="0x8" visible="true" />
+	<float32 name="Size Modifier max" offset="0xC" visible="true" />
+	<float32 name="Shadow Quality Bias" offset="0x10" visible="true" />
+	<enum16 name="Shadow Tap Bias" offset="0x14" visible="true">
 		<option name="3 Tap" value="0x0" />
 		<option name="unused" value="0x1" />
 		<option name="1 Tap" value="0x2" />
-	</enum32>
-	<float32 name="Sphere Light Radius" offset="0x18" visible="false" />
-	<float32 name="Sphere Light Specular Radius" offset="0x1C" visible="false" />
-	<float32 name="Frustum Light Near Width" offset="0x20" visible="true" />
-	<float32 name="Frustum Light Height Stretch" offset="0x24" visible="true" />
-	<float32 name="Frustum Light Field Of View" offset="0x28" visible="true" />
-	<float32 name="Frustum Light Falloff Distance" offset="0x2C" visible="true" />
-	<float32 name="Frustum Light Cutoff Distance" offset="0x30" visible="true" />
+	</enum16>
+	<int16 name="Unknown" offset="0x16" visible="false" />
+	<comment title="Sphere Light"/>
+	<float32 name="Radius" offset="0x18" visible="true" />
+	<float32 name="Specular Radius" offset="0x1C" visible="true" />
+	<comment title="Frustum Light"/>
+	<float32 name="Near Width" offset="0x20" visible="true" />
+	<float32 name="Height Stretch" offset="0x24" visible="true" />
+	<degree name="Field Of View" offset="0x28" visible="true" />
+	<float32 name="Falloff Distance" offset="0x2C" visible="true" />
+	<float32 name="Cutoff Distance" offset="0x30" visible="true" />
+	<comment title="Color"/>
 	<bitfield32 name="Interpolation Flags" offset="0x34" visible="true">
 		<bit name="Blend In HSV" index="0" />
 		<bit name="...More Colors" index="1" />
 	</bitfield32>
-	<float32 name="Bloom Bounds" offset="0x38" visible="false" />
-	<float32 name="..To" offset="0x3C" visible="false" />
-	<float32 name="Specular Lower Bound R" offset="0x40" visible="false" />
-	<float32 name="Specular Lower Bound G" offset="0x44" visible="false" />
-	<float32 name="Specular Lower Bound B" offset="0x48" visible="false" />
-	<float32 name="Specular Upper Bound R" offset="0x4C" visible="true" />
-	<float32 name="Specular Upper Bound G" offset="0x50" visible="true" />
-	<float32 name="Specular Upper Bound B" offset="0x54" visible="true" />
-	<float32 name="Diffuse Lower Bound R" offset="0x58" visible="false" />
-	<float32 name="Diffuse Lower Bound G" offset="0x5C" visible="false" />
-	<float32 name="Diffuse Lower Bound B" offset="0x60" visible="false" />
-	<float32 name="Diffuse Upper Bound R" offset="0x64" visible="true" />
-	<float32 name="Diffuse Upper Bound G" offset="0x68" visible="true" />
-	<float32 name="Diffuse Upper Bound B" offset="0x6C" visible="true" />
-	<float32 name="Brightness Bounds" offset="0x70" visible="false" />
-	<float32 name="...To" offset="0x74" visible="false" />
-	<tagRef name="Gel Map" offset="0x78" visible="false" />
-	<enum32 name="Specular Mask" offset="0x80" visible="false">
+	<float32 name="Bloom Bounds min" offset="0x38" visible="true" />
+	<float32 name="Bloom Bounds max" offset="0x3C" visible="true" />
+	<colorf name="Specular Lower Bound" offset="0x40" format="rgb" visible="true" />
+	<colorf name="Specular Upper Bound" offset="0x4C" format="rgb" visible="true" />
+	<colorf name="Diffuse Lower Bound" offset="0x58" format="rgb" visible="true" />
+	<colorf name="Diffuse Upper Bound" offset="0x64" format="rgb" visible="true" />
+	<float32 name="Brightness Bounds min" offset="0x70" visible="true" />
+	<float32 name="Brightness Bounds max" offset="0x74" visible="true" />
+	<comment title="Gel"/>
+	<tagRef name="Gel Map" offset="0x78" visible="true" />
+	<enum16 name="Specular Mask" offset="0x80" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="None (no mask)" value="0x1" />
 		<option name="Gel Alpha" value="0x2" />
-		<option name="Ge Color" value="0x3" />
-	</enum32>
-	<enum16 name="Falloff Function" offset="0x88" visible="false">
+		<option name="Gel Color" value="0x3" />
+	</enum16>
+	<int16 name="Unknown" offset="0x82" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
+	<comment title="Falloff"/>
+	<enum16 name="Falloff Function" offset="0x88" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Narrow" value="0x1" />
 		<option name="Broad" value="0x2" />
 		<option name="Very Broad" value="0x3" />
 	</enum16>
-	<enum16 name="Diffuse Contrast" offset="0x8A" visible="false">
+	<enum16 name="Diffuse Contrast" offset="0x8A" visible="true">
 		<option name="Default (linear)" value="0x0" />
 		<option name="High" value="0x1" />
 		<option name="Low" value="0x2" />
 		<option name="Very Low" value="0x3" />
 	</enum16>
-	<enum16 name="Specular Contrast" offset="0x8C" visible="false">
+	<enum16 name="Specular Contrast" offset="0x8C" visible="true">
 		<option name="Default (none)" value="0x0" />
 		<option name="High (linear)" value="0x1" />
 		<option name="Low" value="0x2" />
 		<option name="Very Low" value="0x3" />
 	</enum16>
-	<enum16 name="Falloff Geometry" offset="0x8E" visible="false">
+	<enum16 name="Falloff Geometry" offset="0x8E" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Directional" value="0x1" />
 		<option name="Spherical" value="0x2" />
 	</enum16>
+	<comment title="Lens Flare"/>
 	<tagRef name="Lens Flare" offset="0x90" visible="true" />
-	<float32 name="Bounding Radius" offset="0x98" visible="false" />
+	<float32 name="Bounding Radius" offset="0x98" visible="true" />
 	<tagRef name="Light Volume" offset="0x9C" visible="true" />
-	<enum32 name="Default Lightmap Setting" offset="0xA4" visible="true">
+	<comment title="Radiosity"/>
+	<enum16 name="Default Lightmap Setting" offset="0xA4" visible="true">
 		<option name="Dynamic Only" value="0x0" />
 		<option name="Dynamic With Lightmaps" value="0x1" />
 		<option name="Lightmaps Only" value="0x2" />
-	</enum32>
+	</enum16>
+	<int16 name="Unknown" offset="0xA6" visible="false" />
 	<float32 name="Lightmap Half Life" offset="0xA8" visible="true" />
 	<float32 name="Lightmap Light Scale" offset="0xAC" visible="true" />
+	<comment title="Effect Parameters"/>
 	<float32 name="Duration" offset="0xB0" visible="true" />
-	<enum16 name="Falloff Function" offset="0xB4" visible="true">
+	<int16 name="Unknown" offset="0xB4" visible="false" />
+	<enum16 name="Falloff Function" offset="0xB6" visible="true">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />
@@ -122,47 +131,43 @@
 		<option name="Zero" value="0x6" />
 		<option name="One" value="0x7" />
 	</enum16>
-	<enum16 name="Illumination Fade" offset="0xB8" visible="false">
+	<comment title="Distance Fading Parameters"/>
+	<enum16 name="Illumination Fade" offset="0xB8" visible="true">
 		<option name="Fade Very Far" value="0x0" />
 		<option name="Fade Far" value="0x1" />
 		<option name="Fade Medium" value="0x2" />
 		<option name="Fade Close" value="0x3" />
 		<option name="Fade Very Close" value="0x4" />
 	</enum16>
-	<enum16 name="Shadow Fade" offset="0xBA" visible="false">
+	<enum16 name="Shadow Fade" offset="0xBA" visible="true">
 		<option name="Fade Very Far" value="0x0" />
 		<option name="Fade Far" value="0x1" />
 		<option name="Fade Medium" value="0x2" />
 		<option name="Fade Close" value="0x3" />
 		<option name="Fade Very Close" value="0x4" />
 	</enum16>
-	<enum16 name="Specular Fade" offset="0xBC" visible="false">
+	<enum16 name="Specular Fade" offset="0xBC" visible="true">
 		<option name="Fade Very Far" value="0x0" />
 		<option name="Fade Far" value="0x1" />
 		<option name="Fade Medium" value="0x2" />
 		<option name="Fade Close" value="0x3" />
 		<option name="Fade Very Close" value="0x4" />
 	</enum16>
-	<bitfield32 name="Flags" offset="0xC0" visible="false">
+	<int16 name="Unknown" offset="0xBE" visible="false" />
+	<comment title="Animation Parameters"/>
+	<bitfield32 name="Flags" offset="0xC0" visible="true">
 		<bit name="Synchronized" index="0" />
 	</bitfield32>
-	<reflexive name="Brightness Animation" offset="0xC4" visible="true" entrySize="0x4C">
-		<reflexive name="Function" offset="0x0" visible="false" entrySize="0x1">
-			<uint8 name="Data" offset="0x0" visible="false" />
-		</reflexive>
+	<reflexive name="Brightness Animation" offset="0xC4" visible="true" entrySize="0x8">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Color Animation" offset="0xCC" visible="false" entrySize="0xBC">
-		<reflexive name="Function" offset="0x0" visible="false" entrySize="0x1">
-			<uint8 name="Data" offset="0x0" visible="false" />
-		</reflexive>
+	<reflexive name="Color Animation" offset="0xCC" visible="false" entrySize="0x8">
+		<dataref name="Function" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Gel Animation" offset="0xD4" visible="false" entrySize="0x10">
-		<reflexive name="Function" offset="0x0" visible="false" entrySize="0x1">
-			<uint8 name="Data" offset="0x0" visible="false" />
-		</reflexive>
-		<reflexive name="Function" offset="0x0" visible="false" entrySize="0x1">
-			<uint8 name="Data" offset="0x0" visible="false" />
-		</reflexive>
+	<reflexive name="Gel Animation" offset="0xD4" visible="true" entrySize="0x10">
+		<dataref name="dx Function" offset="0x0" visible="true" />
+		<dataref name="dy Function" offset="0x8" visible="true" />
 	</reflexive>
-	<tagRef name="Shader" offset="0xDC" visible="false" />
+	<comment title="Shader"/>
+	<tagRef name="Shader" offset="0xDC" visible="true" />
 </plugin>

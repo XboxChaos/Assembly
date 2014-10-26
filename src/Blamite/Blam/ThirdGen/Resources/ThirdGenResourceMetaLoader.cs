@@ -2,11 +2,13 @@
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
+using Blamite.Blam.Resources.Sounds;
 using Blamite.Blam.ThirdGen.Resources.BSP;
 using Blamite.Blam.ThirdGen.Resources.Models;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
+using Blamite.Blam.ThirdGen.Resources.Sounds;
 
 namespace Blamite.Blam.ThirdGen.Resources
 {
@@ -14,6 +16,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 	{
 		private static readonly int ModeMagic = CharConstant.FromString("mode");
 		private static readonly int SbspMagic = CharConstant.FromString("sbsp");
+		private static readonly int SndMagic = CharConstant.FromString("snd!");
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmentGroup _metaArea;
 
@@ -36,27 +39,45 @@ namespace Blamite.Blam.ThirdGen.Resources
 				throw new NotSupportedException("Render model metadata loading is not supported for the cache file's engine.");
 
 			reader.SeekTo(modeTag.MetaLocation.AsOffset());
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("render model");
-			StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+			var layout = _buildInfo.Layouts.GetLayout("render model");
+			var values = StructureReader.ReadStructure(reader, layout);
 			return new ThirdGenRenderModel(values, reader, _metaArea, _buildInfo);
 		}
 
-		public bool SupportsScenarioBSPs
+		public bool SupportsScenarioBsps
 		{
 			get { return _buildInfo.Layouts.HasLayout("scenario structure bsp"); }
 		}
 
-		public IScenarioBSP LoadScenarioBSPMeta(ITag sbspTag, IReader reader)
+		public IScenarioBSP LoadScenarioBspMeta(ITag sbspTag, IReader reader)
 		{
 			if (sbspTag.MetaLocation == null || sbspTag.Class == null || sbspTag.Class.Magic != SbspMagic)
 				throw new ArgumentException("sbspTag does not point to metadata for a scenario BSP");
-			if (!SupportsScenarioBSPs)
+			if (!SupportsScenarioBsps)
 				throw new NotSupportedException("Scenario BSP metadata loading is not supported for the cache file's engine.");
 
 			reader.SeekTo(sbspTag.MetaLocation.AsOffset());
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("scenario structure bsp");
-			StructureValueCollection values = StructureReader.ReadStructure(reader, layout);
+			var layout = _buildInfo.Layouts.GetLayout("scenario structure bsp");
+			var values = StructureReader.ReadStructure(reader, layout);
 			return new ThirdGenScenarioBSP(values, reader, _metaArea, _buildInfo);
+		}
+
+		public bool SupportsSounds
+		{
+			get { return _buildInfo.Layouts.HasLayout("sound"); }
+		}
+
+		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
+		{
+			if (sndTag.MetaLocation == null || sndTag.Class == null || sndTag.Class.Magic != SndMagic)
+				throw new ArgumentException("sndTag");
+			if (!SupportsSounds)
+				throw new NotSupportedException("Sound metadata loading is not supported for the cache file's engine.");
+
+			reader.SeekTo(sndTag.MetaLocation.AsOffset());
+			var layout = _buildInfo.Layouts.GetLayout("sound");
+			var values = StructureReader.ReadStructure(reader, layout);
+			return new ThirdGenSound(values, reader, _metaArea, _buildInfo);
 		}
 	}
 }

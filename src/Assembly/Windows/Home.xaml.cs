@@ -22,6 +22,7 @@ using AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
+using XBDMCommunicator;
 
 namespace Assembly.Windows
 {
@@ -187,6 +188,37 @@ namespace Assembly.Windows
 		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.PluginConverter);
+		}
+
+		//xbdm
+		private void menuScreenshot_Click(object sender, RoutedEventArgs e)
+		{
+			string screenshotFileName = Path.GetTempFileName();
+
+			if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+				App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+			else
+				MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+		}
+
+		private void menuFreeze_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.Xbdm.Freeze();
+		}
+
+		private void menuUnfreeze_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.Xbdm.Unfreeze();
+		}
+
+		private void menuRebootTitle_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Title);
+		}
+
+		private void menuRebootCold_Click(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Cold);
 		}
 
 		// Help

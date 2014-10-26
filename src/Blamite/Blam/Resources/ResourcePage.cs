@@ -7,7 +7,7 @@
 	{
 		None,
 		Deflate,
-		LZX
+		Lzx
 	}
 
 	/// <summary>

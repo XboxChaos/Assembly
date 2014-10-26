@@ -5,6 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Veegie" version="2">Completed plugin</revision>
 		<revision author="Lord Zedd" version="3">Updated and standardized and restored shit veegie deleted</revision>
+		<revision author="Lord Zedd" version="4">Now with comments.</revision>
 	</revisions>
 	<float32 name="Radius min" offset="0x0" visible="true" />
 	<float32 name="Radius max" offset="0x4" visible="true" />
@@ -98,7 +99,7 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
-	<float32 name="AOE Core Radius" offset="0x18" visible="true" />
+	<float32 name="Area Of Effect Core Radius" offset="0x18" visible="true" />
 	<float32 name="Damage Lower Bound" offset="0x1C" visible="true" />
 	<float32 name="Damage Upper Bound min" offset="0x20" visible="true" />
 	<float32 name="Damage Upper Bound max" offset="0x24" visible="true" />
@@ -110,8 +111,8 @@
 	<float32 name="Stun Time" offset="0x3C" visible="true" />
 	<float32 name="Instantaneous Acceleration" offset="0x40" visible="true" />
 	<float32 name="Rider Direct Damage Scale" offset="0x44" visible="true" />
-	<float32 name="Rider Max Transfer Damage" offset="0x48" visible="true" />
-	<float32 name="Rider Min Transfer Damage" offset="0x4C" visible="true" />
+	<float32 name="Rider Max Transfer Damage Scale" offset="0x48" visible="true" />
+	<float32 name="Rider Min Transfer Damage Scale" offset="0x4C" visible="true" />
 	<stringid name="General Damage" offset="0x50" visible="true" />
 	<stringid name="Specific Damage" offset="0x54" visible="true" />
 	<stringid name="Special Damage" offset="0x58" visible="true" />
@@ -125,10 +126,11 @@
 	<reflexive name="Player Responses" offset="0x78" visible="true" entrySize="0x70">
 		<enum16 name="Response Type" offset="0x0" visible="true">
 			<option name="Shielded" value="0x0" />
-			<option name="UnShielded" value="0x1" />
+			<option name="Unshielded" value="0x1" />
 			<option name="All" value="0x2" />
 		</enum16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
+		<comment title="Screen Flash" />
 		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Lighten" value="0x1" />
@@ -156,18 +158,24 @@
 		</enum16>
 		<int16 name="Unknown" offset="0xE" visible="false" />
 		<float32 name="Maximum Intensity" offset="0x10" visible="true" />
-		<colourf name="Color" offset="0x14" format="argb" visible="true" />
+		<float32 name="Color Alpha" offset="0x14" visible="true" />
+		<float32 name="Color Red" offset="0x18" visible="true" />
+		<float32 name="Color Green" offset="0x1C" visible="true" />
+		<float32 name="Color Blue" offset="0x20" visible="true" />
+		<comment title="Vibration" />
 		<float32 name="Low Frequency Vibration Duration" offset="0x24" visible="true" />
-		<dataRef name="Low Function Vibration Function" offset="0x28" visible="true" />
+		<dataRef name="Low Frequency Vibration Function" offset="0x28" visible="true" />
 		<float32 name="High Frequency Vibration Duration" offset="0x3C" visible="true" />
 		<dataRef name="High Frequency Vibration Function" offset="0x40" visible="true" />
-		<stringid name="Sound Effect Name" offset="0x54" visible="true" />
-		<float32 name="Sound Effect Duration" offset="0x58" visible="true" />
-		<dataRef name="Sound Effect Function" offset="0x5C" visible="true" />
+		<comment title="Sound Effect" />
+		<stringid name="Effect Name" offset="0x54" visible="true" />
+		<float32 name="Duration" offset="0x58" visible="true" />
+		<dataRef name="Effect Scale Function" offset="0x5C" visible="true" />
 	</reflexive>
 	<tagRef name="Damage Response" offset="0x84" visible="true" />
-	<float32 name="Temporary Camera Impulse Duration" offset="0x94" visible="true" />
-	<enum16 name="Temporary Camera Impulse Fade Function" offset="0x98" visible="true">
+	<comment title="Temporary Camera Impulse" />
+	<float32 name="Duration" offset="0x94" visible="true" />
+	<enum16 name="Fade Function" offset="0x98" visible="true">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />
@@ -178,12 +186,13 @@
 		<option name="One" value="0x7" />
 	</enum16>
 	<int16 name="Unknown" offset="0x9A" visible="false" />
-	<degree name="Temporary Camera Impulse Rotation" offset="0x9C" visible="true" />
-	<float32 name="Temporary Camera Impulse Pushback" offset="0xA0" visible="true" />
-	<float32 name="Temporary Camera Impulse Jitter min" offset="0xA4" visible="true" />
-	<float32 name="Temporary Camera Impulse Jitter max" offset="0xA8" visible="true" />
-	<float32 name="Camera Shaking Duration" offset="0xAC" visible="true" />
-	<enum16 name="Camera Shaking Falloff Function" offset="0xB0" visible="true">
+	<degree name="Rotation" offset="0x9C" visible="true" />
+	<float32 name="Pushback" offset="0xA0" visible="true" />
+	<float32 name="Jitter min" offset="0xA4" visible="true" />
+	<float32 name="Jitter max" offset="0xA8" visible="true" />
+	<comment title="Camera Shaking" />
+	<float32 name="Duration" offset="0xAC" visible="true" />
+	<enum16 name="Falloff Function" offset="0xB0" visible="true">
 		<option name="Linear" value="0x0" />
 		<option name="Late" value="0x1" />
 		<option name="Very Late" value="0x2" />
@@ -194,9 +203,9 @@
 		<option name="One" value="0x7" />
 	</enum16>
 	<int16 name="Unknown" offset="0xB2" visible="false" />
-	<float32 name="Camera Shaking Random Translation" offset="0xB4" visible="true" />
-	<degree name="Camera Shaking Random Rotation" offset="0xB8" visible="true" />
-	<enum16 name="Camera Shaking Wobble Function" offset="0xBC" visible="true">
+	<float32 name="Random Translation" offset="0xB4" visible="true" />
+	<degree name="Random Rotation" offset="0xB8" visible="true" />
+	<enum16 name="Wobble Function" offset="0xBC" visible="true">
 		<option name="One" value="0x0" />
 		<option name="Zero" value="0x1" />
 		<option name="Cosine" value="0x2" />
@@ -211,13 +220,15 @@
 		<option name="Spark" value="0xB" />
 	</enum16>
 	<int16 name="Unknown" offset="0xBE" visible="false" />
-	<float32 name="Camera Shaking Wobble Function Period" offset="0xC0" visible="true" />
-	<float32 name="Camera Shaing Wobble Weight" offset="0xC4" visible="true" />
+	<float32 name="Wobble Function Period" offset="0xC0" visible="true" />
+	<float32 name="Wobble Weight" offset="0xC4" visible="true" />
+	<comment title="Sound" />
 	<tagRef name="Sound" offset="0xC8" visible="true" />
-	<float32 name="Breaking Effect Forward Velocity" offset="0xD8" visible="true" />
-	<float32 name="Breaking Effect Forward Radius" offset="0xDC" visible="true" />
-	<float32 name="Breaking Effect Forward Exponent" offset="0xE0" visible="true" />
-	<float32 name="Breaking Effect Outward Velocity" offset="0xE4" visible="true" />
-	<float32 name="Breaking Effect Outward Radius" offset="0xE8" visible="true" />
-	<float32 name="Breaking Effect Outward Exponent" offset="0xEC" visible="true" />
+	<comment title="Breaking Effect" />
+	<float32 name="Forward Velocity" offset="0xD8" visible="true" />
+	<float32 name="Forward Radius" offset="0xDC" visible="true" />
+	<float32 name="Forward Exponent" offset="0xE0" visible="true" />
+	<float32 name="Outward Velocity" offset="0xE4" visible="true" />
+	<float32 name="Outward Radius" offset="0xE8" visible="true" />
+	<float32 name="Outward Exponent" offset="0xEC" visible="true" />
 </plugin>

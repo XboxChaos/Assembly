@@ -267,6 +267,10 @@ namespace Blamite.Plugins
 					ReadShader(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
+				case "uniclist":
+					ReadUnicList(reader, name, offset, visible, visitor, pluginLine);
+					break;
+
 				case "color8":
 				case "color16":
 				case "color24":
@@ -441,6 +445,16 @@ namespace Blamite.Plugins
 				throw new ArgumentException("Invalid shader type \"" + reader.Value + "\"");
 
 			visitor.VisitShader(name, offset, visible, type, pluginLine);
+		}
+
+		private static void ReadUnicList(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine)
+		{
+			if (!reader.MoveToAttribute("languages"))
+				throw new ArgumentException("Unicode string lists must have a languages attribute." + PositionInfo(reader));
+			int languages = ParseInt(reader.Value);
+
+			visitor.VisitUnicList(name, offset, visible, languages, pluginLine);
 		}
 
 		private static void ReadOptions(XmlReader reader, IPluginVisitor visitor)

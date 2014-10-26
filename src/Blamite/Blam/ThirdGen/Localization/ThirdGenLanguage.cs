@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Blamite.Blam.LanguagePack;
+using Blamite.Blam.Localization;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
 
-namespace Blamite.Blam.ThirdGen.LanguagePack
+namespace Blamite.Blam.ThirdGen.Localization
 {
 	public class ThirdGenLanguage
 	{
@@ -106,8 +106,11 @@ namespace Blamite.Blam.ThirdGen.LanguagePack
 			return result;
 		}
 
-		public void SaveStrings(IStream stream, List<LocalizedString> locales)
+		public void SaveStrings(List<LocalizedString> locales, IStream stream)
 		{
+			if (LocaleData == null || LocaleIndexTable == null)
+				return;
+
 			var offsetData = new MemoryStream();
 			var stringData = new MemoryStream();
 			var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);

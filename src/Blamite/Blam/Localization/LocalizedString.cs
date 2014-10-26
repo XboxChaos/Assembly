@@ -1,4 +1,4 @@
-﻿namespace Blamite.Blam.LanguagePack
+﻿namespace Blamite.Blam.Localization
 {
 	/// <summary>
 	///     A localized string, composed of a stringID key and a unicode string value.

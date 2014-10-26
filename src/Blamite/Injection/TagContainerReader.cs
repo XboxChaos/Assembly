@@ -38,6 +38,11 @@ namespace Blamite.Injection
 						tags.AddTag(ReadTag(reader, containerFile.BlockVersion));
 						break;
 
+					case "ersp":
+						// Extracted Raw Resource Page
+						tags.AddExtractedResourcePage(ReadExtractedResourcePage(reader, containerFile.BlockVersion));
+						break;
+
 					case "rspg":
 						// Resource page
 						tags.AddResourcePage(ReadResourcePage(reader, containerFile.BlockVersion));
@@ -53,7 +58,7 @@ namespace Blamite.Injection
 
 		private static DataBlock ReadDataBlock(IReader reader, byte version)
 		{
-			if (version > 4)
+			if (version > 6)
 				throw new InvalidOperationException("Unrecognized \"data\" block version");
 
 			// Block data
@@ -115,6 +120,30 @@ namespace Blamite.Injection
 				}
 			}
 
+			if (version >= 5)
+			{
+				// Unicode string list fixups
+				int numUnicListFixups = reader.ReadInt32();
+				for (int i = 0; i < numUnicListFixups; i++)
+				{
+					// Version 5 is buggy and doesn't include a language index :x
+					int languageIndex = i;
+					if (version >= 6)
+						languageIndex = reader.ReadInt32();
+
+					int writeOffset = reader.ReadInt32();
+					int numStrings = reader.ReadInt32();
+					UnicListFixupString[] strings = new UnicListFixupString[numStrings];
+					for (int j = 0; j < numStrings; j++)
+					{
+						string stringId = reader.ReadAscii();
+						string str = reader.ReadUTF8();
+						strings[j] = new UnicListFixupString(stringId, str);
+					}
+					block.UnicListFixups.Add(new DataBlockUnicListFixup(languageIndex, writeOffset, strings));
+				}
+			}
+
 			return block;
 		}
 
@@ -155,6 +184,18 @@ namespace Blamite.Injection
 			page.Unknown2 = reader.ReadInt32();
 			page.Unknown3 = reader.ReadInt32();
 			return page;
+		}
+
+		private static ExtractedPage ReadExtractedResourcePage(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"ersp\" block version");
+
+			return new ExtractedPage
+			{
+				ResourcePageIndex = reader.ReadInt32(),
+				ExtractedPageData = ReadByteArray(reader)
+			};
 		}
 
 		private static ExtractedResourceInfo ReadResource(IReader reader, byte version)
@@ -208,10 +249,8 @@ namespace Blamite.Injection
 
 		private static byte[] ReadByteArray(IReader reader)
 		{
-			int size = reader.ReadInt32();
-			if (size <= 0)
-				return new byte[0];
-			return reader.ReadBlock(size);
+			var size = reader.ReadInt32();
+			return size <= 0 ? new byte[0] : reader.ReadBlock(size);
 		}
 	}
 }

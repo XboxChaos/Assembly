@@ -233,5 +233,10 @@ namespace Blamite.Plugins
 		{
 			Debug.WriteLine("Shader \"{0}\" at {1}, visible = {2}, type = {3}", name, offset, visible, type);
 		}
+
+		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
+		{
+			Debug.WriteLine("Unicode string list \"{0}\" at {1}, visible = {2}, languages = {3}", name, offset, visible, languages);
+		}
 	}
 }

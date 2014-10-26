@@ -25,14 +25,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 			ComboBoxMapTagSort.ItemsSource = Enum.GetValues(typeof (Settings.TagSort));
 
 			// Load UI
-			btnTabSelection_Clicked(BtnSelectGeneral, null);
+			ButtonTabSelection_OnClick(ButtonSelectGeneral, null);
 		}
 
 		#region TabSelection
 
 		private string _currentTag = "";
 
-		private void btnTabSelection_Clicked(object sender, RoutedEventArgs e)
+		private void ButtonTabSelection_OnClick(object sender, RoutedEventArgs e)
 		{
 			//if (_isActive) return;
 
@@ -41,10 +41,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 			if (_currentTag == button.Tag.ToString()) return;
 
 			// Get Current Tab
-			string currentTabTag = _currentTag;
+			var currentTabTag = _currentTag;
 
 			// Disable all old buttons
-			SetAllToDisbaled();
+			SetAllToDisabled();
 
 			// Update UI
 			button.IsChecked = true;
@@ -57,37 +57,30 @@ namespace Assembly.Metro.Controls.PageTemplates
 			if (storyboardShow != null) storyboardShow.Begin();
 		}
 
-		private void SetAllToDisbaled()
+		private void SetAllToDisabled()
 		{
-			BtnSelectGeneral.IsChecked = false;
-			BtnSelectXboxDev.IsChecked = false;
-			BtnSelectMapEdit.IsChecked = false;
-		//	BtnSelectPlugins.IsChecked = false;
-			BtnSelectStrtpge.IsChecked = false;
+			ButtonSelectGeneral.IsChecked = false;
+			ButtonSelectXbox360Dev.IsChecked = false;
+			ButtonSelectMapEdit.IsChecked = false;
+			ButtonSelectStartPage.IsChecked = false;
 		}
 
 		#endregion
 
 		#region Inline Helpers
 
-		private void btnAutoSaveScreenshotDirectory_Click(object sender, RoutedEventArgs e)
+		private void TextBoxAutoSaveDirectory_OnClick(object sender, RoutedEventArgs e)
 		{
 			var fbd = new FolderBrowserDialog
 			{
 				ShowNewFolderButton = true,
-				SelectedPath = txtAutoSaveDirectory.Text,
-				Description = "Select the folder you would like to auto-save screenshots in"
+				SelectedPath = TextBoxAutoSaveDirectory.Text
 			};
 			if (fbd.ShowDialog() == DialogResult.OK)
 				App.AssemblyStorage.AssemblySettings.XdkScreenshotPath = fbd.SelectedPath;
 		}
 
-		private void sliderXDKScreenGammaModifier_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-		{
-			LblXdkScreenGammaValue.Text = string.Format("Gamma ({0}):", e.NewValue);
-		}
-
-		private void btnBrowseXsd_Click(object sender, RoutedEventArgs e)
+		private void BrowseXsdButton_OnClick(object sender, RoutedEventArgs e)
 		{
 			var dialog = new OpenFileDialog()
 			{

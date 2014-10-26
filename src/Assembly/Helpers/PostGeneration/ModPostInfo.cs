@@ -82,20 +82,40 @@ namespace Assembly.Helpers.PostGeneration
 		private bool _barrierEdits;
 		private bool _bipdEdits;
 		private bool _blfMapinfoEdits;
+		private bool _bspEdits;
 		private bool _effectEdits;
+		private bool _injectedTags;
 		private bool _jmadEdits;
 		private bool _lighingEdits;
-		private bool _machineEdits;
 		private bool _modelEdits;
 		private bool _otherEdits;
 		private bool _physicsEdits;
 		private bool _projectileEdits;
-		private bool _sceneryEdits;
 		private bool _textureEdits;
 		private bool _vehicleEdits;
 		private bool _weaponBalances;
 		private bool _weaponEdits;
 		private bool _weatherEdits;
+
+		public bool BSPEdits
+		{
+			get { return _bspEdits; }
+			set
+			{
+				_bspEdits = value;
+				NotifyPropertyChanged("BSPEdits");
+			}
+		}
+
+		public bool InjectedTags
+		{
+			get { return _injectedTags; }
+			set
+			{
+				_injectedTags = value;
+				NotifyPropertyChanged("InjectedTags");
+			}
+		}
 
 		public bool WeaponEdits
 		{
@@ -144,26 +164,6 @@ namespace Assembly.Helpers.PostGeneration
 			{
 				_projectileEdits = value;
 				NotifyPropertyChanged("ProjectileEdits");
-			}
-		}
-
-		public bool MachineEdits
-		{
-			get { return _machineEdits; }
-			set
-			{
-				_machineEdits = value;
-				NotifyPropertyChanged("MachineEdits");
-			}
-		}
-
-		public bool SceneryEdits
-		{
-			get { return _sceneryEdits; }
-			set
-			{
-				_sceneryEdits = value;
-				NotifyPropertyChanged("SceneryEdits");
 			}
 		}
 

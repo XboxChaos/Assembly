@@ -95,15 +95,25 @@
   <ItemGroup>
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\EngineType.cs" />
+    <Compile Include="Blam\Localization\CachedLanguagePackLoader.cs" />
+    <Compile Include="Blam\Resources\ResourcePageInjector.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundCodec.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundPermutation.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundPlayback.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundPlaybackParameter.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundRawChunk.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundResourceGestalt.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISoundScale.cs" />
+    <Compile Include="Blam\Resources\Sounds\SoundReader.cs" />
     <Compile Include="Blam\ISimulationDefinitionTable.cs" />
     <Compile Include="Blam\Shaders\IShader.cs" />
     <Compile Include="Blam\Shaders\IShaderStreamer.cs" />
-    <Compile Include="Blam\LanguagePack\DummyLanguagePackLoader.cs" />
-    <Compile Include="Blam\LanguagePack\GameLanguage.cs" />
-    <Compile Include="Blam\LanguagePack\ILanguagePack.cs" />
-    <Compile Include="Blam\LanguagePack\ILanguagePackLoader.cs" />
-    <Compile Include="Blam\LanguagePack\LocalizedString.cs" />
-    <Compile Include="Blam\LanguagePack\LocalizedStringList.cs" />
+    <Compile Include="Blam\Localization\DummyLanguagePackLoader.cs" />
+    <Compile Include="Blam\Localization\GameLanguage.cs" />
+    <Compile Include="Blam\Localization\LanguagePack.cs" />
+    <Compile Include="Blam\Localization\ILanguagePackLoader.cs" />
+    <Compile Include="Blam\Localization\LocalizedString.cs" />
+    <Compile Include="Blam\Localization\LocalizedStringList.cs" />
     <Compile Include="Blam\Resources\BSP\IScenarioBSP.cs" />
     <Compile Include="Blam\Resources\IZoneSet.cs" />
     <Compile Include="Blam\Resources\Models\BoundingBoxCalculator.cs" />
@@ -151,10 +161,18 @@
     <Compile Include="Blam\TagTable.cs" />
     <Compile Include="Blam\ThirdGen\BasedPointerConverter.cs" />
     <Compile Include="Blam\ThirdGen\BLF\Campaign.cs" />
-    <Compile Include="Blam\ThirdGen\LanguagePack\ThirdGenLanguagePack.cs" />
-    <Compile Include="Blam\ThirdGen\LanguagePack\ThirdGenLanguagePackLoader.cs" />
+    <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguagePackLoader.cs" />
     <Compile Include="Blam\ThirdGen\MetaAddressConverter.cs" />
     <Compile Include="Blam\ThirdGen\Resources\BSP\ThirdGenScenarioBSP.cs" />
+    <Compile Include="Blam\Resources\Sounds\ISound.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSound.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlaybackParameter.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPermutation.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlatformCodec.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundPlayback.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundRawChunk.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundResourceGestalt.cs" />
+    <Compile Include="Blam\ThirdGen\Resources\Sounds\ThirdGenSoundScale.cs" />
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceManager.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShader.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShaderStreamer.cs" />
@@ -190,6 +208,7 @@
     <Compile Include="Serialization\VertexLayoutCollection.cs" />
     <Compile Include="Injection\DataBlock.cs" />
     <Compile Include="Injection\DataBlockBuilder.cs" />
+    <Compile Include="Injection\ExtractedPage.cs" />
     <Compile Include="Injection\ExtractedResourceInfo.cs" />
     <Compile Include="Injection\ExtractedTag.cs" />
     <Compile Include="Injection\TagContainer.cs" />
@@ -218,7 +237,7 @@
     <Compile Include="Blam\StringID.cs" />
     <Compile Include="Blam\Scripting\CachedStringTable.cs" />
     <Compile Include="Blam\Scripting\StringTableReader.cs" />
-    <Compile Include="Blam\ThirdGen\LanguagePack\ThirdGenMultilingualStringList.cs" />
+    <Compile Include="Blam\ThirdGen\Localization\ThirdGenMultilingualStringList.cs" />
     <Compile Include="Blam\IndexedStringIDSource.cs" />
     <Compile Include="Blam\IndexedStringTable.cs" />
     <Compile Include="Blam\CacheFileVersionInfo.cs" />
@@ -308,8 +327,8 @@
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenHeader.cs" />
     <Compile Include="Blam\IndexedFileNameSource.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagTable.cs" />
-    <Compile Include="Blam\ThirdGen\LanguagePack\ThirdGenLanguage.cs" />
-    <Compile Include="Blam\ThirdGen\LanguagePack\ThirdGenLanguageGlobals.cs" />
+    <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguage.cs" />
+    <Compile Include="Blam\ThirdGen\Localization\ThirdGenLanguageGlobals.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTagClass.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenTag.cs" />
     <Compile Include="Util\ListSearching.cs" />
@@ -370,6 +389,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3\Layouts\H3_Layouts_Shaders.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo3\Layouts\H3_Layouts_Sounds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\H4_LocaleSymbols.xml">

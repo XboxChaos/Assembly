@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam;
+using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {
@@ -146,6 +147,51 @@ namespace Blamite.Injection
 		public byte[] Data { get; private set; }
 	}
 
+	public class UnicListFixupString
+	{
+		public UnicListFixupString(string stringId, string str)
+		{
+			StringID = stringId;
+			String = str;
+		}
+
+		public string StringID { get; private set; }
+		public string String { get; private set; }
+	}
+
+	/// <summary>
+	/// Contains information about a multilingual unicode string list in a <see cref="DataBlock"/> which needs to be injected into the cache file.
+	/// </summary>
+	public class DataBlockUnicListFixup
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DataBlockUnicListFixup"/> class.
+		/// </summary>
+		/// <param name="writeOffset">The write offset.</param>
+		/// <param name="strings">The strings.</param>
+		public DataBlockUnicListFixup(int languageIndex, int writeOffset, UnicListFixupString[] strings)
+		{
+			LanguageIndex = languageIndex;
+			WriteOffset = writeOffset;
+			Strings = strings;
+		}
+
+		/// <summary>
+		/// Gets the index of the language that the fixup contains strings for.
+		/// </summary>
+		public int LanguageIndex { get; private set; }
+
+		/// <summary>
+		/// Gets the offset to write the updated list info to.
+		/// </summary>
+		public int WriteOffset { get; private set; }
+
+		/// <summary>
+		/// Gets the strings to inject into the cache file.
+		/// </summary>
+		public UnicListFixupString[] Strings { get; private set; }
+	}
+
 	/// <summary>
 	///     Represents a block of tag data which can be injected into a cache file.
 	/// </summary>
@@ -169,6 +215,7 @@ namespace Blamite.Injection
 			ResourceFixups = new List<DataBlockResourceFixup>();
 			StringIDFixups = new List<DataBlockStringIDFixup>();
 			ShaderFixups = new List<DataBlockShaderFixup>();
+			UnicListFixups = new List<DataBlockUnicListFixup>();
 		}
 
 		/// <summary>
@@ -228,5 +275,10 @@ namespace Blamite.Injection
 		///     shaders.
 		/// </summary>
 		public List<DataBlockShaderFixup> ShaderFixups { get; private set; }
+
+		/// <summary>
+		/// Gets a list of multilingual unicode string lists in the block that need to be injected into the cache file.
+		/// </summary>
+		public List<DataBlockUnicListFixup> UnicListFixups { get; private set; }
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Assembly.Helpers;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Blamite.Blam;
 using Blamite.Serialization;
 using Blamite.IO;
@@ -21,6 +22,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private PluginEditor _pluginEditor;
 		private IRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
+		private string _cacheLocation;
 		private Trie _stringIDTrie;
 		private TagEntry _tag;
 		private TagHierarchy _tags;
@@ -35,11 +37,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		#endregion
 
-		public MetaContainer(EngineDescription buildInfo, TagEntry tag, TagHierarchy tags, ICacheFile cache,
+		public MetaContainer(EngineDescription buildInfo, string cacheLocation, TagEntry tag, TagHierarchy tags, ICacheFile cache,
 			IStreamManager streamManager, IRTEProvider rteProvider, Trie stringIDTrie)
 		{
 			InitializeComponent();
 
+			_cacheLocation = cacheLocation;
 			_tag = tag;
 			_tags = tags;
 			_buildInfo = buildInfo;
@@ -83,35 +86,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			#endregion
 
-			#region BSP
-
-			/*if (true && _tag.RawTag.Class.Magic == CharConstant.FromString("sbsp")) // add some manual check here akarias, since you code isn't in blamite
-			{
-				tabBspEditor.Visibility = Visibility.Visible;
-				tabBspEditor.Content = new BspEditor(_tag, _cache, _streamManager);
-			}
-			else*/
-			{
-				tabBspEditor.Visibility = Visibility.Collapsed;
-				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == Settings.LastMetaEditorType.Bsp)
-					tbMetaEditors.SelectedIndex = (int) Settings.LastMetaEditorType.MetaEditor;
-			}
-
-			#endregion
-
 			#region Sound
 
-			//if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
-			//{
-			//	tabSound.Visibility = Visibility.Visible;
-			//	tabSound.Content = new SoundEditor(_tag, _cache, _streamManager);
-			//}
-			//else
-			//{
-			//	tabSound.Visibility = Visibility.Collapsed;
-			//	if (App.AssemblyStorage.AssemblySettings.halomapLastSelectedMetaEditor == App.AssemblyStorage.AssemblySettings.LastMetaEditorType.Sound)
-			//		tbMetaEditors.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.LastMetaEditorType.MetaEditor;
-			//}
+			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
+			{
+				tabSoundEditor.Visibility = Visibility.Visible;
+				tabSoundEditor.Content = new SoundEditor(_buildInfo, _cacheLocation, _tag, _cache, _streamManager);
+			}
+			else
+			{
+				tabSoundEditor.Visibility = Visibility.Collapsed;
+				if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor == 
+					Settings.LastMetaEditorType.Sound)
+					tbMetaEditors.SelectedIndex = 
+						(int)Settings.LastMetaEditorType.MetaEditor;
+			}
 
 			#endregion
 		}

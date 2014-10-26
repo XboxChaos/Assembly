@@ -12,6 +12,7 @@ namespace Blamite.Injection
 
 			WriteDataBlocks(tags, container, writer);
 			WriteTags(tags, container, writer);
+			WriteExtractedResourcePages(tags, container, writer);
 			WriteResourcePages(tags, container, writer);
 			WriteResources(tags, container, writer);
 
@@ -22,7 +23,7 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlock dataBlock in tags.DataBlocks)
 			{
-				container.StartBlock("data", 4);
+				container.StartBlock("data", 6);
 
 				// Main data
 				writer.WriteUInt32(dataBlock.OriginalAddress);
@@ -78,6 +79,20 @@ namespace Blamite.Injection
 					}
 				}
 
+				// Unicode string list fixups
+				writer.WriteInt32(dataBlock.UnicListFixups.Count);
+				foreach (DataBlockUnicListFixup unicList in dataBlock.UnicListFixups)
+				{
+					writer.WriteInt32(unicList.LanguageIndex);
+					writer.WriteInt32(unicList.WriteOffset);
+					writer.WriteInt32(unicList.Strings.Length);
+					foreach (UnicListFixupString str in unicList.Strings)
+					{
+						writer.WriteAscii(str.StringID);
+						writer.WriteUTF8(str.String);
+					}
+				}
+
 				container.EndBlock();
 			}
 		}
@@ -99,7 +114,7 @@ namespace Blamite.Injection
 
 		private static void WriteResourcePages(TagContainer tags, ContainerWriter container, IWriter writer)
 		{
-			foreach (ResourcePage page in tags.ResourcePages)
+			foreach (var page in tags.ResourcePages)
 			{
 				container.StartBlock("rspg", 1);
 
@@ -118,6 +133,19 @@ namespace Blamite.Injection
 				writer.WriteInt32(page.Unknown1);
 				writer.WriteInt32(page.Unknown2);
 				writer.WriteInt32(page.Unknown3);
+
+				container.EndBlock();
+			}
+		}
+
+		private static void WriteExtractedResourcePages(TagContainer tags, ContainerWriter container, IWriter writer)
+		{
+			foreach (var extractedPage in tags.ExtractedResourcePages)
+			{
+				container.StartBlock("ersp", 0);
+
+				writer.WriteInt32(extractedPage.ResourcePageIndex);
+				WriteByteArray(extractedPage.ExtractedPageData, writer);
 
 				container.EndBlock();
 			}

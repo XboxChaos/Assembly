@@ -197,5 +197,15 @@ namespace Blamite.Plugins
 		/// <param name="type">The shader's type.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine);
+
+		/// <summary>
+		/// Called when a multilingual unicode string list is encountered in the plugin.
+		/// </summary>
+		/// <param name="name">The list's name.</param>
+		/// <param name="offset">The list's offset.</param>
+		/// <param name="visible">True if the list is visible.</param>
+		/// <param name="languages">The number of languages in the list.</param>
+		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
+		void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine);
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Blamite.Blam.LanguagePack
+﻿namespace Blamite.Blam.Localization
 {
 	/// <summary>
 	///     Languages that language packs can contain localized strings for.

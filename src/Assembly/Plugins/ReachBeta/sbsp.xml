@@ -23,15 +23,15 @@
 	<int16 name="Unknown" offset="0x3A" visible="false" />
 	<int16 name="Unknown" offset="0x3C" visible="false" />
 	<int16 name="Unknown" offset="0x3E" visible="false" />
-	<reflexive name="Multiple BSPs" offset="0x40" visible="true" entrySize="0x28">
+	<reflexive name="Structure Seams" offset="0x40" visible="true" entrySize="0x28">
 		<uint32 name="Unknown" offset="0x0" visible="false" />
 		<uint32 name="Unknown" offset="0x4" visible="false" />
 		<uint32 name="Unknown" offset="0x8" visible="false" />
 		<uint32 name="Unknown" offset="0xC" visible="false" />
-		<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x4">
-			<int32 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Unknown" offset="0x10" visible="true" entrySize="0x4">
+			<int32 name="Unknown" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Cross Portals" offset="0x1C" visible="true" entrySize="0x10">
+		<reflexive name="Seam Clusters" offset="0x1C" visible="true" entrySize="0x10">
 			<int32 name="Cluster Index" offset="0x0" visible="true" />
 			<float32 name="Centroid X" offset="0x4" visible="true" />
 			<float32 name="Centroid Y" offset="0x8" visible="true" />
@@ -45,7 +45,7 @@
 		<tagRef name="Shader" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x10" visible="true" />
 		<int16 name="Conveyor Surface Index" offset="0x12" visible="true" />
-		<int16 name="'Multiple BSPs' Index" offset="0x14" visible="true" />
+		<int16 name="Seam Index" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown 2" offset="0x64" visible="false" entrySize="0x1">
@@ -180,7 +180,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<reflexive name="Verticies" offset="0x1C" visible="true" entrySize="0xC">
+		<reflexive name="Vertices" offset="0x1C" visible="true" entrySize="0xC">
 			<float32 name="X" offset="0x0" visible="true" />
 			<float32 name="Y" offset="0x4" visible="true" />
 			<float32 name="Z" offset="0x8" visible="true" />
@@ -230,8 +230,9 @@
 		</reflexive>
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<int32 name="Size" offset="0x50" visible="true" />
-		<int32 name="Count" offset="0x54" visible="true" />
+		<int32 name="Unknown" offset="0x50" visible="false" />
+		<int16 name="Size" offset="0x54" visible="true" />
+		<int16 name="Count" offset="0x56" visible="true" />
 		<int32 name="Offset" offset="0x58" visible="true" />
 		<int32 name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
@@ -240,8 +241,9 @@
 		<tagRef name="BSP" offset="0x68" visible="true" />
 		<int32 name="Cluster Index" offset="0x78" visible="true" />
 		<uint32 name="Unknown" offset="0x7C" visible="false" />
-		<int32 name="Size" offset="0x80" visible="true" />
-		<int32 name="Count" offset="0x84" visible="true" />
+		<int32 name="Unknown" offset="0x80" visible="false" />
+		<int16 name="Size" offset="0x84" visible="true" />
+		<int16 name="Count" offset="0x86" visible="true" />
 		<int32 name="Offset" offset="0x88" visible="true" />
 		<int32 name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -256,9 +258,10 @@
 		<uint32 name="Unknown" offset="0xB4" visible="false" />
 		<undefined name="Unknown" offset="0xB8" visible="false" />
 		<undefined name="Unknown" offset="0xBC" visible="false" />
-		<reflexive name="Collision Mopp Codes" offset="0xC0" visible="true" entrySize="0x40" align="0x10">
-			<int32 name="Size" offset="0x0" visible="true" />
-			<int32 name="Count" offset="0x4" visible="true" />
+		<reflexive name="Collision MOPP Codes" offset="0xC0" visible="true" entrySize="0x40" align="0x10">
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Size" offset="0x4" visible="true" />
+			<int16 name="Count" offset="0x6" visible="true" />
 			<int32 name="Offset" offset="0x8" visible="true" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<float32 name="Offset X" offset="0x10" visible="true" />
@@ -280,17 +283,14 @@
 		<undefined name="Unknown" offset="0xCC" visible="false" />
 		<int16 name="Model Section Index" offset="0xD0" visible="true" />
 		<int16 name="Unknown" offset="0xD2" visible="false" />
-		<reflexive name="Multi BSP Links" offset="0xD4" visible="false" entrySize="0x1">
-			<int8 name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Seams" offset="0xD4" visible="true" entrySize="0x1">
+			<int8 name="Seam Index" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="Decorator Grids" offset="0xE0" visible="true" entrySize="0x30">
 			<int16 name="Amount" offset="0x0" visible="true" />
 			<int8 name="Decorator Index" offset="0x2" visible="true" />
 			<int8 name="Decorator Index - Scattering" offset="0x3" visible="true" />
-			<int8 name="Unknown" offset="0x4" visible="false" />
-			<int8 name="Unknown" offset="0x5" visible="false" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int32 name="Unknown" offset="0x4" visible="false" />
 			<float32 name="Position X" offset="0x8" visible="true" />
 			<float32 name="Position Y" offset="0xC" visible="true" />
 			<float32 name="Position Z" offset="0x10" visible="true" />
@@ -506,9 +506,10 @@
 	<undefined name="Unknown" offset="0x230" visible="false" />
 	<undefined name="Unknown" offset="0x234" visible="false" />
 	<undefined name="Unknown" offset="0x238" visible="false" />
-	<reflexive name="Unknown Mopp Codes" offset="0x23C" visible="true" entrySize="0x40" align="0x10">
-		<int32 name="Size" offset="0x0" visible="true" />
-		<int32 name="Count" offset="0x4" visible="true" />
+	<reflexive name="Unknown MOPP Codes" offset="0x23C" visible="true" entrySize="0x40" align="0x10">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
 		<int32 name="Offset" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Offset X" offset="0x10" visible="true" />
@@ -527,9 +528,10 @@
 		</reflexive>
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown Mopp Codes" offset="0x248" visible="true" entrySize="0x40" align="0x10">
-		<int32 name="Size" offset="0x0" visible="true" />
-		<int32 name="Count" offset="0x4" visible="true" />
+	<reflexive name="Unknown MOPP Codes" offset="0x248" visible="true" entrySize="0x40" align="0x10">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
 		<int32 name="Offset" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Offset X" offset="0x10" visible="true" />
@@ -661,8 +663,9 @@
 		<int8 name="Unknown" offset="0x83" visible="false" />
 		<float32 name="Unknown" offset="0x84" visible="false" />
 		<reflexive name="Unknown" offset="0x88" visible="true" entrySize="0x70">
-			<int32 name="Size" offset="0x0" visible="true" />
-			<int32 name="Count" offset="0x4" visible="true" />
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Size" offset="0x4" visible="true" />
+			<int16 name="Count" offset="0x6" visible="true" />
 			<int32 name="Offset" offset="0x8" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
@@ -682,8 +685,9 @@
 			<undefined name="Unknown" offset="0x48" visible="false" />
 			<undefined name="Unknown" offset="0x4C" visible="false" />
 			<reflexive name="Unknown" offset="0x50" visible="true" entrySize="0x60">
-				<int32 name="Size" offset="0x0" visible="true" />
-				<int32 name="Count" offset="0x4" visible="true" />
+				<int32 name="Unknown" offset="0x0" visible="false" />
+				<int16 name="Size" offset="0x4" visible="true" />
+				<int16 name="Count" offset="0x6" visible="true" />
 				<int32 name="Offset" offset="0x8" visible="true" />
 				<int32 name="Unknown" offset="0xC" visible="false" />
 				<undefined name="Unknown" offset="0x10" visible="false" />
@@ -736,8 +740,9 @@
 			<undefined name="Unknown" offset="0x6C" visible="false" />
 		</reflexive>
 		<reflexive name="Unknown" offset="0x94" visible="true" entrySize="0xB0">
-			<int32 name="Size" offset="0x0" visible="true" />
-			<int32 name="Count" offset="0x4" visible="true" />
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Size" offset="0x4" visible="true" />
+			<int16 name="Count" offset="0x6" visible="true" />
 			<int32 name="Offset" offset="0x8" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
@@ -763,8 +768,9 @@
 			<undefined name="Unknown" offset="0x54" visible="false" />
 			<undefined name="Unknown" offset="0x58" visible="false" />
 			<undefined name="Unknown" offset="0x5C" visible="false" />
-			<int32 name="Size" offset="0x60" visible="true" />
-			<int32 name="Count" offset="0x64" visible="true" />
+			<int32 name="Unknown" offset="0x60" visible="false" />
+			<int16 name="Size" offset="0x64" visible="true" />
+			<int16 name="Count" offset="0x66" visible="true" />
 			<int32 name="Offset" offset="0x68" visible="true" />
 			<int32 name="Unknown" offset="0x6C" visible="false" />
 			<undefined name="Unknown" offset="0x70" visible="false" />
@@ -1171,9 +1177,10 @@
 	<undefined name="Unknown" offset="0x3F0" visible="false" />
 	<undefined name="Unknown" offset="0x3F4" visible="false" />
 	<undefined name="Unknown" offset="0x3F8" visible="false" />
-	<reflexive name="Collision Mopp Codes" offset="0x3FC" visible="true" entrySize="0x40" align="0x10">
-		<int32 name="Size" offset="0x0" visible="true" />
-		<int32 name="Count" offset="0x4" visible="true" />
+	<reflexive name="Collision MOPP Codes" offset="0x3FC" visible="true" entrySize="0x40" align="0x10">
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
 		<int32 name="Offset" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Offset X" offset="0x10" visible="true" />
@@ -1200,8 +1207,9 @@
 	<undefined name="Collision World Bounds z min" offset="0x41C" visible="true" />
 	<undefined name="Collision World Bounds z max" offset="0x420" visible="true" />
 	<reflexive name="Breakable Surface MOPP Codes" offset="0x424" visible="true" entrySize="0x40" align="0x10">
-		<int32 name="Size" offset="0x0" visible="true" />
-		<int32 name="Count" offset="0x4" visible="true" />
+		<int32 name="Unknown" offset="0x0" visible="false" />
+		<int16 name="Size" offset="0x4" visible="true" />
+		<int16 name="Count" offset="0x6" visible="true" />
 		<int32 name="Offset" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Offset X" offset="0x10" visible="true" />

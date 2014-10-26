@@ -80,6 +80,16 @@ namespace Assembly.Helpers
 		public Storage()
 		{
 			Load();
+
+			// Sort Cache Resource Path Databases
+			foreach (var database in from database in _assemblySettings.DefaultDatabase let resCachePath = _assemblySettings.HalomapResourceCachePaths.FirstOrDefault(r => r.EngineName == database.Name) where resCachePath == null select database)
+			{
+				_assemblySettings.HalomapResourceCachePaths.Add(new ResourceCacheInfo
+				{
+					EngineName = database.Name,
+					ResourceCachePath = ""
+				});
+			}
 		}
 
 		/// <summary>
@@ -130,11 +140,13 @@ namespace Assembly.Helpers
 		private bool _halomapShowEmptyClasses;
 		private TagOpenMode _halomapTagOpenMode = TagOpenMode.NewTab;
 		private TagSort _halomapTagSort = TagSort.TagClass;
+		private string _xsdPath = "";
+		private ObservableCollection<ResourceCacheInfo> _halomapResourceCachePaths = new ObservableCollection<ResourceCacheInfo>();
 		private Home _homeWindow;
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
-		private bool _pluginsShowInformation = false;
-		private bool _pluginsShowEnumIndex = false;
+		private bool _pluginsShowInformation;
+		private bool _pluginsShowEnumIndex;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -151,7 +163,6 @@ namespace Assembly.Helpers
 		private bool _xdkScreenshotGammaCorrect = true;
 		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
-		private string _xsdPath = "";
 
 		#region Enums
 
@@ -173,8 +184,7 @@ namespace Assembly.Helpers
 			MetaEditor,
 			PluginEditor,
 			Sound,
-			Model,
-			Bsp
+			Model
 		}
 
 		/// <summary>
@@ -232,10 +242,8 @@ namespace Assembly.Helpers
 
 		public Settings()
 		{
-			ApplicationRecents.CollectionChanged += (sender, args) =>
-			{
-				SetField(ref _applicationRecents, sender as ObservableCollection<RecentFileEntry>, "ApplicationRecents", true);
-			};
+			ApplicationRecents.CollectionChanged += (sender, args) => SetField(ref _applicationRecents, sender as ObservableCollection<RecentFileEntry>, "ApplicationRecents", true);
+			HalomapResourceCachePaths.CollectionChanged += (sender, args) => SetField(ref _halomapResourceCachePaths, sender as ObservableCollection<ResourceCacheInfo>, "HalomapResourceCachePaths", true);
 		}
 
 		#endregion
@@ -511,6 +519,12 @@ namespace Assembly.Helpers
 			set { SetField(ref _xsdPath, value, "XsdPath"); }
 		}
 
+		public ObservableCollection<ResourceCacheInfo> HalomapResourceCachePaths
+		{
+			get { return _halomapResourceCachePaths; }
+			set { SetField(ref _halomapResourceCachePaths, value, "HalomapResourceCachePaths"); }
+		}
+
 		/// <summary>
 		/// </summary>
 		public LastMetaEditorType HalomapLastSelectedMetaEditor
@@ -688,7 +702,7 @@ namespace Assembly.Helpers
 				App.AssemblyStorage.AssemblySettings.ApplicationRecents = new ObservableCollection<Settings.RecentFileEntry>();
 
 			foreach (
-				Settings.RecentFileEntry entry in
+				var entry in
 					App.AssemblyStorage.AssemblySettings.ApplicationRecents.Where(
 						entry => entry.FileName == filename && entry.FilePath == filepath && entry.FileGame == game))
 				alreadyExistsEntry = entry;
@@ -719,5 +733,15 @@ namespace Assembly.Helpers
 		{
 			App.AssemblyStorage.AssemblySettings.ApplicationRecents.Remove(entry);
 		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public class ResourceCacheInfo
+	{
+		public string EngineName { get; set; }
+
+		public string ResourceCachePath { get; set; }
 	}
 }
