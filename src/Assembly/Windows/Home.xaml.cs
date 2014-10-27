@@ -109,6 +109,13 @@ namespace Assembly.Windows
 		private void LayoutRoot_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			var activeContent = ((LayoutRoot)sender).ActiveContent;
+
+			if (activeContent == null)
+			{
+				UpdateTitleText("");
+				return;
+			}
+
 			if (e.PropertyName == "ActiveContent")
 			{
 				if (activeContent.Content != null)
@@ -120,9 +127,6 @@ namespace Assembly.Windows
 
 				if (activeContent != null && activeContent.Title == "Imgur History")
 					((ImgurHistoryPage)activeContent.Content).UpdateHistory();
-
-				if (activeContent == null)
-					UpdateTitleText("");
 			}
 		}
 
