@@ -783,8 +783,33 @@ namespace Assembly.Windows
 
 		private void HomeWindow_Drop(object sender, DragEventArgs e)
 		{
-			// FIXME: Boot into Win7, to fix this. (Win8's UAC is so fucked up... No drag and drop on win8 it seems...)
-			//string[] draggedFiles = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+			// Win7 master race lol
+			string[] draggedFiles = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+
+			foreach (string file in draggedFiles)
+			{
+				if (file.EndsWith(".mapinfo"))
+				{
+					AddInfooTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".map"))
+				{
+					AddCacheTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".blf"))
+				{
+					AddImageTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".campaign"))
+				{
+					AddCampaignTabModule(file);
+					continue;
+				}
+				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
+			}
 		}
 
 		#endregion
