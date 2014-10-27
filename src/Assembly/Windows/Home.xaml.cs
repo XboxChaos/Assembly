@@ -31,8 +31,6 @@ namespace Assembly.Windows
 	/// </summary>
 	public partial class Home
 	{
-		private int _lastDocumentIndex = -1;
-
 		public Home()
 		{
 			InitializeComponent();
@@ -108,29 +106,23 @@ namespace Assembly.Windows
 				MetroUpdateDialog.Show(updateInfo, true);
 		}
 
-		private void dockManager_ActiveContentChanged(object sender, EventArgs e)
+		private void LayoutRoot_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (documentManager.SelectedContentIndex != _lastDocumentIndex)
+			var activeContent = ((LayoutRoot)sender).ActiveContent;
+			if (e.PropertyName == "ActiveContent")
 			{
-				// Selection Changed, lets do dis
-				LayoutContent tab = documentManager.SelectedContent;
+				if (activeContent.Content != null)
+					UpdateTitleText(activeContent.Title.Replace("__", "_")
+						.Replace(".mapinfo", "").Replace(".map", "").Replace(".campaign", "").Replace(".blf", ""));
 
-				if (tab != null)
-					UpdateTitleText(tab.Title.Replace("__", "_").Replace(".map", ""));
+				if (activeContent != null && activeContent.Title == "Start Page")
+					((StartPage)activeContent.Content).UpdateRecents();
 
-				if (tab != null && tab.Title == "Start Page")
-					((StartPage) tab.Content).UpdateRecents();
+				if (activeContent != null && activeContent.Title == "Imgur History")
+					((ImgurHistoryPage)activeContent.Content).UpdateHistory();
 
-				if (tab != null && tab.Title == "Imgur History")
-					((ImgurHistoryPage)tab.Content).UpdateHistory();
-
-				if (tab == null)
-				{
-					documentManager.SelectedContentIndex = 0;
+				if (activeContent == null)
 					UpdateTitleText("");
-				}
-
-				_lastDocumentIndex = documentManager.SelectedContentIndex;
 			}
 		}
 
