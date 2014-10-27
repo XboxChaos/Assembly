@@ -87,13 +87,16 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 			// Load Map IDs
 			LoadMapIDs();
+
+			// Load Unlock Bytes
+			LoadUnlockBytes();
 		}
 
 		public void LoadCampaignNames()
 		{
 			_campaign.MapNames.Clear();
 
-			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x44 : 0x44;
+			const int baseOffset = 0x44;
 			for (int i = 0; i < languageCount; i++)
 			{
 				_stream.SeekTo(baseOffset + (i*0x40));
@@ -123,6 +126,19 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
+		public void LoadUnlockBytes()
+		{
+			if (_campaign.Game == GameIdentifier.Halo4)
+			{
+				const int baseOffset = 0x1AC4;
+				for (int i = 0; i < mapIDcount; i++)
+				{
+					_stream.SeekTo(baseOffset + (i * 0x1));
+					_campaign.UnlockBytes.Add(_stream.ReadByte());
+				}
+			}
+		}
+
 		#endregion
 
 		#region Update Code
@@ -137,18 +153,17 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 			// Update Map IDs
 			UpdateMapIDs();
+
+			// Update Unlock Bytes
+			UpdateUnlockBytes();
 		}
 
 		public void UpdateMapNames()
 		{
-			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x44 : 0x44;
+			const int baseOffset = 0x44;
 			for (int i = 0; i < _campaign.MapNames.Count; i++)
 			{
-				int seekVal = 0;
-				//if (i == _campaign.MapNames.Count - 1)
-				//	seekVal = baseOffset + ((i*0x40) + 0x40);
-				//else
-					seekVal = baseOffset + (i*0x40);
+				int seekVal = baseOffset + (i*0x40);
 
 				_stream.SeekTo(seekVal);
 				_stream.WriteUTF16(_campaign.MapNames[i]);
@@ -160,11 +175,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x8C4 : 0x644;
 			for (int i = 0; i < _campaign.MapDescriptions.Count; i++)
 			{
-				int seekVal = 0;
-				//if (i == _campaign.MapDescriptions.Count - 1)
-				//	seekVal = baseOffset + ((i*0x100) + 0x100);
-				//else
-					seekVal = baseOffset + (i*0x100);
+				int seekVal = baseOffset + (i*0x100);
 
 				_stream.SeekTo(seekVal);
 				_stream.WriteUTF16(_campaign.MapDescriptions[i]);
@@ -176,10 +187,23 @@ namespace Blamite.Blam.ThirdGen.BLF
 			int baseOffset = _campaign.Game == GameIdentifier.Halo4 ? 0x19C4 : 0x1244;
 			for (int i = 0; i < _campaign.MapIDs.Count; i++)
 			{
-				int seekVal = 0;
-				seekVal = baseOffset + (i * 0x4);
+				int seekVal = baseOffset + (i * 0x4);
 				_stream.SeekTo(seekVal);
 				_stream.WriteInt32(_campaign.MapIDs[i]);
+			}
+		}
+
+		public void UpdateUnlockBytes()
+		{
+			if (_campaign.Game == GameIdentifier.Halo4)
+			{
+				const int baseOffset = 0x1AC4;
+				for (int i = 0; i < _campaign.MapIDs.Count; i++)
+				{
+					int seekVal = baseOffset + (i * 0x1);
+					_stream.SeekTo(seekVal);
+					_stream.WriteByte(_campaign.UnlockBytes[i]);
+				}
 			}
 		}
 
@@ -191,6 +215,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public IList<string> MapDescriptions = new List<string>();
 			public IList<string> MapNames = new List<string>();
 			public IList<int> MapIDs = new List<int>();
+			public IList<byte> UnlockBytes = new List<byte>();
 		}
 	}
 }
