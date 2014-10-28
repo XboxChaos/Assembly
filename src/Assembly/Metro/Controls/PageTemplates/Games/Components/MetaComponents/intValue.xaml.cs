@@ -5,9 +5,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	/// <summary>
 	///     Interaction logic for intValue.xaml
 	/// </summary>
-	public partial class intValue : UserControl
+	public partial class IntValue : UserControl
 	{
-		public intValue()
+		public IntValue()
 		{
 			InitializeComponent();
 		}

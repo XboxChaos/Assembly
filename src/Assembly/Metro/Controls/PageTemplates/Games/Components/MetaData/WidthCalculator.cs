@@ -20,7 +20,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly Bitfield _bitfieldControl = new Bitfield();
 		private static readonly Comment _commentControl = new Comment();
 		private static readonly Enumeration _enumControl = new Enumeration();
-		private static readonly intValue _intControl = new intValue();
+		private static readonly IntValue _intControl = new IntValue();
 		private static readonly StringIDValue _stringIDControl = new StringIDValue();
 		private static readonly rawBlock _rawBlock = new rawBlock();
 		//private static MetaChunk _chunkControl = new MetaChunk();

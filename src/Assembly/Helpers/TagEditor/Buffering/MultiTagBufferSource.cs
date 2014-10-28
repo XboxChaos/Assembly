@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assembly.Helpers.TagEditor
+namespace Assembly.Helpers.TagEditor.Buffering
 {
 	/// <summary>
-	/// A <see cref="TagBufferSource"/> which is a collection of other sources.
+	/// A <see cref="TagBufferSource"/> which loads sources from a dictionary.
 	/// Each source is associated with a key, and the buffer of the source with the currently-active key is always returned.
 	/// </summary>
 	/// <typeparam name="TKey">The type of the key.</typeparam>
@@ -14,7 +14,17 @@ namespace Assembly.Helpers.TagEditor
 	{
 		private TKey _activeKey;
 		private TagBufferSource _activeSource;
+		private TagBufferSource _fallbackSource;
 		private Dictionary<TKey, TagBufferSource> _sources = new Dictionary<TKey, TagBufferSource>();
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MultiTagBufferSource{TKey}"/> class.
+		/// </summary>
+		/// <param name="fallback">The fallback source to use if no buffer is active.</param>
+		public MultiTagBufferSource(TagBufferSource fallback)
+		{
+			_fallbackSource = fallback;
+		}
 
 		/// <summary>
 		/// Gets or sets the active key.
@@ -35,7 +45,7 @@ namespace Assembly.Helpers.TagEditor
 		/// </summary>
 		public TagBufferSource ActiveSource
 		{
-			get { return _activeSource; }
+			get { return _activeSource ?? _fallbackSource; }
 		}
 
 		/// <summary>
@@ -54,7 +64,8 @@ namespace Assembly.Helpers.TagEditor
 		/// </returns>
 		public override TagBuffer GetActiveBuffer()
 		{
-			return (_activeSource != null) ? _activeSource.GetActiveBuffer() : null;
+			var source = ActiveSource;
+			return (source != null) ? source.GetActiveBuffer() : null;
 		}
 
 		/// <summary>

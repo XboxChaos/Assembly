@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assembly.Helpers.TagEditor
+namespace Assembly.Helpers.TagEditor.Buffering
 {
 	/// <summary>
 	/// A <see cref="TagBufferSource"/> which loads and caches tag buffer data from a stream.

@@ -19,6 +19,9 @@ using Blamite.Plugins;
 using Blamite.RTE;
 using Blamite.Util;
 using Assembly.Metro.Dialogs.ControlDialogs;
+using Assembly.Helpers.TagEditor.Buffering;
+using Assembly.Helpers.TagEditor;
+using Assembly.Helpers.TagEditor.Fields;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -67,7 +70,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private FieldChangeSet _fileChanges;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
-		private ThirdGenPluginVisitor _pluginVisitor;
+		private PluginFieldGenerator _fieldGenerator;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
 
@@ -115,12 +118,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Set the stream manager and base offset to use based upon the LoadType
 			IStreamManager streamManager = null;
-			uint baseOffset = 0;
+			SegmentPointer baseLocation;
 			switch (type)
 			{
 				case MetaReader.LoadType.File:
 					streamManager = _fileManager;
-					baseOffset = (uint) _tag.RawTag.MetaLocation.AsOffset();
+					baseLocation = _tag.RawTag.MetaLocation;
 					break;
 
 				case MetaReader.LoadType.Memory:
@@ -134,7 +137,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					}
 
 					streamManager = new RTEStreamManager(_rteProvider, _cache);
-					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
+					baseLocation = _tag.RawTag.MetaLocation;
 					break;
 
 				default:
@@ -145,25 +148,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Load Plugin File
 			using (XmlReader xml = XmlReader.Create(_pluginPath))
 			{
-				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
-					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
-				AssemblyPluginLoader.LoadPlugin(xml, _pluginVisitor);
+				_fieldGenerator = new PluginFieldGenerator((baseSize) => new StreamTagBufferSource(streamManager, baseLocation, (uint)baseSize));
+				AssemblyPluginLoader.LoadPlugin(xml, (IPluginVisitor)_fieldGenerator);
 			}
 
 			_changeTracker = new FieldChangeTracker();
 			_fileChanges = new FieldChangeSet();
 			_memoryChanges = new FieldChangeSet();
 
-			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
+			var reader = new TagDataReader();
 			/*_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);*/
-			metaReader.ReadFields(_pluginVisitor.Values);
-			panelMetaComponents.ItemsSource = _pluginVisitor.Values;
+			reader.ReadFields(_fieldGenerator.Fields);
+			panelMetaComponents.ItemsSource = _fieldGenerator.Fields;
 
 			// Start monitoring fields for changes
 			_changeTracker.RegisterChangeSet(_fileChanges);
 			_changeTracker.RegisterChangeSet(_memoryChanges);
-			_changeTracker.Attach(_pluginVisitor.Values);
+			//_changeTracker.Attach(_pluginVisitor.Values);
 
 			// Update Meta Toolbar
 			UpdateMetaButtons(true);
@@ -171,11 +173,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void RevisionViewer()
 		{
-			if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
+			/*if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
 				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Class.Magic));
 			else
 				MetroMessageBox.Show("Press RB to...wait...how'd you do that?",
-					"How did you load the plugin revision viewer before you loaded a plugin? wat.");
+					"How did you load the plugin revision viewer before you loaded a plugin? wat.");*/
 		}
 
 		private void UpdateMetaButtons(bool pluginExists)
@@ -217,7 +219,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void UpdateMeta(MetaWriter.SaveType type, bool onlyUpdateChanged, bool showActionDialog = true)
 		{
-			if (type == MetaWriter.SaveType.File)
+			/*if (type == MetaWriter.SaveType.File)
 			{
 				if (!ConfirmNewStringIds())
 					return;
@@ -262,7 +264,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						ShowConnectionError();
 					}
 				}
-			}
+			}*/
 		}
 
 		private void ShowConnectionError()
@@ -582,10 +584,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void FilterAndHighlightMeta(string text)
 		{
-			_searchResults = new ObservableCollection<SearchResult>();
+			/*_searchResults = new ObservableCollection<SearchResult>();
 			_resultIndices.Clear();
 			var filterer = new MetaFilterer(MetaFilterer_CollectResult, MetaFilterer_HighlightField);
-			filterer.FilterFields(_pluginVisitor.Values, text);
+			filterer.FilterFields(_pluginVisitor.Values, text);*/
 		}
 
 		private void MetaFilterer_CollectResult(MetaField foundField, MetaField listField, ReflexiveData parent)
@@ -655,20 +657,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		/// </summary>
 		private void ShowAll()
 		{
-			foreach (MetaField field in _pluginVisitor.Values)
+			foreach (var field in _fieldGenerator.Fields)
 				ShowField(field);
 		}
 
-		private void ShowField(MetaField field)
+		private void ShowField(TagField field)
 		{
 			field.Opacity = 1.0f;
 
 			// If the field is a reflexive, recursively set the opacity of its children
-			var reflexive = field as ReflexiveData;
+			/*var reflexive = field as ReflexiveData;
 			if (reflexive != null)
 			{
 				// Show wrappers
-				/*_flattener.EnumWrappers(reflexive, ShowField);
+				_flattener.EnumWrappers(reflexive, ShowField);
 
 				// Show template fields
 				foreach (MetaField child in reflexive.Template)
@@ -682,8 +684,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						if (child != null)
 							ShowField(child);
 					}
-				}*/
-			}
+				}
+			}*/
 		}
 
 		// Thread-safe

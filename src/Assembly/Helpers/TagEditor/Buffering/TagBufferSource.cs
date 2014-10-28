@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assembly.Helpers.TagEditor
+namespace Assembly.Helpers.TagEditor.Buffering
 {
 	/// <summary>
 	/// Base for a class which maintains tag buffers and sub-sources.

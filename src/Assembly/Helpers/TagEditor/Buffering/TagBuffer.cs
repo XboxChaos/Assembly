@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Assembly.Helpers.TagEditor
+namespace Assembly.Helpers.TagEditor.Buffering
 {
 	/// <summary>
 	/// Caches tag data read from a stream.
