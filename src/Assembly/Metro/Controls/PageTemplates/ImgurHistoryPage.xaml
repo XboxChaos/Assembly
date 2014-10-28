@@ -1,0 +1,94 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+	x:Class="Assembly.Metro.Controls.PageTemplates.ImgurHistoryPage"
+	xmlns:converter="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Converters"
+	mc:Ignorable="d"
+	Background="#28282b"
+	d:DesignWidth="1000" d:DesignHeight="600">
+	<UserControl.Resources>
+		<!-- Converters -->
+		<converter:ImageConverter x:Key="IValueImageConverter" />
+
+	</UserControl.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="350" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0" Background="#2d2d30">
+			<TextBlock x:Name="lblHeader" FontFamily="{DynamicResource MetroFontLight}" Text="Imgur History" Foreground="White"
+		           FontSize="32" Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
+			<ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
+		                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
+				<ed:RegularPolygon.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform />
+						<SkewTransform />
+						<RotateTransform Angle="90" />
+						<TranslateTransform />
+					</TransformGroup>
+				</ed:RegularPolygon.RenderTransform>
+			</ed:RegularPolygon>
+
+			<StackPanel Margin="25,114,25,0">
+				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" Margin="0,0,0,20" d:LayoutOverrides="Height" />
+
+				<TextBlock
+				Text="Every screenshot you choose to upload will be achived on this page. Double-click a URL to copy it. Reminisce. Or don't."
+				TextWrapping="WrapWithOverflow" Style="{DynamicResource GenericTextblock}" Foreground="White" />
+
+				<Rectangle Fill="#FF363639" Height="1" VerticalAlignment="Top" Margin="0,20,0,20" d:LayoutOverrides="Height" />
+				<Button Content="Clear All History" Click="ClearAll_Click" />
+			</StackPanel>
+
+		</Grid>
+		<GridSplitter Width="2" Background="#FF545456" Foreground="{x:Null}" ResizeDirection="Columns" IsEnabled="False" />
+		<Grid Grid.Column="1">
+			<DataGrid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3"
+							          x:Name="dataPastUploads" Background="{x:Null}" Padding="0"
+							          BorderBrush="#FF3e3e45" BorderThickness="1,0,1,1" Foreground="White" VerticalAlignment="Stretch"
+							          VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
+							          AutoGenerateColumns="False" GridLinesVisibility="None" RowHeaderWidth="0" HeadersVisibility="Column"
+							          CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False">
+				<DataGrid.Columns>
+					<DataGridTemplateColumn Header="Thumbnail" Width="125" IsReadOnly="True">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Image VerticalAlignment="Center" HorizontalAlignment="Center" Width="100" Height="100" Stretch="Uniform"
+												       Source="{Binding Path=ThumbURL, Converter={StaticResource IValueImageConverter}}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="Date" Width="150" IsReadOnly="True">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding Date}"
+												           Style="{DynamicResource GenericTextblock}" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="URL" Width="*" IsReadOnly="True">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+									<TextBlock Foreground="White" VerticalAlignment="Center" Text="{Binding URL}" ToolTip="Double-Click To Copy"
+													           Style="{DynamicResource GenericTextblock}" MouseDown="URL_MouseDown"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="Action" Width="75" IsReadOnly="True">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Content="Delete" Click="HistoryDelete_Click"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</Grid>
+	</Grid>
+</UserControl>

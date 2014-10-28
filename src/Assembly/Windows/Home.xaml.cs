@@ -31,8 +31,6 @@ namespace Assembly.Windows
 	/// </summary>
 	public partial class Home
 	{
-		private int _lastDocumentIndex = -1;
-
 		public Home()
 		{
 			InitializeComponent();
@@ -108,26 +106,27 @@ namespace Assembly.Windows
 				MetroUpdateDialog.Show(updateInfo, true);
 		}
 
-		private void dockManager_ActiveContentChanged(object sender, EventArgs e)
+		private void LayoutRoot_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (documentManager.SelectedContentIndex != _lastDocumentIndex)
+			var activeContent = ((LayoutRoot)sender).ActiveContent;
+
+			if (activeContent == null)
 			{
-				// Selection Changed, lets do dis
-				LayoutContent tab = documentManager.SelectedContent;
+				UpdateTitleText("");
+				return;
+			}
 
-				if (tab != null)
-					UpdateTitleText(tab.Title.Replace("__", "_").Replace(".map", ""));
+			if (e.PropertyName == "ActiveContent")
+			{
+				if (activeContent.Content != null)
+					UpdateTitleText(activeContent.Title.Replace("__", "_")
+						.Replace(".mapinfo", "").Replace(".map", "").Replace(".campaign", "").Replace(".blf", ""));
 
-				if (tab != null && tab.Title == "Start Page")
-					((StartPage) tab.Content).UpdateRecents();
+				if (activeContent != null && activeContent.Title == "Start Page")
+					((StartPage)activeContent.Content).UpdateRecents();
 
-				if (tab == null)
-				{
-					documentManager.SelectedContentIndex = 0;
-					UpdateTitleText("");
-				}
-
-				_lastDocumentIndex = documentManager.SelectedContentIndex;
+				if (activeContent != null && activeContent.Title == "Imgur History")
+					((ImgurHistoryPage)activeContent.Content).UpdateHistory();
 			}
 		}
 
@@ -168,6 +167,11 @@ namespace Assembly.Windows
 		private void menuViewStartPage_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.StartPage);
+		}
+
+		private void menuViewImgurHistoryPage_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.ImgurHistory);
 		}
 
 		private void menuPatches_Click(object sender, RoutedEventArgs e)
@@ -484,6 +488,7 @@ namespace Assembly.Windows
 			PluginGenerator,
 			Welcome,
 			PluginConverter,
+			ImgurHistory,
 
 			MemoryManager,
 			VoxelConverter,
@@ -682,6 +687,10 @@ namespace Assembly.Windows
 					tab.Title = "Plugin Converter";
 					tab.Content = new HaloPluginConverter();
 					break;
+				case TabGenre.ImgurHistory:
+					tab.Title = "Imgur History";
+					tab.Content = new ImgurHistoryPage();
+					break;
 
 
 				case TabGenre.MemoryManager:
@@ -774,8 +783,33 @@ namespace Assembly.Windows
 
 		private void HomeWindow_Drop(object sender, DragEventArgs e)
 		{
-			// FIXME: Boot into Win7, to fix this. (Win8's UAC is so fucked up... No drag and drop on win8 it seems...)
-			//string[] draggedFiles = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+			// Win7 master race lol
+			string[] draggedFiles = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+
+			foreach (string file in draggedFiles)
+			{
+				if (file.EndsWith(".mapinfo"))
+				{
+					AddInfooTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".map"))
+				{
+					AddCacheTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".blf"))
+				{
+					AddImageTabModule(file);
+					continue;
+				}
+				if (file.EndsWith(".campaign"))
+				{
+					AddCampaignTabModule(file);
+					continue;
+				}
+				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
+			}
 		}
 
 		#endregion

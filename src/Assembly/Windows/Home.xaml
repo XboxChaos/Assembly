@@ -89,6 +89,7 @@
 						<MenuItem Margin="5,0,0,0" Header="VIEW" Foreground="White" FontFamily="{DynamicResource MetroFontLight}"
 						          BorderBrush="{x:Null}" FontSize="12">
 							<MenuItem Header="Start Page" x:Name="menuViewStartPage" Click="menuViewStartPage_Click" />
+							<MenuItem Header="Imgur History" x:Name="menuViewImgurHistoryPage" Click="menuViewImgurHistoryPage_Click" />
 						</MenuItem>
 						<MenuItem Margin="5,0,0,0" Header="TOOLS" Foreground="White" FontFamily="{DynamicResource MetroFontLight}"
 						          BorderBrush="{x:Null}" FontSize="12">
@@ -158,13 +159,11 @@
 				</Grid>
 				<Grid x:Name="homeContent" Margin="0, 62, 0, 0">
 					<Grid x:Name="tabContent">
-						<avalonDock:DockingManager Grid.Row="1" x:Name="dockManager"
-						                           ActiveContentChanged="dockManager_ActiveContentChanged" AllowMixedOrientation="True"
-						                           Background="Transparent">
+						<avalonDock:DockingManager Grid.Row="1" x:Name="dockManager" AllowMixedOrientation="True" Background="Transparent">
 							<avalonDock:DockingManager.Theme>
 								<avalonDockThemes:MetroTheme />
 							</avalonDock:DockingManager.Theme>
-							<avalonDock:LayoutRoot>
+							<avalonDock:LayoutRoot PropertyChanged="LayoutRoot_PropertyChanged">
 								<avalonDock:LayoutPanel Orientation="Horizontal">
 									<avalonDock:LayoutDocumentPaneGroup>
 										<avalonDock:LayoutDocumentPane x:Name="documentManager" />

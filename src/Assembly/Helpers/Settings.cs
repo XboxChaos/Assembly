@@ -163,6 +163,7 @@ namespace Assembly.Helpers
 		private bool _xdkScreenshotGammaCorrect = true;
 		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
+		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 
 		#region Enums
 
@@ -236,6 +237,15 @@ namespace Assembly.Helpers
 			public string FilePath { get; set; }
 		}
 
+		/// <summary>
+		/// </summary>
+		public class ImgurHistoryEntry
+		{
+			public string Date { get; set; }
+			public string ThumbURL { get; set; }
+			public string URL { get; set; }
+		}
+
 		#endregion
 
 		#region Methods
@@ -243,6 +253,7 @@ namespace Assembly.Helpers
 		public Settings()
 		{
 			ApplicationRecents.CollectionChanged += (sender, args) => SetField(ref _applicationRecents, sender as ObservableCollection<RecentFileEntry>, "ApplicationRecents", true);
+			ImgurUploadHistory.CollectionChanged += (sender, args) => SetField(ref _imgurHistory, sender as ObservableCollection<ImgurHistoryEntry>, "ImgurUploadHistory", true);
 			HalomapResourceCachePaths.CollectionChanged += (sender, args) => SetField(ref _halomapResourceCachePaths, sender as ObservableCollection<ResourceCacheInfo>, "HalomapResourceCachePaths", true);
 		}
 
@@ -296,7 +307,7 @@ namespace Assembly.Helpers
 		}
 
 		/// <summary>
-		///     Wether Assebembly checks for updates at the startup. Defaults to True.
+		///     Whether Assembly checks for updates at the startup. Defaults to True.
 		/// </summary>
 		public bool ApplicationUpdateOnStartup
 		{
@@ -679,6 +690,15 @@ namespace Assembly.Helpers
 				});
 			}
 		}
+
+		/// <summary>
+		///     A list of Assembly's recently opened files.
+		/// </summary>
+		public ObservableCollection<ImgurHistoryEntry> ImgurUploadHistory
+		{
+			get { return _imgurHistory; }
+			set { SetField(ref _imgurHistory, value, "ImgurUploadHistory"); }
+		}
 	}
 
 	/// <summary>
@@ -743,5 +763,56 @@ namespace Assembly.Helpers
 		public string EngineName { get; set; }
 
 		public string ResourceCachePath { get; set; }
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public class ImgurHistory
+	{
+
+		public static void AddNewEntry(string date, string thumburl, string url)
+		{
+			Settings.ImgurHistoryEntry alreadyExistsEntry = null;
+
+			if (App.AssemblyStorage.AssemblySettings.ImgurUploadHistory == null)
+				App.AssemblyStorage.AssemblySettings.ImgurUploadHistory = new ObservableCollection<Settings.ImgurHistoryEntry>();
+
+			foreach (
+				var entry in
+					App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Where(
+						entry => entry.Date == date && entry.ThumbURL == thumburl && entry.URL == url))
+				alreadyExistsEntry = entry;
+
+			if (alreadyExistsEntry == null)
+			{
+				// Add New Entry
+				var newEntry = new Settings.ImgurHistoryEntry
+				{
+					Date = date,
+					ThumbURL = thumburl,
+					URL = url
+				};
+				App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Insert(0, newEntry);
+			}
+			else
+			{
+				// Move existing Entry
+				App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Remove(alreadyExistsEntry);
+				App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Insert(0, alreadyExistsEntry);
+			}
+
+			JumpLists.UpdateJumplists();
+		}
+
+		public static void RemoveEntry(Settings.ImgurHistoryEntry entry)
+		{
+			App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Remove(entry);
+		}
+
+		public static void ClearEntries()
+		{
+			App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Clear();
+		}
 	}
 }
