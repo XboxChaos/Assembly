@@ -125,13 +125,13 @@ namespace Blamite.IO
 				return;
 			if (size < 0)
 				throw new ArgumentException("The size of the data to insert must be >= 0");
-			if (stream.Position == stream.Length)
-				return; // Seeking past the end automatically increases the file size
 
 			long startPos = stream.Position;
-			Copy(stream, startPos, startPos + size, stream.Length - startPos);
-
-			stream.SeekTo(startPos);
+			if (startPos < stream.Length)
+			{
+				Copy(stream, startPos, startPos + size, stream.Length - startPos);
+				stream.SeekTo(startPos);
+			}
 			Fill(stream, fill, size);
 		}
 
@@ -147,8 +147,6 @@ namespace Blamite.IO
 				return;
 			if (size < 0)
 				throw new ArgumentException("The size of the data to insert must be >= 0");
-			if (writer.Position == writer.Length)
-				return;
 
 			const int BufferSize = 0x1000;
 			var buffer = new byte[BufferSize];
