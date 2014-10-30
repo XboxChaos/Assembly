@@ -15,7 +15,7 @@ namespace Blamite.Util
 		private List<Range<T>> _ranges = new List<Range<T>>();
 
 		/// <summary>
-		/// Gets the ranges contained in the set.
+		/// Gets the ranges contained in the set, in sorted order by starting index.
 		/// </summary>
 		public IEnumerable<Range<T>> Ranges
 		{
@@ -48,6 +48,16 @@ namespace Blamite.Util
 		}
 
 		/// <summary>
+		/// Imports all of the ranges from another set into this one.
+		/// </summary>
+		/// <param name="other">The other range set to import from.</param>
+		public void Import(RangeSet<T> other)
+		{
+			foreach (var range in other.Ranges)
+				Insert(range);
+		}
+
+		/// <summary>
 		/// Determines whether the set contains a range of values.
 		/// </summary>
 		/// <param name="range">The range of values to check.</param>
@@ -63,6 +73,14 @@ namespace Blamite.Util
 				return (index > 0 && _ranges[index - 1].Includes(range));
 			}
 			return _ranges[index].Includes(range);
+		}
+
+		/// <summary>
+		/// Removes all ranges from the set.
+		/// </summary>
+		public void Clear()
+		{
+			_ranges.Clear();
 		}
 
 		/// <summary>

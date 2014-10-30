@@ -13,8 +13,9 @@ namespace Blamite.Util
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Range&lt;T&gt;"/> struct.
+        /// The range will be set to have a given starting value (inclusive) and a given ending value (exclusive).
         /// </summary>
-        /// <param name="start">The starting value.</param>
+        /// <param name="start">The starting value (inclusive).</param>
         /// <param name="end">The ending value (exclusive).</param>
         public Range(T start, T end)
         {

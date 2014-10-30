@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Assembly.Helpers.TagEditor
 {
+	/// <summary>
+	/// Handles deserializing tag data and updating field values.
+	/// </summary>
 	public class TagDataReader : ITagFieldVisitor
 	{
 		public void ReadField(TagField field)
@@ -22,59 +25,44 @@ namespace Assembly.Helpers.TagEditor
 
 		void ITagFieldVisitor.VisitUInt8(UInt8Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadByte();
 		}
 
 		void ITagFieldVisitor.VisitUInt16(UInt16Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadUInt16();
 		}
 
 		void ITagFieldVisitor.VisitUInt32(UInt32Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadUInt32();
 		}
 
 		void ITagFieldVisitor.VisitInt8(Int8Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadSByte();
 		}
 
 		void ITagFieldVisitor.VisitInt16(Int16Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadInt16();
 		}
 
 		void ITagFieldVisitor.VisitInt32(Int32Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadInt32();
 		}
 
 		void ITagFieldVisitor.VisitFloat32(Float32Field field)
 		{
-			var stream = GetStream(field);
+			var stream = field.GetStream();
 			field.Value = stream.ReadFloat();
-		}
-
-		private IStream GetStream(ValueTagField field)
-		{
-			var source = field.Source;
-			if (source == null)
-				return null;
-			var buffer = source.GetActiveBuffer();
-			if (buffer == null)
-				return null;
-			var stream = buffer.Stream;
-			if (stream == null)
-				return null;
-			stream.SeekTo(field.Offset);
-			return stream;
 		}
 	}
 }

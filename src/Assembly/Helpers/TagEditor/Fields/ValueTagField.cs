@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.IO;
 
 namespace Assembly.Helpers.TagEditor.Fields
 {
@@ -76,6 +77,25 @@ namespace Assembly.Helpers.TagEditor.Fields
 				_source = value;
 				NotifyPropertyChanged("Source");
 			}
+		}
+
+		/// <summary>
+		/// Gets a stream which can be used to read or write the field's data.
+		/// Do not close or dispose of the stream.
+		/// </summary>
+		/// <returns>The stream. Its position will be set to the beginning of the field's data.</returns>
+		public IStream GetStream()
+		{
+			if (Source == null)
+				return null;
+			var buffer = Source.GetActiveBuffer();
+			if (buffer == null)
+				return null;
+			var stream = buffer.Stream;
+			if (stream == null)
+				return null;
+			stream.SeekTo(Offset);
+			return stream;
 		}
 
 		/// <summary>
