@@ -288,7 +288,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void UpdateMapNames(int baseOffset)
+		private void UpdateMapNames(int baseOffset)
 		{
 			for (int i = 0; i < _mapInformation.MapNames.Count; i++)
 			{
@@ -299,7 +299,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		public void UpdateMapDescriptions(int baseOffset)
+		private void UpdateMapDescriptions(int baseOffset)
 		{
 			for (int i = 0; i < _mapInformation.MapDescriptions.Count; i++)
 			{
