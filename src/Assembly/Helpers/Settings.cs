@@ -131,6 +131,7 @@ namespace Assembly.Helpers
 		private bool _defaultAmp;
 		private bool _defaultBlf;
 		private EngineDatabase _defaultDatabase = XMLEngineDatabaseLoader.LoadDatabase("Formats/Engines.xml");
+		private Blamite.Serialization.MapInfo.EngineDatabase _defaultMapInfoDatabase = Blamite.Serialization.MapInfo.XMLEngineDatabaseLoader.LoadDatabase("Formats/MapInfo/Engines.xml");
 		private bool _defaultMap;
 		private bool _defaultMif;
 		private bool _defaultCif;
@@ -666,6 +667,15 @@ namespace Assembly.Helpers
 		{
 			get { return _defaultDatabase; }
 			set { SetField(ref _defaultDatabase, value, "DefaultDatabase"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		[JsonIgnore]
+		public Blamite.Serialization.MapInfo.EngineDatabase DefaultMapInfoDatabase
+		{
+			get { return _defaultMapInfoDatabase; }
+			set { SetField(ref _defaultMapInfoDatabase, value, "DefaultMapInfoDatabase"); }
 		}
 
 		/// <summary>

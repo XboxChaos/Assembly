@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Blamite.IO;
+using Blamite.Serialization.MapInfo;
 
 namespace Blamite.Blam.ThirdGen.BLF
 {
@@ -30,34 +31,28 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 	public class MapInfo
 	{
-		// Private Modifiers
-		public enum GameIdentifier : uint
-		{
-			Halo3 = 0x4D500003,
-			Halo3ODST = 0x98C00003,
-			HaloReachBetas = 0xCC880005,
-			HaloReach = 0xCC980007,
-			Halo4NetworkTest = 0xCC980008,
-			Halo4 = 0x1DD80009
-		}
-
 		private MaplevlInfo _mapInformation;
 		private EndianStream _stream;
-		private int languageCount;
-		private int insertionCount;
-		private int insertionBaseOffset;
-		private int insertionPointSize;
-		private int insertionNameOffset;
-		private int insertionDescriptionOffset;
-		
-		public MapInfo(string blfLocation)
+		private const int MapNamesOffset = 0x44;
+		private int _mapDescriptionsOffset;
+		private int _physicalNameOffset;
+		private int _internalNameOffset;
+		private int _mapIndexOffset;
+		private int _maxTeamsOffset;
+		private int _mpObjectsOffset;
+		private int _insertionOffset;
+		private int _defaultAuthorOffset;
+
+		public EngineDescription Engine { get; private set; }
+
+		public MapInfo(string blfLocation, EngineDatabase database)
 		{
-			Initalize(new FileStream(blfLocation, FileMode.OpenOrCreate));
+			Initalize(new FileStream(blfLocation, FileMode.OpenOrCreate), database);
 		}
 
-		public MapInfo(Stream blfStream)
+		public MapInfo(Stream blfStream, EngineDatabase database)
 		{
-			Initalize(blfStream);
+			Initalize(blfStream, database);
 		}
 
 		public Stream Stream
@@ -71,55 +66,24 @@ namespace Blamite.Blam.ThirdGen.BLF
 			set { _mapInformation = value; }
 		}
 
-		private void Initalize(Stream blfStream)
+		private void Initalize(Stream blfStream, EngineDatabase database)
 		{
 			_stream = new EndianStream(blfStream, Endian.BigEndian);
 
-			// Load MapInfo shit
-			LoadMapInfo();
+			// Load MapInfo data from file
+			LoadMapInfo(database);
 		}
 
-		private void UpdateCountsAndOffsets(GameIdentifier gameIdent)
+		private void UpdateOffsets()
 		{
-			switch (gameIdent)
-			{
-				case GameIdentifier.Halo3:
-					insertionCount = 4;
-					languageCount = 12;
-					insertionBaseOffset = 0x1160;
-					insertionPointSize = 0xF08;
-					insertionNameOffset = 0x8;
-					insertionDescriptionOffset = 0x308;
-					break;
-				case GameIdentifier.Halo3ODST:
-					insertionCount = 9;
-					languageCount = 12;
-					insertionBaseOffset = 0x1160;
-					insertionPointSize = 0xF10;
-					insertionNameOffset = 0x10;
-					insertionDescriptionOffset = 0x310;
-					break;
-				case GameIdentifier.HaloReach:
-				case GameIdentifier.HaloReachBetas:
-				case GameIdentifier.Halo4NetworkTest:
-					insertionCount = 12;
-					languageCount = 12;
-					insertionBaseOffset = 0x1258;
-					insertionPointSize = 0xF88;
-					insertionNameOffset = 0x88;
-					insertionDescriptionOffset = 0x388;
-					break;
-				case GameIdentifier.Halo4:
-					insertionCount = 12;
-					languageCount = 17;
-					insertionBaseOffset = 0x1898;
-					insertionPointSize = 0x15C8;
-					insertionNameOffset = 0x88;
-					insertionDescriptionOffset = 0x4C8;
-					break;
-				default:
-					throw new InvalidOperationException("The MapInfo BLF file is from an unknown Halo Version");
-			}
+			_mapDescriptionsOffset = (Engine.LanguageCount * 0x40) + MapNamesOffset;
+			_physicalNameOffset = (Engine.LanguageCount * 0x100) + _mapDescriptionsOffset;
+			_internalNameOffset = _physicalNameOffset + 0x100;
+			_mapIndexOffset = _internalNameOffset + 0x100;
+			_maxTeamsOffset = _mapIndexOffset + 0xA;
+			_mpObjectsOffset = _mapIndexOffset + 0x14;
+			_insertionOffset = _mapIndexOffset + 0xA;
+			_defaultAuthorOffset = _insertionOffset + (Engine.InsertionCount * Engine.InsertionSize);
 		}
 
 		public void Close()
@@ -129,16 +93,24 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		#region Loading Code
 
-		public void LoadMapInfo()
+		public void LoadMapInfo(EngineDatabase database)
 		{
 			_mapInformation = new MaplevlInfo();
+			
+			// Find out which engine the file uses
+			_stream.SeekTo(0x34);
+			var size = _stream.ReadInt32();
+			_stream.SeekTo(0x38);
+			var version = _stream.ReadUInt16();
+			Engine = database.FindEngine(size, version);
 
-			// Load Game Identification
-			_stream.SeekTo(0x36);
-			_mapInformation.Game = (GameIdentifier) _stream.ReadUInt32();
-			UpdateCountsAndOffsets(_mapInformation.Game);
+			if (Engine == null)
+				throw new NotSupportedException("Engine version " + version + " of size 0x" + size.ToString("X") + " is not supported");
 
-			// Load MapID
+			// Update offsets based on engine info
+			UpdateOffsets();
+
+			// Load Map ID
 			_stream.SeekTo(0x3C);
 			_mapInformation.MapID = _stream.ReadInt32();
 
@@ -146,141 +118,122 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_stream.SeekTo(0x42);
 			_mapInformation.Flags = (LevelFlags)_stream.ReadInt16();
 
-			// Load Map Names
-			LoadMapNames();
-
-			// Load Map Descriptions
-			LoadMapDescriptions();
+			// Load Map Names and Descriptions
+			LoadMapNames(MapNamesOffset);
+			LoadMapDescriptions(_mapDescriptionsOffset);
 
 			// Load Map Physical Name
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1584 : 0x0F44);
+			_stream.SeekTo(_physicalNameOffset);
 			_mapInformation.PhysicalName = _stream.ReadAscii();
 
 			// Load Map Internal Name
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1684 : 0x1044);
+			_stream.SeekTo(_internalNameOffset);
 			_mapInformation.InternalName = _stream.ReadAscii();
 
 			// Load Map Index
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1784 : 0x1144);
+			_stream.SeekTo(_mapIndexOffset);
 			_mapInformation.MapIndex = _stream.ReadInt32();
 
 			// Load Max Teams
-			LoadMapMaxTeams();
+			if (Engine.MaxTeamCollection != null)
+				LoadMapMaxTeams(_maxTeamsOffset);
 
 			// Load Multiplayer Object Table
-			LoadMPObjectTable();
+			if (Engine.MultiplayerObjectCollection != null)
+				LoadMPObjectTable(_mpObjectsOffset);
 
 			// Load Insertion Points
-			LoadInsertionPoints();
+			LoadInsertionPoints(_insertionOffset);
 
 			// Load Default Author Name
-			LoadDefaultAuthor();
+			if (Engine.UsesDefaultAuthor)
+			{
+				_stream.SeekTo(_defaultAuthorOffset);
+				_mapInformation.DefaultAuthor = _stream.ReadAscii();
+			}
 		}
 
-		public void LoadMapNames()
+		private void LoadMapNames(int baseOffset)
 		{
 			_mapInformation.MapNames.Clear();
 
-			const int baseOffset = 0x44;
-			for (int i = 0; i < languageCount; i++)
+			for (int i = 0; i < Engine.LanguageCount; i++)
 			{
 				_stream.SeekTo(baseOffset + (i*0x40));
 				_mapInformation.MapNames.Add(_stream.ReadUTF16());
 			}
 		}
 
-		public void LoadMapDescriptions()
+		private void LoadMapDescriptions(int baseOffset)
 		{
 			_mapInformation.MapDescriptions.Clear();
 
-			int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x0484 : 0x0344;
-			for (int i = 0; i < languageCount; i++)
+			for (int i = 0; i < Engine.LanguageCount; i++)
 			{
 				_stream.SeekTo(baseOffset + (i*0x100));
 				_mapInformation.MapDescriptions.Add(_stream.ReadUTF16());
 			}
 		}
 
-		private void LoadMapMaxTeams()
+		private void LoadMapMaxTeams(int baseOffset)
 		{
-			if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
-			{
-				_stream.SeekTo(0x114E);
-				for (int i = 0; i < 12; i++)
-					_mapInformation.MaxTeamCounts.Add(_stream.ReadByte());
-			}
+			_stream.SeekTo(baseOffset);
+			for (int i = 0; i < Engine.MaxTeamCollection.Count; i++)
+				_mapInformation.MaxTeamCounts.Add(_stream.ReadByte());
 		}
 
-		private void LoadMPObjectTable()
+		private void LoadMPObjectTable(int baseOffset)
 		{
-			if (_mapInformation.Game != GameIdentifier.Halo3 && _mapInformation.Game != GameIdentifier.Halo3ODST)
+			var ints = new int[64];
+			for (int i = 0; i < 64; i++)
 			{
-				int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x1798 : 0x1158;
-				var intList = new List<int>();
-				for (int i = 0; i < 64; i++)
-				{
-					_stream.SeekTo(baseOffset + (i * 4));
-					intList.Add(_stream.ReadInt32());
-				}
-				_mapInformation.ObjectTable = new BitArray(intList.ToArray());
+				_stream.SeekTo(baseOffset + (i * 4));
+				ints[i] = _stream.ReadInt32();
 			}
+			_mapInformation.ObjectTable = new BitArray(ints);
 		}
 
-		private void LoadInsertionPoints()
+		private void LoadInsertionPoints(int baseOffset)
 		{
 			_mapInformation.MapCheckpoints.Clear();
 			
-			for (int i = 0; i < insertionCount; i++)
+			for (int i = 0; i < Engine.InsertionCount; i++)
 			{
 				_mapInformation.MapCheckpoints.Add(new Checkpoint());
 
-				_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize));
+				_stream.SeekTo(baseOffset + (i * Engine.InsertionSize));
 				int visible = _stream.ReadByte();
 				_mapInformation.MapCheckpoints[i].IsVisible = visible == 1;
 
-				if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
+				switch (Engine.InsertionZoneType)
 				{
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 3);
-					_mapInformation.MapCheckpoints[i].ZoneIndex = _stream.ReadByte();
-				}
-				else
-				{
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 1);
-					int used = _stream.ReadByte();
-					_mapInformation.MapCheckpoints[i].IsUsed = used == 1;
+					case ZoneType.Index:
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 3);
+						_mapInformation.MapCheckpoints[i].ZoneIndex = _stream.ReadByte();
+						break;
+					case ZoneType.Name:
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 1);
+						int used = _stream.ReadByte();
+						_mapInformation.MapCheckpoints[i].IsUsed = used == 1;
 
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 4);
-					_mapInformation.MapCheckpoints[i].ZoneName = _stream.ReadAscii();
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 4);
+						_mapInformation.MapCheckpoints[i].ZoneName = _stream.ReadAscii();
+						break;
 				}
 
-				int namesBaseOffset = (insertionBaseOffset + (i * insertionPointSize) + insertionNameOffset);
-				for (int n = 0; n < languageCount; n++)
+				int namesBaseOffset = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionNameOffset);
+				for (int n = 0; n < Engine.LanguageCount; n++)
 				{
 					_stream.SeekTo(namesBaseOffset + (n * 0x40));
 					_mapInformation.MapCheckpoints[i].CheckpointName.Add(_stream.ReadUTF16());
 				}
 
-				int descriptionsBaseOffset = (insertionBaseOffset + (i * insertionPointSize) + insertionDescriptionOffset);
-				for (int d = 0; d < languageCount; d++)
+				int descriptionsBaseOffset = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionDescriptionOffset);
+				for (int d = 0; d < Engine.LanguageCount; d++)
 				{
 					_stream.SeekTo(descriptionsBaseOffset + (d * 0x100));
 					_mapInformation.MapCheckpoints[i].CheckpointDescription.Add(_stream.ReadUTF16());
 				}
-			}
-		}
-
-		private void LoadDefaultAuthor()
-		{
-			if (_mapInformation.Game == GameIdentifier.HaloReach)
-			{
-				_stream.SeekTo(0xCCB8);
-				_mapInformation.DefaultAuthor = _stream.ReadAscii();
-			}
-
-			if (_mapInformation.Game == GameIdentifier.Halo4)
-			{
-				_stream.SeekTo(0x11DF8);
-				_mapInformation.DefaultAuthor = _stream.ReadAscii();
 			}
 		}
 
@@ -290,9 +243,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		public void UpdateMapInfo()
 		{
-			// Update Game Identification
-			_stream.SeekTo(0x36);
-			_stream.WriteUInt32((UInt32) _mapInformation.Game);
+			UpdateOffsets();
 
 			// Update MapID
 			_stream.SeekTo(0x3C);
@@ -302,118 +253,114 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_stream.SeekTo(0x42);
 			_stream.WriteInt16((short)_mapInformation.Flags);
 
-			// Update Map Names
-			UpdateMapNames();
-
-			// Update Map Descrptions
-			UpdateMapDescriptions();
+			// Update Map Names and Descriptions
+			UpdateMapNames(MapNamesOffset);
+			UpdateMapDescriptions(_mapDescriptionsOffset);
 
 			// Update Map Physical Name
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1584 : 0x0F44);
+			_stream.SeekTo(_physicalNameOffset);
 			_stream.WriteAscii(_mapInformation.PhysicalName);
 
 			// Update Map Internal Name
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1684 : 0x1044);
+			_stream.SeekTo(_internalNameOffset);
 			_stream.WriteAscii(_mapInformation.InternalName);
 
 			// Update Map Index
-			_stream.SeekTo(_mapInformation.Game == GameIdentifier.Halo4 ? 0x1784 : 0x1144);
+			_stream.SeekTo(_mapIndexOffset);
 			_stream.WriteInt32(_mapInformation.MapIndex);
 
 			// Update Map Max Teams
-			UpdateMapMaxTeams();
+			if (Engine.MaxTeamCollection != null)
+				UpdateMapMaxTeams(_maxTeamsOffset);
 
 			// Update Multiplayer Object Table
-			UpdateMPObjectTable();
+			if (Engine.MultiplayerObjectCollection != null)
+				UpdateMPObjectTable(_mpObjectsOffset);
 
 			// Update Insertion Points
-			UpdateInsertionPoints();
+			UpdateInsertionPoints(_insertionOffset);
 
 			// Update Default Author
-			UpdateDefaultAuthor();
+			if (Engine.UsesDefaultAuthor)
+			{
+				_stream.SeekTo(_defaultAuthorOffset);
+				_stream.WriteAscii(_mapInformation.DefaultAuthor);
+			}
 		}
 
-		public void UpdateMapNames()
+		public void UpdateMapNames(int baseOffset)
 		{
-			const int baseOffset = 0x44;
 			for (int i = 0; i < _mapInformation.MapNames.Count; i++)
 			{
-				int seekVal = baseOffset + (i*0x40);
+				int seekVal = baseOffset + (i * 0x40);
 
 				_stream.SeekTo(seekVal);
 				_stream.WriteUTF16(_mapInformation.MapNames[i]);
 			}
 		}
 
-		public void UpdateMapDescriptions()
+		public void UpdateMapDescriptions(int baseOffset)
 		{
-			int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x0484 : 0x0344;
 			for (int i = 0; i < _mapInformation.MapDescriptions.Count; i++)
 			{
-				int seekVal = baseOffset + (i*0x100);
+				int seekVal = baseOffset + (i * 0x100);
 
 				_stream.SeekTo(seekVal);
 				_stream.WriteUTF16(_mapInformation.MapDescriptions[i]);
 			}
 		}
 
-		private void UpdateMapMaxTeams()
+		private void UpdateMapMaxTeams(int baseOffset)
 		{
-			if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
+			_stream.SeekTo(baseOffset);
+			for (int i = 0; i < Engine.MaxTeamCollection.Count; i++)
+				_stream.WriteByte(_mapInformation.MaxTeamCounts[i]);
+		}
+
+		private void UpdateMPObjectTable(int baseOffset)
+		{
+			for (int i = 0; i < 64; i++)
 			{
-				_stream.SeekTo(0x114E);
-				for (int i = 0; i < 12; i++)
-					_stream.WriteByte(_mapInformation.MaxTeamCounts[i]);
+				int seekVal = baseOffset + (i * 4);
+				_stream.SeekTo(seekVal);
+				var buffer = new int[1];
+				_mapInformation.ObjectTable.CopyTo(buffer, i * 32);
+				_stream.WriteInt32(buffer[0]);
 			}
 		}
 
-		private void UpdateMPObjectTable()
+		private void UpdateInsertionPoints(int baseOffset)
 		{
-			if (_mapInformation.Game != GameIdentifier.Halo3 && _mapInformation.Game != GameIdentifier.Halo3ODST)
+			for (int i = 0; i < Engine.InsertionCount; i++)
 			{
-				int baseOffset = _mapInformation.Game == GameIdentifier.Halo4 ? 0x1798 : 0x1158;
-				for (int i = 0; i < 64; i++)
-				{
-					int seekVal = baseOffset + (i * 4);
-					_stream.SeekTo(seekVal);
-					var buffer = new int[1];
-					_mapInformation.ObjectTable.CopyTo(buffer, i * 32);
-					_stream.WriteInt32(buffer[0]);
-				}
-			}
-		}
-
-		private void UpdateInsertionPoints()
-		{
-			for (int i = 0; i < insertionCount; i++)
-			{
-				_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize));
+				_stream.SeekTo(baseOffset + (i * Engine.InsertionSize));
 				_stream.WriteByte((byte)(_mapInformation.MapCheckpoints[i].IsVisible ? 0x1 : 0x0));
 
-				if (_mapInformation.Game == GameIdentifier.Halo3 || _mapInformation.Game == GameIdentifier.Halo3ODST)
+				switch (Engine.InsertionZoneType)
 				{
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 3);
-					_stream.WriteByte(_mapInformation.MapCheckpoints[i].ZoneIndex);
-				}
-				else
-				{
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 1);
-					_stream.WriteByte((byte)(_mapInformation.MapCheckpoints[i].IsUsed ? 0x1 : 0x0));
+					case ZoneType.Index:
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 3);
+						_stream.WriteByte(_mapInformation.MapCheckpoints[i].ZoneIndex);
+						break;
+					case ZoneType.Name:
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 1);
+						_stream.WriteByte((byte)(_mapInformation.MapCheckpoints[i].IsUsed ? 0x1 : 0x0));
 
-					_stream.SeekTo(insertionBaseOffset + (i * insertionPointSize) + 4);
-					_stream.WriteAscii(_mapInformation.MapCheckpoints[i].ZoneName);
+						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 4);
+						_stream.WriteAscii(_mapInformation.MapCheckpoints[i].ZoneName);
+						break;
 				}
-				
-				int baseOffsetNames = (insertionBaseOffset + (i * insertionPointSize) + insertionNameOffset);
-				for (int n = 0; n < languageCount; n++)
+
+				int baseOffsetNames = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionNameOffset);
+				for (int n = 0; n < Engine.LanguageCount; n++)
 				{
 					int nameSeek = baseOffsetNames + (n * 0x40);
 					_stream.SeekTo(nameSeek);
 					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointName[n]);
 				}
 
-				int baseOffsetDescriptions = (insertionBaseOffset + (i * insertionPointSize) + insertionDescriptionOffset);
-				for (int d = 0; d < languageCount; d++)
+				int baseOffsetDescriptions = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionDescriptionOffset);
+				for (int d = 0; d < Engine.LanguageCount; d++)
 				{
 					int descriptionSeek = baseOffsetDescriptions + (d * 0x100);
 					_stream.SeekTo(descriptionSeek);
@@ -422,26 +369,10 @@ namespace Blamite.Blam.ThirdGen.BLF
 			}
 		}
 
-		private void UpdateDefaultAuthor()
-		{
-			if (_mapInformation.Game == GameIdentifier.HaloReach)
-			{
-				_stream.SeekTo(0xCCB8);
-				_stream.WriteAscii(_mapInformation.DefaultAuthor);
-			}
-
-			if (_mapInformation.Game == GameIdentifier.Halo4)
-			{
-				_stream.SeekTo(0x11DF8);
-				_stream.WriteAscii(_mapInformation.DefaultAuthor);
-			}
-		}
-
 		#endregion
 
 		public class MaplevlInfo
 		{
-			public GameIdentifier Game { get; set; }
 			public int MapID { get; set; }
 			public LevelFlags Flags { get; set; }
 			public IList<string> MapNames = new List<string>();
@@ -455,7 +386,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public string DefaultAuthor { get; set; }
 		}
 
-		// Insertion Points
 		public class Checkpoint
 		{
 			public bool IsVisible { get; set; }

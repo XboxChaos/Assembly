@@ -93,67 +93,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					throw new Exception("The selected Map Info BLF is not a valid Map Info BLF file.");
 				_blf.Close();
 
-				_mapInfo = new MapInfo(_blfLocation);
+				_mapInfo = new MapInfo(_blfLocation, App.AssemblyStorage.AssemblySettings.DefaultMapInfoDatabase);
 
 				Dispatcher.Invoke(new Action(delegate
 				{
 					// Add BLF Info
-					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X")));
-					paneBLFInfo.Children.Insert(1,
-						new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
-
+					paneBLFInfo.Children.Insert(0, new MapHeaderEntry("MapInfo Version:", _mapInfo.Engine.Version.ToString(CultureInfo.InvariantCulture)));
+					paneBLFInfo.Children.Insert(1, new MapHeaderEntry("BLF Length:", "0x" + _mapInfo.Stream.Length.ToString("X")));
+					paneBLFInfo.Children.Insert(2, new MapHeaderEntry("BLF Chunks:", _blf.BLFChunks.Count.ToString(CultureInfo.InvariantCulture)));
+					
 					// Load Languages
 					LoadLanguages();
 
 					// Add Map Info
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo3:
-							txtGameName.Text = "Halo 3";
-							break;
-						case MapInfo.GameIdentifier.Halo3ODST:
-							txtGameName.Text = "Halo 3: ODST";
-							break;
-						case MapInfo.GameIdentifier.HaloReach:
-							txtGameName.Text = "Halo Reach";
-							break;
-						case MapInfo.GameIdentifier.HaloReachBetas:
-							txtGameName.Text = "Halo Reach Pre/Beta";
-							break;
-						case MapInfo.GameIdentifier.Halo4:
-							txtGameName.Text = "Halo 4";
-							break;
-					}
+					txtGameName.Text = _mapInfo.Engine.Name;
 					txtMapID.Text = _mapInfo.MapInformation.MapID.ToString(CultureInfo.InvariantCulture);
 					txtMapInternalName.Text = _mapInfo.MapInformation.InternalName;
 					txtMapPhysicalName.Text = _mapInfo.MapInformation.PhysicalName;
 
 					// Set up the Type combo box
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo3:
-						case MapInfo.GameIdentifier.Halo3ODST:
-							cbType_Cine.Visibility = System.Windows.Visibility.Collapsed;
-							cbType_Cine.IsEnabled = false;
-							cbType_FF.Visibility = System.Windows.Visibility.Collapsed;
-							cbType_FF.IsEnabled = false;
-							break;
-						case MapInfo.GameIdentifier.HaloReach:
-						case MapInfo.GameIdentifier.HaloReachBetas:
-							cbType_Cine.Visibility = System.Windows.Visibility.Visible;
-							cbType_Cine.IsEnabled = true;
-							cbType_FF.Visibility = System.Windows.Visibility.Visible;
-							cbType_FF.IsEnabled = true;
-							cbType_FF.Content = "Firefight";
-							break;
-						case MapInfo.GameIdentifier.Halo4:
-							cbType_Cine.Visibility = System.Windows.Visibility.Visible;
-							cbType_Cine.IsEnabled = true;
-							cbType_FF.Visibility = System.Windows.Visibility.Visible;
-							cbType_FF.IsEnabled = true;
-							cbType_FF.Content = "Spartan Ops";
-							break;
-					}
+					// TODO: Add flags to formats?
+					cbType_Cine.Visibility = cbType_FF.Visibility = _mapInfo.Engine.Version < 5 ? Visibility.Collapsed : Visibility.Visible;
+					cbType_Cine.IsEnabled = cbType_FF.IsEnabled = _mapInfo.Engine.Version >= 5;
+					cbType_FF.Content = _mapInfo.Engine.Version < 8 ? "Firefight" : "Spartan Ops";
 					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMainMenu))
 						cbType.SelectedIndex = 0;
 					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMultiplayer))
@@ -166,23 +128,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						cbType.SelectedIndex = 4;
 
 					// Set up the Checkboxes
-					switch (_mapInfo.MapInformation.Game)
-					{
-						case MapInfo.GameIdentifier.Halo4:
-							cbForgeOnly.Visibility = System.Windows.Visibility.Visible;
-							break;
-						default:
-							cbForgeOnly.Visibility = System.Windows.Visibility.Collapsed;
-							break;
-					}
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible))
-						cbVisible.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm))
-						cbGeneratesFilm.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsDLC))
-						cbDLC.IsChecked = true;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsForgeOnly))
-						cbForgeOnly.IsChecked = true;
+					cbForgeOnly.Visibility  = _mapInfo.Engine.Version < 8 ? Visibility.Collapsed : Visibility.Visible;
+					cbVisible.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible);
+					cbGeneratesFilm.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm);
+					cbDLC.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsDLC);
+					cbForgeOnly.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsForgeOnly);
 
 					// Update UI
 					_startEditing = true;
@@ -262,7 +212,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		// Update MapInfo file
 		private void btnUpdate_Click(object sender, RoutedEventArgs e)
 		{
-			_mapInfo = new MapInfo(_blfLocation);
+			_mapInfo = new MapInfo(_blfLocation, App.AssemblyStorage.AssemblySettings.DefaultMapInfoDatabase);
 			// Update MapID
 			if (!Equals(txtMapID.BorderBrush, FindResource("ExtryzeAccentBrush")))
 				_mapInfo.MapInformation.MapID = Int32.Parse(txtMapID.Text);
@@ -324,20 +274,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			//}
 		}
 
-		// Load Languages
 		private void LoadLanguages()
 		{
 			// If the game is Halo 4, use that set of languages, if not, use the default set.
-			switch (_mapInfo.MapInformation.Game)
-			{
-				case MapInfo.GameIdentifier.Halo4:
-					_languageset = _halo4languages;
-					break;
-				default:
-					_languageset = _languages;
-					break;
-			}
-			cbLanguages.DataContext = _languageset;
+			cbLanguages.DataContext = _languageset = _mapInfo.Engine.LanguageCount > 12 ? _halo4languages : _languages;
 		}
 
 		public class LanguageEntry
