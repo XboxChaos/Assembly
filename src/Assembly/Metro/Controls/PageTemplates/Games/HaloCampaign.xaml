@@ -7,6 +7,31 @@
              mc:Ignorable="d"
              Background="#28282b"
              d:DesignHeight="1000" d:DesignWidth="1200">
+	<UserControl.Resources>
+		<Style x:Key="UnlockByteLabel" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Foreground" Value="#999999" />
+			<Setter Property="FontFamily" Value="{DynamicResource MetroFontRegular}" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
+								ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" RecognizesAccessKey="True"
+								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+						<ControlTemplate.Triggers>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsChecked" Value="true" />
+									<Condition Property="IsEnabled" Value="true" />
+								</MultiTrigger.Conditions>
+								<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+							</MultiTrigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
 	<Grid>
 		<Grid x:Name="sideBar" Width="350" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#2d2d30">
 			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
@@ -72,9 +97,168 @@
 			</ScrollViewer>
 		</Grid>
 
-		<Grid Margin="400,0,0,0" HorizontalAlignment="Stretch">
-			<Border Margin="30,30,0,0" HorizontalAlignment="Left" BorderThickness="0" VerticalAlignment="Top" Padding="10"
-			        BorderBrush="#FF999999">
+		<Grid Margin="350,0,0,0" HorizontalAlignment="Stretch">
+			<Border Margin="30,30,0,0" HorizontalAlignment="Left" BorderThickness="0" VerticalAlignment="Top" Padding="10" BorderBrush="#FF999999">
+				<StackPanel>
+					<TextBlock Text="Map IDs;" Style="{DynamicResource GenericTextblock}" />
+					<Grid x:Name="gridMapIds" Width="380">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="80"/>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="80"/>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="80"/>
+							<ColumnDefinition Width="15"/>
+							<ColumnDefinition Width="80"/>
+						</Grid.ColumnDefinitions>
+						<StackPanel Grid.Column="0" VerticalAlignment="Top">
+							<ToggleButton x:Name="cbMap1" Content="1." Margin="0,10,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="0" />
+							<ToggleButton x:Name="cbMap5" Content="5." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="4" />
+							<ToggleButton x:Name="cbMap9" Content="9." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="8" />
+							<ToggleButton x:Name="cbMap13" Content="13." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="12" />
+							<ToggleButton x:Name="cbMap17" Content="17." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="16" />
+							<ToggleButton x:Name="cbMap21" Content="21." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="20" />
+							<ToggleButton x:Name="cbMap25" Content="25." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="24" />
+							<ToggleButton x:Name="cbMap29" Content="29." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="28" />
+							<ToggleButton x:Name="cbMap33" Content="33." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="32" />
+							<ToggleButton x:Name="cbMap37" Content="37." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="36" />
+							<ToggleButton x:Name="cbMap41" Content="41." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="40" />
+							<ToggleButton x:Name="cbMap45" Content="45." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="44" />
+							<ToggleButton x:Name="cbMap49" Content="49." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="48" />
+							<ToggleButton x:Name="cbMap53" Content="53." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="52" />
+							<ToggleButton x:Name="cbMap57" Content="57." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="56" />
+							<ToggleButton x:Name="cbMap61" Content="61." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="60" />
+						</StackPanel>
+						<StackPanel Grid.Column="1" Margin="0,0,10,0">
+							<TextBox x:Name="txtMap1" Margin="10,7,0,0" TextChanged="MapIDValidityCheck" TabIndex="1" Tag="0" />
+							<TextBox x:Name="txtMap5" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="5" Tag="4" />
+							<TextBox x:Name="txtMap9" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="9" Tag="8" />
+							<TextBox x:Name="txtMap13" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="13" Tag="12" />
+							<TextBox x:Name="txtMap17" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="17" Tag="16" />
+							<TextBox x:Name="txtMap21" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="21" Tag="20" />
+							<TextBox x:Name="txtMap25" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="25" Tag="24" />
+							<TextBox x:Name="txtMap29" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="29" Tag="28" />
+							<TextBox x:Name="txtMap33" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="33" Tag="32" />
+							<TextBox x:Name="txtMap37" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="37" Tag="36" />
+							<TextBox x:Name="txtMap41" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="41" Tag="40" />
+							<TextBox x:Name="txtMap45" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="45" Tag="44" />
+							<TextBox x:Name="txtMap49" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="49" Tag="48" />
+							<TextBox x:Name="txtMap53" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="53" Tag="52" />
+							<TextBox x:Name="txtMap57" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="57" Tag="56" />
+							<TextBox x:Name="txtMap61" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="61" Tag="60" />
+						</StackPanel>
+						<StackPanel Grid.Column="2" VerticalAlignment="Top">
+							<ToggleButton x:Name="cbMap2" Content="2." Margin="0,10,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="1" />
+							<ToggleButton x:Name="cbMap6" Content="6." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="5" />
+							<ToggleButton x:Name="cbMap10" Content="10." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="9" />
+							<ToggleButton x:Name="cbMap14" Content="14." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="13" />
+							<ToggleButton x:Name="cbMap18" Content="18." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="17" />
+							<ToggleButton x:Name="cbMap22" Content="22." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="21" />
+							<ToggleButton x:Name="cbMap26" Content="26." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="25" />
+							<ToggleButton x:Name="cbMap30" Content="30." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="29" />
+							<ToggleButton x:Name="cbMap34" Content="34." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="33" />
+							<ToggleButton x:Name="cbMap38" Content="38." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="37" />
+							<ToggleButton x:Name="cbMap42" Content="42." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="41" />
+							<ToggleButton x:Name="cbMap46" Content="46." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="45" />
+							<ToggleButton x:Name="cbMap50" Content="50." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="49" />
+							<ToggleButton x:Name="cbMap54" Content="54." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="53" />
+							<ToggleButton x:Name="cbMap58" Content="58." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="57" />
+							<ToggleButton x:Name="cbMap62" Content="62." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="61" />
+						</StackPanel>
+						<StackPanel Grid.Column="3" Margin="0,0,10,0">
+							<TextBox x:Name="txtMap2" Margin="10,7,0,0" TextChanged="MapIDValidityCheck" TabIndex="2" Tag="1" />
+							<TextBox x:Name="txtMap6" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="6" Tag="5" />
+							<TextBox x:Name="txtMap10" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="10" Tag="9" />
+							<TextBox x:Name="txtMap14" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="14" Tag="13" />
+							<TextBox x:Name="txtMap18" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="18" Tag="17" />
+							<TextBox x:Name="txtMap22" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="22" Tag="21" />
+							<TextBox x:Name="txtMap26" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="26" Tag="25" />
+							<TextBox x:Name="txtMap30" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="30" Tag="29" />
+							<TextBox x:Name="txtMap34" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="34" Tag="33" />
+							<TextBox x:Name="txtMap38" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="38" Tag="37" />
+							<TextBox x:Name="txtMap42" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="42" Tag="41" />
+							<TextBox x:Name="txtMap46" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="46" Tag="45" />
+							<TextBox x:Name="txtMap50" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="50" Tag="49" />
+							<TextBox x:Name="txtMap54" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="54" Tag="53" />
+							<TextBox x:Name="txtMap58" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="58" Tag="57" />
+							<TextBox x:Name="txtMap62" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="62" Tag="61" />
+						</StackPanel>
+						<StackPanel Grid.Column="4" VerticalAlignment="Top">
+							<ToggleButton x:Name="cbMap3" Content="3." Margin="0,10,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="2" />
+							<ToggleButton x:Name="cbMap7" Content="7." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="6" />
+							<ToggleButton x:Name="cbMap11" Content="11." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="10" />
+							<ToggleButton x:Name="cbMap15" Content="15." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="14" />
+							<ToggleButton x:Name="cbMap19" Content="19." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="18" />
+							<ToggleButton x:Name="cbMap23" Content="23." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="22" />
+							<ToggleButton x:Name="cbMap27" Content="27." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="26" />
+							<ToggleButton x:Name="cbMap31" Content="31." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="30" />
+							<ToggleButton x:Name="cbMap35" Content="35." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="34" />
+							<ToggleButton x:Name="cbMap39" Content="39." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="38" />
+							<ToggleButton x:Name="cbMap43" Content="43." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="42" />
+							<ToggleButton x:Name="cbMap47" Content="47." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="46" />
+							<ToggleButton x:Name="cbMap51" Content="51." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="50" />
+							<ToggleButton x:Name="cbMap55" Content="55." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="54" />
+							<ToggleButton x:Name="cbMap59" Content="59." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="58" />
+							<ToggleButton x:Name="cbMap63" Content="63." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="62" />
+						</StackPanel>
+						<StackPanel Grid.Column="5" Margin="0,0,10,0">
+							<TextBox x:Name="txtMap3" Margin="10,7,0,0" TextChanged="MapIDValidityCheck" TabIndex="3" Tag="2" />
+							<TextBox x:Name="txtMap7" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="7" Tag="6" />
+							<TextBox x:Name="txtMap11" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="11" Tag="10" />
+							<TextBox x:Name="txtMap15" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="15" Tag="14" />
+							<TextBox x:Name="txtMap19" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="19" Tag="18" />
+							<TextBox x:Name="txtMap23" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="23" Tag="22" />
+							<TextBox x:Name="txtMap27" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="27" Tag="26" />
+							<TextBox x:Name="txtMap31" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="31" Tag="30" />
+							<TextBox x:Name="txtMap35" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="35" Tag="34" />
+							<TextBox x:Name="txtMap39" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="39" Tag="38" />
+							<TextBox x:Name="txtMap43" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="43" Tag="42" />
+							<TextBox x:Name="txtMap47" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="47" Tag="46" />
+							<TextBox x:Name="txtMap51" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="51" Tag="50" />
+							<TextBox x:Name="txtMap55" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="55" Tag="54" />
+							<TextBox x:Name="txtMap59" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="59" Tag="58" />
+							<TextBox x:Name="txtMap63" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="63" Tag="62" />
+						</StackPanel>
+						<StackPanel Grid.Column="6" VerticalAlignment="Top">
+							<ToggleButton x:Name="cbMap4" Content="4." Margin="0,10,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="3" />
+							<ToggleButton x:Name="cbMap8" Content="8." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="7" />
+							<ToggleButton x:Name="cbMap12" Content="12." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="11" />
+							<ToggleButton x:Name="cbMap16" Content="16." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="15" />
+							<ToggleButton x:Name="cbMap20" Content="20." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="19" />
+							<ToggleButton x:Name="cbMap24" Content="24." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="23" />
+							<ToggleButton x:Name="cbMap28" Content="28." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="27" />
+							<ToggleButton x:Name="cbMap32" Content="32." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="31" />
+							<ToggleButton x:Name="cbMap36" Content="36." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="35" />
+							<ToggleButton x:Name="cbMap40" Content="40." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="39" />
+							<ToggleButton x:Name="cbMap44" Content="44." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="43" />
+							<ToggleButton x:Name="cbMap48" Content="48." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="47" />
+							<ToggleButton x:Name="cbMap52" Content="52." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="51" />
+							<ToggleButton x:Name="cbMap56" Content="56." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="55" />
+							<ToggleButton x:Name="cbMap60" Content="60." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="59" />
+							<ToggleButton x:Name="cbMap64" Content="64." Margin="0,7,0,3" VerticalAlignment="Center" Style="{DynamicResource UnlockByteLabel}" Tag="63" />
+						</StackPanel>
+						<StackPanel Grid.Column="7" Margin="0,0,10,0">
+							<TextBox x:Name="txtMap4" Margin="10,7,0,0" TextChanged="MapIDValidityCheck" TabIndex="4" Tag="3" />
+							<TextBox x:Name="txtMap8" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="8" Tag="7" />
+							<TextBox x:Name="txtMap12" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="12" Tag="11" />
+							<TextBox x:Name="txtMap16" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="16" Tag="15" />
+							<TextBox x:Name="txtMap20" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="20" Tag="19" />
+							<TextBox x:Name="txtMap24" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="24" Tag="23" />
+							<TextBox x:Name="txtMap28" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="28" Tag="27" />
+							<TextBox x:Name="txtMap32" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="32" Tag="31" />
+							<TextBox x:Name="txtMap36" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="36" Tag="35" />
+							<TextBox x:Name="txtMap40" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="40" Tag="39" />
+							<TextBox x:Name="txtMap44" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="44" Tag="43" />
+							<TextBox x:Name="txtMap48" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="48" Tag="47" />
+							<TextBox x:Name="txtMap52" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="52" Tag="51" />
+							<TextBox x:Name="txtMap56" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="56" Tag="55" />
+							<TextBox x:Name="txtMap60" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="60" Tag="59" />
+							<TextBox x:Name="txtMap64" Margin="10,4,0,0" TextChanged="MapIDValidityCheck" TabIndex="64" Tag="63" />
+						</StackPanel>
+					</Grid>
+					<TextBlock x:Name="lblToggleNote" Text="Click the label next to the Map ID to toggle unlocking by default. (H4)" Margin="0,4,0,0" Visibility="Hidden" Style="{DynamicResource GenericTextblock}" />
+				</StackPanel>
 			</Border>
 		</Grid>
 	</Grid>
