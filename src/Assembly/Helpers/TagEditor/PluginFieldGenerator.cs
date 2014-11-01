@@ -14,10 +14,10 @@ namespace Assembly.Helpers.TagEditor
 	/// </summary>
 	public class PluginFieldGenerator : IPluginVisitor
 	{
-		private Func<int, TagBufferSource> _rootSourceGenerator;
+		private readonly Func<int, TagBufferSource> _rootSourceGenerator;
 		private TagBufferSource _rootSource;
 		private TagBufferSource _currentSource;
-		private ObservableCollection<TagField> _fields = new ObservableCollection<TagField>();
+		private readonly ObservableCollection<TagField> _fields = new ObservableCollection<TagField>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PluginFieldGenerator"/> class.
@@ -116,71 +116,74 @@ namespace Assembly.Helpers.TagEditor
 
 		void IPluginVisitor.VisitVector3(string name, uint offset, bool visible, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitDegree(string name, uint offset, bool visible, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitStringID(string name, uint offset, bool visible, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitRange(string name, uint offset, bool visible, string type, double min, double max, double smallChange, double largeChange, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		bool IPluginVisitor.EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		bool IPluginVisitor.EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		bool IPluginVisitor.EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
@@ -196,22 +199,24 @@ namespace Assembly.Helpers.TagEditor
 
 		bool IPluginVisitor.EnterEnum8(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		bool IPluginVisitor.EnterEnum16(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		bool IPluginVisitor.EnterEnum32(string name, uint offset, bool visible, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		void IPluginVisitor.VisitOption(string name, int value)
 		{
-			
 		}
 
 		void IPluginVisitor.LeaveEnum()
@@ -221,27 +226,32 @@ namespace Assembly.Helpers.TagEditor
 
 		bool IPluginVisitor.EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
+			AddNotImplemented(name, offset, pluginLine);
 			return false;
 		}
 
 		void IPluginVisitor.LeaveReflexive()
 		{
-			
 		}
 
 		void IPluginVisitor.VisitShader(string name, uint offset, bool visible, Blamite.Blam.Shaders.ShaderType type, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		void IPluginVisitor.VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
 		{
-			
+			AddNotImplemented(name, offset, pluginLine);
 		}
 
 		private void AddField(TagField field)
 		{
 			_fields.Add(field);
+		}
+
+		private void AddNotImplemented(string name, uint offset, uint pluginLine)
+		{
+			_fields.Add(new UInt32Field(name, offset, 0, "(unimplemented)", pluginLine, _currentSource));
 		}
 	}
 }

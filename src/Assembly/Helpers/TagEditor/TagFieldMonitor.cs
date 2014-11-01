@@ -44,7 +44,7 @@ namespace Assembly.Helpers.TagEditor
 		/// Attaches to a collection of fields, listening for changes on them.
 		/// </summary>
 		/// <param name="fields">The collection of fields to attach to.</param>
-		public void Attach(IEnumerable<TagField> fields)
+		public void AttachTo(IEnumerable<TagField> fields)
 		{
 			foreach (var field in fields)
 				AttachTo(field);

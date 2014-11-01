@@ -9,7 +9,7 @@ namespace Blamite.Util
     /// <summary>
     /// A range of two comparable values. The starting value is inclusive, and the ending value is exclusive.
     /// </summary>
-    public struct Range<T> where T : IComparable
+    public struct Range<T> : IComparable<Range<T>> where T : IComparable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Range&lt;T&gt;"/> struct.
@@ -118,6 +118,12 @@ namespace Blamite.Util
                 end = other.End;
 
             return new Range<T>(start, end);
+        }
+
+        public int CompareTo(Range<T> other)
+        {
+            var startCompare = Start.CompareTo(other.Start);
+            return (startCompare != 0) ? startCompare : End.CompareTo(other.End);
         }
     }
 }

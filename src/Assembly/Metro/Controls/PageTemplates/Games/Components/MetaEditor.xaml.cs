@@ -66,9 +66,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly TagHierarchy _tags;
 		private readonly bool hasInitFinished;
 
-		private FieldChangeTracker _changeTracker;
-		private FieldChangeSet _fileChanges;
-		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
 		private PluginFieldGenerator _fieldGenerator;
 		private ObservableCollection<SearchResult> _searchResults;
@@ -152,19 +149,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				AssemblyPluginLoader.LoadPlugin(xml, (IPluginVisitor)_fieldGenerator);
 			}
 
-			_changeTracker = new FieldChangeTracker();
-			_fileChanges = new FieldChangeSet();
-			_memoryChanges = new FieldChangeSet();
+			//_changeTracker = new FieldChangeTracker();
+			//_fileChanges = new FieldChangeSet();
+			//_memoryChanges = new FieldChangeSet();
 
 			var reader = new TagDataReader();
+		    var writer = new TagDataWriter();
+		    var monitor = new TagFieldMonitor();
+		    var updater = new TagDataUpdater(writer);
+			updater.AttachTo(monitor);
+		    var sync = new TagFieldSynchronizer(reader, monitor);
+			sync.AttachTo(writer);
 			/*_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);*/
 			reader.ReadFields(_fieldGenerator.Fields);
+            monitor.AttachTo(_fieldGenerator.Fields);
+            sync.RegisterFields(_fieldGenerator.Fields);
 			panelMetaComponents.ItemsSource = _fieldGenerator.Fields;
 
 			// Start monitoring fields for changes
-			_changeTracker.RegisterChangeSet(_fileChanges);
-			_changeTracker.RegisterChangeSet(_memoryChanges);
+			//_changeTracker.RegisterChangeSet(_fileChanges);
+			//_changeTracker.RegisterChangeSet(_memoryChanges);
 			//_changeTracker.Attach(_pluginVisitor.Values);
 
 			// Update Meta Toolbar
@@ -525,7 +530,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private bool ConfirmNewStringIds()
 		{
-			var newStrings = new List<string>();
+			/*var newStrings = new List<string>();
 			foreach (MetaField field in _fileChanges)
 			{
 				var stringIdField = field as StringIDData;
@@ -537,7 +542,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			if (newStrings.Count > 0)
 				return MetroMessageBoxList.Show("New StringIDs",
-					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);
+					"The following stringID(s) do not currently exist in the cache file and will be added.\r\nContinue?", newStrings);*/
 			return true;
 		}
 

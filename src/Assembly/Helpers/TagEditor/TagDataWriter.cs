@@ -96,7 +96,7 @@ namespace Assembly.Helpers.TagEditor
 		protected void OnTagDataUpdated(ValueTagField field, IStream stream, long size)
 		{
 			var pos = stream.Position;
-			OnTagDataUpdated(new TagDataUpdatedEventArgs(field.Source, new Range<long>(pos - size, pos)));
+			OnTagDataUpdated(new TagDataUpdatedEventArgs(field.Source, field, new Range<long>(pos - size, pos)));
 		}
 	}
 
@@ -109,10 +109,12 @@ namespace Assembly.Helpers.TagEditor
 		/// Initializes a new instance of the <see cref="TagDataUpdatedEventArgs"/> class.
 		/// </summary>
 		/// <param name="bufferSource">The buffer source that changes occurred in.</param>
+		/// <param name="field">The tag field that triggered the update. Can be <c>null</c>.</param>
 		/// <param name="changes">The section of the buffer that was changed.</param>
-		public TagDataUpdatedEventArgs(TagBufferSource bufferSource, Range<long> changes)
+		public TagDataUpdatedEventArgs(TagBufferSource bufferSource, ValueTagField field, Range<long> changes)
 		{
 			BufferSource = bufferSource;
+		    Field = field;
 			Changes = changes;
 		}
 
@@ -120,6 +122,11 @@ namespace Assembly.Helpers.TagEditor
 		/// Gets the buffer source that the changes occurred in.
 		/// </summary>
 		public TagBufferSource BufferSource { get; private set; }
+
+        /// <summary>
+        /// Gets the tag field that triggered the update. Can be <c>null</c>.
+        /// </summary>
+        public ValueTagField Field { get; private set; }
 
 		/// <summary>
 		/// Gets the section of the buffer that was changed.

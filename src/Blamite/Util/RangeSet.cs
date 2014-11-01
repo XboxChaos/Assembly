@@ -11,8 +11,8 @@ namespace Blamite.Util
 	/// <typeparam name="T">The type of value used to set the range bounds.</typeparam>
 	public class RangeSet<T> where T : IComparable
 	{
-		private static RangeStartComparer _startComparer = new RangeStartComparer();
-		private List<Range<T>> _ranges = new List<Range<T>>();
+		private static readonly RangeStartComparer StartComparer = new RangeStartComparer();
+		private readonly List<Range<T>> _ranges = new List<Range<T>>();
 
 		/// <summary>
 		/// Gets the ranges contained in the set, in sorted order by starting index.
@@ -29,7 +29,7 @@ namespace Blamite.Util
 		/// <param name="range">The range to insert.</param>
 		public void Insert(Range<T> range)
 		{
-			var index = _ranges.BinarySearch(range, _startComparer);
+			var index = _ranges.BinarySearch(range, StartComparer);
 			if (index < 0)
 			{
 				// Start index not found
@@ -64,7 +64,7 @@ namespace Blamite.Util
 		/// <returns><c>true</c> if the range is contained within any of the ranges in the set.</returns>
 		public bool ContainsRange(Range<T> range)
 		{
-			var index = _ranges.BinarySearch(range, _startComparer);
+			var index = _ranges.BinarySearch(range, StartComparer);
 			if (index < 0)
 			{
 				// Start index not found
