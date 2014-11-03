@@ -288,6 +288,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 					var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
 					extractor.ExtractPage(page, resourceStream ?? fileStream.BaseStream, tmpStream);
 					pageStream.Close();
+					File.Delete(path);
 
 					switch (i)
 					{

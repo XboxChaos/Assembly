@@ -9,7 +9,7 @@ namespace Blamite.Serialization.MapInfo
 	/// </summary>
 	public class EngineDatabase : IEnumerable<EngineDescription>
 	{
-		private readonly Dictionary<long, EngineDescription> _engines = new Dictionary<long, EngineDescription>();
+		private readonly Dictionary<ulong, EngineDescription> _engines = new Dictionary<ulong, EngineDescription>();
 
 		/// <summary>
 		///     Returns an enumerator that iterates through the collection.
@@ -39,7 +39,7 @@ namespace Blamite.Serialization.MapInfo
 		/// <param name="engine">The description to register.</param>
 		public void RegisterEngine(EngineDescription engine)
 		{
-			_engines[((long)engine.LevlSize << 32) | engine.Version] = engine;
+			_engines[((uint)engine.LevlSize << 32) | (uint)engine.Version] = engine;
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace Blamite.Serialization.MapInfo
 		public EngineDescription FindEngine(int size, int version)
 		{
 			EngineDescription result;
-			_engines.TryGetValue(((long)size << 32) | version, out result);
+			_engines.TryGetValue(((uint)size << 32) | (uint)version, out result);
 			return result;
 		}
 	}

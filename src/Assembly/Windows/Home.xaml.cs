@@ -197,12 +197,18 @@ namespace Assembly.Windows
 		//xbdm
 		private void menuScreenshot_Click(object sender, RoutedEventArgs e)
 		{
-			string screenshotFileName = Path.GetTempFileName();
-
-			if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-				App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
-			else
-				MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+			var screenshotFileName = Path.GetTempFileName();
+			try
+			{
+				if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+				else
+					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+			}
+			finally
+			{
+				File.Delete(screenshotFileName);
+			}
 		}
 
 		private void menuFreeze_Click(object sender, RoutedEventArgs e)

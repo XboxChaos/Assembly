@@ -809,14 +809,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								}
 
 								var extractor = new ResourcePageExtractor(resourceFile);
-								var path = Path.GetTempFileName();
-								var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-								extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
-								pageStream.Close();
-
-								container.AddExtractedResourcePage(
-									new ExtractedPage(File.ReadAllBytes(path),
-										resource.Location.PrimaryPage.Index));
+								byte[] pageData;
+								using (var pageStream = new MemoryStream())
+								{
+									extractor.ExtractPage(resource.Location.PrimaryPage, resourceStream, pageStream);
+									pageData = new byte[pageStream.Length];
+									Buffer.BlockCopy(pageStream.GetBuffer(), 0, pageData, 0, (int) pageStream.Length);
+								}
+								container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.PrimaryPage.Index));
 							}
 						}
 					}
@@ -858,14 +858,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							}
 
 							var extractor = new ResourcePageExtractor(resourceFile);
-							var path = Path.GetTempFileName();
-							var pageStream = File.Open(path, FileMode.Create, FileAccess.ReadWrite);
-							extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
-							pageStream.Close();
-
-							container.AddExtractedResourcePage(
-								new ExtractedPage(File.ReadAllBytes(path),
-									resource.Location.SecondaryPage.Index));
+							byte[] pageData;
+							using (var pageStream = new MemoryStream())
+							{
+								extractor.ExtractPage(resource.Location.SecondaryPage, resourceStream, pageStream);
+								pageData = new byte[pageStream.Length];
+								Buffer.BlockCopy(pageStream.GetBuffer(), 0, pageData, 0, (int)pageStream.Length);
+							}
+							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.SecondaryPage.Index));
 						}
 					}
 				}

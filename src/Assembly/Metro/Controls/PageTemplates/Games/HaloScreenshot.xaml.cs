@@ -102,9 +102,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void imageUpload_DoWork(object sender, DoWorkEventArgs e)
 		{
+			var filePath = Path.GetTempFileName();
 			try
 			{
-				string filePath = Path.GetTempFileName();
 				Dispatcher.Invoke(new Action(delegate
 				{
 					var encoder = new PngBitmapEncoder();
@@ -124,6 +124,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(
 					() =>
 						MetroMessageBox.Show("Error", "Unable to upload Image to server. Try again later.")));
+			}
+			finally
+			{
+				File.Delete(filePath);
 			}
 		}
 

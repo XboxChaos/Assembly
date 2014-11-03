@@ -86,11 +86,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			var backgroundWorker = new BackgroundWorker();
 			backgroundWorker.DoWork += (o, args) =>
 			{
+				string screenshotFileName = null, screenshotPng = null;
 				try
 				{
 					// Grab Screenshot from Xbox
-					string screenshotFileName = Path.GetTempFileName();
-					string screenshotPng = Path.GetTempFileName();
+					screenshotFileName = Path.GetTempFileName();
+					screenshotPng = Path.GetTempFileName();
 
 					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
 					{
@@ -123,6 +124,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 				catch (Exception ex)
 				{
 					Dispatcher.Invoke(new Action(() => MetroException.Show(ex)));
+				}
+				finally
+				{
+					if (screenshotFileName != null)
+						File.Delete(screenshotFileName);
+					if (screenshotPng != null)
+						File.Delete(screenshotPng);
 				}
 			};
 			backgroundWorker.RunWorkerCompleted += (o, args) =>

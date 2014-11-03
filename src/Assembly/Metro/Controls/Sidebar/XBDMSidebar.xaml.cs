@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using Assembly.Metro.Dialogs;
 using XBDMCommunicator;
@@ -18,11 +19,17 @@ namespace Assembly.Metro.Controls.Sidebar
 		private void btnScreenshot_Click(object sender, RoutedEventArgs e)
 		{
 			string screenshotFileName = Path.GetTempFileName();
-
-			if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-				App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
-			else
-				MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+			try
+			{
+				if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+				else
+					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
+			}
+			finally
+			{
+				File.Delete(screenshotFileName);
+			}
 		}
 
 		private void btnFreeze_Click(object sender, RoutedEventArgs e)
