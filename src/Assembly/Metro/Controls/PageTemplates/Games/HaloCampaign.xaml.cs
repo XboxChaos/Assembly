@@ -27,8 +27,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private readonly LayoutDocument _tab;
 		private readonly string _blfLocation;
 
-		private ObservableCollection<LanguageEntry> _languageset;
-
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>
 		{
 			new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
@@ -45,7 +43,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			new LanguageEntry { Index = 11, Language = "Polish", LanguageShort = "pl" },
 		};
 
-		private readonly ObservableCollection<LanguageEntry> _halo4languages = new ObservableCollection<LanguageEntry>
+		private readonly ObservableCollection<LanguageEntry> _halo4Languages = new ObservableCollection<LanguageEntry>
 		{
 			new LanguageEntry { Index = 0, Language = "English", LanguageShort = "en" },
 			new LanguageEntry { Index = 1, Language = "Japanese", LanguageShort = "ja" },
@@ -211,7 +209,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private PureBLF _blf;
 		private Campaign _campaign;
 		private bool _startEditing;
-		private int oldLanguage = -1;
+		private int _oldLanguage = -1;
 
 		public HaloCampaign(string infoLocation, LayoutDocument tab)
 		{
@@ -298,26 +296,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			if (_campaign != null && _startEditing)
 			{
-				if (oldLanguage != -1)
+				if (_oldLanguage != -1)
 				{
 					// Save values to memory
-					_campaign.HaloCampaign.MapNames[oldLanguage] = txtMapName.Text.Trim();
-					_campaign.HaloCampaign.MapDescriptions[oldLanguage] = txtMapDesc.Text.Trim();
+					_campaign.HaloCampaign.MapNames[_oldLanguage] = txtMapName.Text.Trim();
+					_campaign.HaloCampaign.MapDescriptions[_oldLanguage] = txtMapDesc.Text.Trim();
 
 					// Make sure values arn't too long, kiddo
-					if (_campaign.HaloCampaign.MapNames[oldLanguage].Length > 30)
-						_campaign.HaloCampaign.MapNames[oldLanguage] = _campaign.HaloCampaign.MapNames[oldLanguage].Remove(30);
-					if (_campaign.HaloCampaign.MapDescriptions[oldLanguage].Length > 126)
-						_campaign.HaloCampaign.MapDescriptions[oldLanguage] =
-							_campaign.HaloCampaign.MapDescriptions[oldLanguage].Remove(126);
+					if (_campaign.HaloCampaign.MapNames[_oldLanguage].Length > 30)
+						_campaign.HaloCampaign.MapNames[_oldLanguage] = _campaign.HaloCampaign.MapNames[_oldLanguage].Remove(30);
+					if (_campaign.HaloCampaign.MapDescriptions[_oldLanguage].Length > 126)
+						_campaign.HaloCampaign.MapDescriptions[_oldLanguage] =
+							_campaign.HaloCampaign.MapDescriptions[_oldLanguage].Remove(126);
 				}
 
 				// Update oldLanguage int
-				oldLanguage = cbLanguages.SelectedIndex;
+				_oldLanguage = cbLanguages.SelectedIndex;
 
 				// Update UI
-				txtMapName.Text = _campaign.HaloCampaign.MapNames[oldLanguage];
-				txtMapDesc.Text = _campaign.HaloCampaign.MapDescriptions[oldLanguage];
+				txtMapName.Text = _campaign.HaloCampaign.MapNames[_oldLanguage];
+				txtMapDesc.Text = _campaign.HaloCampaign.MapDescriptions[_oldLanguage];
 			}
 		}
 
@@ -330,7 +328,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_campaign.HaloCampaign.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
 			_campaign.HaloCampaign.MapDescriptions[cbLanguages.SelectedIndex] = txtMapDesc.Text;
 
-			if (MapIDsError() == true)
+			if (MapIDsError())
 				return;
 
 			// Update Map IDs
@@ -346,31 +344,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
 
-		private void btnTranslateAllOthers_Click(object sender, RoutedEventArgs e)
-		{
-			//if (MetroMessageBox.Show("Are you sure?", "This will overide all other entries with this Map Name and Description, in the corrosponding language.", MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.Yes)
-			//{
-			//	foreach (LanguageEntry entry in cbLanguages.Items)
-			//	{
-
-			//	}
-			//}
-		}
-
-		// Load Languages
 		private void LoadLanguages()
 		{
 			// If the game is Halo 4, use that set of languages, if not, use the default set.
-			switch (_campaign.HaloCampaign.Game)
-			{
-				case Campaign.GameIdentifier.Halo4:
-					_languageset = _halo4languages;
-					break;
-				default:
-					_languageset = _languages;
-					break;
-			}
-			cbLanguages.DataContext = _languageset;
+			cbLanguages.DataContext = _campaign.HaloCampaign.Game == Campaign.GameIdentifier.Halo4 ? _halo4Languages : _languages;
 		}
 
 		private void LoadMapIDs()

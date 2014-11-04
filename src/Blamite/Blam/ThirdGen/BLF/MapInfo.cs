@@ -82,7 +82,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_mapIndexOffset = _internalNameOffset + 0x100;
 			_maxTeamsOffset = _mapIndexOffset + 0xA;
 			_mpObjectsOffset = _mapIndexOffset + 0x14;
-			_insertionOffset = _mapIndexOffset + 0xA;
+			_insertionOffset = Engine.MultiplayerObjectCollection != null ? _mapIndexOffset + 0x114 : _mapIndexOffset + 0x1C;
 			_defaultAuthorOffset = _insertionOffset + (Engine.InsertionCount * Engine.InsertionSize);
 		}
 
@@ -201,10 +201,19 @@ namespace Blamite.Blam.ThirdGen.BLF
 			{
 				_mapInformation.MapCheckpoints.Add(new Checkpoint());
 
-				_stream.SeekTo(baseOffset + (i * Engine.InsertionSize));
-				int visible = _stream.ReadByte();
-				_mapInformation.MapCheckpoints[i].IsVisible = visible == 1;
-
+				if (Engine.InsertionUsesVisibility)
+				{
+					_stream.SeekTo(baseOffset + (i * Engine.InsertionSize));
+					int visible = _stream.ReadByte();
+					_mapInformation.MapCheckpoints[i].IsVisible = visible == 1;
+				}
+				if (Engine.InsertionUsesUsage)
+				{
+					_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 1);
+					int used = _stream.ReadByte();
+					_mapInformation.MapCheckpoints[i].IsUsed = used == 1;
+				}
+				
 				switch (Engine.InsertionZoneType)
 				{
 					case ZoneType.Index:
@@ -212,10 +221,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 						_mapInformation.MapCheckpoints[i].ZoneIndex = _stream.ReadByte();
 						break;
 					case ZoneType.Name:
-						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 1);
-						int used = _stream.ReadByte();
-						_mapInformation.MapCheckpoints[i].IsUsed = used == 1;
-
 						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 4);
 						_mapInformation.MapCheckpoints[i].ZoneName = _stream.ReadAscii();
 						break;
@@ -225,14 +230,14 @@ namespace Blamite.Blam.ThirdGen.BLF
 				for (int n = 0; n < Engine.LanguageCount; n++)
 				{
 					_stream.SeekTo(namesBaseOffset + (n * 0x40));
-					_mapInformation.MapCheckpoints[i].CheckpointName.Add(_stream.ReadUTF16());
+					_mapInformation.MapCheckpoints[i].CheckpointNames.Add(_stream.ReadUTF16());
 				}
 
 				int descriptionsBaseOffset = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionDescriptionOffset);
 				for (int d = 0; d < Engine.LanguageCount; d++)
 				{
 					_stream.SeekTo(descriptionsBaseOffset + (d * 0x100));
-					_mapInformation.MapCheckpoints[i].CheckpointDescription.Add(_stream.ReadUTF16());
+					_mapInformation.MapCheckpoints[i].CheckpointDescriptions.Add(_stream.ReadUTF16());
 				}
 			}
 		}
@@ -319,22 +324,27 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		private void UpdateMPObjectTable(int baseOffset)
 		{
+			var buffer = new int[64];
+			_mapInformation.ObjectTable.CopyTo(buffer, 0);
+			_stream.SeekTo(baseOffset);
 			for (int i = 0; i < 64; i++)
-			{
-				int seekVal = baseOffset + (i * 4);
-				_stream.SeekTo(seekVal);
-				var buffer = new int[1];
-				_mapInformation.ObjectTable.CopyTo(buffer, i * 32);
-				_stream.WriteInt32(buffer[0]);
-			}
+				_stream.WriteInt32(buffer[i]);
 		}
 
 		private void UpdateInsertionPoints(int baseOffset)
 		{
 			for (int i = 0; i < Engine.InsertionCount; i++)
 			{
-				_stream.SeekTo(baseOffset + (i * Engine.InsertionSize));
-				_stream.WriteByte((byte)(_mapInformation.MapCheckpoints[i].IsVisible ? 0x1 : 0x0));
+				if (Engine.InsertionUsesVisibility)
+				{
+					_stream.SeekTo(baseOffset + (i*Engine.InsertionSize));
+					_stream.WriteByte((byte) (_mapInformation.MapCheckpoints[i].IsVisible ? 0x1 : 0x0));
+				}
+				if (Engine.InsertionUsesUsage)
+				{
+					_stream.SeekTo(baseOffset + (i*Engine.InsertionSize) + 1);
+					_stream.WriteByte((byte) (_mapInformation.MapCheckpoints[i].IsUsed ? 0x1 : 0x0));
+				}
 
 				switch (Engine.InsertionZoneType)
 				{
@@ -343,9 +353,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 						_stream.WriteByte(_mapInformation.MapCheckpoints[i].ZoneIndex);
 						break;
 					case ZoneType.Name:
-						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 1);
-						_stream.WriteByte((byte)(_mapInformation.MapCheckpoints[i].IsUsed ? 0x1 : 0x0));
-
 						_stream.SeekTo(baseOffset + (i * Engine.InsertionSize) + 4);
 						_stream.WriteAscii(_mapInformation.MapCheckpoints[i].ZoneName);
 						break;
@@ -356,7 +363,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 				{
 					int nameSeek = baseOffsetNames + (n * 0x40);
 					_stream.SeekTo(nameSeek);
-					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointName[n]);
+					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointNames[n]);
 				}
 
 				int baseOffsetDescriptions = (baseOffset + (i * Engine.InsertionSize) + Engine.InsertionDescriptionOffset);
@@ -364,7 +371,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 				{
 					int descriptionSeek = baseOffsetDescriptions + (d * 0x100);
 					_stream.SeekTo(descriptionSeek);
-					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointDescription[d]);
+					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointDescriptions[d]);
 				}
 			}
 		}
@@ -392,8 +399,8 @@ namespace Blamite.Blam.ThirdGen.BLF
 			public bool IsUsed { get; set; }
 			public byte ZoneIndex { get; set; }
 			public string ZoneName { get; set; }
-			public IList<string> CheckpointName = new List<string>();
-			public IList<string> CheckpointDescription = new List<string>();
+			public IList<string> CheckpointNames = new List<string>();
+			public IList<string> CheckpointDescriptions = new List<string>();
 		}
 	}
 }
