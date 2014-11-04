@@ -165,7 +165,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Load Default Author & change margin if necessary
 					txtDefaultAuthor.Text = _mapInfo.MapInformation.DefaultAuthor;
-					if (_mapInfo.Engine.UsesDefaultAuthor && _mapInfo.Engine.Version > 5)
+					if (_mapInfo.Engine.UsesDefaultAuthor && _mapInfo.Engine.Version <= 8)
 							lblDefaultAuthor.Margin = new Thickness(0, 37, 0, 3);
 
 					// Set up the Type combo box
@@ -185,7 +185,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						cbType.SelectedIndex = 4;
 
 					// Set up the Checkboxes
-					cbForgeOnly.Visibility  = _mapInfo.Engine.Version < 8 ? Visibility.Collapsed : Visibility.Visible;
+					cbForgeOnly.Visibility  = _mapInfo.Engine.Version < 9 ? Visibility.Collapsed : Visibility.Visible;
 					cbVisible.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible);
 					cbGeneratesFilm.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm);
 					cbDLC.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsDLC);

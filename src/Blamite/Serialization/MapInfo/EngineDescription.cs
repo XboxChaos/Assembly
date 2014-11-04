@@ -117,7 +117,7 @@ namespace Blamite.Serialization.MapInfo
 		private void LoadEngineSettings()
 		{
 			LanguageCount = Settings.GetSettingOrDefault("engineInfo/languageCount", 0);
-			UsesDefaultAuthor = Settings.GetSettingOrDefault("engineInfo/usesDefualtAuthor", false);
+			UsesDefaultAuthor = Settings.GetSettingOrDefault("engineInfo/usesDefaultAuthor", false);
 			InsertionUsesVisibility = Settings.GetSettingOrDefault("insertionPointInfo/usesVisibility", false);
 			InsertionUsesUsage = Settings.GetSettingOrDefault("insertionPointInfo/usesUsage", false);
 			var zoneType = Settings.GetSettingOrDefault("insertionPointInfo/zoneType", "none");
