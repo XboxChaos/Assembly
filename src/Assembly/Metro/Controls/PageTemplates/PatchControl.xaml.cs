@@ -69,8 +69,39 @@ namespace Assembly.Metro.Controls.PageTemplates
 				Title = "Assembly - Select a Modified Map file",
 				Filter = "Blam Cache Files|*.map"
 			};
-			if (ofd.ShowDialog() == DialogResult.OK)
-				txtCreatePatchModifiedMap.Text = ofd.FileName;
+			if (ofd.ShowDialog() != DialogResult.OK)
+				return;
+
+			txtCreatePatchModifiedMap.Text = ofd.FileName;
+
+			var fileStream = new FileStream(ofd.FileName, FileMode.Open);
+			var cacheStream = new EndianStream(fileStream, Endian.BigEndian);
+			var versionInfo = new CacheFileVersionInfo(cacheStream);
+			var engine = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
+			if (engine != null && engine.Name != null)
+			{
+				switch (engine.Name)
+				{
+					case "Halo 2 Vista":
+						cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo2Vista;
+						break;
+					case "Halo 3: ODST":
+						cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo3ODST;
+						break;
+					default:
+						if (engine.Name.Contains("Halo 3"))
+							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo3;
+						else if (engine.Name.Contains("Halo: Reach"))
+							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.HaloReach;
+						else if (engine.Name.Contains("Halo 4"))
+							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo4;
+						else
+							cboxCreatePatchTargetGame.SelectedIndex = 5; // Other
+						break;
+				}
+			}
+
+			cacheStream.Close();
 		}
 
 		private void btnCreatePatchOutputPatch_Click(object sender, RoutedEventArgs e)
@@ -113,8 +144,39 @@ namespace Assembly.Metro.Controls.PageTemplates
 				Title = "Assembly - Select a Modified BLF Container",
 				Filter = "BLF Containers|*.blf"
 			};
-			if (ofd.ShowDialog() == DialogResult.OK)
-				txtCreatePatchblf0.Text = ofd.FileName;
+			if (ofd.ShowDialog() != DialogResult.OK)
+				return;
+
+			txtCreatePatchblf0.Text = ofd.FileName;
+			
+			// Detect if other blf files are in the same folder
+			var filenameBase = Path.ChangeExtension(ofd.FileName, null);
+			var blfClip = filenameBase + "_clip.blf";
+			var blfFilm = filenameBase + "_film.blf";
+			var blfSmall = filenameBase + "_sm.blf";
+			var blfVariant = filenameBase + "_variant.blf";
+			var blfCard = filenameBase + "_card.blf";
+			var blfLobby = filenameBase + "_lobby.blf";
+			switch (cboxCreatePatchTargetGame.SelectedIndex)
+			{
+				case (int)TargetGame.Halo3:
+				case (int)TargetGame.Halo3ODST:
+					txtCreatePatchblf1.Text = File.Exists(blfClip) ? blfClip : "";
+					txtCreatePatchblf2.Text = File.Exists(blfFilm) ? blfFilm : "";
+					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
+					txtCreatePatchblf4.Text = File.Exists(blfVariant) ? blfVariant : "";
+					break;
+
+				case (int)TargetGame.HaloReach:
+					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
+					break;
+
+				case (int)TargetGame.Halo4:
+					txtCreatePatchblf1.Text = File.Exists(blfCard) ? blfCard : "";
+					txtCreatePatchblf2.Text = File.Exists(blfLobby) ? blfLobby : "";
+					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
+					break;
+			}
 		}
 
 		private void btnCreatePatchblf1_Click(object sender, RoutedEventArgs e)
@@ -235,7 +297,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf1.Text = "Modified blf_clip:";
 			lblCreatePatchTitleblf1.Tag = "blf_clip";
 			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
-			lblCreatePatchTitleblf1.Tag = "blf_film";
+			lblCreatePatchTitleblf2.Tag = "blf_film";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
 			lblCreatePatchTitleblf4.Text = "Modified blf_variant:";
 
@@ -289,7 +351,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf1.Text = "Modified blf_card:";
 			lblCreatePatchTitleblf1.Tag = "blf_card";
 			lblCreatePatchTitleblf2.Text = "Modified blf_lobby:";
-			lblCreatePatchTitleblf1.Tag = "blf_lobby";
+			lblCreatePatchTitleblf2.Tag = "blf_lobby";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
 
 			// Reset fields
