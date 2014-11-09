@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using CloseableTabItemDemo;
 
 namespace DragDropListBox
 {
@@ -238,6 +239,11 @@ namespace DragDropListBox
 					insertionIndex--;
 				}
 				Utilities.InsertItemInItemsControl(targetItemsControl, draggedItem, insertionIndex);
+
+				// Select the moved item so a different tab isn't brought into view
+				var tab = draggedItem as CloseableTabItem;
+				if (tab != null)
+					tab.IsSelected = true;
 
 				RemoveDraggedAdorner();
 				RemoveInsertionAdorner();
