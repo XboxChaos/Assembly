@@ -1186,7 +1186,6 @@
 											shell:WindowChrome.IsHitTestVisibleInChrome="True"
 											Focusable="False"
 											Width="18" Height="18"
-											Margin="0,4,4,0"
 											Visibility="{Binding IsMaximized, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"
 											Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
 											Command="{x:Static shell:SystemCommands.RestoreWindowCommand}"
@@ -1201,12 +1200,15 @@
 										<Button
 											x:Name="PART_PinClose"
 											shell:WindowChrome.IsHitTestVisibleInChrome="True"
-											Focusable="False"
+											Focusable="False" Height="18" Width="18"
 											Style="{StaticResource AvalonDock_ThemeMetro_ButtonStyle}"
-											Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
 											Command="{Binding Path=RootDocumentLayoutItem.CloseCommand, RelativeSource={RelativeSource TemplatedParent}}"
 											ToolTip="{x:Static avalonDockProperties:Resources.Document_Close}"
-											Grid.Column="3" />
+											Grid.Column="3">
+											<Path x:Name="PART_ImgPinClose" Height="8" Width="8" Stretch="Fill" StrokeThickness="0.5" Stroke="White" Fill="White"
+												Data="F1 M 2.28484e-007,1.33331L 1.33333,0L 4.00001,2.66669L 6.66667,6.10352e-005L 8,1.33331L 5.33334,4L 8,6.66669L 6.66667,8L 4,5.33331L 1.33333,8L 1.086e-007,6.66669L 2.66667,4L 2.28484e-007,1.33331 Z "
+												HorizontalAlignment="Center" VerticalAlignment="Center" />
+										</Button>
 									</Grid>
 								</Border>
 								<ContentPresenter Content="{TemplateBinding Content}" Grid.Row="1" Grid.ColumnSpan="2" />
@@ -1243,6 +1245,10 @@
 
 						<Trigger Property="IsMouseOver" SourceName="PART_PinRestore" Value="True">
 							<Setter Property="Background" TargetName="PART_PinRestore" Value="#33FFFFFF" />
+						</Trigger>
+
+						<Trigger Property="IsMouseOver" SourceName="PART_PinClose" Value="True">
+							<Setter Property="Background" TargetName="PART_PinClose" Value="#33FFFFFF" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
