@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
-                    xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors">
+                    xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+					xmlns:vsm="clr-namespace:System.Windows;assembly=WPFToolkit">
 
 	<!-- Metro Button -->
 	<Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
@@ -287,61 +288,61 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TextBox}">
 					<Grid>
-						<VisualStateManager.VisualStateGroups>
-							<VisualStateGroup x:Name="CommonStates">
-								<VisualState x:Name="Normal" />
-								<VisualState x:Name="MouseOver">
+						<vsm:VisualStateManager.VisualStateGroups>
+							<vsm:VisualStateGroup x:Name="CommonStates">
+								<vsm:VisualState x:Name="Normal" />
+								<vsm:VisualState x:Name="MouseOver">
 									<Storyboard>
 										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)"
 										                 Storyboard.TargetName="FocusRectangle" />
 									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Disabled">
+								</vsm:VisualState>
+								<vsm:VisualState x:Name="Disabled">
 									<Storyboard>
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
 										                               Storyboard.TargetName="DisabledVisualElement">
 											<SplineDoubleKeyFrame KeyTime="0" Value="1" />
 										</DoubleAnimationUsingKeyFrames>
 									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="ReadOnly">
+								</vsm:VisualState>
+								<vsm:VisualState x:Name="ReadOnly">
 									<Storyboard>
 										<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity"
 										                               Storyboard.TargetName="ReadOnlyVisualElement">
 											<SplineDoubleKeyFrame KeyTime="0" Value="1" />
 										</DoubleAnimationUsingKeyFrames>
 									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-							<VisualStateGroup x:Name="FocusStates">
-								<VisualState x:Name="Focused">
+								</vsm:VisualState>
+							</vsm:VisualStateGroup>
+							<vsm:VisualStateGroup x:Name="FocusStates">
+								<vsm:VisualState x:Name="Focused">
 									<Storyboard>
 										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)"
 										                 Storyboard.TargetName="FocusRectangle" />
 										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)"
 										                 Storyboard.TargetName="FocusInnerRectangle" />
 									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="Unfocused">
+								</vsm:VisualState>
+								<vsm:VisualState x:Name="Unfocused">
 									<Storyboard />
-								</VisualState>
-							</VisualStateGroup>
-							<VisualStateGroup x:Name="ValidationStates">
-								<VisualState x:Name="Valid" />
-								<VisualState x:Name="InvalidUnfocused">
+								</vsm:VisualState>
+							</vsm:VisualStateGroup>
+							<vsm:VisualStateGroup x:Name="ValidationStates">
+								<vsm:VisualState x:Name="Valid" />
+								<vsm:VisualState x:Name="InvalidUnfocused">
 									<Storyboard>
 										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)"
 										                 Storyboard.TargetName="InvalidContentValidation" />
 									</Storyboard>
-								</VisualState>
-								<VisualState x:Name="InvalidFocused">
+								</vsm:VisualState>
+								<vsm:VisualState x:Name="InvalidFocused">
 									<Storyboard>
 										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)"
 										                 Storyboard.TargetName="InvalidContentValidation" />
 									</Storyboard>
-								</VisualState>
-							</VisualStateGroup>
-						</VisualStateManager.VisualStateGroups>
+								</vsm:VisualState>
+							</vsm:VisualStateGroup>
+						</vsm:VisualStateManager.VisualStateGroups>
 						<Rectangle x:Name="Base" Stroke="{TemplateBinding BorderBrush}"
 						           StrokeThickness="{TemplateBinding BorderThickness}" Opacity="1" Fill="{TemplateBinding Background}" />
 						<Rectangle x:Name="FocusRectangle" StrokeThickness="{TemplateBinding BorderThickness}" Opacity="0"
