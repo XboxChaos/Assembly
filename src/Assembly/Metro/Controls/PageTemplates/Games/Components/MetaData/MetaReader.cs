@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Blamite.Blam;
-using Blamite.Blam.Shaders;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
@@ -240,12 +239,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
+			TagClass tagClass = null;
 			DatumIndex index;
 			if (field.WithClass)
 			{
 				// Read the datum index based upon the layout
 				StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
 				index = new DatumIndex(values.GetInteger("datum index"));
+
+				// Check the class, in case the datum index is null
+				var magic = values.GetInteger("class magic");
+				var str = CharConstant.ToString((int)magic);
+				tagClass = field.Tags.Classes.FirstOrDefault(c => c.TagClassMagic == str);
 			}
 			else
 			{
@@ -268,7 +273,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 			else
 			{
-				field.Class = null;
+				field.Class = tagClass;
 				field.Value = null;
 			}
 		}
