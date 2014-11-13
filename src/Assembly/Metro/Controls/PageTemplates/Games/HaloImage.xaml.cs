@@ -150,17 +150,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				if (imageMagic != 0xFFD8 && imageMagic != 0x8950 && imageMagic != 0x424D)
 					throw new Exception("Invalid image type. Only JPEG, PNG, and BMP are supported.");
 
-				// Check if it's the right size
+				// Check for size and dimension differences
+				var imageSize = new FileInfo(ofd.FileName).Length;
 				var image = new BitmapImage();
 				image.BeginInit();
 				image.StreamSource = new MemoryStream(newImage);
 				image.EndInit();
+				string sizeMessage = "";
+				string dimensionMessage = "";
+
+				if (new FileInfo(ofd.FileName).Length >= 0x1C000)
+					sizeMessage = String.Format("- The size of the new image (0x{0}) exceeds Halo 3/ODST's modified limit of 0x1C000. This image will not display in those games as a result. Can be ignored otherwise.\n",
+						imageSize.ToString("X"));
 
 				if (image.PixelWidth != ((BitmapImage)imgBLF.Source).PixelWidth ||
 					image.PixelHeight != ((BitmapImage)imgBLF.Source).PixelHeight)
-					if (MetroMessageBox.Show("Confirm New Dimensions",
-						String.Format("The dimensions of the new image ({0}x{1}) are not the same as the dimensions of the original image ({2}x{3}). This blf may appear stretched or not appear at all as a result. Inject anyway?",
-						image.PixelWidth, image.PixelHeight, ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight),
+					dimensionMessage = String.Format("- The dimensions of the new image ({0}x{1}) are not the same as the dimensions of the original image ({2}x{3}). This blf may appear stretched or not appear at all as a result.\n",
+						image.PixelWidth, image.PixelHeight, ((BitmapImage)imgBLF.Source).PixelWidth, ((BitmapImage)imgBLF.Source).PixelHeight);
+
+				if (dimensionMessage != "" || sizeMessage != "")
+					if (MetroMessageBox.Show("Warning",
+						"There were some potential issue(s) found with your new image;\n\n" + String.Format("{0}{1}",
+						sizeMessage, dimensionMessage) + "\nInject anyway?",
 						MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
 						{
 							Close();
