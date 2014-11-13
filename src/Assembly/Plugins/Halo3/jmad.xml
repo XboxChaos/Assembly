@@ -6,10 +6,10 @@
 		<revision author="-DeToX-" version="2">Found Raw Identifier</revision>
 		<revision author="Lord Zedd" version="3">Lookin Nice</revision>
 	</revisions>
-	<tagRef name="Parent" offset="0x0" visible="true" />
+	<tagRef name="Parent Animation Graph" offset="0x0" visible="true" />
 	<bitfield8 name="Inheritance Flags" offset="0x10" visible="true">
-		<bit name="Bit 0" index="0" />
-		<bit name="Bit 1" index="1" />
+		<bit name="Inherit Root Trans Scale Only" index="0" />
+		<bit name="Inherit For Use On Player" index="1" />
 		<bit name="Bit 2" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Bit 4" index="4" />
@@ -30,9 +30,9 @@
 	<int16 name="Animation Codec Pack" offset="0x12" visible="true" />
 	<reflexive name="Skeleton Nodes" offset="0x14" visible="true" entrySize="0x20">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Next Sibling" offset="0x4" visible="true" />
-		<int16 name="First Child" offset="0x6" visible="true" />
-		<int16 name="Parent" offset="0x8" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x4" visible="true" />
+		<int16 name="First Child Node Index" offset="0x6" visible="true" />
+		<int16 name="Parent Node Index" offset="0x8" visible="true" />
 		<bitfield8 name="Model Flags" offset="0xA" visible="true">
 			<bit name="Primary Model" index="0" />
 			<bit name="Secondary Model" index="1" />
@@ -44,9 +44,9 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<bitfield8 name="Node Joint Flags" offset="0xB" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
+			<bit name="Ball-Socket" index="0" />
+			<bit name="Hinge" index="1" />
+			<bit name="No Movement" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
@@ -180,9 +180,9 @@
 			<option name="dx,dy,dz,dyaw" value="0x3" />
 		</enum8>
 		<bitfield16 name="Production Flags" offset="0x14" visible="true">
-			<bit name="Bit 0" index="0" />
+			<bit name="Do Not Monitor Changes" index="0" />
 			<bit name="Verify Sound Events" index="1" />
-			<bit name="Bit 2" index="2" />
+			<bit name="Do Not Inherit For Player Graphs" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
@@ -203,8 +203,8 @@
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
+			<bit name="Compression Disabled" index="5" />
+			<bit name="Old Production Checksum" index="6" />
 			<bit name="Valid Production Checksum" index="7" />
 			<bit name="Bit 8" index="8" />
 			<bit name="Bit 9" index="9" />
@@ -224,7 +224,19 @@
 		<int16 name="Raw Information Group Index" offset="0x28" visible="True" />
 		<int16 name="Raw Information Member Index" offset="0x2A" visible="True" />
 		<reflexive name="Frame Events" offset="0x2C" visible="True" entrySize="0x4">
-			<int16 name="Type" offset="0x0" visible="True" />
+			<enum16 name="Type" offset="0x0" visible="true">
+				<option name="Primary Keyframe" value="0x0" />
+				<option name="Secondary Keyframe" value="0x1" />
+				<option name="Left Foot" value="0x2" />
+				<option name="Right Foot" value="0x3" />
+				<option name="Allow Interruption" value="0x4" />
+				<option name="Transition A" value="0x5" />
+				<option name="Transition B" value="0x6" />
+				<option name="Transition C" value="0x7" />
+				<option name="Transition D" value="0x8" />
+				<option name="Both-Feet Shuffle" value="0x9" />
+				<option name="Body Impact" value="0xA" />
+			</enum16>
 			<int16 name="Frame" offset="0x2" visible="True" />
 		</reflexive>
 		<reflexive name="Sound Events" offset="0x38" visible="True" entrySize="0x8">
@@ -242,7 +254,11 @@
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<reflexive name="Object-Space Parent Nodes" offset="0x5C" visible="True" entrySize="0x1C">
 			<int16 name="Node Index" offset="0x0" visible="True" />
-			<int16 name="Component Flags" offset="0x0" visible="True" />
+			<bitfield16 name="Component Flags" offset="0x2" visible="true">
+				<bit name="Rotation" index="0" />
+				<bit name="Translation" index="1" />
+				<bit name="Scale" index="2" />
+			</bitfield16>
 			<int16 name="Rotation x" offset="0x4" visible="True" />
 			<int16 name="Rotation y" offset="0x6" visible="True" />
 			<int16 name="Rotation z" offset="0x8" visible="True" />
@@ -306,13 +322,14 @@
 						<stringid name="Full Name" offset="0x0" visible="True" />
 						<stringid name="Mode Name" offset="0x4" visible="True" />
 						<stringid name="State Name" offset="0x8" visible="True" />
-						<enum16 name="Frame Event Link" offset="0xC" visible="true">
+						<enum8 name="Frame Event Link" offset="0xC" visible="true">
 							<option name="No Keyframe" value="0x0" />
 							<option name="Keyframe Type A" value="0x1" />
 							<option name="Keyframe Type B" value="0x2" />
 							<option name="Keyframe Type C" value="0x3" />
 							<option name="Keyframe Type D" value="0x4" />
-						</enum16>
+						</enum8>
+						<int8 name="Unknown" offset="0xD" visible="false" />
 						<int8 name="Index A" offset="0xE" visible="true" />
 						<int8 name="Index B" offset="0xF" visible="true" />
 						<int16 name="Graph Index" offset="0x10" visible="True" />
@@ -338,13 +355,14 @@
 		<int16 name="Graph Index" offset="0x4" visible="True" />
 		<int16 name="Animation" offset="0x6" visible="True" />
 		<stringid name="Marker Name" offset="0x8" visible="True" />
-		<undefined name="Mass Point Offset" offset="0xC" visible="True" />
-		<undefined name="Full Extension Ground Depth" offset="0x10" visible="True" />
-		<undefined name="Full Compression Ground Depth" offset="0x14" visible="True" />
+		<float32 name="Mass Point Offset" offset="0xC" visible="True" />
+		<float32 name="Full Extension Ground Depth" offset="0x10" visible="True" />
+		<float32 name="Full Compression Ground Depth" offset="0x14" visible="True" />
+		<comment title="Destroyed Suspension" />
 		<stringid name="Region Name" offset="0x18" visible="True" />
-		<undefined name="Destoryed Mass Point Offset" offset="0x1C" visible="True" />
-		<undefined name="Destroyed Expression Ground Depth" offset="0x20" visible="True" />
-		<undefined name="Destroyed Compression Ground Depth" offset="0x24" visible="True" />
+		<float32 name="Mass Point Offset" offset="0x1C" visible="True" />
+		<float32 name="Expression Ground Depth" offset="0x20" visible="True" />
+		<float32 name="Compression Ground Depth" offset="0x24" visible="True" />
 	</reflexive>
 	<reflexive name="Object Overlays" offset="0x74" visible="True" entrySize="0x14">
 		<stringid name="Label" offset="0x0" visible="True" />
@@ -358,16 +376,86 @@
 		<stringid name="Function" offset="0xC" visible="True" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
-	<reflexive name="Inheritence List" offset="0x80" visible="True" entrySize="0x30">
-		<tagRef name="Inherited Animation" offset="0x0" visible="True" />
+	<comment title="Inheritance">The Node Map block should have the same count as the Inherited Graph's nodes. Each Local Node value corresponds to the nodes of THIS graph. If there is no matching node, -1 is acceptable.
+The Node Map Flags reflect which nodes in the Node Map are used, meaning a bit should be unchecked if it is -1 in the map.
+Root z Offset allows for differences in height. Updates in realtime so poke around until it looks how you want.
+To reference an inherited graph, set the Graph Index value of the animation(s) you want to the Inheritance List index that points to the graph.</comment>
+	<reflexive name="Inheritance List" offset="0x80" visible="True" entrySize="0x30">
+		<tagRef name="Inherited Graph" offset="0x0" visible="True" />
 		<reflexive name="Node Map" offset="0x10" visible="True" entrySize="0x2">
 			<int16 name="Local Node" offset="0x0" visible="True" />
 		</reflexive>
 		<reflexive name="Node Map Flags" offset="0x1C" visible="True" entrySize="0x4">
-			<int32 name="Local Node Flags" offset="0x0" visible="True" />
+			<bitfield32 name="Local Node Flags" offset="0x0" visible="true">
+				<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+				<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+				<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+				<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+				<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+				<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+				<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+				<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="8" />
+				<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="9" />
+				<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="10" />
+				<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="11" />
+				<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="12" />
+				<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="13" />
+				<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="14" />
+				<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="15" />
+				<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="16" />
+				<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="17" />
+				<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="18" />
+				<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="19" />
+				<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="20" />
+				<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="21" />
+				<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="22" />
+				<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="23" />
+				<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="24" />
+				<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="25" />
+				<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="26" />
+				<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="27" />
+				<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="28" />
+				<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="29" />
+				<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="30" />
+				<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="31" />
+			</bitfield32>
 		</reflexive>
-		<float32 name="Local Z Offset" offset="0x28" visible="True" />
-		<int32 name="Inheritance Flags" offset="0x2C" visible="True" />
+		<float32 name="Root z Offset" offset="0x28" visible="True" />
+		<bitfield32 name="Inheritance Flags" offset="0x2C" visible="true">
+			<bit name="Tighten Nodes" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
 	</reflexive>
 	<reflexive name="Weapon List" offset="0x8C" visible="true" entrySize="0x8">
 		<stringid name="Weapon Name" offset="0x0" visible="true" />
