@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
+using Newtonsoft.Json;
 
 namespace Assembly.Helpers
 {
 	public class Updater
 	{
+		public const string PostUpdatePath = "update.json";
+
 		public static void BeginUpdateProcess()
 		{
 			// Grab JSON Update package from the server
@@ -35,5 +40,47 @@ namespace Assembly.Helpers
 
 			return (serverVersion.CompareTo(currentVersion) > 0);
 		}
+
+		public static PostUpdateInfo LoadPostUpdateInfo(string path)
+		{
+			var info = File.ReadAllText(path);
+			return JsonConvert.DeserializeObject<PostUpdateInfo>(info);
+		}
+
+		public static void CleanUpAfterUpdate(PostUpdateInfo info)
+		{
+			DeleteFiles(info.FilesToDelete);
+		}
+
+		private static void DeleteFiles(IEnumerable<string> deletedFiles)
+		{
+			var basePath = VariousFunctions.GetApplicationLocation();
+			foreach (var path in deletedFiles)
+			{
+				// Ensure the path points to a file inside Assembly's directory
+				if (Path.IsPathRooted(path))
+					continue;
+				var fullPath = Path.GetFullPath(Path.Combine(basePath, path));
+				if (!fullPath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
+					continue;
+				try
+				{
+					File.Delete(fullPath);
+				}
+				catch
+				{
+				}
+			}
+		}
+	}
+
+	[JsonObject]
+	public class PostUpdateInfo
+	{
+		[JsonProperty(PropertyName = "version")]
+		public string Version { get; set; }
+
+		[JsonProperty(PropertyName = "delete_files")]
+		public string[] FilesToDelete { get; set; }
 	}
 }
