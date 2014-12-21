@@ -55,7 +55,7 @@ namespace Assembly.Helpers.Net
 		/// <returns>The update information returned by the server, or null if the request failed.</returns>
 		public static UpdateInfo GetUpdateInfo()
 		{
-			var updateCommand = new ServerRequest("update_asm");
+			var updateCommand = new ServerRequest("update_beta");
 			return AssemblyServer.SendRequest<ServerRequest, UpdateInfo>(updateCommand);
 		}
 	}
