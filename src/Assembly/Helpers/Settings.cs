@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Serialization;
@@ -165,6 +166,7 @@ namespace Assembly.Helpers
 		private double _xdkScreenshotGammaModifier = 0.5;
 		private string _xdkScreenshotPath = "";
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
+		private UpdateSource _updateChannel = UpdateSource.Stable;
 
 		#region Enums
 
@@ -222,6 +224,12 @@ namespace Assembly.Helpers
 			TagClass,
 			ObjectHierarchy,
 			PathHierarchy
+		}
+
+		public enum UpdateSource
+		{
+			Stable,
+			Experimental
 		}
 
 		#endregion
@@ -640,6 +648,12 @@ namespace Assembly.Helpers
 				if (Loaded)
 					FileDefaults.UpdateFileDefaults();
 			}
+		}
+
+		public UpdateSource UpdateChannel
+		{
+			get { return _updateChannel; }
+			set { SetField(ref _updateChannel, value, "UpdateChannel"); }
 		}
 
 		/// <summary>

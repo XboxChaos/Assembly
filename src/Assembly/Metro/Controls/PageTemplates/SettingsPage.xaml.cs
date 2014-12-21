@@ -23,6 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			ComboBoxAccents.ItemsSource = Enum.GetValues(typeof (Settings.Accents));
 			ComboBoxMapInfoDockSide.ItemsSource = Enum.GetValues(typeof (Settings.MapInfoDockSide));
 			ComboBoxMapTagSort.ItemsSource = Enum.GetValues(typeof (Settings.TagSort));
+			ComboBoxUpdateChannel.ItemsSource = Enum.GetValues(typeof(Settings.UpdateSource));
 
 			// Load UI
 			ButtonTabSelection_OnClick(ButtonSelectGeneral, null);

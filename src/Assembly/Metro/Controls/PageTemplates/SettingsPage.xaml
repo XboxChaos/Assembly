@@ -252,17 +252,17 @@
 				<ToggleButton x:Name="ButtonSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="MapEdit" Click="ButtonTabSelection_OnClick" />
-				<ToggleButton x:Name="ButtonSelectStartPage" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
+                <ToggleButton x:Name="ButtonSelectStartPage" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="StartPage" Click="ButtonTabSelection_OnClick" />
-			</StackPanel>
+            </StackPanel>
 
 		</Grid>
 
 		<GridSplitter Grid.Column="0" Width="2" Background="#FF545456" Foreground="{x:Null}" ResizeDirection="Columns" IsEnabled="False" />
 
 		<Grid Grid.Column="1" Margin="30,0,0,40">
-			<Grid x:Name="GeneralSettingsPanel" Visibility="Collapsed">
+			<Grid x:Name="GeneralSettingsPanel" Visibility="Visible">
 				<StackPanel Margin="25,40,0,0">
 					<TextBlock Text="general" Style="{DynamicResource SettingPageTitle}" />
 
@@ -293,9 +293,9 @@
 						</Grid.ColumnDefinitions>
 
 						<StackPanel Grid.Column="0">
-							<TextBlock Text="Updates on Startup:" Style="{DynamicResource SettingName}" />
+							<TextBlock Text="Automatic Updates:" Style="{DynamicResource SettingName}" />
 							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
-								Keep up to date and have assembly check for the latest version every time you start up.
+								Keep up-to-date and have Assembly automatically check for updates every time you start it.
 							</TextBlock>
 						</StackPanel>
 						<Grid Grid.Column="2">
@@ -305,33 +305,50 @@
 						</Grid>
 					</Grid>
 
-					<Grid Style="{DynamicResource SettingEntry}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="200" />
-							<ColumnDefinition Width="20" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-						<StackPanel Grid.Column="0">
-							<TextBlock Text="Default Editor:" Style="{DynamicResource SettingName}" />
-							<TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Update Channel:" Style="{DynamicResource SettingName}" />
+                            <TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}"><Run Text="Choose which channel you want to use for updates."/><LineBreak/><LineBreak/><Run Text="Stable - Only receive updates that are known to work well (master branch)"/><LineBreak/><LineBreak/><Run Text="Experimental - Receive an update every time Assembly's code is updated on GitHub (dev branch)"></Run></TextBlock>
+                        </StackPanel>
+                        <Grid Grid.Column="2">
+                            <ComboBox x:Name="ComboBoxUpdateChannel" HorizontalAlignment="Left" VerticalAlignment="Top"
+								  SelectedItem="{Binding Path=UpdateChannel, Mode=TwoWay}" Width="250" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Default Editor:" Style="{DynamicResource SettingName}" />
+                            <TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
 								Indicates what file types you would like to associate with Assembly.
-							</TextBlock>
-						</StackPanel>
-						<StackPanel Grid.Column="2">
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left"
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left"
 									  Content=".map files" IsChecked="{Binding Path=DefaultMap, Mode=TwoWay}" />
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
+                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
 									  Content=".blf files" IsChecked="{Binding Path=DefaultBlf, Mode=TwoWay}" />
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
+                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
 									  Content=".mapinfo files" IsChecked="{Binding Path=DefaultMif, Mode=TwoWay}" />
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
+                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
 									  Content=".campaign files" IsChecked="{Binding Path=DefaultCif, Mode=TwoWay}" />
-							<CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
+                            <CheckBox VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,4,0,0"
 									  Content=".asmp files" IsChecked="{Binding Path=DefaultAmp, Mode=TwoWay}" />
-						</StackPanel>
-					</Grid>
-				</StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
 			</Grid>
 
 			<Grid x:Name="Xbox360DevSettingsPanel" Visibility="Collapsed">
