@@ -17,28 +17,43 @@ namespace AssemblyUpdateManager
 				Console.Error.WriteLine("Usage: AssemblyUpdateManager <update zip> <assembly exe> <parent pid>");
 				return;
 			}
-			string zipPath = args[0];
-			string exePath = args[1];
-			int pid = Convert.ToInt32(args[2]);
+			var zipPath = args[0];
+			var exePath = args[1];
+			var pid = Convert.ToInt32(args[2]);
 
 			try
 			{
 				// Wait for Assembly to close
 				try
 				{
-					Process process = Process.GetProcessById(pid);
-					process.WaitForExit();
-					process.Close();
+					if (pid != -1)
+					{
+						var process = Process.GetProcessById(pid);
+						process.WaitForExit();
+						process.Close();
+					}
 				}
 				catch
 				{
 				}
 
-				// Back up formats and plugins
+				// Delete the old backup
+				try
+				{
+					Directory.Delete(@"Backup\Formats", true);
+					Directory.Delete(@"Backup\Plugins", true);
+				}
+				catch
+				{
+				}
+
+				// Copy formats and plugins to backup folder
 				try
 				{
 					DirectoryCopy("Formats", @"Backup\Formats", true);
 					DirectoryCopy("Plugins", @"Backup\Plugins", true);
+					Directory.Delete("Formats", true);
+					Directory.Delete("Plugins", true);
 				}
 				catch
 				{
@@ -47,7 +62,7 @@ namespace AssemblyUpdateManager
 				// Extract the update zip
 				var fz = new FastZip();
 				fz.CreateEmptyDirectories = true;
-				for (int i = 0; i < 5; i++)
+				for (var i = 0; i < 5; i++)
 				{
 					try
 					{
@@ -78,7 +93,7 @@ namespace AssemblyUpdateManager
 			}
 
 			// Launch "The New iPa... Assembly"
-			Process.Start("Assembly://post-update");
+			Process.Start(exePath);
 		}
 
 		// http://msdn.microsoft.com/en-us/library/bb762914%28v=vs.110%29.aspx

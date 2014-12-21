@@ -102,7 +102,6 @@ namespace Assembly.Windows
 				var info = Updater.LoadPostUpdateInfo(postUpdatePath);
 				if (info == null)
 					return;
-				Updater.CleanUpAfterUpdate(info);
 				File.Delete(postUpdatePath);
 				e.Result = info;
 			}
