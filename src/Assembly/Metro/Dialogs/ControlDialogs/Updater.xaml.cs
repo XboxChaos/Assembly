@@ -5,6 +5,7 @@ using System.Net;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Animation;
+using Assembly.Helpers;
 using Assembly.Helpers.Native;
 using Assembly.Helpers.Net;
 
@@ -43,7 +44,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		private void LoadDataFromFormat()
 		{
-			_currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			_currentVersion = VersionInfo.GetUserFriendlyVersion() ?? "(unknown)";
 			lblCurrentVersion.Text = _currentVersion;
 			lblServerVersion.Text = _info.LatestVersion;
 

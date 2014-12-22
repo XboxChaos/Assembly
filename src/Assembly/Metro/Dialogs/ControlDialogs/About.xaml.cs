@@ -15,7 +15,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			InitializeComponent();
 			DwmDropShadow.DropShadowToWindow(this);
 
-			string version = VariousFunctions.GetApplicationVersion();
+			var version = VersionInfo.GetUserFriendlyVersion() ?? "(unknown version)";
 			lblTitle.Text = lblTitle.Text.Replace("{version}", version);
 		}
 

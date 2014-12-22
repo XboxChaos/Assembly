@@ -79,44 +79,7 @@ namespace Assembly.Windows
 			ProcessCommandLineArgs(Environment.GetCommandLineArgs());
 
 			if (App.AssemblyStorage.AssemblySettings.ApplicationUpdateOnStartup)
-				StartPostUpdateCheck();
-		}
-
-		/// <summary>
-		/// Asynchronously checks for post-update data and processes it if necessary.
-		/// After post-update processing is complete, an update check will be run.
-		/// </summary>
-		private void StartPostUpdateCheck()
-		{
-			var worker = new BackgroundWorker();
-			worker.DoWork += PostUpdateCheckWorker;
-			worker.RunWorkerCompleted += PostUpdateCheckComplete;
-			worker.RunWorkerAsync();
-		}
-
-		private void PostUpdateCheckWorker(object sender, DoWorkEventArgs e)
-		{
-			var postUpdatePath = Path.Combine(VariousFunctions.GetApplicationLocation(), Updater.PostUpdatePath);
-			if (File.Exists(postUpdatePath))
-			{
-				var info = Updater.LoadPostUpdateInfo(postUpdatePath);
-				if (info == null)
-					return;
-				File.Delete(postUpdatePath);
-				e.Result = info;
-			}
-		}
-
-		private void PostUpdateCheckComplete(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (!e.Cancelled && e.Error == null && e.Result != null)
-			{
-				var info = (PostUpdateInfo) e.Result;
-				MetroMessageBox.Show("Update successful!",
-					"Assembly has been updated to version " + info.Version +
-					".\r\n\r\nYour old plugins and layouts were copied to a \"Backup\" folder.\r\nBe sure to merge any changes you have made on your own.");
-			}
-			StartUpdateCheck();
+				StartUpdateCheck();
 		}
 
 		private void StartUpdateCheck()
@@ -875,6 +838,16 @@ namespace Assembly.Windows
 						// Determine type of file, and start it up, yo
 						if (commandArgs.Length > 1)
 							StartupDetermineType(commandArgs[1]);
+						break;
+
+					case "postupdate":
+						var version = VersionInfo.GetUserFriendlyVersion();
+						if (version != null)
+						{
+							MetroMessageBox.Show("Update successful!",
+								"Assembly has been updated to version " + version +
+								".\r\n\r\nYour old plugins and layouts were copied to a \"Backup\" folder.\r\nBe sure to merge any changes you have made on your own.");
+						}
 						break;
 
 					case "update":

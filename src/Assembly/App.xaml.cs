@@ -56,6 +56,9 @@ namespace Assembly
 			};
 #endif
 
+			// Load version info
+			VersionInfo.Load("version.json");
+
 			// Create Assembly Storage
 			AssemblyStorage = new Storage();
 

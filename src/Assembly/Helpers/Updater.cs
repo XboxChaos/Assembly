@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Controls;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
 using Newtonsoft.Json;
@@ -9,8 +10,6 @@ namespace Assembly.Helpers
 {
 	public class Updater
 	{
-		public const string PostUpdatePath = "update.json";
-
 		public static void BeginUpdateProcess()
 		{
 			// Grab JSON Update package from the server
@@ -32,26 +31,13 @@ namespace Assembly.Helpers
 
 		public static bool UpdateAvailable(UpdateInfo info)
 		{
-			if (info == null || !info.Successful)
+			if (info == null || !info.Successful || VersionInfo.GetUserFriendlyVersion() == null)
 				return false;
 
 			var serverVersion = info.LatestVersion;
-			var currentVersion = VariousFunctions.GetApplicationVersion();
+			var currentVersion = VersionInfo.GetInternalVersion();
 
-			return (serverVersion.CompareTo(currentVersion) > 0);
+			return (VersionInfo.Compare(currentVersion, serverVersion) < 0);
 		}
-
-		public static PostUpdateInfo LoadPostUpdateInfo(string path)
-		{
-			var info = File.ReadAllText(path);
-			return JsonConvert.DeserializeObject<PostUpdateInfo>(info);
-		}
-	}
-
-	[JsonObject]
-	public class PostUpdateInfo
-	{
-		[JsonProperty(PropertyName = "version")]
-		public string Version { get; set; }
 	}
 }

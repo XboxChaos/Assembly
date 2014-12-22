@@ -20,15 +20,6 @@ namespace Assembly.Helpers
 
 		private static readonly string InvalidFileNameChars = new string(Path.GetInvalidFileNameChars());
 
-		/// <summary>
-		///     Gets the application's version number.
-		/// </summary>
-		/// <returns>The application's version number.</returns>
-		public static string GetApplicationVersion()
-		{
-			return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-		}
-
 		public static void EmptyUpdaterLocations()
 		{
 			string tempDir = Path.GetTempPath();
