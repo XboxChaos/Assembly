@@ -117,9 +117,10 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		private static void ExtractUpdateManager(string updateZip)
 		{
-			string tempDir = Path.GetTempPath();
+			// TODO: Download SharpZipLib and AssemblyUpdateManager.exe
 
 			// Extract SharpZipLib
+			/*string tempDir = Path.GetTempPath();
 			Stream zipDLL =
 				System.Reflection.Assembly.GetExecutingAssembly()
 					.GetManifestResourceStream("Assembly.Update.ICSharpCode.SharpZipLib.dll");
@@ -153,7 +154,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				Process.Start(updater);
 			}
 
-			Application.Current.Shutdown();
+			Application.Current.Shutdown();*/
 		}
 
 		#endregion
