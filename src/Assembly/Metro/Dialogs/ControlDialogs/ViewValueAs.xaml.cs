@@ -23,6 +23,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private readonly IStreamManager _streamManager;
 		private uint _cacheOffset;
 		private MetaReader _reader;
+		private uint _memOffset;
 
 		public ViewValueAs(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
 			IList<MetaField> fields, uint cacheOffset)
@@ -37,8 +38,11 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			_fields = fields;
 			_cacheOffsetOriginal = _cacheOffset = cacheOffset;
 
-			// Set Textbox
+			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+
+			// Set Textboxes
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 
 			// Load Meta
 			panelMetaComponents.ItemsSource = _fields;
@@ -49,6 +53,21 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		{
 			_reader = new MetaReader(_streamManager, _cacheOffset, _cacheFile, _buildInfo, MetaReader.LoadType.File, null);
 			_reader.ReadFields(_fields);
+		}
+
+		public uint GetSkip()
+		{
+			switch (cbSkip.SelectedIndex)
+			{
+				case 0:
+					return 1;
+				case 1:
+					return 2;
+				case 2:
+					return 4;
+				default:
+					return 0;
+			}
 		}
 
 		private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -67,7 +86,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				Height = yadjust;
 		}
 
-		private void btnRefresh_Click(object sender = null, RoutedEventArgs e = null)
+		private void RefreshFileOffset()
 		{
 			uint offset;
 
@@ -94,33 +113,87 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				return;
 			}
 			_cacheOffset = offset;
+
+			//Update the other textbox
+			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
+
+			RefreshMeta();
+		}
+
+		private void RefreshMemAddr()
+		{
+			uint offset;
+
+			// Validate Textbox
+			bool success;
+			if (txtMemOffset.Text.StartsWith("0x") || txtMemOffset.Text.StartsWith("0X"))
+			{
+				// Is Hex
+				success = uint.TryParse(txtMemOffset.Text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset);
+			}
+			else
+			{
+				// Not Hex
+				success = uint.TryParse(txtMemOffset.Text, out offset);
+			}
+
+			if (!success || offset < _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.PointerMask ||
+				offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size + _cacheFile.MetaArea.PointerMask)
+			{
+				MetroMessageBox.Show(
+					"Invalid address.",
+					"The meta address you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
+					);
+				return;
+			}
+			_cacheOffset = offset - _cacheFile.MetaArea.PointerMask;
+
+			//Update the other textbox
+			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+
 			RefreshMeta();
 		}
 
 		private void txtOffset_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter)
-				btnRefresh_Click();
+				RefreshFileOffset();
+		}
+
+		private void txtMemOffset_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+				RefreshMemAddr();
 		}
 
 		private void btnReset_Click(object sender, RoutedEventArgs e)
 		{
 			_cacheOffset = _cacheOffsetOriginal;
+			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 			RefreshMeta();
 		}
 
 		private void btnDown_Click(object sender, RoutedEventArgs e)
 		{
-			_cacheOffset -= 1;
+			_cacheOffset -= GetSkip();
+			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 			RefreshMeta();
 		}
 
 		private void btnUp_Click(object sender, RoutedEventArgs e)
 		{
-			_cacheOffset += 1;
+			_cacheOffset += GetSkip();
+			_memOffset = _cacheOffset + _cacheFile.MetaArea.PointerMask;
+
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");
+			txtMemOffset.Text = "0x" + _memOffset.ToString("X");
 			RefreshMeta();
 		}
 	}
