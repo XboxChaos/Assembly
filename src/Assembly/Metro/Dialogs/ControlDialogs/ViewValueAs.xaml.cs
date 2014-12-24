@@ -69,31 +69,31 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		private void btnRefresh_Click(object sender = null, RoutedEventArgs e = null)
 		{
-			int offset;
+			uint offset;
 
 			// Validate Textbox
 			bool success;
 			if (txtOffset.Text.StartsWith("0x") || txtOffset.Text.StartsWith("0X"))
 			{
 				// Is Hex
-				success = int.TryParse(txtOffset.Text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset);
+				success = uint.TryParse(txtOffset.Text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset);
 			}
 			else
 			{
 				// Not Hex
-				success = int.TryParse(txtOffset.Text, out offset);
+				success = uint.TryParse(txtOffset.Text, out offset);
 			}
 
 			if (!success || offset < _cacheFile.MetaArea.Offset ||
-			    offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size)
+				offset >= _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.Size)
 			{
 				MetroMessageBox.Show(
 					"Invalid offset.",
 					"The meta offset you set is not valid. It might be beyond the boundaries of the file or contain invalid characters. Remember, if it's a hex number, it must start with a '0x'."
 					);
+				return;
 			}
-
-			_reader.BaseOffset = (uint) offset;
+			_cacheOffset = offset;
 			RefreshMeta();
 		}
 
