@@ -93,7 +93,7 @@ namespace AssemblyUpdateManager
 			}
 
 			// Launch "The New iPa... Assembly"
-			Process.Start(exePath);
+			Process.Start(exePath, "postupdate");
 		}
 
 		// http://msdn.microsoft.com/en-us/library/bb762914%28v=vs.110%29.aspx
