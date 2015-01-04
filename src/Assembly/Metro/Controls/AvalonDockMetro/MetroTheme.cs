@@ -15,7 +15,7 @@
   **********************************************************************/
 
 using System;
-using AvalonDock.Themes;
+using Xceed.Wpf.AvalonDock.Themes;
 
 namespace Assembly.Metro.Controls.AvalonDockMetro
 {

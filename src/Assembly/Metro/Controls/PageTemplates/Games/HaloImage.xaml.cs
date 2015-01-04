@@ -10,7 +10,7 @@ using Assembly.Helpers;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;

@@ -15,7 +15,7 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam;
 using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;

@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
 using Assembly.Metro.Dialogs;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 using Clipboard = System.Windows.Clipboard;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Assembly</RootNamespace>
     <AssemblyName>Assembly</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -55,6 +55,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -67,6 +68,7 @@
     <SupportedCultures Condition="'$(SupportedCultures)' == ''">en;en-US</SupportedCultures>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowedReferenceRelatedFileExtensions Condition=" '$(AllowedReferenceRelatedFileExtensions)' == '' ">-</AllowedReferenceRelatedFileExtensions>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +80,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -87,18 +90,17 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AvalonDock">
-      <HintPath>..\packages\AvalonDock.2.0.1746\lib\net40\AvalonDock.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\DLLs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Expression.Interactions" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
@@ -130,12 +132,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DLLs\WPFToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="WPFToolkit.Extended, Version=1.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Extended.Wpf.Toolkit.1.8.0\lib\net40\WPFToolkit.Extended.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.1.8.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    <Reference Include="XboxChaos">
+      <HintPath>..\DLLs\XboxChaos.dll</HintPath>
     </Reference>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -171,13 +169,13 @@
     <Compile Include="Helpers\JumpLists.cs" />
     <Compile Include="Helpers\Native\ShellChanges.cs" />
     <Compile Include="Helpers\Models\ObjExporter.cs" />
+    <Compile Include="Helpers\Net\AssemblyServer.cs" />
     <Compile Include="Helpers\Net\HttpExtensions.cs" />
     <Compile Include="Helpers\Net\HttpRequests.cs" />
     <Compile Include="Helpers\Net\SignIn.cs" />
-    <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
-    <Compile Include="Helpers\Net\AssemblyServer.cs" />
-    <Compile Include="Helpers\Net\Imgur.cs" />
     <Compile Include="Helpers\Net\Updates.cs" />
+    <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
+    <Compile Include="Helpers\Net\Imgur.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="Helpers\UIX\AnimationHelper.cs" />
@@ -326,6 +324,9 @@
     <Compile Include="Metro\Controls\PageTemplates\MemoryManager.xaml.cs">
       <DependentUpon>MemoryManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\NetworkGrouping.xaml.cs">
+      <DependentUpon>NetworkGrouping.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Controls\PageTemplates\PatchControl.xaml.cs">
       <DependentUpon>PatchControl.xaml</DependentUpon>
     </Compile>
@@ -455,9 +456,6 @@
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\HaloMap.xaml.cs">
       <DependentUpon>HaloMap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Metro\Controls\PageTemplates\NetworkGrouping.xaml.cs">
-      <DependentUpon>NetworkGrouping.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -1012,6 +1010,24 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SyntaxHighlighting\XMLPurple.xshd" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
     <Resource Include="Helpers\0xabad1dea\GodOfAllThingsHolyAndModdy.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -18,7 +18,7 @@ using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Controls.PageTemplates.Tools;
 using Assembly.Metro.Controls.PageTemplates.Tools.Halo4;
 using Assembly.Metro.Dialogs;
-using AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
