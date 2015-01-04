@@ -291,8 +291,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				var values = new StructureValueCollection();
 				if (field.Value != null)
 				{
-					values.SetInteger("class magic", (uint) field.Value.RawTag.Class.Magic);
-					values.SetInteger("datum index", field.Value.RawTag.Index.Value);
+					//hax
+					if (field.Value.RawTag == null)
+					{
+						values.SetInteger("class magic", (uint)field.Class.RawClass.Magic);
+						values.SetInteger("datum index", 0xFFFFFFFF);
+					}
+					else
+					{
+						values.SetInteger("class magic", (uint)field.Value.RawTag.Class.Magic);
+						values.SetInteger("datum index", field.Value.RawTag.Index.Value);
+					}
 				}
 				else
 				{

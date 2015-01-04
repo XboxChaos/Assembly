@@ -20,9 +20,9 @@ namespace Assembly.Metro.Controls.PageTemplates
 			cbClosePageOnLoad.IsChecked = App.AssemblyStorage.AssemblySettings.StartpageHideOnLaunch;
 			cbShowOnStartUp.IsChecked = App.AssemblyStorage.AssemblySettings.StartpageShowOnLoad;
 
-			// Load RSS feeds
+			/* Load RSS feeds
 			tutHalo3.Content = new RssPage(HoldingVault.XboxChaosH3Tuts);
-			tutHaloReach.Content = new RssPage(HoldingVault.XboxChaosHReachTuts);
+			tutHaloReach.Content = new RssPage(HoldingVault.XboxChaosHReachTuts);*/
 		}
 
 		public bool Close()
