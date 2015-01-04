@@ -564,7 +564,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				Dispatcher.Invoke(new Action(delegate { comboSearchResults.ItemsSource = _searchResults; }));
 
 				SelectFirstResult();
-				EnableResetButton(true);
+				EnableResetButton(Visibility.Visible);
 			}
 		}
 
@@ -605,7 +605,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_resultIndices.Clear();
 			ShowAll();
 			DisableMovementButtons();
-			EnableResetButton(false);
+			EnableResetButton(Visibility.Hidden);
 			SelectField(null);
 		}
 
@@ -675,9 +675,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		}
 
 		// Thread-safe
-		private void EnableResetButton(bool enable)
+		private void EnableResetButton(Visibility visibility)
 		{
-			Dispatcher.Invoke(new Action(delegate { btnResetSearch.IsEnabled = enable; }));
+			Dispatcher.Invoke(new Action(delegate { btnResetSearch.Visibility = visibility; }));
 		}
 
 		private int FindResultByListField(MetaField field)

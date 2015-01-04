@@ -153,6 +153,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var globalMaps = new Dictionary<string, MetaMap>();
 			DateTime startTime = DateTime.Now;
 			string gameIdentifier = "";
+			worker.ReportProgress(0);
 
 			for (int i = 0; i < generatorMaps.Count; i++)
 			{
@@ -208,7 +209,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				reader.Close();
 
-				worker.ReportProgress(100*i/(generatorMaps.Count - 1));
+				worker.ReportProgress(100*(i+1)/(generatorMaps.Count));
 			}
 
 			string badChars = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());

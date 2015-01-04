@@ -1510,7 +1510,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
 		{
+			// Clear button control
+			if (txtTagSearch.Text.Length > 0)
+				btnResetSearch.Visibility = Visibility.Visible;
+			else
+				btnResetSearch.Visibility = Visibility.Hidden;
+
 			UpdateTagFilter();
+		}
+
+		private void btnResetSearch_Click(object sender, RoutedEventArgs e)
+		{
+			txtTagSearch.Text = "";
+			txtTagSearch.Focus();
 		}
 
 		private bool FilterClass(TagClass tagClass, string filter)

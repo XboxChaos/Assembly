@@ -18,6 +18,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		public tagValue()
 		{
 			InitializeComponent();
+			//hax hax
+			if (cbTagEntry.IsEnabled)
+				if (cbTagEntry.SelectedIndex < 0)
+					cbTagEntry.SelectedIndex = 0;
+
 		}
 
 		private void cbTagClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -88,7 +93,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			var sourceClass = value as TagClass;
 			if (sourceClass == null)
 				return null;
-			return sourceClass.Children;
+
+			//hax 2 tha max
+			var nullTag = new TagEntry(null, null, "(null)");
+
+			var tagList = new CompositeCollection();
+			tagList.Add(nullTag);
+
+			var mainTagListContainer = new CollectionContainer();
+			mainTagListContainer.Collection = sourceClass.Children;
+
+			tagList.Add(mainTagListContainer);
+
+
+			return tagList;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
