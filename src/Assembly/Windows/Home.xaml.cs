@@ -22,6 +22,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
+using XboxChaos.Models;
 using XBDMCommunicator;
 
 namespace Assembly.Windows
@@ -90,18 +91,18 @@ namespace Assembly.Windows
 			worker.RunWorkerAsync();
 		}
 
-		private void CheckForUpdates(object sender, DoWorkEventArgs e)
+		private async void CheckForUpdates(object sender, DoWorkEventArgs e)
 		{
 			// Grab JSON Update package from the server
-			e.Result = Updates.GetUpdateInfo();
+			e.Result = await Updater.GetBranchInfo();
 		}
 
 		private void UpdateCheckCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			if (e.Cancelled || e.Error != null)
+			if (e.Cancelled || e.Error != null || e.Result == null)
 				return;
 
-			var updateInfo = (UpdateInfo) e.Result;
+			var updateInfo = (ApplicationBranchResponse) e.Result;
 			if (Updater.UpdateAvailable(updateInfo))
 				MetroUpdateDialog.Show(updateInfo, true);
 		}
@@ -237,10 +238,9 @@ namespace Assembly.Windows
 			MetroAbout.Show();
 		}
 
-		private void menuHelpUpdater_Click(object sender, RoutedEventArgs e)
+		private async void menuHelpUpdater_Click(object sender, RoutedEventArgs e)
 		{
-			var thrd = new Thread(Updater.BeginUpdateProcess);
-			thrd.Start();
+			await Updater.BeginUpdateProcess();
 		}
 
 		// Goodbye Sweet Evelyn
@@ -490,7 +490,6 @@ namespace Assembly.Windows
 		{
 			StartPage,
 			Settings,
-			NetworkPoking,
 			PluginGenerator,
 			Welcome,
 			PluginConverter,
@@ -680,10 +679,6 @@ namespace Assembly.Windows
 				case TabGenre.Settings:
 					tab.Title = "Settings";
 					tab.Content = new SettingsPage();
-					break;
-				case TabGenre.NetworkPoking:
-					tab.Title = "Network Poking";
-					tab.Content = new NetworkGrouping();
 					break;
 				case TabGenre.PluginGenerator:
 					tab.Title = "Plugin Generator";
