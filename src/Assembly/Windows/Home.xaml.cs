@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -68,7 +69,7 @@ namespace Assembly.Windows
 			App.AssemblyStorage.AssemblySettings.HomeWindow = this;
 		}
 
-		protected override void OnSourceInitialized(EventArgs e)
+		protected override async void OnSourceInitialized(EventArgs e)
 		{
 			base.OnSourceInitialized(e);
 
@@ -80,31 +81,23 @@ namespace Assembly.Windows
 			ProcessCommandLineArgs(Environment.GetCommandLineArgs());
 
 			if (App.AssemblyStorage.AssemblySettings.ApplicationUpdateOnStartup)
-				StartUpdateCheck();
+				await CheckForUpdates();
 		}
 
-		private void StartUpdateCheck()
-		{
-			var worker = new BackgroundWorker();
-			worker.DoWork += CheckForUpdates;
-			worker.RunWorkerCompleted += UpdateCheckCompleted;
-			worker.RunWorkerAsync();
-		}
-
-		private async void CheckForUpdates(object sender, DoWorkEventArgs e)
+		private async Task CheckForUpdates()
 		{
 			// Grab JSON Update package from the server
-			e.Result = await Updater.GetBranchInfo();
-		}
-
-		private void UpdateCheckCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			if (e.Cancelled || e.Error != null || e.Result == null)
-				return;
-
-			var updateInfo = (ApplicationBranchResponse) e.Result;
-			if (Updater.UpdateAvailable(updateInfo))
-				MetroUpdateDialog.Show(updateInfo, true);
+			try
+			{
+				var result = await Updater.GetBranchInfo();
+				if (result == null)
+					return;
+				if (Updater.UpdateAvailable(result))
+					MetroUpdateDialog.Show(result, true);
+			}
+			catch
+			{
+			}
 		}
 
 		private void LayoutRoot_PropertyChanged(object sender, PropertyChangedEventArgs e)
