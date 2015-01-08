@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Shell;
 
 namespace Assembly.Helpers
@@ -7,6 +9,8 @@ namespace Assembly.Helpers
 	{
 		public static void UpdateJumplists()
 		{
+			var iconLibraryPath = ExtractIconLibrary();
+
 			var jump = new JumpList();
 			JumpList.SetJumpList(Application.Current, jump);
 
@@ -37,7 +41,7 @@ namespace Assembly.Helpers
 						App.AssemblyStorage.AssemblySettings.ApplicationRecents[i].FilePath);
 					task.WorkingDirectory = VariousFunctions.GetApplicationLocation();
 
-					task.IconResourcePath = VariousFunctions.GetApplicationLocation() + "AssemblyIconLibrary.dll";
+					task.IconResourcePath = iconLibraryPath;
 					task.IconResourceIndex = iconIndex;
 
 					task.CustomCategory = "Recent";
@@ -57,6 +61,34 @@ namespace Assembly.Helpers
 
 			// Send to the Windows Shell
 			jump.Apply();
+		}
+
+		// Name of the embedded icon library DLL
+		private const string IconLibraryName = "AssemblyIconLibrary.dll";
+
+		/// <summary>
+		/// Extracts the icon library DLL if it does not exist.
+		/// </summary>
+		/// <returns>The path to the DLL.</returns>
+		/// <exception cref="System.InvalidOperationException">Thrown if the DLL fails to load.</exception>
+		private static string ExtractIconLibrary()
+		{
+			// If the library has already been extracted, then don't do anything
+			var iconLibraryPath = Path.Combine(Path.GetTempPath(), IconLibraryName);
+			if (File.Exists(iconLibraryPath))
+				return iconLibraryPath;
+
+			// Extract it
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var resourceName = assembly.GetName().Name + "." + IconLibraryName;
+			using (var stream = assembly.GetManifestResourceStream(resourceName))
+			{
+				if (stream == null)
+					throw new InvalidOperationException("Unable to load " + IconLibraryName);
+				using (var output = File.Open(iconLibraryPath, FileMode.Create, FileAccess.Write))
+					stream.CopyTo(output);
+			}
+			return iconLibraryPath;
 		}
 	}
 }
