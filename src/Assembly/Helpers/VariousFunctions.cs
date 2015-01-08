@@ -22,19 +22,22 @@ namespace Assembly.Helpers
 
 		public static void EmptyUpdaterLocations()
 		{
-			string tempDir = Path.GetTempPath();
-			string updaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
-			string dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
+			var tempDir = Path.GetTempPath();
+			var oldUpdaterPath = Path.Combine(tempDir, "AssemblyUpdateManager.exe");
+			var newUpdaterPath = Path.Combine(tempDir, "update.exe");
+			var dllPath = Path.Combine(tempDir, "ICSharpCode.SharpZipLib.dll");
 
 			// Wait for the updater to close
-			Process[] updaterProcesses = Process.GetProcessesByName("AssemblyUpdateManager.exe");
-			foreach (Process process in updaterProcesses.Where(process => !process.HasExited))
+			var updaterProcesses = Process.GetProcessesByName("update.exe");
+			foreach (var process in updaterProcesses.Where(process => !process.HasExited))
 			{
 				process.WaitForExit();
 			}
 
-			if (File.Exists(updaterPath))
-				File.Delete(updaterPath);
+			if (File.Exists(oldUpdaterPath))
+				File.Delete(oldUpdaterPath);
+			if (File.Exists(newUpdaterPath))
+				File.Delete(newUpdaterPath);
 			if (File.Exists(dllPath))
 				File.Delete(dllPath);
 		}
