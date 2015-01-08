@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Zip;
@@ -9,6 +10,9 @@ namespace AssemblyUpdateManager
 {
 	internal class Program
 	{
+		// DLLs to avoid deleting
+		private static readonly string[] KeepDlls = { "XDevkit.dll" };
+
 		private static void Main(string[] args)
 		{
 			if (args.Length != 3)
@@ -54,6 +58,34 @@ namespace AssemblyUpdateManager
 					DirectoryCopy("Plugins", @"Backup\Plugins", true);
 					Directory.Delete("Formats", true);
 					Directory.Delete("Plugins", true);
+				}
+				catch
+				{
+				}
+
+				// Delete unnecessary DLL files
+				foreach (var path in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*.dll"))
+				{
+					// Ignore the file if it's in the KeepDlls list
+					var fileName = Path.GetFileName(path);
+					if (fileName == null)
+						continue;
+					if (KeepDlls.Any(f => fileName.Equals(f, StringComparison.OrdinalIgnoreCase)))
+						continue;
+					try
+					{
+						File.Delete(path);
+					}
+					catch
+					{
+					}
+				}
+
+				// Delete app.json
+				try
+				{
+					if (File.Exists("app.json"))
+						File.Delete("app.json");
 				}
 				catch
 				{
