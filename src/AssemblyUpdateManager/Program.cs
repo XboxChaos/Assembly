@@ -91,6 +91,16 @@ namespace AssemblyUpdateManager
 				{
 				}
 
+				// Delete the meta folder
+				try
+				{
+					if (Directory.Exists("Meta"))
+						Directory.Delete("Meta", true);
+				}
+				catch
+				{
+				}
+
 				// Extract the update zip
 				var fz = new FastZip();
 				fz.CreateEmptyDirectories = true;
