@@ -80,6 +80,12 @@ namespace Assembly.Windows
 
 			ProcessCommandLineArgs(Environment.GetCommandLineArgs());
 
+			if (!App.AssemblyStorage.AssemblySettings.ShownCheatingDialog)
+			{
+				ShowCheatingDialog();
+				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
+			}
+
 			if (App.AssemblyStorage.AssemblySettings.ApplicationUpdateOnStartup)
 				await CheckForUpdates();
 		}
@@ -240,15 +246,6 @@ namespace Assembly.Windows
 		private void menuCloseApplication_Click(object sender, RoutedEventArgs e)
 		{
 			Application.Current.Shutdown();
-		}
-
-		private void Home_OnContentRendered(object sender, EventArgs e)
-		{
-			if (!App.AssemblyStorage.AssemblySettings.ShownCheatingDialog)
-			{
-				ShowCheatingDialog();
-				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
-			}
 		}
 
 		private void ShowCheatingDialog()
