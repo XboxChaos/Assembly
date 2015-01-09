@@ -167,6 +167,7 @@ namespace Assembly.Helpers
 		private string _xdkScreenshotPath = "";
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
+		private bool _shownCheatingDialog = false;
 
 		#region Enums
 
@@ -654,6 +655,14 @@ namespace Assembly.Helpers
 		{
 			get { return _updateChannel; }
 			set { SetField(ref _updateChannel, value, "UpdateChannel"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool ShownCheatingDialog
+		{
+			get { return _shownCheatingDialog; }
+			set { SetField(ref _shownCheatingDialog, value, "ShownCheatingDialog"); }
 		}
 
 		/// <summary>

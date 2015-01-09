@@ -242,12 +242,22 @@ namespace Assembly.Windows
 			Application.Current.Shutdown();
 		}
 
-		#region Waste of Space, idk man
-
-		private void Home_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void Home_OnContentRendered(object sender, EventArgs e)
 		{
-			//var app = (App)Application.Current;
+			if (!App.AssemblyStorage.AssemblySettings.ShownCheatingDialog)
+			{
+				ShowCheatingDialog();
+				App.AssemblyStorage.AssemblySettings.ShownCheatingDialog = true;
+			}
 		}
+
+		private void ShowCheatingDialog()
+		{
+			MetroMessageBox.Show("Assembly",
+				"Assembly is not a cheating tool. While you will never be prevented from using it to give yourself an unfair advantage on Xbox Live, do not expect to receive help if you ask how to do so. Discussion of cheating on Xbox Chaos will immediately result in a permanent ban from the website.\n\nThis dialog will only show once.");
+		}
+
+		#region Waste of Space, idk man
 
 		private void Home_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
@@ -919,6 +929,5 @@ namespace Assembly.Windows
 		}
 
 		#endregion
-
 	}
 }
