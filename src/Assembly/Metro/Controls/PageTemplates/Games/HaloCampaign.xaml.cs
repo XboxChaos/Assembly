@@ -208,6 +208,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private PureBLF _blf;
 		private Campaign _campaign;
+		private Campaign _campaignNew;
 		private bool _startEditing;
 		private int _oldLanguage = -1;
 
@@ -322,7 +323,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		// Update Campaign file
 		private void btnUpdate_Click(object sender, RoutedEventArgs e)
 		{
-			_campaign = new Campaign(_blfLocation);
+			_campaignNew = new Campaign(_blfLocation);
 			
 			// Update Current Map Name/Descrption Language Selection
 			_campaign.HaloCampaign.MapNames[cbLanguages.SelectedIndex] = txtMapName.Text;
@@ -337,9 +338,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Update Unlock Bytes
 			UpdateUnlockBytes();
 
+			// Copy changes to new file
+			_campaignNew.HaloCampaign = _campaign.HaloCampaign;
+
 			// Write all changes to file
-			_campaign.UpdateCampaign();
-			Close();
+			_campaignNew.UpdateCampaign();
+			_campaign.Close();
+			_campaignNew.Close();
 			MetroMessageBox.Show("Save Successful", "Your Campaign has been saved.");
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
