@@ -68,6 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private PureBLF _blf;
 		private MapInfo _mapInfo;
+		private MapInfo _mapInfoNew;
 		private bool _startEditing;
 		private int _oldLanguage = -1;
 		private int _oldInsertionLanguage = -1;
@@ -316,7 +317,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			var errorStrings = new List<string>();
 
-			_mapInfo = new MapInfo(_blfLocation, App.AssemblyStorage.AssemblySettings.DefaultMapInfoDatabase);
+			//Reopen as new file
+			_mapInfoNew = new MapInfo(_blfLocation, App.AssemblyStorage.AssemblySettings.DefaultMapInfoDatabase);
 			if (IsTextBoxValid(txtMapID))
 				errorStrings.Add("Map ID");
 			if (IsTextBoxValid(txtZoneIndex))
@@ -387,9 +389,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Update Insertion Points
 			UpdateInsertionPoints();
 
+			// Copy changes to new file
+			_mapInfoNew.MapInformation = _mapInfo.MapInformation;
+
 			// Write all changes to file
-			_mapInfo.UpdateMapInfo();
-			Close();
+			_mapInfoNew.UpdateMapInfo();
+			_mapInfo.Close();
+			_mapInfoNew.Close();
 			MetroMessageBox.Show("Save Successful", "Your MapInfo has been saved.");
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
@@ -421,7 +427,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (cbInsertVisible.IsChecked != null)
 				_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsVisible = (bool)(cbInsertVisible.IsChecked);
 			if (cbInsertUsed.IsChecked != null)
-				_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsUsed = (cbInsertUsed.IsChecked == false);
+				_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].IsUsed = (bool)(cbInsertUsed.IsChecked);
 			_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].CheckpointNames[cbInsertLanguages.SelectedIndex] = txtInsertName.Text;
 			_mapInfo.MapInformation.MapCheckpoints[cbInsertIndex.SelectedIndex].CheckpointDescriptions[cbInsertLanguages.SelectedIndex] = txtInsertDesc.Text;
 
