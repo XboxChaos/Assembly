@@ -285,6 +285,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			try
 			{
 				_campaign.Close();
+				_campaignNew.Close();
 			}
 			catch
 			{
@@ -343,8 +344,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Write all changes to file
 			_campaignNew.UpdateCampaign();
-			_campaign.Close();
-			_campaignNew.Close();
+			Close();
 			MetroMessageBox.Show("Save Successful", "Your Campaign has been saved.");
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}

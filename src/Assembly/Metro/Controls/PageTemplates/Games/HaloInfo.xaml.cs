@@ -115,6 +115,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			try
 			{
 				_mapInfo.Close();
+				_mapInfoNew.Close();
 			}
 			catch
 			{
@@ -306,7 +307,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_mapInfo.Engine.InsertionZoneType != ZoneType.Index)
 				txtZoneIndex.Visibility = Visibility.Collapsed;
 			if (_mapInfo.Engine.InsertionZoneType != ZoneType.Name)
+			{
+				lblZoneName.Text = "Zone Index:";
 				txtZoneName.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		#endregion
@@ -394,8 +398,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Write all changes to file
 			_mapInfoNew.UpdateMapInfo();
-			_mapInfo.Close();
-			_mapInfoNew.Close();
+			Close();
 			MetroMessageBox.Show("Save Successful", "Your MapInfo has been saved.");
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
 		}
