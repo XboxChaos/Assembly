@@ -5,37 +5,50 @@
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Port from chdt</revision>
 	</revisions>
+	<comment title="Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD</comment>
 	<reflexive name="Render Data" offset="0x0" visible="true" entrySize="0x78">
-		<bitfield8 name="Flags" offset="0x0" visible="true">
-			<bit name="Enabled" index="0" />
-			<bit name="Apply Alpha Function" index="1" />
-			<bit name="Apply Color Change Function" index="2" />
-			<bit name="Apply Meter Function" index="3" />
-			<bit name="Apply Emblem Function" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-		</bitfield8>
+		<enum8 name="Shader Index" offset="0x0" visible="true">
+			<option name="Cheap" value="0x0" />
+			<option name="Meter" value="0x1" />
+			<option name="Text Simple" value="0x2" />
+			<option name="Meter Shield" value="0x3" />
+			<option name="Meter Gradient" value="0x4" />
+			<option name="Crosshair" value="0x5" />
+			<option name="Directional Damage" value="0x6" />
+			<option name="Solid" value="0x7" />
+			<option name="Sensor" value="0x8" />
+			<option name="Meter Single Color" value="0x9" />
+			<option name="Navpoint" value="0xA" />
+			<option name="Medal" value="0xB" />
+			<option name="Texture Cam" value="0xC" />
+			<option name="Meter Chapter" value="0xD" />
+			<option name="Meter Double Gradient" value="0xE" />
+			<option name="Meter Radial Gradient" value="0xF" />
+			<option name="Turbulence" value="0x10" />
+			<option name="Emblem" value="0x11" />
+			<option name="Directional Damage Apply" value="0x12" />
+			<option name="Damage Tracker" value="0x13" />
+		</enum8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int8 name="Unknown" offset="0x2" visible="false" />
 		<int8 name="Unknown" offset="0x3" visible="false" />
-		<float32 name="Local Color Alpha 0" offset="0x4" visible="true" />
-		<Colorf name="Local Color 0" offset="0x8" format="rgb" visible="true" />
-		<float32 name="Local Color Alpha 1" offset="0x14" visible="true" />
-		<Colorf name="Local Color 1" offset="0x18" format="rgb" visible="true" />
-		<float32 name="Local Color Alpha 2" offset="0x24" visible="true" />
-		<Colorf name="Local Color 2" offset="0x28" format="rgb" visible="true" />
-		<float32 name="Local Color Alpha 3" offset="0x34" visible="true" />
-		<Colorf name="Local Color 3" offset="0x38" format="rgb" visible="true" />
-		<float32 name="Function Value 1" offset="0x44" visible="true" />
-		<float32 name="Function Value 2" offset="0x48" visible="true" />
-		<float32 name="Function Value 3" offset="0x4C" visible="true" />
-		<float32 name="Function Value 4" offset="0x50" visible="true" />
-		<enum16 name="Color 1" offset="0x54" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<float32 name="Local Color Alpha a" offset="0x4" visible="true" />
+		<Colorf name="Local Color a" offset="0x8" format="rgb" visible="true" />
+		<float32 name="Local Color Alpha b" offset="0x14" visible="true" />
+		<Colorf name="Local Color b" offset="0x18" format="rgb" visible="true" />
+		<float32 name="Local Color Alpha c" offset="0x24" visible="true" />
+		<Colorf name="Local Color c" offset="0x28" format="rgb" visible="true" />
+		<float32 name="Local Color Alpha d" offset="0x34" visible="true" />
+		<Colorf name="Local Color d" offset="0x38" format="rgb" visible="true" />
+		<float32 name="Local Scalar a" offset="0x44" visible="true" />
+		<float32 name="Local Scalar b" offset="0x48" visible="true" />
+		<float32 name="Local Scalar c" offset="0x4C" visible="true" />
+		<float32 name="Local Scalar d" offset="0x50" visible="true" />
+		<enum16 name="Output Color a" offset="0x54" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -94,11 +107,11 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Color 2" offset="0x56" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<enum16 name="Output Color b" offset="0x56" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -157,11 +170,11 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Color 3" offset="0x58" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<enum16 name="Output Color c" offset="0x58" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -220,11 +233,11 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Color 4" offset="0x5A" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<enum16 name="Output Color d" offset="0x5A" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -283,11 +296,11 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Color 5" offset="0x5C" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<enum16 name="Output Color e" offset="0x5C" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -346,11 +359,11 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Color 6" offset="0x5E" visible="true">
-			<option name="Local 0" value="0x0" />
-			<option name="Local 1" value="0x1" />
-			<option name="Local 2" value="0x2" />
-			<option name="Local 3" value="0x3" />
+		<enum16 name="Output Color f" offset="0x5E" visible="true">
+			<option name="Local a" value="0x0" />
+			<option name="Local b" value="0x1" />
+			<option name="Local c" value="0x2" />
+			<option name="Local d" value="0x3" />
 			<option name="Unknown 4" value="0x4" />
 			<option name="Unknown 5" value="0x5" />
 			<option name="Scoreboard Friendly" value="0x6" />
@@ -409,7 +422,7 @@
 			<option name="Global Dynamic 41" value="0x3B" />
 			<option name="Global Dynamic 42" value="0x3C" />
 		</enum16>
-		<enum16 name="Modifier 1" offset="0x60" visible="true">
+		<enum16 name="Output Scalar a" offset="0x60" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
@@ -421,7 +434,7 @@
 			<option name="Unknown 8" value="0x8" />
 			<option name="Unknown 9" value="0x9" />
 		</enum16>
-		<enum16 name="Modifier 2" offset="0x62" visible="true">
+		<enum16 name="Output Scalar b" offset="0x62" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
@@ -433,7 +446,7 @@
 			<option name="Unknown 8" value="0x8" />
 			<option name="Unknown 9" value="0x9" />
 		</enum16>
-		<enum16 name="Modifier 3" offset="0x64" visible="true">
+		<enum16 name="Output Scalar c" offset="0x64" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
@@ -445,7 +458,7 @@
 			<option name="Unknown 8" value="0x8" />
 			<option name="Unknown 9" value="0x9" />
 		</enum16>
-		<enum16 name="Modifier 4" offset="0x66" visible="true">
+		<enum16 name="Output Scalar d" offset="0x66" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
@@ -457,7 +470,7 @@
 			<option name="Unknown 8" value="0x8" />
 			<option name="Unknown 9" value="0x9" />
 		</enum16>
-		<enum16 name="Modifier 5" offset="0x68" visible="true">
+		<enum16 name="Output Scalar e" offset="0x68" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
@@ -469,7 +482,7 @@
 			<option name="Unknown 8" value="0x8" />
 			<option name="Unknown 9" value="0x9" />
 		</enum16>
-		<enum16 name="Modifier 6" offset="0x6A" visible="true">
+		<enum16 name="Output Scalar f" offset="0x6A" visible="true">
 			<option name="Unknown 0" value="0x0" />
 			<option name="Unknown 1" value="0x1" />
 			<option name="Input" value="0x2" />
