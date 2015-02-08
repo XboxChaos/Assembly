@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -28,6 +29,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitBitfield(BitfieldData field)
 		{
 			FilterString(field, field.Name);
+			foreach (var bit in field.Bits)
+			{
+				if (FilterString(field, bit.Name))
+					return;
+			}
 		}
 
 		public void VisitComment(CommentData field)
@@ -38,7 +44,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitEnum(EnumData field)
 		{
-			FilterString(field, field.Name);
+			if (FilterString(field, field.Name))
+				return;
+			foreach (var val in field.Values)
+			{
+				if (FilterString(field, val.Name))
+					return;
+			}
 		}
 
 		public void VisitUint8(Uint8Data field)
@@ -130,8 +142,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitStringID(StringIDData field)
 		{
-			// TODO: Filter StringIDs by value
-			FilterString(field, field.Name);
+			if (!FilterString(field, field.Name))
+				FilterString(field, field.Value);
 		}
 
 		public void VisitRawData(RawData field)
