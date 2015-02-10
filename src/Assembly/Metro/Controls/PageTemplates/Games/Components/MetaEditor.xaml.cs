@@ -113,6 +113,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
+			// Store the current search selection so it can be restored
+			int searchSelectedItem = comboSearchResults.SelectedIndex;
+
 			// Set the stream manager and base offset to use based upon the LoadType
 			IStreamManager streamManager = null;
 			uint baseOffset = 0;
@@ -167,6 +170,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Update Meta Toolbar
 			UpdateMetaButtons(true);
+
+			// Refresh search if needed
+			if (searchSelectedItem != -1)
+			{
+				SearchTimer(null);
+				if (searchSelectedItem <= (comboSearchResults.Items.Count - 1))
+					comboSearchResults.SelectedIndex = searchSelectedItem;
+			}
 		}
 
 		private void RevisionViewer()
