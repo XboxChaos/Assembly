@@ -757,6 +757,11 @@ namespace Assembly.Windows
 					AddCampaignTabModule(file);
 					continue;
 				}
+				if (file.EndsWith(".asmp"))
+				{
+					AddPatchTabModule(file);
+					continue;
+				}
 				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
 			}
 		}
