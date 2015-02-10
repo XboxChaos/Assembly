@@ -164,7 +164,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 					txtCreatePatchblf1.Text = File.Exists(blfClip) ? blfClip : "";
 					txtCreatePatchblf2.Text = File.Exists(blfFilm) ? blfFilm : "";
 					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
-					txtCreatePatchblf4.Text = File.Exists(blfVariant) ? blfVariant : "";
 					break;
 
 				case (int)TargetGame.HaloReach:
@@ -210,17 +209,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			};
 			if (ofd.ShowDialog() == DialogResult.OK)
 				txtCreatePatchblf3.Text = ofd.FileName;
-		}
-
-		private void btnCreatePatchblf4_Click(object sender, RoutedEventArgs e)
-		{
-			var ofd = new OpenFileDialog
-			{
-				Title = "Assembly - Select a Modified BLF Container",
-				Filter = "BLF Containers|*.blf"
-			};
-			if (ofd.ShowDialog() == DialogResult.OK)
-				txtCreatePatchblf4.Text = ofd.FileName;
 		}
 
 		// Meta Sorting
@@ -287,11 +275,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 			PatchCreationExtras.Visibility = Visibility.Visible;
 
 			// Hide/Show fields
+			if (cboxCreatePatchTargetGame.SelectedIndex == (int)TargetGame.Halo3ODST)
+				PatchCreationBlfOption1.Visibility = Visibility.Collapsed;
+			else
+				PatchCreationBlfOption1.Visibility = Visibility.Visible;
+
 			PatchCreationBlfOption0.Visibility =
-				PatchCreationBlfOption1.Visibility =
-					PatchCreationBlfOption2.Visibility =
-						PatchCreationBlfOption3.Visibility =
-							PatchCreationBlfOption4.Visibility = Visibility.Visible;
+				PatchCreationBlfOption2.Visibility =
+					PatchCreationBlfOption3.Visibility = Visibility.Visible;
 
 			// Re-name fields
 			lblCreatePatchTitleblf1.Text = "Modified blf_clip:";
@@ -299,7 +290,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			lblCreatePatchTitleblf2.Text = "Modified blf_film:";
 			lblCreatePatchTitleblf2.Tag = "blf_film";
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
-			lblCreatePatchTitleblf4.Text = "Modified blf_variant:";
 
 			// Reset fields
 			txtCreatePatchMapInfo.Text = "";
@@ -307,7 +297,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
-			txtCreatePatchblf4.Text = "";
 		}
 
 		private void PrepHaloReach()
@@ -319,8 +308,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 			PatchCreationBlfOption0.Visibility =
 				PatchCreationBlfOption3.Visibility = Visibility.Visible;
 			PatchCreationBlfOption1.Visibility =
-				PatchCreationBlfOption2.Visibility =
-					PatchCreationBlfOption4.Visibility = Visibility.Collapsed;
+				PatchCreationBlfOption2.Visibility = Visibility.Collapsed;
 
 			// Re-name fields
 			lblCreatePatchTitleblf3.Text = "Modified blf_sm:";
@@ -332,7 +320,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
-			txtCreatePatchblf4.Text = "";
 		}
 
 		private void PrepHalo4()
@@ -345,7 +332,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 				PatchCreationBlfOption3.Visibility =
 					PatchCreationBlfOption1.Visibility =
 						PatchCreationBlfOption2.Visibility = Visibility.Visible;
-			PatchCreationBlfOption4.Visibility = Visibility.Collapsed;
 
 			// Re-name fields
 			lblCreatePatchTitleblf1.Text = "Modified blf_card:";
@@ -360,7 +346,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchblf1.Text = "";
 			txtCreatePatchblf2.Text = "";
 			txtCreatePatchblf3.Text = "";
-			txtCreatePatchblf4.Text = "";
 		}
 
 		// Utilities
@@ -497,12 +482,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 							patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name,
 								File.ReadAllBytes(blfFileInfo.FullName)));
 						}
-						if (PatchCreationBlfOption4.Visibility == Visibility.Visible && cbHasblf4.IsChecked == true)
-							{
-								blfFileInfo = new FileInfo(txtCreatePatchblf4.Text);
-								patch.CustomBlfContent.BlfContainerEntries.Add(new BlfContainerEntry(blfFileInfo.Name,
-									File.ReadAllBytes(blfFileInfo.FullName)));
-							}
 
 						#endregion
 					}
