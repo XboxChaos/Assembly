@@ -71,11 +71,17 @@ namespace Blamite.Patching
 				output.Screenshot = reader.ReadBlock(screenshotLength);
 
 			// Version 1
-			if (version == 1)
+			if (version >= 1)
 			{
 				output.MetaPokeBase = reader.ReadUInt32();
 				output.MetaChangesIndex = reader.ReadSByte();
 			}
+
+			// Version 2
+			if (version >= 2)
+				output.OutputName = reader.ReadAscii();
+			else
+				output.OutputName = "";
 		}
 
 		private static void ReadSegmentChanges(IReader reader, Patch output)

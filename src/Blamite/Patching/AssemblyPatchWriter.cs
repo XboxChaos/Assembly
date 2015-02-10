@@ -31,7 +31,7 @@ namespace Blamite.Patching
 
 		private static void WritePatchInfo(Patch patch, ContainerWriter container, IWriter writer)
 		{
-			container.StartBlock("titl", 1); // Version 1
+			container.StartBlock("titl", 2); // Version 2
 
 			// Write target map info
 			writer.WriteInt32(patch.MapID);
@@ -59,6 +59,12 @@ namespace Blamite.Patching
 			// Write meta info
 			writer.WriteUInt32(patch.MetaPokeBase);
 			writer.WriteSByte((sbyte) patch.MetaChangesIndex);
+
+			// Write output name
+			if (patch.OutputName != null)
+				writer.WriteAscii(patch.OutputName);
+			else
+				writer.WriteByte(0);
 
 			container.EndBlock();
 		}

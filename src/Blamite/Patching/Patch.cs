@@ -24,6 +24,11 @@ namespace Blamite.Patching
 		public string MapInternalName { get; set; }
 
 		/// <summary>
+		///     The desired name of the output .map file when the patch is applied. Can be null.
+		/// </summary>
+		public string OutputName { get; set; }
+
+		/// <summary>
 		///     The name of the patch.
 		/// </summary>
 		public string Name { get; set; }

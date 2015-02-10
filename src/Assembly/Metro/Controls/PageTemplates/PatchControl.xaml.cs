@@ -73,6 +73,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				return;
 
 			txtCreatePatchModifiedMap.Text = ofd.FileName;
+			txtCreatePatchOutputName.Text = Path.GetFileNameWithoutExtension(ofd.FileName);
 
 			var fileStream = new FileStream(ofd.FileName, FileMode.Open);
 			var cacheStream = new EndianStream(fileStream, Endian.BigEndian);
@@ -160,8 +161,12 @@ namespace Assembly.Metro.Controls.PageTemplates
 			switch (cboxCreatePatchTargetGame.SelectedIndex)
 			{
 				case (int)TargetGame.Halo3:
-				case (int)TargetGame.Halo3ODST:
 					txtCreatePatchblf1.Text = File.Exists(blfClip) ? blfClip : "";
+					txtCreatePatchblf2.Text = File.Exists(blfFilm) ? blfFilm : "";
+					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
+					break;
+
+				case (int)TargetGame.Halo3ODST:
 					txtCreatePatchblf2.Text = File.Exists(blfFilm) ? blfFilm : "";
 					txtCreatePatchblf3.Text = File.Exists(blfSmall) ? blfSmall : "";
 					break;
@@ -423,6 +428,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				string author = txtCreatePatchContentAuthor.Text;
 				string desc = txtCreatePatchContentDescription.Text;
 				string name = txtCreatePatchContentName.Text;
+				string outputName = txtCreatePatchOutputName.Text;
 
 				// Make dat patch
 				var patch = new Patch
@@ -430,6 +436,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 					Author = author,
 					Description = desc,
 					Name = name,
+					OutputName = outputName,
 					Screenshot = String.IsNullOrEmpty(previewImage)
 						? null
 						: File.ReadAllBytes(previewImage)
@@ -545,6 +552,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			var sfd = new SaveFileDialog
 			{
+				FileName = currentPatch.OutputName,
 				Title = "Assembly - Save Modded Map",
 				Filter = "Blam Cache Files|*.map"
 			};
@@ -650,6 +658,19 @@ namespace Assembly.Metro.Controls.PageTemplates
 				// Check the user isn't completly retarded
 				if (!CheckAllApplyMandatoryFields() || currentPatch == null)
 					return;
+
+				// Check the output name
+				if (currentPatch.OutputName != "")
+					if (Path.GetFileNameWithoutExtension(txtApplyPatchOutputMap.Text) != currentPatch.OutputName)
+						if (MetroMessageBox.Show("Warning",
+							"This patch suggests to use the filename \"" + currentPatch.OutputName +
+							".map\" to save this map. This filename may be required in order for the map to work correctly.\r\n\r\nAre you sure you want to save this map as \"" +
+							Path.GetFileName(txtApplyPatchOutputMap.Text) + "\"?",
+							MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
+						{
+							Close();
+							return;
+						}
 
 				// Paths
 				string unmoddedMapPath = txtApplyPatchUnmodifiedMap.Text;
