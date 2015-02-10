@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Resources;
 using System.Windows.Threading;
 using Assembly.Helpers;
 using Assembly.Helpers.Native;
@@ -131,24 +132,9 @@ namespace Assembly.Windows
 		}
 
 		// File
-		private void menuOpenCacheFile_Click(object sender, RoutedEventArgs e)
+		private void menuOpenFile_Click(object sender, RoutedEventArgs e)
 		{
-			OpenContentFile(ContentTypes.Map);
-		}
-
-		private void menuOpenCacheInfomation_Click(object sender, RoutedEventArgs e)
-		{
-			OpenContentFile(ContentTypes.MapInfo);
-		}
-
-		private void menuOpenCacheImage_Click(object sender, RoutedEventArgs e)
-		{
-			OpenContentFile(ContentTypes.MapImage);
-		}
-
-		private void menuOpenCampaign_Click(object sender, RoutedEventArgs e)
-		{
-			OpenContentFile(ContentTypes.Campaign);
+			OpenContentFile();
 		}
 
 		// Edit
@@ -403,84 +389,46 @@ namespace Assembly.Windows
 
 		#region Content Management
 
-		public enum ContentTypes
-		{
-			Map,
-			MapInfo,
-			MapImage,
-			Campaign
-		}
+		private delegate void ContentFileHandler(Home home, string path);
 
-		private readonly Dictionary<ContentTypes, ContentFileHandler> _contentFileHandlers = new Dictionary
-			<ContentTypes, ContentFileHandler>
+		private readonly Dictionary<string, ContentFileHandler> _contentFileHandlers = new Dictionary
+			<string, ContentFileHandler>
 		{
-			{
-				ContentTypes.Map, new ContentFileHandler(
-					"Assembly - Open Blam Cache File",
-					"Blam Cache File (*.map)|*.map",
-					(home, file) => home.AddCacheTabModule(file))
-			},
-			{
-				ContentTypes.MapImage, new ContentFileHandler(
-					"Assembly - Open Blam Map Image File",
-					"Blam Map Image File (*.blf)|*.blf",
-					(home, file) => home.AddImageTabModule(file))
-			},
-			{
-				ContentTypes.MapInfo, new ContentFileHandler(
-					"Assembly - Open Blam Map Info File",
-					"Blam Map Info File (*.mapinfo)|*.mapinfo",
-					(home, file) => home.AddInfooTabModule(file))
-			},
-			{
-				ContentTypes.Campaign, new ContentFileHandler(
-					"Assembly - Open Blam Campaign File",
-					"Blam Campaign File (*.campaign)|*.campaign",
-					(home, file) => home.AddCampaignTabModule(file))
-			},
+			{ ".map", (home, path) => home.AddCacheTabModule(path) },
+			{ ".blf", (home, path) => home.AddImageTabModule(path) },
+			{ ".mapinfo", (home, path) => home.AddInfooTabModule(path) },
+			{ ".campaign", (home, path) => home.AddCampaignTabModule(path) },
+			{ ".asmp", (home, path) => home.AddPatchTabModule(path) }
 		};
 
 		/// <summary>
 		///     Open a new Blam Engine File
 		/// </summary>
-		/// <param name="contentType">Type of content to open</param>
-		public void OpenContentFile(ContentTypes contentType)
+		public void OpenContentFile()
 		{
-			ContentFileHandler handler;
-			if (!_contentFileHandlers.TryGetValue(contentType, out handler)) return;
-
+			var filter = "Blam Files|" + _contentFileHandlers.Keys.Select(e => "*" + e).Aggregate((f, n) => f + ";" + n);
 			var ofd = new OpenFileDialog
 			{
-				Title = handler.Title,
-				Filter = handler.Filter,
-				Multiselect = handler.AllowMultipleFiles,
+				Title = "Assembly - Open File",
+				Multiselect = true,
+				Filter = filter
 			};
 
 			if (!(bool) ofd.ShowDialog(this)) return;
 
-			if (handler.AllowMultipleFiles)
-				foreach (string file in ofd.FileNames)
-					handler.FileHandler(this, file);
-			else
-				handler.FileHandler(this, ofd.FileName);
-		}
-
-		private class ContentFileHandler
-		{
-			public readonly Action<Home, string> FileHandler;
-
-			public ContentFileHandler(string title, string filter, Action<Home, string> handler, bool allowMultipleFiles = true)
+			foreach (string file in ofd.FileNames)
 			{
-				Title = title;
-				Filter = filter;
-				AllowMultipleFiles = allowMultipleFiles;
-				FileHandler = handler;
+				var extension = (Path.GetExtension(file) ?? "").ToLowerInvariant();
+				ContentFileHandler handler;
+				if (!_contentFileHandlers.TryGetValue(extension, out handler))
+				{
+					MetroMessageBox.Show("Assembly - Unsupported File Type",
+						"\"" + file + "\" cannot be opened because its extension is not recognized.");
+					continue;
+				}
+				handler(this, file);
 			}
-
-			public string Title { get; private set; }
-			public string Filter { get; private set; }
-			public bool AllowMultipleFiles { get; private set; }
-		};
+		}
 
 		#endregion
 

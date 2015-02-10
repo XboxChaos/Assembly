@@ -138,28 +138,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		#endregion
 
-		#region Open Types of Cache Files
-
-		private void btnOpenCacheFile_Click(object sender, RoutedEventArgs e)
+		private void BtnOpenFile_OnClick(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.Map);
+			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile();
 		}
 
-		private void btnOpenCacheInfo_Click(object sender, RoutedEventArgs e)
+		private void BtnPatcher_OnClick(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.MapInfo);
+			App.AssemblyStorage.AssemblySettings.HomeWindow.AddPatchTabModule();
 		}
-
-		private void btnOpenCacheImag_Click(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.MapImage);
-		}
-
-		private void btnOpenCampaign_Click(object sender, RoutedEventArgs e)
-		{
-			App.AssemblyStorage.AssemblySettings.HomeWindow.OpenContentFile(Home.ContentTypes.Campaign);
-		}
-
-		#endregion
 	}
 }
