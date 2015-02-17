@@ -335,6 +335,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (_cacheFile.Resources == null)
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
+			// Hide import/save name buttons if the cache file isn't thirdgen
+			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+				Dispatcher.Invoke(new Action(() => panelTagButtons.Visibility = Visibility.Collapsed));
+
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
 			_allTags = BuildTagHierarchy(
 				c => c.Children.Count > 0,
@@ -997,6 +1001,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
 		}
 
+		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			var tagContext = sender as ContextMenu;
+
+			// Check if we need to hide stuff because the cache isn't thirdgen
+			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+				foreach (object tagItem in tagContext.Items)
+				{
+					// Check for particular names/objects to hide because datatemplate
+					if (tagItem is MenuItem)
+					{
+						MenuItem tagMenuItem = tagItem as MenuItem;
+						if (tagMenuItem.Name == "itemRename" ||
+							tagMenuItem.Name == "itemDuplicate" ||
+							tagMenuItem.Name == "itemExtract" ||
+							tagMenuItem.Name == "itemExtractNoRaw")
+							tagMenuItem.Visibility = Visibility.Collapsed;
+					}
+					if (tagItem is Separator)
+					{
+						Separator tagMenuItem = tagItem as Separator;
+						if (tagMenuItem.Name == "sepTopBookmark")
+							tagMenuItem.Visibility = Visibility.Collapsed;
+					}
+				}
+		}
+
 		#region Tag List
 
 		public static RoutedCommand ViewValueAsCommand = new RoutedCommand();
@@ -1559,5 +1590,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			public string Title { get; set; }
 			public object Data { get; set; }
 		}
+
 	}
 }

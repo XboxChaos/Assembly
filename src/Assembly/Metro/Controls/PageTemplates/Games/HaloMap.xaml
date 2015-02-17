@@ -175,12 +175,12 @@
 													</ContextMenu.CommandBindings>
 													<MenuItem Header="Bookmark Tag" Foreground="White" Command="{x:Static DataBind:HaloMap.CommandTagBookmarking}" CommandParameter="{Binding}" />
 												</ContextMenu>-->
-														<ContextMenu>
-															<MenuItem Header="Rename..." Click="contextRename_Click" />
-                                                            <MenuItem Header="Duplicate..." Click="contextDuplicate_Click" />
-															<MenuItem Header="Extract... (With Raw)" Click="contextExtract_Click" />
-															<MenuItem Header="Extract... (Without Raw)" Click="contextExtractClassic_Click" />
-															<Separator />
+														<ContextMenu IsVisibleChanged="TagContextMenu_IsVisibleChanged">
+															<MenuItem Name="itemRename" Header="Rename..." Click="contextRename_Click" />
+															<MenuItem Name="itemDuplicate" Header="Duplicate..." Click="contextDuplicate_Click" />
+															<MenuItem Name="itemExtract" Header="Extract... (With Raw)" Click="contextExtract_Click" />
+															<MenuItem Name="itemExtractNoRaw" Header="Extract... (Without Raw)" Click="contextExtractClassic_Click" />
+															<Separator Name="sepTopBookmark"/>
 															<MenuItem x:Name="contextmenuBookmark" Header="Add/Remove Bookmark" Foreground="White"
 															          Click="contextBookmark_Click" />
 															<Separator />
@@ -201,7 +201,7 @@
 											</Style>
 										</MetroTreeView:MetroTreeView.ItemContainerStyle>
 									</MetroTreeView:MetroTreeView>
-									<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" DockPanel.Dock="Top">
+									<StackPanel x:Name="panelTagButtons" Orientation="Horizontal" VerticalAlignment="Bottom" DockPanel.Dock="Top">
 										<Button x:Name="btnImport" Content="Import..." Width="72" Click="btnImport_Click" />
 										<Button Content="Save Tag Names" Width="120" Margin="5,0,0,0" Click="btnSaveNames_Click" />
 									</StackPanel>
