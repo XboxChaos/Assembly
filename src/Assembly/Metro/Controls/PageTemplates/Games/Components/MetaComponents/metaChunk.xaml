@@ -110,14 +110,21 @@
 		</Border.Style>
 		<Grid>
 			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="20" />
-				</Grid.ColumnDefinitions>
-				<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-					IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
-				<ToggleButton x:Name="infoToggle" Grid.Column="2" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
+                <Button Grid.Column="2" Content="+" Margin="4,0,0,0" VerticalAlignment="Top"
+                        Command="{x:Static local:MetaChunk.ReallocateCommand}" CommandTarget="{Binding ElementName=metaChunk}">
+                    <Button.ToolTip>
+                        <TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
+                    </Button.ToolTip>
+                </Button>
+                <ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
 					<!--Tooltips inheriting text styles is dumb -->
 					<ToggleButton.ToolTip>
 						<TextBlock Text="Show/Hide Information" FontStyle="Normal" />
@@ -158,15 +165,12 @@
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
 								<Label Content="Address:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
 								       Background="{x:Null}" Foreground="#FF999999" />
-								<TextBox x:Name="txtChunkAddress"
+                                <TextBox x:Name="txtChunkAddress"
 								         Text="{Binding FirstEntryAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80"
 								         Foreground="#FF999999" Padding="0,0,0,0"
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                                <Button Content="Reallocate..." Width="85" Margin="5,0,0,0"
-                                        Command="{x:Static local:MetaChunk.ReallocateCommand}"
-			                            CommandTarget="{Binding ElementName=metaChunk}" />
-							</StackPanel>
+                            </StackPanel>
 
 							<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
 								<Label Content="Entry Size:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"

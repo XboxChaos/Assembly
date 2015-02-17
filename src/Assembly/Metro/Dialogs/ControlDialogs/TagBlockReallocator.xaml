@@ -44,7 +44,7 @@
 
             <StackPanel Grid.Row="1" Margin="33,0,33,6" CanVerticallyScroll="True">
                 <TextBlock x:Name="lblSubInfo" TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left"
-				           Text="This will allow you to resize the &quot;{0}&quot; block. If necessary, the block will be moved to another section of the file, and the file will be expanded to ensure that it fits. Any data left over from the old block will become invalid." FontFamily="{DynamicResource MetroFontRegular}" />
+				           Text="This will allow you to resize the &quot;{0}&quot; block without overwriting any data which is in use. If necessary, the block will be moved to another section of the file, and the file may be expanded to ensure that the block fits. Any data left over from the old block will become invalid." FontFamily="{DynamicResource MetroFontRegular}" />
                 <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left" Margin="0,10,0,0"
                            Text="It is highly recommended to create a backup of the file before proceeding."/>
 
@@ -58,19 +58,24 @@
                         <RowDefinition Height="*" SharedSizeGroup="row" />
                         <RowDefinition Height="*" SharedSizeGroup="row" />
                         <RowDefinition Height="*" SharedSizeGroup="row" />
+                        <RowDefinition Height="*" SharedSizeGroup="row" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Original Address:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Old Address:" Foreground="White" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="0" Grid.Column="1" x:Name="lblOriginalAddress" Text="0xDEADBEEF" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Size of Each Entry:" Foreground="White" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblEntrySize" Text="0x10" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Old Entry Count:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblOriginalCount" Text="10" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="New Entry Count:" Foreground="White" VerticalAlignment="Center" />
                     <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBox x:Name="txtNewCount" Margin="10,2,0,2" Width="100" VerticalAlignment="Center" TextChanged="TxtNewCount_OnTextChanged" />
-                        <Button x:Name="btnMinus" Content="-" Margin="5,0,0,0" Width="20" Click="BtnMinus_OnClick"/>
                         <Button x:Name="btnPlus" Content="+" Margin="5,0,0,0" Width="20" Click="BtnPlus_OnClick"/>
+                        <Button x:Name="btnMinus" Content="-" Margin="5,0,0,0" Width="20" Click="BtnMinus_OnClick"/>
+                        <Button x:Name="btnZero" Content="0" Margin="5,0,0,0" Width="20" Click="BtnZero_OnClick"/>
+                        <Button x:Name="btnAddMore" Content="Quick Add..." Margin="5,0,0,0" Width="80" Click="BtnAddMore_OnClick" />
                     </StackPanel>
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Total Size:" Foreground="White" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="lblNewSize" Text="0x10" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Size of Each Entry:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="lblEntrySize" Text="0x10" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Total Size:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="lblNewSize" Text="0x100" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
                 </Grid>
 
             </StackPanel>
@@ -78,7 +83,7 @@
             <Grid Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
 			            VerticalAlignment="Bottom">
-                <Button x:Name="btnContinue" Padding="10,0,10,0" Margin="10,0,10,0" Click="BtnContinue_OnClick">Reallocate</Button>
+                <Button x:Name="btnContinue" Padding="10,0,10,0" Margin="10,0,10,0" Click="BtnContinue_OnClick" IsEnabled="False">Reallocate</Button>
                 <Button x:Name="btnCancel" Padding="10,0,10,0" Margin="0" Click="BtnCancel_OnClick">Cancel</Button>
             </StackPanel>
         </Grid>
