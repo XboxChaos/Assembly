@@ -306,7 +306,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			uint pointer = values.GetInteger("pointer");
 
 			// Make sure the pointer looks valid
-			if (length <= 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
+			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
 			{
 				length = 0;
 				pointer = 0;
