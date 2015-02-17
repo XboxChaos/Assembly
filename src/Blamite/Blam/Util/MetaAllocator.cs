@@ -71,20 +71,67 @@ namespace Blamite.Blam.Util
 		}
 
 		/// <summary>
-		///     Reallocates a block of memory in the cache file's meta area.
-		///     The contents of the old block will be copied to the new block and then zeroed.
+		/// Reallocates a block of memory in the cache file's meta area.
+		/// The contents of the old block will be copied to the new block and then the old block will be zeroed.
 		/// </summary>
-		/// <param name="address">The starting address of the data to reallocate.</param>
-		/// <param name="oldSize">The old size of the data to reallocate.</param>
-		/// <param name="newSize">The requested size of the newly-allocated data block.</param>
+		/// <param name="address">The starting address of the data to reallocate. If this is 0, a new block will be allocated.</param>
+		/// <param name="oldSize">The old size of the data to reallocate. If this is 0, a new block will be allocated.</param>
+		/// <param name="newSize">The requested size of the newly-allocated data block. If this is 0, the block will be freed and 0 will be returned.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
-		/// <returns>The memory address of the new block.</returns>
+		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
 		public uint Reallocate(uint address, int oldSize, int newSize, IStream stream)
 		{
-			// Pretty basic for now
-			// In the future, we could make an allocator that's biased toward the old address in order to prevent copying
+			return Reallocate(address, oldSize, newSize, 4, stream);
+		}
+
+		/// <summary>
+		/// Reallocates a block of memory in the cache file's meta area.
+		/// The contents of the old block will be copied to the new block and then the old block will be zeroed.
+		/// </summary>
+		/// <param name="address">The starting address of the data to reallocate. If this is 0, a new block will be allocated.</param>
+		/// <param name="oldSize">The old size of the data to reallocate. If this is 0, a new block will be allocated.</param>
+		/// <param name="newSize">The requested size of the newly-allocated data block. If this is 0, the block will be freed and 0 will be returned.</param>
+		/// <param name="align">The power of two to align the block to.</param>
+		/// <param name="stream">The stream to write cache file changes to.</param>
+		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
+		public uint Reallocate(uint address, int oldSize, int newSize, uint align, IStream stream)
+		{
+			if (newSize == oldSize)
+				return address;
+
+			// If the new size is 0, free the block
+			if (newSize == 0)
+			{
+				Free(address, oldSize);
+				return 0;
+			}
+
+			// If the old size or address is 0, allocate a new block
+			if (address == 0 || oldSize == 0)
+				return Allocate(newSize, align, stream);
+
+			// If the block is being made smaller, just free and zero the data at the end
+			if (newSize < oldSize)
+			{
+				Free(address + (uint)newSize, oldSize - newSize);
+				long offset = _cacheFile.MetaArea.PointerToOffset(address);
+				stream.SeekTo(offset + newSize);
+				StreamUtil.Fill(stream, 0, oldSize - newSize);
+				return address;
+			}
+
+			// If the block is being made larger, check if there's free space immediately after the block that can be used to avoid a copy
+			FreeArea area;
+			if (newSize > oldSize && _freeAreasByAddr.TryGetValue(address + (uint)oldSize, out area) &&
+			    area.Size >= newSize - oldSize)
+			{
+				ChangeStartAddress(area, area.Address + (uint)(newSize - oldSize));
+				return address;
+			}
+
+			// Free the block and allocate a new one
 			Free(address, oldSize);
-			uint newAddress = Allocate(newSize, stream);
+			uint newAddress = Allocate(newSize, align, stream);
 
 			// If the addresses differ, then copy the data across and zero the old data
 			if (newAddress != address)
@@ -275,6 +322,8 @@ namespace Blamite.Blam.Util
 
 			RemoveArea(area);
 			area.Size += sizeDelta;
+			if (area.Size == 0)
+				return;
 			area.Address = newAddress;
 			AddArea(area);
 		}

@@ -254,7 +254,7 @@ namespace Assembly.Helpers.Plugins
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new ReflexiveData(name, offset, 0, entrySize, pluginLine, _metaArea);
+				var data = new ReflexiveData(name, offset, 0, entrySize, align, pluginLine, _metaArea);
 				AddValue(data);
 
 				_reflexives.Add(data);

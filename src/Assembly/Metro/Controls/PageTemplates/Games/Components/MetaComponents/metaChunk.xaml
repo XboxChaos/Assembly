@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
+             xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              mc:Ignorable="d"
              HorizontalAlignment="Stretch"
              x:Name="metaChunk"
@@ -85,7 +86,12 @@
 		</ResourceDictionary>
 	</UserControl.Resources>
 
-	<Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:MetaChunk.ReallocateCommand}"
+                        CanExecute="ReallocateCommand_CanExecute" />
+    </UserControl.CommandBindings>
+
+    <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
 		<Border.Style>
 			<Style TargetType="Border">
 				<Setter Property="BorderThickness" Value="1,1,1,0" />
@@ -157,6 +163,9 @@
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="80"
 								         Foreground="#FF999999" Padding="0,0,0,0"
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                                <Button Content="Reallocate..." Width="85" Margin="5,0,0,0"
+                                        Command="{x:Static local:MetaChunk.ReallocateCommand}"
+			                            CommandTarget="{Binding ElementName=metaChunk}" />
 							</StackPanel>
 
 							<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
