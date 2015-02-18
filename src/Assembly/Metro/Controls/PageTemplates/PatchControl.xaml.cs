@@ -28,6 +28,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			InitializeComponent();
 			ApplyPatchControls.Visibility = Visibility.Collapsed;
+			PokePatchControls.Visibility = Visibility.Collapsed;
+			btnExtractInfo.IsEnabled = false;
 			PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
 		}
 
@@ -588,6 +590,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 								? Visibility.Visible
 								: Visibility.Collapsed;
 						ApplyPatchControls.Visibility = Visibility.Visible;
+						btnExtractInfo.IsEnabled = true;
 					}
 					else
 					{
@@ -599,6 +602,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 						ApplyPatchControls.Visibility = Visibility.Visible;
 						PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
+						btnExtractInfo.IsEnabled = false;
 					}
 				}
 
@@ -730,6 +734,46 @@ namespace Assembly.Metro.Controls.PageTemplates
 			}
 		}
 
+		private void btnExtractInfo_Click(object sender, RoutedEventArgs e)
+		{
+			System.Windows.Clipboard.SetText("Name: " + txtApplyPatchName.Text +
+				"\r\nDescription: " + txtApplyPatchDesc.Text);
+
+			var messageString = "The patch name and description has been copied to the clipboard.";
+
+			if (currentPatch.Screenshot != null)
+				try
+				{
+					var stream = new EndianStream(new MemoryStream(currentPatch.Screenshot), Endian.BigEndian);
+					stream.SeekTo(0x0);
+					ushort imageMagic = stream.ReadUInt16();
+
+					var sfd = new SaveFileDialog();
+					sfd.Title = "Assembly - Save Patch Image";
+
+					switch (imageMagic)
+					{
+						case 0x8950:
+							sfd.Filter = "PNG Image (*.png)|*.png";
+							break;
+						default:
+							sfd.Filter = "JPEG Image (*.jpg)|*.jpg";
+							break;
+					}
+					if (sfd.ShowDialog() == DialogResult.OK)
+					{
+						File.WriteAllBytes(sfd.FileName, currentPatch.Screenshot);
+						messageString += "\r\n\r\nThe patch image has been saved.";
+					}
+				}
+				catch (Exception ex)
+				{
+					messageString += "\r\n\r\nThe patch image could not saved: \n" + ex.Message;
+				}
+
+			MetroMessageBox.Show("Information Extracted!", messageString);
+		}
+
 		#endregion
 
 		#region Patch Convertion Functions
@@ -829,10 +873,13 @@ namespace Assembly.Metro.Controls.PageTemplates
 						txtPokePatchName.Text = currentPatchToPoke.Name;
 						txtPokePatchInternalName.Text = currentPatchToPoke.MapInternalName;
 						//txtPokePatchMapID.Text = currentPatchToPoke.MapID.ToString(CultureInfo.InvariantCulture);
+
+						// Set Visibility
+						PokePatchControls.Visibility = Visibility.Visible;
 					}
 					else
 					{
-						MetroMessageBox.Show("You can't poke a patch from Alteration/Ascention. Convert it to a Assembly Patch first");
+						MetroMessageBox.Show("You can't poke a patch from Alteration/Ascension. Convert it to a Assembly Patch first");
 						return;
 					}
 				}
