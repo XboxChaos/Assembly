@@ -139,6 +139,11 @@ namespace Blamite.Injection
 			{
 				ReadReferences(offset, ReadResourceFixup);
 			}
+			if (lowerName.Contains("global cache shader index"))
+			{
+				ReadReferences(offset, GlobalShaderFixup);
+
+			}
 		}
 
 		public void VisitInt32(string name, uint offset, bool visible, uint pluginLine)
@@ -411,9 +416,45 @@ namespace Blamite.Injection
 		private void ReadShader(DataBlock block, uint offset, ShaderType type)
 		{
 			SeekToOffset(block, offset);
+
+			//Don't bother if the pointer is null.
+			if (_reader.ReadInt32() == 0)
+				return;
+			_reader.Skip(-4);
+
 			var data = _cacheFile.ShaderStreamer.ExportShader(_reader, type);
 			var fixup = new DataBlockShaderFixup((int)offset, data);
 			block.ShaderFixups.Add(fixup);
+		}
+
+		private void GlobalShaderFixup(DataBlock block, uint offset)
+		{
+			SeekToOffset(block, offset);
+			var index = _reader.ReadInt32();
+			var shaderAddr = _reader.ReadUInt32();
+
+			//check if we need to grab the shader
+			if (shaderAddr == 0)
+			{
+				if (index != -1)
+				{
+					//make the index -1 in the datablock
+					for (var i = 0; i < 4; i++)
+						block.Data[offset + i] = 0xFF;
+
+					//Grab the shader from gpix
+					_reader.SeekTo(_cacheFile.Tags.FindTagByClass("gpix").MetaLocation.AsOffset() + 0x14);
+					var gpixBase = _reader.ReadUInt32() - _cacheFile.MetaArea.PointerMask;
+					_reader.SeekTo(gpixBase + (0x58 * index) + 0x54);
+
+					//Make a shader fixup using the gpix shader
+					var data = _cacheFile.ShaderStreamer.ExportShader(_reader, ShaderType.Pixel);
+					var fixup = new DataBlockShaderFixup((int)offset + 4, data);
+					block.ShaderFixups.Add(fixup);
+				}
+			}
+			else
+				return;
 		}
 
 		private LocalizedStringList LoadStringList(int languageIndex, ITag tag)
