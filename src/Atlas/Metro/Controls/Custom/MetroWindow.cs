@@ -49,14 +49,14 @@ namespace Atlas.Metro.Controls.Custom
                 MonitorWorkarea.GetMonitorInfo(monitor, monitorInfo);
                 var rcWorkArea = monitorInfo.rcWork;
                 var rcMonitorArea = monitorInfo.rcMonitor;
-                mmi.ptMaxPosition.x = Math.Abs(rcWorkArea.left - rcMonitorArea.left);
-                mmi.ptMaxPosition.y = Math.Abs(rcWorkArea.top - rcMonitorArea.top);
-                mmi.ptMaxSize.x = Math.Abs(rcWorkArea.right - rcWorkArea.left);
-                mmi.ptMaxSize.y = Math.Abs(rcWorkArea.bottom - rcWorkArea.top);
+                mmi.ptMaxPosition.X = Math.Abs(rcWorkArea.Left - rcMonitorArea.Left);
+                mmi.ptMaxPosition.Y = Math.Abs(rcWorkArea.Top - rcMonitorArea.Top);
+                mmi.ptMaxSize.X = Math.Abs(rcWorkArea.Right - rcWorkArea.Left);
+                mmi.ptMaxSize.Y = Math.Abs(rcWorkArea.Bottom - rcWorkArea.Top);
             }
 
-            mmi.ptMinTrackSize.x = DpiConversion.PointsToPixels(MinWidth, DpiConversion.Direction.Horizontal);
-            mmi.ptMinTrackSize.y = DpiConversion.PointsToPixels(MinHeight, DpiConversion.Direction.Vertical);
+            mmi.ptMinTrackSize.X = DpiConversion.PointsToPixels(MinWidth, DpiConversion.Direction.Horizontal);
+            mmi.ptMinTrackSize.Y = DpiConversion.PointsToPixels(MinHeight, DpiConversion.Direction.Vertical);
 
             Marshal.StructureToPtr(mmi, lParam, true);
         }
