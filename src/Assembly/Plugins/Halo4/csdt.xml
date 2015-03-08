@@ -2,23 +2,39 @@
 <plugin game="Halo4" baseSize="0x70">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+		<revision author="Lord Zedd" version="2">Updating and standardizing</revision>
 	</revisions>
-	<float32 name="Length of Camera Movement (Sec)" offset="0x0" visible="true" />
-	<dataRef name="Camera Move Data" offset="0x4" visible="true" />
-	<float32 name="Camera Recoil" offset="0x18" visible="true" />
-	<float32 name="Camera Movement (Back/Forwards)" offset="0x1C" visible="true" />
-	<float32 name="Camera Fling Amount 1" offset="0x20" visible="true" />
-	<float32 name="Camera Fling Amount 2" offset="0x24" visible="true" />
-	<float32 name="Length of Camera Shake (Sec)" offset="0x28" visible="true" />
-	<dataRef name="Camera Shake Data" offset="0x2C" visible="true" />
-	<float32 name="Camera Vibrate Amount" offset="0x40" visible="true" />
-	<float32 name="Camera Shake Amount" offset="0x44" visible="true" />
-	<float32 name="Unknown" offset="0x48" visible="true" />
-	<float32 name="Delay" offset="0x4C" visible="true" />
-	<int16 name="Unknown" offset="0x50" visible="true" />
-	<int16 name="Unknown" offset="0x52" visible="true" />
+	<comment title="Temporary Camera Impulse" />
+	<float32 name="Duration" offset="0x0" visible="true" />
+	<dataRef name="Fade Function" offset="0x4" visible="true" />
+	<degree name="Rotation" offset="0x18" visible="true" />
+	<float32 name="Pushback" offset="0x1C" visible="true" />
+	<float32 name="Jitter min" offset="0x20" visible="true" />
+	<float32 name="Jitter max" offset="0x24" visible="true" />
+	<comment title="Camera Shaking" />
+	<float32 name="Duration" offset="0x28" visible="true" />
+	<dataRef name="Falloff Function" offset="0x2C" visible="true" />
+	<float32 name="Random Translation" offset="0x40" visible="true" />
+	<degree name="Random Rotation" offset="0x44" visible="true" />
+	<float32 name="Wobble Function Period" offset="0x48" visible="true" />
+	<float32 name="Wobble Weight" offset="0x4C" visible="true" />
+	<enum16 name="Wobble Function" offset="0x50" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<int16 name="Unknown" offset="0x52" visible="false" />
 	<tagRef name="Unknown" offset="0x54" visible="true" />
-	<undefined name="Unknown" offset="0x64" visible="true" />
+	<undefined name="Unknown" offset="0x64" visible="false" />
 	<undefined name="Unknown" offset="0x68" visible="true" />
 	<undefined name="Unknown" offset="0x6C" visible="true" />
 </plugin>

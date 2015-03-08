@@ -4,13 +4,823 @@
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="synth92" version="2">Filled in unknowns</revision>
 	</revisions>
-	<int32 name="Parameter" offset="0x0" visible="true" />
+	<comment title="Parameter Types">(int) means the parameter takes an Integer, (sID) means the parameter takes a StringID, (flt) means the parameter takes a float, (nul) means the parameter is null and cannot be used.
+(clr) means 32-bit ARGB color but is not supported.</comment>
+	<enum32 name="Parameter" offset="0x0" visible="true">
+		<option name="(int) Global-Score" value="0x0" />
+		<option name="(int) Global-Teams" value="0x1" />
+		<option name="(nul) Global-Unknown" value="0x2" />
+		<option name="(nul) Global-Unknown" value="0x3" />
+		<option name="(nul) Global-Unknown" value="0x4" />
+		<option name="(int) Global-Unknown" value="0x5" />
+		<option name="(int) Global-Round Time Limit" value="0x6" />
+		<option name="(int) Global-Unknown" value="0x7" />
+		<option name="(int) Global-Round Count" value="0x8" />
+		<option name="(int) Global-Early Victory Win Count" value="0x9" />
+		<option name="(int) Global-Killcam" value="0xA" />
+		<option name="(int) Global-Points System" value="0xB" />
+		<option name="(int) Global-Final Killcam" value="0xC" />
+		<option name="(int) Global-Sudden Death Duration" value="0xD" />
+		<option name="(nul) Global-Unknown" value="0xE" />
+		<option name="(nul) Global-Unknown" value="0xF" />
+		<option name="(nul) Global-Unknown" value="0x10" />
+		<option name="(nul) Global-Unknown" value="0x11" />
+		<option name="(nul) Global-Unknown" value="0x12" />
+		<option name="(nul) Global-Unknown" value="0x13" />
+		<option name="(int) Global-Respawn Inheritance" value="0x14" />
+		<option name="(int) Global-Respawn With Team" value="0x15" />
+		<option name="(int) Global-Respawn At Location" value="0x16" />
+		<option name="(int) Global-Respawn On Kill" value="0x17" />
+		<option name="(nul) Global-Unknown" value="0x18" />
+		<option name="(int) Global-Lives Per Round" value="0x19" />
+		<option name="(int) Global-Team Lives Per Round" value="0x1A" />
+		<option name="(nul) Global-Maximum Team Lives" value="0x1B" />
+		<option name="(int) Global-Respawn Time" value="0x1C" />
+		<option name="(int) Global-Suicide Penalty" value="0x1D" />
+		<option name="(int) Global-Betrayal Penalty" value="0x1E" />
+		<option name="(int) Global-Respawn Growth" value="0x1F" />
+		<option name="(int) Global-Loadout Selection Time" value="0x20" />
+		<option name="(int) Global-Respawn Traits-Duration" value="0x21" />
+		<option name="(int) Global-Observers" value="0x22" />
+		<option name="(int) Global-Team Changing" value="0x23" />
+		<option name="(int) Global-Friendly Fire" value="0x24" />
+		<option name="(int) Global-Betrayal Booting" value="0x25" />
+		<option name="(int) Global-Enemy Voice" value="0x26" />
+		<option name="(int) Global-Open Channel Voice" value="0x27" />
+		<option name="(int) Global-Dead Player Voice" value="0x28" />
+		<option name="(int) Global-Grenades On Map" value="0x29" />
+		<option name="(int) Global-Equipment On Map" value="0x2A" />
+		<option name="(int) Global-Turrets On Map" value="0x2B" />
+		<option name="(int) Global-Shortcuts On Map" value="0x2C" />
+		<option name="(int) Global-Powerups On Map" value="0x2D" />
+		<option name="(int) Global-Indestructible Vehicles" value="0x2E" />
+		<option name="(sID) Global-Map Weapon Set" value="0x2F" />
+		<option name="(sID) Global-Map Vehicle Set" value="0x30" />
+		<option name="(nul) Global-Unknown" value="0x31" />
+		<option name="(int) Global-Red Traits-Step 1 Duration" value="0x32" />
+		<option name="(int) Global-Blue Traits-Step 1 Duration" value="0x33" />
+		<option name="(int) Global-Green Traits-Step 1 Duration" value="0x34" />
+		<option name="(int) Global-Yellow Traits-Step 1 Duration" value="0x35" />
+		<option name="(int) Global-Red Traits-Step 2 Duration" value="0x36" />
+		<option name="(int) Global-Blue Traits-Step 2 Duration" value="0x37" />
+		<option name="(int) Global-Green Traits-Step 2 Duration" value="0x38" />
+		<option name="(int) Global-Yellow Traits-Step 2 Duration" value="0x39" />
+		<option name="(int) Editor-Open Channel Voice" value="0x3A" />
+		<option name="(int) Editor-Edit Mode" value="0x3B" />
+		<option name="(int) Editor-Respawn Time" value="0x3C" />
+		<option name="(int) Global-AI Traits Template-Vision" value="0x3D" />
+		<option name="(int) Global-AI Traits Template-Hearing" value="0x3E" />
+		<option name="(int) Global-AI Traits Template-Luck" value="0x3F" />
+		<option name="(int) Global-AI Traits Template-Firing" value="0x40" />
+		<option name="(int) Global-AI Traits Template-Throwing" value="0x41" />
+		<option name="(int) Global-AI Traits Template-Equipment Drop" value="0x42" />
+		<option name="(int) Global-AI Traits Template-Assassination Immunity" value="0x43" />
+		<option name="(int) Global-AI Traits Template-Headshot Immunity" value="0x44" />
+		<option name="(int) Global-AI Traits Template-Damage Resistance" value="0x45" />
+		<option name="(int) Global-AI Traits Template-Damage Modifier" value="0x46" />
+		<option name="(int) Survival-Scenario Hazards" value="0x47" />
+		<option name="(int) Survival-Weapon Drops" value="0x48" />
+		<option name="(int) Survival-Ammo Crates" value="0x49" />
+		<option name="(int) Survival-Generators-Loss Condition" value="0x4A" />
+		<option name="(int) Survival-Generators-Random Spawns" value="0x4B" />
+		<option name="(int) Survival-Campaign Difficulty Level" value="0x4C" />
+		<option name="(int) Survival-Wave Limit" value="0x4D" />
+		<option name="(int) Survival-Bonus Lives" value="0x4E" />
+		<option name="(int) Survival-Bonus Target" value="0x4F" />
+		<option name="(int) Survival-Elite Kill Bonus" value="0x50" />
+		<option name="(int) Survival-Extra Life Target" value="0x51" />
+		<option name="(int) Survival-Spartan Lives" value="0x52" />
+		<option name="(int) Survival-Elite Lives" value="0x53" />
+		<option name="(int) Survival-Spartan Maximum Lives" value="0x54" />
+		<option name="(int) Survival-Generators-Count" value="0x55" />
+		<option name="(int) Survival-Elites-Respawn Inheritance" value="0x56" />
+		<option name="(int) Survival-Elites-Respawn With Team" value="0x57" />
+		<option name="(int) Survival-Elites-Respawn At Location" value="0x58" />
+		<option name="(int) Survival-Elites-Respawn On Kill" value="0x59" />
+		<option name="(nul) Survival-Unknown" value="0x5A" />
+		<option name="(int) Survival-Elites-Lives Per Round" value="0x5B" />
+		<option name="(int) Survival-Elites-Team Lives Per Round" value="0x5C" />
+		<option name="(nul) Survival-Elites-Maximum Team Lives" value="0x5D" />
+		<option name="(int) Survival-Elites-Respawn Time" value="0x5E" />
+		<option name="(int) Survival-Elites-Suicide Penalty" value="0x5F" />
+		<option name="(int) Survival-Elites-Betrayal Penalty" value="0x60" />
+		<option name="(int) Survival-Elites-Respawn Growth" value="0x61" />
+		<option name="(int) Survival-Elites-Loadout Selection Time" value="0x62" />
+		<option name="(int) Survival-Elites-Respawn Traits-Duration" value="0x63" />
+		<option name="(int) Survival-AI-Base Traits-Vision" value="0x64" />
+		<option name="(int) Survival-AI-Base Traits-Hearing" value="0x65" />
+		<option name="(int) Survival-AI-Base Traits-Luck" value="0x66" />
+		<option name="(int) Survival-AI-Base Traits-Firing" value="0x67" />
+		<option name="(int) Survival-AI-Base Traits-Throwing" value="0x68" />
+		<option name="(int) Survival-AI-Base Traits-Equipment Drop" value="0x69" />
+		<option name="(int) Survival-AI-Base Traits-Assassination Immunity" value="0x6A" />
+		<option name="(int) Survival-AI-Base Traits-Headshot Immunity" value="0x6B" />
+		<option name="(int) Survival-AI-Base Traits-Damage Resistance" value="0x6C" />
+		<option name="(int) Survival-AI-Base Traits-Damage Modifier" value="0x6D" />
+		<option name="(int) Survival-Round 1-Skulls-Iron" value="0x6E" />
+		<option name="(int) Survival-Round 1-Skulls-Black Eye" value="0x6F" />
+		<option name="(int) Survival-Round 1-Skulls-Tough Luck" value="0x70" />
+		<option name="(int) Survival-Round 1-Skulls-Catch" value="0x71" />
+		<option name="(int) Survival-Round 1-Skulls-Fog" value="0x72" />
+		<option name="(int) Survival-Round 1-Skulls-Famine" value="0x73" />
+		<option name="(int) Survival-Round 1-Skulls-Thunderstorm" value="0x74" />
+		<option name="(int) Survival-Round 1-Skulls-Tilt" value="0x75" />
+		<option name="(int) Survival-Round 1-Skulls-Mythic" value="0x76" />
+		<option name="(int) Survival-Round 1-Skulls-Assassin" value="0x77" />
+		<option name="(int) Survival-Round 1-Skulls-Blind" value="0x78" />
+		<option name="(int) Survival-Round 1-Skulls-Cowbell" value="0x79" />
+		<option name="(int) Survival-Round 1-Skulls-Grunt Birthday" value="0x7A" />
+		<option name="(int) Survival-Round 1-Skulls-IWHBYD" value="0x7B" />
+		<option name="(int) Survival-Round 1-Skulls-Red Custom" value="0x7C" />
+		<option name="(int) Survival-Round 1-Skulls-Blue Custom" value="0x7D" />
+		<option name="(int) Survival-Round 1-Skulls-Yellow Custom" value="0x7E" />
+		<option name="(int) Survival-Round 1-Skulls-Unknown" value="0x7F" />
+		<option name="(int) Survival-Round 1-Initial Squad-Use Dropship" value="0x80" />
+		<option name="(int) Survival-Round 1-Initial Squad-Random Selection" value="0x81" />
+		<option name="(sID) Survival-Round 1-Initial Squad-First Squad" value="0x82" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Second Squad" value="0x83" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Third Squad" value="0x84" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Fourth Squad" value="0x85" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Fifth Squad" value="0x86" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Sixth Squad" value="0x87" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Seventh Squad" value="0x88" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Eighth Squad" value="0x89" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Ninth Squad" value="0x8A" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Tenth Squad" value="0x8B" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Eleventh Squad" value="0x8C" />
+		<option name="(sID) Survival-Round 1-Initial Squad-Twelfth Squad" value="0x8D" />
+		<option name="(int) Survival-Round 1-Main Squad-Use Dropship" value="0x8E" />
+		<option name="(int) Survival-Round 1-Main Squad-Random Selection" value="0x8F" />
+		<option name="(sID) Survival-Round 1-Main Squad-First Squad" value="0x90" />
+		<option name="(sID) Survival-Round 1-Main Squad-Second Squad" value="0x91" />
+		<option name="(sID) Survival-Round 1-Main Squad-Third Squad" value="0x92" />
+		<option name="(sID) Survival-Round 1-Main Squad-Fourth Squad" value="0x93" />
+		<option name="(sID) Survival-Round 1-Main Squad-Fifth Squad" value="0x94" />
+		<option name="(sID) Survival-Round 1-Main Squad-Sixth Squad" value="0x95" />
+		<option name="(sID) Survival-Round 1-Main Squad-Seventh Squad" value="0x96" />
+		<option name="(sID) Survival-Round 1-Main Squad-Eighth Squad" value="0x97" />
+		<option name="(sID) Survival-Round 1-Main Squad-Ninth Squad" value="0x98" />
+		<option name="(sID) Survival-Round 1-Main Squad-Tenth Squad" value="0x99" />
+		<option name="(sID) Survival-Round 1-Main Squad-Eleventh Squad" value="0x9A" />
+		<option name="(sID) Survival-Round 1-Main Squad-Twelfth Squad" value="0x9B" />
+		<option name="(int) Survival-Round 1-Boss Squad-Use Dropship" value="0x9C" />
+		<option name="(int) Survival-Round 1-Boss Squad-Random Selection" value="0x9D" />
+		<option name="(sID) Survival-Round 1-Boss Squad-First Squad" value="0x9E" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Second Squad" value="0x9F" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Third Squad" value="0xA0" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Fourth Squad" value="0xA1" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Fifth Squad" value="0xA2" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Sixth Squad" value="0xA3" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Seventh Squad" value="0xA4" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Eighth Squad" value="0xA5" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Ninth Squad" value="0xA6" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Tenth Squad" value="0xA7" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Eleventh Squad" value="0xA8" />
+		<option name="(sID) Survival-Round 1-Boss Squad-Twelfth Squad" value="0xA9" />
+		<option name="(int) Survival-Round 2-Skulls-Iron" value="0xAA" />
+		<option name="(int) Survival-Round 2-Skulls-Black Eye" value="0xAB" />
+		<option name="(int) Survival-Round 2-Skulls-Tough Luck" value="0xAC" />
+		<option name="(int) Survival-Round 2-Skulls-Catch" value="0xAD" />
+		<option name="(int) Survival-Round 2-Skulls-Fog" value="0xAE" />
+		<option name="(int) Survival-Round 2-Skulls-Famine" value="0xAF" />
+		<option name="(int) Survival-Round 2-Skulls-Thunderstorm" value="0xB0" />
+		<option name="(int) Survival-Round 2-Skulls-Tilt" value="0xB1" />
+		<option name="(int) Survival-Round 2-Skulls-Mythic" value="0xB2" />
+		<option name="(int) Survival-Round 2-Skulls-Assassin" value="0xB3" />
+		<option name="(int) Survival-Round 2-Skulls-Blind" value="0xB4" />
+		<option name="(int) Survival-Round 2-Skulls-Cowbell" value="0xB5" />
+		<option name="(int) Survival-Round 2-Skulls-Grunt Birthday" value="0xB6" />
+		<option name="(int) Survival-Round 2-Skulls-IWHBYD" value="0xB7" />
+		<option name="(int) Survival-Round 2-Skulls-Red Custom" value="0xB8" />
+		<option name="(int) Survival-Round 2-Skulls-Blue Custom" value="0xB9" />
+		<option name="(int) Survival-Round 2-Skulls-Yellow Custom" value="0xBA" />
+		<option name="(int) Survival-Round 2-Skulls-Unknown" value="0xBB" />
+		<option name="(int) Survival-Round 2-Initial Squad-Use Dropship" value="0xBC" />
+		<option name="(int) Survival-Round 2-Initial Squad-Random Selection" value="0xBD" />
+		<option name="(sID) Survival-Round 2-Initial Squad-First Squad" value="0xBE" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Second Squad" value="0xBF" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Third Squad" value="0xC0" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Fourth Squad" value="0xC1" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Fifth Squad" value="0xC2" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Sixth Squad" value="0xC3" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Seventh Squad" value="0xC4" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Eighth Squad" value="0xC5" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Ninth Squad" value="0xC6" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Tenth Squad" value="0xC7" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Eleventh Squad" value="0xC8" />
+		<option name="(sID) Survival-Round 2-Initial Squad-Twelfth Squad" value="0xC9" />
+		<option name="(int) Survival-Round 2-Main Squad-Use Dropship" value="0xCA" />
+		<option name="(int) Survival-Round 2-Main Squad-Random Selection" value="0xCB" />
+		<option name="(sID) Survival-Round 2-Main Squad-First Squad" value="0xCC" />
+		<option name="(sID) Survival-Round 2-Main Squad-Second Squad" value="0xCD" />
+		<option name="(sID) Survival-Round 2-Main Squad-Third Squad" value="0xCE" />
+		<option name="(sID) Survival-Round 2-Main Squad-Fourth Squad" value="0xCF" />
+		<option name="(sID) Survival-Round 2-Main Squad-Fifth Squad" value="0xD0" />
+		<option name="(sID) Survival-Round 2-Main Squad-Sixth Squad" value="0xD1" />
+		<option name="(sID) Survival-Round 2-Main Squad-Seventh Squad" value="0xD2" />
+		<option name="(sID) Survival-Round 2-Main Squad-Eighth Squad" value="0xD3" />
+		<option name="(sID) Survival-Round 2-Main Squad-Ninth Squad" value="0xD4" />
+		<option name="(sID) Survival-Round 2-Main Squad-Tenth Squad" value="0xD5" />
+		<option name="(sID) Survival-Round 2-Main Squad-Eleventh Squad" value="0xD6" />
+		<option name="(sID) Survival-Round 2-Main Squad-Twelfth Squad" value="0xD7" />
+		<option name="(int) Survival-Round 2-Boss Squad-Use Dropship" value="0xD8" />
+		<option name="(int) Survival-Round 2-Boss Squad-Random Selection" value="0xD9" />
+		<option name="(sID) Survival-Round 2-Boss Squad-First Squad" value="0xDA" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Second Squad" value="0xDB" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Third Squad" value="0xDC" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Fourth Squad" value="0xDD" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Fifth Squad" value="0xDE" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Sixth Squad" value="0xDF" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Seventh Squad" value="0xE0" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Eighth Squad" value="0xE1" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Ninth Squad" value="0xE2" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Tenth Squad" value="0xE3" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Eleventh Squad" value="0xE4" />
+		<option name="(sID) Survival-Round 2-Boss Squad-Twelfth Squad" value="0xE5" />
+		<option name="(int) Survival-Round 3-Skulls-Iron" value="0xE6" />
+		<option name="(int) Survival-Round 3-Skulls-Black Eye" value="0xE7" />
+		<option name="(int) Survival-Round 3-Skulls-Tough Luck" value="0xE8" />
+		<option name="(int) Survival-Round 3-Skulls-Catch" value="0xE9" />
+		<option name="(int) Survival-Round 3-Skulls-Fog" value="0xEA" />
+		<option name="(int) Survival-Round 3-Skulls-Famine" value="0xEB" />
+		<option name="(int) Survival-Round 3-Skulls-Thunderstorm" value="0xEC" />
+		<option name="(int) Survival-Round 3-Skulls-Tilt" value="0xED" />
+		<option name="(int) Survival-Round 3-Skulls-Mythic" value="0xEE" />
+		<option name="(int) Survival-Round 3-Skulls-Assassin" value="0xEF" />
+		<option name="(int) Survival-Round 3-Skulls-Blind" value="0xF0" />
+		<option name="(int) Survival-Round 3-Skulls-Cowbell" value="0xF1" />
+		<option name="(int) Survival-Round 3-Skulls-Grunt Birthday" value="0xF2" />
+		<option name="(int) Survival-Round 3-Skulls-IWHBYD" value="0xF3" />
+		<option name="(int) Survival-Round 3-Skulls-Red Custom" value="0xF4" />
+		<option name="(int) Survival-Round 3-Skulls-Blue Custom" value="0xF5" />
+		<option name="(int) Survival-Round 3-Skulls-Yellow Custom" value="0xF6" />
+		<option name="(int) Survival-Round 3-Skulls-Unknown" value="0xF7" />
+		<option name="(int) Survival-Round 3-Initial Squad-Use Dropship" value="0xF8" />
+		<option name="(int) Survival-Round 3-Initial Squad-Random Selection" value="0xF9" />
+		<option name="(sID) Survival-Round 3-Initial Squad-First Squad" value="0xFA" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Second Squad" value="0xFB" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Third Squad" value="0xFC" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Fourth Squad" value="0xFD" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Fifth Squad" value="0xFE" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Sixth Squad" value="0xFF" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Seventh Squad" value="0x100" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Eighth Squad" value="0x101" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Ninth Squad" value="0x102" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Tenth Squad" value="0x103" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Eleventh Squad" value="0x104" />
+		<option name="(sID) Survival-Round 3-Initial Squad-Twelfth Squad" value="0x105" />
+		<option name="(int) Survival-Round 3-Main Squad-Use Dropship" value="0x106" />
+		<option name="(int) Survival-Round 3-Main Squad-Random Selection" value="0x107" />
+		<option name="(sID) Survival-Round 3-Main Squad-First Squad" value="0x108" />
+		<option name="(sID) Survival-Round 3-Main Squad-Second Squad" value="0x109" />
+		<option name="(sID) Survival-Round 3-Main Squad-Third Squad" value="0x10A" />
+		<option name="(sID) Survival-Round 3-Main Squad-Fourth Squad" value="0x10B" />
+		<option name="(sID) Survival-Round 3-Main Squad-Fifth Squad" value="0x10C" />
+		<option name="(sID) Survival-Round 3-Main Squad-Sixth Squad" value="0x10D" />
+		<option name="(sID) Survival-Round 3-Main Squad-Seventh Squad" value="0x10E" />
+		<option name="(sID) Survival-Round 3-Main Squad-Eighth Squad" value="0x10F" />
+		<option name="(sID) Survival-Round 3-Main Squad-Ninth Squad" value="0x110" />
+		<option name="(sID) Survival-Round 3-Main Squad-Tenth Squad" value="0x111" />
+		<option name="(sID) Survival-Round 3-Main Squad-Eleventh Squad" value="0x112" />
+		<option name="(sID) Survival-Round 3-Main Squad-Twelfth Squad" value="0x113" />
+		<option name="(int) Survival-Round 3-Boss Squad-Use Dropship" value="0x114" />
+		<option name="(int) Survival-Round 3-Boss Squad-Random Selection" value="0x115" />
+		<option name="(sID) Survival-Round 3-Boss Squad-First Squad" value="0x116" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Second Squad" value="0x117" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Third Squad" value="0x118" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Fourth Squad" value="0x119" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Fifth Squad" value="0x11A" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Sixth Squad" value="0x11B" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Seventh Squad" value="0x11C" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Eighth Squad" value="0x11D" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Ninth Squad" value="0x11E" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Tenth Squad" value="0x11F" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Eleventh Squad" value="0x120" />
+		<option name="(sID) Survival-Round 3-Boss Squad-Twelfth Squad" value="0x121" />
+		<option name="(int) Survival-Bonus Round-Duration" value="0x122" />
+		<option name="(int) Survival-Bonus Round-Skulls-Iron" value="0x123" />
+		<option name="(int) Survival-Bonus Round-Skulls-Black Eye" value="0x124" />
+		<option name="(int) Survival-Bonus Round-Skulls-Tough Luck" value="0x125" />
+		<option name="(int) Survival-Bonus Round-Skulls-Catch" value="0x126" />
+		<option name="(int) Survival-Bonus Round-Skulls-Fog" value="0x127" />
+		<option name="(int) Survival-Bonus Round-Skulls-Famine" value="0x128" />
+		<option name="(int) Survival-Bonus Round-Skulls-Thunderstorm" value="0x129" />
+		<option name="(int) Survival-Bonus Round-Skulls-Tilt" value="0x12A" />
+		<option name="(int) Survival-Bonus Round-Skulls-Mythic" value="0x12B" />
+		<option name="(int) Survival-Bonus Round-Skulls-Assassin" value="0x12C" />
+		<option name="(int) Survival-Bonus Round-Skulls-Blind" value="0x12D" />
+		<option name="(int) Survival-Bonus Round-Skulls-Cowbell" value="0x12E" />
+		<option name="(int) Survival-Bonus Round-Skulls-Grunt Birthday" value="0x12F" />
+		<option name="(int) Survival-Bonus Round-Skulls-IWHBYD" value="0x130" />
+		<option name="(int) Survival-Bonus Round-Skulls-Red Custom" value="0x131" />
+		<option name="(int) Survival-Bonus Round-Skulls-Blue Custom" value="0x132" />
+		<option name="(int) Survival-Bonus Round-Skulls-Yellow Custom" value="0x133" />
+		<option name="(int) Survival-Bonus Round-Skulls-Unknown" value="0x134" />
+		<option name="(int) Survival-Bonus Round-Bonus Squad-Use Dropship" value="0x135" />
+		<option name="(int) Survival-Bonus Round-Bonus Squad-Random Selection" value="0x136" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-First Squad" value="0x137" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Second Squad" value="0x138" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Third Squad" value="0x139" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Fourth Squad" value="0x13A" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Fifth Squad" value="0x13B" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Sixth Squad" value="0x13C" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Seventh Squad" value="0x13D" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Eighth Squad" value="0x13E" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Ninth Squad" value="0x13F" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Tenth Squad" value="0x140" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Eleventh Squad" value="0x141" />
+		<option name="(sID) Survival-Bonus Round-Bonus Squad-Twelfth Squad" value="0x142" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Vision" value="0x143" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Hearing" value="0x144" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Luck" value="0x145" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Firing" value="0x146" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Throwing" value="0x147" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Equipment Drop" value="0x148" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Assassination Immunity" value="0x149" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Headshot Immunity" value="0x14A" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Damage Resistance" value="0x14B" />
+		<option name="(int) Survival-Red Custom Skull-AI Traits-Damage Modifier" value="0x14C" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Vision" value="0x14D" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Hearing" value="0x14E" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Luck" value="0x14F" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Firing" value="0x150" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Throwing" value="0x151" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Equipment Drop" value="0x152" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Assassination Immunity" value="0x153" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Headshot Immunity" value="0x154" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Damage Resistance" value="0x155" />
+		<option name="(int) Survival-Blue Custom Skull-AI Traits-Damage Modifier" value="0x156" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Vision" value="0x157" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Hearing" value="0x158" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Luck" value="0x159" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Firing" value="0x15A" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Throwing" value="0x15B" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Equipment Drop" value="0x15C" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Assassination Immunity" value="0x15D" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Headshot Immunity" value="0x15E" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Damage Resistance" value="0x15F" />
+		<option name="(int) Survival-Yellow Custom Skull-AI Traits-Damage Modifier" value="0x160" />
+		<option name="(int) Survival-Skulls Template-Iron" value="0x161" />
+		<option name="(int) Survival-Skulls Template-Black Eye" value="0x162" />
+		<option name="(int) Survival-Skulls Template-Tough Luck" value="0x163" />
+		<option name="(int) Survival-Skulls Template-Catch" value="0x164" />
+		<option name="(int) Survival-Skulls Template-Fog" value="0x165" />
+		<option name="(int) Survival-Skulls Template-Famine" value="0x166" />
+		<option name="(int) Survival-Skulls Template-Thunderstorm" value="0x167" />
+		<option name="(int) Survival-Skulls Template-Tilt" value="0x168" />
+		<option name="(int) Survival-Skulls Template-Mythic" value="0x169" />
+		<option name="(int) Survival-Skulls Template-Assassin" value="0x16A" />
+		<option name="(int) Survival-Skulls Template-Blind" value="0x16B" />
+		<option name="(int) Survival-Skulls Template-Cowbell" value="0x16C" />
+		<option name="(int) Survival-Skulls Template-Grunt Birthday" value="0x16D" />
+		<option name="(int) Survival-Skulls Template-IWHBYD" value="0x16E" />
+		<option name="(int) Survival-Skulls Template-Red Custom" value="0x16F" />
+		<option name="(int) Survival-Skulls Template-Blue Custom" value="0x170" />
+		<option name="(int) Survival-Skulls Template-Yellow Custom" value="0x171" />
+		<option name="(int) Survival-Skulls Template-Unknown" value="0x172" />
+		<option name="(int) Survival-Round Template-Initial Squad-Use Dropship" value="0x173" />
+		<option name="(int) Survival-Round Template-Initial Squad-Random Selection" value="0x174" />
+		<option name="(sID) Survival-Round Template-Initial Squad-First Squad" value="0x175" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Second Squad" value="0x176" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Third Squad" value="0x177" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Fourth Squad" value="0x178" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Fifth Squad" value="0x179" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Sixth Squad" value="0x17A" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Seventh Squad" value="0x17B" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Eighth Squad" value="0x17C" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Ninth Squad" value="0x17D" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Tenth Squad" value="0x17E" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Eleventh Squad" value="0x17F" />
+		<option name="(sID) Survival-Round Template-Initial Squad-Twelfth Squad" value="0x180" />
+		<option name="(int) Survival-Round Template-Main Squad-Use Dropship" value="0x181" />
+		<option name="(int) Survival-Round Template-Main Squad-Random Selection" value="0x182" />
+		<option name="(sID) Survival-Round Template-Main Squad-First Squad" value="0x183" />
+		<option name="(sID) Survival-Round Template-Main Squad-Second Squad" value="0x184" />
+		<option name="(sID) Survival-Round Template-Main Squad-Third Squad" value="0x185" />
+		<option name="(sID) Survival-Round Template-Main Squad-Fourth Squad" value="0x186" />
+		<option name="(sID) Survival-Round Template-Main Squad-Fifth Squad" value="0x187" />
+		<option name="(sID) Survival-Round Template-Main Squad-Sixth Squad" value="0x188" />
+		<option name="(sID) Survival-Round Template-Main Squad-Seventh Squad" value="0x189" />
+		<option name="(sID) Survival-Round Template-Main Squad-Eighth Squad" value="0x18A" />
+		<option name="(sID) Survival-Round Template-Main Squad-Ninth Squad" value="0x18B" />
+		<option name="(sID) Survival-Round Template-Main Squad-Tenth Squad" value="0x18C" />
+		<option name="(sID) Survival-Round Template-Main Squad-Eleventh Squad" value="0x18D" />
+		<option name="(sID) Survival-Round Template-Main Squad-Twelfth Squad" value="0x18E" />
+		<option name="(int) Survival-Round Template-Boss Squad-Use Dropship" value="0x18F" />
+		<option name="(int) Survival-Round Template-Boss Squad-Random Selection" value="0x190" />
+		<option name="(sID) Survival-Round Template-Boss Squad-First Squad" value="0x191" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Second Squad" value="0x192" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Third Squad" value="0x193" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Fourth Squad" value="0x194" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Fifth Squad" value="0x195" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Sixth Squad" value="0x196" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Seventh Squad" value="0x197" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Eighth Squad" value="0x198" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Ninth Squad" value="0x199" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Tenth Squad" value="0x19A" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Eleventh Squad" value="0x19B" />
+		<option name="(sID) Survival-Round Template-Boss Squad-Twelfth Squad" value="0x19C" />
+		<option name="(int) Global-Loadouts-Custom Loadouts Enabled" value="0x19D" />
+		<option name="(int) Global-Spartan Loadouts-Initial Selection" value="0x19E" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 0-Enabled" value="0x19F" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Name" value="0x1A0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Primary Weapon" value="0x1A1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Secondary Weapon" value="0x1A2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Initial Equipment" value="0x1A3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Tactical Package" value="0x1A4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 0-Support Upgrade" value="0x1A5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 0-Grenade Count" value="0x1A6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 1-Enabled" value="0x1A7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Name" value="0x1A8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Primary Weapon" value="0x1A9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Secondary Weapon" value="0x1AA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Initial Equipment" value="0x1AB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Tactical Package" value="0x1AC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 1-Support Upgrade" value="0x1AD" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 1-Grenade Count" value="0x1AE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 2-Enabled" value="0x1AF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Name" value="0x1B0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Primary Weapon" value="0x1B1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Secondary Weapon" value="0x1B2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Initial Equipment" value="0x1B3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Tactical Package" value="0x1B4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 2-Support Upgrade" value="0x1B5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 2-Grenade Count" value="0x1B6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 3-Enabled" value="0x1B7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Name" value="0x1B8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Primary Weapon" value="0x1B9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Secondary Weapon" value="0x1BA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Initial Equipment" value="0x1BB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Tactical Package" value="0x1BC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 3-Support Upgrade" value="0x1BD" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 3-Grenade Count" value="0x1BE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 4-Enabled" value="0x1BF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Name" value="0x1C0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Primary Weapon" value="0x1C1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Secondary Weapon" value="0x1C2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Initial Equipment" value="0x1C3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Tactical Package" value="0x1C4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 1-Loadout 4-Support Upgrade" value="0x1C5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 1-Loadout 4-Grenade Count" value="0x1C6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 0-Enabled" value="0x1C7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Name" value="0x1C8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Primary Weapon" value="0x1C9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Secondary Weapon" value="0x1CA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Initial Equipment" value="0x1CB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Tactical Package" value="0x1CC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 0-Support Upgrade" value="0x1CD" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 0-Grenade Count" value="0x1CE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 1-Enabled" value="0x1CF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Name" value="0x1D0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Primary Weapon" value="0x1D1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Secondary Weapon" value="0x1D2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Initial Equipment" value="0x1D3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Tactical Package" value="0x1D4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 1-Support Upgrade" value="0x1D5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 1-Grenade Count" value="0x1D6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 2-Enabled" value="0x1D7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Name" value="0x1D8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Primary Weapon" value="0x1D9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Secondary Weapon" value="0x1DA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Initial Equipment" value="0x1DB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Tactical Package" value="0x1DC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 2-Support Upgrade" value="0x1DD" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 2-Grenade Count" value="0x1DE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 3-Enabled" value="0x1DF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Name" value="0x1E0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Primary Weapon" value="0x1E1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Secondary Weapon" value="0x1E2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Initial Equipment" value="0x1E3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Tactical Package" value="0x1E4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 3-Support Upgrade" value="0x1E5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 3-Grenade Count" value="0x1E6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 4-Enabled" value="0x1E7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Name" value="0x1E8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Primary Weapon" value="0x1E9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Secondary Weapon" value="0x1EA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Initial Equipment" value="0x1EB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Tactical Package" value="0x1EC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 2-Loadout 4-Support Upgrade" value="0x1ED" />
+		<option name="(int) Global-Spartan Loadouts-Tier 2-Loadout 4-Grenade Count" value="0x1EE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 0-Enabled" value="0x1EF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Name" value="0x1F0" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Primary Weapon" value="0x1F1" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Secondary Weapon" value="0x1F2" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Initial Equipment" value="0x1F3" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Tactical Package" value="0x1F4" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 0-Support Upgrade" value="0x1F5" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 0-Grenade Count" value="0x1F6" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 1-Enabled" value="0x1F7" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Name" value="0x1F8" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Primary Weapon" value="0x1F9" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Secondary Weapon" value="0x1FA" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Initial Equipment" value="0x1FB" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Tactical Package" value="0x1FC" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 1-Support Upgrade" value="0x1FD" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 1-Grenade Count" value="0x1FE" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 2-Enabled" value="0x1FF" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Name" value="0x200" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Primary Weapon" value="0x201" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Secondary Weapon" value="0x202" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Initial Equipment" value="0x203" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Tactical Package" value="0x204" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 2-Support Upgrade" value="0x205" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 2-Grenade Count" value="0x206" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 3-Enabled" value="0x207" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Name" value="0x208" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Primary Weapon" value="0x209" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Secondary Weapon" value="0x20A" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Initial Equipment" value="0x20B" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Tactical Package" value="0x20C" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 3-Support Upgrade" value="0x20D" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 3-Grenade Count" value="0x20E" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 4-Enabled" value="0x20F" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Name" value="0x210" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Primary Weapon" value="0x211" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Secondary Weapon" value="0x212" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Initial Equipment" value="0x213" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Tactical Package" value="0x214" />
+		<option name="(sID) Global-Spartan Loadouts-Tier 3-Loadout 4-Support Upgrade" value="0x215" />
+		<option name="(int) Global-Spartan Loadouts-Tier 3-Loadout 4-Grenade Count" value="0x216" />
+		<option name="(int) Global-Elite Loadouts-Initial Selection" value="0x217" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 0-Enabled" value="0x218" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Name" value="0x219" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Primary Weapon" value="0x21A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Secondary Weapon" value="0x21B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Initial Equipment" value="0x21C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Tactical Package" value="0x21D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 0-Support Upgrade" value="0x21E" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 0-Grenade Count" value="0x21F" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 1-Enabled" value="0x220" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Name" value="0x221" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Primary Weapon" value="0x222" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Secondary Weapon" value="0x223" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Initial Equipment" value="0x224" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Tactical Package" value="0x225" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 1-Support Upgrade" value="0x226" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 1-Grenade Count" value="0x227" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 2-Enabled" value="0x228" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Name" value="0x229" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Primary Weapon" value="0x22A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Secondary Weapon" value="0x22B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Initial Equipment" value="0x22C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Tactical Package" value="0x22D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 2-Support Upgrade" value="0x22E" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 2-Grenade Count" value="0x22F" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 3-Enabled" value="0x230" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Name" value="0x231" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Primary Weapon" value="0x232" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Secondary Weapon" value="0x233" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Initial Equipment" value="0x234" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Tactical Package" value="0x235" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 3-Support Upgrade" value="0x236" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 3-Grenade Count" value="0x237" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 4-Enabled" value="0x238" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Name" value="0x239" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Primary Weapon" value="0x23A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Secondary Weapon" value="0x23B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Initial Equipment" value="0x23C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Tactical Package" value="0x23D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 1-Loadout 4-Support Upgrade" value="0x23E" />
+		<option name="(int) Global-Elite Loadouts-Tier 1-Loadout 4-Grenade Count" value="0x23F" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 0-Enabled" value="0x240" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Name" value="0x241" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Primary Weapon" value="0x242" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Secondary Weapon" value="0x243" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Initial Equipment" value="0x244" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Tactical Package" value="0x245" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 0-Support Upgrade" value="0x246" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 0-Grenade Count" value="0x247" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 1-Enabled" value="0x248" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Name" value="0x249" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Primary Weapon" value="0x24A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Secondary Weapon" value="0x24B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Initial Equipment" value="0x24C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Tactical Package" value="0x24D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 1-Support Upgrade" value="0x24E" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 1-Grenade Count" value="0x24F" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 2-Enabled" value="0x250" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Name" value="0x251" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Primary Weapon" value="0x252" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Secondary Weapon" value="0x253" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Initial Equipment" value="0x254" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Tactical Package" value="0x255" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 2-Support Upgrade" value="0x256" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 2-Grenade Count" value="0x257" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 3-Enabled" value="0x258" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Name" value="0x259" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Primary Weapon" value="0x25A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Secondary Weapon" value="0x25B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Initial Equipment" value="0x25C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Tactical Package" value="0x25D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 3-Support Upgrade" value="0x25E" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 3-Grenade Count" value="0x25F" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 4-Enabled" value="0x260" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Name" value="0x261" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Primary Weapon" value="0x262" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Secondary Weapon" value="0x263" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Initial Equipment" value="0x264" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Tactical Package" value="0x265" />
+		<option name="(sID) Global-Elite Loadouts-Tier 2-Loadout 4-Support Upgrade" value="0x266" />
+		<option name="(int) Global-Elite Loadouts-Tier 2-Loadout 4-Grenade Count" value="0x267" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 0-Enabled" value="0x268" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Name" value="0x269" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Primary Weapon" value="0x26A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Secondary Weapon" value="0x26B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Initial Equipment" value="0x26C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Tactical Package" value="0x26D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 0-Support Upgrade" value="0x26E" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 0-Grenade Count" value="0x26F" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 1-Enabled" value="0x270" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Name" value="0x271" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Primary Weapon" value="0x272" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Secondary Weapon" value="0x273" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Initial Equipment" value="0x274" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Tactical Package" value="0x275" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 1-Support Upgrade" value="0x276" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 1-Grenade Count" value="0x277" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 2-Enabled" value="0x278" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Name" value="0x279" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Primary Weapon" value="0x27A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Secondary Weapon" value="0x27B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Initial Equipment" value="0x27C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Tactical Package" value="0x27D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 2-Support Upgrade" value="0x27E" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 2-Grenade Count" value="0x27F" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 3-Enabled" value="0x280" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Name" value="0x281" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Primary Weapon" value="0x282" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Secondary Weapon" value="0x283" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Initial Equipment" value="0x284" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Tactical Package" value="0x285" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 3-Support Upgrade" value="0x286" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 3-Grenade Count" value="0x287" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 4-Enabled" value="0x288" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Name" value="0x289" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Primary Weapon" value="0x28A" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Secondary Weapon" value="0x28B" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Initial Equipment" value="0x28C" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Tactical Package" value="0x28D" />
+		<option name="(sID) Global-Elite Loadouts-Tier 3-Loadout 4-Support Upgrade" value="0x28E" />
+		<option name="(int) Global-Elite Loadouts-Tier 3-Loadout 4-Grenade Count" value="0x28F" />
+		<option name="(int) Global-Ordnance-Initial Ordnance" value="0x290" />
+		<option name="(int) Global-Ordnance-Random Ordnance" value="0x291" />
+		<option name="(int) Global-Ordnance-Objective Ordnance" value="0x292" />
+		<option name="(int) Global-Ordnance-Personal Ordnance" value="0x293" />
+		<option name="(int) Global-Ordnance-Ordnance System Enabled" value="0x294" />
+		<option name="(int) Global-Loadouts-Map Loadouts Enabled" value="0x295" />
+		<option name="(int) Global-Ordnance-Minimum Resupply Timer" value="0x296" />
+		<option name="(int) Global-Ordnance-Maximum Resupply Timer" value="0x297" />
+		<option name="(flt) Global-Ordnance-Point Requirement" value="0x298" />
+		<option name="(flt) Global-Ordnance-Point Multiplier" value="0x299" />
+		<option name="(int) Global-Ordnance-Personal-Custom Enabled" value="0x29A" />
+		<option name="(sID) Global-Ordnance-Personal-Right-First Possibility" value="0x29B" />
+		<option name="(flt) Global-Ordnance-Personal-Right-First Possibility Weight" value="0x29C" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Second Possibility" value="0x29D" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Second Possibility Weight" value="0x29E" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Third Possibility" value="0x29F" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Third Possibility Weight" value="0x2A0" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Fourth Possibility" value="0x2A1" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Fourth Possibility Weight" value="0x2A2" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Fifth Possibility" value="0x2A3" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Fifth Possibility Weight" value="0x2A4" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Sixth Possibility" value="0x2A5" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Sixth Possibility Weight" value="0x2A6" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Seventh Possibility" value="0x2A7" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Seventh Possibility Weight" value="0x2A8" />
+		<option name="(sID) Global-Ordnance-Personal-Right-Eighth Possibility" value="0x2A9" />
+		<option name="(flt) Global-Ordnance-Personal-Right-Eighth Possibility Weight" value="0x2AA" />
+		<option name="(sID) Global-Ordnance-Personal-Left-First Possibility" value="0x2AB" />
+		<option name="(flt) Global-Ordnance-Personal-Left-First Possibility Weight" value="0x2AC" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Second Possibility" value="0x2AD" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Second Possibility Weight" value="0x2AE" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Third Possibility" value="0x2AF" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Third Possibility Weight" value="0x2B0" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Fourth Possibility" value="0x2B1" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Fourth Possibility Weight" value="0x2B2" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Fifth Possibility" value="0x2B3" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Fifth Possibility Weight" value="0x2B4" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Sixth Possibility" value="0x2B5" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Sixth Possibility Weight" value="0x2B6" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Seventh Possibility" value="0x2B7" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Seventh Possibility Weight" value="0x2B8" />
+		<option name="(sID) Global-Ordnance-Personal-Left-Eighth Possibility" value="0x2B9" />
+		<option name="(flt) Global-Ordnance-Personal-Left-Eighth Possibility Weight" value="0x2BA" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-First Possibility" value="0x2BB" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-First Possibility Weight" value="0x2BC" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Second Possibility" value="0x2BD" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Second Possibility Weight" value="0x2BE" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Third Possibility" value="0x2BF" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Third Possibility Weight" value="0x2C0" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Fourth Possibility" value="0x2C1" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Fourth Possibility Weight" value="0x2C2" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Fifth Possibility" value="0x2C3" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Fifth Possibility Weight" value="0x2C4" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Sixth Possibility" value="0x2C5" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Sixth Possibility Weight" value="0x2C6" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Seventh Possibility" value="0x2C7" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Seventh Possibility Weight" value="0x2C8" />
+		<option name="(sID) Global-Ordnance-Personal-Middle-Eighth Possibility" value="0x2C9" />
+		<option name="(flt) Global-Ordnance-Personal-Middle-Eighth Possibility Weight" value="0x2CA" />
+		<option name="(sID) Global-Ordnance-Substitutions" value="0x2CB" />
+		<option name="(flt) Global-Traits Template-Damage Resistance" value="0x2CC" />
+		<option name="(flt) Global-Traits Template-Shield Multiplier" value="0x2CD" />
+		<option name="(flt) Global-Traits Template-Body Multiplier" value="0x2CE" />
+		<option name="(flt) Global-Traits Template-Shield Stun Duration" value="0x2CF" />
+		<option name="(flt) Global-Traits Template-Shield Recharge" value="0x2D0" />
+		<option name="(flt) Global-Traits Template-Body Recharge" value="0x2D1" />
+		<option name="(flt) Global-Traits Template-Overshield Recharge" value="0x2D2" />
+		<option name="(flt) Global-Traits Template-Vampirism" value="0x2D3" />
+		<option name="(flt) Global-Traits Template-Explosive Damage Resistance" value="0x2D4" />
+		<option name="(flt) Global-Traits Template-Wheelman Stun Duration" value="0x2D5" />
+		<option name="(flt) Global-Traits Template-Wheelman Recharge" value="0x2D6" />
+		<option name="(flt) Global-Traits Template-Wheelman EMP Time" value="0x2D7" />
+		<option name="(flt) Global-Traits Template-Fall Damage" value="0x2D8" />
+		<option name="(int) Global-Traits Template-Headshot Immunity" value="0x2D9" />
+		<option name="(int) Global-Traits Template-Assassination Immunity" value="0x2DA" />
+		<option name="(int) Global-Traits Template-Deathless" value="0x2DB" />
+		<option name="(int) Global-Traits Template-Fast Track" value="0x2DC" />
+		<option name="(int) Global-Traits Template-Powerup Cancelling" value="0x2DD" />
+		<option name="(flt) Global-Traits Template-Damage Modifier" value="0x2DE" />
+		<option name="(flt) Global-Traits Template-Melee Damage Modifier" value="0x2DF" />
+		<option name="(flt) Global-Traits Template-Fragmentation Grenade Recharge" value="0x2E0" />
+		<option name="(flt) Global-Traits Template-Plasma Grenade Recharge" value="0x2E1" />
+		<option name="(flt) Global-Traits Template-Pulse Grenade Recharge" value="0x2E2" />
+		<option name="(flt) Global-Traits Template-Hero Equipment Use Rate" value="0x2E3" />
+		<option name="(flt) Global-Traits Template-Hero Equipment Recharge Delay" value="0x2E4" />
+		<option name="(flt) Global-Traits Template-Hero Equipment Recharge" value="0x2E5" />
+		<option name="(flt) Global-Traits Template-Hero Equipment Initial Energy" value="0x2E6" />
+		<option name="(flt) Global-Traits Template-Equipment Use Rate" value="0x2E7" />
+		<option name="(flt) Global-Traits Template-Equipment Recharge Delay" value="0x2E8" />
+		<option name="(flt) Global-Traits Template-Equipment Recharge" value="0x2E9" />
+		<option name="(flt) Global-Traits Template-Equipment Initial Energy" value="0x2EA" />
+		<option name="(flt) Global-Traits Template-Weapon Switch Speed" value="0x2EB" />
+		<option name="(flt) Global-Traits Template-Weapon Reload Speed" value="0x2EC" />
+		<option name="(flt) Global-Traits Template-Ordnance Points" value="0x2ED" />
+		<option name="(flt) Global-Traits Template-Explosion Radius" value="0x2EE" />
+		<option name="(flt) Global-Traits Template-Gunner" value="0x2EF" />
+		<option name="(flt) Global-Traits Template-Stability" value="0x2F0" />
+		<option name="(flt) Global-Traits Template-Drop Recon Warn Time" value="0x2F1" />
+		<option name="(flt) Global-Traits Template-Drop Recon Distance" value="0x2F2" />
+		<option name="(flt) Global-Traits Template-Assassination Speed" value="0x2F3" />
+		<option name="(int) Global-Traits Template-Weapon Pickup" value="0x2F4" />
+		<option name="(int) Global-Traits Template-Grenade Count" value="0x2F5" />
+		<option name="(int) Global-Traits Template-Infinite Ammo" value="0x2F6" />
+		<option name="(int) Global-Traits Template-Equipment Usage" value="0x2F7" />
+		<option name="(int) Global-Traits Template-Equipment Usage Except Turret" value="0x2F8" />
+		<option name="(int) Global-Traits Template-Equipment Drop" value="0x2F9" />
+		<option name="(int) Global-Traits Template-Infinite Equipment" value="0x2FA" />
+		<option name="(sID) Global-Traits Template-Primary Weapon" value="0x2FB" />
+		<option name="(sID) Global-Traits Template-Secondary Weapon" value="0x2FC" />
+		<option name="(sID) Global-Traits Template-Initial Equipment" value="0x2FD" />
+		<option name="(sID) Global-Traits Template-Tactical Package" value="0x2FE" />
+		<option name="(sID) Global-Traits Template-Support Upgrade" value="0x2FF" />
+		<option name="(int) Global-Traits Template-Ammo Pack" value="0x300" />
+		<option name="(int) Global-Traits Template-Grenadier" value="0x301" />
+		<option name="(int) Global-Traits Template-Explode On Death" value="0x302" />
+		<option name="(int) Global-Traits Template-Ordnance Waypoints" value="0x303" />
+		<option name="(int) Global-Traits Template-Ordnance Reroll" value="0x304" />
+		<option name="(int) Global-Traits Template-Grenade Drop" value="0x305" />
+		<option name="(int) Global-Traits Template-Firepower" value="0x306" />
+		<option name="(int) Global-Traits Template-Disable Ordnance" value="0x307" />
+		<option name="(flt) Global-Traits Template-Speed" value="0x308" />
+		<option name="(flt) Global-Traits Template-Gravity" value="0x309" />
+		<option name="(flt) Global-Traits Template-Jump Height" value="0x30A" />
+		<option name="(flt) Global-Traits Template-Look Speed" value="0x30B" />
+		<option name="(int) Global-Traits Template-Vehicle Use" value="0x30C" />
+		<option name="(int) Global-Traits Template-Double Jump" value="0x30D" />
+		<option name="(int) Global-Traits Template-Hero Equipment Use" value="0x30E" />
+		<option name="(int) Global-Traits Template-Automatic Momentum Use" value="0x30F" />
+		<option name="(int) Global-Traits Template-Vaulting" value="0x310" />
+		<option name="(int) Global-Traits Template-Stealthy" value="0x311" />
+		<option name="(flt) Global-Traits Template-Scale" value="0x312" />
+		<option name="(int) Global-Traits Template-Active Camo" value="0x313" />
+		<option name="(int) Global-Traits Template-Waypoint" value="0x314" />
+		<option name="(int) Global-Traits Template-Gamertag" value="0x315" />
+		<option name="(int) Global-Traits Template-Aura" value="0x316" />
+		<option name="(clr) Global-Traits Template-Primary Color" value="0x317" />
+		<option name="(clr) Global-Traits Template-Secondary Color" value="0x318" />
+		<option name="(sID) Global-Traits Template-Model Variant" value="0x319" />
+		<option name="(sID) Global-Traits Template-Death Effect" value="0x31A" />
+		<option name="(sID) Global-Traits Template-Looping Effect" value="0x31B" />
+		<option name="(int) Global-Traits Template-Shield HUD" value="0x31C" />
+		<option name="(flt) Global-Traits Template-Sensor Range" value="0x31D" />
+		<option name="(flt) Global-Traits Template-Nemesis Duration" value="0x31E" />
+		<option name="(int) Global-Traits Template-Sensor" value="0x31F" />
+		<option name="(int) Global-Traits Template-Sensor Zoomed" value="0x320" />
+		<option name="(int) Global-Traits Template-Directional Damage" value="0x321" />
+		<option name="(int) Global-Traits Template-Vision Mode" value="0x322" />
+		<option name="(int) Global-Traits Template-Battle Awareness" value="0x323" />
+		<option name="(int) Global-Traits Template-Threat View" value="0x324" />
+		<option name="(int) Global-Traits Template-Aural Enhancement" value="0x325" />
+		<option name="(int) Global-Traits Template-Nemesis" value="0x326" />
+	</enum32>
 	<stringid name="Name" offset="0x4" visible="true" />
 	<stringid name="Description" offset="0x8" visible="true" />
 	<enum8 name="Expected Value Type" offset="0xC" visible="true">
 		<option name="Integer Index" value="0x0" />
 		<option name="StringID Reference" value="0x1" />
-		<option name="Unknown" value="0x2" />
+		<option name="Incremental" value="0x2" />
 		<option name="Float" value="0x3" />
 	</enum8>
 	<int8 name="Unknown" offset="0xD" visible="false" />
@@ -28,9 +838,9 @@
 		</bitfield8>
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="true" />
-		<int32 name="Int Value" offset="0x4" visible="true" />
+		<int32 name="Integer Value" offset="0x4" visible="true" />
 		<float32 name="Float Value" offset="0x8" visible="true" />
-		<stringid name="Ref Name" offset="0xC" visible="true" />
+		<stringid name="StringID Value" offset="0xC" visible="true" />
 		<stringid name="Name" offset="0x10" visible="true" />
 		<stringid name="Description" offset="0x14" visible="true" />
 	</reflexive>

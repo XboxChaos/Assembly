@@ -5,6 +5,7 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="WastingBody" version="2">Filled in some stuff...</revision>
 		<revision author="XZodia" version="3">Completed</revision>
+		<revision author="Lord Zedd" version="4">Updated</revision>
 	</revisions>
 	<bitfield32 name="Flags" offset="0x0" visible="true">
 		<bit name="Deafening To AIs" index="0" />
@@ -17,6 +18,10 @@
 		<bit name="Combine All 3D Playback" index="7" />
 	</bitfield32>
 	<float32 name="Marty's Music Time" offset="0x4" visible="true" />
+	<float32 name="Unknown" offset="0x8" visible="false" />
+	<float32 name="Unknown" offset="0xC" visible="false" />
+	<float32 name="Unknown" offset="0x10" visible="false" />
+	<tagRef name="Unused" offset="0x14" visible="true" />
 	<reflexive name="Tracks" offset="0x1C" visible="true" entrySize="0x58">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<bitfield32 name="Flags" offset="0x4" visible="true">
@@ -26,9 +31,9 @@
 			<bit name="Master Surround Sound Track" index="3" />
 			<bit name="Fade Out At Alternate Stop" index="4" />
 		</bitfield32>
-		<float32 name="Gain dB" offset="0x8" visible="true" />
-		<float32 name="Fade In Duration Sec" offset="0xC" visible="true" />
-		<float32 name="Fade Out Duration Sec" offset="0x10" visible="true" />
+		<float32 name="Gain" offset="0x8" visible="true" />
+		<float32 name="Fade In Duration" offset="0xC" visible="true" />
+		<float32 name="Fade Out Duration" offset="0x10" visible="true" />
 		<tagRef name="In" offset="0x14" visible="true" />
 		<tagRef name="Loop" offset="0x1C" visible="true" />
 		<tagRef name="Out" offset="0x24" visible="true" />
@@ -41,26 +46,29 @@
 			<option name="Output Center Speakers" value="0x3" />
 		</enum16>
 		<int16 name="Unknown" offset="0x3E" visible="false" />
-		<tagRef name="Alternate Trans In" offset="0x40" visible="true" />
-		<tagRef name="Alternate Trans Out" offset="0x48" visible="true" />
-		<float32 name="Alternate Crossfade" offset="0x50" visible="true" />
+		<tagRef name="Alternate Transition In" offset="0x40" visible="true" />
+		<tagRef name="Alternate Transition Out" offset="0x48" visible="true" />
+		<float32 name="Alternate Crossfade Duration" offset="0x50" visible="true" />
 		<float32 name="Alternate Fade Out Duration" offset="0x54" visible="true" />
 	</reflexive>
 	<reflexive name="Detail Sounds" offset="0x24" visible="true" entrySize="0x34">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound" offset="0x4" visible="true" />
-		<float32 name="Random Period Bounds Lower" offset="0xC" visible="true" />
-		<float32 name="Random Period Bounds Upper" offset="0x10" visible="true" />
-		<bitfield32 name="Flags" offset="0x14" visible="true">
+		<comment title="Frequency Of Play" />
+		<float32 name="Random Period Bounds min" offset="0xC" visible="true" />
+		<float32 name="Random Period Bounds max" offset="0x10" visible="true" />
+		<float32 name="Unknown" offset="0x14" visible="false" />
+		<bitfield32 name="Flags" offset="0x18" visible="true">
 			<bit name="Don't Play With Alternate" index="0" />
 			<bit name="Don't Play Without Alternate" index="1" />
 			<bit name="Start Immeditely With Loop" index="2" />
 		</bitfield32>
-		<degree name="Yaw Bounds Lower" offset="0x1C" visible="true" />
-		<degree name="Yaw Bounds Upper" offset="0x20" visible="true" />
-		<degree name="Pitch Bounds Lower" offset="0x24" visible="true" />
-		<degree name="Pitch Bounds Upper" offset="0x28" visible="true" />
-		<float32 name="Distance Bounds Lower" offset="0x2C" visible="true" />
-		<float32 name="Distance Bounds Upper" offset="0x30" visible="true" />
+		<comment title="Random Spatialization" />
+		<degree name="Yaw Bounds min" offset="0x1C" visible="true" />
+		<degree name="Yaw Bounds max" offset="0x20" visible="true" />
+		<degree name="Pitch Bounds min" offset="0x24" visible="true" />
+		<degree name="Pitch Bounds max" offset="0x28" visible="true" />
+		<float32 name="Distance Bounds min" offset="0x2C" visible="true" />
+		<float32 name="Distance Bounds max" offset="0x30" visible="true" />
 	</reflexive>
 </plugin>

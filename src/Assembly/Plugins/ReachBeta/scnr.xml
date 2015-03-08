@@ -241,14 +241,14 @@
 				<undefined name="Unknown" offset="0x0" visible="false" />
 			</reflexive>
 			<reflexive name="Clusters" offset="0x3C" visible="false" entrySize="0x24">
-				<reflexive name="Unknown 12" offset="0x0" visible="false" entrySize="0x4">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+				<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x1">
+					<int8 name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
-				<reflexive name="Unknown 13" offset="0xC" visible="false" entrySize="0x4">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+				<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x1">
+					<int8 name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
-				<reflexive name="Unknown 14" offset="0x18" visible="false" entrySize="0x4">
-					<undefined name="Unknown" offset="0x0" visible="false" />
+				<reflexive name="Unknown" offset="0x18" visible="false" entrySize="0x1">
+					<int8 name="Unknown" offset="0x0" visible="false" />
 				</reflexive>
 			</reflexive>
 		</reflexive>
@@ -1704,7 +1704,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<int16 name="Unknown" offset="0x28" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x28" visible="true" />
 		<int16 name="Unknown" offset="0x2A" visible="false" />
 	</reflexive>
 	<reflexive name="Machines" offset="0x18C" visible="true" entrySize="0xE4">
@@ -3279,7 +3279,7 @@
 		<degree name="Facing p" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x14" visible="false" />
 		<int16 name="Unknown" offset="0x16" visible="false" />
-		<int16 name="Unknown" offset="0x18" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x18" visible="true" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
 	</reflexive>
 	<reflexive name="Trigger Volumes" offset="0x280" visible="true" entrySize="0x7C">
@@ -3339,7 +3339,7 @@
 		<float32 name="Unknown" offset="0x70" visible="false" />
 		<float32 name="Unknown" offset="0x74" visible="false" />
 		<int16 name="Kill Volume" offset="0x78" visible="true" />
-		<int16 name="Unknown" offset="0x7A" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x7A" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown 33" offset="0x28C" visible="false" entrySize="0x18">
 		<reflexive name="Unknown 34" offset="0x0" visible="false" entrySize="0x14">
@@ -3473,7 +3473,7 @@
 		<int16 name="Parent Index" offset="0x20" visible="true" />
 		<int16 name="Objective Index" offset="0x22" visible="true" />
 		<int16 name="Unknown" offset="0x24" visible="true" />
-		<int16 name="Unknown" offset="0x26" visible="true" />
+		<int16 name="Editor Folder Index" offset="0x26" visible="true" />
 	</reflexive>
 	<reflexive name="Squads" offset="0x394" visible="true" entrySize="0x6C">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
@@ -3525,7 +3525,7 @@
 		<int16 name="Parent Zone" offset="0x28" visible="true" />
 		<int16 name="Objective Index" offset="0x2A" visible="true" />
 		<int16 name="Objective Role Index" offset="0x2C" visible="true" />
-		<int16 name="Unknown" offset="0x2E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x2E" visible="true" />
 		<reflexive name="Group Locations" offset="0x30" visible="true" entrySize="0x54">
 			<int16 name="Unknown" offset="0x0" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
@@ -3651,7 +3651,7 @@
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<stringid name="Squad Template Name" offset="0x4C" visible="true" />
 		<tagref name="Squad Template" withClass="false" offset="0x50" visible="true" />
-		<reflexive name="Wave A" offset="0x54" visible="true" entrySize="0x6C">
+		<reflexive name="Squad A" offset="0x54" visible="true" entrySize="0x6C">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<bitfield16 name="Difficulty" offset="0x4" visible="true">
 				<bit name="Easy" index="0" />
@@ -3681,7 +3681,8 @@
 			<reflexive name="Actors" offset="0x14" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Character" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -3689,7 +3690,8 @@
 			<reflexive name="Weapons" offset="0x20" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Weapon" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -3697,15 +3699,17 @@
 			<reflexive name="Secondary Weapons" offset="0x2C" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Weapon" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
 			</reflexive>
-			<reflexive name="Equipment" offset="0x38" visible="false" entrySize="0x10">
+			<reflexive name="Equipment" offset="0x38" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Equipment" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -3724,7 +3728,7 @@
 			<undefined name="Unknown" offset="0x64" visible="false" />
 			<undefined name="Unknown" offset="0x68" visible="false" />
 		</reflexive>
-		<reflexive name="Wave B" offset="0x60" visible="true" entrySize="0x6C">
+		<reflexive name="Squad B" offset="0x60" visible="true" entrySize="0x6C">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<bitfield16 name="Difficulty" offset="0x4" visible="true">
 				<bit name="Easy" index="0" />
@@ -3754,7 +3758,8 @@
 			<reflexive name="Actors" offset="0x14" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Character" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -3762,7 +3767,8 @@
 			<reflexive name="Weapons" offset="0x20" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Weapon" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -3770,15 +3776,17 @@
 			<reflexive name="Secondary Weapons" offset="0x2C" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Weapon" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
 			</reflexive>
-			<reflexive name="Equipment" offset="0x38" visible="false" entrySize="0x10">
+			<reflexive name="Equipment" offset="0x38" visible="true" entrySize="0x10">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
+				<int16 name="Minimum Round" offset="0x4" visible="true" />
+				<int16 name="Maximum Round" offset="0x6" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<int16 name="Equipment" offset="0xC" visible="true" />
 				<int16 name="Probability" offset="0xE" visible="true" />
@@ -4374,7 +4382,7 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</bitfield32>
-			<int16 name="Unknown" offset="0x34" visible="false" />
+			<int16 name="Editor Folder Index" offset="0x34" visible="true" />
 			<int16 name="Unknown" offset="0x36" visible="false" />
 		</reflexive>
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -4416,7 +4424,7 @@
 		<float name="Position z" offset="0x10" visible="true" />
 		<degree name="Facing y" offset="0x14" visible="true" />
 		<degree name="Facing p" offset="0x18" visible="true" />
-		<int16 name="Unknown" offset="0x1C" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="false" />
 	</reflexive>
 	<reflexive name="Cutscene Camera Points" offset="0x474" visible="true" entrySize="0x40">
@@ -5132,7 +5140,7 @@
 		<int16 name="Unknown" offset="0x10" visible="false" />
 		<int16 name="Zone" offset="0x12" visible="true" />
 		<int16 name="Unknown" offset="0x14" visible="false" />
-		<int16 name="Unknown" offset="0x16" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x16" visible="true" />
 		<reflexive name="Roles" offset="0x18" visible="true" entrySize="0x80">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
@@ -5158,11 +5166,11 @@
 			<int16 name="Previous Role" offset="0x42" visible="true" />
 			<int16 name="Next Role" offset="0x44" visible="true" />
 			<int16 name="Parent Role" offset="0x46" visible="true" />
-			<reflexive name="Conditions" offset="0x48" visible="true" entrySize="0x124">
-				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-				<ascii name="Condition" offset="0x20" length="0x100" visible="true" />
-				<int16 name="Unknown" offset="0x120" visible="false" />
-				<int16 name="Unknown" offset="0x122" visible="false" />
+			<reflexive name="Conditions" offset="0x48" visible="true" entrySize="0x108">
+				<stringid name="Name" offset="0x0" visible="true" />
+				<ascii name="Condition" offset="0x4" length="0x20" visible="true" />
+				<int16 name="Unknown" offset="0x104" visible="false" />
+				<int16 name="Unknown" offset="0x106" visible="false" />
 			</reflexive>
 			<int16 name="Script Index" offset="0x54" visible="true" />
 			<int16 name="Unknown" offset="0x56" visible="false" />

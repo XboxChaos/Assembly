@@ -38,14 +38,86 @@
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
-	<undefined name="Unknown" offset="0x4" visible="true" />
-	<undefined name="Unknown" offset="0x8" visible="true" />
-	<undefined name="Unknown" offset="0xC" visible="true" />
-	<undefined name="Unknown" offset="0x10" visible="true" />
-	<undefined name="Unknown" offset="0x14" visible="true" />
-	<int16 name="Unknown" offset="0x18" visible="true" />
-	<int16 name="Unknown" offset="0x1A" visible="true" />
-	<undefined name="Unknown" offset="0x1C" visible="true" />
+	<float32 name="Unknown" offset="0x4" visible="false" />
+	<float32 name="Unknown" offset="0x8" visible="false" />
+	<float32 name="Unknown" offset="0xC" visible="false" />
+	<float32 name="Unknown" offset="0x10" visible="false" />
+	<float32 name="Unknown" offset="0x14" visible="false" />
+	<enum16 name="Sound Class" offset="0x18" visible="true">
+		<option name="projectile_impact" value="0x0" />
+		<option name="projectile_detonation" value="0x1" />
+		<option name="projectile_flyby" value="0x2" />
+		<option name="projectile_detonation_lod" value="0x3" />
+		<option name="weapon_fire" value="0x4" />
+		<option name="weapon_ready" value="0x5" />
+		<option name="weapon_reload" value="0x6" />
+		<option name="weapon_empty" value="0x7" />
+		<option name="weapon_charge" value="0x8" />
+		<option name="weapon_overheat" value="0x9" />
+		<option name="weapon_idle" value="0xA" />
+		<option name="weapon_melee" value="0xB" />
+		<option name="weapon_animation" value="0xC" />
+		<option name="object_impacts" value="0xD" />
+		<option name="particle_impacts" value="0xE" />
+		<option name="weapon_fire_lod" value="0xF" />
+		<option name="water_transitions" value="0x10" />
+		<option name="lowpass_effects" value="0x11" />
+		<option name="unit_footsteps" value="0x12" />
+		<option name="unit_dialog" value="0x13" />
+		<option name="unit_animation" value="0x14" />
+		<option name="unit_unused!" value="0x15" />
+		<option name="vehicle_collision" value="0x16" />
+		<option name="vehicle_engine" value="0x17" />
+		<option name="vehicle_animation" value="0x18" />
+		<option name="vehicle_engine_lod" value="0x19" />
+		<option name="device_door" value="0x1A" />
+		<option name="device_unused0!" value="0x1B" />
+		<option name="device_machinery" value="0x1C" />
+		<option name="device_stationary" value="0x1D" />
+		<option name="device_unused1!" value="0x1E" />
+		<option name="device_unused2!" value="0x1F" />
+		<option name="music" value="0x20" />
+		<option name="ambient_nature" value="0x21" />
+		<option name="ambient_machinery" value="0x22" />
+		<option name="ambient_stationary" value="0x23" />
+		<option name="huge_ass" value="0x24" />
+		<option name="object_looping" value="0x25" />
+		<option name="cinematic_music" value="0x26" />
+		<option name="unknown_unused0!" value="0x27" />
+		<option name="unknown_unused1!" value="0x28" />
+		<option name="ambient_flock" value="0x29" />
+		<option name="no_pad" value="0x2A" />
+		<option name="no_pad_stationary" value="0x2B" />
+		<option name="equipment_effect" value="0x2C" />
+		<option name="mission_dialog" value="0x2D" />
+		<option name="cinematic_dialog" value="0x2E" />
+		<option name="scripted_cinematic_foley" value="0x2F" />
+		<option name="game_event" value="0x30" />
+		<option name="ui" value="0x31" />
+		<option name="test" value="0x32" />
+		<option name="multiplayer_dialog" value="0x33" />
+		<option name="ambient_nature_details" value="0x34" />
+		<option name="ambient_machinery_details" value="0x35" />
+		<option name="inside_surround_tail" value="0x36" />
+		<option name="outside_surround_tail" value="0x37" />
+		<option name="vehicle_detonation" value="0x38" />
+		<option name="ambient_detonation" value="0x39" />
+		<option name="first_person_inside" value="0x3A" />
+		<option name="first_person_outside" value="0x3B" />
+		<option name="first_person_anywhere" value="0x3C" />
+		<option name="space_projectile_detonation" value="0x3D" />
+		<option name="space_projectile_flyby" value="0x3E" />
+		<option name="space_vehicle_engine" value="0x3F" />
+		<option name="space_weapon_fire" value="0x40" />
+		<option name="player_voice_team" value="0x41" />
+		<option name="player_voice_proxy" value="0x42" />
+		<option name="projectile_impact_postpone" value="0x43" />
+		<option name="unit_footsteps_postpone" value="0x44" />
+		<option name="weapon_ready_third_person" value="0x45" />
+		<option name="ui_music" value="0x46" />
+	</enum16>
+	<int16 name="Unknown" offset="0x1A" visible="false" />
+	<undefined name="Unknown" offset="0x1C" visible="false" />
 	<reflexive name="Tracks" offset="0x20" visible="true" entrySize="0xB0">
 		<stringid name="Name" offset="0x0" visible="True" />
 		<bitfield16 name="Flags" offset="0x4" visible="true">
@@ -72,21 +144,22 @@
 			<option name="Output Rear Speakers" value="0x2" />
 			<option name="Output Center Speakers" value="0x3" />
 		</enum16>
-		<undefined name="Gain" offset="0x8" visible="True" />
+		<float32 name="Gain" offset="0x8" visible="True" />
 		<tagRef name="In" offset="0xC" visible="true" />
 		<tagRef name="Loop" offset="0x1C" visible="true" />
 		<tagRef name="Out" offset="0x2C" visible="true" />
-		<tagRef name="Alt Loop" offset="0x3C" visible="true" />
-		<tagRef name="Alt Out" offset="0x4C" visible="true" />
-		<tagRef name="Alt Trans In" offset="0x5C" visible="true" />
-		<tagRef name="Alt Trans Out" offset="0x6C" visible="true" />
-		<undefined name="Fade In Duration" offset="0x7C" visible="true" />
+		<tagRef name="Alternate Loop" offset="0x3C" visible="true" />
+		<tagRef name="Alternate Out" offset="0x4C" visible="true" />
+		<tagRef name="Alternate Transition In" offset="0x5C" visible="true" />
+		<tagRef name="Alternate Transition Out" offset="0x6C" visible="true" />
+		<float32 name="Fade In Duration" offset="0x7C" visible="true" />
 		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Fade Out Duration" offset="0x84" visible="true" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Alt Crossfade Duration" offset="0x8C" visible="true" />
+		<float32 name="Fade Out Duration" offset="0x84" visible="true" />
+		<int16 name="Unknown" offset="0x88" visible="false" />
+		<int16 name="Unknown" offset="0x8A" visible="false" />
+		<float32 name="Alt Crossfade Duration" offset="0x8C" visible="true" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
+		<float32 name="Alternate Fade Out Duration" offset="0x94" visible="true" />
 		<undefined name="Unknown" offset="0x98" visible="false" />
 		<undefined name="Unknown" offset="0x9C" visible="false" />
 		<undefined name="Unknown" offset="0xA0" visible="false" />
@@ -94,21 +167,56 @@
 		<undefined name="Unknown" offset="0xA8" visible="false" />
 		<undefined name="Unknown" offset="0xAC" visible="false" />
 	</reflexive>
-	<reflexive name="Detail Sounds" offset="0x2C" visible="false" entrySize="0x48">
+	<reflexive name="Detail Sounds" offset="0x2C" visible="true" entrySize="0x48">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
+		<comment title="Frequency Of Play" />
+		<float32 name="Random Period Bounds min" offset="0x18" visible="True" />
+		<float32 name="Random Period Bounds max" offset="0x1C" visible="True" />
+		<float32 name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
+		<bitfield32 name="Flags" offset="0x2C" visible="true">
+			<bit name="Don't Play With Alternate" index="0" />
+			<bit name="Don't Play Without Alternate" index="1" />
+			<bit name="Start Immediately With Loop" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
+		<comment title="Random Spatialization" />
+		<degree name="Yaw Bounds min" offset="0x30" visible="True" />
+		<degree name="Yaw Bounds max" offset="0x34" visible="True" />
+		<degree name="Pitch Bounds min" offset="0x38" visible="True" />
+		<degree name="Pitch Bounds max" offset="0x3C" visible="True" />
+		<float32 name="Distance Bounds min" offset="0x40" visible="True" />
+		<float32 name="Distance Bounds max" offset="0x44" visible="True" />
 	</reflexive>
 </plugin>

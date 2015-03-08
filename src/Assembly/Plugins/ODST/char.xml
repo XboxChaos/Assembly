@@ -5,7 +5,40 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Updated and standardized.</revision>
 	</revisions>
-	<int32 name="Character Flags" offset="0x0" visible="true" />
+	<bitfield32 name="Character Flags" offset="0x0" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
 	<tagRef name="Parent Character" offset="0x4" visible="true" />
 	<tagRef name="Unit" offset="0x14" visible="true" />
 	<tagRef name="Creature" offset="0x24" visible="true" />
@@ -189,7 +222,7 @@
 		<float32 name="Notice Projectile Chance" offset="0x1C" visible="true" />
 		<float32 name="Notice Vehicle Chance" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
+		<undefined name="First Acknowledge Surprise Distance" offset="0x28" visible="true" />
 	</reflexive>
 	<reflexive name="Look Properties" offset="0x9C" visible="true" entrySize="0x50">
 		<degree name="Maximum Aiming Deviation y" offset="0x0" visible="true" />
@@ -200,14 +233,14 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<degree name="NonCombat Look Delta L" offset="0x20" visible="true" />
-		<degree name="NonCombat Look Delta R" offset="0x24" visible="true" />
+		<degree name="Noncombat Look Delta L" offset="0x20" visible="true" />
+		<degree name="Noncombat Look Delta R" offset="0x24" visible="true" />
 		<degree name="Combat Look Delta L" offset="0x28" visible="true" />
 		<degree name="Combat Look Delta R" offset="0x2C" visible="true" />
-		<float32 name="NonCombat Idle Looking min" offset="0x30" visible="true" />
-		<float32 name="NonCombat Idle Looking max" offset="0x34" visible="true" />
-		<float32 name="NonCombat Idle Aiming min" offset="0x38" visible="true" />
-		<float32 name="NonCombat Idle Aiming max" offset="0x3C" visible="true" />
+		<float32 name="Noncombat Idle Looking min" offset="0x30" visible="true" />
+		<float32 name="Noncombat Idle Looking max" offset="0x34" visible="true" />
+		<float32 name="Noncombat Idle Aiming min" offset="0x38" visible="true" />
+		<float32 name="Noncombat Idle Aiming max" offset="0x3C" visible="true" />
 		<float32 name="Combat Idle Looking min" offset="0x40" visible="true" />
 		<float32 name="Combat Idle Looking max" offset="0x44" visible="true" />
 		<float32 name="Combat Idle Aiming min" offset="0x48" visible="true" />
@@ -343,9 +376,23 @@
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
-	<undefined name="Swarm Block" offset="0xC0" visible="false" />
-	<undefined name="Swarm Block" offset="0xC4" visible="false" />
-	<undefined name="Swarm Block" offset="0xC8" visible="false" />
+	<reflexive name="Swarm Properties" offset="0xC0" visible="true" entrySize="0x38">
+		<int16 name="Scatter Killed Count" offset="0x0" visible="true" />
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<float32 name="Scatter Radius" offset="0xC" visible="true" />
+		<float32 name="Scatter Distance" offset="0x10" visible="true" />
+		<float32 name="Hound min Distance" offset="0x14" visible="true" />
+		<float32 name="Hound max Distance" offset="0x18" visible="true" />
+		<float32 name="Perlin Offset Scale" offset="0x1C" visible="true" />
+		<float32 name="Offset Period min" offset="0x20" visible="true" />
+		<float32 name="Offset Period max" offset="0x24" visible="true" />
+		<float32 name="Perlin Idle Movement Threshold" offset="0x28" visible="true" />
+		<float32 name="Perlin Combat Movement Threshold" offset="0x2C" visible="true" />
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+	</reflexive>
 	<reflexive name="Ready Properties" offset="0xCC" visible="true" entrySize="0x8">
 		<float32 name="Ready Time Bounds min" offset="0x0" visible="true" />
 		<float32 name="Ready Time Bounds max" offset="0x4" visible="true" />
@@ -386,7 +433,7 @@
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Couch Danger Threshold" offset="0x8" visible="true" />
+		<float32 name="Crouch Danger Threshold" offset="0x8" visible="true" />
 		<float32 name="Stand Danger Threshold" offset="0xC" visible="true" />
 		<float32 name="Fight Danger Move Threshold" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -398,7 +445,7 @@
 	</reflexive>
 	<reflexive name="Charge Properties" offset="0xE4" visible="true" entrySize="0x7C">
 		<bitfield32 name="Charge Flags" offset="0x0" visible="true">
-			<bit name="Offhand Melees Allowed" index="0" />
+			<bit name="Offhand Melee Allowed" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
@@ -526,7 +573,7 @@
 	</reflexive>
 	<reflexive name="Retreat Properties" offset="0x108" visible="true" entrySize="0x58">
 		<bitfield32 name="Retreat Flags" offset="0x0" visible="true">
-			<bit name="ZigZag When Fleeing" index="0" />
+			<bit name="Zig-Zag When Fleeing" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
@@ -573,8 +620,8 @@
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<degree name="ZigZag Angle" offset="0x3C" visible="true" />
-		<float32 name="ZigZag Period" offset="0x40" visible="true" />
+		<degree name="Zig-Zag Angle" offset="0x3C" visible="true" />
+		<float32 name="Zig-Zag Period" offset="0x40" visible="true" />
 		<float32 name="Retreat Grenade Chance" offset="0x44" visible="true" />
 		<tagRef name="Backup Weapon" offset="0x48" visible="true" />
 	</reflexive>
@@ -679,8 +726,45 @@
 		<float32 name="Look Comment Time" offset="0x4" visible="true" />
 		<float32 name="Look Long Comment Time" offset="0x8" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x144" visible="false" entrySize="0x2">
-		<int16 name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Boarding Properties" offset="0x144" visible="true" entrySize="0x14">
+		<bitfield32 name="Flags" offset="0x0" visible="true">
+			<bit name="Airborne Boarding" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
+		<float32 name="Max Distance" offset="0x4" visible="true" />
+		<float32 name="Abort Distance" offset="0x8" visible="true" />
+		<float32 name="Max Speed" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x150" visible="false" entrySize="0x8">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -692,16 +776,16 @@
 	<undefined name="Unknown" offset="0x168" visible="false" />
 	<undefined name="Unknown" offset="0x16C" visible="false" />
 	<undefined name="Unknown" offset="0x170" visible="false" />
-	<reflexive name="Unknown" offset="0x174" visible="false" entrySize="0x38">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+	<reflexive name="Engineer Properties" offset="0x174" visible="true" entrySize="0x38">
+		<float32 name="Unknown" offset="0x0" visible="false" />
+		<float32 name="Unknown" offset="0x4" visible="false" />
+		<float32 name="Unknown" offset="0x8" visible="false" />
+		<float32 name="Unknown" offset="0xC" visible="false" />
+		<float32 name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Shield Amount" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
+		<float32 name="Unknown" offset="0x1C" visible="false" />
+		<float32 name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<tagRef name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
@@ -971,9 +1055,41 @@
 		<int16 name="Unknown" offset="0xCC" visible="false" />
 		<int16 name="Unknown" offset="0xCE" visible="false" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x1C8" visible="false" />
-	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<reflexive name="Morph Properties" offset="0x1C8" visible="true" entrySize="0xE4">
+		<tagRef name="Morph Character 1" offset="0x0" visible="true" />
+		<tagRef name="Morph Character 2" offset="0x10" visible="true" />
+		<tagRef name="Morph Character 3" offset="0x20" visible="true" />
+		<tagRef name="Morph Muffin" offset="0x30" visible="true" />
+		<tagRef name="Morph Weapon 1" offset="0x40" visible="true" />
+		<tagRef name="Morph Weapon 2" offset="0x50" visible="true" />
+		<tagRef name="Morph Weapon 3" offset="0x60" visible="true" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+		<undefined name="Unknown" offset="0x80" visible="false" />
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<tagRef name="Character" offset="0x90" visible="true" />
+		<undefined name="Unknown" offset="0xA0" visible="false" />
+		<stringid name="Unknown" offset="0xA4" visible="false" />
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<undefined name="Unknown" offset="0xC4" visible="false" />
+		<undefined name="Unknown" offset="0xC8" visible="false" />
+		<undefined name="Unknown" offset="0xCC" visible="false" />
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<undefined name="Unknown" offset="0xDC" visible="false" />
+		<undefined name="Unknown" offset="0xE0" visible="false" />
+	</reflexive>
 	<reflexive name="Equipment Properties" offset="0x1D4" visible="true" entrySize="0x24">
 		<tagRef name="Equipment" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
