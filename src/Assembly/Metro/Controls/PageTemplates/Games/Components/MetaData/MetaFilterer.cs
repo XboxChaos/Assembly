@@ -225,7 +225,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		private bool FilterString(MetaField field, string fieldName)
 		{
-			if (fieldName.ToLower().Contains(_filter))
+			if (fieldName != null && fieldName.ToLower().Contains(_filter))
 			{
 				AcceptField(field);
 				return true;
