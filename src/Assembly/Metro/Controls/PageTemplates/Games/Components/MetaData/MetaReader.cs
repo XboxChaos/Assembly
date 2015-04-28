@@ -184,7 +184,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitStringID(StringIDData field)
 		{
 			SeekToOffset(field.Offset);
-			field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
+            try
+            {
+                field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
+            }
+            catch (System.Exception e)
+            {
+                field.Value = "Error: " + e.Message;
+            }
+			
 		}
 
 		public void VisitRawData(RawData field)

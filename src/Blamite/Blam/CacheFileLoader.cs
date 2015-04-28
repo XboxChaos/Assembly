@@ -1,8 +1,10 @@
 ﻿using System;
 using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
+using Blamite.Blam.FourthGen;
 using Blamite.Serialization;
 using Blamite.IO;
+using System.IO;
 
 namespace Blamite.Blam
 {
@@ -19,10 +21,11 @@ namespace Blamite.Blam
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb)
+        //public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, EngineDatabase engineDb)
+        public static ICacheFile LoadCacheFile(IReader map_reader, EngineDatabase engineDb)
 		{
 			EngineDescription tempDesc;
-			return LoadCacheFile(reader, engineDb, out tempDesc);
+            return LoadCacheFile(map_reader, null, null, engineDb, out tempDesc);
 		}
 
 		/// <summary>
@@ -34,16 +37,18 @@ namespace Blamite.Blam
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
+        public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, EngineDatabase engineDb, out EngineDescription engineInfo)
 		{
 			// Set the reader's endianness based upon the file's header magic
-			reader.SeekTo(0);
-			byte[] headerMagic = reader.ReadBlock(4);
-			reader.Endianness = DetermineCacheFileEndianness(headerMagic);
+            map_reader.SeekTo(0);
+            byte[] headerMagic = map_reader.ReadBlock(4);
+            map_reader.Endianness = DetermineCacheFileEndianness(headerMagic);
+            tag_reader.Endianness = DetermineCacheFileEndianness(headerMagic);
+            string_reader.Endianness = DetermineCacheFileEndianness(headerMagic);
 
 			// Load engine version info
-			var version = new CacheFileVersionInfo(reader);
-			if (version.Engine != EngineType.SecondGeneration && version.Engine != EngineType.ThirdGeneration)
+            var version = new CacheFileVersionInfo(map_reader);
+            if (version.Engine != EngineType.SecondGeneration && version.Engine != EngineType.ThirdGeneration && version.Engine != EngineType.FourthGeneration)
 				throw new NotSupportedException("Engine not supported");
 
 			// Load build info
@@ -55,10 +60,16 @@ namespace Blamite.Blam
 			switch (version.Engine)
 			{
 				case EngineType.SecondGeneration:
-					return new SecondGenCacheFile(reader, engineInfo, version.BuildString);
+                    return new SecondGenCacheFile(map_reader, engineInfo, version.BuildString);
 
 				case EngineType.ThirdGeneration:
-					return new ThirdGenCacheFile(reader, engineInfo, version.BuildString);
+                    return new ThirdGenCacheFile(map_reader, engineInfo, version.BuildString);
+
+                case EngineType.FourthGeneration:
+                    if (tag_reader == null) throw new Exception("Can't load Version 4 cache file without tags file.");
+                    if (string_reader == null) throw new Exception("Can't load Version 4 cache file without strings file.");
+
+                    return new FourthGenCacheFile(map_reader, tag_reader, string_reader, engineInfo, version.BuildString);
 
 				default:
 					throw new NotSupportedException("Engine not supported");

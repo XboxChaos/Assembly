@@ -8,7 +8,7 @@ using System.Windows;
 using Assembly.Helpers;
 using Assembly.Helpers.Net;
 using Microsoft.Shell;
-using XBDMCommunicator;
+//using XBDMCommunicator;
 
 namespace Assembly
 {
@@ -69,7 +69,7 @@ namespace Assembly
 			JumpLists.UpdateJumplists();
 
 			// Create XBDM Instance
-			AssemblyStorage.AssemblySettings.Xbdm = new Xbdm(AssemblyStorage.AssemblySettings.XdkNameIp);
+			//AssemblyStorage.AssemblySettings.Xbdm = new Xbdm(AssemblyStorage.AssemblySettings.XdkNameIp);
 
 			// Try and delete all temp data
 			VariousFunctions.EmptyUpdaterLocations();

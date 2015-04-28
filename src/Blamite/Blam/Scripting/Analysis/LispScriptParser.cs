@@ -3,10 +3,10 @@
 // (see accompanying GPPGcopyright.rtf)
 
 // GPPG version 1.5.0
-// Machine:  DESKTOP-WIN8
-// DateTime: 12/26/2013 4:55:26 AM
-// UserName: Alex
-// Input file <Blam\Scripting\Analysis\LispScriptParser.y - 12/26/2013 4:54:04 AM>
+// Machine:  HAYDN-PC
+// DateTime: 27/4/2015 4:33:46 PM
+// UserName: HAYDN
+// Input file <Blam\Scripting\Analysis\LispScriptParser.y - 27/4/2015 4:29:40 PM>
 
 // options: lines gplex
 
@@ -269,8 +269,6 @@ public class LispScriptParser: ShiftReduceParser<ValueType, LexLocation>
     else
         return CharToString((char)terminal);
   }
-
-#line 115 "Blam\Scripting\Analysis\LispScriptParser.y"
 
 #line 116 "Blam\Scripting\Analysis\LispScriptParser.y"
 public LispScriptParser(LispScriptScanner sc)

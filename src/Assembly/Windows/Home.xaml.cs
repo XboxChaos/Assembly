@@ -25,7 +25,7 @@ using Blamite.Blam.ThirdGen;
 using Blamite.IO;
 using Microsoft.Win32;
 using XboxChaos.Models;
-using XBDMCommunicator;
+//using XBDMCommunicator;
 
 namespace Assembly.Windows
 {
@@ -186,9 +186,9 @@ namespace Assembly.Windows
 			var screenshotFileName = Path.GetTempFileName();
 			try
 			{
-				if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
-					App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
-				else
+				//if (App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+				//	App.AssemblyStorage.AssemblySettings.HomeWindow.AddScrenTabModule(screenshotFileName);
+				//else
 					MetroMessageBox.Show("Not Connected", "You are not connected to a debug Xbox 360.");
 			}
 			finally
@@ -199,22 +199,22 @@ namespace Assembly.Windows
 
 		private void menuFreeze_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Freeze();
+			//App.AssemblyStorage.AssemblySettings.Xbdm.Freeze();
 		}
 
 		private void menuUnfreeze_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Unfreeze();
+			//App.AssemblyStorage.AssemblySettings.Xbdm.Unfreeze();
 		}
 
 		private void menuRebootTitle_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Title);
+			//App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Title);
 		}
 
 		private void menuRebootCold_Click(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Cold);
+			//App.AssemblyStorage.AssemblySettings.Xbdm.Reboot(Xbdm.RebootType.Cold);
 		}
 
 		// Help
@@ -501,7 +501,11 @@ namespace Assembly.Windows
 				Title = "",
 				ToolTip = cacheLocation
 			};
-			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
+
+            const string strings_location = "maps/string_ids.dat";
+            const string tags_location = "maps/tags.dat";
+
+            newCacheTab.Content = new HaloMap(cacheLocation, tags_location, strings_location, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
 		}

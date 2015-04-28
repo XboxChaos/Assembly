@@ -30,7 +30,7 @@ using Blamite.Util;
 using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using XBDMCommunicator;
+//using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
@@ -52,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloMap : INotifyPropertyChanged
 	{
-		private readonly string _cacheLocation;
+		private readonly string _cacheLocation, _tagslocation, _stringslocation;
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 		private readonly LayoutDocument _tab;
 
@@ -75,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		/// <param name="cacheLocation"></param>
 		/// <param name="tab"></param>
 		/// <param name="tagSorting"> </param>
-		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting)
+		public HaloMap(string cacheLocation, string tagslocation, string stringslocation, LayoutDocument tab, Settings.TagSort tagSorting)
 		{
 			InitializeComponent();
 			AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
@@ -86,6 +86,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_tab = tab;
 			_tagSorting = tagSorting;
 			_cacheLocation = cacheLocation;
+            _tagslocation = tagslocation;
+            _stringslocation = stringslocation;
 
 			// Update dockpanel location
 			UpdateDockPanelLocation();
@@ -105,7 +107,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
-			initalLoadBackgroundWorker.RunWorkerAsync();
+            string[] args = { tagslocation, stringslocation };
+            initalLoadBackgroundWorker.RunWorkerAsync(args);
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -138,18 +141,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void initalLoadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			InitalizeMap();
+            string[] args = (string[])e.Argument;
+            InitalizeMap(args[0], args[1]);
 		}
 
-		public void InitalizeMap()
+        public void InitalizeMap(string tagsLocation, string stringsLocation)
 		{
-			using (FileStream fileStream = File.OpenRead(_cacheLocation))
+			using (FileStream mapFileStream = File.OpenRead(_cacheLocation))
+            using (FileStream tagsFileStream = File.OpenRead(tagsLocation))
+            using (FileStream stringsFileStream = File.OpenRead(stringsLocation))
 			{
-				var reader = new EndianReader(fileStream, Endian.BigEndian);
+                var map_reader = new EndianReader(mapFileStream, Endian.BigEndian);
+                var tags_reader = new EndianReader(tagsFileStream, Endian.BigEndian);
+                var strings_reader = new EndianReader(stringsFileStream, Endian.BigEndian);
+
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
-						out _buildInfo);
+                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo);
 
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
@@ -167,7 +175,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					Dispatcher.Invoke(new Action(delegate
 					{
-						if (!_0xabad1dea.IWff.Heman(reader))
+                        if (!_0xabad1dea.IWff.Heman(map_reader))
 						{
 							StatusUpdater.Update("Not a supported target engine");
 							MetroMessageBox.Show("Unable to open cache file",
@@ -182,7 +190,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					}));
 					return;
 				}
-				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
 				// Build SID trie
 				_stringIdTrie = new Trie();
@@ -195,16 +202,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Home.TabGenre.StartPage);
 				}));
 
-				// Set up RTE
+				// Set up RTE & Map Manager
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.SecondGeneration:
 						_rteProvider = new H2VistaRTEProvider("halo2.exe");
+                        _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
 						break;
 
 					case EngineType.ThirdGeneration:
-						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						//_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+                        _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
 						break;
+
+                    case EngineType.FourthGeneration:
+                        // TODO: Add HaloOnline patching here
+                        _mapManager = new FileStreamManager(_tagslocation, map_reader.Endianness);
+                        break;
 				}
 
 				Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
@@ -246,8 +260,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				LoadHeader();
 				LoadTags();
-				LoadLocales();
-				LoadScripts();
+				//LoadLocales();
+				//LoadScripts();
 			}
 		}
 
@@ -354,7 +368,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (ITagClass tagClass in _cacheFile.TagClasses)
 			{
 				string name = CharConstant.ToString(tagClass.Magic);
-				string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+				//string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+                string description = "helloworld";
 				var wrapper = new TagClass(tagClass, name, description);
 				classWrappers[tagClass] = wrapper;
 			}
@@ -1528,11 +1543,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private TagEntry WrapTag(ITag tag)
 		{
-			if (tag == null || tag.Class == null || tag.MetaLocation == null)
+			if (tag == null || tag.Class == null)
 				return null;
 
+            
+
 			string className = CharConstant.ToString(tag.Class.Magic);
-			string name = _cacheFile.FileNames.GetTagName(tag);
+			//string name = _cacheFile.FileNames.GetTagName(tag);
+            string name = tag.Index.ToString();
 			if (string.IsNullOrWhiteSpace(name))
 				name = tag.Index.ToString();
 
