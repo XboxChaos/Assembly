@@ -280,14 +280,14 @@ namespace Blamite.Blam.FourthGen.Structures
             List<uint> tagOffsets = new List<uint>();
             for (int i = 0; i < count; i++) tagOffsets.Add(reader.ReadUInt32());
 
-
+            reader.BaseStream.Position = tagOffsets[0];
             for (int i = 0; i < count; i++) // Loop through each offset
             {
                 //if (tagOffsets[i] == 0) tags.Add(null);
                 //else
                 if (tagOffsets[i] != 0)
                 {
-                    var headerOffset = (uint)reader.BaseStream.Position;
+                    //var headerOffset = (uint)reader.BaseStream.Position;
                     /*
                     var checksum = reader.ReadUInt32();                         // 0x00 uint32 checksum?
                     var totalSize = reader.ReadUInt32();                        // 0x04 uint32 total size
@@ -302,13 +302,49 @@ namespace Blamite.Blam.FourthGen.Structures
                     var classId = reader.ReadUInt32();                          // 0x20 uint32 class stringid
                     */
 
+
+
+                    /*
+
                     reader.BaseStream.Position = tagOffsets[i];
                     StructureValueCollection tag_entry_values = StructureReader.ReadStructure(reader, layout);
+                    uint id = tag_entry_values.GetInteger("magic");
+                    if(id == 0x3c66783e )
+                    {
+                        uint x = id;
+                    }
+                    //ITagClass tagclass = TryAddClass(tag_entry_values);
+                    //FourthGenTag tag = new FourthGenTag(new DatumIndex(headerOffset), tagclass, headerOffset);
+
+                    uint tag_offset = tagOffsets[i];
+                    //SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, (int)tag_offset);
+
+
+
+
+
+                    uint dep_size = (tag_entry_values.GetInteger("dependencies count") * 4 + tag_entry_values.GetInteger("data fixups count") * 4 + tag_entry_values.GetInteger("resource fixups count") * 4);
+                    tag_offset += tag_entry_values.GetInteger("total size") - (tag_entry_values.GetInteger("main struct offset") + dep_size);
 
                     ITagClass tagclass = TryAddClass(tag_entry_values);
                     //FourthGenTag tag = new FourthGenTag(new DatumIndex(headerOffset), tagclass, headerOffset);
 
-                    SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, (int)tagOffsets[i]);
+                    SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, (int)(tag_offset));
+
+                    FourthGenTag tag = new FourthGenTag(new DatumIndex(tag_offset), tagclass, pointer);
+                    tags.Add(tag);
+                     * */
+                    var headerOffset = (uint)reader.BaseStream.Position;
+
+                    reader.BaseStream.Position = tagOffsets[i];
+                    StructureValueCollection tag_entry_values = StructureReader.ReadStructure(reader, layout);
+
+                    int structOffset = (int)tag_entry_values.GetInteger("main struct offset");
+                    int metaOffset = (int)tagOffsets[i] + structOffset;
+
+                    ITagClass tagclass = TryAddClass(tag_entry_values);
+
+                    SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, metaOffset);
                     FourthGenTag tag = new FourthGenTag(new DatumIndex(headerOffset), tagclass, pointer);
                     tags.Add(tag);
                 }

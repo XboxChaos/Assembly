@@ -28,8 +28,21 @@
   </layout>
 
   <!-- Tag table entry -->
-  <layout for="tag entry" size="0x8">
+  <layout for="tag entry">
 
+    <!--
+    var checksum = reader.ReadUInt32();                         // 0x00 uint32 checksum?
+    var totalSize = reader.ReadUInt32();                        // 0x04 uint32 total size
+    var numDependencies = reader.ReadInt16();                   // 0x08 int16  dependencies count
+    var numDataFixups = reader.ReadInt16();                     // 0x0A int16  data fixup count
+    var numResourceFixups = reader.ReadInt16();                 // 0x0C int16  resource fixup count
+    reader.BaseStream.Position += 2;                            // 0x0E int16  (padding)
+    var mainStructOffset = reader.ReadUInt32();                 // 0x10 uint32 main struct offset
+    var tagClass = reader.ReadInt32();                          // 0x14 int32  class
+    var parentClass = reader.ReadInt32();                       // 0x18 int32  parent class
+    var grandparentClass = reader.ReadInt32();                  // 0x1C int32  grandparent class
+    var classId = reader.ReadUInt32();                          // 0x20 uint32 class stringid
+    -->
 
     <int32 name="checksum" offset="0x00" />
     <int32 name="datum index salt" offset="0x00" />
