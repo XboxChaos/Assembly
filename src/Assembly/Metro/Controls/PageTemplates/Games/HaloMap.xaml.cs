@@ -1587,12 +1587,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			string className = CharConstant.ToString(tag.Class.Magic);
             //string name = tag.Index.ToString();
             
-            string name;
+            string name = "";
 
             if (_cacheFile.FileNames != null)
                 name = _cacheFile.FileNames.GetTagName(tag);
-            else
-                name = _cacheFile.StringIDs.GetString((int)tag.Index.Value);
+            //else
+                //name = _cacheFile.StringIDs.GetString((int)tag.Index.Value);
 
 			if (string.IsNullOrWhiteSpace(name))
 				name = tag.Index.ToString();

@@ -345,7 +345,7 @@ namespace Blamite.Blam.FourthGen.Structures
                     ITagClass tagclass = TryAddClass(tag_entry_values);
 
                     SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, metaOffset);
-                    FourthGenTag tag = new FourthGenTag(new DatumIndex(headerOffset), tagclass, pointer);
+                    FourthGenTag tag = new FourthGenTag(new DatumIndex((uint)i), tagclass, pointer);
                     tags.Add(tag);
                 }
             }
