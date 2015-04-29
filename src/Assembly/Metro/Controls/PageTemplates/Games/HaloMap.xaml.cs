@@ -32,6 +32,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 //using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
+using Blamite.Blam.FourthGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -145,11 +146,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             InitalizeMap(args[0], args[1]);
 		}
 
+        private FileStream TryInitFilestream(string filepath)
+        {
+            try
+            {
+                FileStream fs = File.OpenRead(filepath);
+                return fs;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public void InitalizeMap(string tagsLocation, string stringsLocation)
 		{
 			using (FileStream mapFileStream = File.OpenRead(_cacheLocation))
-            using (FileStream tagsFileStream = File.OpenRead(tagsLocation))
-            using (FileStream stringsFileStream = File.OpenRead(stringsLocation))
+            using (FileStream tagsFileStream = TryInitFilestream(tagsLocation))
+            using (FileStream stringsFileStream = TryInitFilestream(stringsLocation))
 			{
                 var map_reader = new EndianReader(mapFileStream, Endian.BigEndian);
                 var tags_reader = new EndianReader(tagsFileStream, Endian.BigEndian);
@@ -368,8 +382,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (ITagClass tagClass in _cacheFile.TagClasses)
 			{
 				string name = CharConstant.ToString(tagClass.Magic);
-				//string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
-                string description = "helloworld";
+
+                string description = tagClass.Description.Value.ToString();
+                switch(_cacheFile.Engine)
+                {
+                    case EngineType.FourthGeneration:
+                        FourthGenCacheFile cache_file = (FourthGenCacheFile)_cacheFile;
+                        description = cache_file.StringIDs.GetString(tagClass.Description);
+                        break;
+                    default:
+                        description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+                        break;
+                }
 				var wrapper = new TagClass(tagClass, name, description);
 				classWrappers[tagClass] = wrapper;
 			}
@@ -634,7 +658,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					if (tag == null || tag.Class != tagClass.RawClass) continue;
 
-					string name = _cacheFile.FileNames.GetTagName(tag);
+                    string name;
+                    switch (_cacheFile.Engine)
+                    {
+                        case EngineType.FourthGeneration:
+                            FourthGenCacheFile cache_file = (FourthGenCacheFile)_cacheFile;
+                            //name = cache_file.Test((uint)tag.Class.Magic);
+                            name = "";
+                            break;
+                        default:
+                            name = _cacheFile.FileNames.GetTagName(tag);
+                            break;
+                    }
+					
 					if (name != null)
 						writer.WriteLine("{0}={1}", tag.Index, name);
 				}
@@ -1549,8 +1585,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             
 
 			string className = CharConstant.ToString(tag.Class.Magic);
-			//string name = _cacheFile.FileNames.GetTagName(tag);
-            string name = tag.Index.ToString();
+            //string name = tag.Index.ToString();
+            
+            string name;
+
+            if (_cacheFile.FileNames != null)
+                name = _cacheFile.FileNames.GetTagName(tag);
+            else
+                name = _cacheFile.StringIDs.GetString((int)tag.Index.Value);
+
 			if (string.IsNullOrWhiteSpace(name))
 				name = tag.Index.ToString();
 

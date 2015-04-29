@@ -66,8 +66,8 @@ namespace Blamite.Blam
                     return new ThirdGenCacheFile(map_reader, engineInfo, version.BuildString);
 
                 case EngineType.FourthGeneration:
-                    if (tag_reader == null) throw new Exception("Can't load Version 4 cache file without tags file.");
-                    if (string_reader == null) throw new Exception("Can't load Version 4 cache file without strings file.");
+                    if (tag_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without tags file. Please make sure that tags.dat is in the same folder at the map file.");
+                    if (string_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without strings file. Please make sure that tags.dat is in the same folder at the map file.");
 
                     return new FourthGenCacheFile(map_reader, tag_reader, string_reader, engineInfo, version.BuildString);
 

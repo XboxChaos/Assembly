@@ -28,7 +28,7 @@ namespace Blamite.Blam.FourthGen
 		private FourthGenLanguagePackLoader _languageLoader;
 		private FourthGenResourceMetaLoader _resourceMetaLoader;
 		private IResourceManager _resources;
-		private IndexedStringIDSource _stringIds;
+        private StringIDSource _stringIds;
 		private FourthGenTagTable _tags;
 		private FourthGenSimulationDefinitionTable _simulationDefinitions;
 
@@ -261,12 +261,8 @@ namespace Blamite.Blam.FourthGen
 
         private void LoadStringIDs(IReader reader)
 		{
-			if (_header.StringIDCount > 0)
-			{
-				var stringTable = new IndexedStringTable(reader, _header.StringIDCount, _header.StringIDIndexTable,
-					_header.StringIDData, _buildInfo.StringIDKey);
-				_stringIds = new IndexedStringIDSource(stringTable, _buildInfo.StringIDs);
-			}
+            var stringTable = new FourthGenIndexedStringTable(reader);
+            _stringIds = new FourthGenIndexedStringIDSource(stringTable, _buildInfo.StringIDs);
 		}
 
 		private void LoadLanguageGlobals(IReader reader)

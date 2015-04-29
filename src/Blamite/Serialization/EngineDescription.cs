@@ -78,7 +78,7 @@ namespace Blamite.Serialization
 		///     Gets the stringID set resolver for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public StringIDSetResolver StringIDs { get; private set; }
+        public IStringIDResolver StringIDs { get; private set; }
 
 		/// <summary>
 		///     Gets scripting info for the engine.
