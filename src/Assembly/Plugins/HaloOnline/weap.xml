@@ -3,6 +3,7 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="AussieBacom" version="2">Analysed Plugin.</revision>
 	</revisions>
 	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
@@ -202,7 +203,7 @@
 	<reflexive name="Widgets" offset="0xD8" visible="true" entrySize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Change Colors" offset="0xE4" visible="false" entrySize="0x18">
+	<reflexive name="Change Colors" offset="0xE4" visible="true" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="false" entrySize="0x20">
 			<undefined name="Weight" offset="0x0" visible="false" />
 			<Colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
@@ -829,7 +830,51 @@
 	<reflexive name="Barrels" offset="0x4B0" visible="false" entrySize="0x1AC">
 	<!--
 	This is somehow going to have the majority if not all of this data at some point
+
+		
+		<stringid name="Optional Barrel Marker Name" offset="0x30" visible="true" />
+		<enum16 name="Prediction Type" offset="0x34" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Continuous" value="0x1" />
+			<option name="Instant" value="0x2" />
+		</enum16>
+		<enum16 name="Firing Noise" offset="0x36" visible="true">
+			<option name="Silent" value="0x0" />
+			<option name="Medium" value="0x1" />
+			<option name="Loud" value="0x2" />
+			<option name="Shout" value="0x3" />
+			<option name="Quiet" value="0x4" />
+		</enum16>
+		<comment title="Error" />
+		<float32 name="Acceleration Time" offset="0x38" visible="true" />
+		<float32 name="Deceleration Time" offset="0x3C" visible="true" />
+		<float32 name="Damage Error min" offset="0x40" visible="true" />
+		<float32 name="Damage Error max" offset="0x44" visible="true" />
+		<comment title="Turning" />
+		<degree name="Base Turning Speed" offset="0x48" visible="true" />
+		<degree name="Dynamic Turning Speed min" offset="0x4C" visible="true" />
+		<degree name="Dynamic Turning Speed max" offset="0x50" visible="true" />
+		<comment title="Dual Weapon Error" />
+		<float32 name="Acceleration Time" offset="0x54" visible="true" />
+		<float32 name="Deceleration Time" offset="0x58" visible="true" />
+		<float32 name="Unknown" offset="0x5C" visible="false" />
+		<float32 name="Unknown" offset="0x60" visible="false" />
+		<degree name="Minimum Error" offset="0x64" visible="true" />
+		<degree name="Error Angle min" offset="0x68" visible="true" />
+		<degree name="Error Angle max" offset="0x6C" visible="true" />
+		<float32 name="Dual Wield Damage Scale" offset="0x70" visible="true" />
+		<comment title="Projectile" />
+		<enum16 name="Distribution Function" offset="0x74" visible="true">
+			<option name="Point" value="0x0" />
+			<option name="Horizontal Fan" value="0x1" />
+		</enum16>
+		<int16 name="Projectiles Per Shot" offset="0x76" visible="true" />
+		<degree name="Distribution Angle" offset="0x78" visible="true" />
+		<degree name="Minimum Error" offset="0x7C" visible="true" />
+		<degree name="Error Angle min" offset="0x80" visible="true" />
+		<degree name="Error Angle max" offset="0x84" visible="true" />
 	
+	-->
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Tracks Fired Projectile" index="0" />
 			<bit name="Random Firing Effects" index="1" />
@@ -878,7 +923,8 @@
 		<int16 name="Rounds Per Shot" offset="0x2A" visible="true" />
 		<int16 name="Minimum Rounds Loaded" offset="0x2C" visible="true" />
 		<int16 name="Rounds Between Tracers" offset="0x2E" visible="true" />
-		<stringid name="Optional Barrel Marker Name" offset="0x30" visible="true" />
+		
+				<stringid name="Optional Barrel Marker Name" offset="0x30" visible="true" />
 		<enum16 name="Prediction Type" offset="0x34" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Continuous" value="0x1" />
@@ -919,42 +965,6 @@
 		<degree name="Minimum Error" offset="0x7C" visible="true" />
 		<degree name="Error Angle min" offset="0x80" visible="true" />
 		<degree name="Error Angle max" offset="0x84" visible="true" />
-	
-	-->
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1090,7 +1100,7 @@
 		<float32 name="Rate Of Fire Acceleration Time" offset="0x190" visible="true" />
 		<float32 name="Rate Of Fire Deceleration Time" offset="0x194" visible="true" />
 		<float32 name="Unknown" offset="0x198" visible="false" />
-		<float32 name="Unknown" offset="0x19C" visible="false" />
+		<float32 name="Bloom Rate of Decay" offset="0x19C" visible="true" />
 		<reflexive name="Firing Effects" offset="0x1A0" visible="true" entrySize="0xC4">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" />
