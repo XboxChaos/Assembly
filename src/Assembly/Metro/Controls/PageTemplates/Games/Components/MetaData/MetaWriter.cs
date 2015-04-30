@@ -25,16 +25,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly SaveType _type;
 		private readonly IWriter _writer;
 		private uint _baseOffset;
+		private uint _headerOffset;
+
 
 		private bool _pokeTemplateFields = true;
 
 		/// <summary>
 		///     Save meta to the Blam Cache File
 		/// </summary>
-		public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
+		public MetaWriter(IWriter writer, uint headerOffset, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
 			FieldChangeSet changes, Trie stringIdTrie)
-		{
+ 		{
 			_writer = writer;
+			_headerOffset = headerOffset;
 			_baseOffset = baseOffset;
 			_cache = cache;
 			_type = type;
@@ -358,6 +361,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			// Get the base address and convert it to an offset if we're writing to the file
 			uint newBaseOffset = field.FirstEntryAddress;
+			if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+				newBaseOffset = _headerOffset + (newBaseOffset & 0xFFFFFFF);
+
 			if (_type == SaveType.File)
 				newBaseOffset = (uint) _cache.MetaArea.PointerToOffset(newBaseOffset);
 

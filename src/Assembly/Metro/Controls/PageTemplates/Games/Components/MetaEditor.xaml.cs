@@ -119,11 +119,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Set the stream manager and base offset to use based upon the LoadType
 			IStreamManager streamManager = null;
 			uint baseOffset = 0;
+			uint headerOffset = 0;
 			switch (type)
 			{
 				case MetaReader.LoadType.File:
 					streamManager = _fileManager;
 					baseOffset = (uint) _tag.RawTag.MetaLocation.AsOffset();
+					headerOffset = _tag.RawTag.HeaderLocation == null ? 0 : (uint)_tag.RawTag.HeaderLocation.AsOffset();
 					break;
 
 				case MetaReader.LoadType.Memory:
@@ -157,7 +159,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_fileChanges = new FieldChangeSet();
 			_memoryChanges = new FieldChangeSet();
 
-			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
+			var metaReader = new MetaReader(streamManager, headerOffset, baseOffset, _cache, _buildInfo, type, _fileChanges);
 			_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);
 			metaReader.ReadFields(_pluginVisitor.Values);
@@ -236,9 +238,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				using (IStream stream = _fileManager.OpenReadWrite())
 				{
 #if DEBUG_SAVE_ALL
-                    MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
+					MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.HeaderLocation.AsOffset(), (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
+					var metaUpdate = new MetaWriter(stream, _tag.RawTag.HeaderLocation == null ? 0 : (uint)_tag.RawTag.HeaderLocation.AsOffset(), (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
 						_fileChanges, _stringIdTrie);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
@@ -256,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (metaStream != null)
 					{
 						FieldChangeSet changes = onlyUpdateChanged ? _memoryChanges : null;
-						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
+						var metaUpdate = new MetaWriter(metaStream, _tag.RawTag.HeaderLocation == null ? 0 : _tag.RawTag.HeaderLocation.AsPointer(), _tag.RawTag.MetaLocation.AsPointer(), _cache, _buildInfo, type,
 							changes, _stringIdTrie);
 						metaUpdate.WriteFields(_pluginVisitor.Values);
 
@@ -844,7 +846,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				// Force a save back to the file
 				var changes = new FieldChangeSet();
 				changes.MarkChanged(field);
-				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+				var metaUpdate = new MetaWriter(stream, _tag.RawTag.HeaderLocation == null ? 0 : (uint)_tag.RawTag.HeaderLocation.AsOffset(), (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
 					MetaWriter.SaveType.File, changes, _stringIdTrie);
 				metaUpdate.WriteFields(_pluginVisitor.Values);
 				_fileChanges.MarkUnchanged(field);
