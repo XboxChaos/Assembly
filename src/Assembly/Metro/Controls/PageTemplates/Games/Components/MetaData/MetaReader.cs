@@ -24,11 +24,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly LoadType _type;
 		private IReader _reader;
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
-			LoadType type, FieldChangeSet ignore)
+		public MetaReader(IStreamManager streamManager, uint headerOffset, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
+ 			LoadType type, FieldChangeSet ignore)
 		{
 			_streamManager = streamManager;
 			BaseOffset = baseOffset;
+			HeaderOffset = headerOffset;
 			_cache = cache;
 			_ignoredFields = ignore;
 			_type = type;
@@ -40,6 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public uint BaseOffset { get; set; }
+		public uint HeaderOffset { get; set; }
 
 		public void VisitBitfield(BitfieldData field)
 		{
@@ -314,7 +316,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			uint pointer = values.GetInteger("pointer");
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
+			if (length < 0)
 			{
 				length = 0;
 				pointer = 0;
@@ -391,6 +393,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				// Calculate the base offset to read from
 				uint oldBaseOffset = BaseOffset;
 				uint dataOffset = reflexive.FirstEntryAddress;
+				if(_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+					dataOffset = HeaderOffset + (dataOffset & 0xFFFFFFF);
+
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
 				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);

@@ -123,7 +123,7 @@ namespace Blamite.Blam.FourthGen.Structures
             FileSegmentGroup segmentgroup = new FileSegmentGroup();
 
             SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, (int)offset);
-            FourthGenTag result = new FourthGenTag(index, tagClass, pointer);
+            FourthGenTag result = new FourthGenTag(index, tagClass, pointer, pointer);
 
             _tags.Add(result);
 
@@ -252,6 +252,14 @@ namespace Blamite.Blam.FourthGen.Structures
             return tagclass;
         }
 
+        private const uint TagHeaderSize = 0x24;
+        private const uint FixupPointerBase = 0x40000000;
+        private static uint CalculateHeaderSize(int numRequiredTags, int numDataFixups, int numResourceFixups)
+        {
+            // After the static header, there's 4 bytes per required tag index and 4 bytes per fixup pointer
+            return (uint)(TagHeaderSize + numRequiredTags * 4 + numDataFixups * 4 + numResourceFixups * 4);
+        }
+
 		private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagClass> classes)
 		{
             /*
@@ -301,9 +309,6 @@ namespace Blamite.Blam.FourthGen.Structures
                     var grandparentClass = reader.ReadInt32();                  // 0x1C int32  grandparent class
                     var classId = reader.ReadUInt32();                          // 0x20 uint32 class stringid
                     */
-
-
-
                     /*
 
                     reader.BaseStream.Position = tagOffsets[i];
@@ -319,10 +324,6 @@ namespace Blamite.Blam.FourthGen.Structures
                     uint tag_offset = tagOffsets[i];
                     //SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, (int)tag_offset);
 
-
-
-
-
                     uint dep_size = (tag_entry_values.GetInteger("dependencies count") * 4 + tag_entry_values.GetInteger("data fixups count") * 4 + tag_entry_values.GetInteger("resource fixups count") * 4);
                     tag_offset += tag_entry_values.GetInteger("total size") - (tag_entry_values.GetInteger("main struct offset") + dep_size);
 
@@ -334,18 +335,24 @@ namespace Blamite.Blam.FourthGen.Structures
                     FourthGenTag tag = new FourthGenTag(new DatumIndex(tag_offset), tagclass, pointer);
                     tags.Add(tag);
                      * */
-                    var headerOffset = (uint)reader.BaseStream.Position;
 
-                    reader.BaseStream.Position = tagOffsets[i];
+                    var headerOffset = tagOffsets[i];
+                    reader.BaseStream.Position = headerOffset;
+
                     StructureValueCollection tag_entry_values = StructureReader.ReadStructure(reader, layout);
+
+                    reader.BaseStream.Position = tagOffsets[i] + 0x24;
 
                     int structOffset = (int)tag_entry_values.GetInteger("main struct offset");
                     int metaOffset = (int)tagOffsets[i] + structOffset;
 
                     ITagClass tagclass = TryAddClass(tag_entry_values);
 
+                    //SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, metaOffset);
+                    //FourthGenTag tag = new FourthGenTag(new DatumIndex((uint)i), tagclass, pointer);
+                    SegmentPointer hdrPointer = new SegmentPointer(segment, segmentgroup, (int)headerOffset);
                     SegmentPointer pointer = new SegmentPointer(segment, segmentgroup, metaOffset);
-                    FourthGenTag tag = new FourthGenTag(new DatumIndex((uint)i), tagclass, pointer);
+                    FourthGenTag tag = new FourthGenTag(new DatumIndex(headerOffset), tagclass, hdrPointer, pointer);
                     tags.Add(tag);
                 }
             }

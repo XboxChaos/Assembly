@@ -141,9 +141,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _firstEntryAddr; }
 			set
 			{
-				if (value != 0 && !_metaArea.ContainsPointer(value))
-					throw new ArgumentException("Invalid pointer");
-
 				_firstEntryAddr = value;
 				NotifyPropertyChanged("FirstEntryAddress");
 				NotifyPropertyChanged("FirstEntryAddressHex");

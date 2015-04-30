@@ -98,22 +98,31 @@ namespace Blamite.Blam.FourthGen.Structures
 {
 	public class FourthGenTag : ITag
 	{
-		public FourthGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer metaLocation)
+		public FourthGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer headerLocation, SegmentPointer metaLocation)
 		{
 			Index = index;
 			Class = tagClass;
 			MetaLocation = metaLocation;
+			HeaderLocation = headerLocation;
 		}
 
+        /*
         public FourthGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea,
 			IList<ITagClass> classList)
 		{
 			Load(values, index, metaArea, classList);
 		}
+        */
+
+        public FourthGenTag(StructureValueCollection values, ushort index, FileSegmentGroup header, FileSegmentGroup metaArea, IList<ITagClass> classList)
+		{
+			Load(values, index, header, metaArea, classList);
+		}
 
 		public DatumIndex Index { get; private set; }
 		public ITagClass Class { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
+        public SegmentPointer HeaderLocation { get; set; }
 
 		public StructureValueCollection Serialize(IList<ITagClass> classList)
 		{
@@ -124,6 +133,28 @@ namespace Blamite.Blam.FourthGen.Structures
 			return result;
 		}
 
+
+		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup header, FileSegmentGroup metaArea, IList<ITagClass> classList)
+		{
+			uint address = values.GetInteger("memory address");
+			if (address != 0 && address != 0xFFFFFFFF)
+			{
+				MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+				HeaderLocation = SegmentPointer.FromPointer(address, header);
+			}
+
+			var classIndex = (int)values.GetInteger("class index");
+			if (classIndex >= 0 && classIndex < classList.Count)
+				Class = classList[classIndex];
+
+			var salt = (ushort)values.GetInteger("datum index salt");
+			if (salt != 0xFFFF)
+				Index = new DatumIndex(salt, index);
+			else
+				Index = DatumIndex.Null;
+		}
+
+	    /*
 		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
 		{
 			uint address = values.GetInteger("memory address");
@@ -140,5 +171,6 @@ namespace Blamite.Blam.FourthGen.Structures
 			else
 				Index = DatumIndex.Null;
 		}
+	     * */
 	}
 }

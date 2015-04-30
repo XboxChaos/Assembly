@@ -36,6 +36,11 @@ namespace Blamite.Blam
 		SegmentPointer MetaLocation { get; set; }
 
 		/// <summary>
+		///     The pointer to the tag's header. Can be null.
+		/// </summary>
+		SegmentPointer HeaderLocation { get; set; }
+
+		/// <summary>
 		///     The tag's datum index.
 		/// </summary>
 		DatumIndex Index { get; }
