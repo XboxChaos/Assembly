@@ -355,6 +355,11 @@ namespace Blamite.Blam.FourthGen.Structures
                     FourthGenTag tag = new FourthGenTag(new DatumIndex((uint)i), tagclass, hdrPointer, pointer);
                     tags.Add(tag);
                 }
+                else // Null Tag
+                {
+                    FourthGenTag tag = new FourthGenTag(new DatumIndex((uint)i), null, null, null);
+                    tags.Add(tag);
+                }
             }
 
             return tags.Where(t => t != null).ToList(); // Remove NULL Entries
