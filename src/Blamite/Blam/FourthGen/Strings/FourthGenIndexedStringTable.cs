@@ -8,17 +8,6 @@ using Blamite.Blam.Util;
 using Blamite.IO;
 using Blamite.Util;
 
-namespace Blamite.Blam.FourthGen.Strings
-{
-    class FourthGenIndexedStringTable
-    {
-    }
-}
-
-
-
-
-
 namespace Blamite.Blam
 {
 	/// <summary>
@@ -35,26 +24,14 @@ namespace Blamite.Blam
 
         public FourthGenIndexedStringTable(IReader reader)
 		{
-            /*
-            reader.SeekTo(0x0);
-            int count = reader.ReadInt32();
-            int data_size = reader.ReadInt32();
+            Load(reader);
+		}
 
-            // Retrieve data offsets
-            List<int> data_offsets = new List<int>();
-
-            for (int i = 0; i < count; i++) data_offsets.Add(reader.ReadInt32());
-
-            var offset = reader.BaseStream.Position;
-
-            // Retrieve strings
-            _strings = new List<string>();
-            for (int i = 0; i < count; i++)
-            {
-                reader.SeekTo(data_offsets[i] + offset);
-                _strings.Add(reader.ReadAscii());
-            }
-             * */
+        /// <summary>
+        ///     Loads the strings into the StringTable
+        /// </summary>
+        private void Load(IReader reader)
+        {
             reader.SeekTo(0);
             // Read the header
             var stringCount = reader.ReadInt32();  // int32 string count
@@ -77,7 +54,7 @@ namespace Blamite.Blam
                 reader.BaseStream.Position = dataOffset + offset;
                 _strings.Add(reader.ReadAscii());
             }
-		}
+        }
 
 		/// <summary>
 		///     Gets the number of strings in the table.

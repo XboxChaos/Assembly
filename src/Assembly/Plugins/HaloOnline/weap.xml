@@ -536,29 +536,28 @@
 		<option name="Plasma Cannon" value="0x24" />
 		<option name="Plasma Mortar" value="0x25" />
 		<option name="Plasma Turret" value="0x26" />
-		<option name="Shade Turret" value="0x27" />
-		<option name="Banshee" value="0x28" />
-		<option name="Ghost" value="0x29" />
-		<option name="Mongoose" value="0x2A" />
-		<option name="Scorpion" value="0x2B" />
-		<option name="Scorpion Gunner" value="0x2C" />
-		<option name="Spectre" value="0x2D" />
-		<option name="Spectre Gunner" value="0x2E" />
-		<option name="Warthog" value="0x2F" />
-		<option name="Warthog Gunner" value="0x30" />
-		<option name="Warthog Gauss Turret" value="0x31" />
-		<option name="Wraith" value="0x32" />
-		<option name="Wraith Gunner" value="0x33" />
-		<option name="Tank" value="0x34" />
-		<option name="Chopper" value="0x35" />
-		<option name="Hornet" value="0x36" />
-		<option name="Mantis" value="0x37" />
-		<option name="Prowler" value="0x38" />
-		<option name="Sentinel Beam" value="0x39" />
-		<option name="Sentinel RPG" value="0x3A" />
-		<option name="Teleporter" value="0x3B" />
-		<option name="Tripmine" value="0x3C" />
-		<option name="Elephant Turret" value="0x3D" />
+		<option name="Banshee" value="0x27" />
+		<option name="Ghost" value="0x28" />
+		<option name="Mongoose" value="0x29" />
+		<option name="Scorpion" value="0x2A" />
+		<option name="Scorpion Gunner" value="0x2B" />
+		<option name="Spectre" value="0x2C" />
+		<option name="Spectre Gunner" value="0x2D" />
+		<option name="Warthog" value="0x2E" />
+		<option name="Warthog Gunner" value="0x2F" />
+		<option name="Warthog Gauss Turret" value="0x30" />
+		<option name="Wraith" value="0x31" />
+		<option name="Wraith Gunner" value="0x32" />
+		<option name="Tank" value="0x33" />
+		<option name="Chopper" value="0x34" />
+		<option name="Hornet" value="0x35" />
+		<option name="Mantis" value="0x36" />
+		<option name="Prowler" value="0x37" />
+		<option name="Sentinel Beam" value="0x38" />
+		<option name="Sentinel RPG" value="0x39" />
+		<option name="Teleporter" value="0x3A" />
+		<option name="Tripmine" value="0x3B" />
+		<option name="Elephant Turret" value="0x3C" />
 	</enum8>
 	<int8 name="Unknown" offset="0x365" visible="false" />
 	<int16 name="Magnification Levels" offset="0x366" visible="true" />
@@ -639,12 +638,14 @@
 		<option name="Energy Sword" value="0x6" />
 		<option name="Spartan Laser" value="0x7" />
 	</enum16>
-		<enum16 name="Version Type : WARNING NO ORDER" offset="0x468" visible="true">
+		<enum16 name="Variant Type:" offset="0x468" visible="true">
 		<option name="Default" value="0x0" />
-		<option name="Damage" value="0x1" />
-		<option name="Range" value="0x2" />
-		<option name="Rate of Fire" value="0x2" />
-		<option name="Golden" value="0x2" />
+		<option name="Magazine" value="0x1" />
+		<option name="Damage" value="0x2" />
+		<option name="Accuracy" value="0x3" />
+		<option name="Rate of Fire" value="0x4" />
+		<option name="Range" value="0x5" />
+		<option name="Power Weapon" value="0x6" />
 	</enum16>
 	<int16 name="Unknown" offset="0x46A" visible="false" />
 	<undefined name="Unknown" offset="0x46C" visible="false" />
@@ -652,7 +653,7 @@
 		<tagRef name="First Person Model" offset="0x0" visible="true" />
 		<tagRef name="First Person Animations" offset="0x10" visible="true" />
 	</reflexive>
-	<tagRef name="HUD Interface" offset="0x47C" visible="false" />
+	<tagRef name="HUD Interface" offset="0x47C" visible="true" />
 	<undefined name="Unknown" offset="0x48C" visible="false" />
 	<undefined name="Unknown" offset="0x490" visible="false" />
 	<undefined name="Unknown" offset="0x494" visible="false" />
@@ -827,54 +828,7 @@
 			<float32 name="Percentage" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
-	<reflexive name="Barrels" offset="0x4B0" visible="false" entrySize="0x1AC">
-	<!--
-	This is somehow going to have the majority if not all of this data at some point
-
-		
-		<stringid name="Optional Barrel Marker Name" offset="0x30" visible="true" />
-		<enum16 name="Prediction Type" offset="0x34" visible="true">
-			<option name="None" value="0x0" />
-			<option name="Continuous" value="0x1" />
-			<option name="Instant" value="0x2" />
-		</enum16>
-		<enum16 name="Firing Noise" offset="0x36" visible="true">
-			<option name="Silent" value="0x0" />
-			<option name="Medium" value="0x1" />
-			<option name="Loud" value="0x2" />
-			<option name="Shout" value="0x3" />
-			<option name="Quiet" value="0x4" />
-		</enum16>
-		<comment title="Error" />
-		<float32 name="Acceleration Time" offset="0x38" visible="true" />
-		<float32 name="Deceleration Time" offset="0x3C" visible="true" />
-		<float32 name="Damage Error min" offset="0x40" visible="true" />
-		<float32 name="Damage Error max" offset="0x44" visible="true" />
-		<comment title="Turning" />
-		<degree name="Base Turning Speed" offset="0x48" visible="true" />
-		<degree name="Dynamic Turning Speed min" offset="0x4C" visible="true" />
-		<degree name="Dynamic Turning Speed max" offset="0x50" visible="true" />
-		<comment title="Dual Weapon Error" />
-		<float32 name="Acceleration Time" offset="0x54" visible="true" />
-		<float32 name="Deceleration Time" offset="0x58" visible="true" />
-		<float32 name="Unknown" offset="0x5C" visible="false" />
-		<float32 name="Unknown" offset="0x60" visible="false" />
-		<degree name="Minimum Error" offset="0x64" visible="true" />
-		<degree name="Error Angle min" offset="0x68" visible="true" />
-		<degree name="Error Angle max" offset="0x6C" visible="true" />
-		<float32 name="Dual Wield Damage Scale" offset="0x70" visible="true" />
-		<comment title="Projectile" />
-		<enum16 name="Distribution Function" offset="0x74" visible="true">
-			<option name="Point" value="0x0" />
-			<option name="Horizontal Fan" value="0x1" />
-		</enum16>
-		<int16 name="Projectiles Per Shot" offset="0x76" visible="true" />
-		<degree name="Distribution Angle" offset="0x78" visible="true" />
-		<degree name="Minimum Error" offset="0x7C" visible="true" />
-		<degree name="Error Angle min" offset="0x80" visible="true" />
-		<degree name="Error Angle max" offset="0x84" visible="true" />
-	
-	-->
+	<reflexive name="Barrels" offset="0x4B0" visible="true" entrySize="0x1AC">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Tracks Fired Projectile" index="0" />
 			<bit name="Random Firing Effects" index="1" />
@@ -995,7 +949,6 @@
 		<undefined name="Unknown" offset="0xF4" visible="false" />
 		<undefined name="Unknown" offset="0xF8" visible="false" />
 		<undefined name="Unknown" offset="0xFC" visible="false" />
-		<!-- Upto this point here -->
 		<reflexive name="First Person Offsets" offset="0x100" visible="true" entrySize="0xC">
 			<float32 name="First Person Offset x" offset="0x0" visible="true" />
 			<float32 name="First Person Offset y" offset="0x4" visible="true" />
@@ -1041,29 +994,28 @@
 			<option name="Plasma Cannon" value="0x24" />
 			<option name="Plasma Mortar" value="0x25" />
 			<option name="Plasma Turret" value="0x26" />
-			<option name="Shade Turret" value="0x27" />
-			<option name="Banshee" value="0x28" />
-			<option name="Ghost" value="0x29" />
-			<option name="Mongoose" value="0x2A" />
-			<option name="Scorpion" value="0x2B" />
-			<option name="Scorpion Gunner" value="0x2C" />
-			<option name="Spectre" value="0x2D" />
-			<option name="Spectre Gunner" value="0x2E" />
-			<option name="Warthog" value="0x2F" />
-			<option name="Warthog Gunner" value="0x30" />
-			<option name="Warthog Gauss Turret" value="0x31" />
-			<option name="Wraith" value="0x32" />
-			<option name="Wraith Gunner" value="0x33" />
-			<option name="Tank" value="0x34" />
-			<option name="Chopper" value="0x35" />
-			<option name="Hornet" value="0x36" />
-			<option name="Mantis" value="0x37" />
-			<option name="Prowler" value="0x38" />
-			<option name="Sentinel Beam" value="0x39" />
-			<option name="Sentinel RPG" value="0x3A" />
-			<option name="Teleporter" value="0x3B" />
-			<option name="Tripmine" value="0x3C" />
-			<option name="Elephant Turret" value="0x3D" />
+			<option name="Banshee" value="0x27" />
+			<option name="Ghost" value="0x28" />
+			<option name="Mongoose" value="0x29" />
+			<option name="Scorpion" value="0x2A" />
+			<option name="Scorpion Gunner" value="0x2B" />
+			<option name="Spectre" value="0x2C" />
+			<option name="Spectre Gunner" value="0x2D" />
+			<option name="Warthog" value="0x2E" />
+			<option name="Warthog Gunner" value="0x2F" />
+			<option name="Warthog Gauss Turret" value="0x30" />
+			<option name="Wraith" value="0x31" />
+			<option name="Wraith Gunner" value="0x32" />
+			<option name="Tank" value="0x33" />
+			<option name="Chopper" value="0x34" />
+			<option name="Hornet" value="0x35" />
+			<option name="Mantis" value="0x36" />
+			<option name="Prowler" value="0x37" />
+			<option name="Sentinel Beam" value="0x38" />
+			<option name="Sentinel RPG" value="0x39" />
+			<option name="Teleporter" value="0x3A" />
+			<option name="Tripmine" value="0x3B" />
+			<option name="Elephant Turret" value="0x3C" />
 		</enum8>
 		<int8 name="Unknown" offset="0x10D" visible="false" />
 		<int16 name="Unknown" offset="0x10E" visible="false" />

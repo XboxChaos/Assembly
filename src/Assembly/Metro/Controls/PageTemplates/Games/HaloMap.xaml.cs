@@ -53,7 +53,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloMap : INotifyPropertyChanged
 	{
-		private readonly string _cacheLocation, _tagslocation, _stringslocation;
+        private readonly string _cacheLocation, _tagslocation, _stringslocation, _filesLocation;
+        private string _tagnamesLocation;
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 		private readonly LayoutDocument _tab;
 
@@ -63,7 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ICacheFile _cacheFile;
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
-		private IStreamManager _mapManager;
+		private IStreamManager _mapManager, _stringidsManager, _tagnamesManager;
 		private IRTEProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
@@ -76,7 +77,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		/// <param name="cacheLocation"></param>
 		/// <param name="tab"></param>
 		/// <param name="tagSorting"> </param>
-		public HaloMap(string cacheLocation, string tagslocation, string stringslocation, LayoutDocument tab, Settings.TagSort tagSorting)
+		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting)
 		{
 			InitializeComponent();
 			AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
@@ -87,8 +88,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_tab = tab;
 			_tagSorting = tagSorting;
 			_cacheLocation = cacheLocation;
-            _tagslocation = tagslocation;
-            _stringslocation = stringslocation;
+            _filesLocation = new FileInfo(cacheLocation).Directory.ToString() + "\\";
+            _tagslocation = _filesLocation + "tags.dat";
+            _stringslocation = _filesLocation + "string_ids.dat";
 
 			// Update dockpanel location
 			UpdateDockPanelLocation();
@@ -108,8 +110,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
-            string[] args = { tagslocation, stringslocation };
-            initalLoadBackgroundWorker.RunWorkerAsync(args);
+            initalLoadBackgroundWorker.RunWorkerAsync();
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -142,11 +143,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void initalLoadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-            string[] args = (string[])e.Argument;
-            InitalizeMap(args[0], args[1]);
+            InitalizeMap(_tagslocation, _stringslocation, _filesLocation);
 		}
 
-        private FileStream TryInitFilestream(string filepath)
+        private static FileStream TryInitFilestream(string filepath)
         {
             try
             {
@@ -159,11 +159,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
             }
         }
 
-        public void InitalizeMap(string tagsLocation, string stringsLocation)
+        public void InitalizeMap(string tagsLocation, string stringsLocation, string filesLocation)
 		{
 			using (FileStream mapFileStream = File.OpenRead(_cacheLocation))
-            using (FileStream tagsFileStream = TryInitFilestream(tagsLocation))
-            using (FileStream stringsFileStream = TryInitFilestream(stringsLocation))
+            using (FileStream tagsFileStream = tagsLocation != null ? TryInitFilestream(tagsLocation) : null)
+            using (FileStream stringsFileStream = stringsLocation != null ? TryInitFilestream(stringsLocation) : null)
 			{
                 var map_reader = new EndianReader(mapFileStream, Endian.BigEndian);
                 var tags_reader = new EndianReader(tagsFileStream, Endian.BigEndian);
@@ -171,8 +171,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				try
 				{
-                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo);
-
+                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, out _tagnamesLocation, filesLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo);
+                    
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
 					{
@@ -222,16 +222,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					case EngineType.SecondGeneration:
 						_rteProvider = new H2VistaRTEProvider("halo2.exe");
                         _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
+                        _stringidsManager= null;
+                        _tagnamesManager = null;
 						break;
 
 					case EngineType.ThirdGeneration:
 						//_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
                         _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
+                        _stringidsManager= null;
+                        _tagnamesManager = null;
 						break;
 
                     case EngineType.FourthGeneration:
                         // TODO: Add HaloOnline patching here
                         _mapManager = new FileStreamManager(_tagslocation, map_reader.Endianness);
+                        _stringidsManager = new FileStreamManager(_stringslocation, map_reader.Endianness);
+                        _tagnamesManager = new FileStreamManager(_tagnamesLocation, map_reader.Endianness);
                         break;
 				}
 
@@ -364,7 +370,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
 			// Hide import/save name buttons if the cache file isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+			if (!(_cacheFile.Engine == EngineType.ThirdGeneration || _cacheFile.Engine == EngineType.FourthGeneration))
 				Dispatcher.Invoke(new Action(() => panelTagButtons.Visibility = Visibility.Collapsed));
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
@@ -770,7 +776,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			tagsToProcess.Enqueue(tag.RawTag);
 
 			ResourceTable resources = null;
-			using (var reader = _mapManager.OpenRead())
+            using (var reader = _mapManager.OpenRead())
 			{
 				while (tagsToProcess.Count > 0)
 				{
@@ -956,7 +962,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container = TagContainerReader.ReadTagContainer(reader);
 
 			var injector = new TagContainerInjector(_cacheFile, container);
-			using (IStream stream = _mapManager.OpenReadWrite())
+            using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
 					injector.InjectTag(tag, stream);
@@ -986,9 +992,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (TagEntry tag in _allTags.Entries.Where(t => t != null))
 				_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
 
-			// Save it
-			using (IStream stream = _mapManager.OpenReadWrite())
-				_cacheFile.SaveChanges(stream);
+            switch(_cacheFile.Engine)
+            {
+                case EngineType.FourthGeneration:
+                    // Save it
+                    using (IStream stream = _tagnamesManager.OpenReadWrite())
+                    {
+                        FourthGenCacheFile cache = (FourthGenCacheFile)_cacheFile;
+                        cache.SaveFileNames(stream);
+                    }
+                    break;
+                default:
+                    // Save it
+                    using (IStream stream = _mapManager.OpenReadWrite())
+                        _cacheFile.SaveChanges(stream);
+                    break;
+            }
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
 		}
@@ -1018,7 +1037,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Make a tag container for the tag and then inject it
 			// TODO: A lot of this was copied and pasted from the tag extraction code...need to clean things up
 			var container = new TagContainer();
-			using (var stream = _mapManager.OpenReadWrite())
+            using (var stream = _mapManager.OpenReadWrite())
 			{
 				// Get the plugin path
 				string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
@@ -1057,7 +1076,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var tagContext = sender as ContextMenu;
 
 			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+            if (!(_cacheFile.Engine == EngineType.ThirdGeneration || _cacheFile.Engine == EngineType.FourthGeneration))
 				foreach (object tagItem in tagContext.Items)
 				{
 					// Check for particular names/objects to hide because datatemplate

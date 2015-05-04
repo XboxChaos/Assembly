@@ -22,7 +22,7 @@ namespace Blamite.Blam.FourthGen
 	{
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmenter _segmenter;
-		private IndexedFileNameSource _fileNames;
+        private FourthGenCSVStringMap _fileNames;
 		private FourthGenHeader _header;
 		private FourthGenLanguageGlobals _languageInfo;
 		private FourthGenLanguagePackLoader _languageLoader;
@@ -32,12 +32,12 @@ namespace Blamite.Blam.FourthGen
 		private FourthGenTagTable _tags;
 		private FourthGenSimulationDefinitionTable _simulationDefinitions;
 
-        public FourthGenCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, EngineDescription buildInfo, string buildString)
+        public FourthGenCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, IReader tagnames_reader, EngineDescription buildInfo, string buildString)
 		{
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
 			Allocator = new MetaAllocator(this, 0x10000);
-            Load(map_reader, tag_reader, string_reader, buildString);
+            Load(map_reader, tag_reader, string_reader, tagnames_reader, buildString);
 		}
 
 		public FourthGenHeader FullHeader
@@ -55,6 +55,11 @@ namespace Blamite.Blam.FourthGen
 			//WriteHeader(stream);
 			//WriteLanguageInfo(stream);
 		}
+
+        public void SaveFileNames(IStream stream)
+        {
+            _fileNames.SaveChanges(stream);
+        }
 
 		public int HeaderSize
 		{
@@ -202,10 +207,10 @@ namespace Blamite.Blam.FourthGen
 			get { return _simulationDefinitions; }
 		}
 
-        private void Load(IReader map_reader, IReader tag_reader, IReader string_reader, string buildString)
+        private void Load(IReader map_reader, IReader tag_reader, IReader string_reader, IReader tagnames_reader, string buildString)
 		{
             LoadHeader(map_reader, tag_reader, string_reader, buildString);
-			//LoadFileNames(reader);
+            LoadFileNames(tagnames_reader);
             LoadStringIDs(string_reader);
             LoadTags(tag_reader);
             //LoadLanguageGlobals(tag_reader);
@@ -247,17 +252,13 @@ namespace Blamite.Blam.FourthGen
             _resourceMetaLoader = new FourthGenResourceMetaLoader(_buildInfo, null);
 		}
 
-        /*
+        
         private void LoadFileNames(IReader reader)
         {
-            if (_header.FileNameCount > 0)
-            {
-                var stringTable = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable,
-                    _header.FileNameData, _buildInfo.TagNameKey);
-                _fileNames = new IndexedFileNameSource(stringTable);
-            }
+                //var stringTable = new IndexedStringTable(reader, _header.FileNameCount, _header.FileNameIndexTable, _header.FileNameData, _buildInfo.TagNameKey);
+                _fileNames = reader != null ? new FourthGenCSVStringMap(reader) : null;
         }
-        */
+        
 
         private void LoadStringIDs(IReader reader)
 		{

@@ -502,12 +502,7 @@ namespace Assembly.Windows
 				ToolTip = cacheLocation
 			};
 
-            //const string strings_location = "maps/string_ids.dat";
-            //const string tags_location = "maps/tags.dat";
-            string strings_location = new FileInfo(cacheLocation).Directory.ToString() + "\\string_ids.dat";
-            string tags_location = new FileInfo(cacheLocation).Directory.ToString() + "\\tags.dat";
-
-            newCacheTab.Content = new HaloMap(cacheLocation, tags_location, strings_location, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
+            newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
 		}
