@@ -15,10 +15,14 @@ namespace Blamite.Blam.FourthGen.Structures
         public FourthGenHeader(StructureValueCollection map_values, StructureValueCollection tag_values, StructureValueCollection string_values, EngineDescription info, string buildString,
 			FileSegmenter segmenter)
 		{
+            EngineInfo = info;
 			BuildString = buildString;
 			HeaderSize = info.HeaderSize;
             Load(map_values, tag_values, string_values, segmenter);
 		}
+
+
+        public EngineDescription EngineInfo { get; private set; }
 
 		public int HeaderSize { get; private set; }
 
@@ -286,7 +290,7 @@ namespace Blamite.Blam.FourthGen.Structures
 
             // File Segment
             FileSegmenter tags_segmenter = new FileSegmenter();
-            tags_segmenter.DefineSegment(0, (int)0x7FFFFFFF, 0x1, SegmentResizeOrigin.Beginning); // Define a segment for the header
+            tags_segmenter.DefineSegment(0, (int)EngineInfo.TagsDataSize, 0x1, SegmentResizeOrigin.Beginning); // Define a segment for the header
             FileSegment metaSegment = new FileSegment(0, tags_segmenter);
 
             //FileSegment metaSegment = CalculateTagDataSegment(tag_values, segmenter);

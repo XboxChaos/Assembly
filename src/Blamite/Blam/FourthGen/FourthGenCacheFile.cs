@@ -232,6 +232,8 @@ namespace Blamite.Blam.FourthGen
             StructureValueCollection tag_values = StructureReader.ReadStructure(tag_reader, _buildInfo.Layouts.GetLayout("tags_header"));
             StructureValueCollection string_values = StructureReader.ReadStructure(string_reader, _buildInfo.Layouts.GetLayout("strings_header"));
 
+            _buildInfo.TagsDataSize = tag_reader.Length;
+
             // Create the header
             _header = new FourthGenHeader(map_values, tag_values, string_values, _buildInfo, buildString, _segmenter);
 		}

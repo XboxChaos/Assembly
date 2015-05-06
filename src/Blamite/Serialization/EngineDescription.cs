@@ -40,10 +40,15 @@ namespace Blamite.Serialization
 		/// </summary>
 		public SettingsGroup Settings { get; private set; }
 
-		/// <summary>
-		///     Gets the size of a map header.
-		/// </summary>
-		public int HeaderSize { get; private set; }
+        /// <summary>
+        ///     Gets the size of a map header.
+        /// </summary>
+        public int HeaderSize { get; private set; }
+
+        /// <summary>
+        ///     Gets the size of a map header.
+        /// </summary>
+        public long TagsDataSize { get; set; }
 
 		/// <summary>
 		///     Gets the value to align segment boundaries on.
