@@ -4,6 +4,7 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 	</revisions>
+	<comment title="Render Data Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD</comment>
 	<reflexive name="HUD Widgets" offset="0x0" visible="true" entrySize="0x60">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum16 name="Special HUD Type" offset="0x4" visible="true">
@@ -16,24 +17,513 @@
 			<option name="Motion Sensor" value="0x6" />
 			<option name="Spike Grenade" value="0x7" />
 			<option name="Firebomb Grenade" value="0x8" />
+			<option name="Compass" value="0x9" />
 		</enum16>
 		<uint8 name="Unknown" offset="0x6" visible="false" />
 		<uint8 name="Unknown" offset="0x7" visible="false" />
-		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x44">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-			<undefined name="Unknown" offset="0x28" visible="false" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
-			<undefined name="Unknown" offset="0x30" visible="false" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
+		<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x44">
+			<bitfield16 name="1 Engine" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Survival" index="2" />
+				<bit name="Editor" index="3" />
+				<bit name="Theater" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="2" offset="0x2" visible="true">
+				<bit name="Biped 1" index="0" />
+				<bit name="Biped 2" index="1" />
+				<bit name="Biped 3" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="3" offset="0x4" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="4" offset="0x6" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="5 Resolution" offset="0x8" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Widescreen" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fullscreen" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="6 Scoreboard" offset="0xA" visible="true">
+				<bit name="Has Friends" index="0" />
+				<bit name="Has Enemies" index="1" />
+				<bit name="Has Variant Name?" index="2" />
+				<bit name="Someone Is Talking" index="3" />
+				<bit name="Is Arming" index="4" />
+				<bit name="Time Enabled" index="5" />
+				<bit name="Friends Have X" index="6" />
+				<bit name="Enemies Have X" index="7" />
+				<bit name="Friends Are X" index="8" />
+				<bit name="Enemies Are X" index="9" />
+				<bit name="X is Down" index="10" />
+				<bit name="Summary Enabled" index="11" />
+				<bit name="NetDebug" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield32 name="7" offset="0xC" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Autoaim" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Training Prompt" index="4" />
+				<bit name="Objective Prompt" index="5" />
+				<bit name="Survival State" index="6" />
+				<bit name="Beacon Enabled" index="7" />
+				<bit name="User Waypoint Enabled" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Achievement 1" index="10" />
+				<bit name="Achievement 2" index="11" />
+				<bit name="Achievement 3" index="12" />
+				<bit name="Achievement 4" index="13" />
+				<bit name="Achievement 5" index="14" />
+				<bit name="ARG Enabled" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<bitfield16 name="8 Editor" offset="0x10" visible="true">
+				<bit name="Editor Inactive" index="0" />
+				<bit name="Editor Active" index="1" />
+				<bit name="Editor Holding" index="2" />
+				<bit name="Editor Not Allowed" index="3" />
+				<bit name="Is Editor Biped" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="9" offset="0x12" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Metagame Player 2 Exists" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Metagame Player 3 Exists" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Metagame Player 4 Exists" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Metagame Score Added" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Metagame Score Removed" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="10 Skulls" offset="0x14" visible="true">
+				<bit name="Iron Skull Enabled" index="0" />
+				<bit name="Black Eye Skull Enabled" index="1" />
+				<bit name="Tough Luck Skull Enabled" index="2" />
+				<bit name="Catch Skull Enabled" index="3" />
+				<bit name="Cloud Skull Enabled" index="4" />
+				<bit name="Famine Skull Enabled" index="5" />
+				<bit name="Thunderstorm Skull Enabled" index="6" />
+				<bit name="Tilt Skull Enabled" index="7" />
+				<bit name="Mythic Skull Enabled" index="8" />
+				<bit name="Assassins Skull Enabled" index="9" />
+				<bit name="Blind Skull Enabled" index="10" />
+				<bit name="Cowbell Skull Enabled" index="11" />
+				<bit name="Grunt Birthday Skull Enabled" index="12" />
+				<bit name="IWHBYD Skull Enabled" index="13" />
+				<bit name="Third Person Skull Enabled" index="14" />
+				<bit name="Director's Cut Skull Enabled" index="15" />
+			</bitfield16>
+			<bitfield16 name="11" offset="0x16" visible="true">
+				<bit name="Wave 1 Background" index="0" />
+				<bit name="Wave 2 Background" index="1" />
+				<bit name="Wave 3 Background" index="2" />
+				<bit name="Wave 4 Background" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bonus Round" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="12" offset="0x18" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Wave 1" index="1" />
+				<bit name="Wave 2" index="2" />
+				<bit name="Wave 3" index="3" />
+				<bit name="Wave 4" index="4" />
+				<bit name="Wave 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="13" offset="0x1A" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="14" offset="0x1C" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="15" offset="0x1E" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="16" offset="0x20" visible="true">
+				<bit name="Pickup Grenades" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Lives Added" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="17" offset="0x22" visible="true">
+				<bit name="Binoculars Enabled" index="0" />
+				<bit name="Unit Is Zoomed (Level 1)" index="1" />
+				<bit name="Unit Is Zoomed (Level 2)" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="18" offset="0x24" visible="true">
+				<bit name="Primary Weapon" index="0" />
+				<bit name="Secondary Weapon" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="19" offset="0x26" visible="true">
+				<bit name="Motion Tracker Enabled" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Selected Frag Grenades" index="2" />
+				<bit name="Selected Plasma Grenades" index="3" />
+				<bit name="Selected Spike Grenades" index="4" />
+				<bit name="Selected Fire Grenades" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Has 1x Overshield" index="12" />
+				<bit name="Has 2x Overshield" index="13" />
+				<bit name="Has 3x Overshield" index="14" />
+				<bit name="Has Shields" index="15" />
+			</bitfield16>
+			<bitfield16 name="20" offset="0x28" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Pickup Ammo" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="21" offset="0x2A" visible="true">
+				<bit name="Primary Weapon" index="0" />
+				<bit name="Secondary Weapon" index="1" />
+				<bit name="Backpack" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="22" offset="0x2C" visible="true">
+				<bit name="Not Autoaim?" index="0" />
+				<bit name="Autoaim Friendly" index="1" />
+				<bit name="Autoaim Enemy" index="2" />
+				<bit name="Autoaim Headshot" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Plasma Locked On" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="23" offset="0x2E" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Missile Locked" index="1" />
+				<bit name="Missile Locking" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="24" offset="0x30" visible="true">
+				<bit name="Vitality Meter Minor Damage" index="0" />
+				<bit name="Vitality Meter Medium Damage" index="1" />
+				<bit name="Vitality Meter Heavy Damage" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Has Frag Grenades" index="6" />
+				<bit name="Has Plasma Grenades" index="7" />
+				<bit name="Has Spike Grenades" index="8" />
+				<bit name="Has Fire Grenades" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="25 Ammo" offset="0x32" visible="true">
+				<bit name="Clip Warning" index="0" />
+				<bit name="Ammo Warning" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Low Battery 1" index="4" />
+				<bit name="Low Battery 2" index="5" />
+				<bit name="Overheated" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="26" offset="0x34" visible="true">
+				<bit name="Is Zoomed?" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="27" offset="0x36" visible="true">
+				<bit name="Binoculars Enabled" index="0" />
+				<bit name="Unit Is Zoomed (Level 1)" index="1" />
+				<bit name="Unit Is Zoomed (Level 2)" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
@@ -143,25 +633,513 @@
 			</enum16>
 			<uint8 name="Unknown" offset="0x6" visible="false" />
 			<uint8 name="Unknown" offset="0x7" visible="false" />
-			<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x44">
-				<undefined name="Unknown" offset="0x0" visible="false" />
-				<undefined name="Unknown" offset="0x4" visible="false" />
-				<undefined name="Unknown" offset="0x8" visible="false" />
-				<undefined name="Unknown" offset="0xC" visible="false" />
-				<undefined name="Unknown" offset="0x10" visible="false" />
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
-				<undefined name="Unknown" offset="0x1C" visible="false" />
-				<undefined name="Unknown" offset="0x20" visible="false" />
-				<undefined name="Unknown" offset="0x24" visible="false" />
-				<undefined name="Unknown" offset="0x28" visible="false" />
-				<undefined name="Unknown" offset="0x2C" visible="false" />
-				<undefined name="Unknown" offset="0x30" visible="false" />
-				<undefined name="Unknown" offset="0x34" visible="false" />
-				<undefined name="Unknown" offset="0x38" visible="false" />
-				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<undefined name="Unknown" offset="0x40" visible="false" />
-			</reflexive>
+		<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x44">
+			<bitfield16 name="1 Engine" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Survival" index="2" />
+				<bit name="Editor" index="3" />
+				<bit name="Theater" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="2" offset="0x2" visible="true">
+				<bit name="Biped 1" index="0" />
+				<bit name="Biped 2" index="1" />
+				<bit name="Biped 3" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="3" offset="0x4" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="4" offset="0x6" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="5 Resolution" offset="0x8" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Widescreen" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fullscreen" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="6 Scoreboard" offset="0xA" visible="true">
+				<bit name="Has Friends" index="0" />
+				<bit name="Has Enemies" index="1" />
+				<bit name="Has Variant Name?" index="2" />
+				<bit name="Someone Is Talking" index="3" />
+				<bit name="Is Arming" index="4" />
+				<bit name="Time Enabled" index="5" />
+				<bit name="Friends Have X" index="6" />
+				<bit name="Enemies Have X" index="7" />
+				<bit name="Friends Are X" index="8" />
+				<bit name="Enemies Are X" index="9" />
+				<bit name="X is Down" index="10" />
+				<bit name="Summary Enabled" index="11" />
+				<bit name="NetDebug" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield32 name="7" offset="0xC" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Autoaim" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Training Prompt" index="4" />
+				<bit name="Objective Prompt" index="5" />
+				<bit name="Survival State" index="6" />
+				<bit name="Beacon Enabled" index="7" />
+				<bit name="User Waypoint Enabled" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Achievement 1" index="10" />
+				<bit name="Achievement 2" index="11" />
+				<bit name="Achievement 3" index="12" />
+				<bit name="Achievement 4" index="13" />
+				<bit name="Achievement 5" index="14" />
+				<bit name="ARG Enabled" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<bitfield16 name="8 Editor" offset="0x10" visible="true">
+				<bit name="Editor Inactive" index="0" />
+				<bit name="Editor Active" index="1" />
+				<bit name="Editor Holding" index="2" />
+				<bit name="Editor Not Allowed" index="3" />
+				<bit name="Is Editor Biped" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="9" offset="0x12" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Metagame Player 2 Exists" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Metagame Player 3 Exists" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Metagame Player 4 Exists" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Metagame Score Added" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Metagame Score Removed" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="10 Skulls" offset="0x14" visible="true">
+				<bit name="Iron Skull Enabled" index="0" />
+				<bit name="Black Eye Skull Enabled" index="1" />
+				<bit name="Tough Luck Skull Enabled" index="2" />
+				<bit name="Catch Skull Enabled" index="3" />
+				<bit name="Cloud Skull Enabled" index="4" />
+				<bit name="Famine Skull Enabled" index="5" />
+				<bit name="Thunderstorm Skull Enabled" index="6" />
+				<bit name="Tilt Skull Enabled" index="7" />
+				<bit name="Mythic Skull Enabled" index="8" />
+				<bit name="Assassins Skull Enabled" index="9" />
+				<bit name="Blind Skull Enabled" index="10" />
+				<bit name="Cowbell Skull Enabled" index="11" />
+				<bit name="Grunt Birthday Skull Enabled" index="12" />
+				<bit name="IWHBYD Skull Enabled" index="13" />
+				<bit name="Third Person Skull Enabled" index="14" />
+				<bit name="Director's Cut Skull Enabled" index="15" />
+			</bitfield16>
+			<bitfield16 name="11" offset="0x16" visible="true">
+				<bit name="Wave 1 Background" index="0" />
+				<bit name="Wave 2 Background" index="1" />
+				<bit name="Wave 3 Background" index="2" />
+				<bit name="Wave 4 Background" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bonus Round" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="12" offset="0x18" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Wave 1" index="1" />
+				<bit name="Wave 2" index="2" />
+				<bit name="Wave 3" index="3" />
+				<bit name="Wave 4" index="4" />
+				<bit name="Wave 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="13" offset="0x1A" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="14" offset="0x1C" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="15" offset="0x1E" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="16" offset="0x20" visible="true">
+				<bit name="Pickup Grenades" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Lives Added" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="17" offset="0x22" visible="true">
+				<bit name="Binoculars Enabled" index="0" />
+				<bit name="Unit Is Zoomed (Level 1)" index="1" />
+				<bit name="Unit Is Zoomed (Level 2)" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="18" offset="0x24" visible="true">
+				<bit name="Primary Weapon" index="0" />
+				<bit name="Secondary Weapon" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="19" offset="0x26" visible="true">
+				<bit name="Motion Tracker Enabled" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Selected Frag Grenades" index="2" />
+				<bit name="Selected Plasma Grenades" index="3" />
+				<bit name="Selected Spike Grenades" index="4" />
+				<bit name="Selected Fire Grenades" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Has 1x Overshield" index="12" />
+				<bit name="Has 2x Overshield" index="13" />
+				<bit name="Has 3x Overshield" index="14" />
+				<bit name="Has Shields" index="15" />
+			</bitfield16>
+			<bitfield16 name="20" offset="0x28" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Pickup Ammo" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="21" offset="0x2A" visible="true">
+				<bit name="Primary Weapon" index="0" />
+				<bit name="Secondary Weapon" index="1" />
+				<bit name="Backpack" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="22" offset="0x2C" visible="true">
+				<bit name="Not Autoaim?" index="0" />
+				<bit name="Autoaim Friendly" index="1" />
+				<bit name="Autoaim Enemy" index="2" />
+				<bit name="Autoaim Headshot" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Plasma Locked On" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="23" offset="0x2E" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Missile Locked" index="1" />
+				<bit name="Missile Locking" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="24" offset="0x30" visible="true">
+				<bit name="Vitality Meter Minor Damage" index="0" />
+				<bit name="Vitality Meter Medium Damage" index="1" />
+				<bit name="Vitality Meter Heavy Damage" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Has Frag Grenades" index="6" />
+				<bit name="Has Plasma Grenades" index="7" />
+				<bit name="Has Spike Grenades" index="8" />
+				<bit name="Has Fire Grenades" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="25 Ammo" offset="0x32" visible="true">
+				<bit name="Clip Warning" index="0" />
+				<bit name="Ammo Warning" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Low Battery 1" index="4" />
+				<bit name="Low Battery 2" index="5" />
+				<bit name="Overheated" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="26" offset="0x34" visible="true">
+				<bit name="Is Zoomed?" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<bitfield16 name="27" offset="0x36" visible="true">
+				<bit name="Binoculars Enabled" index="0" />
+				<bit name="Unit Is Zoomed (Level 1)" index="1" />
+				<bit name="Unit Is Zoomed (Level 2)" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+		</reflexive>
 			<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
 				<enum16 name="Anchor" offset="0x0" visible="true">
 					<option name="Top Left" value="0x0" />

@@ -134,7 +134,7 @@ namespace Blamite.Blam
                 // Write the entries
                 string s = string.Format("0x{0:X8}", key.Key);
 
-                if (key.Value != s && key.Value != "")
+                if (key.Value != "")
                 {
                     s += ",";
                     s += key.Value;
