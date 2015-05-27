@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <plugin game="eldorado" baseSize="0x130">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -85,10 +85,10 @@
 		<undefined name="Unknown" offset="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x24" visible="true" />
 	</reflexive>
-	<tagref name="Creation Effect" offset="0x70" visible="false" />
-	<tagref name="Material Effects" offset="0x80" visible="false" />
-	<tagref name="Melee Impact" offset="0x90" visible="false" />
-	<tagref name="Unknown" offset="0xA0" visible="false" />
+	<tagRef name="Creation Effect" offset="0x70" visible="true" />
+	<tagRef name="Material Effects" offset="0x80" visible="true" />
+	<tagRef name="Armor Sounds" offset="0x90" visible="true" />
+	<tagRef name="Melee Impact" offset="0xA0" visible="true" />
 	<reflexive name="AI Properties" offset="0xB0" visible="true" entrySize="0xC">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
@@ -207,7 +207,7 @@
 	<reflexive name="Widgets" offset="0xD8" visible="true" entrySize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Change Colors" offset="0xE4" visible="false" entrySize="0x18">
+	<reflexive name="Change Colors" offset="0xE4" visible="true" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="false" entrySize="0x20">
 			<undefined name="Weight" offset="0x0" visible="false" />
 			<Colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
@@ -255,11 +255,9 @@
 			<stringid name="Scale By..." offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
-	
-	<reflexive name="Unknown (Predicted Resources?)" offset="0xF0" visible="false" entrySize="0x1">
+	<reflexive name="Unknown" offset="0xF0" visible="false" entrySize="0x1">
 		<int8 name="Unknown" offset="0x0" visible="false" />
 	</reflexive>
-	
 	<reflexive name="Multiplayer Object Properties" offset="0xFC" visible="true" entrySize="0xC4">
 		<bitfield16 name="Engine Flags" offset="0x0" visible="true">
 			<bit name="Capture The Flag" index="0" />
@@ -349,16 +347,20 @@
 		<tagRef name="Unknown" offset="0xA4" visible="true" />
 		<tagRef name="Unknown" offset="0xB4" visible="true" />
 	</reflexive>
-	
 	<undefined name="Unknown" offset="0x108" visible="false" />
 	<undefined name="Unknown" offset="0x10C" visible="false" />
 	<undefined name="Unknown" offset="0x110" visible="false" />
-	<reflexive name="Unknown" offset="0x114" visible="false" entrySize="0x14">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+	<reflexive name="Model Object Data" offset="0x114" visible="true" entrySize="0x14">
+		<enum16 name="Type" offset="0x0" visible="true">
+			<option name="Not Set" value="0x0" />
+			<option name="User Defined" value="0x1" />
+			<option name="Auto Generated" value="0x2" />
+		</enum16>
+		<int16 name="Unknown" offset="0x2" visible="false" />
+		<float32 name="Offset X" offset="0x4" visible="true" />
+		<float32 name="Offset Y" offset="0x8" visible="true" />
+		<float32 name="Offset Z" offset="0xC" visible="true" />
+		<float32 name="Radius" offset="0x10" visible="true" />
 	</reflexive>
 	<comment title="SCENERY" />
 	<enum16 name="Pathfinding Policy" offset="0x120" visible="true">
