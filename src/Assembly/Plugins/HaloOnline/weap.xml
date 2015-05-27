@@ -5,7 +5,6 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="AussieBacom" version="2">Analysed Plugin.</revision>
 		<revision author="Lord Zedd" version="3">Howdy.</revision>
-		<revision author="AussieBacom" version="2">Updated some enums.</revision>
 	</revisions>
 	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
@@ -542,11 +541,11 @@
 	<tagRef name="Gun/Sword Clang Response" offset="0x344" visible="true" />
 	<tagRef name="Clash Effect" offset="0x354" visible="true" />
 	<enum8 name="Melee Damage Reporting Type" offset="0x364" visible="true">
-		<option name="Guardians" value="0x0" />
-		<option name="Unknown" value="0x1" />
-		<option name="Unknown" value="0x2" />
-		<option name="Unknown" value="0x3" />
-		<option name="Unknown" value="0x4" />
+		<option name="Guardians (Unknown)" value="0x0" />
+		<option name="Guardians" value="0x1" />
+		<option name="Falling Damage" value="0x2" />
+		<option name="Generic Collision" value="0x3" />
+		<option name="Armor Lock Crush" value="0x4" />
 		<option name="Generic Melee" value="0x5" />
 		<option name="Generic Explosion" value="0x6" />
 		<option name="Magnum" value="0x7" />
@@ -605,13 +604,13 @@
 		<option name="Sentinel RPG" value="0x3C" />
 		<option name="Teleporter" value="0x3D" />
 		<option name="Tripmine" value="0x3E" />
-		<option name="Elephant Turret" value="0x3F" />
+		<option name="DMR" value="0x3F" />
 	</enum8>
 	<int8 name="Unknown" offset="0x365" visible="false" />
 	<int16 name="Magnification Levels" offset="0x366" visible="true" />
 	<float32 name="Magnification Range Min" offset="0x368" visible="true" />
 	<float32 name="Magnification Range Max" offset="0x36C" visible="true" />
-	<stringID name="Unknown" offset="0x370" visible="false" />
+	<undefined name="Unknown" offset="0x370" visible="false" />
 	<undefined name="Unknown" offset="0x374" visible="false" />
 	<comment title="Weapon Aim Assist" />
 	<degree name="Autoaim Angle" offset="0x378" visible="true" />
@@ -686,22 +685,33 @@
 		<option name="Energy Sword" value="0x6" />
 		<option name="Spartan Laser" value="0x7" />
 	</enum16>
-	<enum16 name="Variant Type:" offset="0x468" visible="true">
+	<!-- any proof below are 16 bit? -->
+	<comment  title="Versions">Version will always correspond to color/buffs, like Gold should always be v6. Adjusted Version is dynamic depending on available versions, like Gold Magnum is v3.</comment>
+	<enum16 name="Version" offset="0x468" visible="true">
 		<option name="Default" value="0x0" />
-		<option name="Magazine" value="0x1" />
-		<option name="Damage" value="0x2" />
-		<option name="Accuracy" value="0x3" />
-		<option name="Rate of Fire" value="0x4" />
-		<option name="Range" value="0x5" />
-		<option name="Power Weapon" value="0x6" />
+		<option name="v1 (Ammo)" value="0x1" />
+		<option name="v2 (Damage)" value="0x2" />
+		<option name="v3 (Accuracy)" value="0x3" />
+		<option name="v4 (Rate of Fire)" value="0x4" />
+		<option name="v5 (Range)" value="0x5" />
+		<option name="v6 (Golden)" value="0x6" />
 	</enum16>
 	<int16 name="Unknown" offset="0x46A" visible="false" />
-	<undefined name="Unknown" offset="0x46C" visible="false" />
+	<enum16 name="Adjusted Version" offset="0x46C" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="v1" value="0x1" />
+		<option name="v2" value="0x2" />
+		<option name="v3" value="0x3" />
+		<option name="v4" value="0x4" />
+		<option name="v5" value="0x5" />
+		<option name="v6" value="0x6" />
+	</enum16>
+	<int16 name="Unknown" offset="0x46E" visible="false" />
 	<reflexive name="First Person" offset="0x470" visible="true" entrySize="0x20">
 		<tagRef name="First Person Model" offset="0x0" visible="true" />
 		<tagRef name="First Person Animations" offset="0x10" visible="true" />
 	</reflexive>
-	<tagRef name="HUD Interface" offset="0x47C" visible="false" />
+	<tagRef name="HUD Interface" offset="0x47C" visible="true" />
 	<reflexive name="Predicted Resources" offset="0x48C" visible="false" entrySize="0x8">
 		<int16 name="Type" offset="0x0" visible="true" />
 		<int16 name="Resource Index" offset="0x2" visible="true" />
@@ -768,7 +778,7 @@
 			<tagRef name="Equipment" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
-		<reflexive name="Triggers" offset="0x4A4" visible="true" entrySize="0x90">
+	<reflexive name="Triggers" offset="0x4A4" visible="true" entrySize="0x90">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Autofire Single Action Only" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -874,11 +884,11 @@
 		<float32 name="Charging Age Degeneration" offset="0x60" visible="true" />
 		<tagRef name="Unknown" offset="0x64" visible="true" />
 		<tagRef name="Unknown" offset="0x74" visible="true" />
-		<reflexive name="Charge Levels" offset="0x84" visible="true" entrySize="0x4">
-			<float32 name="Percentage" offset="0x0" visible="true" />
-		</reflexive>
+		<undefined name="Unknown" offset="0x84" visible="false" />
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
 	</reflexive>
-	<reflexive name="Barrels" offset="0x4B0" visible="false" entrySize="0x1AC">
+	<reflexive name="Barrels" offset="0x4B0" visible="true" entrySize="0x1AC">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Tracks Fired Projectile" index="0" />
 			<bit name="Random Firing Effects" index="1" />
@@ -1004,11 +1014,11 @@
 			<float32 name="First Person Offset z" offset="0x8" visible="true" />
 		</reflexive>
 		<enum8 name="Damage Reporting Type" offset="0x10C" visible="true">
-			<option name="Guardians" value="0x0" />
-			<option name="Unknown" value="0x1" />
-			<option name="Unknown" value="0x2" />
-			<option name="Unknown" value="0x3" />
-			<option name="Unknown" value="0x4" />
+			<option name="Guardians (Unknown)" value="0x0" />
+			<option name="Guardians" value="0x1" />
+			<option name="Falling Damage" value="0x2" />
+			<option name="Generic Collision" value="0x3" />
+			<option name="Armor Lock Crush" value="0x4" />
 			<option name="Generic Melee" value="0x5" />
 			<option name="Generic Explosion" value="0x6" />
 			<option name="Magnum" value="0x7" />
@@ -1067,7 +1077,7 @@
 			<option name="Sentinel RPG" value="0x3C" />
 			<option name="Teleporter" value="0x3D" />
 			<option name="Tripmine" value="0x3E" />
-			<option name="Elephant Turret" value="0x3F" />
+			<option name="DMR" value="0x3F" />
 		</enum8>
 		<int8 name="Unknown" offset="0x10D" visible="false" />
 		<int16 name="Unknown" offset="0x10E" visible="false" />
