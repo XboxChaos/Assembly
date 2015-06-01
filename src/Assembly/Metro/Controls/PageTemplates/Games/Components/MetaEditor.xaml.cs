@@ -132,13 +132,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					if (_rteProvider == null)
 						goto default;
 
-					if (_rteProvider.GetMetaStream(_cache) == null)
+					using (var testStream = _rteProvider.GetMetaStream(_cache, _tag.RawTag))
 					{
-						ShowConnectionError();
-						return;
+						if (testStream == null)
+						{
+							ShowConnectionError();
+							return;
+						}
 					}
 
-					streamManager = new RTEStreamManager(_rteProvider, _cache);
+					streamManager = new RTEStreamManager(_rteProvider, _cache, _tag.RawTag);
 					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
 					break;
 
@@ -253,7 +256,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			else if (_rteProvider != null)
 			{
-				using (IStream metaStream = _rteProvider.GetMetaStream(_cache))
+				using (IStream metaStream = _rteProvider.GetMetaStream(_cache, _tag.RawTag))
 				{
 					if (metaStream != null)
 					{
