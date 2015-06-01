@@ -33,6 +33,7 @@ using Newtonsoft.Json;
 //using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.Blam.FourthGen;
+using Blamite.RTE.Eldorado;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -234,7 +235,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						break;
 
                     case EngineType.FourthGeneration:
-                        // TODO: Add HaloOnline patching here
+                        _rteProvider = new EldoradoRTEProvider("eldorado.exe");
                         _mapManager = new FileStreamManager(_tagslocation, map_reader.Endianness);
                         _stringidsManager = new FileStreamManager(_stringslocation, map_reader.Endianness);
                         _tagnamesManager = new FileStreamManager(_tagnamesLocation, map_reader.Endianness);
