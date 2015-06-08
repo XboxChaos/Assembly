@@ -281,7 +281,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				LoadHeader();
 				LoadTags();
-				//LoadLocales();
+				LoadLocales();
 				//LoadScripts();
 			}
 		}
@@ -436,42 +436,65 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void LoadLocales()
 		{
-			//Dispatcher.Invoke(new Action(delegate { cbLocaleLanguages.Items.Clear(); }));
-			/*int totalStrings = 0;
-			foreach (ILanguage language in _cache.Languages)
-				totalStrings += language.StringCount;
-			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
+            switch(_cacheFile.Engine)
+            {
+                case EngineType.FourthGeneration:
 
-			if (!_cacheFile.Languages.AvailableLanguages.Any())
-			{
-				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
-				return;
-			}
+                    if (_cacheFile.Languages == null || !_cacheFile.Languages.AvailableLanguages.Any())
+                    {
+                        Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Hidden));
+                        return;
+                    }
 
-			// TODO: Define the language names in an XML file or something
-			AddLanguage("English", GameLanguage.English);
-			AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
-			AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
-			AddLanguage("Danish", GameLanguage.Danish);
-			AddLanguage("Dutch", GameLanguage.Dutch);
-			AddLanguage("Finnish", GameLanguage.Finnish);
-			AddLanguage("French", GameLanguage.French);
-			AddLanguage("German", GameLanguage.German);
-			AddLanguage("Italian", GameLanguage.Italian);
-			AddLanguage("Japanese", GameLanguage.Japanese);
-			AddLanguage("Korean", GameLanguage.Korean);
-			AddLanguage("Norwegian", GameLanguage.Norwegian);
-			AddLanguage("Polish", GameLanguage.Polish);
-			AddLanguage("Portuguese", GameLanguage.Portuguese);
-			AddLanguage("Russian", GameLanguage.Russian);
-			AddLanguage("Spanish", GameLanguage.Spanish);
-			AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        lbLanguages.ItemsSource = _languages;
+                        StatusUpdater.Update("Initialized Languages");
+                    }));
 
-			Dispatcher.Invoke(new Action(delegate
-			{
-				lbLanguages.ItemsSource = _languages;
-				StatusUpdater.Update("Initialized Languages");
-			}));
+                    break;
+                default:
+
+                    //Dispatcher.Invoke(new Action(delegate { cbLocaleLanguages.Items.Clear(); }));
+                    /*int totalStrings = 0;
+                    foreach (ILanguage language in _cache.Languages)
+                        totalStrings += language.StringCount;
+                    Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
+
+                    if (!_cacheFile.Languages.AvailableLanguages.Any())
+                    {
+                        Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
+                        return;
+                    }
+
+                    // TODO: Define the language names in an XML file or something
+                    AddLanguage("English", GameLanguage.English);
+                    AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
+                    AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
+                    AddLanguage("Danish", GameLanguage.Danish);
+                    AddLanguage("Dutch", GameLanguage.Dutch);
+                    AddLanguage("Finnish", GameLanguage.Finnish);
+                    AddLanguage("French", GameLanguage.French);
+                    AddLanguage("German", GameLanguage.German);
+                    AddLanguage("Italian", GameLanguage.Italian);
+                    AddLanguage("Japanese", GameLanguage.Japanese);
+                    AddLanguage("Korean", GameLanguage.Korean);
+                    AddLanguage("Norwegian", GameLanguage.Norwegian);
+                    AddLanguage("Polish", GameLanguage.Polish);
+                    AddLanguage("Portuguese", GameLanguage.Portuguese);
+                    AddLanguage("Russian", GameLanguage.Russian);
+                    AddLanguage("Spanish", GameLanguage.Spanish);
+                    AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        lbLanguages.ItemsSource = _languages;
+                        StatusUpdater.Update("Initialized Languages");
+                    }));
+
+                    break;
+            }
+
 		}
 
 		private void LoadScripts()
