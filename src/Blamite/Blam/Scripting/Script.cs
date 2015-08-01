@@ -17,9 +17,9 @@ namespace Blamite.Blam.Scripting
 		}
 
 		internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
-			EngineDescription buildInfo)
+			EngineDescription buildInfo, int headeraddr)
 		{
-			Load(values, reader, metaArea, stringIDs, buildInfo);
+			Load(values, reader, metaArea, stringIDs, buildInfo, headeraddr);
 		}
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace Blamite.Blam.Scripting
 		public DatumIndex RootExpressionIndex { get; set; }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
-			EngineDescription buildInfo)
+			EngineDescription buildInfo, int headeraddr)
 		{
 			Name = values.HasInteger("name index")
 				? stringIDs.GetString(new StringID(values.GetInteger("name index")))
@@ -59,15 +59,19 @@ namespace Blamite.Blam.Scripting
 			if (Name == null)
 				Name = "script_" + RootExpressionIndex.Value.ToString("X8");
 
-			Parameters = LoadParameters(reader, values, metaArea, buildInfo);
+			Parameters = LoadParameters(reader, values, metaArea, buildInfo, headeraddr);
 		}
 
 		private IList<ScriptParameter> LoadParameters(IReader reader, StructureValueCollection values,
-			FileSegmentGroup metaArea, EngineDescription buildInfo)
+			FileSegmentGroup metaArea, EngineDescription buildInfo, int addrFix)
 		{
 			var count = (int) values.GetInteger("number of parameters");
 			uint address = values.GetInteger("address of parameter list");
 			StructureLayout layout = buildInfo.Layouts.GetLayout("script parameter entry");
+
+			if (addrFix != 0)
+				address = (uint)addrFix + (address & 0xFFFFFFF);
+			
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 			return entries.Select(e => new ScriptParameter(e)).ToList();
 		}

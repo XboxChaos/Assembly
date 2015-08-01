@@ -214,7 +214,7 @@ namespace Blamite.Blam.FourthGen
             LoadStringIDs(string_reader);
             LoadTags(tag_reader);
             //LoadLanguageGlobals(tag_reader);
-			//LoadScriptFiles(reader);
+			LoadScriptFiles(tag_reader);
             LoadResourceManager(tag_reader);
 			//LoadSimulationDefinitions(reader);
 			//ShaderStreamer = new FourthGenShaderStreamer(this, _buildInfo);
@@ -357,13 +357,32 @@ namespace Blamite.Blam.FourthGen
 			// Scripts are just loaded from scnr for now...
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
-				ITag scnr = _tags.FindTagByClass("scnr");
-				if (scnr != null)
+				int scnrCount = 0;
+				
+				IEnumerable<ITag> scnrs = _tags.FindTagsByClass("scnr");
+
+				foreach (ITag aScnr in scnrs)
+					scnrCount++;
+
+				ScriptFiles = new IScriptFile[scnrCount];
+
+				int i = 0;
+				foreach (ITag aScnr in scnrs)
 				{
-					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new FourthGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo);
-					return;
+					string tagname = _fileNames.GetTagName(aScnr.Index).TrimStart('\\');
+					ScriptFiles[i] = new FourthGenScenarioScriptFile(aScnr, tagname, MetaArea, StringIDs, _buildInfo);
+					i++;
 				}
+
+				return;
+
+			//	ITag scnr = _tags.FindTagByClass("scnr");
+			//	if (scnr != null)
+			//	{
+			//		ScriptFiles = new IScriptFile[1];
+			//		ScriptFiles[0] = new FourthGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo);
+			//		return;
+			//	}
 			}
 			ScriptFiles = new IScriptFile[0];
 		}

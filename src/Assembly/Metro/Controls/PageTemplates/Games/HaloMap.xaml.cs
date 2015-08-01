@@ -282,7 +282,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				LoadHeader();
 				LoadTags();
 				LoadLocales();
-				//LoadScripts();
+				LoadScripts();
 			}
 		}
 

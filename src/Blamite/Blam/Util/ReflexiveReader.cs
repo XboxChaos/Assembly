@@ -16,7 +16,7 @@ namespace Blamite.Blam.Util
 				throw new ArgumentException("The entry layout must have a size associated with it.");
 
 			// Handle null pointers
-			if (count <= 0 || !metaArea.ContainsPointer(address))
+			if (count <= 0)
 				return new StructureValueCollection[0];
 
 			// Convert the address to an offset and seek to it
