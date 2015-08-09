@@ -790,15 +790,15 @@
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 	</reflexive>
-	<reflexive name="Tracking" offset="0x42c" visible="true" entrySize="0x38">
-		<reflexive name="Tracking Type" offset="0x0" visible="true" entrySize="0x4">
-			<stringid name="Unit Type" offset="0x0" visible="true" />
+	<reflexive name="Target Tracking" offset="0x42C" visible="true" entrySize="0x38">
+		<reflexive name="Tracking Types" offset="0x0" visible="true" entrySize="0x4">
+			<stringid name="Tracking Type" offset="0x0" visible="true" />
 		</reflexive>
-		<float32 name="Unknown" offset="0xC" visible="false" />
-		<float32 name="Locking-On Duration" offset="0x10" visible="true" />
-		<float32 name="Locked-On Duration" offset="0x14" visible="true" />
-		<tagRef name="Locking-On Sound" offset="0x18" visible="true" />
-		<tagRef name="Locked-On Sound" offset="0x28" visible="true" />
+		<float32 name="Acquire Time" offset="0xC" visible="true" />
+		<float32 name="Grace Time" offset="0x10" visible="true" />
+		<float32 name="Decay Time" offset="0x14" visible="true" />
+		<tagRef name="Tracking Sound" offset="0x18" visible="true" />
+		<tagRef name="Locked Sound" offset="0x28" visible="true" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x438" visible="false" entrySize="0x24">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -1158,36 +1158,36 @@
 		<degree name="Minimum Error" offset="0x7C" visible="true" />
 		<degree name="Error Angle min" offset="0x80" visible="true" />
 		<degree name="Error Angle max" offset="0x84" visible="true" />
-		<float32 name="Reload Error Deceleration Time" offset="0x88" visible="true" />
-		<float32 name="Weapon Switch Error Deceleration Time" offset="0x8C" visible="true" />
-		<float32 name="Zoom Error Deceleration Time" offset="0x90" visible="true" />
-		<float32 name="Jump Error Deceleration Time" offset="0x94" visible="true" />
-		<reflexive name="Bloom Data" offset="0x98" visible="true" entrySize="0x14">
+		<float32 name="Reload Penalty" offset="0x88" visible="true" />
+		<float32 name="Switch Penalty" offset="0x8C" visible="true" />
+		<float32 name="Zoom Penalty" offset="0x90" visible="true" />
+		<float32 name="Jump Penalty" offset="0x94" visible="true" />
+		<reflexive name="Firing Penalty Function" offset="0x98" visible="true" entrySize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Bloom Crouch Data" offset="0xA4" visible="true" entrySize="0x14">
+		<reflexive name="Firing Crouched Penalty Function" offset="0xA4" visible="true" entrySize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<undefined name="block here 1" offset="0xB0" visible="false" />
-		<undefined name="block here 1" offset="0xB4" visible="false" />
-		<undefined name="block here 1" offset="0xB8" visible="false" />
-		<undefined name="block here 2" offset="0xBC" visible="false" />
-		<undefined name="block here 2" offset="0xC0" visible="false" />
-		<undefined name="block here 2" offset="0xC4" visible="false" />
-		<undefined name="Unknown" offset="0xC8" visible="false" />
-		<reflexive name="Unknown" offset="0xCC" visible="true" entrySize="0x14">
+		<reflexive name="Moving Penalty Function" offset="0xB0" visible="true" entrySize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0xD8" visible="true" entrySize="0x14">
+		<reflexive name="Turning Penalty Function" offset="0xBC" visible="true" entrySize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<undefined name="block here 1" offset="0xE4" visible="false" />
-		<undefined name="block here 1" offset="0xE8" visible="false" />
-		<undefined name="block here 1" offset="0xEC" visible="false" />
-		<undefined name="block here 2" offset="0xF0" visible="false" />
-		<undefined name="block here 2" offset="0xF4" visible="false" />
-		<undefined name="block here 2" offset="0xF8" visible="false" />
-		<undefined name="Unknown" offset="0xFC" visible="false" />
+		<float32 name="Error Angle Maximum Rotation" offset="0xC8" visible="true" />
+		<reflexive name="Dual Firing Penalty Function" offset="0xCC" visible="true" entrySize="0x14">
+			<dataRef name="Function" offset="0x0" visible="true" />
+		</reflexive>
+		<reflexive name="Dual Firing Crouched Penalty Function" offset="0xD8" visible="true" entrySize="0x14">
+			<dataRef name="Function" offset="0x0" visible="true" />
+		</reflexive>
+		<reflexive name="Dual Moving Penalty Function" offset="0xE4" visible="true" entrySize="0x14">
+			<dataRef name="Function" offset="0x0" visible="true" />
+		</reflexive>
+		<reflexive name="Dual Turning Penalty Function" offset="0xF0" visible="true" entrySize="0x14">
+			<dataRef name="Function" offset="0x0" visible="true" />
+		</reflexive>
+		<float32 name="Dual Error Angle Maximum Rotation" offset="0xFC" visible="true" />
 		<reflexive name="First Person Offsets" offset="0x100" visible="true" entrySize="0xC">
 			<float32 name="First Person Offset x" offset="0x0" visible="true" />
 			<float32 name="First Person Offset y" offset="0x4" visible="true" />
@@ -1282,8 +1282,8 @@
 		<tagref name="Initial Projectile" offset="0x110" visible="true" />
 		<tagref name="Trailing Projectile" offset="0x120" visible="true" />
 		<tagref name="Damage Effect" offset="0x130" visible="true" />
-		<tagref name="Override Projectile" offset="0x140" visible="true" />
-		<undefined name="Unknown" offset="0x150" visible="true" />
+		<tagref name="Crate Projectile" offset="0x140" visible="true" />
+		<float32 name="Crate Projectile Speed" offset="0x150" visible="true" />
 		<float32 name="Ejection Port Recovery Time" offset="0x154" visible="true" />
 		<float32 name="Illumination Recovery Time" offset="0x158" visible="true" />
 		<float32 name="Heat Generated Per Round" offset="0x15C" visible="true" />
@@ -1295,7 +1295,7 @@
 		<float32 name="Unknown" offset="0x174" visible="true" />
 		<float32 name="Rate Of Fire Acceleration Time" offset="0x178" visible="true" />
 		<float32 name="Rate Of Fire Deceleration Time" offset="0x17C" visible="true" />
-		<float32 name="Reticule Bloom Deceleration Time" offset="0x180" visible="true" />
+		<float32 name="Bloom Rate of Decay" offset="0x180" visible="true" />
 		<reflexive name="Firing Effects" offset="0x184" visible="true" entrySize="0xF4">
 			<int16 name="Shot Count Lower Bound" offset="0x0" visible="true" />
 			<int16 name="Shot Count Upper Bound" offset="0x2" visible="true" />
