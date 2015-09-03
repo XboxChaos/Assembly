@@ -764,6 +764,7 @@ namespace Assembly.Windows
 				}
 				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
 			}
+			documentManager.SelectedContentIndex = documentManager.Children.Count - 1;
 		}
 
 		#endregion
