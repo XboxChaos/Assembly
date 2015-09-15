@@ -16,9 +16,9 @@ namespace Blamite.RTE.Eldorado
 	public class EldoradoRTEProvider : IRTEProvider
 	{
 		// TODO: Maybe find a way to dynamically get these addresses so we can support other versions of the game
-		private const uint MaxTagCountAddress = 0x22AB008;
-		private const uint TagIndexArrayPointerAddress = 0x22AAFFC;
-		private const uint TagAddressArrayPointerAddress = 0x22AAFF8;
+		private const uint MaxTagCountAddress = 0x22AB008; // ZBT is 0x42D68E8
+		private const uint TagIndexArrayPointerAddress = 0x22AAFFC; // ZBT is 0x42D68DC
+		private const uint TagAddressArrayPointerAddress = 0x22AAFF8; // ZBT is 0x42D68D8
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EldoradoRTEProvider"/> class.

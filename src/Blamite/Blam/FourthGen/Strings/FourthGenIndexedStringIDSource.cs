@@ -11,13 +11,17 @@ namespace Blamite.Blam.FourthGen
     {
         private readonly FourthGenIndexedStringTable _strings;
 
-        public FourthGenIndexedStringIDSource(FourthGenIndexedStringTable strings, IStringIDResolver resolver)
+		private readonly int[] _setOffsets;
+
+        public FourthGenIndexedStringIDSource(FourthGenIndexedStringTable strings, IStringIDResolver resolver, bool isZBT)
         {
             _strings = strings;
+			if (!isZBT)
+				_setOffsets = new int[] { 0x90F, 0x1, 0x685, 0x720, 0x7C4, 0x778, 0x7D0, 0x8EA, 0x902 };
+			else
+				_setOffsets = new int[] { 0x910, 0x1, 0x685, 0x720, 0x7C4, 0x778, 0x7D0, 0x8EB, 0x903 };
         }
 
-        // These values were figured out through trial-and-error
-        private static readonly int[] _setOffsets = { 0x90F, 0x1, 0x685, 0x720, 0x7C4, 0x778, 0x7D0, 0x8EA, 0x902 };
         private const int SetMin = 0x1;   // Mininum index that goes in a set
         private const int SetMax = 0xF1E; // Maximum index that goes in a set
 
