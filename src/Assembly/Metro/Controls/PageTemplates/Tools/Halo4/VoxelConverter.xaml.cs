@@ -22,6 +22,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools.Halo4
 			InitializeComponent();
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		public bool Close()
 		{
 			return !_doingWork;

@@ -33,6 +33,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			DataContext = GeneratorMaps;
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		public bool Close()
 		{
 			return !_isWorking;
