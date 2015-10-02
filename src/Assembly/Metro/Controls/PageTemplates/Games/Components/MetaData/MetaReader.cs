@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Blamite.Blam;
@@ -152,10 +153,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += (_reader.ReadByte().ToString("X2"));
-			field.Value = colorValue;
+			byte[] colorArray = new byte[field.Format.Length];
+			for (int i = 0; i < field.Format.Length; i++)
+				colorArray[i] = _reader.ReadByte();
+
+			if (_cache.Engine == EngineType.FourthGeneration)
+				Array.Reverse(colorArray);
+
+			string colorValue = String.Concat(Array.ConvertAll(colorArray, x => x.ToString("X2")));
+			field.Value = "#" + colorValue;
 		}
 
 		public void VisitColourFloat(ColourData field)

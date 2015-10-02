@@ -138,6 +138,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
+			bool eldorado = _cache.Engine == EngineType.FourthGeneration;
 			if (field.Value.Length == 7)
 				field.Value = field.Value.Insert(1, "FF");
 
@@ -150,15 +151,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 						_writer.WriteByte(alpha);
 						break;
 					case 'r':
-						byte red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
+						byte red = !eldorado ? byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber)
+							: byte.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber);
 						_writer.WriteByte(red);
 						break;
 					case 'g':
-						byte green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
+						byte green = !eldorado ? byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber)
+							: byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
 						_writer.WriteByte(green);
 						break;
 					case 'b':
-						byte blue = byte.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber);
+						byte blue = !eldorado ? byte.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber)
+							: byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
 						_writer.WriteByte(blue);
 						break;
 				}
