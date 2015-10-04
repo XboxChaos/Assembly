@@ -261,7 +261,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 			values.SetInteger("size", (uint) field.Length);
-			values.SetInteger("pointer", field.DataAddress);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
@@ -270,13 +269,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			// Go to the data location
 			uint offset = field.DataAddress;
+			uint dataOffset = offset;
 
-			if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
-				offset = _headerOffset + (offset & 0xFFFFFFF);
-
-			if (_type == SaveType.File)
-				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
-			_writer.SeekTo(offset);
+			switch (_type)
+			{
+				case SaveType.Memory:
+					{
+						if (_cache.GetType() != typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+							values.SetInteger("pointer", offset);
+						break;
+					}
+				case SaveType.File:
+					{
+						if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+							offset = offset - _headerOffset + 0x40000000;
+						values.SetInteger("pointer", offset);
+						dataOffset = (uint)_cache.MetaArea.PointerToOffset(dataOffset);
+						break;
+					}
+			}
+			_writer.SeekTo(dataOffset);
 
 			// Write its data
 			switch (field.Format)
