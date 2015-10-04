@@ -218,8 +218,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			var length = (int) values.GetInteger("size");
 			uint pointer = values.GetInteger("pointer");
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
+			if (length > 0)
 			{
+
+				if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+					pointer = HeaderOffset + (pointer & 0xFFFFFFF);
+
 				field.DataAddress = pointer;
 				field.Length = length;
 

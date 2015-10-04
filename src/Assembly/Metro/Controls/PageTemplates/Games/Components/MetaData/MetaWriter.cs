@@ -270,6 +270,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			// Go to the data location
 			uint offset = field.DataAddress;
+
+			if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+				offset = _headerOffset + (offset & 0xFFFFFFF);
+
 			if (_type == SaveType.File)
 				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
 			_writer.SeekTo(offset);
