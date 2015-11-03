@@ -53,13 +53,13 @@
 	<reflexive name="Havok Cleanup Resources" offset="0xB0" visible="true" entrySize="0x10">
 		<tagRef name="Object Cleanup Effect" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive ame="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
+	<reflexive name="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
 		<tagRef name="Sound Classes" offset="0x0" visible="true" />
 		<tagRef name="Sound Effects" offset="0x10" visible="true" />
 		<tagRef name="Sound Mix" offset="0x20" visible="true" />
 		<tagRef name="Sound Combat Dialogue Constants" offset="0x30" visible="true" />
 		<tagRef name="Sound Global Propagation" offset="0x40" visible="true" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
+		<tagRef name="GFX UI Sounds" offset="0x50" visible="true" />
 	</reflexive>
 	<reflexive name="AI Globals" offset="0xC8" visible="true" entrySize="0x144">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -148,8 +148,8 @@
 		<reflexive name="Damage Groups" offset="0x0" visible="true" entrySize="0x10">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<reflexive name="Armor Modifiers" offset="0x4" visible="true" entrySize="0x8">
-				<undefined name="Name" offset="0x0" visible="true" />
-				<undefined name="Damage Multiplier" offset="0x4" visible="true" />
+				<stringid name="Name" offset="0x0" visible="true" />
+				<float32 name="Damage Multiplier" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
 	</reflexive>
@@ -229,7 +229,7 @@
 		<undefined name="Gravity Scale" offset="0x5C" visible="false" />
 		<int16 name="Unknown" offset="0x60" visible="true" />
 		<int16 name="Minimum Autoleveling Ticks" offset="0x62" visible="true" />
-		<reflexive name="Look Function" offset="0x64" visible="false" entrySize="0x4">
+		<reflexive name="Look Function" offset="0x64" visible="true" entrySize="0x4">
 			<float32 name="Scale" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -429,9 +429,9 @@
 		<tagRef name="Single Player UI Globals" offset="0xF0" visible="true" />
 		<tagRef name="Multiplayer UI Globals" offset="0x100" visible="true" />
 		<tagRef name="HUD Globals" offset="0x110" visible="true" />
-		<reflexive name="Unknown" offset="0x120" visible="false" entrySize="0x30">
-			<ascii name="String" offset="0x0" length="0x20" visible="true" />
-			<tagRef name="Unknown" offset="0x20" visible="false" />
+		<reflexive name="GFX UI Strings" offset="0x120" visible="true" entrySize="0x30">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<tagRef name="Strings" offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<undefined name="Unknown" offset="0x150" visible="false" />
@@ -477,10 +477,9 @@
 	</reflexive>
 	<reflexive name="Player Representation" offset="0x174" visible="true" entrySize="0x6C">
 		<stringID name="Name" offset="0x0" visible="true" />
-		<enum32 name="First Person Animation" offset="0x4" visible="true">
-			<option name="Spartan" value="0x0" />
-			<option name="Elite" value="0x1" />
-		</enum32>
+		<bitfield32 name="Flags" offset="0x4" visible="true">
+			<bit name="Elite" index="0" />
+		</bitfield32>
 		<tagRef name="First Person Hands" offset="0x8" visible="true" />
 		<tagRef name="First Person Body" offset="0x18" visible="true" />
 		<tagRef name="Third Person Unit" offset="0x28" visible="true" />
@@ -858,17 +857,17 @@
 	<undefined name="Unknown" offset="0x514" visible="false" />
 	<tagRef name="Rasterizer Globals" offset="0x518" visible="true" />
 	<tagRef name="Default Camera Effect" offset="0x528" visible="true" />
-	<tagRef name="Unknown" offset="0x538" visible="false" />
+	<tagRef name="Podium Definition" offset="0x538" visible="true" />
 	<tagRef name="Default Wind" offset="0x548" visible="true" />
 	<tagRef name="Default Damage Effect" offset="0x558" visible="true" />
 	<tagRef name="Default Collision Damage" offset="0x568" visible="true" />
-	<stringid name="Unknown Material" offset="0x578" visible="false" />
-	<int16 name="Unknown Global Material Index" offset="0x57C" visible="false" />
+	<stringid name="Unknown Material" offset="0x578" visible="true" />
+	<int16 name="Unknown Global Material Index" offset="0x57C" visible="true" />
 	<int16 name="Unknown" offset="0x57E" visible="false" />
 	<tagRef name="Effect Globals" offset="0x580" visible="true" />
 	<tagRef name="Game Progression Globals" offset="0x590" visible="true" />
 	<tagRef name="Achievement Globals" offset="0x5A0" visible="true" />
-	<tagRef name="Unknown" offset="0x5B0" visible="false" />
+	<tagRef name="Input Globals" offset="0x5B0" visible="true" />
 	<undefined name="Unknown" offset="0x5C0" visible="false" />
 	<undefined name="Unknown" offset="0x5C4" visible="false" />
 	<undefined name="Unknown" offset="0x5C8" visible="false" />

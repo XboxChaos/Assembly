@@ -50,13 +50,13 @@
 	<reflexive name="Havok Cleanup Resources" offset="0xB0" visible="true" entrySize="0x10">
 		<tagRef name="Object Cleanup Effect" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive ame="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
+	<reflexive name="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
 		<tagRef name="Sound Classes" offset="0x0" visible="true" />
 		<tagRef name="Sound Effects" offset="0x10" visible="true" />
 		<tagRef name="Sound Mix" offset="0x20" visible="true" />
 		<tagRef name="Sound Combat Dialogue Constants" offset="0x30" visible="true" />
 		<tagRef name="Sound Global Propagation" offset="0x40" visible="true" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
+		<tagRef name="GFX UI Sounds" offset="0x50" visible="true" />
 	</reflexive>
 	<reflexive name="AI Globals" offset="0xC8" visible="true" entrySize="0x144">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -145,8 +145,8 @@
 		<reflexive name="Damage Groups" offset="0x0" visible="true" entrySize="0x10">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<reflexive name="Armor Modifiers" offset="0x4" visible="true" entrySize="0x8">
-				<undefined name="Name" offset="0x0" visible="true" />
-				<undefined name="Damage Multiplier" offset="0x4" visible="true" />
+				<stringid name="Name" offset="0x0" visible="true" />
+				<float32 name="Damage Multiplier" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
 	</reflexive>
@@ -197,36 +197,46 @@
 		<undefined name="Unknown" offset="0x9C" visible="false" />
 		<undefined name="Unknown" offset="0xA0" visible="false" />
 	</reflexive>
-	<reflexive name="Player Control" offset="0x114" visible="true" entrySize="0x70">
+	<reflexive name="Player Control" offset="0x114" visible="true" entrySize="0x78">
 		<undefined name="Magnetism Friction" offset="0x0" visible="true" />
 		<undefined name="Magnetism Adhesion" offset="0x4" visible="true" />
 		<undefined name="Inconsequential Target Scale" offset="0x8" visible="true" />
-		<undefined name="Crosshair Location x" offset="0xC" visible="true" />
-		<undefined name="Crosshair Location y" offset="0x10" visible="true" />
+		<reflexive name="Crosshair Locations" offset="0xC" visible="true" entrySize="0x28">
+			<undefined name="Default Crosshair Location y" offset="0x4" visible="true" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Centered Crosshair Location y" offset="0xC" visible="true" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+		</reflexive>
 		<comment title="Sprinting" />
-		<undefined name="Seconds to Start" offset="0x14" visible="true" />
-		<undefined name="Seconds to Full Speed" offset="0x18" visible="true" />
-		<undefined name="Decay Rate" offset="0x1C" visible="true" />
-		<undefined name="Full Speed Multiplier s=(1+x)" offset="0x20" visible="true" />
-		<undefined name="Pegged Magnitude" offset="0x24" visible="true" />
-		<undefined name="Pegged Angular Threshold" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<undefined name="Seconds to Start" offset="0x18" visible="true" />
+		<undefined name="Seconds to Full Speed" offset="0x1C" visible="true" />
+		<undefined name="Decay Rate" offset="0x20" visible="true" />
+		<undefined name="Full Speed Multiplier s=(1+x)" offset="0x24" visible="true" />
+		<undefined name="Pegged Magnitude" offset="0x28" visible="true" />
+		<undefined name="Pegged Angular Threshold" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<undefined name="Unknown" offset="0x38" visible="false" />
 		<comment title="Looking" />
-		<undefined name="Look Default Pitch Rate" offset="0x34" visible="false" />
-		<undefined name="Look Default Yaw Rate" offset="0x38" visible="false" />
-		<undefined name="Look Peg Threshold" offset="0x3C" visible="false" />
-		<undefined name="Look Yaw Acceleration Time" offset="0x40" visible="false" />
-		<undefined name="Look Yaw Acceleration Scale" offset="0x44" visible="false" />
-		<undefined name="Look Pitch Acceleration Time" offset="0x48" visible="false" />
-		<undefined name="Look Pitch Acceleration Scale" offset="0x4C" visible="false" />
-		<undefined name="Look Autoleveling Scale" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Gravity Scale" offset="0x5C" visible="false" />
-		<int16 name="Unknown" offset="0x60" visible="true" />
-		<int16 name="Minimum Autoleveling Ticks" offset="0x62" visible="true" />
-		<reflexive name="Look Function" offset="0x64" visible="false" entrySize="0x4">
+		<undefined name="Look Default Pitch Rate" offset="0x3C" visible="false" />
+		<undefined name="Look Default Yaw Rate" offset="0x40" visible="false" />
+		<undefined name="Look Peg Threshold" offset="0x44" visible="false" />
+		<undefined name="Look Yaw Acceleration Time" offset="0x48" visible="false" />
+		<undefined name="Look Yaw Acceleration Scale" offset="0x4C" visible="false" />
+		<undefined name="Look Pitch Acceleration Time" offset="0x50" visible="false" />
+		<undefined name="Look Pitch Acceleration Scale" offset="0x54" visible="false" />
+		<undefined name="Look Autoleveling Scale" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<undefined name="Gravity Scale" offset="0x64" visible="false" />
+		<int16 name="Unknown" offset="0x68" visible="true" />
+		<int16 name="Minimum Autoleveling Ticks" offset="0x6A" visible="true" />
+		<reflexive name="Look Function" offset="0x6C" visible="true" entrySize="0x4">
 			<float32 name="Scale" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -426,9 +436,9 @@
 		<tagRef name="Single Player UI Globals" offset="0xF0" visible="true" />
 		<tagRef name="Multiplayer UI Globals" offset="0x100" visible="true" />
 		<tagRef name="HUD Globals" offset="0x110" visible="true" />
-		<reflexive name="Unknown" offset="0x120" visible="false" entrySize="0x30">
-			<ascii name="String" offset="0x0" length="0x20" visible="true" />
-			<tagRef name="Unknown" offset="0x20" visible="false" />
+		<reflexive name="GFX UI Strings" offset="0x120" visible="true" entrySize="0x30">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<tagRef name="Strings" offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<undefined name="Unknown" offset="0x150" visible="false" />
@@ -474,10 +484,9 @@
 	</reflexive>
 	<reflexive name="Player Representation" offset="0x174" visible="true" entrySize="0x6C">
 		<stringID name="Name" offset="0x0" visible="true" />
-		<enum32 name="First Person Animation" offset="0x4" visible="true">
-			<option name="Spartan" value="0x0" />
-			<option name="Elite" value="0x1" />
-		</enum32>
+		<bitfield32 name="Flags" offset="0x4" visible="true">
+			<bit name="Elite" index="0" />
+		</bitfield32>
 		<tagRef name="First Person Hands" offset="0x8" visible="true" />
 		<tagRef name="First Person Body" offset="0x18" visible="true" />
 		<tagRef name="Third Person Unit" offset="0x28" visible="true" />
@@ -866,7 +875,7 @@
 	<tagRef name="Effect Globals" offset="0x590" visible="true" />
 	<tagRef name="Game Progression Globals" offset="0x5A0" visible="true" />
 	<tagRef name="Achievement Globals" offset="0x5B0" visible="true" />
-	<tagRef name="Unknown" offset="0x5C0" visible="false" />
+	<tagRef name="Input Globals" offset="0x5C0" visible="true" />
 	<undefined name="Unknown" offset="0x5D0" visible="false" />
 	<undefined name="Unknown" offset="0x5D4" visible="false" />
 	<undefined name="Unknown" offset="0x5D8" visible="false" />
