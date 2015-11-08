@@ -89,6 +89,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			thrd.Start();
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		private bool IsTextBoxValid(TextBox textbox)
 		{
 			return (Equals(textbox.BorderBrush, FindResource("ExtryzeAccentBrush")));

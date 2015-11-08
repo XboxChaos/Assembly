@@ -108,6 +108,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerAsync();
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		public ObservableCollection<HeaderValue> HeaderDetails
 		{
 			get { return _headerDetails; }
@@ -169,9 +174,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					{
 						if (!_0xabad1dea.IWff.Heman(reader))
 						{
-							StatusUpdater.Update("Not a supported target engine");
-							MetroMessageBox.Show("Unable to open cache file",
-								ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+							if (ex is NotSupportedException)
+							{
+								StatusUpdater.Update("Not a supported target engine");
+								MetroMessageBox.Show("Unable to open cache file",
+									ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+							}
+							else
+							{
+								StatusUpdater.Update("An unknown error occured. Cache file may be corrupted.");
+								throw ex;
+							}
 						}
 						else
 						{

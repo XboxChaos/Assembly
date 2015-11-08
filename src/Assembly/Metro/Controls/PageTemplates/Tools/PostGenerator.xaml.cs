@@ -29,6 +29,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 			DataContext = _generatorViewModel;
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		// Header Stuff
 		private void btnLaunchPatcher_Click(object sender, RoutedEventArgs e)
 		{

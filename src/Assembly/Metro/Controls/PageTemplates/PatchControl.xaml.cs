@@ -44,6 +44,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 			LoadPatch(isAlteration);
 		}
 
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			this.Focus();
+		}
+
 		// ReSharper disable UnusedMember.Global
 		public bool Close()
 		{
