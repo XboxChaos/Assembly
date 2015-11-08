@@ -670,6 +670,7 @@
 	<comment title="Inheritance">The Node Map block should have the same count as the Inherited Graph's nodes. Each Local Node value corresponds to the nodes of THIS graph. If there is no matching node, -1 is acceptable.
 The Node Map Flags reflect which nodes in the Node Map are used, meaning a bit should be unchecked if it is -1 in the map.
 Root z Offset allows for differences in height. Updates in realtime so poke around until it looks how you want.
+Starting at Reach, a new Inheritance block was added, use that. ("New")
 Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the Animations block with a tag reference and animation index.</comment>
 	<reflexive name="Inheritance List" offset="0x160" visible="true" entrySize="0x30">
 		<tagRef name="Inherited Graph" offset="0x0" visible="True" />
@@ -715,9 +716,60 @@ Unlike Halo 3, Graph Index is obsolete, so inheritance is done right inside the 
 		<int32 name="Unknown" offset="0x28" visible="false" />
 		<float32 name="Root z Offset" offset="0x2C" visible="true" />
 	</reflexive>
-	<undefined name="block here 5" offset="0x16C" visible="false" />
-	<undefined name="block here 5" offset="0x170" visible="false" />
-	<undefined name="block here 5" offset="0x174" visible="false" />
+	<reflexive name="New Inheritance List" offset="0x16C" visible="true" entrySize="0x30">
+		<tagRef name="Inherited Graph" offset="0x0" visible="True" />
+		<reflexive name="Node Map" offset="0x10" visible="True" entrySize="0x2">
+			<!--<int16 name="Local Node" offset="0x0" visible="True" />-->
+				<int16 name="Unknown" offset="0x0" visible="false" />
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<int16 name="Unknown" offset="0x4" visible="false" />
+	<int16 name="Unknown" offset="0x6" visible="false" />
+	<int16 name="Unknown" offset="0x8" visible="false" />
+	<int16 name="Unknown" offset="0xA" visible="false" />
+	<int16 name="Unknown" offset="0xC" visible="false" />
+	<int16 name="Unknown" offset="0xE" visible="false" />
+	<int16 name="Unknown" offset="0x10" visible="false" />
+	<int16 name="Unknown" offset="0x12" visible="false" />
+		</reflexive>
+		<reflexive name="Node Map Flags" offset="0x1C" visible="True" entrySize="0x4">
+			<bitfield32 name="Local Node Flags" offset="0x0" visible="true">
+				<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+				<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+				<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+				<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+				<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+				<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+				<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+				<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="8" />
+				<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="9" />
+				<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="10" />
+				<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="11" />
+				<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="12" />
+				<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="13" />
+				<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="14" />
+				<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="15" />
+				<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="16" />
+				<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="17" />
+				<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="18" />
+				<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="19" />
+				<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="20" />
+				<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="21" />
+				<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="22" />
+				<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="23" />
+				<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="24" />
+				<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="25" />
+				<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="26" />
+				<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="27" />
+				<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="28" />
+				<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="29" />
+				<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="30" />
+				<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="31" />
+			</bitfield32>
+		</reflexive>
+		<int32 name="Unknown" offset="0x28" visible="false" />
+		<float32 name="Root z Offset" offset="0x2C" visible="true" />
+	</reflexive>
 	<reflexive name="Weapon List" offset="0x178" visible="true" entrySize="0x8">
 		<stringid name="Weapon Name" offset="0x0" visible="true" />
 		<stringid name="Weapon Class" offset="0x4" visible="true" />
