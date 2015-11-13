@@ -1874,7 +1874,7 @@
 		</bitfield32>
 		<reflexive name="Pathfinding References" offset="0x7C" visible="true" entrySize="0x4">
 			<int16 name="BSP Index" offset="0x0" visible="true" />
-			<int16 name="Pathfinding Object Index" offset="0x0" visible="true" />
+			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</reflexive>
 		<enum16 name="Pathfinding Policy" offset="0x88" visible="true">
 			<option name="Tag Default" value="0x0" />
@@ -2855,7 +2855,7 @@
 		<int16 name="Unknown" offset="0x7A" visible="true" />
 		<reflexive name="Pathfinding References" offset="0x7C" visible="true" entrySize="0x4">
 			<int16 name="BSP Index" offset="0x0" visible="true" />
-			<int16 name="Pathfinding Object Index" offset="0x0" visible="true" />
+			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Giant Palette" offset="0x1D0" visible="true" entrySize="0x30">
@@ -3648,8 +3648,6 @@
 			<int16 name="Command Script Index" offset="0x78" visible="true" />
 			<int16 name="Unknown" offset="0x7A" visible="false" />
 			<stringId name="Initial State" offset="0x7C" visible="true" />
-			<int16 name="Unknown" offset="0x7C" visible="false" />
-			<int16 name="Unknown" offset="0x7E" visible="false" />
 			<int16 name="Unknown" offset="0x80" visible="false" />
 			<int16 name="Unknown" offset="0x82" visible="false" />
 			<reflexive name="Multi-State" offset="0x84" visible="true" entrySize="0x38">
@@ -3741,7 +3739,7 @@
 			<undefined name="Unknown" offset="0x64" visible="false" />
 			<undefined name="Unknown" offset="0x68" visible="false" />
 			<int16 name="Unknown" offset="0x6C" visible="false" />
-			<int16 name="Unknown" offset="0x3E" visible="false" />
+			<int16 name="Unknown" offset="0x6E" visible="false" />
 			<undefined name="Unknown" offset="0x70" visible="false" />
 			<int16 name="Unknown" offset="0x74" visible="false" />
 			<int16 name="Unknown" offset="0x76" visible="false" />
@@ -3824,7 +3822,7 @@
 			<undefined name="Unknown" offset="0x64" visible="false" />
 			<undefined name="Unknown" offset="0x68" visible="false" />
 			<int16 name="Unknown" offset="0x6C" visible="false" />
-			<int16 name="Unknown" offset="0x3E" visible="false" />
+			<int16 name="Unknown" offset="0x6E" visible="false" />
 			<undefined name="Unknown" offset="0x70" visible="false" />
 			<int16 name="Unknown" offset="0x74" visible="false" />
 			<int16 name="Unknown" offset="0x76" visible="false" />
@@ -5572,12 +5570,17 @@
 	<undefined name="Unknown" offset="0x7B4" visible="false" />
 	<undefined name="Unknown" offset="0x7B8" visible="false" />
 	<undefined name="Unknown" offset="0x7BC" visible="false" />
-	<reflexive name="Metagame Scoring" offset="0x7C0" visible="true" entrySize="0x10">
-		<reflexive name="Time-Based Multipliers" offset="0x0" visible="true" entrySize="0x8">
-			<undefined name="Time" offset="0x0" visible="true" />
-			<undefined name="Applied Multiplier" offset="0x4" visible="true" />
+	<reflexive name="Scenario Metagame" offset="0x7C0" visible="true" entrySize="0x1C">
+		<reflexive name="Time Multipliers" offset="0x0" visible="true" entrySize="0x8">
+			<float32 name="Time" offset="0x0" visible="true" />
+			<float32 name="Multiplier" offset="0x4" visible="true" />
 		</reflexive>
-		<undefined name="Achievement Point Goal" offset="0xC" visible="true" />
+		<float32 name="Par Score" offset="0xC" visible="true" />
+		<reflexive name="Survival" offset="0x10" visible="true" entrySize="0x8">
+			<int16 name="Insertion Index" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<float32 name="Par Score" offset="0x4" visible="true" />
+		</reflexive>
 	</reflexive>
 	<reflexive name="Unknown" offset="0x7CC" visible="false" entrySize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
