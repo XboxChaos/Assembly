@@ -29,11 +29,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			ButtonTabSelection_OnClick(ButtonSelectGeneral, null);
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		#region TabSelection
 
 		private string _currentTag = "";

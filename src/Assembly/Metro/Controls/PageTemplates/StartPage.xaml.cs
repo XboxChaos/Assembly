@@ -25,11 +25,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			tutHaloReach.Content = new RssPage(HoldingVault.XboxChaosHReachTuts);*/
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public bool Close()
 		{
 			return true;

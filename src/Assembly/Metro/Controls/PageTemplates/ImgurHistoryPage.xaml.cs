@@ -21,11 +21,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			UpdateHistory();
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public bool Close()
 		{
 			return true;

@@ -108,11 +108,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerAsync();
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public ObservableCollection<HeaderValue> HeaderDetails
 		{
 			get { return _headerDetails; }
