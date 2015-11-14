@@ -734,6 +734,7 @@ namespace Assembly.Windows
 		{
 			// Win7 master race lol
 			string[] draggedFiles = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+			this.Focus();
 
 			foreach (string file in draggedFiles)
 			{
@@ -764,7 +765,6 @@ namespace Assembly.Windows
 				}
 				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
 			}
-			documentManager.SelectedContentIndex = documentManager.Children.Count - 1;
 		}
 
 		#endregion
