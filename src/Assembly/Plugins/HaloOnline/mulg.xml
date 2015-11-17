@@ -74,26 +74,31 @@
 				<stringId name="Substituted Vehicle" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
-		<reflexive name="Podium" offset="0xBC" visible="true" entrySize="0x30">
+		<reflexive name="Podium Animations" offset="0xBC" visible="true" entrySize="0x30">
 			<tagRef name="Animation Graph" offset="0x0" visible="true" />
 			<stringid name="Default Unarmed" offset="0x10" visible="true" />
 			<stringid name="Default Armed" offset="0x14" visible="true" />
-			<reflexive name="Stance Animations" offset="0x18" visible="true" entrySize="0x34">
+			<reflexive name="Stances" offset="0x18" visible="true" entrySize="0x34">
 				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 				<stringid name="Base Animation" offset="0x20" visible="true" />
 				<stringid name="Loop Animation" offset="0x24" visible="true" />
 				<stringid name="Unarmed Transition" offset="0x28" visible="true" />
 				<stringid name="Armed Transition" offset="0x2C" visible="true" />
-				<float32 name="Unknown" offset="0x30" visible="true" />
+				<float32 name="Camera Distance Offset" offset="0x30" visible="true" />
 			</reflexive>
-			<reflexive name="Move Animations" offset="0x24" visible="true" entrySize="0x50">
+			<reflexive name="Alternates?" offset="0x24" visible="true" entrySize="0x50">
 				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 				<stringid name="In Animation" offset="0x20" visible="true" />
 				<stringid name="Loop Animation" offset="0x24" visible="true" />
 				<stringid name="Out Animation" offset="0x28" visible="true" />
-				<int32 name="Unknown" offset="0x2C" visible="false" />
-				<tagref name="Primary Weapon" offset="0x30" visible="true" />
-				<tagref name="Secondary Weapon" offset="0x40" visible="true" />
+				<enum32 name="Weapon?" offset="0x2C" visible="true">
+					<option name="Unarmed" value="0x0" />
+					<option name="Loadout Primary" value="0x1" />
+					<option name="Loadout Secondary" value="0x2" />
+					<option name="Custom" value="0x3" />
+				</enum32>
+				<tagref name="Custom Primary Weapon" offset="0x30" visible="true" />
+				<tagref name="Custom Secondary Weapon" offset="0x40" visible="true" />
 			</reflexive>
 		</reflexive>
 		<tagRef name="Engine Settings" offset="0xC8" visible="true" />
