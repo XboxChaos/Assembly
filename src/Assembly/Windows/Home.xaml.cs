@@ -758,7 +758,9 @@ namespace Assembly.Windows
 					AddCampaignTabModule(file);
 					continue;
 				}
-				if (file.EndsWith(".asmp"))
+				if (file.EndsWith(".asmp")||
+					file.EndsWith(".ascpatch")||
+					file.EndsWith(".patchdat"))
 				{
 					AddPatchTabModule(file);
 					continue;
