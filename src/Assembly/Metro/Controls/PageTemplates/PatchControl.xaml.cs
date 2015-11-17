@@ -524,6 +524,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		// File Selectors
 		private Patch currentPatch;
+		private string cacheOutputName = "";
 
 		private void btnApplyPatchFile_Click(object sender, RoutedEventArgs e)
 		{
@@ -554,7 +555,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			var sfd = new SaveFileDialog
 			{
-				FileName = currentPatch.OutputName,
+				FileName = cacheOutputName,
 				Title = "Assembly - Save Modded Map",
 				Filter = "Blam Cache Files|*.map"
 			};
@@ -604,6 +605,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 						PatchApplicationPatchExtra.Visibility = Visibility.Collapsed;
 						btnExtractInfo.IsEnabled = false;
 					}
+					if (currentPatch.OutputName != null)
+						cacheOutputName = currentPatch.OutputName;
 				}
 
 				// Set Screenshot
@@ -664,10 +667,10 @@ namespace Assembly.Metro.Controls.PageTemplates
 					return;
 
 				// Check the output name
-				if (currentPatch.OutputName != "")
-					if (Path.GetFileNameWithoutExtension(txtApplyPatchOutputMap.Text) != currentPatch.OutputName)
+				if (cacheOutputName != "")
+					if (Path.GetFileNameWithoutExtension(txtApplyPatchOutputMap.Text) != cacheOutputName)
 						if (MetroMessageBox.Show("Warning",
-							"This patch suggests to use the filename \"" + currentPatch.OutputName +
+							"This patch suggests to use the filename \"" + cacheOutputName +
 							".map\" to save this map. This filename may be required in order for the map to work correctly.\r\n\r\nAre you sure you want to save this map as \"" +
 							Path.GetFileName(txtApplyPatchOutputMap.Text) + "\"?",
 							MetroMessageBox.MessageBoxButtons.OkCancel) != MetroMessageBox.MessageBoxResult.OK)
