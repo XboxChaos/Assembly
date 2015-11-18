@@ -443,7 +443,7 @@
 		<tagref name="Unknown" offset="0xaC" visible="true" />
 		<tagref name="Unknown" offset="0xbC" visible="true" />
 	</reflexive>
-	<tagref name="Simulation" offset="0x190" visible="true" />
+	<tagref name="Simulation Interpolation" offset="0x190" visible="true" />
 	<reflexive name="Unknown" offset="0x1A0" visible="true" entrySize="0x30">
 		<tagRef name="Unknown" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
@@ -560,7 +560,7 @@
 		<bitfield8 name="Flags" offset="0x0" visible="true">
 			<bit name="Must Have Active Seats" index="0" />
 		</bitfield8>
-		<enum8 name="Unit Kind" offset="0x1" visible="true">
+		<enum8 name="Unit" offset="0x1" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />
 			<option name="Jackal" value="0x2" />
@@ -594,14 +594,14 @@
 			<option name="Banshee" value="0x1E" />
 			<option name="Phantom" value="0x1F" />
 			<option name="Scarab" value="0x20" />
-			<option name="Unknown" value="0x21" />
+			<option name="Guntower" value="0x21" />
 			<option name="Tuning Fork" value="0x22" />
 			<option name="Broadsword" value="0x23" />
 			<option name="Mammoth" value="0x24" />
 			<option name="Lich" value="0x25" />
 			<option name="Mantis" value="0x26" />
-			<option name="Unknown 39" value="0x27" />
-			<option name="Unknown 40" value="0x28" />
+			<option name="Wasp" value="0x27" />
+			<option name="Phaeton" value="0x28" />
 			<option name="Watcher" value="0x29" />
 			<option name="Knight" value="0x2A" />
 			<option name="Pawn" value="0x2B" />
@@ -614,10 +614,10 @@
 			<option name="Light Vehicle" value="0x4" />
 			<option name="Heavy Vehicle" value="0x5" />
 			<option name="Giant Vehicle" value="0x6" />
-			<option name="Medium Vehicle" value="0x7" />
+			<option name="Standard Vehicle" value="0x7" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3" visible="false" />
-		<int16 name="Base Point Worth" offset="0x4" visible="true" />
+		<int16 name="Points" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<reflexive name="Unit Screen Effects" offset="0x22C" visible="true" entrySize="0x10">
@@ -625,40 +625,19 @@
 	</reflexive>
 	<int32 name="Unknown" offset="0x238" visible="false" />
 	<comment title="Unit Camera" />
-	<bitfield32 name="Camera Flags" offset="0x23C" visible="true">
+	<bitfield8 name="Camera Flags" offset="0x23C" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
+		<bit name="Hides Player" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Bit 4" index="4" />
 		<bit name="Bit 5" index="5" />
 		<bit name="Bit 6" index="6" />
 		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Invisible in Third Person" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</bitfield8>
+	<int8 name="Unknown" offset="0x23D" visible="false" />
+	<int8 name="Unknown" offset="0x23E" visible="false" />
+	<int8 name="Unknown" offset="0x23F" visible="false" />
 	<stringid name="Camera Marker" offset="0x240" visible="true" />
 	<degree name="Pitch Auto-Level" offset="0x244" visible="true" />
 	<degree name="Pitch Range min" offset="0x248" visible="true" />
@@ -731,40 +710,19 @@
 		</reflexive>
 	</reflexive>
 	<comment title="Assassination Camera" />
-	<bitfield32 name="Camera Flags" offset="0x2B4" visible="true">
+	<bitfield8 name="Camera Flags" offset="0x2B4" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
+		<bit name="Hides Player" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Bit 4" index="4" />
 		<bit name="Bit 5" index="5" />
 		<bit name="Bit 6" index="6" />
 		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Invisible in Third Person" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</bitfield8>
+	<int8 name="Unknown" offset="0x2B5" visible="false" />
+	<int8 name="Unknown" offset="0x2B6" visible="false" />
+	<int8 name="Unknown" offset="0x2B7" visible="false" />
 	<stringid name="Camera Marker" offset="0x2B8" visible="true" />
 	<degree name="Auto-Level" offset="0x2BC" visible="true" />
 	<degree name="Range min" offset="0x2C0" visible="true" />
@@ -851,7 +809,6 @@
 	<float32 name="Feign Death Time" offset="0x380" visible="true" />
 	<float32 name="Distance of Evade Animation" offset="0x384" visible="true" />
 	<float32 name="Distance of Dive Animation" offset="0x388" visible="true" />
-	<!-- "Stunned Movement Threshold", "Feign Death Chance", "Feign Repeat Chance" -->
 	<float32 name="Unknown" offset="0x38C" visible="false" />
 	<float32 name="Unknown" offset="0x390" visible="false" />
 	<degree name="Unknown" offset="0x394" visible="false" />
@@ -865,8 +822,8 @@
 	<float32 name="Unknown" offset="0x3B4" visible="false" />
 	<undefined name="Unknown" offset="0x3B8" visible="false" />
 	<float32 name="Unknown" offset="0x3BC" visible="false" />
-	<undefined name="Unknown" offset="0x3C0" visible="false" />
-	<undefined name="Unknown" offset="0x3C4" visible="false" />
+	<float32 name="Feign Death Chance" offset="0x3C0" visible="true" />
+	<float32 name="Feign Repeat Chance" offset="0x3C4" visible="true" />
 	<tagref name="Spawned Turret Character" offset="0x3C8" visible="true" />
 	<int16 name="Spawned Actor Count min" offset="0x3D8" visible="true" />
 	<int16 name="Spawned Actor Count max" offset="0x3DA" visible="true" />
@@ -907,13 +864,13 @@
 		<option name="Large" value="0x2" />
 	</enum16>
 	<enum16 name="Item Scale" offset="0x4CE" visible="true">
-		<option name="Human" value="0x0" />
-		<option name="Player" value="0x1" />
-		<option name="Covenant" value="0x2" />
-		<option name="Boss" value="0x3" />
+		<option name="Small" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Large" value="0x2" />
+		<option name="Huge" value="0x3" />
 	</enum16>
-	<stringid name="Unknown" offset="0x4D0" visible="true" />
-	<stringid name="Unknown" offset="0x4D4" visible="true" />
+	<stringid name="Equipment Variant" offset="0x4D0" visible="true" />
+	<stringid name="Dropped Equipment Variant" offset="0x4D4" visible="true" />
 	<reflexive name="Postures" offset="0x4D8" visible="true" entrySize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<float32 name="Pill Offset I" offset="0x4" visible="true" />
@@ -1165,40 +1122,19 @@
 		<float32 name="Minimum Speed Reference" offset="0x70" visible="true" />
 		<float32 name="Maximum Speed Reference" offset="0x74" visible="true" />
 		<float32 name="Speed Exponent" offset="0x78" visible="true" />
-		<bitfield32 name="Camera Flags" offset="0x7C" visible="true">
+		<bitfield8 name="Camera Flags" offset="0x7C" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
+			<bit name="Hides Player" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-			<bit name="Bit 8" index="8" />
-			<bit name="Bit 9" index="9" />
-			<bit name="Bit 10" index="10" />
-			<bit name="Bit 11" index="11" />
-			<bit name="Bit 12" index="12" />
-			<bit name="Bit 13" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Invisible in Third Person" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</bitfield8>
+		<int8 name="Unknown" offset="0x7D" visible="false" />
+		<int8 name="Unknown" offset="0x7E" visible="false" />
+		<int8 name="Unknown" offset="0x7F" visible="false" />
 		<stringid name="Camera Marker" offset="0x80" visible="true" />
 		<degree name="Pitch Auto-Level" offset="0x84" visible="true" />
 		<degree name="Pitch Range min" offset="0x88" visible="true" />
@@ -1348,7 +1284,7 @@
 	<tagref name="Unit Equipment" offset="0x5F0" visible="true" />
 	<undefined name="Unknown" offset="0x600" visible="false" />
 	<float32 name="Unknown" offset="0x604" visible="false" />
-	<int16 name="Birthing Region Index" offset="0x608" visible="true" />
+	<int16 name="Birthing Seat Index" offset="0x608" visible="true" />
 	<int16 name="Unknown" offset="0x60A" visible="false" />
 	<stringid name="Birthing Region" offset="0x60C" visible="true" />
 	<comment title="BIPED" />
@@ -1392,9 +1328,24 @@
 	<stringid name="Unknown" offset="0x62C" visible="true" />
 	<stringid name="Assassination String" offset="0x630" visible="true" />
 	<float32 name="Jump Velocity" offset="0x634" visible="true" />
-	<undefined name="block here" offset="0x638" visible="false" />
-	<undefined name="block here" offset="0x63C" visible="false" />
-	<undefined name="block here" offset="0x640" visible="false" />
+	<reflexive name="Tricks" offset="0x638" visible="true" entrySize="0x20">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<enum8 name="Initiate Direction" offset="0x4" visible="true">
+			<option name="Left" value="0x0" />
+			<option name="Right" value="0x1" />
+			<option name="Up" value="0x2" />
+			<option name="Down" value="0x3" />
+		</enum8>
+		<int8 name="Unknown" offset="0x5" visible="true" />
+		<int8 name="Unknown" offset="0x6" visible="true" />
+		<int8 name="Unknown" offset="0x7" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Distance Traveled" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Cooldown Time" offset="0x1C" visible="true" />
+	</reflexive>
 	<float32 name="Maximum Soft Landing Time" offset="0x644" visible="true" />
 	<float32 name="Maximum Hard Landing Time" offset="0x648" visible="true" />
 	<float32 name="Minimum Soft Landing Velocity" offset="0x64C" visible="true" />
@@ -1412,21 +1363,21 @@
 		<float32 name="Standing Height Fraction" offset="0x4" visible="true" />
 		<float32 name="Crouching Height Fraction" offset="0x8" visible="true" />
 	</reflexive>
-	<degree name="Unknown" offset="0x690" visible="false" />
-	<degree name="Unknown" offset="0x694" visible="false" />
+	<degree name="Camera Interpolation Start" offset="0x690" visible="true" />
+	<degree name="Camera Interpolation End" offset="0x694" visible="true" />
 	<float32 name="Unknown" offset="0x698" visible="false" />
-	<undefined name="Unknown" offset="0x69C" visible="false" />
+	<float32 name="Unknown" offset="0x69C" visible="false" />
 	<float32 name="Unknown" offset="0x6A0" visible="false" />
 	<float32 name="Unknown" offset="0x6A4" visible="false" />
 	<float32 name="Unknown" offset="0x6A8" visible="false" />
-	<float32 name="Unknown" offset="0x6AC" visible="false" />
-	<int16 name="Unknown" offset="0x6B0" visible="false" />
+	<float32 name="Autoaim Width" offset="0x6AC" visible="true" />
+	<int16 name="Physics Control Node Index" offset="0x6B0" visible="true" />
 	<int16 name="Unknown" offset="0x6B2" visible="false" />
 	<float32 name="Unknown" offset="0x6B4" visible="false" />
 	<float32 name="Unknown" offset="0x6B8" visible="false" />
 	<float32 name="Unknown" offset="0x6BC" visible="false" />
-	<int16 name="Unknown" offset="0x6C0" visible="false" />
-	<int16 name="Unknown" offset="0x6C2" visible="false" />
+	<int16 name="Pelvis Node Index" offset="0x6C0" visible="true" />
+	<int16 name="Head Node Index" offset="0x6C2" visible="true" />
 	<reflexive name="Unknown" offset="0x6C4" visible="false" entrySize="0x18">
 		<stringid name="Unknown" offset="0x0" visible="true" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
