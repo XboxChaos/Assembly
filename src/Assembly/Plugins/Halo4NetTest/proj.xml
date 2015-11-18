@@ -425,7 +425,7 @@
 		<tagref name="Unknown" offset="0xaC" visible="true" />
 		<tagref name="Unknown" offset="0xbC" visible="true" />
 	</reflexive>
-	<tagRef name="Simulation" offset="0x178" visible="true" />
+	<tagref name="Simulation Interpolation" offset="0x178" visible="true" />
 	<reflexive name="Unknown" offset="0x188" visible="true" entrySize="0x30">
 		<tagRef name="Unknown" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
@@ -598,16 +598,16 @@
 		<option name="Auto Sentry" value="0x44" />
 		<option name="Thruster Pack" value="0x45" />
 		<option name="Falling" value="0x46" />
-		<option name="Generic Collision" value="0x47" />
-		<option name="Generic Melee" value="0x48" />
-		<option name="Generic Explosion" value="0x49" />
+		<option name="Collision" value="0x47" />
+		<option name="Melee" value="0x48" />
+		<option name="Explosion" value="0x49" />
 		<option name="Birthday Party Explosion" value="0x4A" />
 		<option name="Flag" value="0x4B" />
 		<option name="Bomb" value="0x4C" />
 		<option name="Bomb Explosion" value="0x4D" />
 		<option name="Ball" value="0x4E" />
 		<option name="Teleporter" value="0x4F" />
-		<option name="Shifted Blame" value="0x50" />
+		<option name="Transfer Damage" value="0x50" />
 		<option name="Armor Lock" value="0x51" />
 		<option name="Human Turret" value="0x52" />
 		<option name="Plasma Cannon" value="0x53" />
@@ -620,23 +620,22 @@
 		<option name="Mantis" value="0x5A" />
 	</enum8>
 	<int8 name="Unknown" offset="0x2BD" visible="false" />
-	<bitfield16 name="Flags" offset="0x2BE" visible="true">
-		<bit name="Causes Super Detonation" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
+	<bitfield16 name="Super Detonation Object Types" offset="0x2BE" visible="true">
+		<bit name="Biped" index="0" />
+		<bit name="Vehicle" index="1" />
+		<bit name="Weapon" index="2" />
+		<bit name="Equipment" index="3" />
+		<bit name="Terminal" index="4" />
+		<bit name="Projectile" index="5" />
+		<bit name="Scenery" index="6" />
+		<bit name="Machine" index="7" />
+		<bit name="Control" index="8" />
+		<bit name="Dispenser" index="9" />
+		<bit name="Sound Scenery" index="10" />
+		<bit name="Crate" index="11" />
+		<bit name="Creature" index="12" />
+		<bit name="Giant" index="13" />
+		<bit name="Effect Scenery" index="14" />
 	</bitfield16>
 	<tagRef name="Attached Super Detonation Damage" offset="0x2C0" visible="true" />
 	<float32 name="Material Effect Radius" offset="0x2D0" visible="true" />
@@ -787,20 +786,31 @@
 		<float32 name="Parallel Friction" offset="0x2C" visible="true" />
 		<float32 name="Perpendicular Friction" offset="0x30" visible="true" />
 	</reflexive>
-	<undefined name="Unknown" offset="0x3C0" visible="false" />
-	<undefined name="Unknown" offset="0x3C4" visible="false" />
-	<undefined name="Unknown" offset="0x3C8" visible="false" />
-	<undefined name="Unknown" offset="0x3CC" visible="false" />
-	<undefined name="Unknown" offset="0x3D0" visible="false" />
-	<undefined name="Unknown" offset="0x3D4" visible="false" />
+	<reflexive name="Claymore Grenade" offset="0x3C0" visible="true" entrySize="0x30">
+		<degree name="Unknown" offset="0x0" visible="true" />
+		<degree name="Unknown" offset="0x4" visible="true" />
+		<degree name="Unknown" offset="0x8" visible="true" />
+		<float32 name="Unknown" offset="0xC" visible="true" />
+		<float32 name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Unknown" offset="0x14" visible="true" />
+		<float32 name="Unknown" offset="0x18" visible="true" />
+		<float32 name="Unknown" offset="0x1C" visible="true" />
+		<float32 name="Unknown" offset="0x20" visible="true" />
+		<float32 name="Unknown" offset="0x24" visible="true" />
+		<float32 name="Unknown" offset="0x28" visible="true" />
+		<float32 name="Unknown" offset="0x2C" visible="true" />
+	</reflexive>
+	<reflexive name="Firebomb Grenade" offset="0x3CC" visible="true" entrySize="0x4">
+		<float32 name="Unknown" offset="0x0" visible="true" />
+	</reflexive>
 	<reflexive name="Shotgun Properties" offset="0x3D8" visible="true" entrySize="0xC">
 		<int16 name="Amount" offset="0x0" visible="true" />
 		<int16 name="Distance" offset="0x2" visible="true" />
 		<float32 name="Accuracy" offset="0x4" visible="true" />
 		<degree name="Spread Cone Angle" offset="0x8" visible="true" />
 	</reflexive>
-	<tagRef name="Unknown" offset="0x3E4" visible="true" />
-	<tagRef name="Unknown" offset="0x3F4" visible="true" />
+	<tagRef name="Grounded Friction" offset="0x3E4" visible="true" />
+	<tagRef name="Kill Cam Parameters" offset="0x3F4" visible="true" />
 	<reflexive name="Unknown" offset="0x404" visible="false" entrySize="0xC">
 		<int32 name="Unknown" offset="0x0" visible="true" />
 		<stringid name="Unknown" offset="0x4" visible="true" />
