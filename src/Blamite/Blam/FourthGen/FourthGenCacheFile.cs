@@ -265,8 +265,13 @@ namespace Blamite.Blam.FourthGen
         private void LoadStringIDs(IReader reader)
 		{
             var stringTable = new FourthGenIndexedStringTable(reader);
-			bool isZBT = _buildInfo.Name.Contains("ZBT");
-            _stringIds = new FourthGenIndexedStringIDSource(stringTable, _buildInfo.StringIDs, isZBT);
+			int buildVer = 0;
+			if (_buildInfo.Name.Contains("ZBT 70"))
+				buildVer = 2;
+			else if (_buildInfo.Name.Contains("ZBT"))
+				buildVer = 1;
+
+            _stringIds = new FourthGenIndexedStringIDSource(stringTable, _buildInfo.StringIDs, buildVer);
 		}
 
 		private void LoadLanguageGlobals(IReader reader)
