@@ -96,7 +96,7 @@
 		<float32 name="Hooke's Law 'E'" offset="0x1C" visible="true" />
 		<float32 name="Linear Dead Radius" offset="0x20" visible="true" />
 		<float32 name="Center Acceleration" offset="0x24" visible="true" />
-		<float32 name="Center Max Level" offset="0x28" visible="true" />
+		<float32 name="Center Max Velocity" offset="0x28" visible="true" />
 		<float32 name="Axis Acceleration" offset="0x2C" visible="true" />
 		<float32 name="Axis Max Velocity" offset="0x30" visible="true" />
 		<float32 name="Direction Acceleration" offset="0x34" visible="true" />
@@ -263,7 +263,7 @@
 		<float32 name="Inertia Tensor z j" offset="0x94" visible="true" />
 		<float32 name="Inertia Tensor z k" offset="0x98" visible="true" />
 		<float32 name="Inertia Tensor z Radius" offset="0x9C" visible="true" />
-		<int32 name="Unknown Interaction" offset="0xa0" visible="true" />
+		<int32 name="Unknown Interaction" offset="0xA0" visible="true" />
 		<comment title="WOAH THERE">You can't just poke the following 2 values. In memory they become a pointer, pointing directly to the memory address of the destination shape.
 If you want to poke it, use the raw field below it and paste the memory address of the new shape. Use the address of the "Size" value.</comment>
 		<enum16 name="Shape Type" offset="0xA4" visible="true">
@@ -284,23 +284,24 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="List" value="0xE" />
 			<option name="MOPP" value="0xF" />
 		</enum16>
-		<int16 name="Shape Index" offset="0xa6" visible="true" />
+		<int16 name="Shape Index" offset="0xA6" visible="true" />
 		<raw name="New Pointer (read comment)" offset="0xA4" size="0x4" visible="true" />
 		<comment title="/WOAH THERE" />
-		<float32 name="Mass" offset="0xa8" visible="true" />
-		<undefined name="Unknown" offset="0xaC" visible="true" />
-		<int16 name="Interaction A" offset="0xb0" visible="true" />
-		<int16 name="Interaction B" offset="0xb2" visible="true" />
-		<undefined name="Unknown" offset="0xb4" visible="true" />
-		<undefined name="Unknown" offset="0xb8" visible="true" />
-		<undefined name="Unknown" offset="0xbC" visible="true" />
+		<float32 name="Mass" offset="0xA8" visible="true" />
+		<undefined name="Unknown" offset="0xAC" visible="true" />
+		<int16 name="Interaction A" offset="0xB0" visible="true" />
+		<int16 name="Interaction B" offset="0xB2" visible="true" />
+		<undefined name="Unknown" offset="0xB4" visible="true" />
+		<undefined name="Unknown" offset="0xB8" visible="true" />
+		<undefined name="Unknown" offset="0xBC" visible="true" />
 	</reflexive>
 	<reflexive name="Materials" offset="0x68" visible="true" entrySize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
-		<stringid name="Unknown" offset="0x8" visible="true" />
+		<stringid name="Material Name" offset="0x8" visible="true" />
 		<int16 name="Phantom Type Index" offset="0xC" visible="true" />
-		<int16 name="Flags" offset="0xE" visible="true" />
+		<int8 name="Unknown" offset="0xE" visible="false" />
+		<int8 name="Unknown" offset="0xF" visible="false" />
 	</reflexive>
 	<reflexive name="Spheres" offset="0x74" visible="true" entrySize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
@@ -351,7 +352,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Restitution" offset="0x10" visible="true" />
 		<float32 name="Volume" offset="0x14" visible="true" />
 		<float32 name="Mass" offset="0x18" visible="true" />
-		<int16 name="Index" offset="0x1C" visible="true" />
+		<int16 name="Overall Shape Index" offset="0x1C" visible="true" />
 		<int8 name="Phantom Index" offset="0x1E" visible="true" />
 		<int8 name="Interaction Unknown" offset="0x1F" visible="true" />
 		<int32 name="Unknown" offset="0x20" visible="false" />
@@ -359,7 +360,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<int16 name="Count" offset="0x26" visible="true" />
 		<int32 name="Offset" offset="0x28" visible="true" />
 		<int32 name="Unknown" offset="0x2C" visible="true" />
-		<float name="Radius" offset="0x30" visible="true" />
+		<float32 name="Radius" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="true" />
 		<undefined name="Unknown" offset="0x38" visible="true" />
 		<undefined name="Unknown" offset="0x3C" visible="true" />
@@ -782,7 +783,7 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x12" visible="true" />
-		<raw name="New Pointer" offset="0x0" size="0x10" visible="true" />
+		<raw name="New Pointer" offset="0x10" size="0x4" visible="true" />
 		<comment title="/End" />
 		<undefined name="Unknown" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="true" />
