@@ -50,27 +50,19 @@
 			<stringId name="Name" offset="0x0" visible="true" />
 			<int8 name="Model Region Index" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<reflexive name="Permutation" offset="0x8" visible="true" entrySize="0x24">
 				<stringId name="Name" offset="0x0" visible="true" />
 				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
-				<int8 name="Unknown" offset="0x5" visible="false" />
-				<int8 name="Unknown" offset="0x6" visible="false" />
-				<bitfield8 name="Flags" offset="0x7" visible="true">
+				<bitfield8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
 				</bitfield8>
+				<int8 name="Unknown" offset="0x6" visible="false" />
+				<int8 name="Unknown" offset="0x7" visible="false" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="true" entrySize="0xC">
 					<stringid name="Name" offset="0x0" visible="true" />
-					<int8 name="Unknown" offset="0x4" visible="false" />
+					<int8 name="Model Permutation Index" offset="0x4" visible="true" />
 					<bitfield8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
@@ -88,7 +80,7 @@
 						<option name="Major Damage" value="0x3" />
 						<option name="Destroyed" value="0x4" />
 					</enum16>
-					<undefined name="Unknown" offset="0x8" visible="false" />
+					<float32 name="Initial Probability" offset="0x8" visible="true" />
 				</reflexive>
 				<undefined name="Unknown" offset="0x18" visible="false" />
 				<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -118,19 +110,18 @@
 			<int8 name="Unknown" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="true" />
 		</reflexive>
-		<int32 name="Unknown" offset="0x2C" visible="false" />
+		<int32 name="Instance Group Index" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 1" offset="0x90" visible="false" entrySize="0x4"><!-- generator say this is x8 -->
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Unknown" offset="0x90" visible="true" entrySize="0x4">
+		<stringid name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x9C" visible="false" entrySize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Instance Groups" offset="0x9C" visible="true" entrySize="0x18">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
 		<!-- generator says this is a block
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x28">
+		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -142,7 +133,10 @@
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
 		</reflexive>-->
+		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Probability" offset="0x14" visible="true" />
 	</reflexive>
 	<reflexive name="Materials" offset="0xA8" visible="true" entrySize="0x14">
 		<stringId name="Material Name" offset="0x0" visible="true" />

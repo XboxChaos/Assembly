@@ -338,11 +338,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x15" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x16" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x18" visible="true" />
+		<int16 name="Abandon Time" offset="0x18" visible="true" />
 		<bitfield16 name="Flags" offset="0x1A" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Phased Physics" index="1" />
@@ -376,8 +376,10 @@
 		<tagRef name="Unknown" offset="0xAC" visible="true" />
 	</reflexive>
 	<tagref name="Simulation Interpolation" offset="0x130" visible="true" />
-	<reflexive name="Reviving Equipment" offset="0x140" visible="true" entrySize="0x10">
-		<tagRef name="Health Pack" offset="0x0" visible="true" />
+	<reflexive name="Unknown" offset="0x140" visible="true" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="true" />
+		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Unknown" offset="0x20" visible="true" />
 	</reflexive>
 	<comment title="ITEM" />
 	<bitfield32 name="Flags" offset="0x14C" visible="true">
@@ -897,8 +899,8 @@
 		<tagRef name="Charging Damage Effect" offset="0x3C" visible="true" />
 		<tagRef name="Charging Response" offset="0x4C" visible="true" />
 		<float32 name="Charging Age Degeneration" offset="0x5C" visible="true" />
-		<tagRef name="Unknown" offset="0x60" visible="true" />
-		<tagRef name="Unknown" offset="0x70" visible="true" />
+		<tagRef name="Discharging Effect" offset="0x60" visible="true" />
+		<tagRef name="Discharging Damage Effect" offset="0x70" visible="true" />
 		<reflexive name="Charge Levels" offset="0x80" visible="true" entrySize="0x4">
 			<float32 name="Percentage" offset="0x0" visible="true" />
 		</reflexive>
@@ -1153,8 +1155,8 @@
 	<tagRef name="Age Model" offset="0x458" visible="true" />
 	<tagRef name="Age Weapon" offset="0x468" visible="true" />
 	<tagRef name="Aged Material Effects" offset="0x478" visible="true" />
-	<float32 name="Hammer Age Per Use" offset="0x488" visible="true" />
-	<float32 name="Unknown" offset="0x48C" visible="false" />
+	<float32 name="Hammer Age Per Use MP" offset="0x488" visible="true" />
+	<float32 name="Hammer Age Per Use SP" offset="0x48C" visible="true" />
 	<undefined name="Unknown" offset="0x490" visible="false" />
 	<float32 name="First Person Weapon Offset i" offset="0x494" visible="true" />
 	<float32 name="First Person Weapon Offset j" offset="0x498" visible="true" />
