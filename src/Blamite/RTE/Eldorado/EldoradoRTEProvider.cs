@@ -16,9 +16,9 @@ namespace Blamite.RTE.Eldorado
 	public class EldoradoRTEProvider : IRTEProvider
 	{
 		// TODO: Maybe find a way to dynamically get these addresses so we can support other versions of the game
-		private const uint MaxTagCountAddress = 0x22AB008; // ZBT is 0x42D68E8
-		private const uint TagIndexArrayPointerAddress = 0x22AAFFC; // ZBT is 0x42D68DC
-		private const uint TagAddressArrayPointerAddress = 0x22AAFF8; // ZBT is 0x42D68D8
+		public static uint MaxTagCountAddress;
+		public static uint TagIndexArrayPointerAddress;
+		public static uint TagAddressArrayPointerAddress;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EldoradoRTEProvider"/> class.
@@ -27,6 +27,10 @@ namespace Blamite.RTE.Eldorado
 		public EldoradoRTEProvider(string exeName)
 		{
 			EXEName = exeName;
+
+			MaxTagCountAddress = 0x22AB008;
+			TagIndexArrayPointerAddress = 0x22AAFFC;
+			TagAddressArrayPointerAddress = 0x22AAFF8;
 		}
 
 		/// <summary>
@@ -58,7 +62,10 @@ namespace Blamite.RTE.Eldorado
 			if (gameProcess == null)
 				return null;
 			var memoryStream = new ProcessMemoryStream(gameProcess);
-			var tagAddress = GetTagAddress(new EndianReader(memoryStream, Endian.LittleEndian), tag.Index.Index);
+
+			var exeBase = (uint)memoryStream.BaseProcess.MainModule.BaseAddress - 0x400000;
+
+			var tagAddress = GetTagAddress(new EndianReader(memoryStream, Endian.LittleEndian), tag.Index.Index, exeBase);
 			if (tagAddress == 0)
 			{
 				memoryStream.Close();
@@ -74,16 +81,17 @@ namespace Blamite.RTE.Eldorado
 			return processes.Length > 0 ? processes[0] : null;
 		}
 
-		private static uint GetTagAddress(IReader memoryReader, ushort index)
+		public static uint GetTagAddress(IReader memoryReader, ushort index, uint exeBase)
 		{
+			//uint newcountaddr = MaxTagCountAddress;
 			// Read the tag count and validate the tag index
-			memoryReader.SeekTo(MaxTagCountAddress);
+			memoryReader.SeekTo(MaxTagCountAddress + exeBase);
 			var maxIndex = memoryReader.ReadUInt16();
 			if (index >= maxIndex)
 				return 0;
 
 			// Read the tag index table to get the index of the tag in the address table
-			memoryReader.SeekTo(TagIndexArrayPointerAddress);
+			memoryReader.SeekTo(TagIndexArrayPointerAddress + exeBase);
 			var tagIndexTableAddress = memoryReader.ReadUInt32();
 			if (tagIndexTableAddress == 0)
 				return 0;
@@ -93,12 +101,32 @@ namespace Blamite.RTE.Eldorado
 				return 0;
 
 			// Read the tag's address in the address table
-			memoryReader.SeekTo(TagAddressArrayPointerAddress);
+			memoryReader.SeekTo(TagAddressArrayPointerAddress + exeBase);
 			var tagAddressTableAddress = memoryReader.ReadUInt32();
 			if (tagAddressTableAddress == 0)
 				return 0;
 			memoryReader.SeekTo(tagAddressTableAddress + addressIndex * 4);
 			return memoryReader.ReadUInt32();
+		}
+	}
+
+	public class ZBTRTEProvider : EldoradoRTEProvider
+	{
+		public ZBTRTEProvider(string exeName) : base(exeName)
+		{
+			MaxTagCountAddress = 0x42D68E8;
+			TagIndexArrayPointerAddress = 0x42D68DC;
+			TagAddressArrayPointerAddress = 0x42D68D8;
+		}
+	}
+
+	public class ZBT70RTEProvider : EldoradoRTEProvider
+	{
+		public ZBT70RTEProvider(string exeName) : base(exeName)
+		{
+			MaxTagCountAddress = 0x3010B90;
+			TagIndexArrayPointerAddress = 0x4503F6;
+			TagAddressArrayPointerAddress = 0x450406;
 		}
 	}
 }

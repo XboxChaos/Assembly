@@ -243,7 +243,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						break;
 
                     case EngineType.FourthGeneration:
-                        _rteProvider = new EldoradoRTEProvider("eldorado.exe");
+						switch (_cacheFile.BuildString)
+						{
+							default:
+							case "1.106708 cert_ms23":
+								_rteProvider = new EldoradoRTEProvider("eldorado.exe");
+								break;
+							case "11.1.498295 Live":
+								_rteProvider = new ZBTRTEProvider("darkloaded.exe");
+								break;
+							case "12.1.700123 cert_ms30_oct19":
+								_rteProvider = new ZBT70RTEProvider("darkloaded.exe");
+								break;
+						}
+						//_rteProvider = new EldoradoRTEProvider("eldorado.exe");
                         _mapManager = new FileStreamManager(_tagslocation, map_reader.Endianness);
                         _stringidsManager = new FileStreamManager(_stringslocation, map_reader.Endianness);
                         _tagnamesManager = new FileStreamManager(_tagnamesLocation, map_reader.Endianness);
