@@ -289,7 +289,10 @@ namespace Blamite.Blam.ThirdGen.BLF
 			if (Engine.UsesDefaultAuthor)
 			{
 				_stream.SeekTo(_defaultAuthorOffset);
-				_stream.WriteAscii(_mapInformation.DefaultAuthor);
+				//_stream.WriteAscii(_mapInformation.DefaultAuthor);
+				foreach (byte b in _mapInformation.DefaultAuthor)
+					_stream.WriteByte(b);
+				_stream.WriteByte(0);
 			}
 		}
 
