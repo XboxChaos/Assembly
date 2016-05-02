@@ -16,8 +16,6 @@ Assembly was designed with three goals in mind:
 
 Stable releases are made available through [GitHub's release system](https://github.com/XboxChaos/Assembly/releases).
 
-Automatically-compiled bleeding-edge builds of the master branch can be found over at [Xeraxic's Build Distribution system](http://builds.xeraxic.com/).
-
 ## Compiling ##
 
 See [Compiling Assembly from Source](https://github.com/XboxChaos/Assembly/wiki/Compiling-from-Source).
