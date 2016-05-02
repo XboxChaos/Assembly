@@ -168,25 +168,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					// Load Default Author & change margin if necessary
 					txtDefaultAuthor.Text = _mapInfo.MapInformation.DefaultAuthor;
 					if (_mapInfo.Engine.UsesDefaultAuthor && _mapInfo.Engine.Version <= 8)
-							lblDefaultAuthor.Margin = new Thickness(0, 37, 0, 3);
-
-					// Set up the Type combo box
-					// TODO: Add flags to formats?
-					cbType_Cine.Visibility = cbType_FF.Visibility = _mapInfo.Engine.Version < 5 ? Visibility.Collapsed : Visibility.Visible;
-					cbType_Cine.IsEnabled = cbType_FF.IsEnabled = _mapInfo.Engine.Version >= 5;
-					cbType_FF.Content = _mapInfo.Engine.Version < 8 ? "Firefight" : "Spartan Ops";
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMainMenu))
-						cbType.SelectedIndex = 0;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMultiplayer))
-						cbType.SelectedIndex = 1;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCampaign))
-						cbType.SelectedIndex = 2;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCinematic))
-						cbType.SelectedIndex = 3;
-					if (_mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsFirefight))
-						cbType.SelectedIndex = 4;
+							lblDefaultAuthor.Margin = new Thickness(0, 55, 0, 3);
 
 					// Set up the Checkboxes
+					cbCine.Visibility = cbFF.Visibility = _mapInfo.Engine.Version < 5 ? Visibility.Collapsed : Visibility.Visible;
+					cbCine.IsEnabled = cbFF.IsEnabled = _mapInfo.Engine.Version >= 5;
+					cbFF.Content = _mapInfo.Engine.Version < 8 ? "Firefight" : "Spartan Ops";
+
+					cbMM.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMainMenu);
+					cbMP.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsMultiplayer);
+					cbCamp.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCampaign);
+					cbFF.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsFirefight);
+					cbCine.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.IsCinematic);
+
 					cbForgeOnly.Visibility  = _mapInfo.Engine.Version < 9 ? Visibility.Collapsed : Visibility.Visible;
 					cbVisible.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.Visible);
 					cbGeneratesFilm.IsChecked = _mapInfo.MapInformation.Flags.HasFlag(LevelFlags.GeneratesFilm);
@@ -359,15 +353,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Update Flags
 			_mapInfo.MapInformation.Flags = LevelFlags.None;
-			if (cbType.SelectedIndex == 0)
+			if (cbMM.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.IsMainMenu;
-			if (cbType.SelectedIndex == 1)
+			if (cbMP.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.IsMultiplayer;
-			if (cbType.SelectedIndex == 2)
+			if (cbCamp.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.IsCampaign;
-			if (cbType.SelectedIndex == 4)
+			if (cbFF.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.IsFirefight;
-			if (cbType.SelectedIndex == 3)
+			if (cbCine.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.IsCinematic;
 			if (cbVisible.IsChecked == true)
 				_mapInfo.MapInformation.Flags |= LevelFlags.Visible;
