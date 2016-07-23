@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam;
-using Blamite.Blam.Localization;
 
 namespace Blamite.Injection
 {

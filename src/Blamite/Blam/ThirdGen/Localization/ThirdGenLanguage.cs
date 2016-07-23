@@ -132,17 +132,17 @@ namespace Blamite.Blam.ThirdGen.Localization
 				// Update the two locale data hashes if we need to
 				// (the hash arrays are set to null if the build doesn't need them)
 				if (IndexTableHash != null)
-					IndexTableHash = SHA1.Transform(offsetData.GetBuffer(), 0, (int) offsetData.Length);
+					IndexTableHash = SHA1.Transform(offsetData.ToArray(), 0, (int) offsetData.Length);
 				if (StringDataHash != null)
-					StringDataHash = SHA1.Transform(stringData.GetBuffer(), 0, dataSize);
+					StringDataHash = SHA1.Transform(stringData.ToArray(), 0, dataSize);
 
 				// Make sure there's free space for the offset table and then write it to the file
 				LocaleIndexTable.Resize((int) offsetData.Length, stream);
 				stream.SeekTo(LocaleIndexTableLocation.AsOffset());
-				stream.WriteBlock(offsetData.GetBuffer(), 0, (int) offsetData.Length);
+				stream.WriteBlock(offsetData.ToArray(), 0, (int) offsetData.Length);
 
 				// Encrypt the string data if necessary
-				byte[] strings = stringData.GetBuffer();
+				byte[] strings = stringData.ToArray();
 				if (_encryptionKey != null)
 					strings = AES.Encrypt(strings, 0, dataSize, _encryptionKey.Key, _encryptionKey.IV);
 

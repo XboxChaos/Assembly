@@ -105,7 +105,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns><c>true</c> if the tag is active, <c>false</c> otherwise.</returns>
 		public bool IsTagActive(DatumIndex index)
 		{
-			if (index.Index >= _activeTags.Count)
+			if (index.Index >= _activeTags.Length)
 				return false;
 			return _activeTags[index.Index];
 		}

@@ -152,7 +152,7 @@ namespace Blamite.Blam
 				if (_key != null)
 					buffer.SetLength(AES.AlignSize((int) buffer.Length));
 
-				byte[] data = buffer.GetBuffer();
+				byte[] data = buffer.ToArray();
 
 				// Encrypt the buffer if necessary
 				if (_key != null)

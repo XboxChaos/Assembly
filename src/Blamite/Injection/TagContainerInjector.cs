@@ -319,7 +319,7 @@ namespace Blamite.Injection
 
 				// Write the buffer to the file
 				stream.SeekTo(location.AsOffset());
-				stream.WriteBlock(buffer.GetBuffer(), 0, (int) buffer.Length);
+				stream.WriteBlock(buffer.ToArray(), 0, (int) buffer.Length);
 			}
 
 			// Write shader fixups (they can't be done in-memory because they require cache file expansion)

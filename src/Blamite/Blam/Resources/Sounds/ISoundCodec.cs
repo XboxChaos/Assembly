@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Blamite.Blam.Resources.Sounds
+﻿namespace Blamite.Blam.Resources.Sounds
 {
 	public enum Channel
 	{

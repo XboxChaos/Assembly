@@ -251,14 +251,10 @@ namespace Blamite.IO
 		/// </returns>
 		public unsafe string ReadAscii(int size)
 		{
-			var chars = new sbyte[size];
-			string result;
-			fixed (sbyte* str = chars)
-			{
-				_stream.Read((byte[]) (Array) chars, 0, size);
-				result = new string(str);
-			}
-			return result;
+			_currentString.Clear();
+			for(var i = 0; i < size; i++)
+				_currentString.Append((char) _stream.ReadByte());
+			return _currentString.ToString();
 		}
 
 		/// <summary>

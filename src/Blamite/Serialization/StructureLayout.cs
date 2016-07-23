@@ -16,7 +16,6 @@
  * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 
 namespace Blamite.Serialization

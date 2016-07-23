@@ -1,42 +1,54 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using Blamite.Blam.Shaders;
 
 namespace Blamite.Plugins
 {
 	public class TestPluginVisitor : IPluginVisitor
 	{
+		private int _level = 0;
+		private int _indentSize = 4;
+		private string Indent()
+		{
+			var sb = new StringBuilder();
+			for (var i = 0; i < (_level * _indentSize); i++)
+				sb.Append(' ');
+
+			return sb.ToString();
+		}
+
 		public bool EnterPlugin(int baseSize)
 		{
-			Debug.WriteLine("Plugin, baseSize = 0x{0:X}", baseSize);
-			Debug.Indent();
+			Debug.WriteLine(Indent() + "Plugin, baseSize = 0x{0:X}", baseSize);
+			_level++;
 			return true;
 		}
 
 		public void LeavePlugin()
 		{
-			Debug.Unindent();
+			_level--;
 		}
 
 		public bool EnterRevisions()
 		{
-			Debug.WriteLine("Version history:");
-			Debug.Indent();
+			Debug.WriteLine(Indent() + "Version history:");
+			_level++;
 			return true;
 		}
 
 		public void VisitRevision(PluginRevision revision)
 		{
-			Debug.WriteLine("Plugin version {0} by {1}: {2}", revision.Version, revision.Researcher, revision.Description);
+			Debug.WriteLine(Indent() + "Plugin version {0} by {1}: {2}", revision.Version, revision.Researcher, revision.Description);
 		}
 
 		public void LeaveRevisions()
 		{
-			Debug.Unindent();
+			_level--;
 		}
 
 		public void VisitComment(string title, string text, uint pluginLine)
 		{
-			Debug.WriteLine("Comment \"{0}\": {1}", title, text);
+			Debug.WriteLine(Indent() + "Comment \"{0}\": {1}", title, text);
 		}
 
 		public void VisitUInt8(string name, uint offset, bool visible, uint pluginLine)
@@ -123,105 +135,105 @@ namespace Blamite.Plugins
 		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Bitfield8", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Bitfield16", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Bitfield32", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public void VisitBit(string name, int index)
 		{
-			Debug.WriteLine("Bit \"{0}\" at position {1}", name, index);
+			Debug.WriteLine(Indent() + "Bit \"{0}\" at position {1}", name, index);
 		}
 
 		public void LeaveBitfield()
 		{
-			Debug.Unindent();
+			_level--;
 		}
 
 		public bool EnterEnum8(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Enum8", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public bool EnterEnum16(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Enum16", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public bool EnterEnum32(string name, uint offset, bool visible, uint pluginLine)
 		{
 			PrintBasicValue("Enum32", name, offset, visible);
-			Debug.Indent();
+			_level++;
 			return true;
 		}
 
 		public void VisitOption(string name, int value)
 		{
-			Debug.WriteLine("{0} = {1}", name, value);
+			Debug.WriteLine(Indent() + "{0} = {1}", name, value);
 		}
 
 		public void LeaveEnum()
 		{
-			Debug.Unindent();
+			_level--;
 		}
 
 		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
 		{
-			Debug.WriteLine("Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}", name, offset, visible, entrySize, align);
-			Debug.Indent();
+			Debug.WriteLine(Indent() + "Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}", name, offset, visible, entrySize, align);
+			_level++;
 			return true;
 		}
 
 		public void LeaveReflexive()
 		{
-			Debug.Unindent();
+			_level--;
 		}
 
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
-			Debug.WriteLine("Data reference \"{0}\" at {1}, format = {2}, visible = {3}, align = {4}", name, offset, format, visible, align);
+			Debug.WriteLine(Indent() + "Data reference \"{0}\" at {1}, format = {2}, visible = {3}, align = {4}", name, offset, format, visible, align);
 		}
 
 		public void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			Debug.WriteLine("Ascii string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
+			Debug.WriteLine(Indent() + "Ascii string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
 		}
 
 		public void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			Debug.WriteLine("Utf16 string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
+			Debug.WriteLine(Indent() + "Utf16 string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
 		}
 
 		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
-			Debug.WriteLine("Color32 \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
+			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
 		{
-			Debug.WriteLine("ColorF \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
+			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
-			Debug.WriteLine("Raw data block \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
+			Debug.WriteLine(Indent() + "Raw data block \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
 		}
 
 		private static void PrintBasicValue(string type, string name, uint offset, bool visible)
@@ -231,12 +243,12 @@ namespace Blamite.Plugins
 
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
 		{
-			Debug.WriteLine("Shader \"{0}\" at {1}, visible = {2}, type = {3}", name, offset, visible, type);
+			Debug.WriteLine(Indent() + "Shader \"{0}\" at {1}, visible = {2}, type = {3}", name, offset, visible, type);
 		}
 
 		public void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine)
 		{
-			Debug.WriteLine("Unicode string list \"{0}\" at {1}, visible = {2}, languages = {3}", name, offset, visible, languages);
+			Debug.WriteLine(Indent() + "Unicode string list \"{0}\" at {1}, visible = {2}, languages = {3}", name, offset, visible, languages);
 		}
 	}
 }

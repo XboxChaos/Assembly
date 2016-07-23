@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Blamite.Blam.Shaders;
 using Blamite.Serialization;
 using Blamite.IO;
@@ -99,7 +96,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 
 					// Create the result from the memory stream's buffer
 					var result = new byte[memStream.Length];
-					Buffer.BlockCopy(memStream.GetBuffer(), 0, result, 0, (int)memStream.Length);
+					Buffer.BlockCopy(memStream.ToArray(), 0, result, 0, (int)memStream.Length);
 					return result;
 				}
 			}

@@ -39,14 +39,14 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
 			int result;
 			if (ParseNumber(attribute.Value, out result))
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -70,7 +70,7 @@ namespace Blamite.Util
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 			return attribute.Value;
 		}
 
@@ -118,7 +118,7 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
 			if (attribute.Value == "true")
 				return true;
@@ -126,7 +126,7 @@ namespace Blamite.Util
 				return false;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace Blamite.Util
 				return false;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -168,14 +168,14 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
 			EnumType result;
 			if (FindEnumValueLower(attribute.Value, out result))
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -198,7 +198,7 @@ namespace Blamite.Util
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>

@@ -21,7 +21,7 @@ namespace Blamite.Util
 
 		public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
 		{
-			var crypto = new AesCryptoServiceProvider();
+			var crypto = System.Security.Cryptography.Aes.Create();
 			crypto.Key = key;
 			crypto.IV = iv;
 			crypto.Padding = PaddingMode.None;
@@ -31,7 +31,7 @@ namespace Blamite.Util
 
 		public static byte[] Decrypt(byte[] data, int offset, int length, byte[] key, byte[] iv)
 		{
-			var crypto = new AesCryptoServiceProvider();
+			var crypto = System.Security.Cryptography.Aes.Create();
 			crypto.Key = key;
 			crypto.IV = iv;
 			crypto.Padding = PaddingMode.None;
@@ -41,7 +41,7 @@ namespace Blamite.Util
 
 		public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
 		{
-			var crypto = new AesCryptoServiceProvider();
+			var crypto = System.Security.Cryptography.Aes.Create();
 			crypto.Key = key;
 			crypto.IV = iv;
 			crypto.Padding = PaddingMode.None;
@@ -51,7 +51,7 @@ namespace Blamite.Util
 
 		public static byte[] Encrypt(byte[] data, int offset, int length, byte[] key, byte[] iv)
 		{
-			var crypto = new AesCryptoServiceProvider();
+			var crypto = System.Security.Cryptography.Aes.Create();
 			crypto.Key = key;
 			crypto.IV = iv;
 			crypto.Padding = PaddingMode.None;
