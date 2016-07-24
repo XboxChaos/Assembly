@@ -51,7 +51,7 @@ namespace Blamite.IO
 		/// </summary>
 		public void Dispose()
 		{
-			Close();
+			_stream.Dispose();
 		}
 
 		/// <summary>
@@ -65,15 +65,6 @@ namespace Blamite.IO
 				_reader.Endianness = value;
 				_writer.Endianness = value;
 			}
-		}
-
-		/// <summary>
-		///     Closes the stream, releasing any I/O resources it has acquired.
-		/// </summary>
-		public void Close()
-		{
-			_reader.Close();
-			_writer.Close();
 		}
 
 		/// <summary>

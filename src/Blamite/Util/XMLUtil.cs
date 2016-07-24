@@ -222,15 +222,14 @@ namespace Blamite.Util
 		private static bool FindEnumValueLower<T>(string name, out T result)
 		{
 			// Use reflection to scan the enum and find the first case-insensitive match
-			string[] names = typeof (T).GetEnumNames();
+			string[] names = Enum.GetNames(typeof(T));
 			for (int i = 0; i < names.Length; i++)
 			{
-				if (names[i].ToLower() == name)
-				{
-					var values = (T[]) typeof (T).GetEnumValues();
-					result = values[i];
-					return true;
-				}
+				if (names[i].ToLower() != name) continue;
+				
+				var values = (T[]) Enum.GetValues(typeof(T));
+				result = values[i];
+				return true;
 			}
 
 			result = default(T);

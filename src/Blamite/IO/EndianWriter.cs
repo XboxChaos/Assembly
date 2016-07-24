@@ -52,14 +52,6 @@ namespace Blamite.IO
 		}
 
 		/// <summary>
-		///     Closes the stream, releasing any I/O resources it has acquired.
-		/// </summary>
-		public void Close()
-		{
-			_stream.Close();
-		}
-
-		/// <summary>
 		///     Writes a byte to the stream.
 		/// </summary>
 		/// <param name="value">The byte to write.</param>

@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Blamite.IO
@@ -50,7 +49,7 @@ namespace Blamite.IO
 		/// </summary>
 		public void Dispose()
 		{
-			Close();
+			_stream.Dispose();
 		}
 
 		/// <summary>
@@ -60,14 +59,6 @@ namespace Blamite.IO
 		{
 			get { return _bigEndian ? Endian.BigEndian : Endian.LittleEndian; }
 			set { _bigEndian = (value == Endian.BigEndian); }
-		}
-
-		/// <summary>
-		///     Closes the stream, releasing any I/O resources it has acquired.
-		/// </summary>
-		public void Close()
-		{
-			_stream.Close();
 		}
 
 		/// <summary>
@@ -152,8 +143,8 @@ namespace Blamite.IO
 		public ulong ReadUInt64()
 		{
 			/*_stream.Read(_buffer, 0, 8);
-            return (ulong)((_buffer[0] << 56) | (_buffer[1] << 48) | (_buffer[2] << 40) | (_buffer[3] << 32) |
-                           (_buffer[4] << 24) | (_buffer[5] << 16) | (_buffer[6] << 8) | _buffer[7]);*/
+			return (ulong)((_buffer[0] << 56) | (_buffer[1] << 48) | (_buffer[2] << 40) | (_buffer[3] << 32) |
+						   (_buffer[4] << 24) | (_buffer[5] << 16) | (_buffer[6] << 8) | _buffer[7]);*/
 			ulong one = ReadUInt32();
 			ulong two = ReadUInt32();
 			if (_bigEndian)
@@ -170,8 +161,8 @@ namespace Blamite.IO
 		public long ReadInt64()
 		{
 			/*_stream.Read(_buffer, 0, 8);
-            return (long)((_buffer[0] << 56) | (_buffer[1] << 48) | (_buffer[2] << 40) | (_buffer[3] << 32) |
-                          (_buffer[4] << 24) | (_buffer[5] << 16) | (_buffer[6] << 8) | _buffer[7]);*/
+			return (long)((_buffer[0] << 56) | (_buffer[1] << 48) | (_buffer[2] << 40) | (_buffer[3] << 32) |
+						  (_buffer[4] << 24) | (_buffer[5] << 16) | (_buffer[6] << 8) | _buffer[7]);*/
 			return (long) ReadUInt64();
 		}
 
@@ -263,21 +254,17 @@ namespace Blamite.IO
 		/// <returns>
 		///     The null-terminated UTF-8 string that was read.
 		/// </returns>
-		public unsafe string ReadUTF8()
+		public string ReadUTF8()
 		{
-			var chars = new List<sbyte>();
-			sbyte ch;
+			var chars = new List<byte>();
+			byte ch;
 			while (true)
 			{
-				ch = ReadSByte();
-				if (ch == 0)
-					break;
+				ch = ReadByte();
+				if (ch == 0) break;
 				chars.Add(ch);
 			}
-
-			sbyte[] charss = chars.ToArray<sbyte>();
-			fixed (sbyte* prt = charss)
-				return new string(prt, 0, chars.Count, Encoding.UTF8);
+			return Encoding.UTF8.GetString(chars.ToArray());
 		}
 
 		/// <summary>
@@ -287,16 +274,11 @@ namespace Blamite.IO
 		/// <returns>
 		///     The UTF-8 string that was read, with any padding bytes stripped.
 		/// </returns>
-		public unsafe string ReadUTF8(int size)
+		public string ReadUTF8(int size)
 		{
-			var chars = new sbyte[size];
-			string result;
-			fixed (sbyte* str = chars)
-			{
-				_stream.Read((byte[]) (Array) chars, 0, size);
-				result = new string(str, 0, size, Encoding.UTF8);
-			}
-			return result;
+			var chars = new byte[size];
+			_stream.Read(chars, 0, size);
+			return Encoding.UTF8.GetString(chars);
 		}
 
 		/// <summary>

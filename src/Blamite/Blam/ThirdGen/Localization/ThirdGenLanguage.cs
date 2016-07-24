@@ -111,12 +111,10 @@ namespace Blamite.Blam.ThirdGen.Localization
 			if (LocaleData == null || LocaleIndexTable == null)
 				return;
 
-			var offsetData = new MemoryStream();
-			var stringData = new MemoryStream();
-			var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);
-			var stringWriter = new EndianWriter(stringData, Endian.BigEndian);
-
-			try
+			using (var offsetData = new MemoryStream())
+			using (var stringData = new MemoryStream())
+			using (var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian))
+			using (var stringWriter = new EndianWriter(stringData, Endian.BigEndian))
 			{
 				// Write the string and offset data to buffers
 				foreach (LocalizedString locale in locales)
@@ -153,11 +151,6 @@ namespace Blamite.Blam.ThirdGen.Localization
 
 				// Update the string count and recalculate the language table offsets
 				StringCount = locales.Count;
-			}
-			finally
-			{
-				offsetWriter.Close();
-				stringWriter.Close();
 			}
 		}
 
