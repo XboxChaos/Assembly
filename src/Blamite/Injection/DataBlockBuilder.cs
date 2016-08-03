@@ -144,6 +144,11 @@ namespace Blamite.Injection
 				ReadReferences(offset, GlobalShaderFixup);
 
 			}
+			if (lowerName.Contains("polyart asset address"))
+			{
+				//ReadReferences(offset, PolyartFixup);
+				ReadReferences(offset, (b, o) => ReadPolyart(b, o));
+			}
 		}
 
 		public void VisitInt32(string name, uint offset, bool visible, uint pluginLine)
@@ -455,6 +460,22 @@ namespace Blamite.Injection
 			}
 			else
 				return;
+		}
+
+		private void ReadPolyart(DataBlock block, uint offset)
+		{
+			// Read the address
+			SeekToOffset(block, offset);
+			var address = _reader.ReadUInt32();
+
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(address, 20)) return;
+
+			var newBlock = ReadDataBlock(address, 20, 1, 4);
+			ReadDataReference(newBlock, 0, 4);
+
+			// Now create a fixup for the block
+			var fixup = new DataBlockAddressFixup(address, (int)offset);
+			block.AddressFixups.Add(fixup);
 		}
 
 		private LocalizedStringList LoadStringList(int languageIndex, ITag tag)
