@@ -112,7 +112,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				if (resource.InfoDatas != null)
 				{
 
-					//resource.InfoOffsets = new List<int>();
+					resource.InfoOffsets = new List<int>();
 
 					List<byte[]> exisitinginfos = new List<byte[]>();
 
