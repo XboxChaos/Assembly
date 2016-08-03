@@ -880,6 +880,55 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.SecondaryPage.Index));
 						}
 					}
+
+					if (resource.Location.TertiaryPage == null || resourcePagesProcessed.Contains(resource.Location.TertiaryPage))
+						continue;
+
+					container.AddResourcePage(resource.Location.TertiaryPage);
+					resourcePagesProcessed.Add(resource.Location.TertiaryPage);
+
+					if (withRaw)
+					{
+						using (var fileStream = File.OpenRead(_cacheLocation))
+						{
+							var resourceFile = _cacheFile;
+							Stream resourceStream = fileStream;
+							if (resource.Location.TertiaryPage.FilePath != null)
+							{
+								var resourceCacheInfo =
+									App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+										r => r.EngineName == _buildInfo.Name);
+
+								var resourceCachePath = (resourceCacheInfo != null)
+									? resourceCacheInfo.ResourceCachePath
+									: Path.GetDirectoryName(_cacheLocation);
+
+								resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(resource.Location.TertiaryPage.FilePath));
+
+								if (!File.Exists(resourceCachePath))
+								{
+									MetroMessageBox.Show("Unable to extract tag",
+										"Unable to extract tag, because a resource it relies on is in a external cache '{0}' that could not be found. Check Assembly's settings and set the file path to resource caches.");
+									return;
+								}
+
+								resourceStream =
+									File.OpenRead(resourceCachePath);
+								resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+									_cacheFile.BuildString);
+							}
+
+							var extractor = new ResourcePageExtractor(resourceFile);
+							byte[] pageData;
+							using (var pageStream = new MemoryStream())
+							{
+								extractor.ExtractPage(resource.Location.TertiaryPage, resourceStream, pageStream);
+								pageData = new byte[pageStream.Length];
+								Buffer.BlockCopy(pageStream.GetBuffer(), 0, pageData, 0, (int)pageStream.Length);
+							}
+							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.TertiaryPage.Index));
+						}
+					}
 				}
 			}
 

@@ -86,6 +86,8 @@ namespace Blamite.Blam.Resources
 		{
 			ResourceFixups = new List<ResourceFixup>();
 			DefinitionFixups = new List<ResourceDefinitionFixup>();
+			InfoOffsets = new List<int>();
+			InfoDatas = new List<byte[]>();
 		}
 
 		/// <summary>
@@ -106,7 +108,7 @@ namespace Blamite.Blam.Resources
 		/// <summary>
 		///     Gets or sets the info buffer for the resource.
 		/// </summary>
-		public byte[] Info { get; set; }
+		//public byte[] Info { get; set; }
 
 		/// <summary>
 		///     Gets or sets the tag associated with the resource.
@@ -120,9 +122,11 @@ namespace Blamite.Blam.Resources
 
 		public List<ResourceFixup> ResourceFixups { get; private set; }
 		public List<ResourceDefinitionFixup> DefinitionFixups { get; private set; }
+		public List<int> InfoOffsets { get; set; }
+		public List<byte[]> InfoDatas { get; set; }
 
 		public int Unknown1 { get; set; }
 		public int Unknown2 { get; set; }
-		public int Unknown3 { get; set; }
+		//public int Unknown3 { get; set; }
 	}
 }

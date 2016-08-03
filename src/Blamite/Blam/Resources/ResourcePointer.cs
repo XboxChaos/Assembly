@@ -34,5 +34,21 @@
 		///     Gets or sets an unknown reflexive index related to the secondary page.
 		/// </summary>
 		public int SecondaryUnknown { get; set; }
+
+
+		/// <summary>
+		///     Gets or sets the secondary resource page that the resource belongs to. Can be null.
+		/// </summary>
+		public ResourcePage TertiaryPage { get; set; }
+
+		/// <summary>
+		///     Gets or sets the offset of the resource data within the secondary page. Can be -1.
+		/// </summary>
+		public int TertiaryOffset { get; set; }
+
+		/// <summary>
+		///     Gets or sets an unknown reflexive index related to the secondary page.
+		/// </summary>
+		public int TertiaryUnknown { get; set; }
 	}
 }

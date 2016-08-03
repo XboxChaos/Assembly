@@ -1,5 +1,18 @@
 # Assembly <img src="http://build.xeraxic.com/app/rest/builds/buildType:(id:asm_master_release)/statusIcon" />
 
+### Halo 4 Raw Injection Edition ###
+
+
+Current roadmap:
+
+* Add support for polyart tags, which store raw locally kinda like shaders
+* THEN bring back support for other games
+
+Known issues:
+
+* Polyart tags will crash the game if rendered since its data is not injected at this time
+* I couldn't spawn the Revenant via Forge on Valhalla, but could through a weapon, dunno why.
+
 ### Multi-Generation Blam Engine Research Tool ###
 
 __An Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__

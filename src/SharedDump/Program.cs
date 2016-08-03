@@ -58,6 +58,7 @@ namespace SharedDump
 					ResourcePointer loc = resource.Location;
 					string primaryFile = (loc.PrimaryPage != null) ? loc.PrimaryPage.FilePath : null;
 					string secondaryFile = (loc.SecondaryPage != null) ? loc.SecondaryPage.FilePath : null;
+					//thirdpage someday or something
 					if (primaryFile != null || secondaryFile != null)
 					{
 						string className = CharConstant.ToString(resource.ParentTag.Class.Magic);
