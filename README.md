@@ -2,15 +2,18 @@
 
 ### Halo 4 Raw Injection Edition ###
 
+This branch currently breaks injection on every other game besides Retail Halo 4 (didn't try beta, not sure when I will). This will eventually be fixed to hopefully make it into dev/master. Use at your own risk.
 
 Current roadmap:
 
 * Add support for polyart tags, which store raw locally kinda like shaders
+* Fix as many issues as possible with Halo 4; submit an issue or tell me about it or something
 * THEN bring back support for other games
 
 Known issues:
 
 * Polyart tags will crash the game if rendered since its data is not injected at this time
+* Models/textures seem to render in a lower LOD or something, not sure if that's the game's fault or injection's
 * I couldn't spawn the Revenant via Forge on Valhalla, but could through a weapon, dunno why.
 
 ### Multi-Generation Blam Engine Research Tool ###
