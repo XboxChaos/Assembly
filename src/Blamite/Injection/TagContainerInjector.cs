@@ -146,6 +146,17 @@ namespace Blamite.Injection
 			if (_cacheFile.SimulationDefinitions != null && _simulationClasses.Contains(CharConstant.ToString(newTag.Class.Magic)))
 				_cacheFile.SimulationDefinitions.Add(newTag);
 
+			if (CharConstant.ToString(newTag.Class.Magic) == "paas")
+			{
+				IPolyart vertex = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x44, 6);
+				IPolyart index = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x50, 8);
+
+				_cacheFile.PolyartTable.Add(vertex);
+				_cacheFile.PolyartTable.Add(index);
+				
+			}
+				
+
 			return newTag.Index;
 		}
 

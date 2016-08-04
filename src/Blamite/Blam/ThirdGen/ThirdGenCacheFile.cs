@@ -199,6 +199,11 @@ namespace Blamite.Blam.ThirdGen
 			get { return _simulationDefinitions; }
 		}
 
+		public IList<IPolyart> PolyartTable
+		{
+			get { return _tags.Polyart; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);

@@ -468,10 +468,10 @@ namespace Blamite.Injection
 			SeekToOffset(block, offset);
 			var address = _reader.ReadUInt32();
 
-			if (!_cacheFile.MetaArea.ContainsBlockPointer(address, 20)) return;
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(address, 24)) return;
 
-			var newBlock = ReadDataBlock(address, 20, 1, 4);
-			ReadDataReference(newBlock, 0, 4);
+			var newBlock = ReadDataBlock(address, 24, 1, 16);
+			ReadDataReference(newBlock, 0, 16);
 
 			// Now create a fixup for the block
 			var fixup = new DataBlockAddressFixup(address, (int)offset);

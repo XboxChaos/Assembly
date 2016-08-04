@@ -37,10 +37,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly FileSegmentGroup _metaArea;
 
 		private List<ITag> _tags;
+		private List<IPolyart> _polyart;
 
 		public ThirdGenTagTable()
 		{
 			_tags = new List<ITag>();
+			_polyart = new List<IPolyart>();
 			Classes = new List<ITagClass>();
 		}
 
@@ -62,6 +64,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 		///     Available tag classes.
 		/// </value>
 		public IList<ITagClass> Classes { get; private set; }
+
+		public IList<IPolyart> Polyart
+		{
+			get { return _polyart; }
+		}
 
 		/// <summary>
 		///     Gets the tag at a given index.
@@ -129,7 +136,24 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 
 			SaveTags(headerValues, stream);
+
+			if (Polyart.Count > 0)
+			{
+				var oldCount = (int)headerValues.GetInteger("number of polyart fixups");
+				uint oldAddress = headerValues.GetInteger("polyart fixup table address");
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("polyart table entry");
+				IEnumerable<StructureValueCollection> entries = _polyart.Select(t => ((ThirdGenPolyart)t).Serialize());
+				// hax
+				uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _polyart.Count, layout, _metaArea,
+					_allocator, stream);
+			
+				headerValues.SetInteger("number of polyart fixups", (uint)_polyart.Count);
+				headerValues.SetInteger("polyart fixup table address", newAddress);
+			}
+
 			SaveHeader(headerValues, stream);
+
+
 		}
 
 		private void SaveTags(StructureValueCollection headerValues, IStream stream)
@@ -154,6 +178,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			Classes = LoadClasses(reader, headerValues).AsReadOnly();
 			_tags = LoadTags(reader, headerValues, Classes);
+			_polyart = LoadPolyart(reader, headerValues);
 		}
 
 		private StructureValueCollection LoadHeader(IReader reader)
@@ -187,6 +212,15 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("class entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
 			return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
+		}
+
+		private List<IPolyart> LoadPolyart(IReader reader, StructureValueCollection headerValues)
+		{
+			var count = (int)headerValues.GetInteger("number of polyart fixups");
+			uint address = headerValues.GetInteger("polyart fixup table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("polyart table entry");
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			return entries.Select<StructureValueCollection, IPolyart>(e => new ThirdGenPolyart(e, _metaArea)).ToList();
 		}
 
 		private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagClass> classes)
