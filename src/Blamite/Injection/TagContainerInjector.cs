@@ -15,6 +15,7 @@ namespace Blamite.Injection
 
 		private static int ShaderBankClass = CharConstant.FromString("mtsb");
 		private static int ShaderTemplateClass = CharConstant.FromString("mats");
+		private static int PCAClass = CharConstant.FromString("pcaa");
 
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
@@ -116,9 +117,9 @@ namespace Blamite.Injection
 			//if (tag.Class == SoundClass)
 			//return DatumIndex.Null;
 
-
-			
-			
+			// Let's just remove PCA tags for now
+			if (tag.Class == PCAClass)
+			return DatumIndex.Null;
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
