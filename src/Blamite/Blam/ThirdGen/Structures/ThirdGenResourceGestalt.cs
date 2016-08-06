@@ -80,6 +80,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var entries = new List<StructureValueCollection>();
 			var fixupCache = new ReflexiveCache<ResourceFixup>();
 			var defFixupCache = new ReflexiveCache<ResourceDefinitionFixup>();
+
+			List<byte[]> paddedinfos = new List<byte[]>();
+
 			foreach (Resource resource in resources)
 			{
 				//infoOffset = AlignInfoBlockOffset(resource, infoOffset);
@@ -109,12 +112,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 				uint oldAddress = entry.GetIntegerOrDefault("resource info offsets table address", 0);
 				StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
 
-				if (resource.InfoDatas != null)
+				if (resource.InfoDatas.Count > 0)
 				{
-
 					resource.InfoOffsets = new List<int>();
 
-					List<byte[]> exisitinginfos = new List<byte[]>();
 
 					for (int i = 0; i < 3; i++)
 					{
@@ -123,15 +124,18 @@ namespace Blamite.Blam.ThirdGen.Structures
 							resource.InfoOffsets.Add(-1);
 							continue;
 						}
-							
-						if (exisitinginfos.Contains(resource.InfoDatas[i]))
-						{
-							resource.InfoOffsets.Add(resource.InfoOffsets[resource.InfoDatas.IndexOf(resource.InfoDatas[i])]);
-							continue;
-						}
 
-						exisitinginfos.Add(resource.InfoDatas[i]);
-						resource.InfoOffsets.Add(AlignInfoBlockOffset(resource, infoBuffSize));
+						int offset = AlignInfoBlockOffset(resource, infoBuffSize);
+						int padding = offset - infoBuffSize;
+
+						resource.InfoOffsets.Add(offset);
+
+						byte[] temp = new byte[padding + resource.InfoDatas[i].Length];
+
+						Buffer.BlockCopy(resource.InfoDatas[i], 0, temp, padding, resource.InfoDatas[i].Length);
+
+						paddedinfos.Add(temp);
+
 						infoBuffSize += resource.InfoDatas[i].Length;
 					}
 
@@ -143,7 +147,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 						_allocator, stream);
 					infocache.Add(newBlockAddress, resource.InfoOffsets);
 
-
 					entry.SetInteger("number of resource info offsets", (uint)resource.InfoOffsets.Count);
 					entry.SetInteger("resource info offsets table address", newBlockAddress);
 				}
@@ -152,8 +155,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 					entry.SetInteger("number of resource info offsets", 0);
 					entry.SetInteger("resource info offsets table address", 0);
 				}
-
-
 					
 				// Update pointer info
 	
@@ -167,9 +168,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("number of resources", (uint) entries.Count);
 			values.SetInteger("resource table address", newAddress);
 
-			// Build and save the info buffer
-			byte[] infoBuffer = BuildResourceInfoBuffer(resources);
-			SaveResourceInfoBuffer(infoBuffer, values, stream);
+			// Save the info buffer
+			SaveResourceInfoBuffer(paddedinfos.SelectMany(a => a).ToArray(), values, stream);
 
 			SaveTag(values, stream);
 			return pointers;
@@ -215,59 +215,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 			int offset = _metaArea.PointerToOffset(address);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
-		}
-
-		private byte[] BuildResourceInfoBuffer(IEnumerable<Resource> resources)
-		{
-			// Add up all of the sizes to compute the total buffer size
-			int size = 0;
-			//foreach (Resource resource in resources.Where(r => r.Info != null))
-
-			foreach (Resource resource in resources.Where(r => r.InfoDatas != null))
-			{
-				//size = AlignInfoBlockOffset(resource, size);
-				//size += resource.Info.Length;
-
-				List<byte[]> ass = new List<byte[]>();
-				for (int i = 0; i < resource.InfoDatas.Count; i++)
-				{
-					if (ass.Contains(resource.InfoDatas[i]))
-						continue;
-
-					ass.Add(resource.InfoDatas[i]);
-
-					size = AlignInfoBlockOffset(resource, size);
-					size += resource.InfoDatas[i].Length;
-				}
-				
-			}
-
-			// Now copy each info block into the buffer
-			int offset = 0;
-			var result = new byte[size];
-			//foreach (Resource resource in resources.Where(r => r.Info != null))
-
-			foreach (Resource resource in resources.Where(r => r.InfoDatas != null))
-			{
-				List<byte[]> ass = new List<byte[]>();
-
-				offset = AlignInfoBlockOffset(resource, offset);
-				//Buffer.BlockCopy(resource.Info, 0, result, offset, resource.Info.Length);
-				//offset += resource.Info.Length;
-
-				for (int i = 0; i < resource.InfoDatas.Count; i++)
-				{
-					if (ass.Contains(resource.InfoDatas[i]))
-						continue;
-
-					Buffer.BlockCopy(resource.InfoDatas[i], 0, result, offset, resource.InfoDatas[i].Length);
-					offset += resource.InfoDatas[i].Length;
-				}
-
-					
-			}
-
-			return result;
 		}
 
 		private void SaveResourceInfoBuffer(byte[] buffer, StructureValueCollection values, IStream stream)
