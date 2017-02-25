@@ -267,8 +267,13 @@ namespace Assembly.Windows
 
 			if (xadjust > MinWidth)
 				Width = xadjust;
+			else
+				Width = MinWidth;
+
 			if (yadjust > MinHeight)
 				Height = yadjust;
+			else
+				Height = MinHeight;
 		}
 
 		private void ResizeRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -277,6 +282,8 @@ namespace Assembly.Windows
 
 			if (xadjust > MinWidth)
 				Width = xadjust;
+			else
+				Width = MinWidth;
 		}
 
 		private void ResizeBottom_DragDelta(object sender, DragDeltaEventArgs e)
@@ -285,6 +292,34 @@ namespace Assembly.Windows
 
 			if (yadjust > MinHeight)
 				Height = yadjust;
+			else
+				Height = MinHeight;
+		}
+
+		private void ResizeLeft_DragDelta(object sender, DragDeltaEventArgs e)
+		{
+			double xadjust = Width - e.HorizontalChange;
+
+			if (xadjust > MinWidth)
+			{
+				Width = xadjust;
+				Left += e.HorizontalChange;
+			}
+			else
+				Width = MinWidth;
+		}
+
+		private void ResizeTop_DragDelta(object sender, DragDeltaEventArgs e)
+		{
+			double yadjust = Height - e.VerticalChange;
+
+			if (yadjust > MinHeight)
+			{
+				Height = yadjust;
+				Top += e.VerticalChange;
+			}
+			else
+				Height = MinHeight;
 		}
 
 		private void Window_StateChanged(object sender, EventArgs e)
