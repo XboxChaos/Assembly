@@ -246,5 +246,14 @@ namespace Assembly.Helpers.Tags
 					return x.Suffix.CompareTo(y.Suffix);
 			}
 		}
-	}
+
+        /// <summary>
+        /// Get the name of the node
+        /// </summary>
+        /// <returns>The name of the node</returns>
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
 }
