@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Assembly.Helpers.Tags;
+using Assembly.Metro.Dialogs.ControlDialogs;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -46,12 +48,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			cbTagClass.SelectedIndex = 0;
 		}
-	}
 
-	/// <summary>
-	///     Converts a tag class node to an index in the class list.
-	/// </summary>
-	[ValueConversion(typeof(TagHierarchyNode), typeof (int))]
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            TagHierarchyNode currentValue = ((TagRefData)cbTagClass.DataContext).Value;
+            Collection<TagHierarchyNode> availableTags = currentValue.Parent.Children;
+
+            TagValueSearcher searchDialog = new TagValueSearcher(currentValue, availableTags);
+            searchDialog.ShowDialog();
+
+            if (searchDialog.DialogResult.HasValue && searchDialog.DialogResult.Value)
+            {
+                cbTagEntry.SelectedIndex = searchDialog.SelectedTagIndex;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Converts a tag class node to an index in the class list.
+    /// </summary>
+    [ValueConversion(typeof(TagHierarchyNode), typeof (int))]
 	internal class TagClassConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty TagsSourceProperty = DependencyProperty.Register(
