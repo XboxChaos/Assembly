@@ -114,8 +114,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			try
 			{
-				_mapInfo.Close();
-				_mapInfoNew.Close();
+				_mapInfo.Dispose();
+				_mapInfoNew.Dispose();
 			}
 			catch
 			{
@@ -133,7 +133,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_blf = new PureBLF(_blfLocation);
 				if (_blf.BLFChunks[1].ChunkMagic != "levl")
 					throw new Exception("The selected Map Info BLF is not a valid Map Info BLF file.");
-				_blf.Close();
+				_blf.Dispose();
 
 				_mapInfo = new MapInfo(_blfLocation, App.AssemblyStorage.AssemblySettings.DefaultMapInfoDatabase);
 

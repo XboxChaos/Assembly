@@ -851,7 +851,7 @@ namespace Assembly.Windows
 						case "_blf":
 							// BLF Container, needs more checking
 							var blf = new PureBLF(path);
-							blf.Close();
+							blf.Dispose();
 							if (blf.BLFChunks.Count > 2)
 							{
 								switch (blf.BLFChunks[1].ChunkMagic)

@@ -117,7 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			try
 			{
-				_blf.Close();
+				_blf.Dispose();
 			}
 			catch (Exception)
 			{

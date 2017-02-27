@@ -20,6 +20,8 @@
     </SccProvider>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -31,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,27 +43,30 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;NET45</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -72,6 +78,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -82,6 +89,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -140,15 +148,6 @@
     <Compile Include="Blam\Resources\ResourcePointer.cs" />
     <Compile Include="Blam\Resources\ResourceTable.cs" />
     <Compile Include="Blam\Resources\IZoneSetTable.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ConstantNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\FunctionCallNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNodeVisitor.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionParam.cs" />
-    <Compile Include="Blam\Scripting\Analysis\GlobalDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ShiftReduceParserCode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\VariableReferenceNode.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptContext.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObject.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObjectReflexive.cs" />
@@ -195,6 +194,7 @@
     <Compile Include="Blam\Util\ReflexiveCache.cs" />
     <Compile Include="Blam\Util\ReflexiveReader.cs" />
     <Compile Include="Blam\Util\ReflexiveWriter.cs" />
+    <Compile Include="Extensions\BitArrayExtensions.cs" />
     <Compile Include="Serialization\MapInfo\EngineDatabase.cs" />
     <Compile Include="Serialization\MapInfo\EngineDescription.cs" />
     <Compile Include="Serialization\MapInfo\NameIndexCollection.cs" />
@@ -348,20 +348,6 @@
     <Compile Include="IO\ContainerReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptScanner.cs">
-      <DependentUpon>LispScriptScanner.lex</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Parser Include="Blam\Scripting\Analysis\LispScriptParser.y" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptParser.cs">
-      <DependentUpon>LispScriptParser.y</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Blam\Scripting\Analysis\Executables\gplex.exe" />
-    <Content Include="Blam\Scripting\Analysis\Executables\gppg.exe" />
     <Content Include="Formats\Engines.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -543,21 +529,5 @@
   </Target>
   -->
   <Target Name="TeamCitySetup">
-  </Target>
-  <PropertyGroup>
-    <CompileDependsOn>GenerateLexers;$(CompileDependsOn)</CompileDependsOn>
-    <CompileDependsOn>GenerateParsers;$(CompileDependsOn)</CompileDependsOn>
-  </PropertyGroup>
-  <Target Name="GenerateLexers" Inputs="@(Lexer)" Outputs="@(Lexer -> '%(RelativeDir)%(Filename).cs')">
-    <Exec Command="Blam\Scripting\Analysis\Executables\gplex.exe /out:@(Lexer -> '%(RelativeDir)%(Filename).cs') %(Lexer.Identity)" />
-    <CreateItem Include="%(Lexer.Filename).cs">
-      <Output TaskParameter="Include" ItemName="FileWrites" />
-    </CreateItem>
-  </Target>
-  <Target Name="GenerateParsers" Inputs="@(Parser)" Outputs="@(Parser -> '%(RelativeDir)%(Filename).cs')">
-    <Exec Command="Blam\Scripting\Analysis\Executables\gppg.exe /gplex /out:@(Parser -> '%(RelativeDir)%(Filename).cs') %(Parser.Identity)" />
-    <CreateItem Include="%(Parser.Filename).cs">
-      <Output TaskParameter="Include" ItemName="FileWrites" />
-    </CreateItem>
   </Target>
 </Project>
