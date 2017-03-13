@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<plugin game="eldorado" baseSize="0x1DC">
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="HaloOnline" baseSize="0x1D0">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -191,7 +191,10 @@
 	<int16 name="HUD Text Message Index" offset="0xC8" visible="true" />
 	<int16 name="Unknown" offset="0xCA" visible="false" />
 	<reflexive name="Attachments" offset="0xCC" visible="true" entrySize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<bitfield32 name="Atlas Flags" offset="0x0" visible="true">
+			<bit name="Gameplay Vision Mode" index="0" />
+			<bit name="Theater Vision Mode" index="1" />
+		</bitfield32>
 		<tagRef name="Attachment" offset="0x4" visible="true" />
 		<stringId name="Marker" offset="0x14" visible="true" />
 		<enum16 name="Change Color" offset="0x18" visible="true">
@@ -306,8 +309,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -316,7 +318,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -324,11 +334,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -365,39 +375,127 @@
 		<float32 name="Radius" offset="0x10" visible="true" />
 	</reflexive>
 	<comment title="DEVICE" />
-	<undefined name="Unknown" offset="0x120" visible="false" />
-	<undefined name="Unknown" offset="0x124" visible="false" />
-	<undefined name="Unknown" offset="0x128" visible="false" />
-	<undefined name="Unknown" offset="0x12C" visible="false" />
-	<undefined name="Unknown" offset="0x130" visible="false" />
-	<undefined name="Unknown" offset="0x134" visible="false" />
-	<undefined name="Unknown" offset="0x138" visible="false" />
-	<undefined name="Unknown" offset="0x13C" visible="false" />
-	<tagRef name="Unknown" offset="0x140" visible="false" />
-	<tagRef name="Unknown" offset="0x150" visible="false" />
-	<tagRef name="Unknown" offset="0x160" visible="false" />
-	<tagRef name="Unknown" offset="0x170" visible="false" />
-	<undefined name="Unknown" offset="0x180" visible="false" />
-	<undefined name="Unknown" offset="0x184" visible="false" />
-	<undefined name="Unknown" offset="0x188" visible="false" />
-	<undefined name="Unknown" offset="0x18C" visible="false" />
-	<undefined name="Unknown" offset="0x190" visible="false" />
-	<undefined name="Unknown" offset="0x194" visible="false" />
-	<undefined name="Unknown" offset="0x198" visible="false" />
-	<undefined name="Unknown" offset="0x19C" visible="false" />
-	<undefined name="Unknown" offset="0x1A0" visible="false" />
-	<undefined name="Unknown" offset="0x1A4" visible="false" />
-	<undefined name="Unknown" offset="0x1A8" visible="false" />
-	<undefined name="Unknown" offset="0x1AC" visible="false" />
-	<undefined name="Unknown" offset="0x1B0" visible="false" />
-	<undefined name="Unknown" offset="0x1B4" visible="false" />
-	<undefined name="Unknown" offset="0x1B8" visible="false" />
-	<undefined name="Unknown" offset="0x1BC" visible="false" />
-	<undefined name="Unknown" offset="0x1C0" visible="false" />
-	<undefined name="Unknown" offset="0x1C4" visible="false" />
-	<undefined name="Unknown" offset="0x1C8" visible="false" />
-	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
-	<undefined name="Unknown" offset="0x1D4" visible="false" />
-	<undefined name="Unknown" offset="0x1D8" visible="false" />
+	<bitfield32 name="Flags" offset="0x120" visible="true">
+		<bit name="Position Loops" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Position Interpolation" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<float32 name="Power Transition Time" offset="0x124" visible="true" />
+	<float32 name="Power Acceleration Time" offset="0x128" visible="true" />
+	<float32 name="Position Transition Time" offset="0x12C" visible="true" />
+	<float32 name="Position Acceleration Time" offset="0x130" visible="true" />
+	<float32 name="Depowered Position Transition Time" offset="0x134" visible="true" />
+	<float32 name="Depowered Position Acceleration Time" offset="0x138" visible="true" />
+	<bitfield32 name="Lightmap Flags" offset="0x13C" visible="true">
+		<bit name="Don't Use In Lightmap" index="0" />
+		<bit name="Don't Use In Lightprobe" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<tagRef name="Open (Up)" offset="0x140" visible="true" />
+	<tagRef name="Close (Down)" offset="0x150" visible="true" />
+	<tagRef name="Opened" offset="0x160" visible="true" />
+	<tagRef name="Closed" offset="0x170" visible="true" />
+	<tagRef name="Depowered" offset="0x180" visible="true" />
+	<tagRef name="Repowered" offset="0x190" visible="true" />
+	<float32 name="Delay Time" offset="0x1A0" visible="true" />
+	<tagRef name="Delay Effect" offset="0x1A4" visible="true" />
+	<float32 name="Automatic Activation Radius" offset="0x1B4" visible="true" />
+	<comment title="MACHINE" />
+	<enum16 name="Type" offset="0x1B8" visible="true">
+		<option name="Door" value="0x0" />
+		<option name="Platform" value="0x1" />
+		<option name="Gear" value="0x2" />
+	</enum16>
+	<bitfield16 name="Flags" offset="0x1BA" visible="true">
+		<bit name="Pathfinding Obstacle" index="0" />
+		<bit name="...But Not When Open" index="1" />
+		<bit name="Elevator" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</bitfield16>
+	<float32 name="Door Open Time" offset="0x1BC" visible="true" />
+	<float32 name="Occlusion Bounds min" offset="0x1C0" visible="true" />
+	<float32 name="Occlusion Bounds max" offset="0x1C4" visible="true" />
+	<enum16 name="Collision Response" offset="0x1C8" visible="true">
+		<option name="Pause Until Crushed" value="0x0" />
+		<option name="Reverse Directions" value="0x1" />
+		<option name="Discs" value="0x2" />
+	</enum16>
+	<int16 name="Elevator Node" offset="0x1CA" visible="true" />
+	<enum16 name="Pathfinding Policy" offset="0x1CC" visible="true">
+		<option name="Discs" value="0x0" />
+		<option name="Sectors" value="0x1" />
+		<option name="Cut Out" value="0x2" />
+		<option name="None" value="0x3" />
+	</enum16>
+	<int16 name="Unknown" offset="0x1CE" visible="false" />
 </plugin>

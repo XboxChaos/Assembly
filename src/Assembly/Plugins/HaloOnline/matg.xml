@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="eldorado" baseSize="0x608">
+<plugin game="HaloOnline" baseSize="0x608">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -49,17 +49,30 @@
 	<undefined name="Unknown" offset="0xA0" visible="false" />
 	<undefined name="Unknown" offset="0xA4" visible="false" />
 	<undefined name="Unknown" offset="0xA8" visible="false" />
-	<undefined name="Unknown" offset="0xAC" visible="false" />
+	<enum32 name="Language" offset="0xAC" visible="true">
+		<option name="English" value="0x0" />
+		<option name="Japanese" value="0x1" />
+		<option name="German" value="0x2" />
+		<option name="French" value="0x3" />
+		<option name="Spanish" value="0x4" />
+		<option name="Latin American Spanish" value="0x5" />
+		<option name="Italian" value="0x6" />
+		<option name="Korean" value="0x7" />
+		<option name="Chinese Traditional" value="0x8" />
+		<option name="Chinese Simplified" value="0x9" />
+		<option name="Portuguese" value="0xA" />
+		<option name="Polish" value="0xB" />
+	</enum32>
 	<reflexive name="Havok Cleanup Resources" offset="0xB0" visible="true" entrySize="0x10">
 		<tagRef name="Object Cleanup Effect" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive ame="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
+	<reflexive name="Sound Globals" offset="0xBC" visible="true" entrySize="0x60">
 		<tagRef name="Sound Classes" offset="0x0" visible="true" />
 		<tagRef name="Sound Effects" offset="0x10" visible="true" />
 		<tagRef name="Sound Mix" offset="0x20" visible="true" />
 		<tagRef name="Sound Combat Dialogue Constants" offset="0x30" visible="true" />
 		<tagRef name="Sound Global Propagation" offset="0x40" visible="true" />
-		<tagRef name="Unknown" offset="0x50" visible="false" />
+		<tagRef name="GFX UI Sounds" offset="0x50" visible="true" />
 	</reflexive>
 	<reflexive name="AI Globals" offset="0xC8" visible="true" entrySize="0x144">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -148,8 +161,8 @@
 		<reflexive name="Damage Groups" offset="0x0" visible="true" entrySize="0x10">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<reflexive name="Armor Modifiers" offset="0x4" visible="true" entrySize="0x8">
-				<undefined name="Name" offset="0x0" visible="true" />
-				<undefined name="Damage Multiplier" offset="0x4" visible="true" />
+				<stringid name="Name" offset="0x0" visible="true" />
+				<float32 name="Damage Multiplier" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
 	</reflexive>
@@ -229,7 +242,7 @@
 		<undefined name="Gravity Scale" offset="0x5C" visible="false" />
 		<int16 name="Unknown" offset="0x60" visible="true" />
 		<int16 name="Minimum Autoleveling Ticks" offset="0x62" visible="true" />
-		<reflexive name="Look Function" offset="0x64" visible="false" entrySize="0x4">
+		<reflexive name="Look Function" offset="0x64" visible="true" entrySize="0x4">
 			<float32 name="Scale" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -349,7 +362,7 @@
 		<float32 name="Easy Major Upgrade Normal" offset="0x1C0" visible="true" />
 		<float32 name="Normal Major Upgrade Normal" offset="0x1C4" visible="true" />
 		<float32 name="Hard Major Upgrade Normal" offset="0x1C8" visible="true" />
-		<float32 name="Impossible Major Upgrade Normal" offset="0x1DC" visible="true" />
+		<float32 name="Impossible Major Upgrade Normal" offset="0x1CC" visible="true" />
 		<float32 name="Easy Major Upgrade Few" offset="0x1D0" visible="true" />
 		<float32 name="Normal Major Upgrade Few" offset="0x1D4" visible="true" />
 		<float32 name="Hard Major Upgrade Few" offset="0x1D8" visible="true" />
@@ -429,9 +442,9 @@
 		<tagRef name="Single Player UI Globals" offset="0xF0" visible="true" />
 		<tagRef name="Multiplayer UI Globals" offset="0x100" visible="true" />
 		<tagRef name="HUD Globals" offset="0x110" visible="true" />
-		<reflexive name="Unknown" offset="0x120" visible="false" entrySize="0x30">
-			<ascii name="String" offset="0x0" length="0x20" visible="true" />
-			<tagRef name="Unknown" offset="0x20" visible="false" />
+		<reflexive name="GFX UI Strings" offset="0x120" visible="true" entrySize="0x30">
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
+			<tagRef name="Strings" offset="0x20" visible="true" />
 		</reflexive>
 	</reflexive>
 	<undefined name="Unknown" offset="0x150" visible="false" />
@@ -475,16 +488,18 @@
 		<tagRef name="Flashlight Off" offset="0xAC" visible="true" />
 		<tagRef name="Default Damage Response" offset="0xBC" visible="true" />
 	</reflexive>
-	<reflexive name="Player Representation" offset="0x174" visible="false" entrySize="0x6C">
-		<stringID name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<tagRef name="Unknown" offset="0x8" visible="false" />
-		<tagRef name="Unknown" offset="0x18" visible="false" />
-		<tagRef name="Unknown" offset="0x28" visible="false" />
-		<stringid name="Unknown" offset="0x38" visible="false" />
-		<tagRef name="Unknown" offset="0x3C" visible="false" />
-		<tagRef name="Unknown" offset="0x4C" visible="false" />
-		<tagRef name="Unknownxxx" offset="0x5C" visible="false" />
+	<reflexive name="Player Representation" offset="0x174" visible="true" entrySize="0x6C">
+		<stringID name="Name" offset="0x0" visible="true" />
+		<bitfield32 name="Flags" offset="0x4" visible="true">
+			<bit name="Elite" index="0" />
+		</bitfield32>
+		<tagRef name="First Person Hands" offset="0x8" visible="true" />
+		<tagRef name="First Person Body" offset="0x18" visible="true" />
+		<tagRef name="Third Person Unit" offset="0x28" visible="true" />
+		<stringid name="Third Person Variant" offset="0x38" visible="true" />
+		<tagRef name="Binoculars Zoom In Sound" offset="0x3C" visible="true" />
+		<tagRef name="Binoculars Zoom Out Sound" offset="0x4C" visible="true" />
+		<tagRef name="Unknown" offset="0x5C" visible="true" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x180" visible="false" />
 	<undefined name="Unknown" offset="0x184" visible="false" />
@@ -604,27 +619,90 @@
 		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
 	<reflexive name="Metagame Globals" offset="0x1DC" visible="true" entrySize="0x98">
-		<reflexive name="Events" offset="0x0" visible="true" entrySize="0x10">
+		<comment title="Medals List (thx bungie api)">0  - Grenade Stick
+1  - Headshot
+2  - Melee Kill
+3  - Stealth Kill
+4  - Road Kill
+5  - Multi-Kill (Deprecated)
+6  - Needler Superdetonation Kill
+7  - EMP Kill
+8  - Double Kill
+9  - Triple Kill
+10 - Overkill
+11 - Killtacular
+12 - Killtrocity
+13 - Killamanjaro
+14 - Killtastrophe
+15 - Killpocalpyse
+16 - Killionaire
+17 - Killing Spree
+18 - Killing Frenzy
+19 - Running Riot
+20 - Rampage
+21 - Untouchable
+22 - Invincible
+23 - Splatter Spree
+24 - Vehicular Manslaughter
+25 - Sniper Spree
+26 - Sharpshooter
+27 - Shotgun Spree
+28 - Open Season
+29 - Stick Spree
+30 - Corrected
+31 - Sword Spree
+32 - Slice 'N Dice
+33 - Hammer Spree
+34 - BallPeen Buster
+35 - Hero
+36 - Incineration
+37 - Laser Kill
+38 - Death From The Grave
+39 - Vehicle Jack
+40 - Sky Jacker
+41 - VisionMode Kill
+42 - Assist</comment>
+		<reflexive name="Medals" offset="0x0" visible="true" entrySize="0x10">
 			<float32 name="Multiplier" offset="0x0" visible="true" />
 			<int32 name="Awarded Points" offset="0x4" visible="true" />
 			<int32 name="Medal Uptime" offset="0x8" visible="true" />
 			<stringid name="Event Name" offset="0xC" visible="true" />
 		</reflexive>
+		<comment title="Difficulty List">0 - Easy
+1 - Normal
+2 - Heroic
+3 - Legendary</comment>
 		<reflexive name="Difficulty" offset="0xC" visible="true" entrySize="0x4">
 			<float32 name="Multiplier" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Skulls" offset="0x18" visible="true" entrySize="0x4">
+		<comment title="Primary Skulls List">0 - Iron
+1 - Black Eye
+2 - Tough Luck
+3 - Catch
+4 - Fog
+5 - Famine
+6 - Thunderstorm
+7 - Tilt
+8 - Mythic</comment>
+		<reflexive name="Primary Skulls" offset="0x18" visible="true" entrySize="0x4">
 			<float32 name="Multiplier" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x4">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+		<comment title="Secondary Skulls List">0 - Assassin
+1 - Blind
+2 - Cowbell
+3 - Grunt Birthday Party
+4 - IWHBYD
+5 - Third Person 
+6 - Directors Cut</comment>
+		<reflexive name="Secondary Skulls" offset="0x24" visible="true" entrySize="0x4">
+			<float32 name="Multiplier" offset="0x0" visible="true" />
 		</reflexive>
-		<int32 name="Unknown" offset="0x30" visible="false" />
+		<int32 name="Unknown" offset="0x30" visible="true" />
 		<int32 name="Death Penalty" offset="0x34" visible="true" />
-		<int32 name="Unknown" offset="0x38" visible="false" />
+		<int32 name="Betrayal Penalty" offset="0x38" visible="true" />
 		<int32 name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Tally Wait" offset="0x40" visible="true" />
-		<float32 name="Unknown" offset="0x44" visible="false" />
+		<float32 name="Multikill Window" offset="0x40" visible="true" />
+		<float32 name="EMP Window" offset="0x44" visible="true" />
 		<float32 name="Unknown" offset="0x48" visible="false" />
 		<float32 name="Unknown" offset="0x4C" visible="false" />
 		<float32 name="Unknown" offset="0x50" visible="false" />
@@ -855,17 +933,17 @@
 	<undefined name="Unknown" offset="0x514" visible="false" />
 	<tagRef name="Rasterizer Globals" offset="0x518" visible="true" />
 	<tagRef name="Default Camera Effect" offset="0x528" visible="true" />
-	<tagRef name="Unknown" offset="0x538" visible="false" />
+	<tagRef name="Podium Definition" offset="0x538" visible="true" />
 	<tagRef name="Default Wind" offset="0x548" visible="true" />
 	<tagRef name="Default Damage Effect" offset="0x558" visible="true" />
 	<tagRef name="Default Collision Damage" offset="0x568" visible="true" />
-	<stringid name="Unknown Material" offset="0x578" visible="false" />
-	<int16 name="Unknown Global Material Index" offset="0x57C" visible="false" />
+	<stringid name="Unknown Material" offset="0x578" visible="true" />
+	<int16 name="Unknown Global Material Index" offset="0x57C" visible="true" />
 	<int16 name="Unknown" offset="0x57E" visible="false" />
 	<tagRef name="Effect Globals" offset="0x580" visible="true" />
 	<tagRef name="Game Progression Globals" offset="0x590" visible="true" />
 	<tagRef name="Achievement Globals" offset="0x5A0" visible="true" />
-	<tagRef name="Unknown" offset="0x5B0" visible="false" />
+	<tagRef name="Input Globals" offset="0x5B0" visible="true" />
 	<undefined name="Unknown" offset="0x5C0" visible="false" />
 	<undefined name="Unknown" offset="0x5C4" visible="false" />
 	<undefined name="Unknown" offset="0x5C8" visible="false" />

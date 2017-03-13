@@ -121,7 +121,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			uint address = values.GetInteger("script table address");
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => new Script(e, reader, _metaArea, _stringIDs, _buildInfo)).ToList();
+			return entries.Select(e => new Script(e, reader, _metaArea, _stringIDs, _buildInfo, 0)).ToList();
 		}
 
 		private ScriptExpressionTable LoadExpressions(IReader reader, StructureValueCollection values,

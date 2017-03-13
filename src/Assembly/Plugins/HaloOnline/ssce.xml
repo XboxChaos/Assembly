@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<plugin game="eldorado" baseSize="0x13C">
+<plugin game="HaloOnline" baseSize="0x13C">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -191,7 +191,10 @@
 	<int16 name="HUD Text Message Index" offset="0xC8" visible="true" />
 	<int16 name="Unknown" offset="0xCA" visible="false" />
 	<reflexive name="Attachments" offset="0xCC" visible="true" entrySize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<bitfield32 name="Atlas Flags" offset="0x0" visible="true">
+			<bit name="Gameplay Vision Mode" index="0" />
+			<bit name="Theater Vision Mode" index="1" />
+		</bitfield32>
 		<tagRef name="Attachment" offset="0x4" visible="true" />
 		<stringId name="Marker" offset="0x14" visible="true" />
 		<enum16 name="Change Color" offset="0x18" visible="true">
@@ -306,8 +309,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -316,7 +318,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -324,11 +334,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -365,10 +375,10 @@
 		<float32 name="Radius" offset="0x10" visible="true" />
 	</reflexive>
 	<comment title="SOUND SCENERY" />
-	<undefined name="Unknown" offset="0x120" visible="false" />
-	<undefined name="Unknown" offset="0x124" visible="false" />
-	<undefined name="Unknown" offset="0x128" visible="false" />
-	<undefined name="Unknown" offset="0x12C" visible="false" />
+	<float32 name="Distance min" offset="0x120" visible="true" />
+	<float32 name="Distance max" offset="0x124" visible="true" />
+	<degree name="Cone Angle min" offset="0x128" visible="true" />
+	<degree name="Cone Angle max" offset="0x12C" visible="true" />
 	<undefined name="Unknown" offset="0x130" visible="false" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
 	<undefined name="Unknown" offset="0x138" visible="false" />

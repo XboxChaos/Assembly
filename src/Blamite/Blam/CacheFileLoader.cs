@@ -86,10 +86,12 @@ namespace Blamite.Blam
                     if (tag_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without tags file. Please make sure that tags.dat is in the same folder at the map file.");
                     if (string_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without strings file. Please make sure that tags.dat is in the same folder at the map file.");
 
-
-
-                    // Load the tag names csv file
-                    string tagnames_filename = "tagnames_" + version.BuildString + ".csv";
+					// Load the tag names csv file
+					string tagnames_filename = "tagnames_";
+					if (engineInfo.AltTagNames != null)
+						tagnames_filename += engineInfo.AltTagNames + ".csv";
+					else
+						tagnames_filename += version.BuildString + ".csv";
                     string tagnames_location = filesLocation != null ? filesLocation + tagnames_filename : "";
                     if (!File.Exists(tagnames_location)) tagnames_location = "tagnames\\" + tagnames_filename;
                     if (!File.Exists(tagnames_location)) tagnames_location = null;

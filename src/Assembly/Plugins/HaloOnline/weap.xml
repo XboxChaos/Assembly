@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin game="eldorado" baseSize="0x560">
+<plugin game="HaloOnline" baseSize="0x558">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
@@ -192,7 +192,10 @@
 	<int16 name="HUD Text Message Index" offset="0xC8" visible="true" />
 	<int16 name="Unknown" offset="0xCA" visible="false" />
 	<reflexive name="Attachments" offset="0xCC" visible="true" entrySize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<bitfield32 name="Atlas Flags" offset="0x0" visible="true">
+			<bit name="Gameplay Vision Mode" index="0" />
+			<bit name="Theater Vision Mode" index="1" />
+		</bitfield32>
 		<tagRef name="Attachment" offset="0x4" visible="true" />
 		<stringId name="Marker" offset="0x14" visible="true" />
 		<enum16 name="Change Color" offset="0x18" visible="true">
@@ -307,8 +310,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -317,7 +319,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -325,11 +335,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -423,16 +433,16 @@
 	<tagref name="Detonation Effect" offset="0x194" visible="true" />
 	<float name="Campaign Ground Scale" offset="0x1A4" visible="true" />
 	<float name="Multiplayer Ground Scale" offset="0x1A8" visible="true" />
-	<float name="Human Hold Scale" offset="0x1AC" visible="true" />
-	<float name="Human Holster Scale" offset="0x1B0" visible="true" />
-	<float name="Covenant Hold Scale" offset="0x1B4" visible="true" />
-	<float name="Covenant Holster Scale" offset="0x1B8" visible="true" />
-	<undefined name="Player Hold Scale" offset="0x1BC" visible="false" />
-	<undefined name="Player Hold Scale" offset="0x1C0" visible="false" />
-	<float name="Boss Hold Scale" offset="0x1C4" visible="true" />
-	<float name="Boss Holster Scale" offset="0x1C8" visible="true" />
-	<undefined name="Unknown" offset="0x1CC" visible="false" />
-	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<float32 name="Small Hold Scale" offset="0x1AC" visible="true" />
+	<float32 name="Small Holster Scale" offset="0x1B0" visible="true" />
+	<float32 name="Medium Hold Scale" offset="0x1B4" visible="true" />
+	<float32 name="Medium Holster Scale" offset="0x1B8" visible="true" />
+	<float32 name="Large Hold Scale" offset="0x1BC" visible="true" />
+	<float32 name="Large Holster Scale" offset="0x1C0" visible="true" />
+	<float32 name="Huge Hold Scale" offset="0x1C4" visible="true" />
+	<float32 name="Huge Holster Scale" offset="0x1C8" visible="true" />
+	<float32 name="Grounded Friction Length" offset="0x1CC" visible="true" />
+	<float32 name="Grounded Friction Unknown" offset="0x1D0" visible="true" />
 	<comment title="WEAPON" />
 	<bitfield32 name="Flags" offset="0x1D4" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
@@ -615,8 +625,10 @@
 	<int16 name="Magnification Levels" offset="0x366" visible="true" />
 	<float32 name="Magnification Range Min" offset="0x368" visible="true" />
 	<float32 name="Magnification Range Max" offset="0x36C" visible="true" />
-	<undefined name="Unknown" offset="0x370" visible="false" />
-	<undefined name="Unknown" offset="0x374" visible="false" />
+	<bitfield32 name="Magnification Flags" offset="0x370" visible="true">
+		<bit name="Does Not Unzoom Automatically" index="0" />
+	</bitfield32>
+	<float32 name="Weapon Switch/Ready Speed (0 = default)" offset="0x374" visible="true" />
 	<comment title="Weapon Aim Assist" />
 	<degree name="Autoaim Angle" offset="0x378" visible="true" />
 	<float name="Autoaim Range Long" offset="0x37C" visible="true" />
@@ -652,7 +664,7 @@
 		<option name="When Zoomed" value="0x1" />
 		<option name="When Zoomed or Reloading" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0x3B2" visible="false" />
+	<int16 name="Unknown" offset="0x3D2" visible="false" />
 	<float name="Forwards Movement Penalty" offset="0x3D4" visible="true" />
 	<float name="Sideways Movement Penalty" offset="0x3D8" visible="true" />
 	<float name="AI Scariness" offset="0x3DC" visible="true" />
@@ -673,14 +685,14 @@
 	<undefined name="Unknown" offset="0x454" visible="false" />
 	<stringID name="Weapon Class" offset="0x458" visible="true" />
 	<stringID name="Weapon Name" offset="0x45C" visible="true" />
-	<enum16 name="Multiplayer Weapon Type" offset="0x464" visible="true">
+	<enum16 name="Multiplayer Weapon Type" offset="0x460" visible="true">
 		<option name="None" value="0x0" />
 		<option name="CTF Flag" value="0x1" />
 		<option name="Oddball Ball" value="0x2" />
 		<option name="Headhunter Head" value="0x3" />
 		<option name="Juggernaut Powerup" value="0x4" />
 	</enum16>
-	<enum16 name="Weapon Type" offset="0x466" visible="true">
+	<enum16 name="Weapon Type" offset="0x462" visible="true">
 		<option name="Undefined" value="0x0" />
 		<option name="Shotgun" value="0x1" />
 		<option name="Needler" value="0x2" />
@@ -689,29 +701,32 @@
 		<option name="Rocket Launcher" value="0x5" />
 		<option name="Energy Sword" value="0x6" />
 		<option name="Spartan Laser" value="0x7" />
+		<option name="Assault Rifle" value="0x8" />
+		<option name="Battle Rifle" value="0x9" />
+		<option name="DMR" value="0xA" />
+		<option name="Magnum" value="0xB" />
+		<option name="Sniper Rifle" value="0xC" />
+		<option name="SMG" value="0xD" />
 	</enum16>
-	<!-- any proof below are 16 bit? -->
-	<comment  title="Versions">Version will always correspond to color/buffs, like Gold should always be v6. Adjusted Version is dynamic depending on available versions, like Gold Magnum is v3.</comment>
-	<enum16 name="Version" offset="0x468" visible="true">
-		<option name="Default" value="0x0" />
-		<option name="v1 (Ammo)" value="0x1" />
-		<option name="v2 (Damage)" value="0x2" />
-		<option name="v3 (Accuracy)" value="0x3" />
-		<option name="v4 (Rate of Fire)" value="0x4" />
-		<option name="v5 (Range)" value="0x5" />
-		<option name="v6 (Golden)" value="0x6" />
+	<enum16 name="Tracking Type" offset="0x464" visible="true">
+		<option name="No Tracking" value="0x0" />
+		<option name="Human Tracking" value="0x1" />
+		<option name="Plasma Tracking" value="0x2" />
 	</enum16>
-	<int16 name="Unknown" offset="0x46A" visible="false" />
-	<enum16 name="Adjusted Version" offset="0x46C" visible="true">
-		<option name="Default" value="0x0" />
-		<option name="v1" value="0x1" />
-		<option name="v2" value="0x2" />
-		<option name="v3" value="0x3" />
-		<option name="v4" value="0x4" />
-		<option name="v5" value="0x5" />
-		<option name="v6" value="0x6" />
-	</enum16>
-	<int16 name="Unknown" offset="0x46E" visible="false" />
+	<int16 name="Unknown" offset="0x466" visible="false" />
+	<comment title="Special HUD">Version is used for HUD coloring/outline and the "name" of a variant weapon. Corresponds to Colors 30-36 in CHGD. Technically any global color can be used via negative values, but there will be no outline.
+Icon values depend on the sprite bitmap referenced in the weapon's CHDT.</comment>
+	<enum32 name="Special HUD Version" offset="0x468" visible="true">
+		<option name="Default/No Outline [2]" value="0xFFFFFFE4" />
+		<option name="Default [30]" value="0x0" />
+		<option name="Ammo [31]" value="0x1" />
+		<option name="Damage [32]" value="0x2" />
+		<option name="Accuracy [33]" value="0x3" />
+		<option name="Rate Of Fire [34]" value="0x4" />
+		<option name="Range [35]" value="0x5" />
+		<option name="Power [36]" value="0x6" />
+	</enum32>
+	<int32 name="Special HUD Icon" offset="0x46C" visible="true" />
 	<reflexive name="First Person" offset="0x470" visible="true" entrySize="0x20">
 		<tagRef name="First Person Model" offset="0x0" visible="true" />
 		<tagRef name="First Person Animations" offset="0x10" visible="true" />
@@ -887,9 +902,9 @@
 		<tagRef name="Charging Damage Effect" offset="0x40" visible="true" />
 		<tagRef name="Charging Response" offset="0x50" visible="true" />
 		<float32 name="Charging Age Degeneration" offset="0x60" visible="true" />
-		<tagRef name="Unknown" offset="0x64" visible="true" />
-		<tagRef name="Unknown" offset="0x74" visible="true" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
+		<tagRef name="Discharging Effect" offset="0x64" visible="true" />
+		<tagRef name="Discharging Damage Effect" offset="0x74" visible="true" />
+		<float32 name="Target Tracking Decay Time" offset="0x84" visible="true" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 	</reflexive>
@@ -1148,8 +1163,8 @@
 	<tagRef name="Age Model" offset="0x4F4" visible="true" />
 	<tagRef name="Age Weapon" offset="0x504" visible="true" />
 	<tagRef name="Aged Material Effects" offset="0x514" visible="true" />
-	<float name="Hammer Age Per Use" offset="0x524" visible="true" />
-	<float name="Unknown (Sword Age Per Use?)" offset="0x528" visible="false" />
+	<float32 name="Hammer Age Per Use MP" offset="0x524" visible="true" />
+	<float32 name="Hammer Age Per Use SP" offset="0x528" visible="true" />
 	<float name="First Person Weapon Offset i" offset="0x52C" visible="true" />
 	<float name="First Person Weapon Offset j" offset="0x530" visible="true" />
 	<float name="First Person Weapon Offset k" offset="0x534" visible="true" />
@@ -1161,6 +1176,4 @@
 	<float name="Melee Weapon Delay" offset="0x54C" visible="true" />
 	<float name="Ready Animation Duration" offset="0x550" visible="true" />
 	<stringID name="Weapon Holster Marker" offset="0x554" visible="true" />
-	<undefined name="Unknown" offset="0x558" visible="false" />
-	<undefined name="Unknown" offset="0x55C" visible="false" />
 </plugin>
