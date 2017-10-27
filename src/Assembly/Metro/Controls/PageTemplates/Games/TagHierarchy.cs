@@ -163,7 +163,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public override string ToString()
+        {
+            return TagFileName;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)
 		{
