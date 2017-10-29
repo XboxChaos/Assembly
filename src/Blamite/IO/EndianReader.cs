@@ -240,11 +240,17 @@ namespace Blamite.IO
 		/// <returns>
 		///     The ASCII string that was read, with any 0 padding bytes stripped.
 		/// </returns>
-		public unsafe string ReadAscii(int size)
+		public string ReadAscii(int size)
 		{
 			_currentString.Clear();
-			for(var i = 0; i < size; i++)
-				_currentString.Append((char) _stream.ReadByte());
+			int ch;
+			for (var i = 0; i < size; i++)
+			{
+				ch = _stream.ReadByte();
+				if (ch == 0 || ch == -1)
+					break;
+				_currentString.Append((char)ch);
+			}
 			return _currentString.ToString();
 		}
 
