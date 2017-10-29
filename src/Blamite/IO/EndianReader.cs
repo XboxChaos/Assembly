@@ -282,9 +282,15 @@ namespace Blamite.IO
 		/// </returns>
 		public string ReadUTF8(int size)
 		{
-			var chars = new byte[size];
-			_stream.Read(chars, 0, size);
-			return Encoding.UTF8.GetString(chars);
+			var chars = new List<byte>();
+			byte ch;
+			for (int i = 0; i < size; i++)
+			{
+				ch = ReadByte();
+				if (ch == 0) break;
+				chars.Add(ch);
+			}
+			return Encoding.UTF8.GetString(chars.ToArray());
 		}
 
 		/// <summary>
