@@ -398,7 +398,9 @@ namespace Assembly.Windows
 			{ ".blf", (home, path) => home.AddImageTabModule(path) },
 			{ ".mapinfo", (home, path) => home.AddInfooTabModule(path) },
 			{ ".campaign", (home, path) => home.AddCampaignTabModule(path) },
-			{ ".asmp", (home, path) => home.AddPatchTabModule(path) }
+			{ ".asmp", (home, path) => home.AddPatchTabModule(path) },
+			{ ".ascpatch", (home, path) => home.AddPatchTabModule(path) },
+			{ ".patchdat", (home, path) => home.AddPatchTabModule(path) }
 		};
 
 		/// <summary>
@@ -417,17 +419,26 @@ namespace Assembly.Windows
 			if (!(bool) ofd.ShowDialog(this)) return;
 
 			foreach (string file in ofd.FileNames)
+				ProcessContentFile(file);
+		}
+
+		public void ProcessContentFile(string file)
+		{
+			if (!File.Exists(file))
 			{
-				var extension = (Path.GetExtension(file) ?? "").ToLowerInvariant();
-				ContentFileHandler handler;
-				if (!_contentFileHandlers.TryGetValue(extension, out handler))
-				{
-					MetroMessageBox.Show("Assembly - Unsupported File Type",
-						"\"" + file + "\" cannot be opened because its extension is not recognized.");
-					continue;
-				}
-				handler(this, file);
+				MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
+				return;
 			}
+
+			var extension = (Path.GetExtension(file) ?? "").ToLowerInvariant();
+			ContentFileHandler handler;
+			if (!_contentFileHandlers.TryGetValue(extension, out handler))
+			{
+				MetroMessageBox.Show("Assembly - Unsupported File Type",
+					"\"" + file + "\" cannot be opened because its extension is not recognized.");
+				return;
+			}
+			handler(this, file);
 		}
 
 		#endregion
@@ -737,36 +748,7 @@ namespace Assembly.Windows
 			this.Focus();
 
 			foreach (string file in draggedFiles)
-			{
-				if (file.EndsWith(".mapinfo"))
-				{
-					AddInfooTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".map"))
-				{
-					AddCacheTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".blf"))
-				{
-					AddImageTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".campaign"))
-				{
-					AddCampaignTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".asmp")||
-					file.EndsWith(".ascpatch")||
-					file.EndsWith(".patchdat"))
-				{
-					AddPatchTabModule(file);
-					continue;
-				}
-				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
-			}
+				ProcessContentFile(file);
 		}
 
 		#endregion
@@ -828,52 +810,7 @@ namespace Assembly.Windows
 		{
 			try
 			{
-				if (File.Exists(path))
-				{
-					// Magic Check
-					string magic;
-					using (var stream = new EndianReader(File.OpenRead(path), Endian.BigEndian))
-						magic = stream.ReadAscii(0x04).ToLower();
-
-					switch (magic)
-					{
-						case "head":
-						case "daeh":
-							// Map File
-							AddCacheTabModule(path);
-							return;
-
-						case "asmp":
-							// Patch File
-							AddPatchTabModule(path);
-							return;
-
-						case "_blf":
-							// BLF Container, needs more checking
-							var blf = new PureBLF(path);
-							blf.Dispose();
-							if (blf.BLFChunks.Count > 2)
-							{
-								switch (blf.BLFChunks[1].ChunkMagic)
-								{
-									case "levl":
-										AddInfooTabModule(path);
-										return;
-									case "mapi":
-										AddImageTabModule(path);
-										return;
-								}
-							}
-							MetroMessageBox.Show("Unsupported BLF Type", "The selected BLF file is not supported in assembly.");
-							return;
-
-						default:
-							MetroMessageBox.Show("Unsupported file type", "The selected file is not supported in assembly.");
-							return;
-					}
-				}
-
-				MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
+				ProcessContentFile(path);
 			}
 			catch (Exception ex)
 			{
