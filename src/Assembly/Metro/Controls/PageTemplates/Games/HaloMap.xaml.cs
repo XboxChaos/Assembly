@@ -490,7 +490,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e)
 		{
-			UpdateEmptyTags(cbShowEmptyTags.IsChecked ?? false);
+			UpdateEmptyTags(cbShowEmptyTags.IsChecked);
 		}
 
 		private void UpdateEmptyTags(bool shown)
@@ -1063,7 +1063,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void cbShowBookmarkedTagsOnly_Altered(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked ?? false;
+			App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked;
 			UpdateTagFilter();
 		}
 
