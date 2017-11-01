@@ -263,9 +263,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						if (showActionDialog)
 						{
 							if (onlyUpdateChanged)
-								MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the game.");
+								StatusUpdater.Update("All changed metadata has been poked to the game.");
 							else
-								MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the game.");
+								StatusUpdater.Update("The metadata has been poked to the game.");
 						}
 					}
 					else
