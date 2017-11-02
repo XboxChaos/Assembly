@@ -7,6 +7,7 @@ using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.RTE;
 using Blamite.Util;
+using System.Windows.Input;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 {
@@ -54,8 +55,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			tbMetaEditors.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor;
 
 			// Create Meta Information Tab
-			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
-			tabTagInfo.Content = _metaInformation;
+			//_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			//tabTagInfo.Content = _metaInformation;
+			if (App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor ==
+				Settings.LastMetaEditorType.Info)
+				tbMetaEditors.SelectedIndex =
+					(int)Settings.LastMetaEditorType.MetaEditor;
+
 
 			// Create Meta Editor Tab
 			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie)
@@ -103,6 +109,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			#endregion
+
+			// Load Info
+			lblTagName.Text = tag.TagFileName != null
+				? tag.TagFileName + "." + tag.ClassName
+				: "0x" + tag.RawTag.Index.Value.ToString("X");
+
+			lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);
+			lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
+			lblOffset.Text = string.Format("File Offset: 0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
 		}
 
 		public void GoToRawPluginLine(int pluginLine)
@@ -121,8 +136,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			TagEntry = tag;
 
 			// Create Meta Information Tab
-			_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
-			tabTagInfo.Content = _metaInformation;
+			//_metaInformation = new MetaInformation(_buildInfo, _tag, _cache);
+			//tabTagInfo.Content = _metaInformation;
 
 			// Create Meta Editor Tab
 			_metaEditor.LoadNewTagEntry(tag);
@@ -130,12 +145,44 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Create Plugin Editor Tab
 			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
 			tabPluginEditor.Content = _pluginEditor;
+
+			// Load Info
+			lblTagName.Text = tag.TagFileName != null
+				? tag.TagFileName + "." + tag.ClassName
+				: "0x" + tag.RawTag.Index.Value.ToString("X");
+
+			lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);
+			lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
+			lblOffset.Text = string.Format("File Offset: 0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
+
 		}
 
 		private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor =
 				(Settings.LastMetaEditorType) tbMetaEditors.SelectedIndex;
+		}
+
+
+		private void MetaDatumValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(13));
+		}
+		private void MetaAddrValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(16));
+		}
+		private void MetaOffsetValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(13));
+		}
+		private void MetaNameValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((TextBlock)e.OriginalSource).Text);
 		}
 	}
 }
