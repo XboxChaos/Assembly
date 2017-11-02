@@ -150,7 +150,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
-
+/*
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
 					{
@@ -161,7 +161,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						},
 						Content = new DebugTools(_cacheFile)
 					})));
-#endif
+#endif*/
 				}
 				catch (Exception ex)
 				{
@@ -1034,6 +1034,61 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 				}
+		}
+
+		private void SIDButton_Click(object sender, RoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null) return;
+
+			string tabName = "StringID Tools";
+			if (IsTagOpen(tabName))
+			{
+				SelectTabFromTitle(tabName);
+			}
+			else
+			{
+				var tab = new CloseableTabItem
+				{
+					Header = new ContentControl
+					{
+						Content = tabName,
+						ContextMenu = BaseContextMenu
+					},
+					Content = new SIDTools(_cacheFile)
+				};
+
+				contentTabs.Items.Add(tab);
+				contentTabs.SelectedItem = tab;
+			}
+		}
+
+		private void AddrButton_Click(object sender, RoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null) return;
+
+			string tabName = "Debug Tools";
+			if (IsTagOpen(tabName))
+			{
+				SelectTabFromTitle(tabName);
+			}
+			else
+			{
+				var tab = new CloseableTabItem
+				{
+					Header = new ContentControl
+					{
+						Content = tabName,
+						ContextMenu = BaseContextMenu
+					},
+					Content = new DebugTools(_cacheFile)
+				};
+
+				contentTabs.Items.Add(tab);
+				contentTabs.SelectedItem = tab;
+			}
+
 		}
 
 		#region Tag List
