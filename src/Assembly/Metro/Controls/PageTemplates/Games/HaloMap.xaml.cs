@@ -324,6 +324,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Data = "0x" + ((uint) -_cacheFile.LocaleArea.PointerMask).ToString("X8")
 					});
 
+				HeaderDetails.Add(new HeaderValue
+				{
+					Title = "Tags:",
+					Data = _cacheFile.Tags.Count
+				});
+
+				if (_cacheFile.Partitions != null && _cacheFile.Partitions.Count() > 0)
+				{
+					for (int i = 0; i < _cacheFile.Partitions.Count(); i++)
+					{
+						uint pointer = 0;
+						if (_cacheFile.Partitions[i].Size > 0)
+							pointer = _cacheFile.Partitions[i].BasePointer.AsPointer();
+
+						HeaderDetails.Add(new HeaderValue
+						{
+							Title = "Partition " + i + ":",
+							Data = "0x" + pointer.ToString("X8") + " 0x" + _cacheFile.Partitions[i].Size.ToString("X8")
+						
+						});
+					}
+				}
 				Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 				StatusUpdater.Update("Loaded Header Info");
