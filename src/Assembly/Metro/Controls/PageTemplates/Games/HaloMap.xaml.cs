@@ -1031,6 +1031,137 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
 		}
 
+		private void contextForce_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// Make a tag container for everything and then use that to forceload
+			// Copy of the dupe code which is a copy of the extract code lol
+			// Make a tag container
+			var container = new TagContainer();
+
+			// Recursively extract tags
+			var tagsToProcess = new Queue<ITag>();
+			var tagsProcessed = new HashSet<ITag>();
+			var resourcesToProcess = new Queue<DatumIndex>();
+			var resourcesProcessed = new HashSet<DatumIndex>();
+			var resourcePagesProcessed = new HashSet<ResourcePage>();
+			tagsToProcess.Enqueue(tag.RawTag);
+
+			ResourceTable resources = null;
+			using (var reader = _mapManager.OpenRead())
+			{
+				while (tagsToProcess.Count > 0)
+				{
+					var currentTag = tagsToProcess.Dequeue();
+					if (tagsProcessed.Contains(currentTag))
+						continue;
+
+					// Get the plugin path
+					var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+						_buildInfo.Settings.GetSetting<string>("plugins"), className);
+
+					// Extract dem data blocks
+					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
+					using (var pluginReader = XmlReader.Create(pluginPath))
+						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
+
+					foreach (var block in blockBuilder.DataBlocks)
+					{
+						// Remove non-datablock fixups because those are still valid
+						// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
+						block.StringIDFixups.Clear();
+						block.ShaderFixups.Clear();
+						//block.ResourceFixups.Clear();
+						//block.TagFixups.Clear();
+						container.AddDataBlock(block);
+					}
+
+					// Add data for the tag that was extracted
+					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
+					var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic,
+						tagName);
+					container.AddTag(extractedTag);
+
+					// Mark the tag as processed and then enqueue all of its child tags and resources
+					tagsProcessed.Add(currentTag);
+					foreach (var tagRef in blockBuilder.ReferencedTags)
+						tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
+					foreach (var resource in blockBuilder.ReferencedResources)
+						resourcesToProcess.Enqueue(resource);
+				}
+
+				// Load the resource table in if necessary
+				if (resourcesToProcess.Count > 0)
+					resources = _cacheFile.Resources.LoadResourceTable(reader);
+			}
+
+			// Extract resource info
+			if (resources != null)
+			{
+				while (resourcesToProcess.Count > 0)
+				{
+					var index = resourcesToProcess.Dequeue();
+					if (resourcesProcessed.Contains(index))
+						continue;
+
+					// Add the resource
+					var resource = resources.Resources[index.Index];
+					container.AddResource(new ExtractedResourceInfo(index, resource));
+
+					// Add data for its pages
+					if (resource.Location == null) continue;
+
+					if (resource.Location.PrimaryPage != null &&
+						!resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+					{
+						container.AddResourcePage(resource.Location.PrimaryPage);
+						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+
+					}
+					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+						continue;
+
+					container.AddResourcePage(resource.Location.SecondaryPage);
+					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+
+				}
+			}
+
+			// Now take the info we just extracted and use it to forceload
+			using (IStream stream = _mapManager.OpenReadWrite())
+			{
+				var _zonesets = _cacheFile.Resources.LoadZoneSets(stream);
+
+				foreach (ExtractedTag et in container.Tags)
+				{
+					DatumIndex oldindex = et.OriginalIndex;
+
+					_zonesets.GlobalZoneSet.ActivateTag(oldindex, true);
+				}
+				foreach (ExtractedResourceInfo eri in container.Resources)
+				{
+					DatumIndex oldindex = eri.OriginalIndex;
+
+					_zonesets.GlobalZoneSet.ActivateResource(oldindex, true);
+				}
+				_zonesets.SaveChanges(stream);
+
+				_cacheFile.SaveChanges(stream);
+			}
+
+			LoadTags();
+			MetroMessageBox.Show("Forceload Successful", "Done.");
+
+		}
+
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
@@ -1046,7 +1177,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						if (tagMenuItem.Name == "itemRename" ||
 							tagMenuItem.Name == "itemDuplicate" ||
 							tagMenuItem.Name == "itemExtract" ||
-							tagMenuItem.Name == "itemExtractNoRaw")
+							tagMenuItem.Name == "itemExtractNoRaw" ||
+							tagMenuItem.Name == "itemForce")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 					if (tagItem is Separator)
