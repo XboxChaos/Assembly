@@ -1397,7 +1397,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		/// <summary>
 		///     Check to see if a tag is already open in the Editor Pane
 		/// </summary>
-		/// <param name="tabTitle">THe title of the tag to search for</param>
+		/// <param name="tabTitle">The title of the tag to search for</param>
 		/// <returns></returns>
 		private bool IsTagOpen(string tabTitle)
 		{
@@ -1451,6 +1451,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.SelectedItem = tab;
 		}
 
+		/// <summary>
+		///     Returns a tab header
+		/// </summary>
+		/// <param name="tag">The tag to use</param>
+		private ContentControl TabHeaderFromTag(TagEntry tag)
+		{
+			return new ContentControl
+			{
+				Content =
+							string.Format("{0}.{1}",
+								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
+								tag.ClassName),
+				ContextMenu = BaseContextMenu,
+				ToolTip =
+							string.Format("{0}.{1}",
+								tag.TagFileName,
+								tag.ClassName),
+			};
+		}
+
 		public void CreateTag(TagEntry tag)
 		{
 			TagEntry selectedTag = null;
@@ -1486,14 +1506,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					var metaContainer = (MetaContainer) selectedTab.Content;
 					metaContainer.LoadNewTagEntry(tag);
-					selectedTab.Header = new ContentControl
-					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
-						ContextMenu = BaseContextMenu
-					};
+					selectedTab.Header = TabHeaderFromTag(tag);
 					selectedTab.Tag = tag;
 					SelectTabFromTag(tag);
 
@@ -1506,14 +1519,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				contentTabs.Items.Add(new CloseableTabItem
 				{
-					Header = new ContentControl
-					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
-						ContextMenu = BaseContextMenu
-					},
+					Header = TabHeaderFromTag(tag),
 					Tag = tag,
 					Content =
 						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
