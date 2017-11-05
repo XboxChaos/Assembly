@@ -367,7 +367,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Hide import/save name buttons if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				Dispatcher.Invoke(new Action(() => panelTagButtons.Visibility = Visibility.Collapsed));
+				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
+					btnSaveNames.Visibility = Visibility.Collapsed; }));
+				
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
 			_allTags = BuildTagHierarchy(
