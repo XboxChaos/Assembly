@@ -54,8 +54,14 @@
             </Grid>
 
             <Grid x:Name="listContainer" Grid.Row="2" Margin="33,0,10,0">
-                <ListBox x:Name="listTagSearchResults" Margin="0,12,0,12" Background="Transparent" SelectionChanged="listTagSearchResults_SelectionChanged" MouseDoubleClick="listTagSearchResults_MouseDoubleClick"/>
-            </Grid>
+				<ListBox x:Name="listTagSearchResults" Margin="0,12,0,12" Background="Transparent" SelectionChanged="listTagSearchResults_SelectionChanged" MouseDoubleClick="listTagSearchResults_MouseDoubleClick">
+					<ListBox.ItemTemplate>
+						<ItemContainerTemplate>
+							<TextBlock Text="{Binding Path=TagFileName}" ToolTip="{Binding Path=TagToolTip}" Background="Transparent" />
+						</ItemContainerTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
 
             <Grid Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" >
                 <Grid.ColumnDefinitions>

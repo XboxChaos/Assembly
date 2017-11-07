@@ -15,7 +15,7 @@
 			<TextBlock Text="{Binding TagClassMagic}" />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type games:TagEntry}">
-			<TextBlock Text="{Binding TagFileName}" />
+			<TextBlock Text="{Binding TagFileName}" ToolTip="{Binding TagToolTip}" />
 		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
@@ -38,10 +38,9 @@
 					</CompositeCollection>
 				</ComboBox.Resources>
 			</ComboBox>
-
 			<ComboBox x:Name="cbTagEntry" Width="452" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,0,0"
 			          ItemsSource="{Binding Class, Converter={StaticResource classItemsRetriever}, Mode=OneWay}"
-			          SelectedItem="{Binding Value, Mode=TwoWay}"
+			          SelectedItem="{Binding Value, Mode=TwoWay}" ToolTip="{Binding Path=SelectedItem.TagToolTip, RelativeSource={RelativeSource Self}}"
 			          SelectionChanged="cbTagEntry_SelectionChanged" />
 
 			<StackPanel Orientation="Horizontal">
