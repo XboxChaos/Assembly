@@ -287,7 +287,7 @@ namespace Blamite.Injection
 				{
 					int secondaryPageIndex = -1;
 
-					if (FindExistingPages) //find existing entry to point to
+					if (_findExistingPages) //find existing entry to point to
 						secondaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalSecondaryPageIndex).Checksum);
 
 					if (secondaryPageIndex == -1)
