@@ -11,6 +11,8 @@ namespace Blamite.Injection
 {
 	public class TagContainerInjector
 	{
+		private bool _keepSound;
+		private bool _findExistingPages;
 		private static int SoundClass = CharConstant.FromString("snd!");
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
@@ -36,6 +38,17 @@ namespace Blamite.Injection
 			_cacheFile = cacheFile;
 			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
 			_container = container;
+			_keepSound = false;
+			_findExistingPages = false;
+		}
+
+		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool findexisting)
+		{
+			_cacheFile = cacheFile;
+			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
+			_container = container;
+			_keepSound = keepsnd;
+			_findExistingPages = findexisting;
 		}
 
 		public ICollection<DataBlock> InjectedBlocks
@@ -101,7 +114,7 @@ namespace Blamite.Injection
 				return existingTag.Index;
 
 			// If the tag has made it this far but is a sound, make everyone (especially gerit) shut up.
-			if (tag.Class == SoundClass)
+			if (!_keepSound && tag.Class == SoundClass)
 				return DatumIndex.Null;
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
@@ -181,9 +194,20 @@ namespace Blamite.Injection
 			// Inject?
 			if (extractedRaw != null)
 			{
-				var rawOffset = InjectExtractedResourcePage(page, extractedRaw, stream);
-				page.Offset = rawOffset;
-				page.FilePath = null;
+				if (_findExistingPages && page.FilePath != null &&
+					(page.FilePath.Contains("mainmenu") || page.FilePath.Contains("shared") ||
+					((page.FilePath.Contains("campaign") && (_cacheFile.Type == CacheFileType.SinglePlayer)))))
+				{
+					// Nothing!
+				}
+				else
+				{
+					var rawOffset = InjectExtractedResourcePage(page, extractedRaw, stream);
+					page.Offset = rawOffset;
+					page.FilePath = null;
+				}
+
+				
 			}
 
 			_resources.Pages.Add(page);
@@ -245,7 +269,14 @@ namespace Blamite.Injection
 				// Primary page pointers
 				if (resource.Location.OriginalPrimaryPageIndex >= 0)
 				{
-					int primaryPageIndex = InjectResourcePage(resource.Location.OriginalPrimaryPageIndex, stream);
+					int primaryPageIndex = -1;
+
+					if (_findExistingPages) //find existing entry to point to
+						primaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalPrimaryPageIndex).Checksum);
+ 
+					if (primaryPageIndex == -1)
+						primaryPageIndex = InjectResourcePage(resource.Location.OriginalPrimaryPageIndex, stream);
+
 					newResource.Location.PrimaryPage = _resources.Pages[primaryPageIndex];
 				}
 				newResource.Location.PrimaryOffset = resource.Location.PrimaryOffset;
@@ -254,7 +285,14 @@ namespace Blamite.Injection
 				// Secondary page pointers
 				if (resource.Location.OriginalSecondaryPageIndex >= 0)
 				{
-					int secondaryPageIndex = InjectResourcePage(resource.Location.OriginalSecondaryPageIndex, stream);
+					int secondaryPageIndex = -1;
+
+					if (FindExistingPages) //find existing entry to point to
+						secondaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalSecondaryPageIndex).Checksum);
+
+					if (secondaryPageIndex == -1)
+						secondaryPageIndex = InjectResourcePage(resource.Location.OriginalSecondaryPageIndex, stream);
+
 					newResource.Location.SecondaryPage = _resources.Pages[secondaryPageIndex];
 				}
 				newResource.Location.SecondaryOffset = resource.Location.SecondaryOffset;

@@ -932,11 +932,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!result.Value)
 				return;
 
+			CheckBox keepsnd = new CheckBox() { Content = new TextBlock() { Text = "Keep Sound Tags" } };
+			CheckBox findraw = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Use Existing/Shared Raw Pages" },
+				IsChecked = true
+			};
+
+			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
+				"\r\nKeep Sound Tags: Sounds are not supported at this time and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY.\r\n" +
+				"\r\nUse Existing/Shared Raw Pages: New experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
+				new List<CheckBox>() { keepsnd, findraw });
+
+			if (!optionresult)
+				return;
+
+
 			TagContainer container;
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-			var injector = new TagContainerInjector(_cacheFile, container);
+			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)findraw.IsChecked);
 			using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
@@ -1024,7 +1040,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container.AddTag(extracted);
 
 				// Now inject the container
-				var injector = new TagContainerInjector(_cacheFile, container);
+				var injector = new TagContainerInjector(_cacheFile, container, true, false);
 				injector.InjectTag(extracted, stream);
 				injector.SaveChanges(stream);
 			}
