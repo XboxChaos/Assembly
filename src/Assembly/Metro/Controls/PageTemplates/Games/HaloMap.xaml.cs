@@ -69,6 +69,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
 
+		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
+
 		/// <summary>
 		///     New Instance of the Halo Map Location
 		/// </summary>
@@ -710,7 +712,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 
 			// Passing true so raw is extracted as well
-			extractTags(true, tag);
+			extractTag(true, tag);
 		}
 
 		private void contextExtractClassic_Click(object sender, RoutedEventArgs e)
@@ -724,11 +726,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 
 			// Passing false so raw is not extracted
-			extractTags(false, tag);
+			extractTag(false, tag);
 		}
 
-		private void extractTags(bool withRaw, TagEntry tag)
+		private void extractTag(bool withRaw, TagEntry tag)
 		{
+			extractTags(withRaw, new List<TagEntry>() { tag });
+		}
+
+		private void extractTags(bool withRaw, List<TagEntry> tags)
+		{
+
 			// Ask where to save the extracted tag collection
 			var sfd = new SaveFileDialog
 			{
@@ -748,7 +756,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var resourcesToProcess = new Queue<DatumIndex>();
 			var resourcesProcessed = new HashSet<DatumIndex>();
 			var resourcePagesProcessed = new HashSet<ResourcePage>();
-			tagsToProcess.Enqueue(tag.RawTag);
+
+			foreach (TagEntry t in tags)
+				tagsToProcess.Enqueue(t.RawTag);
 
 			ResourceTable resources = null;
 			using (var reader = _mapManager.OpenRead())
@@ -1196,13 +1206,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							tagMenuItem.Name == "itemDuplicate" ||
 							tagMenuItem.Name == "itemExtract" ||
 							tagMenuItem.Name == "itemExtractNoRaw" ||
-							tagMenuItem.Name == "itemForce")
+							tagMenuItem.Name == "itemForce" ||
+							tagMenuItem.Name == "itemTagBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 					if (tagItem is Separator)
 					{
 						Separator tagMenuItem = tagItem as Separator;
 						if (tagMenuItem.Name == "sepTopBookmark")
+							tagMenuItem.Visibility = Visibility.Collapsed;
+					}
+				}
+		}
+
+		private void ClassContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			var tagContext = sender as ContextMenu;
+
+			// Check if we need to hide stuff because the cache isn't thirdgen
+			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+				foreach (object tagItem in tagContext.Items)
+				{
+					// Check for particular names/objects to hide because datatemplate
+					if (tagItem is MenuItem)
+					{
+						MenuItem tagMenuItem = tagItem as MenuItem;
+						if (tagMenuItem.Name == "itemClassBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 				}
@@ -1824,6 +1853,98 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			return tag.TagFileName.ToLower().Contains(filter) || tag.ClassName.ToLower().Contains(filter);
 		}
 
+		#endregion
+
+		#region Batch
+		private void itemTagBatch_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// Is it already in the list?
+			if (batchTagList.Items.Contains(tag))
+				return;
+
+			// Add tag to batch listbox
+			batchTagList.Items.Add(tag);
+
+		}
+
+		private void itemClassBatch_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag class
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tagClass = item.DataContext as TagClass;
+			if (tagClass == null)
+				return;
+
+			// Add everything
+			foreach (ITag tag in _cacheFile.Tags)
+			{
+				if (tag == null || tag.Class != tagClass.RawClass) continue;
+
+				TagEntry temptag = WrapTag(tag);
+
+				// Is it already in the list?
+				if (batchTagList.Items.Contains(temptag))
+					return;
+
+				// Add tag to batch listbox
+				batchTagList.Items.Add(temptag);
+			}
+
+		}
+
+		private void DeleteBatchCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null)
+				return;
+
+			var entry = elem.DataContext as TagEntry;
+			e.CanExecute = entry != null;
+		}
+
+		private void DeleteBatchCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null)
+				return;
+
+			var entry = elem.DataContext as TagEntry;
+			if (entry == null)
+				return;
+
+			batchTagList.Items.Remove(entry);
+		}
+
+		private void BatchExtract_Click(object sender, RoutedEventArgs e)
+		{
+			List<TagEntry> tags = new List<TagEntry>();
+			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
+
+			extractTags(true, tags);
+		}
+		private void BatchExtractClassic_Click(object sender, RoutedEventArgs e)
+		{
+			List<TagEntry> tags = new List<TagEntry>();
+			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
+
+			extractTags(false, tags);
+		}
+		private void BatchClear_Click(object sender, RoutedEventArgs e)
+		{
+			batchTagList.Items.Clear();
+		}
 		#endregion
 
 		public class HeaderValue
