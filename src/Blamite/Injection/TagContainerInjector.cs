@@ -12,6 +12,7 @@ namespace Blamite.Injection
 	public class TagContainerInjector
 	{
 		private bool _keepSound;
+		private bool _injectRaw;
 		private bool _findExistingPages;
 		private static int SoundClass = CharConstant.FromString("snd!");
 		private readonly ICacheFile _cacheFile;
@@ -39,15 +40,17 @@ namespace Blamite.Injection
 			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
 			_container = container;
 			_keepSound = false;
+			_injectRaw = false;
 			_findExistingPages = false;
 		}
 
-		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool findexisting)
+		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool injectraw, bool findexisting)
 		{
 			_cacheFile = cacheFile;
 			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
 			_container = container;
 			_keepSound = keepsnd;
+			_injectRaw = injectraw;
 			_findExistingPages = findexisting;
 		}
 
@@ -192,7 +195,7 @@ namespace Blamite.Injection
 			LoadResourceTable(stream);
 
 			// Inject?
-			if (extractedRaw != null)
+			if (_injectRaw && extractedRaw != null)
 			{
 				if (_findExistingPages && page.FilePath != null &&
 					(page.FilePath.Contains("mainmenu") || page.FilePath.Contains("shared") ||

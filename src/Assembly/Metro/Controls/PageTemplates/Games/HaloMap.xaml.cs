@@ -710,31 +710,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var tag = item.DataContext as TagEntry;
 			if (tag == null)
 				return;
-
-			// Passing true so raw is extracted as well
-			extractTag(true, tag);
+			
+			extractTag(tag);
 		}
 
-		private void contextExtractClassic_Click(object sender, RoutedEventArgs e)
+		private void extractTag(TagEntry tag)
 		{
-			// Get the menu item and the tag
-			var item = e.Source as MenuItem;
-			if (item == null)
-				return;
-			var tag = item.DataContext as TagEntry;
-			if (tag == null)
-				return;
-
-			// Passing false so raw is not extracted
-			extractTag(false, tag);
+			extractTags(new List<TagEntry>() { tag });
 		}
 
-		private void extractTag(bool withRaw, TagEntry tag)
-		{
-			extractTags(withRaw, new List<TagEntry>() { tag });
-		}
-
-		private void extractTags(bool withRaw, List<TagEntry> tags)
+		private void extractTags(List<TagEntry> tags)
 		{
 
 			// Ask where to save the extracted tag collection
@@ -823,8 +808,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						container.AddResourcePage(resource.Location.PrimaryPage);
 						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
 
-						if (withRaw)
-						{
+						//if (withRaw)
+						//{
 							using (var fileStream = File.OpenRead(_cacheLocation))
 							{
 								var resourceFile = _cacheFile;
@@ -864,7 +849,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								}
 								container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.PrimaryPage.Index));
 							}
-						}
+						//}
 					}
 					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
 						continue;
@@ -872,8 +857,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					container.AddResourcePage(resource.Location.SecondaryPage);
 					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
 
-					if (withRaw)
-					{
+					//if (withRaw)
+					//{
 						using (var fileStream = File.OpenRead(_cacheLocation))
 						{
 							var resourceFile = _cacheFile;
@@ -913,7 +898,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							}
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.SecondaryPage.Index));
 						}
-					}
+					//}
 				}
 			}
 
@@ -948,11 +933,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Content = new TextBlock() { Text = "Use Existing/Shared Raw Pages" },
 				IsChecked = true
 			};
+			CheckBox injectraw = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Inject Raw Data" },
+				IsChecked = true
+			};
 
 			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
-				"\r\nKeep Sound Tags: Sounds are not supported at this time and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY.\r\n" +
-				"\r\nUse Existing/Shared Raw Pages: New experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
-				new List<CheckBox>() { keepsnd, findraw });
+				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY.\r\n" +
+				"\r\nInject Raw Data:\r\nA replacement for the old \"Extract With/Without Raw\" extraction commands. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override \"Use Existing/Shared\"!\r\n" +
+				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
+				new List<CheckBox>() { keepsnd, injectraw, findraw });
 
 			if (!optionresult)
 				return;
@@ -962,7 +953,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)findraw.IsChecked);
+			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)injectraw.IsChecked, (bool)findraw.IsChecked);
 			using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
@@ -1050,7 +1041,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container.AddTag(extracted);
 
 				// Now inject the container
-				var injector = new TagContainerInjector(_cacheFile, container, true, false);
+				var injector = new TagContainerInjector(_cacheFile, container, true, false, false);
 				injector.InjectTag(extracted, stream);
 				injector.SaveChanges(stream);
 			}
@@ -1205,7 +1196,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						if (tagMenuItem.Name == "itemRename" ||
 							tagMenuItem.Name == "itemDuplicate" ||
 							tagMenuItem.Name == "itemExtract" ||
-							tagMenuItem.Name == "itemExtractNoRaw" ||
 							tagMenuItem.Name == "itemForce" ||
 							tagMenuItem.Name == "itemTagBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
@@ -1932,14 +1922,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			List<TagEntry> tags = new List<TagEntry>();
 			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
 
-			extractTags(true, tags);
-		}
-		private void BatchExtractClassic_Click(object sender, RoutedEventArgs e)
-		{
-			List<TagEntry> tags = new List<TagEntry>();
-			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
-
-			extractTags(false, tags);
+			extractTags(tags);
 		}
 		private void BatchClear_Click(object sender, RoutedEventArgs e)
 		{
