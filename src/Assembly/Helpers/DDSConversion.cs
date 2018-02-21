@@ -119,12 +119,6 @@ namespace Assembly.Helpers
 			if (App.AssemblyStorage.AssemblySettings.XdkResizeImages && !dontSettingsResize)
 				bitmap = ResizeImage(bitmap);
 
-			if (width != -1 && height != -1)
-				if (onlyResizeIfGreater && (bitmap.Width > width && bitmap.Height > height))
-					bitmap = ResizeImage(bitmap, width, height);
-				else
-					bitmap = ResizeImage(bitmap, width, height);
-
 			return loadBitmap(bitmap);
 		}
 

@@ -64,7 +64,7 @@
 	<undefined name="Unknown" offset="0xDC" visible="false" />
 	<tagRef name="Primary Map" offset="0xE0" visible="true" />
 	<tagRef name="Intensity Map" offset="0xF0" visible="true" />
-	<reflexive name="Instanced Sections" offset="0x100" visible="true" entrySize="0x10">
+	<reflexive name="Instanced Meshes" offset="0x100" visible="true" entrySize="0x10">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -76,7 +76,7 @@
 	</reflexive>
 	<reflexive name="Instanced Geometry" offset="0x118" visible="true" entrySize="0x8">
 		<int16 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="Instanced Section Index" offset="0x2" visible="true" />
+		<int16 name="Instanced Mesh Index" offset="0x2" visible="true" />
 		<int16 name="Unknown B Index" offset="0x4" visible="false" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
@@ -101,14 +101,14 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 	</reflexive>
 	<int32 name="Unknown" offset="0x130" visible="false" />
-	<reflexive name="Sections" offset="0x134" visible="true" entrySize="0x4C">
-		<reflexive name="Submeshes" offset="0x0" visible="true" entrySize="0x10">
+	<reflexive name="Meshes" offset="0x134" visible="true" entrySize="0x4C">
+		<reflexive name="Parts" offset="0x0" visible="true" entrySize="0x10">
 			<int16 name="Material Index" offset="0x0" visible="true" />
 			<int16 name="'Unknown Nodey' Index" offset="0x2" visible="false" />
 			<int16 name="Index Buffer Start" offset="0x4" visible="true" />
 			<int16 name="Index Buffer Count" offset="0x6" visible="true" />
-			<int16 name="Vertex Group Index" offset="0x8" visible="true" />
-			<int16 name="Vertex Group Count" offset="0xA" visible="true" />
+			<int16 name="Subpart Index" offset="0x8" visible="true" />
+			<int16 name="Subpart Count" offset="0xA" visible="true" />
 			<int8 name="Unknown Enum?" offset="0xC" visible="false" /><!-- value of 4 enables above x2 index-->
 			<bitfield8 name="Flags?" offset="0xD" visible="true">
 				<bit name="Bit 0" index="0" />
@@ -120,26 +120,36 @@
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
 			</bitfield8>
-			<int16 name="Vertex Buffer Count" offset="0xE" visible="true" />
+			<int16 name="Vertex Count" offset="0xE" visible="true" />
 		</reflexive>
-		<reflexive name="Vertex Groups" offset="0xC" visible="true" entrySize="0x8">
+		<reflexive name="Subparts" offset="0xC" visible="true" entrySize="0x8">
 			<int16 name="Index Buffer Start" offset="0x0" visible="true" />
 			<int16 name="Index Buffer Count" offset="0x2" visible="true" />
-			<int16 name="Parent Submesh Index" offset="0x4" visible="true" />
-			<int16 name="Vertex Buffer Count" offset="0x6" visible="true" />
+			<int16 name="Part Index" offset="0x4" visible="true" />
+			<int16 name="Vertex Count" offset="0x6" visible="true" />
 		</reflexive>
-		<int16 name="Valid Mesh Index" offset="0x18" visible="true" />
-		<int16 name="Valid World Mesh Index?" offset="0x1A" visible="false" />
-		<int16 name="Valid Transparent 3 Mesh Index?" offset="0x1C" visible="false" />
-		<int16 name="Valid Opaque Mesh Index?" offset="0x1E" visible="false" />
-		<int32 name="Raw ID?" offset="0x20" visible="false" />
-		<int16 name="Valid Water Mesh Index 1" offset="0x24" visible="false" />
-		<int16 name="Valid Water Mesh Index 2" offset="0x26" visible="false" />
-		<int16 name="Valid Section Index" offset="0x28" visible="true" />
-		<int16 name="Valid Water Section Index?" offset="0x2A" visible="false" />
-		<int8 name="Transparent Nodes Per Vertex?" offset="0x2C" visible="false" />
+		<int16 name="Vertex Buffer Index 1" offset="0x18" visible="true" />
+		<int16 name="Vertex Buffer Index 2" offset="0x1A" visible="true" />
+		<int16 name="Vertex Buffer Index 3" offset="0x1C" visible="true" />
+		<int16 name="Vertex Buffer Index 4" offset="0x1E" visible="true" />
+		<int16 name="Vertex Buffer Index 5" offset="0x20" visible="true" />
+		<int16 name="Vertex Buffer Index 6" offset="0x22" visible="true" />
+		<int16 name="Vertex Buffer Index 7" offset="0x24" visible="true" />
+		<int16 name="Vertex Buffer Index 8" offset="0x26" visible="true" />
+		<int16 name="Index Buffer Index 1" offset="0x28" visible="true" />
+		<int16 name="Index Buffer Index 2" offset="0x2A" visible="true" />
+		<bitfield8 name="Flags" offset="0x2C" visible="true">
+			<bit name="Has Vertex Colors" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
 		<int8 name="Rigid Node" offset="0x2D" visible="true" />
-		<enum8 name="Mesh Type" offset="0x2E" visible="true">
+		<enum8 name="Vertex Type" offset="0x2E" visible="true">
 			<option name="World" value="0x0" />
 			<option name="Rigid" value="0x1" />
 			<option name="Skinned" value="0x2" />
@@ -163,15 +173,27 @@
 			<option name="Implicit" value="0x14" />
 			<option name="Beam" value="0x15" />
 		</enum8>
-		<int8 name="Opaque Max Nodes/Vertex" offset="0x2F" visible="true" />
-		<int8 name="Unknown" offset="0x30" visible="false" />
+		<enum8 name="PRT Type" offset="0x2F" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Ambient" value="0x1" />
+			<option name="Linear" value="0x2" />
+			<option name="Quadratic" value="0x3" />
+		</enum8>
+		<enum8 name="Index Buffer Type" offset="0x30" visible="true">
+			<option name="Point List" value="0x0" />
+			<option name="Line List" value="0x1" />
+			<option name="Line Strip" value="0x2" />
+			<option name="Triange List" value="0x3" />
+			<option name="Triange Fan" value="0x4" />
+			<option name="Triange Strip" value="0x5" />
+		</enum8>
 		<int8 name="Unknown" offset="0x31" visible="false" />
 		<int8 name="Unknown" offset="0x32" visible="false" />
 		<int8 name="Unknown" offset="0x33" visible="false" />
 		<reflexive name="Instanced Geometry Indices" offset="0x34" visible="true" entrySize="0x10">
-			<int16 name="Instanced Geometry Section Index 1" offset="0x0" visible="true" />
-			<int16 name="Instanced Geometry Section Index 2" offset="0x2" visible="true" />
-			<reflexive name="Instanced Geometry Section Contents" offset="0x4" visible="true" entrySize="0x2">
+			<int16 name="Instanced Geometry Mesh Index 1" offset="0x0" visible="true" />
+			<int16 name="Instanced Geometry Mesh Index 2" offset="0x2" visible="true" />
+			<reflexive name="Instanced Geometry Mesh Contents" offset="0x4" visible="true" entrySize="0x2">
 				<int16 name="Instanced Geometry Index" offset="0x0" visible="true" />
 			</reflexive>
 		</reflexive>
@@ -218,7 +240,7 @@
 	<undefined name="Unknown" offset="0x164" visible="false" />
 	<undefined name="Unknown" offset="0x168" visible="false" />
 	<undefined name="Unknown" offset="0x16C" visible="false" />
-	<reflexive name="Unknown Sections" offset="0x170" visible="false" entrySize="0x20">
+	<reflexive name="Unknown Meshes" offset="0x170" visible="false" entrySize="0x20">
 		<dataRef name="Unknown" offset="0x0" visible="false" align="0x10" />
 		<reflexive name="Unknown" offset="0x14" visible="false" entrySize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="false" />

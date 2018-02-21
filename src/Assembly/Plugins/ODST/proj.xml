@@ -190,7 +190,10 @@
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
 	<int16 name="Unknown" offset="0xBA" visible="false" />
 	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x24">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+		<bitfield32 name="Atlas Flags" offset="0x0" visible="true">
+			<bit name="Gameplay Vision Mode" index="0" />
+			<bit name="Theater Vision Mode" index="1" />
+		</bitfield32>
 		<tagRef name="Attachment" offset="0x4" visible="true" />
 		<stringId name="Marker" offset="0x14" visible="true" />
 		<enum16 name="Change Color" offset="0x18" visible="true">
@@ -306,8 +309,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -316,7 +318,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -324,11 +334,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -428,9 +438,9 @@
 	<enum8 name="Damage Reporting Type" offset="0x1B4" visible="true">
 		<option name="Guardians" value="0x0" />
 		<option name="Falling Damage" value="0x1" />
-		<option name="Generic Collision" value="0x2" />
-		<option name="Generic Melee" value="0x3" />
-		<option name="Generic Explosion" value="0x4" />
+		<option name="Collision" value="0x2" />
+		<option name="Melee" value="0x3" />
+		<option name="Explosion" value="0x4" />
 		<option name="Magnum" value="0x5" />
 		<option name="Plasma Pistol" value="0x6" />
 		<option name="Needler" value="0x7" />
@@ -599,7 +609,7 @@
 		<float32 name="Parallel Friction" offset="0x38" visible="true" />
 		<float32 name="Perpendicular Friction" offset="0x3C" visible="true" />
 	</reflexive>
-	<reflexive name="Impact Properties" offset="0x288" visible="true" entrySize="0x30">
+	<reflexive name="Claymore Grenade" offset="0x288" visible="true" entrySize="0x30">
 		<degree name="Unknown" offset="0x0" visible="true" />
 		<degree name="Unknown" offset="0x4" visible="true" />
 		<degree name="Unknown" offset="0x8" visible="true" />
@@ -613,8 +623,8 @@
 		<float32 name="Unknown" offset="0x28" visible="true" />
 		<float32 name="Unknown" offset="0x2C" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x294" visible="true" entrySize="0x4">
-		<undefined name="Unknown" offset="0x0" visible="true" />
+	<reflexive name="Firebomb Grenade" offset="0x294" visible="true" entrySize="0x4">
+		<float32 name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Shotgun Properties" offset="0x2A0" visible="true" entrySize="0xC">
 		<int16 name="Amount" offset="0x0" visible="true" />

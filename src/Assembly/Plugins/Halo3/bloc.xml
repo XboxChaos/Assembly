@@ -308,8 +308,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -318,7 +317,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -326,11 +333,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -371,15 +378,53 @@
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
 	<int16 name="Unknown" offset="0xFE" visible="false" />
-	<reflexive name="Unknown" offset="0xFC" visible="false" entrySize="0x8">
-		<int8 name="Unknown" offset="0x0" visible="true" />
-		<int8 name="Unknown" offset="0x1" visible="true" />
-		<int8 name="Unknown" offset="0x2" visible="true" />
-		<int8 name="Unknown" offset="0x3" visible="true" />
-		<int8 name="Unknown" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="true" />
-		<int8 name="Unknown" offset="0x6" visible="true" />
-		<int8 name="Unknown" offset="0x7" visible="true" />
+	<reflexive name="Metagame Properties" offset="0xFC" visible="true" entrySize="0x8">
+		<bitfield8 name="Flags" offset="0x0" visible="true">
+			<bit name="Must Have Active Seats" index="0" />
+		</bitfield8>
+		<enum8 name="Unit" offset="0x1" visible="true">
+			<option name="Brute" value="0x0" />
+			<option name="Grunt" value="0x1" />
+			<option name="Jackal" value="0x2" />
+			<option name="Marine" value="0x3" />
+			<option name="Bugger" value="0x4" />
+			<option name="Hunter" value="0x5" />
+			<option name="Flood Infection" value="0x6" />
+			<option name="Flood Carrier" value="0x7" />
+			<option name="Flood Combat" value="0x8" />
+			<option name="Flood Pureform" value="0x9" />
+			<option name="Sentinel" value="0xA" />
+			<option name="Elite" value="0xB" />
+			<option name="Turret" value="0xC" />
+			<option name="Mongoose" value="0xD" />
+			<option name="Warthog" value="0xE" />
+			<option name="Scorpion" value="0xF" />
+			<option name="Hornet" value="0x10" />
+			<option name="Pelican" value="0x11" />
+			<option name="Shade" value="0x12" />
+			<option name="Watchtower" value="0x13" />
+			<option name="Ghost" value="0x14" />
+			<option name="Chopper" value="0x15" />
+			<option name="Mauler" value="0x16" />
+			<option name="Wraith" value="0x17" />
+			<option name="Banshee" value="0x18" />
+			<option name="Phantom" value="0x19" />
+			<option name="Scarab" value="0x1A" />
+			<option name="Guntower" value="0x1B" />
+		</enum8>
+		<enum8 name="Classification" offset="0x2" visible="true">
+			<option name="Infantry" value="0x0" />
+			<option name="Leader" value="0x1" />
+			<option name="Hero" value="0x2" />
+			<option name="Specialist" value="0x3" />
+			<option name="Light Vehicle" value="0x4" />
+			<option name="Heavy Vehicle" value="0x5" />
+			<option name="Giant Vehicle" value="0x6" />
+			<option name="Standard Vehicle" value="0x7" />
+		</enum8>
+		<int8 name="Unknown" offset="0x3" visible="false" />
+		<int16 name="Points" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<int8 name="Unknown" offset="0x108" visible="false" />
 	<int8 name="Unknown" offset="0x109" visible="false" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Halo4" baseSize="0x22C">
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
@@ -27,67 +27,7 @@
 		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 	</reflexive>
 	<reflexive name="External Cache References" offset="0x28" visible="true" entrySize="0x108">
-		<ascii name="Map Path" offset="0x0" visible="true" length="0x12" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
-		<undefined name="Unknown" offset="0x78" visible="false" />
-		<undefined name="Unknown" offset="0x7C" visible="false" />
-		<undefined name="Unknown" offset="0x80" visible="false" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
-		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
-		<undefined name="Unknown" offset="0x94" visible="false" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
-		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<undefined name="Unknown" offset="0xa0" visible="false" />
-		<undefined name="Unknown" offset="0xa4" visible="false" />
-		<undefined name="Unknown" offset="0xa8" visible="false" />
-		<undefined name="Unknown" offset="0xaC" visible="false" />
-		<undefined name="Unknown" offset="0xb0" visible="false" />
-		<undefined name="Unknown" offset="0xb4" visible="false" />
-		<undefined name="Unknown" offset="0xb8" visible="false" />
-		<undefined name="Unknown" offset="0xbC" visible="false" />
-		<undefined name="Unknown" offset="0xc0" visible="false" />
-		<undefined name="Unknown" offset="0xc4" visible="false" />
-		<undefined name="Unknown" offset="0xc8" visible="false" />
-		<undefined name="Unknown" offset="0xcC" visible="false" />
-		<undefined name="Unknown" offset="0xd0" visible="false" />
-		<undefined name="Unknown" offset="0xd4" visible="false" />
-		<undefined name="Unknown" offset="0xd8" visible="false" />
-		<undefined name="Unknown" offset="0xdC" visible="false" />
-		<undefined name="Unknown" offset="0xe0" visible="false" />
-		<undefined name="Unknown" offset="0xe4" visible="false" />
-		<undefined name="Unknown" offset="0xe8" visible="false" />
-		<undefined name="Unknown" offset="0xeC" visible="false" />
-		<undefined name="Unknown" offset="0xf0" visible="false" />
-		<undefined name="Unknown" offset="0xf4" visible="false" />
-		<undefined name="Unknown" offset="0xf8" visible="false" />
-		<undefined name="Unknown" offset="0xfC" visible="false" />
+		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
 		<int16 name="Unknown" offset="0x100" visible="false" />
 		<int16 name="Unknown" offset="0x102" visible="false" />
 		<undefined name="Unknown" offset="0x104" visible="false" />
@@ -131,15 +71,48 @@
 		<int32 name="Fixup Information Length" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="true" />
 		<int16 name="[play] Segment Index" offset="0x1A" visible="true" />
-		<uint32 name="Unknown" offset="0x1C" visible="true" />
+		<bitfield8 name="Root Definition Address Location/High Bits" offset="0x1C" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Fixup" index="5" />
+			<bit name="Raw Page" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<uint8 name="Root Definition Address Upper Bits" offset="0x1D" visible="true" />
+		<uint16 name="Root Definition Address" offset="0x1E" visible="true" />
 		<reflexive name="Resource Fixups" offset="0x20" visible="true" entrySize="0x8">
 			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
 Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.</comment>
 			<int32 name="Block Offset" offset="0x0" visible="true" />
-			<int32 name="Address" offset="0x4" visible="true" />
+			<bitfield8 name="Address Location/High Bits" offset="0x4" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fixup" index="5" />
+				<bit name="Raw Page" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<uint8 name="Address Upper Bits" offset="0x5" visible="true" />
+			<uint16 name="Address" offset="0x6" visible="true" />
 		</reflexive>
 		<reflexive name="Resource Definition Fixups" offset="0x2C" visible="true" entrySize="0x8">
-			<int32 name="Offset" offset="0x0" visible="true" />
+			<bitfield8 name="Offset Location/High Bits" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Fixup" index="5" />
+				<bit name="Raw Page" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<uint8 name="Offset Upper Bits" offset="0x1" visible="true" />
+			<uint16 name="Offset" offset="0x2" visible="true" />
 			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
 		</reflexive>
 		<reflexive name="Fixup Information Locations" offset="0x38" visible="true" entrySize="0x4">
@@ -230,7 +203,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -400,7 +373,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -571,7 +544,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -741,7 +714,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -911,7 +884,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1081,7 +1054,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1251,7 +1224,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1421,7 +1394,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1591,7 +1564,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1761,7 +1734,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1931,7 +1904,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -2101,7 +2074,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -2542,7 +2515,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<reflexive name="Resource Types" offset="0x34" visible="true" entrySize="0x1C">
-			<stringid name="Resource Type Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -2639,29 +2612,29 @@ If a bit is enabled then that member will be loaded.</comment>
 	<int32 name="block here 6" offset="0x1c4" visible="false" />
 	<int32 name="block here 7" offset="0x1d0" visible="false" />
 	<int32 name="block here 8" offset="0x1dC" visible="false" />
-	<reflexive name="A" offset="0x1E8" visible="true" entrySize="0x4">
-		<int32 name="Unknown" offset="0x0" visible="true" />
+	<reflexive name="Prediction A" offset="0x1E8" visible="true" entrySize="0x4">
+		<uint32 name="Key" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="B" offset="0x1F4" visible="true" entrySize="0x8">
-		<int16 name="C Parent Index" offset="0x0" visible="false" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
-		<int32 name="A Index" offset="0x4" visible="false" />
+	<reflexive name="Prediction B" offset="0x1F4" visible="true" entrySize="0x8">
+		<int16 name="Overall Index" offset="0x0" visible="true" />
+		<int16 name="A Count" offset="0x2" visible="true" />
+		<int32 name="A Index" offset="0x4" visible="true" />
 	</reflexive>
-	<reflexive name="C" offset="0x200" visible="true" entrySize="0x4">
-		<int16 name="C Parent Index" offset="0x0" visible="false" />
-		<int16 name="B Index" offset="0x2" visible="false" />
+	<reflexive name="Prediction C" offset="0x200" visible="true" entrySize="0x4">
+		<int16 name="Overall Index" offset="0x0" visible="true" />
+		<int16 name="B Index" offset="0x2" visible="true" />
 	</reflexive>
-	<reflexive name="D - Tags" offset="0x20C" visible="true" entrySize="0x8">
-		<int16 name="Unknown" offset="0x0" visible="false" />
-		<int16 name="C Index" offset="0x2" visible="false" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Secondary C Index" offset="0x6" visible="false" />
+	<reflexive name="Prediction D - Tags" offset="0x20C" visible="true" entrySize="0x8">
+		<int16 name="C Count" offset="0x0" visible="true" />
+		<int16 name="C Index" offset="0x2" visible="true" />
+		<int16 name="A Count" offset="0x4" visible="true" />
+		<int16 name="A Index" offset="0x6" visible="true" />
 	</reflexive>
-	<reflexive name="D2 - Tags" offset="0x218" visible="true" entrySize="0xC">
+	<reflexive name="Prediction D2 - Tags" offset="0x218" visible="true" entrySize="0xC">
 		<tagref name="Tag" offset="0x0" withClass="true" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="true" />
-		<int32 name="Part" offset="0x8" visible="true" />
+		<int32 name="First Value" offset="0x4" visible="true" />
+		<int32 name="Second Value" offset="0x8" visible="true" />
 	</reflexive>
-	<int32 name="Unknown" offset="0x224" visible="true" />
+	<int32 name="Campaign ID" offset="0x224" visible="true" />
 	<int32 name="Map ID" offset="0x228" visible="true" />
 </plugin>

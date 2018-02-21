@@ -46,11 +46,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (FilterString(field, field.Name))
 				return;
-			foreach (var val in field.Values)
-			{
-				if (FilterString(field, val.Name))
-					return;
-			}
+			if (FilterString(field, field.SelectedValue.Name))
+				return;
 		}
 
 		public void VisitUint8(Uint8Data field)
@@ -225,7 +222,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		private bool FilterString(MetaField field, string fieldName)
 		{
-			if (fieldName.ToLower().Contains(_filter))
+			if (fieldName != null && fieldName.ToLower().Contains(_filter))
 			{
 				AcceptField(field);
 				return true;

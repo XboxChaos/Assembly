@@ -1,0 +1,1726 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="H4Network" baseSize="0x35C">
+	<!-- Automatically generated plugin -->
+	<revisions>
+		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">Sup</revision>
+	</revisions>
+	<enum16 name="Object Type" offset="0x0" visible="true">
+		<option name="Biped" value="0x0" />
+		<option name="Vehicle" value="0x1" />
+		<option name="Weapon" value="0x2" />
+		<option name="Equipment" value="0x3" />
+		<option name="Terminal" value="0x4" />
+		<option name="Projectile" value="0x5" />
+		<option name="Scenery" value="0x6" />
+		<option name="Machine" value="0x7" />
+		<option name="Control" value="0x8" />
+		<option name="Dispenser" value="0x9" />
+		<option name="Sound Scenery" value="0xA" />
+		<option name="Crate" value="0xB" />
+		<option name="Creature" value="0xC" />
+		<option name="Giant" value="0xD" />
+		<option name="Effect Scenery" value="0xE" />
+	</enum16>
+	<int16 name="Unknown" offset="0x2" visible="false" />
+	<bitfield32 name="Flags" offset="0x4" visible="true">
+		<bit name="Does Not Cast Shadow" index="0" />
+		<bit name="Search Cardinal Direction Lightmaps on Failure" index="1" />
+		<bit name="Preserves Initial Damage Owner" index="2" />
+		<bit name="Not A Pathfinding Obstacle" index="3" />
+		<bit name="Extension Of Parent" index="4" />
+		<bit name="Does Not Cause Collision Damage" index="5" />
+		<bit name="Early Mover" index="6" />
+		<bit name="Early Mover Localized Physics" index="7" />
+		<bit name="Use Static Massive Lightmap Sample" index="8" />
+		<bit name="Object Scales Attachments" index="9" />
+		<bit name="Inherits Player's Appearance" index="10" />
+		<bit name="Non-Physical in Map Editor" index="11" />
+		<bit name="Object Is Always On Ceiling" index="12" />
+		<bit name="Sample Environment Lighting Only Ignore Object Lighting" index="13" />
+		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="14" />
+		<bit name="Does Not Collide With Camera" index="15" />
+		<bit name="Force Collide With Camera" index="16" />
+		<bit name="Damage Not Blocked By Obstructions" index="17" />
+		<bit name="Does Not Damage Breakable Surfaces" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<float32 name="Bounding Radius" offset="0x8" visible="true" />
+	<float32 name="Bounding Offset X" offset="0xC" visible="true" />
+	<float32 name="Bounding Offset Y" offset="0x10" visible="true" />
+	<float32 name="Bounding Offset Z" offset="0x14" visible="true" />
+	<float32 name="Horizontal Acceleration Scale" offset="0x18" visible="true" />
+	<float32 name="Vertical Acceleration Scale" offset="0x1C" visible="true" />
+	<float32 name="Angular Acceleration Scale" offset="0x20" visible="true" />
+	<enum16 name="Lightmap Shadow Mode Size" offset="0x24" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Never" value="0x1" />
+		<option name="Always" value="0x2" />
+		<option name="Unknown" value="0x3" />
+	</enum16>
+	<enum8 name="Sweetener Size" offset="0x26" visible="true">
+		<option name="Small" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Large" value="0x2" />
+	</enum8>
+	<enum8 name="Water Density" offset="0x27" visible="true">
+		<option name="Default" value="0x0" />
+		<option name="Least" value="0x1" />
+		<option name="Some" value="0x2" />
+		<option name="Equal" value="0x3" />
+		<option name="More" value="0x4" />
+		<option name="More Still" value="0x5" />
+		<option name="Lots More" value="0x6" />
+	</enum8>
+	<int32 name="Unknown" offset="0x28" visible="false" />
+	<float32 name="Dynamic Light Sphere Radius" offset="0x2C" visible="true" />
+	<float32 name="Dynamic Light Sphere X Offset" offset="0x30" visible="true" />
+	<float32 name="Dynamic Light Sphere Y Offset" offset="0x34" visible="true" />
+	<float32 name="Dynamic Light Sphere Z Offset" offset="0x38" visible="true" />
+	<stringid name="Generic HUD Text" offset="0x3C" visible="true" />
+	<tagRef name="Generic Name List" offset="0x40" visible="true" />
+	<tagRef name="Generic Service Tag List" offset="0x50" visible="true" />
+	<undefined name="block here" offset="0x60" visible="false" />
+	<undefined name="block here" offset="0x64" visible="false" />
+	<undefined name="block here" offset="0x68" visible="false" />
+	<stringid name="Default Variant" offset="0x6C" visible="true" />
+	<tagRef name="Model" offset="0x70" visible="true" />
+	<tagRef name="Crate Object" offset="0x80" visible="true" />
+	<tagRef name="Collision Damage" offset="0x90" visible="true" />
+	<tagRef name="Brittle Collision Damage" offset="0xA0" visible="true" />
+	<reflexive name="Early Mover Properties" offset="0xB0" visible="true" entrySize="0x28">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<undefined name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+		<undefined name="Unknown" offset="0x10" visible="true" />
+		<undefined name="Unknown" offset="0x14" visible="true" />
+		<undefined name="Unknown" offset="0x18" visible="true" />
+		<undefined name="Unknown" offset="0x1C" visible="true" />
+		<undefined name="Unknown" offset="0x20" visible="true" />
+		<undefined name="Unknown" offset="0x24" visible="true" />
+	</reflexive>
+	<tagRef name="Creation Effect" offset="0xBC" visible="true" />
+	<tagRef name="Material Effects" offset="0xCC" visible="true" />
+	<tagRef name="Melee Impact" offset="0xDC" visible="true" />
+	<float32 name="Unknown" offset="0xEC" visible="false" />
+	<reflexive name="AI Properties" offset="0xF0" visible="true" entrySize="0x10">
+		<bitfield32 name="Flags" offset="0x0" visible="true">
+			<bit name="Destroyable Cover" index="0" />
+			<bit name="Pathfinding Ignore When Dead" index="1" />
+			<bit name="Dynamic Cover" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
+		<stringid name="AI Type Name" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<enum16 name="Size" offset="0xC" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Tiny" value="0x1" />
+			<option name="Small" value="0x2" />
+			<option name="Medium" value="0x3" />
+			<option name="Large" value="0x4" />
+			<option name="Huge" value="0x5" />
+			<option name="Immobile" value="0x6" />
+		</enum16>
+		<enum16 name="Leap Jump Speed" offset="0xE" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Down" value="0x1" />
+			<option name="Step" value="0x2" />
+			<option name="Crouch" value="0x3" />
+			<option name="Stand" value="0x4" />
+			<option name="Storey" value="0x5" />
+			<option name="Tower" value="0x6" />
+			<option name="Infinite" value="0x7" />
+		</enum16>
+	</reflexive>
+	<reflexive name="Functions" offset="0xFC" visible="true" entrySize="0x40">
+		<bitfield32 name="Flags" offset="0x0" visible="true">
+			<bit name="Invert" index="0" />
+			<bit name="Mapping Does Not Controls Active" index="1" />
+			<bit name="Always Active" index="2" />
+			<bit name="Random Time Offset" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Bit 16" index="16" />
+			<bit name="Bit 17" index="17" />
+			<bit name="Bit 18" index="18" />
+			<bit name="Bit 19" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Bit 22" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
+		<stringid name="Import Name" offset="0x4" visible="true" />
+		<stringid name="Export Name" offset="0x8" visible="true" />
+		<stringid name="Turn Off With" offset="0xC" visible="true" />
+		<stringid name="Unknown" offset="0x10" visible="true" />
+		<float32 name="Minimum Value" offset="0x14" visible="true" />
+		<dataRef name="Default Function" offset="0x18" visible="true" />
+		<stringid name="Scale By" offset="0x2C" visible="true" />
+		<reflexive name="Unknown" offset="0x30" visible="false" entrySize="0x18">
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<float32 name="Unknown" offset="0x10" visible="false" />
+			<float32 name="Unknown" offset="0x14" visible="false" />
+		</reflexive>
+		<int32 name="'Function Related' Index" offset="0x3C" visible="true" />
+	</reflexive>
+	<reflexive name="Function Related" offset="0x108" visible="true" entrySize="0x4">
+		<int32 name="Function Index" offset="0x0" visible="true" />
+	</reflexive>
+	<int16 name="HUD Text Message Index" offset="0x114" visible="true" />
+	<int16 name="Unknown" offset="0x116" visible="false" />
+	<undefined name="Unknown" offset="0x118" visible="false" />
+	<undefined name="Unknown" offset="0x11C" visible="false" />
+	<undefined name="Unknown" offset="0x120" visible="false" />
+	<reflexive name="Attachments" offset="0x124" visible="true" entrySize="0x20">
+		<tagRef name="Attachment" offset="0x0" visible="true" />
+		<stringid name="Marker" offset="0x10" visible="true" />
+		<enum16 name="Change Color" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Primary" value="0x1" />
+			<option name="Secondary" value="0x2" />
+			<option name="Tertiary" value="0x3" />
+			<option name="Quaternary" value="0x4" />
+		</enum16>
+		<int16 name="Unknown" offset="0x16" visible="false" />
+		<stringid name="Primary Scale" offset="0x18" visible="true" />
+		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
+	</reflexive>
+	<reflexive name="Material Responses" offset="0x130" visible="true" entrySize="0x18">
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<reflexive name="Unknown" offset="0xC" visible="true" entrySize="0x3C">
+			<stringid name="Material" offset="0x0" visible="true" />
+			<dataRef name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x18" visible="true" />
+			<dataRef name="Unknown" offset="0x1C" visible="true" />
+			<float32 name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+		</reflexive>
+	</reflexive>
+	<reflexive name="Jet Wash" offset="0x13C" visible="true" entrySize="0x24">
+		<stringid name="Marker" offset="0x0" visible="true" />
+		<float32 name="Unknown" offset="0x4" visible="true" />
+		<undefined name="Unknown" offset="0x8" visible="true" />
+		<float32 name="Unknown" offset="0xC" visible="true" />
+		<degree name="Unknown" offset="0x10" visible="true" />
+		<degree name="Unknown" offset="0x14" visible="true" />
+		<degree name="Unknown" offset="0x18" visible="true" />
+		<degree name="Unknown" offset="0x1C" visible="true" />
+		<float32 name="Unknown" offset="0x20" visible="true" />
+	</reflexive>
+	<reflexive name="Widgets" offset="0x148" visible="true" entrySize="0x10">
+		<tagRef name="Type" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Change Color" offset="0x154" visible="true" entrySize="0x18">
+		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+			<float32 name="Weight" offset="0x0" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" visible="true" format="rgb" />
+			<colorf name="Color Upper Bound" offset="0x10" visible="true" format="rgb" />
+			<stringId name="Variant Name" offset="0x1C" visible="true" />
+		</reflexive>
+		<reflexive name="Functions" offset="0xC" visible="false" entrySize="0x20">
+			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
+				<bit name="Blend In HSV" index="0" />
+				<bit name="...More Colors" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<colorf name="Color Lower Bound" offset="0x4" visible="true" format="rgb" />
+			<colorf name="Color Upper Bound" offset="0x10" visible="true" format="rgb" />
+			<stringid name="Darken By..." offset="0x1C" visible="true" />
+			<stringid name="Scale By..." offset="0x20" visible="true" />
+		</reflexive>
+	</reflexive>
+	<reflexive name="Predicted Resources" offset="0x160" visible="false" entrySize="0x8">
+		<int16 name="Type" offset="0x0" visible="true" />
+		<int16 name="Resource Index" offset="0x2" visible="true" />
+		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
+	</reflexive>
+	<reflexive name="Multiplayer Object Properties" offset="0x16C" visible="true" entrySize="0xCC">
+		<int8 name="Unknown" offset="0x0" visible="true" />
+		<enum8 name="Object Type" offset="0x1" visible="true">
+			<option name="Ordinary" value="0x0" />
+			<option name="Weapon" value="0x1" />
+			<option name="Grenade" value="0x2" />
+			<option name="Projectile" value="0x3" />
+			<option name="Powerup" value="0x4" />
+			<option name="Equipment" value="0x5" />
+			<option name="Ammo Pack" value="0x6" />
+			<option name="Light Land Vehicle" value="0x7" />
+			<option name="Heavy Land Vehicle" value="0x8" />
+			<option name="Flying Vehicle" value="0x9" />
+			<option name="Turret" value="0xA" />
+			<option name="Device" value="0xB" />
+			<option name="Dispenser" value="0xC" />
+			<option name="Teleporter 2Way" value="0xD" />
+			<option name="Teleporter Sender" value="0xE" />
+			<option name="Teleporter Receiver" value="0xF" />
+			<option name="Player Spawn Location" value="0x10" />
+			<option name="Player Respawn Zone" value="0x11" />
+			<option name="Secondary Objective" value="0x12" />
+			<option name="Primary Objective" value="0x13" />
+			<option name="Named Location Area" value="0x14" />
+			<option name="Danger Zone" value="0x15" />
+			<option name="Fireteam 1 Respawn Zone" value="0x16" />
+			<option name="Fireteam 2 Respawn Zone" value="0x17" />
+			<option name="Fireteam 3 Respawn Zone" value="0x18" />
+			<option name="Fireteam 4 Respawn Zone" value="0x19" />
+			<option name="Safe Volume" value="0x1A" />
+			<option name="Kill Volume" value="0x1B" />
+			<option name="Cinematic Camera Position" value="0x1C" />
+			<option name="Mosh Enemy Spawn Location" value="0x1D" />
+			<option name="Ordnance Drop Point" value="0x1E" />
+		</enum8>
+		<bitfield8 name="Teleporter Flags" offset="0x2" visible="true">
+			<bit name="Disallows Players" index="0" />
+			<bit name="Allows Land Vehicles" index="1" />
+			<bit name="Allows Heavy Vehicles" index="2" />
+			<bit name="Allows Flying Vehicles" index="3" />
+			<bit name="Allows Projectiles" index="4" />
+		</bitfield8>
+		<enum8 name="Spawn Timer Mode" offset="0x3" visible="true">
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
+		</enum8>
+		<float32 name="Radius/Width" offset="0x4" visible="true" />
+		<float32 name="Length" offset="0x8" visible="true" />
+		<float32 name="Top" offset="0xC" visible="true" />
+		<float32 name="Bottom" offset="0x10" visible="true" />
+		<enum8 name="Shape" offset="0x14" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Sphere" value="0x1" />
+			<option name="Cylinder" value="0x2" />
+			<option name="Box" value="0x3" />
+		</enum8>
+		<int8 name="Unknown" offset="0x15" visible="false" />
+		<int8 name="Unknown" offset="0x16" visible="false" />
+		<int8 name="Unknown" offset="0x17" visible="false" />
+		<int16 name="Spawn Time" offset="0x18" visible="true" />
+		<int16 name="Abandon Time" offset="0x1A" visible="true" />
+		<bitfield16 name="Flags" offset="0x1C" visible="true">
+			<bit name="Editor Only" index="0" />
+			<bit name="Phased Physics" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Soft Area Boundary" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
+		<int16 name="Unknown" offset="0x1E" visible="false" />
+		<undefined name="Unknown" offset="0x20" visible="false" />
+		<reflexive name="Unknown" offset="0x24" visible="true" entrySize="0x14">
+			<dataRef name="Unknown" offset="0x0" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x30" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
+		<tagref name="Child Object" offset="0x38" visible="true" />
+		<int32 name="Unknown" offset="0x48" visible="true" />
+		<tagref name="Shape Shader" offset="0x4C" visible="true" />
+		<tagref name="Unknown" offset="0x5C" visible="true" />
+		<tagref name="Unknown" offset="0x6C" visible="true" />
+		<tagref name="Unknown" offset="0x7C" visible="true" />
+		<tagref name="Unknown" offset="0x8C" visible="true" />
+		<tagref name="Unknown" offset="0x9C" visible="true" />
+		<tagref name="Unknown" offset="0xaC" visible="true" />
+		<tagref name="Unknown" offset="0xbC" visible="true" />
+	</reflexive>
+	<tagref name="Simulation Interpolation" offset="0x178" visible="true" />
+	<reflexive name="Unknown" offset="0x188" visible="true" entrySize="0x30">
+		<tagRef name="Unknown" offset="0x0" visible="true" />
+		<tagRef name="Unknown" offset="0x10" visible="true" />
+		<tagRef name="Unknown" offset="0x20" visible="true" />
+	</reflexive>
+	<reflexive name="Destruction De-rez Effects" offset="0x194" visible="true" entrySize="0x10">
+		<tagref name="Dissolver Effect" offset="0x0" visible="true" />
+	</reflexive>
+	<reflexive name="Script Imports" offset="0x1A0" visible="true" entrySize="0x10">
+		<tagref name="Script Resource" offset="0x0" visible="true" />
+	</reflexive>
+	<undefined name="block here 4" offset="0x1AC" visible="false" />
+	<undefined name="block here 4" offset="0x1B0" visible="false" />
+	<undefined name="block here 4" offset="0x1B4" visible="false" />
+	<tagRef name="Script" offset="0x1B8" visible="true" />
+	<undefined name="Unknown" offset="0x1C8" visible="false" />
+	<undefined name="Unknown" offset="0x1CC" visible="false" />
+	<undefined name="Unknown" offset="0x1D0" visible="false" />
+	<comment title="ITEM" />
+	<bitfield32 name="Flags" offset="0x1D4" visible="true">
+		<bit name="Always Maintains Z Up" index="0" />
+		<bit name="Destroyed By Explosions" index="1" />
+		<bit name="Unaffected By Gravity" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<int16 name="OLD Message Index" offset="0x1D8" visible="true" />
+	<int16 name="Sort Order" offset="0x1DA" visible="true" />
+	<float32 name="OLD Multiplayer On-Ground Scale" offset="0x1DC" visible="true" />
+	<float32 name="OLD Campaign On-Ground Scale" offset="0x1E0" visible="true" />
+	<stringId name="Pickup Message" offset="0x1E4" visible="true" />
+	<stringId name="Swap Message" offset="0x1E8" visible="true" />
+	<stringId name="Pickup Or Dual Wield Message" offset="0x1EC" visible="true" />
+	<stringId name="Swap Or Dual Wield Message" offset="0x1F0" visible="true" />
+	<stringId name="Picked Up Message" offset="0x1F4" visible="true" />
+	<stringId name="Switch-To Message" offset="0x1F8" visible="true" />
+	<stringId name="Switch-To From AI Message" offset="0x1FC" visible="true" />
+	<stringid name="All Weapons Empty Message" offset="0x200" visible="true" />
+	<stringid name="Overheated Message" offset="0x204" visible="true" />
+	<tagRef name="Collision Sound" offset="0x208" visible="true" />
+	<reflexive name="Predicted Bitmaps" offset="0x218" visible="false" entrySize="0x10">
+		<tagRef name="Bitmap" offset="0x0" visible="false" />
+	</reflexive>
+	<tagRef name="Detonation Damage Effect" offset="0x224" visible="true" />
+	<float32 name="Detonation Delay min" offset="0x234" visible="true" />
+	<float32 name="Detonation Delay max" offset="0x238" visible="true" />
+	<tagRef name="Detonating Effect" offset="0x23C" visible="true" />
+	<tagRef name="Detonation Effect" offset="0x24C" visible="true" />
+	<float32 name="Global Ground Scale" offset="0x25C" visible="true" />
+	<float32 name="Small Hold Scale" offset="0x260" visible="true" />
+	<float32 name="Small Holster Scale" offset="0x264" visible="true" />
+	<float32 name="Large Hold Scale" offset="0x268" visible="true" />
+	<float32 name="Large Holster Scale" offset="0x26C" visible="true" />
+	<float32 name="Medium Hold Scale" offset="0x270" visible="true" />
+	<float32 name="Medium Holster Scale" offset="0x274" visible="true" />
+	<float32 name="Huge Hold Scale" offset="0x278" visible="true" />
+	<float32 name="Huge Holster Scale" offset="0x27C" visible="true" />
+	<tagRef name="Grounded Friction" offset="0x280" visible="true" />
+	<tagRef name="Death Spawn Object" offset="0x290" visible="true" />
+	<comment title="EQUIPMENT" />
+	<float32 name="Initial Charge" offset="0x2A0" visible="true" />
+	<float32 name="Recharge Delay" offset="0x2A4" visible="true" />
+	<float32 name="Recharge Rate" offset="0x2A8" visible="true" />
+	<bitfield32 name="Flags" offset="0x2AC" visible="true">
+		<bit name="Bit 0" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Third Person Camera" index="4" />
+		<bit name="Overrides User's Primary Color" index="5" />
+		<bit name="Overrides User's Secondary Color" index="6" />
+		<bit name="Cannot Be Picked Up By Player" index="7" />
+		<bit name="Single-Use" index="8" />
+		<bit name="Dropped On Parent Death" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
+	<stringid name="Biped Stow Marker" offset="0x2B0" visible="true" />
+	<int8 name="Unknown" offset="0x2B4" visible="true" />
+	<int8 name="Unknown" offset="0x2B5" visible="true" />
+	<int8 name="Unknown" offset="0x2B6" visible="true" />
+	<int8 name="Unknown" offset="0x2B7" visible="true" />
+	<colorf name="Primary Color" offset="0x2B8" visible="true" format="argb" />
+	<colorf name="Secondary Color" offset="0x2C8" visible="true" format="argb" />
+	<undefined name="Unknown" offset="0x2D8" visible="false" />
+	<undefined name="Unknown" offset="0x2DC" visible="false" />
+	<float32 name="Unknown" offset="0x2E0" visible="false" />
+	<stringid name="Unknown" offset="0x2E4" visible="true" />
+	<reflexive name="Equipment Camera" offset="0x2E8" visible="true" entrySize="0x78">
+		<bitfield8 name="Camera Flags" offset="0x0" visible="true">
+			<bit name="Bit 0" index="0" />
+			<bit name="Bit 1" index="1" />
+			<bit name="Hides Player" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+		</bitfield8>
+		<int8 name="Unknown" offset="0x1" visible="false" />
+		<int8 name="Unknown" offset="0x2" visible="false" />
+		<int8 name="Unknown" offset="0x3" visible="false" />
+		<stringid name="Camera Marker" offset="0x4" visible="true" />
+		<degree name="Pitch Auto-Level" offset="0x8" visible="true" />
+		<degree name="Pitch Range min" offset="0xC" visible="true" />
+		<degree name="Pitch Range max" offset="0x10" visible="true" />
+		<reflexive name="Camera Tracks" offset="0x14" visible="true" entrySize="0x20">
+			<tagRef name="Track" offset="0x0" visible="true" />
+			<tagRef name="Screen Effect" offset="0x10" visible="true" />
+		</reflexive>
+		<degree name="Camera Stiffness min" offset="0x20" visible="true" />
+		<degree name="Camera Stiffness max" offset="0x24" visible="true" />
+		<degree name="Unknown" offset="0x28" visible="false" />
+		<degree name="Camera Acceleration Speed" offset="0x2C" visible="true" />
+		<degree name="Camera Deceleration Speed" offset="0x30" visible="true" />
+		<float32 name="Unknown" offset="0x34" visible="false" />
+		<degree name="Camera Field Of View" offset="0x38" visible="true" />
+		<undefined name="Unknown" offset="0x3C" visible="false" />
+		<undefined name="Unknown" offset="0x40" visible="false" />
+		<undefined name="Unknown" offset="0x44" visible="false" />
+		<undefined name="Unknown" offset="0x48" visible="false" />
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<reflexive name="Unknown" offset="0x54" visible="false" entrySize="0x70">
+			<float32 name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="true" />
+			<dataRef name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Unknown" offset="0x1C" visible="true" />
+			<float32 name="Unknown" offset="0x20" visible="true" />
+			<float32 name="Unknown" offset="0x24" visible="true" />
+			<int16 name="Unknown" offset="0x28" visible="true" />
+			<int16 name="Unknown" offset="0x2A" visible="true" />
+			<dataRef name="Unknown" offset="0x2C" visible="true" />
+			<float32 name="Unknown" offset="0x40" visible="true" />
+			<float32 name="Unknown" offset="0x44" visible="true" />
+			<float32 name="Unknown" offset="0x48" visible="true" />
+			<int16 name="Unknown" offset="0x4C" visible="true" />
+			<int16 name="Unknown" offset="0x4E" visible="true" />
+			<dataRef name="Unknown" offset="0x50" visible="true" />
+			<float32 name="Unknown" offset="0x64" visible="true" />
+			<float32 name="Unknown" offset="0x68" visible="true" />
+			<float32 name="Unknown" offset="0x6C" visible="true" />
+		</reflexive>
+		<reflexive name="Unknown" offset="0x60" visible="false" entrySize="0x28">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Unknown" offset="0xC" visible="true" />
+			<float32 name="Unknown" offset="0x10" visible="true" />
+			<float32 name="Unknown" offset="0x14" visible="true" />
+			<degree name="Unknown" offset="0x18" visible="true" />
+			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+				<dataRef name="Function" offset="0x0" visible="true" />
+			</reflexive>
+		</reflexive>
+		<reflexive name="Space Fighter Camera" offset="0x6C" visible="false" entrySize="0x28">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Unknown" offset="0xC" visible="true" />
+			<float32 name="Unknown" offset="0x10" visible="true" />
+			<float32 name="Unknown" offset="0x14" visible="true" />
+			<degree name="Unknown" offset="0x18" visible="true" />
+			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+				<dataRef name="Function" offset="0x0" visible="true" />
+			</reflexive>
+		</reflexive>
+	</reflexive>
+	<reflexive name="Equipment Definition" offset="0x2F4" visible="true" entrySize="0x230">
+		<float32 name="Use Duration" offset="0x0" visible="true" />
+		<float32 name="Initial Active Charge Delay" offset="0x4" visible="true" />
+		<float32 name="Disabled Action Return Delay" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+		<float32 name="Minimum Charge Fraction" offset="0x10" visible="true" />
+		<float32 name="Initial Energy Use Amount" offset="0x14" visible="true" />
+		<float32 name="Final Energy Use Amount" offset="0x18" visible="true" />
+		<float32 name="Active Energy Use Amount" offset="0x1C" visible="true" />
+		<dataref name="Dynamic Charge Function" offset="0x20" visible="true" />
+		<float32 name="Dynamic Charge Range" offset="0x34" visible="true" />
+		<bitfield32 name="Flags" offset="0x38" visible="true">
+			<bit name="Third Person When Active" index="0" />
+			<bit name="Third Person Enter Animation" index="1" />
+			<bit name="Cannot Activate In Air" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Deactivate On Seat Entry" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Disables Shooting When Active" index="7" />
+			<bit name="Disables Melee When Active" index="8" />
+			<bit name="Disables Grenades When Active" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Cannot Shoot Immediately After" index="14" />
+			<bit name="Bit 15" index="15" />
+			<bit name="Backpacks Weapon" index="16" />
+			<bit name="Cannot Activate In Seats" index="17" />
+			<bit name="Deactivates When Shooting" index="18" />
+			<bit name="Deactivates When Reloading" index="19" />
+			<bit name="Bit 20" index="20" />
+			<bit name="Bit 21" index="21" />
+			<bit name="Disables Zoom When Active" index="22" />
+			<bit name="Bit 23" index="23" />
+			<bit name="Bit 24" index="24" />
+			<bit name="Bit 25" index="25" />
+			<bit name="Bit 26" index="26" />
+			<bit name="Bit 27" index="27" />
+			<bit name="Bit 28" index="28" />
+			<bit name="Bit 29" index="29" />
+			<bit name="Bit 30" index="30" />
+			<bit name="Bit 31" index="31" />
+		</bitfield32>
+		<enum16 name="Equipment Type" offset="0x3C" visible="true">
+			<option name="Armor Ability" value="0xFFFF" />
+			<option name="Grenade" value="0x0" />
+			<option name="Powerup" value="0x1" />
+		</enum16>
+		<enum8 name="Activation Type" offset="0x3E" visible="true">
+			<option name="Toggle" value="0x0" />
+			<option name="Held" value="0x1" />
+			<option name="Double-Tap Toggle" value="0x2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x3F" visible="false" />
+		<reflexive name="Powerup" offset="0x40" visible="true" entrySize="0x4">
+			<enum32 name="Powerup Trait Set" offset="0x0" visible="true">
+				<option name="Red" value="0x0" />
+				<option name="Blue" value="0x1" />
+				<option name="Yellow" value="0x2" />
+			</enum32>
+		</reflexive>
+		<undefined name="Unknown" offset="0x4C" visible="false" />
+		<undefined name="Unknown" offset="0x50" visible="false" />
+		<undefined name="Unknown" offset="0x54" visible="false" />
+		<undefined name="Unknown" offset="0x58" visible="false" />
+		<undefined name="Unknown" offset="0x5C" visible="false" />
+		<undefined name="Unknown" offset="0x60" visible="false" />
+		<reflexive name="Destruction" offset="0x64" visible="true" entrySize="0x30">
+			<tagRef name="Destroy Effect" offset="0x0" visible="true" />
+			<tagRef name="Destroy Damage Effect" offset="0x10" visible="true" />
+			<float32 name="Unknown" offset="0x20" visible="false" />
+			<float32 name="Self Destruction Time" offset="0x24" visible="true" />
+			<float32 name="Unknown" offset="0x28" visible="false" />
+			<int16 name="Unknown" offset="0x2C" visible="false" />
+			<int16 name="Unknown" offset="0x2E" visible="false" />
+		</reflexive>
+		<reflexive name="Radar Manipulation" offset="0x70" visible="true" entrySize="0x14">
+			<int32 name="Unknown" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x4" visible="true" />
+			<undefined name="Fake Blip Radius" offset="0x8" visible="true" />
+			<int32 name="Number of Fake Blips" offset="0xC" visible="true" />
+			<undefined name="Unknown" offset="0x10" visible="true" />
+		</reflexive>
+		<reflexive name="Armor Lockup" offset="0x7C" visible="true" entrySize="0x80">
+			<stringid name="Material Name" offset="0x0" visible="true" />
+			<int16 name="Global Material Index" offset="0x4" visible="true" />
+			<int16 name="Unknown" offset="0x6" visible="false" />
+			<undefined name="Unknown" offset="0x8" visible="false" />
+			<undefined name="Unknown" offset="0xC" visible="false" />
+			<tagRef name="Collision Damage" offset="0x10" visible="true" />
+			<tagRef name="AI Reflection Damage" offset="0x20" visible="true" />
+			<tagRef name="Player Reflection Damage" offset="0x30" visible="true" />
+			<stringid name="Biped Active Damage Section" offset="0x40" visible="true" />
+			<stringid name="Biped Deactivated Damage Section" offset="0x44" visible="true" />
+			<dataRef name="Function" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x5C" visible="false" />
+			<dataRef name="Function" offset="0x60" visible="false" />
+			<reflexive name="EMP Discharge Levels" offset="0x74" visible="true" entrySize="0x18">
+				<float32 name="Charge Level" offset="0x0" visible="true" />
+				<float32 name="Unknown" offset="0x4" visible="true" />
+				<tagRef name="Discharge Effect" offset="0x8" visible="true" />
+			</reflexive>
+		</reflexive>
+		<undefined name="Unknown" offset="0x88" visible="false" />
+		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<undefined name="Unknown" offset="0x90" visible="false" />
+		<undefined name="Unknown" offset="0x94" visible="false" />
+		<undefined name="Unknown" offset="0x98" visible="false" />
+		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<reflexive name="Runtime" offset="0xA0" visible="true" entrySize="0x1C">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<reflexive name="Traits When Active" offset="0x4" visible="false" entrySize="0x3C">
+				<reflexive name="Shields and Health" offset="0x0" visible="true" entrySize="0x2C">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Damage Resistance Multiplier" index="0" />
+						<bit name="Shield Health Multiplier" index="1" />
+						<bit name="Body Health Multiplier" index="2" />
+						<bit name="Shield Stun Duration" index="3" />
+						<bit name="Shield Health Recharge Rate" index="4" />
+						<bit name="Body Health Recharge Rate" index="5" />
+						<bit name="Overshield Recharge Rate" index="6" />
+						<bit name="Vampirism Percent" index="7" />
+						<bit name="Explosive Damage Resistance" index="8" />
+					</bitfield32>
+					<float32 name="Damage Resistance Multiplier" offset="0x4" visible="true" />
+					<float32 name="Shield Health Multiplier" offset="0x8" visible="true" />
+					<float32 name="Body Health Multiplier" offset="0xC" visible="true" />
+					<float32 name="Shield Stun Duration" offset="0x10" visible="true" />
+					<float32 name="Shield Health Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Body Health Recharge Rate" offset="0x18" visible="true" />
+					<float32 name="Overshield Recharge Rate" offset="0x1C" visible="true" />
+					<float32 name="Vampirism Percent" offset="0x20" visible="true" />
+					<float32 name="Explosive Damage Resistance" offset="0x24" visible="true" />
+					<enum8 name="Headshot Immunity" offset="0x28" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Assassination Immunity" offset="0x29" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Deathless" offset="0x2A" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<int8 name="Unknown" offset="0x2B" visible="false" />
+					</enum8>
+				</reflexive>
+				<reflexive name="Weapons, Damage, and Equipment" offset="0xC" visible="true" entrySize="0x60">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Weapon Damage Multiplier" index="0" />
+						<bit name="Melee Damage Multiplier" index="1" />
+						<bit name="Frag Grenade Recharge Rate" index="2" />
+						<bit name="Plasma Grenade Rechage Rate" index="3" />
+						<bit name="Pulse Grenade Recharge Rate" index="4" />
+						<bit name="Sprint Use Rate" index="5" />
+						<bit name="Sprint Recharge Delay" index="6" />
+						<bit name="Sprint Recharge Rate" index="7" />
+						<bit name="Sprint Initial Energy" index="8" />
+						<bit name="Equipment Use Rate" index="9" />
+						<bit name="Equipment Recharge Delay" index="10" />
+						<bit name="Equipment Recharge Rate" index="11" />
+						<bit name="Equipment Initial Energy" index="12" />
+						<bit name="Weapon Switch Speed" index="13" />
+						<bit name="Weapon Reload Speed" index="14" />
+						<bit name="Points For Ordnance" index="15" />
+						<bit name="Explosion Radius Multiplier" index="16" />
+					</bitfield32>
+					<float32 name="Weapon Damage Multiplier" offset="0x4" visible="true" />
+					<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
+					<float32 name="Frag Grenade Recharge Rate" offset="0xC" visible="true" />
+					<float32 name="Plasma Grenade Rechage Rate" offset="0x10" visible="true" />
+					<float32 name="Pulse Grenade Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Sprint Use Rate" offset="0x18" visible="true" />
+					<float32 name="Sprint Recharge Delay" offset="0x1C" visible="true" />
+					<float32 name="Sprint Recharge Rate" offset="0x20" visible="true" />
+					<float32 name="Sprint Initial Energy" offset="0x24" visible="true" />
+					<float32 name="Equipment Use Rate" offset="0x28" visible="true" />
+					<float32 name="Equipment Recharge Delay" offset="0x2C" visible="true" />
+					<float32 name="Equipment Recharge Rate" offset="0x30" visible="true" />
+					<float32 name="Equipment Initial Energy" offset="0x34" visible="true" />
+					<float32 name="Weapon Switch Speed" offset="0x38" visible="true" />
+					<float32 name="Weapon Reload Speed" offset="0x3C" visible="true" />
+					<float32 name="Points For Ordnance" offset="0x40" visible="true" />
+					<float32 name="Explosion Radius Multiplier" offset="0x44" visible="true" />
+					<enum8 name="Weapon Pickup" offset="0x48" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Grenade Count" offset="0x49" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Loadout" value="0x1" />
+						<option name="None" value="0x2" />
+						<option name="1x Frag" value="0x3" />
+						<option name="2x Frag" value="0x4" />
+						<option name="1x Plasma" value="0x5" />
+						<option name="2x Plasma" value="0x6" />
+						<option name="1x Pulse" value="0x7" />
+						<option name="2x Pulse" value="0x8" />
+					</enum8>
+					<enum8 name="Infinite Ammo" offset="0x4A" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<option name="Bottomless Clip" value="0x3" />
+					</enum8>
+					<enum8 name="Ability Usage" offset="0x4B" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Unknown" value="0x2" />
+						<option name="Enabled" value="0x3" />
+					</enum8>
+					<enum8 name="Global Equipment Drop" offset="0x4C" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Unlimited Abilities" offset="0x4D" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Ammo Mod" offset="0x4E" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Grenadier Mod" offset="0x4F" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global 'Last Gasp'" offset="0x50" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Waypoints" offset="0x51" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Grenade Drop" offset="0x52" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Two Primary Weapons" offset="0x53" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<stringid name="Initial Primary Weapon" offset="0x54" visible="true" />
+					<stringid name="Initial Secondary Weapon" offset="0x58" visible="true" />
+					<stringid name="Initial Ability" offset="0x5C" visible="true" />
+				</reflexive>
+				<reflexive name="Movement" offset="0x18" visible="true" entrySize="0x1C">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Movement Multiplier" index="0" />
+						<bit name="Gravity Multiplier" index="1" />
+						<bit name="Jump Height Multiplier" index="2" />
+						<bit name="Look Speed Multiplier" index="3" />
+					</bitfield32>
+					<float32 name="Movement Multiplier" offset="0x4" visible="true" />
+					<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
+					<float32 name="Jump Height Multiplier" offset="0xC" visible="true" />
+					<float32 name="Look Speed Multiplier" offset="0x10" visible="true" />
+					<enum8 name="Vehicle Use" offset="0x14" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="No Use" value="0x1" />
+						<option name="Passenger Only" value="0x2" />
+						<option name="Driver Only" value="0x3" />
+						<option name="Gunner Only" value="0x4" />
+						<option name="No Passenger" value="0x5" />
+						<option name="No Driver" value="0x6" />
+						<option name="No Gunner" value="0x7" />
+						<option name="Full Use" value="0x8" />
+					</enum8>
+					<enum8 name="Double Jump" offset="0x15" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Sprint Use" offset="0x16" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Automatic Momentum Use" offset="0x17" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Vaulting" offset="0x18" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Stealthy" offset="0x19" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x1a" visible="false" />
+					<int8 name="Unknown" offset="0x1b" visible="false" />
+				</reflexive>
+				<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0xC">
+					<enum8 name="Active Camo" offset="0x0" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<option name="Poor Camo" value="0x3" />
+						<option name="Good Camo" value="0x4" />
+						<option name="Best Camo" value="0x5" />
+					</enum8>
+					<enum8 name="Waypoint" offset="0x1" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Allies Only" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Show Gamertag" offset="0x2" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Allies Only" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Aura" offset="0x3" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Team" value="0x2" />
+						<option name="Black" value="0x3" />
+						<option name="White" value="0x4" />
+					</enum8>
+					<enum8 name="Forced Color" offset="0x4" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Red" value="0x2" />
+						<option name="Blue" value="0x3" />
+						<option name="Green" value="0x4" />
+						<option name="Orange" value="0x5" />
+						<option name="Purple" value="0x6" />
+						<option name="Tan" value="0x7" />
+						<option name="White" value="0x8" />
+						<option name="Pink" value="0x9" />
+					</enum8>
+					<int8 name="Unknown" offset="0x5" visible="false" />
+					<int8 name="Unknown" offset="0x6" visible="false" />
+					<int8 name="Unknown" offset="0x7" visible="false" />
+					<stringid name="Death Effect" offset="0x8" visible="true" />
+				</reflexive>
+				<reflexive name="HUD" offset="0x30" visible="true" entrySize="0x10">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Tracker Range" index="0" />
+					</bitfield32>
+					<float32 name="Tracker Range" offset="0x4" visible="true" />
+					<enum8 name="Tracker Mode" offset="0x8" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Ally Movement" value="0x2" />
+						<option name="Player Movement" value="0x3" />
+						<option name="Player Locations" value="0x4" />
+					</enum8>
+					<enum8 name="Tracker Visible When Zoomed" offset="0x9" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Damage Indicator" offset="0xA" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Vision Mode" offset="0xB" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Battle Awareness" offset="0xC" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Threat View" offset="0xD" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Aural Enhancement" offset="0xE" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0xF" visible="false" />
+				</reflexive>
+			</reflexive>
+			<reflexive name="Traits When Inactive" offset="0x10" visible="false" entrySize="0x3C">
+				<reflexive name="Shields and Health" offset="0x0" visible="true" entrySize="0x2C">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Damage Resistance Multiplier" index="0" />
+						<bit name="Shield Health Multiplier" index="1" />
+						<bit name="Body Health Multiplier" index="2" />
+						<bit name="Shield Stun Duration" index="3" />
+						<bit name="Shield Health Recharge Rate" index="4" />
+						<bit name="Body Health Recharge Rate" index="5" />
+						<bit name="Overshield Recharge Rate" index="6" />
+						<bit name="Vampirism Percent" index="7" />
+						<bit name="Explosive Damage Resistance" index="8" />
+					</bitfield32>
+					<float32 name="Damage Resistance Multiplier" offset="0x4" visible="true" />
+					<float32 name="Shield Health Multiplier" offset="0x8" visible="true" />
+					<float32 name="Body Health Multiplier" offset="0xC" visible="true" />
+					<float32 name="Shield Stun Duration" offset="0x10" visible="true" />
+					<float32 name="Shield Health Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Body Health Recharge Rate" offset="0x18" visible="true" />
+					<float32 name="Overshield Recharge Rate" offset="0x1C" visible="true" />
+					<float32 name="Vampirism Percent" offset="0x20" visible="true" />
+					<float32 name="Explosive Damage Resistance" offset="0x24" visible="true" />
+					<enum8 name="Headshot Immunity" offset="0x28" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Assassination Immunity" offset="0x29" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Deathless" offset="0x2A" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<int8 name="Unknown" offset="0x2B" visible="false" />
+					</enum8>
+				</reflexive>
+				<reflexive name="Weapons, Damage, and Equipment" offset="0xC" visible="true" entrySize="0x60">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Weapon Damage Multiplier" index="0" />
+						<bit name="Melee Damage Multiplier" index="1" />
+						<bit name="Frag Grenade Recharge Rate" index="2" />
+						<bit name="Plasma Grenade Rechage Rate" index="3" />
+						<bit name="Pulse Grenade Recharge Rate" index="4" />
+						<bit name="Sprint Use Rate" index="5" />
+						<bit name="Sprint Recharge Delay" index="6" />
+						<bit name="Sprint Recharge Rate" index="7" />
+						<bit name="Sprint Initial Energy" index="8" />
+						<bit name="Equipment Use Rate" index="9" />
+						<bit name="Equipment Recharge Delay" index="10" />
+						<bit name="Equipment Recharge Rate" index="11" />
+						<bit name="Equipment Initial Energy" index="12" />
+						<bit name="Weapon Switch Speed" index="13" />
+						<bit name="Weapon Reload Speed" index="14" />
+						<bit name="Points For Ordnance" index="15" />
+						<bit name="Explosion Radius Multiplier" index="16" />
+					</bitfield32>
+					<float32 name="Weapon Damage Multiplier" offset="0x4" visible="true" />
+					<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
+					<float32 name="Frag Grenade Recharge Rate" offset="0xC" visible="true" />
+					<float32 name="Plasma Grenade Rechage Rate" offset="0x10" visible="true" />
+					<float32 name="Pulse Grenade Recharge Rate" offset="0x14" visible="true" />
+					<float32 name="Sprint Use Rate" offset="0x18" visible="true" />
+					<float32 name="Sprint Recharge Delay" offset="0x1C" visible="true" />
+					<float32 name="Sprint Recharge Rate" offset="0x20" visible="true" />
+					<float32 name="Sprint Initial Energy" offset="0x24" visible="true" />
+					<float32 name="Equipment Use Rate" offset="0x28" visible="true" />
+					<float32 name="Equipment Recharge Delay" offset="0x2C" visible="true" />
+					<float32 name="Equipment Recharge Rate" offset="0x30" visible="true" />
+					<float32 name="Equipment Initial Energy" offset="0x34" visible="true" />
+					<float32 name="Weapon Switch Speed" offset="0x38" visible="true" />
+					<float32 name="Weapon Reload Speed" offset="0x3C" visible="true" />
+					<float32 name="Points For Ordnance" offset="0x40" visible="true" />
+					<float32 name="Explosion Radius Multiplier" offset="0x44" visible="true" />
+					<enum8 name="Weapon Pickup" offset="0x48" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Grenade Count" offset="0x49" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Loadout" value="0x1" />
+						<option name="None" value="0x2" />
+						<option name="1x Frag" value="0x3" />
+						<option name="2x Frag" value="0x4" />
+						<option name="1x Plasma" value="0x5" />
+						<option name="2x Plasma" value="0x6" />
+						<option name="1x Pulse" value="0x7" />
+						<option name="2x Pulse" value="0x8" />
+					</enum8>
+					<enum8 name="Infinite Ammo" offset="0x4A" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<option name="Bottomless Clip" value="0x3" />
+					</enum8>
+					<enum8 name="Ability Usage" offset="0x4B" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Unknown" value="0x2" />
+						<option name="Enabled" value="0x3" />
+					</enum8>
+					<enum8 name="Global Equipment Drop" offset="0x4C" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Unlimited Abilities" offset="0x4D" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Ammo Mod" offset="0x4E" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Grenadier Mod" offset="0x4F" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global 'Last Gasp'" offset="0x50" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Ordnance Waypoints" offset="0x51" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Grenade Drop" offset="0x52" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Global Two Primary Weapons" offset="0x53" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<stringid name="Initial Primary Weapon" offset="0x54" visible="true" />
+					<stringid name="Initial Secondary Weapon" offset="0x58" visible="true" />
+					<stringid name="Initial Ability" offset="0x5C" visible="true" />
+				</reflexive>
+				<reflexive name="Movement" offset="0x18" visible="true" entrySize="0x1C">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Movement Multiplier" index="0" />
+						<bit name="Gravity Multiplier" index="1" />
+						<bit name="Jump Height Multiplier" index="2" />
+						<bit name="Look Speed Multiplier" index="3" />
+					</bitfield32>
+					<float32 name="Movement Multiplier" offset="0x4" visible="true" />
+					<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
+					<float32 name="Jump Height Multiplier" offset="0xC" visible="true" />
+					<float32 name="Look Speed Multiplier" offset="0x10" visible="true" />
+					<enum8 name="Vehicle Use" offset="0x14" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="No Use" value="0x1" />
+						<option name="Passenger Only" value="0x2" />
+						<option name="Driver Only" value="0x3" />
+						<option name="Gunner Only" value="0x4" />
+						<option name="No Passenger" value="0x5" />
+						<option name="No Driver" value="0x6" />
+						<option name="No Gunner" value="0x7" />
+						<option name="Full Use" value="0x8" />
+					</enum8>
+					<enum8 name="Double Jump" offset="0x15" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Sprint Use" offset="0x16" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Automatic Momentum Use" offset="0x17" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Vaulting" offset="0x18" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Stealthy" offset="0x19" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0x1a" visible="false" />
+					<int8 name="Unknown" offset="0x1b" visible="false" />
+				</reflexive>
+				<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0xC">
+					<enum8 name="Active Camo" offset="0x0" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+						<option name="Poor Camo" value="0x3" />
+						<option name="Good Camo" value="0x4" />
+						<option name="Best Camo" value="0x5" />
+					</enum8>
+					<enum8 name="Waypoint" offset="0x1" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Allies Only" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Show Gamertag" offset="0x2" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Allies Only" value="0x2" />
+						<option name="All" value="0x3" />
+					</enum8>
+					<enum8 name="Aura" offset="0x3" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Team" value="0x2" />
+						<option name="Black" value="0x3" />
+						<option name="White" value="0x4" />
+					</enum8>
+					<enum8 name="Forced Color" offset="0x4" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Red" value="0x2" />
+						<option name="Blue" value="0x3" />
+						<option name="Green" value="0x4" />
+						<option name="Orange" value="0x5" />
+						<option name="Purple" value="0x6" />
+						<option name="Tan" value="0x7" />
+						<option name="White" value="0x8" />
+						<option name="Pink" value="0x9" />
+					</enum8>
+					<int8 name="Unknown" offset="0x5" visible="false" />
+					<int8 name="Unknown" offset="0x6" visible="false" />
+					<int8 name="Unknown" offset="0x7" visible="false" />
+					<stringid name="Death Effect" offset="0x8" visible="true" />
+				</reflexive>
+				<reflexive name="HUD" offset="0x30" visible="true" entrySize="0x10">
+					<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+						<bit name="Tracker Range" index="0" />
+					</bitfield32>
+					<float32 name="Tracker Range" offset="0x4" visible="true" />
+					<enum8 name="Tracker Mode" offset="0x8" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Ally Movement" value="0x2" />
+						<option name="Player Movement" value="0x3" />
+						<option name="Player Locations" value="0x4" />
+					</enum8>
+					<enum8 name="Tracker Visible When Zoomed" offset="0x9" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Damage Indicator" offset="0xA" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Vision Mode" offset="0xB" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Battle Awareness" offset="0xC" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Threat View" offset="0xD" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<enum8 name="Aural Enhancement" offset="0xE" visible="true">
+						<option name="Default" value="0x0" />
+						<option name="Disabled" value="0x1" />
+						<option name="Enabled" value="0x2" />
+					</enum8>
+					<int8 name="Unknown" offset="0xF" visible="false" />
+				</reflexive>
+			</reflexive>
+		</reflexive>
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<undefined name="Unknown" offset="0xB4" visible="false" />
+		<undefined name="Unknown" offset="0xB8" visible="false" />
+		<undefined name="Unknown" offset="0xBC" visible="false" />
+		<undefined name="Unknown" offset="0xC0" visible="false" />
+		<reflexive name="Stasis Field" offset="0xC4" visible="true" entrySize="0x20">
+			<int32 name="Unknown" offset="0x0" visible="true" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Unknown" offset="0xC" visible="true" />
+			<float32 name="Unknown" offset="0x10" visible="true" />
+			<float32 name="Unknown" offset="0x14" visible="true" />
+			<float32 name="Unknown" offset="0x18" visible="true" />
+			<float32 name="Unknown" offset="0x1C" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xD0" visible="false" />
+		<undefined name="Unknown" offset="0xD4" visible="false" />
+		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<reflexive name="Held Object" offset="0xDC" visible="true" entrySize="0x5C">
+			<tagref name="Object" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x10" visible="true" />
+			<int8 name="Unknown" offset="0x11" visible="false" />
+			<int8 name="Unknown" offset="0x12" visible="false" />
+			<int8 name="Unknown" offset="0x13" visible="false" />
+			<float32 name="Unknown" offset="0x14" visible="false" />
+			<float32 name="Unknown" offset="0x18" visible="false" />
+			<undefined name="Unknown" offset="0x1C" visible="false" />
+			<float32 name="X Offset" offset="0x20" visible="true" />
+			<float32 name="Unknown" offset="0x24" visible="false" />
+			<float32 name="Unknown" offset="0x28" visible="false" />
+			<float32 name="Unknown" offset="0x2C" visible="false" />
+			<float32 name="Unknown" offset="0x30" visible="false" />
+			<tagRef name="Activation Effect" offset="0x34" visible="true" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<tagRef name="Deactivation Effect" offset="0x48" visible="true" />
+			<undefined name="Unknown" offset="0x58" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0xE8" visible="false" />
+		<undefined name="Unknown" offset="0xEC" visible="false" />
+		<undefined name="Unknown" offset="0xF0" visible="false" />
+		<undefined name="Unknown" offset="0xF4" visible="false" />
+		<undefined name="Unknown" offset="0xF8" visible="false" />
+		<undefined name="Unknown" offset="0xFC" visible="false" />
+		<undefined name="Unknown" offset="0x100" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
+		<undefined name="Unknown" offset="0x108" visible="false" />
+		<undefined name="Unknown" offset="0x10C" visible="false" />
+		<undefined name="Unknown" offset="0x110" visible="false" />
+		<undefined name="Unknown" offset="0x114" visible="false" />
+		<undefined name="Unknown" offset="0x118" visible="false" />
+		<undefined name="Unknown" offset="0x11C" visible="false" />
+		<undefined name="Unknown" offset="0x120" visible="false" />
+		<reflexive name="Jetpack" offset="0x124" visible="true" entrySize="0x5C">
+			<undefined name="Unknown" offset="0x0" visible="false" />
+			<dataRef name="Function" offset="0x4" visible="false" />
+			<float32 name="Downforce When Falling" offset="0x18" visible="true" />
+			<float32 name="Airtime" offset="0x1C" visible="true" />
+			<float32 name="Falling Velocity Defuse" offset="0x20" visible="true" />
+			<undefined name="Unknown" offset="0x24" visible="false" />
+			<float32 name="Vertical Force" offset="0x28" visible="true" />
+			<float32 name="Terminal Velocity Time" offset="0x2C" visible="true" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<undefined name="Unknown" offset="0x3C" visible="false" />
+			<undefined name="Unknown" offset="0x40" visible="false" />
+			<undefined name="Unknown" offset="0x44" visible="false" />
+			<undefined name="Unknown" offset="0x48" visible="false" />
+			<undefined name="Unknown" offset="0x4C" visible="false" />
+			<undefined name="block here" offset="0x50" visible="false" />
+			<undefined name="block here" offset="0x54" visible="false" />
+			<undefined name="block here" offset="0x58" visible="false" />
+		</reflexive>
+		<reflexive name="Hologram" offset="0x130" visible="true" entrySize="0x64">
+			<float32 name="Time Active" offset="0x0" visible="true" />
+			<bitfield32 name="Flags" offset="0x4" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Collides With BSP A" index="1" />
+				<bit name="Collides With Vehicles" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Collides With BSP B" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+				<bit name="Bit 16" index="16" />
+				<bit name="Bit 17" index="17" />
+				<bit name="Bit 18" index="18" />
+				<bit name="Bit 19" index="19" />
+				<bit name="Bit 20" index="20" />
+				<bit name="Bit 21" index="21" />
+				<bit name="Bit 22" index="22" />
+				<bit name="Bit 23" index="23" />
+				<bit name="Bit 24" index="24" />
+				<bit name="Bit 25" index="25" />
+				<bit name="Bit 26" index="26" />
+				<bit name="Bit 27" index="27" />
+				<bit name="Bit 28" index="28" />
+				<bit name="Bit 29" index="29" />
+				<bit name="Bit 30" index="30" />
+				<bit name="Bit 31" index="31" />
+			</bitfield32>
+			<tagRef name="Create Effect" offset="0x8" visible="true" />
+			<tagRef name="Active Effect" offset="0x18" visible="true" />
+			<undefined name="Unknown" offset="0x28" visible="true" />
+			<undefined name="Unknown" offset="0x2C" visible="true" />
+			<undefined name="Unknown" offset="0x30" visible="true" />
+			<tagRef name="Destruction Effect" offset="0x34" visible="true" />
+			<float32 name="Stability min" offset="0x44" visible="true" />
+			<float32 name="Stability max" offset="0x48" visible="true" />
+			<dataRef name="Function" offset="0x4C" visible="false" />
+			<bitfield8 name="New Flags" offset="0x60" visible="true">
+				<bit name="Possess Hologram" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<int8 name="Unknown" offset="0x61" visible="false" />
+			<int8 name="Unknown" offset="0x62" visible="false" />
+			<int8 name="Unknown" offset="0x63" visible="false" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x13C" visible="false" />
+		<undefined name="Unknown" offset="0x140" visible="false" />
+		<undefined name="Unknown" offset="0x144" visible="false" />
+		<reflexive name="Evade" offset="0x148" visible="true" entrySize="0x20">
+			<stringid name="Front Animation" offset="0x0" visible="true" />
+			<stringid name="Left Animation" offset="0x4" visible="true" />
+			<stringid name="Back Animation" offset="0x8" visible="true" />
+			<stringid name="Right Animation" offset="0xC" visible="true" />
+			<tagRef name="Thrust Effect" offset="0x10" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x154" visible="false" />
+		<undefined name="Unknown" offset="0x158" visible="false" />
+		<undefined name="Unknown" offset="0x15C" visible="false" />
+		<reflexive name="Sprint" offset="0x160" visible="true" entrySize="0x4">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="true" />
+			<int8 name="Unknown" offset="0x2" visible="true" />
+			<int8 name="Unknown" offset="0x3" visible="true" />
+		</reflexive>
+		<reflexive name="Teleport" offset="0x16C" visible="true" entrySize="0x5C">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<float32 name="Teleport Distance" offset="0x4" visible="true" />
+			<float32 name="Teleport Speed" offset="0x8" visible="true" />
+			<undefined name="Unknown" offset="0xC" visible="true" />
+			<tagref name="Tracer Effect" offset="0x10" visible="true" />
+			<undefined name="Unknown" offset="0x20" visible="true" />
+			<undefined name="Unknown" offset="0x24" visible="true" />
+			<float32 name="Unknown" offset="0x28" visible="true" />
+			<float32 name="Unknown" offset="0x2C" visible="true" />
+			<float32 name="Unknown" offset="0x30" visible="true" />
+			<float32 name="Unknown" offset="0x34" visible="true" />
+			<float32 name="Unknown" offset="0x38" visible="true" />
+			<float32 name="Unknown" offset="0x3C" visible="true" />
+			<float32 name="Unknown" offset="0x40" visible="true" />
+			<float32 name="Unknown" offset="0x44" visible="true" />
+			<float32 name="Unknown" offset="0x48" visible="true" />
+			<int32 name="Unknown" offset="0x4C" visible="true" />
+			<undefined name="block here" offset="0x50" visible="false" />
+			<undefined name="block here" offset="0x54" visible="false" />
+			<undefined name="block here" offset="0x58" visible="false" />
+		</reflexive>
+		<reflexive name="Auto Turret" offset="0x178" visible="true" entrySize="0x78">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<tagref name="Turret Object" offset="0x4" visible="true" />
+			<undefined name="Unknown" offset="0x14" visible="true" />
+			<float32 name="Unknown" offset="0x18" visible="true" />
+			<float32 name="Unknown" offset="0x1C" visible="true" />
+			<float32 name="Unknown" offset="0x20" visible="true" />
+			<float32 name="Unknown" offset="0x24" visible="true" />
+			<float32 name="Unknown" offset="0x28" visible="true" />
+			<float32 name="Unknown" offset="0x2C" visible="true" />
+			<float32 name="Unknown" offset="0x30" visible="true" />
+			<float32 name="Unknown" offset="0x34" visible="true" />
+			<float32 name="Unknown" offset="0x38" visible="true" />
+			<undefined name="Unknown" offset="0x3C" visible="true" />
+			<float32 name="Unknown" offset="0x40" visible="true" />
+			<float32 name="Unknown" offset="0x44" visible="true" />
+			<float32 name="Spawn X Offset" offset="0x48" visible="true" />
+			<float32 name="Spawn Y Offset" offset="0x4C" visible="true" />
+			<float32 name="Spawn Z Offset" offset="0x50" visible="true" />
+			<float32 name="Bobbing Range" offset="0x54" visible="true" />
+			<float32 name="Unknown" offset="0x58" visible="true" />
+			<tagref name="Spawn Effect" offset="0x5C" visible="true" />
+			<undefined name="Unknown" offset="0x6C" visible="false" />
+			<stringid name="Unknown" offset="0x70" visible="true" />
+			<stringid name="Unknown" offset="0x74" visible="true" />
+		</reflexive>
+		<reflexive name="Vision Mode" offset="0x184" visible="true" entrySize="0x2C">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<tagref name="Tell Effect" offset="0x8" visible="true" />
+			<int32 name="Unknown" offset="0x18" visible="true" />
+			<tagref name="Properties" offset="0x1C" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x190" visible="false" />
+		<undefined name="Unknown" offset="0x194" visible="false" />
+		<undefined name="Unknown" offset="0x198" visible="false" />
+		<undefined name="Unknown" offset="0x19C" visible="false" />
+		<undefined name="Unknown" offset="0x1A0" visible="false" />
+		<undefined name="Unknown" offset="0x1A4" visible="false" />
+		<reflexive name="Remote Strike" offset="0x1A8" visible="true" entrySize="0x24">
+			<tagref name="Target Weapon" offset="0x0" visible="true" />
+			<undefined name="Unknown" offset="0x10" visible="false" />
+			<undefined name="Unknown" offset="0x14" visible="false" />
+			<float32 name="Unknown" offset="0x18" visible="false" />
+			<float32 name="Unknown" offset="0x1C" visible="false" />
+			<int8 name="Unknown" offset="0x20" visible="false" />
+			<int8 name="Unknown" offset="0x21" visible="false" />
+			<int8 name="Unknown" offset="0x22" visible="false" />
+			<int8 name="Unknown" offset="0x23" visible="false" />
+		</reflexive>
+		<reflexive name="Hacker" offset="0x1B4" visible="true" entrySize="0x3C">
+			<int8 name="Unknown" offset="0x0" visible="true" />
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="true" />
+			<float32 name="Unknown" offset="0x8" visible="true" />
+			<float32 name="Effective Cone Angle" offset="0xC" visible="true" />
+			<reflexive name="Lengths?" offset="0x10" visible="true" entrySize="0x8">
+				<float32 name="Unknown" offset="0x0" visible="true" />
+				<float32 name="Unknown" offset="0x4" visible="true" />
+			</reflexive>
+			<tagref name="Tell Effect" offset="0x1C" visible="true" />
+			<tagref name="Target's Effect" offset="0x2C" visible="true" />
+		</reflexive>
+		<reflexive name="Cruise Missile" offset="0x1C0" visible="true" entrySize="0x28">
+			<tagref name="Hologram Equipment" offset="0x0" visible="true" />
+			<tagref name="Vehicle" offset="0x10" visible="true" />
+			<stringid name="Entered Seat" offset="0x20" visible="true" />
+			<undefined name="Unknown" offset="0x24" visible="true" />
+		</reflexive>
+		<undefined name="Unknown" offset="0x1CC" visible="false" />
+		<undefined name="Unknown" offset="0x1D0" visible="false" />
+		<undefined name="Unknown" offset="0x1D4" visible="false" />
+		<reflexive name="Active Shield" offset="0x1D8" visible="true" entrySize="0x4">
+			<bitfield8 name="Flags" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</bitfield8>
+			<int8 name="Unknown" offset="0x1" visible="false" />
+			<int8 name="Unknown" offset="0x2" visible="false" />
+			<int8 name="Unknown" offset="0x3" visible="false" />
+		</reflexive>
+		<tagref name="Error Sound" offset="0x1E4" visible="true" />
+		<tagref name="Activation Effect" offset="0x1F4" visible="true" />
+		<tagref name="Active Effect" offset="0x204" visible="true" />
+		<tagref name="Deactivation Effect" offset="0x214" visible="true" />
+		<stringid name="Enter Animation" offset="0x224" visible="true" />
+		<stringid name="Idle Animation" offset="0x228" visible="true" />
+		<stringid name="End Animation" offset="0x22C" visible="true" />
+	</reflexive>
+	<enum8 name="Damage Reporting Type" offset="0x300" visible="true">
+		<option name="Guardians (Unknown)" value="0x0" />
+		<option name="Guardians" value="0x1" />
+		<option name="Guardians (Scripting)" value="0x2" />
+		<option name="Suicide" value="0x3" />
+		<option name="Burst Gun" value="0x4" />
+		<option name="Scattershot" value="0x5" />
+		<option name="Light Rifle" value="0x6" />
+		<option name="Binary Rifle" value="0x7" />
+		<option name="Bishop Beam" value="0x8" />
+		<option name="Stasis Gun" value="0x9" />
+		<option name="Pulse Grenade" value="0xA" />
+		<option name="Magnum" value="0xB" />
+		<option name="Assault Rifle" value="0xC" />
+		<option name="DMR" value="0xD" />
+		<option name="Shotgun" value="0xE" />
+		<option name="Battle Rifle" value="0xF" />
+		<option name="Sniper Rifle" value="0x10" />
+		<option name="Rocket Launcher" value="0x11" />
+		<option name="Spartan Laser" value="0x12" />
+		<option name="Frag Grenade" value="0x13" />
+		<option name="Sticky Detonator" value="0x14" />
+		<option name="SAW" value="0x15" />
+		<option name="Railgun" value="0x16" />
+		<option name="Plasma Pistol" value="0x17" />
+		<option name="Needler" value="0x18" />
+		<option name="Gravity Hammer" value="0x19" />
+		<option name="Energy Sword" value="0x1A" />
+		<option name="Plasma Grenade" value="0x1B" />
+		<option name="Carbine" value="0x1C" />
+		<option name="Beam Rifle" value="0x1D" />
+		<option name="Storm Rifle" value="0x1E" />
+		<option name="Ghost" value="0x1F" />
+		<option name="Revenant (Old)" value="0x20" />
+		<option name="Revenant Gunner (Old)" value="0x21" />
+		<option name="Wraith" value="0x22" />
+		<option name="Wraith Gunner" value="0x23" />
+		<option name="Banshee" value="0x24" />
+		<option name="Banshee Bomb" value="0x25" />
+		<option name="Seraph" value="0x26" />
+		<option name="Revenant" value="0x27" />
+		<option name="Revenant Gunner" value="0x28" />
+		<option name="Lich" value="0x29" />
+		<option name="Lich Gunner" value="0x2A" />
+		<option name="Mongoose" value="0x2B" />
+		<option name="Warthog" value="0x2C" />
+		<option name="Warthog Gunner" value="0x2D" />
+		<option name="Warthog Gauss Turret" value="0x2E" />
+		<option name="Warthog Rocket Turret" value="0x2F" />
+		<option name="Scorpion" value="0x30" />
+		<option name="Scorpion Gunner" value="0x31" />
+		<option name="Falcon" value="0x32" />
+		<option name="Falcon Gunner" value="0x33" />
+		<option name="Wasp" value="0x34" />
+		<option name="Wasp Gunner" value="0x35" />
+		<option name="Wasp Heavy Gunner" value="0x36" />
+		<option name="Mantis Stomp" value="0x37" />
+		<option name="Mantis Chaingun" value="0x38" />
+		<option name="Mantis Cannon" value="0x39" />
+		<option name="Mantis Missile" value="0x3A" />
+		<option name="Broadsword" value="0x3B" />
+		<option name="Broadsword Missile" value="0x3C" />
+		<option name="Tortoise" value="0x3D" />
+		<option name="Tortoise Gunner" value="0x3E" />
+		<option name="Mac Cannon" value="0x3F" />
+		<option name="Traget Designator" value="0x40" />
+		<option name="Drop Pod" value="0x41" />
+		<option name="Cruise Missile" value="0x42" />
+		<option name="Hardlight Shield" value="0x43" />
+		<option name="Auto Sentry" value="0x44" />
+		<option name="Thruster Pack" value="0x45" />
+		<option name="Falling" value="0x46" />
+		<option name="Collision" value="0x47" />
+		<option name="Melee" value="0x48" />
+		<option name="Explosion" value="0x49" />
+		<option name="Birthday Party Explosion" value="0x4A" />
+		<option name="Flag" value="0x4B" />
+		<option name="Bomb" value="0x4C" />
+		<option name="Bomb Explosion" value="0x4D" />
+		<option name="Ball" value="0x4E" />
+		<option name="Teleporter" value="0x4F" />
+		<option name="Transfer Damage" value="0x50" />
+		<option name="Armor Lock" value="0x51" />
+		<option name="Human Turret" value="0x52" />
+		<option name="Plasma Cannon" value="0x53" />
+		<option name="Plasma Mortar" value="0x54" />
+		<option name="Plasma Turret" value="0x55" />
+		<option name="Shade Turret" value="0x56" />
+		<option name="Tank" value="0x57" />
+		<option name="Chopper" value="0x58" />
+		<option name="Hornet" value="0x59" />
+		<option name="Mantis" value="0x5A" />
+	</enum8>
+	<int8 name="Unknown" offset="0x301" visible="false" />
+	<int8 name="Unknown" offset="0x302" visible="false" />
+	<int8 name="Unknown" offset="0x303" visible="false" />
+	<tagref name="HUD Interface" offset="0x304" visible="true" />
+	<tagref name="Pickup Sound" offset="0x314" visible="true" />
+	<tagRef name="Recharge Effect" offset="0x324" visible="true" />
+	<tagRef name="Soundbank" offset="0x334" visible="true" />
+	<reflexive name="Sounds" offset="0x344" visible="true" entrySize="0x10">
+		<int32 name="Unknown" offset="0x0" visible="true" />
+		<stringid name="Unknown" offset="0x4" visible="true" />
+		<stringid name="Unknown" offset="0x8" visible="true" />
+		<undefined name="Unknown" offset="0xC" visible="true" />
+	</reflexive>
+	<undefined name="block here" offset="0x350" visible="false" />
+	<undefined name="block here" offset="0x354" visible="false" />
+	<undefined name="block here" offset="0x358" visible="false" />
+</plugin>

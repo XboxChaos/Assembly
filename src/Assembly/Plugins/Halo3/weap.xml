@@ -309,8 +309,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -319,7 +318,15 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
@@ -327,11 +334,11 @@
 			<option name="Box" value="0x3" />
 		</enum8>
 		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Abandon Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
@@ -410,16 +417,16 @@
 	<tagRef name="Detonation Effect" offset="0x16C" visible="true" />
 	<float32 name="Campaign Ground Scale" offset="0x17C" visible="true" />
 	<float32 name="Multiplayer Ground Scale" offset="0x180" visible="true" />
-	<float32 name="Human Hold Scale" offset="0x184" visible="true" />
-	<float32 name="Human Holster Scale" offset="0x188" visible="true" />
-	<float32 name="Covenant Hold Scale" offset="0x18C" visible="true" />
-	<float32 name="Covenant Holster Scale" offset="0x190" visible="true" />
-	<float32 name="Player Hold Scale" offset="0x194" visible="true" />
-	<float32 name="Player Holster Scale" offset="0x198" visible="true" />
-	<float32 name="Boss Hold Scale" offset="0x19C" visible="true" />
-	<float32 name="Boss Holster Scale" offset="0x1A0" visible="true" />
-	<float32 name="Unknown" offset="0x1A4" visible="false" />
-	<float32 name="Unknown" offset="0x1A8" visible="false" />
+	<float32 name="Small Hold Scale" offset="0x184" visible="true" />
+	<float32 name="Small Holster Scale" offset="0x188" visible="true" />
+	<float32 name="Medium Hold Scale" offset="0x18C" visible="true" />
+	<float32 name="Medium Holster Scale" offset="0x190" visible="true" />
+	<float32 name="Large Hold Scale" offset="0x194" visible="true" />
+	<float32 name="Large Holster Scale" offset="0x198" visible="true" />
+	<float32 name="Huge Hold Scale" offset="0x19C" visible="true" />
+	<float32 name="Huge Holster Scale" offset="0x1A0" visible="true" />
+	<float32 name="Grounded Friction Length" offset="0x1A4" visible="true" />
+	<float32 name="Grounded Friction Unknown" offset="0x1A8" visible="true" />
 	<comment title="WEAPON" />
 	<bitfield32 name="Flags" offset="0x1AC" visible="true">
 		<bit name="Vertical Heat Display" index="0" />
@@ -513,9 +520,9 @@
 	<tagRef name="Overheated Damage Effect" offset="0x210" visible="true" />
 	<tagRef name="Detonation" offset="0x220" visible="true" />
 	<tagRef name="Detonation Damage Effect" offset="0x230" visible="true" />
+	<comment title="Melee Damage" />
 	<tagRef name="Player Melee Damage" offset="0x240" visible="true" />
 	<tagRef name="Player Melee Response" offset="0x250" visible="true" />
-	<comment title="Melee Damage" />
 	<degree name="Damage Pyramid Angles y" offset="0x260" visible="true" />
 	<degree name="Damage Pyramid Angles p" offset="0x264" visible="true" />
 	<float32 name="Damage Pyramid Depth" offset="0x268" visible="true" />
@@ -535,9 +542,9 @@
 	<enum8 name="Melee Damage Reporting Type" offset="0x33C" visible="true">
 		<option name="Guardians" value="0x0" />
 		<option name="Falling Damage" value="0x1" />
-		<option name="Generic Collision" value="0x2" />
-		<option name="Generic Melee" value="0x3" />
-		<option name="Generic Explosion" value="0x4" />
+		<option name="Collision" value="0x2" />
+		<option name="Melee" value="0x3" />
+		<option name="Explosion" value="0x4" />
 		<option name="Magnum" value="0x5" />
 		<option name="Plasma Pistol" value="0x6" />
 		<option name="Needler" value="0x7" />
@@ -839,11 +846,11 @@
 		<tagRef name="Charging Damage Effect" offset="0x40" visible="true" />
 		<tagRef name="Charging Response" offset="0x50" visible="true" />
 		<float32 name="Charging Age Degeneration" offset="0x60" visible="true" />
-		<tagRef name="Unknown" offset="0x64" visible="true" />
-		<tagRef name="Unknown" offset="0x74" visible="true" />
-		<undefined name="Unknown" offset="0x84" visible="false" />
+		<tagRef name="Discharging Effect" offset="0x64" visible="true" />
+		<tagRef name="Discharging Damage Effect" offset="0x74" visible="true" />
+		<float32 name="Target Tracking Decay Time" offset="0x84" visible="true" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
-		<undefined name="Unknown" offset="0x8C" visible="false" />
+		<float32 name="Unknown" offset="0x8C" visible="false" />
 	</reflexive>
 	<reflexive name="Barrels" offset="0x45C" visible="true" entrySize="0x134">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
@@ -943,9 +950,9 @@
 		<enum8 name="Damage Reporting Type" offset="0x94" visible="true">
 			<option name="Guardians" value="0x0" />
 			<option name="Falling Damage" value="0x1" />
-			<option name="Generic Collision" value="0x2" />
-			<option name="Generic Melee" value="0x3" />
-			<option name="Generic Explosion" value="0x4" />
+			<option name="Collision" value="0x2" />
+			<option name="Melee" value="0x3" />
+			<option name="Explosion" value="0x4" />
 			<option name="Magnum" value="0x5" />
 			<option name="Plasma Pistol" value="0x6" />
 			<option name="Needler" value="0x7" />
@@ -1008,8 +1015,8 @@
 		<tagRef name="Initial Projectile" offset="0x98" visible="true" />
 		<tagRef name="Trailing Projectile" offset="0xA8" visible="true" />
 		<tagRef name="Damage Effect" offset="0xB8" visible="true" />
-		<tagRef name="Override Projectile" offset="0xC8" visible="true" />
-		<undefined name="Unknown" offset="0xD8" visible="false" />
+		<tagRef name="Crate Projectile" offset="0xC8" visible="true" />
+		<float32 name="Crate Projectile Speed" offset="0xD8" visible="true" />
 		<float32 name="Ejection Port Recovery Time" offset="0xDC" visible="true" />
 		<float32 name="Illumination Recovery Time" offset="0xE0" visible="true" />
 		<float32 name="Heat Generated Per Round" offset="0xE4" visible="true" />
@@ -1067,8 +1074,8 @@
 	<tagRef name="Age Model" offset="0x4A0" visible="true" />
 	<tagRef name="Age Weapon" offset="0x4B0" visible="true" />
 	<tagRef name="Aged Effect" offset="0x4C0" visible="true" />
-	<float32 name="Hammer Age Per Use" offset="0x4D0" visible="true" />
-	<undefined name="Unknown" offset="0x4D4" visible="false" />
+	<float32 name="Hammer Age Per Use MP" offset="0x4D0" visible="true" />
+	<float32 name="Hammer Age Per Use SP" offset="0x4D4" visible="true" />
 	<float32 name="First Person Weapon Offset i" offset="0x4D8" visible="true" />
 	<float32 name="First Person Weapon Offset j" offset="0x4DC" visible="true" />
 	<float32 name="First Person Weapon Offset k" offset="0x4E0" visible="true" />

@@ -388,8 +388,8 @@
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
 		<enum8 name="Spawn Timer Mode" offset="0x3" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+			<option name="On Death" value="0x0" />
+			<option name="On Disturbance" value="0x1" />
 		</enum8>
 		<float32 name="Radius/Width" offset="0x4" visible="true" />
 		<float32 name="Length" offset="0x8" visible="true" />
@@ -405,7 +405,7 @@
 		<int8 name="Unknown" offset="0x16" visible="false" />
 		<int8 name="Unknown" offset="0x17" visible="false" />
 		<int16 name="Spawn Time" offset="0x18" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x1A" visible="true" />
+		<int16 name="Abandon Time" offset="0x1A" visible="true" />
 		<bitfield16 name="Flags" offset="0x1C" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Phased Physics" index="1" />
@@ -442,7 +442,7 @@
 		<tagref name="Unknown" offset="0xaC" visible="true" />
 		<tagref name="Unknown" offset="0xbC" visible="true" />
 	</reflexive>
-	<tagref name="Simulation" offset="0x190" visible="true" />
+	<tagref name="Simulation Interpolation" offset="0x190" visible="true" />
 	<reflexive name="Unknown" offset="0x1A0" visible="true" entrySize="0x30">
 		<tagRef name="Unknown" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
@@ -487,15 +487,69 @@
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
 	<int16 name="Unknown" offset="0x206" visible="false" />
-	<reflexive name="Unknown" offset="0x208" visible="false" entrySize="0x8">
-		<int8 name="Unknown" offset="0x0" visible="true" />
-		<int8 name="Unknown" offset="0x1" visible="true" />
-		<int8 name="Unknown" offset="0x2" visible="true" />
-		<int8 name="Unknown" offset="0x3" visible="true" />
-		<int8 name="Unknown" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="true" />
-		<int8 name="Unknown" offset="0x6" visible="true" />
-		<int8 name="Unknown" offset="0x7" visible="true" />
+	<reflexive name="Metagame Properties" offset="0x208" visible="true" entrySize="0x8">
+		<bitfield8 name="Flags" offset="0x0" visible="true">
+			<bit name="Must Have Active Seats" index="0" />
+		</bitfield8>
+		<enum8 name="Unit" offset="0x1" visible="true">
+			<option name="Brute" value="0x0" />
+			<option name="Grunt" value="0x1" />
+			<option name="Jackal" value="0x2" />
+			<option name="Skirmisher" value="0x3" />
+			<option name="Marine" value="0x4" />
+			<option name="Spartan" value="0x5" />
+			<option name="Bugger" value="0x6" />
+			<option name="Hunter" value="0x7" />
+			<option name="Flood Infection" value="0x8" />
+			<option name="Flood Carrier" value="0x9" />
+			<option name="Flood Combat" value="0xA" />
+			<option name="Flood Pureform" value="0xB" />
+			<option name="Sentinel" value="0xC" />
+			<option name="Elite" value="0xD" />
+			<option name="Engineer" value="0xE" />
+			<option name="Mule" value="0xF" />
+			<option name="Turret" value="0x10" />
+			<option name="Mongoose" value="0x11" />
+			<option name="Warthog" value="0x12" />
+			<option name="Scorpion" value="0x13" />
+			<option name="Falcon" value="0x14" />
+			<option name="Pelican" value="0x15" />
+			<option name="Revenant" value="0x16" />
+			<option name="Seraph" value="0x17" />
+			<option name="Shade" value="0x18" />
+			<option name="Watchtower" value="0x19" />
+			<option name="Ghost" value="0x1A" />
+			<option name="Space Banshee" value="0x1B" />
+			<option name="Mauler" value="0x1C" />
+			<option name="Wraith" value="0x1D" />
+			<option name="Banshee" value="0x1E" />
+			<option name="Phantom" value="0x1F" />
+			<option name="Scarab" value="0x20" />
+			<option name="Guntower" value="0x21" />
+			<option name="Tuning Fork" value="0x22" />
+			<option name="Broadsword" value="0x23" />
+			<option name="Mammoth" value="0x24" />
+			<option name="Lich" value="0x25" />
+			<option name="Mantis" value="0x26" />
+			<option name="Wasp" value="0x27" />
+			<option name="Phaeton" value="0x28" />
+			<option name="Watcher" value="0x29" />
+			<option name="Knight" value="0x2A" />
+			<option name="Pawn" value="0x2B" />
+		</enum8>
+		<enum8 name="Classification" offset="0x2" visible="true">
+			<option name="Infantry" value="0x0" />
+			<option name="Leader" value="0x1" />
+			<option name="Hero" value="0x2" />
+			<option name="Specialist" value="0x3" />
+			<option name="Light Vehicle" value="0x4" />
+			<option name="Heavy Vehicle" value="0x5" />
+			<option name="Giant Vehicle" value="0x6" />
+			<option name="Standard Vehicle" value="0x7" />
+		</enum8>
+		<int8 name="Unknown" offset="0x3" visible="false" />
+		<int16 name="Points" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<int8 name="Unknown" offset="0x214" visible="false" />
 	<int8 name="Unknown" offset="0x215" visible="false" />

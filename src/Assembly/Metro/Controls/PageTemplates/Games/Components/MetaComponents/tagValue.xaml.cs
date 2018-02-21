@@ -29,7 +29,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			bool enable = (cbTagClass.SelectedIndex > 0);
 			cbTagEntry.IsEnabled = enable;
-			btnNullTag.IsEnabled = enable;
 			btnJumpToTag.IsEnabled = enable;
 		}
 

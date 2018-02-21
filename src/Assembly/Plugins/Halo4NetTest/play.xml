@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo4" baseSize="0x3C">
+	<revisions>
+		<revision author="Lord Zedd" version="1">Portin without generation</revision>
+	</revisions>
+	<reflexive name="Compression Codecs" offset="0x0" visible="true" entrySize="0x10">
+		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
+	</reflexive>
+	<reflexive name="External Cache References" offset="0xC" visible="true" entrySize="0x108">
+		<ascii name="Map Path" offset="0x0" visible="true" length="0x100" />
+		<int16 name="Unknown" offset="0x100" visible="false" />
+		<int16 name="Unknown" offset="0x102" visible="false" />
+		<undefined name="Unknown" offset="0x104" visible="false" />
+	</reflexive>
+	<reflexive name="Raw Pages" offset="0x18" visible="true" entrySize="0x58">
+		<int16 name="Salt" offset="0x0" visible="true" />
+		<int8 name="Flags" offset="0x2" visible="true" />
+		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
+		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
+		<int16 name="Unknown" offset="0x6" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using ???.</comment>
+		<uint32 name="Block Offset" offset="0x8" visible="true" />
+		<uint32 name="Compressed Block Size" offset="0xC" visible="true" />
+		<uint32 name="Uncompressed Block Size" offset="0x10" visible="true" />
+		<int32 name="CRC Checksum" offset="0x14" visible="true" />
+		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
+		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
+		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
+		<int16 name="Block Asset Count" offset="0x54" visible="true" />
+		<int16 name="Unknown" offset="0x56" visible="true" />
+	</reflexive>
+	<int32 name="Sizes Block" offset="0x24" visible="false" />
+	<int32 name="Sizes Block" offset="0x28" visible="false" />
+	<int32 name="Sizes Block" offset="0x2C" visible="false" />
+	<reflexive name="Segments" offset="0x30" visible="true" entrySize="0x18" align="0x8">
+		<int32 name="Primary Page Offset" offset="0x0" visible="true" />
+		<int32 name="Secondary Page Offset" offset="0x4" visible="true" />
+		<int32 name="Tertiary Page Offset" offset="0x8" visible="true" />
+		<int16 name="Primary Page Index" offset="0xC" visible="true" />
+		<int16 name="Secondary Page Index" offset="0xE" visible="true" />
+		<int16 name="Tertiary Page Index" offset="0x10" visible="true" />
+		<int16 name="Primary Size Index" offset="0x12" visible="true" />
+		<int16 name="Secondary Size Index" offset="0x14" visible="true" />
+		<int16 name="Tertiary Size Index" offset="0x16" visible="true" />
+	</reflexive>
+</plugin>

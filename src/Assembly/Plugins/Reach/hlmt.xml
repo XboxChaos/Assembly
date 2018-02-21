@@ -50,27 +50,19 @@
 			<stringId name="Name" offset="0x0" visible="true" />
 			<int8 name="Model Region Index" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
-			<int8 name="Unknown" offset="0x6" visible="false" />
-			<int8 name="Unknown" offset="0x7" visible="false" />
+			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<reflexive name="Permutation" offset="0x8" visible="true" entrySize="0x24">
 				<stringId name="Name" offset="0x0" visible="true" />
 				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
-				<int8 name="Unknown" offset="0x5" visible="false" />
-				<int8 name="Unknown" offset="0x6" visible="false" />
-				<bitfield8 name="Flags" offset="0x7" visible="true">
+				<bitfield8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
 				</bitfield8>
+				<int8 name="Unknown" offset="0x6" visible="false" />
+				<int8 name="Unknown" offset="0x7" visible="false" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<reflexive name="States" offset="0xC" visible="true" entrySize="0xC">
 					<stringid name="Name" offset="0x0" visible="true" />
-					<int8 name="Unknown" offset="0x4" visible="false" />
+					<int8 name="Model Permutation Index" offset="0x4" visible="true" />
 					<bitfield8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
@@ -88,7 +80,7 @@
 						<option name="Major Damage" value="0x3" />
 						<option name="Destroyed" value="0x4" />
 					</enum16>
-					<undefined name="Unknown" offset="0x8" visible="false" />
+					<float32 name="Initial Probability" offset="0x8" visible="true" />
 				</reflexive>
 				<undefined name="Unknown" offset="0x18" visible="false" />
 				<undefined name="Unknown" offset="0x1C" visible="false" />
@@ -118,19 +110,18 @@
 			<int8 name="Unknown" offset="0x1E" visible="true" />
 			<int8 name="Unknown" offset="0x1F" visible="true" />
 		</reflexive>
-		<int32 name="Unknown" offset="0x2C" visible="false" />
+		<int32 name="Instance Group Index" offset="0x2C" visible="true" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 1" offset="0x90" visible="false" entrySize="0x4"><!-- generator say this is x8 -->
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Unknown" offset="0x90" visible="true" entrySize="0x4">
+		<stringid name="Unknown" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown" offset="0x9C" visible="false" entrySize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+	<reflexive name="Instance Groups" offset="0x9C" visible="true" entrySize="0x18">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int32 name="Unknown" offset="0x4" visible="false" />
 		<!-- generator says this is a block
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x28">
+		<reflexive name="Unknown" offset="0x8" visible="false" entrySize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -142,7 +133,10 @@
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
 		</reflexive>-->
+		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Probability" offset="0x14" visible="true" />
 	</reflexive>
 	<reflexive name="Materials" offset="0xA8" visible="true" entrySize="0x14">
 		<stringId name="Material Name" offset="0x0" visible="true" />
@@ -246,16 +240,16 @@
 			<option name="Falcon" value="0x27" />
 			<option name="Falcon Gunner" value="0x28" />
 			<option name="Falling" value="0x29" />
-			<option name="Generic Collision" value="0x2A" />
-			<option name="Generic Melee" value="0x2B" />
-			<option name="Generic Explosion" value="0x2C" />
+			<option name="Collision" value="0x2A" />
+			<option name="Melee" value="0x2B" />
+			<option name="Explosion" value="0x2C" />
 			<option name="Birthday Explosion" value="0x2D" />
 			<option name="Flag" value="0x2E" />
 			<option name="Bomb" value="0x2F" />
 			<option name="Bomb Explosion" value="0x30" />
 			<option name="Ball" value="0x31" />
 			<option name="Teleporter" value="0x32" />
-			<option name="Shifted Blame" value="0x33" />
+			<option name="Transfer Damage" value="0x33" />
 			<option name="Armor Lock" value="0x34" />
 			<option name="Target Locator" value="0x35" />
 			<option name="Human Turret" value="0x36" />
@@ -264,11 +258,28 @@
 			<option name="Plasma Turret" value="0x39" />
 			<option name="Shade Turret" value="0x3A" />
 			<option name="Sabre" value="0x3B" />
+			<option name="SMG" value="0x3C" />
+			<option name="Carbine" value="0x3D" />
+			<option name="Battle Rifle" value="0x3E" />
 			<option name="Focus Rifle" value="0x3F" />
 			<option name="Fuel Rod" value="0x40" />
 			<option name="Missile Pod" value="0x41" />
+			<option name="Brute Shot" value="0x42" />
+			<option name="Flamethrower" value="0x43" />
+			<option name="Sentinel Gun" value="0x44" />
+			<option name="Spike Grenade" value="0x45" />
+			<option name="Firebomb Grenade" value="0x46" />
+			<option name="Elephant Turret" value="0x47" />
+			<option name="Spectre" value="0x48" />
+			<option name="Spectre Gunner" value="0x49" />
 			<option name="Tank" value="0x4A" />
+			<option name="Chopper" value="0x4B" />
 			<option name="Falcon" value="0x4C" />
+			<option name="Mantis" value="0x4D" />
+			<option name="Prowler" value="0x4E" />
+			<option name="Sentinel Beam" value="0x4F" />
+			<option name="Sentinel RPG" value="0x50" />
+			<option name="Tripmine" value="0x51" />
 		</enum8>
 		<enum8 name="Response Damage Reporting Type" offset="0x11" visible="true">
 			<option name="Guardians (Unknown)" value="0x0" />
@@ -313,16 +324,16 @@
 			<option name="Falcon" value="0x27" />
 			<option name="Falcon Gunner" value="0x28" />
 			<option name="Falling" value="0x29" />
-			<option name="Generic Collision" value="0x2A" />
-			<option name="Generic Melee" value="0x2B" />
-			<option name="Generic Explosion" value="0x2C" />
+			<option name="Collision" value="0x2A" />
+			<option name="Melee" value="0x2B" />
+			<option name="Explosion" value="0x2C" />
 			<option name="Birthday Explosion" value="0x2D" />
 			<option name="Flag" value="0x2E" />
 			<option name="Bomb" value="0x2F" />
 			<option name="Bomb Explosion" value="0x30" />
 			<option name="Ball" value="0x31" />
 			<option name="Teleporter" value="0x32" />
-			<option name="Shifted Blame" value="0x33" />
+			<option name="Transfer Damage" value="0x33" />
 			<option name="Armor Lock" value="0x34" />
 			<option name="Target Locator" value="0x35" />
 			<option name="Human Turret" value="0x36" />
@@ -331,11 +342,28 @@
 			<option name="Plasma Turret" value="0x39" />
 			<option name="Shade Turret" value="0x3A" />
 			<option name="Sabre" value="0x3B" />
+			<option name="SMG" value="0x3C" />
+			<option name="Carbine" value="0x3D" />
+			<option name="Battle Rifle" value="0x3E" />
 			<option name="Focus Rifle" value="0x3F" />
 			<option name="Fuel Rod" value="0x40" />
 			<option name="Missile Pod" value="0x41" />
+			<option name="Brute Shot" value="0x42" />
+			<option name="Flamethrower" value="0x43" />
+			<option name="Sentinel Gun" value="0x44" />
+			<option name="Spike Grenade" value="0x45" />
+			<option name="Firebomb Grenade" value="0x46" />
+			<option name="Elephant Turret" value="0x47" />
+			<option name="Spectre" value="0x48" />
+			<option name="Spectre Gunner" value="0x49" />
 			<option name="Tank" value="0x4A" />
+			<option name="Chopper" value="0x4B" />
 			<option name="Falcon" value="0x4C" />
+			<option name="Mantis" value="0x4D" />
+			<option name="Prowler" value="0x4E" />
+			<option name="Sentinel Beam" value="0x4F" />
+			<option name="Sentinel RPG" value="0x50" />
+			<option name="Tripmine" value="0x51" />
 		</enum8>
 		<int16 name="Unknown" offset="0x12" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
@@ -343,8 +371,8 @@
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
-		<float32 name="Max Vitality" offset="0x28" visible="true" />
-		<float32 name="Min Stun Damage" offset="0x2C" visible="true" />
+		<float32 name="Maximum Vitality" offset="0x28" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x2C" visible="true" />
 		<float32 name="Stun Time" offset="0x30" visible="true" />
 		<float32 name="Recharge Time" offset="0x34" visible="true" />
 		<float32 name="Recharge Fraction" offset="0x38" visible="true" />
@@ -364,7 +392,7 @@
 		<undefined name="Unknown" offset="0x70" visible="false" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
-		<float32 name="Max Shield Vitality" offset="0x7C" visible="true" />
+		<float32 name="Maximum Shield Vitality" offset="0x7C" visible="true" />
 		<stringid name="Global Shield Material Name" offset="0x80" visible="true" />
 		<float32 name="Minimum Stun Damage" offset="0x84" visible="true" />
 		<float32 name="Stun Time" offset="0x88" visible="true" />
@@ -427,33 +455,33 @@
 				</enum16>
 				<stringid name="Trigger" offset="0x4" visible="true" />
 				<bitfield32 name="Flags" offset="0x8" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
+					<bit name="Kills Object" index="0" />
+					<bit name="Inhibits Melee Attack" index="1" />
+					<bit name="Inhibits Weapon Attack" index="2" />
+					<bit name="Inhibits Walking" index="3" />
+					<bit name="Forces Drop Weapon" index="4" />
+					<bit name="Kills Weapon Primary Trigger" index="5" />
+					<bit name="Kills Weapon Secondary Trigger" index="6" />
+					<bit name="Destroys Object" index="7" />
+					<bit name="Damages Weapon Primary Trigger" index="8" />
+					<bit name="Damages Weapon Secondary Trigger" index="9" />
+					<bit name="Light Damage Left Turn" index="10" />
+					<bit name="Major Damage Left Turn" index="11" />
+					<bit name="Light Damage Right Turn" index="12" />
+					<bit name="Major Damage Right Turn" index="13" />
+					<bit name="Light Damage Engine" index="14" />
+					<bit name="Major Damage Engine" index="15" />
+					<bit name="Kills Object (No Player Solo)" index="16" />
+					<bit name="Causes Detonation" index="17" />
+					<bit name="Destroy All Group Constraints" index="18" />
+					<bit name="Kills Variant Objects" index="19" />
+					<bit name="Force Unattached Effects" index="20" />
+					<bit name="Fires Under Threshold" index="21" />
+					<bit name="Triggers Special Death" index="22" />
+					<bit name="Only On Special Death" index="23" />
+					<bit name="Only NOT On Special Death" index="24" />
 					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
+					<bit name="Causes Detonation In Single Player" index="26" />
 					<bit name="Bit 27" index="27" />
 					<bit name="Bit 28" index="28" />
 					<bit name="Bit 29" index="29" />
@@ -646,16 +674,16 @@
 		<option name="Falcon" value="0x27" />
 		<option name="Falcon Gunner" value="0x28" />
 		<option name="Falling" value="0x29" />
-		<option name="Generic Collision" value="0x2A" />
-		<option name="Generic Melee" value="0x2B" />
-		<option name="Generic Explosion" value="0x2C" />
+		<option name="Collision" value="0x2A" />
+		<option name="Melee" value="0x2B" />
+		<option name="Explosion" value="0x2C" />
 		<option name="Birthday Explosion" value="0x2D" />
 		<option name="Flag" value="0x2E" />
 		<option name="Bomb" value="0x2F" />
 		<option name="Bomb Explosion" value="0x30" />
 		<option name="Ball" value="0x31" />
 		<option name="Teleporter" value="0x32" />
-		<option name="Shifted Blame" value="0x33" />
+		<option name="Transfer Damage" value="0x33" />
 		<option name="Armor Lock" value="0x34" />
 		<option name="Target Locator" value="0x35" />
 		<option name="Human Turret" value="0x36" />
@@ -664,11 +692,28 @@
 		<option name="Plasma Turret" value="0x39" />
 		<option name="Shade Turret" value="0x3A" />
 		<option name="Sabre" value="0x3B" />
+		<option name="SMG" value="0x3C" />
+		<option name="Carbine" value="0x3D" />
+		<option name="Battle Rifle" value="0x3E" />
 		<option name="Focus Rifle" value="0x3F" />
 		<option name="Fuel Rod" value="0x40" />
 		<option name="Missile Pod" value="0x41" />
+		<option name="Brute Shot" value="0x42" />
+		<option name="Flamethrower" value="0x43" />
+		<option name="Sentinel Gun" value="0x44" />
+		<option name="Spike Grenade" value="0x45" />
+		<option name="Firebomb Grenade" value="0x46" />
+		<option name="Elephant Turret" value="0x47" />
+		<option name="Spectre" value="0x48" />
+		<option name="Spectre Gunner" value="0x49" />
 		<option name="Tank" value="0x4A" />
+		<option name="Chopper" value="0x4B" />
 		<option name="Falcon" value="0x4C" />
+		<option name="Mantis" value="0x4D" />
+		<option name="Prowler" value="0x4E" />
+		<option name="Sentinel Beam" value="0x4F" />
+		<option name="Sentinel RPG" value="0x50" />
+		<option name="Tripmine" value="0x51" />
 	</enum8>
 	<enum8 name="Response Damage Reporting Type" offset="0xDD" visible="true">
 		<option name="Guardians (Unknown)" value="0x0" />
@@ -713,16 +758,16 @@
 		<option name="Falcon" value="0x27" />
 		<option name="Falcon Gunner" value="0x28" />
 		<option name="Falling" value="0x29" />
-		<option name="Generic Collision" value="0x2A" />
-		<option name="Generic Melee" value="0x2B" />
-		<option name="Generic Explosion" value="0x2C" />
+		<option name="Collision" value="0x2A" />
+		<option name="Melee" value="0x2B" />
+		<option name="Explosion" value="0x2C" />
 		<option name="Birthday Explosion" value="0x2D" />
 		<option name="Flag" value="0x2E" />
 		<option name="Bomb" value="0x2F" />
 		<option name="Bomb Explosion" value="0x30" />
 		<option name="Ball" value="0x31" />
 		<option name="Teleporter" value="0x32" />
-		<option name="Shifted Blame" value="0x33" />
+		<option name="Transfer Damage" value="0x33" />
 		<option name="Armor Lock" value="0x34" />
 		<option name="Target Locator" value="0x35" />
 		<option name="Human Turret" value="0x36" />
@@ -731,11 +776,28 @@
 		<option name="Plasma Turret" value="0x39" />
 		<option name="Shade Turret" value="0x3A" />
 		<option name="Sabre" value="0x3B" />
+		<option name="SMG" value="0x3C" />
+		<option name="Carbine" value="0x3D" />
+		<option name="Battle Rifle" value="0x3E" />
 		<option name="Focus Rifle" value="0x3F" />
 		<option name="Fuel Rod" value="0x40" />
 		<option name="Missile Pod" value="0x41" />
+		<option name="Brute Shot" value="0x42" />
+		<option name="Flamethrower" value="0x43" />
+		<option name="Sentinel Gun" value="0x44" />
+		<option name="Spike Grenade" value="0x45" />
+		<option name="Firebomb Grenade" value="0x46" />
+		<option name="Elephant Turret" value="0x47" />
+		<option name="Spectre" value="0x48" />
+		<option name="Spectre Gunner" value="0x49" />
 		<option name="Tank" value="0x4A" />
+		<option name="Chopper" value="0x4B" />
 		<option name="Falcon" value="0x4C" />
+		<option name="Mantis" value="0x4D" />
+		<option name="Prowler" value="0x4E" />
+		<option name="Sentinel Beam" value="0x4F" />
+		<option name="Sentinel RPG" value="0x50" />
+		<option name="Tripmine" value="0x51" />
 	</enum8>
 	<int16 name="Unknown" offset="0xDE" visible="false" />
 	<reflexive name="Omaha Damage Sections" offset="0xE0" visible="true" entrySize="0xB4">
@@ -806,7 +868,7 @@
 				<bit name="Kills Weapon Primary Trigger" index="5" />
 				<bit name="Kills Weapon Secondary Trigger" index="6" />
 				<bit name="Destroys Object" index="7" />
-				<bit name="Bit 8" index="8" />
+				<bit name="Causes Detonation" index="8" />
 				<bit name="Bit 9" index="9" />
 				<bit name="Bit 10" index="10" />
 				<bit name="Bit 11" index="11" />
@@ -817,8 +879,8 @@
 				<bit name="Bit 16" index="16" />
 				<bit name="Bit 17" index="17" />
 				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
+				<bit name="Causes Detonation In Single Player" index="19" />
+				<bit name="Silent Transition Effects" index="20" />
 				<bit name="Bit 21" index="21" />
 				<bit name="Bit 22" index="22" />
 				<bit name="Bit 23" index="23" />
