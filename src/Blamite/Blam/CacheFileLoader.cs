@@ -26,7 +26,7 @@ namespace Blamite.Blam
 		{
 			EngineDescription tempDesc;
             string ns = null;
-            return LoadCacheFile(map_reader, null, null, out ns, null, engineDb, out tempDesc);
+            return LoadCacheFile(map_reader, null, null, out ns, null, engineDb, out tempDesc, null, null);
 		}
 
         private static FileStream TryInitFilestream(string filepath)
@@ -51,7 +51,7 @@ namespace Blamite.Blam
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-        public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, out string tagnamesLocation, string filesLocation, EngineDatabase engineDb, out EngineDescription engineInfo)
+        public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, out string tagnamesLocation, string filesLocation, EngineDatabase engineDb, out EngineDescription engineInfo, string tagsLocation, string stringsLocation)
 		{
 			// Set the reader's endianness based upon the file's header magic
             map_reader.SeekTo(0);
@@ -86,15 +86,23 @@ namespace Blamite.Blam
                     if (tag_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without tags file. Please make sure that tags.dat is in the same folder at the map file.");
                     if (string_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without strings file. Please make sure that tags.dat is in the same folder at the map file.");
 
-					// Load the tag names csv file
-					string tagnames_filename = "tagnames_";
-					if (engineInfo.AltTagNames != null)
-						tagnames_filename += engineInfo.AltTagNames + ".csv";
-					else
-						tagnames_filename += version.BuildString + ".csv";
-                    string tagnames_location = filesLocation != null ? filesLocation + tagnames_filename : "";
-                    if (!File.Exists(tagnames_location)) tagnames_location = "tagnames\\" + tagnames_filename;
+                    string tagnames_location = Path.Combine(Path.GetDirectoryName(tagsLocation), "tag_list.csv");
+
+
                     if (!File.Exists(tagnames_location)) tagnames_location = null;
+
+                    if (tagnames_location == null)
+                    {
+                        // Load the tag names csv file
+                        string tagnames_filename = "tagnames_";
+                        if (engineInfo.AltTagNames != null)
+                            tagnames_filename += engineInfo.AltTagNames + ".csv";
+                        else
+                            tagnames_filename += version.BuildString + ".csv";
+                        tagnames_location = filesLocation != null ? filesLocation + tagnames_filename : "";
+                        if (File.Exists(tagnames_location)) tagnames_location = "tagnames\\" + tagnames_filename;
+                        else tagnames_location = null;
+                    }
 
                     FileStream tagnamesFileStream = tagnames_location != null ? TryInitFilestream(tagnames_location) : null;
                     EndianReader tagnames_reader = null;

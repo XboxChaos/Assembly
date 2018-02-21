@@ -172,7 +172,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				try
 				{
-                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, out _tagnamesLocation, filesLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo);
+                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, out _tagnamesLocation, filesLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo, tagsLocation, stringsLocation);
                     
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
