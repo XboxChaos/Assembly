@@ -15,6 +15,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		public ITagClass Class { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
+		public SegmentPointer HeaderLocation { get; set; }
 		public DatumIndex Index { get; private set; }
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)

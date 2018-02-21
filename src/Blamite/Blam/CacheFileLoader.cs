@@ -1,8 +1,10 @@
 ﻿using System;
 using Blamite.Blam.SecondGen;
 using Blamite.Blam.ThirdGen;
+using Blamite.Blam.FourthGen;
 using Blamite.Serialization;
 using Blamite.IO;
+using System.IO;
 
 namespace Blamite.Blam
 {
@@ -19,11 +21,26 @@ namespace Blamite.Blam
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb)
+        //public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, EngineDatabase engineDb)
+        public static ICacheFile LoadCacheFile(IReader map_reader, EngineDatabase engineDb)
 		{
 			EngineDescription tempDesc;
-			return LoadCacheFile(reader, engineDb, out tempDesc);
+            string ns = null;
+            return LoadCacheFile(map_reader, null, null, out ns, null, engineDb, out tempDesc, null, null);
 		}
+
+        private static FileStream TryInitFilestream(string filepath)
+        {
+            try
+            {
+                FileStream fs = File.OpenRead(filepath);
+                return fs;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
 		/// <summary>
 		///     Loads a cache file from a stream.
@@ -34,16 +51,19 @@ namespace Blamite.Blam
 		/// <returns>The cache file that was loaded.</returns>
 		/// <exception cref="ArgumentException">Thrown if the cache file is invalid.</exception>
 		/// <exception cref="NotSupportedException">Thrown if the cache file's target engine is not supported.</exception>
-		public static ICacheFile LoadCacheFile(IReader reader, EngineDatabase engineDb, out EngineDescription engineInfo)
+        public static ICacheFile LoadCacheFile(IReader map_reader, IReader tag_reader, IReader string_reader, out string tagnamesLocation, string filesLocation, EngineDatabase engineDb, out EngineDescription engineInfo, string tagsLocation, string stringsLocation)
 		{
 			// Set the reader's endianness based upon the file's header magic
-			reader.SeekTo(0);
-			byte[] headerMagic = reader.ReadBlock(4);
-			reader.Endianness = DetermineCacheFileEndianness(headerMagic);
+            map_reader.SeekTo(0);
+            byte[] headerMagic = map_reader.ReadBlock(4);
+            Endian engianess = DetermineCacheFileEndianness(headerMagic);
+            map_reader.Endianness = engianess;
+            if(tag_reader != null) tag_reader.Endianness = engianess;
+            if (tag_reader != null) string_reader.Endianness = engianess;
 
 			// Load engine version info
-			var version = new CacheFileVersionInfo(reader);
-			if (version.Engine != EngineType.SecondGeneration && version.Engine != EngineType.ThirdGeneration)
+            var version = new CacheFileVersionInfo(map_reader);
+            if (version.Engine != EngineType.SecondGeneration && version.Engine != EngineType.ThirdGeneration && version.Engine != EngineType.FourthGeneration)
 				throw new NotSupportedException("Engine not supported");
 
 			// Load build info
@@ -55,10 +75,48 @@ namespace Blamite.Blam
 			switch (version.Engine)
 			{
 				case EngineType.SecondGeneration:
-					return new SecondGenCacheFile(reader, engineInfo, version.BuildString);
+                    tagnamesLocation = null;
+                    return new SecondGenCacheFile(map_reader, engineInfo, version.BuildString);
 
 				case EngineType.ThirdGeneration:
-					return new ThirdGenCacheFile(reader, engineInfo, version.BuildString);
+                    tagnamesLocation = null;
+                    return new ThirdGenCacheFile(map_reader, engineInfo, version.BuildString);
+
+                case EngineType.FourthGeneration:
+                    if (tag_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without tags file. Please make sure that tags.dat is in the same folder at the map file.");
+                    if (string_reader == null || tag_reader.BaseStream.Length == 0) throw new Exception("Can't load version 4 cache file without strings file. Please make sure that tags.dat is in the same folder at the map file.");
+
+                    string tagnames_location = Path.Combine(Path.GetDirectoryName(tagsLocation), "tag_list.csv");
+
+
+                    if (!File.Exists(tagnames_location)) tagnames_location = null;
+
+                    if (tagnames_location == null)
+                    {
+                        // Load the tag names csv file
+                        string tagnames_filename = "tagnames_";
+                        if (engineInfo.AltTagNames != null)
+                            tagnames_filename += engineInfo.AltTagNames + ".csv";
+                        else
+                            tagnames_filename += version.BuildString + ".csv";
+                        tagnames_location = filesLocation != null ? filesLocation + tagnames_filename : "";
+                        if (File.Exists(tagnames_location)) tagnames_location = "tagnames\\" + tagnames_filename;
+                        else tagnames_location = null;
+                    }
+
+                    FileStream tagnamesFileStream = tagnames_location != null ? TryInitFilestream(tagnames_location) : null;
+                    EndianReader tagnames_reader = null;
+                    if (tagnamesFileStream != null) 
+                    {
+                        tagnames_reader = new EndianReader(tagnamesFileStream, Endian.BigEndian);
+                        tagnames_reader.Endianness = engianess;
+                    }
+
+                    tagnamesLocation = tagnames_location;
+
+                    FourthGenCacheFile cache_file = new FourthGenCacheFile(map_reader, tag_reader, string_reader, tagnames_reader, engineInfo, version.BuildString);
+                    tagnamesFileStream.Close();
+                    return cache_file;
 
 				default:
 					throw new NotSupportedException("Engine not supported");

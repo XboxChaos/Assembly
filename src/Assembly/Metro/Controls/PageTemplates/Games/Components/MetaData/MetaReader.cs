@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Blamite.Blam;
@@ -24,11 +25,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly LoadType _type;
 		private IReader _reader;
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
-			LoadType type, FieldChangeSet ignore)
+		public MetaReader(IStreamManager streamManager, uint headerOffset, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
+ 			LoadType type, FieldChangeSet ignore)
 		{
 			_streamManager = streamManager;
 			BaseOffset = baseOffset;
+			HeaderOffset = headerOffset;
 			_cache = cache;
 			_ignoredFields = ignore;
 			_type = type;
@@ -40,6 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public uint BaseOffset { get; set; }
+		public uint HeaderOffset { get; set; }
 
 		public void VisitBitfield(BitfieldData field)
 		{
@@ -150,10 +153,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += (_reader.ReadByte().ToString("X2"));
-			field.Value = colorValue;
+			byte[] colorArray = new byte[field.Format.Length];
+			for (int i = 0; i < field.Format.Length; i++)
+				colorArray[i] = _reader.ReadByte();
+
+			if (_cache.Engine == EngineType.FourthGeneration)
+				Array.Reverse(colorArray);
+
+			string colorValue = String.Concat(Array.ConvertAll(colorArray, x => x.ToString("X2")));
+			field.Value = "#" + colorValue;
 		}
 
 		public void VisitColourFloat(ColourData field)
@@ -184,7 +192,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitStringID(StringIDData field)
 		{
 			SeekToOffset(field.Offset);
-			field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
+            try
+            {
+                field.Value = _cache.StringIDs.GetString(new StringID(_reader.ReadUInt32()));
+            }
+            catch (System.Exception e)
+            {
+                field.Value = "Error: " + e.Message;
+            }
+			
 		}
 
 		public void VisitRawData(RawData field)
@@ -202,8 +218,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			var length = (int) values.GetInteger("size");
 			uint pointer = values.GetInteger("pointer");
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
+			if (length > 0)
 			{
+
+				if (_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+					pointer = HeaderOffset + (pointer & 0xFFFFFFF);
+
 				field.DataAddress = pointer;
 				field.Length = length;
 
@@ -306,7 +326,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			uint pointer = values.GetInteger("pointer");
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
+			if (length < 0)
 			{
 				length = 0;
 				pointer = 0;
@@ -383,6 +403,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				// Calculate the base offset to read from
 				uint oldBaseOffset = BaseOffset;
 				uint dataOffset = reflexive.FirstEntryAddress;
+				if(_cache.GetType() == typeof(Blamite.Blam.FourthGen.FourthGenCacheFile))
+					dataOffset = HeaderOffset + (dataOffset & 0xFFFFFFF);
+
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
 				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);

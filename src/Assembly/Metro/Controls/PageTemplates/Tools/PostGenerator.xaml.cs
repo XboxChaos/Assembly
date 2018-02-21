@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Tools
 					screenshotFileName = Path.GetTempFileName();
 					screenshotPng = Path.GetTempFileName();
 
-					if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
+					//if (!App.AssemblyStorage.AssemblySettings.Xbdm.GetScreenshot(screenshotFileName))
 					{
 						Dispatcher.Invoke(
 							new Action(

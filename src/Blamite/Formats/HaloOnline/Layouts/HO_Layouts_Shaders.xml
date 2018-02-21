@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<layouts>
+  <layout for="pixel shader info" size="0x28">
+    <uint32 name="shader data address" offset="0x10" />
+  </layout>
+
+  <!-- Why is there so much padding here?! -->
+  <layout for="vertex shader info" size="0x368">
+    <uint32 name="shader data address" offset="0x10" />
+  </layout>
+  
+  <layout for="shader debug info">
+    <uint32 name="magic" offset="0x0" /> <!-- This might actually be some sort of version number, but it seems to always start with 10 2A -->
+    <uint32 name="structure size" offset="0x4" /> <!-- Size of the entire debug info structure -->
+    <uint32 name="shader data size" offset="0x8" /> <!-- constant data size + code data size -->
+    
+    <!-- These offsets point to the structures below.
+         If an offset is 0, the structure isn't present.
+         Offsets are relative to the beginning of the debug info. -->
+    <uint32 name="updb pointer offset" offset="0xC" />
+    <uint32 name="unknown offset" offset="0x14" />
+    <uint32 name="code info offset" offset="0x18" />
+  </layout>
+  
+  <!-- These following structures are actually part of the debug info structure and are pointed to by the offsets in it -->
+  <layout for="updb pointer" size="0x8">
+    <uint32 name="string length" offset="0x4" />
+    <!-- The string goes right here. No null terminator, just read [string length] bytes.
+         Data after the string is 4-byte aligned. -->
+  </layout>
+  <layout for="code info">
+    <uint32 name="constant data size" offset="0x0" />
+    <uint32 name="code data size" offset="0x4" />
+    <!-- There's more data after this, but it's not necessary to handle right now -->
+  </layout>
+</layouts>

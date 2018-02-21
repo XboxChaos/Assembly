@@ -30,8 +30,10 @@ using Blamite.Util;
 using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using XBDMCommunicator;
+//using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
+using Blamite.Blam.FourthGen;
+using Blamite.RTE.Eldorado;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -52,7 +54,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// </summary>
 	public partial class HaloMap : INotifyPropertyChanged
 	{
-		private readonly string _cacheLocation;
+        private readonly string _cacheLocation, _tagslocation, _stringslocation, _filesLocation;
+        private string _tagnamesLocation;
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
 		private readonly LayoutDocument _tab;
 
@@ -62,7 +65,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ICacheFile _cacheFile;
 		private Settings.MapInfoDockSide _dockSide;
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
-		private IStreamManager _mapManager;
+		private IStreamManager _mapManager, _stringidsManager, _tagnamesManager;
 		private IRTEProvider _rteProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
@@ -86,6 +89,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_tab = tab;
 			_tagSorting = tagSorting;
 			_cacheLocation = cacheLocation;
+            _filesLocation = new FileInfo(cacheLocation).Directory.ToString() + "\\";
+            _tagslocation = _filesLocation + "tags.dat";
+            _stringslocation = _filesLocation + "string_ids.dat";
 
 			// Update dockpanel location
 			UpdateDockPanelLocation();
@@ -105,7 +111,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.DoWork += initalLoadBackgroundWorker_DoWork;
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
-			initalLoadBackgroundWorker.RunWorkerAsync();
+            initalLoadBackgroundWorker.RunWorkerAsync();
 		}
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -143,19 +149,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void initalLoadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			InitalizeMap();
+            InitalizeMap(_tagslocation, _stringslocation, _filesLocation);
 		}
 
-		public void InitalizeMap()
+        private static FileStream TryInitFilestream(string filepath)
+        {
+            try
+            {
+                FileStream fs = File.OpenRead(filepath);
+                return fs;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public void InitalizeMap(string tagsLocation, string stringsLocation, string filesLocation)
 		{
-			using (FileStream fileStream = File.OpenRead(_cacheLocation))
+			using (FileStream mapFileStream = File.OpenRead(_cacheLocation))
+            using (FileStream tagsFileStream = tagsLocation != null ? TryInitFilestream(tagsLocation) : null)
+            using (FileStream stringsFileStream = stringsLocation != null ? TryInitFilestream(stringsLocation) : null)
 			{
-				var reader = new EndianReader(fileStream, Endian.BigEndian);
+                var map_reader = new EndianReader(mapFileStream, Endian.BigEndian);
+                var tags_reader = new EndianReader(tagsFileStream, Endian.BigEndian);
+                var strings_reader = new EndianReader(stringsFileStream, Endian.BigEndian);
+
 				try
 				{
-					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
-						out _buildInfo);
-
+                    _cacheFile = CacheFileLoader.LoadCacheFile(map_reader, tags_reader, strings_reader, out _tagnamesLocation, filesLocation, App.AssemblyStorage.AssemblySettings.DefaultDatabase, out _buildInfo, tagsLocation, stringsLocation);
+                    
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
 					{
@@ -172,7 +195,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					Dispatcher.Invoke(new Action(delegate
 					{
-						if (!_0xabad1dea.IWff.Heman(reader))
+                        if (!_0xabad1dea.IWff.Heman(map_reader))
 						{
 							if (ex is NotSupportedException)
 							{
@@ -195,7 +218,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					}));
 					return;
 				}
-				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
 				// Build SID trie
 				_stringIdTrie = new Trie();
@@ -208,16 +230,42 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Home.TabGenre.StartPage);
 				}));
 
-				// Set up RTE
+				// Set up RTE & Map Manager
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.SecondGeneration:
 						_rteProvider = new H2VistaRTEProvider("halo2.exe");
+                        _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
+                        _stringidsManager= null;
+                        _tagnamesManager = null;
 						break;
 
 					case EngineType.ThirdGeneration:
-						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						//_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+                        _mapManager = new FileStreamManager(_cacheLocation, map_reader.Endianness);
+                        _stringidsManager= null;
+                        _tagnamesManager = null;
 						break;
+
+                    case EngineType.FourthGeneration:
+						switch (_cacheFile.BuildString)
+						{
+							default:
+							case "1.106708 cert_ms23":
+								_rteProvider = new EldoradoRTEProvider("eldorado.exe");
+								break;
+							case "11.1.498295 Live":
+								_rteProvider = new ZBTRTEProvider("darkloaded.exe");
+								break;
+							case "12.1.700123 cert_ms30_oct19":
+								_rteProvider = new ZBT70RTEProvider("darkloaded.exe");
+								break;
+						}
+						//_rteProvider = new EldoradoRTEProvider("eldorado.exe");
+                        _mapManager = new FileStreamManager(_tagslocation, map_reader.Endianness);
+                        _stringidsManager = new FileStreamManager(_stringslocation, map_reader.Endianness);
+                        _tagnamesManager = new FileStreamManager(_tagnamesLocation, map_reader.Endianness);
+                        break;
 				}
 
 				Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
@@ -349,7 +397,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Dispatcher.Invoke(new Action(() => btnImport.IsEnabled = false));
 
 			// Hide import/save name buttons if the cache file isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+			if (!(_cacheFile.Engine == EngineType.ThirdGeneration || _cacheFile.Engine == EngineType.FourthGeneration))
 				Dispatcher.Invoke(new Action(() => panelTagButtons.Visibility = Visibility.Collapsed));
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
@@ -367,7 +415,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (ITagClass tagClass in _cacheFile.TagClasses)
 			{
 				string name = CharConstant.ToString(tagClass.Magic);
-				string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+
+                string description = tagClass.Description.Value.ToString();
+                switch(_cacheFile.Engine)
+                {
+                    case EngineType.FourthGeneration:
+                        FourthGenCacheFile cache_file = (FourthGenCacheFile)_cacheFile;
+                        description = cache_file.StringIDs.GetString(tagClass.Description);
+                        break;
+                    default:
+                        description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+                        break;
+                }
 				var wrapper = new TagClass(tagClass, name, description);
 				classWrappers[tagClass] = wrapper;
 			}
@@ -403,42 +462,65 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void LoadLocales()
 		{
-			//Dispatcher.Invoke(new Action(delegate { cbLocaleLanguages.Items.Clear(); }));
-			/*int totalStrings = 0;
-			foreach (ILanguage language in _cache.Languages)
-				totalStrings += language.StringCount;
-			Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
+            switch(_cacheFile.Engine)
+            {
+                case EngineType.FourthGeneration:
 
-			if (!_cacheFile.Languages.AvailableLanguages.Any())
-			{
-				Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
-				return;
-			}
+                    if (_cacheFile.Languages == null || !_cacheFile.Languages.AvailableLanguages.Any())
+                    {
+                        Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Hidden));
+                        return;
+                    }
 
-			// TODO: Define the language names in an XML file or something
-			AddLanguage("English", GameLanguage.English);
-			AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
-			AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
-			AddLanguage("Danish", GameLanguage.Danish);
-			AddLanguage("Dutch", GameLanguage.Dutch);
-			AddLanguage("Finnish", GameLanguage.Finnish);
-			AddLanguage("French", GameLanguage.French);
-			AddLanguage("German", GameLanguage.German);
-			AddLanguage("Italian", GameLanguage.Italian);
-			AddLanguage("Japanese", GameLanguage.Japanese);
-			AddLanguage("Korean", GameLanguage.Korean);
-			AddLanguage("Norwegian", GameLanguage.Norwegian);
-			AddLanguage("Polish", GameLanguage.Polish);
-			AddLanguage("Portuguese", GameLanguage.Portuguese);
-			AddLanguage("Russian", GameLanguage.Russian);
-			AddLanguage("Spanish", GameLanguage.Spanish);
-			AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        lbLanguages.ItemsSource = _languages;
+                        StatusUpdater.Update("Initialized Languages");
+                    }));
 
-			Dispatcher.Invoke(new Action(delegate
-			{
-				lbLanguages.ItemsSource = _languages;
-				StatusUpdater.Update("Initialized Languages");
-			}));
+                    break;
+                default:
+
+                    //Dispatcher.Invoke(new Action(delegate { cbLocaleLanguages.Items.Clear(); }));
+                    /*int totalStrings = 0;
+                    foreach (ILanguage language in _cache.Languages)
+                        totalStrings += language.StringCount;
+                    Dispatcher.Invoke(new Action(delegate { lblLocaleTotalCount.Text = totalStrings.ToString(); }));*/
+
+                    if (!_cacheFile.Languages.AvailableLanguages.Any())
+                    {
+                        Dispatcher.Invoke(new Action(() => tabStrings.Visibility = Visibility.Collapsed));
+                        return;
+                    }
+
+                    // TODO: Define the language names in an XML file or something
+                    AddLanguage("English", GameLanguage.English);
+                    AddLanguage("Chinese (Traditional)", GameLanguage.ChineseTrad);
+                    AddLanguage("Chinese (Simplified)", GameLanguage.ChineseSimp);
+                    AddLanguage("Danish", GameLanguage.Danish);
+                    AddLanguage("Dutch", GameLanguage.Dutch);
+                    AddLanguage("Finnish", GameLanguage.Finnish);
+                    AddLanguage("French", GameLanguage.French);
+                    AddLanguage("German", GameLanguage.German);
+                    AddLanguage("Italian", GameLanguage.Italian);
+                    AddLanguage("Japanese", GameLanguage.Japanese);
+                    AddLanguage("Korean", GameLanguage.Korean);
+                    AddLanguage("Norwegian", GameLanguage.Norwegian);
+                    AddLanguage("Polish", GameLanguage.Polish);
+                    AddLanguage("Portuguese", GameLanguage.Portuguese);
+                    AddLanguage("Russian", GameLanguage.Russian);
+                    AddLanguage("Spanish", GameLanguage.Spanish);
+                    AddLanguage("Spanish (Latin American)", GameLanguage.LatinAmericanSpanish);
+
+                    Dispatcher.Invoke(new Action(delegate
+                    {
+                        lbLanguages.ItemsSource = _languages;
+                        StatusUpdater.Update("Initialized Languages");
+                    }));
+
+                    break;
+            }
+
 		}
 
 		private void LoadScripts()
@@ -632,7 +714,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					if (tag == null || tag.Class != tagClass.RawClass) continue;
 
-					string name = _cacheFile.FileNames.GetTagName(tag);
+                    string name;
+                    switch (_cacheFile.Engine)
+                    {
+                        case EngineType.FourthGeneration:
+                            FourthGenCacheFile cache_file = (FourthGenCacheFile)_cacheFile;
+                            //name = cache_file.Test((uint)tag.Class.Magic);
+                            name = "";
+                            break;
+                        default:
+                            name = _cacheFile.FileNames.GetTagName(tag);
+                            break;
+                    }
+					
 					if (name != null)
 						writer.WriteLine("{0}={1}", tag.Index, name);
 				}
@@ -732,7 +826,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			tagsToProcess.Enqueue(tag.RawTag);
 
 			ResourceTable resources = null;
-			using (var reader = _mapManager.OpenRead())
+            using (var reader = _mapManager.OpenRead())
 			{
 				while (tagsToProcess.Count > 0)
 				{
@@ -918,7 +1012,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container = TagContainerReader.ReadTagContainer(reader);
 
 			var injector = new TagContainerInjector(_cacheFile, container);
-			using (IStream stream = _mapManager.OpenReadWrite())
+            using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
 					injector.InjectTag(tag, stream);
@@ -948,9 +1042,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (TagEntry tag in _allTags.Entries.Where(t => t != null))
 				_cacheFile.FileNames.SetTagName(tag.RawTag, tag.TagFileName);
 
-			// Save it
-			using (IStream stream = _mapManager.OpenReadWrite())
-				_cacheFile.SaveChanges(stream);
+            switch(_cacheFile.Engine)
+            {
+                case EngineType.FourthGeneration:
+                    // Save it
+                    using (IStream stream = _tagnamesManager.OpenReadWrite())
+                    {
+                        FourthGenCacheFile cache = (FourthGenCacheFile)_cacheFile;
+                        cache.SaveFileNames(stream);
+                    }
+                    break;
+                default:
+                    // Save it
+                    using (IStream stream = _mapManager.OpenReadWrite())
+                        _cacheFile.SaveChanges(stream);
+                    break;
+            }
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
 		}
@@ -980,7 +1087,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Make a tag container for the tag and then inject it
 			// TODO: A lot of this was copied and pasted from the tag extraction code...need to clean things up
 			var container = new TagContainer();
-			using (var stream = _mapManager.OpenReadWrite())
+            using (var stream = _mapManager.OpenReadWrite())
 			{
 				// Get the plugin path
 				string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
@@ -1019,7 +1126,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var tagContext = sender as ContextMenu;
 
 			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+            if (!(_cacheFile.Engine == EngineType.ThirdGeneration || _cacheFile.Engine == EngineType.FourthGeneration))
 				foreach (object tagItem in tagContext.Items)
 				{
 					// Check for particular names/objects to hide because datatemplate
@@ -1541,11 +1648,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private TagEntry WrapTag(ITag tag)
 		{
-			if (tag == null || tag.Class == null || tag.MetaLocation == null)
+			if (tag == null || tag.Class == null)
 				return null;
 
+            
+
 			string className = CharConstant.ToString(tag.Class.Magic);
-			string name = _cacheFile.FileNames.GetTagName(tag);
+            //string name = tag.Index.ToString();
+            
+            string name = "";
+
+            if (_cacheFile.FileNames != null)
+                name = _cacheFile.FileNames.GetTagName(tag);
+            //else
+                //name = _cacheFile.StringIDs.GetString((int)tag.Index.Value);
+
 			if (string.IsNullOrWhiteSpace(name))
 				name = tag.Index.ToString();
 

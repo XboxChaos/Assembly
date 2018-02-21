@@ -40,6 +40,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public DatumIndex Index { get; private set; }
 		public ITagClass Class { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
+		public SegmentPointer HeaderLocation { get; set; }
 
 		public StructureValueCollection Serialize(IList<ITagClass> classList)
 		{

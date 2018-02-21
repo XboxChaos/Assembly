@@ -189,15 +189,16 @@ namespace Blamite.Blam.Scripting
 				case "function_name":
 					if (_nextFunctionIsScript)
 					{
-						output.Write(_scripts.Scripts[expression.Opcode].Name);
+						output.Write(expression.StringValue); // halo online seems weird in that the "opcode" value that is actually a script index in this case is greater than the number of scripts
+						//output.Write(_scripts.Scripts[expression.Opcode].Name);
 						_nextFunctionIsScript = false;
 					}
 					else
 					{
 						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
 						if (info == null)
-							throw new InvalidOperationException("Unrecognized function opcode 0x" + expression.Opcode.ToString("X"));
-
+							output.Write("unknown_" + expression.Opcode.ToString("X")+"("+expression.StringValue+")");//throw new InvalidOperationException("Unrecognized function opcode 0x" + expression.Opcode.ToString("X"));
+						else
 						output.Write(info.Name);
 					}
 					break;
@@ -269,7 +270,37 @@ namespace Blamite.Blam.Scripting
 
 		private uint GetValue(ScriptExpression expression, ScriptValueType type)
 		{
-			return expression.Value >> (32 - (type.Size*8));
+			//var valBytes = new byte[4];
+			uint newVal = 0;
+			byte[] valBytes = new byte[4];
+
+			switch(type.Size)
+			{
+				case 1:
+					valBytes[0] = 0;
+					valBytes[1] = 0;
+					valBytes[2] = 0;
+					valBytes[3] = (byte)(expression.Value);
+					break;
+				case 2:
+					valBytes[0] = 0;
+					valBytes[1] = 0;
+					valBytes[2] = (byte)(expression.Value);
+					valBytes[3] = (byte)(expression.Value >> 8);
+					break;
+				default:
+				case 4:
+					valBytes[0] = (byte)(expression.Value);
+					valBytes[1] = (byte)(expression.Value >> 8);
+					valBytes[2] = (byte)(expression.Value >> 16);
+					valBytes[3] = (byte)(expression.Value >> 24);
+					break;
+			}
+
+			newVal = BitConverter.ToUInt32(valBytes, 0);
+
+			return newVal >> (32 - (type.Size * 8));
+			//return expression.Value >> (32 - (type.Size*8));
 		}
 	}
 }

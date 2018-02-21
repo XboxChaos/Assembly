@@ -40,10 +40,15 @@ namespace Blamite.Serialization
 		/// </summary>
 		public SettingsGroup Settings { get; private set; }
 
-		/// <summary>
-		///     Gets the size of a map header.
-		/// </summary>
-		public int HeaderSize { get; private set; }
+        /// <summary>
+        ///     Gets the size of a map header.
+        /// </summary>
+        public int HeaderSize { get; private set; }
+
+        /// <summary>
+        ///     Gets the size of a map header.
+        /// </summary>
+        public long TagsDataSize { get; set; }
 
 		/// <summary>
 		///     Gets the value to align segment boundaries on.
@@ -78,7 +83,7 @@ namespace Blamite.Serialization
 		///     Gets the stringID set resolver for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public StringIDSetResolver StringIDs { get; private set; }
+        public IStringIDResolver StringIDs { get; private set; }
 
 		/// <summary>
 		///     Gets scripting info for the engine.
@@ -98,6 +103,12 @@ namespace Blamite.Serialization
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
 
+		/// <summary>
+		///     Gets the alternate csv source for the engine.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public string AltTagNames { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -114,6 +125,8 @@ namespace Blamite.Serialization
 				StringIDKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/stringIdKey", null));
 			if (Settings.PathExists("engineInfo/encryption/localeKey"))
 				LocaleKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/localeKey", null));
+			if (Settings.PathExists("altTagNames"))
+				AltTagNames = Settings.GetSetting<string>("altTagNames");
 		}
 
 		private void LoadDatabases()

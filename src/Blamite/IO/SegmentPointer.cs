@@ -13,7 +13,7 @@ namespace Blamite.IO
 		private readonly int _baseSegmentDelta;
 		private readonly int _originalBaseSize;
 
-		private SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, int baseSegmentDelta)
+        public SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, int baseSegmentDelta)
 		{
 			_baseSegment = baseSegment;
 			_baseGroup = baseGroup;
@@ -64,7 +64,7 @@ namespace Blamite.IO
 		///     Gets the file offset corresponding to the SegmentPointer.
 		/// </summary>
 		/// <returns>The file offset corresponding to the SegmentPointer.</returns>
-		public int AsOffset()
+		public virtual int AsOffset()
 		{
 			if (_baseBottomResizes)
 				return _baseSegment.Offset + _baseSegment.Size - _originalBaseSize + _baseSegmentDelta;

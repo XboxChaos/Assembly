@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layouts>
+  <!-- Map header (minus version info) -->
+  <layout for="map_header">
+    <uint32 name="file size" offset="0x8" />
+    <uint32 name="index header address" offset="0x10" />
+    <uint32 name="tag buffer offset" offset="0x14" />
+    <int16 name="type" offset="0x13C" />
+
+    <asciiz name="internal name" offset="0x1B4" />
+    <asciiz name="scenario path" offset="0x1D8" />
+
+    <raw name="sha1 hash" offset="0x330" size="0x14" />
+    <raw name="rsa2048 hash" offset="0x344" size="0x100" />
+
+    <uint32 name="scenario index" offset="0x2E00" />
+  </layout>
+
+  <layout for="tags_header">
+    <!-- <uint32 name="index header address" offset="0x0" /> -->
+    <uint32 name="tag table address" offset="0x4" />
+    <uint32 name="number of tags" offset="0x8" />
+  </layout>
+
+  <layout for="strings_header">
+    <int32 name="string table count" offset="0x0" />
+    <int32 name="string table size" offset="0x4" />
+  </layout>
+
+  <!-- Tag table entry -->
+  <layout for="tag entry">
+
+    <!--
+    var checksum = reader.ReadUInt32();                         // 0x00 uint32 checksum?
+    var totalSize = reader.ReadUInt32();                        // 0x04 uint32 total size
+    var numDependencies = reader.ReadInt16();                   // 0x08 int16  dependencies count
+    var numDataFixups = reader.ReadInt16();                     // 0x0A int16  data fixup count
+    var numResourceFixups = reader.ReadInt16();                 // 0x0C int16  resource fixup count
+    reader.BaseStream.Position += 2;                            // 0x0E int16  (padding)
+    var mainStructOffset = reader.ReadUInt32();                 // 0x10 uint32 main struct offset
+    var tagClass = reader.ReadInt32();                          // 0x14 int32  class
+    var parentClass = reader.ReadInt32();                       // 0x18 int32  parent class
+    var grandparentClass = reader.ReadInt32();                  // 0x1C int32  grandparent class
+    var classId = reader.ReadUInt32();                          // 0x20 uint32 class stringid
+    -->
+
+    <int32 name="checksum" offset="0x00" />
+    <int32 name="datum index salt" offset="0x00" />
+    
+    <int32 name="total size" offset="0x04" />
+    <int16 name="dependencies count" offset="0x08" />
+    <int16 name="data fixups count" offset="0x0A" />
+    <int16 name="resource fixups count" offset="0x0C" />
+    <int16 name="Unknown (padding)" offset="0x0E" />
+
+    <uint32 name="main struct offset" offset="0x10" />
+    <int32 name="magic" offset="0x14" />
+    <int32 name="parent magic" offset="0x18" />
+    <int32 name="grandparent magic" offset="0x1C" />
+
+    <int32 name="stringid" offset="0x20" />
+  </layout>
+
+  <layout for="matg">
+    <array name="languages" offset="0x1FC" entrySize="0x44" count="12">
+      <uint32 name="string count" offset="0x0" />
+      <uint32 name="locale table size" offset="0x4" />
+      <uint32 name="locale index table offset" offset="0x8" />
+      <uint32 name="locale data index offset" offset="0xC" />
+      <raw name="index table hash" offset="0x10" size="0x14" />
+      <raw name="string data hash" offset="0x24" size="0x14" />
+    </array>
+  </layout>
+
+  <layout for="locale index table entry">
+    <uint32 name="stringid" offset="0x0" />
+    <uint32 name="offset" offset="0x4" />
+  </layout>
+
+  <layout for="tag block" size="0xC">
+    <int32 name="entry count" offset="0x0" />
+    <uint32 name="pointer" offset="0x4" />
+  </layout>
+
+  <layout for="tag reference" size="0x10">
+    <int32 name="class magic" offset="0x0" />
+    <uint32 name="datum index" offset="0xC" />
+  </layout>
+
+  <layout for="data reference" size="0x14">
+    <int32 name="size" offset="0x0" />
+    <uint32 name="pointer" offset="0xC" />
+  </layout>
+  
+</layouts>
