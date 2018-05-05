@@ -1878,18 +1878,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 
 			// Add everything
-			foreach (ITag tag in _cacheFile.Tags)
+			foreach (TagEntry entry in tagClass.Children)
 			{
-				if (tag == null || tag.Class != tagClass.RawClass) continue;
-
-				TagEntry temptag = WrapTag(tag);
-
 				// Is it already in the list?
-				if (batchTagList.Items.Contains(temptag))
-					return;
+				if (batchTagList.Items.Contains(entry))
+					continue;
 
 				// Add tag to batch listbox
-				batchTagList.Items.Add(temptag);
+				batchTagList.Items.Add(entry);
 			}
 
 		}
