@@ -870,21 +870,5 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					"The tag block was freed successfully.");
 			}
 		}
-
-		private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-		{
-			//Check if it is trying to scroll below 0
-			if (e.VerticalOffset == 0 && e.VerticalChange < 0)
-			{
-				if (sender is ScrollViewer)
-				{
-					//Reverse it instead
-					ScrollViewer scrolls = (ScrollViewer)sender;
-					scrolls.ScrollToVerticalOffset(-e.VerticalChange);
-					e.Handled = true;
-				}
-			}
-		}
-
 	}
 }
