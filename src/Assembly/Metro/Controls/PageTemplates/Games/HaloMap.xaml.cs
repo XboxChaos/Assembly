@@ -1890,29 +1890,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		}
 
-		private void DeleteBatchCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			var elem = e.Source as FrameworkElement;
-			if (elem == null)
-				return;
-
-			var entry = elem.DataContext as TagEntry;
-			e.CanExecute = entry != null;
-		}
-
-		private void DeleteBatchCommand_Executed(object sender, ExecutedRoutedEventArgs e)
-		{
-			var elem = e.Source as FrameworkElement;
-			if (elem == null)
-				return;
-
-			var entry = elem.DataContext as TagEntry;
-			if (entry == null)
-				return;
-
-			batchTagList.Items.Remove(entry);
-		}
-
 		private void BatchExtract_Click(object sender, RoutedEventArgs e)
 		{
 			List<TagEntry> tags = new List<TagEntry>();
@@ -1923,6 +1900,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void BatchClear_Click(object sender, RoutedEventArgs e)
 		{
 			batchTagList.Items.Clear();
+		}
+
+		private void BatchList_PreviewKeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Delete)
+			{
+				List<TagEntry> selected = batchTagList.SelectedItems.Cast<TagEntry>().ToList();
+
+				foreach (TagEntry t in selected)
+				{
+					if (batchTagList.Items.Contains(t))
+						batchTagList.Items.Remove(t);
+				}
+
+			}
 		}
 		#endregion
 
