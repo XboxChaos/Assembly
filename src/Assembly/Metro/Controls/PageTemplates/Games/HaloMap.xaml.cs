@@ -100,6 +100,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Read Settings
 			cbShowEmptyTags.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapShowEmptyClasses;
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
+			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -529,6 +530,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Fuck bitches, get money
 			// #xboxscenefame
+		}
+
+		private void cbOpenDuplicate_Altered(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates = cbOpenDuplicate.IsChecked;
+			
 		}
 
 		private void UpdateDockPanelLocation()
@@ -1048,6 +1055,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			LoadTags();
 			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
+
+			if (App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates)
+			{
+				ITag result = _cacheFile.Tags.FindTagByName(newName, tag.RawTag.Class, _cacheFile.FileNames);
+
+				foreach (TagClass c in tvTagList.Items)
+				{
+					if (c.RawClass == result.Class)
+					{
+						foreach (TagEntry t in c.Children)
+						{
+							if (t.RawTag == result)
+							{
+								CreateTag(t);
+
+								return;
+							}
+						}
+					}
+				}
+			}
+
 		}
 
 		private void contextForce_Click(object sender, RoutedEventArgs e)

@@ -168,6 +168,7 @@ namespace Assembly.Helpers
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
+		private bool _autoOpenDuplicates = false;
 
 		#region Enums
 
@@ -663,6 +664,14 @@ namespace Assembly.Helpers
 		{
 			get { return _shownCheatingDialog; }
 			set { SetField(ref _shownCheatingDialog, value, "ShownCheatingDialog"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool AutoOpenDuplicates
+		{
+			get { return _autoOpenDuplicates; }
+			set { SetField(ref _autoOpenDuplicates, value, "AutoOpenDuplicates"); }
 		}
 
 		/// <summary>
