@@ -779,7 +779,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 
 				// Load the resource table in if necessary
-				if (resourcesToProcess.Count > 0)
+				if (resourcesToProcess.Count > 0 && _cacheFile.Resources != null)
 					resources = _cacheFile.Resources.LoadResourceTable(reader);
 			}
 
