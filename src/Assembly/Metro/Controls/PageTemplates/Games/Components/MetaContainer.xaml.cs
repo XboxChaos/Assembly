@@ -159,10 +159,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor =
-				(Settings.LastMetaEditorType) tbMetaEditors.SelectedIndex;
+			if ((int)App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor != tbMetaEditors.SelectedIndex)
+				App.AssemblyStorage.AssemblySettings.HalomapLastSelectedMetaEditor =
+				(Settings.LastMetaEditorType)tbMetaEditors.SelectedIndex;
 		}
 
+		public void Dispose()
+		{
+			PluginEditor pe = (PluginEditor)tabPluginEditor.Content;
+			pe.Dispose();
+		}
 
 		private void MetaDatumValueData_MouseDown(object sender, MouseButtonEventArgs e)
 		{

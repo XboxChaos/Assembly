@@ -253,5 +253,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					_completer.CompleteAttributeValue(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
 			}
 		}
+
+		public void Dispose()
+		{
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
+		}
 	}
 }

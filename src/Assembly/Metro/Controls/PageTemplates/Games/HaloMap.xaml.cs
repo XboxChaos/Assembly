@@ -491,16 +491,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_languages.Add(new LanguageEntry(name, lang));
 		}
 
-		private static void CloseTab(object source, RoutedEventArgs args)
-		{
-			var tabItem = args.OriginalSource as TabItem;
-			if (tabItem == null) return;
-
-			var tabControl = tabItem.Parent as TabControl;
-			if (tabControl != null)
-				tabControl.Items.Remove(tabItem);
-		}
-
 		private void SettingsChanged(object sender, EventArgs e)
 		{
 			if (App.AssemblyStorage.AssemblySettings.HalomapTagSort != _tagSorting)
@@ -1728,20 +1718,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			SelectTabFromTag(tag);
 		}
 
+		private void CloseTab(object source, RoutedEventArgs args)
+		{
+			var tabItem = args.OriginalSource as TabItem;
+			if (tabItem == null) return;
+
+			ExternalTabClose(tabItem);
+		}
+
 		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
 		{
+			DisposeTab(tab);
 			contentTabs.Items.Remove(tab);
 
 			if (!updateFocus) return;
-
-			foreach (
-				TabItem datTab in
-					contentTabs.Items.Cast<TabItem>()
-						.Where(datTab => ((ContentControl) datTab.Header).Content.ToString() == "Start Page"))
-			{
-				contentTabs.SelectedItem = datTab;
-				return;
-			}
 
 			if (contentTabs.Items.Count > 0)
 				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
@@ -1750,21 +1740,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		public void ExternalTabsClose(List<TabItem> tab, bool updateFocus = true)
 		{
 			foreach (TabItem tabItem in tab)
+			{
+				DisposeTab(tabItem);
 				contentTabs.Items.Remove(tabItem);
+			}
+				
 
 			if (!updateFocus) return;
 
-			foreach (
-				TabItem datTab in
-					contentTabs.Items.Cast<TabItem>()
-						.Where(datTab => ((ContentControl) datTab.Header).Content.ToString() == "Start Page"))
-			{
-				contentTabs.SelectedItem = datTab;
-				return;
-			}
-
 			if (contentTabs.Items.Count > 0)
 				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
+		}
+
+		public void DisposeTab(TabItem tab)
+		{
+			if (tab.Content.GetType() == typeof(MetaContainer))
+			{
+				MetaContainer mc = (MetaContainer)tab.Content;
+				mc.Dispose();
+			}
 		}
 
 		public int GetSelectedIndex(TabItem selectedTab)
@@ -1953,5 +1947,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			public object Data { get; set; }
 		}
 
+		public void Dispose()
+		{
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= SettingsChanged;
+
+			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			ExternalTabsClose(tabs, false);
+		}
 	}
 }

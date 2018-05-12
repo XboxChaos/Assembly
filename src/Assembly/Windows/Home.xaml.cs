@@ -471,7 +471,6 @@ namespace Assembly.Windows
 					tabHeader = "Settings";
 					break;
 			}
-
 			LayoutDocument toRemove = null;
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.Title == tabHeader && tab is LayoutDocument))
 				toRemove = (LayoutDocument) tab;
@@ -513,6 +512,7 @@ namespace Assembly.Windows
 				ToolTip = cacheLocation
 			};
 			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
+			newCacheTab.Closing += HaloMap_Closing;
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
 		}
@@ -819,5 +819,13 @@ namespace Assembly.Windows
 		}
 
 		#endregion
+
+		private void HaloMap_Closing(object sender, CancelEventArgs e)
+		{
+			LayoutDocument ld = (LayoutDocument)sender;
+			HaloMap mp = (HaloMap)ld.Content;
+
+			mp.Dispose();
+		}
 	}
 }
