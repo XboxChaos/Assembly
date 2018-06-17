@@ -26,6 +26,7 @@ using Blamite.IO;
 using Microsoft.Win32;
 using XboxChaos.Models;
 using XBDMCommunicator;
+using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Assembly.Windows
 {
@@ -498,12 +499,8 @@ namespace Assembly.Windows
 		/// <param name="cacheLocation">Path to the Blam Cache File</param>
 		public void AddCacheTabModule(string cacheLocation)
 		{
-			// Check Map isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == cacheLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(cacheLocation))
 				return;
-			}
 
 			var newCacheTab = new LayoutDocument
 			{
@@ -540,12 +537,8 @@ namespace Assembly.Windows
 		/// <param name="imageLocation">Path to the BLF file</param>
 		public void AddImageTabModule(string imageLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == imageLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(imageLocation))
 				return;
-			}
 
 			var newMapImageTab = new LayoutDocument
 			{
@@ -564,12 +557,8 @@ namespace Assembly.Windows
 		/// <param name="infooLocation">Path to the MapInfo file</param>
 		public void AddInfooTabModule(string infooLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == infooLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(infooLocation))
 				return;
-			}
 
 			var newMapInfoTab = new LayoutDocument
 			{
@@ -585,23 +574,19 @@ namespace Assembly.Windows
 		/// <summary>
 		///     Add a new Campaign Editor Container
 		/// </summary>
-		/// <param name="campiagnLocation">Path to the Campaign file</param>
-		public void AddCampaignTabModule(string campiagnLocation)
+		/// <param name="campaignLocation">Path to the Campaign file</param>
+		public void AddCampaignTabModule(string campaignLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == campiagnLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(campaignLocation))
 				return;
-			}
 
 			var newCampaignTab = new LayoutDocument
 			{
-				ContentId = campiagnLocation,
+				ContentId = campaignLocation,
 				Title = "Campaign",
-				ToolTip = campiagnLocation
+				ToolTip = campaignLocation
 			};
-			newCampaignTab.Content = new HaloCampaign(campiagnLocation, newCampaignTab);
+			newCampaignTab.Content = new HaloCampaign(campaignLocation, newCampaignTab);
 			documentManager.Children.Add(newCampaignTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCampaignTab);
 		}
@@ -619,6 +604,31 @@ namespace Assembly.Windows
 			};
 			documentManager.Children.Add(newPatchTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
+		}
+
+		private bool TabModuleFindExisting(string contentId)
+		{
+			// Check module isn't already open in the main window
+			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == contentId))
+			{
+				//focus existing
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return true;
+			}
+			// Check module isn't already open as a floating window
+			foreach (LayoutDocumentFloatingWindowControl windo in dockManager.FloatingWindows)
+			{
+				LayoutDocumentFloatingWindow mod = (LayoutDocumentFloatingWindow)windo.Model;
+				if (mod.RootDocument.ContentId == contentId)
+				{
+					//focus existing
+					mod.RootDocument.IsActive = true;
+					windo.Focus();
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public void AddTabModule(TabGenre tabG, bool singleInstance = true)
