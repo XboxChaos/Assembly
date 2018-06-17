@@ -1759,6 +1759,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				MetaContainer mc = (MetaContainer)tab.Content;
 				mc.Dispose();
 			}
+			else if (tab.Content.GetType() == typeof(ScriptEditor))
+			{
+				ScriptEditor se = (ScriptEditor)tab.Content;
+				se.Dispose();
+			}
 		}
 
 		public int GetSelectedIndex(TabItem selectedTab)
