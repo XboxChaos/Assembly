@@ -895,7 +895,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							}
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.SecondaryPage.Index));
 						}
-					}
+					//}
 
 					if (resource.Location.TertiaryPage == null || resourcePagesProcessed.Contains(resource.Location.TertiaryPage))
 						continue;
@@ -903,8 +903,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					container.AddResourcePage(resource.Location.TertiaryPage);
 					resourcePagesProcessed.Add(resource.Location.TertiaryPage);
 
-					if (withRaw)
-					{
+					//if (withRaw)
+					//{
 						using (var fileStream = File.OpenRead(_cacheLocation))
 						{
 							var resourceFile = _cacheFile;
@@ -945,7 +945,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.TertiaryPage.Index));
 						}
 					}
-				}
 			}
 
 			// Write it to a file
