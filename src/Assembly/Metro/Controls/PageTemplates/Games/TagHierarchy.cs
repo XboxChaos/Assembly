@@ -116,11 +116,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ITag _rawTag;
 		private string _tagFileName = string.Empty;
 
+		private string _tagToolTip = null;
+
 		public TagEntry(ITag baseTag, string className, string name)
 		{
 			RawTag = baseTag;
 			ClassName = className;
 			TagFileName = name;
+
+			if (baseTag != null)
+				TagToolTip = string.Format("Datum Index: {0}\r\nMemory Address: 0x{1:X8}\r\nFile Offset: 0x{2:X}", baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
 		}
 
 		public bool IsBookmark
@@ -153,6 +158,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public string TagToolTip
+		{
+			get { return _tagToolTip; }
+			internal set
+			{
+				_tagToolTip = value;
+				NotifyPropertyChanged("TagToolTip");
+			}
+		}
+
 		public ITag RawTag
 		{
 			get { return _rawTag; }
@@ -163,6 +178,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public override string ToString()
+		{
+			return TagFileName;
+		}
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NET45
+
+using System;
 using System.CodeDom.Compiler;
 
 namespace Blamite.Blam.Scripting
@@ -273,3 +275,5 @@ namespace Blamite.Blam.Scripting
 		}
 	}
 }
+
+#endif

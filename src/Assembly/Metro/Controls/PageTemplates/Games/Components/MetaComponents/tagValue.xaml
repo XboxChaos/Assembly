@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:games="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
-             mc:Ignorable="d" Height="28" Width="785"
+             mc:Ignorable="d" Height="28" Width="810"
              HorizontalAlignment="Left"
              x:Name="control">
 	<UserControl.Resources>
@@ -15,7 +15,7 @@
 			<TextBlock Text="{Binding TagClassMagic}" />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type games:TagEntry}">
-			<TextBlock Text="{Binding TagFileName}" />
+			<TextBlock Text="{Binding TagFileName}" ToolTip="{Binding TagToolTip}" />
 		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
@@ -38,16 +38,17 @@
 					</CompositeCollection>
 				</ComboBox.Resources>
 			</ComboBox>
-
 			<ComboBox x:Name="cbTagEntry" Width="452" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,0,0"
 			          ItemsSource="{Binding Class, Converter={StaticResource classItemsRetriever}, Mode=OneWay}"
-			          SelectedItem="{Binding Value, Mode=TwoWay}"
+			          SelectedItem="{Binding Value, Mode=TwoWay}" ToolTip="{Binding Path=SelectedItem.TagToolTip, RelativeSource={RelativeSource Self}}"
 			          SelectionChanged="cbTagEntry_SelectionChanged" />
 
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="btnNullTag" Content="Ø" Margin="5,0,0,0" Width="20" Click="btnNullTag_Click" ToolTip="Nulls this tag reference."/>
+                <Button x:Name="btnSearch" Content="🔍" Margin="5,0,0,0" 
+                        Width="20" ToolTip="Search for a tag." Click="btnSearch_Click" IsEnabled="False"/>
                 <Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
-			        Visibility="{Binding ShowJumpTo}" ToolTip="Opens this tag in a new tab."
+			        Visibility="{Binding ShowTagOptions}" ToolTip="Opens this tag in a new tab."
 			        Command="{x:Static local:tagValue.JumpToCommand}" CommandParameter="{Binding Value}"
 			        CommandTarget="{Binding ElementName=control}">
                     <StackPanel>

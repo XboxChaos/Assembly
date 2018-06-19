@@ -420,7 +420,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (_reader != null)
 			{
-				_reader.Close();
+				_reader.Dispose();
 				_reader = null;
 			}
 		}

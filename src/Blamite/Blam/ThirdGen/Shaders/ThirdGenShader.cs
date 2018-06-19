@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Blamite.Blam.Shaders;
-using Blamite.Serialization;
+﻿using Blamite.Blam.Shaders;
 
 namespace Blamite.Blam.ThirdGen.Shaders
 {

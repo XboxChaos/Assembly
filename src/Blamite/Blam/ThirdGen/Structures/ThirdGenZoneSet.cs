@@ -4,6 +4,7 @@ using Blamite.Blam.Resources;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Extensions;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
@@ -59,7 +60,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns><c>true</c> if the resource is active, <c>false</c> otherwise.</returns>
 		public bool IsResourceActive(DatumIndex index)
 		{
-			if (index.Index >= _activeResources.Count)
+			if (index.Index >= _activeResources.Length)
 				return false;
 			return _activeResources[index.Index];
 		}
@@ -105,7 +106,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns><c>true</c> if the tag is active, <c>false</c> otherwise.</returns>
 		public bool IsTagActive(DatumIndex index)
 		{
-			if (index.Index >= _activeTags.Count)
+			if (index.Index >= _activeTags.Length)
 				return false;
 			return _activeTags[index.Index];
 		}
@@ -179,8 +180,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 			}
 
-			var ints = new int[((bits.Length + 31) & ~31)/32];
-			bits.CopyTo(ints, 0);
+			var ints = bits.ToIntArray();
 
 			// If the address isn't cached, then allocate space and write a new array
 			uint newAddress;

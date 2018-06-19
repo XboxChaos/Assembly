@@ -207,7 +207,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						globalMaps[map.Key] = map.Value;
 				}
 
-				reader.Close();
+				reader.Dispose();
 
 				worker.ReportProgress(100*(i+1)/(generatorMaps.Count));
 			}

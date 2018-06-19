@@ -55,6 +55,8 @@ namespace Assembly
 				args.Handled = true;
 			};
 #endif
+			// Reset Directory
+			System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
 
 			// Load version info
 			VersionInfo.Load("version.json");

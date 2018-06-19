@@ -69,6 +69,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
 
+		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
+
 		/// <summary>
 		///     New Instance of the Halo Map Location
 		/// </summary>
@@ -98,6 +100,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			// Read Settings
 			cbShowEmptyTags.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapShowEmptyClasses;
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
+			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
@@ -150,7 +153,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
-
+/*
 #if DEBUG
 					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
 					{
@@ -161,7 +164,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						},
 						Content = new DebugTools(_cacheFile)
 					})));
-#endif
+#endif*/
 				}
 				catch (Exception ex)
 				{
@@ -324,6 +327,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Data = "0x" + ((uint) -_cacheFile.LocaleArea.PointerMask).ToString("X8")
 					});
 
+				HeaderDetails.Add(new HeaderValue
+				{
+					Title = "Tags:",
+					Data = _cacheFile.Tags.Count
+				});
+
+				if (_cacheFile.Partitions != null && _cacheFile.Partitions.Count() > 0)
+				{
+					for (int i = 0; i < _cacheFile.Partitions.Count(); i++)
+					{
+						uint pointer = 0;
+						if (_cacheFile.Partitions[i].Size > 0)
+							pointer = _cacheFile.Partitions[i].BasePointer.AsPointer();
+
+						HeaderDetails.Add(new HeaderValue
+						{
+							Title = "Partition " + i + ":",
+							Data = "0x" + pointer.ToString("X8") + " 0x" + _cacheFile.Partitions[i].Size.ToString("X8")
+						
+						});
+					}
+				}
 				Dispatcher.Invoke(new Action(() => panelHeaderItems.DataContext = HeaderDetails));
 
 				StatusUpdater.Update("Loaded Header Info");
@@ -345,7 +370,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Hide import/save name buttons if the cache file isn't thirdgen
 			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				Dispatcher.Invoke(new Action(() => panelTagButtons.Visibility = Visibility.Collapsed));
+				Dispatcher.Invoke(new Action(() => { btnImport.Visibility = Visibility.Collapsed;
+					btnSaveNames.Visibility = Visibility.Collapsed; }));
+				
 
 			_tagEntries = _cacheFile.Tags.Select(WrapTag).ToList();
 			_allTags = BuildTagHierarchy(
@@ -464,16 +491,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			_languages.Add(new LanguageEntry(name, lang));
 		}
 
-		private static void CloseTab(object source, RoutedEventArgs args)
-		{
-			var tabItem = args.OriginalSource as TabItem;
-			if (tabItem == null) return;
-
-			var tabControl = tabItem.Parent as TabControl;
-			if (tabControl != null)
-				tabControl.Items.Remove(tabItem);
-		}
-
 		private void SettingsChanged(object sender, EventArgs e)
 		{
 			if (App.AssemblyStorage.AssemblySettings.HalomapTagSort != _tagSorting)
@@ -490,7 +507,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void cbShowEmptyTags_Altered(object sender, RoutedEventArgs e)
 		{
-			UpdateEmptyTags(cbShowEmptyTags.IsChecked ?? false);
+			UpdateEmptyTags(cbShowEmptyTags.IsChecked);
 		}
 
 		private void UpdateEmptyTags(bool shown)
@@ -503,6 +520,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			// Fuck bitches, get money
 			// #xboxscenefame
+		}
+
+		private void cbOpenDuplicate_Altered(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates = cbOpenDuplicate.IsChecked;
+			
 		}
 
 		private void UpdateDockPanelLocation()
@@ -684,27 +707,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var tag = item.DataContext as TagEntry;
 			if (tag == null)
 				return;
-
-			// Passing true so raw is extracted as well
-			extractTags(true, tag);
+			
+			extractTag(tag);
 		}
 
-		private void contextExtractClassic_Click(object sender, RoutedEventArgs e)
+		private void extractTag(TagEntry tag)
 		{
-			// Get the menu item and the tag
-			var item = e.Source as MenuItem;
-			if (item == null)
-				return;
-			var tag = item.DataContext as TagEntry;
-			if (tag == null)
-				return;
-
-			// Passing false so raw is not extracted
-			extractTags(false, tag);
+			extractTags(new List<TagEntry>() { tag });
 		}
 
-		private void extractTags(bool withRaw, TagEntry tag)
+		private void extractTags(List<TagEntry> tags)
 		{
+
 			// Ask where to save the extracted tag collection
 			var sfd = new SaveFileDialog
 			{
@@ -724,7 +738,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var resourcesToProcess = new Queue<DatumIndex>();
 			var resourcesProcessed = new HashSet<DatumIndex>();
 			var resourcePagesProcessed = new HashSet<ResourcePage>();
-			tagsToProcess.Enqueue(tag.RawTag);
+
+			foreach (TagEntry t in tags)
+				tagsToProcess.Enqueue(t.RawTag);
 
 			ResourceTable resources = null;
 			using (var reader = _mapManager.OpenRead())
@@ -763,7 +779,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 
 				// Load the resource table in if necessary
-				if (resourcesToProcess.Count > 0)
+				if (resourcesToProcess.Count > 0 && _cacheFile.Resources != null)
 					resources = _cacheFile.Resources.LoadResourceTable(reader);
 			}
 
@@ -789,8 +805,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						container.AddResourcePage(resource.Location.PrimaryPage);
 						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
 
-						if (withRaw)
-						{
+						//if (withRaw)
+						//{
 							using (var fileStream = File.OpenRead(_cacheLocation))
 							{
 								var resourceFile = _cacheFile;
@@ -830,7 +846,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								}
 								container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.PrimaryPage.Index));
 							}
-						}
+						//}
 					}
 					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
 						continue;
@@ -838,8 +854,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					container.AddResourcePage(resource.Location.SecondaryPage);
 					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
 
-					if (withRaw)
-					{
+					//if (withRaw)
+					//{
 						using (var fileStream = File.OpenRead(_cacheLocation))
 						{
 							var resourceFile = _cacheFile;
@@ -957,11 +973,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!result.Value)
 				return;
 
+			CheckBox keepsnd = new CheckBox() { Content = new TextBlock() { Text = "Keep Sound Tags" } };
+			CheckBox findraw = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Use Existing/Shared Raw Pages" },
+				IsChecked = true
+			};
+			CheckBox injectraw = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Inject Raw Data" },
+				IsChecked = true
+			};
+
+			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
+				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY.\r\n" +
+				"\r\nInject Raw Data:\r\nA replacement for the old \"Extract With/Without Raw\" extraction commands. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override \"Use Existing/Shared\"!\r\n" +
+				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
+				new List<CheckBox>() { keepsnd, injectraw, findraw });
+
+			if (!optionresult)
+				return;
+
+
 			TagContainer container;
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-			var injector = new TagContainerInjector(_cacheFile, container);
+			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)injectraw.IsChecked, (bool)findraw.IsChecked);
 			using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
@@ -1049,13 +1087,166 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container.AddTag(extracted);
 
 				// Now inject the container
-				var injector = new TagContainerInjector(_cacheFile, container);
+				var injector = new TagContainerInjector(_cacheFile, container, true, false, false);
 				injector.InjectTag(extracted, stream);
 				injector.SaveChanges(stream);
 			}
 
 			LoadTags();
 			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
+
+			if (App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates)
+			{
+				ITag result = _cacheFile.Tags.FindTagByName(newName, tag.RawTag.Class, _cacheFile.FileNames);
+
+				foreach (TagClass c in tvTagList.Items)
+				{
+					if (c.RawClass == result.Class)
+					{
+						foreach (TagEntry t in c.Children)
+						{
+							if (t.RawTag == result)
+							{
+								CreateTag(t);
+
+								return;
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+		private void contextForce_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// Make a tag container for everything and then use that to forceload
+			// Copy of the dupe code which is a copy of the extract code lol
+			// Make a tag container
+			var container = new TagContainer();
+
+			// Recursively extract tags
+			var tagsToProcess = new Queue<ITag>();
+			var tagsProcessed = new HashSet<ITag>();
+			var resourcesToProcess = new Queue<DatumIndex>();
+			var resourcesProcessed = new HashSet<DatumIndex>();
+			var resourcePagesProcessed = new HashSet<ResourcePage>();
+			tagsToProcess.Enqueue(tag.RawTag);
+
+			ResourceTable resources = null;
+			using (var reader = _mapManager.OpenRead())
+			{
+				while (tagsToProcess.Count > 0)
+				{
+					var currentTag = tagsToProcess.Dequeue();
+					if (tagsProcessed.Contains(currentTag))
+						continue;
+
+					// Get the plugin path
+					var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+						_buildInfo.Settings.GetSetting<string>("plugins"), className);
+
+					// Extract dem data blocks
+					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
+					using (var pluginReader = XmlReader.Create(pluginPath))
+						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
+
+					foreach (var block in blockBuilder.DataBlocks)
+					{
+						// Remove non-datablock fixups because those are still valid
+						// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
+						block.StringIDFixups.Clear();
+						block.ShaderFixups.Clear();
+						//block.ResourceFixups.Clear();
+						//block.TagFixups.Clear();
+						container.AddDataBlock(block);
+					}
+
+					// Add data for the tag that was extracted
+					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
+					var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic,
+						tagName);
+					container.AddTag(extractedTag);
+
+					// Mark the tag as processed and then enqueue all of its child tags and resources
+					tagsProcessed.Add(currentTag);
+					foreach (var tagRef in blockBuilder.ReferencedTags)
+						tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
+					foreach (var resource in blockBuilder.ReferencedResources)
+						resourcesToProcess.Enqueue(resource);
+				}
+
+				// Load the resource table in if necessary
+				if (resourcesToProcess.Count > 0)
+					resources = _cacheFile.Resources.LoadResourceTable(reader);
+			}
+
+			// Extract resource info
+			if (resources != null)
+			{
+				while (resourcesToProcess.Count > 0)
+				{
+					var index = resourcesToProcess.Dequeue();
+					if (resourcesProcessed.Contains(index))
+						continue;
+
+					// Add the resource
+					var resource = resources.Resources[index.Index];
+					container.AddResource(new ExtractedResourceInfo(index, resource));
+
+					// Add data for its pages
+					if (resource.Location == null) continue;
+
+					if (resource.Location.PrimaryPage != null &&
+						!resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
+					{
+						container.AddResourcePage(resource.Location.PrimaryPage);
+						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
+
+					}
+					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
+						continue;
+
+					container.AddResourcePage(resource.Location.SecondaryPage);
+					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
+
+				}
+			}
+
+			// Now take the info we just extracted and use it to forceload
+			using (IStream stream = _mapManager.OpenReadWrite())
+			{
+				var _zonesets = _cacheFile.Resources.LoadZoneSets(stream);
+
+				foreach (ExtractedTag et in container.Tags)
+				{
+					DatumIndex oldindex = et.OriginalIndex;
+
+					_zonesets.GlobalZoneSet.ActivateTag(oldindex, true);
+				}
+				foreach (ExtractedResourceInfo eri in container.Resources)
+				{
+					DatumIndex oldindex = eri.OriginalIndex;
+
+					_zonesets.GlobalZoneSet.ActivateResource(oldindex, true);
+				}
+				_zonesets.SaveChanges(stream);
+
+				_cacheFile.SaveChanges(stream);
+			}
+
+			LoadTags();
+			MetroMessageBox.Show("Forceload Successful", "Done.");
+
 		}
 
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1073,7 +1264,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						if (tagMenuItem.Name == "itemRename" ||
 							tagMenuItem.Name == "itemDuplicate" ||
 							tagMenuItem.Name == "itemExtract" ||
-							tagMenuItem.Name == "itemExtractNoRaw")
+							tagMenuItem.Name == "itemForce" ||
+							tagMenuItem.Name == "itemTagBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 					if (tagItem is Separator)
@@ -1083,6 +1275,79 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 				}
+		}
+
+		private void ClassContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			var tagContext = sender as ContextMenu;
+
+			// Check if we need to hide stuff because the cache isn't thirdgen
+			if (_cacheFile.Engine != EngineType.ThirdGeneration)
+				foreach (object tagItem in tagContext.Items)
+				{
+					// Check for particular names/objects to hide because datatemplate
+					if (tagItem is MenuItem)
+					{
+						MenuItem tagMenuItem = tagItem as MenuItem;
+						if (tagMenuItem.Name == "itemClassBatch")
+							tagMenuItem.Visibility = Visibility.Collapsed;
+					}
+				}
+		}
+
+		private void SIDButton_Click(object sender, RoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null) return;
+
+			string tabName = "StringID Tools";
+			if (IsTagOpen(tabName))
+			{
+				SelectTabFromTitle(tabName);
+			}
+			else
+			{
+				var tab = new CloseableTabItem
+				{
+					Header = new ContentControl
+					{
+						Content = tabName,
+						ContextMenu = BaseContextMenu
+					},
+					Content = new SIDTools(_cacheFile)
+				};
+
+				contentTabs.Items.Add(tab);
+				contentTabs.SelectedItem = tab;
+			}
+		}
+
+		private void AddrButton_Click(object sender, RoutedEventArgs e)
+		{
+			var elem = e.Source as FrameworkElement;
+			if (elem == null) return;
+
+			string tabName = "Debug Tools";
+			if (IsTagOpen(tabName))
+			{
+				SelectTabFromTitle(tabName);
+			}
+			else
+			{
+				var tab = new CloseableTabItem
+				{
+					Header = new ContentControl
+					{
+						Content = tabName,
+						ContextMenu = BaseContextMenu
+					},
+					Content = new DebugTools(_cacheFile)
+				};
+
+				contentTabs.Items.Add(tab);
+				contentTabs.SelectedItem = tab;
+			}
+
 		}
 
 		#region Tag List
@@ -1112,7 +1377,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void cbShowBookmarkedTagsOnly_Altered(object sender, RoutedEventArgs e)
 		{
-			App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked ?? false;
+			App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags = cbShowBookmarkedTagsOnly.IsChecked;
 			UpdateTagFilter();
 		}
 
@@ -1369,7 +1634,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		/// <summary>
 		///     Check to see if a tag is already open in the Editor Pane
 		/// </summary>
-		/// <param name="tabTitle">THe title of the tag to search for</param>
+		/// <param name="tabTitle">The title of the tag to search for</param>
 		/// <returns></returns>
 		private bool IsTagOpen(string tabTitle)
 		{
@@ -1423,6 +1688,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.SelectedItem = tab;
 		}
 
+		/// <summary>
+		///     Returns a tab header
+		/// </summary>
+		/// <param name="tag">The tag to use</param>
+		private ContentControl TabHeaderFromTag(TagEntry tag)
+		{
+			return new ContentControl
+			{
+				Content =
+							string.Format("{0}.{1}",
+								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
+								tag.ClassName),
+				ContextMenu = BaseContextMenu,
+				ToolTip =
+							string.Format("{0}.{1}",
+								tag.TagFileName,
+								tag.ClassName),
+			};
+		}
+
 		public void CreateTag(TagEntry tag)
 		{
 			TagEntry selectedTag = null;
@@ -1458,14 +1743,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					var metaContainer = (MetaContainer) selectedTab.Content;
 					metaContainer.LoadNewTagEntry(tag);
-					selectedTab.Header = new ContentControl
-					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
-						ContextMenu = BaseContextMenu
-					};
+					selectedTab.Header = TabHeaderFromTag(tag);
 					selectedTab.Tag = tag;
 					SelectTabFromTag(tag);
 
@@ -1478,14 +1756,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				contentTabs.Items.Add(new CloseableTabItem
 				{
-					Header = new ContentControl
-					{
-						Content =
-							string.Format("{0}.{1}",
-								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								CharConstant.ToString(tag.RawTag.Class.Magic)),
-						ContextMenu = BaseContextMenu
-					},
+					Header = TabHeaderFromTag(tag),
 					Tag = tag,
 					Content =
 						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
@@ -1496,20 +1767,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			SelectTabFromTag(tag);
 		}
 
+		private void CloseTab(object source, RoutedEventArgs args)
+		{
+			var tabItem = args.OriginalSource as TabItem;
+			if (tabItem == null) return;
+
+			ExternalTabClose(tabItem);
+		}
+
 		public void ExternalTabClose(TabItem tab, bool updateFocus = true)
 		{
+			DisposeTab(tab);
 			contentTabs.Items.Remove(tab);
 
 			if (!updateFocus) return;
-
-			foreach (
-				TabItem datTab in
-					contentTabs.Items.Cast<TabItem>()
-						.Where(datTab => ((ContentControl) datTab.Header).Content.ToString() == "Start Page"))
-			{
-				contentTabs.SelectedItem = datTab;
-				return;
-			}
 
 			if (contentTabs.Items.Count > 0)
 				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
@@ -1518,21 +1789,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		public void ExternalTabsClose(List<TabItem> tab, bool updateFocus = true)
 		{
 			foreach (TabItem tabItem in tab)
+			{
+				DisposeTab(tabItem);
 				contentTabs.Items.Remove(tabItem);
+			}
+				
 
 			if (!updateFocus) return;
 
-			foreach (
-				TabItem datTab in
-					contentTabs.Items.Cast<TabItem>()
-						.Where(datTab => ((ContentControl) datTab.Header).Content.ToString() == "Start Page"))
-			{
-				contentTabs.SelectedItem = datTab;
-				return;
-			}
-
 			if (contentTabs.Items.Count > 0)
 				contentTabs.SelectedIndex = contentTabs.Items.Count - 1;
+		}
+
+		public void DisposeTab(TabItem tab)
+		{
+			if (tab.Content.GetType() == typeof(MetaContainer))
+			{
+				MetaContainer mc = (MetaContainer)tab.Content;
+				mc.Dispose();
+			}
+			else if (tab.Content.GetType() == typeof(ScriptEditor))
+			{
+				ScriptEditor se = (ScriptEditor)tab.Content;
+				se.Dispose();
+			}
 		}
 
 		public int GetSelectedIndex(TabItem selectedTab)
@@ -1642,11 +1922,92 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		#endregion
 
+		#region Batch
+		private void itemTagBatch_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tag = item.DataContext as TagEntry;
+			if (tag == null)
+				return;
+
+			// Is it already in the list?
+			if (batchTagList.Items.Contains(tag))
+				return;
+
+			// Add tag to batch listbox
+			batchTagList.Items.Add(tag);
+
+		}
+
+		private void itemClassBatch_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the menu item and the tag class
+			var item = e.Source as MenuItem;
+			if (item == null)
+				return;
+
+			var tagClass = item.DataContext as TagClass;
+			if (tagClass == null)
+				return;
+
+			// Add everything
+			foreach (TagEntry entry in tagClass.Children)
+			{
+				// Is it already in the list?
+				if (batchTagList.Items.Contains(entry))
+					continue;
+
+				// Add tag to batch listbox
+				batchTagList.Items.Add(entry);
+			}
+
+		}
+
+		private void BatchExtract_Click(object sender, RoutedEventArgs e)
+		{
+			List<TagEntry> tags = new List<TagEntry>();
+			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
+
+			extractTags(tags);
+		}
+		private void BatchClear_Click(object sender, RoutedEventArgs e)
+		{
+			batchTagList.Items.Clear();
+		}
+
+		private void BatchList_PreviewKeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Delete)
+			{
+				List<TagEntry> selected = batchTagList.SelectedItems.Cast<TagEntry>().ToList();
+
+				foreach (TagEntry t in selected)
+				{
+					if (batchTagList.Items.Contains(t))
+						batchTagList.Items.Remove(t);
+				}
+
+			}
+		}
+		#endregion
+
 		public class HeaderValue
 		{
 			public string Title { get; set; }
 			public object Data { get; set; }
 		}
 
+		public void Dispose()
+		{
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= SettingsChanged;
+
+			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			ExternalTabsClose(tabs, false);
+		}
 	}
 }

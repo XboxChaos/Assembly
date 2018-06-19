@@ -129,5 +129,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             parser.Parse();*/
 			// You have to stick a breakpoint here to look at the parsed nodes :P
 		}
+
+		public void Dispose()
+		{
+			txtScript.Clear();
+		}
 	}
 }

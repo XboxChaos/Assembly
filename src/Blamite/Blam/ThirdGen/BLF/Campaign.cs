@@ -5,7 +5,7 @@ using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.BLF
 {
-	public class Campaign
+	public class Campaign : IDisposable
 	{
 		// Private Modifiers
 		public enum GameIdentifier : uint
@@ -61,11 +61,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 				default:
 					throw new InvalidOperationException("The Campaign BLF file is from an unknown Halo Version");
 			}
-		}
-
-		public void Close()
-		{
-			_stream.Close();
 		}
 
 		#region Loading Code
@@ -205,6 +200,11 @@ namespace Blamite.Blam.ThirdGen.BLF
 					_stream.WriteByte(_campaign.UnlockBytes[i]);
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			_stream.Dispose();
 		}
 
 		#endregion

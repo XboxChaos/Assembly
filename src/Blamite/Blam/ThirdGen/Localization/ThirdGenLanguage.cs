@@ -111,12 +111,10 @@ namespace Blamite.Blam.ThirdGen.Localization
 			if (LocaleData == null || LocaleIndexTable == null)
 				return;
 
-			var offsetData = new MemoryStream();
-			var stringData = new MemoryStream();
-			var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian);
-			var stringWriter = new EndianWriter(stringData, Endian.BigEndian);
-
-			try
+			using (var offsetData = new MemoryStream())
+			using (var stringData = new MemoryStream())
+			using (var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian))
+			using (var stringWriter = new EndianWriter(stringData, Endian.BigEndian))
 			{
 				// Write the string and offset data to buffers
 				foreach (LocalizedString locale in locales)
@@ -132,17 +130,17 @@ namespace Blamite.Blam.ThirdGen.Localization
 				// Update the two locale data hashes if we need to
 				// (the hash arrays are set to null if the build doesn't need them)
 				if (IndexTableHash != null)
-					IndexTableHash = SHA1.Transform(offsetData.GetBuffer(), 0, (int) offsetData.Length);
+					IndexTableHash = SHA1.Transform(offsetData.ToArray(), 0, (int) offsetData.Length);
 				if (StringDataHash != null)
-					StringDataHash = SHA1.Transform(stringData.GetBuffer(), 0, dataSize);
+					StringDataHash = SHA1.Transform(stringData.ToArray(), 0, dataSize);
 
 				// Make sure there's free space for the offset table and then write it to the file
 				LocaleIndexTable.Resize((int) offsetData.Length, stream);
 				stream.SeekTo(LocaleIndexTableLocation.AsOffset());
-				stream.WriteBlock(offsetData.GetBuffer(), 0, (int) offsetData.Length);
+				stream.WriteBlock(offsetData.ToArray(), 0, (int) offsetData.Length);
 
 				// Encrypt the string data if necessary
-				byte[] strings = stringData.GetBuffer();
+				byte[] strings = stringData.ToArray();
 				if (_encryptionKey != null)
 					strings = AES.Encrypt(strings, 0, dataSize, _encryptionKey.Key, _encryptionKey.IV);
 
@@ -153,11 +151,6 @@ namespace Blamite.Blam.ThirdGen.Localization
 
 				// Update the string count and recalculate the language table offsets
 				StringCount = locales.Count;
-			}
-			finally
-			{
-				offsetWriter.Close();
-				stringWriter.Close();
 			}
 		}
 

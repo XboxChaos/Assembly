@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NET45
+
+using System;
 using System.IO;
 using Blamite.Blam;
 using Blamite.IO;
@@ -149,3 +151,5 @@ namespace Blamite.RTE.H2Vista
 		#endregion
 	}
 }
+
+#endif

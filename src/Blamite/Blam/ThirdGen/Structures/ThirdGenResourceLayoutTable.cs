@@ -152,7 +152,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			for (int i = 0; i < externalFiles.Length; i++)
 			{
-				if (externalFiles[i].Path.Equals(path, StringComparison.InvariantCultureIgnoreCase))
+				if (externalFiles[i].Path.ToLowerInvariant() == path.ToLowerInvariant())
 					return i;
 			}
 			throw new InvalidOperationException("Invalid shared map path \"" + path + "\"");

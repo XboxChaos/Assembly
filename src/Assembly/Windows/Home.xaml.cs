@@ -26,6 +26,7 @@ using Blamite.IO;
 using Microsoft.Win32;
 using XboxChaos.Models;
 using XBDMCommunicator;
+using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Assembly.Windows
 {
@@ -398,7 +399,9 @@ namespace Assembly.Windows
 			{ ".blf", (home, path) => home.AddImageTabModule(path) },
 			{ ".mapinfo", (home, path) => home.AddInfooTabModule(path) },
 			{ ".campaign", (home, path) => home.AddCampaignTabModule(path) },
-			{ ".asmp", (home, path) => home.AddPatchTabModule(path) }
+			{ ".asmp", (home, path) => home.AddPatchTabModule(path) },
+			{ ".ascpatch", (home, path) => home.AddPatchTabModule(path) },
+			{ ".patchdat", (home, path) => home.AddPatchTabModule(path) }
 		};
 
 		/// <summary>
@@ -417,17 +420,26 @@ namespace Assembly.Windows
 			if (!(bool) ofd.ShowDialog(this)) return;
 
 			foreach (string file in ofd.FileNames)
+				ProcessContentFile(file);
+		}
+
+		public void ProcessContentFile(string file)
+		{
+			if (!File.Exists(file))
 			{
-				var extension = (Path.GetExtension(file) ?? "").ToLowerInvariant();
-				ContentFileHandler handler;
-				if (!_contentFileHandlers.TryGetValue(extension, out handler))
-				{
-					MetroMessageBox.Show("Assembly - Unsupported File Type",
-						"\"" + file + "\" cannot be opened because its extension is not recognized.");
-					continue;
-				}
-				handler(this, file);
+				MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
+				return;
 			}
+
+			var extension = (Path.GetExtension(file) ?? "").ToLowerInvariant();
+			ContentFileHandler handler;
+			if (!_contentFileHandlers.TryGetValue(extension, out handler))
+			{
+				MetroMessageBox.Show("Assembly - Unsupported File Type",
+					"\"" + file + "\" cannot be opened because its extension is not recognized.");
+				return;
+			}
+			handler(this, file);
 		}
 
 		#endregion
@@ -460,7 +472,6 @@ namespace Assembly.Windows
 					tabHeader = "Settings";
 					break;
 			}
-
 			LayoutDocument toRemove = null;
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.Title == tabHeader && tab is LayoutDocument))
 				toRemove = (LayoutDocument) tab;
@@ -488,12 +499,8 @@ namespace Assembly.Windows
 		/// <param name="cacheLocation">Path to the Blam Cache File</param>
 		public void AddCacheTabModule(string cacheLocation)
 		{
-			// Check Map isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == cacheLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(cacheLocation))
 				return;
-			}
 
 			var newCacheTab = new LayoutDocument
 			{
@@ -502,6 +509,7 @@ namespace Assembly.Windows
 				ToolTip = cacheLocation
 			};
 			newCacheTab.Content = new HaloMap(cacheLocation, newCacheTab, App.AssemblyStorage.AssemblySettings.HalomapTagSort);
+			newCacheTab.Closing += HaloMap_Closing;
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
 		}
@@ -529,12 +537,8 @@ namespace Assembly.Windows
 		/// <param name="imageLocation">Path to the BLF file</param>
 		public void AddImageTabModule(string imageLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == imageLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(imageLocation))
 				return;
-			}
 
 			var newMapImageTab = new LayoutDocument
 			{
@@ -553,12 +557,8 @@ namespace Assembly.Windows
 		/// <param name="infooLocation">Path to the MapInfo file</param>
 		public void AddInfooTabModule(string infooLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == infooLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(infooLocation))
 				return;
-			}
 
 			var newMapInfoTab = new LayoutDocument
 			{
@@ -574,23 +574,19 @@ namespace Assembly.Windows
 		/// <summary>
 		///     Add a new Campaign Editor Container
 		/// </summary>
-		/// <param name="campiagnLocation">Path to the Campaign file</param>
-		public void AddCampaignTabModule(string campiagnLocation)
+		/// <param name="campaignLocation">Path to the Campaign file</param>
+		public void AddCampaignTabModule(string campaignLocation)
 		{
-			// Check File isn't already open
-			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == campiagnLocation))
-			{
-				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+			if (TabModuleFindExisting(campaignLocation))
 				return;
-			}
 
 			var newCampaignTab = new LayoutDocument
 			{
-				ContentId = campiagnLocation,
+				ContentId = campaignLocation,
 				Title = "Campaign",
-				ToolTip = campiagnLocation
+				ToolTip = campaignLocation
 			};
-			newCampaignTab.Content = new HaloCampaign(campiagnLocation, newCampaignTab);
+			newCampaignTab.Content = new HaloCampaign(campaignLocation, newCampaignTab);
 			documentManager.Children.Add(newCampaignTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCampaignTab);
 		}
@@ -608,6 +604,31 @@ namespace Assembly.Windows
 			};
 			documentManager.Children.Add(newPatchTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
+		}
+
+		private bool TabModuleFindExisting(string contentId)
+		{
+			// Check module isn't already open in the main window
+			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.ContentId == contentId))
+			{
+				//focus existing
+				documentManager.SelectedContentIndex = documentManager.IndexOfChild(tab);
+				return true;
+			}
+			// Check module isn't already open as a floating window
+			foreach (LayoutDocumentFloatingWindowControl windo in dockManager.FloatingWindows)
+			{
+				LayoutDocumentFloatingWindow mod = (LayoutDocumentFloatingWindow)windo.Model;
+				if (mod.RootDocument.ContentId == contentId)
+				{
+					//focus existing
+					mod.RootDocument.IsActive = true;
+					windo.Focus();
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public void AddTabModule(TabGenre tabG, bool singleInstance = true)
@@ -737,36 +758,7 @@ namespace Assembly.Windows
 			this.Focus();
 
 			foreach (string file in draggedFiles)
-			{
-				if (file.EndsWith(".mapinfo"))
-				{
-					AddInfooTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".map"))
-				{
-					AddCacheTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".blf"))
-				{
-					AddImageTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".campaign"))
-				{
-					AddCampaignTabModule(file);
-					continue;
-				}
-				if (file.EndsWith(".asmp")||
-					file.EndsWith(".ascpatch")||
-					file.EndsWith(".patchdat"))
-				{
-					AddPatchTabModule(file);
-					continue;
-				}
-				MetroMessageBox.Show("File Not Supported", "The dropped file, \"" + Path.GetFileName(file) + "\" has an invalid extension and will not be opened.");
-			}
+				ProcessContentFile(file);
 		}
 
 		#endregion
@@ -828,52 +820,7 @@ namespace Assembly.Windows
 		{
 			try
 			{
-				if (File.Exists(path))
-				{
-					// Magic Check
-					string magic;
-					using (var stream = new EndianReader(File.OpenRead(path), Endian.BigEndian))
-						magic = stream.ReadAscii(0x04).ToLower();
-
-					switch (magic)
-					{
-						case "head":
-						case "daeh":
-							// Map File
-							AddCacheTabModule(path);
-							return;
-
-						case "asmp":
-							// Patch File
-							AddPatchTabModule(path);
-							return;
-
-						case "_blf":
-							// BLF Container, needs more checking
-							var blf = new PureBLF(path);
-							blf.Close();
-							if (blf.BLFChunks.Count > 2)
-							{
-								switch (blf.BLFChunks[1].ChunkMagic)
-								{
-									case "levl":
-										AddInfooTabModule(path);
-										return;
-									case "mapi":
-										AddImageTabModule(path);
-										return;
-								}
-							}
-							MetroMessageBox.Show("Unsupported BLF Type", "The selected BLF file is not supported in assembly.");
-							return;
-
-						default:
-							MetroMessageBox.Show("Unsupported file type", "The selected file is not supported in assembly.");
-							return;
-					}
-				}
-
-				MetroMessageBox.Show("Unable to find file", "The selected file could no longer be found");
+				ProcessContentFile(path);
 			}
 			catch (Exception ex)
 			{
@@ -882,5 +829,13 @@ namespace Assembly.Windows
 		}
 
 		#endregion
+
+		private void HaloMap_Closing(object sender, CancelEventArgs e)
+		{
+			LayoutDocument ld = (LayoutDocument)sender;
+			HaloMap mp = (HaloMap)ld.Content;
+
+			mp.Dispose();
+		}
 	}
 }

@@ -104,7 +104,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				}
 			}
 
-			cacheStream.Close();
+			cacheStream.Dispose();
 		}
 
 		private void btnCreatePatchOutputPatch_Click(object sender, RoutedEventArgs e)
@@ -500,14 +500,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 				finally
 				{
 					if (originalReader != null)
-						originalReader.Close();
+						originalReader.Dispose();
 					if (newReader != null)
-						newReader.Close();
+						newReader.Dispose();
 				}
 
 				IWriter output = new EndianWriter(File.Open(outputPath, FileMode.Create, FileAccess.Write), Endian.BigEndian);
 				AssemblyPatchWriter.WritePatch(patch, output);
-				output.Close();
+				output.Dispose();
 
 				MetroMessageBox.Show("Patch Created!",
 					"Your patch has been created in the designated location. Happy sailing, modder!");
