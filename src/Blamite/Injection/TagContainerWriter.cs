@@ -155,7 +155,8 @@ namespace Blamite.Injection
 		{
 			foreach (ExtractedResourceInfo resource in tags.Resources)
 			{
-				container.StartBlock("rsrc", 1);
+				//container.StartBlock("rsrc", 1);
+				container.StartBlock("rsrc", 2);
 
 				writer.WriteUInt32(resource.OriginalIndex.Value);
 				writer.WriteUInt32(resource.Flags);
@@ -163,7 +164,13 @@ namespace Blamite.Injection
 					writer.WriteAscii(resource.Type);
 				else
 					writer.WriteByte(0);
-				WriteByteArray(resource.Info, writer);
+				//WriteByteArray(resource.Info, writer);
+
+				writer.WriteByte((byte)resource.InfoDatas.Count);
+
+				for (int i = 0; i < resource.InfoDatas.Count; i++)
+					WriteByteArray(resource.InfoDatas[i], writer);
+
 				writer.WriteUInt32(resource.OriginalParentTagIndex.Value);
 				if (resource.Location != null)
 				{
@@ -174,6 +181,9 @@ namespace Blamite.Injection
 					writer.WriteInt32(resource.Location.OriginalSecondaryPageIndex);
 					writer.WriteInt32(resource.Location.SecondaryOffset);
 					writer.WriteInt32(resource.Location.SecondaryUnknown);
+					writer.WriteInt32(resource.Location.OriginalTertiaryPageIndex);
+					writer.WriteInt32(resource.Location.TertiaryOffset);
+					writer.WriteInt32(resource.Location.TertiaryUnknown);
 				}
 				else
 				{
@@ -181,7 +191,7 @@ namespace Blamite.Injection
 				}
 				writer.WriteInt32(resource.Unknown1);
 				writer.WriteInt32(resource.Unknown2);
-				writer.WriteInt32(resource.Unknown3);
+				//writer.WriteInt32(resource.Unknown3);
 
 				writer.WriteInt32(resource.ResourceFixups.Count);
 				foreach (ResourceFixup fixup in resource.ResourceFixups)

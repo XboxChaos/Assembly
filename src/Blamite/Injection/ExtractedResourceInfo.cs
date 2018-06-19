@@ -22,6 +22,10 @@ namespace Blamite.Injection
 			OriginalSecondaryPageIndex = -1;
 			SecondaryOffset = -1;
 			SecondaryUnknown = -1;
+
+			OriginalTertiaryPageIndex = -1;
+			TertiaryOffset = -1;
+			TertiaryUnknown = -1;
 		}
 
 		/// <summary>
@@ -36,6 +40,10 @@ namespace Blamite.Injection
 			OriginalSecondaryPageIndex = (basePointer.SecondaryPage != null) ? basePointer.SecondaryPage.Index : -1;
 			SecondaryOffset = basePointer.SecondaryOffset;
 			SecondaryUnknown = basePointer.SecondaryUnknown;
+
+			OriginalTertiaryPageIndex = (basePointer.TertiaryPage != null) ? basePointer.TertiaryPage.Index : -1;
+			TertiaryOffset = basePointer.TertiaryOffset;
+			TertiaryUnknown = basePointer.TertiaryUnknown;
 		}
 
 		/// <summary>
@@ -61,6 +69,19 @@ namespace Blamite.Injection
 		public int SecondaryOffset { get; set; }
 
 		public int SecondaryUnknown { get; set; }
+
+
+		/// <summary>
+		///     Gets or sets the original index of the resource's secondary page.
+		/// </summary>
+		public int OriginalTertiaryPageIndex { get; set; }
+
+		/// <summary>
+		///     Gets or sets the offset of the resource in its secondary page.
+		/// </summary>
+		public int TertiaryOffset { get; set; }
+
+		public int TertiaryUnknown { get; set; }
 	}
 
 	/// <summary>
@@ -92,14 +113,15 @@ namespace Blamite.Injection
 			OriginalIndex = originalIndex;
 			Flags = baseResource.Flags;
 			Type = baseResource.Type;
-			Info = baseResource.Info;
+			//Info = baseResource.Info;
+			InfoDatas = new List<byte[]>(baseResource.InfoDatas);
 			OriginalParentTagIndex = (baseResource.ParentTag != null) ? baseResource.ParentTag.Index : DatumIndex.Null;
 			Location = (baseResource.Location != null) ? new ExtractedResourcePointer(baseResource.Location) : null;
 			ResourceFixups = new List<ResourceFixup>(baseResource.ResourceFixups);
 			DefinitionFixups = new List<ResourceDefinitionFixup>(baseResource.DefinitionFixups);
 			Unknown1 = baseResource.Unknown1;
 			Unknown2 = baseResource.Unknown2;
-			Unknown3 = baseResource.Unknown3;
+			//Unknown3 = baseResource.Unknown3;
 		}
 
 		/// <summary>
@@ -120,7 +142,7 @@ namespace Blamite.Injection
 		/// <summary>
 		///     Gets or sets the info buffer for the resource.
 		/// </summary>
-		public byte[] Info { get; set; }
+		//public byte[] Info { get; set; }
 
 		/// <summary>
 		///     Gets or sets the original datum index of the tag associated with the resource.
@@ -135,8 +157,10 @@ namespace Blamite.Injection
 		public List<ResourceFixup> ResourceFixups { get; private set; }
 		public List<ResourceDefinitionFixup> DefinitionFixups { get; private set; }
 
+		public List<byte[]> InfoDatas { get; set; }
+
 		public int Unknown1 { get; set; }
 		public int Unknown2 { get; set; }
-		public int Unknown3 { get; set; }
+		//public int Unknown3 { get; set; }
 	}
 }

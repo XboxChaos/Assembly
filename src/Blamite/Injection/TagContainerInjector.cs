@@ -15,6 +15,11 @@ namespace Blamite.Injection
 		private bool _injectRaw;
 		private bool _findExistingPages;
 		private static int SoundClass = CharConstant.FromString("snd!");
+
+		private static int ShaderBankClass = CharConstant.FromString("mtsb");
+		private static int ShaderTemplateClass = CharConstant.FromString("mats");
+		private static int PCAClass = CharConstant.FromString("pcaa");
+
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
 
@@ -103,6 +108,8 @@ namespace Blamite.Injection
 
 		public DatumIndex InjectTag(ExtractedTag tag, IStream stream)
 		{
+			string tagnameuniqifier = "";
+
 			if (tag == null)
 				throw new ArgumentNullException("tag is null");
 
@@ -114,11 +121,21 @@ namespace Blamite.Injection
 			// Make sure there isn't already a tag with the given name
 			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
 			if (existingTag != null)
-				return existingTag.Index;
+			{
+				if (tag.Class == ShaderBankClass || tag.Class == ShaderTemplateClass)
+					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
+				else
+					return existingTag.Index;
+			}
+				
 
 			// If the tag has made it this far but is a sound, make everyone (especially gerit) shut up.
 			if (!_keepSound && tag.Class == SoundClass)
 				return DatumIndex.Null;
+      
+			if (tag.Class == PCAClass)
+			return DatumIndex.Null;
+
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);
@@ -132,7 +149,7 @@ namespace Blamite.Injection
 
 			ITag newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
 			_tagIndices[tag] = newTag.Index;
-			_cacheFile.FileNames.SetTagName(newTag, tag.Name);
+			_cacheFile.FileNames.SetTagName(newTag, tag.Name + tagnameuniqifier);
 
 			// Write the data
 			WriteDataBlock(tagData, newTag.MetaLocation, stream, newTag);
@@ -145,6 +162,17 @@ namespace Blamite.Injection
 			// If its class matches one of the valid simulation class names, add it to the simulation definition table
 			if (_cacheFile.SimulationDefinitions != null && _simulationClasses.Contains(CharConstant.ToString(newTag.Class.Magic)))
 				_cacheFile.SimulationDefinitions.Add(newTag);
+
+			if (CharConstant.ToString(newTag.Class.Magic) == "paas")
+			{
+				IPolyart vertex = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x44, 6);
+				IPolyart index = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x50, 8);
+
+				_cacheFile.PolyartTable.Add(vertex);
+				_cacheFile.PolyartTable.Add(index);
+				
+			}
+				
 
 			return newTag.Index;
 		}
@@ -259,7 +287,10 @@ namespace Blamite.Injection
 			newResource.Index = newIndex;
 			newResource.Flags = resource.Flags;
 			newResource.Type = resource.Type;
-			newResource.Info = resource.Info;
+			//newResource.Info = resource.Info;
+
+			newResource.InfoDatas = resource.InfoDatas;
+
 			if (resource.OriginalParentTagIndex.IsValid)
 			{
 				DatumIndex parentTagIndex = InjectTag(resource.OriginalParentTagIndex, stream);
@@ -300,6 +331,16 @@ namespace Blamite.Injection
 				}
 				newResource.Location.SecondaryOffset = resource.Location.SecondaryOffset;
 				newResource.Location.SecondaryUnknown = resource.Location.SecondaryUnknown;
+
+
+				// tert page pointers
+				if (resource.Location.OriginalTertiaryPageIndex >= 0)
+				{
+					int tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
+					newResource.Location.TertiaryPage = _resources.Pages[tertiaryPageIndex];
+				}
+				newResource.Location.TertiaryOffset = resource.Location.TertiaryOffset;
+				newResource.Location.TertiaryUnknown = resource.Location.TertiaryUnknown;
 			}
 
 			newResource.ResourceFixups.AddRange(resource.ResourceFixups);
@@ -307,7 +348,7 @@ namespace Blamite.Injection
 
 			newResource.Unknown1 = resource.Unknown1;
 			newResource.Unknown2 = resource.Unknown2;
-			newResource.Unknown3 = resource.Unknown3;
+			//newResource.Unknown3 = resource.Unknown3;
 
 			// Make it load
 			LoadZoneSets(stream);

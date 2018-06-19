@@ -200,7 +200,8 @@ namespace Blamite.Injection
 
 		private static ExtractedResourceInfo ReadResource(IReader reader, byte version)
 		{
-			if (version != 1)
+			//if (version != 1)
+			if (version != 2)
 				throw new InvalidOperationException("Unrecognized \"rsrc\" block version");
 
 			var originalIndex = new DatumIndex(reader.ReadUInt32());
@@ -209,7 +210,14 @@ namespace Blamite.Injection
 			resource.Type = reader.ReadAscii();
 			if (string.IsNullOrEmpty(resource.Type))
 				resource.Type = null;
-			resource.Info = ReadByteArray(reader);
+			//resource.Info = ReadByteArray(reader);
+
+			resource.InfoDatas = new System.Collections.Generic.List<byte[]>();
+
+			byte infocount = reader.ReadByte();
+			for (int i = 0; i < infocount; i++)
+				resource.InfoDatas.Add(ReadByteArray(reader));
+
 			resource.OriginalParentTagIndex = new DatumIndex(reader.ReadUInt32());
 			byte hasLocation = reader.ReadByte();
 			if (hasLocation != 0)
@@ -221,10 +229,14 @@ namespace Blamite.Injection
 				resource.Location.OriginalSecondaryPageIndex = reader.ReadInt32();
 				resource.Location.SecondaryOffset = reader.ReadInt32();
 				resource.Location.SecondaryUnknown = reader.ReadInt32();
+
+				resource.Location.OriginalTertiaryPageIndex = reader.ReadInt32();
+				resource.Location.TertiaryOffset = reader.ReadInt32();
+				resource.Location.TertiaryUnknown = reader.ReadInt32();
 			}
 			resource.Unknown1 = reader.ReadInt32();
 			resource.Unknown2 = reader.ReadInt32();
-			resource.Unknown3 = reader.ReadInt32();
+			//resource.Unknown3 = reader.ReadInt32();
 
 			int numResourceFixups = reader.ReadInt32();
 			for (int i = 0; i < numResourceFixups; i++)
