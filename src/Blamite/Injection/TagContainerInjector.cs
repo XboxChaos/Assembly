@@ -336,7 +336,14 @@ namespace Blamite.Injection
 				// tert page pointers
 				if (resource.Location.OriginalTertiaryPageIndex >= 0)
 				{
-					int tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
+					int tertiaryPageIndex = -1;
+
+					if (_findExistingPages) //find existing entry to point to
+						tertiaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalTertiaryPageIndex).Checksum);
+
+					if (tertiaryPageIndex == -1)
+						tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
+
 					newResource.Location.TertiaryPage = _resources.Pages[tertiaryPageIndex];
 				}
 				newResource.Location.TertiaryOffset = resource.Location.TertiaryOffset;
