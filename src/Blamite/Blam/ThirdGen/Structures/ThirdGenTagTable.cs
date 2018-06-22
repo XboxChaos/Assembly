@@ -137,7 +137,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			SaveTags(headerValues, stream);
 
-			if (Polyart.Count > 0)
+			if (Polyart != null && Polyart.Count > 0)
 			{
 				var oldCount = (int)headerValues.GetInteger("number of polyart fixups");
 				uint oldAddress = headerValues.GetInteger("polyart fixup table address");
@@ -216,6 +216,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private List<IPolyart> LoadPolyart(IReader reader, StructureValueCollection headerValues)
 		{
+			if (!headerValues.HasInteger("number of polyart fixups"))
+				return null;
+
 			var count = (int)headerValues.GetInteger("number of polyart fixups");
 			uint address = headerValues.GetInteger("polyart fixup table address");
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("polyart table entry");

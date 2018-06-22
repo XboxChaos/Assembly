@@ -287,9 +287,7 @@ namespace Blamite.Injection
 			newResource.Index = newIndex;
 			newResource.Flags = resource.Flags;
 			newResource.Type = resource.Type;
-			//newResource.Info = resource.Info;
-
-			newResource.InfoDatas = resource.InfoDatas;
+			newResource.Info = resource.Info;
 
 			if (resource.OriginalParentTagIndex.IsValid)
 			{
@@ -353,9 +351,8 @@ namespace Blamite.Injection
 			newResource.ResourceFixups.AddRange(resource.ResourceFixups);
 			newResource.DefinitionFixups.AddRange(resource.DefinitionFixups);
 
-			newResource.Unknown1 = resource.Unknown1;
-			newResource.Unknown2 = resource.Unknown2;
-			//newResource.Unknown3 = resource.Unknown3;
+			newResource.ResourceBits = resource.ResourceBits;
+			newResource.BaseDefinitionAddress = resource.BaseDefinitionAddress;
 
 			// Make it load
 			LoadZoneSets(stream);
