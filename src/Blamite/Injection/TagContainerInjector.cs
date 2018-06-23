@@ -122,8 +122,19 @@ namespace Blamite.Injection
 			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
 			if (existingTag != null)
 			{
+				//check if its an h4 shader tag
 				if (tag.Class == ShaderBankClass || tag.Class == ShaderTemplateClass)
+				{
+					//append old tagid to make it unique
 					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
+
+					//make sure the appended name isn't already present
+					existingTag = _cacheFile.Tags.FindTagByName(tag.Name + tagnameuniqifier, tag.Class, _cacheFile.FileNames);
+
+					if (existingTag != null)
+						return existingTag.Index;
+
+				}	
 				else
 					return existingTag.Index;
 			}
