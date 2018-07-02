@@ -895,7 +895,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							}
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.SecondaryPage.Index));
 						}
-					}
+					//}
 
 					if (resource.Location.TertiaryPage == null || resourcePagesProcessed.Contains(resource.Location.TertiaryPage))
 						continue;
@@ -903,8 +903,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					container.AddResourcePage(resource.Location.TertiaryPage);
 					resourcePagesProcessed.Add(resource.Location.TertiaryPage);
 
-					if (withRaw)
-					{
+					//if (withRaw)
+					//{
 						using (var fileStream = File.OpenRead(_cacheLocation))
 						{
 							var resourceFile = _cacheFile;
@@ -945,7 +945,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							container.AddExtractedResourcePage(new ExtractedPage(pageData, resource.Location.TertiaryPage.Index));
 						}
 					}
-				}
 			}
 
 			// Write it to a file
@@ -973,7 +972,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!result.Value)
 				return;
 
-			CheckBox keepsnd = new CheckBox() { Content = new TextBlock() { Text = "Keep Sound Tags" } };
+			CheckBox keepsnd = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Keep Sound Tags" },
+				IsChecked = (_cacheFile.HeaderSize == 0x1E000),//lol
+			};
+
 			CheckBox findraw = new CheckBox()
 			{
 				Content = new TextBlock() { Text = "Use Existing/Shared Raw Pages" },
@@ -986,7 +990,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			};
 
 			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
-				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY.\r\n" +
+				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time for not-Halo 4 and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY outside of Halo 4.\r\n" +
 				"\r\nInject Raw Data:\r\nA replacement for the old \"Extract With/Without Raw\" extraction commands. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override \"Use Existing/Shared\"!\r\n" +
 				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
 				new List<CheckBox>() { keepsnd, injectraw, findraw });

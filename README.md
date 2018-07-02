@@ -11,10 +11,10 @@ Current roadmap:
 
 Known issues:
 
-* Maybe a memory leak? Or did injection always have this?
-* Models/textures seem to render in a lower LOD or something, not sure if that's the game's fault or injection's
+* Maybe a memory leak?
+* Models are muddy/low LOD due to prediction data not being injected/created. Actually a problem for all games but effects not as severe as H4.
 * I couldn't spawn the Revenant via Forge on Valhalla, but could through a weapon, dunno why.
-* Animations with PCAA tags will cause an error when injecting into multiplayer. Solution is to null any PCAA references in affected JMADs before extracting or adding an entry for "pca_coefficients_resource_definition" in ZONE "Resource Types" (Copy the GUID from campaign) and reloading the map. (Because types are only read when the map first opens)
+* PCAA tags are not supported right now/disabled as they will error upon injection into multiplayer maps without the "pca_coefficients_resource_definition" resource type present. Needs code to add the type during injection.
 
 ### Multi-Generation Blam Engine Research Tool ###
 

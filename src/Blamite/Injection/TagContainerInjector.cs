@@ -122,8 +122,19 @@ namespace Blamite.Injection
 			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
 			if (existingTag != null)
 			{
+				//check if its an h4 shader tag
 				if (tag.Class == ShaderBankClass || tag.Class == ShaderTemplateClass)
+				{
+					//append old tagid to make it unique
 					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
+
+					//make sure the appended name isn't already present
+					existingTag = _cacheFile.Tags.FindTagByName(tag.Name + tagnameuniqifier, tag.Class, _cacheFile.FileNames);
+
+					if (existingTag != null)
+						return existingTag.Index;
+
+				}	
 				else
 					return existingTag.Index;
 			}
@@ -287,9 +298,7 @@ namespace Blamite.Injection
 			newResource.Index = newIndex;
 			newResource.Flags = resource.Flags;
 			newResource.Type = resource.Type;
-			//newResource.Info = resource.Info;
-
-			newResource.InfoDatas = resource.InfoDatas;
+			newResource.Info = resource.Info;
 
 			if (resource.OriginalParentTagIndex.IsValid)
 			{
@@ -336,7 +345,14 @@ namespace Blamite.Injection
 				// tert page pointers
 				if (resource.Location.OriginalTertiaryPageIndex >= 0)
 				{
-					int tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
+					int tertiaryPageIndex = -1;
+
+					if (_findExistingPages) //find existing entry to point to
+						tertiaryPageIndex = _resources.Pages.FindIndex(r => r.Checksum == _container.FindResourcePage(resource.Location.OriginalTertiaryPageIndex).Checksum);
+
+					if (tertiaryPageIndex == -1)
+						tertiaryPageIndex = InjectResourcePage(resource.Location.OriginalTertiaryPageIndex, stream);
+
 					newResource.Location.TertiaryPage = _resources.Pages[tertiaryPageIndex];
 				}
 				newResource.Location.TertiaryOffset = resource.Location.TertiaryOffset;
@@ -346,9 +362,8 @@ namespace Blamite.Injection
 			newResource.ResourceFixups.AddRange(resource.ResourceFixups);
 			newResource.DefinitionFixups.AddRange(resource.DefinitionFixups);
 
-			newResource.Unknown1 = resource.Unknown1;
-			newResource.Unknown2 = resource.Unknown2;
-			//newResource.Unknown3 = resource.Unknown3;
+			newResource.ResourceBits = resource.ResourceBits;
+			newResource.BaseDefinitionAddress = resource.BaseDefinitionAddress;
 
 			// Make it load
 			LoadZoneSets(stream);

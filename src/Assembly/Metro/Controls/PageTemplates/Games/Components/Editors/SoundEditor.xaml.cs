@@ -81,8 +81,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 				_resourcePages = new []
 				{
 					_soundResource.Location.PrimaryPage,
-					_soundResource.Location.SecondaryPage
-					//thirdpage someday or something
+					_soundResource.Location.SecondaryPage,
+					_soundResource.Location.TertiaryPage,
 				};
 
 				viewModel.ResourcePages = 
@@ -249,10 +249,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			using (var fileStream = _streamManager.OpenRead())
 			{
-				_resourcePages = new ResourcePage[2];
+				_resourcePages = new ResourcePage[3];
 				_resourcePages[0] = _soundResource.Location.PrimaryPage;
 				_resourcePages[1] = _soundResource.Location.SecondaryPage;
-				//thirdpage someday or something
+				_resourcePages[2] = _soundResource.Location.TertiaryPage;
 
 				for (var i = 0; i < _resourcePages.Length; i++)
 				{
@@ -301,7 +301,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 						case 1:
 							tmpStream.Position = _soundResource.Location.SecondaryOffset;
 							break;
-						//thirdpage someday or something
+
+						case 2:
+							tmpStream.Position = _soundResource.Location.TertiaryOffset;
+							break;
 					}
 
 					var bytes = VariousFunctions.StreamToByteArray(tmpStream);

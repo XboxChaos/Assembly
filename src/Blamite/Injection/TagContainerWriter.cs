@@ -155,7 +155,6 @@ namespace Blamite.Injection
 		{
 			foreach (ExtractedResourceInfo resource in tags.Resources)
 			{
-				//container.StartBlock("rsrc", 1);
 				container.StartBlock("rsrc", 2);
 
 				writer.WriteUInt32(resource.OriginalIndex.Value);
@@ -164,12 +163,7 @@ namespace Blamite.Injection
 					writer.WriteAscii(resource.Type);
 				else
 					writer.WriteByte(0);
-				//WriteByteArray(resource.Info, writer);
-
-				writer.WriteByte((byte)resource.InfoDatas.Count);
-
-				for (int i = 0; i < resource.InfoDatas.Count; i++)
-					WriteByteArray(resource.InfoDatas[i], writer);
+				WriteByteArray(resource.Info, writer);
 
 				writer.WriteUInt32(resource.OriginalParentTagIndex.Value);
 				if (resource.Location != null)
@@ -189,9 +183,9 @@ namespace Blamite.Injection
 				{
 					writer.WriteByte(0);
 				}
-				writer.WriteInt32(resource.Unknown1);
-				writer.WriteInt32(resource.Unknown2);
-				//writer.WriteInt32(resource.Unknown3);
+
+				writer.WriteInt32(resource.ResourceBits);
+				writer.WriteInt32(resource.BaseDefinitionAddress);
 
 				writer.WriteInt32(resource.ResourceFixups.Count);
 				foreach (ResourceFixup fixup in resource.ResourceFixups)

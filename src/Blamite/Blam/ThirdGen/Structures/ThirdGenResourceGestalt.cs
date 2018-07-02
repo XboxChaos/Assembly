@@ -72,8 +72,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			// Serialize each resource entry
 			// This can't be lazily evaluated because allocations might cause the stream to expand
-			int infoBuffSize = 0;
-			//var infoOffsets = new List<uint>();
+			int infoOffset = 0;
+			int altInfoOffset = 0;
 			var infocache = new ReflexiveCache<int>();
 
 			var pointers = new List<ResourcePointer>();
@@ -81,83 +81,105 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var fixupCache = new ReflexiveCache<ResourceFixup>();
 			var defFixupCache = new ReflexiveCache<ResourceDefinitionFixup>();
 
-			List<byte[]> paddedinfos = new List<byte[]>();
+			List<byte[]> paddedInfos = new List<byte[]>();
 
 			foreach (Resource resource in resources)
 			{
-				//infoOffset = AlignInfoBlockOffset(resource, infoOffset);
-				//StructureValueCollection entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1,
-				//	(resource.Info != null) ? infoOffset : 0, stream);
 
 				StructureValueCollection entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1, stream);
 				entries.Add(entry);
-
-
-
-
-				//infoOffset = AlignInfoBlockOffset(resource, infoOffset);
-				//StructureValueCollection entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1,
-				//	(resource.Info != null) ? infoOffset : 0, stream);
-				//entries.Add(entry);
 
 				// Save fixups
 				SaveResourceFixups(resource.ResourceFixups, entry, stream, fixupCache);
 				SaveDefinitionFixups(resource.DefinitionFixups, entry, stream, defFixupCache);
 
-				// Update info offset and pointer info
-				//if (resource.Info != null)
-				//	infoOffset += resource.Info.Length;
+				uint bits = entry.GetInteger("resource bits");
+				int size = (int)entry.GetInteger("resource info size");
 
-				var oldCount = (int)entry.GetIntegerOrDefault("number of resource info offsets", 0);
-				uint oldAddress = entry.GetIntegerOrDefault("resource info offsets table address", 0);
-				StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+				List<int> offsets = new List<int>();
 
-				if (resource.InfoDatas.Count > 0)
+				if (size > 0)
 				{
-					resource.InfoOffsets = new List<int>();
+					int dirtyoffset = infoOffset;
 
+					infoOffset = AlignInfoBlockOffset(resource, infoOffset);
 
-					for (int i = 0; i < 3; i++)
+					offsets.Add(infoOffset);
+
+					int padding =  infoOffset - dirtyoffset;
+
+					byte[] temp = new byte[padding + size];
+
+					Buffer.BlockCopy(resource.Info, 0, temp, padding, size);
+
+					paddedInfos.Add(temp);
+
+					infoOffset += size;
+				}
+				else
+					offsets.Add(0);
+
+				if ((bits & 2) > 0)
+				{
+					int tempalt = AlignInfoBlockOffset(resource, altInfoOffset);
+					offsets.Add(tempalt);
+
+					altInfoOffset += size;
+				}
+				else
+					offsets.Add(size > 0 ? -1 : 0);
+
+				if ((bits & 4) > 0)
+				{
+					int tempalt = AlignInfoBlockOffset(resource, altInfoOffset);
+					offsets.Add(tempalt);
+
+					altInfoOffset += size;
+				}
+				else
+					offsets.Add(size > 0 ? -1 : 0);
+
+				if (_buildInfo.HeaderSize == 0x1E000)//h4
+				{
+					var oldCount = (int)entry.GetIntegerOrDefault("number of resource info offsets", 0);
+					uint oldAddress = entry.GetIntegerOrDefault("resource info offsets table address", 0);
+					StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+
+					if (size > 0)
 					{
-						if (resource.InfoDatas.Count <= (i))
-						{
-							resource.InfoOffsets.Add(-1);
-							continue;
-						}
+						uint newBlockAddress;
 
-						int offset = AlignInfoBlockOffset(resource, infoBuffSize);
-						int padding = offset - infoBuffSize;
+						// Write a new reflexive
+						IEnumerable<StructureValueCollection> infoentries = offsets.Select(f => SerializeInfos(f));
+						newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, oldAddress, offsets.Count, infolayout, _metaArea,
+							_allocator, stream);
+						infocache.Add(newBlockAddress, offsets);
 
-						resource.InfoOffsets.Add(offset);
-
-						byte[] temp = new byte[padding + resource.InfoDatas[i].Length];
-
-						Buffer.BlockCopy(resource.InfoDatas[i], 0, temp, padding, resource.InfoDatas[i].Length);
-
-						paddedinfos.Add(temp);
-
-						infoBuffSize += resource.InfoDatas[i].Length;
+						entry.SetInteger("number of resource info offsets", (uint)offsets.Count);
+						entry.SetInteger("resource info offsets table address", newBlockAddress);
 					}
-
-					uint newBlockAddress;
-
-					// Write a new reflexive
-					IEnumerable<StructureValueCollection> infoentries = resource.InfoOffsets.Select(f => SerializeInfos(f));
-					newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, oldAddress, resource.InfoOffsets.Count, infolayout, _metaArea,
-						_allocator, stream);
-					infocache.Add(newBlockAddress, resource.InfoOffsets);
-
-					entry.SetInteger("number of resource info offsets", (uint)resource.InfoOffsets.Count);
-					entry.SetInteger("resource info offsets table address", newBlockAddress);
+					else
+					{
+						entry.SetInteger("number of resource info offsets", 0);
+						entry.SetInteger("resource info offsets table address", 0);
+					}
 				}
 				else
 				{
-					entry.SetInteger("number of resource info offsets", 0);
-					entry.SetInteger("resource info offsets table address", 0);
+					if (size > 0)
+					{
+						entry.SetInteger("resource info offset", (uint)offsets[0]);
+						entry.SetInteger("alt resource info offset", (uint)offsets[1]);
+					}
+					else
+					{
+						entry.SetInteger("resource info offset", 0);
+						entry.SetInteger("alt resource info offset", 0);
+					}
+
 				}
 					
 				// Update pointer info
-	
 				if (resource.Location != null)
 					pointers.Add(resource.Location);
 			}
@@ -169,7 +191,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("resource table address", newAddress);
 
 			// Save the info buffer
-			SaveResourceInfoBuffer(paddedinfos.SelectMany(a => a).ToArray(), values, stream);
+			SaveResourceInfoBuffer(paddedInfos.SelectMany(a => a).ToArray(), values, stream);
 
 			SaveTag(values, stream);
 			return pointers;
@@ -255,64 +277,40 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			//var infoOffset = (int) values.GetInteger("resource info offset");
 			var infoSize = (int) values.GetInteger("resource info size");
-			//if (infoSize > 0)
-			//{
-			//	// Copy the section of the info buffer that the resource is pointing to
-			//	result.Info = new byte[infoSize];
-			//	Buffer.BlockCopy(infoBuffer, infoOffset, result.Info, 0, infoSize);
-			//}
 
-			result.Unknown1 = (int) values.GetInteger("unknown 1");
-			result.Unknown2 = (int) values.GetInteger("unknown 2");
+			if (infoSize > 0)
+			{
+				var infoOffset = 0;
+
+				if (values.HasInteger("number of resource info offsets"))//for h4
+				{
+					var infocount = (int)values.GetInteger("number of resource info offsets");
+					uint address = values.GetInteger("resource info offsets table address");
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+					StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, address, layout, _metaArea);
+
+					if (infocount > 0)
+						infoOffset = (int)entries[0].GetInteger("offset");
+				}
+				else
+					infoOffset = (int)values.GetInteger("resource info offset");
+
+				// Copy the section of the info buffer that the resource is pointing to
+				result.Info = new byte[infoSize];
+				Buffer.BlockCopy(infoBuffer, infoOffset, result.Info, 0, infoSize);
+			}
+
+			result.ResourceBits = (ushort) values.GetInteger("resource bits");
 			var segmentIndex = (int) values.GetInteger("segment index");
 			result.Location = (segmentIndex >= 0) ? pointers[segmentIndex] : null;
-			//result.Unknown3 = (int) values.GetInteger("unknown 3");
+			result.BaseDefinitionAddress = (int) values.GetInteger("base definition address");
 
 			result.ResourceFixups.AddRange(LoadResourceFixups(values, reader));
 			result.DefinitionFixups.AddRange(LoadDefinitionFixups(values, reader));
 
-
-			var infocount = (int)values.GetInteger("number of resource info offsets");
-			uint address = values.GetInteger("resource info offsets table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, address, layout, _metaArea);
-
-			//result.InfoOffsets = new List<int>();
-
-			foreach (StructureValueCollection infoentry in entries)
-			{
-				int tempoffset = (int)infoentry.GetInteger("offset");
-
-				result.InfoOffsets.Add(tempoffset);
-			}
-
-
-			//result.InfoDatas = new List<byte[]>();
-
-			if (infoSize > 0)
-			{
-				for (int i = 0; i < result.InfoOffsets.Count; i++)//(uint infoentry in result.InfoOffsets)
-				{
-					//result.InfoDatas.Add(new byte[infoSize]);
-					byte[] tempbuffer = new byte[infoSize];
-					if (result.InfoOffsets[i] == -1)
-						break;
-
-					Buffer.BlockCopy(infoBuffer, result.InfoOffsets[i], tempbuffer, 0, infoSize);
-					result.InfoDatas.Add(tempbuffer);
-				}
-
-				// Copy the section of the info buffer that the resource is pointing to
-				//result.Info = new byte[infoSize];
-				//Buffer.BlockCopy(infoBuffer, infoOffset, result.Info, 0, infoSize);
-			}
-
-
-
 			return result;
 		}
 
-		//private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, int infoOffset, IStream stream)
 		private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, IStream stream)
 		{
 			var result = new StructureValueCollection();
@@ -330,18 +328,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.SetInteger("resource type index", (uint) FindResourceType(resource.Type));
 			result.SetInteger("flags", resource.Flags);
 			//result.SetInteger("resource info offset", (uint)infoOffset);
-			//result.SetInteger("resource info size", (resource.Info != null) ? (uint)resource.Info.Length : 0);
+			result.SetInteger("resource info size", (resource.Info != null) ? (uint)resource.Info.Length : 0);
 
-			uint temp = 0;
-			if (resource.InfoDatas != null)
-				if (resource.InfoDatas.Count > 0)
-					temp = (uint)resource.InfoDatas[0].Length;
-
-			result.SetInteger("resource info size", temp);//(resource.InfoOffsets.Count > 0 && resource.InfoOffsets != null) ? (uint) resource.InfoDatas[0].Length : 0);
-			result.SetInteger("unknown 1", (uint) resource.Unknown1);
-			result.SetInteger("unknown 2", (uint) resource.Unknown2);
+			result.SetInteger("resource bits", (ushort) resource.ResourceBits);
 			result.SetInteger("segment index", (uint) pointerIndex);
-			//result.SetInteger("unknown 3", (uint) resource.Unknown3);
+			result.SetInteger("base definition address", (uint) resource.BaseDefinitionAddress);
 			return result;
 		}
 
