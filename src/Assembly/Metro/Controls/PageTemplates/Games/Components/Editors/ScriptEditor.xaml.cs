@@ -57,12 +57,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			code.WriteLine();
 
 			generator.WriteComment("Globals", code);
-			foreach (ScriptGlobal global in scripts.Globals)
-			{
-				code.Write("(global {0} {1} ", opcodes.GetTypeInfo((ushort) global.Type).Name, global.Name);
-				generator.WriteExpression(global.ExpressionIndex, code);
-				code.WriteLine(")");
-			}
+			//foreach (ScriptGlobal global in scripts.Globals)
+			//{
+			//	code.Write("(global {0} {1} ", opcodes.GetTypeInfo((ushort) global.Type).Name, global.Name);
+			//	generator.WriteExpression(global.ExpressionIndex, code);
+			//	code.WriteLine(")");
+			//}
 			code.WriteLine();
 
 			generator.WriteComment("Scripts", code);
@@ -93,7 +93,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 				code.Indent++;
 				code.WriteLine();
-				generator.WriteExpression(script.RootExpressionIndex, code);
+				generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
 				code.Indent--;
 
 				code.WriteLine();
