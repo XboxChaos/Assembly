@@ -1,21 +1,5 @@
 # Assembly
 
-### Halo 4 Raw Injection Edition ###
-
-This branch currently breaks injection on every other game besides Retail Halo 4 (didn't try beta, not sure when I will). This will eventually be fixed to hopefully make it into dev/master. Use at your own risk.
-
-Current roadmap:
-
-* Fix as many issues as possible with Halo 4 and optimize code where needed; submit an issue or tell me about it or something
-* THEN bring back support for other games
-
-Known issues:
-
-* Maybe a memory leak?
-* Models are muddy/low LOD due to prediction data not being injected/created. Actually a problem for all games but effects not as severe as H4.
-* I couldn't spawn the Revenant via Forge on Valhalla, but could through a weapon, dunno why.
-* PCAA tags are not supported right now/disabled as they will error upon injection into multiplayer maps without the "pca_coefficients_resource_definition" resource type present. Needs code to add the type during injection.
-
 ### Multi-Generation Blam Engine Research Tool ###
 
 __An Xbox 360 capable of running unsigned code is required, for Xbox 360 supported games, in order to use modifications created with Assembly. Flashed disc drives will not work.__
