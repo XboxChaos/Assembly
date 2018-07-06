@@ -149,22 +149,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (FileStream fileStream = File.OpenRead(_cacheLocation))
 			{
 				var reader = new EndianReader(fileStream, Endian.BigEndian);
+		#if DEBUG
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					out _buildInfo);
+		#else
 				try
 				{
 					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
 						out _buildInfo);
-/*
-#if DEBUG
-					Dispatcher.Invoke(new Action(() => contentTabs.Items.Add(new CloseableTabItem
-					{
-						Header = new ContentControl
-						{
-							Content = "Debug Tools",
-							ContextMenu = BaseContextMenu
-						},
-						Content = new DebugTools(_cacheFile)
-					})));
-#endif*/
 				}
 				catch (Exception ex)
 				{
@@ -193,6 +185,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					}));
 					return;
 				}
+		#endif
+
 				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
 
 				// Build SID trie
