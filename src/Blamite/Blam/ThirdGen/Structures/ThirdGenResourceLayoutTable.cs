@@ -14,6 +14,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ITag _tag;
+		private readonly bool _zone;
 
 		public ThirdGenResourceLayoutTable(ITag playTag, FileSegmentGroup metaArea, MetaAllocator allocator,
 			EngineDescription buildInfo)
@@ -22,6 +23,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+
+			_zone = _tag.Class.Magic != 1886151033;//"play"
 		}
 
 		public IEnumerable<ResourcePage> LoadPages(IReader reader)
@@ -84,13 +87,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private StructureValueCollection LoadTag(IReader reader)
 		{
 			reader.SeekTo(_tag.MetaLocation.AsOffset());
-			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
+			if (!_zone)
+				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
+			else
+				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table alt"));
 		}
 
 		private void SaveTag(StructureValueCollection values, IWriter writer)
 		{
 			writer.SeekTo(_tag.MetaLocation.AsOffset());
-			StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
+			if (!_zone)
+				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
+			else
+				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table alt"), writer);
 		}
 
 		private ThirdGenCacheFileReference[] LoadExternalFiles(StructureValueCollection values, IReader reader)

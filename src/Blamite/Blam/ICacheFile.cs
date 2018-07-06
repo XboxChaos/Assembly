@@ -55,6 +55,11 @@ namespace Blamite.Blam
 		int XDKVersion { get; set; }
 
 		/// <summary>
+		///     True if the cache file's resource page information is located in the zone tag, rather than play.
+		/// </summary>
+		bool ZoneOnly { get; }
+
+		/// <summary>
 		///     The meta area of the cache file.
 		///     Can be null.
 		/// </summary>

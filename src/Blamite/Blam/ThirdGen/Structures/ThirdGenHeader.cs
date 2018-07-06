@@ -151,8 +151,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (MetaArea == null)
 				return;
 
-			// Find the first partition with a non-null address and change it to the meta area's base address
-			Partition partition = Partitions.First(p => p.BasePointer != null);
+			// Find the first partition and change it to the meta area's base addres
+			Partition partition = Partitions.First();
 			if (partition != null)
 				partition.BasePointer = SegmentPointer.FromPointer(MetaArea.BasePointer, MetaArea);
 

@@ -11,6 +11,7 @@ namespace Blamite.Blam.Resources
 	public class ResourcePageExtractor
 	{
 		private readonly FileSegment _rawTable;
+		private bool _fileOffsets;
 
 		/// <summary>
 		///     Creates a new ResourcePageExtractor which can extract resource pages from a cache file.
@@ -18,6 +19,7 @@ namespace Blamite.Blam.Resources
 		/// <param name="cacheFile">The cache file to extract resource pages from.</param>
 		public ResourcePageExtractor(ICacheFile cacheFile)
 		{
+			_fileOffsets = cacheFile.ZoneOnly;
 			_rawTable = cacheFile.RawTable;
 		}
 
@@ -29,7 +31,8 @@ namespace Blamite.Blam.Resources
 		/// <param name="outStream">The Stream to write the extracted page to.</param>
 		public void ExtractPage(ResourcePage page, Stream inStream, Stream outStream)
 		{
-			inStream.Position = _rawTable.Offset + page.Offset;
+			inStream.Position = (page.Offset != -1 ? page.Offset : 0)
+				+ (_fileOffsets ? 0 : _rawTable.Offset);
 			StreamUtil.Copy(inStream, outStream, page.CompressedSize);
 		}
 
@@ -41,7 +44,8 @@ namespace Blamite.Blam.Resources
 		/// <param name="outStream">The Stream to write the extracted page to.</param>
 		public void ExtractDecompressPage(ResourcePage page, Stream inStream, Stream outStream)
 		{
-			inStream.Position = _rawTable.Offset + page.Offset;
+			inStream.Position = (page.Offset != -1 ? page.Offset : 0)
+				+ (_fileOffsets ? 0 : _rawTable.Offset);
 
 			switch (page.CompressionMethod)
 			{

@@ -78,6 +78,11 @@ namespace Blamite.Blam.SecondGen
 			set { _header.XDKVersion = value; }
 		}
 
+		public bool ZoneOnly
+		{
+			get { return false; }
+		}
+
 		public SegmentPointer IndexHeaderLocation
 		{
 			get { return _header.IndexHeaderLocation; }

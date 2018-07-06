@@ -32,6 +32,8 @@ namespace Blamite.Blam.ThirdGen
 		private ThirdGenTagTable _tags;
 		private ThirdGenSimulationDefinitionTable _simulationDefinitions;
 
+		private bool _zoneOnly = false;
+
 		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
 			_buildInfo = buildInfo;
@@ -95,6 +97,11 @@ namespace Blamite.Blam.ThirdGen
 		{
 			get { return _header.XDKVersion; }
 			set { _header.XDKVersion = value; }
+		}
+
+		public bool ZoneOnly
+		{
+			get { return _zoneOnly; }
 		}
 
 		public SegmentPointer IndexHeaderLocation
@@ -303,16 +310,24 @@ namespace Blamite.Blam.ThirdGen
 			ITag playTag = _tags.FindTagByClass("play");
 			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
 			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
-			bool canLoadZone = (zoneTag != null && haveZoneLayout);
-			bool canLoadPlay = (playTag != null && havePlayLayout);
+			bool haveAltPlayLayout = _buildInfo.Layouts.HasLayout("resource layout table alt");
+			bool canLoadZone = (zoneTag != null && zoneTag.MetaLocation != null && haveZoneLayout);
+			bool canLoadPlay = (playTag != null && playTag.MetaLocation != null && havePlayLayout);
 			if (canLoadZone || canLoadPlay)
 			{
 				ThirdGenResourceGestalt gestalt = null;
 				ThirdGenResourceLayoutTable layoutTable = null;
 				if (canLoadZone)
 					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+
 				if (canLoadPlay)
 					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+				else if (canLoadZone && haveAltPlayLayout)
+				{
+					layoutTable = new ThirdGenResourceLayoutTable(zoneTag, MetaArea, Allocator, _buildInfo);
+					_zoneOnly = true;
+				}
+					
 
 				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
 			}
