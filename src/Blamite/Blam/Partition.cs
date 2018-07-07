@@ -45,5 +45,14 @@ namespace Blamite.Blam
 		///     The size of the partition.
 		/// </summary>
 		public uint Size { get; set; }
+
+		/// <summary>
+		///     Returns whether the given memory address falls within this partition.
+		/// </summary>
+		/// <param name="address">The memory address to check.</param>
+		public bool Contains(uint address)
+		{
+			return (address >= BasePointer.AsPointer() && address < BasePointer.AsPointer() + Size);
+		}
 	}
 }

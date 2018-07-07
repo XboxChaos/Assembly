@@ -46,6 +46,21 @@ namespace Blamite.Blam.Util
 		{
 			// Find the smallest block that fits, or if nothing is found, expand the meta area
 			FreeArea block = FindSmallestBlock(size, align);
+
+			// if data is aligned, we will assume this data should not be in a readonly partition
+			if (block != null && align > 4)
+			{
+				// readonly partitions are always 1 and 5 starting with halo 3. for halo 3 beta, only partition 0.
+				if (_cacheFile.HeaderSize != 0x800 && _cacheFile.Partitions.Length == 6)
+				{
+					//throw out the found area if readonly
+					if ((_cacheFile.Partitions[1] != null && _cacheFile.Partitions[1].Contains(block.Address))
+					|| (_cacheFile.Partitions[5] != null && _cacheFile.Partitions[5].Contains(block.Address)))
+						block = null;
+				}
+				// todo: h3beta support maybe
+			}
+
 			if (block == null)
 				block = Expand(size, stream);
 
