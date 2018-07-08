@@ -83,6 +83,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				
 			result.Scripts = LoadScripts(reader, values);
 			result.Globals = LoadGlobals(reader, values);
+			result.Variables = LoadVariables(reader, values);
 			result.Expressions = LoadExpressions(reader, values, stringReader);
 
 			CachedStringTable strings = LoadStrings(reader, values, stringReader);

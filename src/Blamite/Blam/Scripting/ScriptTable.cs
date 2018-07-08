@@ -12,9 +12,6 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public List<ScriptGlobal> Globals { get; set; }
 
-		public List<ScriptGlobal> hsGlob = new List<ScriptGlobal>();
-		public List<ScriptExpression> hsExp = new List<ScriptExpression>();
-
 		/// <summary>
 		///     Gets or sets the list of local variables in the file.
 		/// </summary>

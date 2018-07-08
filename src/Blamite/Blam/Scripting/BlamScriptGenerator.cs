@@ -14,6 +14,10 @@ namespace Blamite.Blam.Scripting
 		private bool _onNewLine = true;
 		private bool _h4;
 
+		private bool _nextExpressionIsVar;
+		private bool _varTypeWritten;
+		private int localVarCounter;
+
 		public BlamScriptGenerator(ScriptTable scripts, OpcodeLookup opcodes)
 		{
 			_scripts = scripts;
@@ -28,6 +32,7 @@ namespace Blamite.Blam.Scripting
 		public void WriteExpression(ScriptExpression expression, IndentedTextWriter output)
 		{
 			_onNewLine = true;
+			localVarCounter = 0;
 			GenerateCode(expression, output, true);
 		}
 
@@ -54,11 +59,6 @@ namespace Blamite.Blam.Scripting
 						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
 						if (info != null)
 						{
-							//if (expression.LineNumber == 0 && !info.Name.StartsWith("begin"))
-							//	System.Diagnostics.Debug.WriteLine(info.Name);
-
-
-
 							if (info.Name.StartsWith("begin"))
 							{
 								firstIndentedArg = 0;
@@ -81,9 +81,9 @@ namespace Blamite.Blam.Scripting
 			}
 
 
-			
 
-			bool wroteAnything = HandleExpression(expression, output);
+
+			bool wroteAnything = wroteAnything = HandleExpression(expression, output);
 			int startIndent = output.Indent;
 
 			int currentArg = 0;
@@ -98,16 +98,10 @@ namespace Blamite.Blam.Scripting
 			ScriptExpression sibling = expression.Next;
 			while (sibling != null)
 			{
-				if (wroteAnything)
+				if (wroteAnything && !_nextExpressionIsVar)
 				{
-					//output.Write(" _" + currentArg.ToString() + "_" + firstIndentedArg.ToString());
 					if (currentArg == firstIndentedArg)
 						output.Indent++;
-					//if (currentArg >= firstIndentedArg || output.Indent != startIndent)
-					//{
-					//	output.WriteLine();
-					//	_onNewLine = true;
-					//}
 					if (currentArg >= firstIndentedArg)
 					{
 						output.WriteLine();
@@ -124,7 +118,20 @@ namespace Blamite.Blam.Scripting
 					}
 				}
 
-				wroteAnything = HandleExpression(sibling, output);
+				if (!_nextExpressionIsVar)
+					wroteAnything = HandleExpression(sibling, output);
+				else if ((_nextExpressionIsVar && sibling.Opcode != 0xFFFF))
+				{
+					if (!_varTypeWritten)
+					{
+						ScriptValueType type = _opcodes.GetTypeInfo((ushort)sibling.ReturnType);
+						output.Write(type.Name + " var_" + localVarCounter.ToString() + " ");
+						_varTypeWritten = true;
+					}
+					
+					wroteAnything = HandleExpression(sibling, output);
+				}
+
 				sibling = sibling.Next;
 				currentArg++;
 			}
@@ -146,95 +153,14 @@ namespace Blamite.Blam.Scripting
 			}
 
 
-		}
-
-		private void GenerateCodeOld(ScriptExpression expression, IndentedTextWriter output)
-		{
-			int firstIndentedArg = int.MaxValue;
-			bool isFunctionCall = false;
-
-			if (expression.Type == ScriptExpressionType.Expression || expression.Type == ScriptExpressionType.Expression4)
-			{
-				ScriptValueType type = _opcodes.GetTypeInfo((ushort)expression.ReturnType);
-				if (type.Name == "function_name")
-				{
-					isFunctionCall = true;
-
-					if (!_nextFunctionIsScript)
-					{
-						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
-						if (info != null)
-						{
-							if (info.Name.StartsWith("begin"))
-							{
-								firstIndentedArg = 0;
-								if (expression.LineNumber > 0 && !_onNewLine)
-								{
-									output.Indent++;
-									output.WriteLine();
-								}
-							}
-							else if (info.Name == "if")
-							{
-								firstIndentedArg = 1;
-							}
-						}
-					}
-					if (expression.LineNumber > 0)
-						output.Write("(");
-				}
-			}
-
-			bool wroteAnything = HandleExpression(expression, output);
-			int startIndent = output.Indent;
-
-			int currentArg = 0;
-			ScriptExpression sibling = expression.Next;
-			while (sibling != null)
-			{
-				if (wroteAnything)
-				{
-					if (currentArg == firstIndentedArg)
-						output.Indent++;
-					if (currentArg >= firstIndentedArg || output.Indent != startIndent)
-					{
-						output.WriteLine();
-						_onNewLine = true;
-					}
-					else
-					{
-						output.Write(" ");
-					}
-				}
-
-				wroteAnything = HandleExpression(sibling, output);
-				sibling = sibling.Next;
-				currentArg++;
-			}
-
-			if (isFunctionCall && expression.LineNumber > 0)
-			{
-				if (output.Indent != startIndent)
-				{
-					output.Indent = startIndent;
-					if (wroteAnything)
-						output.WriteLine();
-					output.Write("x)");
-					_onNewLine = true;
-				}
-				else
-				{
-					output.Write("y)");
-				}
-			}
 		}
 
 		private bool HandleExpression(ScriptExpression expression, IndentedTextWriter output)
 		{
-			short realtype = (short)((short)expression.Type & 0xFF);
-			//short realtype = (short)expression.Type;
+			short realtype = (short)expression.Type;
+			short clippedtype = (short)((short)expression.Type & 0xFF);
 
-			switch ((ScriptExpressionType) realtype)
+			switch ((ScriptExpressionType) clippedtype)
 			{
 				case ScriptExpressionType.Expression:
 				case ScriptExpressionType.Expression4:
@@ -242,7 +168,13 @@ namespace Blamite.Blam.Scripting
 
 				case ScriptExpressionType.GlobalsReference:
 				case ScriptExpressionType.GlobalsReference4:
-					return GenerateGlobalsReference(expression, output);
+					{
+						if ((realtype & 0xFF00) > 0)
+							return GenerateVariableReference(expression, output, true);
+						else
+						return GenerateGlobalsReference(expression, output);
+					}
+					
 
 				case ScriptExpressionType.ParameterReference:
 				case ScriptExpressionType.ParameterReference4:
@@ -272,13 +204,6 @@ namespace Blamite.Blam.Scripting
 			if (expression.LineNumber == 0)
 				return false;
 
-			//if (_locallinenumber == 0)
-			//{
-			//	_locallinenumber++;
-			//	return false;
-			//}
-			
-
 			_onNewLine = false;
 			ScriptValueType type = _opcodes.GetTypeInfo((ushort) expression.ReturnType);
 			ScriptValueType actualType = type;
@@ -299,11 +224,6 @@ namespace Blamite.Blam.Scripting
 						return true;
 					}
 				}
-				else
-				{
-					output.Write("_UNPARSED");
-				}
-
 			}
 
 			uint value = GetValue(expression, type);
@@ -335,7 +255,7 @@ namespace Blamite.Blam.Scripting
 					if (_nextFunctionIsScript)
 					{
 						if (expression.Opcode >= _scripts.Scripts.Count)
-							output.Write("_IMPORT FOR 0x" + expression.Opcode.ToString("X4"));
+							output.Write("import#" + expression.StringValue);
 						else
 							output.Write(_scripts.Scripts[expression.Opcode].Name);
 						_nextFunctionIsScript = false;
@@ -343,35 +263,11 @@ namespace Blamite.Blam.Scripting
 					else
 					{
 						ScriptFunctionInfo info = _opcodes.GetFunctionInfo(expression.Opcode);
-
-						ScriptExpression blah = new ScriptExpression();
-						blah.Opcode = expression.Opcode;
-						blah.StringValue = expression.StringValue;//info.Name;
-
-						int exist = _scripts.hsExp.FindIndex(x => x.Opcode == blah.Opcode);
-
-						if (exist == -1)
-						{
-							if (info != null)
-							{
-								if (info.Name != blah.StringValue)
-									blah.StringValue = "¥" + blah.StringValue;
-							}
-
-							_scripts.hsExp.Add(blah);
-						}
-
 						if (info == null)
-							output.Write("[" + expression.Opcode.ToString("X4") + "]" + expression.StringValue);
+							output.Write("UNNAMED_OPCODE_" + expression.Opcode.ToString("X4") + "#" + expression.StringValue);
 						else
 							output.Write(info.Name);
 						//throw new InvalidOperationException("Unrecognized function opcode 0x" + expression.Opcode.ToString("X"));
-
-						//string namey = info.Name;
-						//if (info.Name == "")
-						//	namey = "[" + expression.Opcode.ToString("X4") + "]" + expression.StringValue;
-
-						//output.Write(namey);
 					}
 					break;
 				case "unit_seat_mapping":
@@ -409,24 +305,7 @@ namespace Blamite.Blam.Scripting
 		private bool GenerateGlobalsReference(ScriptExpression expression, IndentedTextWriter output)
 		{
 			_onNewLine = false;
-			string globalindex = "";
-
-			if ((byte)((expression.Value >> 24) & 0xFF) == 0xFF)
-			{
-				//globalindex = " {{" + (expression.Value ^ 0xFFFF8000).ToString("X3") + "}}";
-				ushort index = (ushort)(expression.Value ^ 0xFFFF8000);
-				ScriptGlobal blah = new ScriptGlobal();
-				blah.Name = expression.StringValue;
-				blah.Type = (short)expression.Type.GetTypeCode();
-				blah.ExpressionIndex = new DatumIndex(0xFFFF, index);
-
-				int exist = _scripts.hsGlob.FindIndex(x => x.ExpressionIndex.Index == index);
-
-				if (exist == -1)
-					_scripts.hsGlob.Add(blah);
-			}
-
-			output.Write(expression.StringValue + globalindex);
+			output.Write(expression.StringValue);
 			return true;
 		}
 
@@ -437,17 +316,25 @@ namespace Blamite.Blam.Scripting
 			return true;
 		}
 
-		private bool GenerateVariableReference(ScriptExpression expression, IndentedTextWriter output)
+		private bool GenerateVariableReference(ScriptExpression expression, IndentedTextWriter output, bool islocal = false)
 		{
 			_onNewLine = false;
-			output.Write(expression.StringValue);
+			string varDesc = islocal ? ("var_" + expression.Value.ToString() + "#") : "";
+			output.Write(varDesc + expression.StringValue);
 			return true;
 		}
 
 		private bool GenerateVariableDecl(ScriptExpression expression, IndentedTextWriter output)
 		{
 			_onNewLine = false;
-			output.Write("_VAR DECL");
+			output.Write("(local ");
+			var expressionIndex = new DatumIndex(expression.Value);
+			_nextExpressionIsVar = true;
+			_varTypeWritten = false;
+			GenerateCode(_scripts.Expressions.FindExpression(expressionIndex), output);
+			_nextExpressionIsVar = false;
+			localVarCounter++;
+			output.Write(")");
 			return true;
 		}
 
