@@ -356,8 +356,36 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadScriptFiles(IReader reader)
 		{
-			// Scripts are just loaded from scnr for now...
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
+			{
+				int tagCount = 0;
+
+				IEnumerable<ITag> scripttags = _tags.FindTagsByClass("hsdt");
+
+				ITag scnr = _tags.FindTagByClass("scnr");
+				if (scnr == null)
+				{
+					ScriptFiles = new IScriptFile[0];
+					return;
+				}
+
+
+				foreach (ITag aHS in scripttags)
+					tagCount++;
+
+				ScriptFiles = new IScriptFile[tagCount];
+
+				int i = 0;
+				foreach (ITag aHS in scripttags)
+				{
+					string tagname = _fileNames.GetTagName(aHS.Index);//.TrimStart('\\');
+					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo);
+					i++;
+				}
+
+				return;
+			}
+			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
 				ITag scnr = _tags.FindTagByClass("scnr");
 				if (scnr != null)

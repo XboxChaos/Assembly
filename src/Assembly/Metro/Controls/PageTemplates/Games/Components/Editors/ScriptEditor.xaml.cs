@@ -56,6 +56,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			generator.WriteComment("You have no rights. Play nice.", code);
 			code.WriteLine();
 
+			if (scripts.Variables != null)
+			{
+				generator.WriteComment("Variables", code);
+				foreach (ScriptGlobal variable in scripts.Variables)
+				{
+					code.Write("(variable {0} {1} ", opcodes.GetTypeInfo((ushort)variable.Type).Name, variable.Name);
+					generator.WriteExpression(variable.ExpressionIndex, code);
+					code.WriteLine(")");
+				}
+				code.WriteLine();
+			}
+
 			generator.WriteComment("Globals", code);
 			foreach (ScriptGlobal global in scripts.Globals)
 			{
@@ -93,7 +105,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 				code.Indent++;
 				code.WriteLine();
-				generator.WriteExpression(script.RootExpressionIndex, code);
+				generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
 				code.Indent--;
 
 				code.WriteLine();

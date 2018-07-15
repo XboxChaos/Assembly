@@ -14,7 +14,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly StringIDSource _stringIDs;
-		private readonly ITag _tag;
+		private readonly ITag _scenarioTag;
+		private readonly ITag _scriptTag;
 		private ScriptObjectReflexive _aiObjectWaves;
 		private ScriptObjectReflexive _aiObjects;
 		private ScriptObjectReflexive _aiSquadGroups;
@@ -33,14 +34,27 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private ScriptObjectReflexive _triggerVolumes;
 		private ScriptObjectReflexive _zoneSets;
 
-		public ThirdGenScenarioScriptFile(ITag scenarioTag, string scenarioName, FileSegmentGroup metaArea,
+		public ThirdGenScenarioScriptFile(ITag scenarioTag, string tagName, FileSegmentGroup metaArea,
 			StringIDSource stringIDs, EngineDescription buildInfo)
 		{
-			_tag = scenarioTag;
+			_scenarioTag = _scriptTag = scenarioTag;
 			_stringIDs = stringIDs;
 			_metaArea = metaArea;
 			_buildInfo = buildInfo;
-			Name = scenarioName.Substring(scenarioName.LastIndexOf('\\') + 1) + ".hsc";
+			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
+
+			DefineScriptObjectReflexives();
+		}
+
+		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
+	StringIDSource stringIDs, EngineDescription buildInfo)
+		{
+			_scenarioTag = scenarioTag;
+			_scriptTag = scriptTag;
+			_stringIDs = stringIDs;
+			_metaArea = metaArea;
+			_buildInfo = buildInfo;
+			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
 
 			DefineScriptObjectReflexives();
 		}
@@ -55,12 +69,21 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public ScriptTable LoadScripts(IReader reader)
 		{
-			StructureValueCollection values = LoadTag(reader);
+			StructureValueCollection values;
+
+			if (_scriptTag != _scenarioTag)
+				values = LoadScriptTag(reader);
+			else
+				values = LoadTag(reader);
+
+			//StructureValueCollection values = LoadTag(reader);
 
 			var result = new ScriptTable();
 			var stringReader = new StringTableReader();
+				
 			result.Scripts = LoadScripts(reader, values);
 			result.Globals = LoadGlobals(reader, values);
+			result.Variables = LoadVariables(reader, values);
 			result.Expressions = LoadExpressions(reader, values, stringReader);
 
 			CachedStringTable strings = LoadStrings(reader, values, stringReader);
@@ -102,8 +125,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private StructureValueCollection LoadTag(IReader reader)
 		{
-			reader.SeekTo(_tag.MetaLocation.AsOffset());
+			reader.SeekTo(_scenarioTag.MetaLocation.AsOffset());
 			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+		}
+		private StructureValueCollection LoadScriptTag(IReader reader)
+		{
+			reader.SeekTo(_scriptTag.MetaLocation.AsOffset());
+			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
 		}
 
 		private List<ScriptGlobal> LoadGlobals(IReader reader, StructureValueCollection values)
@@ -112,7 +140,22 @@ namespace Blamite.Blam.ThirdGen.Structures
 			uint address = values.GetInteger("script global table address");
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script global entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => new ScriptGlobal(e)).ToList();
+			return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
+		}
+
+		private List<ScriptGlobal> LoadVariables(IReader reader, StructureValueCollection values)
+		{
+			if (_buildInfo.Layouts.HasLayout("script variable entry"))
+			{
+				var count = (int)values.GetInteger("number of script variables");
+				uint address = values.GetInteger("script variable table address");
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("script variable entry");
+				StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+				return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
+			}
+			else
+				return null;
+
 		}
 
 		private List<Script> LoadScripts(IReader reader, StructureValueCollection values)
