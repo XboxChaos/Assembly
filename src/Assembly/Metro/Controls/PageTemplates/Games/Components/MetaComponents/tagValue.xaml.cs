@@ -32,7 +32,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			bool enable = (cbTagClass.SelectedIndex > 0);
 			cbTagEntry.IsEnabled = enable;
 			btnJumpToTag.IsEnabled = enable;
-            btnSearch.IsEnabled = enable;
+			btnSearch.IsEnabled = enable;
+			if (enable && cbTagEntry.SelectedIndex < 0)
+				cbTagEntry.SelectedIndex = 0;
 		}
 
 		private void cbTagEntry_SelectionChanged(object sender, SelectionChangedEventArgs e)
