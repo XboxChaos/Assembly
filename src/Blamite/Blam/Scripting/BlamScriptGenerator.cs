@@ -279,6 +279,8 @@ namespace Blamite.Blam.Scripting
 					else
 						output.Write("none");
 					break;
+				case "unparsed":
+					break;
 				default:
 					string enumValue = actualType.GetEnumValue(value);
 					if (enumValue != null)
