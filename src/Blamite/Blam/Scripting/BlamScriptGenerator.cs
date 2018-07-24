@@ -238,6 +238,8 @@ namespace Blamite.Blam.Scripting
 						output.Write("false");
 					break;
 				case "short":
+					output.Write((short) value);
+					break;
 				case "long":
 					// Signed integer
 					output.Write((int) value);
