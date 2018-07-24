@@ -810,6 +810,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void ReallocateCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Tag Block Reallocator", "Only third generation cache files are currently supported by the block reallocator.");
+				return;
+			}
+
 			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
 			if (field == null)
 				return;
