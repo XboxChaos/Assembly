@@ -130,8 +130,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.Hash1 = values.GetRaw("hash 1");
 			result.Hash2 = values.GetRaw("hash 2");
 			result.Hash3 = values.GetRaw("hash 3");
+			result.AssetCount = (int) values.GetIntegerOrDefault("asset count", 0);
 			result.Unknown2 = (int) values.GetIntegerOrDefault("unknown 2", 0);
-			result.Unknown3 = (int) values.GetIntegerOrDefault("unknown 3", 0);
 			return result;
 		}
 
@@ -152,8 +152,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.SetRaw("hash 1", page.Hash1);
 			result.SetRaw("hash 2", page.Hash2);
 			result.SetRaw("hash 3", page.Hash3);
+			result.SetInteger("asset count", (uint) page.AssetCount);
 			result.SetInteger("unknown 2", (uint) page.Unknown2);
-			result.SetInteger("unknown 3", (uint) page.Unknown3);
 			return result;
 		}
 
@@ -173,12 +173,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var primaryPage = (int) values.GetInteger("primary page index");
 			result.PrimaryPage = (primaryPage != -1) ? pages[primaryPage] : null;
 			result.PrimaryOffset = (int) values.GetInteger("primary offset");
-			result.PrimaryUnknown = (int) values.GetInteger("primary unknown");
+			result.PrimarySize = (int) values.GetInteger("primary size");
 
 			var secondaryPage = (int) values.GetInteger("secondary page index");
 			result.SecondaryPage = (secondaryPage != -1) ? pages[secondaryPage] : null;
 			result.SecondaryOffset = (int) values.GetInteger("secondary offset");
-			result.SecondaryUnknown = (int) values.GetInteger("secondary unknown");
+			result.SecondarySize = (int) values.GetInteger("secondary size");
 
 
 			if (values.HasInteger("tertiary page index"))
@@ -186,7 +186,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				var tertiaryPage = (int)values.GetInteger("tertiary page index");
 				result.TertiaryPage = (tertiaryPage != -1) ? pages[tertiaryPage] : null;
 				result.TertiaryOffset = (int)values.GetInteger("tertiary offset");
-				result.TertiaryUnknown = (int)values.GetInteger("tertiary unknown");
+				result.TertiarySize = (int)values.GetInteger("tertiary size");
 			}
 
 
@@ -198,17 +198,17 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var result = new StructureValueCollection();
 			result.SetInteger("primary page index", (pointer.PrimaryPage != null) ? (uint) pointer.PrimaryPage.Index : 0xFFFFFFFF);
 			result.SetInteger("primary offset", (uint) pointer.PrimaryOffset);
-			result.SetInteger("primary unknown", (uint) pointer.PrimaryUnknown);
+			result.SetInteger("primary size", (uint) pointer.PrimarySize);
 			result.SetInteger("secondary page index",
 				(pointer.SecondaryPage != null) ? (uint) pointer.SecondaryPage.Index : 0xFFFFFFFF);
 			result.SetInteger("secondary offset", (uint) pointer.SecondaryOffset);
-			result.SetInteger("secondary unknown", (uint) pointer.SecondaryUnknown);
+			result.SetInteger("secondary size", (uint) pointer.SecondarySize);
 
 			if (_buildInfo.HeaderSize == 0x1E000)
 			{
 				result.SetInteger("tertiary page index", (pointer.TertiaryPage != null) ? (uint)pointer.TertiaryPage.Index : 0xFFFFFFFF);
 				result.SetInteger("tertiary offset", (uint)pointer.TertiaryOffset);
-				result.SetInteger("tertiary unknown", (uint)pointer.TertiaryUnknown);
+				result.SetInteger("tertiary size", (uint)pointer.TertiarySize);
 			}
 
 			return result;

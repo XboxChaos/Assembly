@@ -181,8 +181,8 @@ namespace Blamite.Injection
 			page.Hash2 = ReadByteArray(reader);
 			page.Hash3 = ReadByteArray(reader);
 			page.Unknown1 = reader.ReadInt32();
+			page.AssetCount = reader.ReadInt32();
 			page.Unknown2 = reader.ReadInt32();
-			page.Unknown3 = reader.ReadInt32();
 			return page;
 		}
 
@@ -217,16 +217,16 @@ namespace Blamite.Injection
 				resource.Location = new ExtractedResourcePointer();
 				resource.Location.OriginalPrimaryPageIndex = reader.ReadInt32();
 				resource.Location.PrimaryOffset = reader.ReadInt32();
-				resource.Location.PrimaryUnknown = reader.ReadInt32();
+				resource.Location.PrimarySize = reader.ReadInt32();
 				resource.Location.OriginalSecondaryPageIndex = reader.ReadInt32();
 				resource.Location.SecondaryOffset = reader.ReadInt32();
-				resource.Location.SecondaryUnknown = reader.ReadInt32();
+				resource.Location.SecondarySize = reader.ReadInt32();
 
 				if (version > 1)
 				{
 					resource.Location.OriginalTertiaryPageIndex = reader.ReadInt32();
 					resource.Location.TertiaryOffset = reader.ReadInt32();
-					resource.Location.TertiaryUnknown = reader.ReadInt32();
+					resource.Location.TertiarySize = reader.ReadInt32();
 				}
 			}
 			if (version == 1)

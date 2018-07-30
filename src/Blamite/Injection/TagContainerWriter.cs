@@ -131,8 +131,8 @@ namespace Blamite.Injection
 				WriteByteArray(page.Hash2, writer);
 				WriteByteArray(page.Hash3, writer);
 				writer.WriteInt32(page.Unknown1);
+				writer.WriteInt32(page.AssetCount);
 				writer.WriteInt32(page.Unknown2);
-				writer.WriteInt32(page.Unknown3);
 
 				container.EndBlock();
 			}
@@ -171,13 +171,13 @@ namespace Blamite.Injection
 					writer.WriteByte(1);
 					writer.WriteInt32(resource.Location.OriginalPrimaryPageIndex);
 					writer.WriteInt32(resource.Location.PrimaryOffset);
-					writer.WriteInt32(resource.Location.PrimaryUnknown);
+					writer.WriteInt32(resource.Location.PrimarySize);
 					writer.WriteInt32(resource.Location.OriginalSecondaryPageIndex);
 					writer.WriteInt32(resource.Location.SecondaryOffset);
-					writer.WriteInt32(resource.Location.SecondaryUnknown);
+					writer.WriteInt32(resource.Location.SecondarySize);
 					writer.WriteInt32(resource.Location.OriginalTertiaryPageIndex);
 					writer.WriteInt32(resource.Location.TertiaryOffset);
-					writer.WriteInt32(resource.Location.TertiaryUnknown);
+					writer.WriteInt32(resource.Location.TertiarySize);
 				}
 				else
 				{

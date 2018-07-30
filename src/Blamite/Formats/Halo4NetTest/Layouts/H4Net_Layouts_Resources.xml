@@ -26,8 +26,8 @@
 		<uint32 name="bsp 3 zone set table address" offset="0xC8" />
 		<int32 name="number of cinematic zone sets" offset="0xD0" />
 		<uint32 name="cinematic zone set table address" offset="0xD4" />
-		<int32 name="number of custom zone sets" offset="0xDC" />
-		<uint32 name="custom zone set table address" offset="0xE0" />
+		<int32 name="number of scenario zone sets" offset="0xDC" />
+		<uint32 name="scenario zone set table address" offset="0xE0" />
 		
 		<int32 name="resource info buffer size" offset="0x13C" />
 		<uint32 name="resource info buffer address" offset="0x148" />
@@ -98,6 +98,9 @@
 
 		<int32 name="number of raw pages" offset="0x18" />
 		<uint32 name="raw page table address" offset="0x1C" />
+		
+		<int32 name="number of raw sizes" offset="0x24" />
+		<uint32 name="raw sizes table address" offset="0x28" />
 
 		<int32 name="number of raw segments" offset="0x30" />
 		<uint32 name="raw segment table address" offset="0x34" />
@@ -109,6 +112,9 @@
 
 		<int32 name="number of raw pages" offset="0x34" />
 		<uint32 name="raw page table address" offset="0x38" />
+		
+		<int32 name="number of raw sizes" offset="0x40" />
+		<uint32 name="raw sizes table address" offset="0x44" />
 
 		<int32 name="number of raw segments" offset="0x4C" />
 		<uint32 name="raw segment table address" offset="0x50" />
@@ -133,8 +139,20 @@
 		<raw name="hash 1" offset="0x18" size="0x14" />
 		<raw name="hash 2" offset="0x2C" size="0x14" />
 		<raw name="hash 3" offset="0x40" size="0x14" />
-		<int16 name="unknown 2" offset="0x54" />
-		<int16 name="unknown 3" offset="0x56" />
+		<int16 name="asset count" offset="0x54" />
+		<int16 name="unknown 2" offset="0x56" />
+	</layout>
+	
+	<!-- Reflexive at 0x24 in play -->
+	<layout for="raw size table entry" size="0x10">
+		<int32 name="overall size" offset="0x0" />
+		<int32 name="number of size parts" offset="0x4" />
+		<uint32 name="size part table address" offset="0x8" />
+	</layout>
+	
+	<layout for="size part table entry" size="0x8">
+		<int32 name="unknown 1" offset="0x0" />
+		<int32 name="size" offset="0x4" />
 	</layout>
 
 	<!-- Reflexive at 0x30 in play -->
@@ -145,8 +163,8 @@
 		<int16 name="primary page index" offset="0xC" />
 		<int16 name="secondary page index" offset="0xE" />
 		<int16 name="tertiary page index" offset="0x10" />
-		<int16 name="primary unknown" offset="0x12" />
-		<int16 name="secondary unknown" offset="0x14" />
-		<int16 name="tertiary unknown" offset="0x16" />
+		<int16 name="primary size" offset="0x12" />
+		<int16 name="secondary size" offset="0x14" />
+		<int16 name="tertiary size" offset="0x16" />
 	</layout>
 </layouts>

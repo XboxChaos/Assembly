@@ -46,7 +46,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public IZoneSet[] CinematicZoneSets { get; private set; }
 
-		public IZoneSet[] CustomZoneSets { get; private set; }
+		public IZoneSet[] ScenarioZoneSets { get; private set; }
 
 		/// <summary>
 		///     Saves changes made to zone sets in the table.
@@ -68,7 +68,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			SaveZoneSetTable(BSPZoneSets2, tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets3, tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", cache, stream);
 			SaveZoneSetTable(CinematicZoneSets, tagValues, "number of cinematic zone sets", "cinematic zone set table address", cache, stream);
-			SaveZoneSetTable(CustomZoneSets, tagValues, "number of custom zone sets", "custom zone set table address", cache, stream);
+			SaveZoneSetTable(ScenarioZoneSets, tagValues, "number of scenario zone sets", "scenario zone set table address", cache, stream);
 
 			_gestalt.SaveTag(tagValues, stream);
 		}
@@ -89,7 +89,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			BSPZoneSets2 = ReadZoneSetTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader).ToArray();
 			BSPZoneSets3 = ReadZoneSetTable(tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", reader).ToArray();
 			CinematicZoneSets = ReadZoneSetTable(tagValues, "number of cinematic zone sets", "cinematic zone set table address", reader).ToArray();
-			CustomZoneSets = ReadZoneSetTable(tagValues, "number of custom zone sets", "custom zone set table address", reader).ToArray();
+			ScenarioZoneSets = ReadZoneSetTable(tagValues, "number of scenario zone sets", "scenario zone set table address", reader).ToArray();
 		}
 
 		private IEnumerable<ThirdGenZoneSet> ReadZoneSetTable(StructureValueCollection tagValues, string countName, string addressName, IReader reader)
@@ -136,7 +136,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FreeZoneSetsInTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of bsp 3 zone sets", "bsp 3 zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of cinematic zone sets", "cinematic zone set table address", reader);
-			FreeZoneSetsInTable(tagValues, "number of custom zone sets", "custom zone set table address", reader);
+			FreeZoneSetsInTable(tagValues, "number of scenario zone sets", "scenario zone set table address", reader);
 		}
 
 		private void FreeZoneSetsInTable(StructureValueCollection tagValues, string countName, string addressName, IReader reader)

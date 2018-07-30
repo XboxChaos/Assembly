@@ -16,9 +16,9 @@
 		public int PrimaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets an unknown reflexive index related to the primary page.
+		///     Gets or sets a size reflexive index for the primary page.
 		/// </summary>
-		public int PrimaryUnknown { get; set; }
+		public int PrimarySize { get; set; }
 
 		/// <summary>
 		///     Gets or sets the secondary resource page that the resource belongs to. Can be null.
@@ -31,9 +31,9 @@
 		public int SecondaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets an unknown reflexive index related to the secondary page.
+		///     Gets or sets a size reflexive index for the secondary page.
 		/// </summary>
-		public int SecondaryUnknown { get; set; }
+		public int SecondarySize { get; set; }
 
 
 		/// <summary>
@@ -47,8 +47,8 @@
 		public int TertiaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets an unknown reflexive index related to the secondary page.
+		///     Gets or sets a size reflexive index for the secondary page.
 		/// </summary>
-		public int TertiaryUnknown { get; set; }
+		public int TertiarySize { get; set; }
 	}
 }

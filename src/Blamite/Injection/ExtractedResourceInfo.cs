@@ -18,14 +18,14 @@ namespace Blamite.Injection
 		{
 			OriginalPrimaryPageIndex = -1;
 			PrimaryOffset = -1;
-			PrimaryUnknown = -1;
+			PrimarySize = -1;
 			OriginalSecondaryPageIndex = -1;
 			SecondaryOffset = -1;
-			SecondaryUnknown = -1;
+			SecondarySize = -1;
 
 			OriginalTertiaryPageIndex = -1;
 			TertiaryOffset = -1;
-			TertiaryUnknown = -1;
+			TertiarySize = -1;
 		}
 
 		/// <summary>
@@ -36,14 +36,14 @@ namespace Blamite.Injection
 		{
 			OriginalPrimaryPageIndex = (basePointer.PrimaryPage != null) ? basePointer.PrimaryPage.Index : -1;
 			PrimaryOffset = basePointer.PrimaryOffset;
-			PrimaryUnknown = basePointer.PrimaryUnknown;
+			PrimarySize = basePointer.PrimarySize;
 			OriginalSecondaryPageIndex = (basePointer.SecondaryPage != null) ? basePointer.SecondaryPage.Index : -1;
 			SecondaryOffset = basePointer.SecondaryOffset;
-			SecondaryUnknown = basePointer.SecondaryUnknown;
+			SecondarySize = basePointer.SecondarySize;
 
 			OriginalTertiaryPageIndex = (basePointer.TertiaryPage != null) ? basePointer.TertiaryPage.Index : -1;
 			TertiaryOffset = basePointer.TertiaryOffset;
-			TertiaryUnknown = basePointer.TertiaryUnknown;
+			TertiarySize = basePointer.TertiarySize;
 		}
 
 		/// <summary>
@@ -56,7 +56,10 @@ namespace Blamite.Injection
 		/// </summary>
 		public int PrimaryOffset { get; set; }
 
-		public int PrimaryUnknown { get; set; }
+		/// <summary>
+		///     Gets or sets the original index of the resource's primary size.
+		/// </summary>
+		public int PrimarySize { get; set; }
 
 		/// <summary>
 		///     Gets or sets the original index of the resource's secondary page.
@@ -68,7 +71,10 @@ namespace Blamite.Injection
 		/// </summary>
 		public int SecondaryOffset { get; set; }
 
-		public int SecondaryUnknown { get; set; }
+		/// <summary>
+		///     Gets or sets the original index of the resource's secondary size.
+		/// </summary>
+		public int SecondarySize { get; set; }
 
 
 		/// <summary>
@@ -81,7 +87,10 @@ namespace Blamite.Injection
 		/// </summary>
 		public int TertiaryOffset { get; set; }
 
-		public int TertiaryUnknown { get; set; }
+		/// <summary>
+		///     Gets or sets the original index of the resource's tertiary size.
+		/// </summary>
+		public int TertiarySize { get; set; }
 	}
 
 	/// <summary>

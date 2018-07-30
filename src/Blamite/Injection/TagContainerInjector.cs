@@ -323,7 +323,7 @@ namespace Blamite.Injection
 					newResource.Location.PrimaryPage = _resources.Pages[primaryPageIndex];
 				}
 				newResource.Location.PrimaryOffset = resource.Location.PrimaryOffset;
-				newResource.Location.PrimaryUnknown = resource.Location.PrimaryUnknown;
+				newResource.Location.PrimarySize = resource.Location.PrimarySize;
 
 				// Secondary page pointers
 				if (resource.Location.OriginalSecondaryPageIndex >= 0)
@@ -339,7 +339,7 @@ namespace Blamite.Injection
 					newResource.Location.SecondaryPage = _resources.Pages[secondaryPageIndex];
 				}
 				newResource.Location.SecondaryOffset = resource.Location.SecondaryOffset;
-				newResource.Location.SecondaryUnknown = resource.Location.SecondaryUnknown;
+				newResource.Location.SecondarySize = resource.Location.SecondarySize;
 
 
 				// tert page pointers
@@ -356,7 +356,7 @@ namespace Blamite.Injection
 					newResource.Location.TertiaryPage = _resources.Pages[tertiaryPageIndex];
 				}
 				newResource.Location.TertiaryOffset = resource.Location.TertiaryOffset;
-				newResource.Location.TertiaryUnknown = resource.Location.TertiaryUnknown;
+				newResource.Location.TertiarySize = resource.Location.TertiarySize;
 			}
 
 			newResource.ResourceFixups.AddRange(resource.ResourceFixups);
