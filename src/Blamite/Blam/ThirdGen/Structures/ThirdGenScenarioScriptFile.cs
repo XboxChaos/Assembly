@@ -76,8 +76,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 			else
 				values = LoadTag(reader);
 
-			//StructureValueCollection values = LoadTag(reader);
-
 			var result = new ScriptTable();
 			var stringReader = new StringTableReader();
 				
