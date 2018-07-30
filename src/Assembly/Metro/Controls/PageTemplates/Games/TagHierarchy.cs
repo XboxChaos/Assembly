@@ -125,7 +125,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			TagFileName = name;
 
 			if (baseTag != null)
-				TagToolTip = string.Format("Datum Index: {0}\r\nMemory Address: 0x{1:X8}\r\nFile Offset: 0x{2:X}", baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
+				TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
 		}
 
 		public bool IsBookmark
