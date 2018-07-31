@@ -14,10 +14,9 @@ namespace Blamite.Injection
 		private bool _keepSound;
 		private bool _injectRaw;
 		private bool _findExistingPages;
+		private bool _renameShaders;
 		private static int SoundClass = CharConstant.FromString("snd!");
 
-		private static int ShaderBankClass = CharConstant.FromString("mtsb");
-		private static int ShaderTemplateClass = CharConstant.FromString("mats");
 		private static int PCAClass = CharConstant.FromString("pcaa");
 
 		private readonly ICacheFile _cacheFile;
@@ -39,6 +38,9 @@ namespace Blamite.Injection
 		
 		private static HashSet<string> _simulationClasses = new HashSet<string>(new string[] { "jpt!", "effe", "argd", "bipd", "bloc", "crea", "ctrl", "efsc", "eqip", "gint", "mach", "proj", "scen", "ssce", "term", "vehi", "weap" });
 
+		private static HashSet<string> _shaderClasses = new HashSet<string>(new string[] { "mtsb", "mats", "pixl", "vtsh", "rmt2" });
+
+
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
 		{
 			_cacheFile = cacheFile;
@@ -49,7 +51,7 @@ namespace Blamite.Injection
 			_findExistingPages = false;
 		}
 
-		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool injectraw, bool findexisting)
+		public TagContainerInjector(ICacheFile cacheFile, TagContainer container, bool keepsnd, bool injectraw, bool findexisting, bool renameshaders)
 		{
 			_cacheFile = cacheFile;
 			_languageCache = new CachedLanguagePackLoader(cacheFile.Languages);
@@ -57,6 +59,7 @@ namespace Blamite.Injection
 			_keepSound = keepsnd;
 			_injectRaw = injectraw;
 			_findExistingPages = findexisting;
+			_renameShaders = renameshaders;
 		}
 
 		public ICollection<DataBlock> InjectedBlocks
@@ -122,8 +125,8 @@ namespace Blamite.Injection
 			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
 			if (existingTag != null)
 			{
-				//check if its an h4 shader tag
-				if (tag.Class == ShaderBankClass || tag.Class == ShaderTemplateClass)
+				//check if we are doing shader tweaks
+				if (_renameShaders && _shaderClasses.Contains(CharConstant.ToString(tag.Class)))
 				{
 					//append old tagid to make it unique
 					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
@@ -139,14 +142,12 @@ namespace Blamite.Injection
 					return existingTag.Index;
 			}
 				
-
-			// If the tag has made it this far but is a sound, make everyone (especially gerit) shut up.
 			if (!_keepSound && tag.Class == SoundClass)
 				return DatumIndex.Null;
-      
+	
+			//PCA resource type is not always present, so get rid of 'em for now
 			if (tag.Class == PCAClass)
 			return DatumIndex.Null;
-
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
 			DataBlock tagData = _container.FindDataBlock(tag.OriginalAddress);

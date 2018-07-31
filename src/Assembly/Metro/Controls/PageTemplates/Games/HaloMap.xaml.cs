@@ -983,11 +983,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				IsChecked = true
 			};
 
+			CheckBox uniqueshaders = new CheckBox()
+			{
+				Content = new TextBlock() { Text = "Unique Shaders" },
+				IsChecked = (_cacheFile.HeaderSize > 0x3000)
+			};
+
 			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
 				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time for not-Halo 4 and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY outside of Halo 4.\r\n" +
 				"\r\nInject Raw Data:\r\nA replacement for the old \"Extract With/Without Raw\" extraction commands. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override \"Use Existing/Shared\"!\r\n" +
-				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.",
-				new List<CheckBox>() { keepsnd, injectraw, findraw });
+				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.\r\n" +
+				"\r\nUnique Shaders:\r\nIn games past Halo 3/ODST, tags containing shader code can differ between maps due to stripping of unused data. This option will rename affected tags so necessary tags always get injected. Disable at your own discretion, when on by default.",
+				new List<CheckBox>() { keepsnd, injectraw, findraw, uniqueshaders });
 
 			if (!optionresult)
 				return;
@@ -997,7 +1004,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)injectraw.IsChecked, (bool)findraw.IsChecked);
+			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)injectraw.IsChecked, (bool)findraw.IsChecked, (bool)uniqueshaders.IsChecked);
 			using (IStream stream = _mapManager.OpenReadWrite())
 			{
 				foreach (ExtractedTag tag in container.Tags)
@@ -1085,7 +1092,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container.AddTag(extracted);
 
 				// Now inject the container
-				var injector = new TagContainerInjector(_cacheFile, container, true, false, false);
+				var injector = new TagContainerInjector(_cacheFile, container, true, false, false, false);
 				injector.InjectTag(extracted, stream);
 				injector.SaveChanges(stream);
 			}
