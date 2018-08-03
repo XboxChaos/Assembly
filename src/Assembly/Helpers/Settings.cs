@@ -169,6 +169,7 @@ namespace Assembly.Helpers
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
 		private bool _autoOpenDuplicates = false;
+		private bool _showScriptInfo = false;
 
 		#region Enums
 
@@ -679,6 +680,14 @@ namespace Assembly.Helpers
 		{
 			get { return _autoOpenDuplicates; }
 			set { SetField(ref _autoOpenDuplicates, value, "AutoOpenDuplicates"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool ShowScriptInfo
+		{
+			get { return _showScriptInfo; }
+			set { SetField(ref _showScriptInfo, value, "ShowScriptInfo"); }
 		}
 
 		/// <summary>

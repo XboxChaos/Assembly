@@ -370,57 +370,80 @@
 
 					<TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="15.96"
 					         Margin="18,0,-18,-15" VerticalAlignment="Bottom">
-						<Grid Margin="25,30,25,30">
-							<ListBox x:Name="lbScripts" Margin="0" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
-							         ScrollViewer.CanContentScroll="False">
-								<ListBox.ItemTemplate>
-									<DataTemplate>
-										<Button Name="PART_Button" HorizontalAlignment="Stretch" Height="Auto" Click="ScriptButtonClick">
-											<Button.Template>
-												<ControlTemplate TargetType="{x:Type Button}">
-													<Border Background="Transparent" HorizontalAlignment="Stretch">
-														<ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-											<TextBlock Text="{Binding Name}" FontSize="16">
-												<TextBlock.Style>
-													<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
-														<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
-														<Style.Triggers>
-															<MultiDataTrigger>
-																<MultiDataTrigger.Conditions>
-																	<Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
-																	<Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
-																</MultiDataTrigger.Conditions>
-																<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
-															</MultiDataTrigger>
-														</Style.Triggers>
-													</Style>
-												</TextBlock.Style>
-											</TextBlock>
-										</Button>
-									</DataTemplate>
-								</ListBox.ItemTemplate>
-								<ListBox.ItemContainerStyle>
-									<Style TargetType="{x:Type ListBoxItem}">
-										<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate>
-													<ContentPresenter Margin="8,5"
+						<Grid Margin="25,25,15,5">
+							<DockPanel>
+								<ToggleButton x:Name="btnScriptOptions" Width="75" IsChecked="False" Style="{DynamicResource OptionsToggleButton}"
+											  VerticalAlignment="Stretch" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Margin="-10,4,0,0">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="50"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+
+										<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
+										<Path x:Name="Arrow2" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+									</Grid>
+								</ToggleButton>
+								<Popup x:Name="popScriptOptions" IsOpen="{Binding IsChecked, ElementName=btnScriptOptions}" PlacementTarget="{x:Reference btnScriptOptions}" StaysOpen="False" >
+									<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+										<StackPanel>
+											<MenuItem x:Name="cbShowHSInfo" Header="Show Extra Information" IsCheckable="True" Foreground="White"
+														  Checked="cbShowHSInfo_Altered" Unchecked="cbShowHSInfo_Altered" ToolTip="Toggles the display of block indices and expression indices for variables/globals/scripts as comments. Will need to close/reopen any script tabs to take effect."/>
+
+										</StackPanel>
+									</Border>
+								</Popup>
+								<ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
+							         ScrollViewer.CanContentScroll="False" DockPanel.Dock="Top">
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<Button Name="PART_Button" HorizontalAlignment="Stretch" Height="Auto" Click="ScriptButtonClick" ToolTip="{Binding Name}">
+												<Button.Template>
+													<ControlTemplate TargetType="{x:Type Button}">
+														<Border Background="Transparent" HorizontalAlignment="Stretch">
+															<ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+														</Border>
+													</ControlTemplate>
+												</Button.Template>
+												<TextBlock Text="{Binding Name}" FontSize="16">
+													<TextBlock.Style>
+														<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
+															<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
+															<Style.Triggers>
+																<MultiDataTrigger>
+																	<MultiDataTrigger.Conditions>
+																		<Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
+																		<Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
+																	</MultiDataTrigger.Conditions>
+																	<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+																</MultiDataTrigger>
+															</Style.Triggers>
+														</Style>
+													</TextBlock.Style>
+												</TextBlock>
+											</Button>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+									<ListBox.ItemContainerStyle>
+										<Style TargetType="{x:Type ListBoxItem}">
+											<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate>
+														<ContentPresenter Margin="0,5"
 													                  Content="{TemplateBinding ContentControl.Content}"
 													                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
 													                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
 													                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 													                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 													                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</ListBox.ItemContainerStyle>
-							</ListBox>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</ListBox.ItemContainerStyle>
+								</ListBox>
+							</DockPanel>
 						</Grid>
 					</TabItem>
 				</TabControl>

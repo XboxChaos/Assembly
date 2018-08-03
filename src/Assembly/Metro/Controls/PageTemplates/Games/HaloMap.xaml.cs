@@ -102,6 +102,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
 			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
 			cbTabOpenMode.SelectedIndex = (int) App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
+			cbShowHSInfo.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
+
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
 
 			var initalLoadBackgroundWorker = new BackgroundWorker();
@@ -585,6 +587,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.Items.Add(tab);
 				contentTabs.SelectedItem = tab;
 			}
+		}
+
+		private void cbShowHSInfo_Altered(object sender, RoutedEventArgs e)
+		{
+			App.AssemblyStorage.AssemblySettings.ShowScriptInfo = cbShowHSInfo.IsChecked;
 		}
 
 		private void ScriptButtonClick(object sender, RoutedEventArgs e)
