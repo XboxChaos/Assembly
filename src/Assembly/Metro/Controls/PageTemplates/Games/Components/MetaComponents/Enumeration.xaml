@@ -5,18 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" Height="28" Width="580"
              HorizontalAlignment="Left">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<Style x:Key="ValuePanel" TargetType="StackPanel">
-				<Setter Property="Visibility" Value="Collapsed" />
-				<Style.Triggers>
-					<DataTrigger Binding="{Binding ShowValue}" Value="true">
-						<Setter Property="Visibility" Value="Visible" />
-					</DataTrigger>
-				</Style.Triggers>
-			</Style>
-		</ResourceDictionary>
-	</UserControl.Resources>
 	<Grid>
 		<StackPanel Orientation="Horizontal">
 			<TextBlock x:Name="lblEnumName" Text="{Binding Name}" ToolTip="{Binding Path=Name}"
@@ -34,13 +22,7 @@
 				</ComboBox.ItemsPanel>
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<StackPanel x:Name="indexPrefix" Orientation="Horizontal" Style="{StaticResource ValuePanel}">
-								<TextBlock Text="{Binding Value}" />
-								<TextBlock Text=". " />
-							</StackPanel>
-							<TextBlock Text="{Binding Name}" />
-						</StackPanel>
+						<TextBlock Text="{Binding Name}" />
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>

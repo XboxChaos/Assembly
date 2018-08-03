@@ -148,7 +148,7 @@ namespace Assembly.Helpers
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
 		private bool _pluginsShowInformation;
-		private bool _pluginsShowEnumIndex;
+		private EnumPrefix _pluginsEnumPrefix = EnumPrefix.None;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -232,6 +232,13 @@ namespace Assembly.Helpers
 		{
 			Stable,
 			Experimental
+		}
+
+		public enum EnumPrefix
+		{
+			None,
+			Decimal,
+			Hexidecimal
 		}
 
 		#endregion
@@ -573,10 +580,10 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public bool PluginsShowEnumIndex
+		public EnumPrefix PluginsEnumPrefix
 		{
-			get { return _pluginsShowEnumIndex; }
-			set { SetField(ref _pluginsShowEnumIndex, value, "PluginsShowEnumIndex"); }
+			get { return _pluginsEnumPrefix; }
+			set { SetField(ref _pluginsEnumPrefix, value, "PluginsEnumPrefix"); }
 		}
 
 		/// <summary>

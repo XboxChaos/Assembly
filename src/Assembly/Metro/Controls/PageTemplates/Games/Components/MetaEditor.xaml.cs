@@ -94,8 +94,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+
+			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -304,8 +305,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+
+			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -353,13 +355,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			btnOptions.IsChecked = false;
 		}
 
-		private void cbShowEnumIndex_Altered(object sender, RoutedEventArgs e)
+		private void cbEnumPrefix_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (!hasInitFinished) return;
+			if (!hasInitFinished || cbEnumPrefix == null || cbEnumPrefix.SelectedIndex < 0) return;
 
-
-			App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex = (bool)cbShowEnumIndex.IsChecked;
-			btnOptions.IsChecked = false;
+			App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix = (Settings.EnumPrefix)cbEnumPrefix.SelectedIndex;
 		}
 
 		private void cbShowInformation_Altered(object sender, RoutedEventArgs e)
