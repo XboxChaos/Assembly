@@ -419,8 +419,11 @@ namespace Blamite.Plugins
 			int align = 4;
 			if (reader.MoveToAttribute("align"))
 				align = ParseInt(reader.Value);
+			bool sort = false;
+			if (reader.MoveToAttribute("sort"))
+				sort = ParseBool(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, sort, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

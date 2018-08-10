@@ -247,12 +247,14 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
 			WriteValueStart("reflexive", name, offset, visible);
 			_output.WriteAttributeString("entrySize", ToHexString(entrySize));
 			if (align != 4)
 				_output.WriteAttributeString("align", ToHexString(align));
+			if (sort == true)
+				_output.WriteAttributeString("sort", sort.ToString().ToLower());
 			return true;
 		}
 

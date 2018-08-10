@@ -194,9 +194,9 @@ namespace Blamite.Plugins
 			_level--;
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
-			Debug.WriteLine(Indent() + "Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}", name, offset, visible, entrySize, align);
+			Debug.WriteLine(Indent() + "Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}, sort = {5}", name, offset, visible, entrySize, align, sort);
 			_level++;
 			return true;
 		}

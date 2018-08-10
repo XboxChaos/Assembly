@@ -280,7 +280,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								if (subMap != null)
 								{
 									int subMapSize = subMap.GetBestSizeEstimate();
-									writer.EnterReflexive("Unknown", (uint) offset, false, (uint)subMapSize, 4, 0);
+									writer.EnterReflexive("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0);
 									WritePlugin(subMap, subMapSize, writer);
 									writer.LeaveReflexive();
 									offset += 0x8;

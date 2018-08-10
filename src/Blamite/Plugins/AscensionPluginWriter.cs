@@ -232,7 +232,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
 			WriteValueStart("struct", name, offset, visible);
 			_output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));

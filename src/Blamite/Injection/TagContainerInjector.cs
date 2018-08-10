@@ -6,6 +6,7 @@ using Blamite.Blam.Resources;
 using Blamite.IO;
 using Blamite.Util;
 using Blamite.Blam.Localization;
+using System.Linq;
 
 namespace Blamite.Injection
 {
@@ -414,6 +415,27 @@ namespace Blamite.Injection
 				FixStringIdReferences(block, bufferWriter);
 				if (tag != null)
 					FixUnicListReferences(block, tag, bufferWriter, stream);
+
+				// sort after fixups
+				if (block.Sortable && block.EntrySize >= 4)
+				{
+					var entries = new List<Tuple<uint, byte[]>>();
+					var bufferReader = new EndianReader(buffer, stream.Endianness);
+
+					for (int i = 0; i < block.EntryCount; i++)
+					{
+						buffer.Position = i * block.EntrySize;
+						uint sid = bufferReader.ReadUInt32();
+						byte[] rest = bufferReader.ReadBlock(block.EntrySize - 4);
+						entries.Add(new Tuple<uint, byte[]>(sid, rest));
+					}
+					buffer.Position = 0;
+					foreach (var entry in entries.OrderBy(e => e.Item1))
+					{
+						bufferWriter.WriteUInt32(entry.Item1);
+						bufferWriter.WriteBlock(entry.Item2);
+					}
+				}
 
 				// Write the buffer to the file
 				stream.SeekTo(location.AsOffset());

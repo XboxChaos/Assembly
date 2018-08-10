@@ -179,9 +179,10 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the reflexive is visible.</param>
 		/// <param name="entrySize">The size of each entry in the reflexive.</param>
 		/// <param name="align">The power of two to align the block on.</param>
+		/// <param name="sort">Whether or not this block needs sorting.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		/// <returns>False if the entries in the reflexive should be skipped over.</returns>
-		bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine);
+		bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine);
 
 		/// <summary>
 		///     Called when a reflexive definition is exited.

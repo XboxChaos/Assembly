@@ -23,12 +23,13 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlock dataBlock in tags.DataBlocks)
 			{
-				container.StartBlock("data", 6);
+				container.StartBlock("data", 7);
 
 				// Main data
 				writer.WriteUInt32(dataBlock.OriginalAddress);
 				writer.WriteInt32(dataBlock.EntryCount);
 				writer.WriteInt32(dataBlock.Alignment);
+				writer.WriteByte((byte)(dataBlock.Sortable == true ? 1 : 0));
 				WriteByteArray(dataBlock.Data, writer);
 
 				// Address fixups

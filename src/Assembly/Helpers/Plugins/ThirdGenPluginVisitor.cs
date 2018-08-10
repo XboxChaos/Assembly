@@ -250,11 +250,11 @@ namespace Assembly.Helpers.Plugins
 
 		#region Reflexive
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new ReflexiveData(name, offset, 0, entrySize, align, pluginLine, _metaArea);
+				var data = new ReflexiveData(name, offset, 0, entrySize, align, sort, pluginLine, _metaArea);
 				AddValue(data);
 
 				_reflexives.Add(data);

@@ -99,13 +99,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private double _width = MinWidth;
 
 		public ReflexiveData(string name, uint offset, uint address, uint entrySize, int align,
-			uint pluginLine, FileSegmentGroup metaArea)
+			bool sort, uint pluginLine, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{
 			_entrySize = entrySize;
 			_metaArea = metaArea;
 			_expanded = true;
 			Align = align;
+			Sort = sort;
 		}
 
 		public double Width
@@ -135,6 +136,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public int Align { get; private set; }
+		public bool Sort { get; private set; }
 
 		public uint FirstEntryAddress
 		{
@@ -226,7 +228,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, Align, base.PluginLine, _metaArea);
+			var result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, Align, Sort, base.PluginLine, _metaArea);
 			result._expanded = _expanded;
 			result._width = _width;
 			result._currentIndex = _currentIndex;
