@@ -6,6 +6,19 @@
 	public class ResourcePointer
 	{
 		/// <summary>
+		///     Returns all 3 ResourcePage objects in an array.
+		/// </summary>
+		public ResourcePage[] PagesToArray()
+		{
+			return new ResourcePage[]
+			{
+				PrimaryPage,
+				SecondaryPage,
+				TertiaryPage
+			};
+		}
+
+		/// <summary>
 		///     Gets or sets the primary resource page that the resource belongs to. Can be null.
 		/// </summary>
 		public ResourcePage PrimaryPage { get; set; }
