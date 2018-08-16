@@ -219,6 +219,11 @@ namespace Assembly.Windows
 		}
 
 		// Help
+		private void menuHelpMapNames_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.MapNames);
+		}
+
 		private void menuHelpAbout_Click(object sender, RoutedEventArgs e)
 		{
 			MetroAbout.Show();
@@ -457,7 +462,8 @@ namespace Assembly.Windows
 
 			MemoryManager,
 			VoxelConverter,
-			PostGenerator
+			PostGenerator,
+			MapNames
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -674,6 +680,11 @@ namespace Assembly.Windows
 				case TabGenre.PostGenerator:
 					tab.Title = "Post Generator";
 					tab.Content = new PostGenerator();
+					break;
+
+				case TabGenre.MapNames:
+					tab.Title = "Map Names";
+					tab.Content = new MapNames();
 					break;
 			}
 
