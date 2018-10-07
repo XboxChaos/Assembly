@@ -877,68 +877,48 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			bool? result = ofd.ShowDialog();
 			if (!result.Value)
 				return;
-
-			CheckBox keepsnd = new CheckBox()
-			{
-				Content = new TextBlock() { Text = "Keep Sound Tags" },
-				IsChecked = (_cacheFile.HeaderSize == 0x1E000),//lol
-			};
-
-			CheckBox findraw = new CheckBox()
-			{
-				Content = new TextBlock() { Text = "Use Existing/Shared Raw Pages" },
-				IsChecked = true
-			};
-			CheckBox injectraw = new CheckBox()
-			{
-				Content = new TextBlock() { Text = "Inject Raw Data" },
-				IsChecked = true
-			};
-
-			CheckBox uniqueshaders = new CheckBox()
-			{
-				Content = new TextBlock() { Text = "Unique Shaders" },
-				IsChecked = (_cacheFile.HeaderSize > 0x3000)
-			};
-
-			bool optionresult = MetroMessageBoxList.Show("Import Options", "Please toggle settings as necessary. Note that the defaults here will apply to a majority of cases, only change if you know what you are doing!\r\n" +
-				"\r\nKeep Sound Tags:\r\nSounds are not supported at this time for not-Halo 4 and the game may crash, so they are normally stripped out. This will inject sound tags anyway; For custom injection purposes ONLY outside of Halo 4.\r\n" +
-				"\r\nInject Raw Data:\r\nA replacement for the old \"Extract With/Without Raw\" extraction commands. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override \"Use Existing/Shared\"!\r\n" +
-				"\r\nUse Existing/Shared Raw Pages:\r\nNew experimental setting intended to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource.\r\n" +
-				"\r\nUnique Shaders:\r\nIn games past Halo 3/ODST, tags containing shader code can differ between maps due to stripping of unused data. This option will rename affected tags so necessary tags always get injected. Disable at your own discretion, when on by default.",
-				new List<CheckBox>() { keepsnd, injectraw, findraw, uniqueshaders });
-
-			if (!optionresult)
-				return;
-
-
+			
 			TagContainer container;
 			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
 				container = TagContainerReader.ReadTagContainer(reader);
 
-			var injector = new TagContainerInjector(_cacheFile, container, (bool)keepsnd.IsChecked, (bool)injectraw.IsChecked, (bool)findraw.IsChecked, (bool)uniqueshaders.IsChecked);
-			using (IStream stream = _mapManager.OpenReadWrite())
-			{
-				foreach (ExtractedTag tag in container.Tags)
-					injector.InjectTag(tag, stream);
 
-				injector.SaveChanges(stream);
+			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
+			// Handle defaults
+			injs.KeepSounds = (_cacheFile.HeaderSize == 0x1E000);
+			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000);
+
+			injs.ShowDialog();
+
+			if (injs.DialogResult.HasValue && injs.DialogResult.Value)
+			{
+				var injector = new TagContainerInjector(_cacheFile, container, (bool)injs.KeepSounds, (bool)injs.InjectRaw, (bool)injs.FindRaw, (bool)injs.UniqueShaders);
+				using (IStream stream = _mapManager.OpenReadWrite())
+				{
+					foreach (ExtractedTag tag in container.Tags)
+						injector.InjectTag(tag, stream);
+
+					injector.SaveChanges(stream);
+				}
+
+				// Fix the SID trie
+				foreach (StringID sid in injector.InjectedStringIDs)
+					_stringIdTrie.Add(_cacheFile.StringIDs.GetString(sid));
+
+				LoadTags();
+				MetroMessageBox.Show("Import Successful",
+					"Imported " +
+					injector.InjectedTags.Count + " tag(s), " +
+					injector.InjectedBlocks.Count + " data block(s), " +
+					injector.InjectedPages.Count + " resource page pointer(s), " +
+					injector.InjectedExtractedResourcePages.Count + " raw page(s), " +
+					injector.InjectedResources.Count + " resource pointer(s), and " +
+					injector.InjectedStringIDs.Count + " stringID(s)." +
+					"\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
+
 			}
 
-			// Fix the SID trie
-			foreach (StringID sid in injector.InjectedStringIDs)
-				_stringIdTrie.Add(_cacheFile.StringIDs.GetString(sid));
 
-			LoadTags();
-			MetroMessageBox.Show("Import Successful",
-				"Imported " + 
-				injector.InjectedTags.Count + " tag(s), " + 
-				injector.InjectedBlocks.Count + " data block(s), " +
-				injector.InjectedPages.Count + " resource page pointer(s), " +
-				injector.InjectedExtractedResourcePages.Count + " raw page(s), " + 
-				injector.InjectedResources.Count + " resource pointer(s), and " + 
-				injector.InjectedStringIDs.Count + " stringID(s)." + 
-				"\r\n\r\nPlease remember that you cannot poke to injected or modified tags without causing problems. Load the modified map in the game first.\r\n\r\nAdditionally, if applicable, make sure that your game executable is patched so that any map header hash checks are bypassed. Using an executable which only has RSA checks patched out will refuse to load the map.");
 		}
 
 		private void btnSaveNames_Click(object sender, RoutedEventArgs e)
