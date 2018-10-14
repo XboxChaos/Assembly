@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -98,8 +98,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
-			// Load Meta
-			RefreshEditor(MetaReader.LoadType.File);
+            // Load Meta
+            try
+            {
+                RefreshEditor(MetaReader.LoadType.File);
+            }
+            catch (Exception)
+            {
+                MetroMessageBox.Show("Unable to save to read file", "Is the file currently open in another process?"); //Ctrl+S your hex editor dummy.
+            }
 
 			// Set init finished
 			hasInitFinished = true;
@@ -239,8 +246,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 #if DEBUG_SAVE_ALL
                     MetaWriter metaUpdate = new MetaWriter(writer, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, null, _stringIdTrie);
 #else
-					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type,
-						_fileChanges, _stringIdTrie);
+					var metaUpdate = new MetaWriter(stream, (uint) _tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo, type, _fileChanges, _stringIdTrie);
 #endif
 					metaUpdate.WriteFields(_pluginVisitor.Values);
 					_cache.SaveChanges(stream);
@@ -315,7 +321,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void btnPluginRefresh_Click(object sender, RoutedEventArgs e)
 		{
-			RefreshEditor(MetaReader.LoadType.File);
+            try
+            {
+                RefreshEditor(MetaReader.LoadType.File);
+            }
+            catch (Exception)
+            {
+                MetroMessageBox.Show("Unable to read cache file", "Is the file currently open in another process?"); //Ctrl+S your hex editor dummy.
+            }
 			sbPluginRefresh.IsOpen = false;
 		}
 
@@ -389,7 +402,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private void btnPluginSave_Click(object sender, RoutedEventArgs e)
 		{
-			UpdateMeta(MetaWriter.SaveType.File, false);
+            try
+            {
+                UpdateMeta(MetaWriter.SaveType.File, false);
+            } catch (Exception)
+            {
+                MetroMessageBox.Show("Unable to save to cache file", "Is the file currently open in another process?"); //Ctrl+S your hex editor dummy.
+            }
 		}
 
 		private void metaEditor_KeyDown(object sender, KeyEventArgs e)
