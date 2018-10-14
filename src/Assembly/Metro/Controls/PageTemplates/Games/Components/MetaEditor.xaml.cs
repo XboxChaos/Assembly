@@ -105,7 +105,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
             }
             catch (Exception)
             {
-                MetroMessageBox.Show("Unable to save to read file", "Is the file currently open in another process?"); //Ctrl+S your hex editor dummy.
+                MetroMessageBox.Show("Unable to read cache file", "Is the file currently open in another process?"); //Ctrl+S your hex editor dummy.
             }
 
 			// Set init finished
