@@ -12,7 +12,7 @@
 	MaxWidth="550" MinHeight="464" MinWidth="664" ShowInTaskbar="True"
 	n:WindowMovement.IsDraggable="True" x:Name="control">
 	<Window.Resources>
-		<local:ExistingTagConverter x:Key="tagToBrushConverter" TagsSource="{Binding Tags, Source={x:Reference control}}" />
+		<local:ExistingTagConverter x:Key="tagToBoolConverter" TagsSource="{Binding Tags, Source={x:Reference control}}" />
 	</Window.Resources>
 	<Border Background="#FF2E2E31" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
 		<Grid>
@@ -61,7 +61,7 @@
 								<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="Attempts to reduce map filesize and memory usage ingame by keeping shared resources shared and reusing pages that already exist. Only disable if you plan on adding a custom bitmap or other resource." />
 
 								<CheckBox x:Name="injectraw" Content="Inject Raw Data" Margin="0,8,0,0" IsChecked="True"/>
-								<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="Raw data for tags will also be injected. A replacement for the &quot;Extract With/Without Raw&quot; options of previous versions. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override &quot;Use Existing/Shared&quot;!" />
+								<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="Raw data for tags will also be injected. This replaces the &quot;Extract With/Without Raw&quot; options of previous versions. Only disable if you plan on adding a custom bitmap or other resource. This will NOT override &quot;Use Existing/Shared&quot;!" />
 
 								<CheckBox x:Name="uniqueshaders" Content="Unique Shaders" Margin="0,8,0,0" />
 								<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="In games past Halo 3/ODST, tags containing shader code can differ between maps due to stripping of unused data. This will rename affected tags so necessary tags always get injected. Disable at your own discretion, when on by default." />
@@ -81,19 +81,7 @@
 										<ColumnDefinition Width="*" />
 										<ColumnDefinition Width="Auto" />
 									</Grid.ColumnDefinitions>
-
-									<TextBlock Grid.Column="0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}">
-										<TextBlock.Inlines>
-											<Run Text="Use this to rename any tag(s) to be injected via double-clicking." />
-											<Run Text="Highlighted tags">
-												<Run.Background>
-													<SolidColorBrush Color="{StaticResource ExtryzeAccentBrushColourSecondary}" Opacity="0.5" />
-												</Run.Background>
-											</Run>
-											<Run Text="won't be injected unless renamed, and will instead use the existing tag of the same name from this map." />
-										</TextBlock.Inlines>
-									</TextBlock>
-
+									<TextBlock Grid.Column="0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" Text="Use this to rename any tag(s) to be injected via double-clicking. Tags without a plus icon won't be injected unless renamed, instead using the existing tag of the same name from this map."/>
 									<ComboBox x:Name="tagClasses" Width="65" Margin="4,0,1,0" Grid.Column="1" SelectionChanged="tagClasses_SelectionChanged" VerticalAlignment="Bottom">
 										<ComboBox.ItemTemplate>
 											<ItemContainerTemplate>
@@ -113,7 +101,40 @@
 									<ListBox x:Name="listTags"  Background="Transparent" MouseDoubleClick="listTags_MouseDoubleClick" Grid.Row="0">
 										<ListBox.ItemTemplate>
 											<ItemContainerTemplate>
-												<TextBlock Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource GenericTextblock}" Background="{Binding ., Mode=TwoWay, Converter={StaticResource tagToBrushConverter}}" />
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="13" />
+														<ColumnDefinition Width="*" />
+													</Grid.ColumnDefinitions>
+													<Path x:Name="CheckMark" Grid.Column="0" SnapsToDevicePixels="False" VerticalAlignment="Center" >
+														<Path.Style>
+															<Style TargetType="Path">
+																<Setter Property="Stroke" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+																<Setter Property="StrokeThickness" Value="1.5" />
+																<Setter Property="Data" Value="M 4.5 0 L 4.5 9 M 0 4.5 L 9 4.5" />
+																<Style.Triggers>
+																	<DataTrigger Binding="{Binding ., Mode=TwoWay, Converter={StaticResource tagToBoolConverter}}" Value="True">
+																		<Setter Property="Visibility" Value="Hidden" />
+																	</DataTrigger>
+																</Style.Triggers>
+															</Style>
+														</Path.Style>
+													</Path>
+													<TextBlock Grid.Column="1" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}"
+															   ToolTip="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}">
+														<TextBlock.Style>
+															<Style TargetType="TextBlock" BasedOn="{StaticResource GenericTextblock}">
+																<Style.Triggers>
+																	<DataTrigger Binding="{Binding ., Mode=TwoWay, Converter={StaticResource tagToBoolConverter}}" Value="False">
+																		<Setter Property="Foreground" Value="White" />
+																	</DataTrigger>
+																</Style.Triggers>
+																
+															</Style>
+														</TextBlock.Style>
+													</TextBlock>
+												</Grid>
+												
 											</ItemContainerTemplate>
 										</ListBox.ItemTemplate>
 									</ListBox>

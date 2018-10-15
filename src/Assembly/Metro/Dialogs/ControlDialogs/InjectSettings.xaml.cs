@@ -181,7 +181,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 	}
 
-	[ValueConversion(typeof(ExtractedTag), typeof(System.Windows.Media.Brush))]
+	[ValueConversion(typeof(ExtractedTag), typeof(bool))]
 	internal class ExistingTagConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty TagsSourceProperty = DependencyProperty.Register(
@@ -202,21 +202,11 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 			TagClass tc = TagsSource.Classes.Where(c => c.RawClass.Magic == sourceTag.Class).FirstOrDefault();
 			if (tc == null)
-				return System.Windows.Media.Brushes.Transparent;
+				return false;
 
 			var existingTag = tc.Children.Find(t => t.TagFileName == sourceTag.Name);
 
-			if (existingTag != null)
-			{
-				System.Windows.Media.SolidColorBrush secondarybrush = Application.Current.Resources["ExtryzeAccentBrushSecondary"] as System.Windows.Media.SolidColorBrush;
-				System.Windows.Media.SolidColorBrush finalbrush = new System.Windows.Media.SolidColorBrush(secondarybrush.Color);
-
-				finalbrush.Opacity = 0.5;
-				return finalbrush;
-			}
-			else
-				return System.Windows.Media.Brushes.Transparent;
-
+			return existingTag != null;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -224,6 +214,5 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			throw new NotImplementedException();
 		}
 	}
-	
 
 }
