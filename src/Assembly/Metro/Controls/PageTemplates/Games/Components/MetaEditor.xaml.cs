@@ -435,6 +435,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						RefreshEditor(MetaReader.LoadType.File);
 					}
 					break;
+
+				case Key.F:
+					txtSearch.Focus();
+					break;
 			}
 		}
 
