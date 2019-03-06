@@ -385,7 +385,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			foreach (ITagClass tagClass in _cacheFile.TagClasses)
 			{
 				string name = CharConstant.ToString(tagClass.Magic);
-				string description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+				string description;
+				if (tagClass.Description.Value == 0)
+				{
+					if (_buildInfo.ClassNames != null)
+						description = _buildInfo.ClassNames.RetrieveName(name);
+					else
+						description = "unknown";
+				}
+				else
+					description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+
 				var wrapper = new TagClass(tagClass, name, description);
 				classWrappers[tagClass] = wrapper;
 			}

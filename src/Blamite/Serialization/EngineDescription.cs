@@ -98,6 +98,12 @@ namespace Blamite.Serialization
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
 
+		/// <summary>
+		///     Gets class names for the engine.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public ClassNameCollection ClassNames { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -123,6 +129,8 @@ namespace Blamite.Serialization
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
+			ClassNames = Settings.GetSettingOrDefault<ClassNameCollection>("databases/classNames", null);
+
 		}
 	}
 }
