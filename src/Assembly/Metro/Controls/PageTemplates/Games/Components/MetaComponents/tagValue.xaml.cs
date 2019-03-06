@@ -111,11 +111,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			if (sourceClass == null)
 				return null;
 
-			//hax 2 tha max
-			var nullTag = new TagEntry(null, null, "(null)");
-
 			var tagList = new CompositeCollection();
-			tagList.Add(nullTag);
+			tagList.Add(sourceClass.NullTag);
 
 			var mainTagListContainer = new CollectionContainer();
 			mainTagListContainer.Collection = sourceClass.Children;

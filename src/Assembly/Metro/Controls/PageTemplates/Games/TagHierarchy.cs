@@ -49,6 +49,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private string _description = string.Empty;
 		private ITagClass _rawClass;
 		private string _tagClassMagic = string.Empty;
+		private TagEntry _null = new TagEntry(null, null, "(null)");
 
 		public TagClass(ITagClass baseClass, string name, string description)
 		{
@@ -96,6 +97,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_children = value;
 				NotifyPropertyChanged("Children");
 			}
+		}
+
+		public TagEntry NullTag
+		{
+			get { return _null; }
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
