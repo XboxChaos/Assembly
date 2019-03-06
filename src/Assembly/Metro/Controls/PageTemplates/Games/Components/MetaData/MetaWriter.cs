@@ -198,7 +198,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitReflexive(ReflexiveData field)
 		{
 			var values = new StructureValueCollection();
-			values.SetInteger("entry count", (uint) field.Length);
+
+			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstEntryAddress, (int)(field.Length * field.EntrySize)) ? (uint)field.Length : 0);
 			values.SetInteger("pointer", field.FirstEntryAddress);
 
 			SeekToOffset(field.Offset);
