@@ -25,6 +25,11 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private MetaReader _reader;
 		private uint _memOffset;
 
+		public ICacheFile ParentCache
+		{
+			get { return _cacheFile; }
+		}
+
 		public ViewValueAs(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
 			IList<MetaField> fields, uint cacheOffset)
 		{

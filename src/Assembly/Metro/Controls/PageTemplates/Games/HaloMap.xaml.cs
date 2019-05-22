@@ -1915,6 +1915,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
 
 			ExternalTabsClose(tabs, false);
+
+			//check for any viewvalueas dialogs that rely on this cache and close them
+			foreach (Window w in Application.Current.Windows)
+			{
+				if (w.GetType() == typeof(Dialogs.ControlDialogs.ViewValueAs))
+				{
+					if (((Dialogs.ControlDialogs.ViewValueAs)w).ParentCache == _cacheFile)
+						w.Close();
+				}
+			}
 		}
 	}
 }
