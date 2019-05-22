@@ -19,10 +19,22 @@
 		void VisitRawData(RawData field);
 		void VisitDataRef(DataRef field);
 		void VisitTagRef(TagRefData field);
-		void VisitVector(VectorData field);
+		void VisitPoint2(Vector2Data field);
+		void VisitPoint3(Vector3Data field);
+		void VisitVector2(Vector2Data field);
+		void VisitVector3(Vector3Data field);
+		void VisitVector4(Vector4Data field);
 		void VisitDegree(DegreeData field);
+		void VisitDegree2(Degree2Data field);
+		void VisitDegree3(Degree3Data field);
+		void VisitPlane2(Vector3Data field);
+		void VisitPlane3(Vector4Data field);
+		void VisitRect16(RectangleData field);
 		void VisitColourInt(ColourData field);
 		void VisitColourFloat(ColourData field);
 		void VisitShaderRef(ShaderRef field);
+		void VisitRangeUint16(RangeUint16Data field);
+		void VisitRangeFloat32(RangeFloat32Data field);
+		void VisitRangeDegree(RangeDegreeData field);
 	}
 }

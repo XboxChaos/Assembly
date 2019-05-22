@@ -164,11 +164,47 @@ namespace Blamite.Injection
 		{
 		}
 
+		public void VisitPoint2(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitPoint3(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitVector2(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
 		public void VisitVector3(string name, uint offset, bool visible, uint pluginLine)
 		{
 		}
 
+		public void VisitVector4(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
 		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitDegree2(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitDegree3(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitPlane2(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitPlane3(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine)
 		{
 		}
 
@@ -188,11 +224,6 @@ namespace Blamite.Injection
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
-		{
-		}
-
-		public void VisitRange(string name, uint offset, bool visible, string type, double min, double max, double smallChange,
-			double largeChange, uint pluginLine)
 		{
 		}
 
@@ -276,6 +307,18 @@ namespace Blamite.Injection
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)
 		{
 			ReadReferences(offset, (b, o) => ReadShader(b, o, type));
+		}
+
+		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine)
+		{
+		}
+
+		public void VisitRangeDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
 		}
 
 		private UnicListFixupString CreateFixupString(LocalizedString str)

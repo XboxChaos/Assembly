@@ -317,12 +317,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteFloat(field.X);
-			_writer.WriteFloat(field.Y);
-			_writer.WriteFloat(field.Z);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+			_writer.WriteFloat(field.D);
 		}
 
 		public void VisitDegree(DegreeData field)
@@ -331,9 +362,71 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteFloat(field.Radian);
 		}
 
+		public void VisitDegree2(Degree2Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
+			_writer.WriteFloat(field.RadianC);
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+			_writer.WriteFloat(field.D);
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteInt16(field.A);
+			_writer.WriteInt16(field.B);
+			_writer.WriteInt16(field.C);
+			_writer.WriteInt16(field.D);
+		}
+
 		public void VisitShaderRef(ShaderRef field)
 		{
 			// Don't do anything
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt16(field.A);
+			_writer.WriteUInt16(field.B);
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
 		}
 
 		public void WriteFields(IList<MetaField> fields)

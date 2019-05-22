@@ -177,8 +177,36 @@ namespace Blamite.Plugins
 				case "degree":
 					visitor.VisitFloat32(name, offset, visible, pluginLine);
 					break;
+				case "point2":
+					visitor.VisitPoint2(name, offset, visible, pluginLine);
+					break;
+				case "point3":
+					visitor.VisitPoint3(name, offset, visible, pluginLine);
+					break;
+				case "vector2":
+					visitor.VisitVector2(name, offset, visible, pluginLine);
+					break;
 				case "vector3":
 					visitor.VisitVector3(name, offset, visible, pluginLine);
+					break;
+				case "vector4":
+				case "quaternion":
+					visitor.VisitVector4(name, offset, visible, pluginLine);
+					break;
+				case "degree2":
+					visitor.VisitDegree2(name, offset, visible, pluginLine);
+					break;
+				case "degree3":
+					visitor.VisitDegree3(name, offset, visible, pluginLine);
+					break;
+				case "plane2":
+					visitor.VisitPlane2(name, offset, visible, pluginLine);
+					break;
+				case "plane3":
+					visitor.VisitPlane3(name, offset, visible, pluginLine);
+					break;
+				case "rect16":
+					visitor.VisitRect16(name, offset, visible, pluginLine);
 					break;
 				case "stringid":
 					visitor.VisitStringID(name, offset, visible, pluginLine);

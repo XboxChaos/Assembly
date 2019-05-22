@@ -25,10 +25,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly rawBlock _rawBlock = new rawBlock();
 		//private static MetaChunk _chunkControl = new MetaChunk();
 		private static readonly tagValue _tagControl = new tagValue();
-		private static readonly VectorValue _vectorControl = new VectorValue();
 		private static readonly DegreeValue _degreeControl = new DegreeValue();
 		private static readonly ColourValue _colourValue = new ColourValue();
 		private static readonly Shader _shader = new Shader();
+		private static readonly MultiValue _multiValue = new MultiValue();
 		private double _totalWidth;
 
 		public double TotalWidth
@@ -129,14 +129,59 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_tagControl.Width);
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
-			AddWidth(_vectorControl.Width);
+			AddWidth(_multiValue.Multi2Width);
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			AddWidth(_multiValue.Multi3Width);
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			AddWidth(_multiValue.Multi2Width);
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			AddWidth(_multiValue.Multi3Width);
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			AddWidth(_multiValue.Multi4Width);
 		}
 
 		public void VisitDegree(DegreeData field)
 		{
 			AddWidth(_degreeControl.Width);
+		}
+
+		public void VisitDegree2(Degree2Data field)
+		{
+			AddWidth(_multiValue.Multi2Width);
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			AddWidth(_multiValue.Multi3Width);
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			AddWidth(_multiValue.Plane2Width);
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			AddWidth(_multiValue.Plane3Width);
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			AddWidth(_multiValue.Multi4Width);
 		}
 
 		public void VisitColourInt(ColourData field)
@@ -152,6 +197,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitShaderRef(ShaderRef field)
 		{
 			AddWidth(_shader.Width);
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			AddWidth(_multiValue.RangeWidth);
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			AddWidth(_multiValue.RangeWidth);
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			AddWidth(_multiValue.RangeWidth);
 		}
 
 		public void Add(MetaField field)
