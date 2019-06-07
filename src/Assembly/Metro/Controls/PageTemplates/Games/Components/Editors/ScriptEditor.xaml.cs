@@ -68,12 +68,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			generator.WriteComment("Scripts", code);
 			foreach (Script script in scripts.Scripts)
 			{
-				code.Write("(script {0} {1} ", opcodes.GetScriptTypeName((ushort) script.ExecutionType),
-					opcodes.GetTypeInfo((ushort) script.ReturnType).Name);
+				code.Write("(script {0} {1} {2}", opcodes.GetScriptTypeName((ushort) script.ExecutionType),
+					opcodes.GetTypeInfo((ushort) script.ReturnType).Name, script.Name);
 
 				if (script.Parameters.Count > 0)
 				{
-					code.Write("({0} (", script.Name);
+					code.Write(" (");
 
 					bool firstParam = true;
 					foreach (ScriptParameter param in script.Parameters)
@@ -84,11 +84,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 						firstParam = false;
 					}
 
-					code.Write("))");
-				}
-				else
-				{
-					code.Write(script.Name);
+					code.Write(")");
 				}
 
 				code.Indent++;
