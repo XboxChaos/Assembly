@@ -155,7 +155,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 
 				// Allocate and zero space for the info structures
 				var infoSize = infoLayoutSize + (int)debugInfoSize;
-				var infoAddr = _cacheFile.Allocator.Allocate(infoSize, stream);
+				var infoAddr = _cacheFile.Allocator.Allocate(infoSize, 0x10, stream); // 16-byte aligned too
 				var infoOffset = _cacheFile.MetaArea.PointerToOffset(infoAddr);
 				stream.SeekTo(infoOffset);
 				StreamUtil.Fill(stream, 0, infoSize);
