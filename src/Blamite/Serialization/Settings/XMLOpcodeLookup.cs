@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using Blamite.Blam.Scripting;
 using Blamite.Util;
+using System.Diagnostics;
 
 namespace Blamite.Serialization.Settings
 {
@@ -50,6 +51,10 @@ namespace Blamite.Serialization.Settings
 				bool quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
 				string tag = XMLUtil.GetStringAttribute(element, "tag", null);
 				var valueType = new ScriptValueType(name, opcode, size, quoted, tag);
+                foreach(XElement option in element.Descendants("enum"))
+                {
+                    valueType.AddEnumValue(option.Value);
+                }
 				lookup.RegisterValueType(valueType);
 			}
 		}
@@ -65,9 +70,10 @@ namespace Blamite.Serialization.Settings
 				var opcode = (ushort) XMLUtil.GetNumericAttribute(element, "opcode");
 				string returnType = XMLUtil.GetStringAttribute(element, "returnType", "void");
 				var flags = (uint) XMLUtil.GetNumericAttribute(element, "flags", 0);
+                string group = XMLUtil.GetStringAttribute(element, "group", null);
 				string[] parameterTypes = element.Descendants("arg").Select(e => XMLUtil.GetStringAttribute(e, "type")).ToArray();
 
-				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, parameterTypes);
+				var info = new ScriptFunctionInfo(name, opcode, returnType, flags, group, parameterTypes);
 				lookup.RegisterFunction(info);
 			}
 		}

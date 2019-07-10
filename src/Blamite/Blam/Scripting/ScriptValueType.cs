@@ -56,5 +56,10 @@ namespace Blamite.Blam.Scripting
 				return _enumValues[(int) value];
 			return null;
 		}
+
+        public int GetEnumIndex(string name)
+        {
+            return _enumValues.FindIndex(e => e == name);
+        }
 	}
 }

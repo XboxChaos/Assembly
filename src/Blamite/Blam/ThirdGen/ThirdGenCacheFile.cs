@@ -340,10 +340,11 @@ namespace Blamite.Blam.ThirdGen
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
 				ITag scnr = _tags.FindTagByClass("scnr");
-				if (scnr != null)
+                ITag mdlg = _tags.FindTagByClass("mdlg");
+				if (scnr != null && mdlg != null)
 				{
 					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo);
+					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, mdlg, ScenarioName, MetaArea, StringIDs, _buildInfo);
 					return;
 				}
 			}

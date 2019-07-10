@@ -14,9 +14,9 @@ namespace Blamite.Blam.Scripting
 		{
 		}
 
-		internal ScriptExpression(StructureValueCollection values, ushort index, StringTableReader stringReader)
+		internal ScriptExpression(StructureValueCollection values, ushort index, StringTableReader stringReader, int stringTableSize)
 		{
-			Load(values, index, stringReader);
+			Load(values, index, stringReader, stringTableSize);
 		}
 
 		/// <summary>
@@ -70,7 +70,7 @@ namespace Blamite.Blam.Scripting
 			StringValue = requestedStrings.GetString(_stringTableOffset);
 		}
 
-		private void Load(StructureValueCollection values, ushort index, StringTableReader stringReader)
+		private void Load(StructureValueCollection values, ushort index, StringTableReader stringReader, int stringTableSize)
 		{
 			Index = new DatumIndex((ushort) values.GetInteger("datum index salt"), index);
 			Opcode = (ushort) values.GetInteger("opcode");
@@ -81,7 +81,8 @@ namespace Blamite.Blam.Scripting
 			Value = values.GetInteger("value");
 			LineNumber = (short) values.GetIntegerOrDefault("source line", 0);
 
-			stringReader.RequestString(_stringTableOffset);
+            if(_stringTableOffset < stringTableSize)
+			    stringReader.RequestString(_stringTableOffset);
 		}
 	}
 }

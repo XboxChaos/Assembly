@@ -98,7 +98,13 @@ namespace Blamite.Serialization
 		/// </summary>
 		public VertexLayoutCollection VertexLayouts { get; private set; }
 
-		private void LoadSettings()
+        /// <summary>
+        ///     Gets seat mappings for the engine.
+        ///     Can be <c>null</c> if not present.
+        /// </summary>
+        public string SeatMappings { get; private set; }
+
+        private void LoadSettings()
 		{
 			LoadEngineSettings();
 			LoadDatabases();
@@ -123,6 +129,7 @@ namespace Blamite.Serialization
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
+            SeatMappings = Settings.GetSettingOrDefault<string>("databases/seatMappings", null);
 		}
 	}
 }

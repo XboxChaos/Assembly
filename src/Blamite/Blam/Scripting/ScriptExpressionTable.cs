@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Blamite.Blam.Scripting
 {
@@ -51,5 +52,10 @@ namespace Blamite.Blam.Scripting
 				return null;
 			return _expressions[index.Index];
 		}
+
+        public ReadOnlyCollection<ScriptExpression> ExpressionsAsReadonly
+        {
+            get { return _expressions.AsReadOnly(); }
+        }
 	}
 }

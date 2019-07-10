@@ -13,12 +13,13 @@
 		/// <param name="returnType">The return type of the function.</param>
 		/// <param name="flags">The flags for the function.</param>
 		/// <param name="parameterTypes">The parameter types for the function.</param>
-		public ScriptFunctionInfo(string name, ushort opcode, string returnType, uint flags, string[] parameterTypes)
+		public ScriptFunctionInfo(string name, ushort opcode, string returnType, uint flags, string group, string[] parameterTypes)
 		{
 			Name = name;
 			ReturnType = returnType;
 			Opcode = opcode;
 			Flags = flags;
+            Group = group;
 			ParameterTypes = parameterTypes;
 		}
 
@@ -45,6 +46,12 @@
 		/// </summary>
 		/// <value>The flags for the function.</value>
 		public uint Flags { get; private set; }
+
+        /// <summary>
+        ///     Gets the group for the function.
+        /// </summary>
+        /// <value>The group of the function.</value>
+        public string Group { get; private set; }
 
 		/// <summary>
 		///     Gets the parameter types for the function.

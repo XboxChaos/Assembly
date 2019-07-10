@@ -66,7 +66,8 @@ namespace Blamite.Serialization.Settings
 			loader.RegisterComplexSettingLoader("stringIds", new XMLStringIDSetLoader());
 			loader.RegisterComplexSettingLoader("scripting", new XMLOpcodeLookupLoader());
 			loader.RegisterComplexSettingLoader("vertexLayouts", new XMLVertexLayoutLoader());
-			return loader;
+            loader.RegisterComplexSettingLoader("seatMappings", new XMLSeatMappingLoader());
+            return loader;
 		}
 	}
 }

@@ -47,6 +47,7 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public DatumIndex RootExpressionIndex { get; set; }
 
+
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
 			EngineDescription buildInfo)
 		{

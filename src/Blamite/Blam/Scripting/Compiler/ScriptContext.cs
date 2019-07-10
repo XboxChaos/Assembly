@@ -9,7 +9,7 @@
 		///     Gets or sets available object references.
 		/// </summary>
 		/// <value>Available object references.</value>
-		public ScriptObject[] ObjectReferences { get; set; }
+		public ScriptObject[] ObjectNames { get; set; }
 
 		/// <summary>
 		///     Gets or sets available trigger volumes.
@@ -60,16 +60,16 @@
 		public ScriptObjectReflexive AISquadSingleLocations { get; set; }
 
 		/// <summary>
-		///     Gets or sets available AI objects.
+		///     Gets or sets available AI objectives.
 		/// </summary>
 		/// <value>Available AI objects.</value>
-		public ScriptObject[] AIObjects { get; set; }
+		public ScriptObject[] AIObjectives { get; set; }
 
 		/// <summary>
 		///     Gets or sets the reflexive to read AI object waves from.
 		/// </summary>
 		/// <value>The reflexive to read AI object waves from.</value>
-		public ScriptObjectReflexive AIObjectWaves { get; set; }
+		public ScriptObjectReflexive AIObjectiveRoles { get; set; }
 
 		/// <summary>
 		///     Gets or sets available starting profiles.
@@ -83,11 +83,17 @@
 		/// <value>Available object references.</value>
 		public ScriptObject[] ZoneSets { get; set; }
 
-		/// <summary>
-		///     Gets or sets available object folders.
-		/// </summary>
-		/// <value>Available object folders.</value>
-		public ScriptObject[] ObjectFolders { get; set; }
+        /// <summary>
+        ///     Gets or sets available zone sets.
+        /// </summary>
+        /// <value>Available object references.</value>
+        public ScriptObject[] DesignerZones { get; set; }
+
+        /// <summary>
+        ///     Gets or sets available object folders.
+        /// </summary>
+        /// <value>Available object folders.</value>
+        public ScriptObject[] ObjectFolders { get; set; }
 
 		/// <summary>
 		///     Gets or sets available point sets.
@@ -95,10 +101,29 @@
 		/// <value>Available point sets.</value>
 		public ScriptObject[] PointSets { get; set; }
 
-		/// <summary>
-		///     Gets or sets the reflexive to read point set points from.
-		/// </summary>
-		/// <value>The reflexive to read point set points from.</value>
-		public ScriptObjectReflexive PointSetPoints { get; set; }
-	}
+        /// <summary>
+        ///     Gets or sets the reflexive to read point set points from.
+        /// </summary>
+        /// <value>The reflexive to read point set points from.</value>
+        public ScriptObjectReflexive PointSetPoints { get; set; }
+
+
+        /// <summary>
+        ///     Gets or sets available AI Lines.
+        /// </summary>
+        /// <value>Available point sets.</value>
+        public ScriptObject[] AILines { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the reflexive to Ai Line Variants from.
+        /// </summary>
+        /// <value>The reflexive to read point set points from.</value>
+        public ScriptObjectReflexive AILineVariants { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the unit_seat_mapping count.
+        /// </summary>
+        /// <value>The number of unit seat mappings int he cache file.</value>
+        public int UnitSeatMappingCount { get; set; }
+    }
 }

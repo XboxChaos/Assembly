@@ -2,8 +2,8 @@
 <layouts>
 	<!-- Scenario meta -->
 	<layout for="scnr">
-		<int32 name="number of script objects" offset="0x104" />
-		<uint32 name="script object table address" offset="0x108" />
+    <int32 name="number of object names" offset="0x104" />
+		<uint32 name="object names table address" offset="0x108" />
 
 		<int32 name="script string table size" offset="0x430" />
 		<uint32 name="script string table address" offset="0x43C" />
@@ -38,8 +38,8 @@
 		<int32 name="number of ai squads" offset="0x3AC" />
 		<uint32 name="ai squads table address" offset="0x3B0" />
 
-		<int32 name="number of ai objects" offset="0x760" />
-		<uint32 name="ai objects table address" offset="0x764" />
+		<int32 name="number of ai objectives" offset="0x760" />
+		<uint32 name="ai objectives table address" offset="0x764" />
 
 		<int32 name="number of starting profiles" offset="0x270" />
 		<uint32 name="starting profiles table address" offset="0x274" />
@@ -47,11 +47,16 @@
 		<int32 name="number of zone sets" offset="0xA8" />
 		<uint32 name="zone sets table address" offset="0xAC" />
 
+    <int32 name="number of designer zones" offset="0x76C" />
+    <uint32 name="designer zones table address" offset="0x770" />
+
 		<int32 name="number of object folders" offset="0x678" />
 		<uint32 name="object folders table address" offset="0x67C" />
 
 		<int32 name="point set data count" offset="0x474" />
 		<uint32 name="point set data address" offset="0x478" />
+
+    <int32 name="unit seat mapping count" offset="0x4D0" />
 	</layout>
 
 	<layout for="point set data entry" size="0x84">
@@ -78,6 +83,10 @@
 		<asciiz name="name" offset="0x4" />
 	</layout>
 
+  <layout for="designer zone entry" size="0xBC">
+    <int32 name="name stringid" offset="0x0" />
+  </layout>
+
 	<layout for="starting profile entry" size="0x68">
 		<asciiz name="name" offset="0x0" />
 	</layout>
@@ -98,6 +107,10 @@
 		<int32 name="name stringid" offset="0x0" />
 	</layout>
 
+  <layout for="cutscene title entry" size="0x30">
+    <int32 name="name stringid" offset="0x0" />
+  </layout>
+
 	<layout for="device group entry" size="0x2C">
 		<asciiz name="name" offset="0x0" />
 	</layout>
@@ -117,18 +130,18 @@
 		<int32 name="name stringid" offset="0xC" />
 	</layout>
 
-	<layout for="ai object entry" size="0x24">
+	<layout for="ai objectives entry" size="0x24">
 		<int32 name="name stringid" offset="0x0" />
 
-		<int32 name="number of waves" offset="0x18" />
-		<uint32 name="waves table address" offset="0x1C" />
+		<int32 name="number of roles" offset="0x18" />
+		<uint32 name="roles table address" offset="0x1C" />
 	</layout>
 
-	<layout for="ai object wave entry" size="0x84">
+	<layout for="ai objective role entry" size="0x84">
 		<int32 name="name stringid" offset="0x40" />
 	</layout>
 
-	<layout for="script object entry" size="0x8">
+	<layout for="object name entry" size="0x8">
 		<int32 name="name stringid" offset="0x0" />
 	</layout>
 
@@ -164,4 +177,20 @@
 		<uint32 name="value" offset="0x10" />
 		<int16 name="source line" offset="0x14" />
 	</layout>
+
+  <layout for="mdlg">
+    <int32 name="number of lines" offset="0x0" />
+    <uint32 name="lines table address" offset="0x4" />
+  </layout>
+
+  <layout for="line entry" size="0x14">
+    <int32 name="name stringid" offset="0x0" />
+    <int32 name="number of variants" offset="0x4" />
+    <uint32 name="variants table address" offset="0x8" />
+  </layout>
+
+  <layout for="line variants entry" size="0x18">
+    <int32 name="name stringid" offset="0x0" />
+  </layout>
+  
 </layouts>

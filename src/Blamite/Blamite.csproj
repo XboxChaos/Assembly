@@ -84,6 +84,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime.Standard, Version=4.7.2.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.Standard.4.7.2\lib\net35\Antlr4.Runtime.Standard.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -106,6 +110,30 @@
     <Compile Include="Blam\Resources\Sounds\ISoundScale.cs" />
     <Compile Include="Blam\Resources\Sounds\SoundReader.cs" />
     <Compile Include="Blam\ISimulationDefinitionTable.cs" />
+    <Compile Include="Blam\Scripting\ANTLR\BS_ReachBaseListener.cs" />
+    <Compile Include="Blam\Scripting\ANTLR\BS_ReachLexer.cs" />
+    <Compile Include="Blam\Scripting\ANTLR\BS_ReachListener.cs" />
+    <Compile Include="Blam\Scripting\ANTLR\BS_ReachParser.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Casting.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\StringIDExpression.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\TagReferenceExpression.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\RealExpression.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\ScriptVariableReference.cs" />
+    <Compile Include="Blam\Scripting\Compiler\ParameterInfo.cs" />
+    <Compile Include="Blam\Scripting\Compiler\ScriptCompilerTypeHandling.cs" />
+    <Compile Include="Blam\Scripting\Compiler\ScriptCompilerUtility.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\Expression16.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\Expression32.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\Expression8.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\ScriptReference.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\FunctionCall.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\GlobalReference.cs" />
+    <Compile Include="Blam\Scripting\Compiler\ScriptCompiler.cs" />
+    <Compile Include="Blam\Scripting\Compiler\GlobalInfo.cs" />
+    <Compile Include="Blam\Scripting\Compiler\ScriptInfo.cs" />
+    <Compile Include="Blam\Scripting\Compiler\Expressions\ExpressionBase.cs" />
+    <Compile Include="Blam\Scripting\Compiler\UnitSeatMapping.cs" />
+    <Compile Include="Blam\Scripting\StringTable.cs" />
     <Compile Include="Blam\Shaders\IShader.cs" />
     <Compile Include="Blam\Shaders\IShaderStreamer.cs" />
     <Compile Include="Blam\Localization\DummyLanguagePackLoader.cs" />
@@ -140,15 +168,6 @@
     <Compile Include="Blam\Resources\ResourcePointer.cs" />
     <Compile Include="Blam\Resources\ResourceTable.cs" />
     <Compile Include="Blam\Resources\IZoneSetTable.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ConstantNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\FunctionCallNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNodeVisitor.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionParam.cs" />
-    <Compile Include="Blam\Scripting\Analysis\GlobalDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ShiftReduceParserCode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\VariableReferenceNode.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptContext.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObject.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObjectReflexive.cs" />
@@ -208,6 +227,7 @@
     <Compile Include="Serialization\Settings\IComplexSettingLoader.cs" />
     <Compile Include="Serialization\Settings\SettingsGroup.cs" />
     <Compile Include="Serialization\Settings\XMLEngineDatabaseLoader.cs" />
+    <Compile Include="Serialization\Settings\XMLSeatMappingLoader.cs" />
     <Compile Include="Serialization\Settings\XMLSettingsGroupLoader.cs" />
     <Compile Include="Serialization\StringIDLayout.cs" />
     <Compile Include="Serialization\VertexLayout.cs" />
@@ -348,20 +368,6 @@
     <Compile Include="IO\ContainerReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptScanner.cs">
-      <DependentUpon>LispScriptScanner.lex</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Parser Include="Blam\Scripting\Analysis\LispScriptParser.y" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptParser.cs">
-      <DependentUpon>LispScriptParser.y</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Blam\Scripting\Analysis\Executables\gplex.exe" />
-    <Content Include="Blam\Scripting\Analysis\Executables\gppg.exe" />
     <Content Include="Formats\Engines.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -526,6 +532,7 @@
     </Content>
     <Content Include="Formats\Reach\Reach_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Formats\Reach\Reach_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -533,6 +540,26 @@
     <Content Include="Formats\Reach\Reach_VertexBuffer.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Blam\Scripting\ANTLR\BS_Reach.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Blamite.Blam.Scripting.ANTLR</CustomToolNamespace>
+    </None>
+    <None Include="Blam\Scripting\ANTLR\BS_Reach.interp" />
+    <AntlrTokens Include="Blam\Scripting\ANTLR\BS_Reach.tokens">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Blamite.Blam.Scripting.ANTLR</CustomToolNamespace>
+    </AntlrTokens>
+    <None Include="Blam\Scripting\ANTLR\BS_ReachLexer.interp" />
+    <AntlrTokens Include="Blam\Scripting\ANTLR\BS_ReachLexer.tokens">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Blamite.Blam.Scripting.ANTLR</CustomToolNamespace>
+    </AntlrTokens>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Formats\Reach\SeatMappings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

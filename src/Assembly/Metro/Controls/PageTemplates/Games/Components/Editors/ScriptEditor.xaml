@@ -17,7 +17,24 @@
 				        HorizontalAlignment="Left" Margin="10,0,0,0" Click="btnCompile_Click" />
 				<Button x:Name="btnExport" Content="Export..." Width="80" VerticalAlignment="Center" HorizontalAlignment="Left"
 				        Margin="10,0,0,0" Click="btnExport_Click" />
-			</StackPanel>
+                <Grid>
+                    <TextBox   x:Name="SearchTermTextBox" Width="200"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                    <TextBlock IsHitTestVisible="False" Text="Enter A Value Type..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" Foreground="DarkGray">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+                <Button x:Name="btnExpressions" Content="Search Expressions" Width="132" VerticalAlignment="Center" HorizontalAlignment="Left"
+				        Margin="10,0,0,0" Click="btnExpressions_Click" />
+            </StackPanel>
 		</Border>
 	</Grid>
 </UserControl>
