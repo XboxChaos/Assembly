@@ -13,16 +13,15 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
-        private readonly List<string> _numTypes = new List<string> { "real", "short", "long" };
 
         private ScriptFunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
         {
             var infos = _opcodes.GetFunctionInfo(function);
             if (infos == null)
-                throw new Exception($"A Function opcode couldn't be retrieved: {function}");
+                throw new ArgumentException($"A Function opcode couldn't be retrieved. Name: {function} , Parameter count: {parameterCount}");
 
             ScriptFunctionInfo result;
-            // overloaded function
+            // overloaded functions exist. select the right one based on its parameter count
             if (infos.Count > 1)
                 result = infos.Find(i => i.ParameterTypes.Count() == parameterCount);
             else
@@ -184,15 +183,15 @@ namespace Blamite.Blam.Scripting.Compiler
         /// </summary>
         private void CloseDatum()
         {
-            Debug.Print("Close");
             if (_openDatums.Count > 0)
             {
                 var index = _openDatums.Pop();
+                Debug.Print($"Close! Index: {index}");
                 _expressions[index].NextExpression = DatumIndex.Null;
             }
 
             else
-                throw new Exception("The Datum stack is empty.");
+                throw new InvalidOperationException("Failed to close a datum. The Datum stack is empty.");
         }
 
         /// <summary>
@@ -200,16 +199,16 @@ namespace Blamite.Blam.Scripting.Compiler
         /// </summary>
         private void LinkDatum()
         {
-            Debug.Print("Link");
             if (_openDatums.Count > 0)
             {
                 var index = _openDatums.Pop();
-                if(index != -1)
+                Debug.Print($"Link! Index: {index}");
+                if (index != -1)        // -1 means that this expression belongs to a global declaration
                     _expressions[index].NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
             }
 
             else
-                throw new Exception("The Datum stack is empty.");
+                throw new InvalidOperationException("Failed to link a datum. The Datum stack is empty.");
         }
 
         /// <summary>
@@ -218,8 +217,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="expression"></param>
         private void OpenDatumAndAdd(ExpressionBase expression)
         {
-            Debug.Print("Open");
             Int32 openIndex = _expressions.Count;
+            Debug.Print($"Open! Index: {openIndex}");
             _openDatums.Push(openIndex);
             _expressions.Add(expression);
         }
@@ -242,11 +241,6 @@ namespace Blamite.Blam.Scripting.Compiler
             return (ushort)salt;
         }
 
-        private bool IsNumtype(string type)
-        {
-            return _numTypes.Contains(type);
-        }
-
         private void PushTypes(params string[] types)
         {
             var rev = types.Reverse();
@@ -264,6 +258,13 @@ namespace Blamite.Blam.Scripting.Compiler
                 Debug.WriteLine($"Type Push: {type}");
                 _expectedTypes.Push(type);
             }
+        }
+
+        private string PopType()
+        {
+            string str = _expectedTypes.Pop();
+            Debug.WriteLine($"Type Pop: {str}");
+            return str;
         }
     }
 }

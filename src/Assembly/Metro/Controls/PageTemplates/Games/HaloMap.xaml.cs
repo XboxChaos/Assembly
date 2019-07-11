@@ -589,14 +589,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 			else
 			{
-				var tab = new CloseableTabItem
-				{
-					Header = new ContentControl
-					{
-						Content = tabName,
-						ContextMenu = BaseContextMenu
-					},
-					Content = new ScriptEditor(_buildInfo, script, _mapManager)
+                var tab = new CloseableTabItem
+                {
+                    Header = new ContentControl
+                    {
+                        Content = tabName,
+                        ContextMenu = BaseContextMenu
+                    },
+                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, Path.GetFileNameWithoutExtension(_cacheLocation))
 				};
 
 				contentTabs.Items.Add(tab);

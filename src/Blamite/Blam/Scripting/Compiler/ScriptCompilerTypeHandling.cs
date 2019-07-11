@@ -60,7 +60,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     if (IsIndex16(context, expectedValueType))
                         return true;
                     else
-                        throw new Exception($"Failed to retrieve the {expectedValueType} index. Name: {name}");
+                        throw new ArgumentException($"Failed to retrieve the {expectedValueType} index. Name: {name}. Line: {context.Start.Line}");
 
                 case "ai_line":
                     return IsAiLine(context);
@@ -101,7 +101,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     if (IsAI(context, expectedValueType))
                         return true;
                     else
-                        throw new Exception($"Failed to find a matching AI. Name: \"{name}\"");
+                        throw new ArgumentException($"Failed to retrieve a matching AI. Name: \"{name}\". Line: {context.Start.Line}");
 
                 case "player":
                 case "game_difficulty":
@@ -155,10 +155,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     if (IsObject_Name(context, expectedValueType, expectedValueType))
                         return true;
                     else
-                        throw new Exception($"Failed to find a matching object name. Name: \"{name}\"");
+                        throw new ArgumentException($"Failed to retrieve a matching object name. Name: {name}. Line: {context.Start.Line}");
 
                 default:
-                    throw new Exception($"Unimplemented Value Type: \"{expectedValueType}\"");
+                    throw new NotImplementedException($"Unimplemented Value Type: \"{expectedValueType}\". Line: {context.Start.Line}");
             }
         }
 
@@ -263,6 +263,10 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             // information
             string txt = context.GetText().Trim('"');
+            if (txt == "ai_current_actor")
+            {
+                throw new NotImplementedException("The keyword ai_current_actor is not supported yet.");
+            }
             string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
             var opCode = _opcodes.GetTypeInfo("ai").Opcode;
             var valType = _opcodes.GetTypeInfo(expectedValueType).Opcode;
@@ -587,7 +591,7 @@ namespace Blamite.Blam.Scripting.Compiler
             Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
             Int32 result;
             if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
-                throw new Exception($"Unable to parse Long. Text: {txt}");
+                throw new ArgumentException($"Failed to parse Long. Text: {txt}");
             exp.Value = result;
             IncrementDatum();
             OpenDatumAndAdd(exp);
@@ -600,7 +604,7 @@ namespace Blamite.Blam.Scripting.Compiler
             Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
             Int16 result;
             if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
-                throw new Exception($"Unable to parse short. Text: {txt}");
+                throw new ArgumentException($"Failed to parse short. Text: {txt}");
             exp.Values[0] = result;
             IncrementDatum();
             OpenDatumAndAdd(exp);
@@ -613,7 +617,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var exp = new RealExpression(_currentSalt, opCode, opCode, (short)context.Start.Line);
             float result;
             if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
-                throw new Exception($"Unable to parse float. Text: {txt}");
+                throw new ArgumentException($"Failed to parse float. Text: {txt}");
 
             exp.Value = result;
             IncrementDatum();
@@ -627,18 +631,18 @@ namespace Blamite.Blam.Scripting.Compiler
 
             if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out contextIndex))
             {
-                throw new Exception($"Failed to parse unit seat mapping index. Text: {txt}");
+                throw new ArgumentException($"Failed to parse unit seat mapping index. Text: {txt}. Line: {context.Start.Line}");
             }
 
             if (contextIndex < 0 || contextIndex >= _scriptContext.UnitSeatMappingCount)
             {
-                throw new Exception($"Invalid unit seat mapping index. Index: {contextIndex}");
+                throw new ArgumentException($"Invalid unit seat mapping index. Index: {contextIndex}. Line: {context.Start.Line}");
             }
 
             UnitSeatMapping mapping;
             if(!_seatMappings.TryGetValue(contextIndex, out mapping))
             {
-                throw new Exception($"Failed to retrieve the unit seat mapping information. Please ensure that the xml file contains the mapping. Index: {contextIndex}");
+                throw new ArgumentException($"Failed to retrieve the unit seat mapping information. Please ensure that the xml file contains the mapping. Index: {contextIndex}. Line: {context.Start.Line}");
             }
 
             var opCode = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;

@@ -26,7 +26,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 // extract strings from the context
 
                 if (names.Count() != valTypes.Count())
-                    throw new Exception($"Error while creating parameter information for Script: \"{Name}\" - Mismatched parameter arrays.");
+                    throw new InvalidOperationException($"Failed to create parameter information for Script \"{Name}\" - Mismatched parameter arrays. Line: {context.Start.Line}");
 
                 // create parameters from the extracted strings
                 for (int i = 0; i < names.Count(); i++)
@@ -36,17 +36,5 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
             }                
         }
-
-        //public void Print()
-        //{
-        //    Console.WriteLine($"Script - Name: {Name} ScrType: {ScriptType} RetType: {ReturnType}");
-        //    if(Parameters.Count > 0)
-        //    {
-        //        Console.Write("Parameters:");
-        //        foreach (string param in Parameters)
-        //            Console.Write(" " + param);
-        //        Console.WriteLine();
-        //    }
-        //}
     }
 }

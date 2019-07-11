@@ -7,9 +7,12 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public static class Casting
     {
-        private static readonly Dictionary<string, string[]> _types = new Dictionary<string, string[]>
+        private static readonly List<string> _numTypes = new List<string> { "real", "short", "long" };
+
+        private static readonly Dictionary<string, string[]> _types = new Dictionary<string, string[]>()
         {
             {"object", new string[]{"object_name", "player", "ai", "unit", "vehicle", "weapon", "device" , "scenery", "effect_scenery"} },
+            {"object_list", new string[]{"object"} },
             {"unit", new string[]{"unit_name", "player", "ai", "vehicle"} },
             {"vehicle", new string[]{"vehicle_name", "ai"} },
             {"weapon", new string[]{"weapon_name"} },
@@ -35,6 +38,11 @@ namespace Blamite.Blam.Scripting.Compiler
                 return false;
             }
 
+        }
+
+        public static bool IsNumType(string type)
+        {
+            return _numTypes.Contains(type);
         }
     }
 }
