@@ -18,8 +18,8 @@ namespace Blamite.Blam.Scripting.Compiler
         private OpcodeLookup _opcodes;
         private ScriptContext _scriptContext;
         private Dictionary<int, UnitSeatMapping> _seatMappings;
-        private List<ScriptInfo> _scriptLookup = new List<ScriptInfo>();
-        private List<GlobalInfo> _globalLookup = new List<GlobalInfo>();
+        private List<ScriptDeclInfo> _scriptLookup = new List<ScriptDeclInfo>();
+        private List<GlobalDeclInfo> _globalLookup = new List<GlobalDeclInfo>();
         private List<ParameterInfo> _variables = new List<ParameterInfo>();
 
         // script tables
@@ -52,10 +52,10 @@ namespace Blamite.Blam.Scripting.Compiler
         public override void EnterHsc(BS_ReachParser.HscContext context)
         {
             if (context.gloDecl() != null)
-                _globalLookup = context.gloDecl().Select(g => new GlobalInfo(g)).ToList();
+                _globalLookup = context.gloDecl().Select(g => new GlobalDeclInfo(g)).ToList();
 
             if (context.scriDecl() != null)
-                _scriptLookup = context.scriDecl().Select(s => new ScriptInfo(s)).ToList();
+                _scriptLookup = context.scriDecl().Select(s => new ScriptDeclInfo(s)).ToList();
 
         }
 
@@ -264,6 +264,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (IsScriptVariable(context))
                 return;
 
+
             // handle global references
             if (IsGlobalReference(context, valType))
                 return;
@@ -282,55 +283,78 @@ namespace Blamite.Blam.Scripting.Compiler
             //todo: implement casting?
 
             string text = context.GetText();
-            int index = -1;
-            if(expReturnType == "GLOBALREFERENCE" || expReturnType == "NUMBER" || expReturnType == "ANY")  // todo: handle NUMBER separately?
-                index = _globalLookup.FindIndex(glo => glo.Name == text);
-            else
-                index = _globalLookup.FindIndex(glo => glo.Name == text && glo.ValueType == expReturnType);
 
-            // not found...not a global reference
-            if (index == -1)
+            // check if this literal is an engine global
+            GlobalInfo engineGlobal = _opcodes.GetGlobalInfo(text);
+            if (engineGlobal != null)
             {
-                if (expReturnType == "GLOBALREFERENCE")
-                    throw new ArgumentException($"GLOBALREFERENCE: No matching global could be found. Name: \"{text}\". Line: {context.Start.Line}");
-                else
-                    return false;
+                string retType = engineGlobal.ReturnType;
+                ushort opc = GetGlobalOpCode(context, retType);
+                var exp = new EngineGlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), engineGlobal.MaskedOpcode, (short)context.Start.Line);
+                IncrementDatum();
+                OpenDatumAndAdd(exp);
+                return true;
             }
-                
+            else
+            {
+                // check if this is a "normal" global reference
 
-            GlobalReference exp = new GlobalReference();
-            exp.Salt = _currentSalt;
-            exp.ValueType = _opcodes.GetTypeInfo(_globalLookup[index].ValueType).Opcode;
+                int index = -1;
+
+                if (expReturnType == "GLOBALREFERENCE" || expReturnType == "NUMBER" || expReturnType == "ANY")  // todo: handle NUMBER separately?
+                {
+                    index = _globalLookup.FindIndex(glo => glo.Name == text);
+                }
+                else
+                {
+                    index = _globalLookup.FindIndex(glo => glo.Name == text && glo.ValueType == expReturnType);
+                }
+                    
+
+                // no match...not a global reference
+                if (index == -1)
+                {
+                    if (expReturnType == "GLOBALREFERENCE")
+                        throw new ArgumentException($"GLOBALREFERENCE: No matching global could be found. Name: \"{text}\". Line: {context.Start.Line}");
+                    else
+                        return false;
+                }
+
+                string retType = _globalLookup[index].ValueType;
+                ushort opc = GetGlobalOpCode(context, retType);
+                var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, (short)context.Start.Line);
+                IncrementDatum();
+                OpenDatumAndAdd(exp);
+                return true;
+            }
+        }
+
+        private ushort GetGlobalOpCode(BS_ReachParser.LitContext context, string retType)
+        {
+            ushort opcode = 0xFFFF;
+            var grandparent = (BS_ReachParser.CallContext)context.Parent.Parent;
 
             // "set" and "=" functions are special
-            if (context.Parent.Parent.RuleIndex == BS_ReachParser.RULE_call)
+            if (grandparent.RuleIndex == BS_ReachParser.RULE_call)
             {
-                var grandparent = (BS_ReachParser.CallContext)context.Parent.Parent;
                 string funcName = grandparent.funcID().GetText();
                 if (funcName == "=")
-                    exp.OpCode = 0;
+                    opcode = 0;
                 else if (funcName == "set")
                 {
-                    exp.OpCode = 0xFFFF;
+                    opcode = 0xFFFF;
                     Debug.Print("global push");
-                    PushTypes(_globalLookup[index].ValueType); // the next parameter must have the same return type as this global
+                    PushTypes(retType); // the next parameter must have the same return type as this global
                 }
 
             }
             // default case: opcode = value type
             else
-                exp.OpCode = (ushort)exp.ValueType;
+            {
+                opcode = _opcodes.GetTypeInfo(retType).Opcode;
+            }
 
-            exp.StringAddress = _strings.Cache(text);
-            exp.Value = index;
-            exp.LineNumber = (short)context.Start.Line;
-
-            IncrementDatum();
-
-            //open next expression Datum
-            OpenDatumAndAdd(exp);
-
-            return true;
+            return opcode;
         }
 
         private bool IsScriptReference(BS_ReachParser.CallContext context, string expextedReturnType, Int32 expectedParamCount)

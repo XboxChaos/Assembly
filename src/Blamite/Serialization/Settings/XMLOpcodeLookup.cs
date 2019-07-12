@@ -27,6 +27,7 @@ namespace Blamite.Serialization.Settings
 			RegisterExecutionTypes(root, result);
 			RegisterValueTypes(root, result);
 			RegisterFunctions(root, result);
+            RegisterGlobals(root, result);
 
 			return result;
 		}
@@ -77,5 +78,21 @@ namespace Blamite.Serialization.Settings
 				lookup.RegisterFunction(info);
 			}
 		}
+
+        private void RegisterGlobals(XContainer root, OpcodeLookup lookup)
+        {
+            foreach (XElement element in root.Element("globals").Descendants("global"))
+            {
+                string name = XMLUtil.GetStringAttribute(element, "name");
+                if (name == "")
+                    continue;
+
+                ushort opcode = (ushort)XMLUtil.GetNumericAttribute(element, "opcode");
+                string returnType = XMLUtil.GetStringAttribute(element, "type");
+
+                var info = new GlobalInfo(name, opcode, returnType);
+                lookup.RegisterGlobal(info);
+            }
+        }
 	}
 }

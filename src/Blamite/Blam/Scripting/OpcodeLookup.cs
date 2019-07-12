@@ -10,7 +10,13 @@ namespace Blamite.Blam.Scripting
 		private readonly Dictionary<ushort, ScriptFunctionInfo> _functionLookupByOpcode =
 			new Dictionary<ushort, ScriptFunctionInfo>();
 
-		private readonly Dictionary<ushort, string> _scriptTypeNameLookup = new Dictionary<ushort, string>();
+        private readonly Dictionary<string, GlobalInfo> _globalLookupByName =
+            new Dictionary<string, GlobalInfo>();
+
+        private readonly Dictionary<ushort, GlobalInfo> _globalLookupByOpcode =
+            new Dictionary<ushort, GlobalInfo>();
+
+        private readonly Dictionary<ushort, string> _scriptTypeNameLookup = new Dictionary<ushort, string>();
 		private readonly Dictionary<string, ushort> _scriptTypeOpcodeLookup = new Dictionary<string, ushort>();
 		private readonly Dictionary<string, ScriptValueType> _typeLookupByName = new Dictionary<string, ScriptValueType>();
 		private readonly Dictionary<ushort, ScriptValueType> _typeLookupByOpcode = new Dictionary<ushort, ScriptValueType>();
@@ -40,7 +46,13 @@ namespace Blamite.Blam.Scripting
 			functions.Add(func);
 		}
 
-		public string GetScriptTypeName(ushort opcode)
+        public void RegisterGlobal(GlobalInfo glo)
+        {
+            _globalLookupByOpcode[glo.Opcode] = glo;
+            _globalLookupByName[glo.Name] = glo;
+        }
+
+        public string GetScriptTypeName(ushort opcode)
 		{
 			string result;
 			if (_scriptTypeNameLookup.TryGetValue(opcode, out result))
@@ -87,5 +99,21 @@ namespace Blamite.Blam.Scripting
 				return result;
 			return null;
 		}
-	}
+
+        public GlobalInfo GetGlobalInfo(ushort opcode)
+        {
+            GlobalInfo result;
+            if (_globalLookupByOpcode.TryGetValue(opcode, out result))
+                return result;
+            return null;
+        }
+
+        public GlobalInfo GetGlobalInfo(string name)
+        {
+            GlobalInfo result;
+            if (_globalLookupByName.TryGetValue(name, out result))
+                return result;
+            return null;
+        }
+    }
 }

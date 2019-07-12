@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler
 {
-    public class ScriptInfo
+    public class ScriptDeclInfo
     {
         public string Name { get; private set; }
         public string ScriptType { get; private set; }
         public string ReturnType { get; private set; }
         public List<ParameterInfo> Parameters { get; private set; }
 
-        public ScriptInfo(BS_ReachParser.ScriDeclContext context)
+        public ScriptDeclInfo(BS_ReachParser.ScriDeclContext context)
         {
             Name = context.ID().GetText();
             ScriptType = context.SCRIPTTYPE().GetText();

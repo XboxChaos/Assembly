@@ -5,9 +5,12 @@ using System.Text;
 
 namespace Blamite.Blam.Scripting.Compiler.Expressions
 {
-    public class GlobalReference : ExpressionBase
+    public class EngineGlobalReference : ExpressionBase
     {
-        public Int32 Value { get; set; }
+
+        public const ushort Padding = 0xFFFF;
+        public ushort MaskedOpcode { get; set; }
+
 
         public override short ExpressionType
         {
@@ -17,26 +20,27 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
             }
         }
 
-        public GlobalReference()
+        public EngineGlobalReference()
         {
-            Value = -1;
+            MaskedOpcode = 0xFFFF;
         }
 
-        public GlobalReference(UInt16 salt, UInt16 opCode, UInt16 valType, UInt32 strAddr, int value, Int16 line)
+
+        public EngineGlobalReference(UInt16 salt, UInt16 opCode, UInt16 valType, UInt32 strAddr, ushort maskedOpcode, Int16 line)
         {
             Salt = salt;
             OpCode = opCode;
             ValueType = valType;
             StringAddress = strAddr;
             LineNumber = line;
-            Value = value;
+            MaskedOpcode = maskedOpcode;
         }
 
         public override string ValueToString
         {
             get
             {
-                return Value.ToString();
+                return $"{Padding} | {MaskedOpcode}";
             }
         }
     }
