@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
@@ -142,10 +143,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             if (_buildInfo.Name == "Halo: Reach")
             {
                 string hsc = txtScript.Text;
-                var thrd = new Thread(()=>CompileScripts(hsc));
-                thrd.SetApartmentState(ApartmentState.STA);
-                thrd.Start();
-                MetroMessageBox.Show("Success!", "The scripts were compiled successfully!");
+                Task<TimeSpan> task = new Task<TimeSpan>(() => CompileScripts(hsc));
+                task.Start();
+
+                try
+                {
+                    task.Wait();
+                    MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {task.Result.TotalSeconds}s.");
+                }
+                catch (AggregateException ex)
+                {
+                    MetroMessageBox.Show("Compiler Exception", ex.InnerException.Message);
+                }
+
             }
             else
                 MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
@@ -158,8 +168,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             ExpressionsToXML();
         }
 
-        private void CompileScripts(string code)
+        private TimeSpan CompileScripts(string code)
         {
+            DateTime start = DateTime.Now;
+
             ICharStream stream = CharStreams.fromstring(code);
             ITokenSource lexer = new BS_ReachLexer(stream);
             ITokenStream tokens = new CommonTokenStream(lexer);
@@ -168,6 +180,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             IParseTree tree = parser.hsc();
             ScriptCompiler compiler = new ScriptCompiler(_cashefile, _scriptFile.LoadContext(_streamManager.OpenRead()), _opcodes, LoadSeatMappings());
             ParseTreeWalker.Default.Walk(compiler, tree);
+
+            DateTime end = DateTime.Now;
+            TimeSpan duration = end.Subtract(start);
+            return duration;
         }
 
         // Remove Later

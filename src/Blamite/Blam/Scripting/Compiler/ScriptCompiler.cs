@@ -216,8 +216,8 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             else
             {
-                throw new InvalidOperationException($"The compiler encountered mismatched value types while processing function \"{name}\". " +
-                    $"Expected: \"{expectedType}\" Encountered: \"{info.ReturnType}\". Line: {context.Start.Line}.");
+                throw new InvalidOperationException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
+                    $"\nIt encountered \"{info.ReturnType}\".\nLine: {context.Start.Line}");
             }
             
             IncrementDatum();
