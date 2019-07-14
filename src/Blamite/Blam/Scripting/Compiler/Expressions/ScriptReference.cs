@@ -17,9 +17,14 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
 
         public DatumIndex Value { get; set; }
 
-        public ScriptReference()
+        public ScriptReference(UInt16 salt, UInt16 opCode, UInt16 valType, Int16 line)
         {
+            Salt = salt;
+            OpCode = opCode;
+            ValueType = valType;
             StringAddress = 0xCDCDCDCD;
+            LineNumber = line;
+            Value = new DatumIndex();
         }
 
         public override string ValueToString

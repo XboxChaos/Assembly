@@ -78,7 +78,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterScriDecl(BS_ReachParser.ScriDeclContext context)
         {
-            Debug.Print($"Enter Script: {context.ID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Enter Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
+
+
             // create new script object and add it to the table
             Script scr = ScriptFromContext(context);
             _scripts.Add(scr);
@@ -119,7 +121,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitScriDecl(BS_ReachParser.ScriDeclContext context)
         {
-            Debug.Print($"Exit Script: {context.ID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Exit Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
             _variables.Clear();
             CloseDatum();
         }
@@ -130,7 +132,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterGloDecl( BS_ReachParser.GloDeclContext context)
         {
-            Debug.Print($"Enter Global: {context.ID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Enter Global:\t{context.ID().GetText()} , Line: {context.Start.Line}");
 
             //create a new Global and add it to the table
             ScriptGlobal glo = new ScriptGlobal();
@@ -150,7 +152,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitGloDecl(BS_ReachParser.GloDeclContext context)
         {
-            Debug.Print($"Exit Global: {context.ID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Exit Global:\t{context.ID().GetText()}");
             CloseDatum();
         }
 
@@ -161,7 +163,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterCall(BS_ReachParser.CallContext context)
         {
-            Debug.Print($"Enter Call: {context.funcID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Enter Call:\t\t{context.funcID().GetText()} , Line: {context.Start.Line}");
+
+
             LinkDatum();
 
             // retrieve information from the context.
@@ -174,8 +178,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
 
             // handle calls
-            ScriptFunctionInfo info = RetrieveFunctionInfo(name, contextParamCount);
-            PushCallParameters(info, context, contextParamCount);
+            ScriptFunctionInfo info = RetrieveFunctionInfo(name, contextParamCount, context.Start.Line);
+            PushCallParameters(info, context, contextParamCount, expectedType);
 
             // Create Function Call Expression
             FunctionCall funcCall = new FunctionCall();
@@ -203,6 +207,10 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 funcCall.ValueType = _opcodes.GetTypeInfo(info.ReturnType).Opcode;
             }
+            else if(info.ReturnType == "passthrough")   // passthrough
+            {
+                funcCall.ValueType = _opcodes.GetTypeInfo(expectedType).Opcode;
+            }
             else if (Casting.CanBeCasted(info.ReturnType, expectedType))     // casting
             {
                 if (expectedType == "object_list")   // special cases
@@ -216,14 +224,12 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             else
             {
-                throw new InvalidOperationException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
-                    $"\nIt encountered \"{info.ReturnType}\".\nLine: {context.Start.Line}");
+                throw new CompilerException($"The compiler expected a function with the return type \"{expectedType}\" while processing \"{name}\"." +
+                    $" It encountered \"{info.ReturnType}\".",context);
             }
             
             IncrementDatum();
             funcCall.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
-
-            // open next expression Datum
             OpenDatumAndAdd(funcCall);
             AddFunctionName(name, funcCall.OpCode, funcCall.LineNumber);
         }
@@ -234,7 +240,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitCall(BS_ReachParser.CallContext context)
         {
-            Debug.Print($"Exit Call: {context.funcID().GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Exit Call:\t\t{context.funcID().GetText()}");
             CloseDatum();
         }
 
@@ -244,7 +250,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterLit(BS_ReachParser.LitContext context)
         {
-            Debug.Print($"Enter Lit: {context.GetText()} , Line: {context.Start.Line}");
+            Debug.Print($"Enter Lit:\t\t{context.GetText()} , Line: {context.Start.Line}");
             LinkDatum();
 
             string txt = context.GetText();
@@ -273,7 +279,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (HandleValueType(context, valType))
                 return;
 
-            throw new ArgumentException($"Failed to process a literal. Name: \"{txt}\". Line: {context.Start.Line}");
+            throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
 
 
@@ -297,21 +303,9 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             else
             {
-                // check if this is a "normal" global reference
+                int index = _globalLookup.FindIndex(glo => glo.Name == text);
 
-                int index = -1;
-
-                if (expReturnType == "GLOBALREFERENCE" || expReturnType == "NUMBER" || expReturnType == "ANY")  // todo: handle NUMBER separately?
-                {
-                    index = _globalLookup.FindIndex(glo => glo.Name == text);
-                }
-                else
-                {
-                    index = _globalLookup.FindIndex(glo => glo.Name == text && glo.ValueType == expReturnType);
-                }
-                    
-
-                // no match...not a global reference
+                // not found
                 if (index == -1)
                 {
                     if (expReturnType == "GLOBALREFERENCE")
@@ -319,19 +313,36 @@ namespace Blamite.Blam.Scripting.Compiler
                     else
                         return false;
                 }
+                else
+                {
+                    string retType;
 
-                string retType = _globalLookup[index].ValueType;
-                ushort opc = GetGlobalOpCode(context, retType);
-                var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, (short)context.Start.Line);
-                IncrementDatum();
-                OpenDatumAndAdd(exp);
-                return true;
+                    // calculate return type
+                    if(Casting.IsFlexibleType(expReturnType) || expReturnType == _globalLookup[index].ValueType)    // default case
+                    {
+                        retType = _globalLookup[index].ValueType;
+                    }
+                    else if (Casting.CanBeCasted(_globalLookup[index].ValueType, expReturnType))        // casting
+                    {
+                        retType = expReturnType;
+                    }
+                    else
+                    {
+                        throw new CompilerException($"The global \"{text}\" can't be casted from \"{_globalLookup[index]}\" to \"{expReturnType}\".", context);
+                    }
+
+                    ushort opc = GetGlobalOpCode(context, retType);
+                    var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, (short)context.Start.Line);
+                    IncrementDatum();
+                    OpenDatumAndAdd(exp);
+                    return true;
+                }
             }
         }
 
         private ushort GetGlobalOpCode(BS_ReachParser.LitContext context, string retType)
         {
-            ushort opcode = 0xFFFF;
+            ushort opcode;
             var grandparent = (BS_ReachParser.CallContext)context.Parent.Parent;
 
             // "set" and "=" functions are special
@@ -345,6 +356,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     opcode = 0xFFFF;
                     Debug.Print("global push");
                     PushTypes(retType); // the next parameter must have the same return type as this global
+                }
+                else
+                {
+                    opcode = _opcodes.GetTypeInfo(retType).Opcode;
                 }
 
             }
@@ -360,19 +375,21 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsScriptReference(BS_ReachParser.CallContext context, string expextedReturnType, Int32 expectedParamCount)
         {
             string name = context.funcID().GetText();
-            if (expextedReturnType == "ANY")
-                expextedReturnType = "void";
 
             int index;
 
-            // number handling
+            // try to find a matching script
             if(expextedReturnType == "NUMBER")
             {
-                index = _scriptLookup.FindIndex(s => s.Name == name && Casting.IsNumType(s.ReturnType) && s.Parameters.Count == expectedParamCount);
+                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && Casting.IsNumType(s.ReturnType));
+            }
+            else if(expextedReturnType == "ANY")
+            {
+                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
             }
             else
             {
-                index = _scriptLookup.FindIndex(s => s.Name == name && s.ReturnType == expextedReturnType && s.Parameters.Count == expectedParamCount);
+                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && s.ReturnType == expextedReturnType);
             }
 
             // a matching script wasn't found...not a script reference
@@ -387,11 +404,8 @@ namespace Blamite.Blam.Scripting.Compiler
             }
 
             // create Script Reference node
-            ScriptReference scrRef = new ScriptReference();
-            scrRef.Salt = _currentSalt;
-            scrRef.OpCode = (ushort)index;
-            scrRef.ValueType = _opcodes.GetTypeInfo(_scriptLookup[index].ReturnType).Opcode;
-            scrRef.LineNumber = (short)context.Start.Line;
+            ushort valType = _opcodes.GetTypeInfo(_scriptLookup[index].ReturnType).Opcode;
+            ScriptReference scrRef = new ScriptReference(_currentSalt, (ushort)index, valType, (short)context.Start.Line);
 
             IncrementDatum();
             scrRef.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);     // close Value: Index to name                                                                                     
@@ -483,20 +497,21 @@ namespace Blamite.Blam.Scripting.Compiler
             OpenDatumAndAdd(funcName);
         }
 
+        // todo: finish passthrough support for functions other than "begin"
         /// <summary>
         /// Calculates the value types for the parameters of a function and pushes them to the stack.
         /// </summary>
         /// <param name="info">The function's ScriptFunctionInfo</param>
         /// <param name="context">The call contect</param>
         /// <param name="actualParameterCount">The number of parameters which was extracted from the context</param>
-        private void PushCallParameters(ScriptFunctionInfo info, BS_ReachParser.CallContext context, int contextParameterCount)
+        private void PushCallParameters(ScriptFunctionInfo info, BS_ReachParser.CallContext context, int contextParameterCount, string expectedReturnType)
         {
             // handle parameters
             int expectedParamCount = info.ParameterTypes.Count();
             if (expectedParamCount > 0)
             {
                 if (contextParameterCount != expectedParamCount)
-                    throw new InvalidOperationException($"Failed to push function parameters for function \"{context.funcID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\". Line: {context.Start.Line}");
+                    throw new CompilerException($"Failed to push function parameters for function \"{context.funcID().GetText()}\". Mismatched counts. Expected: \"{expectedParamCount}\" Encountered: \"{contextParameterCount}\".", context);
 
                 // push params to the stack
                 PushTypes(info.ParameterTypes);
@@ -507,7 +522,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 switch (info.Group)
                 {
                     case "Begin":
-                        PushTypes("ANY", contextParameterCount);
+                        PushTypes(expectedReturnType);  // the last evaluated expression
+                        PushTypes("ANY", contextParameterCount -1);
                         break;
 
                     case "BeginCount":

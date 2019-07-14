@@ -11,7 +11,7 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
         {
             get
             {
-                return 41;
+                return 29;
             }
         }
 

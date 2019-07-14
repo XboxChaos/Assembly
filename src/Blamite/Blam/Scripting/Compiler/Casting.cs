@@ -9,6 +9,8 @@ namespace Blamite.Blam.Scripting.Compiler
     {
         private static readonly List<string> _numTypes = new List<string> { "real", "short", "long" };
 
+        private static readonly List<string> _flexTypes = new List<string>() { "ANY", "NUMBER", "GLOBALREFERENCE" };
+
         private static readonly Dictionary<string, string[]> _types = new Dictionary<string, string[]>()
         {
             {"object", new string[]{"object_name", "player", "ai", "unit", "vehicle", "weapon", "device" , "scenery", "effect_scenery"} },
@@ -43,6 +45,11 @@ namespace Blamite.Blam.Scripting.Compiler
         public static bool IsNumType(string type)
         {
             return _numTypes.Contains(type);
+        }
+
+        public static bool IsFlexibleType(string type)
+        {
+            return _flexTypes.Contains(type);
         }
     }
 }

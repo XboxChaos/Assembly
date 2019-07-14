@@ -14,11 +14,12 @@ namespace Blamite.Blam.Scripting.Compiler
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
 
-        private ScriptFunctionInfo RetrieveFunctionInfo(string function, int parameterCount)
+        private ScriptFunctionInfo RetrieveFunctionInfo(string function, int parameterCount, int line)
         {
             var infos = _opcodes.GetFunctionInfo(function);
             if (infos == null)
-                throw new ArgumentException($"A Function opcode couldn't be retrieved. Name: {function} , Parameter count: {parameterCount}");
+                throw new CompilerException($"The opcode for function \"{function}\" with parameter count \"{parameterCount}\" couldn't be retrieved. Please ensure that this is a valid function name."
+                                        +"\nAlternatively, a script declaration could be missing in your .hsc file." , function, line);
 
             ScriptFunctionInfo result;
             // overloaded functions exist. select the right one based on its parameter count
@@ -186,7 +187,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (_openDatums.Count > 0)
             {
                 var index = _openDatums.Pop();
-                Debug.Print($"Close! Index: {index}");
+                Debug.Print($"Close!\t\t\t{index}");
                 _expressions[index].NextExpression = DatumIndex.Null;
             }
 
@@ -202,7 +203,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (_openDatums.Count > 0)
             {
                 var index = _openDatums.Pop();
-                Debug.Print($"Link! Index: {index}");
+                Debug.Print($"Link!\t\t\t{index}");
                 if (index != -1)        // -1 means that this expression belongs to a global declaration
                     _expressions[index].NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
             }
@@ -218,7 +219,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private void OpenDatumAndAdd(ExpressionBase expression)
         {
             Int32 openIndex = _expressions.Count;
-            Debug.Print($"Open! Index: {openIndex}");
+            Debug.Print($"Open!\t\t\t{openIndex}");
             _openDatums.Push(openIndex);
             _expressions.Add(expression);
         }
@@ -246,7 +247,7 @@ namespace Blamite.Blam.Scripting.Compiler
             var rev = types.Reverse();
             foreach(string type in rev)
             {
-                Debug.WriteLine($"Type Push: {type}");
+                Debug.WriteLine($"Type Push:\t\t{type}");
                 _expectedTypes.Push(type);
             }
         }
@@ -255,7 +256,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             for(int i = 0; i < count; i++)
             {
-                Debug.WriteLine($"Type Push: {type}");
+                Debug.WriteLine($"Type Push:\t\t{type}");
                 _expectedTypes.Push(type);
             }
         }
@@ -263,7 +264,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private string PopType()
         {
             string str = _expectedTypes.Pop();
-            Debug.WriteLine($"Type Pop: {str}");
+            Debug.WriteLine($"Type Pop:\t\t{str}");
             return str;
         }
     }
