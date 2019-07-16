@@ -18,6 +18,8 @@ using System.Xml.Linq;
 using Blamite.Util;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using System.Diagnostics;
+using Assembly.Helpers;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -44,12 +46,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			InitializeComponent();
 
-			var thrd1 = new Thread(DecompileScripts);
-            var thrd2 = new Thread(GenerateSeatMappings);
-			thrd1.SetApartmentState(ApartmentState.STA);
-            thrd2.SetApartmentState(ApartmentState.STA);
-            thrd1.Start();
-            thrd2.Start();
+            List<Task> tasks = new List<Task>();
+            tasks.Add(Task.Run(() => { DecompileScripts(); }));
+            tasks.Add(Task.Run(() => { GenerateSeatMappings(); }));
+            //tasks.Add(Task.Run(() => { DumpEngineGlobalsToXML(); }));
+           // tasks.Add(Task.Run(() => { DumpSpecialGlobalsToXML(); }));
+
+            //var thrd1 = new Thread(DecompileScripts);
+            //thrd1.SetApartmentState(ApartmentState.STA);
+            //thrd1.Start();
         }
 
 		private void DecompileScripts()
@@ -124,7 +129,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
 		}
 
-		private void btnExport_Click(object sender, RoutedEventArgs e)
+        private ScriptData CompileScripts(string code)
+        {            
+            ICharStream stream = CharStreams.fromstring(code);
+            ITokenSource lexer = new BS_ReachLexer(stream);
+            ITokenStream tokens = new CommonTokenStream(lexer);
+            BS_ReachParser parser = new BS_ReachParser(tokens);
+            parser.BuildParseTree = true;
+            IParseTree tree = parser.hsc();
+            ScriptCompiler compiler = new ScriptCompiler(_cashefile, _scriptFile.LoadContext(_streamManager.OpenRead()), _opcodes, LoadSeatMappings());
+            compiler.PrintDebugInfo = false;
+            ParseTreeWalker.Default.Walk(compiler, tree);          
+            return compiler.Result();
+        }
+
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
 		{
 			var sfd = new SaveFileDialog();
             sfd.FileName = $"{_cashefile.InternalName}.hsc";
@@ -143,17 +163,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             if (_buildInfo.Name == "Halo: Reach")
             {
                 string hsc = txtScript.Text;
-                Task<TimeSpan> task = new Task<TimeSpan>(() => CompileScripts(hsc));
+                DateTime start = DateTime.Now;
+                Task<ScriptData> task = new Task<ScriptData>(() => CompileScripts(hsc));
                 task.Start();
 
                 try
                 {
                     task.Wait();
-                    MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {task.Result.TotalSeconds}s.");
+                    DateTime end = DateTime.Now;
+                    TimeSpan duration = end.Subtract(start);
+                    ScriptData data = task.Result;                   
+                    MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds. Returned Data? {data != null}");
                 }
                 catch (AggregateException ex)
                 {
-                    MetroMessageBox.Show("Compiler Exception", ex.InnerException.Message);
+                    ex.Handle((x) =>
+                    {
+                        if(x is CompilerException)
+                        {
+                            var comEx = x as CompilerException;
+                            MetroMessageBox.Show("Compiler Exception", $"{comEx.Message}\n\nText: \"{comEx.Text}\"\nLine: {comEx.Line}");
+                            return true;
+                            
+                        }
+                        else
+                        {
+                            MetroMessageBox.Show(x.GetType().ToString(), x.Message);
+                            return true;
+                        }
+                    });
+                    
                 }
 
             }
@@ -166,24 +205,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private void btnExpressions_Click(object sender, RoutedEventArgs e)
         {
             ExpressionsToXML();
-        }
-
-        private TimeSpan CompileScripts(string code)
-        {
-            DateTime start = DateTime.Now;
-
-            ICharStream stream = CharStreams.fromstring(code);
-            ITokenSource lexer = new BS_ReachLexer(stream);
-            ITokenStream tokens = new CommonTokenStream(lexer);
-            BS_ReachParser parser = new BS_ReachParser(tokens);
-            parser.BuildParseTree = true;
-            IParseTree tree = parser.hsc();
-            ScriptCompiler compiler = new ScriptCompiler(_cashefile, _scriptFile.LoadContext(_streamManager.OpenRead()), _opcodes, LoadSeatMappings());
-            ParseTreeWalker.Default.Walk(compiler, tree);
-
-            DateTime end = DateTime.Now;
-            TimeSpan duration = end.Subtract(start);
-            return duration;
         }
 
         // Remove Later
@@ -287,6 +308,121 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 writer.Close();
             }
             MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".");
+        }
+
+        private void DumpEngineGlobalsToXML()
+        {
+            ScriptTable scripts;
+            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+            }
+
+            string folder = "Dump";
+            string fileName = _cashefile.InternalName + "_EngineGlobals.xml";
+            string path = Path.Combine(folder, fileName);
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+
+            var expressions = scripts.Expressions.ExpressionsAsReadonly;
+            int occurences = 0;
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            using (var writer = XmlWriter.Create(path, settings))
+            {
+                writer.WriteStartElement("globals");
+
+                for (int i = 0; i < expressions.Count; i++)
+                {
+                    var exp = expressions[i];
+                    if (exp.Type == ScriptExpressionType.GlobalsReference)
+                    {
+
+                        var bytes = BitConverter.GetBytes(exp.Value);
+                        ushort first16 = BitConverter.ToUInt16(bytes, 2);
+                        ushort second16 = (ushort)(BitConverter.ToUInt16(bytes, 0) ^ 0x8000);
+
+                        if(first16 == 0xFFFF)
+                        {
+                            int con = (int)exp.Value;
+                            
+                            writer.WriteStartElement("global");
+                            writer.WriteAttributeString("Index", i.ToString());
+                            writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
+                            writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
+                            writer.WriteAttributeString("ExpType", exp.Type.ToString());
+                            writer.WriteAttributeString("String", exp.StringValue);
+                            writer.WriteAttributeString("OpCode", second16.ToString("X"));
+                            writer.WriteEndElement();
+
+                            occurences++;
+                        }
+                    }
+                }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Close();
+            }
+            Dispatcher.Invoke(new Action(() => MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".")));
+        }
+
+        private void DumpSpecialGlobalsToXML()
+        {
+            ScriptTable scripts;
+            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+            }
+
+            string folder = "Dump";
+            string fileName = _cashefile.InternalName + "_SpecialGlobals.xml";
+            string path = Path.Combine(folder, fileName);
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+
+            var expressions = scripts.Expressions.ExpressionsAsReadonly;
+            int occurences = 0;
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            using (var writer = XmlWriter.Create(path, settings))
+            {
+                writer.WriteStartElement("globals");
+
+                for (int i = 0; i < expressions.Count; i++)
+                {
+                    var exp = expressions[i];
+                    if (exp.Type == ScriptExpressionType.GlobalsReference && exp.Opcode != exp.ReturnType)
+                    {
+
+                        var bytes = BitConverter.GetBytes(exp.Value);
+                        ushort first16 = BitConverter.ToUInt16(bytes, 2);
+                        ushort second16 = BitConverter.ToUInt16(bytes, 0);
+
+                            writer.WriteStartElement("global");
+                            writer.WriteAttributeString("Index", i.ToString());
+                            writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
+                            writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
+                            writer.WriteAttributeString("ExpType", exp.Type.ToString());
+                            writer.WriteAttributeString("String", exp.StringValue);
+                            writer.WriteAttributeString("Value", exp.Value.ToString("X"));
+                            writer.WriteEndElement();
+
+                            occurences++;
+                    }
+                }
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+                writer.Close();
+            }
+            Dispatcher.Invoke(new Action(() => MetroMessageBox.Show($"{occurences} expressions matching the criteria were found.\nThe output was saved in \"{path}\".")));
         }
 
         // remove later

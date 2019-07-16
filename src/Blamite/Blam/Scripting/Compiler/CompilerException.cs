@@ -25,6 +25,12 @@ namespace Blamite.Blam.Scripting.Compiler
             Text = context.funcID().GetText();
         }
 
+        public CompilerException(string message, BS_ReachParser.ScriDeclContext context) : base(message)
+        {
+            Line = context.Start.Line;
+            Text = context.ID().GetText();
+        }
+
         public CompilerException(string message, string text, int line) : base(message)
         {
             Line = line;

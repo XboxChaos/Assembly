@@ -1,4 +1,5 @@
 ﻿using System;
+using Blamite.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,23 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
 
                 return $"{Values[0]} | {Values[1]}";
             }
+        }
+
+        public override void Write(IWriter writer)
+        {
+            writer.WriteUInt16(Salt);
+            writer.WriteUInt16(OpCode);
+            writer.WriteUInt16(ValueType);
+            writer.WriteInt16(ExpressionType);
+            writer.WriteUInt16(NextExpression.Salt);
+            writer.WriteUInt16(NextExpression.Index);
+            writer.WriteUInt32(StringAddress);
+
+            writer.WriteInt16(Values[0]);
+            writer.WriteInt16(Values[1]);
+
+            writer.WriteInt16(LineNumber);
+            writer.WriteUInt16(0);
         }
     }
 }

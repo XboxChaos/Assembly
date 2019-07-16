@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.IO;
 
 namespace Blamite.Blam.Scripting.Compiler.Expressions
 {
@@ -24,5 +25,8 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
             StringAddress = strAddr;
             LineNumber = line;
         }
+
+
+        public abstract void Write(IWriter writer);
     }
 }

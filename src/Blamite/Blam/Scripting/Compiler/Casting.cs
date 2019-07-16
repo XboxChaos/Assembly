@@ -14,7 +14,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private static readonly Dictionary<string, string[]> _types = new Dictionary<string, string[]>()
         {
             {"object", new string[]{"object_name", "player", "ai", "unit", "vehicle", "weapon", "device" , "scenery", "effect_scenery"} },
-            {"object_list", new string[]{"object"} },
+            {"object_list", new string[]{"object", "vehicle"} },
             {"unit", new string[]{"unit_name", "player", "ai", "vehicle"} },
             {"vehicle", new string[]{"vehicle_name", "ai"} },
             {"weapon", new string[]{"weapon_name"} },

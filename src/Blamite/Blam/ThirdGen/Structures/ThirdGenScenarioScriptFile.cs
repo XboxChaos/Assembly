@@ -6,6 +6,7 @@ using Blamite.Blam.Scripting.Compiler;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using System.Diagnostics;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
@@ -61,7 +62,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public ScriptTable LoadScripts(IReader reader)
 		{
 			StructureValueCollection values = LoadScnrTag(reader);
-
+            uint strSize = values.GetInteger("script string table size");
+            Debug.WriteLine($"String Table Size: 0x{strSize.ToString("X")}");
 			var result = new ScriptTable();
 			var stringReader = new StringTableReader();
 			result.Scripts = LoadScripts(reader, values);

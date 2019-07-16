@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Blamite.IO;
 
 namespace Blamite.Blam.Scripting.Compiler.Expressions
 {
@@ -39,6 +40,24 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
             {
                 return $"{Value.Salt} | {Value.Index}";
             }
+        }
+
+
+        public override void Write(IWriter writer)
+        {
+            writer.WriteUInt16(Salt);
+            writer.WriteUInt16(OpCode);
+            writer.WriteUInt16(ValueType);
+            writer.WriteInt16(ExpressionType);
+            writer.WriteUInt16(NextExpression.Salt);
+            writer.WriteUInt16(NextExpression.Index);
+            writer.WriteUInt32(StringAddress);
+
+            writer.WriteUInt16(Value.Salt);
+            writer.WriteUInt16(Value.Index);
+
+            writer.WriteInt16(LineNumber);
+            writer.WriteUInt16(0);
         }
     }
 }

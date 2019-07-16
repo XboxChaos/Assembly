@@ -35,7 +35,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private ushort _currentExpressionIndex = 0;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
-
+        private ScriptData _result = null;
 
         public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<int, UnitSeatMapping> seatMappings)
         {
@@ -44,6 +44,13 @@ namespace Blamite.Blam.Scripting.Compiler
             _opcodes = opCodes;
             _seatMappings = seatMappings;
         }
+
+        public ScriptData Result()
+        {
+            return _result;
+        }
+
+        public Boolean PrintDebugInfo = false;
 
         /// <summary>
         /// Generate script and global lookups.
@@ -68,6 +75,7 @@ namespace Blamite.Blam.Scripting.Compiler
             DeclarationsToXML();
             ExpressionsToXML();
             StringsToFile();
+            _result = new ScriptData(_scripts, _globals, _references, _expressions, _strings);
         }
 
         /// <summary>
@@ -78,7 +86,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterScriDecl(BS_ReachParser.ScriDeclContext context)
         {
-            Debug.Print($"Enter Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
+            if(PrintDebugInfo)
+                Debug.Print($"Enter Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
 
 
             // create new script object and add it to the table
@@ -121,7 +130,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitScriDecl(BS_ReachParser.ScriDeclContext context)
         {
-            Debug.Print($"Exit Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
+            if (PrintDebugInfo)
+                Debug.Print($"Exit Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
             _variables.Clear();
             CloseDatum();
         }
@@ -132,17 +142,23 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterGloDecl( BS_ReachParser.GloDeclContext context)
         {
-            Debug.Print($"Enter Global:\t{context.ID().GetText()} , Line: {context.Start.Line}");
+            if (PrintDebugInfo)
+                Debug.Print($"Enter Global:\t{context.ID().GetText()} , Line: {context.Start.Line}");
 
             //create a new Global and add it to the table
             ScriptGlobal glo = new ScriptGlobal();
             glo.Name = context.ID().GetText();
-            glo.Type = (short)_opcodes.GetTypeInfo(context.VALUETYPE().GetText()).Opcode;
+            string valType = context.VALUETYPE().GetText();
+            glo.Type = (short)_opcodes.GetTypeInfo(valType).Opcode;
             glo.ExpressionIndex = new DatumIndex(_currentSalt, _currentExpressionIndex);
             _globals.Add(glo);
 
-            Debug.Print("Global Open");
-            PushTypes(context.VALUETYPE().GetText());
+            if(PrintDebugInfo)
+            {
+                Debug.Print("Global Open!\t\t-1");
+                Debug.WriteLine($"Type Push:\t\t{valType}");
+            }
+            PushTypes(valType);
             _openDatums.Push(-1);
         }
 
@@ -152,7 +168,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitGloDecl(BS_ReachParser.GloDeclContext context)
         {
-            Debug.Print($"Exit Global:\t{context.ID().GetText()}");
+            if (PrintDebugInfo)
+                Debug.Print($"Exit Global:\t{context.ID().GetText()}");
             CloseDatum();
         }
 
@@ -163,7 +180,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterCall(BS_ReachParser.CallContext context)
         {
-            Debug.Print($"Enter Call:\t\t{context.funcID().GetText()} , Line: {context.Start.Line}");
+            if (PrintDebugInfo)
+                Debug.Print($"Enter Call:\t\t{context.funcID().GetText()} , Line: {context.Start.Line}");
 
 
             LinkDatum();
@@ -240,7 +258,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitCall(BS_ReachParser.CallContext context)
         {
-            Debug.Print($"Exit Call:\t\t{context.funcID().GetText()}");
+            if (PrintDebugInfo)
+                Debug.Print($"Exit Call:\t\t{context.funcID().GetText()}");
+
             CloseDatum();
         }
 
@@ -250,7 +270,9 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void EnterLit(BS_ReachParser.LitContext context)
         {
-            Debug.Print($"Enter Lit:\t\t{context.GetText()} , Line: {context.Start.Line}");
+            if (PrintDebugInfo)
+                Debug.Print($"Enter Lit:\t\t{context.GetText()} , Line: {context.Start.Line}");
+
             LinkDatum();
 
             string txt = context.GetText();
@@ -269,7 +291,6 @@ namespace Blamite.Blam.Scripting.Compiler
             // handle script variable references
             if (IsScriptVariable(context))
                 return;
-
 
             // handle global references
             if (IsGlobalReference(context, valType))
@@ -354,7 +375,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 else if (funcName == "set")
                 {
                     opcode = 0xFFFF;
-                    Debug.Print("global push");
+
+                    if (PrintDebugInfo)
+                        Debug.Print($"Global Type Push:\t{retType}");
+
                     PushTypes(retType); // the next parameter must have the same return type as this global
                 }
                 else
@@ -468,7 +492,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 var valTypes = paramContext.VALUETYPE().Select(v => v.GetText()).ToArray();
 
                 if (names.Count() != valTypes.Count())
-                    throw new InvalidOperationException($"Failed to parse Script \"{scr.Name}\" - Mismatched parameter arrays. Line: {context.Start.Line}");
+                    throw new CompilerException($"Failed to parse Script \"{scr.Name}\" - Mismatched parameter arrays.", context);
 
                 // create parameters from the extracted strings
                 for (int i = 0; i < names.Count(); i++)
