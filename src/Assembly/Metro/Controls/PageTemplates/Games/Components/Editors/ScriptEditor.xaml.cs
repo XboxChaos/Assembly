@@ -130,17 +130,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		}
 
         private ScriptData CompileScripts(string code)
-        {            
-            ICharStream stream = CharStreams.fromstring(code);
-            ITokenSource lexer = new BS_ReachLexer(stream);
-            ITokenStream tokens = new CommonTokenStream(lexer);
-            BS_ReachParser parser = new BS_ReachParser(tokens);
-            parser.BuildParseTree = true;
-            IParseTree tree = parser.hsc();
-            ScriptCompiler compiler = new ScriptCompiler(_cashefile, _scriptFile.LoadContext(_streamManager.OpenRead()), _opcodes, LoadSeatMappings());
-            compiler.PrintDebugInfo = false;
-            ParseTreeWalker.Default.Walk(compiler, tree);          
-            return compiler.Result();
+        {
+            using (IReader reader = _streamManager.OpenRead())
+            {
+                ICharStream stream = CharStreams.fromstring(code);
+                ITokenSource lexer = new BS_ReachLexer(stream);
+                ITokenStream tokens = new CommonTokenStream(lexer);
+                BS_ReachParser parser = new BS_ReachParser(tokens);
+                parser.BuildParseTree = true;
+                IParseTree tree = parser.hsc();
+                ScriptContext scrContext = _scriptFile.LoadContext(reader);
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, LoadSeatMappings());
+                compiler.PrintDebugInfo = false;
+                ParseTreeWalker.Default.Walk(compiler, tree);
+                return compiler.Result();
+            }
         }
 
 
@@ -170,10 +174,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 try
                 {
                     task.Wait();
+                    ScriptData data = task.Result;
+                    task.Dispose();
+
                     DateTime end = DateTime.Now;
                     TimeSpan duration = end.Subtract(start);
-                    ScriptData data = task.Result;                   
-                    MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds. Returned Data? {data != null}");
+
+                    var res = MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds. Do you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                    if(res == MetroMessageBox.MessageBoxResult.Yes)
+                    {
+                        using (IStream stream = _streamManager.OpenReadWrite())
+                        {
+                            _scriptFile.SaveScripts(data, stream);
+                            _cashefile.SaveChanges(stream);
+                        }
+
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 catch (AggregateException ex)
                 {

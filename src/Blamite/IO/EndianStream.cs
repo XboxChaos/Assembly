@@ -288,13 +288,23 @@ namespace Blamite.IO
 			_writer.WriteAscii(str);
 		}
 
-		/// <summary>
-		///     Reads a null-terminated UTF-8 string from the stream.
-		/// </summary>
-		/// <returns>
-		///     The null-terminated UTF-8 string that was read.
-		/// </returns>
-		public string ReadUTF8()
+        /// <summary>
+        ///     Writes an ASCII string to the stream and pads it with trailing null bytes to the specified length.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="length"></param>
+        public void WriteAscii(string str, int length)
+        {
+            _writer.WriteAscii(str, length);
+        }
+
+        /// <summary>
+        ///     Reads a null-terminated UTF-8 string from the stream.
+        /// </summary>
+        /// <returns>
+        ///     The null-terminated UTF-8 string that was read.
+        /// </returns>
+        public string ReadUTF8()
 		{
 			return _reader.ReadUTF8();
 		}

@@ -1,4 +1,5 @@
 ﻿using Blamite.Serialization;
+using Blamite.IO;
 
 namespace Blamite.Blam.Scripting
 {
@@ -26,10 +27,18 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public short Type { get; set; }
 
+        public void Write(IWriter writer)
+        {
+            writer.WriteAscii(Name, 0x20);
+            writer.WriteInt16(Type);
+            writer.WriteInt16(0);
+        }
+
 		private void Load(StructureValueCollection values)
 		{
 			Name = values.GetString("name");
 			Type = (short) values.GetInteger("type");
 		}
+
 	}
 }

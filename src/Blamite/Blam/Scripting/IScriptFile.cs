@@ -32,7 +32,7 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		/// <param name="scripts">The scripts to save.</param>
 		/// <param name="stream">The stream to operate on.</param>
-		void SaveScripts(ScriptTable scripts, IStream stream);
+		void SaveScripts(ScriptData scripts, IStream stream);
 
 		/// <summary>
 		///     Loads the script file's context.
