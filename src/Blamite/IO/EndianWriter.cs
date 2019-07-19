@@ -217,6 +217,12 @@ namespace Blamite.IO
         public void WriteAscii(string str, int length)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(str);
+
+            if(bytes.Length >= length)
+            {
+                throw new ArgumentException("The strings exceeds the specified length.");
+            }
+
             WriteBlock(bytes);
             int padding = length - bytes.Length;
             for(int i = 0; i < padding; i++)

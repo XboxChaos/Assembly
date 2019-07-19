@@ -30,6 +30,11 @@ namespace Blamite.Blam.Scripting
             return _strings.Single(s => s.Value == offset).Key;
         }
 
+        public int Size
+        {
+            get { return (int)_eof; }
+        }
+
         public void Write(IWriter writer)
         {
             _strings.OrderBy(str => str.Value);

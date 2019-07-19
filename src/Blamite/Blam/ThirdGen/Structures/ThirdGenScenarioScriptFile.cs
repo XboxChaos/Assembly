@@ -83,133 +83,15 @@ namespace Blamite.Blam.ThirdGen.Structures
             StructureValueCollection scnr = LoadScnrTag(stream);
             StructureLayout scnrLayout = _buildInfo.Layouts.GetLayout("scnr");
 
-
-            StructureLayout glolayout = _buildInfo.Layouts.GetLayout("script global entry");
-            var oldGlobalCount = (int)scnr.GetInteger("number of script globals");
-            uint oldGlobalAddress = scnr.GetInteger("script global table address");
-
-
-            var oldRefCount = (int)scnr.GetInteger("number of script references");
-            uint oldRefAddress = scnr.GetInteger("script references table address");
-
-            var oldStringsSize = (int)scnr.GetInteger("script string table size");
-            int oldStringOffset = _metaArea.PointerToOffset(scnr.GetInteger("script string table address"));
-
-
+            WriteExpressions(data, stream, scnr);
             WriteScriptsAndParams(data, stream, scnr);
+            WriteStrings(data, stream, scnr);
+            WriteGlobals(data, stream, scnr);
+            WriteTagReferences(data, stream, scnr);
+
             stream.SeekTo(_scnrTag.MetaLocation.AsOffset());
             StructureWriter.WriteStructure(scnr, scnrLayout, stream);
-
-
         }
-
-        private void WriteScriptsAndParams(ScriptData data, IStream stream, StructureValueCollection scnr)
-        {
-            StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script entry");
-            StructureLayout paramlayout = _buildInfo.Layouts.GetLayout("script parameter entry");
-
-            var oldScriptCount = (int)scnr.GetInteger("number of scripts");
-            uint oldScriptAddress = scnr.GetInteger("script table address");
-            int oldScriptSize = oldScriptCount * scrlayout.Size;
-            uint newScriptAddress = 0;
-
-            uint oldParamAddress = 0;
-            int oldParamSize = 0;
-
-            // Get the param table address and size
-            StructureValueCollection[] oldScripts = ReflexiveReader.ReadReflexive(stream, oldScriptCount, oldScriptAddress, scrlayout, _metaArea);
-            StructureValueCollection first = Array.Find(oldScripts, s => s.GetInteger("number of parameters") > 0);
-            StructureValueCollection last = Array.FindLast(oldScripts, s => s.GetInteger("number of parameters") > 0);
-            if (first != null && last != null)
-            {
-                oldParamAddress = first.GetInteger("address of parameter list");
-                uint lastCount = last.GetInteger("number of parameters");
-                uint endAddress = last.GetInteger("address of parameter list") + (uint)(lastCount * paramlayout.Size);
-                oldParamSize = (int)(endAddress - oldParamAddress);
-            }
-
-
-            // Check if the new hsc file contained scripts
-            if (data.Scripts.Count > 0)
-            {
-                // calculate the size of the new param table
-                List<ScriptParameter> newParams = new List<ScriptParameter>();
-                foreach (var scr in data.Scripts)
-                {
-                    if (scr.Parameters.Count > 0)
-                    {
-                        newParams.AddRange(scr.Parameters);
-                    }
-                }
-
-                uint newParamAddress = 0;
-
-                if (newParams.Count > 0)
-                {
-                    int newParamSize = newParams.Count * paramlayout.Size;
-
-                    // allocate or realllocate the params table
-                    if (oldParamSize > 0)
-                    {
-                        newParamAddress = _allocator.Reallocate(oldParamAddress, oldParamSize, newParamSize, stream);
-                    }
-                    else
-                    {
-                        newParamAddress = _allocator.Allocate(newParamSize, stream);
-                    }
-
-                    // write params
-                    stream.SeekTo(_metaArea.PointerToOffset(newParamAddress));
-                    foreach (var par in newParams)
-                    {
-                        par.Write(stream);
-                    }
-                }
-
-                // new address of the script reflexive
-                int newScriptSize = data.Scripts.Count * scrlayout.Size;
-                if (oldScriptSize > 0)
-                {
-                    newScriptAddress = _allocator.Reallocate(oldScriptAddress, oldScriptSize, newScriptSize, stream);
-                }
-                else
-                {
-                    newScriptAddress = _allocator.Allocate(newScriptSize, stream);
-                }
-
-                // write scripts
-                stream.SeekTo(_metaArea.PointerToOffset(newScriptAddress));
-                foreach (var scr in data.Scripts)
-                {
-                    int paramCount = scr.Parameters.Count;
-                    // has parameters
-                    if (paramCount > 0)
-                    {
-                        scr.Write(stream, _stringIDs, paramCount, newParamAddress);
-                        newParamAddress += (uint)(paramCount * paramlayout.Size);
-                    }
-                    // doesn't have parameters
-                    else
-                    {
-                        scr.Write(stream, _stringIDs, 0, 0);
-                    }
-                }
-            }
-            // free the script reflexive if it existed
-            else if (oldScriptSize > 0)
-            {
-                _allocator.Free(oldScriptAddress, oldScriptSize);
-                // Free the param table if it existed
-                if (oldParamAddress != 0 && oldParamSize != 0)
-                {
-                    _allocator.Free(oldParamAddress, oldParamSize);
-                }
-            }
-
-            scnr.SetInteger("number of scripts", (uint)data.Scripts.Count);
-            scnr.SetInteger("script table address", newScriptAddress);
-        }
-
 
 		public ScriptContext LoadContext(IReader reader)
 		{
@@ -359,5 +241,262 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
 			return ReadObjects(reader, entries.First(), _pointSets);
 		}
-	}
+
+        private void WriteScriptsAndParams(ScriptData data, IStream stream, StructureValueCollection scnr)
+        {
+            StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script entry");
+            StructureLayout paramlayout = _buildInfo.Layouts.GetLayout("script parameter entry");
+
+            var oldScriptCount = (int)scnr.GetInteger("number of scripts");
+            uint oldScriptAddress = scnr.GetInteger("script table address");
+            int oldScriptSize = oldScriptCount * scrlayout.Size;
+            uint newScriptAddress = 0;
+
+            uint oldParamAddress = 0;
+            int oldParamSize = 0;
+
+            // Get the param table address and size
+            StructureValueCollection[] oldScripts = ReflexiveReader.ReadReflexive(stream, oldScriptCount, oldScriptAddress, scrlayout, _metaArea);
+            StructureValueCollection first = Array.Find(oldScripts, s => s.GetInteger("number of parameters") > 0);
+            StructureValueCollection last = Array.FindLast(oldScripts, s => s.GetInteger("number of parameters") > 0);
+            if (first != null && last != null)
+            {
+                oldParamAddress = first.GetInteger("address of parameter list");
+                uint lastCount = last.GetInteger("number of parameters");
+                uint endAddress = last.GetInteger("address of parameter list") + (uint)(lastCount * paramlayout.Size);
+                oldParamSize = (int)(endAddress - oldParamAddress);
+            }
+
+
+            // Check if the new hsc file contained scripts
+            if (data.Scripts.Count > 0)
+            {
+                // calculate the size of the new param table
+                List<ScriptParameter> newParams = new List<ScriptParameter>();
+                foreach (var scr in data.Scripts)
+                {
+                    if (scr.Parameters.Count > 0)
+                    {
+                        newParams.AddRange(scr.Parameters);
+                    }
+                }
+
+                uint newParamAddress = 0;
+
+                if (newParams.Count > 0)
+                {
+                    int newParamSize = newParams.Count * paramlayout.Size;
+
+                    // allocate or realllocate the params table
+                    if (oldParamSize > 0)
+                    {
+                        newParamAddress = _allocator.Reallocate(oldParamAddress, oldParamSize, newParamSize, stream);
+                    }
+                    else
+                    {
+                        newParamAddress = _allocator.Allocate(newParamSize, stream);
+                    }
+
+                    // write params
+                    stream.SeekTo(_metaArea.PointerToOffset(newParamAddress));
+                    foreach (var par in newParams)
+                    {
+                        par.Write(stream);
+                    }
+                }
+
+                // new address of the script reflexive
+                int newScriptSize = data.Scripts.Count * scrlayout.Size;
+                if (oldScriptSize > 0)
+                {
+                    newScriptAddress = _allocator.Reallocate(oldScriptAddress, oldScriptSize, newScriptSize, stream);
+                }
+                else
+                {
+                    newScriptAddress = _allocator.Allocate(newScriptSize, stream);
+                }
+
+                // write scripts
+                stream.SeekTo(_metaArea.PointerToOffset(newScriptAddress));
+                foreach (var scr in data.Scripts)
+                {
+                    int paramCount = scr.Parameters.Count;
+                    // has parameters
+                    if (paramCount > 0)
+                    {
+                        scr.Write(stream, _stringIDs, paramCount, newParamAddress);
+                        newParamAddress += (uint)(paramCount * paramlayout.Size);
+                    }
+                    // doesn't have parameters
+                    else
+                    {
+                        scr.Write(stream, _stringIDs, 0, 0);
+                    }
+                }
+            }
+            // free the script reflexive if it existed
+            else if (oldScriptSize > 0)
+            {
+                _allocator.Free(oldScriptAddress, oldScriptSize);
+                // Free the param table if it existed
+                if (oldParamAddress != 0 && oldParamSize != 0)
+                {
+                    _allocator.Free(oldParamAddress, oldParamSize);
+                }
+            }
+
+            scnr.SetInteger("number of scripts", (uint)data.Scripts.Count);
+            scnr.SetInteger("script table address", newScriptAddress);
+        }
+
+        private void WriteStrings(ScriptData data, IStream stream, StructureValueCollection scnr)
+        {
+            var oldStringsSize = (int)scnr.GetInteger("script string table size");
+            uint oldStringAddress = scnr.GetInteger("script string table address");
+            uint newStringsAddress = 0;
+
+            // Check if the returned data contained strings
+            if (data.Strings.Size > 0)
+            {
+                // allocate space for the string table
+                if (oldStringsSize > 0)
+                {
+                    newStringsAddress = _allocator.Reallocate(oldStringAddress, oldStringsSize, data.Strings.Size, stream);
+                }
+                else
+                {
+                    newStringsAddress = _allocator.Allocate(data.Strings.Size, stream);
+                }
+                // write strings
+                stream.SeekTo(_metaArea.PointerToOffset(newStringsAddress));
+                data.Strings.Write(stream);
+            }
+            // free the old string table if the new scripts didn't contain strings (impossible)
+            else if (oldStringsSize > 0)
+            {
+                _allocator.Free(oldStringAddress, oldStringsSize);
+            }
+
+            scnr.SetInteger("script string table size", (uint)data.Strings.Size);
+            scnr.SetInteger("script string table address", newStringsAddress);
+        }
+
+        private void WriteGlobals(ScriptData data, IStream stream, StructureValueCollection scnr)
+        {
+            StructureLayout glolayout = _buildInfo.Layouts.GetLayout("script global entry");
+            var oldGlobalCount = (int)scnr.GetInteger("number of script globals");
+            uint oldGlobalAddress = scnr.GetInteger("script global table address");
+            int oldGlobalSize = oldGlobalCount * glolayout.Size;
+            uint newGlobalAddress = 0;
+
+            // check if the returned data contains globals
+            if (data.Globals.Count > 0)
+            {
+                int newGlobalSize = data.Globals.Count * glolayout.Size;
+
+                // allocate space for the globals
+                if (oldGlobalCount > 0)
+                {
+                    newGlobalAddress = _allocator.Reallocate(oldGlobalAddress, oldGlobalSize, newGlobalSize, stream);
+                }
+                else
+                {
+                    newGlobalAddress = _allocator.Allocate(newGlobalSize, stream);
+                }
+
+                // write globals
+                stream.SeekTo(_metaArea.PointerToOffset(newGlobalAddress));
+                foreach (var glo in data.Globals)
+                {
+                    glo.Write(stream);
+                }
+            }
+            else if (oldGlobalCount > 0)
+            {
+                _allocator.Free(oldGlobalAddress, oldGlobalSize);
+            }
+
+            scnr.SetInteger("number of script globals", (uint)data.Globals.Count);
+            scnr.SetInteger("script global table address", newGlobalAddress);
+        }
+
+        private void WriteExpressions(ScriptData data, IStream stream, StructureValueCollection scnr)
+        {
+            StructureLayout expLayout = _buildInfo.Layouts.GetLayout("script expression entry");
+            var oldExpCount = (int)scnr.GetInteger("number of script expressions");
+            uint oldExpAddress = scnr.GetInteger("script expression table address");
+            int oldExpSize = oldExpCount * expLayout.Size;
+            uint newExpAddress = 0;
+
+            if (data.Expressions.Count > 0)
+            {
+                int newExpSize = data.Expressions.Count * expLayout.Size;
+
+                // allocate space for the expessions
+                if (oldExpCount > 0)
+                {
+                    newExpAddress = _allocator.Reallocate(oldExpAddress, oldExpCount, newExpSize, stream);
+                }
+                else
+                {
+                    newExpAddress = _allocator.Allocate(newExpSize, stream);
+                }
+
+                // write expressions
+                stream.SeekTo(_metaArea.PointerToOffset(newExpAddress));
+                foreach (var exp in data.Expressions)
+                {
+                    exp.Write(stream);
+                }
+            }
+            else if (oldExpCount > 0)
+            {
+                _allocator.Free(oldExpAddress, oldExpSize);
+            }
+
+            scnr.SetInteger("number of script expressions", (uint)data.Expressions.Count);
+            scnr.SetInteger("script expression table address", newExpAddress);
+        }
+
+        private void WriteTagReferences(ScriptData data, IStream stream, StructureValueCollection scnr)
+        {
+            var oldRefCount = (int)scnr.GetInteger("number of script references");
+            uint oldRefAddress = scnr.GetInteger("script references table address");
+            int oldRefSize = oldRefCount * 0x10;
+            uint newRefAddress = 0;
+
+            //check if the returned data contained tag references
+            if (data.TagReferences.Count > 0)
+            {
+                int newRefSize = data.TagReferences.Count * 0x10;
+
+                // allocate space for the references
+                if (oldRefCount > 0)
+                {
+                    newRefAddress = _allocator.Reallocate(oldRefAddress, oldRefSize, newRefSize, stream);
+                }
+                else
+                {
+                    newRefAddress = _allocator.Allocate(newRefSize, stream);
+                }
+
+                //write the references
+                stream.SeekTo(_metaArea.PointerToOffset(newRefAddress));
+                foreach (ITag tag in data.TagReferences)
+                {
+                    stream.WriteInt32(tag.Class.Magic);
+                    stream.WriteUInt32(0);
+                    stream.WriteUInt32(0);
+                    stream.WriteUInt32(tag.Index.Value);
+                }
+            }
+            else if (oldRefCount > 0)
+            {
+                _allocator.Free(oldRefAddress, oldRefSize);
+            }
+
+            scnr.SetInteger("number of script references", (uint)data.TagReferences.Count);
+            scnr.SetInteger("script references table address", newRefAddress);
+        }
+    }
 }

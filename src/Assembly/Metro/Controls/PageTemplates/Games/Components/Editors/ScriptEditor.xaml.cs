@@ -180,7 +180,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     DateTime end = DateTime.Now;
                     TimeSpan duration = end.Subtract(start);
 
-                    var res = MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds. Do you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                    var res = MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds.\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
                     if(res == MetroMessageBox.MessageBoxResult.Yes)
                     {
                         using (IStream stream = _streamManager.OpenReadWrite())
