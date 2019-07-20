@@ -596,7 +596,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
                         Content = tabName,
                         ContextMenu = BaseContextMenu
                     },
-                    Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile, Path.GetFileNameWithoutExtension(_cacheLocation))
+                    Content = new ScriptEditor(RefreshTags, _buildInfo, script, _mapManager, _cacheFile, Path.GetFileNameWithoutExtension(_cacheLocation))
 				};
 
 				contentTabs.Items.Add(tab);
@@ -1504,6 +1504,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			throw new Exception();
 		}
+
+        public void RefreshTags()
+        {
+            foreach (CloseableTabItem tab in contentTabs.Items)
+            {
+                var meta = tab.Content as MetaContainer;
+                if(meta != null)
+                {
+                    meta.RefreshMetaEditor();
+                }
+            }
+        }
 
 		private void UpdateTagOpenMode()
 		{

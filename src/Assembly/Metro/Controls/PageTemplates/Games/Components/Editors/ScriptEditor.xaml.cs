@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using Assembly.Windows;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
@@ -34,15 +35,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
         private readonly OpcodeLookup _opcodes;
         private readonly ICacheFile _cashefile;
         private readonly string _casheName;
+        private Action _metaRefresh;
 
-        public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName)
+
+        public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName)
 		{
+            _metaRefresh = metaRefresh;
 			_buildInfo = buildInfo;
             _opcodes = _buildInfo.ScriptInfo;
             _scriptFile = scriptFile;
             _streamManager = streamManager;
             _cashefile = casheFile;
             _casheName = casheName;
+
 
 			InitializeComponent();
 
@@ -180,7 +185,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     DateTime end = DateTime.Now;
                     TimeSpan duration = end.Subtract(start);
 
-                    var res = MetroMessageBox.Show("Success!", $"The scripts were compiled successfully in {duration.TotalSeconds} seconds.\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                    var res = MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
+                        + "\nWARNING: This compiler is not 100% accurate and could corrupt your map. Please backup your map before proceeding."
+                        +"\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
                     if(res == MetroMessageBox.MessageBoxResult.Yes)
                     {
                         using (IStream stream = _streamManager.OpenReadWrite())
@@ -188,7 +195,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                             _scriptFile.SaveScripts(data, stream);
                             _cashefile.SaveChanges(stream);
                         }
-
+                        _metaRefresh();
+                        StatusUpdater.Update("Scripts saved");
                     }
                     else
                     {
