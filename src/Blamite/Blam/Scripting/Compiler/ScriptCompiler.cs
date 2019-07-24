@@ -35,6 +35,8 @@ namespace Blamite.Blam.Scripting.Compiler
         private ushort _currentExpressionIndex = 0;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
+        private ushort _branchBoolIndex = 0;
+        private Dictionary<string, ExpressionBase[]> _genBranches = new Dictionary<string, ExpressionBase[]>();
         private ScriptData _result = null;
 
         public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<int, UnitSeatMapping> seatMappings)
@@ -72,6 +74,8 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <param name="context"></param>
         public override void ExitHsc(BS_ReachParser.HscContext context)
         {
+            GenerateBranches();
+
             DeclarationsToXML();
             ExpressionsToXML();
             StringsToFile();
@@ -99,7 +103,7 @@ namespace Blamite.Blam.Scripting.Compiler
             // if the function has a return type, the first call or global reference must match it.
             if (retType == "void")
             {
-                var exp_count = context.gloRef().Count() + context.call().Count();
+                var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count();
                 for (int i = 0; i < exp_count; i++)
                     PushTypes("ANY");
             }
@@ -264,6 +268,71 @@ namespace Blamite.Blam.Scripting.Compiler
             CloseDatum();
         }
 
+        public override void EnterBranch(BS_ReachParser.BranchContext context)
+        {
+            if (PrintDebugInfo)
+                Debug.Print($"Enter Branch:\tLine: {context.Start.Line}");
+
+            string expectedType = PopType();    // just ignore the type for now
+
+            // branch excepts two parameters
+            if (context.expr().Count() != 2)
+            {
+                throw new CompilerException("A branch statement had an unexpected number of parameters.", context);
+            }
+
+            PushTypes("boolean", "ANY");
+
+            ScriptFunctionInfo info = _opcodes.GetFunctionInfo("branch").First();
+            UInt16 op = info.Opcode;
+
+            // create the branch function call and its name expression
+            FunctionCall call = new FunctionCall(_currentSalt, op, _opcodes.GetTypeInfo("void").Opcode, (short)context.Start.Line);
+            IncrementDatum();
+            call.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
+            OpenDatumAndAdd(call);
+
+            AddFunctionName("branch", op, (short)context.Start.Line);
+
+            _branchBoolIndex = _currentExpressionIndex;
+        }
+
+        public override void ExitBranch(BS_ReachParser.BranchContext context)
+        {
+            if (PrintDebugInfo)
+                Debug.Print($"Exit Branch");
+
+            // generate the script name
+            var parent = (BS_ReachParser.ScriDeclContext)context.Parent;
+            string fromScript = parent.ID().GetText();
+
+            var parameters = context.expr();
+            if (parameters[1].call() == null)
+            {
+                throw new CompilerException("A branch statements second parameter was not a script name.", context);
+            }
+            var param = parameters[1].call();
+            string toScript = param.funcID().GetText();
+            string genName = fromScript + "_to_" + toScript;
+
+            ExpressionBase[] expressions = new ExpressionBase[2];
+            // grab boolean expression
+            var bol = _expressions[_branchBoolIndex].Clone();
+            expressions[0] = bol;
+            // grab script ref
+            var sr = _expressions[_expressions.Count - 2].Clone();
+            expressions[1] = sr;
+            // modify the original script ref. the opcode points to the generated script
+            int genScriptIndex = _scriptLookup.Count;
+            _expressions[_expressions.Count - 2].OpCode = (ushort)genScriptIndex;
+            // add the generated script to the lookup
+            ScriptDeclInfo decl = new ScriptDeclInfo(genName, "static", "void");
+            _scriptLookup.Add(decl);
+
+            _genBranches.Add(genName, expressions);
+            CloseDatum();
+        }
+
         /// <summary>
         /// Processes regular expressions, script variables and global references. Links to a datum. Opens a datum.
         /// </summary>
@@ -302,8 +371,6 @@ namespace Blamite.Blam.Scripting.Compiler
 
             throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
-
-
 
         private bool IsGlobalReference(BS_ReachParser.LitContext context, string expReturnType)
         {
@@ -625,6 +692,67 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
                         #endregion
                 }
+            }
+        }
+
+        private void GenerateBranches()
+        {
+            foreach(var branch in _genBranches)
+            {
+                // create script entry
+                Script scr = new Script();
+                scr.Name = branch.Key;
+                scr.ReturnType = (short)_opcodes.GetTypeInfo("void").Opcode;
+                scr.ExecutionType = (short)_opcodes.GetScriptTypeOpcode("static");
+                scr.RootExpressionIndex = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                _scripts.Add(scr);
+
+                // create the begin call
+                ScriptFunctionInfo beginInfo = _opcodes.GetFunctionInfo("begin").First();
+                FunctionCall begin = new FunctionCall(_currentSalt, beginInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode, 0);
+                begin.NextExpression = DatumIndex.Null;
+                IncrementDatum();
+                begin.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                _expressions.Add(begin);
+
+                // create the begin name
+                Expression32 beginName = new Expression32(_currentSalt, beginInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache("begin"), 0);
+                beginName.Value = 0;
+                IncrementDatum();
+                beginName.NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                _expressions.Add(beginName);
+
+                // create the sleep_until call
+                ScriptFunctionInfo sleepInfo = _opcodes.GetFunctionInfo("sleep_until").First();
+                FunctionCall sleepCall = new FunctionCall(_currentSalt, sleepInfo.Opcode, _opcodes.GetTypeInfo("void").Opcode, 0);
+                // link to the script reference
+                ushort srIndex = (ushort)(_currentSalt + 3);
+                ushort srSalt = IndexToSalt(srIndex);
+                sleepCall.NextExpression = new DatumIndex(srSalt, srIndex);
+                IncrementDatum();
+                sleepCall.Value = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                _expressions.Add(sleepCall);
+
+                // create the sleep_until name
+                Expression32 sleepName = new Expression32(_currentSalt, sleepInfo.Opcode, _opcodes.GetTypeInfo("function_name").Opcode, _strings.Cache("sleep_until"), 0);
+                sleepName.Value = 0;
+                IncrementDatum();
+                sleepName.NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
+                _expressions.Add(sleepName);
+
+                // adjust the boolean expression
+                ExpressionBase bo = branch.Value[0];
+                bo.Salt = _currentSalt;
+                bo.NextExpression = DatumIndex.Null;
+                IncrementDatum();
+                _expressions.Add(bo);
+
+                // adjust the script reference
+                ExpressionBase sr = branch.Value[1];
+                sr.Salt = _currentSalt;
+                sr.NextExpression = DatumIndex.Null;
+                IncrementDatum();
+                _expressions.Add(sr);
             }
         }
     }

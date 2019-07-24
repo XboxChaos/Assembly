@@ -146,7 +146,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 IParseTree tree = parser.hsc();
                 ScriptContext scrContext = _scriptFile.LoadContext(reader);
                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, LoadSeatMappings());
-                compiler.PrintDebugInfo = false;
+                compiler.PrintDebugInfo = true;
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }

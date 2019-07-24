@@ -23,6 +23,15 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
             StringAddress = 0xCDCDCDCD;
         }
 
+        public FunctionCall(UInt16 salt, UInt16 opcode, UInt16 valType, Int16 line)
+        {
+            Salt = salt;
+            OpCode = opcode;
+            ValueType = valType;
+            LineNumber = line;
+            StringAddress = 0xCDCDCDCD;
+        }
+
         public override string ValueToString
         {
             get

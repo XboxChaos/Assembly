@@ -71,6 +71,16 @@ public interface IBS_ReachListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitScriptParams([NotNull] BS_ReachParser.ScriptParamsContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.branch"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBranch([NotNull] BS_ReachParser.BranchContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.branch"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBranch([NotNull] BS_ReachParser.BranchContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.call"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

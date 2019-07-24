@@ -28,5 +28,12 @@ namespace Blamite.Blam.Scripting.Compiler.Expressions
 
 
         public abstract void Write(IWriter writer);
+
+        public ExpressionBase Clone()
+        {
+            var clone = (ExpressionBase)this.MemberwiseClone();
+            clone.NextExpression = new DatumIndex(NextExpression.Salt, NextExpression.Index);
+            return clone;
+        }
     }
 }

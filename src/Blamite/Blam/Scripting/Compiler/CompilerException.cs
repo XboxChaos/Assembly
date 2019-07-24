@@ -31,6 +31,12 @@ namespace Blamite.Blam.Scripting.Compiler
             Text = context.ID().GetText();
         }
 
+        public CompilerException(string message, BS_ReachParser.BranchContext context) : base(message)
+        {
+            Line = context.Start.Line;
+            Text = "branch";
+        }
+
         public CompilerException(string message, string text, int line) : base(message)
         {
             Line = line;

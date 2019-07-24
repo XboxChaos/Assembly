@@ -36,5 +36,13 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
             }                
         }
+
+        public ScriptDeclInfo(string name, string scriptType, string returnType)
+        {
+            Name = name;
+            ScriptType = scriptType;
+            ReturnType = returnType;
+            Parameters = new List<ParameterInfo>();
+        }
     }
 }
