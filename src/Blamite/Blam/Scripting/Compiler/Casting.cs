@@ -23,7 +23,9 @@ namespace Blamite.Blam.Scripting.Compiler
             {"effect_scenery", new string[]{"effect_scenery_name"} },
             {"real", new string[]{"short", "long"} },
             {"short", new string[]{"real", "long"} },
-            {"long", new string[]{"real", "short"} }
+            {"long", new string[]{"real", "short"} },
+            {"player", new string[]{"unit"} }
+
         };
 
         public static bool CanBeCasted(string from, string to)

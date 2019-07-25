@@ -603,8 +603,14 @@ namespace Blamite.Blam.Scripting.Compiler
             var opCode = _opcodes.GetTypeInfo("short").Opcode;
             Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
             Int16 result;
-            if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
-                throw new ArgumentException($"Failed to parse short. Text: {txt}");
+            if(txt == "65535")
+            {
+                result = -1;
+            }
+            else if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
+            {
+                throw new CompilerException($"Failed to parse short. Text: {txt}", context);
+            }
             exp.Values[0] = result;
             IncrementDatum();
             OpenDatumAndAdd(exp);

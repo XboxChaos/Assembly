@@ -99,18 +99,20 @@ namespace Blamite.Blam.Scripting.Compiler
             _scripts.Add(scr);
 
             var retType = context.retType().GetText();
+            var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count();
 
-            // if the function has a return type, the first call or global reference must match it.
+            // if the function has a return type, the last call or global reference must match it.
             if (retType == "void")
             {
-                var exp_count = context.gloRef().Count() + context.call().Count() + context.branch().Count();
-                for (int i = 0; i < exp_count; i++)
-                    PushTypes("ANY");
+                PushTypes("ANY");
             }
             else
             {
                 PushTypes(retType);
             }
+            // push the remaining parameters
+            for (int i = 0; i < exp_count - 1; i++)
+                PushTypes("ANY");
 
             // Create FunctionCall entry
             ScriptFunctionInfo info = _opcodes.GetFunctionInfo("begin").First();
@@ -618,7 +620,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "BeginCount":
-                        PushTypes("ANY", contextParameterCount - 1);
+                        PushTypes(expectedReturnType, contextParameterCount - 1);
                         PushTypes("NUMBER");
                         break;
 
@@ -651,7 +653,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "Inequality":
-                        PushTypes("NUMBER", "NUMBER");
+                        PushTypes("ANY", "ANY");
                         break;
 
                     case "Sleep":
@@ -666,7 +668,11 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "SleepUntil":
-                        if (contextParameterCount > 1)
+                        if (contextParameterCount == 3)
+                        {
+                            PushTypes("short", "NUMBER");
+                        }
+                        else if(contextParameterCount == 2)
                         {
                             PushTypes("short");
                         }
@@ -682,10 +688,7 @@ namespace Blamite.Blam.Scripting.Compiler
                         break;
 
                     case "Branch":
-                        throw new NotImplementedException("Branching is not supported yet.");
-                        //_expectedTypes.Push("boolean");
-                        //_expectedTypes.Push("BRANCH"); // not sure
-                        //break;
+                        throw new CompilerException("A branch call was not regognized by the parser.", context);
 
                     case "ObjectCast":
                         PushTypes(info.ReturnType);
