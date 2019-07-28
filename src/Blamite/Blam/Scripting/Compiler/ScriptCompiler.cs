@@ -13,6 +13,10 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
+        // debug toggle
+        public Boolean PrintDebugInfo = false;
+
+
         // lookups
         private ICacheFile _cashefile;
         private OpcodeLookup _opcodes;
@@ -35,12 +39,19 @@ namespace Blamite.Blam.Scripting.Compiler
         private ushort _currentExpressionIndex = 0;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
+        // branching
         private ushort _branchBoolIndex = 0;
         private Dictionary<string, ExpressionBase[]> _genBranches = new Dictionary<string, ExpressionBase[]>();
+        // progress
+        private IProgress<int> _progress;
+        private int _declarationCount = 0;
+        private int _processedDeclarations = 0;
+        // returned data
         private ScriptData _result = null;
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<int, UnitSeatMapping> seatMappings)
+        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<int, UnitSeatMapping> seatMappings, IProgress<int> progress)
         {
+            _progress = progress;
             _cashefile = casheFile;
             _scriptContext = context;
             _opcodes = opCodes;
@@ -51,8 +62,6 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             return _result;
         }
-
-        public Boolean PrintDebugInfo = false;
 
         /// <summary>
         /// Generate script and global lookups.
@@ -66,6 +75,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (context.scriDecl() != null)
                 _scriptLookup = context.scriDecl().Select(s => new ScriptDeclInfo(s)).ToList();
 
+            _declarationCount = context.scriDecl().Count() + context.gloDecl().Count();
         }
 
         /// <summary>
@@ -134,12 +144,13 @@ namespace Blamite.Blam.Scripting.Compiler
         /// Closes a datum.
         /// </summary>
         /// <param name="context"></param>
-        public override void ExitScriDecl(BS_ReachParser.ScriDeclContext context)
+        public override void ExitScriDecl(BS_ReachParser.ScriDeclContext context)  
         {
             if (PrintDebugInfo)
                 Debug.Print($"Exit Script:\t{context.ID().GetText()} , Line: {context.Start.Line}");
             _variables.Clear();
             CloseDatum();
+            ReportProgress();
         }
 
         /// <summary>
@@ -177,6 +188,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (PrintDebugInfo)
                 Debug.Print($"Exit Global:\t{context.ID().GetText()}");
             CloseDatum();
+            ReportProgress();
         }
 
         /// <summary>
@@ -305,8 +317,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 Debug.Print($"Exit Branch");
 
             // generate the script name
-            var parent = (BS_ReachParser.ScriDeclContext)context.Parent;
-            string fromScript = parent.ID().GetText();
+            BS_ReachParser.ScriDeclContext scriptContext = GetParentScriptContext(context);
+            string fromScript = scriptContext.ID().GetText();
 
             var parameters = context.expr();
             if (parameters[1].call() == null)
@@ -469,35 +481,60 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string name = context.funcID().GetText();
 
-            int index;
+            int index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
 
             // try to find a matching script
-            if(expextedReturnType == "NUMBER")
+            if (expextedReturnType == "NUMBER")
             {
                 index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && Casting.IsNumType(s.ReturnType));
             }
-            else if(expextedReturnType == "ANY")
-            {
-                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
-            }
             else
             {
-                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount && s.ReturnType == expextedReturnType);
+                index = _scriptLookup.FindIndex(s => s.Name == name && s.Parameters.Count == expectedParamCount);
             }
 
             // a matching script wasn't found...not a script reference
             if (index == -1)
                 return false;
 
-            // handle parameters. Push them to the stack
-            if(expectedParamCount > 0)
+            ScriptDeclInfo info = _scriptLookup[index];
+            string retType;
+
+            // check if the script satisfies the return type requirement
+            if(expextedReturnType != "ANY" && expextedReturnType != info.ReturnType)
             {
-                string[] types = _scriptLookup[index].Parameters.Select(p=> p.ValueType).ToArray();
+                // NUMBER
+                if(expextedReturnType == "NUMBER" && Casting.IsNumType(info.ReturnType))
+                {
+                    retType = info.ReturnType;
+                }
+                // casting
+                else if(Casting.CanBeCasted(info.ReturnType, expextedReturnType))
+                {
+                    retType = expextedReturnType;
+                }
+                // the script didn't satisfy the requirement
+                else
+                {
+                    return false;
+                }
+            }
+            // ANY and matching types
+            else
+            {
+                retType = info.ReturnType;
+            }
+
+
+            // handle parameters. Push them to the stack
+            if (expectedParamCount > 0)
+            {
+                string[] types = info.Parameters.Select(p=> p.ValueType).ToArray();
                 PushTypes(types);
             }
 
             // create Script Reference node
-            ushort valType = _opcodes.GetTypeInfo(_scriptLookup[index].ReturnType).Opcode;
+            ushort valType = _opcodes.GetTypeInfo(retType).Opcode;
             ScriptReference scrRef = new ScriptReference(_currentSalt, (ushort)index, valType, (short)context.Start.Line);
 
             IncrementDatum();

@@ -431,32 +431,33 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             string txt = context.GetText().Trim('"');
             string[] subStrings = txt.Split(new char[] { '/' }, 2, StringSplitOptions.RemoveEmptyEntries);
-            if (subStrings.LongCount() != 2)
-                return false;
 
              // find set
             int set = Array.FindIndex(_scriptContext.PointSets, s => s.Name == subStrings[0]);
             if (set != -1)
             {
-                // find point
-                ScriptObject[] points = _scriptContext.PointSets[set].GetChildren(_scriptContext.PointSetPoints);
-                int point = Array.FindIndex(points, p => p.Name == subStrings[1]);
-
-                if (point != -1)
+                int point = -1;
+                // check if the string contains a point name
+                if(subStrings.Count() == 2)
                 {
-                    // create point_reference
-                    var opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
-                    Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
-                    exp.Values[0] = (Int16)set;
-                    exp.Values[1] = (Int16)point;
-
-                    IncrementDatum();
-                    OpenDatumAndAdd(exp);
-
-                    return true;
+                    // find point
+                    ScriptObject[] points = _scriptContext.PointSets[set].GetChildren(_scriptContext.PointSetPoints);
+                    point = Array.FindIndex(points, p => p.Name == subStrings[1]);
+                    if (point == -1)
+                    {
+                        // a matching point couldn't be found
+                        return false;
+                    }
                 }
-                else
-                    return false;
+
+                // create point_reference
+                var opCode = _opcodes.GetTypeInfo("point_reference").Opcode;
+                Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
+                exp.Values[0] = (Int16)set;
+                exp.Values[1] = (Int16)point;
+                IncrementDatum();
+                OpenDatumAndAdd(exp);
+                return true;
             }
             else
                 return false;

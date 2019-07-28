@@ -184,7 +184,9 @@ namespace Blamite.Blam.Scripting
 					floatBytes[1] = (byte) ((value >> 8) & 0xFF);
 					floatBytes[2] = (byte) ((value >> 16) & 0xFF);
 					floatBytes[3] = (byte) ((value >> 24) & 0xFF);
-					output.Write(BitConverter.ToSingle(floatBytes, 0));
+                    float fl = BitConverter.ToSingle(floatBytes, 0);
+
+                    output.Write(fl.ToString("0.#########"));
 					break;
 				case "function_name":
 					if (_nextFunctionIsScript)

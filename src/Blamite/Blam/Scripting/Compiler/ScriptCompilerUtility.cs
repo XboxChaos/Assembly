@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Antlr4.Runtime.Misc;
+using Antlr4.Runtime;
 using System.Xml;
 using Blamite.Blam.Scripting.Compiler.Expressions;
 using Blamite.IO;
@@ -29,6 +29,21 @@ namespace Blamite.Blam.Scripting.Compiler
                 result = infos.First();
 
             return result;
+        }
+
+        private BS_ReachParser.ScriDeclContext GetParentScriptContext(ParserRuleContext ctx)
+        {
+            RuleContext parent = ctx;
+
+            for(int i = 0; i < ctx.Depth(); i++)
+            {
+                parent = parent.Parent;
+                if(parent is BS_ReachParser.ScriDeclContext)
+                {
+                    return (BS_ReachParser.ScriDeclContext)parent;
+                }
+            }
+            throw new CompilerException("Failed to retrieve a script declaration context.", ctx.GetText(), ctx.Start.Line);
         }
 
         private void ExpressionsToXML()
@@ -281,6 +296,13 @@ namespace Blamite.Blam.Scripting.Compiler
                 Debug.WriteLine($"Type Pop:\t\t{str}");
             }
             return str;
+        }
+
+        private void ReportProgress()
+        {
+            _processedDeclarations++;
+            int i = _processedDeclarations * 100 / _declarationCount;
+            _progress.Report(i);
         }
     }
 }

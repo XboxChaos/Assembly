@@ -27,7 +27,7 @@ funcID
         ;
 gloRef  :       ID; 
 
-expr    :   lit | call ;
+expr    :   lit | call | branch;
 
 retType : 'void' | VALUETYPE ;
 

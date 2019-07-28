@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 
 			var generator = new BlamScriptGenerator(scripts, _opcodes);
-			var code = new IndentedTextWriter(new StringWriter());
+			var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
 
 			generator.WriteComment("Decompiled with Assembly", code);
 			generator.WriteComment("", code);
@@ -98,33 +99,36 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			generator.WriteComment("Scripts", code);
 			foreach (Script script in scripts.Scripts)
 			{
-				code.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort) script.ExecutionType),
-					_opcodes.GetTypeInfo((ushort) script.ReturnType).Name, script.Name);
+                if (!script.Name.Contains("_to_"))
+                {
+                    code.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort)script.ExecutionType),
+                        _opcodes.GetTypeInfo((ushort)script.ReturnType).Name, script.Name);
 
-				if (script.Parameters.Count > 0)
-				{
-					code.Write(" (");
+                    if (script.Parameters.Count > 0)
+                    {
+                        code.Write(" (");
 
-					bool firstParam = true;
-					foreach (ScriptParameter param in script.Parameters)
-					{
-						if (!firstParam)
-							code.Write(", ");
-						code.Write("{1} {0}", param.Name, _opcodes.GetTypeInfo((ushort) param.Type).Name);
-						firstParam = false;
-					}
+                        bool firstParam = true;
+                        foreach (ScriptParameter param in script.Parameters)
+                        {
+                            if (!firstParam)
+                                code.Write(", ");
+                            code.Write("{1} {0}", param.Name, _opcodes.GetTypeInfo((ushort)param.Type).Name);
+                            firstParam = false;
+                        }
 
-					code.Write(")");
-				}
+                        code.Write(")");
+                    }
 
-				code.Indent++;
-				code.WriteLine();
-				generator.WriteExpression(script.RootExpressionIndex, code);
-				code.Indent--;
+                    code.Indent++;
+                    code.WriteLine();
+                    generator.WriteExpression(script.RootExpressionIndex, code);
+                    code.Indent--;
 
-				code.WriteLine();
-				code.WriteLine(")");
-				code.WriteLine();
+                    code.WriteLine();
+                    code.WriteLine(")");
+                    code.WriteLine();
+                }
 			}
 
 			DateTime endTime = DateTime.Now;
@@ -133,25 +137,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
 		}
-
-        private ScriptData CompileScripts(string code)
-        {
-            using (IReader reader = _streamManager.OpenRead())
-            {
-                ICharStream stream = CharStreams.fromstring(code);
-                ITokenSource lexer = new BS_ReachLexer(stream);
-                ITokenStream tokens = new CommonTokenStream(lexer);
-                BS_ReachParser parser = new BS_ReachParser(tokens);
-                parser.BuildParseTree = true;
-                IParseTree tree = parser.hsc();
-                ScriptContext scrContext = _scriptFile.LoadContext(reader);
-                ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, LoadSeatMappings());
-                compiler.PrintDebugInfo = true;
-                ParseTreeWalker.Default.Walk(compiler, tree);
-                return compiler.Result();
-            }
-        }
-
 
         private void btnExport_Click(object sender, RoutedEventArgs e)
 		{
@@ -166,42 +151,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			MetroMessageBox.Show("Script Exported", "Script exported successfully.");
 		}
 
-		private void btnCompile_Click(object sender, RoutedEventArgs e)
+		private async void btnCompile_Click(object sender, RoutedEventArgs e)
 		{
 
             if (_buildInfo.Name == "Halo: Reach")
             {
                 string hsc = txtScript.Text;
-                DateTime start = DateTime.Now;
-                Task<ScriptData> task = new Task<ScriptData>(() => CompileScripts(hsc));
-                task.Start();
+                var progress = new Progress<int>(v =>
+                {
+                    progressBar.Value = v;
+                });
 
                 try
                 {
-                    task.Wait();
-                    ScriptData data = task.Result;
-                    task.Dispose();
-
-                    DateTime end = DateTime.Now;
-                    TimeSpan duration = end.Subtract(start);
-
-                    var res = MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
-                        + "\nWARNING: This compiler is not 100% accurate and could corrupt your map. Please backup your map before proceeding."
-                        +"\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
-                    if(res == MetroMessageBox.MessageBoxResult.Yes)
+                    DateTime start = DateTime.Now;
+                    Task<ScriptData> task = Task.Run(() => CompileScripts(hsc, progress));
+                    await task.ContinueWith(t =>
                     {
-                        using (IStream stream = _streamManager.OpenReadWrite())
+                        ScriptData data = t.Result;
+
+                        DateTime end = DateTime.Now;
+                        TimeSpan duration = end.Subtract(start);
+
+                        var res = MetroMessageBox.Show("Success!", $"The scripts were successfully compiled in {duration.TotalSeconds} seconds."
+                            + "\nWARNING: This compiler is not 100% accurate and could corrupt your map.\nPlease backup your map before proceeding."
+                            + "\n\nDo you want to save the changes to the file?", MetroMessageBox.MessageBoxButtons.YesNo);
+                        if (res == MetroMessageBox.MessageBoxResult.Yes)
                         {
-                            _scriptFile.SaveScripts(data, stream);
-                            _cashefile.SaveChanges(stream);
+                            using (IStream stream = _streamManager.OpenReadWrite())
+                            {
+                                _scriptFile.SaveScripts(data, stream);
+                                _cashefile.SaveChanges(stream);
+                            }
+                            _metaRefresh();
+                            StatusUpdater.Update("Scripts saved");
                         }
-                        _metaRefresh();
-                        StatusUpdater.Update("Scripts saved");
-                    }
-                    else
-                    {
-                        return;
-                    }
+                        else
+                        {
+                            return;
+                        }
+                    });
                 }
                 catch (AggregateException ex)
                 {
@@ -227,6 +216,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             else
                 MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
 
+        }
+
+        private ScriptData CompileScripts(string code, IProgress<int> progress)
+        {
+            using (IReader reader = _streamManager.OpenRead())
+            {
+                ICharStream stream = CharStreams.fromstring(code);
+                ITokenSource lexer = new BS_ReachLexer(stream);
+                ITokenStream tokens = new CommonTokenStream(lexer);
+                BS_ReachParser parser = new BS_ReachParser(tokens);
+                parser.BuildParseTree = true;
+                IParseTree tree = parser.hsc();
+                ScriptContext scrContext = _scriptFile.LoadContext(reader);
+                ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, LoadSeatMappings(), progress);
+                ParseTreeWalker.Default.Walk(compiler, tree);
+                return compiler.Result();
+            }
         }
 
         //remove later?
