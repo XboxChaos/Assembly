@@ -30,8 +30,13 @@ namespace Blamite.Blam
 			stringReader.SeekTo(0);
 			for (int i = 0; i < offsets.Length; i++)
 			{
-				stringReader.SeekTo(offsets[i]);
-				_strings.Add(stringReader.ReadAscii());
+				if (offsets[i] == -1)
+					_strings.Add(null);
+				else
+				{
+					stringReader.SeekTo(offsets[i]);
+					_strings.Add(stringReader.ReadAscii());
+				}
 			}
 		}
 
@@ -129,7 +134,7 @@ namespace Blamite.Blam
 				}
 				else
 				{
-					stream.WriteInt32(0);
+					stream.WriteInt32(-1);
 				}
 			}
 		}
