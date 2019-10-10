@@ -50,7 +50,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             if (_expressions.Count > 0)
             {
-                string folder = "Compiler_Debug";
+                string folder = "Compiler";
                 if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
@@ -110,7 +110,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private void StringsToFile()
         {
-            string folder = "Compiler_Debug";
+            string folder = "Compiler";
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
@@ -137,7 +137,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         private void DeclarationsToXML()
         {
-            string folder = "Compiler_Debug";
+            string folder = "Compiler";
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
@@ -204,7 +204,11 @@ namespace Blamite.Blam.Scripting.Compiler
                 var index = _openDatums.Pop();
 
                 if (PrintDebugInfo)
-                    Debug.Print($"Close!\t\t\t{index}");
+                {
+                    _logger.WriteLine("CLOSE", $"Index: {index}");
+                    _logger.WriteNewLine();
+                }
+
 
                 _expressions[index].NextExpression = DatumIndex.Null;
             }
@@ -222,7 +226,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 var index = _openDatums.Pop();
                 if (PrintDebugInfo)
-                    Debug.Print($"Link!\t\t\t{index}");
+                    _logger.WriteLine("LINK", $"Index: {index}");
 
                 if (index != -1)        // -1 means that this expression belongs to a global declaration
                     _expressions[index].NextExpression = new DatumIndex(_currentSalt, _currentExpressionIndex);
@@ -240,7 +244,7 @@ namespace Blamite.Blam.Scripting.Compiler
         {
             Int32 openIndex = _expressions.Count;
             if (PrintDebugInfo)
-                Debug.Print($"Open!\t\t\t{openIndex}");
+                _logger.WriteLine("OPEN", $"Index: {openIndex}");
             _openDatums.Push(openIndex);
             _expressions.Add(expression);
         }
@@ -270,7 +274,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if(PrintDebugInfo)
                 {
-                    Debug.WriteLine($"Type Push:\t\t{type}");
+                    _logger.WriteLine("TYPE", $"Push: {type}");
                 }
                 _expectedTypes.Push(type);
             }
@@ -282,9 +286,18 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 if (PrintDebugInfo)
                 {
-                    Debug.WriteLine($"Type Push:\t\t{type}");
+                    _logger.WriteLine("TYPE", $"Push: {type}");
                 }
                 _expectedTypes.Push(type);
+            }
+        }
+
+        private void EqualityPush(string type)
+        {
+            if(_equality)
+            {
+                PushTypes(type);
+                _equality = false;
             }
         }
 
@@ -293,7 +306,7 @@ namespace Blamite.Blam.Scripting.Compiler
             string str = _expectedTypes.Pop();
             if (PrintDebugInfo)
             {
-                Debug.WriteLine($"Type Pop:\t\t{str}");
+                _logger.WriteLine("TYPE", $"Pop: {str}");
             }
             return str;
         }
@@ -303,6 +316,24 @@ namespace Blamite.Blam.Scripting.Compiler
             _processedDeclarations++;
             int i = _processedDeclarations * 100 / _declarationCount;
             _progress.Report(i);
+        }
+
+        private RuleContext GetParentContext(RuleContext context, int ruleIndex)
+        {
+            var parent = context.Parent;
+            if (parent.RuleIndex == ruleIndex)
+            {
+                return parent;
+            }
+            while (parent.RuleIndex != BS_ReachParser.RULE_hsc)
+            {
+                parent = parent.Parent;
+                if (parent.RuleIndex == ruleIndex)
+                {
+                    return parent;
+                }
+            }
+            return null;
         }
     }
 }

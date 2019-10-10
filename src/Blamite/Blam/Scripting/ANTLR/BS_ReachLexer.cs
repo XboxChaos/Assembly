@@ -35,8 +35,8 @@ public partial class BS_ReachLexer : Lexer {
 	public const int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, DAMAGEREGION=15, MODELSTATE=16, 
-		BOOLIT=17, VALUETYPE=18, SCRIPTTYPE=19, STRING=20, FLOAT=21, INT=22, LP=23, 
-		RP=24, ID=25, COMMENT=26, WS=27;
+		BOOLIT=17, VALUETYPE=18, SCRIPTTYPE=19, STRING=20, FLOAT=21, INT=22, ID=23, 
+		LP=24, RP=25, COMMENT=26, WS=27;
 	public static string[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -48,8 +48,8 @@ public partial class BS_ReachLexer : Lexer {
 	public static readonly string[] ruleNames = {
 		"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
 		"T__9", "T__10", "T__11", "T__12", "T__13", "DAMAGEREGION", "MODELSTATE", 
-		"BOOLIT", "VALUETYPE", "SCRIPTTYPE", "STRING", "FLOAT", "INT", "LP", "RP", 
-		"ID", "LCASE", "DIGIT", "SPECIAL", "COMMENT", "WS"
+		"BOOLIT", "VALUETYPE", "SCRIPTTYPE", "STRING", "FLOAT", "INT", "ID", "LP", 
+		"RP", "LCASE", "DIGIT", "SPECIAL", "COMMENT", "WS"
 	};
 
 
@@ -65,12 +65,12 @@ public partial class BS_ReachLexer : Lexer {
 	private static readonly string[] _LiteralNames = {
 		null, "'global'", "'script'", "','", "'branch'", "'!='", "'>='", "'<='", 
 		"'*'", "'+'", "'<'", "'-'", "'='", "'>'", "'void'", null, null, null, 
-		null, null, null, null, null, "'('", "')'"
+		null, null, null, null, null, null, "'('", "')'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, "DAMAGEREGION", "MODELSTATE", "BOOLIT", "VALUETYPE", 
-		"SCRIPTTYPE", "STRING", "FLOAT", "INT", "LP", "RP", "ID", "COMMENT", "WS"
+		"SCRIPTTYPE", "STRING", "FLOAT", "INT", "ID", "LP", "RP", "COMMENT", "WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -390,9 +390,9 @@ public partial class BS_ReachLexer : Lexer {
 		'\x3', '\x16', '\x6', '\x16', '\x598', '\n', '\x16', '\r', '\x16', '\xE', 
 		'\x16', '\x599', '\x3', '\x17', '\x5', '\x17', '\x59D', '\n', '\x17', 
 		'\x3', '\x17', '\x6', '\x17', '\x5A0', '\n', '\x17', '\r', '\x17', '\xE', 
-		'\x17', '\x5A1', '\x3', '\x18', '\x3', '\x18', '\x3', '\x19', '\x3', '\x19', 
-		'\x3', '\x1A', '\x3', '\x1A', '\x3', '\x1A', '\x6', '\x1A', '\x5AB', '\n', 
-		'\x1A', '\r', '\x1A', '\xE', '\x1A', '\x5AC', '\x3', '\x1B', '\x3', '\x1B', 
+		'\x17', '\x5A1', '\x3', '\x18', '\x3', '\x18', '\x3', '\x18', '\x6', '\x18', 
+		'\x5A7', '\n', '\x18', '\r', '\x18', '\xE', '\x18', '\x5A8', '\x3', '\x19', 
+		'\x3', '\x19', '\x3', '\x1A', '\x3', '\x1A', '\x3', '\x1B', '\x3', '\x1B', 
 		'\x3', '\x1C', '\x3', '\x1C', '\x3', '\x1D', '\x3', '\x1D', '\x3', '\x1E', 
 		'\x3', '\x1E', '\a', '\x1E', '\x5B7', '\n', '\x1E', '\f', '\x1E', '\xE', 
 		'\x1E', '\x5BA', '\v', '\x1E', '\x3', '\x1E', '\x3', '\x1E', '\x3', '\x1E', 
@@ -435,9 +435,9 @@ public partial class BS_ReachLexer : Lexer {
 		'\x2', '\x2', '#', '\x10F', '\x3', '\x2', '\x2', '\x2', '%', '\x550', 
 		'\x3', '\x2', '\x2', '\x2', '\'', '\x582', '\x3', '\x2', '\x2', '\x2', 
 		')', '\x584', '\x3', '\x2', '\x2', '\x2', '+', '\x58E', '\x3', '\x2', 
-		'\x2', '\x2', '-', '\x59C', '\x3', '\x2', '\x2', '\x2', '/', '\x5A3', 
-		'\x3', '\x2', '\x2', '\x2', '\x31', '\x5A5', '\x3', '\x2', '\x2', '\x2', 
-		'\x33', '\x5AA', '\x3', '\x2', '\x2', '\x2', '\x35', '\x5AE', '\x3', '\x2', 
+		'\x2', '\x2', '-', '\x59C', '\x3', '\x2', '\x2', '\x2', '/', '\x5A6', 
+		'\x3', '\x2', '\x2', '\x2', '\x31', '\x5AA', '\x3', '\x2', '\x2', '\x2', 
+		'\x33', '\x5AC', '\x3', '\x2', '\x2', '\x2', '\x35', '\x5AE', '\x3', '\x2', 
 		'\x2', '\x2', '\x37', '\x5B0', '\x3', '\x2', '\x2', '\x2', '\x39', '\x5B2', 
 		'\x3', '\x2', '\x2', '\x2', ';', '\x5B4', '\x3', '\x2', '\x2', '\x2', 
 		'=', '\x5C0', '\x3', '\x2', '\x2', '\x2', '?', '@', '\a', 'i', '\x2', 
@@ -1331,34 +1331,34 @@ public partial class BS_ReachLexer : Lexer {
 		'\x1C', '\x2', '\x59F', '\x59E', '\x3', '\x2', '\x2', '\x2', '\x5A0', 
 		'\x5A1', '\x3', '\x2', '\x2', '\x2', '\x5A1', '\x59F', '\x3', '\x2', '\x2', 
 		'\x2', '\x5A1', '\x5A2', '\x3', '\x2', '\x2', '\x2', '\x5A2', '.', '\x3', 
-		'\x2', '\x2', '\x2', '\x5A3', '\x5A4', '\a', '*', '\x2', '\x2', '\x5A4', 
-		'\x30', '\x3', '\x2', '\x2', '\x2', '\x5A5', '\x5A6', '\a', '+', '\x2', 
-		'\x2', '\x5A6', '\x32', '\x3', '\x2', '\x2', '\x2', '\x5A7', '\x5AB', 
-		'\x5', '\x35', '\x1B', '\x2', '\x5A8', '\x5AB', '\x5', '\x37', '\x1C', 
-		'\x2', '\x5A9', '\x5AB', '\x5', '\x39', '\x1D', '\x2', '\x5AA', '\x5A7', 
-		'\x3', '\x2', '\x2', '\x2', '\x5AA', '\x5A8', '\x3', '\x2', '\x2', '\x2', 
-		'\x5AA', '\x5A9', '\x3', '\x2', '\x2', '\x2', '\x5AB', '\x5AC', '\x3', 
-		'\x2', '\x2', '\x2', '\x5AC', '\x5AA', '\x3', '\x2', '\x2', '\x2', '\x5AC', 
-		'\x5AD', '\x3', '\x2', '\x2', '\x2', '\x5AD', '\x34', '\x3', '\x2', '\x2', 
-		'\x2', '\x5AE', '\x5AF', '\t', '\x2', '\x2', '\x2', '\x5AF', '\x36', '\x3', 
-		'\x2', '\x2', '\x2', '\x5B0', '\x5B1', '\t', '\x3', '\x2', '\x2', '\x5B1', 
-		'\x38', '\x3', '\x2', '\x2', '\x2', '\x5B2', '\x5B3', '\t', '\x4', '\x2', 
-		'\x2', '\x5B3', ':', '\x3', '\x2', '\x2', '\x2', '\x5B4', '\x5B8', '\a', 
-		'=', '\x2', '\x2', '\x5B5', '\x5B7', '\v', '\x2', '\x2', '\x2', '\x5B6', 
-		'\x5B5', '\x3', '\x2', '\x2', '\x2', '\x5B7', '\x5BA', '\x3', '\x2', '\x2', 
-		'\x2', '\x5B8', '\x5B9', '\x3', '\x2', '\x2', '\x2', '\x5B8', '\x5B6', 
-		'\x3', '\x2', '\x2', '\x2', '\x5B9', '\x5BB', '\x3', '\x2', '\x2', '\x2', 
-		'\x5BA', '\x5B8', '\x3', '\x2', '\x2', '\x2', '\x5BB', '\x5BC', '\a', 
-		'\f', '\x2', '\x2', '\x5BC', '\x5BD', '\x3', '\x2', '\x2', '\x2', '\x5BD', 
-		'\x5BE', '\b', '\x1E', '\x2', '\x2', '\x5BE', '<', '\x3', '\x2', '\x2', 
-		'\x2', '\x5BF', '\x5C1', '\t', '\x5', '\x2', '\x2', '\x5C0', '\x5BF', 
-		'\x3', '\x2', '\x2', '\x2', '\x5C1', '\x5C2', '\x3', '\x2', '\x2', '\x2', 
-		'\x5C2', '\x5C0', '\x3', '\x2', '\x2', '\x2', '\x5C2', '\x5C3', '\x3', 
-		'\x2', '\x2', '\x2', '\x5C3', '\x5C4', '\x3', '\x2', '\x2', '\x2', '\x5C4', 
-		'\x5C5', '\b', '\x1F', '\x2', '\x2', '\x5C5', '>', '\x3', '\x2', '\x2', 
-		'\x2', '\x12', '\x2', '\xCC', '\x104', '\x10F', '\x550', '\x582', '\x588', 
-		'\x58E', '\x593', '\x599', '\x59C', '\x5A1', '\x5AA', '\x5AC', '\x5B8', 
-		'\x5C2', '\x3', '\b', '\x2', '\x2',
+		'\x2', '\x2', '\x2', '\x5A3', '\x5A7', '\x5', '\x35', '\x1B', '\x2', '\x5A4', 
+		'\x5A7', '\x5', '\x37', '\x1C', '\x2', '\x5A5', '\x5A7', '\x5', '\x39', 
+		'\x1D', '\x2', '\x5A6', '\x5A3', '\x3', '\x2', '\x2', '\x2', '\x5A6', 
+		'\x5A4', '\x3', '\x2', '\x2', '\x2', '\x5A6', '\x5A5', '\x3', '\x2', '\x2', 
+		'\x2', '\x5A7', '\x5A8', '\x3', '\x2', '\x2', '\x2', '\x5A8', '\x5A6', 
+		'\x3', '\x2', '\x2', '\x2', '\x5A8', '\x5A9', '\x3', '\x2', '\x2', '\x2', 
+		'\x5A9', '\x30', '\x3', '\x2', '\x2', '\x2', '\x5AA', '\x5AB', '\a', '*', 
+		'\x2', '\x2', '\x5AB', '\x32', '\x3', '\x2', '\x2', '\x2', '\x5AC', '\x5AD', 
+		'\a', '+', '\x2', '\x2', '\x5AD', '\x34', '\x3', '\x2', '\x2', '\x2', 
+		'\x5AE', '\x5AF', '\t', '\x2', '\x2', '\x2', '\x5AF', '\x36', '\x3', '\x2', 
+		'\x2', '\x2', '\x5B0', '\x5B1', '\t', '\x3', '\x2', '\x2', '\x5B1', '\x38', 
+		'\x3', '\x2', '\x2', '\x2', '\x5B2', '\x5B3', '\t', '\x4', '\x2', '\x2', 
+		'\x5B3', ':', '\x3', '\x2', '\x2', '\x2', '\x5B4', '\x5B8', '\a', '=', 
+		'\x2', '\x2', '\x5B5', '\x5B7', '\v', '\x2', '\x2', '\x2', '\x5B6', '\x5B5', 
+		'\x3', '\x2', '\x2', '\x2', '\x5B7', '\x5BA', '\x3', '\x2', '\x2', '\x2', 
+		'\x5B8', '\x5B9', '\x3', '\x2', '\x2', '\x2', '\x5B8', '\x5B6', '\x3', 
+		'\x2', '\x2', '\x2', '\x5B9', '\x5BB', '\x3', '\x2', '\x2', '\x2', '\x5BA', 
+		'\x5B8', '\x3', '\x2', '\x2', '\x2', '\x5BB', '\x5BC', '\a', '\f', '\x2', 
+		'\x2', '\x5BC', '\x5BD', '\x3', '\x2', '\x2', '\x2', '\x5BD', '\x5BE', 
+		'\b', '\x1E', '\x2', '\x2', '\x5BE', '<', '\x3', '\x2', '\x2', '\x2', 
+		'\x5BF', '\x5C1', '\t', '\x5', '\x2', '\x2', '\x5C0', '\x5BF', '\x3', 
+		'\x2', '\x2', '\x2', '\x5C1', '\x5C2', '\x3', '\x2', '\x2', '\x2', '\x5C2', 
+		'\x5C0', '\x3', '\x2', '\x2', '\x2', '\x5C2', '\x5C3', '\x3', '\x2', '\x2', 
+		'\x2', '\x5C3', '\x5C4', '\x3', '\x2', '\x2', '\x2', '\x5C4', '\x5C5', 
+		'\b', '\x1F', '\x2', '\x2', '\x5C5', '>', '\x3', '\x2', '\x2', '\x2', 
+		'\x12', '\x2', '\xCC', '\x104', '\x10F', '\x550', '\x582', '\x588', '\x58E', 
+		'\x593', '\x599', '\x59C', '\x5A1', '\x5A6', '\x5A8', '\x5B8', '\x5C2', 
+		'\x3', '\b', '\x2', '\x2',
 	};
 
 	public static readonly ATN _ATN =

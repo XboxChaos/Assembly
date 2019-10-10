@@ -14,7 +14,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
         public ScriptDeclInfo(BS_ReachParser.ScriDeclContext context)
         {
-            Name = context.ID().GetText();
+            Name = context.scriptID().GetText();
             ScriptType = context.SCRIPTTYPE().GetText();
             ReturnType = context.retType().GetText();
             Parameters = new List<ParameterInfo>();

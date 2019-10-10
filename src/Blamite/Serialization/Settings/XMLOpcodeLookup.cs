@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using Blamite.Blam.Scripting;
 using Blamite.Util;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Blamite.Serialization.Settings
@@ -28,6 +29,7 @@ namespace Blamite.Serialization.Settings
 			RegisterValueTypes(root, result);
 			RegisterFunctions(root, result);
             RegisterGlobals(root, result);
+            RegisterTypeCasts(root, result);
 
 			return result;
 		}
@@ -94,5 +96,18 @@ namespace Blamite.Serialization.Settings
                 lookup.RegisterGlobal(info);
             }
         }
-	}
+
+        private void RegisterTypeCasts(XContainer root, OpcodeLookup lookup)
+        {
+            foreach (XElement element in root.Element("typecasting").Elements("to"))
+            {
+                string to = XMLUtil.GetStringAttribute(element, "name");
+                bool castOnly = XMLUtil.GetBoolAttribute(element, "castOnly", false);
+                List<string> from = element.Elements("from").Select(e => e.Value).ToList();
+                CastInfo info = new CastInfo(to, castOnly, from);
+                lookup.RegisterTypeCast(to, info);
+            }
+        }
+
+    }
 }

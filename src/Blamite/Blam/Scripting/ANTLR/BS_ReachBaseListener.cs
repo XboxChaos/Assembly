@@ -107,6 +107,18 @@ public partial class BS_ReachBaseListener : IBS_ReachListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCall([NotNull] BS_ReachParser.CallContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterScriptID([NotNull] BS_ReachParser.ScriptIDContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BS_ReachParser.scriptID"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitScriptID([NotNull] BS_ReachParser.ScriptIDContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="BS_ReachParser.funcID"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

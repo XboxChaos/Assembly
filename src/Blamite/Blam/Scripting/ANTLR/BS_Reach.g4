@@ -4,13 +4,18 @@ hsc : (gloDecl|scriDecl)+ ;
 
 gloDecl : LP 'global' VALUETYPE ID expr RP ;
 
-scriDecl : LP 'script' SCRIPTTYPE retType ID scriptParams? (call | gloRef | branch)+ RP ;
+scriDecl : LP 'script' SCRIPTTYPE retType scriptID scriptParams? (call | gloRef | branch)+ RP ;
 
 scriptParams : LP VALUETYPE ID (',' VALUETYPE ID)* RP ;
 
 branch : LP 'branch' expr* RP ;
 
 call : LP funcID expr* RP ;
+
+scriptID 
+        :       ID
+        |       INT
+        ;
 
 funcID 
         :       '!='
@@ -172,12 +177,13 @@ SCRIPTTYPE
 STRING : '"' .*? '"' ;
 
 FLOAT : '-'? DIGIT+ '.' DIGIT+ ;
+
+
 INT : '-'? DIGIT+ ;
+ID : (LCASE|DIGIT|SPECIAL)+ ;
 
 LP : '(' ;
 RP : ')' ;
-
-ID : (LCASE|DIGIT|SPECIAL)+ ;
 
 fragment
 LCASE : [a-z] ;

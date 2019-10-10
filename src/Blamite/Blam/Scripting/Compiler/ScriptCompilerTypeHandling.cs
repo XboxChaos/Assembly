@@ -9,6 +9,37 @@ namespace Blamite.Blam.Scripting.Compiler
 {
     public partial class ScriptCompiler : BS_ReachBaseListener
     {
+        private bool ProcessLiteral(BS_ReachParser.LitContext context, string expectedValueType, string initialType)
+        {
+            CastInfo info = _opcodes.GetTypeCast(expectedValueType);
+            if(info != null)
+            {                
+                if(!info.CastOnly && HandleValueType(context, expectedValueType))
+                {
+                    return true;
+                }
+                else
+                {
+                    foreach(string type in info.From)
+                    {   
+                        
+                        // recursion                                       
+                        if(type != initialType && ProcessLiteral(context, type, initialType))
+                        {
+                            // overwrite the value type of the added expression node with the casted type
+                            _expressions[_expressions.Count - 1].ValueType = _opcodes.GetTypeInfo(initialType).Opcode;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+            }
+            else
+            {
+                return HandleValueType(context, expectedValueType);
+            }
+        }
 
         private bool HandleValueType(BS_ReachParser.LitContext context, string expectedValueType)
         {
@@ -23,19 +54,16 @@ namespace Blamite.Blam.Scripting.Compiler
                     return IsNumber(context);
 
                 case "short":
-                    CreateShort(context);
-                    return true;
+                    return IsShort(context);
 
                 case "long":
-                    CreateLong(context);
-                    return true;
+                    return IsLong(context);
 
                 case "boolean":
                     return IsBoolean(context);
 
                 case "real":
-                    CreateReal(context);
-                    return true;
+                    return IsReal(context);
 
                 case "string":
                     return IsString(context);
@@ -57,13 +85,10 @@ namespace Blamite.Blam.Scripting.Compiler
                 case "starting_profile":
                 case "zone_set":
                 case "designer_zone":
-                    if (IsIndex16(context, expectedValueType))
-                        return true;
-                    else
-                        throw new ArgumentException($"Failed to retrieve the {expectedValueType} index. Name: {name}. Line: {context.Start.Line}");
+                    return IsIndex16(context, expectedValueType);
 
                 case "ai_line":
-                    return IsAiLine(context);
+                    return IsAiLine(context, false);
 
                 case "point_reference":
                     return IsPointReference(context);
@@ -98,10 +123,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     return IsDeviceGroup(context);
 
                 case "ai":
-                    if (IsAI(context, expectedValueType))
-                        return true;
-                    else
-                        throw new ArgumentException($"Failed to retrieve a matching AI. Name: \"{name}\". Line: {context.Start.Line}");
+                    return IsAI(context, expectedValueType);
 
                 case "player":
                 case "game_difficulty":
@@ -126,25 +148,6 @@ namespace Blamite.Blam.Scripting.Compiler
                 case "subtitle_setting":
                     return IsEnum16(context, expectedValueType);
 
-                case "object":
-                    return IsObject_Name(context, "object_name", "object") || IsAI(context, "object") || IsEnum32(context, "player", "object");
-
-                case "unit":
-                    return IsObject_Name(context, "unit_name", "unit") || IsAI(context, "unit") || IsEnum32(context, "player", "unit");
-
-                case "vehicle":
-                    return IsObject_Name(context, "vehicle_name", "vehicle") || IsAI(context, "vehicle");
-
-                case "weapon":
-                    return IsObject_Name(context, "weapon_name", "weapon");
-                case "device":
-                    return IsObject_Name(context, "device_name", "device");
-                case "scenery":
-                    return IsObject_Name(context, "scenery_name", "scenery");
-                case "effect_scenery":
-                    return IsObject_Name(context, "effect_scenery_name", "effect_scenery");
-
-
                 case "object_name":
                 case "unit_name":
                 case "vehicle_name":
@@ -152,10 +155,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 case "device_name":
                 case "scenery_name":
                 case "effect_scenery_name":
-                    if (IsObject_Name(context, expectedValueType, expectedValueType))
-                        return true;
-                    else
-                        throw new ArgumentException($"Failed to retrieve a matching object name. Name: {name}. Line: {context.Start.Line}");
+                    return (IsObject_Name(context, expectedValueType, expectedValueType));
 
                 default:
                     throw new NotImplementedException($"Unimplemented Value Type: \"{expectedValueType}\". Line: {context.Start.Line}");
@@ -184,6 +184,7 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush("boolean");
             return true;
         }
 
@@ -202,6 +203,7 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush(valueType);
             return true;
         }
 
@@ -220,22 +222,33 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush(expectedValueType);
             return true;
         }
 
         private bool IsNumber(BS_ReachParser.LitContext context)
         {
-            // is the number an integer? The default integer is a long for now.
+            // is the number an integer? The default integer is a short for now.
             if (context.INT() != null)
             {
-                CreateLong(context);
-                return true;
+                string txt = context.GetText();
+
+                Int32 num;
+                if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out num))
+                    throw new ArgumentException($"Failed to parse Long. Text: {txt}");
+                if(num >= Int16.MinValue && num <= Int16.MaxValue)
+                {
+                    return IsShort(context);
+                }
+                else
+                {
+                    return IsLong(context);
+                }                               
             }
             // if the number a real?
             else if (context.FLOAT() != null)
             {
-                CreateReal(context);
-                return true;
+                return IsReal(context);
             }
             else
                 return false;
@@ -256,6 +269,7 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(obj);
 
+            EqualityPush(valueType);
             return true;
         }
 
@@ -355,6 +369,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
             IncrementDatum();
             OpenDatumAndAdd(exp);
+
+            EqualityPush(expectedValueType);
             return true;
         }
 
@@ -408,6 +424,8 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+
+            EqualityPush(expectedValueType);
             return true;
         }
 
@@ -424,6 +442,8 @@ namespace Blamite.Blam.Scripting.Compiler
             exp.Values[1] = (Int16)index;
             IncrementDatum();
             OpenDatumAndAdd(exp);
+
+            EqualityPush("device_group");
             return true;
         }
 
@@ -457,6 +477,8 @@ namespace Blamite.Blam.Scripting.Compiler
                 exp.Values[1] = (Int16)point;
                 IncrementDatum();
                 OpenDatumAndAdd(exp);
+
+                EqualityPush("point_reference");
                 return true;
             }
             else
@@ -480,6 +502,7 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush("folder");
             return true;
         }
 
@@ -539,23 +562,52 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush(expectedValueType);
             return true;
         }
 
-        private bool IsAiLine(BS_ReachParser.LitContext context)
+        private bool IsAiLine(BS_ReachParser.LitContext context, bool any)
         {
             string name = context.GetText().Trim('"');
-            int index = Array.FindIndex(_scriptContext.AILines, l => l.Name == name);
-            if (index == -1)
+            // check if this is a simple line reference
+            bool exists = _scriptContext.AILines.Any(s => s.Name == name);
+            // check if a variant was specified
+            if (!exists)
+            {
+                var split = name.Split('_');
+                if(split.Count() > 1)
+                {
+                    string line = string.Join("_", split, 0, split.Count()-1);
+                    string variant = split[split.Count()-1];
+
+                    int lineIndex = Array.FindIndex(_scriptContext.AILines, l => l.Name == line);
+
+                    // make sure that this variant exists
+                    if(lineIndex != -1)
+                    {
+                        var variants = _scriptContext.AILines[lineIndex].GetChildren(_scriptContext.AILineVariants);
+                        exists = variants.Any(v => v.Name == variant);
+                    }
+                }
+            }
+            // don't create an expression node when the line doesn't exist and the compiler is trying to guess the value type
+            if(any && !exists)
+            {
                 return false;
+            }
 
             var opCode = _opcodes.GetTypeInfo("ai_line").Opcode;
-            StringIDExpression exp = new StringIDExpression(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
-            exp.Value = _cashefile.StringIDs.FindOrAddStringID(name);
+            ExpressionU32 exp = new ExpressionU32(_currentSalt, opCode, opCode, _strings.Cache(name), (short)context.Start.Line);
+            if(exists)
+            {
+                exp.Value = _cashefile.StringIDs.FindStringID(name).Value;
+            }
+
 
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush("ai_line");
             return true;
         }
 
@@ -572,6 +624,78 @@ namespace Blamite.Blam.Scripting.Compiler
             IncrementDatum();
             OpenDatumAndAdd(exp);
 
+            EqualityPush("string");
+            return true;
+        }
+
+        private bool IsLong(BS_ReachParser.LitContext context)
+        {
+            string txt = context.GetText();
+            var opCode = _opcodes.GetTypeInfo("long").Opcode;
+            Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
+            Int32 result;
+            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
+            {
+                return false;
+            }
+
+            exp.Value = result;
+            IncrementDatum();
+            OpenDatumAndAdd(exp);
+            EqualityPush("long");
+            return true;
+        }
+
+        private bool IsShort(BS_ReachParser.LitContext context)
+        {
+            string txt = context.GetText();
+            var opCode = _opcodes.GetTypeInfo("short").Opcode;
+            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
+            Int16 result;
+            if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
+            {
+                return false;
+            }
+            exp.Values[0] = result;
+            IncrementDatum();
+            OpenDatumAndAdd(exp);
+            EqualityPush("short");
+            return true;
+        }
+
+        private bool IsReal(BS_ReachParser.LitContext context)
+        {
+            string txt = context.GetText();
+            var opCode = _opcodes.GetTypeInfo("real").Opcode;
+            var exp = new RealExpression(_currentSalt, opCode, opCode, (short)context.Start.Line);
+            float result;
+            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+            {
+                return false;
+            }
+
+            exp.Value = result;
+            IncrementDatum();
+            OpenDatumAndAdd(exp);
+            EqualityPush("real");
+            return true;
+        }
+
+        private bool IsSID(BS_ReachParser.LitContext context)
+        {
+            string txt = context.GetText().Trim('"');
+            var id = _cashefile.StringIDs.FindStringID(txt);
+            if(id == StringID.Null)
+            {
+                return false;
+            }
+
+            var opCode = _opcodes.GetTypeInfo("string_id").Opcode;
+            StringIDExpression exp = new StringIDExpression(_currentSalt, opCode, opCode, _strings.Cache(txt), (short)context.Start.Line);
+            exp.Value = id;
+            IncrementDatum();
+            OpenDatumAndAdd(exp);
+            EqualityPush("string_id");
             return true;
         }
 
@@ -583,52 +707,7 @@ namespace Blamite.Blam.Scripting.Compiler
             exp.Value = _cashefile.StringIDs.FindOrAddStringID(txt);
             IncrementDatum();
             OpenDatumAndAdd(exp);
-        }
-
-        private void CreateLong(BS_ReachParser.LitContext context)
-        {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("long").Opcode;
-            Expression32 exp = new Expression32(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
-            Int32 result;
-            if (!Int32.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
-                throw new ArgumentException($"Failed to parse Long. Text: {txt}");
-            exp.Value = result;
-            IncrementDatum();
-            OpenDatumAndAdd(exp);
-        }
-
-        private void CreateShort(BS_ReachParser.LitContext context)
-        {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("short").Opcode;
-            Expression16 exp = new Expression16(_currentSalt, opCode, opCode, _randomAddress, (short)context.Start.Line);
-            Int16 result;
-            if(txt == "65535")
-            {
-                result = -1;
-            }
-            else if (!Int16.TryParse(txt, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out result))
-            {
-                throw new CompilerException($"Failed to parse short. Text: {txt}", context);
-            }
-            exp.Values[0] = result;
-            IncrementDatum();
-            OpenDatumAndAdd(exp);
-        }
-
-        private void CreateReal(BS_ReachParser.LitContext context)
-        {
-            string txt = context.GetText();
-            var opCode = _opcodes.GetTypeInfo("real").Opcode;
-            var exp = new RealExpression(_currentSalt, opCode, opCode, (short)context.Start.Line);
-            float result;
-            if (!float.TryParse(txt, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
-                throw new ArgumentException($"Failed to parse float. Text: {txt}");
-
-            exp.Value = result;
-            IncrementDatum();
-            OpenDatumAndAdd(exp);
+            EqualityPush("string_id");
         }
 
         private void CreateUnitSeatMapping(BS_ReachParser.LitContext context)
@@ -659,6 +738,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
             IncrementDatum();
             OpenDatumAndAdd(exp);
+            EqualityPush("unit_seat_mapping");
 
         }
 
@@ -716,17 +796,14 @@ namespace Blamite.Blam.Scripting.Compiler
                     || IsIndex16(context, "designer_zone")
                     || IsObject_Name(context, "Object_name", "Object_name")
                     || IsAI(context, "ai")
-                    || IsAiLine(context)
+                    || IsAiLine(context, true)
                     || IsPointReference(context)
                     || IsFolder(context)
                     || IsDeviceGroup(context)
                     || IsTagref(context, "any_tag")
+                    || IsSID(context)
                     || IsString(context);
-                if(result == false)
-                {
-                    CreateSID(context);
-                }
-                return true;
+                return result;
             }
             #endregion
         }

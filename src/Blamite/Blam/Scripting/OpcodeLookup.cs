@@ -21,6 +21,8 @@ namespace Blamite.Blam.Scripting
 		private readonly Dictionary<string, ScriptValueType> _typeLookupByName = new Dictionary<string, ScriptValueType>();
 		private readonly Dictionary<ushort, ScriptValueType> _typeLookupByOpcode = new Dictionary<ushort, ScriptValueType>();
 
+        private readonly Dictionary<string, CastInfo> _typeCastLookup = new Dictionary<string, CastInfo>();
+
 		public void RegisterScriptType(string name, ushort opcode)
 		{
 			_scriptTypeNameLookup[opcode] = name;
@@ -50,6 +52,11 @@ namespace Blamite.Blam.Scripting
         {
             _globalLookupByOpcode[glo.Opcode] = glo;
             _globalLookupByName[glo.Name] = glo;
+        }
+
+        public void RegisterTypeCast(string to, CastInfo info)
+        {
+            _typeCastLookup[to] = info;
         }
 
         public string GetScriptTypeName(ushort opcode)
@@ -112,6 +119,14 @@ namespace Blamite.Blam.Scripting
         {
             GlobalInfo result;
             if (_globalLookupByName.TryGetValue(name, out result))
+                return result;
+            return null;
+        }
+
+        public CastInfo GetTypeCast(string type)
+        {
+            CastInfo result;
+            if (_typeCastLookup.TryGetValue(type, out result))
                 return result;
             return null;
         }

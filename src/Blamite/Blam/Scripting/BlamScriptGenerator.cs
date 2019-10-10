@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Globalization;
 
 namespace Blamite.Blam.Scripting
 {
@@ -173,9 +174,16 @@ namespace Blamite.Blam.Scripting
 						output.Write("false");
 					break;
 				case "short":
-				case "long":
-					// Signed integer
-					output.Write((int) value);
+                    // Signed integer
+                    byte[] bytes = BitConverter.GetBytes(value);
+                    Int16 s16 = BitConverter.ToInt16(bytes, 0);
+                    output.Write(s16);
+                    break;
+                case "long":
+                    // Signed integer
+                    bytes = BitConverter.GetBytes(value);
+                    int signed = BitConverter.ToInt32(bytes, 0);
+					output.Write(signed);
 					break;
 				case "real":
 					// Eww
@@ -186,7 +194,7 @@ namespace Blamite.Blam.Scripting
 					floatBytes[3] = (byte) ((value >> 24) & 0xFF);
                     float fl = BitConverter.ToSingle(floatBytes, 0);
 
-                    output.Write(fl.ToString("0.#########"));
+                    output.Write(fl.ToString("0.#########", CultureInfo.InvariantCulture));
 					break;
 				case "function_name":
 					if (_nextFunctionIsScript)

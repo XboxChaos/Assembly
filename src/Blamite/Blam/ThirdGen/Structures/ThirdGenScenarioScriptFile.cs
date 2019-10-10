@@ -96,7 +96,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public ScriptContext LoadContext(IReader reader)
 		{
 			StructureValueCollection scnrValues = LoadScnrTag(reader);
-            StructureValueCollection mdlgValues = LoadMdlgTag(reader);
+
+            ScriptObject[] lines = new ScriptObject[0];
+            //ScriptObject[] lineVariants = new ScriptObject[0];
+
+            if(_mdlgTag != null)
+            {
+                StructureValueCollection mdlgValues = LoadMdlgTag(reader);
+                lines = ReadObjects(reader, mdlgValues, _aiLines);
+            }
+
 
             return new ScriptContext
             {
@@ -117,7 +126,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 AISquadSingleLocations = _aiSquadSingleLocations,
                 AIObjectiveRoles = _aoObjectiveRoles,
                 PointSetPoints = _pointSetPoints,
-                AILines = ReadObjects(reader, mdlgValues, _aiLines),
+                AILines = lines,
                 AILineVariants = _aiLineVariants,
                 UnitSeatMappingCount = (int)scnrValues.GetInteger("unit seat mapping count")
             };
