@@ -36,6 +36,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public IZoneSet DiscAlwaysStreamingZoneSet { get; private set; }
 
+		public IZoneSet RequiredMapVariantsZoneSet { get; private set; }
+
+		public IZoneSet SandboxMapVariantsZoneSet { get; private set; }
+
 		public IZoneSet[] GeneralZoneSets { get; private set; }
 
 		public IZoneSet[] BSPZoneSets { get; private set; }
@@ -63,6 +67,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			SaveZoneSetTable(UnattachedZoneSet, tagValues, "number of unattached zone sets", "unattached zone set table address", cache, stream);
 			SaveZoneSetTable(DiscForbiddenZoneSet, tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", cache, stream);
 			SaveZoneSetTable(DiscAlwaysStreamingZoneSet, tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", cache, stream);
+			SaveZoneSetTable(RequiredMapVariantsZoneSet, tagValues, "number of required map variant zone sets", "required map variant zone set table address", cache, stream);
+			SaveZoneSetTable(SandboxMapVariantsZoneSet, tagValues, "number of sandbox map variant zone sets", "sandbox map variant zone set table address", cache, stream);
 			SaveZoneSetTable(GeneralZoneSets, tagValues, "number of general zone sets", "general zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets, tagValues, "number of bsp zone sets", "bsp zone set table address", cache, stream);
 			SaveZoneSetTable(BSPZoneSets2, tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", cache, stream);
@@ -82,6 +88,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			UnattachedZoneSet = ReadZoneSetTable(tagValues, "number of unattached zone sets", "unattached zone set table address", reader).FirstOrDefault();
 			DiscForbiddenZoneSet = ReadZoneSetTable(tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", reader).FirstOrDefault();
 			DiscAlwaysStreamingZoneSet = ReadZoneSetTable(tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", reader).FirstOrDefault();
+			RequiredMapVariantsZoneSet = ReadZoneSetTable(tagValues, "number of required map variant zone sets", "required map variant zone set table address", reader).FirstOrDefault();
+			SandboxMapVariantsZoneSet = ReadZoneSetTable(tagValues, "number of sandbox map variant zone sets", "sandbox map variant zone set table address", reader).FirstOrDefault();
 
 			// Everything else needs to be an array
 			GeneralZoneSets = ReadZoneSetTable(tagValues, "number of general zone sets", "general zone set table address", reader).ToArray();
@@ -131,6 +139,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			FreeZoneSetsInTable(tagValues, "number of unattached zone sets", "unattached zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of disc forbidden zone sets", "disc forbidden zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of disc always streaming zone sets", "disc always streaming zone set table address", reader);
+			FreeZoneSetsInTable(tagValues, "number of required map variant zone sets", "required map variant zone set table address", reader);
+			FreeZoneSetsInTable(tagValues, "number of sandbox map variant zone sets", "sandbox map variant zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of general zone sets", "general zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of bsp zone sets", "bsp zone set table address", reader);
 			FreeZoneSetsInTable(tagValues, "number of bsp 2 zone sets", "bsp 2 zone set table address", reader);
