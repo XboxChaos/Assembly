@@ -3,6 +3,7 @@
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
                     xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+					xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
 					xmlns:vsm="clr-namespace:System.Windows;assembly=WPFToolkit">
 
 	<!-- Metro Button -->
@@ -510,6 +511,51 @@
 		<Setter Property="BorderBrush" Value="#292929" />
 		<Setter Property="BorderThickness" Value="2" />
 		<Setter Property="FontSize" Value="12" />
+	</Style>
+
+	<Style x:Key="{x:Type avalonEdit:SearchPanel}" TargetType="{x:Type avalonEdit:SearchPanel}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type avalonEdit:SearchPanel}">
+					<Border BorderBrush="#434346" Background="#FF303032" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="Arrow">
+						<StackPanel Orientation="Horizontal" Margin="4">
+							<TextBox Name="PART_searchTextBox" Focusable="True" Width="150" >
+								<TextBox.Text>
+									<Binding Path="SearchPattern" RelativeSource="{RelativeSource TemplatedParent}" UpdateSourceTrigger="PropertyChanged">
+										<Binding.ValidationRules>
+											<ExceptionValidationRule />
+										</Binding.ValidationRules>
+									</Binding>
+								</TextBox.Text>
+							</TextBox>
+
+							<ToggleButton x:Name="btnOptions" IsChecked="False" Style="{DynamicResource OptionsToggleButton}" Margin="2,0,0,0">
+								<Grid>
+									<Path x:Name="Arrow" Data="M0,0L4,4 8,0z" Margin="4,0,4,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+								</Grid>
+							</ToggleButton>
+
+							<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
+								<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+									<StackPanel>
+										<MenuItem IsCheckable="True" IsChecked="{Binding MatchCase, RelativeSource={RelativeSource TemplatedParent}}" Header="{Binding Localization.MatchCaseText, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White" FontFamily="{DynamicResource MetroFontSemiLight}" FontSize="12" />
+										<MenuItem IsCheckable="True" IsChecked="{Binding WholeWords, RelativeSource={RelativeSource TemplatedParent}}" Header="{Binding Localization.MatchWholeWordsText, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White" FontFamily="{DynamicResource MetroFontSemiLight}" FontSize="12" />
+										<MenuItem IsCheckable="True" IsChecked="{Binding UseRegex, RelativeSource={RelativeSource TemplatedParent}}" Header="{Binding Localization.UseRegexText, RelativeSource={RelativeSource TemplatedParent}}" Foreground="White" FontFamily="{DynamicResource MetroFontSemiLight}" FontSize="12" />
+									</StackPanel>
+								</Border>
+							</Popup>
+
+							<Button Margin="4,0,0,0"  Width="22" Command="avalonEdit:SearchCommands.FindPrevious" ToolTip="{Binding Localization.FindPreviousText, RelativeSource={RelativeSource TemplatedParent}}"
+									Content="&lt;"/>
+							<Button Margin="2,0,0,0"  Width="22" Command="avalonEdit:SearchCommands.FindNext" ToolTip="{Binding Localization.FindNextText, RelativeSource={RelativeSource TemplatedParent}}"
+									Content="&gt;"/>
+							<Button Margin="4,0,0,0" Padding="0,0,0,2" Height="16" Width="16" Content="x" Focusable="False" VerticalAlignment="Top" VerticalContentAlignment="Center"
+											HorizontalAlignment="Right" Command="avalonEdit:SearchCommands.CloseSearchPanel" />
+						</StackPanel>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 </ResourceDictionary>

@@ -4,11 +4,13 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.Scripting;
 using Blamite.Serialization;
 using Blamite.IO;
 using Microsoft.Win32;
+using ICSharpCode.AvalonEdit.Search;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -31,6 +33,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			var thrd = new Thread(DecompileScripts);
 			thrd.SetApartmentState(ApartmentState.STA);
 			thrd.Start(streamManager);
+
+			SearchPanel srch = SearchPanel.Install(txtScript);
+
+			var bconv = new System.Windows.Media.BrushConverter();
+			var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
+
+			srch.MarkerBrush = srchbrsh;
+
+			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
+			SetHighlightColor();
 		}
 
 		private void DecompileScripts(object streamManager)
@@ -162,9 +174,42 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			// You have to stick a breakpoint here to look at the parsed nodes :P
 		}
 
+		private void Settings_SettingsChanged(object sender, EventArgs e)
+		{
+			// Reset the highlight color in case the theme changed
+			SetHighlightColor();
+		}
+
+		private void SetHighlightColor()
+		{
+			var bconv = new System.Windows.Media.BrushConverter();
+			var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+
+			//yucky
+			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+			{
+				case Settings.Accents.Blue:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+					break;
+				case Settings.Accents.Green:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
+					break;
+				case Settings.Accents.Orange:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
+					break;
+				case Settings.Accents.Purple:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
+					break;
+			}
+			txtScript.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
+			selbrsh.Opacity = 0.3;
+			txtScript.TextArea.SelectionBrush = selbrsh;
+		}
+
 		public void Dispose()
 		{
 			txtScript.Clear();
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
 		}
 	}
 }

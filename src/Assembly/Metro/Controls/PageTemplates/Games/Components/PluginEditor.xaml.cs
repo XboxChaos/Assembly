@@ -36,6 +36,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_sibling = sibling;
 
 			LoadSyntaxHighlighting();
+			SetHighlightColor();
 			LoadCodeCompletion();
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
@@ -60,6 +61,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			// Reload the syntax highlighting definition in case the theme changed
 			LoadSyntaxHighlighting();
+
+			// Reset the highlight color in case the theme changed
+			SetHighlightColor();
 		}
 
 		private void btnPluginSave_Click(object sender, RoutedEventArgs e)
@@ -103,6 +107,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					break;
 			}
 			txtPlugin.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
+		}
+
+		private void SetHighlightColor()
+		{
+			var bconv = new System.Windows.Media.BrushConverter();
+			var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+
+			//yucky
+			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+			{
+				case Settings.Accents.Blue:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+					break;
+				case Settings.Accents.Green:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
+					break;
+				case Settings.Accents.Orange:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
+					break;
+				case Settings.Accents.Purple:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
+					break;
+			}
+
+			txtPlugin.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
+			selbrsh.Opacity = 0.3;
+			txtPlugin.TextArea.SelectionBrush = selbrsh;
 		}
 
 		private void LoadPlugin()
