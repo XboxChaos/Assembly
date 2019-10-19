@@ -59,6 +59,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _allTags; }
 		}
 
+		public bool CanJump
+		{
+			get { return _value != null && !_value.IsNull; }
+		}
+
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
 			visitor.VisitTagRef(this);

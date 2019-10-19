@@ -121,6 +121,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private bool _isBookmark;
 		private ITag _rawTag;
 		private string _tagFileName = string.Empty;
+		private bool _isNull;
 
 		private string _tagToolTip = null;
 
@@ -131,7 +132,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			TagFileName = name;
 
 			if (baseTag != null)
-				TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
+			{
+				if (baseTag.MetaLocation == null)
+				{
+					_isNull = true;
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nThis tag refers to a shared cache.\r\nIt cannot be modified directly, only referenced.", _tagFileName, baseTag.Index);
+				}
+				else
+				{
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
+				}
+			}
+		}
+
+		public bool IsNull
+		{
+			get { return _isNull; }
 		}
 
 		public bool IsBookmark

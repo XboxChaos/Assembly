@@ -41,6 +41,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			if (cbTagEntry.SelectedIndex < 0 && cbTagClass.SelectedIndex > 0)
 				cbTagEntry.SelectedIndex = 0;
+
+			TagEntry currentTag = ((TagEntry)cbTagEntry.SelectedItem);
+
+			if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull )
+				btnJumpToTag.IsEnabled = true;
+			else
+				btnJumpToTag.IsEnabled = false;
 		}
 
 		private void CanExecuteJumpToCommand(object sender, CanExecuteRoutedEventArgs e)

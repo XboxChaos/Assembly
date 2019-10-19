@@ -681,7 +681,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void ExecutedJumpToCommand(object sender, ExecutedRoutedEventArgs e)
 		{
 			var tag = e.Parameter as TagEntry;
-			if (tag != null)
+			if (tag != null && !tag.IsNull)
 				CreateTag(tag);
 		}
 
@@ -1772,7 +1772,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private TagEntry WrapTag(ITag tag)
 		{
-			if (tag == null || tag.Class == null || tag.MetaLocation == null)
+			if (tag == null || tag.Class == null || (_cacheFile.Engine != EngineType.SecondGeneration && tag.MetaLocation == null))
 				return null;
 
 			string className = CharConstant.ToString(tag.Class.Magic);
@@ -1810,6 +1810,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private bool FilterTag(TagEntry tag, string filter)
 		{
+			if (tag.IsNull)
+				return false;
 			if (App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags && !tag.IsBookmark)
 				return false;
 			if (string.IsNullOrWhiteSpace(filter))
