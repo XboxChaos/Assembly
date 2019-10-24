@@ -53,8 +53,10 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 			var result = new ResourceTable();
 			result.Pages.AddRange(_layoutTable.LoadPages(reader));
-			var pointers = _layoutTable.LoadPointers(reader, result.Pages);
+			result.Sizes.AddRange(_layoutTable.LoadSizes(reader));
+			var pointers = _layoutTable.LoadPointers(reader, result.Pages, result.Sizes);
 			result.Resources.AddRange(_gestalt.LoadResources(reader, _tags, pointers.ToList()));
+			result.Predictions.AddRange(_gestalt.LoadPredictions(reader, _tags, result.Resources));
 			return result;
 		}
 		
@@ -70,7 +72,10 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 			var pointers = _gestalt.SaveResources(table.Resources, stream);
 			_layoutTable.SavePointers(pointers, stream);
-			_layoutTable.SavePages(table.Pages, stream);
+			_layoutTable.SaveSizes(table.Sizes, stream);
+			_layoutTable.SavePages(table.Pages, pointers, stream);
+
+			_gestalt.SavePredictions(table.Predictions, stream);
 		}
 
 		/// <summary>

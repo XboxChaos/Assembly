@@ -77,6 +77,12 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			set { uniqueshaders.IsChecked = value; }
 		}
 
+		public bool? AddPrediction
+		{
+			get { return addprediction.IsChecked; }
+			set { addprediction.IsChecked = value; }
+		}
+
 
 		private void btnOK_Click(object sender, RoutedEventArgs e)
 		{

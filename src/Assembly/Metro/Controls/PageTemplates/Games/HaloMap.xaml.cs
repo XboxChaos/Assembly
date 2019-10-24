@@ -861,6 +861,60 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						}
 					}
 				}
+
+				foreach (ITag t in tagsProcessed)
+				{
+					foreach (ResourcePredictionD pred in resources.Predictions.Where(d => d.Tag == t))
+					{
+						ExtractedResourcePredictionD expred = new ExtractedResourcePredictionD(pred);
+
+						foreach (ResourcePredictionC pc in pred.CEntries)
+						{
+							ExtractedResourcePredictionC expc = new ExtractedResourcePredictionC(pc);
+
+							foreach (ResourcePredictionA pa in pc.BEntry.AEntries)
+							{
+								ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA(pa);
+
+								var res = resources.Resources[pa.Resource.Index];
+								if (res.ParentTag != null)
+								{
+									expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
+									expa.OriginalResourceClass = res.ParentTag.Class.Magic;
+								}
+								else
+								{
+									expa.OriginalResourceName = "null";
+									expa.OriginalResourceClass = -1;
+								}
+
+								expc.BEntry.AEntries.Add(expa);
+
+							}
+							expred.CEntries.Add(expc);
+						}
+
+						foreach (ResourcePredictionA pa in pred.AEntries)
+						{
+							ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA(pa);
+
+							var res = resources.Resources[pa.Resource.Index];
+							if (res.ParentTag != null)
+							{
+								expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
+								expa.OriginalResourceClass = res.ParentTag.Class.Magic;
+							}
+							else
+							{
+								expa.OriginalResourceName = "null";
+								expa.OriginalResourceClass = -1;
+							}
+
+							expred.AEntries.Add(expa);
+						}
+						container.AddPrediction(expred);
+					}
+				}
 			}
 
 			// Write it to a file
@@ -907,6 +961,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					foreach (ExtractedTag tag in container.Tags)
 						injector.InjectTag(tag, stream);
+
+					if ((bool)injs.AddPrediction)
+						injector.InjectPredictions(container.Predictions);
 
 					injector.SaveChanges(stream);
 				}

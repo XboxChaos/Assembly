@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blamite.Blam;
 using Blamite.Blam.Resources;
+using System.Linq;
 
 namespace Blamite.Injection
 {
@@ -24,6 +25,9 @@ namespace Blamite.Injection
 
 		private readonly Dictionary<DatumIndex, ExtractedTag> _tagsByIndex = 
 			new Dictionary<DatumIndex, ExtractedTag>();
+
+		private readonly List<ExtractedResourcePredictionD> _extractedPredictions =
+			new List<ExtractedResourcePredictionD>();
 
 		/// <summary>
 		///     Gets a collection of all data blocks in the container.
@@ -63,6 +67,14 @@ namespace Blamite.Injection
 		public ICollection<ExtractedResourceInfo> Resources
 		{
 			get { return _resourcesByIndex.Values; }
+		}
+
+		/// <summary>
+		///     Gets a collection of all resource prediction objects in the container.
+		/// </summary>
+		public ICollection<ExtractedResourcePredictionD> Predictions
+		{
+			get { return _extractedPredictions; }
 		}
 
 		/// <summary>
@@ -109,6 +121,15 @@ namespace Blamite.Injection
 		public void AddResource(ExtractedResourceInfo resource)
 		{
 			_resourcesByIndex[resource.OriginalIndex] = resource;
+		}
+
+		/// <summary>
+		///     Adds information about a resource prediction to the container.
+		/// </summary>
+		/// <param name="prediction">The prediction to add.</param>
+		public void AddPrediction(ExtractedResourcePredictionD prediction)
+		{
+			_extractedPredictions.Add(prediction);
 		}
 
 		/// <summary>

@@ -31,7 +31,7 @@
 		/// <summary>
 		///     Gets or sets a size reflexive index for the primary page.
 		/// </summary>
-		public int PrimarySize { get; set; }
+		public ResourceSize PrimarySize { get; set; }
 
 		/// <summary>
 		///     Gets or sets the secondary resource page that the resource belongs to. Can be null.
@@ -46,7 +46,7 @@
 		/// <summary>
 		///     Gets or sets a size reflexive index for the secondary page.
 		/// </summary>
-		public int SecondarySize { get; set; }
+		public ResourceSize SecondarySize { get; set; }
 
 
 		/// <summary>
@@ -62,6 +62,6 @@
 		/// <summary>
 		///     Gets or sets a size reflexive index for the secondary page.
 		/// </summary>
-		public int TertiarySize { get; set; }
+		public ResourceSize TertiarySize { get; set; }
 	}
 }

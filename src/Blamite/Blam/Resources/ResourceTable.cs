@@ -13,7 +13,9 @@ namespace Blamite.Blam.Resources
 		public ResourceTable()
 		{
 			Resources = new List<Resource>();
+			Sizes = new List<ResourceSize>();
 			Pages = new List<ResourcePage>();
+			Predictions = new List<ResourcePredictionD>();
 		}
 
 		/// <summary>
@@ -23,9 +25,21 @@ namespace Blamite.Blam.Resources
 		public List<Resource> Resources { get; private set; }
 
 		/// <summary>
+		///     Gets a list of sizes in the table.
+		/// </summary>
+		/// <seealso cref="ResourceSize" />
+		public List<ResourceSize> Sizes { get; private set; }
+
+		/// <summary>
 		///     Gets a list of pages in the table.
 		/// </summary>
 		/// <seealso cref="ResourcePage" />
 		public List<ResourcePage> Pages { get; private set; }
+
+		/// <summary>
+		///     Gets a list of predictions in the table.
+		/// </summary>
+		/// <seealso cref="ResourcePredictionD" />
+		public List<ResourcePredictionD> Predictions { get; private set; }
 	}
 }

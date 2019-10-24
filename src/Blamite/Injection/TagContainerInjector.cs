@@ -132,6 +132,10 @@ namespace Blamite.Injection
 					//append old tagid to make it unique
 					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
 
+					//make sure the tag didnt come from this exact map
+					if (existingTag.Index == tag.OriginalIndex)
+						return existingTag.Index;
+
 					//make sure the appended name isn't already present
 					existingTag = _cacheFile.Tags.FindTagByName(tag.Name + tagnameuniqifier, tag.Class, _cacheFile.FileNames);
 
@@ -289,9 +293,12 @@ namespace Blamite.Injection
 			if (_resourceIndices.TryGetValue(resource, out newIndex))
 				return newIndex;
 
-			// Create a new datum index for it (0x4152 = 'AR') and associate it
+			// Create a new datum index for it and associate it
 			LoadResourceTable(stream);
-			newIndex = new DatumIndex(0x4152, (ushort) _resources.Resources.Count);
+			if (resource.OriginalParentTagIndex.Index == DatumIndex.Null.Index)
+				newIndex = new DatumIndex((ushort)0xFFFF, (ushort)_resources.Resources.Count);
+			else
+				newIndex = new DatumIndex((ushort)(0x8152 + _resourceIndices.Count), (ushort) _resources.Resources.Count);
 			_resourceIndices[resource] = newIndex;
 
 			// Create a native resource for it
@@ -326,6 +333,11 @@ namespace Blamite.Injection
 				}
 				newResource.Location.PrimaryOffset = resource.Location.PrimaryOffset;
 				newResource.Location.PrimarySize = resource.Location.PrimarySize;
+				if (newResource.Location.PrimarySize != null)
+				{
+					newResource.Location.PrimarySize.Index = _resources.Sizes.Count;
+					_resources.Sizes.Add(newResource.Location.PrimarySize);
+				}
 
 				// Secondary page pointers
 				if (resource.Location.OriginalSecondaryPageIndex >= 0)
@@ -342,7 +354,11 @@ namespace Blamite.Injection
 				}
 				newResource.Location.SecondaryOffset = resource.Location.SecondaryOffset;
 				newResource.Location.SecondarySize = resource.Location.SecondarySize;
-
+				if (newResource.Location.SecondarySize != null)
+				{
+					newResource.Location.SecondarySize.Index = _resources.Sizes.Count;
+					_resources.Sizes.Add(newResource.Location.SecondarySize);
+				}
 
 				// tert page pointers
 				if (resource.Location.OriginalTertiaryPageIndex >= 0)
@@ -359,6 +375,11 @@ namespace Blamite.Injection
 				}
 				newResource.Location.TertiaryOffset = resource.Location.TertiaryOffset;
 				newResource.Location.TertiarySize = resource.Location.TertiarySize;
+				if (newResource.Location.TertiarySize != null)
+				{
+					newResource.Location.TertiarySize.Index = _resources.Sizes.Count;
+					_resources.Sizes.Add(newResource.Location.TertiarySize);
+				}
 			}
 
 			newResource.ResourceFixups.AddRange(resource.ResourceFixups);
@@ -520,6 +541,114 @@ namespace Blamite.Injection
 				_injectedStrings.Add(newSID);
 			}
 			return newSID;
+		}
+
+		public void InjectPredictions(ICollection<ExtractedResourcePredictionD> predictions)
+		{
+			if (predictions == null || predictions.Count == 0)
+				return;
+
+			//prediction tags are sorted by index, so step through the injected tags to add them that way
+			foreach (ExtractedTag tag in InjectedTags)
+			{
+				foreach (ExtractedResourcePredictionD pred in predictions.Where(p=>p.OriginalTagIndex == tag.OriginalIndex))
+					InjectPrediction(pred);
+			}
+		}
+
+		private void InjectPrediction(ExtractedResourcePredictionD pred)
+		{
+			//was the tag for this prediction injected?
+			var tag = InjectedTags.FirstOrDefault(t => t.OriginalIndex == pred.OriginalTagIndex);
+			if (tag == null)
+				return;
+
+			ResourcePredictionD newpred = new ResourcePredictionD();
+
+			var newtag = _tagIndices[tag];
+
+			newpred.Tag = _cacheFile.Tags[newtag.Index];
+
+			newpred.Index = -1;
+			newpred.Unknown1 = pred.Unknown1;
+			newpred.Unknown2 = pred.Unknown2;
+
+			foreach (ExtractedResourcePredictionC expc in pred.CEntries)
+			{
+				ResourcePredictionC pc = new ResourcePredictionC();
+				pc.OverallIndex = -1;
+				pc.Index = -1;
+				pc.BEntry = new ResourcePredictionB();
+
+				pc.BEntry.Index = -1;
+				pc.BEntry.OverallIndex = -1;
+
+				foreach (ExtractedResourcePredictionA expa in expc.BEntry.AEntries)
+				{
+					ResourcePredictionA pa = GeneratePredictionA(expa);
+					if (pa != null)
+						pc.BEntry.AEntries.Add(pa);
+				}
+				newpred.CEntries.Add(pc);
+			}
+
+			foreach (ExtractedResourcePredictionA expa in pred.AEntries)
+			{
+				ResourcePredictionA pa = GeneratePredictionA(expa);
+				if (pa != null)
+					newpred.AEntries.Add(pa);
+			}
+
+			_resources.Predictions.Add(newpred);
+			return;
+		}
+
+		private ResourcePredictionA GeneratePredictionA(ExtractedResourcePredictionA expa)
+		{
+			ResourcePredictionA result = new ResourcePredictionA();
+			result.Index = -1;
+			result.SubResource = expa.OriginalResourceSubIndex;
+
+			int subcount = 2;
+			if (_cacheFile.HeaderSize == 0x1E000)
+				subcount = 3;
+
+			//ignore it if the resource was null
+			if (expa.OriginalResourceClass == -1)
+				return null;
+
+			DatumIndex foundresource = DatumIndex.Null;
+
+			//check if resource was injected
+			var res = InjectedResources.FirstOrDefault(r => r.OriginalIndex == expa.OriginalResourceIndex);
+			if (res != null)
+			{
+				foundresource = _resourceIndices[res];
+			}
+			else
+			{
+				var foundtag = _cacheFile.Tags.FindTagByName(expa.OriginalResourceName, expa.OriginalResourceClass, _cacheFile.FileNames);
+
+				if (foundtag != null)
+				{
+					var ress = _resources.Resources.Find(r => r.ParentTag == foundtag);
+					if (ress != null)
+						foundresource = ress.Index;
+				}	
+			}
+
+			if (foundresource != DatumIndex.Null)
+			{
+				int notsalt = ~foundresource.Salt & 0x1FFF;
+				int salt = notsalt | 0xE000;
+				ushort ind = (ushort)((foundresource.Index * subcount) + result.SubResource);
+
+				result.Value = new DatumIndex((ushort)salt, ind);
+
+				return result;
+			}	
+			else
+				return null;
 		}
 
 		private void LoadResourceTable(IReader reader)
