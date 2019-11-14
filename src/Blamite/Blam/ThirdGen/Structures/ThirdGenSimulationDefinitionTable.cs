@@ -80,8 +80,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table entry");
 
 			var newTable = _table.Select(SerializeTag);
-			//var newAddr = ReflexiveWriter.WriteReflexive(newTable, oldCount, oldAddress, _table.Count, entryLayout, _metaArea, _allocator, stream);
-			var newAddr = ReflexiveWriter.WriteReflexive(newTable, 0, 0, _table.Count, entryLayout, _metaArea, _allocator, stream); //hack to fix readonly bugs ingame
+			var newAddr = ReflexiveWriter.WriteReflexive(newTable, oldCount, oldAddress, _table.Count, entryLayout, _metaArea, _allocator, stream);
 			scenarioData.SetInteger("simulation definition table count", (uint)_table.Count);
 			scenarioData.SetInteger("simulation definition table address", newAddr);
 			stream.SeekTo(_scenario.MetaLocation.AsOffset());
