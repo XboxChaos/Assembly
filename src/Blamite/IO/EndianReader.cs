@@ -261,13 +261,36 @@ namespace Blamite.IO
 			return result;
 		}
 
-		/// <summary>
-		///     Reads a null-terminated UTF-8 string from the stream.
-		/// </summary>
-		/// <returns>
-		///     The null-terminated UTF-8 string that was read.
-		/// </returns>
-		public unsafe string ReadUTF8()
+        /// <summary>
+        ///     Reads a null-terminated Windows-1252 string from the stream.
+        /// </summary>
+        /// <returns>
+        ///     The ASCII string that was read.
+        /// </returns>
+        public unsafe string ReadWin1252()
+        {
+            var chars = new List<sbyte>();
+            sbyte ch;
+            while (true)
+            {
+                ch = ReadSByte();
+                if (ch == 0)
+                    break;
+                chars.Add(ch);
+            }
+
+            sbyte[] charss = chars.ToArray<sbyte>();
+            fixed (sbyte* prt = charss)
+                return new string(prt, 0, chars.Count, Encoding.GetEncoding(1252));
+        }
+
+        /// <summary>
+        ///     Reads a null-terminated UTF-8 string from the stream.
+        /// </summary>
+        /// <returns>
+        ///     The null-terminated UTF-8 string that was read.
+        /// </returns>
+        public unsafe string ReadUTF8()
 		{
 			var chars = new List<sbyte>();
 			sbyte ch;

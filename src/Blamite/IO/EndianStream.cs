@@ -299,6 +299,26 @@ namespace Blamite.IO
         }
 
         /// <summary>
+        ///     Reads a null-terminated Windows-1252 string from the stream.
+        /// </summary>
+        /// <returns>
+        ///     The ASCII string that was read, with any 0 padding bytes stripped.
+        /// </returns>
+        public string ReadWin1252()
+        {
+            return _reader.ReadWin1252();
+        }
+
+        /// <summary>
+        ///     Writes a Windows-1252 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The Windows-1252 string to write.</param>
+        public void WriteWin1252(string str)
+        {
+            _writer.WriteWin1252(str);
+        }
+
+        /// <summary>
         ///     Reads a null-terminated UTF-8 string from the stream.
         /// </summary>
         /// <returns>

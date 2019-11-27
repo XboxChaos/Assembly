@@ -21,7 +21,7 @@ namespace Blamite.Blam.Scripting
 					continue;
 
 				reader.SeekTo(tableOffset + offset);
-				string str = reader.ReadAscii();
+				string str = reader.ReadWin1252();
 				output.CacheString(offset, str);
 				lastEnd = offset + str.Length;
 			}

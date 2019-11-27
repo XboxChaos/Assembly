@@ -39,7 +39,7 @@ namespace Blamite.Blam.Scripting
         {
             _strings.OrderBy(str => str.Value);
             foreach (var str in _strings)
-                writer.WriteAscii(str.Key);
+                writer.WriteWin1252(str.Key);
         }
     }
 }

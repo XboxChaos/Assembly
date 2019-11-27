@@ -232,6 +232,18 @@ namespace Blamite.IO
         }
 
         /// <summary>
+        ///     Writes a Windows-1252 string to the stream, followed by a null terminator.
+        /// </summary>
+        /// <param name="str">The Windows-1252 string to write.</param>
+        public void WriteWin1252(string str)
+        {
+            var enc = Encoding.GetEncoding(1252);
+            byte[] bytes = enc.GetBytes(str);
+            WriteBlock(bytes);
+            WriteByte(0);
+        }
+
+        /// <summary>
         ///     Writes a UTF-8 string to the stream, followed by a null terminator.
         /// </summary>
         /// <param name="str">The UTF-8 string to write.</param>

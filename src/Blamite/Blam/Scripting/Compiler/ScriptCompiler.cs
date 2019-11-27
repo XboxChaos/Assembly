@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Antlr4.Runtime.Misc;
+using Antlr4.Runtime;
 using System.Xml;
 using Blamite.Blam.Scripting.Compiler.Expressions;
 using Blamite.IO;
@@ -320,6 +320,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 _logger.WriteLine("BRANCH", $"Enter , Line: {context.Start.Line}");
             }
 
+            LinkDatum();
             string expectedType = PopType();    // just ignore the type for now
 
             // branch excepts two parameters
@@ -382,6 +383,23 @@ namespace Blamite.Blam.Scripting.Compiler
             CloseDatum();
         }
 
+        public override void EnterGloRef(BS_ReachParser.GloRefContext context)
+        {
+            if (PrintDebugInfo)
+            {
+                _logger.WriteLine("GloRef", $"Enter: {context.GetText()} , Line: {context.Start.Line}");
+            }
+
+            LinkDatum();
+
+            string retType = PopType();
+
+            if (!IsGlobalReference(context, retType, (short)context.Start.Line))
+            {
+
+            }
+        }
+
         /// <summary>
         /// Processes regular expressions, script variables and global references. Links to a datum. Opens a datum.
         /// </summary>
@@ -413,7 +431,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 return;
 
             // handle global references
-            if (IsGlobalReference(context, valType))
+            if (IsGlobalReference(context, valType, (short)context.Start.Line))
                 return;
             
             // handle regular expressions
@@ -423,7 +441,7 @@ namespace Blamite.Blam.Scripting.Compiler
             throw new CompilerException($"Failed to process \"{txt}\".", context);
         }
 
-        private bool IsGlobalReference(BS_ReachParser.LitContext context, string expReturnType)
+        private bool IsGlobalReference(RuleContext context, string expReturnType, short line)
         {
             //todo: implement casting?
 
@@ -435,7 +453,7 @@ namespace Blamite.Blam.Scripting.Compiler
             {
                 string retType = engineGlobal.ReturnType;
                 ushort opc = GetGlobalOpCode(context, retType);
-                var exp = new EngineGlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), engineGlobal.MaskedOpcode, (short)context.Start.Line);
+                var exp = new EngineGlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), engineGlobal.MaskedOpcode, line);
                 IncrementDatum();
                 OpenDatumAndAdd(exp);
                 return true;
@@ -448,7 +466,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 if (index == -1)
                 {
                     if (expReturnType == "GLOBALREFERENCE")
-                        throw new ArgumentException($"GLOBALREFERENCE: No matching global could be found. Name: \"{text}\". Line: {context.Start.Line}");
+                        throw new ArgumentException($"GLOBALREFERENCE: No matching global could be found. Name: \"{text}\". Line: {line}");
                     else
                         return false;
                 }
@@ -467,11 +485,11 @@ namespace Blamite.Blam.Scripting.Compiler
                     }
                     else
                     {
-                        throw new CompilerException($"The global \"{text}\" can't be casted from \"{_globalLookup[index]}\" to \"{expReturnType}\".", context);
+                        throw new CompilerException($"The global \"{text}\" can't be casted from \"{_globalLookup[index]}\" to \"{expReturnType}\".", context.GetText(), (int)line);
                     }
 
                     ushort opc = GetGlobalOpCode(context, retType);
-                    var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, (short)context.Start.Line);
+                    var exp = new GlobalReference(_currentSalt, opc, _opcodes.GetTypeInfo(retType).Opcode, _strings.Cache(text), index, line);
                     IncrementDatum();
                     OpenDatumAndAdd(exp);
                     return true;
@@ -479,10 +497,10 @@ namespace Blamite.Blam.Scripting.Compiler
             }
         }
 
-        private ushort GetGlobalOpCode(BS_ReachParser.LitContext context, string retType)
+        private ushort GetGlobalOpCode(RuleContext context, string retType)
         {
             ushort opcode = _opcodes.GetTypeInfo(retType).Opcode;
-            var grandparent = context.Parent.Parent as BS_ReachParser.CallContext;
+            var grandparent = GetParentContext(context, BS_ReachParser.RULE_call) as BS_ReachParser.CallContext;
 
             // "set" and (In)Equality functions are special
             if (grandparent != null)

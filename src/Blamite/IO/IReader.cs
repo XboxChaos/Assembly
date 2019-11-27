@@ -106,11 +106,17 @@ namespace Blamite.IO
 		/// <returns>The ASCII string that was read, with any 0 padding bytes stripped.</returns>
 		string ReadAscii(int size);
 
-		/// <summary>
-		///     Reads a null-terminated UTF-8 string from the stream.
-		/// </summary>
-		/// <returns>The null-terminated UTF-8 string that was read.</returns>
-		string ReadUTF8();
+        /// <summary>
+        ///     Reads a null-terminated Windows-1252 string from the stream.
+        /// </summary>
+        /// <returns>The ASCII string that was read.</returns>
+        string ReadWin1252();
+
+        /// <summary>
+        ///     Reads a null-terminated UTF-8 string from the stream.
+        /// </summary>
+        /// <returns>The null-terminated UTF-8 string that was read.</returns>
+        string ReadUTF8();
 
 		/// <summary>
 		///     Reads a fixed-size null-terminated UTF-8 string from the stream.
