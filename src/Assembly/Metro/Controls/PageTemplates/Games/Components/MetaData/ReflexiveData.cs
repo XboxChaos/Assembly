@@ -95,7 +95,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private int _currentIndex;
 		private uint _entrySize;
 		private bool _expanded;
-		private uint _firstEntryAddr;
+		private long _firstEntryAddr;
 		private double _width = MinWidth;
 
 		public ReflexiveData(string name, uint offset, uint address, uint entrySize, int align,
@@ -138,7 +138,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public int Align { get; private set; }
 		public bool Sort { get; private set; }
 
-		public uint FirstEntryAddress
+		public long FirstEntryAddress
 		{
 			get { return _firstEntryAddr; }
 			set
@@ -159,7 +159,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				if (value.StartsWith("0x"))
 					value = value.Substring(2);
-				FirstEntryAddress = uint.Parse(value, NumberStyles.HexNumber);
+				FirstEntryAddress = long.Parse(value, NumberStyles.HexNumber);
 			}
 		}
 

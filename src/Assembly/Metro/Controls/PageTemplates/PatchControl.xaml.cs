@@ -10,6 +10,7 @@ using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Patching;
+using Blamite.RTE.MCC;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -21,6 +22,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 		// ReSharper disable ConvertToConstant.Local
 		// ReSharper disable FieldCanBeMadeReadOnly.Local
 		private bool _doingWork = false;
+		private EngineDescription _buildInfo;
 		// ReSharper restore FieldCanBeMadeReadOnly.Local
 		// ReSharper restore ConvertToConstant.Local
 
@@ -78,12 +80,18 @@ namespace Assembly.Metro.Controls.PageTemplates
 			txtCreatePatchOutputName.Text = Path.GetFileNameWithoutExtension(ofd.FileName);
 
 			var fileStream = new FileStream(ofd.FileName, FileMode.Open);
-			var cacheStream = new EndianStream(fileStream, Endian.BigEndian);
+
+			byte[] headerMagic = new byte[4];
+			fileStream.Read(headerMagic, 0, 4);
+
+			var endian = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
+
+			var cacheStream = new EndianStream(fileStream, endian);
 			var versionInfo = new CacheFileVersionInfo(cacheStream);
-			var engine = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
-			if (engine != null && engine.Name != null)
+			_buildInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
+			if (_buildInfo != null && _buildInfo.Name != null)
 			{
-				switch (engine.Name)
+				switch (_buildInfo.Name)
 				{
 					case "Halo 2 Vista":
 						cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo2Vista;
@@ -92,14 +100,16 @@ namespace Assembly.Metro.Controls.PageTemplates
 						cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo3ODST;
 						break;
 					default:
-						if (engine.Name.Contains("Halo 3"))
+						if (_buildInfo.Name.Contains("MCC"))
+							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.MCC;
+						else if (_buildInfo.Name.Contains("Halo 3"))
 							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo3;
-						else if (engine.Name.Contains("Halo: Reach"))
+						else if (_buildInfo.Name.Contains("Halo: Reach"))
 							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.HaloReach;
-						else if (engine.Name.Contains("Halo 4"))
+						else if (_buildInfo.Name.Contains("Halo 4"))
 							cboxCreatePatchTargetGame.SelectedIndex = (int)TargetGame.Halo4;
 						else
-							cboxCreatePatchTargetGame.SelectedIndex = 5; // Other
+							cboxCreatePatchTargetGame.SelectedIndex = 6; // Other
 						break;
 				}
 			}
@@ -238,14 +248,18 @@ namespace Assembly.Metro.Controls.PageTemplates
 			PatchCreationNoMetaSelected.Visibility = Visibility.Collapsed;
 			PatchCreationExtras.Visibility = Visibility.Collapsed;
 
-			if (cboxCreatePatchTargetGame.SelectedIndex == (int) TargetGame.Halo2Vista)
+			if (cboxCreatePatchTargetGame.SelectedIndex == (int)TargetGame.Halo2Vista ||
+				cboxCreatePatchTargetGame.SelectedIndex == (int)TargetGame.MCC)
 			{
 				cbCreatePatchHasCustomMeta.IsEnabled = false;
 				PatchCreationEmbeddedFiles.Visibility = Visibility.Collapsed;
 				return;
 			}
-			cbCreatePatchHasCustomMeta.IsEnabled = true;
-			PatchCreationEmbeddedFiles.Visibility = Visibility.Visible;
+			else
+			{
+				cbCreatePatchHasCustomMeta.IsEnabled = true;
+				PatchCreationEmbeddedFiles.Visibility = Visibility.Visible;
+			}
 
 			// Check if custom meta is asked for
 			if (cbCreatePatchHasCustomMeta.IsChecked == null || !(bool) cbCreatePatchHasCustomMeta.IsChecked)
@@ -441,7 +455,11 @@ namespace Assembly.Metro.Controls.PageTemplates
 					OutputName = outputName,
 					Screenshot = String.IsNullOrEmpty(previewImage)
 						? null
-						: File.ReadAllBytes(previewImage)
+						: File.ReadAllBytes(previewImage),
+					BuildString = _buildInfo.Version,
+					PC = String.IsNullOrEmpty(_buildInfo.GameExecutable)
+						? false
+						: true
 				};
 
 				EndianReader originalReader = null;
@@ -698,6 +716,13 @@ namespace Assembly.Metro.Controls.PageTemplates
 							".map, and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");
 						return;
 					}
+					if (currentPatch.BuildString != null && cacheFile.BuildString != currentPatch.BuildString)
+					{
+						MetroMessageBox.Show("Unable to apply patch",
+							"Hold on there! That patch is for a map with a build version of" + currentPatch.BuildString +
+							", and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");
+						return;
+					}
 
 					// Apply the patch!
 					if (currentPatch.MapInternalName == null)
@@ -802,14 +827,21 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		private void btnPokePatch_Click(object sender, RoutedEventArgs e)
 		{
+			if (currentPatchToPoke == null)
+				return;
+
+			if (currentPatchToPoke.PC)
+				PokePCPatch();
+			else
+				PokeXenonPatch();
+		}
+
+		private void PokeXenonPatch()
+		{
 			try
 			{
-				// Check the user isn't completly retarded
-				if (currentPatchToPoke == null)
-					return;
-
 				if (App.AssemblyStorage.AssemblySettings.Xbdm == null ||
-				    String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.Xbdm.DeviceIdent))
+					String.IsNullOrEmpty(App.AssemblyStorage.AssemblySettings.Xbdm.DeviceIdent))
 				{
 					MetroMessageBox.Show("No Xbox 360 Console Detected",
 						"Make sure your xbox 360 console is turned on, and the IP is entered in the App.AssemblyStorage.AssemblySettings.");
@@ -846,6 +878,83 @@ namespace Assembly.Metro.Controls.PageTemplates
 					{
 						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Seek(change.Offset, SeekOrigin.Begin);
 						App.AssemblyStorage.AssemblySettings.Xbdm.MemoryStream.Write(change.Data, 0x00, change.Data.Length);
+					}
+				}
+
+				MetroMessageBox.Show("Patch Poked!", "Your patch has been poked successfully. Have fun!");
+			}
+			catch (Exception ex)
+			{
+				MetroException.Show(ex);
+			}
+		}
+
+		private void PokePCPatch()
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(currentPatchToPoke.BuildString))
+					return;
+
+				var pokeInfo = App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(currentPatchToPoke.BuildString);
+				if (pokeInfo == null)
+				{
+					MetroMessageBox.Show("Unsupported Build",
+						"This patch is for a build (" + currentPatchToPoke.BuildString + ") that this installation of Assembly does not support. Make sure you are up to date or add a definition manually.");
+					return;
+				}
+
+				if (pokeInfo.Name.Contains("Vista"))
+				{
+					MetroMessageBox.Show("Unsupported Build",
+						"This patch is for Halo 2 Vista which cannot be poked at this time.");
+					return;
+				}
+
+				if (string.IsNullOrEmpty(pokeInfo.GameExecutable) || string.IsNullOrEmpty(pokeInfo.GameModule) || pokeInfo.Poking == null)
+				{
+					MetroMessageBox.Show("Unsupported Build",
+						"This patch is for a build (" + pokeInfo.Version + ") that this installation of Assembly does not have enough information for to poke patches.\r\n" +
+						"This includes a gameExecutable and gameModule value and a poking definition which includes a pointer with the game version you are running.\r\n" +
+						"Make sure you are up to date or add a definition manually.");
+					return;
+				}
+
+				
+
+				var gameRTE = new MCCRTEProvider(pokeInfo);
+				var gameStream = gameRTE.GetMetaStream();
+
+				if (currentPatchToPoke.MetaChangesIndex >= 0)
+				{
+					if (currentPatchToPoke.SegmentChanges.Count > 1)
+						if (MetroMessageBox.Show("Possible unexpected results ahead!",
+							"This patch contains edits to segments other than the meta, ie locales and the file header, it could crash if you continue. \n\nDo you wish to continue?",
+							MetroMessageBox.MessageBoxButtons.YesNo) == MetroMessageBox.MessageBoxResult.No)
+							return;
+
+					SegmentChange changes = currentPatchToPoke.SegmentChanges[currentPatchToPoke.MetaChangesIndex];
+					if (changes.OldSize != changes.NewSize)
+					{
+						// can't poke, patch injects meta
+						MetroMessageBox.Show("Unable to Poke Patch",
+							"This patch contains meta that has been injected, and can't be poked.");
+						return;
+					}
+
+					foreach (DataChange change in changes.DataChanges)
+					{
+						gameStream.BaseStream.Seek(currentPatchToPoke.MetaPokeBase + change.Offset,
+							SeekOrigin.Begin);
+						gameStream.BaseStream.Write(change.Data, 0x00, change.Data.Length);
+					}
+				}
+				else if (currentPatchToPoke.MetaChanges.Count > 0)
+				{
+					foreach (DataChange change in currentPatchToPoke.MetaChanges)
+					{
+						gameStream.BaseStream.Seek(change.Offset, SeekOrigin.Begin);
+						gameStream.BaseStream.Write(change.Data, 0x00, change.Data.Length);
 					}
 				}
 

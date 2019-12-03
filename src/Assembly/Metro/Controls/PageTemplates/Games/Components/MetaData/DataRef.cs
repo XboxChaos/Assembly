@@ -2,7 +2,7 @@
 {
 	public class DataRef : RawData
 	{
-		public DataRef(string name, uint offset, string format, uint address, uint dataAddress, string value, int length,
+		public DataRef(string name, uint offset, string format, uint address, long dataAddress, string value, int length,
 			uint pluginLine)
 			: base(name, offset, format, address, value, length, pluginLine)
 		{

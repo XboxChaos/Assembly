@@ -30,7 +30,7 @@ namespace Blamite.Serialization
 			new Dictionary<string, StructureValueCollection[]>();
 
 		private readonly Dictionary<string, float> _floatValues = new Dictionary<string, float>();
-		private readonly Dictionary<string, uint> _intValues = new Dictionary<string, uint>();
+		private readonly Dictionary<string, ulong> _intValues = new Dictionary<string, ulong>();
 		private readonly Dictionary<string, byte[]> _rawValues = new Dictionary<string, byte[]>();
 		private readonly Dictionary<string, string> _stringValues = new Dictionary<string, string>();
 		private readonly Dictionary<string, StructureValueCollection> _structValues = new Dictionary<string, StructureValueCollection>();
@@ -101,7 +101,7 @@ namespace Blamite.Serialization
 		/// </summary>
 		/// <param name="name">The name of the integer field to set.</param>
 		/// <param name="value">The value to assign to the field.</param>
-		public void SetInteger(string name, uint value)
+		public void SetInteger(string name, ulong value)
 		{
 			_intValues[name] = value;
 		}
@@ -165,7 +165,7 @@ namespace Blamite.Serialization
 		/// <param name="name">The name of the integer field to find.</param>
 		/// <param name="value">The variable to store the field's value to (if the field exists).</param>
 		/// <returns>true if the field was found.</returns>
-		public bool FindInteger(string name, out uint value)
+		public bool FindInteger(string name, out ulong value)
 		{
 			return _intValues.TryGetValue(name, out value);
 		}
@@ -232,7 +232,7 @@ namespace Blamite.Serialization
 		/// <param name="name">The name of the integer field to retrieve the value of.</param>
 		/// <returns>The field's value.</returns>
 		/// <exception cref="ArgumentException">Thrown if the field does not exist.</exception>
-		public uint GetInteger(string name)
+		public ulong GetInteger(string name)
 		{
 			if (!HasInteger(name))
 				ThrowMissingFieldException(name);
@@ -316,9 +316,9 @@ namespace Blamite.Serialization
 		/// <param name="name">The name of the integer field to retrieve the value of.</param>
 		/// <param name="defaultValue">The value to return if the field is not found.</param>
 		/// <returns>The field's value if it was found, or <paramref name="defaultValue" /> otherwise.</returns>
-		public uint GetIntegerOrDefault(string name, uint defaultValue)
+		public ulong GetIntegerOrDefault(string name, ulong defaultValue)
 		{
-			uint value;
+			ulong value;
 			if (FindInteger(name, out value))
 				return value;
 			return defaultValue;

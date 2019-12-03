@@ -40,9 +40,9 @@ namespace Blamite.Blam.ThirdGen.Localization
 			result.SetInteger("locale table size", LocaleData != null ? (uint) LocaleData.Size : 0);
 
 			if (LocaleIndexTableLocation != null)
-				result.SetInteger("locale index table offset", LocaleIndexTableLocation.AsPointer());
+				result.SetInteger("locale index table offset", (uint)LocaleIndexTableLocation.AsPointer());
 			if (LocaleDataLocation != null)
-				result.SetInteger("locale data index offset", LocaleDataLocation.AsPointer());
+				result.SetInteger("locale data index offset", (uint)LocaleDataLocation.AsPointer());
 
 			if (IndexTableHash != null)
 				result.SetRaw("index table hash", IndexTableHash);
@@ -58,12 +58,12 @@ namespace Blamite.Blam.ThirdGen.Localization
 			if (StringCount > 0)
 			{
 				// Index table offset, segment, and pointer
-				int localeIndexTableOffset = localeArea.PointerToOffset(values.GetInteger("locale index table offset"));
+				int localeIndexTableOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale index table offset"));
 				LocaleIndexTable = segmenter.WrapSegment(localeIndexTableOffset, StringCount*8, 8, SegmentResizeOrigin.End);
 				LocaleIndexTableLocation = localeArea.AddSegment(LocaleIndexTable);
 
 				// Data offset, segment, and pointer
-				int localeDataOffset = localeArea.PointerToOffset(values.GetInteger("locale data index offset"));
+				int localeDataOffset = localeArea.PointerToOffset((uint)values.GetInteger("locale data index offset"));
 				var localeDataSize = (int) values.GetInteger("locale table size");
 				LocaleData = segmenter.WrapSegment(localeDataOffset, localeDataSize, _sizeAlign, SegmentResizeOrigin.End);
 				LocaleDataLocation = localeArea.AddSegment(LocaleData);
@@ -83,7 +83,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 				return result;
 
 			byte[] stringData = ReadLocaleData(reader);
-			using (var stringReader = new EndianReader(new MemoryStream(stringData), Endian.BigEndian))
+			using (var stringReader = new EndianReader(new MemoryStream(stringData), reader.Endianness))
 			{
 				reader.SeekTo(LocaleIndexTableLocation.AsOffset());
 
@@ -113,8 +113,8 @@ namespace Blamite.Blam.ThirdGen.Localization
 
 			using (var offsetData = new MemoryStream())
 			using (var stringData = new MemoryStream())
-			using (var offsetWriter = new EndianWriter(offsetData, Endian.BigEndian))
-			using (var stringWriter = new EndianWriter(stringData, Endian.BigEndian))
+			using (var offsetWriter = new EndianWriter(offsetData, stream.Endianness))
+			using (var stringWriter = new EndianWriter(stringData, stream.Endianness))
 			{
 				// Write the string and offset data to buffers
 				foreach (LocalizedString locale in locales)

@@ -7,7 +7,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RawData : ValueField
 	{
-		private uint _dataAddress;
+		private long _dataAddress;
 		private string _value;
 		private string _format;
 		private int _length;
@@ -52,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public uint DataAddress
+		public long DataAddress
 		{
 			get { return _dataAddress; }
 			set

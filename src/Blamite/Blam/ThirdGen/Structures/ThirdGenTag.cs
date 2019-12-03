@@ -32,29 +32,38 @@ namespace Blamite.Blam.ThirdGen.Structures
 		}
 
 		public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea,
-			IList<ITagClass> classList)
+			IList<ITagClass> classList, IPointerExpander expander)
 		{
-			Load(values, index, metaArea, classList);
+			Load(values, index, metaArea, classList, expander);
 		}
 
 		public DatumIndex Index { get; private set; }
 		public ITagClass Class { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
 
-		public StructureValueCollection Serialize(IList<ITagClass> classList)
+		public StructureValueCollection Serialize(IList<ITagClass> classList, IPointerExpander expander)
 		{
 			var result = new StructureValueCollection();
-			result.SetInteger("memory address", (MetaLocation != null) ? MetaLocation.AsPointer() : 0);
+
+			uint cont = 0;
+			if (MetaLocation != null)
+				cont = expander.Contract(MetaLocation.AsPointer());
+
+			result.SetInteger("memory address", cont);
 			result.SetInteger("class index", (Class != null) ? (uint) classList.IndexOf(Class) : 0xFFFFFFFF);
 			result.SetInteger("datum index salt", Index.Salt);
 			return result;
 		}
 
-		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList)
+		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList, IPointerExpander expander)
 		{
-			uint address = values.GetInteger("memory address");
+			uint address = (uint)values.GetInteger("memory address");
 			if (address != 0 && address != 0xFFFFFFFF)
-				MetaLocation = SegmentPointer.FromPointer(address, metaArea);
+			{
+				long expanded = expander.Expand(address);
+
+				MetaLocation = SegmentPointer.FromPointer(expanded, metaArea);
+			}
 
 			var classIndex = (int) values.GetInteger("class index");
 			if (classIndex >= 0 && classIndex < classList.Count)

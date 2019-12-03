@@ -29,6 +29,8 @@ namespace Blamite.Serialization
 		Int16, // short
 		UInt32, // uint
 		Int32, // int
+		UInt64, // ulong
+		Int64, // long
 		Asciiz, // Null-terminated ASCII string
 		Float32
 	}

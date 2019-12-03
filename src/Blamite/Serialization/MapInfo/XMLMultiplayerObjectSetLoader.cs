@@ -53,7 +53,7 @@ namespace Blamite.Serialization.MapInfo
 
 		private static void ProcessSetElement(XElement element, NameIndexCollection collection)
 		{
-			int index = XMLUtil.GetNumericAttribute(element, "index", -1);
+			int index = (int)XMLUtil.GetNumericAttribute(element, "index", -1);
 			string name = XMLUtil.GetStringAttribute(element, "name", "");
 			collection.AddLayout(new NameIndexLayout(index, name));
 		}

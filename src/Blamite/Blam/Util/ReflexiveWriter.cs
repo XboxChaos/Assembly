@@ -10,6 +10,20 @@ namespace Blamite.Blam.Util
 	/// </summary>
 	public static class ReflexiveWriter
 	{
+		public static void WriteContractedReflexive(IEnumerable<StructureValueCollection> entries, uint address, StructureLayout layout,
+			FileSegmentGroup metaArea, IWriter writer, IPointerExpander expander)
+		{
+			long cont = expander.Expand(address);
+			int offset = metaArea.PointerToOffset(address);
+			int index = 0;
+			foreach (StructureValueCollection entry in entries)
+			{
+				writer.SeekTo(offset + index * layout.Size);
+				StructureWriter.WriteStructure(entry, layout, writer);
+				index++;
+			}
+		}
+
 		/// <summary>
 		///     Writes data to a reflexive at a particular address.
 		/// </summary>
@@ -18,7 +32,7 @@ namespace Blamite.Blam.Util
 		/// <param name="layout">The layout of the data to write.</param>
 		/// <param name="metaArea">The meta area of the cache file.</param>
 		/// <param name="writer">The stream to write to.</param>
-		public static void WriteReflexive(IEnumerable<StructureValueCollection> entries, uint address, StructureLayout layout,
+		public static void WriteReflexive(IEnumerable<StructureValueCollection> entries, long address, StructureLayout layout,
 			FileSegmentGroup metaArea, IWriter writer)
 		{
 			int offset = metaArea.PointerToOffset(address);
@@ -40,7 +54,7 @@ namespace Blamite.Blam.Util
 		/// <param name="allocator">The cache file's meta allocator.</param>
 		/// <param name="stream">The stream to manipulate.</param>
 		/// <returns>The address of the new reflexive, or 0 if the entry list is empty.</returns>
-		public static uint WriteReflexive(ICollection<StructureValueCollection> entries, StructureLayout layout,
+		public static long WriteReflexive(ICollection<StructureValueCollection> entries, StructureLayout layout,
 			FileSegmentGroup metaArea, MetaAllocator allocator, IStream stream)
 		{
 			return WriteReflexive(entries, 0, 0, layout, metaArea, allocator, stream);
@@ -57,7 +71,7 @@ namespace Blamite.Blam.Util
 		/// <param name="allocator">The cache file's meta allocator.</param>
 		/// <param name="stream">The stream to manipulate.</param>
 		/// <returns>The address of the new reflexive, or 0 if the entry list is empty and the reflexive was freed.</returns>
-		public static uint WriteReflexive(ICollection<StructureValueCollection> entries, int oldCount, uint oldAddress,
+		public static long WriteReflexive(ICollection<StructureValueCollection> entries, int oldCount, long oldAddress,
 			StructureLayout layout, FileSegmentGroup metaArea, MetaAllocator allocator, IStream stream)
 		{
 			return WriteReflexive(entries, oldCount, oldAddress, entries.Count, layout, metaArea, allocator, stream);
@@ -75,7 +89,7 @@ namespace Blamite.Blam.Util
 		/// <param name="allocator">The cache file's meta allocator.</param>
 		/// <param name="stream">The stream to manipulate.</param>
 		/// <returns>The address of the new reflexive, or 0 if the entry list is empty and the reflexive was freed.</returns>
-		public static uint WriteReflexive(IEnumerable<StructureValueCollection> entries, int oldCount, uint oldAddress,
+		public static long WriteReflexive(IEnumerable<StructureValueCollection> entries, int oldCount, long oldAddress,
 			int newCount, StructureLayout layout, FileSegmentGroup metaArea, MetaAllocator allocator, IStream stream)
 		{
 			if (newCount == 0)
@@ -86,7 +100,7 @@ namespace Blamite.Blam.Util
 				return 0;
 			}
 
-			uint newAddress = oldAddress;
+			long newAddress = oldAddress;
 			if (newCount != oldCount)
 			{
 				// Reallocate the reflexive

@@ -23,6 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly XMLCodeCompleter _completer = new XMLCodeCompleter();
 		private readonly MetaContainer _parent;
 		private readonly string _pluginPath;
+		private readonly string _fallbackPluginPath;
 		private readonly MetaEditor _sibling;
 		private CompletionWindow _completionWindow;
 
@@ -45,6 +46,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
+
+			if (buildInfo.Settings.PathExists("fallbackPlugins"))
+				_fallbackPluginPath =
+				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className.Trim());
 			LoadPlugin();
 		}
 
@@ -139,8 +145,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void LoadPlugin()
 		{
 			// Load Plugin Path
-			if (File.Exists(_pluginPath))
-				txtPlugin.Text = File.ReadAllText(_pluginPath);
+			string pluginpath = _pluginPath;
+
+			if (!File.Exists(pluginpath))
+				pluginpath = _fallbackPluginPath;
+
+			if (pluginpath == null || !File.Exists(pluginpath))
+				return;
+
+			txtPlugin.Text = File.ReadAllText(pluginpath);
 		}
 
 		private void LoadCodeCompletion()

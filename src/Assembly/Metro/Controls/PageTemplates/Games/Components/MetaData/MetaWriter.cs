@@ -24,14 +24,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly StructureLayout _tagRefLayout;
 		private readonly SaveType _type;
 		private readonly IWriter _writer;
-		private uint _baseOffset;
+		private long _baseOffset;
 
 		private bool _pokeTemplateFields = true;
 
 		/// <summary>
 		///     Save meta to the Blam Cache File
 		/// </summary>
-		public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
+		public MetaWriter(IWriter writer, long baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
 			FieldChangeSet changes, Trie stringIdTrie)
 		{
 			_writer = writer;
@@ -200,7 +200,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			var values = new StructureValueCollection();
 
 			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstEntryAddress, (int)(field.Length * field.EntrySize)) ? (uint)field.Length : 0);
-			values.SetInteger("pointer", field.FirstEntryAddress);
+
+			uint cont = _cache.PointerExpander.Contract(field.FirstEntryAddress);
+
+			values.SetInteger("pointer", cont);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
@@ -255,7 +258,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 			values.SetInteger("size", (uint) field.Length);
-			values.SetInteger("pointer", field.DataAddress);
+
+			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
+
+			values.SetInteger("pointer", cont);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
@@ -263,9 +269,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (field.DataAddress == 0xFFFFFFFF || field.DataAddress <= 0) return;
 
 			// Go to the data location
-			uint offset = field.DataAddress;
+			long offset = field.DataAddress;
 			if (_type == SaveType.File)
-				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
+				offset = _cache.MetaArea.PointerToOffset(offset);
 			_writer.SeekTo(offset);
 
 			// Write its data
@@ -451,12 +457,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
-			uint newBaseOffset = field.FirstEntryAddress;
+			long newBaseOffset = field.FirstEntryAddress;
 			if (_type == SaveType.File)
-				newBaseOffset = (uint) _cache.MetaArea.PointerToOffset(newBaseOffset);
+				newBaseOffset = _cache.MetaArea.PointerToOffset(newBaseOffset);
 
 			// Save the old base offset and set the base offset to the reflexive's base
-			uint oldBaseOffset = _baseOffset;
+			long oldBaseOffset = _baseOffset;
 			_baseOffset = newBaseOffset;
 
 			// Write each page

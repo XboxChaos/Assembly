@@ -1,5 +1,6 @@
 ﻿#if NET45
 
+using Blamite.IO;
 using System;
 using System.CodeDom.Compiler;
 
@@ -10,6 +11,7 @@ namespace Blamite.Blam.Scripting
 	{
 		private readonly OpcodeLookup _opcodes;
 		private readonly ScriptTable _scripts;
+		private readonly Endian _endian;
 		private bool _nextFunctionIsScript;
 		private bool _onNewLine = true;
 		private bool _h4;
@@ -18,8 +20,9 @@ namespace Blamite.Blam.Scripting
 		private bool _varTypeWritten;
 		private int localVarCounter;
 
-		public BlamScriptGenerator(ScriptTable scripts, OpcodeLookup opcodes)
+		public BlamScriptGenerator(ScriptTable scripts, OpcodeLookup opcodes, Endian endian)
 		{
+			_endian = endian;
 			_scripts = scripts;
 			_opcodes = opcodes;
 		}
@@ -226,19 +229,22 @@ namespace Blamite.Blam.Scripting
 				}
 			}
 
-			uint value = GetValue(expression, type);
+			uint value = GetValue(expression, type, _endian);
+
+			byte[] val = BitConverter.GetBytes(value);
+
 			switch (type.Name)
 			{
 				case "void":
 					return false;
 				case "boolean":
-					if (value > 0)
+					if (BitConverter.ToBoolean(val,0))
 						output.Write("true");
 					else
 						output.Write("false");
 					break;
 				case "short":
-					output.Write((short) value);
+					output.Write(BitConverter.ToInt16(val,0));
 					break;
 				case "long":
 					// Signed integer
@@ -246,12 +252,12 @@ namespace Blamite.Blam.Scripting
 					break;
 				case "real":
 					// Eww
-					var floatBytes = new byte[4];
-					floatBytes[0] = (byte) (value & 0xFF);
-					floatBytes[1] = (byte) ((value >> 8) & 0xFF);
-					floatBytes[2] = (byte) ((value >> 16) & 0xFF);
-					floatBytes[3] = (byte) ((value >> 24) & 0xFF);
-					output.Write(BitConverter.ToSingle(floatBytes, 0));
+					//var floatBytes = new byte[4];
+					//floatBytes[0] = (byte) (value & 0xFF);
+					//floatBytes[1] = (byte) ((value >> 8) & 0xFF);
+					//floatBytes[2] = (byte) ((value >> 16) & 0xFF);
+					//floatBytes[3] = (byte) ((value >> 24) & 0xFF);
+					output.Write(BitConverter.ToSingle(val, 0));
 					break;
 				case "function_name":
 					if (_nextFunctionIsScript)
@@ -362,9 +368,12 @@ namespace Blamite.Blam.Scripting
 			return true;
 		}
 
-		private uint GetValue(ScriptExpression expression, ScriptValueType type)
+		private uint GetValue(ScriptExpression expression, ScriptValueType type, Endian endian)
 		{
-			return expression.Value >> (32 - (type.Size*8));
+			if (endian == Endian.BigEndian)
+				return expression.Value >> (32 - (type.Size * 8));
+			else
+				return expression.Value;
 		}
 	}
 }

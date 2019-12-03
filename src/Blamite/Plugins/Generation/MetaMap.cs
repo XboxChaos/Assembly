@@ -5,7 +5,7 @@ namespace Blamite.Plugins.Generation
 	public class MetaMap
 	{
 		private readonly HashSet<MetaMap> _ancestors = new HashSet<MetaMap>();
-		private readonly SortedList<int, MetaValueGuess> _guesses = new SortedList<int, MetaValueGuess>();
+		private readonly SortedList<long, MetaValueGuess> _guesses = new SortedList<long, MetaValueGuess>();
 
 		private readonly SortedList<int, int> _sizeEstimates = new SortedList<int, int>();
 		// Maps size estimate -> frequency of estimate

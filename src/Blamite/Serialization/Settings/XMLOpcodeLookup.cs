@@ -46,7 +46,7 @@ namespace Blamite.Serialization.Settings
 			{
 				string name = XMLUtil.GetStringAttribute(element, "name");
 				var opcode = (ushort) XMLUtil.GetNumericAttribute(element, "opcode");
-				int size = XMLUtil.GetNumericAttribute(element, "size");
+				int size = (int)XMLUtil.GetNumericAttribute(element, "size");
 				bool quoted = XMLUtil.GetBoolAttribute(element, "quoted", false);
 				string tag = XMLUtil.GetStringAttribute(element, "tag", null);
 				var valueType = new ScriptValueType(name, opcode, size, quoted, tag);

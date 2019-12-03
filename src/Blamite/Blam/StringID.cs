@@ -49,6 +49,8 @@ namespace Blamite.Blam
 			_value = value;
 		}
 
+		public StringID(ulong value) : this((uint)value) { }
+
 		/// <summary>
 		///     The value of the stringID as a 32-bit integer.
 		/// </summary>

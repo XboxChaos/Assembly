@@ -191,6 +191,58 @@ namespace Blamite.Injection
 		public UnicListFixupString[] Strings { get; private set; }
 	}
 
+	public class DataBlockModelDataFixup
+	{
+		public DataBlockModelDataFixup(int type, uint originalAddress, int writeOffset)
+		{
+			Type = type;
+			OriginalAddress = originalAddress;
+			WriteOffset = writeOffset;
+		}
+
+		public int Type { get; private set; }
+
+		/// <summary>
+		///     Gets the original address of the data that was pointed to.
+		///     This can be used to find the data inside the tag container.
+		/// </summary>
+		public uint OriginalAddress { get; private set; }
+
+		/// <summary>
+		///     Gets the offset within the data block's data to write the new address of the injected data to.
+		/// </summary>
+		public int WriteOffset { get; private set; }
+	}
+
+	public class DataBlockEffectFixup
+	{
+		public DataBlockEffectFixup(int type, int originalIndex, int writeOffset, byte[] data)
+		{
+			Type = type;
+			OriginalIndex = originalIndex;
+			WriteOffset = writeOffset;
+			Data = data;
+		}
+
+		public int Type { get; private set; }
+
+		/// <summary>
+		///     Gets the original index of the data.
+		///     This can be used to find the data inside the tag container.
+		/// </summary>
+		public int OriginalIndex { get; private set; }
+
+		/// <summary>
+		///     Gets the offset within the data block's data to write the new address of the injected data to.
+		/// </summary>
+		public int WriteOffset { get; private set; }
+
+		/// <summary>
+		/// Gets the effect data to import.
+		/// </summary>
+		public byte[] Data { get; private set; }
+	}
+
 	/// <summary>
 	///     Represents a block of tag data which can be injected into a cache file.
 	/// </summary>
@@ -216,6 +268,8 @@ namespace Blamite.Injection
 			StringIDFixups = new List<DataBlockStringIDFixup>();
 			ShaderFixups = new List<DataBlockShaderFixup>();
 			UnicListFixups = new List<DataBlockUnicListFixup>();
+			ModelDataFixups = new List<DataBlockModelDataFixup>();
+			EffectFixups = new List<DataBlockEffectFixup>();
 		}
 
 		/// <summary>
@@ -285,5 +339,9 @@ namespace Blamite.Injection
 		/// Gets a list of multilingual unicode string lists in the block that need to be injected into the cache file.
 		/// </summary>
 		public List<DataBlockUnicListFixup> UnicListFixups { get; private set; }
+
+		public List<DataBlockModelDataFixup> ModelDataFixups { get; private set; }
+
+		public List<DataBlockEffectFixup> EffectFixups { get; private set; }
 	}
 }

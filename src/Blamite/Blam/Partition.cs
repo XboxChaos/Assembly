@@ -50,7 +50,7 @@ namespace Blamite.Blam
 		///     Returns whether the given memory address falls within this partition.
 		/// </summary>
 		/// <param name="address">The memory address to check.</param>
-		public bool Contains(uint address)
+		public bool Contains(long address)
 		{
 			return (address >= BasePointer.AsPointer() && address < BasePointer.AsPointer() + Size);
 		}

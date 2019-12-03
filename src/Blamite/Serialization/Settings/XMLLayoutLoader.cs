@@ -49,7 +49,7 @@ namespace Blamite.Serialization.Settings
 			foreach (XElement layout in layoutContainer.Elements("layout"))
 			{
 				string name = XMLUtil.GetStringAttribute(layout, "for");
-				int size = XMLUtil.GetNumericAttribute(layout, "size", 0);
+				int size = (int)XMLUtil.GetNumericAttribute(layout, "size", 0);
 				result.AddLayout(name, LoadLayout(layout, size));
 			}
 			return result;
@@ -105,7 +105,7 @@ namespace Blamite.Serialization.Settings
 		{
 			// Every structure field at least has a name and an offset
 			string name = XMLUtil.GetStringAttribute(element, "name");
-			int offset = XMLUtil.GetNumericAttribute(element, "offset");
+			int offset = (int)XMLUtil.GetNumericAttribute(element, "offset");
 
 			if (IsArrayElement(element))
 				HandleArrayElement(layout, element, name, offset);
@@ -141,8 +141,8 @@ namespace Blamite.Serialization.Settings
 		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
 		private void HandleArrayElement(StructureLayout layout, XElement element, string name, int offset)
 		{
-			int count = XMLUtil.GetNumericAttribute(element, "count");
-			int entrySize = XMLUtil.GetNumericAttribute(element, "entrySize");
+			int count = (int)XMLUtil.GetNumericAttribute(element, "count");
+			int entrySize = (int)XMLUtil.GetNumericAttribute(element, "entrySize");
 			layout.AddArrayField(name, offset, count, LoadLayout(element, entrySize));
 		}
 
@@ -156,7 +156,7 @@ namespace Blamite.Serialization.Settings
 		/// <param name="offset">The offset (in bytes) of the field from the beginning of the structure.</param>
 		private void HandleRawElement(StructureLayout layout, XElement element, string name, int offset)
 		{
-			int size = XMLUtil.GetNumericAttribute(element, "size");
+			int size = (int)XMLUtil.GetNumericAttribute(element, "size");
 			layout.AddRawField(name, offset, size);
 		}
 
@@ -214,6 +214,10 @@ namespace Blamite.Serialization.Settings
 					return StructureValueType.UInt32;
 				case "int32":
 					return StructureValueType.Int32;
+				case "uint64":
+					return StructureValueType.UInt64;
+				case "int64":
+					return StructureValueType.Int64;
 				case "asciiz":
 					return StructureValueType.Asciiz;
 				case "float32":

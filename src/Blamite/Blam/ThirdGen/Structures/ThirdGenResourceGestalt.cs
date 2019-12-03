@@ -39,14 +39,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ITag _tag;
 		private ThirdGenResourceType[] _resourceTypes;
+		private IPointerExpander _expander;
 
 		public ThirdGenResourceGestalt(IReader reader, ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator,
-			StringIDSource stringIDs, EngineDescription buildInfo)
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_tag = zoneTag;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 
 			Load(reader, stringIDs);
 		}
@@ -91,7 +93,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				SaveResourceFixups(resource.ResourceFixups, entry, stream, fixupCache);
 				SaveDefinitionFixups(resource.DefinitionFixups, entry, stream, defFixupCache);
 
-				uint bits = entry.GetInteger("resource bits");
+				uint bits = (uint)entry.GetInteger("resource bits");
 				int size = (int)entry.GetInteger("resource info size");
 
 				List<int> offsets = new List<int>();
@@ -140,21 +142,26 @@ namespace Blamite.Blam.ThirdGen.Structures
 				if (layout.HasField("number of resource info offsets"))
 				{
 					var oldCount = (int)entry.GetIntegerOrDefault("number of resource info offsets", 0);
-					uint oldAddress = entry.GetIntegerOrDefault("resource info offsets table address", 0);
+					uint oldAddress = (uint)entry.GetIntegerOrDefault("resource info offsets table address", 0);
+
+					long expand = _expander.Expand(oldAddress);
+
 					StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
 
 					if (size > 0)
 					{
-						uint newBlockAddress;
+						long newBlockAddress;
 
 						// Write a new reflexive
 						IEnumerable<StructureValueCollection> infoentries = offsets.Select(f => SerializeInfos(f));
-						newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, oldAddress, offsets.Count, infolayout, _metaArea,
+						newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, expand, offsets.Count, infolayout, _metaArea,
 							_allocator, stream);
 						infocache.Add(newBlockAddress, offsets);
 
+						uint cont = _expander.Contract(newBlockAddress);
+
 						entry.SetInteger("number of resource info offsets", (uint)offsets.Count);
-						entry.SetInteger("resource info offsets table address", newBlockAddress);
+						entry.SetInteger("resource info offsets table address", cont);
 					}
 					else
 					{
@@ -183,9 +190,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 
 			// Write the reflexive and update the tag values
-			uint newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
+			long newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
+
+			uint contr = _expander.Contract(newAddress);
+
 			values.SetInteger("number of resources", (uint) entries.Count);
-			values.SetInteger("resource table address", newAddress);
+			values.SetInteger("resource table address", contr);
 
 			// Save the info buffer
 			SaveResourceInfoBuffer(paddedInfos.SelectMany(a => a).ToArray(), values, stream);
@@ -218,27 +228,33 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 
 			var count = (int) values.GetInteger("number of resource types");
-			uint address = values.GetInteger("resource type table address");
+			uint address = (uint)values.GetInteger("resource type table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource type entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			_resourceTypes = entries.Select(e => new ThirdGenResourceType(e, stringIDs)).ToArray();
 		}
 
 		private byte[] LoadResourceInfoBuffer(StructureValueCollection values, IReader reader)
 		{
 			var size = (int) values.GetInteger("resource info buffer size");
-			uint address = values.GetInteger("resource info buffer address");
+			uint address = (uint)values.GetInteger("resource info buffer address");
+
+			long expand = _expander.Expand(address);
+
 			if (size <= 0 || address == 0)
 				return new byte[0];
 
-			int offset = _metaArea.PointerToOffset(address);
+			int offset = _metaArea.PointerToOffset(expand);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
 		}
 
 		private void SaveResourceInfoBuffer(byte[] buffer, StructureValueCollection values, IStream stream)
 		{
-			uint newAddress = 0;
+			long newAddress = 0;
 			if (buffer.Length > 0)
 			{
 				newAddress = _allocator.Allocate(buffer.Length, 0x10, stream);
@@ -247,8 +263,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 
 			// Update values
+
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("resource info buffer size", (uint) buffer.Length);
-			values.SetInteger("resource info buffer address", newAddress);
+			values.SetInteger("resource info buffer address", cont);
 		}
 
 		public IEnumerable<ResourcePredictionD> LoadPredictions(IReader reader, TagTable tags, List<Resource> resources)
@@ -480,38 +499,48 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			// a
 			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction a entry");
-			uint newa = ReflexiveWriter.WriteReflexive(aentries, alayout, _metaArea, _allocator, stream);
+			long newa = ReflexiveWriter.WriteReflexive(aentries, alayout, _metaArea, _allocator, stream);
+
+			uint conta = _expander.Contract(newa);
 
 			values.SetInteger("number of prediction as", (uint)aentries.Count);
-			values.SetInteger("prediction a table address", newa);
+			values.SetInteger("prediction a table address", conta);
 
 			// b
 			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction b entry");
-			uint newb = ReflexiveWriter.WriteReflexive(bentries, blayout, _metaArea, _allocator, stream);
+			long newb = ReflexiveWriter.WriteReflexive(bentries, blayout, _metaArea, _allocator, stream);
+
+			uint contb = _expander.Contract(newb);
 
 			values.SetInteger("number of prediction bs", (uint)bentries.Count);
-			values.SetInteger("prediction b table address", newb);
+			values.SetInteger("prediction b table address", contb);
 
 			// cc
 			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction c entry");
-			uint newc = ReflexiveWriter.WriteReflexive(centries, clayout, _metaArea, _allocator, stream);
+			long newc = ReflexiveWriter.WriteReflexive(centries, clayout, _metaArea, _allocator, stream);
+
+			uint contc = _expander.Contract(newc);
 
 			values.SetInteger("number of prediction cs", (uint)centries.Count);
-			values.SetInteger("prediction c table address", newc);
+			values.SetInteger("prediction c table address", contc);
 
 			// d
 			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction d entry");
-			uint newd = ReflexiveWriter.WriteReflexive(dentries, dlayout, _metaArea, _allocator, stream);
+			long newd = ReflexiveWriter.WriteReflexive(dentries, dlayout, _metaArea, _allocator, stream);
+
+			uint contd = _expander.Contract(newd);
 
 			values.SetInteger("number of prediction ds", (uint)dentries.Count);
-			values.SetInteger("prediction d table address", newd);
+			values.SetInteger("prediction d table address", contd);
 
 			// d2
 			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction d2 entry");
-			uint newd2 = ReflexiveWriter.WriteReflexive(dentries, d2layout, _metaArea, _allocator, stream);
+			long newd2 = ReflexiveWriter.WriteReflexive(dentries, d2layout, _metaArea, _allocator, stream);
+
+			uint contd2 = _expander.Contract(newd2);
 
 			values.SetInteger("number of prediction d2s", (uint)dentries.Count);
-			values.SetInteger("prediction d2 table address", newd2);
+			values.SetInteger("prediction d2 table address", contd2);
 
 			SaveTag(values, stream);
 		}
@@ -528,7 +557,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var typeIndex = (int) values.GetInteger("resource type index");
 			if (typeIndex >= 0 && typeIndex < _resourceTypes.Length)
 				result.Type = _resourceTypes[typeIndex].Name;
-			result.Flags = values.GetInteger("flags");
+			result.Flags = (uint)values.GetInteger("flags");
 
 			var infoSize = (int) values.GetInteger("resource info size");
 
@@ -539,9 +568,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 				if (values.HasInteger("number of resource info offsets"))//for h4
 				{
 					var infocount = (int)values.GetInteger("number of resource info offsets");
-					uint address = values.GetInteger("resource info offsets table address");
+					uint address = (uint)values.GetInteger("resource info offsets table address");
+
+					long expand = _expander.Expand(address);
+
 					StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset entry");
-					StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, address, layout, _metaArea);
+					StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, expand, layout, _metaArea);
 
 					if (infocount > 0)
 						infoOffset = (int)entries[0].GetInteger("offset");
@@ -592,13 +624,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private IEnumerable<ResourceFixup> LoadResourceFixups(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of resource fixups");
-			uint address = values.GetInteger("resource fixup table address");
+			uint address = (uint)values.GetInteger("resource fixup table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
-				Address = e.GetInteger("address")
+				Address = (uint)e.GetInteger("address")
 			});
 		}
 
@@ -606,26 +641,31 @@ namespace Blamite.Blam.ThirdGen.Structures
 			ReflexiveCache<ResourceFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of resource fixups", 0);
-			uint oldAddress = values.GetIntegerOrDefault("resource fixup table address", 0);
+			uint oldAddress = (uint)values.GetIntegerOrDefault("resource fixup table address", 0);
+
+			long oldExpand = _expander.Expand(oldAddress);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
 
-			uint newAddress;
+			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
 				// Write a new reflexive
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeResourceFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, fixups.Count, layout, _metaArea,
+				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Reflexive was cached - just free it
-				_allocator.Free(oldAddress, oldCount*layout.Size);
+				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of resource fixups", (uint) fixups.Count);
-			values.SetInteger("resource fixup table address", newAddress);
+			values.SetInteger("resource fixup table address", cont);
 		}
 
 		private StructureValueCollection SerializeResourceFixup(ResourceFixup fixup)
@@ -639,9 +679,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private IEnumerable<ResourceDefinitionFixup> LoadDefinitionFixups(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of definition fixups");
-			uint address = values.GetInteger("definition fixup table address");
+			uint address = (uint)values.GetInteger("definition fixup table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceDefinitionFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
@@ -668,40 +711,48 @@ namespace Blamite.Blam.ThirdGen.Structures
 			IStream stream, ReflexiveCache<ResourceDefinitionFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of definition fixups", 0);
-			uint oldAddress = values.GetIntegerOrDefault("definition fixup table address", 0);
+			uint oldAddress = (uint)values.GetIntegerOrDefault("definition fixup table address", 0);
+
+			long oldExpand = _expander.Expand(oldAddress);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
 
-			uint newAddress;
+			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
 				// Write a new reflexive
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeDefinitionFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, fixups.Count, layout, _metaArea,
+				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Reflexive was cached - just free it
-				_allocator.Free(oldAddress, oldCount*layout.Size);
+				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of definition fixups", (uint) fixups.Count);
-			values.SetInteger("definition fixup table address", newAddress);
+			values.SetInteger("definition fixup table address", cont);
 		}
 
 		private void FreeResources(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of resources");
-			uint address = values.GetInteger("resource table address");
+			uint address = (uint)values.GetInteger("resource table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			foreach (StructureValueCollection entry in entries)
 				FreeResource(entry);
 
 			int size = count*layout.Size;
-			if (address >= 0 && size > 0)
-				_allocator.Free(address, size);
+			if (expand >= 0 && size > 0)
+				_allocator.Free(expand, size);
 		}
 
 		private void FreeResource(StructureValueCollection values)
@@ -715,9 +766,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private void FreeInfoBuffer(StructureValueCollection values)
 		{
 			var buffsize = (int)values.GetInteger("resource info buffer size");
-			uint buffaddr = values.GetInteger("resource info buffer address");
+			uint buffaddr = (uint)values.GetInteger("resource info buffer address");
+
+			long expand = _expander.Expand(buffaddr);
+
 			if (buffaddr >= 0 && buffsize > 0)
-				_allocator.Free(buffaddr, buffsize);
+				_allocator.Free(expand, buffsize);
 		}
 
 		private void FreePredictions(StructureValueCollection values)
@@ -732,19 +786,25 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private void FreeReflexive(StructureValueCollection values, string countName, string addressName, string layoutName)
 		{
 			var count = (int)values.GetInteger(countName);
-			uint address = values.GetInteger(addressName);
+			uint address = (uint)values.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
 			int size = count * layout.Size;
-			if (address >= 0 && size > 0)
-				_allocator.Free(address, size);
+			if (expand >= 0 && size > 0)
+				_allocator.Free(expand, size);
 		}
 
 		private StructureValueCollection[] ReadReflexive(StructureValueCollection values, IReader reader, string countName, string addressName, string layoutName)
 		{
 			var count = (int)values.GetInteger(countName);
-			uint address = values.GetInteger(addressName);
+			uint address = (uint)values.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
-			return ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			return ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 		}
 
 		private int AlignInfoBlockOffset(Resource resource, int offset)

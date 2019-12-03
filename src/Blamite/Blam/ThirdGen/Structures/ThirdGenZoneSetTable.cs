@@ -14,14 +14,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly ThirdGenResourceGestalt _gestalt;
 		private readonly FileSegmentGroup _metaArea;
+		private readonly IPointerExpander _expander;
 
 		public ThirdGenZoneSetTable(ThirdGenResourceGestalt gestalt, IReader reader, FileSegmentGroup metaArea,
-			MetaAllocator allocator, EngineDescription buildInfo)
+			MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_gestalt = gestalt;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 			Load(reader);
 		}
 
@@ -106,10 +108,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return Enumerable.Empty<ThirdGenZoneSet>();
 
 			var count = (int) tagValues.GetInteger(countName);
-			uint address = tagValues.GetInteger(addressName);
+			uint address = (uint)tagValues.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("zone set definition");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => new ThirdGenZoneSet(e, reader, _metaArea));
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select(e => new ThirdGenZoneSet(e, reader, _metaArea, _expander));
 		}
 
 		private void SaveZoneSetTable(IZoneSet set, StructureValueCollection tagValues, string countName, string addressName, ReflexiveCache<int> cache, IStream stream)
@@ -126,11 +131,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (count != sets.Length)
 				throw new InvalidOperationException("Zone set count does not match");
 
-			uint address = tagValues.GetInteger(addressName);
+			uint address = (uint)tagValues.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("zone set definition");
 			List<StructureValueCollection> entries =
-				sets.Select(set => ((ThirdGenZoneSet) set).Serialize(stream, _allocator, cache)).ToList();
-			ReflexiveWriter.WriteReflexive(entries, address, layout, _metaArea, stream);
+				sets.Select(set => ((ThirdGenZoneSet) set).Serialize(stream, _allocator, cache, _expander)).ToList();
+			ReflexiveWriter.WriteReflexive(entries, expand, layout, _metaArea, stream);
 		}
 
 		private void FreeZoneSets(StructureValueCollection tagValues, IReader reader)
@@ -155,11 +163,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 
 			var count = (int) tagValues.GetInteger(countName);
-			uint address = tagValues.GetInteger(addressName);
+			uint address = (uint)tagValues.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("zone set definition");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			foreach (StructureValueCollection entry in entries)
-				ThirdGenZoneSet.Free(entry, _allocator);
+				ThirdGenZoneSet.Free(entry, _allocator, _expander);
 		}
 	}
 }

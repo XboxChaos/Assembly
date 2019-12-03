@@ -2,7 +2,7 @@
 {
 	public class MetaValueGuess
 	{
-		public MetaValueGuess(int offset, MetaValueType type, uint pointer, uint data1)
+		public MetaValueGuess(int offset, MetaValueType type, long pointer, uint data1)
 		{
 			Offset = offset;
 			Type = type;
@@ -12,7 +12,7 @@
 
 		public MetaValueType Type { get; set; }
 		public int Offset { get; set; }
-		public uint Pointer { get; set; }
+		public long Pointer { get; set; }
 		public uint Data1 { get; set; }
 	}
 }

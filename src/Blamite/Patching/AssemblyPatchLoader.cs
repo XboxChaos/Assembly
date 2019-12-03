@@ -73,7 +73,10 @@ namespace Blamite.Patching
 			// Version 1
 			if (version >= 1)
 			{
-				output.MetaPokeBase = reader.ReadUInt32();
+				if (version >= 3)
+					output.MetaPokeBase = reader.ReadInt64();
+				else
+					output.MetaPokeBase = reader.ReadUInt32();
 				output.MetaChangesIndex = reader.ReadSByte();
 			}
 
@@ -82,6 +85,15 @@ namespace Blamite.Patching
 				output.OutputName = reader.ReadAscii();
 			else
 				output.OutputName = "";
+
+			// Version 3
+			if (version >= 3)
+			{
+				output.PC = reader.ReadByte() == 1;
+				output.BuildString = reader.ReadAscii();
+			}
+			else
+				output.BuildString = "";
 		}
 
 		private static void ReadSegmentChanges(IReader reader, Patch output)

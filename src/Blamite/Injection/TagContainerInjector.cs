@@ -23,7 +23,7 @@ namespace Blamite.Injection
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
 
-		private readonly Dictionary<DataBlock, uint> _dataBlockAddresses = new Dictionary<DataBlock, uint>();
+		private readonly Dictionary<DataBlock, long> _dataBlockAddresses = new Dictionary<DataBlock, long>();
 		private readonly List<StringID> _injectedStrings = new List<StringID>();
 		private readonly Dictionary<ResourcePage, int> _pageIndices = new Dictionary<ResourcePage, int>();
 
@@ -180,17 +180,6 @@ namespace Blamite.Injection
 			if (_cacheFile.SimulationDefinitions != null && _simulationClasses.Contains(CharConstant.ToString(newTag.Class.Magic)))
 				_cacheFile.SimulationDefinitions.Add(newTag);
 
-			if (CharConstant.ToString(newTag.Class.Magic) == "paas")
-			{
-				IPolyart vertex = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x44, 6);
-				IPolyart index = new Blamite.Blam.ThirdGen.Structures.ThirdGenPolyart(newTag.MetaLocation.AsPointer() + 0x50, 8);
-
-				_cacheFile.PolyartTable.Add(vertex);
-				_cacheFile.PolyartTable.Add(index);
-				
-			}
-				
-
 			return newTag.Index;
 		}
 
@@ -199,13 +188,13 @@ namespace Blamite.Injection
 			return InjectTag(_container.FindTag(originalIndex), stream);
 		}
 
-		public uint InjectDataBlock(DataBlock block, IStream stream)
+		public long InjectDataBlock(DataBlock block, IStream stream)
 		{
 			if (block == null)
 				throw new ArgumentNullException("block is null");
 
 			// Don't inject the block if it's already been injected
-			uint newAddress;
+			long newAddress;
 			if (_dataBlockAddresses.TryGetValue(block, out newAddress))
 				return newAddress;
 
@@ -216,7 +205,7 @@ namespace Blamite.Injection
 			return newAddress;
 		}
 
-		public uint InjectDataBlock(uint originalAddress, IStream stream)
+		public long InjectDataBlock(uint originalAddress, IStream stream)
 		{
 			return InjectDataBlock(_container.FindDataBlock(originalAddress), stream);
 		}
@@ -436,6 +425,8 @@ namespace Blamite.Injection
 				FixStringIdReferences(block, bufferWriter);
 				if (tag != null)
 					FixUnicListReferences(block, tag, bufferWriter, stream);
+				FixModelDataReferences(block, bufferWriter, stream, location);
+				FixEffectReferences(block, bufferWriter);
 
 				// sort after fixups
 				if (block.Sortable && block.EntrySize >= 4)
@@ -471,9 +462,12 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlockAddressFixup fixup in block.AddressFixups)
 			{
-				uint newAddress = InjectDataBlock(fixup.OriginalAddress, stream);
+				long newAddress = InjectDataBlock(fixup.OriginalAddress, stream);
+
+				uint cont = _cacheFile.PointerExpander.Contract(newAddress);
+
 				buffer.SeekTo(fixup.WriteOffset);
-				buffer.WriteUInt32(newAddress);
+				buffer.WriteUInt32(cont);
 			}
 		}
 
@@ -528,6 +522,34 @@ namespace Blamite.Injection
 					stringList.Strings.Add(new LocalizedString(id, str.String));
 				}
 				pack.AddStringList(stringList);
+			}
+		}
+
+		private void FixModelDataReferences(DataBlock block, IWriter buffer, IStream stream, SegmentPointer location)
+		{
+			foreach (DataBlockModelDataFixup fixup in block.ModelDataFixups)
+			{
+				long newAddress = InjectDataBlock(fixup.OriginalAddress, stream);
+
+				uint cont = _cacheFile.PointerExpander.Contract(newAddress);
+
+				buffer.SeekTo(fixup.WriteOffset);
+				buffer.WriteUInt32(cont);
+
+				uint contp = _cacheFile.PointerExpander.Contract(location.AsPointer() + fixup.WriteOffset);
+
+				_cacheFile.PolyartTable.Add(new Blam.ThirdGen.Structures.ThirdGenPolyart(contp, fixup.Type));
+			}
+		}
+
+		private void FixEffectReferences(DataBlock block, IWriter buffer)
+		{
+			foreach (DataBlockEffectFixup fixup in block.EffectFixups)
+			{
+				int newIndex = _cacheFile.CompiledEffects.AddData((EffectStorageType)fixup.Type, fixup.Data);
+
+				buffer.SeekTo(fixup.WriteOffset);
+				buffer.WriteInt32(newIndex);
 			}
 		}
 

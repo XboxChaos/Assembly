@@ -18,6 +18,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		private readonly ThirdGenResourceLayoutTable _layoutTable;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly TagTable _tags;
+		private readonly IPointerExpander _expander;
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="ThirdGenResourceManager" /> class.
@@ -29,7 +30,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// <param name="allocator">The cache file's tag data allocator.</param>
 		/// <param name="buildInfo">The cache file's build information.</param>
 		public ThirdGenResourceManager(ThirdGenResourceGestalt gestalt, ThirdGenResourceLayoutTable layoutTable, TagTable tags,
-			FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
+			FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_gestalt = gestalt;
 			_layoutTable = layoutTable;
@@ -37,6 +38,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 		}
 
 		/// <summary>
@@ -87,7 +89,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// </returns>
 		public IZoneSetTable LoadZoneSets(IReader reader)
 		{
-			return _gestalt == null ? null : new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo);
+			return _gestalt == null ? null : new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo, _expander);
 		}
 	}
 }

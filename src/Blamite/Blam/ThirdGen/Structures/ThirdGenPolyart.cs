@@ -32,7 +32,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea)
 		{
-			Pointer = values.GetInteger("pointer");
+			Pointer = (uint)values.GetInteger("pointer");
 
 			Type = (int)values.GetInteger("type");
 		}

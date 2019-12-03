@@ -28,7 +28,11 @@ namespace Blamite.Blam
 				Engine = EngineType.ThirdGeneration;
 
 				// Read third-generation build string
-				reader.SeekTo(0x11C);
+				if (reader.Endianness == Endian.BigEndian)
+					reader.SeekTo(0x11C);
+				else
+					reader.SeekTo(0x120);
+
 				BuildString = reader.ReadAscii();
 			}
 

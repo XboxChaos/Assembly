@@ -46,6 +46,8 @@ namespace Blamite.Blam
 			Index = (ushort) (value & 0xFFFF);
 		}
 
+		public DatumIndex(ulong value) : this((uint)value) { }
+
 		public DatumIndex(ushort salt, ushort index)
 		{
 			Salt = salt;

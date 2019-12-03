@@ -155,6 +155,29 @@ namespace Blamite.Injection
 				}
 			}
 
+			if (version >= 7)
+			{
+				int numModelFixups = reader.ReadInt32();
+				for (int i = 0; i < numModelFixups; i++)
+				{
+					uint dataAddress = reader.ReadUInt32();
+					int writeOffset = reader.ReadInt32();
+					int type = reader.ReadInt32();
+					block.ModelDataFixups.Add(new DataBlockModelDataFixup(type, dataAddress, writeOffset));
+				}
+
+				int numEffectFixups = reader.ReadInt32();
+				for (int i = 0; i < numEffectFixups; i++)
+				{
+					int index = reader.ReadInt32();
+					int writeOffset = reader.ReadInt32();
+					int type = reader.ReadInt32();
+					int effectDataSize = reader.ReadInt32();
+					byte[] effectData = reader.ReadBlock(effectDataSize);
+					block.EffectFixups.Add(new DataBlockEffectFixup(type, index, writeOffset, effectData));
+				}
+			}
+
 			return block;
 		}
 

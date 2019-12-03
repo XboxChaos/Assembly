@@ -22,7 +22,7 @@ namespace Blamite.Blam
 		/// <summary>
 		///     The size of the cache file.
 		/// </summary>
-		uint FileSize { get; }
+		long FileSize { get; }
 
 		/// <summary>
 		///     The purpose of the cache file.
@@ -196,5 +196,11 @@ namespace Blamite.Blam
 		/// </summary>
 		/// <param name="stream">The stream to write changes to.</param>
 		void SaveChanges(IStream stream);
+
+		IPointerExpander PointerExpander { get; }
+
+		Endian Endianness { get; }
+
+		EffectStorage CompiledEffects { get; }
 	}
 }

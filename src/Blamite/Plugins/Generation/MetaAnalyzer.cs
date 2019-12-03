@@ -10,11 +10,13 @@ namespace Blamite.Plugins.Generation
 	{
 		private readonly HashSet<int> _classIds = new HashSet<int>();
 		private readonly MemoryMap _memMap = new MemoryMap();
-		private uint _maxAddress;
-		private uint _minAddress;
+		private long _maxAddress;
+		private long _minAddress;
+		private IPointerExpander _expander;
 
 		public MetaAnalyzer(ICacheFile cacheFile)
 		{
+			_expander = cacheFile.PointerExpander;
 			InitializeMemoryMap(cacheFile);
 			RecognizeClassIDs(cacheFile);
 		}
@@ -24,7 +26,7 @@ namespace Blamite.Plugins.Generation
 			get { return _memMap; }
 		}
 
-		public void AnalyzeArea(IReader reader, uint startAddress, MetaMap resultMap)
+		public void AnalyzeArea(IReader reader, long startAddress, MetaMap resultMap)
 		{
 			// Right now, this method only searches for the signatures of a few complex meta values.
 			// Reflexives:      int32 entry count + uint32 address     + 4 bytes of padding
@@ -33,11 +35,11 @@ namespace Blamite.Plugins.Generation
 			// ASCII strings:   characters with the values 0 or 0x20 - 0x7F
 
 			// End at the next-highest address
-			uint endAddress = _memMap.GetNextHighestAddress(startAddress);
+			long endAddress = _memMap.GetNextHighestAddress(startAddress);
 			if (endAddress == 0xFFFFFFFF)
 				throw new InvalidOperationException("Invalid start address for area analysis");
 
-			uint size = endAddress - startAddress; // The size of the block of data
+			uint size = (uint)(endAddress - startAddress); // The size of the block of data
 			int paddingLength = 0; // The number of 4-byte padding values that have been read
 			uint prePadding = 0; // The last non-padding uint32 that was read
 
@@ -47,6 +49,8 @@ namespace Blamite.Plugins.Generation
 			{
 				uint value = reader.ReadUInt32();
 
+				long expValue = _expander.Expand(value);
+
 				if (IsPadding(value))
 				{
 					if (paddingLength == 0 && pendingGuess != null)
@@ -54,7 +58,7 @@ namespace Blamite.Plugins.Generation
 						resultMap.AddGuess(pendingGuess);
 
 						// Add the address to the memory map
-						uint address = pendingGuess.Pointer;
+						long address = pendingGuess.Pointer;
 						_memMap.AddAddress(address, (int) reader.Position);
 					}
 
@@ -68,11 +72,11 @@ namespace Blamite.Plugins.Generation
 					if (offset <= size - 8
 					    && prePadding > 0
 					    && prePadding < 0x80000000
-					    && (value & 3) == 0
-					    && IsValidAddress(value)
-					    && value + prePadding > value
-					    && IsValidAddress(value + prePadding - 1)
-					    && !_memMap.BlockCrossesBoundary(value, (int) prePadding))
+					   // && (value & 3) == 0
+					    && IsValidAddress(expValue)
+					    && expValue + prePadding > value
+					    && IsValidAddress(expValue + prePadding - 1)
+					    && !_memMap.BlockCrossesBoundary(expValue, (int) prePadding))
 					{
 						// Either a reflexive or a data reference
 						// Check the padding to determine which (see the comments at the beginning of this method)
@@ -80,16 +84,14 @@ namespace Blamite.Plugins.Generation
 						{
 							// Found a data reference
 							uint dataSize = prePadding;
-							uint address = value;
-							pendingGuess = new MetaValueGuess(offset - 12, MetaValueType.DataReference, address, dataSize);
+							pendingGuess = new MetaValueGuess(offset - 12, MetaValueType.DataReference, expValue, dataSize);
 							// Guess with Pointer = address, Data1 = data size
 						}
 						else if (paddingLength == 0 && offset >= 4)
 						{
 							// Found a reflexive!
 							uint entryCount = prePadding;
-							uint address = value;
-							pendingGuess = new MetaValueGuess(offset - 4, MetaValueType.Reflexive, address, entryCount);
+							pendingGuess = new MetaValueGuess(offset - 4, MetaValueType.Reflexive, expValue, entryCount);
 							// Guess with Pointer = address, Data1 = entry count
 						}
 					}
@@ -128,7 +130,7 @@ namespace Blamite.Plugins.Generation
 			}
 
 			// Add the end of meta as well
-			_maxAddress = (uint) (_minAddress + cacheFile.MetaArea.Size);
+			_maxAddress = (_minAddress + cacheFile.MetaArea.Size);
 			_memMap.AddAddress(_maxAddress, 0);
 		}
 
@@ -165,7 +167,7 @@ namespace Blamite.Plugins.Generation
 		/// </summary>
 		/// <param name="value">The value to test.</param>
 		/// <returns>true if the value is a valid memory address.</returns>
-		private bool IsValidAddress(uint value)
+		private bool IsValidAddress(long value)
 		{
 			// Check that the address is between the meta start and end
 			return (value >= _minAddress && value < _maxAddress);

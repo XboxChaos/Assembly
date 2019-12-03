@@ -22,9 +22,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 		private readonly EngineDescription _buildInfo;
 		private readonly IScriptFile _scriptFile;
 		private bool _showInfo;
+		private Endian _endian;
 
-		public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager)
+		public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, Endian endian)
 		{
+			_endian = endian;
 			_buildInfo = buildInfo;
 			_scriptFile = scriptFile;
 			_showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
@@ -58,7 +60,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 
 			OpcodeLookup opcodes = _buildInfo.ScriptInfo;
-			var generator = new BlamScriptGenerator(scripts, opcodes);
+			var generator = new BlamScriptGenerator(scripts, opcodes, _endian);
 			var code = new IndentedTextWriter(new StringWriter());
 
 			generator.WriteComment("Decompiled with Assembly", code);

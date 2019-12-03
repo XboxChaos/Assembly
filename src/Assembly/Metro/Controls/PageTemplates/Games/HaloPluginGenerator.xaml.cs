@@ -59,7 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					fis.Where(
 						fi =>
 							!fi.Name.ToLower().StartsWith("campaign") && !fi.Name.ToLower().StartsWith("shared") &&
-							!fi.Name.ToLower().StartsWith("single_player_shared")))
+							!fi.Name.ToLower().StartsWith("english") && !fi.Name.ToLower().StartsWith("single_player_shared")))
 			{
 				GeneratorMaps.Add(new MapEntry
 				{
@@ -303,7 +303,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void GenerateSubMaps(Queue<MetaMap> maps, MetaAnalyzer analyzer, IReader reader, ICacheFile cacheFile)
 		{
-			var generatedMaps = new Dictionary<uint, MetaMap>();
+			var generatedMaps = new Dictionary<long, MetaMap>();
 			while (maps.Count > 0)
 			{
 				MetaMap map = maps.Dequeue();
@@ -323,7 +323,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void EstimateMapSize(MetaMap map, uint mapAddress, MemoryMap memMap, int entryCount)
+		private void EstimateMapSize(MetaMap map, long mapAddress, MemoryMap memMap, int entryCount)
 		{
 			bool alreadyVisited = map.HasSizeEstimates;
 
@@ -364,7 +364,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
 		{
-			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
+			reader = new EndianReader(File.OpenRead(path), Endian.LittleEndian);//yuck
 			var versionInfo = new CacheFileVersionInfo(reader);
 			EngineDescription buildInfo =
 				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);

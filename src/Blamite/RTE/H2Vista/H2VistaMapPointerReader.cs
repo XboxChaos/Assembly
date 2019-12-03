@@ -6,6 +6,7 @@ using Blamite.Blam;
 using Blamite.IO;
 using Blamite.Native;
 using Blamite.Util;
+using Blamite.Serialization;
 
 namespace Blamite.RTE.H2Vista
 {
@@ -17,15 +18,15 @@ namespace Blamite.RTE.H2Vista
 		private readonly long _baseAddress;
 		private long _mapHeaderAddress;
 
-		public H2VistaMapPointerReader(ProcessMemoryStream stream)
+		public H2VistaMapPointerReader(ProcessMemoryStream stream, long pointer)
 		{
 			// Get the base address of the process's main module
 			// All addresses have to be based off of this because the game
 			// randomizes its address space
 			_baseAddress = (long) stream.BaseProcess.MainModule.BaseAddress;
+			_mapHeaderAddress = _baseAddress + pointer;
 
 			var reader = new EndianReader(stream, BitConverter.IsLittleEndian ? Endian.LittleEndian : Endian.BigEndian);
-			FindMapHeader(reader);
 			ReadMapPointers(reader);
 			ReadMapHeader(reader);
 			ProcessMapHeader();
@@ -61,30 +62,7 @@ namespace Blamite.RTE.H2Vista
 		///     Gets the full header of the map that is currently loaded.
 		/// </summary>
 		public byte[] MapHeader { get; private set; }
-
-		private void FindMapHeader(IReader reader)
-		{
-			if (TryHeaderAddress(reader, Patch2MapHeaderRelativeAddress))
-				return;
-			if (TryHeaderAddress(reader, Patch1MapHeaderRelativeAddress))
-				return;
-			if (TryHeaderAddress(reader, NoPatchMapHeaderRelativeAddress))
-				return;
-
-			throw new InvalidOperationException("Unable to locate the map header in the game's memory");
-		}
-
-		private bool TryHeaderAddress(IReader reader, long address)
-		{
-			reader.SeekTo(_baseAddress + address);
-			if (reader.ReadUInt32() == MapHeaderMagic)
-			{
-				_mapHeaderAddress = _baseAddress + address;
-				return true;
-			}
-			return false;
-		}
-
+		
 		private void ReadMapPointers(IReader reader)
 		{
 			// The shared meta pointer is immediately before the map header
@@ -116,20 +94,6 @@ namespace Blamite.RTE.H2Vista
 				ScenarioName = reader.ReadAscii();
 			}
 		}
-
-		#region Addresses
-
-		// Note: all addresses are relative to the module base
-		// because the game uses address space layout randomization (ASLR)
-
-		// These addresses point to the beginning of the header of the currently-loaded map in halo2.exe
-		// The header here is always 0x800 bytes long
-		// The rest of the file does NOT come after this - it only contains the header
-		private const long NoPatchMapHeaderRelativeAddress = 0x479B40;
-		private const long Patch1MapHeaderRelativeAddress = 0x47CD58;
-		private const long Patch2MapHeaderRelativeAddress = 0x47CD68;
-
-		#endregion
 
 		#region Map Header
 

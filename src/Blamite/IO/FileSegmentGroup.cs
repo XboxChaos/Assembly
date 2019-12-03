@@ -30,7 +30,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the lowest possible value a valid pointer can have.
 		/// </summary>
-		public uint BasePointer
+		public long BasePointer
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Blamite.IO
 		/// <summary>
 		///     Gets the value to subtract from a pointer to convert it to a file offset.
 		/// </summary>
-		public uint PointerMask
+		public long PointerMask
 		{
 			get
 			{
@@ -114,12 +114,12 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="pointer">The pointer to test.</param>
 		/// <returns>true if the pointer falls inside a segment in the group.</returns>
-		public bool ContainsPointer(uint pointer)
+		public bool ContainsPointer(long pointer)
 		{
 			if (Segments.Count == 0)
 				return false;
 
-			uint basePointer = BasePointer;
+			long basePointer = BasePointer;
 			return (pointer >= basePointer && pointer < basePointer + Size);
 		}
 
@@ -129,13 +129,13 @@ namespace Blamite.IO
 		/// <param name="pointer">The pointer to the start of the block.</param>
 		/// <param name="size">The size of the block in bytes.</param>
 		/// <returns>true if the block falls completely inside the group.</returns>
-		public bool ContainsBlockPointer(uint pointer, int size)
+		public bool ContainsBlockPointer(long pointer, int size)
 		{
 			if (Segments.Count == 0)
 				return false;
 
-			uint basePointer = BasePointer;
-			return ((uint) (pointer + size) >= pointer && pointer >= basePointer && pointer + size <= basePointer + Size);
+			long basePointer = BasePointer;
+			return ((long)(pointer + size) >= pointer && pointer >= basePointer && pointer + size <= basePointer + Size);
 		}
 
 		/// <summary>
@@ -187,13 +187,13 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="pointer">The pointer to search for.</param>
 		/// <returns>The FileSegment containing the pointer if found, or null otherwise.</returns>
-		public FileSegment FindSegmentWithPointer(uint pointer)
+		public FileSegment FindSegmentWithPointer(long pointer)
 		{
 			if (Segments.Count == 0)
 				return null;
 
 			// Just do a linear search for now, if this gets slow then it can be converted to binary search or something
-			uint currentPointer = OffsetToPointer(Segments[0].Offset);
+			long currentPointer = OffsetToPointer(Segments[0].Offset);
 			foreach (FileSegment segment in Segments)
 			{
 				if (pointer >= currentPointer && pointer < currentPointer + segment.Size)
@@ -208,7 +208,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="pointer">The pointer to convert.</param>
 		/// <returns>The file offset corresponding to the pointer.</returns>
-		public int PointerToOffset(uint pointer)
+		public int PointerToOffset(long pointer)
 		{
 			if (_pointerConverter != null)
 			{
@@ -224,7 +224,7 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="offset">The file offset to convert.</param>
 		/// <returns>The pointer corresponding to the file offset.</returns>
-		public uint OffsetToPointer(int offset)
+		public long OffsetToPointer(int offset)
 		{
 			if (_pointerConverter != null)
 			{

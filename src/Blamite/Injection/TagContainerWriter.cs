@@ -95,6 +95,33 @@ namespace Blamite.Injection
 					}
 				}
 
+				// Model Data fixups
+				writer.WriteInt32(dataBlock.ModelDataFixups.Count);
+				foreach (DataBlockModelDataFixup modelData in dataBlock.ModelDataFixups)
+				{
+					writer.WriteUInt32(modelData.OriginalAddress);
+					writer.WriteInt32(modelData.WriteOffset);
+					writer.WriteInt32(modelData.Type);
+				}
+
+				// Effect fixups
+				writer.WriteInt32(dataBlock.EffectFixups.Count);
+				foreach (DataBlockEffectFixup effectData in dataBlock.EffectFixups)
+				{
+					writer.WriteInt32(effectData.OriginalIndex);
+					writer.WriteInt32(effectData.WriteOffset);
+					writer.WriteInt32(effectData.Type);
+					if (effectData.Data != null)
+					{
+						writer.WriteInt32(effectData.Data.Length);
+						writer.WriteBlock(effectData.Data);
+					}
+					else
+					{
+						writer.WriteInt32(0);
+					}
+				}
+
 				container.EndBlock();
 			}
 		}

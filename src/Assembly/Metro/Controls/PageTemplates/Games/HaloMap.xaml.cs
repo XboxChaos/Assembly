@@ -32,6 +32,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
+using Blamite.RTE.MCC;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -206,11 +207,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.SecondGeneration:
-						_rteProvider = new H2VistaRTEProvider("halo2.exe");
+						_rteProvider = new H2VistaRTEProvider(_buildInfo);
 						break;
 
 					case EngineType.ThirdGeneration:
-						_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						if (_cacheFile.Endianness == Endian.BigEndian)
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						else
+							_rteProvider = new MCCRTEProvider(_buildInfo);
 						break;
 				}
 
@@ -333,7 +337,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					for (int i = 0; i < _cacheFile.Partitions.Count(); i++)
 					{
-						uint pointer = 0;
+						long pointer = 0;
 						if (_cacheFile.Partitions[i].Size > 0)
 							pointer = _cacheFile.Partitions[i].BasePointer.AsPointer();
 
@@ -625,7 +629,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Content = tabName,
 						ContextMenu = BaseContextMenu
 					},
-					Content = new ScriptEditor(_buildInfo, script, _mapManager)
+					Content = new ScriptEditor(_buildInfo, script, _mapManager, _cacheFile.Endianness)
 				};
 
 				contentTabs.Items.Add(tab);
@@ -767,9 +771,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 						_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
+					string fallbackPluginPath = null;
+					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
+						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+
+					string realpluginpath = pluginPath;
+
+					if (!File.Exists(realpluginpath))
+						realpluginpath = fallbackPluginPath;
+
+					if (realpluginpath == null || !File.Exists(realpluginpath))
+					{
+						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
+						return;
+					}
+
 					// Extract dem data blocks
 					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
-					using (var pluginReader = XmlReader.Create(pluginPath))
+					using (var pluginReader = XmlReader.Create(realpluginpath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
 					foreach (var block in blockBuilder.DataBlocks)
@@ -777,7 +797,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Add data for the tag that was extracted
 					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
-					var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic,
+
+					uint cont = _cacheFile.PointerExpander.Contract(currentTag.MetaLocation.AsPointer());
+
+					var extractedTag = new ExtractedTag(currentTag.Index, cont, currentTag.Class.Magic,
 						tagName);
 					container.AddTag(extractedTag);
 
@@ -844,7 +867,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 									resourceStream =
 										File.OpenRead(resourceCachePath);
-									resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, Endian.BigEndian), _buildInfo,
+									resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
 										_cacheFile.BuildString);
 								}
 
@@ -918,7 +941,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 
 			// Write it to a file
-			using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), Endian.BigEndian))
+			using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), _cacheFile.Endianness))
 				TagContainerWriter.WriteTagContainer(container, writer);
 
 			// YAY!
@@ -943,7 +966,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				return;
 			
 			TagContainer container;
-			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), Endian.BigEndian))
+			using (var reader = new EndianReader(File.OpenRead(ofd.FileName), _cacheFile.Endianness))
 				container = TagContainerReader.ReadTagContainer(reader);
 
 
@@ -1033,9 +1056,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				string pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 					_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
+				string fallbackPluginPath = null;
+				if (_buildInfo.Settings.PathExists("fallbackPlugins"))
+					fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+						_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+
+				string realpluginpath = pluginPath;
+
+				if (!File.Exists(realpluginpath))
+					realpluginpath = fallbackPluginPath;
+
+				if (realpluginpath == null || !File.Exists(realpluginpath))
+				{
+					StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
+					return;
+				}
+
 				// Extract data blocks
 				var builder = new DataBlockBuilder(stream, tag.RawTag, _cacheFile, _buildInfo);
-				using (XmlReader pluginReader = XmlReader.Create(pluginPath))
+				using (XmlReader pluginReader = XmlReader.Create(realpluginpath))
 					AssemblyPluginLoader.LoadPlugin(pluginReader, builder);
 				foreach (var block in builder.DataBlocks)
 				{
@@ -1047,7 +1086,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					block.TagFixups.Clear();
 					container.AddDataBlock(block);
 				}
-				var extracted = new ExtractedTag(tag.RawTag.Index, tag.RawTag.MetaLocation.AsPointer(), tag.RawTag.Class.Magic, newName);
+
+				uint cont = _cacheFile.PointerExpander.Contract(tag.RawTag.MetaLocation.AsPointer());
+
+				var extracted = new ExtractedTag(tag.RawTag.Index, cont, tag.RawTag.Class.Magic, newName);
 				container.AddTag(extracted);
 
 				// Now inject the container
@@ -1137,7 +1179,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Add data for the tag that was extracted
 					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
-					var extractedTag = new ExtractedTag(currentTag.Index, currentTag.MetaLocation.AsPointer(), currentTag.Class.Magic,
+
+					uint cont = _cacheFile.PointerExpander.Contract(currentTag.MetaLocation.AsPointer());
+
+					var extractedTag = new ExtractedTag(currentTag.Index, cont, currentTag.Class.Magic,
 						tagName);
 					container.AddTag(extractedTag);
 

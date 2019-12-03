@@ -69,7 +69,9 @@ namespace Blamite.Injection
 			var data = _reader.ReadBlock(baseSize);
 
 			// Create a block for it and push it onto the block stack
-			var block = new DataBlock(_tag.MetaLocation.AsPointer(), 1, 4, false, data);
+			uint cont = _cacheFile.PointerExpander.Contract(_tag.MetaLocation.AsPointer());
+
+			var block = new DataBlock(cont, 1, 4, false, data);
 			DataBlocks.Add(block);
 
 			var blockList = new List<DataBlock> {block};
@@ -148,6 +150,18 @@ namespace Blamite.Injection
 			{
 				//ReadReferences(offset, PolyartFixup);
 				ReadReferences(offset, (b, o) => ReadPolyart(b, o));
+			}
+			if (lowerName.Contains("compiled scenario index"))
+			{
+				var type = EffectStorageType.Effect;
+				if (_tag.Class.Magic == 1835099490)//beam
+					type = EffectStorageType.Beam;
+				else if (_tag.Class.Magic == 1819569763)//cntl
+					type = EffectStorageType.Contrail;
+				else if (_tag.Class.Magic == 1819702380)//ltvl
+					type = EffectStorageType.LightVolume;
+
+				ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, type));
 			}
 		}
 
@@ -383,12 +397,14 @@ namespace Blamite.Injection
 			ReferencedResources.Add(index);
 		}
 
-		private DataBlock ReadDataBlock(uint pointer, int entrySize, int entryCount, int align, bool sort)
+		private DataBlock ReadDataBlock(long pointer, int entrySize, int entryCount, int align, bool sort)
 		{
 			_reader.SeekTo(_cacheFile.MetaArea.PointerToOffset(pointer));
 			var data = _reader.ReadBlock(entrySize*entryCount);
 
-			var block = new DataBlock(pointer, entryCount, align, sort, data);
+			uint cont = _cacheFile.PointerExpander.Contract(pointer);
+
+			var block = new DataBlock(cont, entryCount, align, sort, data);
 			DataBlocks.Add(block);
 			return block;
 		}
@@ -431,12 +447,14 @@ namespace Blamite.Injection
 			SeekToOffset(block, offset);
 			var values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 			var size = (int) values.GetInteger("size");
-			var pointer = values.GetInteger("pointer");
+			var pointer = (uint)values.GetInteger("pointer");
 
-			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(pointer, size)) return;
+			long expand = _cacheFile.PointerExpander.Expand(pointer);
+
+			if (size <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, size)) return;
 
 			// Read the block and create a fixup for it
-			ReadDataBlock(pointer, size, 1, align, false);
+			ReadDataBlock(expand, size, 1, align, false);
 			var fixup = new DataBlockAddressFixup(pointer, (int) offset + _dataRefLayout.GetFieldOffset("pointer"));
 			block.AddressFixups.Add(fixup);
 		}
@@ -447,11 +465,13 @@ namespace Blamite.Injection
 			SeekToOffset(block, offset);
 			var values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var count = (int) values.GetInteger("entry count");
-			var pointer = values.GetInteger("pointer");
+			var pointer = (uint)values.GetInteger("pointer");
 
-			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(pointer, (int) (count*entrySize))) return;
+			long expand = _cacheFile.PointerExpander.Expand(pointer);
 
-			var newBlock = ReadDataBlock(pointer, (int)entrySize, count, align, sort);
+			if (count <= 0 || !_cacheFile.MetaArea.ContainsBlockPointer(expand, (int) (count*entrySize))) return;
+
+			var newBlock = ReadDataBlock(expand, (int)entrySize, count, align, sort);
 
 			// Now create a fixup for the block
 			var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
@@ -511,14 +531,42 @@ namespace Blamite.Injection
 			SeekToOffset(block, offset);
 			var address = _reader.ReadUInt32();
 
-			if (!_cacheFile.MetaArea.ContainsBlockPointer(address, 24)) return;
+			long expand = _cacheFile.PointerExpander.Expand(address);
 
-			var newBlock = ReadDataBlock(address, 24, 1, 16, false);
+			if (!_cacheFile.MetaArea.ContainsBlockPointer(expand, 24)) return;
+
+			var newBlock = ReadDataBlock(expand, 24, 1, 16, false);
 			ReadDataReference(newBlock, 0, 16);
 
-			// Now create a fixup for the block
-			var fixup = new DataBlockAddressFixup(address, (int)offset);
-			block.AddressFixups.Add(fixup);
+			//get the type from the table
+			uint loc = block.OriginalAddress;
+			long expLoc = _cacheFile.PointerExpander.Expand(loc) + offset;
+			uint cont = _cacheFile.PointerExpander.Contract(expLoc);
+
+			IPolyart a = _cacheFile.PolyartTable.Where(p => p.Pointer == cont).FirstOrDefault();
+			if (a == null) return;
+			int type = a.Type;
+
+			// Now create a fixup
+			var fixup = new DataBlockModelDataFixup(type, address, (int)offset);
+			block.ModelDataFixups.Add(fixup);
+		}
+
+		private void ReadCompiledEffect(DataBlock block, uint offset, EffectStorageType type)
+		{
+			if (_cacheFile.CompiledEffects == null)
+				return;
+
+			// Read the index
+			SeekToOffset(block, offset);
+			int index = _reader.ReadInt32();
+
+			//get the data
+			byte[] data = _cacheFile.CompiledEffects.GetData(type, index);
+
+			// Now create a fixup
+			var fixup = new DataBlockEffectFixup((int)type, index, (int)offset, data);
+			block.EffectFixups.Add(fixup);
 		}
 
 		private LocalizedStringList LoadStringList(int languageIndex, ITag tag)
@@ -531,7 +579,9 @@ namespace Blamite.Injection
 
 		private void SeekToOffset(DataBlock block, uint offset)
 		{
-			var baseOffset = _cacheFile.MetaArea.PointerToOffset(block.OriginalAddress);
+			long expand = _cacheFile.PointerExpander.Expand(block.OriginalAddress);
+
+			var baseOffset = _cacheFile.MetaArea.PointerToOffset(expand);
 			_reader.SeekTo(baseOffset + offset);
 		}
 	}

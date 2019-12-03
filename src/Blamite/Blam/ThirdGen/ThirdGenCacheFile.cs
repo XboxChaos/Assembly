@@ -12,6 +12,7 @@ using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Blam.ThirdGen
 {
@@ -31,13 +32,18 @@ namespace Blamite.Blam.ThirdGen
 		private IndexedStringIDSource _stringIds;
 		private ThirdGenTagTable _tags;
 		private ThirdGenSimulationDefinitionTable _simulationDefinitions;
+		private ThirdGenPointerExpander _expander;
+		private Endian _endianness;
+		private EffectStorage _effects;
 
 		private bool _zoneOnly = false;
 
 		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
+			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
+			_expander = new ThirdGenPointerExpander((uint)buildInfo.ExpandMagic);
 			Allocator = new MetaAllocator(this, 0x10000);
 			Load(reader, buildString);
 		}
@@ -54,6 +60,8 @@ namespace Blamite.Blam.ThirdGen
 			_stringIds.SaveChanges(stream);
 			if (_simulationDefinitions != null)
 				_simulationDefinitions.SaveChanges(stream);
+			if (_effects != null)
+				_effects.SaveChanges(stream);
 			WriteHeader(stream);
 			WriteLanguageInfo(stream);
 		}
@@ -63,7 +71,7 @@ namespace Blamite.Blam.ThirdGen
 			get { return _header.HeaderSize; }
 		}
 
-		public uint FileSize
+		public long FileSize
 		{
 			get { return _header.FileSize; }
 		}
@@ -211,6 +219,21 @@ namespace Blamite.Blam.ThirdGen
 			get { return _tags.Polyart; }
 		}
 
+		public IPointerExpander PointerExpander
+		{
+			get { return _expander; }
+		}
+
+		public Endian Endianness
+		{
+			get { return _endianness; }
+		}
+
+		public EffectStorage CompiledEffects
+		{
+			get { return _effects; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -221,6 +244,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
 			LoadSimulationDefinitions(reader);
+			LoadEffects(reader);
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
 		}
 
@@ -228,7 +252,7 @@ namespace Blamite.Blam.ThirdGen
 		{
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
-			_header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter);
+			_header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter, _expander);
 		}
 
 		private void LoadTags(IReader reader)
@@ -239,7 +263,7 @@ namespace Blamite.Blam.ThirdGen
 				return;
 			}
 
-			_tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo);
+			_tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo, _expander);
 			_resourceMetaLoader = new ThirdGenResourceMetaLoader(_buildInfo, _header.MetaArea);
 		}
 
@@ -318,18 +342,18 @@ namespace Blamite.Blam.ThirdGen
 				ThirdGenResourceGestalt gestalt = null;
 				ThirdGenResourceLayoutTable layoutTable = null;
 				if (canLoadZone)
-					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
+					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo, _expander);
 
 				if (canLoadPlay)
-					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo, _expander);
 				else if (canLoadZone && haveAltPlayLayout)
 				{
-					layoutTable = new ThirdGenResourceLayoutTable(zoneTag, MetaArea, Allocator, _buildInfo);
+					layoutTable = new ThirdGenResourceLayoutTable(zoneTag, MetaArea, Allocator, _buildInfo, _expander);
 					_zoneOnly = true;
 				}
 					
 
-				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}
 
@@ -378,8 +402,8 @@ namespace Blamite.Blam.ThirdGen
 				int i = 0;
 				foreach (ITag aHS in scripttags)
 				{
-					string tagname = _fileNames.GetTagName(aHS.Index);//.TrimStart('\\');
-					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo);
+					string tagname = _fileNames.GetTagName(aHS.Index);
+					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander);
 					i++;
 				}
 
@@ -391,7 +415,7 @@ namespace Blamite.Blam.ThirdGen
 				if (scnr != null)
 				{
 					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo);
+					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander);
 					return;
 				}
 			}
@@ -404,7 +428,17 @@ namespace Blamite.Blam.ThirdGen
 			{
 				ITag scnr = _tags.FindTagByClass("scnr");
 				if (scnr != null)
-					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo);
+					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo, _expander);
+			}
+		}
+
+		private void LoadEffects(IReader reader)
+		{
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("compiled effect entry"))
+			{
+				ITag scnr = _tags.GetImportantTag(CharConstant.FromString("scnr"));
+				if (scnr != null)
+					_effects = new EffectStorage(scnr, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}
 

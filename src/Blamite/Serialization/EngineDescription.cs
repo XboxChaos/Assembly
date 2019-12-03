@@ -104,6 +104,35 @@ namespace Blamite.Serialization
 		/// </summary>
 		public ClassNameCollection ClassNames { get; private set; }
 
+		/// <summary>
+		///		Gets the magic number used to expand tag addresses for the engine
+		/// </summary>
+		public int ExpandMagic { get; private set; }
+
+		/// <summary>
+		///     Gets the name of the game executable for poking purposes.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public string GameExecutable { get; private set; }
+
+		/// <summary>
+		///     Gets the name of the alternate game executable for poking purposes. (win store)
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public string GameExecutableAlt { get; private set; }
+
+		/// <summary>
+		///     Gets the name of the engine's module for poking purposes.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public string GameModule { get; private set; }
+
+		/// <summary>
+		///     Gets the collection of pointers to allow for poking on PC.
+		///     Can be <c>null</c> if not present.
+		/// </summary>
+		public PokingCollection Poking { get; private set; }
+
 		private void LoadSettings()
 		{
 			LoadEngineSettings();
@@ -114,6 +143,14 @@ namespace Blamite.Serialization
 		{
 			HeaderSize = Settings.GetSetting<int>("engineInfo/headerSize");
 			SegmentAlignment = Settings.GetSettingOrDefault("engineInfo/segmentAlignment", 0x1000);
+			ExpandMagic = Settings.GetSettingOrDefault("engineInfo/expandMagic", 0);
+
+			if (Settings.PathExists("engineInfo/gameExecutable"))
+				GameExecutable = Settings.GetSetting<string>("engineInfo/gameExecutable");
+			if (Settings.PathExists("engineInfo/gameExecutableAlt"))
+				GameExecutableAlt = Settings.GetSetting<string>("engineInfo/gameExecutableAlt");
+			if (Settings.PathExists("engineInfo/gameModule"))
+				GameModule = Settings.GetSetting<string>("engineInfo/gameModule");
 			if (Settings.PathExists("engineInfo/encryption/tagNameKey"))
 				TagNameKey = new AESKey(Settings.GetSettingOrDefault<string>("engineInfo/encryption/tagNameKey", null));
 			if (Settings.PathExists("engineInfo/encryption/stringIdKey"))
@@ -130,7 +167,7 @@ namespace Blamite.Serialization
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);
 			ClassNames = Settings.GetSettingOrDefault<ClassNameCollection>("databases/classNames", null);
-
+			Poking = Settings.GetSettingOrDefault<PokingCollection>("databases/poking", null);
 		}
 	}
 }

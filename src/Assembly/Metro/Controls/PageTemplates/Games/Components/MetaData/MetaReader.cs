@@ -200,18 +200,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 
 			var length = (int) values.GetInteger("size");
-			uint pointer = values.GetInteger("pointer");
+			uint pointer = (uint)values.GetInteger("pointer");
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
+			long expanded = _cache.PointerExpander.Expand(pointer);
+
+			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(expanded, length))
 			{
-				field.DataAddress = pointer;
+				field.DataAddress = expanded;
 				field.Length = length;
 
 				// Go to position
 				if (_type == LoadType.Memory)
-					_reader.SeekTo(pointer);
+					_reader.SeekTo(expanded);
 				else
-					_reader.SeekTo(_cache.MetaArea.PointerToOffset(pointer));
+					_reader.SeekTo(_cache.MetaArea.PointerToOffset(expanded));
 
 				switch (field.Format)
 				{
@@ -375,17 +377,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var length = (int) values.GetInteger("entry count");
-			uint pointer = values.GetInteger("pointer");
+			uint pointer = (uint)values.GetInteger("pointer");
+
+			long expanded = _cache.PointerExpander.Expand(pointer);
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
+			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (int) (length*field.EntrySize)))
 			{
 				length = 0;
 				pointer = 0;
+				expanded = 0;
 			}
 
-			if (pointer != field.FirstEntryAddress)
-				field.FirstEntryAddress = pointer;
+			if (expanded != field.FirstEntryAddress)
+				field.FirstEntryAddress = expanded;
 
 			field.Length = length;
 			
@@ -431,7 +436,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
 				if (_type == LoadType.File)
-					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int) valueField.FieldAddress);
+					valueField.FieldAddress = (uint)_cache.MetaArea.OffsetToPointer((int) valueField.FieldAddress);
 			}
 
 			// Read its contents if it hasn't changed (or if change detection is disabled)
@@ -477,7 +482,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				// Calculate the base offset to read from
 				uint oldBaseOffset = BaseOffset;
-				uint dataOffset = reflexive.FirstEntryAddress;
+				long dataOffset = reflexive.FirstEntryAddress;
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
 				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
