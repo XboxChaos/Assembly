@@ -11,6 +11,7 @@ using Blamite.Serialization;
 using Blamite.IO;
 using Microsoft.Win32;
 using ICSharpCode.AvalonEdit.Search;
+using Assembly.SyntaxHighlighting;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -45,7 +46,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 			SetHighlightColor();
-		}
+            LoadSyntaxHighlighting();
+        }
 
 		private void DecompileScripts(object streamManager)
 		{
@@ -74,7 +76,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 			int counter = 0;
 
-			if (scripts.Variables != null)
+            //Show implicit expressions. Helpful for newbies who are learning.
+            //Seperate to another AssemblySettings?
+            if (_showInfo)
+            {
+                generator.WriteComment("NOTE: Implicit expressions are being displayed. \n", code);
+                foreach (ScriptExpression exp in scripts.Expressions)
+                {
+                    counter++;
+                    if (exp.LineNumber == 0)
+                        exp.LineNumber++;
+                }
+            }
+
+            counter = 0;
+
+            if (scripts.Variables != null)
 			{
 				generator.WriteComment("VARIABLES", code);
 				foreach (ScriptGlobal variable in scripts.Variables)
@@ -151,8 +168,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			TimeSpan duration = endTime.Subtract(startTime);
 			generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
 
-			Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
-		}
+			Dispatcher.Invoke(new Action(delegate { 
+                txtScript.Text = code.InnerWriter.ToString();
+                LoadSyntaxHighlighting(); //Jeeze
+            }));
+        }
 
 		private void btnExport_Click(object sender, RoutedEventArgs e)
 		{
@@ -178,9 +198,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 		private void Settings_SettingsChanged(object sender, EventArgs e)
 		{
-			// Reset the highlight color in case the theme changed
+			// Reset the highlight colors in case the theme changed
 			SetHighlightColor();
-		}
+            LoadSyntaxHighlighting();
+        }
 
 		private void SetHighlightColor()
 		{
@@ -208,7 +229,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			txtScript.TextArea.SelectionBrush = selbrsh;
 		}
 
-		public void Dispose()
+        private void LoadSyntaxHighlighting()
+        {
+            string filename = "BlamScriptBlue.xshd";
+
+            switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+            {
+                case Settings.Accents.Blue:
+                    filename = "BlamScriptBlue.xshd";
+                    break;
+                case Settings.Accents.Green:
+                    filename = "BlamScriptGreen.xshd";
+                    break;
+                case Settings.Accents.Orange:
+                    filename = "BlamScriptOrange.xshd";
+                    break;
+                case Settings.Accents.Purple:
+                    filename = "BlamScriptPurple.xshd";
+                    break;
+            }
+            txtScript.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
+        }
+
+        public void Dispose()
 		{
 			txtScript.Clear();
 			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
