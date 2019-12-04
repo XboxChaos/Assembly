@@ -26,13 +26,13 @@ namespace Blamite.Serialization.Settings
 		/// <returns>The names that were loaded.</returns>
 		public static PokingCollection LoadPointers(XDocument namesDocument)
 		{
-			// Make sure there is a root <symbols> tag
+			// Make sure there is a root <poking> tag
 			XContainer container = namesDocument.Element("poking");
 			if (container == null)
 				throw new ArgumentException("Invalid poking document");
 
-			// Class tags have the format:
-			// <class magic="(the magic as a string)" name="(class name)" />
+			// Poking tags have the format:
+			// <version name="(the version string)" address="(the pointer in the game module to the cache header in memory)" />
 			var result = new PokingCollection();
 			foreach (XElement cl in container.Elements("version"))
 			{
@@ -47,10 +47,10 @@ namespace Blamite.Serialization.Settings
 		}
 
 		/// <summary>
-		///     Loads all of the class names defined in an XML document.
+		///     Loads all of the poking versions defined in an XML document.
 		/// </summary>
 		/// <param name="documentPath">The path to the XML document to load.</param>
-		/// <returns>The symbols that were loaded.</returns>
+		/// <returns>The poking versions that were loaded.</returns>
 		public static PokingCollection LoadPointers(string documentPath)
 		{
 			return LoadPointers(XDocument.Load(documentPath));
