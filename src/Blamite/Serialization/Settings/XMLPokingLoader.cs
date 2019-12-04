@@ -39,7 +39,9 @@ namespace Blamite.Serialization.Settings
 				string name = XMLUtil.GetStringAttribute(cl, "name");
 				long pointer = XMLUtil.GetNumericAttribute(cl, "address");
 
-				result.AddName(name, pointer);
+				Version version = new Version(name);
+
+				result.AddName(version, pointer);
 			}
 			return result;
 		}

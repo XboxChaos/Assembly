@@ -61,7 +61,13 @@ namespace Blamite.RTE.MCC
 			try
 			{
 				version = gameProcess.MainModule.FileVersionInfo.FileVersion;
-				pointer = _buildInfo.Poking.RetrievePointer(version);
+
+				//TODO: make winstore support not horrible
+				if (version == null)
+					pointer = _buildInfo.Poking.RetrieveLastPointer();
+				else
+					pointer = _buildInfo.Poking.RetrievePointer(version);
+
 				if (pointer == -1)
 					throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
 			}
