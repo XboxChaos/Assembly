@@ -153,15 +153,23 @@ namespace Blamite.Injection
 			}
 			if (lowerName.Contains("compiled scenario index"))
 			{
-				var type = EffectStorageType.Effect;
-				if (_tag.Class.Magic == 1835099490)//beam
-					type = EffectStorageType.Beam;
-				else if (_tag.Class.Magic == 1819569763)//cntl
-					type = EffectStorageType.Contrail;
-				else if (_tag.Class.Magic == 1819702380)//ltvl
-					type = EffectStorageType.LightVolume;
-
-				ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, type));
+				switch (Util.CharConstant.ToString(_tag.Class.Magic))
+				{
+					case "effe":
+						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Effect));
+						break;
+					case "beam":
+						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Beam));
+						break;
+					case "cntl":
+						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Contrail));
+						break;
+					case "ltvl":
+						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.LightVolume));
+						break;
+					default:
+						return;
+				}
 			}
 		}
 
