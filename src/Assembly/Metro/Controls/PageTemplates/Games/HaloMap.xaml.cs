@@ -1161,9 +1161,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
 						_buildInfo.Settings.GetSetting<string>("plugins"), className);
 
+					string fallbackPluginPath = null;
+					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
+						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+
+					string realpluginpath = pluginPath;
+
+					if (!File.Exists(realpluginpath))
+						realpluginpath = fallbackPluginPath;
+
+					if (realpluginpath == null || !File.Exists(realpluginpath))
+					{
+						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
+						return;
+					}
+
 					// Extract dem data blocks
 					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
-					using (var pluginReader = XmlReader.Create(pluginPath))
+					using (var pluginReader = XmlReader.Create(realpluginpath))
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
 					foreach (var block in blockBuilder.DataBlocks)
