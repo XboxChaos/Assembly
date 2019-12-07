@@ -86,12 +86,12 @@
 		</ResourceDictionary>
 	</UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static local:MetaChunk.ReallocateCommand}"
+	<UserControl.CommandBindings>
+		<CommandBinding Command="{x:Static local:MetaChunk.ReallocateCommand}"
                         CanExecute="ReallocateCommand_CanExecute" />
-    </UserControl.CommandBindings>
+	</UserControl.CommandBindings>
 
-    <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
+	<Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
 		<Border.Style>
 			<Style TargetType="Border">
 				<Setter Property="BorderThickness" Value="1,1,1,0" />
@@ -110,21 +110,21 @@
 		</Border.Style>
 		<Grid>
 			<Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="20" />
-                    <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
-                <Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="20" />
+					<ColumnDefinition Width="20" />
+				</Grid.ColumnDefinitions>
+				<Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                           IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
 				<Button Grid.Column="2" Content="+" Margin="4,0,0,0" VerticalAlignment="Top"
                         Command="{x:Static local:MetaChunk.ReallocateCommand}" CommandTarget="{Binding ElementName=metaChunk}">
-                    <Button.ToolTip>
-                        <TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
-                    </Button.ToolTip>
-                </Button>
-                <ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
+					<Button.ToolTip>
+						<TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
+					</Button.ToolTip>
+				</Button>
+				<ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
 					<!--Tooltips inheriting text styles is dumb -->
 					<ToggleButton.ToolTip>
 						<TextBlock Text="Show/Hide Information" FontStyle="Normal" />
@@ -133,7 +133,7 @@
 				<ComboBox Grid.Column="1" x:Name="cbChunkIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
 				          VerticalAlignment="Top" ItemsSource="{Binding Pages}" IsTextSearchEnabled="True" TextSearch.TextPath="Index"
 				          SelectedIndex="{Binding CurrentIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-				          IsEnabled="{Binding HasChildren}" ToolTip="Select an entry from the dropdown or click and type the desired index to jump.">
+				          IsEnabled="{Binding HasChildren}" ToolTip="Select an entry from the dropdown or type the desired index to jump to.">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock>
@@ -165,12 +165,12 @@
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
 								<Label Content="Address:" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
 								       Background="{x:Null}" Foreground="#FF999999" />
-                                <TextBox x:Name="txtChunkAddress"
+								<TextBox x:Name="txtChunkAddress"
 								         Text="{Binding FirstEntryAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
 								         HorizontalAlignment="Left" Height="22" Margin="5,0,0,0" VerticalAlignment="Center" Width="90"
 								         Foreground="#FF999999" Padding="0,0,0,0"
 								         c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
-                            </StackPanel>
+							</StackPanel>
 
 							<StackPanel Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,10,0">
 								<Label Content="Entry Size:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"

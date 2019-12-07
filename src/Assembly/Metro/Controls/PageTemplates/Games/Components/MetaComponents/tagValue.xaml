@@ -30,7 +30,9 @@
 			<ComboBox x:Name="cbTagClass" Width="65" VerticalAlignment="Center" Margin="20,0,0,0"
 			          SelectionChanged="cbTagClass_SelectionChanged"
 			          ItemsSource="{DynamicResource classList}"
-			          SelectedIndex="{Binding Class, Mode=TwoWay, Converter={StaticResource classToIndexConverter}}">
+			          SelectedIndex="{Binding Class, Mode=TwoWay, Converter={StaticResource classToIndexConverter}}"
+					  IsTextSearchEnabled="True" TextSearch.TextPath="TagClassMagic"
+					  ToolTip="Select an entry from the dropdown or type the desired class to jump to.">
 				<ComboBox.Resources>
 					<CompositeCollection x:Key="classList">
 						<ComboBoxItem>(null)</ComboBoxItem>
@@ -45,17 +47,17 @@
 
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="btnNullTag" Content="Ø" Margin="5,0,0,0" Width="20" Click="btnNullTag_Click" ToolTip="Nulls this tag reference."/>
-                <Button x:Name="btnSearch" Content="🔍" Margin="5,0,0,0" 
+				<Button x:Name="btnSearch" Content="🔍" Margin="5,0,0,0" 
                         Width="20" ToolTip="Search for a tag." Click="btnSearch_Click" IsEnabled="False"/>
-                <Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
+				<Button x:Name="btnJumpToTag" Margin="5,0,0,0" Height="22" Width="30"
 			        Visibility="{Binding ShowTagOptions}" ToolTip="Opens this tag in a new tab."
 			        Command="{x:Static local:tagValue.JumpToCommand}" CommandParameter="{Binding Value}"
 			        CommandTarget="{Binding ElementName=control}">
-                    <StackPanel>
-                        <TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
+					<StackPanel>
+						<TextBlock FontSize="24" Text="➝" Margin="0,-6,0,0"/>
+					</StackPanel>
+				</Button>
+			</StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>

@@ -44,7 +44,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 			TagEntry currentTag = ((TagEntry)cbTagEntry.SelectedItem);
 
-			if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull )
+			if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull)
 				btnJumpToTag.IsEnabled = true;
 			else
 				btnJumpToTag.IsEnabled = false;
@@ -61,55 +61,55 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			cbTagClass.SelectedIndex = 0;
 		}
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            TagRefData currentTag = ((TagRefData)cbTagClass.DataContext);
+		private void btnSearch_Click(object sender, RoutedEventArgs e)
+		{
+			TagRefData currentTag = ((TagRefData)cbTagClass.DataContext);
 
-            TagValueSearcher searchDialog = new TagValueSearcher(currentTag.Class);
-            searchDialog.ShowDialog();
+			TagValueSearcher searchDialog = new TagValueSearcher(currentTag.Class);
+			searchDialog.ShowDialog();
 
-            if (searchDialog.DialogResult.HasValue && searchDialog.DialogResult.Value)
-            {
-                cbTagEntry.SelectedValue = searchDialog.SelectedTag;
-            }
-        }
-    }
+			if (searchDialog.DialogResult.HasValue && searchDialog.DialogResult.Value)
+			{
+				cbTagEntry.SelectedValue = searchDialog.SelectedTag;
+			}
+		}
+	}
 
-    /// <summary>
-    ///     Converts a TagClass to an index in the class list.
-    /// </summary>
-    [ValueConversion(typeof (TagClass), typeof (int))]
+	/// <summary>
+	///     Converts a TagClass to an index in the class list.
+	/// </summary>
+	[ValueConversion(typeof(TagClass), typeof(int))]
 	internal class TagClassConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty TagsSourceProperty = DependencyProperty.Register(
 			"TagsSource",
-			typeof (TagHierarchy),
-			typeof (TagClassConverter)
+			typeof(TagHierarchy),
+			typeof(TagClassConverter)
 			);
 
 		public TagHierarchy TagsSource
 		{
-			get { return (TagHierarchy) GetValue(TagsSourceProperty); }
+			get { return (TagHierarchy)GetValue(TagsSourceProperty); }
 			set { SetValue(TagsSourceProperty, value); }
 		}
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var sourceClass = (TagClass) value;
+			var sourceClass = (TagClass)value;
 			int index = TagsSource.Classes.IndexOf(sourceClass);
 			return index + 1;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			int adjustedIndex = (int) value - 1;
+			int adjustedIndex = (int)value - 1;
 			if (adjustedIndex >= 0 && adjustedIndex < TagsSource.Classes.Count)
 				return TagsSource.Classes[adjustedIndex];
 			return null;
 		}
 	}
 
-	[ValueConversion(typeof (TagClass), typeof (List<TagEntry>))]
+	[ValueConversion(typeof(TagClass), typeof(List<TagEntry>))]
 	internal class TagEntryListRetriever : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
