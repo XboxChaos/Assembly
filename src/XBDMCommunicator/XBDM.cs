@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
-#if REQUIRE_XDEVKIT
 using XDevkit;
-#else
-using XBDMCommunicator.XDevkitSnub;
-#endif
 
 namespace XBDMCommunicator
 {
@@ -16,6 +12,7 @@ namespace XBDMCommunicator
 			Title
 		}
 
+		private readonly XboxMemoryStream _xboxMemoryStream;
 		private uint _xboxConnectionCode;
 		private XboxConsole _xboxConsole;
 		private IXboxDebugTarget _xboxDebugTarget;
@@ -29,7 +26,7 @@ namespace XBDMCommunicator
 		public Xbdm(string deviceIdent, bool openConnection = false)
 		{
 			DeviceIdent = deviceIdent;
-			MemoryStream = new XboxMemoryStream(this);
+			_xboxMemoryStream = new XboxMemoryStream(this);
 
 			if (openConnection)
 				Connect();
@@ -40,7 +37,11 @@ namespace XBDMCommunicator
 		public string XboxType { get; private set; }
 		public bool IsConnected { get; private set; }
 
-		public XboxMemoryStream MemoryStream { get; }
+		public XboxMemoryStream MemoryStream
+		{
+			get { return _xboxMemoryStream; }
+			//set { _xboxMemoryStream = value; }
+		}
 
 		// Public Functions
 		/// <summary>
