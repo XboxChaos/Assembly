@@ -1,4 +1,4 @@
-﻿namespace XBDMCommunicator.XDevkitSnub
+﻿namespace XBDMCommunicator.XDevkitStub
 {
 	public interface IXboxDebugTarget
 	{
