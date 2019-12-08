@@ -3,7 +3,7 @@ using System.IO;
 #if REQUIRE_XDEVKIT
 using XDevkit;
 #else
-using XBDMCommunicator.XDevkitSnub;
+using XBDMCommunicator.XDevkitStub;
 #endif
 
 namespace XBDMCommunicator
