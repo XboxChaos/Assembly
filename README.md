@@ -18,6 +18,10 @@ Assembly was designed with three goals in mind:
 
 Stable releases are made available through [GitHub's release system](https://github.com/XboxChaos/Assembly/releases).
 
+## Precompiled Builds ##
+
+At this time precompiled builds should not be shared unless by a [team member](https://github.com/orgs/XboxChaos/people).
+
 ## Compiling ##
 
 See [Compiling Assembly from Source](https://github.com/XboxChaos/Assembly/wiki/Compiling-from-Source).
