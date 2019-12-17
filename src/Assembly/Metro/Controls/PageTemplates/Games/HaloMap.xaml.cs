@@ -2066,11 +2066,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
 			{
-				//if (_cacheFile.MetaArea.ContainsBlockPointer(memory.Offset, memory.Data.Length))
-				//{
+				if (_cacheFile.MetaArea.ContainsBlockPointer(memory.Offset, memory.Data.Length))
+				{
 					metaStream.SeekTo(memory.Offset);
 					metaStream.WriteBlock(memory.Data);
-				//}
+				}
 			}
 		}
 
