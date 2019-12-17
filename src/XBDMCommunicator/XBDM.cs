@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
-#if REQUIRE_XDEVKIT
 using XDevkit;
-#else
-using XBDMCommunicator.XDevkitStub;
-#endif
 
 namespace XBDMCommunicator
 {
