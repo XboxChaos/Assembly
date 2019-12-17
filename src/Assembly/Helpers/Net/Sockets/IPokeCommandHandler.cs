@@ -8,5 +8,7 @@ namespace Assembly.Helpers.Net.Sockets
     public interface IPokeCommandHandler
     {
         void HandleTestCommand(TestCommand test);
+
+        void HandleMemoryCommand(MemoryCommand memory);
     }
 }

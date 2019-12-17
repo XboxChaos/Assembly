@@ -11,9 +11,12 @@ namespace Assembly.Helpers.Net.Sockets
     {
         private Socket _socket;
 
+        // TODO: Should we make it possible to set the port number somehow?
+        private static int Port = 19002;
+
         public NetworkPokeClient(IPAddress address)
         {
-            var endpoint = new IPEndPoint(address, 12345);
+            var endpoint = new IPEndPoint(address, Port);
             _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _socket.Connect(endpoint);
         }
@@ -22,12 +25,17 @@ namespace Assembly.Helpers.Net.Sockets
         {
             using (var stream = new NetworkStream(_socket, false))
             {
-                var type = (byte)command.Type;
-                stream.WriteByte(type);
-                command.Serialize(stream);
+                CommandSerialization.SerializeCommand(command, stream);
             }
         }
 
-
+        public void ReceiveCommand(IPokeCommandHandler handler)
+        {
+            using (var stream = new NetworkStream(_socket, false))
+            {
+                var command = CommandSerialization.DeserializeCommand(stream);
+                command.Handle(handler);
+            }
+        }
     }
 }

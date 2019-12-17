@@ -8,7 +8,6 @@ namespace Assembly.Helpers.Net.Sockets
     public enum PokeCommandType
     {
         Test,
-        Foo,
-        Bar
+        Memory,
     }
 }

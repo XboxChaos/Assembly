@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Assembly.Helpers;
+using Assembly.Helpers.Net.Sockets;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Assembly.Metro.Dialogs;
@@ -51,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// <summary>
 	///     Interaction logic for Halo4Map.xaml
 	/// </summary>
-	public partial class HaloMap : INotifyPropertyChanged
+	public partial class HaloMap : INotifyPropertyChanged, IPokeCommandHandler
 	{
 		private readonly string _cacheLocation;
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
@@ -65,6 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
 		private IRTEProvider _rteProvider;
+		private IRTEProvider _networkProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
@@ -112,6 +114,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
 			initalLoadBackgroundWorker.RunWorkerAsync();
+
+			_networkProvider = null;
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -1779,12 +1783,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!IsTagOpen(tag))
 			{
+				var rteProvdier = _rteProvider;
+				if (_networkProvider != null)
+				{
+					rteProvdier = _networkProvider;
+				}
+
 				contentTabs.Items.Add(new CloseableTabItem
 				{
 					Header = TabHeaderFromTag(tag),
 					Tag = tag,
 					Content =
-						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
+						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, rteProvdier,
 							_stringIdTrie)
 				});
 			}
@@ -2045,6 +2055,35 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						w.Close();
 				}
 			}
+		}
+
+		public void HandleTestCommand(TestCommand test)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void HandleMemoryCommand(MemoryCommand memory)
+		{
+			using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
+			{
+				//if (_cacheFile.MetaArea.ContainsBlockPointer(memory.Offset, memory.Data.Length))
+				//{
+					metaStream.SeekTo(memory.Offset);
+					metaStream.WriteBlock(memory.Data);
+				//}
+			}
+		}
+
+		private void StartServer_Click(object sender, RoutedEventArgs e)
+		{
+			var serverCommandStarter = new ServerCommandStarter(this);
+			_networkProvider = new SocketRTEProvider(serverCommandStarter);
+		}
+
+		private void StartClient_Click(object sender, RoutedEventArgs e)
+		{
+			var clientCommandStarter = new ClientCommandStarter(svrAddressBox.Text, this);
+			_networkProvider = new SocketRTEProvider(clientCommandStarter);
 		}
 	}
 }
