@@ -49,7 +49,7 @@ namespace Blamite.Serialization
 		/// <returns>The pointer, otherwise -1.</returns>
 		public long RetrievePointer(Version version)
 		{
-			long output = -1;
+			long output = 0;
 			_collection.TryGetValue(version, out output);
 			return output;
 

@@ -68,7 +68,7 @@ namespace Blamite.RTE.MCC
 				else
 					pointer = _buildInfo.Poking.RetrievePointer(version);
 
-				if (pointer == -1)
+				if (pointer == 0)
 					throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
 			}
 			catch(System.ComponentModel.Win32Exception)
