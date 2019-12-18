@@ -716,7 +716,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 							".map, and the unmodified map file you selected doesn't seem to match that. Find the correct file and try again.");
 						return;
 					}
-					if (currentPatch.BuildString != null && cacheFile.BuildString != currentPatch.BuildString)
+					if (!string.IsNullOrEmpty(currentPatch.BuildString) && cacheFile.BuildString != currentPatch.BuildString)
 					{
 						MetroMessageBox.Show("Unable to apply patch",
 							"Hold on there! That patch is for a map with a build version of" + currentPatch.BuildString +
