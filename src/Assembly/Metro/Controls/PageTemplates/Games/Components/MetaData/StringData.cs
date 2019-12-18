@@ -12,7 +12,7 @@
 		private StringType _type;
 		private string _value;
 
-		public StringData(string name, uint offset, uint address, StringType type, string value, int size, uint pluginLine)
+		public StringData(string name, uint offset, long address, StringType type, string value, int size, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = value;

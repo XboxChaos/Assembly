@@ -11,7 +11,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _type;
 		private T _a, _b;
 
-		public RangeNumberData(string name, uint offset, uint address, string type, T a, T b, uint pluginLine)
+		public RangeNumberData(string name, uint offset, long address, string type, T a, T b, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -68,7 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeUint16Data : RangeNumberData<ushort>
 	{
-		public RangeUint16Data(string name, uint offset, uint address, string type, ushort a, ushort b, uint pluginLine)
+		public RangeUint16Data(string name, uint offset, long address, string type, ushort a, ushort b, uint pluginLine)
 			: base(name, offset, address, type, a, b, pluginLine)
 		{
 		}
@@ -89,7 +89,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeFloat32Data : VectorData
 	{
-		public RangeFloat32Data(string name, uint offset, uint address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
+		public RangeFloat32Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
 			: base(name, offset, address, type, a, b, c, d, pluginLine)
 		{
 		}
@@ -110,7 +110,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeDegreeData : DegreeMultData
 	{
-		public RangeDegreeData(string name, uint offset, uint address, string type, float a, float b, uint pluginLine, float c = 0)
+		public RangeDegreeData(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0)
 			: base(name, offset, address, type, a, b, c, pluginLine)
 		{
 		}

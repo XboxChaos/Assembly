@@ -18,7 +18,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private BitfieldType _type;
 		private uint _value;
 
-		public BitfieldData(string name, uint offset, uint address, BitfieldType type, uint pluginLine)
+		public BitfieldData(string name, uint offset, long address, BitfieldType type, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;

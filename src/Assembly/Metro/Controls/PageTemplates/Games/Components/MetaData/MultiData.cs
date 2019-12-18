@@ -7,7 +7,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private short _a, _b, _c, _d;
 		private string _type;
 
-		public RectangleData(string name, uint offset, uint address, string type, short a, short b, short c, short d, uint pluginLine)
+		public RectangleData(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -82,7 +82,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private float _a, _b, _c;
 		private string _type;
 
-		public DegreeMultData(string name, uint offset, uint address, string type, float a, float b, float c, uint pluginLine)
+		public DegreeMultData(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_a = a;
@@ -174,7 +174,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Degree2Data : DegreeMultData
 	{
-		public Degree2Data(string name, uint offset, uint address, string type, float a, float b, uint pluginLine, float c = 0)
+		public Degree2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0)
 			: base(name, offset, address, type, a, b, c, pluginLine)
 		{
 		}
@@ -192,7 +192,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Degree3Data : DegreeMultData
 	{
-		public Degree3Data(string name, uint offset, uint address, string type, float a, float b, float c, uint pluginLine)
+		public Degree3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine)
 			: base(name, offset, address, type, a, b, c, pluginLine)
 		{
 		}
@@ -213,7 +213,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private float _a, _b, _c, _d;
 		private string _type;
 
-		public VectorData(string name, uint offset, uint address, string type, float a, float b, float c, float d, uint pluginLine)
+		public VectorData(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_a = a;
@@ -277,7 +277,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector2Data : VectorData
 	{
-		public Vector2Data(string name, uint offset, uint address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
+		public Vector2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
 			: base(name, offset, address, type, a, b, c, d, pluginLine)
 		{
 		}
@@ -295,7 +295,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector3Data : VectorData
 	{
-		public Vector3Data(string name, uint offset, uint address, string type, float a, float b, float c, uint pluginLine, float d = 0)
+		public Vector3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, float d = 0)
 			: base(name, offset, address, type, a, b, c, d, pluginLine)
 		{
 		}
@@ -313,7 +313,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector4Data : VectorData //needs to be split off with quaternion math someday
 	{
-		public Vector4Data(string name, uint offset, uint address, string type, float a, float b, float c, float d, uint pluginLine)
+		public Vector4Data(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine)
 			: base(name, offset, address, type, a, b, c, d, pluginLine)
 		{
 		}
