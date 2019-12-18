@@ -70,6 +70,7 @@ namespace Assembly.Helpers.Net.Sockets
 						using (var stream = new NetworkStream(socket, false))
 						{
 							var command = CommandSerialization.DeserializeCommand(stream);
+							SendCommandToAll(command);
 							command.Handle(handler);
 						}
 						break; // Only process one command at a time
