@@ -73,7 +73,7 @@ namespace Blamite.RTE.MCC
 			}
 			catch(System.ComponentModel.Win32Exception)
 			{
-				throw new InvalidOperationException("Cannot access game process due to Anti-Cheat.");
+				throw new InvalidOperationException("Cannot access game process. This could be due to Anti-Cheat or lack of admin privileges.");
 			}
 
 			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);
