@@ -449,8 +449,24 @@
 
                     <TabItem x:Name="tabNetwork" Header="Network" Style="{StaticResource MetroHeaderTabItem}" Height="16"
                              					         Margin="18,0,-18,-15" VerticalAlignment="Bottom">
-                        <Grid Margin="25,25,15,5">
-                            <DockPanel>
+                        <DockPanel>
+                            <Grid Margin="15,25,15,5" DockPanel.Dock="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="32" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Server Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+                                <TextBox Grid.Row="1" x:Name="svrAddressBox" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Center" />
+                            </Grid>
+                            <StackPanel Margin="15,25,15,5" Orientation="Horizontal" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Grid.Row="2">
+
+                                <Button Grid.Column="0" Content="Start Server" Margin="0,0,5,0" Width="85" RenderTransformOrigin="0.057,0.462" Click="StartServer_Click"/>
+                                <Button Grid.Column="1" Content="Start Client" Margin="0,0,5,0" Width="90" Click="StartClient_Click" />
+                                <Button Grid.Column="2" x:Name="DisconnectButton" Content="Shutdown" Width="75" />
+                            </StackPanel>
+                        </DockPanel>
+                        <!--<Grid Margin="25,25,15,5">
+
                                 <WrapPanel DockPanel.Dock="Top" Margin="0" VerticalAlignment="Top" Orientation="Horizontal"
 										 Background="{DynamicResource SidebarHeaderBrush}">
                                     <TextBox x:Name="svrAddressBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" RenderTransformOrigin="-0.358,-1.989" Height="30" Width="300"/>
@@ -464,7 +480,7 @@
 											 Height="307" VerticalAlignment="Top" Width="209" ItemsSource="{Binding Clients}"/>
                                 </WrapPanel>
                             </DockPanel>
-                         </Grid>
+                         </Grid>-->
                         
                     </TabItem>
                     
