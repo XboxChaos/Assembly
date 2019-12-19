@@ -10,7 +10,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private Visibility _showTagOptions;
 		private TagEntry _value;
 
-		public TagRefData(string name, uint offset, uint address, TagHierarchy allTags, Visibility showTagOptions, bool withClass,
+		public TagRefData(string name, uint offset, long address, TagHierarchy allTags, Visibility showTagOptions, bool withClass,
 			uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{

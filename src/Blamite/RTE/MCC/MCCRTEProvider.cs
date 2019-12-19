@@ -68,12 +68,12 @@ namespace Blamite.RTE.MCC
 				else
 					pointer = _buildInfo.Poking.RetrievePointer(version);
 
-				if (pointer == -1)
+				if (pointer == 0)
 					throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
 			}
 			catch(System.ComponentModel.Win32Exception)
 			{
-				throw new InvalidOperationException("Cannot access game process due to Anti-Cheat.");
+				throw new InvalidOperationException("Cannot access game process. This could be due to Anti-Cheat or lack of admin privileges.");
 			}
 
 			var gameMemory = new ProcessModuleMemoryStream(gameProcess, _buildInfo.GameModule);

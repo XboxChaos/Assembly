@@ -12,14 +12,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _format;
 		private int _length;
 
-		public RawData(string name, uint offset, uint address, string value, int length, uint pluginLine)
+		public RawData(string name, uint offset, long address, string value, int length, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = value;
 			_length = length;
 		}
 
-		public RawData(string name, uint offset, string format, uint address, string value, int length, uint pluginLine)
+		public RawData(string name, uint offset, string format, long address, string value, int length, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = value;

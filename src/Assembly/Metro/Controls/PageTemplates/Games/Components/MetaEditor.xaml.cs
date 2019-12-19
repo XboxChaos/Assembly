@@ -129,7 +129,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Set the stream manager and base offset to use based upon the LoadType
 			IStreamManager streamManager = null;
-			uint baseOffset = 0;
+			long baseOffset = 0;
 			switch (type)
 			{
 				case MetaReader.LoadType.File:
@@ -148,7 +148,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					}
 
 					streamManager = new RTEStreamManager(_rteProvider, _cache);
-					baseOffset = (uint)_tag.RawTag.MetaLocation.AsPointer();
+					baseOffset = _tag.RawTag.MetaLocation.AsPointer();
 					break;
 
 				default:

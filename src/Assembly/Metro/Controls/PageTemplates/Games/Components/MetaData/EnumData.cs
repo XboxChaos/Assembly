@@ -15,7 +15,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private EnumType _type;
 		private int _value;
 
-		public EnumData(string name, uint offset, uint address, EnumType type, int value, uint pluginLine)
+		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;

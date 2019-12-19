@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private long _firstEntryAddr;
 		private double _width = MinWidth;
 
-		public ReflexiveData(string name, uint offset, uint address, uint entrySize, int align,
+		public ReflexiveData(string name, uint offset, long address, uint entrySize, int align,
 			bool sort, uint pluginLine, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{

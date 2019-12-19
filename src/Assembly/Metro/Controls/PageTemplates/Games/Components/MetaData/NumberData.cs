@@ -11,7 +11,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _type;
 		private T _value;
 
-		public NumberData(string name, uint offset, uint address, string type, T value, uint pluginLine)
+		public NumberData(string name, uint offset, long address, string type, T value, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -44,7 +44,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint8Data : NumberData<byte>
 	{
-		public Uint8Data(string name, uint offset, uint address, string type, byte value, uint pluginLine)
+		public Uint8Data(string name, uint offset, long address, string type, byte value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -65,7 +65,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int8Data : NumberData<sbyte>
 	{
-		public Int8Data(string name, uint offset, uint address, string type, sbyte value, uint pluginLine)
+		public Int8Data(string name, uint offset, long address, string type, sbyte value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -86,7 +86,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint16Data : NumberData<ushort>
 	{
-		public Uint16Data(string name, uint offset, uint address, string type, ushort value, uint pluginLine)
+		public Uint16Data(string name, uint offset, long address, string type, ushort value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -107,7 +107,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int16Data : NumberData<short>
 	{
-		public Int16Data(string name, uint offset, uint address, string type, short value, uint pluginLine)
+		public Int16Data(string name, uint offset, long address, string type, short value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -128,7 +128,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint32Data : NumberData<uint>
 	{
-		public Uint32Data(string name, uint offset, uint address, string type, uint value, uint pluginLine)
+		public Uint32Data(string name, uint offset, long address, string type, uint value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -149,7 +149,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int32Data : NumberData<int>
 	{
-		public Int32Data(string name, uint offset, uint address, string type, int value, uint pluginLine)
+		public Int32Data(string name, uint offset, long address, string type, int value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -170,7 +170,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Float32Data : NumberData<float>
 	{
-		public Float32Data(string name, uint offset, uint address, string type, float value, uint pluginLine)
+		public Float32Data(string name, uint offset, long address, string type, float value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -193,7 +193,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private float _radian;
 
-		public DegreeData(string name, uint offset, uint address, float radian, uint pluginLine)
+		public DegreeData(string name, uint offset, long address, float radian, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_radian = radian;

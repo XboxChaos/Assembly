@@ -7,7 +7,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private Trie _autocompleteTrie;
 		private string _value;
 
-		public StringIDData(string name, uint offset, uint address, string val, Trie autocompleteTrie, uint pluginLine)
+		public StringIDData(string name, uint offset, long address, string val, Trie autocompleteTrie, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = val;

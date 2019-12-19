@@ -24,7 +24,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly LoadType _type;
 		private IReader _reader;
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
+		public MetaReader(IStreamManager streamManager, long baseOffset, ICacheFile cache, EngineDescription buildInfo,
 			LoadType type, FieldChangeSet ignore)
 		{
 			_streamManager = streamManager;
@@ -39,7 +39,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
 
-		public uint BaseOffset { get; set; }
+		public long BaseOffset { get; set; }
 
 		public void VisitBitfield(BitfieldData field)
 		{
@@ -436,7 +436,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
 				if (_type == LoadType.File)
-					valueField.FieldAddress = (uint)_cache.MetaArea.OffsetToPointer((int) valueField.FieldAddress);
+					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
 			}
 
 			// Read its contents if it hasn't changed (or if change detection is disabled)
@@ -481,11 +481,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			try
 			{
 				// Calculate the base offset to read from
-				uint oldBaseOffset = BaseOffset;
+				long oldBaseOffset = BaseOffset;
 				long dataOffset = reflexive.FirstEntryAddress;
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
-				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
+				BaseOffset = (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
 
 				ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
 				for (int i = 0; i < page.Fields.Length; i++)
