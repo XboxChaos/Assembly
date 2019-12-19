@@ -66,7 +66,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
 		private IRTEProvider _rteProvider;
-		private IRTEProvider _networkProvider;
+		private SocketRTEProvider _networkProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
@@ -2076,14 +2076,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void StartServer_Click(object sender, RoutedEventArgs e)
 		{
-			var serverCommandStarter = new ServerCommandStarter(this);
-			_networkProvider = new SocketRTEProvider(serverCommandStarter);
+			if (_networkProvider == null || _networkProvider.IsDead())
+			{
+				var serverCommandStarter = new ServerCommandStarter(this);
+
+				if (serverCommandStarter.StartServer())
+				{
+					_networkProvider = new SocketRTEProvider(serverCommandStarter);
+					MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
+				}
+				else
+				{
+					MetroMessageBox.Show("Unable to start server", "Unable to bind to address and port.  Likely that another network poke server is running already.");
+				}
+			}
+			else
+			{
+				MetroMessageBox.Show("Unable to start server", "Server cannot be started since a connection is already running.  Disconnect first.");
+			}
 		}
 
 		private void StartClient_Click(object sender, RoutedEventArgs e)
 		{
-			var clientCommandStarter = new ClientCommandStarter(svrAddressBox.Text, this);
-			_networkProvider = new SocketRTEProvider(clientCommandStarter);
+			if (_networkProvider == null || _networkProvider.IsDead())
+			{
+				var clientCommandStarter = new ClientCommandStarter(svrAddressBox.Text, this);
+					
+				if (clientCommandStarter.StartClient())
+				{
+					_networkProvider = new SocketRTEProvider(clientCommandStarter);
+					MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
+				}
+				else
+				{
+					MetroMessageBox.Show("Unable to start client", "Remote address is not a currently available network poke server.");
+				}
+			}
+			else
+			{
+				MetroMessageBox.Show("Unable to start client", "Client cannot be started since a connection is already running.  Disconnect first.");
+			}
 		}
 	}
 }

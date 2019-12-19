@@ -21,5 +21,10 @@ namespace Assembly.Helpers.Net.Sockets
         {
             return new EndianStream(new SocketStream(_starter), cacheFile.Endianness);
         }
+
+        public bool IsDead()
+        {
+            return _starter.IsDead();
+        }
     }
 }

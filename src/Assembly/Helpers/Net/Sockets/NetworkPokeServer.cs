@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 //using Mono.Nat;
 
 namespace Assembly.Helpers.Net.Sockets
@@ -26,17 +27,29 @@ namespace Assembly.Helpers.Net.Sockets
 		/// </summary>
 		public NetworkPokeServer()
 		{
-			var hostIp = IPAddress.Any;
-			var hostEndpoint = new IPEndPoint(hostIp, Port);
-			_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-			// Bind to our local endpoint
-			_listener.Bind(hostEndpoint);
-			_listener.Listen(128); // Listen with a pending connection queue size of 128
-
 			// Discover UPnP support
 			//NatUtility.DeviceFound += DeviceFound;
 			//NatUtility.StartDiscovery();
+		}
+
+		public bool Listen()
+		{
+			try
+			{
+				var hostIp = IPAddress.Any;
+				var hostEndpoint = new IPEndPoint(hostIp, Port);
+				_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+				// Bind to our local endpoint
+				_listener.Bind(hostEndpoint);
+				_listener.Listen(128); // Listen with a pending connection queue size of 128
+				return true;
+			}
+			catch (SocketException)
+			{
+
+			}
+			return false;
 		}
 
 		/// <summary>
@@ -51,6 +64,7 @@ namespace Assembly.Helpers.Net.Sockets
 			{
 				// Duplicate our clients list for use with Socket.Select()
 				List<Socket> readyClients;
+				List<Socket> failedClients = new List<Socket>();
 				lock (_clients)
 				{
 					readyClients = new List<Socket>(_clients);
@@ -66,12 +80,19 @@ namespace Assembly.Helpers.Net.Sockets
 				{
 					if (socket != _listener)
 					{
-						// Command available
-						using (var stream = new NetworkStream(socket, false))
+						try
 						{
-							var command = CommandSerialization.DeserializeCommand(stream);
-							SendCommandToAll(command);
-							command.Handle(handler);
+							// Command available
+							using (var stream = new NetworkStream(socket, false))
+							{
+								var command = CommandSerialization.DeserializeCommand(stream);
+								SendCommandToAll(command);
+								command.Handle(handler);
+							}
+						}
+						catch (IOException)
+						{
+							failedClients.Add(socket);
 						}
 						break; // Only process one command at a time
 					}
@@ -82,6 +103,15 @@ namespace Assembly.Helpers.Net.Sockets
 						ConnectClient(client);
 					}
 				}
+				lock (_clients)
+				{
+					foreach (var socket in failedClients)
+					{
+						socket.Close();
+						_clients.Remove(socket);
+					}
+				}
+
 			}
 		}
 
@@ -91,12 +121,25 @@ namespace Assembly.Helpers.Net.Sockets
 		/// <param name="command">The command to send.</param>
 		public void SendCommandToAll(PokeCommand command)
 		{
+			IList<Socket> failedClients = new List<Socket>();
 			lock (_clients)
 			{
 				foreach (var socket in _clients)
 				{
-					using (var stream = new NetworkStream(socket, false))
-						CommandSerialization.SerializeCommand(command, stream);
+					try
+					{
+						using (var stream = new NetworkStream(socket, false))
+							CommandSerialization.SerializeCommand(command, stream);
+					}
+					catch (IOException)
+					{
+						socket.Close();
+						failedClients.Add(socket);
+					}
+				}
+				foreach (var socket in failedClients)
+				{
+					_clients.Remove(socket);
 				}
 			}
 		}
