@@ -449,21 +449,33 @@
 
                     <TabItem x:Name="tabNetwork" Header="Network" Style="{StaticResource MetroHeaderTabItem}" Height="16"
                              					         Margin="18,0,-18,-15" VerticalAlignment="Bottom">
-                        <DockPanel>
-                            <Grid Margin="15,25,15,5" DockPanel.Dock="Top">
+                        <DockPanel LastChildFill="True">
+                            <Grid x:Name="srvAddressBar" Margin="15,25,15,5" DockPanel.Dock="Top" Grid.Row="0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="32" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Text="Server Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Row="0" Text="Remote Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
                                 <TextBox Grid.Row="1" x:Name="svrAddressBox" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Center" />
                             </Grid>
+
+                            <Grid x:Name="connectedClientsGrid" Margin="15,25,15,5" DockPanel.Dock="Top" Grid.Row="0" Visibility="Collapsed">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Connected Clients:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+                            </Grid>
+
+
                             <StackPanel Margin="15,25,15,5" Orientation="Horizontal" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Grid.Row="2">
 
-                                <Button Grid.Column="0" Content="Start Server" Margin="0,0,5,0" Width="85" RenderTransformOrigin="0.057,0.462" Click="StartServer_Click"/>
-                                <Button Grid.Column="1" Content="Start Client" Margin="0,0,5,0" Width="90" Click="StartClient_Click" />
-                                <Button Grid.Column="2" x:Name="DisconnectButton" Content="Shutdown" Width="75" />
+                                <Button Grid.Column="0" x:Name="startServerBtn" Content="Start Server" Margin="0,0,5,0" Width="85" RenderTransformOrigin="0.057,0.462" Click="StartServer_Click"/>
+                                <Button Grid.Column="1" x:Name="startClientBtn" Content="Start Client" Margin="0,0,5,0" Width="90" Click="StartClient_Click" />
+                                <Button Grid.Column="0" x:Name="disconnectButton" Content="Shutdown" Visibility="Collapsed" Width="75" Click="disconnectButton_Click" />
                             </StackPanel>
+                            <ListBox  Visibility="Collapsed" Margin="15,0,15,0"  DockPanel.Dock="Top" x:Name="clientList" VerticalAlignment="Stretch"  HorizontalAlignment="Stretch" Background="{x:Null}"
+																	 BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" SelectionMode="Extended"
+																	 ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewKeyUp="BatchList_PreviewKeyUp" ItemsSource="{Binding ClientList, Mode=OneWay}"/>
                         </DockPanel>
                         <!--<Grid Margin="25,25,15,5">
 

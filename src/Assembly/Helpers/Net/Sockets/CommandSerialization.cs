@@ -28,7 +28,7 @@ namespace Assembly.Helpers.Net.Sockets
 					command = new MemoryCommand();
 					break;
 				default:
-					throw new NotImplementedException("The suspected command type has not been implemented yet.");
+					return null; 
 			}
 			command.Deserialize(stream);
 			return command;

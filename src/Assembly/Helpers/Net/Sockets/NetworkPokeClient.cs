@@ -60,7 +60,8 @@ namespace Assembly.Helpers.Net.Sockets
                 using (var stream = new NetworkStream(_socket, false))
                 {
                     var command = CommandSerialization.DeserializeCommand(stream);
-                    command.Handle(handler);
+                    if (command != null)
+                        command.Handle(handler);
                 }
                 return true;
             }

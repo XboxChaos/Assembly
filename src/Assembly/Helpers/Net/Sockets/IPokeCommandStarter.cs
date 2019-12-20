@@ -13,5 +13,7 @@ namespace Assembly.Helpers.Net.Sockets
         void StartMemoryCommand(MemoryCommand freeze);
 
         bool IsDead();
+
+        bool Kill();
     }
 }

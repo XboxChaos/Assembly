@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Assembly.Metro.Dialogs;
+using System.Collections.ObjectModel;
 
 namespace Assembly.Helpers.Net.Sockets
 {
@@ -11,11 +13,13 @@ namespace Assembly.Helpers.Net.Sockets
     {
         private NetworkPokeServer _server;
         private IPokeCommandHandler _handler;
+        private volatile bool _isFailed;
 
-        public ServerCommandStarter(IPokeCommandHandler handler)
+        public ServerCommandStarter(IPokeCommandHandler handler, ObservableCollection<string> clientList)
         {
-            _server = new NetworkPokeServer();
+            _server = new NetworkPokeServer(clientList);
             _handler = handler;
+            _isFailed = false;
         }
 
         public bool StartServer()
@@ -27,10 +31,11 @@ namespace Assembly.Helpers.Net.Sockets
 
             var thread = new Thread(new ThreadStart(delegate
             {
-                while (true)
+                while (_server.ReceiveCommand(_handler))
                 {
-                    _server.ReceiveCommand(_handler);
+                    
                 }
+                Kill();
             }));
             thread.IsBackground = true;
             thread.Start();
@@ -52,7 +57,20 @@ namespace Assembly.Helpers.Net.Sockets
 
         public bool IsDead()
         {
-            return false;
+            return _isFailed;
+        }
+
+        public bool Kill()
+        {
+            if (!_isFailed)
+            {
+                _isFailed = true;
+                _server.Close();
+                App.AssemblyStorage.AssemblySettings.HomeWindow.Dispatcher.Invoke(new Action(
+                    () =>
+                        MetroMessageBox.Show("Server Killed", "Poke server was killed.  Reverting to local poke...")));
+            }
+            return IsDead();
         }
     }
 }

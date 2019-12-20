@@ -34,7 +34,7 @@ namespace Assembly.Helpers.Net.Sockets
                 while (_client.ReceiveCommand(_handler))
                 {
                 }
-                Shutdown();
+                Kill();
             }));
             thread.IsBackground = true;
             thread.Start();
@@ -46,7 +46,7 @@ namespace Assembly.Helpers.Net.Sockets
         {
             if (!_client.SendCommand(test))
             {
-                Shutdown();
+                Kill();
             }
         }
 
@@ -55,12 +55,17 @@ namespace Assembly.Helpers.Net.Sockets
             if (!_client.SendCommand(memory))
             {
                 // if we died, just send the command along local only.
-                Shutdown();
+                Kill();
                 _handler.HandleMemoryCommand(memory);
             }
         }
 
-        private void Shutdown()
+        public bool IsDead()
+        {
+            return _isFailed;
+        }
+
+        public bool Kill()
         {
             if (!_isFailed)
             {
@@ -68,13 +73,9 @@ namespace Assembly.Helpers.Net.Sockets
                 _client.Close();
                 App.AssemblyStorage.AssemblySettings.HomeWindow.Dispatcher.Invoke(new Action(
                     () =>
-                        MetroMessageBox.Show("Client Connection Closed", "Connection to the poke server was lost.  Reverting to local poke...")));
+                        MetroMessageBox.Show("Client Connection Closed", "Connection to the poke server was closed.  Reverting to local poke...")));
             }
-        }
-
-        public bool IsDead()
-        {
-            return _isFailed;
+            return IsDead();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Collections.ObjectModel;
 //using Mono.Nat;
 
 namespace Assembly.Helpers.Net.Sockets
@@ -15,6 +16,7 @@ namespace Assembly.Helpers.Net.Sockets
 	{
 		private Socket _listener;
 		private readonly List<Socket> _clients = new List<Socket>();
+		ObservableCollection<string> _clientList;
 
 		// TODO: Should we make it possible to set the port number somehow?
 		private static int Port = 19002;
@@ -25,8 +27,9 @@ namespace Assembly.Helpers.Net.Sockets
 		/// Initializes a new instance of the <see cref="NetworkPokeServer"/> class.
 		/// A server will be created on the local machine on port 19002.
 		/// </summary>
-		public NetworkPokeServer()
+		public NetworkPokeServer(ObservableCollection<string> clientList)
 		{
+			_clientList = clientList;
 			// Discover UPnP support
 			//NatUtility.DeviceFound += DeviceFound;
 			//NatUtility.StartDiscovery();
@@ -57,62 +60,72 @@ namespace Assembly.Helpers.Net.Sockets
 		/// The first command that is available will be passed into a handler.
 		/// </summary>
 		/// <param name="handler">The <see cref="IPokeCommandHandler"/> to handle the command with.</param>
-		public void ReceiveCommand(IPokeCommandHandler handler)
+		public bool ReceiveCommand(IPokeCommandHandler handler)
 		{
-			// Loop until a command is processed
-			while (true)
+			// Duplicate our clients list for use with Socket.Select()
+			List<Socket> readyClients;
+			List<Socket> failedClients = new List<Socket>();
+			lock (_clients)
 			{
-				// Duplicate our clients list for use with Socket.Select()
-				List<Socket> readyClients;
-				List<Socket> failedClients = new List<Socket>();
-				lock (_clients)
-				{
-					readyClients = new List<Socket>(_clients);
-				}
+				readyClients = new List<Socket>(_clients);
+			}
 
-				// The listener socket is "readable" when a client is ready to be accepted
-				readyClients.Add(_listener);
+			// The listener socket is "readable" when a client is ready to be accepted
+			readyClients.Add(_listener);
 
-				// Wait for either a command to become available in a client,
-				// or a client to be ready to connect
-				Socket.Select(readyClients, null, null, -1);
-				foreach (var socket in readyClients)
+			// Wait for either a command to become available in a client,
+			// or a client to be ready to connect
+			Socket.Select(readyClients, null, null, -1);
+			foreach (var socket in readyClients)
+			{
+				if (socket != _listener)
 				{
-					if (socket != _listener)
+					try
 					{
-						try
+						// Command available
+						using (var stream = new NetworkStream(socket, false))
 						{
-							// Command available
-							using (var stream = new NetworkStream(socket, false))
+							var command = CommandSerialization.DeserializeCommand(stream);
+							if (command != null)
 							{
-								var command = CommandSerialization.DeserializeCommand(stream);
 								SendCommandToAll(command);
 								command.Handle(handler);
 							}
 						}
-						catch (IOException)
-						{
-							failedClients.Add(socket);
-						}
-						break; // Only process one command at a time
 					}
-					else
+					catch (IOException)
+					{
+						failedClients.Add(socket);
+					}
+					break; // Only process one command at a time
+				}
+				else
+				{
+					try
 					{
 						// Client ready to connect
 						var client = _listener.Accept();
 						ConnectClient(client);
 					}
-				}
-				lock (_clients)
-				{
-					foreach (var socket in failedClients)
+					catch (ObjectDisposedException)
 					{
-						socket.Close();
-						_clients.Remove(socket);
+						return false;
 					}
 				}
-
 			}
+			lock (_clients)
+			{
+				foreach (var socket in failedClients)
+				{
+					_clients.Remove(socket);
+					App.Current.Dispatcher.Invoke((Action)delegate
+					{
+						_clientList.Remove(socket.RemoteEndPoint.ToString());
+					});
+					socket.Close();
+				}
+			}
+			return true;
 		}
 
 		/// <summary>
@@ -133,13 +146,17 @@ namespace Assembly.Helpers.Net.Sockets
 					}
 					catch (IOException)
 					{
-						socket.Close();
 						failedClients.Add(socket);
 					}
 				}
 				foreach (var socket in failedClients)
 				{
+					App.Current.Dispatcher.Invoke((Action)delegate
+					{
+						_clientList.Remove(socket.RemoteEndPoint.ToString());
+					});
 					_clients.Remove(socket);
+					socket.Close();
 				}
 			}
 		}
@@ -153,6 +170,26 @@ namespace Assembly.Helpers.Net.Sockets
 			lock (_clients)
 			{
 				_clients.Add(client);
+				App.Current.Dispatcher.Invoke((Action)delegate
+				{
+					_clientList.Add(client.RemoteEndPoint.ToString());
+				});
+			}
+		}
+
+		public void Close()
+		{
+			_listener.Close();
+			lock (_clients)
+			{
+				foreach (var socket in _clients)
+				{
+					socket.Close();
+					App.Current.Dispatcher.Invoke((Action)delegate
+					{
+						_clientList.Clear();
+					});
+				}
 			}
 		}
 
@@ -161,17 +198,17 @@ namespace Assembly.Helpers.Net.Sockets
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-//		private void DeviceFound(object sender, DeviceEventArgs e)
-//		{
-//			// Create a UPnP mapping for our port
-//			var device = e.Device;
-//			var map = new Mapping(Protocol.Tcp, Port, Port);
-//			map.Description = UpnpDescription;
-//			device.CreatePortMap(map);
+		//		private void DeviceFound(object sender, DeviceEventArgs e)
+		//		{
+		//			// Create a UPnP mapping for our port
+		//			var device = e.Device;
+		//			var map = new Mapping(Protocol.Tcp, Port, Port);
+		//			map.Description = UpnpDescription;
+		//			device.CreatePortMap(map);
 
-//#if DEBUG
-//			Debug.WriteLine("UPnP found device: " + device.GetExternalIP());
-//#endif
-//		}
+		//#if DEBUG
+		//			Debug.WriteLine("UPnP found device: " + device.GetExternalIP());
+		//#endif
+		//		}
 	}
 }

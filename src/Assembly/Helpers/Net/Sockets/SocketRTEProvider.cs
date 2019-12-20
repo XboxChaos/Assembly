@@ -26,5 +26,10 @@ namespace Assembly.Helpers.Net.Sockets
         {
             return _starter.IsDead();
         }
+
+        public bool Kill()
+        {
+            return _starter.Kill();
+        }
     }
 }

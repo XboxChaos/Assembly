@@ -71,6 +71,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
+		private ObservableCollection<string> _clientList = new ObservableCollection<string>();
 
 		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
 
@@ -116,6 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerAsync();
 
 			_networkProvider = null;
+			DataContext = this;
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -125,6 +127,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				_headerDetails = value;
 				NotifyPropertyChanged("HeaderDetails");
+			}
+		}
+
+		public ObservableCollection<string> ClientList
+		{
+			get { return _clientList; }
+			set
+			{
+				_clientList = value;
+				NotifyPropertyChanged("ClientList");
 			}
 		}
 
@@ -2072,11 +2084,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			if (_networkProvider == null || _networkProvider.IsDead())
 			{
-				var serverCommandStarter = new ServerCommandStarter(this);
+				var serverCommandStarter = new ServerCommandStarter(this, _clientList);
 
 				if (serverCommandStarter.StartServer())
 				{
 					_networkProvider = new SocketRTEProvider(serverCommandStarter);
+					startClientBtn.Visibility = Visibility.Collapsed;
+					startServerBtn.Visibility = Visibility.Collapsed;
+					disconnectButton.Visibility = Visibility.Visible;
+					connectedClientsGrid.Visibility = Visibility.Visible;
+					srvAddressBar.Visibility = Visibility.Collapsed;
+					clientList.Visibility = Visibility.Visible;
 					MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
 				}
 				else
@@ -2099,6 +2117,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				if (clientCommandStarter.StartClient())
 				{
 					_networkProvider = new SocketRTEProvider(clientCommandStarter);
+					startClientBtn.Visibility = Visibility.Collapsed;
+					startServerBtn.Visibility = Visibility.Collapsed;
+					disconnectButton.Visibility = Visibility.Visible;
+					svrAddressBox.IsReadOnly = true;
 					MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
 				}
 				else
@@ -2110,6 +2132,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				MetroMessageBox.Show("Unable to start client", "Client cannot be started since a connection is already running.  Disconnect first.");
 			}
+		}
+
+		private void disconnectButton_Click(object sender, RoutedEventArgs e)
+		{
+			_networkProvider.Kill();
+			startClientBtn.Visibility = Visibility.Visible;
+			startServerBtn.Visibility = Visibility.Visible;
+			disconnectButton.Visibility = Visibility.Collapsed;
+			srvAddressBar.Visibility = Visibility.Visible;
+			connectedClientsGrid.Visibility = Visibility.Collapsed;
+			clientList.Visibility = Visibility.Collapsed;
+			svrAddressBox.IsReadOnly = false;
 		}
 	}
 }
