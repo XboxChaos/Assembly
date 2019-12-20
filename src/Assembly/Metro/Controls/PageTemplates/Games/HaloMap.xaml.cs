@@ -717,17 +717,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tag == null)
 				return;
 			
-			extractTag(tag);
+			extractTagToFile(tag);
 		}
 
-		private void extractTag(TagEntry tag)
+		private void extractTagToFile(TagEntry tag)
 		{
-			extractTags(new List<TagEntry>() { tag });
+			extractTagsToFile(new List<TagEntry>() { tag });
 		}
 
-		private void extractTags(List<TagEntry> tags)
+		private void extractTagsToFile(List<TagEntry> tags)
 		{
-
 			// Ask where to save the extracted tag collection
 			var sfd = new SaveFileDialog
 			{
@@ -738,6 +737,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!result.Value)
 				return;
 
+			var container = extractTags(tags, ExtractMode.Default, true, true);
+			if (container == null)
+				return;
+
+			// Write it to a file
+			using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), _cacheFile.Endianness))
+				TagContainerWriter.WriteTagContainer(container, writer);
+
+			// YAY!
+			MetroMessageBox.Show("Extraction Successful",
+				"Extracted " +
+				container.Tags.Count + " tag(s), " +
+				container.DataBlocks.Count + " data block(s), " +
+				container.ResourcePages.Count + " resource page pointer(s), " +
+				container.ExtractedResourcePages.Count + " extracted resource page(s), and " +
+				container.Resources.Count + " resource pointer(s).");
+		}
+
+		private TagContainer extractTags(List<TagEntry> tags, ExtractMode mode, bool withResources, bool withPredictions)
+		{
 			// Make a tag container
 			var container = new TagContainer();
 
@@ -778,7 +797,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (realpluginpath == null || !File.Exists(realpluginpath))
 					{
 						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
-						return;
+						return null;
 					}
 
 					// Extract dem data blocks
@@ -787,7 +806,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
 
 					foreach (var block in blockBuilder.DataBlocks)
+					{
+						if (mode != ExtractMode.Default)
+						{
+							// Remove non-datablock fixups because those are still valid
+							// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
+							block.StringIDFixups.Clear();
+							block.ShaderFixups.Clear();
+							if (!withResources)
+								block.ResourceFixups.Clear();
+							block.TagFixups.Clear();
+						}
 						container.AddDataBlock(block);
+					}
 
 					// Add data for the tag that was extracted
 					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
@@ -800,96 +831,127 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					// Mark the tag as processed and then enqueue all of its child tags and resources
 					tagsProcessed.Add(currentTag);
-					foreach (var tagRef in blockBuilder.ReferencedTags)
-						tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
+					if (mode != ExtractMode.Duplicate)
+						foreach (var tagRef in blockBuilder.ReferencedTags)
+							tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
 					foreach (var resource in blockBuilder.ReferencedResources)
 						resourcesToProcess.Enqueue(resource);
 				}
 
 				// Load the resource table in if necessary
-				if (resourcesToProcess.Count > 0 && _cacheFile.Resources != null)
+				if ( _cacheFile.Resources != null)
 					resources = _cacheFile.Resources.LoadResourceTable(reader);
 			}
 
 			// Extract resource info
 			if (resources != null)
 			{
-				while (resourcesToProcess.Count > 0)
+				if (withResources)
 				{
-					var index = resourcesToProcess.Dequeue();
-					if (resourcesProcessed.Contains(index))
-						continue;
-
-					// Add the resource
-					var resource = resources.Resources[index.Index];
-					container.AddResource(new ExtractedResourceInfo(index, resource));
-
-					// Add data for its pages
-					if (resource.Location == null) continue;
-
-					foreach (ResourcePage page in resource.Location.PagesToArray())
+					while (resourcesToProcess.Count > 0)
 					{
-						// todo maybe: break up ResourcePointer and make resource.Location into a collection of em. Could also extend that to ExtractedResourceInfo to simplify things there
-						if (page != null &&
-						!resourcePagesProcessed.Contains(page))
+						var index = resourcesToProcess.Dequeue();
+						if (resourcesProcessed.Contains(index))
+							continue;
+
+						// Add the resource
+						var resource = resources.Resources[index.Index];
+						container.AddResource(new ExtractedResourceInfo(index, resource));
+
+						// Add data for its pages
+						if (resource.Location == null) continue;
+
+						foreach (ResourcePage page in resource.Location.PagesToArray())
 						{
-							container.AddResourcePage(page);
-							resourcePagesProcessed.Add(page);
-
-							using (var fileStream = File.OpenRead(_cacheLocation))
+							// todo maybe: break up ResourcePointer and make resource.Location into a collection of em. Could also extend that to ExtractedResourceInfo to simplify things there
+							if (page != null &&
+							!resourcePagesProcessed.Contains(page))
 							{
-								var resourceFile = _cacheFile;
-								Stream resourceStream = fileStream;
-								if (page.FilePath != null)
+								container.AddResourcePage(page);
+								resourcePagesProcessed.Add(page);
+
+								if (mode != ExtractMode.Default)
+									continue;
+
+								using (var fileStream = File.OpenRead(_cacheLocation))
 								{
-									var resourceCacheInfo =
-									App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
-										r => r.EngineName == _buildInfo.Name);
-
-									var resourceCachePath = (resourceCacheInfo != null && resourceCacheInfo.ResourceCachePath != "")
-										? resourceCacheInfo.ResourceCachePath : Path.GetDirectoryName(_cacheLocation);
-
-									resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(page.FilePath));
-
-									if (!File.Exists(resourceCachePath))
+									var resourceFile = _cacheFile;
+									Stream resourceStream = fileStream;
+									if (page.FilePath != null)
 									{
-										MetroMessageBox.Show("Unable to extract tag",
-											string.Format("Unable to extract tag, because a resource it relies on is stored in an external cache, \"{0}\" which could not be found.\r\nCheck Assembly's settings and set the file path to resource caches, or verify that the missing cache is in the same folder as the open cache file.",
-											Path.GetFileName(resourceCachePath)));
-										return;
+										var resourceCacheInfo =
+										App.AssemblyStorage.AssemblySettings.HalomapResourceCachePaths.FirstOrDefault(
+											r => r.EngineName == _buildInfo.Name);
+
+										var resourceCachePath = (resourceCacheInfo != null && resourceCacheInfo.ResourceCachePath != "")
+											? resourceCacheInfo.ResourceCachePath : Path.GetDirectoryName(_cacheLocation);
+
+										resourceCachePath = Path.Combine(resourceCachePath ?? "", Path.GetFileName(page.FilePath));
+
+										if (!File.Exists(resourceCachePath))
+										{
+											MetroMessageBox.Show("Unable to extract tag",
+												string.Format("Unable to extract tag, because a resource it relies on is stored in an external cache, \"{0}\" which could not be found.\r\nCheck Assembly's settings and set the file path to resource caches, or verify that the missing cache is in the same folder as the open cache file.",
+												Path.GetFileName(resourceCachePath)));
+											return null;
+										}
+
+										resourceStream =
+											File.OpenRead(resourceCachePath);
+										resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
+											_cacheFile.BuildString);
 									}
 
-									resourceStream =
-										File.OpenRead(resourceCachePath);
-									resourceFile = new ThirdGenCacheFile(new EndianReader(resourceStream, _cacheFile.Endianness), _buildInfo,
-										_cacheFile.BuildString);
+									var extractor = new ResourcePageExtractor(resourceFile);
+									byte[] pageData;
+									using (var pageStream = new MemoryStream())
+									{
+										extractor.ExtractPage(page, resourceStream, pageStream);
+										pageData = new byte[pageStream.Length];
+										Buffer.BlockCopy(pageStream.GetBuffer(), 0, pageData, 0, (int)pageStream.Length);
+									}
+									container.AddExtractedResourcePage(new ExtractedPage(pageData, page.Index));
 								}
-
-								var extractor = new ResourcePageExtractor(resourceFile);
-								byte[] pageData;
-								using (var pageStream = new MemoryStream())
-								{
-									extractor.ExtractPage(page, resourceStream, pageStream);
-									pageData = new byte[pageStream.Length];
-									Buffer.BlockCopy(pageStream.GetBuffer(), 0, pageData, 0, (int)pageStream.Length);
-								}
-								container.AddExtractedResourcePage(new ExtractedPage(pageData, page.Index));
 							}
 						}
 					}
 				}
 
-				foreach (ITag t in tagsProcessed)
+				if (withPredictions)
 				{
-					foreach (ResourcePredictionD pred in resources.Predictions.Where(d => d.Tag == t))
+					foreach (ITag t in tagsProcessed)
 					{
-						ExtractedResourcePredictionD expred = new ExtractedResourcePredictionD(pred);
-
-						foreach (ResourcePredictionC pc in pred.CEntries)
+						foreach (ResourcePredictionD pred in resources.Predictions.Where(d => d.Tag.Index == t.Index))
 						{
-							ExtractedResourcePredictionC expc = new ExtractedResourcePredictionC(pc);
+							ExtractedResourcePredictionD expred = new ExtractedResourcePredictionD(pred);
 
-							foreach (ResourcePredictionA pa in pc.BEntry.AEntries)
+							foreach (ResourcePredictionC pc in pred.CEntries)
+							{
+								ExtractedResourcePredictionC expc = new ExtractedResourcePredictionC(pc);
+
+								foreach (ResourcePredictionA pa in pc.BEntry.AEntries)
+								{
+									ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA(pa);
+
+									var res = resources.Resources[pa.Resource.Index];
+									if (res.ParentTag != null)
+									{
+										expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
+										expa.OriginalResourceClass = res.ParentTag.Class.Magic;
+									}
+									else
+									{
+										expa.OriginalResourceName = "null";
+										expa.OriginalResourceClass = -1;
+									}
+
+									expc.BEntry.AEntries.Add(expa);
+
+								}
+								expred.CEntries.Add(expc);
+							}
+
+							foreach (ResourcePredictionA pa in pred.AEntries)
 							{
 								ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA(pa);
 
@@ -905,47 +967,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 									expa.OriginalResourceClass = -1;
 								}
 
-								expc.BEntry.AEntries.Add(expa);
-
+								expred.AEntries.Add(expa);
 							}
-							expred.CEntries.Add(expc);
+							container.AddPrediction(expred);
 						}
-
-						foreach (ResourcePredictionA pa in pred.AEntries)
-						{
-							ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA(pa);
-
-							var res = resources.Resources[pa.Resource.Index];
-							if (res.ParentTag != null)
-							{
-								expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
-								expa.OriginalResourceClass = res.ParentTag.Class.Magic;
-							}
-							else
-							{
-								expa.OriginalResourceName = "null";
-								expa.OriginalResourceClass = -1;
-							}
-
-							expred.AEntries.Add(expa);
-						}
-						container.AddPrediction(expred);
 					}
 				}
 			}
-
-			// Write it to a file
-			using (var writer = new EndianWriter(File.Open(sfd.FileName, FileMode.Create, FileAccess.Write), _cacheFile.Endianness))
-				TagContainerWriter.WriteTagContainer(container, writer);
-
-			// YAY!
-			MetroMessageBox.Show("Extraction Successful",
-				"Extracted " +
-				container.Tags.Count + " tag(s), " +
-				container.DataBlocks.Count + " data block(s), " +
-				container.ResourcePages.Count + " resource page pointer(s), " +
-				container.ExtractedResourcePages.Count + " extracted resource page(s), and " +
-				container.Resources.Count + " resource pointer(s).");
+			return container;
 		}
 
 		private void btnImport_Click(object sender, RoutedEventArgs e)
@@ -967,7 +996,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			Dialogs.ControlDialogs.InjectSettings injs = new Dialogs.ControlDialogs.InjectSettings(_allTags, container);
 			// Handle defaults
 			injs.KeepSounds = (_cacheFile.HeaderSize == 0x1E000);
-			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000);
+			injs.UniqueShaders = (_cacheFile.HeaderSize > 0x3000 && _cacheFile.Endianness == Endian.BigEndian);
 
 			injs.ShowDialog();
 
@@ -980,7 +1009,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						injector.InjectTag(tag, stream);
 
 					if ((bool)injs.AddPrediction)
-						injector.InjectPredictions(container.Predictions);
+						injector.InjectPredictions(container.Predictions, stream);
 
 					injector.SaveChanges(stream);
 				}
@@ -1028,94 +1057,52 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tag == null)
 				return;
 
-			// TODO: Make this into a dialog with more options
-			string newName;
-			while (true)
+			Dialogs.ControlDialogs.DupeSettings dupe = new Dialogs.ControlDialogs.DupeSettings(_cacheFile, tag.RawTag.Class, tag.TagFileName);
+
+			dupe.ShowDialog();
+
+			if (dupe.DialogResult.HasValue && dupe.DialogResult.Value)
 			{
-				newName = MetroInputBox.Show("Duplicate Tag", "Please enter a name for the new tag.", tag.TagFileName, "Enter a name.");
-				if (newName == null)
+				var container = extractTags(new List<TagEntry>() { tag }, ExtractMode.Duplicate, (bool)dupe.DupeAsset, (bool)dupe.DupePred);
+
+				if (container == null)
 					return;
-				if (newName != tag.TagFileName && _cacheFile.Tags.FindTagByName(newName, tag.RawTag.Class, _cacheFile.FileNames) == null)
-					break;
-				MetroMessageBox.Show("Duplicate Tag", "Please enter a name that is different from the original and that is not in use.");
-			}
 
-			// Make a tag container for the tag and then inject it
-			// TODO: A lot of this was copied and pasted from the tag extraction code...need to clean things up
-			var container = new TagContainer();
-			using (var stream = _mapManager.OpenReadWrite())
-			{
-				// Get the plugin path
-				string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
-				string pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					_buildInfo.Settings.GetSetting<string>("plugins"), className);
+				container.Tags.First().Name = dupe.NewName;
 
-				string fallbackPluginPath = null;
-				if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-					fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-						_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
-
-				string realpluginpath = pluginPath;
-
-				if (!File.Exists(realpluginpath))
-					realpluginpath = fallbackPluginPath;
-
-				if (realpluginpath == null || !File.Exists(realpluginpath))
+				using (var stream = _mapManager.OpenReadWrite())
 				{
-					StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
-					return;
+					// Now inject the container
+					var injector = new TagContainerInjector(_cacheFile, container, true, false, true, false);
+					injector.InjectTag(container.Tags.First(), stream);
+					injector.InjectPredictions(container.Predictions, stream);
+					injector.SaveChanges(stream);
 				}
 
-				// Extract data blocks
-				var builder = new DataBlockBuilder(stream, tag.RawTag, _cacheFile, _buildInfo);
-				using (XmlReader pluginReader = XmlReader.Create(realpluginpath))
-					AssemblyPluginLoader.LoadPlugin(pluginReader, builder);
-				foreach (var block in builder.DataBlocks)
+				LoadTags();
+				MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
+
+				if (App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates)
 				{
-					// Remove non-datablock fixups because those are still valid
-					// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
-					block.StringIDFixups.Clear();
-					block.ShaderFixups.Clear();
-					block.ResourceFixups.Clear();
-					block.TagFixups.Clear();
-					container.AddDataBlock(block);
-				}
+					ITag result = _cacheFile.Tags.FindTagByName(dupe.NewName, tag.RawTag.Class, _cacheFile.FileNames);
 
-				uint cont = _cacheFile.PointerExpander.Contract(tag.RawTag.MetaLocation.AsPointer());
-
-				var extracted = new ExtractedTag(tag.RawTag.Index, cont, tag.RawTag.Class.Magic, newName);
-				container.AddTag(extracted);
-
-				// Now inject the container
-				var injector = new TagContainerInjector(_cacheFile, container, true, false, false, false);
-				injector.InjectTag(extracted, stream);
-				injector.SaveChanges(stream);
-			}
-
-			LoadTags();
-			MetroMessageBox.Show("Duplicate Tag", "Tag duplicated successfully!");
-
-			if (App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates)
-			{
-				ITag result = _cacheFile.Tags.FindTagByName(newName, tag.RawTag.Class, _cacheFile.FileNames);
-
-				foreach (TagClass c in tvTagList.Items)
-				{
-					if (c.RawClass == result.Class)
+					foreach (TagClass c in tvTagList.Items)
 					{
-						foreach (TagEntry t in c.Children)
+						if (c.RawClass == result.Class)
 						{
-							if (t.RawTag == result)
+							foreach (TagEntry t in c.Children)
 							{
-								CreateTag(t);
+								if (t.RawTag == result)
+								{
+									CreateTag(t);
 
-								return;
+									return;
+								}
 							}
 						}
 					}
 				}
 			}
-
 		}
 
 		private void contextForce_Click(object sender, RoutedEventArgs e)
@@ -1128,118 +1115,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tag == null)
 				return;
 
-			// Make a tag container for everything and then use that to forceload
-			// Copy of the dupe code which is a copy of the extract code lol
-			// Make a tag container
-			var container = new TagContainer();
+			var container = extractTags(new List<TagEntry>() { tag }, ExtractMode.Forceload, true, false);
 
-			// Recursively extract tags
-			var tagsToProcess = new Queue<ITag>();
-			var tagsProcessed = new HashSet<ITag>();
-			var resourcesToProcess = new Queue<DatumIndex>();
-			var resourcesProcessed = new HashSet<DatumIndex>();
-			var resourcePagesProcessed = new HashSet<ResourcePage>();
-			tagsToProcess.Enqueue(tag.RawTag);
-
-			ResourceTable resources = null;
-			using (var reader = _mapManager.OpenRead())
-			{
-				while (tagsToProcess.Count > 0)
-				{
-					var currentTag = tagsToProcess.Dequeue();
-					if (tagsProcessed.Contains(currentTag))
-						continue;
-
-					// Get the plugin path
-					var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
-					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-						_buildInfo.Settings.GetSetting<string>("plugins"), className);
-
-					string fallbackPluginPath = null;
-					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
-						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
-
-					string realpluginpath = pluginPath;
-
-					if (!File.Exists(realpluginpath))
-						realpluginpath = fallbackPluginPath;
-
-					if (realpluginpath == null || !File.Exists(realpluginpath))
-					{
-						StatusUpdater.Update("Plugin doesn't exist for an extracted tag. Cannot extract.");
-						return;
-					}
-
-					// Extract dem data blocks
-					var blockBuilder = new DataBlockBuilder(reader, currentTag, _cacheFile, _buildInfo);
-					using (var pluginReader = XmlReader.Create(realpluginpath))
-						AssemblyPluginLoader.LoadPlugin(pluginReader, blockBuilder);
-
-					foreach (var block in blockBuilder.DataBlocks)
-					{
-						// Remove non-datablock fixups because those are still valid
-						// TODO: A better approach might be to just make DataBlockBuilder ignore these in the first place
-						block.StringIDFixups.Clear();
-						block.ShaderFixups.Clear();
-						//block.ResourceFixups.Clear();
-						//block.TagFixups.Clear();
-						container.AddDataBlock(block);
-					}
-
-					// Add data for the tag that was extracted
-					var tagName = _cacheFile.FileNames.GetTagName(currentTag) ?? currentTag.Index.ToString();
-
-					uint cont = _cacheFile.PointerExpander.Contract(currentTag.MetaLocation.AsPointer());
-
-					var extractedTag = new ExtractedTag(currentTag.Index, cont, currentTag.Class.Magic,
-						tagName);
-					container.AddTag(extractedTag);
-
-					// Mark the tag as processed and then enqueue all of its child tags and resources
-					tagsProcessed.Add(currentTag);
-					foreach (var tagRef in blockBuilder.ReferencedTags)
-						tagsToProcess.Enqueue(_cacheFile.Tags[tagRef]);
-					foreach (var resource in blockBuilder.ReferencedResources)
-						resourcesToProcess.Enqueue(resource);
-				}
-
-				// Load the resource table in if necessary
-				if (resourcesToProcess.Count > 0)
-					resources = _cacheFile.Resources.LoadResourceTable(reader);
-			}
-
-			// Extract resource info
-			if (resources != null)
-			{
-				while (resourcesToProcess.Count > 0)
-				{
-					var index = resourcesToProcess.Dequeue();
-					if (resourcesProcessed.Contains(index))
-						continue;
-
-					// Add the resource
-					var resource = resources.Resources[index.Index];
-					container.AddResource(new ExtractedResourceInfo(index, resource));
-
-					// Add data for its pages
-					if (resource.Location == null) continue;
-
-					if (resource.Location.PrimaryPage != null &&
-						!resourcePagesProcessed.Contains(resource.Location.PrimaryPage))
-					{
-						container.AddResourcePage(resource.Location.PrimaryPage);
-						resourcePagesProcessed.Add(resource.Location.PrimaryPage);
-
-					}
-					if (resource.Location.SecondaryPage == null || resourcePagesProcessed.Contains(resource.Location.SecondaryPage))
-						continue;
-
-					container.AddResourcePage(resource.Location.SecondaryPage);
-					resourcePagesProcessed.Add(resource.Location.SecondaryPage);
-
-				}
-			}
+			if (container == null)
+				return;
 
 			// Now take the info we just extracted and use it to forceload
 			using (IStream stream = _mapManager.OpenReadWrite())
@@ -1265,7 +1144,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			LoadTags();
 			MetroMessageBox.Show("Forceload Successful", "Done.");
-
 		}
 
 		private void TagContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1993,7 +1871,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			List<TagEntry> tags = new List<TagEntry>();
 			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
 
-			extractTags(tags);
+			extractTagsToFile(tags);
 		}
 		private void BatchClear_Click(object sender, RoutedEventArgs e)
 		{
@@ -2020,6 +1898,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			public string Title { get; set; }
 			public object Data { get; set; }
+		}
+
+		public enum ExtractMode
+		{
+			Default = 0,
+			Duplicate = 1,
+			Forceload = 2,
 		}
 
 		public void Dispose()
