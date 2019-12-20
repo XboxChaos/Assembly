@@ -18,9 +18,6 @@ namespace Assembly.Helpers.Net.Sockets
 		private readonly List<Socket> _clients = new List<Socket>();
 		ObservableCollection<string> _clientList;
 
-		// TODO: Should we make it possible to set the port number somehow?
-		private static int Port = 19002;
-
 		private static string UpnpDescription = "Assembly Network Poking";
 
 		/// <summary>
@@ -35,16 +32,14 @@ namespace Assembly.Helpers.Net.Sockets
 			//NatUtility.StartDiscovery();
 		}
 
-		public bool Listen()
+		public bool Listen(IPEndPoint endpoint)
 		{
 			try
 			{
-				var hostIp = IPAddress.Any;
-				var hostEndpoint = new IPEndPoint(hostIp, Port);
 				_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 				// Bind to our local endpoint
-				_listener.Bind(hostEndpoint);
+				_listener.Bind(endpoint);
 				_listener.Listen(128); // Listen with a pending connection queue size of 128
 				return true;
 			}

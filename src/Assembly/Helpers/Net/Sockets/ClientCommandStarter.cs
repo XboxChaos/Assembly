@@ -15,16 +15,16 @@ namespace Assembly.Helpers.Net.Sockets
         private IPokeCommandHandler _handler;
         private volatile bool _isFailed;
 
-        public ClientCommandStarter(string IpAddress, IPokeCommandHandler handler)
+        public ClientCommandStarter(IPokeCommandHandler handler)
         {
-            _client = new NetworkPokeClient(IPAddress.Parse(IpAddress));
+            _client = new NetworkPokeClient();
             _handler = handler;
             _isFailed = false;
         }
 
-        public bool StartClient()
+        public bool StartClient(IPEndPoint endpoint)
         {
-            if (!_client.Connect())
+            if (!_client.Connect(endpoint))
             {
                 return false;
             }

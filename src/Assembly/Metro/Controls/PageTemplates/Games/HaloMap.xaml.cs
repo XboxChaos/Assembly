@@ -34,6 +34,7 @@ using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.MCC;
+using System.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -2068,6 +2069,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			throw new NotImplementedException();
 		}
 
+		private void PreviewPortInput(object sender, TextCompositionEventArgs e)
+		{
+			foreach (var ch in e.Text)
+			{
+				if (!Char.IsDigit(ch)) {
+					e.Handled = true;
+					break;
+				}
+			}
+		}
+
 		public void HandleMemoryCommand(MemoryCommand memory)
 		{
 			using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
@@ -2080,57 +2092,93 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void StartServer_Click(object sender, RoutedEventArgs e)
+		private IPEndPoint CreateIPEndpoint(string ipAddress, string port)
 		{
-			if (_networkProvider == null || _networkProvider.IsDead())
+			try
 			{
-				var serverCommandStarter = new ServerCommandStarter(this, _clientList);
-
-				if (serverCommandStarter.StartServer())
+				if (ipAddress == null)
 				{
-					_networkProvider = new SocketRTEProvider(serverCommandStarter);
-					startClientBtn.Visibility = Visibility.Collapsed;
-					startServerBtn.Visibility = Visibility.Collapsed;
-					disconnectButton.Visibility = Visibility.Visible;
-					connectedClientsGrid.Visibility = Visibility.Visible;
-					srvAddressBar.Visibility = Visibility.Collapsed;
-					clientList.Visibility = Visibility.Visible;
-					MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
+					return new IPEndPoint(IPAddress.Any, Int32.Parse(port));
 				}
 				else
 				{
-					MetroMessageBox.Show("Unable to start server", "Unable to bind to address and port.  Likely that another network poke server is running already.");
+					return new IPEndPoint(IPAddress.Parse(ipAddress), Int32.Parse(port));
+				}
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		private void StartServer_Click(object sender, RoutedEventArgs e)
+		{
+			//first check input is there.
+			var endpoint = CreateIPEndpoint(null, svrPortBox.Text);
+			if (endpoint != null)
+			{
+				if (_networkProvider == null || _networkProvider.IsDead())
+				{
+					var serverCommandStarter = new ServerCommandStarter(this, _clientList);
+
+					if (serverCommandStarter.StartServer(endpoint))
+					{
+						_networkProvider = new SocketRTEProvider(serverCommandStarter);
+						startClientBtn.Visibility = Visibility.Collapsed;
+						startServerBtn.Visibility = Visibility.Collapsed;
+						disconnectButton.Visibility = Visibility.Visible;
+						connectedClientsGrid.Visibility = Visibility.Visible;
+						srvAddressBar.Visibility = Visibility.Collapsed;
+						clientList.Visibility = Visibility.Visible;
+						MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
+					}
+					else
+					{
+						MetroMessageBox.Show("Unable to start server", "Unable to bind to address and port.  Possible another network poke server is running already.");
+					}
+				}
+				else
+				{
+					MetroMessageBox.Show("Unable to start server", "Server cannot be started since a connection is already running.  Disconnect first.");
 				}
 			}
 			else
 			{
-				MetroMessageBox.Show("Unable to start server", "Server cannot be started since a connection is already running.  Disconnect first.");
+				MetroMessageBox.Show("Port Invalid", "Server listen port was invalid.");
 			}
 		}
 
 		private void StartClient_Click(object sender, RoutedEventArgs e)
 		{
-			if (_networkProvider == null || _networkProvider.IsDead())
+			var endpoint = CreateIPEndpoint(svrAddressBox.Text, svrPortBox.Text);
+			if (endpoint != null)
 			{
-				var clientCommandStarter = new ClientCommandStarter(svrAddressBox.Text, this);
-					
-				if (clientCommandStarter.StartClient())
+				if (_networkProvider == null || _networkProvider.IsDead())
 				{
-					_networkProvider = new SocketRTEProvider(clientCommandStarter);
-					startClientBtn.Visibility = Visibility.Collapsed;
-					startServerBtn.Visibility = Visibility.Collapsed;
-					disconnectButton.Visibility = Visibility.Visible;
-					svrAddressBox.IsReadOnly = true;
-					MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
+					var clientCommandStarter = new ClientCommandStarter(this);
+
+					if (clientCommandStarter.StartClient(endpoint))
+					{
+						_networkProvider = new SocketRTEProvider(clientCommandStarter);
+						startClientBtn.Visibility = Visibility.Collapsed;
+						startServerBtn.Visibility = Visibility.Collapsed;
+						disconnectButton.Visibility = Visibility.Visible;
+						svrAddressBox.IsReadOnly = true;
+						MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
+					}
+					else
+					{
+						MetroMessageBox.Show("Unable to start client", "Remote address is not a currently available network poke server.");
+					}
 				}
 				else
 				{
-					MetroMessageBox.Show("Unable to start client", "Remote address is not a currently available network poke server.");
+					MetroMessageBox.Show("Unable to start client", "Client cannot be started since a connection is already running.  Disconnect first.");
 				}
 			}
 			else
 			{
-				MetroMessageBox.Show("Unable to start client", "Client cannot be started since a connection is already running.  Disconnect first.");
+				MetroMessageBox.Show("Server Details Invalid", "Remote port or address was not the correct format.");
 			}
 		}
 

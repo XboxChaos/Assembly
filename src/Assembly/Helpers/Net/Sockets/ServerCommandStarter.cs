@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Assembly.Metro.Dialogs;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace Assembly.Helpers.Net.Sockets
 {
@@ -22,9 +23,9 @@ namespace Assembly.Helpers.Net.Sockets
             _isFailed = false;
         }
 
-        public bool StartServer()
+        public bool StartServer(IPEndPoint endpoint)
         {
-            if (!_server.Listen())
+            if (!_server.Listen(endpoint))
             {
                 return false;
             }

@@ -11,25 +11,28 @@ namespace Assembly.Helpers.Net.Sockets
     public class NetworkPokeClient
     {
         private Socket _socket;
-        private IPEndPoint _endpoint;
 
         // TODO: Should we make it possible to set the port number somehow?
         private static int Port = 19002;
 
-        public NetworkPokeClient(IPAddress address)
+        public NetworkPokeClient()
         {
-            _endpoint = new IPEndPoint(address, Port);
+
         }
 
-        public bool Connect()
+        public bool Connect(IPEndPoint endpoint)
         {
             try
             {
                 _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                _socket.Connect(_endpoint);
+                _socket.Connect(endpoint);
                 return true;
             }
             catch (SocketException)
+            {
+
+            }
+            catch (ArgumentOutOfRangeException)
             {
 
             }
