@@ -2047,6 +2047,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public void Dispose()
 		{
+			if (_networkProvider != null)
+			{
+				_networkProvider.Kill();
+			}
+
 			App.AssemblyStorage.AssemblySettings.PropertyChanged -= SettingsChanged;
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
