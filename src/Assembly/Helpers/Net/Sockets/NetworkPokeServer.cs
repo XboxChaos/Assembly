@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Collections.ObjectModel;
-//using Mono.Nat;
+using Mono.Nat;
 
 namespace Assembly.Helpers.Net.Sockets
 {
@@ -17,6 +17,7 @@ namespace Assembly.Helpers.Net.Sockets
 		private Socket _listener;
 		private readonly List<Socket> _clients = new List<Socket>();
 		ObservableCollection<string> _clientList;
+		private int _port;
 
 		private static string UpnpDescription = "Assembly Network Poking";
 
@@ -28,8 +29,6 @@ namespace Assembly.Helpers.Net.Sockets
 		{
 			_clientList = clientList;
 			// Discover UPnP support
-			//NatUtility.DeviceFound += DeviceFound;
-			//NatUtility.StartDiscovery();
 		}
 
 		public bool Listen(IPEndPoint endpoint)
@@ -40,7 +39,10 @@ namespace Assembly.Helpers.Net.Sockets
 
 				// Bind to our local endpoint
 				_listener.Bind(endpoint);
+				_port = endpoint.Port;
 				_listener.Listen(128); // Listen with a pending connection queue size of 128
+				NatUtility.DeviceFound += DeviceFound;
+				NatUtility.StartDiscovery();
 				return true;
 			}
 			catch (SocketException)
@@ -188,22 +190,22 @@ namespace Assembly.Helpers.Net.Sockets
 			}
 		}
 
-		/// <summary>
-		/// Callback for when a UPnP device is found.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		//		private void DeviceFound(object sender, DeviceEventArgs e)
-		//		{
-		//			// Create a UPnP mapping for our port
-		//			var device = e.Device;
-		//			var map = new Mapping(Protocol.Tcp, Port, Port);
-		//			map.Description = UpnpDescription;
-		//			device.CreatePortMap(map);
+		// <summary>
+		// Callback for when a UPnP device is found.
+		// </summary>
+		// <param name="sender"></param>
+		// <param name="e"></param>
+		private void DeviceFound(object sender, DeviceEventArgs e)
+		{
+			// Create a UPnP mapping for our port
+			var device = e.Device;
+			var map = new Mapping(Protocol.Tcp, _port, _port);
+			map.Description = UpnpDescription;
+			device.CreatePortMap(map);
 
-		//#if DEBUG
-		//			Debug.WriteLine("UPnP found device: " + device.GetExternalIP());
-		//#endif
-		//		}
+#if DEBUG
+			Debug.WriteLine("UPnP found device: " + device.GetExternalIP());
+#endif
+		}
 	}
 }
