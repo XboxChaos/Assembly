@@ -9,6 +9,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 	public partial class MetaChunk : UserControl
 	{
 		public static RoutedCommand ReallocateCommand = new RoutedCommand();
+		public static RoutedCommand IsolateCommand = new RoutedCommand();
 
 		public MetaChunk()
 		{
@@ -19,6 +20,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		}
 
 		private void ReallocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void IsolateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = true;
 		}

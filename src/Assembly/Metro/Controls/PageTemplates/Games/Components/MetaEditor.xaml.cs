@@ -837,8 +837,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
 			if (field == null)
 				return;
+			var oldCount = field.Length;
 			var newCount = MetroTagBlockReallocator.Show(_cache, field);
-			if (newCount == null || (int)newCount == field.Length)
+			if (newCount == null || newCount == oldCount)
 				return; // Canceled
 
 			var oldAddress = field.FirstEntryAddress;
@@ -851,11 +852,40 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				newAddress = _cache.Allocator.Reallocate(oldAddress, (int)oldSize, (int)newSize, (uint)field.Align, stream);
 				_cache.SaveChanges(stream);
 
-				// If the block was made larger, zero extra data
+				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
 					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
 					StreamUtil.Fill(stream, 0, (int)(newSize - oldSize));
+
+					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
+					var classOffset = tagRefLayout.GetFieldOffset("class magic");
+					var datumOffset = tagRefLayout.GetFieldOffset("datum index");
+
+					//go through each new page and write null for any tagrefs
+					for (int i = oldCount; i < newCount; i++)
+					{
+						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.EntrySize * i);
+						foreach (MetaField mf in field.Template)
+						{
+							if (mf.GetType() != typeof(TagRefData))
+								continue;
+							var tagref = (TagRefData)mf;
+							if (tagref.WithClass)
+							{
+								stream.SeekTo(entryStart + tagref.Offset + classOffset);
+								stream.WriteInt32(-1);
+								stream.SeekTo(entryStart + tagref.Offset + datumOffset);
+								stream.WriteInt32(-1);
+							}
+							else
+							{
+								//no class, write to field offset without adding anything
+								stream.SeekTo(entryStart + tagref.Offset);
+								stream.WriteInt32(-1);
+							}
+						}
+					}
 				}
 			}
 
@@ -893,6 +923,128 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				MetroMessageBox.Show("Tag Block Reallocator - Assembly",
 					"The tag block was freed successfully.");
 			}
+		}
+
+		private void IsolateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Tag Block Isolation", "Only third generation cache files are currently supported.");
+				return;
+			}
+
+			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
+			if (field == null)
+				return;
+
+			var oldAddress = field.FirstEntryAddress;
+			int size = field.Length * (int)field.EntrySize;
+			if (oldAddress == 0 || size == 0)
+			{
+				MetroMessageBox.Show("Tag Block Isolation", "Cannot isolate: block is null.");
+				return;
+			}
+
+			var result = MetroMessageBox.Show("Tag Block Isolation", "Are you sure you want to copy this block to a new location?", MetroMessageBox.MessageBoxButtons.OkCancel);
+			if (result != MetroMessageBox.MessageBoxResult.OK)
+				return;
+
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Reallocate the block
+				newAddress = _cache.Allocator.Allocate(size, stream);
+				_cache.SaveChanges(stream);
+
+				//copy data
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				var data = stream.ReadBlock(size);
+
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.WriteBlock(data);
+			}
+
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.FirstEntryAddress = newAddress;
+
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+			MetroMessageBox.Show("Tag Block Isolation - Assembly",
+					"The tag block was isolated successfully.");
+		}
+
+		private void IsolateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+		
+		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Data Reference Isolation", "Only third generation cache files are currently supported.");
+				return;
+			}
+		
+			var field = GetWrappedField(e.OriginalSource) as DataRef;
+			if (field == null)
+				return;
+		
+			var oldAddress = field.DataAddress;
+			int size = field.Length;
+			if (oldAddress == 0 || size == 0)
+			{
+				MetroMessageBox.Show("Data Reference Isolation", "Cannot isolate: data is null.");
+				return;
+			}
+		
+			var result = MetroMessageBox.Show("Data Reference Isolation", "Are you sure you want to copy this data to a new location?", MetroMessageBox.MessageBoxButtons.OkCancel);
+			if (result != MetroMessageBox.MessageBoxResult.OK)
+				return;
+		
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Reallocate the block
+				newAddress = _cache.Allocator.Allocate(size, stream);
+				_cache.SaveChanges(stream);
+		
+				//copy data
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				var data = stream.ReadBlock(size);
+		
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.WriteBlock(data);
+			}
+		
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.DataAddress = newAddress;
+		
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+			MetroMessageBox.Show("Data Reference Isolation - Assembly",
+					"The data reference was isolated successfully.");
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly Enumeration _enumControl = new Enumeration();
 		private static readonly intValue _intControl = new intValue();
 		private static readonly StringIDValue _stringIDControl = new StringIDValue();
-		private static readonly rawBlock _rawBlock = new rawBlock();
+		private static readonly RawBlock _rawBlock = new RawBlock();
 		//private static MetaChunk _chunkControl = new MetaChunk();
 		private static readonly tagValue _tagControl = new tagValue();
 		private static readonly DegreeValue _degreeControl = new DegreeValue();

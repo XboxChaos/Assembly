@@ -89,6 +89,8 @@
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static local:MetaChunk.ReallocateCommand}"
                         CanExecute="ReallocateCommand_CanExecute" />
+		<CommandBinding Command="{x:Static local:MetaChunk.IsolateCommand}"
+                        CanExecute="IsolateCommand_CanExecute" />
     </UserControl.CommandBindings>
 
     <Border HorizontalAlignment="Stretch" Grid.ZIndex="1" BorderBrush="#FF474747" Padding="4,4,4,4">
@@ -113,17 +115,24 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
                 <Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                           IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
-				<Button Grid.Column="2" Content="+" Margin="4,0,0,0" VerticalAlignment="Top"
-                        Command="{x:Static local:MetaChunk.ReallocateCommand}" CommandTarget="{Binding ElementName=metaChunk}">
-                    <Button.ToolTip>
-                        <TextBlock Text="Add a new entry or reorder existing ones" FontStyle="Normal" />
-                    </Button.ToolTip>
-                </Button>
+                <ToggleButton x:Name="btnOptions" Grid.Column="2" VerticalAlignment="Top" Margin="4,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}" ToolTip="Click to view options relating to this field.">
+                    <Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
+                </ToggleButton>
+                <Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
+                    <Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+                        <StackPanel>
+                            <MenuItem Header="Add or Remove Entries..." Foreground="White" ToolTip="Opens the Tag Block Reallocator tool to properly add or remove entires for this block."
+                                      Command="{x:Static local:MetaChunk.ReallocateCommand}" CommandTarget="{Binding ElementName=metaChunk}"/>
+                            <MenuItem Header="Isolate Shared Block" Foreground="White" ToolTip="Isolates this block from other shared instances by copying to a new address."
+                                      Command="{x:Static local:MetaChunk.IsolateCommand}" CommandTarget="{Binding ElementName=metaChunk}"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
                 <ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
 					<!--Tooltips inheriting text styles is dumb -->
 					<ToggleButton.ToolTip>
