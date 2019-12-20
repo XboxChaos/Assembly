@@ -59,6 +59,7 @@ namespace Assembly.Helpers.Net.Sockets
             // Send a MemoryCommand to the server
             var memory = new MemoryCommand((Int64)Position, writeBuffer);
             _starter.StartMemoryCommand(memory);
+            Position += count;
         }
 
         public override bool CanRead

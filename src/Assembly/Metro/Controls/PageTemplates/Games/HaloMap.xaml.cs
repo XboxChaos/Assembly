@@ -2192,6 +2192,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			connectedClientsGrid.Visibility = Visibility.Collapsed;
 			clientList.Visibility = Visibility.Collapsed;
 			svrAddressBox.IsReadOnly = false;
+			_networkProvider = null;
 		}
 	}
 }
