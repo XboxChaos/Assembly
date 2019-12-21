@@ -2026,6 +2026,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						connectedClientsGrid.Visibility = Visibility.Visible;
 						srvAddressBar.Visibility = Visibility.Collapsed;
 						clientList.Visibility = Visibility.Visible;
+						svrAddressBox.IsReadOnly = true;
+						svrPortBox.IsReadOnly = true;
 						MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
 					}
 					else
@@ -2060,6 +2062,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						startServerBtn.Visibility = Visibility.Collapsed;
 						disconnectButton.Visibility = Visibility.Visible;
 						svrAddressBox.IsReadOnly = true;
+						svrPortBox.IsReadOnly = true;
 						MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
 					}
 					else
@@ -2088,6 +2091,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			connectedClientsGrid.Visibility = Visibility.Collapsed;
 			clientList.Visibility = Visibility.Collapsed;
 			svrAddressBox.IsReadOnly = false;
+			svrPortBox.IsReadOnly = false;
 			_networkProvider = null;
 		}
 	}
