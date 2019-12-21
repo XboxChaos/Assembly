@@ -37,9 +37,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public string Kind
+		public string Type
 		{
-			get { return "byte array"; }
+			get { return "raw"; }
+		}
+		
+		public string FullType
+		{
+			get { return Type + " " + Format; }
 		}
 
 		public string Format

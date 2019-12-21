@@ -27,27 +27,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		}
 
-		private void cbTagClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ValueChanged(object sender, SelectionChangedEventArgs e)
 		{
-			bool enable = (cbTagClass.SelectedIndex > 0);
-			cbTagEntry.IsEnabled = enable;
-			btnJumpToTag.IsEnabled = enable;
-			btnSearch.IsEnabled = enable;
-			if (enable && cbTagEntry.SelectedIndex < 0)
-				cbTagEntry.SelectedIndex = 0;
-		}
-
-		private void cbTagEntry_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (cbTagEntry.SelectedIndex < 0 && cbTagClass.SelectedIndex > 0)
+			if (cbTagEntry.SelectedIndex < 0)
 				cbTagEntry.SelectedIndex = 0;
 
-			TagEntry currentTag = ((TagEntry)cbTagEntry.SelectedItem);
+			if (cbTagClass.SelectedIndex > 0)
+			{
+				btnSearch.IsEnabled = true;
+				cbTagEntry.IsEnabled = true;
 
-			if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull )
-				btnJumpToTag.IsEnabled = true;
+				TagEntry currentTag = ((TagEntry)cbTagEntry.SelectedItem);
+
+				if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull)
+					btnJumpToTag.IsEnabled = true;
+				else
+					btnJumpToTag.IsEnabled = false;
+			}
 			else
+			{
 				btnJumpToTag.IsEnabled = false;
+				btnSearch.IsEnabled = false;
+				cbTagEntry.IsEnabled = false;
+			}
+			bool tagValid = cbTagEntry.SelectedIndex != 1;
 		}
 
 		private void CanExecuteJumpToCommand(object sender, CanExecuteRoutedEventArgs e)

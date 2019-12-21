@@ -565,10 +565,12 @@ namespace Blamite.Injection
 			return newSID;
 		}
 
-		public void InjectPredictions(ICollection<ExtractedResourcePredictionD> predictions)
+		public void InjectPredictions(ICollection<ExtractedResourcePredictionD> predictions, IStream stream)
 		{
 			if (predictions == null || predictions.Count == 0)
 				return;
+
+			LoadResourceTable(stream);
 
 			//prediction tags are sorted by index, so step through the injected tags to add them that way
 			foreach (ExtractedTag tag in InjectedTags)
