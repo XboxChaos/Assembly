@@ -10,9 +10,12 @@ namespace Assembly.Helpers.Net.Sockets
 	{
 		public static void SerializeCommand(PokeCommand command, Stream stream)
 		{
-			var type = (byte)command.Type;
-			stream.WriteByte(type);
-			command.Serialize(stream);
+			using (var bufferStream = new BufferedStream(stream))
+			{
+				var type = (byte)command.Type;
+				bufferStream.WriteByte(type);
+				command.Serialize(bufferStream);
+			}
 		}
 
 		public static PokeCommand DeserializeCommand(Stream stream)
