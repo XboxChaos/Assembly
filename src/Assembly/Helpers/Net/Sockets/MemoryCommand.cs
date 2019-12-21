@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Blamite.IO;
 
@@ -6,29 +7,31 @@ namespace Assembly.Helpers.Net.Sockets
 {
     public class MemoryCommand : PokeCommand
     {
-        public Int64 Offset { get; set; }
-        public byte[] Data { get; set; }
+        public List<SocketStream.SocketAction> Actions { get; set; }
 
         public MemoryCommand() : base(PokeCommandType.Memory)
         {
-
+            Actions = new List<SocketStream.SocketAction>();
         }
 
-        public MemoryCommand(long offset, byte[] data) : base(PokeCommandType.Memory)
+        public MemoryCommand(List<SocketStream.SocketAction> actions) : base(PokeCommandType.Memory)
         {
-
-            Offset = offset;
-            Data = data;
+            Actions = actions;
         }
 
         public override void Deserialize(Stream stream)
         {
-
             using (var reader = new EndianReader(stream, Endian.BigEndian))
             {
-                Offset = reader.ReadInt64();
-                var size = reader.ReadInt32();
-                Data = reader.ReadBlock(size);
+                var count = reader.ReadInt32();
+
+                for (int i = 0; i < count; i++)
+                {
+                    var position = reader.ReadInt64();
+                    var size = reader.ReadInt32();
+                    var buffer = reader.ReadBlock(size);
+                    Actions.Add(new SocketStream.SocketAction(position, buffer));
+                }
             }
         }
 
@@ -42,9 +45,15 @@ namespace Assembly.Helpers.Net.Sockets
         {
             using (var writer = new EndianWriter(stream, Endian.BigEndian))
             {
-                writer.WriteInt64(Offset);
-                writer.WriteInt32(Data.Length);
-                writer.WriteBlock(Data);
+                var count = Actions.Count;
+                writer.WriteInt32(count);
+
+                foreach (var action in Actions)
+                {
+                    writer.WriteInt64(action.Position);
+                    writer.WriteInt32(action.Buffer.Length);
+                    writer.WriteBlock(action.Buffer);
+                }
             }
         }
         public class Model

@@ -2089,10 +2089,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
 			{
-				if (_cacheFile.MetaArea.ContainsBlockPointer(memory.Offset, memory.Data.Length))
+				foreach (var action in memory.Actions)
 				{
-					metaStream.SeekTo(memory.Offset);
-					metaStream.WriteBlock(memory.Data);
+					if (_cacheFile.MetaArea.ContainsBlockPointer(action.Position, action.Buffer.Length))
+					{
+						metaStream.SeekTo(action.Position);
+						metaStream.WriteBlock(action.Buffer);
+					}
 				}
 			}
 		}

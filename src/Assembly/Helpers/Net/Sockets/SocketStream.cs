@@ -9,15 +9,12 @@ namespace Assembly.Helpers.Net.Sockets
     public class SocketStream : Stream
     {
         private IPokeCommandStarter _starter;
+        private List<SocketAction> _actions;
 
         public SocketStream(IPokeCommandStarter starter)
         {
             _starter = starter;
-        }
-
-        public override void Flush()
-        {
-            throw new NotImplementedException();
+            _actions = new List<SocketAction>();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -45,9 +42,20 @@ namespace Assembly.Helpers.Net.Sockets
             throw new NotImplementedException();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            Flush();
+        }
+
         public override int Read(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Flush()
+        {
+            _starter.StartMemoryCommand(new MemoryCommand(_actions));
+            _actions.Clear();
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -57,8 +65,7 @@ namespace Assembly.Helpers.Net.Sockets
             Buffer.BlockCopy(buffer, offset, writeBuffer, 0, count);
 
             // Send a MemoryCommand to the server
-            var memory = new MemoryCommand((Int64)Position, writeBuffer);
-            _starter.StartMemoryCommand(memory);
+            _actions.Add(new SocketAction((Int64)Position, writeBuffer));
             Position += count;
         }
 
@@ -83,5 +90,18 @@ namespace Assembly.Helpers.Net.Sockets
         }
 
         public override long Position { get; set; }
+
+        public class SocketAction
+        {
+            public SocketAction(Int64 position, byte[] writeBuffer)
+            {
+                Position = position;
+                Buffer = writeBuffer;
+            }
+
+            public byte[] Buffer { get; set; }
+
+            public Int64 Position { get; set; }
+        }
     }
 }
