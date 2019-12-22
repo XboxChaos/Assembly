@@ -34,21 +34,21 @@ namespace Blamite.Patching
 						break;
 
 					case "segm":
-						ReadSegmentChanges(reader, result);
+						ReadSegmentChanges(reader, container.BlockVersion, result);
 						break;
 
 					case "blfc":
-						ReadBlfInfo(reader, result);
+						ReadBlfInfo(reader, container.BlockVersion, result);
 						break;
 
 						#region Deprecated
 
 					case "meta":
-						ReadMetaChanges(reader, result);
+						ReadMetaChanges(reader, container.BlockVersion, result);
 						break;
 
 					case "locl":
-						ReadLocaleChanges(reader, result);
+						ReadLocaleChanges(reader, container.BlockVersion, result);
 						break;
 
 						#endregion Deprecated
@@ -59,6 +59,11 @@ namespace Blamite.Patching
 
 		private static void ReadPatchInfo(IReader reader, byte version, Patch output)
 		{
+			if (version > 3)
+			{
+				throw new NotSupportedException("The patch info container version was too new.");
+			}
+
 			// Version 0 (all versions)
 			output.MapID = reader.ReadInt32();
 			output.MapInternalName = reader.ReadAscii();
@@ -87,7 +92,7 @@ namespace Blamite.Patching
 				output.OutputName = "";
 
 			// Version 3
-			if (version >= 3)
+			if (version == 3)
 			{
 				output.PC = reader.ReadByte() == 1;
 				output.BuildString = reader.ReadAscii();
@@ -96,8 +101,13 @@ namespace Blamite.Patching
 				output.BuildString = "";
 		}
 
-		private static void ReadSegmentChanges(IReader reader, Patch output)
+		private static void ReadSegmentChanges(IReader reader, byte version, Patch output)
 		{
+			if (version > 0)
+			{
+				throw new NotSupportedException("The segment container version was too new.");
+			}
+
 			// Version 0 (all versions)
 			byte numChanges = reader.ReadByte();
 			for (int i = 0; i < numChanges; i++)
@@ -138,8 +148,13 @@ namespace Blamite.Patching
 			return result;
 		}
 
-		private static void ReadBlfInfo(IReader reader, Patch output)
+		private static void ReadBlfInfo(IReader reader, byte version, Patch output)
 		{
+			if (version > 0)
+			{
+				throw new NotSupportedException("The blf info container version was too new.");
+			}
+
 			// Version 0 (all versions)
 			var targetGame = (TargetGame) reader.ReadByte();
 			string mapInfoFileName = reader.ReadAscii();
@@ -159,13 +174,23 @@ namespace Blamite.Patching
 
 		#region Deprecated
 
-		private static void ReadMetaChanges(IReader reader, Patch output)
+		private static void ReadMetaChanges(IReader reader, byte version, Patch output)
 		{
+			if (version > 0)
+			{
+				throw new NotSupportedException("The meta changes container version was too new.");
+			}
+
 			output.MetaChanges.AddRange(ReadDataChanges(reader));
 		}
 
-		private static void ReadLocaleChanges(IReader reader, Patch output)
+		private static void ReadLocaleChanges(IReader reader, byte version, Patch output)
 		{
+			if (version > 0)
+			{
+				throw new NotSupportedException("The locale container version was too new.");
+			}
+
 			// Read language changes
 			byte numLanguageChanges = reader.ReadByte();
 			for (byte i = 0; i < numLanguageChanges; i++)
