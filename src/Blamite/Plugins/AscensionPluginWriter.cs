@@ -246,6 +246,12 @@ namespace Blamite.Plugins
 			return true;
 		}
 
+		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		{
+			//WriteValueStart("bitmask64", name, offset, visible);
+			return false;
+		}
+
 		public void VisitBit(string name, int index)
 		{
 			_output.WriteStartElement("option");

@@ -137,6 +137,7 @@ namespace Blamite.Plugins
 		bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine);
 		bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine);
 		bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine);
 
 		/// <summary>
 		///     Called when a bit definition is encountered inside a bitfield.

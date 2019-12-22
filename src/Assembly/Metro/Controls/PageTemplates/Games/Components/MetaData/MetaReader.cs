@@ -55,6 +55,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				case BitfieldType.Bitfield32:
 					field.Value = _reader.ReadUInt32();
 					break;
+				case BitfieldType.Bitfield64:
+					field.Value = _reader.ReadUInt64();
+					break;
 			}
 		}
 

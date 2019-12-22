@@ -280,6 +280,11 @@ namespace Blamite.Injection
 			return false;
 		}
 
+		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		{
+			return false;
+		}
+
 		public void VisitBit(string name, int index)
 		{
 		}

@@ -177,6 +177,13 @@ namespace Blamite.Plugins
 			return true;
 		}
 
+		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		{
+			PrintBasicValue("Bitfield64", name, offset, visible);
+			_level++;
+			return true;
+		}
+
 		public void VisitBit(string name, int index)
 		{
 			Debug.WriteLine(Indent() + "Bit \"{0}\" at position {1}", name, index);

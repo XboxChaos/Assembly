@@ -240,6 +240,11 @@ namespace Assembly.Helpers.Plugins
 			return EnterBitfield(BitfieldType.Bitfield32, name, offset, visible, pluginLine);
 		}
 
+		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		{
+			return EnterBitfield(BitfieldType.Bitfield64, name, offset, visible, pluginLine);
+		}
+
 		public void VisitBit(string name, int index)
 		{
 			if (_currentBitfield != null)

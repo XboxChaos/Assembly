@@ -261,6 +261,11 @@ namespace Blamite.Plugins
 					if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
+				case "bitmask64":
+				case "bitfield64":
+					if (visitor.EnterBitfield64(name, offset, visible, pluginLine))
+						ReadBits(reader, visitor);
+					break;
 
 				case "enum8":
 					if (visitor.EnterEnum8(name, offset, visible, pluginLine))

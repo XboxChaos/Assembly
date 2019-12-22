@@ -169,6 +169,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RegisterMetaTag("bitfield8", "8-bit bitfield");
 			RegisterMetaTag("bitfield16", "16-bit bitfield");
 			RegisterMetaTag("bitfield32", "32-bit bitfield");
+			RegisterMetaTag("bitfield64", "64-bit bitfield");
 			RegisterMetaTag("enum8", "8-bit enumeration value");
 			RegisterMetaTag("enum16", "8-bit enumeration value");
 			RegisterMetaTag("enum32", "8-bit enumeration value");

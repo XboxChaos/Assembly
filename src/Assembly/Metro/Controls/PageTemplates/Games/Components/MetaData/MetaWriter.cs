@@ -61,7 +61,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					break;
 
 				case BitfieldType.Bitfield32:
-					_writer.WriteUInt32(field.Value);
+					_writer.WriteUInt32((uint)field.Value);
+					break;
+
+				case BitfieldType.Bitfield64:
+					_writer.WriteUInt64(field.Value);
 					break;
 			}
 		}
