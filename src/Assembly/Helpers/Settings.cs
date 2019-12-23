@@ -120,7 +120,11 @@ namespace Assembly.Helpers
 			}
 		}
 
-		public NetworkPoke AssemblyNetworkPoke { get => _networkPoke; private set => _networkPoke = AssemblyNetworkPoke; }
+		public NetworkPoke AssemblyNetworkPoke
+		{
+			get { return _networkPoke; }
+			set { _networkPoke = AssemblyNetworkPoke; }
+		}
 	}
 
 	/// <summary>
