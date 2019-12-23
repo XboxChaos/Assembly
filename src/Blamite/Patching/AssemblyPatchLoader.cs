@@ -60,9 +60,7 @@ namespace Blamite.Patching
 		private static void ReadPatchInfo(IReader reader, byte version, Patch output)
 		{
 			if (version > 3)
-			{
-				throw new NotSupportedException("The patch info container version was too new.");
-			}
+				throw new NotSupportedException("Unrecognized \"titl\" block version");
 
 			// Version 0 (all versions)
 			output.MapID = reader.ReadInt32();
@@ -104,9 +102,7 @@ namespace Blamite.Patching
 		private static void ReadSegmentChanges(IReader reader, byte version, Patch output)
 		{
 			if (version > 0)
-			{
-				throw new NotSupportedException("The segment container version was too new.");
-			}
+				throw new NotSupportedException("Unrecognized \"segm\" block version");
 
 			// Version 0 (all versions)
 			byte numChanges = reader.ReadByte();
@@ -151,9 +147,7 @@ namespace Blamite.Patching
 		private static void ReadBlfInfo(IReader reader, byte version, Patch output)
 		{
 			if (version > 0)
-			{
-				throw new NotSupportedException("The blf info container version was too new.");
-			}
+				throw new NotSupportedException("Unrecognized \"blfc\" block version");
 
 			// Version 0 (all versions)
 			var targetGame = (TargetGame) reader.ReadByte();
@@ -177,9 +171,7 @@ namespace Blamite.Patching
 		private static void ReadMetaChanges(IReader reader, byte version, Patch output)
 		{
 			if (version > 0)
-			{
-				throw new NotSupportedException("The meta changes container version was too new.");
-			}
+				throw new NotSupportedException("Unrecognized \"meta\" block version");
 
 			output.MetaChanges.AddRange(ReadDataChanges(reader));
 		}
@@ -187,9 +179,7 @@ namespace Blamite.Patching
 		private static void ReadLocaleChanges(IReader reader, byte version, Patch output)
 		{
 			if (version > 0)
-			{
-				throw new NotSupportedException("The locale container version was too new.");
-			}
+				throw new NotSupportedException("Unrecognized \"locl\" block version");
 
 			// Read language changes
 			byte numLanguageChanges = reader.ReadByte();
