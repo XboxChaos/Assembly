@@ -19,7 +19,7 @@ namespace Assembly.Helpers.Net.Sockets
 
         public IStream GetMetaStream(ICacheFile cacheFile)
         {
-            return new EndianStream(new SocketStream(_starter), cacheFile.Endianness);
+            return new EndianStream(new SocketStream(_starter, cacheFile.BuildString, cacheFile.InternalName), cacheFile.Endianness);
         }
 
         public bool IsDead()

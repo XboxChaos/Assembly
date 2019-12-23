@@ -10,11 +10,15 @@ namespace Assembly.Helpers.Net.Sockets
     {
         private IPokeCommandStarter _starter;
         private List<SocketAction> _actions;
+        private string _buildName;
+        private string _cacheName;
 
-        public SocketStream(IPokeCommandStarter starter)
+        public SocketStream(IPokeCommandStarter starter, string buildName, string cacheName)
         {
             _starter = starter;
             _actions = new List<SocketAction>();
+            _buildName = buildName;
+            _cacheName = cacheName;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -54,7 +58,7 @@ namespace Assembly.Helpers.Net.Sockets
 
         public override void Flush()
         {
-            _starter.StartMemoryCommand(new MemoryCommand(_actions));
+            _starter.StartMemoryCommand(new MemoryCommand(_actions, _buildName, _cacheName));
             _actions.Clear();
         }
 

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Assembly.Helpers.Net;
+using Assembly.Helpers.Net.Sockets;
+using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Serialization;
@@ -21,6 +23,7 @@ namespace Assembly.Helpers
 	public class Storage : INotifyPropertyChanged
 	{
 		private Settings _assemblySettings = new Settings();
+		private NetworkPoke _networkPoke = new NetworkPoke();
 
 		#region Helpers
 
@@ -116,6 +119,8 @@ namespace Assembly.Helpers
 				FileDefaults.UpdateFileDefaults();
 			}
 		}
+
+		public NetworkPoke AssemblyNetworkPoke { get => _networkPoke; private set => _networkPoke = AssemblyNetworkPoke; }
 	}
 
 	/// <summary>
@@ -872,5 +877,35 @@ namespace Assembly.Helpers
 		{
 			App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Clear();
 		}
+	}
+
+	public class NetworkPoke
+	{
+
+		public NetworkPoke()
+		{
+			IsConnected = false;
+			IsServer = false;
+			Maps = new List<HaloMap>();
+			Clients = new ObservableCollection<string>();
+			NetworkRteProvider = null;
+			Address = "127.0.0.1";
+			Port = "19002";
+		}
+
+		public bool IsConnected { get; set; }
+
+		public bool IsServer { get; set; }
+
+		public ObservableCollection<string> Clients { get; private set; }
+
+		public List<HaloMap> Maps { get; private set; }
+
+		public SocketRTEProvider NetworkRteProvider { get; set; }
+
+		public string Address { get; set; }
+
+		public string Port { get; set; }
+
 	}
 }

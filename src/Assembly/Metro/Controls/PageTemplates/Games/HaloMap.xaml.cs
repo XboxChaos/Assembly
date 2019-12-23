@@ -67,7 +67,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private ObservableCollection<HeaderValue> _headerDetails = new ObservableCollection<HeaderValue>();
 		private IStreamManager _mapManager;
 		private IRTEProvider _rteProvider;
-		private SocketRTEProvider _networkProvider;
 		private Trie _stringIdTrie;
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
@@ -117,7 +116,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			initalLoadBackgroundWorker.RunWorkerAsync();
 
-			_networkProvider = null;
 			DataContext = this;
 		}
 
@@ -1668,18 +1666,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			if (!IsTagOpen(tag))
 			{
-				var rteProvdier = _rteProvider;
-				if (_networkProvider != null)
-				{
-					rteProvdier = _networkProvider;
-				}
-
 				contentTabs.Items.Add(new CloseableTabItem
 				{
 					Header = TabHeaderFromTag(tag),
 					Tag = tag,
 					Content =
-						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, rteProvdier,
+						new MetaContainer(_buildInfo, _cacheLocation, tag, _allTags, _cacheFile, _mapManager, _rteProvider,
 							_stringIdTrie)
 				});
 			}
@@ -1932,11 +1924,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public void Dispose()
 		{
-			if (_networkProvider != null)
-			{
-				_networkProvider.Kill();
-			}
-
 			App.AssemblyStorage.AssemblySettings.PropertyChanged -= SettingsChanged;
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
@@ -1959,140 +1946,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			throw new NotImplementedException();
 		}
 
-		private void PreviewPortInput(object sender, TextCompositionEventArgs e)
+		public bool HandleMemoryCommand(MemoryCommand memory)
 		{
-			foreach (var ch in e.Text)
+			if (memory.BuildName == _cacheFile.BuildString && memory.CacheName == _cacheFile.InternalName)
 			{
-				if (!Char.IsDigit(ch)) {
-					e.Handled = true;
-					break;
-				}
-			}
-		}
-
-		public void HandleMemoryCommand(MemoryCommand memory)
-		{
-			using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
-			{
-				if (metaStream != null)
+				using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
 				{
-					foreach (var action in memory.Actions)
+					if (metaStream != null)
 					{
-						if (_cacheFile.MetaArea.ContainsBlockPointer(action.Position, action.Buffer.Length))
+						foreach (var action in memory.Actions)
 						{
-							metaStream.SeekTo(action.Position);
-							metaStream.WriteBlock(action.Buffer);
+							if (_cacheFile.MetaArea.ContainsBlockPointer(action.Position, action.Buffer.Length))
+							{
+								metaStream.SeekTo(action.Position);
+								metaStream.WriteBlock(action.Buffer);
+							}
 						}
 					}
+					return true;
 				}
 			}
-		}
-
-		private IPEndPoint CreateIPEndpoint(string ipAddress, string port)
-		{
-			try
-			{
-				if (ipAddress == null)
-				{
-					return new IPEndPoint(IPAddress.Any, Int32.Parse(port));
-				}
-				else
-				{
-					return new IPEndPoint(IPAddress.Parse(ipAddress), Int32.Parse(port));
-				}
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-		}
-
-		private void StartServer_Click(object sender, RoutedEventArgs e)
-		{
-			//first check input is there.
-			var endpoint = CreateIPEndpoint(null, svrPortBox.Text);
-			if (endpoint != null)
-			{
-				if (_networkProvider == null || _networkProvider.IsDead())
-				{
-					var serverCommandStarter = new ServerCommandStarter(this, _clientList);
-
-					if (serverCommandStarter.StartServer(endpoint))
-					{
-						_networkProvider = new SocketRTEProvider(serverCommandStarter);
-						startClientBtn.Visibility = Visibility.Collapsed;
-						startServerBtn.Visibility = Visibility.Collapsed;
-						disconnectButton.Visibility = Visibility.Visible;
-						connectedClientsGrid.Visibility = Visibility.Visible;
-						srvAddressBar.Visibility = Visibility.Collapsed;
-						clientList.Visibility = Visibility.Visible;
-						svrAddressBox.IsReadOnly = true;
-						svrPortBox.IsReadOnly = true;
-						MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
-					}
-					else
-					{
-						MetroMessageBox.Show("Unable to start server", "Unable to bind to address and port.  Possible another network poke server is running already.");
-					}
-				}
-				else
-				{
-					MetroMessageBox.Show("Unable to start server", "Server cannot be started since a connection is already running.  Disconnect first.");
-				}
-			}
-			else
-			{
-				MetroMessageBox.Show("Port Invalid", "Server listen port was invalid.");
-			}
-		}
-
-		private void StartClient_Click(object sender, RoutedEventArgs e)
-		{
-			var endpoint = CreateIPEndpoint(svrAddressBox.Text, svrPortBox.Text);
-			if (endpoint != null)
-			{
-				if (_networkProvider == null || _networkProvider.IsDead())
-				{
-					var clientCommandStarter = new ClientCommandStarter(this);
-
-					if (clientCommandStarter.StartClient(endpoint))
-					{
-						_networkProvider = new SocketRTEProvider(clientCommandStarter);
-						startClientBtn.Visibility = Visibility.Collapsed;
-						startServerBtn.Visibility = Visibility.Collapsed;
-						disconnectButton.Visibility = Visibility.Visible;
-						svrAddressBox.IsReadOnly = true;
-						svrPortBox.IsReadOnly = true;
-						MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
-					}
-					else
-					{
-						MetroMessageBox.Show("Unable to start client", "Remote address is not a currently available network poke server.");
-					}
-				}
-				else
-				{
-					MetroMessageBox.Show("Unable to start client", "Client cannot be started since a connection is already running.  Disconnect first.");
-				}
-			}
-			else
-			{
-				MetroMessageBox.Show("Server Details Invalid", "Remote port or address was not the correct format.");
-			}
-		}
-
-		private void disconnectButton_Click(object sender, RoutedEventArgs e)
-		{
-			_networkProvider.Kill();
-			startClientBtn.Visibility = Visibility.Visible;
-			startServerBtn.Visibility = Visibility.Visible;
-			disconnectButton.Visibility = Visibility.Collapsed;
-			srvAddressBar.Visibility = Visibility.Visible;
-			connectedClientsGrid.Visibility = Visibility.Collapsed;
-			clientList.Visibility = Visibility.Collapsed;
-			svrAddressBox.IsReadOnly = false;
-			svrPortBox.IsReadOnly = false;
-			_networkProvider = null;
+			return false;
 		}
 	}
 }

@@ -262,7 +262,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			else if (_rteProvider != null)
 			{
-				using (IStream metaStream = _rteProvider.GetMetaStream(_cache))
+				var rteProvider = _rteProvider;
+				if (App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider != null && !App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider.IsDead())
+				{
+					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
+				}
+
+				using (IStream metaStream = rteProvider.GetMetaStream(_cache))
 				{
 					if (metaStream != null)
 					{

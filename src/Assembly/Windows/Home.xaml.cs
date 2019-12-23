@@ -181,6 +181,11 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.PluginConverter);
 		}
 
+		private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.NetworkPoking);
+		}
+
 		//xbdm
 		private void menuScreenshot_Click(object sender, RoutedEventArgs e)
 		{
@@ -463,7 +468,8 @@ namespace Assembly.Windows
 			MemoryManager,
 			VoxelConverter,
 			PostGenerator,
-			MapNames
+			MapNames,
+			NetworkPoking
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -518,6 +524,7 @@ namespace Assembly.Windows
 			newCacheTab.Closing += HaloMap_Closing;
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
+			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add((HaloMap)newCacheTab.Content);
 		}
 
 		/// <summary>
@@ -680,6 +687,11 @@ namespace Assembly.Windows
 				case TabGenre.PostGenerator:
 					tab.Title = "Post Generator";
 					tab.Content = new PostGenerator();
+					break;
+
+				case TabGenre.NetworkPoking:
+					tab.Title = "Network Poking";
+					tab.Content = new NetworkPoking();
 					break;
 
 				case TabGenre.MapNames:
@@ -845,6 +857,7 @@ namespace Assembly.Windows
 		{
 			LayoutDocument ld = (LayoutDocument)sender;
 			HaloMap mp = (HaloMap)ld.Content;
+			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(mp);
 
 			mp.Dispose();
 		}

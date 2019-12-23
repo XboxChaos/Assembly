@@ -9,6 +9,6 @@ namespace Assembly.Helpers.Net.Sockets
     {
         void HandleTestCommand(TestCommand test);
 
-        void HandleMemoryCommand(MemoryCommand memory);
+        bool HandleMemoryCommand(MemoryCommand memory);
     }
 }

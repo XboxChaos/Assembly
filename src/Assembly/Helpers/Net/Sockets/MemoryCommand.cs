@@ -8,21 +8,33 @@ namespace Assembly.Helpers.Net.Sockets
     public class MemoryCommand : PokeCommand
     {
         public List<SocketStream.SocketAction> Actions { get; set; }
+        public string BuildName { get; set; }
+        public string CacheName { get; set; }
 
         public MemoryCommand() : base(PokeCommandType.Memory)
         {
             Actions = new List<SocketStream.SocketAction>();
+            BuildName = "";
+            CacheName = "";
         }
 
-        public MemoryCommand(List<SocketStream.SocketAction> actions) : base(PokeCommandType.Memory)
+        public MemoryCommand(List<SocketStream.SocketAction> actions, string buildName, string cacheName) : base(PokeCommandType.Memory)
         {
             Actions = actions;
+            BuildName = buildName;
+            CacheName = cacheName;
         }
 
         public override void Deserialize(Stream stream)
         {
             using (var reader = new EndianReader(stream, Endian.BigEndian))
             {
+                var buildNameLen = reader.ReadInt32();
+                BuildName = System.Text.Encoding.UTF8.GetString(reader.ReadBlock(buildNameLen));
+
+                var cacheNameLen = reader.ReadInt32();
+                CacheName = System.Text.Encoding.UTF8.GetString(reader.ReadBlock(cacheNameLen));
+
                 var count = reader.ReadInt32();
 
                 for (int i = 0; i < count; i++)
@@ -45,6 +57,14 @@ namespace Assembly.Helpers.Net.Sockets
         {
             using (var writer = new EndianWriter(stream, Endian.BigEndian))
             {
+                var buildNameBytes = System.Text.Encoding.UTF8.GetBytes(BuildName);
+                writer.WriteInt32(buildNameBytes.Length);
+                writer.WriteBlock(buildNameBytes);
+
+                var cacheNameBytes = System.Text.Encoding.UTF8.GetBytes(CacheName);
+                writer.WriteInt32(cacheNameBytes.Length);
+                writer.WriteBlock(cacheNameBytes);
+
                 var count = Actions.Count;
                 writer.WriteInt32(count);
 
@@ -55,11 +75,6 @@ namespace Assembly.Helpers.Net.Sockets
                     writer.WriteBlock(action.Buffer);
                 }
             }
-        }
-        public class Model
-        {
-            public uint Offset { get; set; }
-            public byte[] Data { get; set; }
         }
     }
 }

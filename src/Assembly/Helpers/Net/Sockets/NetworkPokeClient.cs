@@ -12,9 +12,6 @@ namespace Assembly.Helpers.Net.Sockets
     {
         private Socket _socket;
 
-        // TODO: Should we make it possible to set the port number somehow?
-        private static int Port = 19002;
-
         public NetworkPokeClient()
         {
 
