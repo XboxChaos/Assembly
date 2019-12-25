@@ -8,12 +8,12 @@ namespace Assembly.Helpers.Net.Sockets
 {
     public class SocketStream : Stream
     {
-        private IPokeCommandStarter _starter;
+        private IPokeSessionManager _starter;
         private List<SocketAction> _actions;
         private string _buildName;
         private string _cacheName;
 
-        public SocketStream(IPokeCommandStarter starter, string buildName, string cacheName)
+        public SocketStream(IPokeSessionManager starter, string buildName, string cacheName)
         {
             _starter = starter;
             _actions = new List<SocketAction>();
@@ -34,8 +34,7 @@ namespace Assembly.Helpers.Net.Sockets
                     break;
 
                 case SeekOrigin.End:
-                    Position = 0x100000000 - offset;
-                    break;
+                    throw new NotImplementedException();
             }
             return Position;
 
@@ -58,7 +57,7 @@ namespace Assembly.Helpers.Net.Sockets
 
         public override void Flush()
         {
-            _starter.StartMemoryCommand(new MemoryCommand(_actions, _buildName, _cacheName));
+            _starter.SendMemoryCommand(new MemoryCommand(_actions, _buildName, _cacheName));
             _actions.Clear();
         }
 

@@ -16,40 +16,23 @@ namespace Assembly.Helpers.Net.Sockets
 	{
 		private Socket _listener;
 		private readonly List<Socket> _clients = new List<Socket>();
-		ObservableCollection<string> _clientList;
 		private int _port;
 
-		private static string UpnpDescription = "Assembly Network Poking";
+		public event EventHandler<ClientEventArgs> ClientConnected;
+		public event EventHandler<ClientEventArgs> ClientDisconnected;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NetworkPokeServer"/> class.
-		/// A server will be created on the local machine on port 19002.
-		/// </summary>
-		public NetworkPokeServer(ObservableCollection<string> clientList)
+		private const string UpnpDescription = "Assembly Network Poking";
+
+		public void Listen(IPEndPoint endpoint)
 		{
-			_clientList = clientList;
-			// Discover UPnP support
-		}
+			_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		public bool Listen(IPEndPoint endpoint)
-		{
-			try
-			{
-				_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-				// Bind to our local endpoint
-				_listener.Bind(endpoint);
-				_port = endpoint.Port;
-				_listener.Listen(128); // Listen with a pending connection queue size of 128
-				NatUtility.DeviceFound += DeviceFound;
-				NatUtility.StartDiscovery();
-				return true;
-			}
-			catch (SocketException)
-			{
-
-			}
-			return false;
+			// Bind to our local endpoint
+			_listener.Bind(endpoint);
+			_port = endpoint.Port;
+			_listener.Listen(128);
+			NatUtility.DeviceFound += DeviceFound;
+			NatUtility.StartDiscovery();
 		}
 
 		/// <summary>
@@ -98,29 +81,17 @@ namespace Assembly.Helpers.Net.Sockets
 				}
 				else
 				{
-					try
-					{
-						// Client ready to connect
-						var client = _listener.Accept();
-						ConnectClient(client);
-					}
-					catch (ObjectDisposedException)
-					{
-						return false;
-					}
+					// Client ready to connect
+					var client = _listener.Accept();
+					ConnectClient(client);
 				}
 			}
-			lock (_clients)
+
+			foreach (var socket in failedClients)
 			{
-				foreach (var socket in failedClients)
-				{
-					_clients.Remove(socket);
-					App.Current.Dispatcher.Invoke((Action)delegate
-					{
-						_clientList.Remove(socket.RemoteEndPoint.ToString());
-					});
-					socket.Close();
-				}
+				RemoveClient(socket);
+				_clients.Remove(socket);
+				socket.Close();
 			}
 			return true;
 		}
@@ -138,8 +109,10 @@ namespace Assembly.Helpers.Net.Sockets
 				{
 					try
 					{
-						using (var stream = new NetworkStream(socket, false))
+						using (var stream = new BufferedStream(new NetworkStream(socket, false)))
+						{
 							CommandSerialization.SerializeCommand(command, stream);
+						}
 					}
 					catch (IOException)
 					{
@@ -148,10 +121,6 @@ namespace Assembly.Helpers.Net.Sockets
 				}
 				foreach (var socket in failedClients)
 				{
-					App.Current.Dispatcher.Invoke((Action)delegate
-					{
-						_clientList.Remove(socket.RemoteEndPoint.ToString());
-					});
 					_clients.Remove(socket);
 					socket.Close();
 				}
@@ -167,10 +136,17 @@ namespace Assembly.Helpers.Net.Sockets
 			lock (_clients)
 			{
 				_clients.Add(client);
-				App.Current.Dispatcher.Invoke((Action)delegate
-				{
-					_clientList.Add(client.RemoteEndPoint.ToString());
-				});
+			}
+			ClientConnected(this, new ClientEventArgs(client.RemoteEndPoint.ToString()));
+		}
+
+		private void RemoveClient(Socket client)
+		{
+			ClientDisconnected(this, new ClientEventArgs(client.RemoteEndPoint.ToString()));
+			lock (_clients)
+			{
+				_clients.Remove(client);
+				client.Close();
 			}
 		}
 
@@ -182,10 +158,6 @@ namespace Assembly.Helpers.Net.Sockets
 				foreach (var socket in _clients)
 				{
 					socket.Close();
-					App.Current.Dispatcher.Invoke((Action)delegate
-					{
-						_clientList.Clear();
-					});
 				}
 			}
 		}

@@ -263,7 +263,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			else if (_rteProvider != null)
 			{
 				var rteProvider = _rteProvider;
-				if (App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider != null && !App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider.IsDead())
+				if (App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider != null)
 				{
 					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
 				}

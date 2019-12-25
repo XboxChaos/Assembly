@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using XboxChaos.Models;
 using XBDMCommunicator;
 using Xceed.Wpf.AvalonDock.Controls;
+using Assembly.Helpers.Net.Sockets;
 
 namespace Assembly.Windows
 {
@@ -132,6 +133,22 @@ namespace Assembly.Windows
 			}
 		}
 
+		internal void SessionManager_ClientConnected(object sender, ClientEventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Add(e.ClientInfo);
+			});
+		}
+
+		internal void SessionManager_ClientDisconnected(object sender, ClientEventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Remove(e.ClientInfo);
+			});
+		}
+
 		// File
 		private void menuOpenFile_Click(object sender, RoutedEventArgs e)
 		{
@@ -148,6 +165,41 @@ namespace Assembly.Windows
 		private void menuToolHalo4VoxelConverter_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.VoxelConverter);
+		}
+
+		internal void SessionManager_SessionDead(object sender, EventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Clear();
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider.Kill();
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = false;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = null;
+				App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = null;
+				MetroMessageBox.Show("Network Poking Killed", "Network poking session has stopped.  Reverting to local poking...");
+			});
+		}
+
+		internal void ServerSessionManager_SessionActive(object sender, EventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Clear();
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager);
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = true;
+			});
+		}
+
+		internal void ClientSessionManager_SessionActive(object sender, EventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager);
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
+			});
 		}
 
 		// View

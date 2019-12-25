@@ -57,28 +57,54 @@ namespace Assembly.Metro.Controls.PageTemplates
             }
         }
 
+        private void ServerSessionManager_SessionActive(object sender, EventArgs e)
+        {
+            Dispatcher.InvokeAsync((Action)delegate
+            {
+                App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
+                App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
+                SetServerVisibility();
+                MetroMessageBox.Show("Network Poke Server Started", "Network poking server started successfully on port " + svrPortBox.Text);
+            });
+        }
+
+        private void ClientSessionManager_SessionActive(object sender, EventArgs e)
+        {
+            Dispatcher.InvokeAsync((Action)delegate
+            {
+                App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
+                App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
+                SetClientVisibility();
+                MetroMessageBox.Show("Network Poke Client Started", "Network poking successfully connected as a client to " + svrAddressBox.Text);
+            });
+        }
+
+        private void SessionManager_SessionDead(object sender, EventArgs e)
+        {
+            Dispatcher.InvokeAsync((Action)delegate
+            {
+                SetUnconnectedVisibility();
+            });
+        }
+
+
         private void startServerBtn_Click(object sender, RoutedEventArgs e)
         {
             //first check input is there.
             var endpoint = CreateIPEndpoint(null, svrPortBox.Text);
             if (endpoint != null)
             {
-                var serverCommandStarter = new ServerCommandStarter(new PokeCommandDispatcher(), App.AssemblyStorage.AssemblyNetworkPoke.Clients);
+                var serverSessionManager = new ServerPokeSessionManager(new PokeCommandDispatcher());
 
-                if (serverCommandStarter.StartServer(endpoint))
-                {
-                    App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(serverCommandStarter);
-                    App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
-                    App.AssemblyStorage.AssemblyNetworkPoke.IsServer = true;
-                    App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
-                    App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
-                    SetServerVisibility();
-                    MetroMessageBox.Show("Server Start Success", "Network poke server successfully started!");
-                }
-                else
-                {
-                    MetroMessageBox.Show("Unable to start server", "Unable to bind to address and port.  Possible another network poke server is running already.");
-                }
+                serverSessionManager.SessionActive += ServerSessionManager_SessionActive;
+                serverSessionManager.SessionActive += App.AssemblyStorage.AssemblySettings.HomeWindow.ServerSessionManager_SessionActive;
+                serverSessionManager.SessionDead += SessionManager_SessionDead;
+                serverSessionManager.SessionDead += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDead;
+                serverSessionManager.ClientConnected += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_ClientConnected;
+                serverSessionManager.ClientDisconnected += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_ClientDisconnected;
+
+                App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = serverSessionManager;
+                serverSessionManager.StartServer(endpoint);
             }
             else
             {
@@ -91,21 +117,17 @@ namespace Assembly.Metro.Controls.PageTemplates
             var endpoint = CreateIPEndpoint(svrAddressBox.Text, svrPortBox.Text);
             if (endpoint != null)
             {
-                var clientCommandStarter = new ClientCommandStarter(new PokeCommandDispatcher());
+                var clientSesionManager = new ClientPokeSessionManager(new PokeCommandDispatcher());
 
-                if (clientCommandStarter.StartClient(endpoint))
+                clientSesionManager.SessionActive += ClientSessionManager_SessionActive;
+                clientSesionManager.SessionActive += App.AssemblyStorage.AssemblySettings.HomeWindow.ClientSessionManager_SessionActive;
+                clientSesionManager.SessionDead += SessionManager_SessionDead;
+                clientSesionManager.SessionDead += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDead;
+
+                App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = clientSesionManager;
+                if (!clientSesionManager.StartClient(endpoint))
                 {
-                    App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(clientCommandStarter);
-                    App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
-                    App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
-                    App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
-                    App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
-                    SetClientVisibility();
-                    MetroMessageBox.Show("Client Start Success", "Network poke client successfully connected to " + svrAddressBox.Text + "!");
-                }
-                else
-                {
-                    MetroMessageBox.Show("Unable to start client", "Remote address is not a currently available network poke server.");
+                    MetroMessageBox.Show("Network Poke Client Failure", "Could not start network poke connection to " + svrAddressBox.Text);
                 }
             }
             else
@@ -116,11 +138,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         private void disconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider.Kill();
-            App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = false;
-            App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
-            SetUnconnectedVisibility();
-            App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = null;
+            App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.Kill();
         }
 
         private void SetServerVisibility()
@@ -133,6 +151,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             clientList.Visibility = Visibility.Visible;
             svrAddressBox.IsReadOnly = true;
             svrPortBox.IsReadOnly = true;
+            UpdateLayout();
         }
 
         private void SetClientVisibility()
@@ -142,6 +161,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             disconnectButton.Visibility = Visibility.Visible;
             svrAddressBox.IsReadOnly = true;
             svrPortBox.IsReadOnly = true;
+            UpdateLayout();
         }
 
         private void SetUnconnectedVisibility()
@@ -154,6 +174,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             clientList.Visibility = Visibility.Collapsed;
             svrAddressBox.IsReadOnly = false;
             svrPortBox.IsReadOnly = false;
+            UpdateLayout();
         }
 
         private void PreviewPortInput(object sender, TextCompositionEventArgs e)

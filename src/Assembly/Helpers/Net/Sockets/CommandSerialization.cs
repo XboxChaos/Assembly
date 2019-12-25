@@ -10,12 +10,9 @@ namespace Assembly.Helpers.Net.Sockets
 	{
 		public static void SerializeCommand(PokeCommand command, Stream stream)
 		{
-			using (var bufferStream = new BufferedStream(stream))
-			{
-				var type = (byte)command.Type;
-				bufferStream.WriteByte(type);
-				command.Serialize(bufferStream);
-			}
+			var type = (byte)command.Type;
+			stream.WriteByte(type);
+			command.Serialize(stream);
 		}
 
 		public static PokeCommand DeserializeCommand(Stream stream)
@@ -24,14 +21,11 @@ namespace Assembly.Helpers.Net.Sockets
 			PokeCommand command;
 			switch (commandType)
 			{
-				case PokeCommandType.Test:
-					command = new TestCommand();
-					break;
 				case PokeCommandType.Memory:
 					command = new MemoryCommand();
 					break;
 				default:
-					return null; 
+					throw new NotImplementedException();  // Add new undefined command exception
 			}
 			command.Deserialize(stream);
 			return command;

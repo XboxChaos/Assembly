@@ -883,33 +883,82 @@ namespace Assembly.Helpers
 		}
 	}
 
-	public class NetworkPoke
+	public class NetworkPoke : INotifyPropertyChanged
 	{
+		private bool _isConnected;
+		private bool _isServer;
+		private List<HaloMap> _maps = new List<HaloMap>();
+		private IPokeSessionManager _pokeSessionManager = null;
+		private SocketRTEProvider _networkProvider = null;
+		private ObservableCollection<string> _clients = new ObservableCollection<string>();
+		private string _address = "127.0.0.1";
+		private string _port = "19002";
 
-		public NetworkPoke()
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public bool IsConnected
 		{
-			IsConnected = false;
-			IsServer = false;
-			Maps = new List<HaloMap>();
-			Clients = new ObservableCollection<string>();
-			NetworkRteProvider = null;
-			Address = "127.0.0.1";
-			Port = "19002";
+			get { return _isConnected; }
+			set { SetField(ref _isConnected, value, "IsConnected"); }
 		}
 
-		public bool IsConnected { get; set; }
+		public bool IsServer
+		{
+			get { return _isServer; }
+			set { SetField(ref _isServer, value, "IsServer");  }
+		}
 
-		public bool IsServer { get; set; }
+		public List<HaloMap> Maps
+		{
+			get { return _maps; }
+			set { SetField(ref _maps, value, "Maps"); }
+		}
 
-		public ObservableCollection<string> Clients { get; private set; }
+		public IPokeSessionManager PokeSessionManager
+		{
+			get { return _pokeSessionManager; }
+			set { SetField(ref _pokeSessionManager, value, "PokeSessionManager"); }
+		}
 
-		public List<HaloMap> Maps { get; private set; }
+		public SocketRTEProvider NetworkRteProvider
+		{
+			get { return _networkProvider; }
+			set { SetField(ref _networkProvider, value, "NetworkRteProvider"); }
+		}
 
-		public SocketRTEProvider NetworkRteProvider { get; set; }
+		public ObservableCollection<string> Clients
+		{
+			get { return _clients; }
+			set { SetField(ref _clients, value, "Clients"); }
+		}
 
-		public string Address { get; set; }
+		public string Address
+		{
+			get { return _address; }
+			set { SetField(ref _address, value, "Address"); }
+		}
 
-		public string Port { get; set; }
+		public string Port
+		{
+			get { return _port; }
+			set { SetField(ref _port, value, "Port"); }
+		}
+
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected bool SetField<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
+
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
 
 	}
 }

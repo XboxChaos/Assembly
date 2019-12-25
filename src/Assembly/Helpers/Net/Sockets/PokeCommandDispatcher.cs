@@ -22,10 +22,5 @@ namespace Assembly.Helpers.Net.Sockets
 
             return false;
         }
-
-        public void HandleTestCommand(TestCommand test)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

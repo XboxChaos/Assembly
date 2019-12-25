@@ -7,10 +7,10 @@ namespace Assembly.Helpers.Net.Sockets
 {
     public class SocketRTEProvider : IRTEProvider
     {
-        private IPokeCommandStarter _starter;
+        private IPokeSessionManager _starter;
         public string ExeName { get; set; }
 
-        public SocketRTEProvider(IPokeCommandStarter starter)
+        public SocketRTEProvider(IPokeSessionManager starter)
         {
             _starter = starter;
         }
@@ -22,14 +22,9 @@ namespace Assembly.Helpers.Net.Sockets
             return new EndianStream(new SocketStream(_starter, cacheFile.BuildString, cacheFile.InternalName), cacheFile.Endianness);
         }
 
-        public bool IsDead()
+        public void Kill()
         {
-            return _starter.IsDead();
-        }
-
-        public bool Kill()
-        {
-            return _starter.Kill();
+            _starter.Kill();
         }
     }
 }

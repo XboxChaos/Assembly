@@ -1941,11 +1941,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		public void HandleTestCommand(TestCommand test)
-		{
-			throw new NotImplementedException();
-		}
-
 		public bool HandleMemoryCommand(MemoryCommand memory)
 		{
 			if (memory.BuildName == _cacheFile.BuildString && memory.CacheName == _cacheFile.InternalName)

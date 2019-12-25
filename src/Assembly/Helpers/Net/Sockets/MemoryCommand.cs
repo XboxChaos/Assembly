@@ -7,15 +7,13 @@ namespace Assembly.Helpers.Net.Sockets
 {
     public class MemoryCommand : PokeCommand
     {
-        public List<SocketStream.SocketAction> Actions { get; set; }
-        public string BuildName { get; set; }
-        public string CacheName { get; set; }
+        public List<SocketStream.SocketAction> Actions { get; set; } = new List<SocketStream.SocketAction>();
+        public string BuildName { get; set; } = "";
+        public string CacheName { get; set; } = "";
 
         public MemoryCommand() : base(PokeCommandType.Memory)
         {
-            Actions = new List<SocketStream.SocketAction>();
-            BuildName = "";
-            CacheName = "";
+
         }
 
         public MemoryCommand(List<SocketStream.SocketAction> actions, string buildName, string cacheName) : base(PokeCommandType.Memory)

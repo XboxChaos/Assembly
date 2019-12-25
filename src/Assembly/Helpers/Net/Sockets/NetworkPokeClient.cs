@@ -12,64 +12,28 @@ namespace Assembly.Helpers.Net.Sockets
     {
         private Socket _socket;
 
-        public NetworkPokeClient()
+        public void Connect(IPEndPoint endpoint)
         {
-
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _socket.Connect(endpoint);
         }
 
-        public bool Connect(IPEndPoint endpoint)
+        public void SendCommand(PokeCommand command)
         {
-            try
+            using (var stream = new BufferedStream(new NetworkStream(_socket, false)))
             {
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                _socket.Connect(endpoint);
-                return true;
+                CommandSerialization.SerializeCommand(command, stream);
             }
-            catch (SocketException)
-            {
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-
-            }
-            return false;
         }
 
-        public bool SendCommand(PokeCommand command)
+        public void ReceiveCommand(IPokeCommandHandler handler)
         {
-            try
+            using (var stream = new NetworkStream(_socket, false))
             {
-                using (var stream = new NetworkStream(_socket, false))
-                {
-                    CommandSerialization.SerializeCommand(command, stream);
-                }
-                return true;
+                var command = CommandSerialization.DeserializeCommand(stream);
+                if (command != null)
+                    command.Handle(handler);
             }
-            catch (IOException)
-            {
-
-            }
-            return false;
-        }
-
-        public bool ReceiveCommand(IPokeCommandHandler handler)
-        {
-            try
-            {
-                using (var stream = new NetworkStream(_socket, false))
-                {
-                    var command = CommandSerialization.DeserializeCommand(stream);
-                    if (command != null)
-                        command.Handle(handler);
-                }
-                return true;
-            }
-            catch (IOException)
-            {
-
-            }
-            return false;
         }
 
         public void Close()
