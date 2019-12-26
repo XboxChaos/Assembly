@@ -167,7 +167,7 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.VoxelConverter);
 		}
 
-		internal void SessionManager_SessionDead(object sender, EventArgs e)
+		internal void SessionManager_SessionDead(object sender, RunWorkerCompletedEventArgs e)
 		{
 			Dispatcher.InvokeAsync((Action)delegate
 			{
@@ -177,6 +177,10 @@ namespace Assembly.Windows
 				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
 				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = null;
 				App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = null;
+				if (e != null)
+				{
+					MetroException.Show(e.Error);
+				}
 				MetroMessageBox.Show("Network Poking Killed", "Network poking session has stopped.  Reverting to local poking...");
 			});
 		}
@@ -576,7 +580,6 @@ namespace Assembly.Windows
 			newCacheTab.Closing += HaloMap_Closing;
 			documentManager.Children.Add(newCacheTab);
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newCacheTab);
-			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add((HaloMap)newCacheTab.Content);
 		}
 
 		/// <summary>
@@ -909,7 +912,6 @@ namespace Assembly.Windows
 		{
 			LayoutDocument ld = (LayoutDocument)sender;
 			HaloMap mp = (HaloMap)ld.Content;
-			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(mp);
 
 			mp.Dispose();
 		}

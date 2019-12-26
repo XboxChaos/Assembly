@@ -25,7 +25,7 @@ namespace Assembly.Helpers.Net.Sockets
 					command = new MemoryCommand();
 					break;
 				default:
-					throw new NotImplementedException();  // Add new undefined command exception
+					throw new NotImplementedException();
 			}
 			command.Deserialize(stream);
 			return command;

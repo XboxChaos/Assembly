@@ -4,6 +4,7 @@ using System.Net;
 using System.Windows;
 using System.Windows.Input;
 using Assembly.Metro.Dialogs;
+using System.ComponentModel;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -46,6 +47,8 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             if (App.AssemblyStorage.AssemblyNetworkPoke.IsConnected)
             {
+                App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.SessionDead += SessionManager_SessionDead;
+
                 if (App.AssemblyStorage.AssemblyNetworkPoke.IsServer)
                 {
                     SetServerVisibility();
@@ -79,7 +82,7 @@ namespace Assembly.Metro.Controls.PageTemplates
             });
         }
 
-        private void SessionManager_SessionDead(object sender, EventArgs e)
+        private void SessionManager_SessionDead(object sender, RunWorkerCompletedEventArgs e)
         {
             Dispatcher.InvokeAsync((Action)delegate
             {
@@ -138,7 +141,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
         private void disconnectButton_Click(object sender, RoutedEventArgs e)
         {
-            App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.Kill();
+            App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.Kill(null);
         }
 
         private void SetServerVisibility()

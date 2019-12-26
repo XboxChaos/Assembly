@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +11,10 @@ namespace Assembly.Helpers.Net.Sockets
     { 
         void SendMemoryCommand(MemoryCommand freeze);
 
-        void Kill();
+        void Kill(RunWorkerCompletedEventArgs ex);
 
         event EventHandler SessionActive;
-        event EventHandler SessionDead;
+        event EventHandler<RunWorkerCompletedEventArgs> SessionDead;
     }
 
     public class ClientEventArgs : EventArgs

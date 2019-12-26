@@ -8,6 +8,8 @@ using Assembly.Metro.Dialogs;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.ComponentModel;
+using System.Net.Sockets;
+using System.IO;
 
 namespace Assembly.Helpers.Net.Sockets
 {
@@ -19,7 +21,7 @@ namespace Assembly.Helpers.Net.Sockets
         private BackgroundWorker _serverBackgroundWoker;
 
         public event EventHandler SessionActive;
-        public event EventHandler SessionDead;
+        public event EventHandler<RunWorkerCompletedEventArgs> SessionDead;
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;
 
@@ -37,17 +39,18 @@ namespace Assembly.Helpers.Net.Sockets
             try
             {
                 _server.Listen(endpoint);
-                _serverBackgroundWoker = new BackgroundWorker();
-                _serverBackgroundWoker.DoWork += DoServerReceiveWork;
-                _serverBackgroundWoker.RunWorkerCompleted += DoServerReceiveDone;
-                _serverBackgroundWoker.RunWorkerAsync();
-                _sessionActive = true;
-                SessionActive(this, new EventArgs());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Kill();
+                Kill(null);
             }
+
+            _serverBackgroundWoker = new BackgroundWorker();
+            _serverBackgroundWoker.DoWork += DoServerReceiveWork;
+            _serverBackgroundWoker.RunWorkerCompleted += DoServerReceiveDone;
+            _serverBackgroundWoker.RunWorkerAsync();
+            _sessionActive = true;
+            SessionActive(this, new EventArgs());
         }
 
         public void SendMemoryCommand(MemoryCommand memory)
@@ -56,31 +59,24 @@ namespace Assembly.Helpers.Net.Sockets
             memory.Handle(_handler);
         }
 
-        public void Kill()
+        public void Kill(RunWorkerCompletedEventArgs ex)
         {
             _server.Close();
             if (_sessionActive)
             {
                 _sessionActive = false;
-                SessionDead(this, new EventArgs());
+                SessionDead(this, ex);
             }
         }
 
         private void DoServerReceiveWork(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                while (_server.ReceiveCommand(_handler)) ;
-            }
-            catch (Exception)
-            {
-                Kill();
-            }
+            while (_server.ReceiveCommand(_handler)) ;
         }
 
         private void DoServerReceiveDone(object sender, RunWorkerCompletedEventArgs e)
         {
-            Kill();
+            Kill(e);
         }
 
         private void netpokeClientConnected(object sender, ClientEventArgs e)

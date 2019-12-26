@@ -237,6 +237,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					StatusUpdater.Update("Added To Recents");
 				}));
 
+				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+
 				/*ITag dice = _cacheFile.Tags[0x0102];
 				IRenderModel diceModel = _cacheFile.ResourceMetaLoader.LoadRenderModelMeta(dice, reader);
 				var resourceTable = _cacheFile.Resources.LoadResourceTable(reader);
@@ -1927,6 +1929,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			App.AssemblyStorage.AssemblySettings.PropertyChanged -= SettingsChanged;
 
 			List<TabItem> tabs = contentTabs.Items.OfType<TabItem>().ToList();
+
+			App.AssemblyStorage.AssemblyNetworkPoke.Maps.Remove(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
 
 			ExternalTabsClose(tabs, false);
 

@@ -17,7 +17,7 @@ namespace Assembly.Helpers.Net.Sockets
         private bool _sessionActive;
 
         public event EventHandler SessionActive;
-        public event EventHandler SessionDead;
+        public event EventHandler<RunWorkerCompletedEventArgs> SessionDead;
 
         public ClientPokeSessionManager(IPokeCommandHandler handler)
         {
@@ -33,12 +33,13 @@ namespace Assembly.Helpers.Net.Sockets
             }
             catch (Exception)
             {
-                Kill();
+                Kill(null);
                 return false;
             }
 
             var serverBackgroundWorker = new BackgroundWorker();
             serverBackgroundWorker.DoWork += DoClientReceiveWork;
+            serverBackgroundWorker.RunWorkerCompleted += DoClientWorkerCompleted;
             serverBackgroundWorker.RunWorkerAsync();
             _sessionActive = true;
             SessionActive(this, new EventArgs());
@@ -47,40 +48,30 @@ namespace Assembly.Helpers.Net.Sockets
 
         public void SendMemoryCommand(MemoryCommand memory)
         {
-            try
-            {
-                _client.SendCommand(memory);
-            }
-            catch (Exception)
-            {
-                Kill();
-                _handler.HandleMemoryCommand(memory);
-            }
+           _client.SendCommand(memory);
         }
 
-        public void Kill()
+        public void Kill(RunWorkerCompletedEventArgs ex)
         {
             _client.Close();
             if (_sessionActive)
             {
                 _sessionActive = false;
-                SessionDead(this, new EventArgs());
+                SessionDead(this, ex);
             }
         }
 
         private void DoClientReceiveWork(object sender, DoWorkEventArgs e)
         {
-            try
+            while (true)
             {
-                while (true)
-                {
-                    _client.ReceiveCommand(_handler);
-                }
+                _client.ReceiveCommand(_handler);
             }
-            catch (Exception)
-            {
-                Kill();
-            }
+        }
+
+        private void DoClientWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Kill(e);
         }
     }
 }

@@ -11,6 +11,8 @@ using Assembly.Helpers.Net.Sockets;
 using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
+using Blamite.Blam;
+using Blamite.RTE;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Newtonsoft.Json;
@@ -887,7 +889,7 @@ namespace Assembly.Helpers
 	{
 		private bool _isConnected;
 		private bool _isServer;
-		private List<HaloMap> _maps = new List<HaloMap>();
+		private List<Tuple<ICacheFile, IRTEProvider>> _maps = new List<Tuple<ICacheFile, IRTEProvider>>();
 		private IPokeSessionManager _pokeSessionManager = null;
 		private SocketRTEProvider _networkProvider = null;
 		private ObservableCollection<string> _clients = new ObservableCollection<string>();
@@ -908,7 +910,7 @@ namespace Assembly.Helpers
 			set { SetField(ref _isServer, value, "IsServer");  }
 		}
 
-		public List<HaloMap> Maps
+		public List<Tuple<ICacheFile, IRTEProvider>> Maps
 		{
 			get { return _maps; }
 			set { SetField(ref _maps, value, "Maps"); }
