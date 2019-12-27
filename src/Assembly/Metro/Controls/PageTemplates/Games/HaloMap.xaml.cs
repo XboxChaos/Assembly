@@ -11,7 +11,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Assembly.Helpers;
-using Assembly.Helpers.Net.Sockets;
 using Assembly.Metro.Controls.PageTemplates.Games.Components;
 using Assembly.Metro.Controls.PageTemplates.Games.Components.Editors;
 using Assembly.Metro.Dialogs;
@@ -34,7 +33,6 @@ using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.MCC;
-using System.Net;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -53,7 +51,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 	/// <summary>
 	///     Interaction logic for Halo4Map.xaml
 	/// </summary>
-	public partial class HaloMap : INotifyPropertyChanged, IPokeCommandHandler
+	public partial class HaloMap : INotifyPropertyChanged
 	{
 		private readonly string _cacheLocation;
 		private readonly ObservableCollection<LanguageEntry> _languages = new ObservableCollection<LanguageEntry>();
@@ -71,7 +69,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private List<TagEntry> _tagEntries = new List<TagEntry>();
 		private Settings.TagOpenMode _tagOpenMode;
 		private TagHierarchy _visibleTags = new TagHierarchy();
-		private ObservableCollection<string> _clientList = new ObservableCollection<string>();
 
 		public static RoutedCommand DeleteBatchCommand = new RoutedCommand();
 
@@ -115,8 +112,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
 			initalLoadBackgroundWorker.RunWorkerAsync();
-
-			DataContext = this;
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -126,16 +121,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				_headerDetails = value;
 				NotifyPropertyChanged("HeaderDetails");
-			}
-		}
-
-		public ObservableCollection<string> ClientList
-		{
-			get { return _clientList; }
-			set
-			{
-				_clientList = value;
-				NotifyPropertyChanged("ClientList");
 			}
 		}
 
@@ -1943,29 +1928,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						w.Close();
 				}
 			}
-		}
-
-		public bool HandleMemoryCommand(MemoryCommand memory)
-		{
-			if (memory.BuildName == _cacheFile.BuildString && memory.CacheName == _cacheFile.InternalName)
-			{
-				using (var metaStream = _rteProvider.GetMetaStream(_cacheFile))
-				{
-					if (metaStream != null)
-					{
-						foreach (var action in memory.Actions)
-						{
-							if (_cacheFile.MetaArea.ContainsBlockPointer(action.Position, action.Buffer.Length))
-							{
-								metaStream.SeekTo(action.Position);
-								metaStream.WriteBlock(action.Buffer);
-							}
-						}
-					}
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 }
