@@ -21,7 +21,7 @@ namespace Assembly.Helpers.Net.Sockets
 		public event EventHandler<ClientEventArgs> ClientConnected;
 		public event EventHandler<ClientEventArgs> ClientDisconnected;
 
-		private const string UpnpDescription = "Assembly Network Poking";
+		private const string UpnpDescription = "Assembly Group Poking";
 
 		public void Listen(IPEndPoint endpoint)
 		{
@@ -109,9 +109,12 @@ namespace Assembly.Helpers.Net.Sockets
 				{
 					try
 					{
-						using (var stream = new BufferedStream(new NetworkStream(socket, false)))
+						using (var netStream = new NetworkStream(socket, false))
 						{
-							CommandSerialization.SerializeCommand(command, stream);
+							using (var bufStream = new BufferedStream(netStream))
+							{
+								CommandSerialization.SerializeCommand(command, bufStream);
+							}
 						}
 					}
 					catch (IOException)
@@ -152,7 +155,11 @@ namespace Assembly.Helpers.Net.Sockets
 
 		public void Close()
 		{
-			_listener.Close();
+			if (_listener != null)
+			{
+				_listener.Close();
+			}
+			
 			lock (_clients)
 			{
 				foreach (var socket in _clients)

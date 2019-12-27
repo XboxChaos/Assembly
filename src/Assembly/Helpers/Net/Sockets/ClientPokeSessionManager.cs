@@ -15,9 +15,10 @@ namespace Assembly.Helpers.Net.Sockets
         private NetworkPokeClient _client;
         private IPokeCommandHandler _handler;
         private bool _sessionActive;
+        private BackgroundWorker _worker;
 
-        public event EventHandler SessionActive;
-        public event EventHandler<RunWorkerCompletedEventArgs> SessionDead;
+        public event EventHandler SessionActivated;
+        public event EventHandler<SessionDiedEventArgs> SessionDied;
 
         public ClientPokeSessionManager(IPokeCommandHandler handler)
         {
@@ -25,25 +26,17 @@ namespace Assembly.Helpers.Net.Sockets
             _handler = handler;
         }
 
-        public bool StartClient(IPEndPoint endpoint)
+        public void StartClient(IPEndPoint endpoint)
         {
-            try
-            {
-                _client.Connect(endpoint);
-            }
-            catch (Exception)
-            {
-                Kill(null);
-                return false;
-            }
+            _client.Connect(endpoint);
 
-            var serverBackgroundWorker = new BackgroundWorker();
-            serverBackgroundWorker.DoWork += DoClientReceiveWork;
-            serverBackgroundWorker.RunWorkerCompleted += DoClientWorkerCompleted;
-            serverBackgroundWorker.RunWorkerAsync();
+            _worker = new BackgroundWorker();
+            _worker.DoWork += DoClientReceiveWork;
+            _worker.RunWorkerCompleted += DoClientWorkerCompleted;
+            _worker.WorkerSupportsCancellation = true;
+            _worker.RunWorkerAsync();
             _sessionActive = true;
-            SessionActive(this, new EventArgs());
-            return true;
+            SessionActivated(this, new EventArgs());
         }
 
         public void SendMemoryCommand(MemoryCommand memory)
@@ -51,19 +44,20 @@ namespace Assembly.Helpers.Net.Sockets
            _client.SendCommand(memory);
         }
 
-        public void Kill(RunWorkerCompletedEventArgs ex)
+        public void Kill(SessionDiedEventArgs ex)
         {
-            _client.Close();
             if (_sessionActive)
             {
                 _sessionActive = false;
-                SessionDead(this, ex);
+                _worker.CancelAsync();
+                _client.Close();
+                SessionDied(this, ex);
             }
         }
 
         private void DoClientReceiveWork(object sender, DoWorkEventArgs e)
         {
-            while (true)
+            while (!_worker.CancellationPending)
             {
                 _client.ReceiveCommand(_handler);
             }
@@ -71,7 +65,8 @@ namespace Assembly.Helpers.Net.Sockets
 
         private void DoClientWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Kill(e);
+            var sessionDiedEvent = new SessionDiedEventArgs(e.Error);
+            Kill(sessionDiedEvent);
         }
     }
 }

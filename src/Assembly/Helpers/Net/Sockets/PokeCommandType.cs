@@ -9,5 +9,7 @@ namespace Assembly.Helpers.Net.Sockets
     {
         Test,
         Memory,
+
+        End = -1
     }
 }

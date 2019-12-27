@@ -167,7 +167,7 @@ namespace Assembly.Windows
 			AddTabModule(TabGenre.VoxelConverter);
 		}
 
-		internal void SessionManager_SessionDead(object sender, RunWorkerCompletedEventArgs e)
+		internal void SessionManager_SessionDied(object sender, SessionDiedEventArgs e)
 		{
 			Dispatcher.InvokeAsync((Action)delegate
 			{
@@ -177,15 +177,15 @@ namespace Assembly.Windows
 				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
 				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = null;
 				App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = null;
-				if (e != null)
+				if (e != null && !(e.Error is IOException))
 				{
 					MetroException.Show(e.Error);
 				}
-				MetroMessageBox.Show("Network Poking Killed", "Network poking session has stopped.  Reverting to local poking...");
+				MetroMessageBox.Show("Group Poking Killed", "Peer poking session has stopped.  Reverting to local poking...");
 			});
 		}
 
-		internal void ServerSessionManager_SessionActive(object sender, EventArgs e)
+		internal void ServerSessionManager_SessionActivated(object sender, EventArgs e)
 		{
 			Dispatcher.InvokeAsync((Action)delegate
 			{
@@ -196,7 +196,7 @@ namespace Assembly.Windows
 			});
 		}
 
-		internal void ClientSessionManager_SessionActive(object sender, EventArgs e)
+		internal void ClientSessionManager_SessionActivated(object sender, EventArgs e)
 		{
 			Dispatcher.InvokeAsync((Action)delegate
 			{
@@ -745,7 +745,7 @@ namespace Assembly.Windows
 					break;
 
 				case TabGenre.NetworkPoking:
-					tab.Title = "Network Poking";
+					tab.Title = "Group Poking";
 					tab.Content = new NetworkPoking();
 					break;
 

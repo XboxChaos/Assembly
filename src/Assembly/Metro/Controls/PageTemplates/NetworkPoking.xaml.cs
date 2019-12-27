@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using Assembly.Metro.Dialogs;
 using System.ComponentModel;
+using System.Net.Sockets;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -47,7 +48,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
             if (App.AssemblyStorage.AssemblyNetworkPoke.IsConnected)
             {
-                App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.SessionDead += SessionManager_SessionDead;
+                App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager.SessionDied += SessionManager_SessionDied;
 
                 if (App.AssemblyStorage.AssemblyNetworkPoke.IsServer)
                 {
@@ -60,29 +61,29 @@ namespace Assembly.Metro.Controls.PageTemplates
             }
         }
 
-        private void ServerSessionManager_SessionActive(object sender, EventArgs e)
+        private void ServerSessionManager_SessionActivated(object sender, EventArgs e)
         {
             Dispatcher.InvokeAsync((Action)delegate
             {
                 App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
                 App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
                 SetServerVisibility();
-                MetroMessageBox.Show("Network Poke Server Started", "Network poking server started successfully on port " + svrPortBox.Text);
+                MetroMessageBox.Show("Group Poke Server Started", "Group poking server started successfully on port " + svrPortBox.Text);
             });
         }
 
-        private void ClientSessionManager_SessionActive(object sender, EventArgs e)
+        private void ClientSessionManager_SessionActivated(object sender, EventArgs e)
         {
             Dispatcher.InvokeAsync((Action)delegate
             {
                 App.AssemblyStorage.AssemblyNetworkPoke.Address = svrAddressBox.Text;
                 App.AssemblyStorage.AssemblyNetworkPoke.Port = svrPortBox.Text;
                 SetClientVisibility();
-                MetroMessageBox.Show("Network Poke Client Started", "Network poking successfully connected as a client to " + svrAddressBox.Text);
+                MetroMessageBox.Show("Group Poke Client Started", "Group poking successfully connected as a client to " + svrAddressBox.Text);
             });
         }
 
-        private void SessionManager_SessionDead(object sender, RunWorkerCompletedEventArgs e)
+        private void SessionManager_SessionDied(object sender, SessionDiedEventArgs e)
         {
             Dispatcher.InvokeAsync((Action)delegate
             {
@@ -99,15 +100,22 @@ namespace Assembly.Metro.Controls.PageTemplates
             {
                 var serverSessionManager = new ServerPokeSessionManager(new PokeCommandDispatcher());
 
-                serverSessionManager.SessionActive += ServerSessionManager_SessionActive;
-                serverSessionManager.SessionActive += App.AssemblyStorage.AssemblySettings.HomeWindow.ServerSessionManager_SessionActive;
-                serverSessionManager.SessionDead += SessionManager_SessionDead;
-                serverSessionManager.SessionDead += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDead;
+                serverSessionManager.SessionActivated += ServerSessionManager_SessionActivated;
+                serverSessionManager.SessionActivated += App.AssemblyStorage.AssemblySettings.HomeWindow.ServerSessionManager_SessionActivated;
+                serverSessionManager.SessionDied += SessionManager_SessionDied;
+                serverSessionManager.SessionDied += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDied;
                 serverSessionManager.ClientConnected += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_ClientConnected;
                 serverSessionManager.ClientDisconnected += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_ClientDisconnected;
 
                 App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = serverSessionManager;
-                serverSessionManager.StartServer(endpoint);
+                try
+                {
+                    serverSessionManager.StartServer(endpoint);
+                }
+                catch (SocketException)
+                {
+                    MetroMessageBox.Show("Group poke server start failure.", "Server could not bind port or address.  May already be in use by another process.");
+                }
             }
             else
             {
@@ -122,15 +130,19 @@ namespace Assembly.Metro.Controls.PageTemplates
             {
                 var clientSesionManager = new ClientPokeSessionManager(new PokeCommandDispatcher());
 
-                clientSesionManager.SessionActive += ClientSessionManager_SessionActive;
-                clientSesionManager.SessionActive += App.AssemblyStorage.AssemblySettings.HomeWindow.ClientSessionManager_SessionActive;
-                clientSesionManager.SessionDead += SessionManager_SessionDead;
-                clientSesionManager.SessionDead += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDead;
+                clientSesionManager.SessionActivated += ClientSessionManager_SessionActivated;
+                clientSesionManager.SessionActivated += App.AssemblyStorage.AssemblySettings.HomeWindow.ClientSessionManager_SessionActivated;
+                clientSesionManager.SessionDied += SessionManager_SessionDied;
+                clientSesionManager.SessionDied += App.AssemblyStorage.AssemblySettings.HomeWindow.SessionManager_SessionDied;
 
                 App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = clientSesionManager;
-                if (!clientSesionManager.StartClient(endpoint))
+                try
                 {
-                    MetroMessageBox.Show("Network Poke Client Failure", "Could not start network poke connection to " + svrAddressBox.Text);
+                    clientSesionManager.StartClient(endpoint);
+                }
+                catch (SocketException)
+                {
+                    MetroMessageBox.Show("Group Poke Client Failure", "Could not start group poke connection to " + svrAddressBox.Text);
                 }
             }
             else
@@ -150,7 +162,6 @@ namespace Assembly.Metro.Controls.PageTemplates
             startServerBtn.Visibility = Visibility.Collapsed;
             disconnectButton.Visibility = Visibility.Visible;
             connectedClientsGrid.Visibility = Visibility.Visible;
-            srvAddressBar.Visibility = Visibility.Collapsed;
             clientList.Visibility = Visibility.Visible;
             svrAddressBox.IsReadOnly = true;
             svrPortBox.IsReadOnly = true;

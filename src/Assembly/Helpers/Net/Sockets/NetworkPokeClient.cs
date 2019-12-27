@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.IO;
 
 namespace Assembly.Helpers.Net.Sockets
@@ -20,9 +19,12 @@ namespace Assembly.Helpers.Net.Sockets
 
         public void SendCommand(PokeCommand command)
         {
-            using (var stream = new BufferedStream(new NetworkStream(_socket, false)))
+            using (var netStream = new NetworkStream(_socket, false))
             {
-                CommandSerialization.SerializeCommand(command, stream);
+                using (var bufStream = new BufferedStream(netStream))
+                {
+                    CommandSerialization.SerializeCommand(command, bufStream);
+                }
             }
         }
 
@@ -33,12 +35,15 @@ namespace Assembly.Helpers.Net.Sockets
                 var command = CommandSerialization.DeserializeCommand(stream);
                 if (command != null)
                     command.Handle(handler);
+                else
+                    Close();
             }
         }
 
         public void Close()
         {
-            _socket.Close();
+            if (_socket != null)
+                _socket.Close();
         }
     }
 }
