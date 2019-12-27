@@ -123,6 +123,10 @@
     <Reference Include="Microsoft.Expression.Interactions">
       <LibZ>True</LibZ>
     </Reference>
+    <Reference Include="Mono.Nat, Version=1.2.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Nat.1.2.24.0\lib\net40\Mono.Nat.dll</HintPath>
+      <LibZ>True</LibZ>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
       <LibZ>True</LibZ>
@@ -203,6 +207,19 @@
     <Compile Include="Helpers\Native\ShellChanges.cs" />
     <Compile Include="Helpers\Models\ObjExporter.cs" />
     <Compile Include="Helpers\Net\HttpMethod.cs" />
+    <Compile Include="Helpers\Net\Sockets\ClientPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\CommandSerialization.cs" />
+    <Compile Include="Helpers\Net\Sockets\IPokeCommandHandler.cs" />
+    <Compile Include="Helpers\Net\Sockets\IPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\MemoryCommand.cs" />
+    <Compile Include="Helpers\Net\Sockets\NetworkPokeClient.cs" />
+    <Compile Include="Helpers\Net\Sockets\NetworkPokeServer.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommand.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommandDispatcher.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommandType.cs" />
+    <Compile Include="Helpers\Net\Sockets\ServerPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\SocketRTEProvider.cs" />
+    <Compile Include="Helpers\Net\Sockets\SocketStream.cs" />
     <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
     <Compile Include="Helpers\Net\Imgur.cs" />
     <Compile Include="Helpers\Settings.cs" />
@@ -358,6 +375,9 @@
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\MemoryManager.xaml.cs">
       <DependentUpon>MemoryManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\NetworkPoking.xaml.cs">
+      <DependentUpon>NetworkPoking.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\PatchControl.xaml.cs">
       <DependentUpon>PatchControl.xaml</DependentUpon>
@@ -867,6 +887,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Metro\Controls\PageTemplates\MemoryManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Metro\Controls\PageTemplates\NetworkPoking.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

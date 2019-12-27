@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using XboxChaos.Models;
 using XBDMCommunicator;
 using Xceed.Wpf.AvalonDock.Controls;
+using Assembly.Helpers.Net.Sockets;
 
 namespace Assembly.Windows
 {
@@ -132,6 +133,22 @@ namespace Assembly.Windows
 			}
 		}
 
+		internal void SessionManager_ClientConnected(object sender, ClientEventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Add(e.ClientInfo);
+			});
+		}
+
+		internal void SessionManager_ClientDisconnected(object sender, ClientEventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Remove(e.ClientInfo);
+			});
+		}
+
 		// File
 		private void menuOpenFile_Click(object sender, RoutedEventArgs e)
 		{
@@ -148,6 +165,45 @@ namespace Assembly.Windows
 		private void menuToolHalo4VoxelConverter_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.VoxelConverter);
+		}
+
+		internal void SessionManager_SessionDied(object sender, SessionDiedEventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Clear();
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider.Kill();
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = false;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = null;
+				App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager = null;
+				if (e != null && !(e.Error is IOException))
+				{
+					MetroException.Show(e.Error);
+				}
+				MetroMessageBox.Show("Group Poking Killed", "Peer poking session has stopped.  Reverting to local poking...");
+			});
+		}
+
+		internal void ServerSessionManager_SessionActivated(object sender, EventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.Clients.Clear();
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager);
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = true;
+			});
+		}
+
+		internal void ClientSessionManager_SessionActivated(object sender, EventArgs e)
+		{
+			Dispatcher.InvokeAsync((Action)delegate
+			{
+				App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider = new SocketRTEProvider(App.AssemblyStorage.AssemblyNetworkPoke.PokeSessionManager);
+				App.AssemblyStorage.AssemblyNetworkPoke.IsConnected = true;
+				App.AssemblyStorage.AssemblyNetworkPoke.IsServer = false;
+			});
 		}
 
 		// View
@@ -179,6 +235,11 @@ namespace Assembly.Windows
 		private void menuPluginConverter_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.PluginConverter);
+		}
+
+		private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)
+		{
+			AddTabModule(TabGenre.NetworkPoking);
 		}
 
 		//xbdm
@@ -463,7 +524,8 @@ namespace Assembly.Windows
 			MemoryManager,
 			VoxelConverter,
 			PostGenerator,
-			MapNames
+			MapNames,
+			NetworkPoking
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -680,6 +742,11 @@ namespace Assembly.Windows
 				case TabGenre.PostGenerator:
 					tab.Title = "Post Generator";
 					tab.Content = new PostGenerator();
+					break;
+
+				case TabGenre.NetworkPoking:
+					tab.Title = "Group Poking";
+					tab.Content = new NetworkPoking();
 					break;
 
 				case TabGenre.MapNames:

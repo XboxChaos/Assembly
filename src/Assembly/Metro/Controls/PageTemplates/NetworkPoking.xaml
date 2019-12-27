@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.NetworkPoking"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+             xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d"
+             Background="#28282b"
+             d:DesignWidth="1000" d:DesignHeight="600">
+
+    <Grid>
+        <Grid x:Name="sideBar" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="350" Background="#2d2d30">
+            <Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
+			           d:LayoutOverrides="Height" />
+
+            <TextBlock FontFamily="{DynamicResource MetroFontLight}" Text="Group Poking" Foreground="White" FontSize="32"
+			           Margin="25,36.5,13,0" Height="50" VerticalAlignment="Top" />
+            <ed:RegularPolygon Fill="#FF4A4A4C" HorizontalAlignment="Left" Height="19" InnerRadius="1" Margin="-16,51,0,0"
+			                   PointCount="3" Stretch="Fill" VerticalAlignment="Top" Width="48" RenderTransformOrigin="0.5,0.5">
+                <ed:RegularPolygon.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <SkewTransform />
+                        <RotateTransform Angle="90" />
+                        <TranslateTransform />
+                    </TransformGroup>
+                </ed:RegularPolygon.RenderTransform>
+            </ed:RegularPolygon>
+
+            <Rectangle Fill="#FF363639" Height="1" Margin="25,110,25,0" VerticalAlignment="Top"
+			           d:LayoutOverrides="Height" />
+            <Grid VerticalAlignment="Top" Margin="25,120,00,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="0,20,20,0">
+                        <TextBlock TextWrapping="Wrap" Foreground="White" FontSize="12">
+							Setup a server or client for group synchronized poking in Halo games.
+							<LineBreak />
+							<LineBreak />
+							To connect to someone else, specify the address and port and click "Connect".  To host, specify a port and click "Start Server"
+							<LineBreak />
+                            <LineBreak />
+							Assembly attempts to use uPnP for port forwarding.  You may need to manually port forward if your router doesn't support it correctly.
+                        </TextBlock>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <Grid x:Name="content" VerticalAlignment="Stretch" HorizontalAlignment="Left" Margin="350,0,0,0" Width="350">
+            <DockPanel LastChildFill="True" MaxWidth="300">
+                <Grid x:Name="srvAddressBar" Margin="15,25,15,5" DockPanel.Dock="Top" Grid.Row="0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="32" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="53" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Remote Address" Style="{DynamicResource GenericTextblock}" HorizontalAlignment="Stretch" Foreground="White" FontSize="13"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Port" Style="{DynamicResource GenericTextblock}" HorizontalAlignment="Left"  Foreground="White" FontSize="13" />
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="svrPortBox" TextWrapping="Wrap" Text="19002" DockPanel.Dock="Right" TextAlignment="Left" PreviewTextInput="PreviewPortInput" MaxLength="5" />
+                    <TextBox Grid.Row="1" Grid.Column="0" x:Name="svrAddressBox" TextWrapping="Wrap" Text="127.0.0.1" HorizontalAlignment="Stretch" Margin="0,0,10,0" />
+                    
+                </Grid>
+
+                <StackPanel Margin="15,0,15,5" Orientation="Horizontal" DockPanel.Dock="Top" VerticalAlignment="Bottom" Grid.Row="1">
+
+                    <Button Grid.Column="0" x:Name="startServerBtn" Content="Start Server" Margin="0,0,5,0" Width="85" RenderTransformOrigin="0.057,0.462" Click="startServerBtn_Click" />
+                    <Button Grid.Column="1" x:Name="startClientBtn" Content="Connect" Margin="0,0,5,0" Width="90" Click="startClientBtn_Click" />
+                    <Button Grid.Column="0" x:Name="disconnectButton" Content="Shut Down" Visibility="Collapsed" Width="75" Click="disconnectButton_Click" />
+                </StackPanel>
+
+                <Grid x:Name="connectedClientsGrid" Margin="15,15,15,5" DockPanel.Dock="Top" Grid.Row="2" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Connected Clients:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Foreground="White" FontSize="13"/>
+                </Grid>
+
+                <ListBox  Visibility="Collapsed" Margin="15,0,15,0" MinHeight="200" Height="300" DockPanel.Dock="Top" x:Name="clientList" VerticalAlignment="Top"  HorizontalAlignment="Stretch" Background="{x:Null}"
+																	 BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" SelectionMode="Extended"
+																	 ScrollViewer.VerticalScrollBarVisibility="Auto"  ItemsSource="{Binding Clients, Mode=OneWay}"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>
