@@ -8,6 +8,7 @@ using Blamite.Blam.Shaders;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.Util;
+using System.Windows.Media;
 
 namespace Assembly.Helpers.Plugins
 {
@@ -131,16 +132,16 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new DegreeData(name, offset, 0, 0, pluginLine));
 		}
 
-		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, format, "int", "", pluginLine));
+				AddValue(new ColourData(name, offset, 0, alpha, "int", Colors.Transparent, pluginLine));
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, format, "float", "", pluginLine));
+				AddValue(new ColourData(name, offset, 0, alpha, "float", Colors.Transparent, pluginLine));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine)

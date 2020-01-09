@@ -104,32 +104,24 @@ namespace Blamite.Plugins
 		void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine);
 
 		/// <summary>
-		///     Called when a color8, color16, color24, or color32 is encountered in the plugin.
+		///     Called when a argb32 or rgb32 is encountered in the plugin.
 		/// </summary>
 		/// <param name="name">The name of the color.</param>
 		/// <param name="offset">The offset of the color.</param>
 		/// <param name="visible">True if the color entry is visible.</param>
-		/// <param name="format">
-		///     The format of the color, expressed as a string
-		///     containing the characters 'r', 'g', 'b', and 'a'. It is guaranteed
-		///     to be valid.
-		/// </param>
+		/// <param name="alpha">True if alpha is used.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine);
+		void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine);
 
 		/// <summary>
-		///     Called when a colorf is encountered in the plugin.
+		///     Called when a argbf or rgbf is encountered in the plugin.
 		/// </summary>
 		/// <param name="name">The name of the color.</param>
 		/// <param name="offset">The offset of the color.</param>
 		/// <param name="visible">True if the color entry is visible.</param>
-		/// <param name="format">
-		///     The format of the color, expressed as a string
-		///     containing the characters 'r', 'g', 'b', and 'a'. It is guaranteed
-		///     to be valid.
-		/// </param>
+		/// <param name="alpha">True if alpha is used.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine);
+		void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine);
 
 		// These are called whenever a bitfield is found in the plugin.
 		// Return false from one of these methods to skip over the

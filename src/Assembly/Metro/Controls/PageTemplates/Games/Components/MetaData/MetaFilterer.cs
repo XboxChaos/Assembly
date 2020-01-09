@@ -94,14 +94,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitColourInt(ColourData field)
 		{
-			if (!FilterString(field, field.Name))
-				FilterString(field, field.Value);
+			FilterString(field, field.Name);
 		}
 
 		public void VisitColourFloat(ColourData field)
 		{
-			if (!FilterString(field, field.Name))
-				FilterString(field, field.Value);
+			FilterString(field, field.Name);
 		}
 
 		public void VisitReflexive(ReflexiveData field)

@@ -139,64 +139,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			if (field.Value.Length == 7)
-				field.Value = field.Value.Insert(1, "FF");
+			byte[] channels = new byte[] { field.Value.B, field.Value.G, field.Value.R, field.Value.A };
 
-			foreach (char formatChar in field.Format)
-			{
-				switch (formatChar)
-				{
-					case 'a':
-						byte alpha = byte.Parse(field.Value.Replace("#", "").Remove(2), NumberStyles.HexNumber);
-						_writer.WriteByte(alpha);
-						break;
-					case 'r':
-						byte red = byte.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber);
-						_writer.WriteByte(red);
-						break;
-					case 'g':
-						byte green = byte.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber);
-						_writer.WriteByte(green);
-						break;
-					case 'b':
-						byte blue = byte.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber);
-						_writer.WriteByte(blue);
-						break;
-				}
-			}
+			_writer.WriteUInt32(BitConverter.ToUInt32(channels, 0));
 		}
 
 		public void VisitColourFloat(ColourData field)
 		{
 			SeekToOffset(field.Offset);
 
-			if (field.Value.Length == 7)
-				field.Value = field.Value.Insert(1, "FF");
-
-			foreach (char formatChar in field.Format)
-			{
-				switch (formatChar)
-				{
-					case 'a':
-						float alpha = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(2), NumberStyles.HexNumber))/255;
-						_writer.WriteFloat(alpha);
-						break;
-					case 'r':
-						float red =
-							Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 2).Remove(2), NumberStyles.HexNumber))/255;
-						_writer.WriteFloat(red);
-						break;
-					case 'g':
-						float green =
-							Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 4).Remove(2), NumberStyles.HexNumber))/255;
-						_writer.WriteFloat(green);
-						break;
-					case 'b':
-						float blue = Convert.ToSingle(int.Parse(field.Value.Replace("#", "").Remove(0, 6), NumberStyles.HexNumber))/255;
-						_writer.WriteFloat(blue);
-						break;
-				}
-			}
+			if (field.Alpha)
+				_writer.WriteFloat(field.Value.ScA);
+			_writer.WriteFloat(field.Value.ScR);
+			_writer.WriteFloat(field.Value.ScG);
+			_writer.WriteFloat(field.Value.ScB);
 		}
 
 		public void VisitReflexive(ReflexiveData field)

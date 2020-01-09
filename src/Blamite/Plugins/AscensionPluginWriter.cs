@@ -212,18 +212,18 @@ namespace Blamite.Plugins
 			// TODO: does Ascension support this?
 		}
 
-		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
 			WriteValueStart("color8", name, offset, visible);
-			_output.WriteAttributeString("order", format.ToUpper());
+			_output.WriteAttributeString("order", alpha ? "ARGB" : "RGB");
 			_output.WriteAttributeString("real", "True"); // What does this do?
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
 			WriteValueStart("colorf", name, offset, visible);
-			_output.WriteAttributeString("order", format.ToUpper());
+			_output.WriteAttributeString("order", alpha ? "ARGB" : "RGB");
 			_output.WriteAttributeString("real", "True"); // What does this do?
 			_output.WriteEndElement();
 		}

@@ -252,14 +252,14 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Utf16 string \"{0}\" at {1}, visible = {2}, size = {3}", name, offset, visible, size);
 		}
 
-		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
-			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
+			Debug.WriteLine(Indent() + "Color32 \"{0}\" at {1}, visible = {2}, alpha = {3}", name, offset, visible, alpha);
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
-			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, format = {3}", name, offset, visible, format);
+			Debug.WriteLine(Indent() + "ColorF \"{0}\" at {1}, visible = {2}, alpha = {3}", name, offset, visible, alpha);
 		}
 
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)

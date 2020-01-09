@@ -304,15 +304,12 @@ namespace Blamite.Plugins
 					ReadUnicList(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
-				case "color8":
-				case "color16":
-				case "color24":
 				case "color32":
-					visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
+					visitor.VisitColorInt(name, offset, visible, ReadColorAlpha(reader), pluginLine);
 					break;
 
 				case "colorf":
-					visitor.VisitColorF(name, offset, visible, ReadColorFormat(reader), pluginLine);
+					visitor.VisitColorF(name, offset, visible, ReadColorAlpha(reader), pluginLine);
 					break;
 
 				case "id":
@@ -514,22 +511,22 @@ namespace Blamite.Plugins
 			visitor.VisitOption(name, value);
 		}
 
-		private static string ReadColorFormat(XmlReader reader)
+		private static bool ReadColorAlpha(XmlReader reader)
 		{
 			string format;
 
-			if (!reader.MoveToAttribute("format") && !reader.MoveToAttribute("order"))
-				throw new ArgumentException("Color tags must have a format or order attribute." + PositionInfo(reader));
+			if (!reader.MoveToAttribute("alpha") && !reader.MoveToAttribute("order"))
+				throw new ArgumentException("Color tags must have a alpha or order attribute." + PositionInfo(reader));
 			format = reader.Value.ToLower();
 
-			for (int i = 0; i < format.Length; i++)
+			if (format.ToLower() == "true")
+				return true;
+			else if (format.ToLower() == "false")
+				return false;
+			else
 			{
-				char ch = format[i];
-				if (ch != 'r' && ch != 'g' && ch != 'b' && ch != 'a')
-					throw new ArgumentException("Invalid color format: \"" + format + "\"" + PositionInfo(reader));
+				return format.ToLower().Contains("a");
 			}
-
-			return format;
 		}
 
 		private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,

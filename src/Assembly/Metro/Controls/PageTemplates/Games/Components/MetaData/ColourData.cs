@@ -1,4 +1,6 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using System.Windows.Media;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
 	///     Base class for colour data.
@@ -6,25 +8,25 @@
 	public class ColourData : ValueField
 	{
 		private string _dataType;
-		private string _format;
-		private string _value;
+		private bool _alpha;
+		private Color _value;
 
-		public ColourData(string name, uint offset, long address, string format, string dataType, string value,
+		public ColourData(string name, uint offset, long address, bool alpha, string dataType, Color value,
 			uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
-			_format = format;
 			_value = value;
+			_alpha = alpha;
 			_dataType = dataType;
 		}
 
-		public string Format
+		public bool Alpha
 		{
-			get { return _format; }
+			get { return _alpha; }
 			set
 			{
-				_format = value;
-				NotifyPropertyChanged("Format");
+				_alpha = value;
+				NotifyPropertyChanged("Alpha");
 			}
 		}
 
@@ -38,7 +40,7 @@
 			}
 		}
 
-		public string Value
+		public Color Value
 		{
 			get { return _value; }
 			set
@@ -58,7 +60,7 @@
 
 		public override MetaField CloneValue()
 		{
-			return new ColourData(Name, Offset, FieldAddress, Format, DataType, Value, PluginLine);
+			return new ColourData(Name, Offset, FieldAddress, Alpha, DataType, Value, PluginLine);
 		}
 	}
 }

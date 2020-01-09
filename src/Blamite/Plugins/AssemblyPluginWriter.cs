@@ -199,34 +199,19 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
-			string element;
-			switch (format.Length)
-			{
-				case 1:
-					element = "color8";
-					break;
-				case 2:
-					element = "color16";
-					break;
-				case 3:
-					element = "color24";
-					break;
-				default:
-					element = "color32";
-					break;
-			}
+			string element = "color32";
 
 			WriteValueStart(element, name, offset, visible);
-			_output.WriteAttributeString("format", format);
+			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
 			_output.WriteEndElement();
 		}
 
-		public void VisitColorF(string name, uint offset, bool visible, string format, uint pluginLine)
+		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine)
 		{
 			WriteValueStart("colorf", name, offset, visible);
-			_output.WriteAttributeString("format", format);
+			_output.WriteAttributeString("alpha", alpha.ToString().ToLower());
 			_output.WriteEndElement();
 		}
 

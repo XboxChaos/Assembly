@@ -4,6 +4,8 @@ using Blamite.Blam;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
+using System;
+using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -153,20 +155,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += (_reader.ReadByte().ToString("X2"));
-			field.Value = colorValue;
+			var val = _reader.ReadUInt32();
+
+			byte[] channels = BitConverter.GetBytes(val);
+
+			field.Value = Color.FromArgb(field.Alpha ? channels[3] : (byte)0xFF, channels[2], channels[1], channels[0]);
 		}
 
 		public void VisitColourFloat(ColourData field)
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += ((int) (_reader.ReadFloat()*255)).ToString("X2");
-			field.Value = colorValue;
+			Color scColor = Color.FromScRgb(field.Alpha ? _reader.ReadFloat() : 1, _reader.ReadFloat(), _reader.ReadFloat(), _reader.ReadFloat());
+			//Color.ToString() doesnt display hex code when using scrgb, so gotta do this
+			field.Value = Color.FromArgb(scColor.A, scColor.R, scColor.G, scColor.B);
 		}
 
 		public void VisitString(StringData field)
