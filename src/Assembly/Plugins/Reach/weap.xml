@@ -7,6 +7,7 @@
 		<revision author="ManBearPig_06" version="3">Added Trigger struct, and Aiming values.</revision>
 		<revision author="Lord Zedd" version="4">Standardized, Sectioned, Named.</revision>
 		<revision author="Mobius118" version="5">Tracking</revision>
+		<revision author="Camden" version="6">Update barrels block</revision>
 	</revisions>
 	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
@@ -952,44 +953,33 @@
 	</reflexive>
 	<reflexive name="Barrels" offset="0x44C" visible="true" entrySize="0x184">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
-			<bit name="Tracks Fired Projectile" index="0" />
-			<bit name="Random Firing Effects" index="1" />
-			<bit name="Can Fire With Partial Ammo" index="2" />
-			<bit name="Projectiles Use Weapon Origin" index="3" />
-			<bit name="Ejects During Chamber" index="4" />
-			<bit name="Use Error When Unzoomed" index="5" />
-			<bit name="Projectile Vector Cannot Be Adjusted" index="6" />
-			<bit name="Projectiles Have Identical Error" index="7" />
-			<bit name="Projectiles Fire Parallel" index="8" />
-			<bit name="Cant Fire When Others Firing" index="9" />
-			<bit name="Cant Fire When Others Recovering" index="10" />
-			<bit name="Don't Clear Fire Bit After Recovering" index="11" />
-			<bit name="Stagger Fire Across Multiple Markers" index="12" />
-			<bit name="Fires Locked Projectiles" index="13" />
-			<bit name="Bit 14" index="14" />
-			<bit name="Bit 15" index="15" />
-			<bit name="Bit 16" index="16" />
-			<bit name="Bit 17" index="17" />
-			<bit name="Bit 18" index="18" />
-			<bit name="Bit 19" index="19" />
-			<bit name="Bit 20" index="20" />
-			<bit name="Bit 21" index="21" />
-			<bit name="Bit 22" index="22" />
-			<bit name="Bit 23" index="23" />
-			<bit name="Bit 24" index="24" />
-			<bit name="Bit 25" index="25" />
-			<bit name="Bit 26" index="26" />
-			<bit name="Bit 27" index="27" />
-			<bit name="Bit 28" index="28" />
-			<bit name="Bit 29" index="29" />
-			<bit name="Bit 30" index="30" />
-			<bit name="Bit 31" index="31" />
+			<bit name="Random Firing Effects" index="0" />
+			<bit name="Can Fire With Partial Ammo" index="1" />
+			<bit name="Projectiles Use Weapon Origin" index="2" />
+			<bit name="Ejects During Chamber" index="3" />
+			<bit name="Projectile Vector Cannot Be Adjusted" index="4" />
+			<bit name="Projectiles Have Identical Error" index="5" />
+			<bit name="Projectiles Fire Parallel" index="6" />
+			<bit name="Can't Fire When Others Firing" index="7" />
+			<bit name="Can't Fire When Others Recovering" index="8" />
+			<bit name="Don't Clear Fire Bit After Recovering" index="9" />
+			<bit name="Stagger Fire Across Multiple Markers" index="10" />
+			<bit name="Can Fire At Maximum Age" index="11" />
+			<bit name="Use 1 Firing Effect Per Burst" index="12" />
+			<bit name="Prevent Marker Deviation" index="13" />
+			<bit name="Error Ignores Zoom" index="14" />
+			<bit name="Projectile Fires In Marker Direction" index="15" />
+			<bit name="Skip Test For Object Being Outside Bsp" index="16" />
+			<bit name="Only Reload If All Barrels Idle" index="17" />
+			<bit name="Only Switch Weapons If Barrel Idle" index="18" />
+			<bit name="Use Automatic Fire Looping Sounds" index="19" />
 		</bitfield32>
+		<comment title="Firing" />
 		<float32 name="Rounds Per Second min" offset="0x4" visible="true" />
 		<float32 name="Rounds Per Second max" offset="0x8" visible="true" />
-		<stringid name="Acceleration Time Function" offset="0xC" visible="true" />
+		<stringid name="Rate Of Fire Acceleration" offset="0xC" visible="true" />
 		<float32 name="Acceleration Time" offset="0x10" visible="true" />
-		<stringid name="Deceleration Time Function" offset="0x14" visible="true" />
+		<stringid name="Rate Of Fire Deceleration" offset="0x14" visible="true" />
 		<float32 name="Deceleration Time" offset="0x18" visible="true" />
 		<float32 name="Barrel Spin Scale" offset="0x1C" visible="true" />
 		<float32 name="Blurred Rate of Fire" offset="0x20" visible="true" />
@@ -997,26 +987,36 @@
 		<int16 name="Shots Per Fire max" offset="0x26" visible="true" />
 		<float32 name="Fire Recovery Time" offset="0x28" visible="true" />
 		<float32 name="Soft Recovery Fraction" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
+		<float32 name="Melee Fire Recovery Time" offset="0x30" visible="true" />
+		<float32 name="Melee Soft Recovery Fraction" offset="0x34" visible="true" />
 		<int16 name="Magazine" offset="0x38" visible="true" />
 		<int16 name="Rounds Per Shot" offset="0x3A" visible="true" />
 		<int16 name="Minimum Rounds Loaded" offset="0x3C" visible="true" />
-		<int16 name="Rounds Between Tracers" offset="0x3E" visible="true" />
-		<stringid name="Optional Barrel Marker Name" offset="0x40" visible="true" />
-		<enum16 name="Prediction Type" offset="0x44" visible="true">
+		<int16 name="Rounds Per Burst" offset="0x3E" visible="true" />
+		<int16 name="Rounds Between Tracers" offset="0x40" visible="true" />
+		<stringId name="Optional Barrel Marker Name" offset="0x42" visible="true" />
+		<int16 name="Unused" offset="0x46" visible="false" />
+		<comment title="Prediction Properties">what the behavior of this barrel is in a predicted network game</comment>
+		<enum16 name="Prediction Type" offset="0x46" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Continuous" value="0x1" />
 			<option name="Instant" value="0x2" />
+			<option name="Continuous Burst" value="0x3" />
 		</enum16>
-		<enum16 name="Firing Noise" offset="0x46" visible="true">
+		<comment title="Noise" />
+		<enum16 name="Firing Noise" offset="0x48" visible="true">
 			<option name="Silent" value="0x0" />
 			<option name="Medium" value="0x1" />
 			<option name="Loud" value="0x2" />
 			<option name="Shout" value="0x3" />
 			<option name="Quiet" value="0x4" />
 		</enum16>
-		<float32 name="Unknown" offset="0x48" visible="false" />
+		<enum16 name="Motion Tracker Noise" offset="0x4A" visible="true">
+			<option name="None" value="0x0" />
+			<option name="Continuous" value="0x1" />
+			<option name="Instant" value="0x2" />
+			<option name="Continuous Burst" value="0x3" />
+		</enum16>
 		<comment title="Error" />
 		<float32 name="Acceleration Time" offset="0x4C" visible="true" />
 		<float32 name="Deceleration Time" offset="0x50" visible="true" />
