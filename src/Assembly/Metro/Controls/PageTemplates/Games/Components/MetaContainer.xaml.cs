@@ -19,7 +19,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly EngineDescription _buildInfo;
 		private readonly ICacheFile _cache;
 		private readonly MetaEditor _metaEditor;
-		private MetaInformation _metaInformation;
 		private PluginEditor _pluginEditor;
 		private IRTEProvider _rteProvider;
 		private IStreamManager _streamManager;
@@ -64,10 +63,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 
 			// Create Meta Editor Tab
-			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie)
-			{
-				Padding = new Thickness(0)
-			};
+			_metaEditor = new MetaEditor(_buildInfo, _tag, this, _tags, _cache, _streamManager, _rteProvider, _stringIDTrie);
 			tabMetaEditor.Content = _metaEditor;
 
 			// Create Plugin Editor Tab
@@ -109,15 +105,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			#endregion
-
-			// Load Info
-			lblTagName.Text = tag.TagFileName != null
-				? tag.TagFileName + "." + tag.ClassName
-				: "0x" + tag.RawTag.Index.Value.ToString("X");
-
-			lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);
-			lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
-			lblOffset.Text = string.Format("File Offset: 0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
 		}
 
 		public void GoToRawPluginLine(int pluginLine)
@@ -146,15 +133,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_pluginEditor = new PluginEditor(_buildInfo, _tag, this, _metaEditor);
 			tabPluginEditor.Content = _pluginEditor;
 
-			// Load Info
-			lblTagName.Text = tag.TagFileName != null
-				? tag.TagFileName + "." + tag.ClassName
-				: "0x" + tag.RawTag.Index.Value.ToString("X");
-
-			lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);
-			lblAddress.Text = string.Format("Memory Address: 0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
-			lblOffset.Text = string.Format("File Offset: 0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
-
 		}
 
 		private void tbMetaEditors_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -168,27 +146,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			PluginEditor pe = (PluginEditor)tabPluginEditor.Content;
 			pe.Dispose();
-		}
-
-		private void MetaDatumValueData_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.ClickCount == 2)
-				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(13));
-		}
-		private void MetaAddrValueData_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.ClickCount == 2)
-				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(16));
-		}
-		private void MetaOffsetValueData_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.ClickCount == 2)
-				Clipboard.SetText(((TextBlock)e.OriginalSource).Text.Substring(13));
-		}
-		private void MetaNameValueData_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			if (e.ClickCount == 2)
-				Clipboard.SetText(((TextBlock)e.OriginalSource).Text);
 		}
 	}
 }

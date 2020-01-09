@@ -106,6 +106,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
 
+			// Load Info
+			lblTagName.Text = tag.TagFileName != null
+				? tag.TagFileName + "." + tag.ClassName
+				: "0x" + tag.RawTag.Index.Value.ToString("X");
+
+			lblDatum.Text = string.Format("{0}", tag.RawTag.Index);
+			lblAddress.Text = string.Format("0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
+			lblOffset.Text = string.Format("0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
+
 			// Set init finished
 			hasInitFinished = true;
 		}
@@ -1051,6 +1060,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			MetroMessageBox.Show("Data Reference Isolation - Assembly",
 					"The data reference was isolated successfully.");
+		}
+
+		private void InfoValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((System.Windows.Documents.Run)e.OriginalSource).Text);
 		}
 	}
 }
