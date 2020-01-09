@@ -10,12 +10,12 @@
 			Format = format;
 		}
 
-		public string Type
+		public new string Type
 		{
 			get { return "dataref"; }
 		}
 		
-		public string FullType
+		public new string FullType
 		{
 			get { return Type + " " + Format; }
 		}
