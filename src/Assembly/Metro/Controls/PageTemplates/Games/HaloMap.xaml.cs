@@ -1240,7 +1240,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						Content = tabName,
 						ContextMenu = BaseContextMenu
 					},
-					Content = new DebugTools(_cacheFile)
+					Content = new AddressTools(_cacheFile)
 				};
 
 				contentTabs.Items.Add(tab);
