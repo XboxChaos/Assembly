@@ -44,23 +44,25 @@
 		<bit name="Bit 31" index="31" />
 	</bitfield32>
 	<reflexive name="Materials" offset="0x14" visible="true" entrySize="0x4">
-		<stringid name="Name" offset="0x0" visible="True" />
+		<stringid name="Name" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Regions" offset="0x20" visible="true" entrySize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<reflexive name="Permutations" offset="0x4" visible="true" entrySize="0x28">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<reflexive name="BSPs" offset="0x4" visible="true" entrySize="0x70">
-				<int16 name="Node Index" offset="0x0" visible="True" />
+				<int16 name="Node Index" offset="0x0" visible="true" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<reflexive name="BSP 3D Nodes" offset="0x4" visible="True" entrySize="0x8" align="0x8">
-					<uint8 name="Unknown" offset="0x0" visible="false" />
-					<int16 name="Second Child" offset="0x1" visible="true" />
-					<uint8 name="Unknown" offset="0x3" visible="false" />
-					<int16 name="First Child" offset="0x4" visible="true" />
-					<int16 name="Plane" offset="0x6" visible="True" />
+				<reflexive name="BSP 3D Nodes" offset="0x4" visible="true" entrySize="0x8" align="0x8">
+					<uint8 name="Back Child Upper" offset="0x0" visible="true" />
+					<uint8 name="Back Child Mid" offset="0x1" visible="true" />
+					<uint8 name="Back Child Lower" offset="0x2" visible="true" />
+					<uint8 name="Front Child Upper" offset="0x3" visible="true" />
+					<uint8 name="Front Child Mid" offset="0x4" visible="true" />
+					<uint8 name="Front Child Lower" offset="0x5" visible="true" />
+					<int16 name="Plane" offset="0x6" visible="true" />
 				</reflexive>
-				<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x80" align="0x80">
+				<reflexive name="Unknown" offset="0x10" visible="false" entrySize="0x80" align="0x8">
 					<undefined name="Unknown" offset="0x0" visible="false" />
 					<undefined name="Unknown" offset="0x4" visible="false" />
 					<undefined name="Unknown" offset="0x8" visible="false" />
@@ -95,49 +97,49 @@
 					<undefined name="Unknown" offset="0x7C" visible="false" />
 				</reflexive>
 				<reflexive name="Planes" offset="0x1C" visible="true" entrySize="0x10" align="0x10">
-					<float32 name="Plane i" offset="0x0" visible="True" />
-					<float32 name="Plane j" offset="0x4" visible="True" />
-					<float32 name="Plane k" offset="0x8" visible="True" />
-					<float32 name="Plane d" offset="0xC" visible="True" />
+					<float32 name="Plane i" offset="0x0" visible="true" />
+					<float32 name="Plane j" offset="0x4" visible="true" />
+					<float32 name="Plane k" offset="0x8" visible="true" />
+					<float32 name="Plane d" offset="0xC" visible="true" />
 				</reflexive>
 				<reflexive name="Leaves" offset="0x28" visible="true" entrySize="0x8" align="0x8">
-					<int16 name="Flags" offset="0x0" visible="True" />
-					<int16 name="BSP 2D Reference Count" offset="0x2" visible="True" />
+					<int16 name="Flags" offset="0x0" visible="true" />
+					<int16 name="BSP 2D Reference Count" offset="0x2" visible="true" />
 					<int16 name="Unknown" offset="0x4" visible="false" />
-					<int16 name="First BSP 2D Reference" offset="0x6" visible="True" />
+					<int16 name="First BSP 2D Reference" offset="0x6" visible="true" />
 				</reflexive>
 				<reflexive name="BSP 2D References" offset="0x34" visible="true" entrySize="0x4" align="0x8">
-					<int16 name="Plane" offset="0x0" visible="True" />
-					<int16 name="BSP 2D Node" offset="0x2" visible="True" />
+					<int16 name="Plane" offset="0x0" visible="true" />
+					<int16 name="BSP 2D Node" offset="0x2" visible="true" />
 				</reflexive>
 				<reflexive name="BSP 2D Nodes" offset="0x40" visible="true" entrySize="0x10" align="0x10">
-					<float32 name="Plane i" offset="0x0" visible="True" />
-					<float32 name="Plane j" offset="0x4" visible="True" />
-					<float32 name="Plane d" offset="0x8" visible="True" />
-					<int16 name="Left Child" offset="0xC" visible="True" />
-					<int16 name="Right Child" offset="0xE" visible="True" />
+					<float32 name="Plane i" offset="0x0" visible="true" />
+					<float32 name="Plane j" offset="0x4" visible="true" />
+					<float32 name="Plane d" offset="0x8" visible="true" />
+					<int16 name="Left Child" offset="0xC" visible="true" />
+					<int16 name="Right Child" offset="0xE" visible="true" />
 				</reflexive>
 				<reflexive name="Surfaces" offset="0x4C" visible="true" entrySize="0xC">
-					<int16 name="Plane" offset="0x0" visible="True" />
-					<int16 name="First Edge" offset="0x2" visible="True" />
+					<int16 name="Plane" offset="0x0" visible="true" />
+					<int16 name="First Edge" offset="0x2" visible="true" />
 					<int16 name="Material" offset="0x4" visible="true" />
 					<int16 name="Unknown" offset="0x6" visible="false" />
 					<int16 name="Breakable Surface" offset="0x8" visible="true" />
 					<int16 name="Unknown" offset="0xA" visible="false" />
 				</reflexive>
 				<reflexive name="Edges" offset="0x58" visible="true" entrySize="0xC">
-					<int16 name="Start Vertex" offset="0x0" visible="True" />
-					<int16 name="End Vertex" offset="0x2" visible="True" />
-					<int16 name="Forward Edge" offset="0x4" visible="True" />
-					<int16 name="Reverse Edge" offset="0x6" visible="True" />
-					<int16 name="Left Surface" offset="0x8" visible="True" />
-					<int16 name="Right Surface" offset="0xA" visible="True" />
+					<int16 name="Start Vertex" offset="0x0" visible="true" />
+					<int16 name="End Vertex" offset="0x2" visible="true" />
+					<int16 name="Forward Edge" offset="0x4" visible="true" />
+					<int16 name="Reverse Edge" offset="0x6" visible="true" />
+					<int16 name="Left Surface" offset="0x8" visible="true" />
+					<int16 name="Right Surface" offset="0xA" visible="true" />
 				</reflexive>
 				<reflexive name="Vertices" offset="0x64" visible="true" entrySize="0x10" align="0x10">
-					<undefined name="Point x" offset="0x0" visible="True" />
-					<undefined name="Point y" offset="0x4" visible="True" />
-					<undefined name="Point z" offset="0x8" visible="True" />
-					<int16 name="First Edge" offset="0xC" visible="True" />
+					<float32 name="Point x" offset="0x0" visible="true" />
+					<float32 name="Point y" offset="0x4" visible="true" />
+					<float32 name="Point z" offset="0x8" visible="true" />
+					<int16 name="First Edge" offset="0xC" visible="true" />
 					<int16 name="Unknown" offset="0xE" visible="false" />
 				</reflexive>
 			</reflexive>
@@ -160,7 +162,7 @@
 				<float32 name="Unknown" offset="0x34" visible="true" />
 				<float32 name="Unknown" offset="0x38" visible="true" />
 				<undefined name="Unknown" offset="0x3C" visible="false" />
-				<tagref name="Model" offset="0x40" withClass="False" visible="true" />
+				<tagref name="Model" offset="0x40" withClass="false" visible="true" />
 				<undefined name="Unknown" offset="0x44" visible="false" />
 				<undefined name="Unknown" offset="0x48" visible="false" />
 				<int16 name="Unknown" offset="0x4C" visible="false" />

@@ -6,10 +6,10 @@
 		<revision author="Shalted" version="2">Added some data...</revision>
 		<revision author="Lord Zedd" version="3">Updates.</revision>
 	</revisions>
-	<undefined name="Import Info Block" offset="0x0" visible="false" />
-	<undefined name="Import Info Block" offset="0x4" visible="false" />
-	<undefined name="Errors Block" offset="0x8" visible="false" />
-	<undefined name="Errors Block" offset="0xC" visible="false" />
+	<uint32 name="Import Info Block" offset="0x0" visible="false" />
+	<uint32 name="Import Info Block" offset="0x4" visible="false" />
+	<uint32 name="Errors Block" offset="0x8" visible="false" />
+	<uint32 name="Errors Block" offset="0xC" visible="false" />
 	<bitfield32 name="Flags" offset="0x10" visible="true">
 		<bit name="Contains Open Edges" index="0" />
 	</bitfield32>
@@ -25,10 +25,12 @@
 				<int16 name="Unknown" offset="0x2" visible="false" />
 				<reflexive name="BSP 3D Nodes" offset="0x4" visible="true" entrySize="0x8">
 					<int16 name="Plane" offset="0x0" visible="true" />
-					<int16 name="First Child" offset="0x2" visible="true" />
-					<uint8 name="Unknown" offset="0x4" visible="false" />
-					<int16 name="Second Child" offset="0x5" visible="true" />
-					<uint8 name="Unknown" offset="0x7" visible="false" />
+					<uint8 name="Front Child Lower" offset="0x2" visible="true" />
+					<uint8 name="Front Child Mid" offset="0x3" visible="true" />
+					<uint8 name="Front Child Upper" offset="0x4" visible="true" />
+					<uint8 name="Back Child Lower" offset="0x5" visible="true" />
+					<uint8 name="Back Child Mid" offset="0x6" visible="true" />
+					<uint8 name="Back Child Upper" offset="0x7" visible="true" />
 				</reflexive>
 				<reflexive name="Planes" offset="0xC" visible="true" entrySize="0x10">
 					<float32 name="Plane i" offset="0x0" visible="true" />
@@ -77,9 +79,9 @@
 					<int16 name="Right Surface" offset="0xA" visible="true" />
 				</reflexive>
 				<reflexive name="Vertices" offset="0x3C" visible="true" entrySize="0x10">
-					<undefined name="Point x" offset="0x0" visible="true" />
-					<undefined name="Point y" offset="0x4" visible="true" />
-					<undefined name="Point z" offset="0x8" visible="true" />
+					<float32 name="Point x" offset="0x0" visible="true" />
+					<float32 name="Point y" offset="0x4" visible="true" />
+					<float32 name="Point z" offset="0x8" visible="true" />
 					<int16 name="First Edge" offset="0xC" visible="true" />
 					<int16 name="Unknown" offset="0xE" visible="false" />
 				</reflexive>
@@ -113,9 +115,7 @@
 				<undefined name="Unknown" offset="0x58" visible="false" />
 				<undefined name="Unknown" offset="0x5C" visible="false" />
 				<undefined name="Unknown" offset="0x60" visible="false" />
-				<reflexive name="MOPP Code Data" offset="0x64" visible="true" entrySize="0x1">
-					<uint8 name="Unknown" offset="0x0" visible="true" />
-				</reflexive>
+				<dataref name="MOPP Code Data" offset="0x64" visible="true" />
 				<undefined name="Unknown" offset="0x6C" visible="false" />
 			</reflexive>
 		</reflexive>

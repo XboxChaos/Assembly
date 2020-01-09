@@ -4,6 +4,7 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Updating</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<reflexive name="Universal" offset="0x0" visible="true" entrySize="0xB4">
 		<tagRef name="Random Player Name Strings" offset="0x0" visible="true" />
@@ -19,26 +20,12 @@
 					<stringid name="Name" offset="0x0" visible="true" />
 					<stringid name="Description" offset="0x4" visible="true" />
 					<bitfield16 name="Flags" offset="0x8" visible="true">
-						<bit name="Has Requirement" index="0" />
-						<bit name="Has Special Requirement" index="1" />
-						<bit name="Bit 2" index="2" />
-						<bit name="Bit 3" index="3" />
-						<bit name="Bit 4" index="4" />
-						<bit name="Bit 5" index="5" />
-						<bit name="Bit 6" index="6" />
-						<bit name="Bit 7" index="7" />
-						<bit name="Bit 8" index="8" />
-						<bit name="Bit 9" index="9" />
-						<bit name="Bit 10" index="10" />
-						<bit name="Bit 11" index="11" />
-						<bit name="Bit 12" index="12" />
-						<bit name="Bit 13" index="13" />
-						<bit name="Bit 14" index="14" />
-						<bit name="Bit 15" index="15" />
+						<bit name="Has Unlock Condition" index="0" />
+						<bit name="Hidden While Locked" index="1" />
 					</bitfield16>
-					<int16 name="Unknown" offset="0xA" visible="true" />
-					<stringid name="Achievement Requirement" offset="0xC" visible="true" />
-					<reflexive name="Variant" offset="0x10" visible="true" entrySize="0x8">
+					<int16 name="Unknown" offset="0xA" visible="false" />
+					<stringid name="Unlock Condition" offset="0xC" visible="true" />
+					<reflexive name="Definitions" offset="0x10" visible="true" entrySize="0x8">
 						<stringId name="Region" offset="0x0" visible="true" />
 						<stringId name="Permutation" offset="0x4" visible="true" />
 					</reflexive>
@@ -46,8 +33,8 @@
 			</reflexive>
 		</reflexive>
 		<tagRef name="Multiplayer Strings" offset="0x38" visible="true" />
-		<tagRef name="Sandbox UI Strings" offset="0x48" visible="true" />
-		<tagRef name="Sandbox UI Properties" offset="0x58" visible="true" />
+		<tagRef name="Sandbox Text" offset="0x48" visible="true" />
+		<tagRef name="Sandbox Object Properties" offset="0x58" visible="true" />
 		<reflexive name="Game Variant Weapons" offset="0x68" visible="true" entrySize="0x18">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<float32 name="Random Chance" offset="0x4" visible="true" />
@@ -75,15 +62,15 @@
 				<stringId name="Substituted Vehicle" offset="0x4" visible="true" />
 			</reflexive>
 		</reflexive>
-		<tagRef name="Engine Settings" offset="0xA4" visible="true" />
+		<tagRef name="Game Engine Settings" offset="0xA4" visible="true" />
 	</reflexive>
 	<reflexive name="Runtime" offset="0xC" visible="true" entrySize="0x20C">
-		<tagRef name="Sandbox Editor Unit" offset="0x0" visible="true" />
-		<tagRef name="Sandbox Editor Object" offset="0x10" visible="true" />
+		<tagRef name="Editor Biped" offset="0x0" visible="true" />
+		<tagRef name="Editor Helper" offset="0x10" visible="true" />
 		<tagRef name="Flag" offset="0x20" visible="true" />
 		<tagRef name="Ball" offset="0x30" visible="true" />
-		<tagRef name="Bomb" offset="0x40" visible="true" />
-		<tagRef name="VIP Zone" offset="0x50" visible="true" />
+		<tagRef name="Assault Bomb" offset="0x40" visible="true" />
+		<tagRef name="VIP Influence Area" offset="0x50" visible="true" />
 		<tagRef name="In Game Strings" offset="0x60" visible="true" />
 		<reflexive name="Sounds" offset="0x70" visible="true" entrySize="0x10">
 			<tagRef name="Sound" offset="0x0" visible="true" />
@@ -94,7 +81,7 @@
 		<comment title="Event Protip">Strings print to the stringid "chud_survival_objective_text" so be sure to reference that somewhere in the biped HUD or remove states on the original "survival_state" widget so it always shows.
 Also, variables like #effect_player are no longer recognized by the engine so you'll need to work around them.
 Also, you can't just steal Halo 3's events verbatim because the Event value got turned into a stringid (but for multiplayer events it still expects the enum index thx Bungie) and a Display Duration value. Gotta fix that stuff manually yo, have fun.
-And medals don't seem to display, idk.</comment> 
+And medals don't display because "chud_survival_objective_text" doesn't support them.</comment>
 		<reflexive name="General Events" offset="0x88" visible="true" entrySize="0x108">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
 				<bit name="Bit 0" index="0" />
@@ -120,7 +107,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -136,8 +123,8 @@ And medals don't seem to display, idk.</comment>
 				<option name="Betrayal" value="0x2" />
 				<option name="Victory" value="0x3" />
 				<option name="Team Victory" value="0x4" />
-				<option name="unused1" value="0x5" />
-				<option name="unused2" value="0x6" />
+				<option name="Unknown" value="0x5" />
+				<option name="Unknown" value="0x6" />
 				<option name="1 Min To Win" value="0x7" />
 				<option name="Team 1 Min To Win" value="0x8" />
 				<option name="30 Secs To Win" value="0x9" />
@@ -285,7 +272,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -450,7 +437,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -560,7 +547,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -683,7 +670,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -800,7 +787,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -915,7 +902,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -1030,7 +1017,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -1142,7 +1129,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -1255,7 +1242,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -1381,7 +1368,7 @@ And medals don't seem to display, idk.</comment>
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
 				<option name="VIP" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
@@ -1469,8 +1456,8 @@ And medals don't seem to display, idk.</comment>
 			<undefined name="Unknown" offset="0x100" visible="false" />
 			<undefined name="Unknown" offset="0x104" visible="false" />
 		</reflexive>
-		<int32 name="Default Frag Grenade Count" offset="0x10C" visible="true" />
-		<int32 name="Default Plasma Grenade Count" offset="0x110" visible="true" />
+		<int32 name="Maximum Frag Grenade Count" offset="0x10C" visible="true" />
+		<int32 name="Maximum Plasma Grenade Count" offset="0x110" visible="true" />
 		<reflexive name="Multiplayer Constants" offset="0x114" visible="true" entrySize="0x21C">
 			<float32 name="Unknown" offset="0x0" visible="false" />
 			<float32 name="Unknown" offset="0x4" visible="false" />
@@ -1583,24 +1570,24 @@ And medals don't seem to display, idk.</comment>
 			<tagRef name="Bomb Explode Damage Effect" offset="0x1A4" visible="true" />
 			<tagRef name="Bomb Defuse Effect" offset="0x1B4" visible="true" />
 			<tagRef name="Cursor Impact Effect" offset="0x1C4" visible="true" />
-			<stringId name="Bomb Defusal String" offset="0x1D4" visible="true" />
-			<stringId name="Blocked Teleporter String" offset="0x1D8" visible="true" />
-			<stringid name="Unknown" offset="0x1DC" visible="false" />
-			<stringId name="Spawn Allowed Default Respawn String" offset="0x1E0" visible="true" />
-			<stringId name="Spawn At Player Looking At Self String" offset="0x1E4" visible="true" />
-			<stringId name="Spawn At Player Looking At Target String" offset="0x1E8" visible="true" />
-			<stringId name="Spawn At Player Looking At Potential Target String" offset="0x1EC" visible="true" />
-			<stringId name="Spawn At Territory Allowed Looking At Target String" offset="0x1F0" visible="true" />
-			<stringId name="Spawn At Territory Allowed Looking At Potential Target String" offset="0x1F4" visible="true" />
-			<stringId name="Player Out Of Lives String" offset="0x1F8" visible="true" />
-			<stringId name="Invalid Spawn Target String" offset="0x1FC" visible="true" />
-			<stringId name="Targetted Player Enemies Nearby String" offset="0x200" visible="true" />
-			<stringId name="Targetted Player Unfriendly Team String" offset="0x204" visible="true" />
-			<stringId name="Targetted Player Is Dead String" offset="0x208" visible="true" />
-			<stringId name="Targetted Player In Combat String" offset="0x20C" visible="true" />
-			<stringId name="Targetted Player Too Far From Owned Flag String" offset="0x210" visible="true" />
-			<stringId name="No Available Netpoints String" offset="0x214" visible="true" />
-			<stringId name="Netpoint Contested String" offset="0x218" visible="true" />
+			<stringId name="Bomb Defusal" offset="0x1D4" visible="true" />
+			<stringId name="Blocked Teleporter" offset="0x1D8" visible="true" />
+			<stringid name="Voluntary Respawn Control Instructions" offset="0x1DC" visible="true" />
+			<stringId name="Spawn Allowed Default Respawn" offset="0x1E0" visible="true" />
+			<stringId name="Spawn At Player Looking At Self" offset="0x1E4" visible="true" />
+			<stringId name="Spawn At Player Looking At Target" offset="0x1E8" visible="true" />
+			<stringId name="Spawn At Player Looking At Potential Target" offset="0x1EC" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Target" offset="0x1F0" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Potential Target" offset="0x1F4" visible="true" />
+			<stringId name="Player Out Of Lives" offset="0x1F8" visible="true" />
+			<stringId name="Invalid Spawn Target" offset="0x1FC" visible="true" />
+			<stringId name="Targetted Player Enemies Nearby" offset="0x200" visible="true" />
+			<stringId name="Targetted Player Unfriendly Team" offset="0x204" visible="true" />
+			<stringId name="Targetted Player Is Dead" offset="0x208" visible="true" />
+			<stringId name="Targetted Player In Combat" offset="0x20C" visible="true" />
+			<stringId name="Targetted Player Too Far From Owned Flag" offset="0x210" visible="true" />
+			<stringId name="No Available Netpoints" offset="0x214" visible="true" />
+			<stringId name="Netpoint Contested" offset="0x218" visible="true" />
 		</reflexive>
 		<reflexive name="State Responses" offset="0x120" visible="true" entrySize="0x24">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -1661,8 +1648,8 @@ And medals don't seem to display, idk.</comment>
 		</reflexive>
 		<tagRef name="Scoreboard Emblem Bitmap" offset="0x12C" visible="true" />
 		<tagRef name="Scoreboard Dead Emblem Bitmap" offset="0x13C" visible="true" />
-		<tagRef name="Default Shape Shader" offset="0x14C" visible="true" />
-		<tagRef name="Unknown" offset="0x15C" visible="true" />
+		<tagRef name="Hill Shader" offset="0x14C" visible="true" />
+		<tagRef name="Null Intro UI" offset="0x15C" visible="true" />
 		<tagRef name="CTF Intro UI" offset="0x16C" visible="true" />
 		<tagRef name="Slayer Intro UI" offset="0x17C" visible="true" />
 		<tagRef name="Oddball Intro UI" offset="0x18C" visible="true" />

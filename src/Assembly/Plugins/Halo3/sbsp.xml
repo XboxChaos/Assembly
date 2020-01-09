@@ -248,8 +248,8 @@
 		<reflexive name="Decorator Grids" offset="0xAC" visible="true" entrySize="0x30">
 			<int16 name="Amount" offset="0x0" visible="true" />
 			<int8 name="Decorator Index" offset="0x2" visible="true" />
-			<int8 name="Decorator Index - Scattering" offset="0x3" visible="true" />
-			<int32 name="Unknown" offset="0x4" visible="false" />
+			<int8 name="Decorator Instance Index" offset="0x3" visible="true" />
+			<int32 name="Decorator Geometry Offset" offset="0x4" visible="true" />
 			<float32 name="Position X" offset="0x8" visible="true" />
 			<float32 name="Position Y" offset="0xC" visible="true" />
 			<float32 name="Position Z" offset="0x10" visible="true" />
@@ -296,13 +296,13 @@
 	<reflexive name="Sky Owner Cluster" offset="0xCC" visible="true" entrySize="0x2">
 		<int16 name="Cluster Owner" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Conveyor Surfaces" offset="0xD8" visible="false" entrySize="0x18" align="0x10">
-		<undefined name="u i" offset="0x0" visible="false" />
-		<undefined name="u j" offset="0x4" visible="false" />
-		<undefined name="u k" offset="0x8" visible="false" />
-		<undefined name="v i" offset="0xC" visible="false" />
-		<undefined name="v j" offset="0x10" visible="false" />
-		<undefined name="v k" offset="0x14" visible="false" />
+	<reflexive name="Conveyor Surfaces" offset="0xD8" visible="true" entrySize="0x18" align="0x10">
+		<float32 name="u i" offset="0x0" visible="true" />
+		<float32 name="u j" offset="0x4" visible="true" />
+		<float32 name="u k" offset="0x8" visible="true" />
+		<float32 name="v i" offset="0xC" visible="true" />
+		<float32 name="v j" offset="0x10" visible="true" />
+		<float32 name="v k" offset="0x14" visible="true" />
 	</reflexive>
 	<reflexive name="Breakable Surfaces" offset="0xE4" visible="false" entrySize="0x20">
 		<undefined name="Unknown" offset="0x0" visible="false" />
@@ -368,16 +368,16 @@
 			<int32 name="Node or Sector Ref" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="BSP 2D Nodes" offset="0x24" visible="true" entrySize="0x14"><!--required-->
-			<undefined name="Plane i" offset="0x0" visible="true" />
-			<undefined name="Plane j" offset="0x4" visible="true" />
-			<undefined name="Plane d" offset="0x8" visible="true" />
+			<float32 name="Plane i" offset="0x0" visible="true" />
+			<float32 name="Plane j" offset="0x4" visible="true" />
+			<float32 name="Plane d" offset="0x8" visible="true" />
 			<int32 name="Left Child" offset="0xC" visible="true" />
 			<int32 name="Right Child" offset="0x10" visible="true" />
 		</reflexive>
 		<reflexive name="Vertices" offset="0x30" visible="true" entrySize="0xC">
-			<undefined name="x" offset="0x0" visible="true" />
-			<undefined name="y" offset="0x4" visible="true" />
-			<undefined name="z" offset="0x8" visible="true" />
+			<float32 name="x" offset="0x0" visible="true" />
+			<float32 name="y" offset="0x4" visible="true" />
+			<float32 name="z" offset="0x8" visible="true" />
 		</reflexive>
 		<reflexive name="Object Refs" offset="0x3C" visible="false" entrySize="0x18"><!--required-->
 			<undefined name="Unknown" offset="0x0" visible="false" />
@@ -395,7 +395,7 @@
 		</reflexive>
 		<reflexive name="Pathfinding Hints" offset="0x48" visible="true" entrySize="0x14">
 			<int16 name="Hint Type" offset="0x0" visible="true" />
-			<int16 name="Next Hint Index" offset="0x0" visible="true" />
+			<int16 name="Next Hint Index" offset="0x2" visible="true" />
 			<int16 name="Hint Data 0" offset="0x4" visible="true" />
 			<int16 name="Hint Data 1" offset="0x6" visible="true" />
 			<int16 name="Hint Data 2" offset="0x8" visible="true" />
@@ -575,7 +575,8 @@
 		<float32 name="Scale" offset="0x3C" visible="true" />
 		<int16 name="Palette Index" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
-		<int32 name="Unique ID" offset="0x44" visible="true" />
+		<uint16 name="Unique ID Salt" offset="0x44" visible="true" />
+		<uint16 name="Unique ID Index" offset="0x46" visible="true" />
 		<ascii name="Scenario Object Name" offset="0x48" length="0x20" visible="true" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 	</reflexive>
@@ -638,7 +639,7 @@
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<int16 name="Size" offset="0x4" visible="true" />
 			<int16 name="Count" offset="0x6" visible="true" />
-			<int32 name="Offset" offset="0x8" visible="false" />
+			<int32 name="Offset" offset="0x8" visible="true" />
 			<int32 name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
@@ -661,7 +662,7 @@
 			<int32 name="Unknown" offset="0x50" visible="false" />
 			<int16 name="Size" offset="0x54" visible="true" />
 			<int16 name="Count" offset="0x56" visible="true" />
-			<int32 name="Offset" offset="0x58" visible="false" />
+			<int32 name="Offset" offset="0x58" visible="true" />
 			<int32 name="Unknown" offset="0x5C" visible="false" />
 			<undefined name="Unknown" offset="0x60" visible="false" />
 			<undefined name="Unknown" offset="0x64" visible="false" />
@@ -848,10 +849,10 @@
 	<undefined name="Unknown" offset="0x230" visible="false" />
 	<undefined name="Unknown" offset="0x234" visible="false" />
 	<reflexive name="Unknown Yo" offset="0x238" visible="true" entrySize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown Index" offset="0xC" visible="true" />
+		<uint32 name="block here" offset="0x0" visible="false" />
+		<uint32 name="block here" offset="0x4" visible="false" />
+		<uint32 name="block here" offset="0x8" visible="false" />
+		<int16 name="Vertex Buffer Index" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</reflexive>
 	<uint16 name="[zone] Asset Salt 1" offset="0x244" visible="true" />
@@ -1138,10 +1139,10 @@
 	<undefined name="Unknown" offset="0x348" visible="false" />
 	<undefined name="Unknown" offset="0x34C" visible="false" />
 	<reflexive name="Unknown Yo" offset="0x350" visible="true" entrySize="0x10">
-		<undefined name="Unknown" offset="0x0" visible="false" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown Index" offset="0xC" visible="true" />
+		<uint32 name="block here" offset="0x0" visible="false" />
+		<uint32 name="block here" offset="0x4" visible="false" />
+		<uint32 name="block here" offset="0x8" visible="false" />
+		<int16 name="Vertex Buffer Index" offset="0xC" visible="true" />
 		<int16 name="Unknown" offset="0xE" visible="false" />
 	</reflexive>
 	<uint16 name="[zone] Asset Salt 2" offset="0x35C" visible="true" />

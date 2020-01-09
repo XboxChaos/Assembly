@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<plugin game="Reach" baseSize="0x3C">
+<plugin game="Reach" baseSize="0x44">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
@@ -20,8 +20,8 @@
 		<int8 name="Flags" offset="0x2" visible="true" />
 		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
 		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="true" />
-		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate.</comment>
+		<int16 name="Precache Index" offset="0x6" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate. The decompressed data is hashed.</comment>
 		<uint32 name="Block Offset" offset="0x8" visible="true" />
 		<uint32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<uint32 name="Uncompressed Block Size" offset="0x10" visible="true" />
@@ -30,12 +30,12 @@
 		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
 		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
 		<int16 name="Block Asset Count" offset="0x54" visible="true" />
-		<int16 name="Unknown" offset="0x56" visible="true" />
+		<int16 name="Unknown Index" offset="0x56" visible="true" />
 	</reflexive>
 	<reflexive name="Sizes" offset="0x24" visible="true" entrySize="0x10" align="0x8">
 		<int32 name="Overall Size" offset="0x0" visible="true" />
 		<reflexive name="Parts" offset="0x4" visible="true" entrySize="0x8" align="0x8">
-			<int32 name="Unknown" offset="0x0" visible="true" />
+			<int32 name="Offset" offset="0x0" visible="true" />
 			<int32 name="Size" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -47,4 +47,6 @@
 		<int16 name="Primary Size Index" offset="0xC" visible="true" />
 		<int16 name="Secondary Size Index" offset="0xE" visible="true" />
 	</reflexive>
+	<int32 name="Header Precache Count" offset="0x3C" visible="true" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
 </plugin>

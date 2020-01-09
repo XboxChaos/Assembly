@@ -9,7 +9,7 @@
 		<option name="Main Menu" value="0x2" />
 	</enum16>
 	<int16 name="Flags" offset="0x2" visible="true" />
-	<reflexive name="Resource Types" offset="0x4" visible="True" entrySize="0x1C">
+	<reflexive name="Resource Types" offset="0x4" visible="true" entrySize="0x1C">
 		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x10" visible="true" />
 		<int16 name="Unknown" offset="0x12" visible="true" />
@@ -36,7 +36,7 @@
 		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
 		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="true" />
-		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate.</comment>
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using deflate. The decompressed data is hashed.</comment>
 		<int32 name="Block Offset" offset="0x8" visible="true" />
 		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
@@ -44,13 +44,13 @@
 		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
 		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
 		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
-		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
-		<int16 name="Unknown" offset="0x56" visible="true" />
+		<int16 name="Block Asset Count" offset="0x54" visible="true" />
+		<int16 name="Unknown Index" offset="0x56" visible="true" />
 	</reflexive>
 	<reflexive name="Sizes" offset="0x40" visible="true" entrySize="0x10" align="0x8">
 		<int32 name="Overall Size" offset="0x0" visible="true" />
 		<reflexive name="Parts" offset="0x4" visible="true" entrySize="0x8" align="0x8">
-			<int32 name="Unknown" offset="0x0" visible="true" />
+			<int32 name="Offset" offset="0x0" visible="true" />
 			<int32 name="Size" offset="0x4" visible="true" />
 		</reflexive>
 	</reflexive>
@@ -75,7 +75,24 @@
 		<int32 name="Fixup Information Offset" offset="0x14" visible="true" />
 		<int32 name="Fixup Information Length" offset="0x18" visible="true" />
 		<int32 name="Secondary Fixup Information Offset" offset="0x1C" visible="true" />
-		<int16 name="Unknown" offset="0x20" visible="true" />
+		<bitfield16 name="Fixup Flags" offset="0x20" visible="true">
+			<bit name="Primary Fixup Exists" index="0" />
+			<bit name="Secondary Fixup Exists" index="1" />
+			<bit name="Bit 2" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<int16 name="[play] Segment Index" offset="0x22" visible="true" />
 		<bitfield8 name="Root Definition Address Location/High Bits" offset="0x24" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -2475,13 +2492,13 @@ If a bit is enabled then that member will be loaded.</comment>
 	<undefined name="Unknown" offset="0x13C" visible="false" />
 	<undefined name="Unknown" offset="0x140" visible="false" />
 	<undefined name="Unknown" offset="0x144" visible="false" />
-	<dataref name="Fixup Information" offset="0x148" visible="true" />
+	<dataref name="Fixup Information" offset="0x148" visible="true" align="0x10" />
 	<undefined name="Unknown" offset="0x15C" visible="false" />
 	<undefined name="Unknown" offset="0x160" visible="false" />
 	<undefined name="Unknown" offset="0x164" visible="false" />
 	<undefined name="Unknown" offset="0x168" visible="false" />
 	<undefined name="Unknown" offset="0x16C" visible="false" />
-	<reflexive name="Unknown 13" offset="0x170" visible="false" entrySize="0x18">
+	<reflexive name="Unknown" offset="0x170" visible="false" entrySize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -2514,7 +2531,8 @@ If a bit is enabled then that member will be loaded.</comment>
 	<undefined name="Unknown" offset="0x1D4" visible="false" />
 	<undefined name="Unknown" offset="0x1D8" visible="false" />
 	<reflexive name="Prediction A" offset="0x1DC" visible="true" entrySize="0x4">
-		<uint32 name="Key" offset="0x0" visible="true" />
+		<uint16 name="Adjusted Index" offset="0x0" visible="true" />
+		<uint16 name="Adjusted Salt" offset="0x2" visible="true" />
 	</reflexive>
 	<reflexive name="Prediction B" offset="0x1E8" visible="true" entrySize="0x8">
 		<int16 name="Overall Index" offset="0x0" visible="true" />
@@ -2532,7 +2550,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<int16 name="A Index" offset="0x6" visible="true" />
 	</reflexive>
 	<reflexive name="Prediction D2 - Tags" offset="0x20C" visible="true" entrySize="0xC">
-		<tagref name="Tag" offset="0x0" withClass="true" visible="true" />
+		<tagref name="Tag" offset="0x0" withClass="false" visible="true" />
 		<int32 name="First Value" offset="0x4" visible="true" />
 		<int32 name="Second Value" offset="0x8" visible="true" />
 	</reflexive>

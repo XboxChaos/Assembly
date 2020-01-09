@@ -4,11 +4,12 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Updates and standardizing</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<reflexive name="AI Globals" offset="0x0" visible="true" entrySize="0x144">
-		<float32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
+		<float32 name="AI Infantry-On-AI Weapon Damage Scale" offset="0x0" visible="true" />
+		<float32 name="AI Vehicle-On-AI Weapon Damage Scale" offset="0x4" visible="true" />
+		<float32 name="AI Player Vehicle-On-AI Weapon Damage Scale" offset="0x8" visible="true" />
 		<float32 name="Danger Broadly Facing" offset="0xC" visible="true" />
 		<float32 name="Danger Shooting Near" offset="0x10" visible="true" />
 		<float32 name="Danger Shooting At" offset="0x14" visible="true" />
@@ -25,12 +26,12 @@
 		<float32 name="Jump Stand" offset="0x4C" visible="true" />
 		<float32 name="Jump Storey" offset="0x50" visible="true" />
 		<float32 name="Jump Tower" offset="0x54" visible="true" />
-		<float32 name="Max Jump Down Height Down" offset="0x58" visible="true" />
-		<float32 name="Max Jump Down Height Step" offset="0x5C" visible="true" />
-		<float32 name="Max Jump Down Height Crouch" offset="0x60" visible="true" />
-		<float32 name="Max Jump Down Height Stand" offset="0x64" visible="true" />
-		<float32 name="Max Jump Down Height Storey" offset="0x68" visible="true" />
-		<float32 name="Max Jump Down Height Tower" offset="0x6C" visible="true" />
+		<float32 name="Maximum Jump Down Height Down" offset="0x58" visible="true" />
+		<float32 name="Maximum Jump Down Height Step" offset="0x5C" visible="true" />
+		<float32 name="Maximum Jump Down Height Crouch" offset="0x60" visible="true" />
+		<float32 name="Maximum Jump Down Height Stand" offset="0x64" visible="true" />
+		<float32 name="Maximum Jump Down Height Storey" offset="0x68" visible="true" />
+		<float32 name="Maximum Jump Down Height Tower" offset="0x6C" visible="true" />
 		<float32 name="Hoist Step min" offset="0x70" visible="true" />
 		<float32 name="Hoist Step max" offset="0x74" visible="true" />
 		<float32 name="Hoist Crouch min" offset="0x78" visible="true" />
@@ -41,10 +42,11 @@
 		<float32 name="Vault Step max" offset="0x8C" visible="true" />
 		<float32 name="Vault Crouch min" offset="0x90" visible="true" />
 		<float32 name="Vault Crouch max" offset="0x94" visible="true" />
-		<float32 name="Unknown" offset="0x98" visible="false" />
-		<float32 name="Unknown" offset="0x9C" visible="false" />
-		<float32 name="Unknown" offset="0xA0" visible="false" />
-		<float32 name="Unknown" offset="0xA4" visible="false" />
+		<comment title="PATHFINDING SEARCH RANGES">The maximum ranges to which firing point evaluations will do pathfinding searches. INCREASING THESE VALUES WILL ALMOST CERTAINLY HAVE A NEGATIVE IMPACT ON PERFORMANCE.</comment>
+		<float32 name="Search Range Infantry" offset="0x98" visible="true" />
+		<float32 name="Search Range Flying" offset="0x9C" visible="true" />
+		<float32 name="Search Range Vehicle" offset="0xA0" visible="true" />
+		<float32 name="Search Range Giant" offset="0xA4" visible="true" />
 		<reflexive name="Gravemind Properties" offset="0xA8" visible="true" entrySize="0xC">
 			<float32 name="Minimum Retreat Time" offset="0x0" visible="true" />
 			<float32 name="Ideal Retreat Time" offset="0x4" visible="true" />
@@ -52,39 +54,42 @@
 		</reflexive>
 		<float32 name="Scary Target Threshold" offset="0xB4" visible="true" />
 		<float32 name="Scary Weapon Threshold" offset="0xB8" visible="true" />
-		<float32 name="Unknown" offset="0xBC" visible="false" />
-		<float32 name="Unknown" offset="0xC0" visible="false" />
-		<float32 name="Unknown" offset="0xC4" visible="false" />
-		<float32 name="Unknown" offset="0xC8" visible="false" />
+		<float32 name="Player Scariness" offset="0xBC" visible="true" />
+		<float32 name="Berserking Actor Scariness" offset="0xC0" visible="true" />
+		<float32 name="Kamikazeing Actor Scariness" offset="0xC4" visible="true" />
+		<float32 name="Invincible Scariness" offset="0xC8" visible="true" />
 		<float32 name="Unknown" offset="0xCC" visible="false" />
 		<float32 name="Unknown" offset="0xD0" visible="false" />
 		<float32 name="Unknown" offset="0xD4" visible="false" />
-		<float32 name="Unknown" offset="0xD8" visible="false" />
-		<float32 name="Unknown" offset="0xDC" visible="false" />
-		<float32 name="Unknown" offset="0xE0" visible="false" />
-		<float32 name="Unknown" offset="0xE4" visible="false" />
+		<comment title="RESURRECTION">A few properties to help define when it is safe for a mission critical character to ressurect.</comment>
+		<float32 name="Minimum Death Time" offset="0xD8" visible="true" />
+		<float32 name="Projectile Distance" offset="0xDC" visible="true" />
+		<float32 name="Idle Clump Distance" offset="0xE0" visible="true" />
+		<float32 name="Dangerous Clump Distance" offset="0xE4" visible="true" />
 		<reflexive name="Styles" offset="0xE8" visible="true" entrySize="0x10">
 			<tagRef name="Style" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Formations" offset="0xF4" visible="true" entrySize="0x10">
-			<tagRef name="Formations" offset="0x0" visible="true" />
+		<reflexive name="Spawn Formations" offset="0xF4" visible="true" entrySize="0x10">
+			<tagRef name="Formation" offset="0x0" visible="true" />
 		</reflexive>
 		<reflexive name="Squad Templates" offset="0x100" visible="true" entrySize="0x10">
 			<tagRef name="Squad Template" offset="0x0" visible="true" />
 		</reflexive>
-		<undefined name="Unknown" offset="0x10C" visible="false" />
-		<undefined name="Unknown" offset="0x110" visible="false" />
-		<undefined name="Unknown" offset="0x114" visible="false" />
-		<undefined name="Unknown" offset="0x118" visible="false" />
-		<undefined name="Unknown" offset="0x11C" visible="false" />
-		<undefined name="Unknown" offset="0x120" visible="false" />
-		<undefined name="Unknown" offset="0x124" visible="false" />
-		<undefined name="Unknown" offset="0x128" visible="false" />
-		<undefined name="Unknown" offset="0x12C" visible="false" />
-		<undefined name="Unknown" offset="0x130" visible="false" />
-		<undefined name="Unknown" offset="0x134" visible="false" />
-		<undefined name="Unknown" offset="0x138" visible="false" />
-		<undefined name="Unknown" offset="0x13C" visible="false" />
-		<undefined name="Unknown" offset="0x140" visible="false" />
+		<comment title="CLUMP THROTTLING">Some values to help you control how much guys will throttle when they want to stick with the rest of their squad.</comment>
+		<float32 name="Stop Distance" offset="0x10C" visible="true" />
+		<float32 name="Resume Distance" offset="0x110" visible="true" />
+		<float32 name="Minimum Distance" offset="0x114" visible="true" />
+		<float32 name="Maximum Distance" offset="0x118" visible="true" />
+		<float32 name="Minimum Scale" offset="0x11C" visible="true" />
+		<comment title="SQUAD PATROLLING">Parameters related to squad patrolling.</comment>
+		<float32 name="Passthrough Chance" offset="0x120" visible="true" />
+		<float32 name="Search Phase Skip Chance" offset="0x124" visible="true" />
+		<float32 name="Patrol Transition Timeout" offset="0x128" visible="true" />
+		<float32 name="Patrol Maneuver Timeout" offset="0x12C" visible="true" />
+		<float32 name="Unknown" offset="0x130" visible="false" />
+		<float32 name="Unknown" offset="0x134" visible="false" />
+		<float32 name="Unknown" offset="0x138" visible="false" />
+		<float32 name="Unknown" offset="0x13C" visible="false" />
+		<float32 name="Unknown" offset="0x140" visible="false" />
 	</reflexive>
 </plugin>

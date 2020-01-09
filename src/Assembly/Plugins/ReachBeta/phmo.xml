@@ -114,11 +114,11 @@
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 	</reflexive>
-	<reflexive name="Unknown 12" offset="0x44" visible="false" entrySize="0x18">
-		<reflexive name="Unknown 1" offset="0x0" visible="false" entrySize="0x2">
+	<reflexive name="Unknown" offset="0x44" visible="false" entrySize="0x18">
+		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x2">
 			<int16 name="Unknown" offset="0x0" visible="false" />
 		</reflexive>
-		<reflexive name="Unknown 1" offset="0xC" visible="false" entrySize="0x10">
+		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x10">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -240,12 +240,12 @@
 		<float32 name="Unknown" offset="0x20" visible="true" />
 		<float32 name="Unknown" offset="0x24" visible="true" />
 		<float32 name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Inertia Tensor Scale" offset="0x2C" visible="true" />
-		<undefined name="Linear Dampening" offset="0x30" visible="true" />
-		<undefined name="Angular Dampening" offset="0x34" visible="true" />
-		<undefined name="Center Of Mass Offset x" offset="0x38" visible="true" />
-		<undefined name="Center Of Mass Offset y" offset="0x3C" visible="true" />
-		<undefined name="Center Of Mass Offset z" offset="0x40" visible="true" />
+		<float32 name="Inertia Tensor Scale" offset="0x2C" visible="true" />
+		<float32 name="Linear Dampening" offset="0x30" visible="true" />
+		<float32 name="Angular Dampening" offset="0x34" visible="true" />
+		<float32 name="Center Of Mass Offset x" offset="0x38" visible="true" />
+		<float32 name="Center Of Mass Offset y" offset="0x3C" visible="true" />
+		<float32 name="Center Of Mass Offset z" offset="0x40" visible="true" />
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<undefined name="Unknown" offset="0x48" visible="true" />
 		<undefined name="Unknown" offset="0x4C" visible="true" />
@@ -270,8 +270,8 @@
 		<float32 name="Inertia Tensor z k" offset="0x98" visible="true" />
 		<float32 name="Inertia Tensor z Radius" offset="0x9C" visible="true" />
 		<int32 name="Unknown Interaction" offset="0xA0" visible="true" />
-		<comment title="WOAH THERE">You can't just poke the following 2 values. In memory they become a pointer, pointing directly to the memory address of the destination shape.
-If you want to poke it, use the raw field below it and paste the memory address of the new shape. Use the address of the "Size" value.</comment>
+		<comment title="Shape Type/Index">You can't just poke the following 2 values. In memory they become a pointer, pointing directly to the memory address of the destination shape.
+If you want to poke it, you'll want to View Value As on the Shape Type enum for its address and use another poking tool to paste the memory address of the new shape. Use the address of the "Size" value.</comment>
 		<enum16 name="Shape Type" offset="0xA4" visible="true">
 			<option name="Sphere" value="0x0" />
 			<option name="Pill" value="0x1" />
@@ -291,8 +291,6 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0xA6" visible="true" />
-		<raw name="New Pointer (read comment)" offset="0xA4" size="0x4" visible="true" />
-		<comment title="/WOAH THERE" />
 		<float32 name="Mass" offset="0xA8" visible="true" />
 		<undefined name="Unknown" offset="0xAC" visible="true" />
 		<int16 name="Interaction A" offset="0xB0" visible="true" />
@@ -345,9 +343,9 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
 	</reflexive>
-	<undefined name="Multi Spheres Block Here" offset="0x80" visible="false" />
-	<undefined name="Multi Spheres Block Here" offset="0x84" visible="false" />
-	<undefined name="Multi Spheres Block Here" offset="0x88" visible="false" />
+	<uint32 name="Multi Spheres Block Here" offset="0x80" visible="false" />
+	<uint32 name="Multi Spheres Block Here" offset="0x84" visible="false" />
+	<uint32 name="Multi Spheres Block Here" offset="0x88" visible="false" />
 	<reflexive name="Pills" offset="0x8C" visible="true" entrySize="0x60" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
@@ -431,9 +429,9 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Translation k" offset="0xA8" visible="true" />
 		<float32 name="Translation Radius" offset="0xAC" visible="true" />
 	</reflexive>
-	<undefined name="Triangles Block Here" offset="0xA4" visible="false" />
-	<undefined name="Triangles Block Here" offset="0xA8" visible="false" />
-	<undefined name="Triangles Block Here" offset="0xAC" visible="false" />
+	<uint32 name="Triangles Block Here" offset="0xA4" visible="false" />
+	<uint32 name="Triangles Block Here" offset="0xA8" visible="false" />
+	<uint32 name="Triangles Block Here" offset="0xAC" visible="false" />
 	<reflexive name="Polyhedra" offset="0xB0" visible="true" entrySize="0x90" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
@@ -497,9 +495,9 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<float32 name="Unknown" offset="0x8" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="true" />
 	</reflexive>
-	<undefined name="Mass Distributions Block Here" offset="0xD4" visible="false" />
-	<undefined name="Mass Distributions Block Here" offset="0xD8" visible="false" />
-	<undefined name="Mass Distributions Block Here" offset="0xDC" visible="false" />
+	<uint32 name="Mass Distributions Block Here" offset="0xD4" visible="false" />
+	<uint32 name="Mass Distributions Block Here" offset="0xD8" visible="false" />
+	<uint32 name="Mass Distributions Block Here" offset="0xDC" visible="false" />
 	<reflexive name="Lists" offset="0xE0" visible="true" entrySize="0x70" align="0x10">
 		<int32 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Size" offset="0x4" visible="true" />
@@ -552,8 +550,6 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x2" visible="true" />
-		<raw name="New Pointer" offset="0x0" size="0x4" visible="true" />
-		<comment title="/End" />
 		<int32 name="Unknown" offset="0x4" visible="true" />
 		<int32 name="Unknown" offset="0x8" visible="true" />
 		<int32 name="Unknown" offset="0xC" visible="true" />
@@ -593,8 +589,6 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x36" visible="true" />
-		<raw name="New Pointer" offset="0x34" size="0x4" visible="true" />
-		<comment title="/End" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -754,15 +748,15 @@ If you want to poke it, use the raw field below it and paste the memory address 
 		<degree name="Limit Min Angle" offset="0x7C" visible="true" />
 		<degree name="Limit Max Angle" offset="0x80" visible="true" />
 	</reflexive>
-	<undefined name="Ball And Socket Constraint Block" offset="0x16C" visible="false" />
-	<undefined name="Ball And Socket Constraint Block" offset="0x170" visible="false" />
-	<undefined name="Ball And Socket Constraint Block" offset="0x174" visible="false" />
-	<undefined name="Stiff Spring Constraint Block" offset="0x178" visible="false" />
-	<undefined name="Stiff Spring Constraint Block" offset="0x17C" visible="false" />
-	<undefined name="Stiff Spring Constraint Block" offset="0x180" visible="false" />
-	<undefined name="Prismatic Constraint Block" offset="0x184" visible="false" />
-	<undefined name="Prismatic Constraint Block" offset="0x188" visible="false" />
-	<undefined name="Prismatic Constraint Block" offset="0x18C" visible="false" />
+	<uint32 name="Ball And Socket Constraint Block" offset="0x16C" visible="false" />
+	<uint32 name="Ball And Socket Constraint Block" offset="0x170" visible="false" />
+	<uint32 name="Ball And Socket Constraint Block" offset="0x174" visible="false" />
+	<uint32 name="Stiff Spring Constraint Block" offset="0x178" visible="false" />
+	<uint32 name="Stiff Spring Constraint Block" offset="0x17C" visible="false" />
+	<uint32 name="Stiff Spring Constraint Block" offset="0x180" visible="false" />
+	<uint32 name="Prismatic Constraint Block" offset="0x184" visible="false" />
+	<uint32 name="Prismatic Constraint Block" offset="0x188" visible="false" />
+	<uint32 name="Prismatic Constraint Block" offset="0x18C" visible="false" />
 	<reflexive name="Phantoms" offset="0x190" visible="true" entrySize="0x2C" align="0x10">
 		<int32 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Size" offset="0x4" visible="true" />
@@ -789,8 +783,6 @@ If you want to poke it, use the raw field below it and paste the memory address 
 			<option name="MOPP" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x12" visible="true" />
-		<raw name="New Pointer" offset="0x10" size="0x4" visible="true" />
-		<comment title="/End" />
 		<undefined name="Unknown" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="true" />
 		<int32 name="Unknown" offset="0x1C" visible="false" />

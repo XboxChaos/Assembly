@@ -5,7 +5,7 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Standardized</revision>
 	</revisions>
-	<reflexive name="Platform Codec" offset="0x0" visible="true" entrySize="0x3">
+	<reflexive name="Platform Codec" offset="0x0" visible="true" entrySize="0x3" align="0x10">
 		<enum8 name="Sample Rate" offset="0x0" visible="true">
 			<option name="22kHz" value="0x0" />
 			<option name="44kHz" value="0x1" />
@@ -17,7 +17,7 @@
 			<option name="Surround" value="0x2" />
 			<option name="5.1 Surround" value="0x3" />
 		</enum8>
-		<int8 name="Unknown" offset="0x2" visible="false" />
+		<int8 name="Compression" offset="0x2" visible="true" />
 	</reflexive>
 	<reflexive name="Playback Parameters" offset="0xC" visible="true" entrySize="0x44">
 		<comment title="Distances" />
@@ -97,10 +97,10 @@
 		<int16 name="Bend Bounds max" offset="0x4" visible="true" />
 		<int16 name="Max Gain Pitch Bounds min" offset="0x6" visible="true" />
 		<int16 name="Max Gain Pitch Bounds max" offset="0x8" visible="true" />
-		<int16 name="Unknown Bounds min" offset="0xA" visible="false" />
-		<int16 name="Unknown Bounds max" offset="0xC" visible="false" />
+		<int16 name="Unknown Bounds min" offset="0xA" visible="true" />
+		<int16 name="Unknown Bounds max" offset="0xC" visible="true" />
 	</reflexive>
-	<reflexive name="Pitch Ranges" offset="0x3C" visible="true" entrySize="0xC">
+	<reflexive name="Pitch Ranges" offset="0x3C" visible="true" entrySize="0xC" align="0x10">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
 		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
@@ -112,7 +112,7 @@
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
 		<uint32 name="Sample Size" offset="0x4" visible="true" />
-		<int32 name="First Permutation Chunk" offset="0x8" visible="true" />
+		<int32 name="First Permutation Chunk Index" offset="0x8" visible="true" />
 		<int16 name="Permutation Chunk Count" offset="0xC" visible="true" />
 		<int8 name="Gain" offset="0xE" visible="true" />
 		<int8 name="Pitch Range Overall Permutation Index" offset="0xF" visible="true" />
@@ -129,22 +129,22 @@
 		<reflexive name="Filter" offset="0x18" visible="true" entrySize="0x48">
 			<int32 name="Filter Type" offset="0x0" visible="true" />
 			<int32 name="Filter Width" offset="0x4" visible="true" />
-			<comment title="Left Filter Frequency"/>
+			<comment title="Left Filter Frequency" />
 			<float32 name="Scale Bounds min" offset="0x8" visible="true" />
 			<float32 name="Scale Bounds max" offset="0xC" visible="true" />
 			<float32 name="Random Base" offset="0x10" visible="true" />
 			<float32 name="Random Variance" offset="0x14" visible="true" />
-			<comment title="Left Filter Gain"/>
+			<comment title="Left Filter Gain" />
 			<float32 name="Scale Bounds min" offset="0x18" visible="true" />
 			<float32 name="Scale Bounds max" offset="0x1C" visible="true" />
 			<float32 name="Random Base" offset="0x20" visible="true" />
 			<float32 name="Random Variance" offset="0x24" visible="true" />
-			<comment title="Right Filter Frequency"/>
+			<comment title="Right Filter Frequency" />
 			<float32 name="Scale Bounds min" offset="0x28" visible="true" />
 			<float32 name="Scale Bounds max" offset="0x2C" visible="true" />
 			<float32 name="Random Base" offset="0x30" visible="true" />
 			<float32 name="Random Variance" offset="0x34" visible="true" />
-			<comment title="Right Filter Gain"/>
+			<comment title="Right Filter Gain" />
 			<float32 name="Scale Bounds min" offset="0x38" visible="true" />
 			<float32 name="Scale Bounds max" offset="0x3C" visible="true" />
 			<float32 name="Random Base" offset="0x40" visible="true" />
@@ -160,7 +160,7 @@
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 	</reflexive>
-	<reflexive name="Languages" offset="0x60" visible="true" entrySize="0x1C">
+	<reflexive name="Language Durations" offset="0x60" visible="true" entrySize="0x1C">
 		<enum32 name="Language" offset="0x0" visible="true">
 			<option name="English" value="0x0" />
 			<option name="Japanese" value="0x1" />
@@ -175,12 +175,12 @@
 			<option name="Portuguese" value="0xA" />
 			<option name="Polish" value="0xB" />
 		</enum32>
-		<reflexive name="Unknown A" offset="0x4" visible="true" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="true" />
+		<reflexive name="Permutation Durations" offset="0x4" visible="true" entrySize="0x2">
+			<int16 name="Duration" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown B" offset="0x10" visible="true" entrySize="0x4">
-			<int16 name="Unknown A Start Index" offset="0x0" visible="true" />
-			<int16 name="Unknown A Count" offset="0x2" visible="true" />
+		<reflexive name="Pitch Ranges" offset="0x10" visible="true" entrySize="0x4">
+			<int16 name="First Permutation Index" offset="0x0" visible="true" />
+			<int16 name="Permutation Count" offset="0x2" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Runtime Permutation Flags" offset="0x6C" visible="true" entrySize="0x1">
@@ -244,9 +244,12 @@
 					</reflexive>
 					<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x8">
 						<int16 name="Unknown" offset="0x0" visible="true" />
-						<int16 name="Unknown" offset="0x2" visible="true" />
-						<int16 name="Unknown" offset="0x4" visible="true" />
-						<int16 name="Unknown" offset="0x6" visible="true" />
+						<int8 name="Unknown" offset="0x2" visible="true" />
+						<int8 name="Unknown" offset="0x3" visible="true" />
+						<int8 name="Unknown" offset="0x4" visible="true" />
+						<int8 name="Unknown" offset="0x5" visible="true" />
+						<int8 name="Unknown" offset="0x6" visible="true" />
+						<int8 name="Unknown" offset="0x7" visible="true" />
 					</reflexive>
 				</reflexive>
 			</reflexive>

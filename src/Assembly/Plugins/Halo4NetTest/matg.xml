@@ -350,20 +350,22 @@
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
-		<undefined name="Unknown" offset="0x5C" visible="false" />
-		<undefined name="Unknown" offset="0x60" visible="false" />
-		<undefined name="Unknown" offset="0x64" visible="false" />
-		<undefined name="Unknown" offset="0x68" visible="false" />
-		<undefined name="Unknown" offset="0x6C" visible="false" />
-		<undefined name="Unknown" offset="0x70" visible="false" />
-		<float32 name="Unknown" offset="0x74" visible="false" />
-		<float32 name="Unknown" offset="0x78" visible="false" />
-		<float32 name="Unknown" offset="0x7C" visible="false" />
-		<float32 name="Unknown" offset="0x80" visible="false" />
-		<float32 name="Unknown" offset="0x84" visible="false" />
-		<float32 name="Unknown" offset="0x88" visible="false" />
-		<float32 name="Unknown" offset="0x8C" visible="false" />
-		<float32 name="Unknown" offset="0x90" visible="false" />
+		<comment title="Double/Triple Jump" />
+		<float32 name="Minimum Vertical Velocity" offset="0x5C" visible="true" />
+		<float32 name="Cooldown Time" offset="0x60" visible="true" />
+		<float32 name="Double Jump Velocity i" offset="0x64" visible="true" />
+		<float32 name="Double Jump Velocity j" offset="0x68" visible="true" />
+		<float32 name="Triple Jump Velocity i" offset="0x6C" visible="true" />
+		<float32 name="Triple Jump Velocity j" offset="0x70" visible="true" />
+		<comment title="Stick Throws" />
+		<float32 name="Throw Channel Width" offset="0x74" visible="true" />
+		<float32 name="Throw Peg Threshold" offset="0x78" visible="true" />
+		<float32 name="Throw Centered Minimum Time" offset="0x7C" visible="true" />
+		<float32 name="Throw Drawing Maximum Time" offset="0x80" visible="true" />
+		<float32 name="Throw Drawn Maximum Time" offset="0x84" visible="true" />
+		<float32 name="Throw Throwing Maximum Time" offset="0x88" visible="true" />
+		<float32 name="Flick Peg Jump Max Time" offset="0x8C" visible="true" />
+		<float32 name="Double Tap Interval Time" offset="0x90" visible="true" />
 		<undefined name="Unknown" offset="0x94" visible="false" />
 		<undefined name="Unknown" offset="0x98" visible="false" />
 		<undefined name="Unknown" offset="0x9C" visible="false" />
@@ -614,8 +616,8 @@
 				<option name="Disabled" value="0x1" />
 				<option name="Enabled" value="0x2" />
 			</enum8>
-			<int8 name="Unknown" offset="0x1a" visible="false" />
-			<int8 name="Unknown" offset="0x1b" visible="false" />
+			<int8 name="Unknown" offset="0x1A" visible="false" />
+			<int8 name="Unknown" offset="0x1B" visible="false" />
 		</reflexive>
 		<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0xC">
 			<enum8 name="Active Camo" offset="0x0" visible="true">
@@ -907,13 +909,13 @@
 		<float32 name="Unknown" offset="0x80" visible="false" />
 	</reflexive>
 	<reflexive name="Soft Barrier Properties" offset="0x144" visible="true" entrySize="0x1C">
-		<undefined name="Biped Give" offset="0x0" visible="true" />
-		<undefined name="Biped Bounciness" offset="0x4" visible="true" />
-		<undefined name="Biped Bumpiness" offset="0x8" visible="true" />
+		<float32 name="Biped Give" offset="0x0" visible="true" />
+		<float32 name="Biped Bounciness" offset="0x4" visible="true" />
+		<float32 name="Biped Bumpiness" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Vehicle Give" offset="0x10" visible="true" />
-		<undefined name="Vehicle Bounciness" offset="0x14" visible="true" />
-		<undefined name="Vehicle Bumpiness" offset="0x18" visible="true" />
+		<float32 name="Vehicle Give" offset="0x10" visible="true" />
+		<float32 name="Vehicle Bounciness" offset="0x14" visible="true" />
+		<float32 name="Vehicle Bumpiness" offset="0x18" visible="true" />
 	</reflexive>
 	<reflexive name="Interface Tags" offset="0x150" visible="true" entrySize="0x130">
 		<tagref name="Spinner" offset="0x0" visible="true" />
@@ -966,14 +968,14 @@
 		<tagRef name="Respawn Effect" offset="0x78" visible="true" />
 		<tagref name="Unknown" offset="0x88" visible="true" />
 		<int32 name="Binoculars Zoom Count" offset="0x98" visible="true" />
-		<undefined name="Binocular Zoom Range min" offset="0x9C" visible="true" />
-		<undefined name="Binocular Zoom Range max" offset="0xA0" visible="true" />
+		<float32 name="Binocular Zoom Range min" offset="0x9C" visible="true" />
+		<float32 name="Binocular Zoom Range max" offset="0xA0" visible="true" />
 		<tagRef name="Flashlight On" offset="0xA4" visible="true" />
 		<tagRef name="Flashlight Off" offset="0xB4" visible="true" />
 		<undefined name="Unknown" offset="0xC4" visible="false" />
 		<undefined name="Unknown" offset="0xC8" visible="false" />
 		<undefined name="Unknown" offset="0xCC" visible="false" />
-		<reflexive name="Equipment" offset="0xD0" visible="true" entrySize="0x38">
+		<reflexive name="Equipment" offset="0xD0" visible="true" entrySize="0x34">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<float32 name="Unknown" offset="0x4" visible="false" />
 			<float32 name="Unknown" offset="0x8" visible="false" />
@@ -987,7 +989,6 @@
 			<float32 name="Unknown" offset="0x28" visible="false" />
 			<stringid name="Equipment" offset="0x2C" visible="true" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
-			<float32 name="Unknown" offset="0x34" visible="false" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Player Representation" offset="0x180" visible="true" entrySize="0x80">
@@ -1019,7 +1020,7 @@
 		<tagRef name="Soft Landing" offset="0x20" visible="true" />
 		<tagRef name="Hard Landing" offset="0x30" visible="true" />
 		<tagRef name="Script Damage" offset="0x40" visible="true" />
-		<float32 name="Maximum Falling Distance" offset="0x50" visible="false" />
+		<float32 name="Maximum Falling Distance" offset="0x50" visible="true" />
 		<tagRef name="Terminal Velocity Damage" offset="0x54" visible="true" />
 		<tagRef name="Missing Response" offset="0x64" visible="true" />
 		<tagref name="Unknown" offset="0x74" visible="true" />
@@ -1088,7 +1089,7 @@
 		<float32 name="Water Drag Unknown" offset="0x58" visible="false" />
 		<float32 name="Water Drag Unknown" offset="0x5C" visible="false" />
 		<float32 name="Water Drag Unknown" offset="0x60" visible="false" />
-		<undefined name="Water Drag Unknown" offset="0x64" visible="false" />
+		<float32 name="Water Drag Unknown" offset="0x64" visible="false" />
 		<tagRef name="Breakable Surface" offset="0x68" visible="true" />
 		<tagRef name="Sound Sweetener Small" offset="0x78" visible="true" />
 		<tagRef name="Sound Sweetener Medium" offset="0x88" visible="true" />
@@ -1438,7 +1439,7 @@
 		<float32 name="Water Drag Unknown" offset="0x58" visible="false" />
 		<float32 name="Water Drag Unknown" offset="0x5C" visible="false" />
 		<float32 name="Water Drag Unknown" offset="0x60" visible="false" />
-		<undefined name="Water Drag Unknown" offset="0x64" visible="false" />
+		<float32 name="Water Drag Unknown" offset="0x64" visible="false" />
 		<tagRef name="Breakable Surface" offset="0x68" visible="true" />
 		<tagRef name="Sound Sweetener Small" offset="0x78" visible="true" />
 		<tagRef name="Sound Sweetener Medium" offset="0x88" visible="true" />

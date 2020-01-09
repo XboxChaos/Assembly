@@ -4,34 +4,111 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Standardizing</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
-	<reflexive name="Unknown" offset="0x0" visible="true" entrySize="0x14">
-		<int32 name="Unknown" offset="0x0" visible="true" />
-		<int32 name="Unknown" offset="0x4" visible="true" />
-		<reflexive name="Unknown" offset="0x8" visible="true" entrySize="0x10">
-			<int32 name="Unknown" offset="0x0" visible="true" />
-			<int32 name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="true" />
-			<int32 name="Unknown" offset="0xC" visible="true" />
+	<comment title="EFFECT HOLDBACKS">ALLOCATIONS ON THE MAIN THREAD
+type_effect:                     Number of effect slots
+type_event:                      Number of event slots
+type_location:                   Number of location slots
+type_lightprobe:                 Number of lightprobe slots
+
+THREAD MESSAGES
+type_effect_message:             Number of main--&gt;render messages
+                                 Most effect components require 2 messages + 1 x number of locations
+type_effect_reverse_message:     Number of render--&gt;main messages (attached effects to particles)
+                                 Holdback not implemented due to complexity.
+
+ALLOCATIONS ON THE RENDER THREAD
+tracer system		              Number of instances
+tracer location		          Number of instances * markers
+tracer			                  Number of instances * markers * tag-block-entries
+tracer profile row			      x16 = Number of tracer profiles
+
+type_decal_system                Number of instances
+type_decal                       Number of instances * tag-block-entries
+type_decal_vertex                Number of decal vertices
+type_decal_index                 Number of decal indices
+
+type_light_volume_system         Number of instances
+type_light_volume_location       Number of instances * markers
+type_light_volume                Number of instances * markers * tag-block-entries
+type_light_volume_profile_row    x16 =Number of light_volume profiles
+
+type_particle_system             Number of instances
+type_particle_location           Number of instances * markers
+type_particle_emitter            Number of instances * markers * tag-block-entries
+type_cpu_particle                Number of cpu particles
+type_gpu_particle_row            x16 =Number of gpu particles (includes cpu particles)
+
+SPAWNS TO THE GPU
+type_particle_queue              Number of particles created in a frame (includes cpu particles)
+tracer queue		              Number of tracer profiles created in a frame
+</comment>
+	<reflexive name="Holdbacks" offset="0x0" visible="true" entrySize="0x14">
+		<enum32 name="Holdback Type" offset="0x0" visible="true">
+			<option name="Type Effect" value="0x0" />
+			<option name="Type Event" value="0x1" />
+			<option name="Type Location" value="0x2" />
+			<option name="Type Lightprobe" value="0x3" />
+			<option name="Type Effect Message" value="0x4" />
+			<option name="Tracer System" value="0x5" />
+			<option name="Tracer Location" value="0x6" />
+			<option name="Tracer Spawned" value="0x7" />
+			<option name="Tracer Stateless" value="0x8" />
+			<option name="Tracer Spawned Profile Row" value="0x9" />
+			<option name="Tracer Stateless Profile Row" value="0xA" />
+			<option name="Type Decal System" value="0xB" />
+			<option name="Type Decal" value="0xC" />
+			<option name="Type Decal Vertex" value="0xD" />
+			<option name="Type Decal Index" value="0xE" />
+			<option name="Type Light Volume System" value="0xF" />
+			<option name="Type Light Volume Location" value="0x10" />
+			<option name="Type Light Volume" value="0x11" />
+			<option name="Type Light Volume Profile Row" value="0x12" />
+			<option name="Type Particle System" value="0x13" />
+			<option name="Type Particle Location" value="0x14" />
+			<option name="Type Particle Emitter" value="0x15" />
+			<option name="Type Cpu Particle" value="0x16" />
+			<option name="Type Gpu Particle Row" value="0x17" />
+			<option name="Type Particle Queue" value="0x18" />
+			<option name="Tracer Queue" value="0x19" />
+			<option name="Track Decal System" value="0x1A" />
+		</enum32>
+		<uint32 name="Overall Budget" offset="0x4" visible="true" />
+		<reflexive name="Priorities" offset="0x8" visible="true" entrySize="0x10">
+			<enum32 name="Priority Type" offset="0x0" visible="true">
+				<option name="Low" value="0x0" />
+				<option name="Normal" value="0x1" />
+				<option name="Above Normal" value="0x2" />
+				<option name="High" value="0x3" />
+				<option name="Very High" value="0x4" />
+				<option name="Essential" value="0x5" />
+			</enum32>
+			<comment title="SET ONE OF THE FOLLOWING">Whichever is larger will be used</comment>
+			<uint32 name="Absolute Count" offset="0x4" visible="true" />
+			<float32 name="Relative Percentage" offset="0x8" visible="true" />
+			<uint32 name="How Many Available At This Priority" offset="0xC" visible="true" />
 		</reflexive>
 	</reflexive>
 	<tagRef name="Birthday Party Effect" offset="0xC" visible="true" />
-	<reflexive name="Spawning 1" offset="0x1C" visible="true" entrySize="0x40">
-		<tagRef name="Bipeds" offset="0x0" visible="true" />
-		<tagRef name="Vehicles" offset="0x10" visible="true" />
-		<tagRef name="Weapons" offset="0x20" visible="true" />
-		<tagRef name="Player" offset="0x30" visible="true" />
+	<comment title="Spawn Effects">Effect played when an object of this type spawns in during each game mode.
+Can be overridden per-object in the object definition tag</comment>
+	<reflexive name="Multiplayer" offset="0x1C" visible="true" entrySize="0x40">
+		<tagRef name="Biped Spawn Effect" offset="0x0" visible="true" />
+		<tagRef name="Vehicle Spawn Effect" offset="0x10" visible="true" />
+		<tagRef name="Weapon Spawn Effect" offset="0x20" visible="true" />
+		<tagRef name="First Person Player Spawn Effect" offset="0x30" visible="true" />
 	</reflexive>
-	<reflexive name="Spawning 2" offset="0x28" visible="true" entrySize="0x40">
-		<tagRef name="Bipeds" offset="0x0" visible="true" />
-		<tagRef name="Vehicles" offset="0x10" visible="true" />
-		<tagRef name="Weapons" offset="0x20" visible="true" />
-		<tagRef name="Player" offset="0x30" visible="true" />
+	<reflexive name="Survival" offset="0x28" visible="true" entrySize="0x40">
+		<tagRef name="Biped Spawn Effect" offset="0x0" visible="true" />
+		<tagRef name="Vehicle Spawn Effect" offset="0x10" visible="true" />
+		<tagRef name="Weapon Spawn Effect" offset="0x20" visible="true" />
+		<tagRef name="First Person Player Spawn Effect" offset="0x30" visible="true" />
 	</reflexive>
-	<reflexive name="Spawning 3" offset="0x34" visible="true" entrySize="0x40">
-		<tagRef name="Bipeds" offset="0x0" visible="true" />
-		<tagRef name="Vehicles" offset="0x10" visible="true" />
-		<tagRef name="Weapons" offset="0x20" visible="true" />
-		<tagRef name="Player" offset="0x30" visible="true" />
+	<reflexive name="Campaign" offset="0x34" visible="true" entrySize="0x40">
+		<tagRef name="Biped Spawn Effect" offset="0x0" visible="true" />
+		<tagRef name="Vehicle Spawn Effect" offset="0x10" visible="true" />
+		<tagRef name="Weapon Spawn Effect" offset="0x20" visible="true" />
+		<tagRef name="First Person Player Spawn Effect" offset="0x30" visible="true" />
 	</reflexive>
 </plugin>

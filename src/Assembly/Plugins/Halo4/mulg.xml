@@ -3,14 +3,15 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="Lord Zedd" version="2">Updating</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<reflexive name="Multiplayer Settings" offset="0x0" visible="true" entrySize="0x90">
 		<tagRef name="Random Player Name Strings" offset="0x0" visible="true" />
 		<tagRef name="Team Name Strings" offset="0x10" visible="true" />
 		<reflexive name="Teams" offset="0x20" visible="true" entrySize="0x24">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<colorf name="Color Primary" offset="0x4" visible="true" format="rgb" />
-			<colorf name="Color Secondary" offset="0x10" visible="true" format="rgb" />
+			<colorf name="Primary Color" offset="0x4" visible="true" format="rgb" />
+			<colorf name="Secondary Color" offset="0x10" visible="true" format="rgb" />
 			<int8 name="Foreground Emblem Index" offset="0x1C" visible="true" />
 			<int8 name="Background Emblem Index" offset="0x1D" visible="true" />
 			<bitfield8 name="Emblem Flags" offset="0x1E" visible="true">
@@ -29,12 +30,12 @@
 			<int16 name="Unknown" offset="0x22" visible="true" />
 		</reflexive>
 		<tagRef name="Multiplayer Strings" offset="0x2C" visible="true" />
-		<tagRef name="Sandbox UI Strings (Obsolete)" offset="0x3C" visible="true" />
-		<tagRef name="Sandbox UI Properties (Obsolete)" offset="0x4C" visible="true" />
+		<tagRef name="Sandbox Text" offset="0x3C" visible="true" />
+		<tagRef name="Sandbox Object Properties" offset="0x4C" visible="true" />
 		<tagref name="Megalo Effects" offset="0x5C" visible="true" />
-		<undefined name="block here" offset="0x6C" visible="false" />
-		<undefined name="block here" offset="0x70" visible="false" />
-		<undefined name="block here" offset="0x74" visible="false" />
+		<uint32 name="Multiplayer Roles Block" offset="0x6C" visible="false" />
+		<uint32 name="Multiplayer Roles Block" offset="0x70" visible="false" />
+		<uint32 name="Multiplayer Roles Block" offset="0x74" visible="false" />
 		<reflexive name="Unknown" offset="0x78" visible="false" entrySize="0x68">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
@@ -59,41 +60,44 @@
 			<undefined name="Unknown" offset="0x50" visible="false" />
 			<undefined name="Unknown" offset="0x54" visible="false" />
 			<undefined name="Unknown" offset="0x58" visible="false" />
-			<undefined name="block here" offset="0x5C" visible="false" />
-			<undefined name="block here" offset="0x60" visible="false" />
-			<undefined name="block here" offset="0x64" visible="false" />
+			<uint32 name="block here" offset="0x5C" visible="false" />
+			<uint32 name="block here" offset="0x60" visible="false" />
+			<uint32 name="block here" offset="0x64" visible="false" />
 		</reflexive>
-		<reflexive name="Default Profiles" offset="0x84" visible="true" entrySize="0x7C">
+		<reflexive name="Player Starting Profile" offset="0x84" visible="true" entrySize="0x7C">
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 			<float32 name="Starting Health Damage" offset="0x20" visible="true" />
 			<float32 name="Starting Shield Damage" offset="0x24" visible="true" />
 			<tagRef name="Starting Weapon Primary" offset="0x28" visible="true" />
-			<int16 name="Rounds Loaded" offset="0x38" visible="true" />
-			<int16 name="Rounds Total" offset="0x3A" visible="true" />
-			<float32 name="Energy Level" offset="0x3C" visible="true" />
+			<int16 name="Primary Rounds Loaded" offset="0x38" visible="true" />
+			<int16 name="Primary Rounds Total" offset="0x3A" visible="true" />
+			<float32 name="Primary Energy Level" offset="0x3C" visible="true" />
 			<tagRef name="Starting Weapon Secondary" offset="0x40" visible="true" />
-			<int16 name="Rounds Loaded" offset="0x50" visible="true" />
-			<int16 name="Rounds Total" offset="0x52" visible="true" />
-			<float32 name="Energy Level" offset="0x54" visible="true" />
-			<int8 name="Frag Grenade Count" offset="0x58" visible="true" />
-			<int8 name="Plasma Grenade Count" offset="0x59" visible="true" />
-			<int8 name="Pulse Grenade Count" offset="0x5A" visible="true" />
-			<int8 name="Unused Grenade Count" offset="0x5B" visible="false" />
-			<undefined name="Unknown" offset="0x5C" visible="false" />
-			<tagRef name="Equipment" offset="0x60" visible="true" />
-			<undefined name="Unknown" offset="0x70" visible="false" />
-			<undefined name="Unknown" offset="0x74" visible="false" />
-			<int16 name="Unknown" offset="0x78" visible="false" />
+			<int16 name="Secondary Rounds Loaded" offset="0x50" visible="true" />
+			<int16 name="Secondary Rounds Total" offset="0x52" visible="true" />
+			<float32 name="Secondary Energy Level" offset="0x54" visible="true" />
+			<int8 name="Starting Frag Grenade Count" offset="0x58" visible="true" />
+			<int8 name="Starting Plasma Grenade Count" offset="0x59" visible="true" />
+			<int8 name="Starting Pulse Grenade Count" offset="0x5A" visible="true" />
+			<int8 name="Starting Grenade 4 Count" offset="0x5B" visible="true" />
+			<int8 name="Starting Grenade 5 Count" offset="0x5C" visible="true" />
+			<int8 name="Starting Grenade 6 Count" offset="0x5D" visible="true" />
+			<int8 name="Starting Grenade 7 Count" offset="0x5E" visible="true" />
+			<int8 name="Starting Grenade 8 Count" offset="0x5F" visible="true" />
+			<tagRef name="Starting Equipment" offset="0x60" visible="true" />
+			<stringid name="Starting Tactical Package" offset="0x70" visible="true" />
+			<stringid name="Starting Support Upgrade" offset="0x74" visible="true" />
+			<int16 name="Editor Folder Index" offset="0x78" visible="true" />
 			<int16 name="Unknown" offset="0x7A" visible="false" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Runtime" offset="0xC" visible="true" entrySize="0x188">
-		<tagRef name="Sandbox Editor Unit" offset="0x0" visible="true" />
-		<tagRef name="Sandbox Editor Object" offset="0x10" visible="true" />
+		<tagRef name="Editor Biped" offset="0x0" visible="true" />
+		<tagRef name="Editor Helper" offset="0x10" visible="true" />
 		<tagRef name="Flag" offset="0x20" visible="true" />
 		<tagRef name="Ball" offset="0x30" visible="true" />
-		<tagRef name="Bomb" offset="0x40" visible="true" />
-		<tagRef name="VIP Zone" offset="0x50" visible="true" />
+		<tagRef name="Assault Bomb" offset="0x40" visible="true" />
+		<tagRef name="VIP Influence Area" offset="0x50" visible="true" />
 		<tagRef name="In Game Strings" offset="0x60" visible="true" />
 		<reflexive name="Sounds" offset="0x70" visible="true" entrySize="0x10">
 			<tagRef name="Sound" offset="0x0" visible="true" />
@@ -102,30 +106,30 @@
 			<tagRef name="Looping Sound" offset="0x0" visible="true" />
 		</reflexive>
 		<tagref name="Megalo Sounds" offset="0x88" visible="true" />
-		<tagref name="Communication Globals" offset="0x98" visible="true" />
-		<int32 name="Default Frag Grenade Count" offset="0xA8" visible="true" />
-		<int32 name="Default Plasma Grenade Count" offset="0xAC" visible="true" />
+		<tagref name="Communication Sounds" offset="0x98" visible="true" />
+		<int32 name="Maximum Frag Grenade Count" offset="0xA8" visible="true" />
+		<int32 name="Maximum Plasma Grenade Count" offset="0xAC" visible="true" />
 		<reflexive name="Multiplayer Constants" offset="0xB0" visible="true" entrySize="0x68">
 			<tagRef name="Spawn Settings" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<tagRef name="Cursor Impact Effect" offset="0x14" visible="true" />
-			<stringId name="Blocked Teleporter String" offset="0x24" visible="true" />
-			<stringid name="Unknown" offset="0x28" visible="false" />
-			<stringId name="Spawn Allowed Default Respawn String" offset="0x2C" visible="true" />
-			<stringId name="Spawn At Player Looking At Self String" offset="0x30" visible="true" />
-			<stringId name="Spawn At Player Looking At Target String" offset="0x34" visible="true" />
-			<stringId name="Spawn At Player Looking At Potential Target String" offset="0x38" visible="true" />
-			<stringId name="Spawn At Territory Allowed Looking At Target String" offset="0x3C" visible="true" />
-			<stringId name="Spawn At Territory Allowed Looking At Potential Target String" offset="0x40" visible="true" />
-			<stringId name="Player Out Of Lives String" offset="0x44" visible="true" />
-			<stringId name="Invalid Spawn Target String" offset="0x48" visible="true" />
-			<stringId name="Targetted Player Enemies Nearby String" offset="0x4C" visible="true" />
-			<stringId name="Targetted Player Unfriendly Team String" offset="0x50" visible="true" />
-			<stringId name="Targetted Player Is Dead String" offset="0x54" visible="true" />
-			<stringId name="Targetted Player In Combat String" offset="0x58" visible="true" />
-			<stringId name="Targetted Player Too Far From Owned Flag String" offset="0x5C" visible="true" />
-			<stringId name="No Available Netpoints String" offset="0x60" visible="true" />
-			<stringId name="Netpoint Contested String" offset="0x64" visible="true" />
+			<float32 name="Teleporter Recharge Time" offset="0x10" visible="true" />
+			<tagRef name="Sandbox Effect" offset="0x14" visible="true" />
+			<stringId name="Blocked Teleporter" offset="0x24" visible="true" />
+			<stringid name="Voluntary Respawn Control Instructions" offset="0x28" visible="false" />
+			<stringId name="Spawn Allowed Default Respawn" offset="0x2C" visible="true" />
+			<stringId name="Spawn At Player Looking At Self" offset="0x30" visible="true" />
+			<stringId name="Spawn At Player Looking At Target" offset="0x34" visible="true" />
+			<stringId name="Spawn At Player Looking At Potential Target" offset="0x38" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Target" offset="0x3C" visible="true" />
+			<stringId name="Spawn At Territory Allowed Looking At Potential Target" offset="0x40" visible="true" />
+			<stringId name="You Are Out Of Lives" offset="0x44" visible="true" />
+			<stringId name="Invalid Spawn Target Selected" offset="0x48" visible="true" />
+			<stringId name="Targeted Player Enemies Nearby" offset="0x4C" visible="true" />
+			<stringId name="Targeted Player Unfriendly Team" offset="0x50" visible="true" />
+			<stringId name="Targeted Player Is Dead" offset="0x54" visible="true" />
+			<stringId name="Targeted Player In Combat" offset="0x58" visible="true" />
+			<stringId name="Targeted Player Too Far From Owned Flag" offset="0x5C" visible="true" />
+			<stringId name="No Available Netpoints" offset="0x60" visible="true" />
+			<stringId name="Targeted Netpoint Contested" offset="0x64" visible="true" />
 		</reflexive>
 		<reflexive name="State Responses" offset="0xBC" visible="true" entrySize="0x24">
 			<bitfield16 name="Flags" offset="0x0" visible="true">
@@ -185,17 +189,17 @@
 			<tagRef name="Unknown" offset="0x10" visible="false" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 		</reflexive>
-		<tagref name="Scoreboard Emblem Bitmap" offset="0xD8" visible="true" />
-		<tagref name="Scoreboard Dead Emblem Bitmap" offset="0xE8" visible="true" />
-		<tagref name="Default Shape Shader" offset="0xE8" visible="true" />
-		<tagRef name="Default Biped Simulation" offset="0xF8" visible="true" />
-		<tagRef name="Default Vehicle Simulation" offset="0x108" visible="true" />
-		<tagRef name="Default Crate Simulation" offset="0x118" visible="true" />
-		<tagRef name="Default Item Simulation" offset="0x128" visible="true" />
-		<tagRef name="Default Projectile Simulation" offset="0x138" visible="true" />
-		<tagRef name="Default Object Simulation" offset="0x148" visible="true" />
+		<tagref name="Scoreboard Emblem Bitmap" offset="0xC8" visible="true" />
+		<tagref name="Scoreboard Dead Emblem Bitmap" offset="0xD8" visible="true" />
+		<tagref name="Hill Shader" offset="0xE8" visible="true" />
+		<tagRef name="Default Biped Simulation Interpolation" offset="0xF8" visible="true" />
+		<tagRef name="Default Vehicle Simulation Interpolation" offset="0x108" visible="true" />
+		<tagRef name="Default Crate Simulation Interpolation" offset="0x118" visible="true" />
+		<tagRef name="Default Item Simulation Interpolation" offset="0x128" visible="true" />
+		<tagRef name="Default Projectile Simulation Interpolation" offset="0x138" visible="true" />
+		<tagRef name="Default Object Simulation Interpolation" offset="0x148" visible="true" />
 		<tagRef name="Coop Spawning Globals" offset="0x158" visible="true" />
-		<tagRef name="Megalo String Table" offset="0x168" visible="true" />
+		<tagRef name="Megalo String ID Table" offset="0x168" visible="true" />
 		<tagRef name="Unknown" offset="0x178" visible="true" />
 	</reflexive>
 </plugin>

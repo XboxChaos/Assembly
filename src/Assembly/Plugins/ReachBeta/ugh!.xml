@@ -5,7 +5,7 @@
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Standardized</revision>
 	</revisions>
-	<reflexive name="Platform Codec" offset="0x0" visible="true" entrySize="0x3">
+	<reflexive name="Platform Codec" offset="0x0" visible="true" entrySize="0x3" align="0x10">
 		<enum8 name="Sample Rate" offset="0x0" visible="true">
 			<option name="22kHz" value="0x0" />
 			<option name="44kHz" value="0x1" />
@@ -17,12 +17,12 @@
 			<option name="Surround" value="0x2" />
 			<option name="5.1 Surround" value="0x3" />
 		</enum8>
-		<int8 name="Unknown" offset="0x2" visible="false" />
+		<int8 name="Compression" offset="0x2" visible="true" />
 	</reflexive>
 	<reflexive name="Playback Parameters" offset="0xC" visible="false" entrySize="0x54">
 		<int32 name="Unknown" offset="0x0" visible="false" />
-		<float32 name="Unknown" offset="0x4" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
+		<float32 name="Skip Fraction" offset="0x4" visible="true" />
+		<float32 name="Maximum Bend Per Second" offset="0x8" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Unknown" offset="0x10" visible="false" />
 		<float32 name="Unknown" offset="0x14" visible="false" />
@@ -61,19 +61,19 @@
 	<reflexive name="Import Names" offset="0x24" visible="true" entrySize="0x4">
 		<stringId name="Name" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 4" offset="0x30" visible="false" entrySize="0x20">
+	<reflexive name="Unknowny" offset="0x30" visible="false" entrySize="0x20">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<undefined name="Unknown" offset="0x18" visible="false" />
+		<float32 name="Unknown" offset="0x18" visible="false" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 	</reflexive>
 	<reflexive name="Pitch Range Parameters" offset="0x3C" visible="true" entrySize="0x10">
 		<int16 name="Natural Pitch" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x2" visible="false" />
+		<int16 name="Unknowny Index" offset="0x2" visible="true" />
 		<int16 name="Bend Bounds min" offset="0x4" visible="true" />
 		<int16 name="Bend Bounds max" offset="0x6" visible="true" />
 		<int16 name="Max Gain Pitch Bounds min" offset="0x8" visible="true" />
@@ -81,7 +81,7 @@
 		<int16 name="Unknown Bounds min" offset="0xC" visible="false" />
 		<int16 name="Unknown Bounds max" offset="0xE" visible="false" />
 	</reflexive>
-	<reflexive name="Pitch Ranges" offset="0x48" visible="true" entrySize="0xC">
+	<reflexive name="Pitch Ranges" offset="0x48" visible="true" entrySize="0xC" align="0x10">
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Pitch Range Parameter Index" offset="0x2" visible="true" />
 		<int16 name="Encoded Permutation Data Index" offset="0x4" visible="true" />
@@ -93,64 +93,64 @@
 		<int16 name="Import Name Index" offset="0x0" visible="true" />
 		<int16 name="Encoded Skip Fraction" offset="0x2" visible="true" />
 		<uint32 name="Sample Size" offset="0x4" visible="true" />
-		<int32 name="First Permutation Chunk" offset="0x8" visible="true" />
+		<int32 name="First Permutation Chunk Index" offset="0x8" visible="true" />
 		<int16 name="Permutation Chunk Count" offset="0xC" visible="true" />
 		<int8 name="Gain" offset="0xE" visible="true" />
 		<int8 name="Pitch Range Overall Permutation Index" offset="0xF" visible="true" />
 	</reflexive>
 	<reflexive name="Language Permutations" offset="0x60" visible="true" entrySize="0x94">
 		<int32 name="Parent Permutation Index" offset="0x0" visible="true" />
-		<comment title="English"/>
+		<comment title="English" />
 		<uint32 name="Sample Size" offset="0x4" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x8" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0xC" visible="true" />
-		<comment title="Japanese"/>
+		<comment title="Japanese" />
 		<uint32 name="Sample Size" offset="0x10" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x14" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x18" visible="true" />
-		<comment title="German"/>
+		<comment title="German" />
 		<uint32 name="Sample Size" offset="0x1C" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x20" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x24" visible="true" />
-		<comment title="French"/>
+		<comment title="French" />
 		<uint32 name="Sample Size" offset="0x28" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x2C" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x30" visible="true" />
-		<comment title="Spanish"/>
+		<comment title="Spanish" />
 		<uint32 name="Sample Size" offset="0x34" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x38" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x3C" visible="true" />
-		<comment title="Latin American Spanish"/>
+		<comment title="Latin American Spanish" />
 		<uint32 name="Sample Size" offset="0x40" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x44" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x48" visible="true" />
-		<comment title="Italian"/>
+		<comment title="Italian" />
 		<uint32 name="Sample Size" offset="0x4C" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x50" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x54" visible="true" />
-		<comment title="Korean"/>
+		<comment title="Korean" />
 		<uint32 name="Sample Size" offset="0x58" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x5C" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x60" visible="true" />
-		<comment title="Chinese Traditional"/>
+		<comment title="Chinese Traditional" />
 		<uint32 name="Sample Size" offset="0x64" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x68" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x6C" visible="true" />
-		<comment title="Chinese Simplified"/>
+		<comment title="Chinese Simplified" />
 		<uint32 name="Sample Size" offset="0x70" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x74" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x78" visible="true" />
-		<comment title="Portuguese"/>
+		<comment title="Portuguese" />
 		<uint32 name="Sample Size" offset="0x7C" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x80" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x84" visible="true" />
-		<comment title="Polish"/>
+		<comment title="Polish" />
 		<uint32 name="Sample Size" offset="0x88" visible="true" />
 		<int32 name="First Permutation Chunk" offset="0x8C" visible="true" />
 		<int32 name="Permutation Chunk Count" offset="0x90" visible="true" />
 	</reflexive>
-	<reflexive name="Unknown 9" offset="0x6C" visible="false" entrySize="0x2C">
-		<undefined name="Unknown" offset="0x0" visible="false" />
+	<reflexive name="Custom Playbacks" offset="0x6C" visible="false" entrySize="0x2C">
+		<stringid name="Unknown" offset="0x0" visible="false" />
 		<tagref name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -159,7 +159,7 @@
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 	</reflexive>
-	<reflexive name="Languages" offset="0x78" visible="true" entrySize="0x1C">
+	<reflexive name="Language Durations" offset="0x78" visible="true" entrySize="0x1C">
 		<enum32 name="Language" offset="0x0" visible="true">
 			<option name="English" value="0x0" />
 			<option name="Japanese" value="0x1" />
@@ -174,12 +174,12 @@
 			<option name="Portuguese" value="0xA" />
 			<option name="Polish" value="0xB" />
 		</enum32>
-		<reflexive name="Unknown A" offset="0x4" visible="true" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="true" />
+		<reflexive name="Permutation Durations" offset="0x4" visible="true" entrySize="0x2">
+			<int16 name="Duration" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Unknown B" offset="0x10" visible="true" entrySize="0x4">
-			<int16 name="Unknown A Start Index" offset="0x0" visible="true" />
-			<int16 name="Unknown A Count" offset="0x2" visible="true" />
+		<reflexive name="Pitch Ranges" offset="0x10" visible="true" entrySize="0x4">
+			<int16 name="First Permutation Index" offset="0x0" visible="true" />
+			<int16 name="Permutation Count" offset="0x2" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Runtime Permutation Flags" offset="0x84" visible="true" entrySize="0x1">

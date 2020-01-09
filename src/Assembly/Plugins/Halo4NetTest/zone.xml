@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="H4Network" baseSize="0x214">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -24,32 +24,36 @@
 		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 		<stringid name="Name" offset="0x10" visible="true" />
 	</reflexive>
-	<reflexive name="Compression Codecs" offset="0x1C" visible="true" entrySize="0x10" align="0x40">
+	<reflexive name="Compression Codecs" offset="0x1C" visible="true" entrySize="0x10">
 		<raw name="Guid" offset="0x0" size="0x10" visible="true" />
 	</reflexive>
-	<undefined name="External Caches Here" offset="0x28" visible="false" />
-	<undefined name="External Caches Here" offset="0x2C" visible="false" />
-	<undefined name="External Caches Here" offset="0x30" visible="false" />
+	<uint32 name="External Caches Here" offset="0x28" visible="false" />
+	<uint32 name="External Caches Here" offset="0x2C" visible="false" />
+	<uint32 name="External Caches Here" offset="0x30" visible="false" />
 	<reflexive name="Raw Pages" offset="0x34" visible="true" entrySize="0x58" align="0x10">
 		<int16 name="Salt" offset="0x0" visible="true" />
 		<int8 name="Flags" offset="0x2" visible="true" />
 		<int8 name="Compression Codec Index" offset="0x3" visible="true" />
 		<int16 name="Shared Cache Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="true" />
-		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using ???.</comment>
-		<int32 name="Block Offset" offset="0x8" visible="true" />
+		<comment title="Blocks">Blocks are stored in the raw table, at the beginning of the map, and compressed using native 360 compression.</comment>
+		<int32 name="Block Offset" offset="0x8" visible="true" /> The decompressed data is hashed.
 		<int32 name="Compressed Block Size" offset="0xC" visible="true" />
 		<int32 name="Uncompressed Block Size" offset="0x10" visible="true" />
 		<int32 name="CRC Checksum" offset="0x14" visible="true" />
 		<raw name="Entire Buffer Hash" offset="0x18" size="0x14" visible="true" />
 		<raw name="First Chunk Hash" offset="0x2C" size="0x14" visible="true" />
 		<raw name="Last Chunk Hash" offset="0x40" size="0x14" visible="true" />
-		<int16 name="Block Asset Count?" offset="0x54" visible="true" />
-		<int16 name="Unknown" offset="0x56" visible="true" />
+		<int16 name="Block Asset Count" offset="0x54" visible="true" />
+		<int16 name="Unknown Index" offset="0x56" visible="true" />
 	</reflexive>
-	<int32 name="Sizes Block" offset="0x40" visible="false" />
-	<int32 name="Sizes Block" offset="0x44" visible="false" />
-	<int32 name="Sizes Block" offset="0x48" visible="false" />
+	<reflexive name="Sizes" offset="0x40" visible="true" entrySize="0x10" align="0x8">
+		<int32 name="Overall Size" offset="0x0" visible="true" />
+		<reflexive name="Parts" offset="0x4" visible="true" entrySize="0x8" align="0x8">
+			<int32 name="Offset" offset="0x0" visible="true" />
+			<int32 name="Size" offset="0x4" visible="true" />
+		</reflexive>
+	</reflexive>
 	<reflexive name="Segments" offset="0x4C" visible="true" entrySize="0x18" align="0x8">
 		<int32 name="Primary Page Offset" offset="0x0" visible="true" />
 		<int32 name="Secondary Page Offset" offset="0x4" visible="true" />
@@ -67,7 +71,24 @@
 		<uint8 name="Resource Type Index" offset="0x12" visible="true" />
 		<uint8 name="Flags" offset="0x13" visible="true" />
 		<int32 name="Fixup Information Length" offset="0x14" visible="true" />
-		<int16 name="Unknown" offset="0x18" visible="true" />
+		<bitfield16 name="Fixup Flags" offset="0x18" visible="true">
+			<bit name="Primary Fixup Exists" index="0" />
+			<bit name="Secondary Fixup Exists" index="1" />
+			<bit name="Tertiary Fixup Exists" index="2" />
+			<bit name="Bit 3" index="3" />
+			<bit name="Bit 4" index="4" />
+			<bit name="Bit 5" index="5" />
+			<bit name="Bit 6" index="6" />
+			<bit name="Bit 7" index="7" />
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<int16 name="[play] Segment Index" offset="0x1A" visible="true" />
 		<bitfield8 name="Root Definition Address Location/High Bits" offset="0x1C" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -154,9 +175,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -209,12 +230,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4" align="0x8">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -287,9 +308,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -332,9 +353,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -387,12 +408,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -465,17 +486,17 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
 		<undefined name="Unknown" offset="0x94" visible="false" />
 	</reflexive>
-	<undefined name="Unknown Zoneset Here" offset="0x7C" visible="false" />
-	<undefined name="Unknown Zoneset Here" offset="0x80" visible="false" />
-	<undefined name="Unknown Zoneset Here" offset="0x84" visible="false" />
+	<uint32 name="Unknown Zoneset Here" offset="0x7C" visible="false" />
+	<uint32 name="Unknown Zoneset Here" offset="0x80" visible="false" />
+	<uint32 name="Unknown Zoneset Here" offset="0x84" visible="false" />
 	<reflexive name="Unattached Zoneset" offset="0x88" visible="true" entrySize="0x98">
 		<reflexive name="Required Raw Pool" offset="0x0" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
@@ -513,9 +534,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -568,12 +589,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -646,9 +667,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -691,9 +712,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -746,12 +767,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -824,9 +845,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -869,9 +890,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -924,12 +945,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1002,9 +1023,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1047,9 +1068,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1102,12 +1123,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4" align="0x8">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1180,9 +1201,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1225,9 +1246,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1280,12 +1301,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1358,9 +1379,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1403,9 +1424,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1458,12 +1479,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4" align="0x8">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1536,9 +1557,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1581,9 +1602,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1636,12 +1657,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1714,9 +1735,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -1759,9 +1780,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1814,12 +1835,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 			<undefined name="Unknown" offset="0x14" visible="false" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
 		</reflexive>
-		<undefined name="block here" offset="0x4C" visible="false" />
-		<undefined name="block here" offset="0x50" visible="false" />
-		<undefined name="block here" offset="0x54" visible="false" />
-		<undefined name="block here 2" offset="0x58" visible="false" />
-		<undefined name="block here 2" offset="0x5C" visible="false" />
-		<undefined name="block here 2" offset="0x60" visible="false" />
+		<uint32 name="block here" offset="0x4C" visible="false" />
+		<uint32 name="block here" offset="0x50" visible="false" />
+		<uint32 name="block here" offset="0x54" visible="false" />
+		<uint32 name="block here 2" offset="0x58" visible="false" />
+		<uint32 name="block here 2" offset="0x5C" visible="false" />
+		<uint32 name="block here 2" offset="0x60" visible="false" />
 		<reflexive name="Required Tag Pool" offset="0x64" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -1892,9 +1913,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0x7C" visible="false" />
-		<undefined name="block here" offset="0x80" visible="false" />
-		<undefined name="block here" offset="0x84" visible="false" />
+		<uint32 name="block here" offset="0x7C" visible="false" />
+		<uint32 name="block here" offset="0x80" visible="false" />
+		<uint32 name="block here" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
@@ -2093,7 +2114,7 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 	<undefined name="Unknown" offset="0x130" visible="false" />
 	<undefined name="Unknown" offset="0x134" visible="false" />
 	<undefined name="Unknown" offset="0x138" visible="false" />
-	<dataRef name="Fixup Information" offset="0x13C" visible="true" align="0x10000" />
+	<dataRef name="Fixup Information" offset="0x13C" visible="true" align="0x10" />
 	<undefined name="Unknown" offset="0x150" visible="false" />
 	<undefined name="Unknown" offset="0x154" visible="false" />
 	<undefined name="Unknown" offset="0x158" visible="false" />
@@ -2151,9 +2172,9 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="31" index="31" />
 			</bitfield32>
 		</reflexive>
-		<undefined name="block here" offset="0xC" visible="false" />
-		<undefined name="block here" offset="0x10" visible="false" />
-		<undefined name="block here" offset="0x14" visible="false" />
+		<uint32 name="block here" offset="0xC" visible="false" />
+		<uint32 name="block here" offset="0x10" visible="false" />
+		<uint32 name="block here" offset="0x14" visible="false" />
 		<reflexive name="Optional Raw Pool?" offset="0x18" visible="true" entrySize="0x4">
 			<bitfield32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
@@ -2311,7 +2332,8 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 	<undefined name="Unknown" offset="0x1C8" visible="false" />
 	<undefined name="Unknown" offset="0x1CC" visible="false" />
 	<reflexive name="Prediction A" offset="0x1D0" visible="true" entrySize="0x4">
-		<uint32 name="Key" offset="0x0" visible="true" />
+		<uint16 name="Adjusted Salt" offset="0x0" visible="true" />
+		<uint16 name="Adjusted Index" offset="0x2" visible="true" />
 	</reflexive>
 	<reflexive name="Prediction B" offset="0x1DC" visible="true" entrySize="0x8">
 		<int16 name="Overall Index" offset="0x0" visible="true" />
@@ -2329,7 +2351,7 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 		<int16 name="A Index" offset="0x6" visible="true" />
 	</reflexive>
 	<reflexive name="Prediction D2 - Tags" offset="0x200" visible="true" entrySize="0xC">
-		<tagref name="Tag" offset="0x0" withClass="true" visible="true" />
+		<tagref name="Tag" offset="0x0" withClass="false" visible="true" />
 		<int32 name="First Value" offset="0x4" visible="true" />
 		<int32 name="Second Value" offset="0x8" visible="true" />
 	</reflexive>

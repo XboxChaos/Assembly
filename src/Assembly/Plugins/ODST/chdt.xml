@@ -1,11 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="ODST" baseSize="0x18">
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Overhauled.</revision>
 	</revisions>
-	<comment title="Render Data Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD</comment>
+	<comment title="Render Data Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD.</comment>
+	<comment title="Placement Anchor">Only select "Use Parent Widget" for a Bitmap or Text Widget, otherwise the game will crash.</comment>
+	<comment title="Grenade Inputs">These will only function with the placement anchor value set to Grenade A/B/C/D.</comment>
+	<comment title="State Data">Things to note about them:
+-Only 1 condition needs to match per bitfield for the game to count it. Split the flags between the parent and bitmap/text widgets to get around this.
+-Fields named with "Weapon" only resolve on HUDs referenced by weapons.
+-Fields named with [Special] mean the widget is always visible by default, but play a specific animation if a match occurs.
+-Fields named with [Brief] mean the widget is always invisible by default, but play a specific animation if a match occurs, then becomes invisible again.
+-Every other field should behave as an on/off switch for whether or not the widget should be drawn.</comment>
+	<comment title="Texture Coordinates">Can adjust the visible area of a widget if non-zero. Coordinates refer to the overall screen, so the top left corner is 0,0</comment>
 	<reflexive name="HUD Widgets" offset="0x0" visible="true" entrySize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum16 name="Special HUD Type" offset="0x4" visible="true">
@@ -20,103 +29,64 @@
 			<option name="Firebomb Grenade" value="0x8" />
 			<option name="Compass" value="0x9" />
 		</enum16>
-		<uint8 name="Unknown" offset="0x6" visible="false" />
-		<uint8 name="Unknown" offset="0x7" visible="false" />
+		<bitfield8 name="Flags" offset="0x6" visible="true">
+			<bit name="Bit 0" index="0" />
+		</bitfield8>
+		<enum8 name="Layer" offset="0x7" visible="true">
+			<option name="0" value="0x0" />
+			<option name="1" value="0x1" />
+			<option name="2" value="0x2" />
+			<option name="3" value="0x3" />
+			<option name="4" value="0x4" />
+			<option name="5" value="0x5" />
+			<option name="6/Use Parent Widget" value="0x6" />
+			<option name="7/Always Show/No Warping" value="0x7" />
+		</enum8>
 		<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x38">
 			<bitfield16 name="1 Engine" offset="0x0" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
+				<bit name="Campaign Solo" index="0" />
+				<bit name="Campaign Coop" index="1" />
 				<bit name="Survival" index="2" />
 				<bit name="Editor" index="3" />
 				<bit name="Theater" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="2" offset="0x2" visible="true">
-				<bit name="Biped 1" index="0" />
-				<bit name="Biped 2" index="1" />
-				<bit name="Biped 3" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+				<bit name="Spartan" index="0" />
+				<bit name="Elite" index="1" />
+				<bit name="Monitor" index="2" />
 			</bitfield16>
-			<bitfield16 name="3" offset="0x4" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="3 Unknown" offset="0x4" visible="true">
+				<bit name="Splitscreen PDA Open" index="0" />
+				<bit name="Splitscreen PDA Closed" index="1" />
+				<bit name="Camera Unknown" index="2" />
 			</bitfield16>
-			<bitfield16 name="4" offset="0x6" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="4 Multiplayer" offset="0x6" visible="true">
+				<bit name="Offense Team" index="0" />
+				<bit name="Defense Team" index="1" />
+				<bit name="Normal Team" index="2" />
+				<bit name="Special Team (Infected, VIP, Jugg, etc)" index="3" />
+				<bit name="Extra Special Team? (Broken?)" index="4" />
+				<bit name="No Microphone" index="5" />
+				<bit name="Talking Disabled" index="6" />
+				<bit name="Tap To Talk" index="7" />
+				<bit name="Talking Enabled" index="8" />
+				<bit name="Not Talking" index="9" />
+				<bit name="Talking" index="10" />
 			</bitfield16>
 			<bitfield16 name="5 Resolution" offset="0x8" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Widescreen" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Fullscreen" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="Wide Full" index="0" />
+				<bit name="Wide Half" index="1" />
+				<bit name="Native Full" index="2" />
+				<bit name="Standard Full" index="3" />
+				<bit name="Wide Quarter" index="4" />
+				<bit name="Standard Half" index="5" />
+				<bit name="Native Quarter" index="6" />
+				<bit name="Standard Quarter" index="7" />
 			</bitfield16>
-			<bitfield16 name="6 Scoreboard" offset="0xA" visible="true">
+			<bitfield16 name="6 Multiplayer Events" offset="0xA" visible="true">
 				<bit name="Has Friends" index="0" />
 				<bit name="Has Enemies" index="1" />
-				<bit name="Has Variant Name?" index="2" />
+				<bit name="Variant Name Valid" index="2" />
 				<bit name="Someone Is Talking" index="3" />
 				<bit name="Is Arming" index="4" />
 				<bit name="Time Enabled" index="5" />
@@ -126,80 +96,50 @@
 				<bit name="Enemies Are X" index="9" />
 				<bit name="X is Down" index="10" />
 				<bit name="Summary Enabled" index="11" />
-				<bit name="NetDebug" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="NetDebug Enabled" index="12" />
 			</bitfield16>
-			<bitfield32 name="7" offset="0xC" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Autoaim" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
+			<bitfield32 name="7 Unit Base" offset="0xC" visible="true">
+				<bit name="Texture Cam Enabled" index="0" />
+				<bit name="Binoculars Targeted" index="1" />
+				<bit name="Bit 2 - UNUSED?" index="2" />
+				<bit name="Bit 3 - UNUSED?" index="3" />
 				<bit name="Training Prompt" index="4" />
 				<bit name="Objective Prompt" index="5" />
 				<bit name="Survival State" index="6" />
-				<bit name="Beacon Enabled" index="7" />
-				<bit name="User Waypoint Enabled" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Achievement 1" index="10" />
-				<bit name="Achievement 2" index="11" />
-				<bit name="Achievement 3" index="12" />
-				<bit name="Achievement 4" index="13" />
-				<bit name="Achievement 5" index="14" />
-				<bit name="ARG Enabled" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
+				<bit name="Beacon Exists" index="7" />
+				<bit name="User Waypoint Exists" index="8" />
+				<bit name="Camera Unknown" index="9" />
+				<bit name="Achievement 1 Updated" index="10" />
+				<bit name="Achievement 2 Updated" index="11" />
+				<bit name="Achievement 3 Updated" index="12" />
+				<bit name="Achievement 4 Updated" index="13" />
+				<bit name="Achievement 5 Updated" index="14" />
+				<bit name="ARG Is Playing" index="15" />
 			</bitfield32>
 			<bitfield16 name="8 Editor" offset="0x10" visible="true">
 				<bit name="Editor Inactive" index="0" />
 				<bit name="Editor Active" index="1" />
 				<bit name="Editor Holding" index="2" />
 				<bit name="Editor Not Allowed" index="3" />
-				<bit name="Is Editor Biped" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="Is Editor" index="4" />
 			</bitfield16>
-			<bitfield16 name="9" offset="0x12" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Metagame Player 2 Exists" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Metagame Player 3 Exists" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Metagame Player 4 Exists" index="9" />
-				<bit name="Bit 10" index="10" />
+			<bitfield16 name="9 Engine General" offset="0x12" visible="true">
+				<bit name="Motion Tracker 10m" index="0" />
+				<bit name="Motion Tracker 25m" index="1" />
+				<bit name="Motion Tracker 75m" index="2" />
+				<bit name="Motion Tracker 150m" index="3" />
+				<bit name="Metagame Debug Enabled" index="4" />
+				<bit name="Metagame 2 FFA Players" index="5" />
+				<bit name="Metagame Bit 6 UNKNOWN" index="6" />
+				<bit name="Metagame 3 FFA Players" index="7" />
+				<bit name="Metagame Bit 8 UNKNOWN" index="8" />
+				<bit name="Metagame 4 FFA Players" index="9" />
+				<bit name="Metagame Bit 10 UNKNOWN" index="10" />
 				<bit name="Metagame Score Added" index="11" />
-				<bit name="Bit 12" index="12" />
+				<bit name="Metagame Multikill" index="12" />
 				<bit name="Metagame Score Removed" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="Metagame Unknown NotZero" index="14" />
+				<bit name="Metagame Unknown Zero" index="15" />
 			</bitfield16>
 			<bitfield16 name="10 Skulls" offset="0x14" visible="true">
 				<bit name="Iron Skull Enabled" index="0" />
@@ -219,311 +159,156 @@
 				<bit name="Third Person Skull Enabled" index="14" />
 				<bit name="Director's Cut Skull Enabled" index="15" />
 			</bitfield16>
-			<bitfield16 name="11" offset="0x16" visible="true">
-				<bit name="Wave 1 Background" index="0" />
-				<bit name="Wave 2 Background" index="1" />
-				<bit name="Wave 3 Background" index="2" />
-				<bit name="Wave 4 Background" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
+			<bitfield16 name="11 Survival Rounds" offset="0x16" visible="true">
+				<!-- Technically all bits are supported, but since bonus round is "special" I'll stop there -->
+				<bit name="Round 0" index="0" />
+				<bit name="Round 1" index="1" />
+				<bit name="Round 2" index="2" />
+				<bit name="Round 3" index="3" />
+				<bit name="Round 4" index="4" />
+				<bit name="Round 5" index="5" />
 				<bit name="Bonus Round" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="12" offset="0x18" visible="true">
-				<bit name="Bit 0" index="0" />
+			<bitfield16 name="12 Survival Waves" offset="0x18" visible="true">
+				<bit name="Wave 0" index="0" />
 				<bit name="Wave 1" index="1" />
 				<bit name="Wave 2" index="2" />
 				<bit name="Wave 3" index="3" />
 				<bit name="Wave 4" index="4" />
 				<bit name="Wave 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+				<bit name="Wave 6" index="6" />
+				<bit name="Wave 7" index="7" />
+				<bit name="Wave 8" index="8" />
+				<bit name="Wave 9" index="9" />
+				<bit name="Wave 10" index="10" />
+				<bit name="Wave 11" index="11" />
+				<bit name="Wave 12" index="12" />
+				<bit name="Wave 13" index="13" />
+				<bit name="Wave 14" index="14" />
+				<bit name="Wave 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="13" offset="0x1A" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="13 Survival Lives" offset="0x1A" visible="true">
+				<bit name="0 Lives" index="0" />
+				<bit name="1 Lives" index="1" />
+				<bit name="2 Lives" index="2" />
+				<bit name="3 Lives" index="3" />
+				<bit name="4 Lives" index="4" />
+				<bit name="5 Lives" index="5" />
+				<bit name="6 Lives" index="6" />
+				<bit name="7 Lives" index="7" />
+				<bit name="8 Lives" index="8" />
+				<bit name="9 Lives" index="9" />
+				<bit name="10 Lives" index="10" />
+				<bit name="11 Lives" index="11" />
+				<bit name="12 Lives" index="12" />
+				<bit name="13 Lives" index="13" />
+				<bit name="14 Lives" index="14" />
+				<bit name="15 Lives" index="15" />
 			</bitfield16>
-			<bitfield16 name="14" offset="0x1C" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="14 Survival Difficulty" offset="0x1C" visible="true">
+				<bit name="Easy" index="0" />
+				<bit name="Normal" index="1" />
+				<bit name="Heroic" index="2" />
+				<bit name="Legendary" index="3" />
 			</bitfield16>
-			<bitfield16 name="15" offset="0x1E" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-			</bitfield16>
-			<bitfield16 name="16" offset="0x20" visible="true">
-				<bit name="Pickup Grenades" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
+			<uint16 name="15 Unused?" offset="0x1E" visible="false" />
+			<bitfield16 name="16 General Kudos [Brief]" offset="0x20" visible="true">
+				<bit name="Pickup Frag Grenades" index="0" />
+				<bit name="Pickup Plasma Grenades" index="1" />
+				<bit name="Pickup Spike Grenades" index="2" />
+				<bit name="Pickup Fire Grenades" index="3" />
+				<bit name="Bit 4 - UNUSED?" index="4" />
+				<bit name="Bit 5 - UNUSED?" index="5" />
+				<bit name="Bit 6 - UNUSED?" index="6" />
+				<bit name="Bit 7 - UNUSED?" index="7" />
+				<bit name="Bit 8 - UNUSED?" index="8" />
 				<bit name="Lives Added" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="17" offset="0x22" visible="true">
+			<bitfield16 name="17 Unit Zoom" offset="0x22" visible="true">
 				<bit name="Binoculars Enabled" index="0" />
 				<bit name="Unit Is Zoomed (Level 1)" index="1" />
 				<bit name="Unit Is Zoomed (Level 2)" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="18" offset="0x24" visible="true">
-				<bit name="Primary Weapon" index="0" />
-				<bit name="Secondary Weapon" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="18 Unit Inventory" offset="0x24" visible="true">
+				<bit name="None of the Below" index="0" />
+				<bit name="Is Single Wielding" index="1" />
+				<bit name="Is Dual Wielding" index="2" />
+				<bit name="Has Support Weapon" index="3" />
 			</bitfield16>
-			<bitfield16 name="19" offset="0x26" visible="true">
+			<bitfield16 name="19 Unit General" offset="0x26" visible="true">
 				<bit name="Motion Tracker Enabled" index="0" />
-				<bit name="Bit 1" index="1" />
+				<bit name="Motion Tracker Disabled" index="1" />
 				<bit name="Selected Frag Grenades" index="2" />
 				<bit name="Selected Plasma Grenades" index="3" />
 				<bit name="Selected Spike Grenades" index="4" />
 				<bit name="Selected Fire Grenades" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
+				<bit name="Binoculars Active" index="6" />
+				<bit name="Binoculars Not Active" index="7" />
+				<bit name="First Person Camera" index="8" />
+				<bit name="Third Person Camera" index="9" />
+				<bit name="Is Speaking" index="10" />
+				<bit name="Is Tapping To Talk" index="11" />
 				<bit name="Has 1x Overshield" index="12" />
 				<bit name="Has 2x Overshield" index="13" />
 				<bit name="Has 3x Overshield" index="14" />
 				<bit name="Has Shields" index="15" />
 			</bitfield16>
-			<bitfield16 name="20" offset="0x28" visible="true">
-				<bit name="Bit 0" index="0" />
+			<bitfield16 name="20 Weapon Kudos [Brief]" offset="0x28" visible="true">
+				<bit name="Bit 0 - UNUSED?" index="0" />
 				<bit name="Pickup Ammo" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="21" offset="0x2A" visible="true">
-				<bit name="Primary Weapon" index="0" />
-				<bit name="Secondary Weapon" index="1" />
-				<bit name="Backpack" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="21 Weapon Status" offset="0x2A" visible="true">
+				<bit name="Source Is Primary Weapon" index="0" />
+				<bit name="Source Is Dual Weapon" index="1" />
+				<bit name="Source Is Backpacked" index="2" />
+				<bit name="NOT ACTUALLY USED BIT" index="3" />
 			</bitfield16>
-			<bitfield16 name="22" offset="0x2C" visible="true">
-				<bit name="Not Autoaim?" index="0" />
-				<bit name="Autoaim Friendly" index="1" />
-				<bit name="Autoaim Enemy" index="2" />
-				<bit name="Autoaim Headshot" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Plasma Locked On" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="22 Weapon Target" offset="0x2C" visible="true">
+				<bit name="No Target" index="0" />
+				<bit name="Friendly Target" index="1" />
+				<bit name="Enemy Target" index="2" />
+				<bit name="Headshot Target" index="3" />
+				<bit name="Vulnerable Target" index="4" />
+				<bit name="Invincible Target (Defunct)" index="5" />
+				<bit name="Plasma Locked" index="6" />
+				<bit name="Plasma Locking" index="7" />
+				<bit name="Plasma Lock Available" index="8" />
+				<bit name="Unknown is 0" index="9" />
+				<bit name="Unknown is 1" index="10" />
 			</bitfield16>
-			<bitfield16 name="23" offset="0x2E" visible="true">
-				<bit name="Bit 0" index="0" />
-				<bit name="Missile Locked" index="1" />
-				<bit name="Missile Locking" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="23 Weapon Target B" offset="0x2E" visible="true">
+				<bit name="Human Locking" index="0" />
+				<bit name="Human Locked" index="1" />
+				<bit name="Human Lock Available" index="2" />
 			</bitfield16>
-			<bitfield16 name="24" offset="0x30" visible="true">
-				<bit name="Vitality Meter Minor Damage" index="0" />
-				<bit name="Vitality Meter Medium Damage" index="1" />
-				<bit name="Vitality Meter Heavy Damage" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Has Frag Grenades" index="6" />
-				<bit name="Has Plasma Grenades" index="7" />
-				<bit name="Has Spike Grenades" index="8" />
-				<bit name="Has Fire Grenades" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="24 Player [Special]" offset="0x30" visible="true">
+				<bit name="Health Minor Damage" index="0" />
+				<bit name="Health Medium Damage" index="1" />
+				<bit name="Health Heavy Damage" index="2" />
+				<bit name="Shields Minor Damage" index="3" />
+				<bit name="Shields Medium Damage" index="4" />
+				<bit name="Shields Heavy Damage" index="5" />
+				<bit name="Has Any Frag Grenades" index="6" />
+				<bit name="Has Any Plasma Grenades" index="7" />
+				<bit name="Has Any Spike Grenades" index="8" />
+				<bit name="Has Any Fire Grenades" index="9" />
 			</bitfield16>
-			<bitfield16 name="25 Ammo" offset="0x32" visible="true">
-				<bit name="Clip Warning" index="0" />
-				<bit name="Ammo Warning" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Low Battery 1" index="4" />
-				<bit name="Low Battery 2" index="5" />
+			<bitfield16 name="25 Weapon [Special]" offset="0x32" visible="true">
+				<bit name="Clip Below Cutoff" index="0" />
+				<bit name="Clip Empty (Broken?)" index="1" />
+				<bit name="Ammo Below Cutoff" index="2" />
+				<bit name="Ammo Empty (Broken?)" index="3" />
+				<bit name="Battery Below Cutoff" index="4" />
+				<bit name="Battery Empty (Broken?)" index="5" />
 				<bit name="Overheated" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
 			</bitfield16>
-			<bitfield16 name="26" offset="0x34" visible="true">
-				<bit name="Is Zoomed?" index="0" />
-				<bit name="Bit 1" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="26 Unit Extra" offset="0x34" visible="true">
+				<bit name="Not Zoomed In" index="0" />
+				<bit name="Not Armed With Support Weapon" index="1" />
+				<bit name="At Least 2 Weapons" index="2" />
 			</bitfield16>
-			<bitfield16 name="27" offset="0x36" visible="true">
-				<bit name="Binoculars Enabled" index="0" />
-				<bit name="Unit Is Zoomed (Level 1)" index="1" />
-				<bit name="Unit Is Zoomed (Level 2)" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
+			<bitfield16 name="27 PDA" offset="0x36" visible="true">
+				<bit name="Visible In PDA" index="0" />
 			</bitfield16>
 		</reflexive>
 		<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
@@ -540,16 +325,16 @@
 				<option name="Grenade D" value="0x9" />
 				<option name="Scoreboard Friendly" value="0xA" />
 				<option name="Scoreboard Enemy" value="0xB" />
-				<option name="Health and Shield" value="0xC" />
+				<option name="Use Parent Widget" value="0xC" />
 				<option name="Bottom Edge" value="0xD" />
 				<option name="Unknown" value="0xE" />
 				<option name="Equipment" value="0xF" />
 				<option name="Unknown" value="0x10" />
-				<option name="Depreciated" value="0x11" />
-				<option name="Depreciated" value="0x12" />
-				<option name="Depreciated" value="0x13" />
-				<option name="Depreciated" value="0x14" />
-				<option name="Depreciated" value="0x15" />
+				<option name="Deprecated" value="0x11" />
+				<option name="Deprecated" value="0x12" />
+				<option name="Deprecated" value="0x13" />
+				<option name="Deprecated" value="0x14" />
+				<option name="Deprecated" value="0x15" />
 				<option name="Unknown" value="0x16" />
 				<option name="Gametype" value="0x17" />
 				<option name="Unknown" value="0x18" />
@@ -576,72 +361,78 @@
 			<float32 name="Scale Y" offset="0x18" visible="true" />
 		</reflexive>
 		<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
-			<bitfield16 name="Animation 1 Flags" offset="0x0" visible="true">
+			<comment title="HUD Initialize Animation" />
+			<bitfield16 name="Flags" offset="0x0" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 1 Function" offset="0x2" visible="true">
+			<enum16 name="Function" offset="0x2" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 1" offset="0x4" visible="true" />
-			<bitfield16 name="Animation 2 Flags" offset="0x14" visible="true">
+			<tagRef name="Animation" offset="0x4" visible="true" />
+			<comment title="Idle Animation" />
+			<bitfield16 name="Flags" offset="0x14" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 2 Function" offset="0x16" visible="true">
+			<enum16 name="Function" offset="0x16" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 2" offset="0x18" visible="true" />
-			<bitfield16 name="Animation 3 Flags" offset="0x28" visible="true">
+			<tagRef name="Animation" offset="0x18" visible="true" />
+			<comment title="Special State Animation" />
+			<bitfield16 name="Flags" offset="0x28" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 3 Function" offset="0x2A" visible="true">
+			<enum16 name="Function" offset="0x2A" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 3" offset="0x2C" visible="true" />
-			<bitfield16 name="Animation 4 Flags" offset="0x3C" visible="true">
+			<tagRef name="Animation" offset="0x2C" visible="true" />
+			<comment title="Transition In Animation" />
+			<bitfield16 name="Flags" offset="0x3C" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 4 Function" offset="0x3E" visible="true">
+			<enum16 name="Function" offset="0x3E" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 4" offset="0x40" visible="true" />
-			<bitfield16 name="Animation 5 Flags" offset="0x50" visible="true">
+			<tagRef name="Animation" offset="0x40" visible="true" />
+			<comment title="Transition Out Animation" />
+			<bitfield16 name="Flags" offset="0x50" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 5 Function" offset="0x52" visible="true">
+			<enum16 name="Function" offset="0x52" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 5" offset="0x54" visible="true" />
-			<bitfield16 name="Animation 6 Flags" offset="0x64" visible="true">
+			<tagRef name="Animation" offset="0x54" visible="true" />
+			<comment title="Brief State Animation" />
+			<bitfield16 name="Flags" offset="0x64" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield16>
-			<enum16 name="Animation 6 Function" offset="0x66" visible="true">
+			<enum16 name="Function" offset="0x66" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
 				<option name="Use Range Input" value="0x2" />
 				<option name="Use Compass Target?" value="0x3" />
 				<option name="Use Compass User Target?" value="0x4" />
 			</enum16>
-			<tagRef name="Animation 6" offset="0x68" visible="true" />
+			<tagRef name="Animation" offset="0x68" visible="true" />
 		</reflexive>
 		<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x48">
 			<enum16 name="Shader Index" offset="0x0" visible="true">
@@ -687,8 +478,8 @@
 				<option name="Battery Fraction" value="0xB" />
 				<option name="Pickup" value="0xC" />
 				<option name="Unit Autoaimed" value="0xD" />
-				<option name="Grenade" value="0xE" />
-				<option name="Grenade Fraction" value="0xF" />
+				<option name="Grenade Anchor Selected" value="0xE" />
+				<option name="Grenade Anchor Fraction" value="0xF" />
 				<option name="Charge Fraction" value="0x10" />
 				<option name="Friendly Score" value="0x11" />
 				<option name="Enemy Score" value="0x12" />
@@ -709,11 +500,11 @@
 				<option name="Editor Budget Cost" value="0x21" />
 				<option name="Film Total Time" value="0x22" />
 				<option name="Film Current Time" value="0x23" />
-				<option name="Unknown" value="0x24" />
-				<option name="Film Timeline Fraction 1" value="0x25" />
-				<option name="Film Timeline Fraction 2" value="0x26" />
+				<option name="Deprecated" value="0x24" />
+				<option name="Film Timeline Last Marker Fraction" value="0x25" />
+				<option name="Film Timeline Fraction" value="0x26" />
 				<option name="Unknown" value="0x27" />
-				<option name="Unknown" value="0x28" />
+				<option name="Deprecated" value="0x28" />
 				<option name="Metagame Time" value="0x29" />
 				<option name="Metagame Score Transient" value="0x2A" />
 				<option name="Metagame Score Player 1" value="0x2B" />
@@ -728,15 +519,15 @@
 				<option name="NetDebug Host Quality" value="0x34" />
 				<option name="NetDebug Local Quality" value="0x35" />
 				<option name="Metagame Score Negative" value="0x36" />
-				<option name="Unknown" value="0x37" />
-				<option name="Compass Distance To User Target" value="0x38" />
-				<option name="Compass Distance To User Target 2" value="0x39" />
-				<option name="Unknown" value="0x3A" />
-				<option name="Compass Distance To Target" value="0x3B" />
-				<option name="Compass Distance To Target 2" value="0x3C" />
+				<option name="Compass User Target Unknown" value="0x37" />
+				<option name="Compass User Target Yaw" value="0x38" />
+				<option name="Compass User Target Distance" value="0x39" />
+				<option name="Compass Target Unknown" value="0x3A" />
+				<option name="Compass Target Yaw" value="0x3B" />
+				<option name="Compass Target Distance" value="0x3C" />
 				<option name="Survival Current Set" value="0x3D" />
-				<option name="Unknown" value="0x3E" />
-				<option name="Unknown" value="0x3F" />
+				<option name="Survival Current Round Unknown" value="0x3E" />
+				<option name="Survival Current Wave Unknown" value="0x3F" />
 				<option name="Survival Current Lives" value="0x40" />
 				<option name="Survival Bonus Time" value="0x41" />
 				<option name="Survival Bonus Score" value="0x42" />
@@ -772,8 +563,8 @@
 				<option name="Battery Fraction" value="0xB" />
 				<option name="Pickup" value="0xC" />
 				<option name="Unit Autoaimed" value="0xD" />
-				<option name="Grenade" value="0xE" />
-				<option name="Grenade Fraction" value="0xF" />
+				<option name="Grenade Anchor Selected" value="0xE" />
+				<option name="Grenade Anchor Fraction" value="0xF" />
 				<option name="Charge Fraction" value="0x10" />
 				<option name="Friendly Score" value="0x11" />
 				<option name="Enemy Score" value="0x12" />
@@ -794,11 +585,11 @@
 				<option name="Editor Budget Cost" value="0x21" />
 				<option name="Film Total Time" value="0x22" />
 				<option name="Film Current Time" value="0x23" />
-				<option name="Unknown" value="0x24" />
-				<option name="Film Timeline Fraction 1" value="0x25" />
-				<option name="Film Timeline Fraction 2" value="0x26" />
+				<option name="Deprecated" value="0x24" />
+				<option name="Film Timeline Last Marker Fraction" value="0x25" />
+				<option name="Film Timeline Fraction" value="0x26" />
 				<option name="Unknown" value="0x27" />
-				<option name="Unknown" value="0x28" />
+				<option name="Deprecated" value="0x28" />
 				<option name="Metagame Time" value="0x29" />
 				<option name="Metagame Score Transient" value="0x2A" />
 				<option name="Metagame Score Player 1" value="0x2B" />
@@ -813,15 +604,15 @@
 				<option name="NetDebug Host Quality" value="0x34" />
 				<option name="NetDebug Local Quality" value="0x35" />
 				<option name="Metagame Score Negative" value="0x36" />
-				<option name="Unknown" value="0x37" />
-				<option name="Compass Distance To User Target" value="0x38" />
-				<option name="Compass Distance To User Target 2" value="0x39" />
-				<option name="Unknown" value="0x3A" />
-				<option name="Compass Distance To Target" value="0x3B" />
-				<option name="Compass Distance To Target 2" value="0x3C" />
+				<option name="Compass User Target Unknown" value="0x37" />
+				<option name="Compass User Target Yaw" value="0x38" />
+				<option name="Compass User Target Distance" value="0x39" />
+				<option name="Compass Target Unknown" value="0x3A" />
+				<option name="Compass Target Yaw" value="0x3B" />
+				<option name="Compass Target Distance" value="0x3C" />
 				<option name="Survival Current Set" value="0x3D" />
-				<option name="Unknown" value="0x3E" />
-				<option name="Unknown" value="0x3F" />
+				<option name="Survival Current Round Unknown" value="0x3E" />
+				<option name="Survival Current Wave Unknown" value="0x3F" />
 				<option name="Survival Current Lives" value="0x40" />
 				<option name="Survival Bonus Time" value="0x41" />
 				<option name="Survival Bonus Score" value="0x42" />
@@ -854,13 +645,13 @@
 			<float32 name="Local Scalar b" offset="0x1C" visible="true" />
 			<float32 name="Local Scalar c" offset="0x20" visible="true" />
 			<float32 name="Local Scalar d" offset="0x24" visible="true" />
-			<enum16 name="Output Color a" offset="0x28" visible="true">
+			<enum16 name="Shader Output Color a" offset="0x28" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -868,7 +659,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -898,13 +689,13 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Color b" offset="0x2A" visible="true">
+			<enum16 name="Shader Output Color b" offset="0x2A" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -912,7 +703,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -942,13 +733,13 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Color c" offset="0x2C" visible="true">
+			<enum16 name="Shader Output Color c" offset="0x2C" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -956,7 +747,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -986,13 +777,13 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Color d" offset="0x2E" visible="true">
+			<enum16 name="Shader Output Color d" offset="0x2E" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -1000,7 +791,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -1030,13 +821,13 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Color e" offset="0x30" visible="true">
+			<enum16 name="Shader Output Color e" offset="0x30" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -1044,7 +835,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -1074,13 +865,13 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Color f" offset="0x32" visible="true">
+			<enum16 name="Shader Output Color f" offset="0x32" visible="true">
 				<option name="Local a" value="0x0" />
 				<option name="Local b" value="0x1" />
 				<option name="Local c" value="0x2" />
 				<option name="Local d" value="0x3" />
-				<option name="Unknown 4" value="0x4" />
-				<option name="Unknown 5" value="0x5" />
+				<option name="Deprecated" value="0x4" />
+				<option name="Deprecated" value="0x5" />
 				<option name="Scoreboard Friendly" value="0x6" />
 				<option name="Scoreboard Enemy" value="0x7" />
 				<option name="Arming Team" value="0x8" />
@@ -1088,7 +879,7 @@
 				<option name="Metagame Player 2" value="0xA" />
 				<option name="Metagame Player 3" value="0xB" />
 				<option name="Metagame Player 4" value="0xC" />
-				<option name="Unknown 13" value="0xD" />
+				<option name="Deprecated" value="0xD" />
 				<option name="Global Dynamic 0" value="0xE" />
 				<option name="Global Dynamic 1" value="0xF" />
 				<option name="Global Dynamic 2" value="0x10" />
@@ -1118,70 +909,67 @@
 				<option name="Global Dynamic 26" value="0x28" />
 				<option name="Global Dynamic 27" value="0x29" />
 			</enum16>
-			<enum16 name="Output Scalar a" offset="0x34" visible="true">
+			<enum16 name="Shader Output Scalar a" offset="0x34" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<enum16 name="Output Scalar b" offset="0x36" visible="true">
+			<enum16 name="Shader Output Scalar b" offset="0x36" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<enum16 name="Output Scalar c" offset="0x38" visible="true">
+			<enum16 name="Shader Output Scalar c" offset="0x38" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<enum16 name="Output Scalar d" offset="0x3A" visible="true">
+			<enum16 name="Shader Output Scalar d" offset="0x3A" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<enum16 name="Output Scalar e" offset="0x3C" visible="true">
+			<enum16 name="Shader Output Scalar e" offset="0x3C" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<enum16 name="Output Scalar f" offset="0x3E" visible="true">
+			<enum16 name="Shader Output Scalar f" offset="0x3E" visible="true">
 				<option name="Input" value="0x0" />
 				<option name="Range Input" value="0x1" />
 				<option name="Local a" value="0x2" />
 				<option name="Local b" value="0x3" />
 				<option name="Local c" value="0x4" />
 				<option name="Local d" value="0x5" />
-				<option name="Unknown 6" value="0x6" />
-				<option name="Unknown 7" value="0x7" />
+				<option name="Custom Animation" value="0x6" />
+				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-			<int16 name="Unknown" offset="0x40" visible="false" />
-			<int16 name="Unknown" offset="0x42" visible="false" />
-			<int16 name="Unknown" offset="0x44" visible="false" />
-			<int16 name="Unknown" offset="0x46" visible="false" />
+			<rect16 name="Texture Coordinates" offset="0x40" visible="true" />
 		</reflexive>
 		<reflexive name="Bitmap Widgets" offset="0x38" visible="true" entrySize="0x54">
 			<stringId name="Name" offset="0x0" visible="true" />
@@ -1197,103 +985,64 @@
 				<option name="Firebomb Grenade" value="0x8" />
 				<option name="Compass" value="0x9" />
 			</enum16>
-			<uint8 name="Unknown" offset="0x6" visible="false" />
-			<uint8 name="Unknown" offset="0x7" visible="false" />
+			<bitfield8 name="Flags" offset="0x6" visible="true">
+				<bit name="Bit 0" index="0" />
+			</bitfield8>
+			<enum8 name="Layer" offset="0x7" visible="true">
+				<option name="0" value="0x0" />
+				<option name="1" value="0x1" />
+				<option name="2" value="0x2" />
+				<option name="3" value="0x3" />
+				<option name="4" value="0x4" />
+				<option name="5" value="0x5" />
+				<option name="6/Use Parent Widget" value="0x6" />
+				<option name="7/Always Show/No Warping" value="0x7" />
+			</enum8>
 			<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x38">
 				<bitfield16 name="1 Engine" offset="0x0" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
+					<bit name="Campaign Solo" index="0" />
+					<bit name="Campaign Coop" index="1" />
 					<bit name="Survival" index="2" />
 					<bit name="Editor" index="3" />
 					<bit name="Theater" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="2" offset="0x2" visible="true">
-					<bit name="Biped 1" index="0" />
-					<bit name="Biped 2" index="1" />
-					<bit name="Biped 3" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+					<bit name="Spartan" index="0" />
+					<bit name="Elite" index="1" />
+					<bit name="Monitor" index="2" />
 				</bitfield16>
-				<bitfield16 name="3" offset="0x4" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="3 Unknown" offset="0x4" visible="true">
+					<bit name="Splitscreen PDA Open" index="0" />
+					<bit name="Splitscreen PDA Closed" index="1" />
+					<bit name="Camera Unknown" index="2" />
 				</bitfield16>
-				<bitfield16 name="4" offset="0x6" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="4 Multiplayer" offset="0x6" visible="true">
+					<bit name="Offense Team" index="0" />
+					<bit name="Defense Team" index="1" />
+					<bit name="Normal Team" index="2" />
+					<bit name="Special Team (Infected, VIP, Jugg, etc)" index="3" />
+					<bit name="Extra Special Team? (Broken?)" index="4" />
+					<bit name="No Microphone" index="5" />
+					<bit name="Talking Disabled" index="6" />
+					<bit name="Tap To Talk" index="7" />
+					<bit name="Talking Enabled" index="8" />
+					<bit name="Not Talking" index="9" />
+					<bit name="Talking" index="10" />
 				</bitfield16>
 				<bitfield16 name="5 Resolution" offset="0x8" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Widescreen" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Fullscreen" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Wide Full" index="0" />
+					<bit name="Wide Half" index="1" />
+					<bit name="Native Full" index="2" />
+					<bit name="Standard Full" index="3" />
+					<bit name="Wide Quarter" index="4" />
+					<bit name="Standard Half" index="5" />
+					<bit name="Native Quarter" index="6" />
+					<bit name="Standard Quarter" index="7" />
 				</bitfield16>
-				<bitfield16 name="6 Scoreboard" offset="0xA" visible="true">
+				<bitfield16 name="6 Multiplayer Events" offset="0xA" visible="true">
 					<bit name="Has Friends" index="0" />
 					<bit name="Has Enemies" index="1" />
-					<bit name="Has Variant Name?" index="2" />
+					<bit name="Variant Name Valid" index="2" />
 					<bit name="Someone Is Talking" index="3" />
 					<bit name="Is Arming" index="4" />
 					<bit name="Time Enabled" index="5" />
@@ -1303,80 +1052,50 @@
 					<bit name="Enemies Are X" index="9" />
 					<bit name="X is Down" index="10" />
 					<bit name="Summary Enabled" index="11" />
-					<bit name="NetDebug" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="NetDebug Enabled" index="12" />
 				</bitfield16>
-				<bitfield32 name="7" offset="0xC" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Autoaim" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
+				<bitfield32 name="7 Unit Base" offset="0xC" visible="true">
+					<bit name="Texture Cam Enabled" index="0" />
+					<bit name="Binoculars Targeted" index="1" />
+					<bit name="Bit 2 - UNUSED?" index="2" />
+					<bit name="Bit 3 - UNUSED?" index="3" />
 					<bit name="Training Prompt" index="4" />
 					<bit name="Objective Prompt" index="5" />
 					<bit name="Survival State" index="6" />
-					<bit name="Beacon Enabled" index="7" />
-					<bit name="User Waypoint Enabled" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Achievement 1" index="10" />
-					<bit name="Achievement 2" index="11" />
-					<bit name="Achievement 3" index="12" />
-					<bit name="Achievement 4" index="13" />
-					<bit name="Achievement 5" index="14" />
-					<bit name="ARG Enabled" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
+					<bit name="Beacon Exists" index="7" />
+					<bit name="User Waypoint Exists" index="8" />
+					<bit name="Camera Unknown" index="9" />
+					<bit name="Achievement 1 Updated" index="10" />
+					<bit name="Achievement 2 Updated" index="11" />
+					<bit name="Achievement 3 Updated" index="12" />
+					<bit name="Achievement 4 Updated" index="13" />
+					<bit name="Achievement 5 Updated" index="14" />
+					<bit name="ARG Is Playing" index="15" />
 				</bitfield32>
 				<bitfield16 name="8 Editor" offset="0x10" visible="true">
 					<bit name="Editor Inactive" index="0" />
 					<bit name="Editor Active" index="1" />
 					<bit name="Editor Holding" index="2" />
 					<bit name="Editor Not Allowed" index="3" />
-					<bit name="Is Editor Biped" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Is Editor" index="4" />
 				</bitfield16>
-				<bitfield16 name="9" offset="0x12" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Metagame Player 2 Exists" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Metagame Player 3 Exists" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Metagame Player 4 Exists" index="9" />
-					<bit name="Bit 10" index="10" />
+				<bitfield16 name="9 Engine General" offset="0x12" visible="true">
+					<bit name="Motion Tracker 10m" index="0" />
+					<bit name="Motion Tracker 25m" index="1" />
+					<bit name="Motion Tracker 75m" index="2" />
+					<bit name="Motion Tracker 150m" index="3" />
+					<bit name="Metagame Debug Enabled" index="4" />
+					<bit name="Metagame 2 FFA Players" index="5" />
+					<bit name="Metagame Bit 6 UNKNOWN" index="6" />
+					<bit name="Metagame 3 FFA Players" index="7" />
+					<bit name="Metagame Bit 8 UNKNOWN" index="8" />
+					<bit name="Metagame 4 FFA Players" index="9" />
+					<bit name="Metagame Bit 10 UNKNOWN" index="10" />
 					<bit name="Metagame Score Added" index="11" />
-					<bit name="Bit 12" index="12" />
+					<bit name="Metagame Multikill" index="12" />
 					<bit name="Metagame Score Removed" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Metagame Unknown NotZero" index="14" />
+					<bit name="Metagame Unknown Zero" index="15" />
 				</bitfield16>
 				<bitfield16 name="10 Skulls" offset="0x14" visible="true">
 					<bit name="Iron Skull Enabled" index="0" />
@@ -1396,311 +1115,156 @@
 					<bit name="Third Person Skull Enabled" index="14" />
 					<bit name="Director's Cut Skull Enabled" index="15" />
 				</bitfield16>
-				<bitfield16 name="11" offset="0x16" visible="true">
-					<bit name="Wave 1 Background" index="0" />
-					<bit name="Wave 2 Background" index="1" />
-					<bit name="Wave 3 Background" index="2" />
-					<bit name="Wave 4 Background" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
+				<bitfield16 name="11 Survival Rounds" offset="0x16" visible="true">
+					<!-- Technically all bits are supported, but since bonus round is "special" I'll stop there -->
+					<bit name="Round 0" index="0" />
+					<bit name="Round 1" index="1" />
+					<bit name="Round 2" index="2" />
+					<bit name="Round 3" index="3" />
+					<bit name="Round 4" index="4" />
+					<bit name="Round 5" index="5" />
 					<bit name="Bonus Round" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="12" offset="0x18" visible="true">
-					<bit name="Bit 0" index="0" />
+				<bitfield16 name="12 Survival Waves" offset="0x18" visible="true">
+					<bit name="Wave 0" index="0" />
 					<bit name="Wave 1" index="1" />
 					<bit name="Wave 2" index="2" />
 					<bit name="Wave 3" index="3" />
 					<bit name="Wave 4" index="4" />
 					<bit name="Wave 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Wave 6" index="6" />
+					<bit name="Wave 7" index="7" />
+					<bit name="Wave 8" index="8" />
+					<bit name="Wave 9" index="9" />
+					<bit name="Wave 10" index="10" />
+					<bit name="Wave 11" index="11" />
+					<bit name="Wave 12" index="12" />
+					<bit name="Wave 13" index="13" />
+					<bit name="Wave 14" index="14" />
+					<bit name="Wave 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="13" offset="0x1A" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="13 Survival Lives" offset="0x1A" visible="true">
+					<bit name="0 Lives" index="0" />
+					<bit name="1 Lives" index="1" />
+					<bit name="2 Lives" index="2" />
+					<bit name="3 Lives" index="3" />
+					<bit name="4 Lives" index="4" />
+					<bit name="5 Lives" index="5" />
+					<bit name="6 Lives" index="6" />
+					<bit name="7 Lives" index="7" />
+					<bit name="8 Lives" index="8" />
+					<bit name="9 Lives" index="9" />
+					<bit name="10 Lives" index="10" />
+					<bit name="11 Lives" index="11" />
+					<bit name="12 Lives" index="12" />
+					<bit name="13 Lives" index="13" />
+					<bit name="14 Lives" index="14" />
+					<bit name="15 Lives" index="15" />
 				</bitfield16>
-				<bitfield16 name="14" offset="0x1C" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="14 Survival Difficulty" offset="0x1C" visible="true">
+					<bit name="Easy" index="0" />
+					<bit name="Normal" index="1" />
+					<bit name="Heroic" index="2" />
+					<bit name="Legendary" index="3" />
 				</bitfield16>
-				<bitfield16 name="15" offset="0x1E" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield16 name="16" offset="0x20" visible="true">
-					<bit name="Pickup Grenades" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
+				<uint16 name="15 Unused?" offset="0x1E" visible="false" />
+				<bitfield16 name="16 General Kudos [Brief]" offset="0x20" visible="true">
+					<bit name="Pickup Frag Grenades" index="0" />
+					<bit name="Pickup Plasma Grenades" index="1" />
+					<bit name="Pickup Spike Grenades" index="2" />
+					<bit name="Pickup Fire Grenades" index="3" />
+					<bit name="Bit 4 - UNUSED?" index="4" />
+					<bit name="Bit 5 - UNUSED?" index="5" />
+					<bit name="Bit 6 - UNUSED?" index="6" />
+					<bit name="Bit 7 - UNUSED?" index="7" />
+					<bit name="Bit 8 - UNUSED?" index="8" />
 					<bit name="Lives Added" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="17" offset="0x22" visible="true">
+				<bitfield16 name="17 Unit Zoom" offset="0x22" visible="true">
 					<bit name="Binoculars Enabled" index="0" />
 					<bit name="Unit Is Zoomed (Level 1)" index="1" />
 					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="18" offset="0x24" visible="true">
-					<bit name="Primary Weapon" index="0" />
-					<bit name="Secondary Weapon" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="18 Unit Inventory" offset="0x24" visible="true">
+					<bit name="None of the Below" index="0" />
+					<bit name="Is Single Wielding" index="1" />
+					<bit name="Is Dual Wielding" index="2" />
+					<bit name="Has Support Weapon" index="3" />
 				</bitfield16>
-				<bitfield16 name="19" offset="0x26" visible="true">
+				<bitfield16 name="19 Unit General" offset="0x26" visible="true">
 					<bit name="Motion Tracker Enabled" index="0" />
-					<bit name="Bit 1" index="1" />
+					<bit name="Motion Tracker Disabled" index="1" />
 					<bit name="Selected Frag Grenades" index="2" />
 					<bit name="Selected Plasma Grenades" index="3" />
 					<bit name="Selected Spike Grenades" index="4" />
 					<bit name="Selected Fire Grenades" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
+					<bit name="Binoculars Active" index="6" />
+					<bit name="Binoculars Not Active" index="7" />
+					<bit name="First Person Camera" index="8" />
+					<bit name="Third Person Camera" index="9" />
+					<bit name="Is Speaking" index="10" />
+					<bit name="Is Tapping To Talk" index="11" />
 					<bit name="Has 1x Overshield" index="12" />
 					<bit name="Has 2x Overshield" index="13" />
 					<bit name="Has 3x Overshield" index="14" />
 					<bit name="Has Shields" index="15" />
 				</bitfield16>
-				<bitfield16 name="20" offset="0x28" visible="true">
-					<bit name="Bit 0" index="0" />
+				<bitfield16 name="20 Weapon Kudos [Brief]" offset="0x28" visible="true">
+					<bit name="Bit 0 - UNUSED?" index="0" />
 					<bit name="Pickup Ammo" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="21" offset="0x2A" visible="true">
-					<bit name="Primary Weapon" index="0" />
-					<bit name="Secondary Weapon" index="1" />
-					<bit name="Backpack" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="21 Weapon Status" offset="0x2A" visible="true">
+					<bit name="Source Is Primary Weapon" index="0" />
+					<bit name="Source Is Dual Weapon" index="1" />
+					<bit name="Source Is Backpacked" index="2" />
+					<bit name="NOT ACTUALLY USED BIT" index="3" />
 				</bitfield16>
-				<bitfield16 name="22" offset="0x2C" visible="true">
-					<bit name="Not Autoaim?" index="0" />
-					<bit name="Autoaim Friendly" index="1" />
-					<bit name="Autoaim Enemy" index="2" />
-					<bit name="Autoaim Headshot" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Plasma Locked On" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="22 Weapon Target" offset="0x2C" visible="true">
+					<bit name="No Target" index="0" />
+					<bit name="Friendly Target" index="1" />
+					<bit name="Enemy Target" index="2" />
+					<bit name="Headshot Target" index="3" />
+					<bit name="Vulnerable Target" index="4" />
+					<bit name="Invincible Target (Defunct)" index="5" />
+					<bit name="Plasma Locked" index="6" />
+					<bit name="Plasma Locking" index="7" />
+					<bit name="Plasma Lock Available" index="8" />
+					<bit name="Unknown is 0" index="9" />
+					<bit name="Unknown is 1" index="10" />
 				</bitfield16>
-				<bitfield16 name="23" offset="0x2E" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Missile Locked" index="1" />
-					<bit name="Missile Locking" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="23 Weapon Target B" offset="0x2E" visible="true">
+					<bit name="Human Locking" index="0" />
+					<bit name="Human Locked" index="1" />
+					<bit name="Human Lock Available" index="2" />
 				</bitfield16>
-				<bitfield16 name="24" offset="0x30" visible="true">
-					<bit name="Vitality Meter Minor Damage" index="0" />
-					<bit name="Vitality Meter Medium Damage" index="1" />
-					<bit name="Vitality Meter Heavy Damage" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Has Frag Grenades" index="6" />
-					<bit name="Has Plasma Grenades" index="7" />
-					<bit name="Has Spike Grenades" index="8" />
-					<bit name="Has Fire Grenades" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="24 Player [Special]" offset="0x30" visible="true">
+					<bit name="Health Minor Damage" index="0" />
+					<bit name="Health Medium Damage" index="1" />
+					<bit name="Health Heavy Damage" index="2" />
+					<bit name="Shields Minor Damage" index="3" />
+					<bit name="Shields Medium Damage" index="4" />
+					<bit name="Shields Heavy Damage" index="5" />
+					<bit name="Has Any Any Frag Grenades" index="6" />
+					<bit name="Has Any Any Plasma Grenades" index="7" />
+					<bit name="Has Any Any Spike Grenades" index="8" />
+					<bit name="Has Any Any Fire Grenades" index="9" />
 				</bitfield16>
-				<bitfield16 name="25 Ammo" offset="0x32" visible="true">
-					<bit name="Clip Warning" index="0" />
-					<bit name="Ammo Warning" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Low Battery 1" index="4" />
-					<bit name="Low Battery 2" index="5" />
+				<bitfield16 name="25 Weapon [Special]" offset="0x32" visible="true">
+					<bit name="Clip Below Cutoff" index="0" />
+					<bit name="Clip Empty (Broken?)" index="1" />
+					<bit name="Ammo Below Cutoff" index="2" />
+					<bit name="Ammo Empty (Broken?)" index="3" />
+					<bit name="Battery Below Cutoff" index="4" />
+					<bit name="Battery Empty (Broken?)" index="5" />
 					<bit name="Overheated" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="26" offset="0x34" visible="true">
-					<bit name="Is Zoomed?" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="26 Unit Extra" offset="0x34" visible="true">
+					<bit name="Not Zoomed In" index="0" />
+					<bit name="Not Armed With Support Weapon" index="1" />
+					<bit name="At Least 2 Weapons" index="2" />
 				</bitfield16>
-				<bitfield16 name="27" offset="0x36" visible="true">
-					<bit name="Binoculars Enabled" index="0" />
-					<bit name="Unit Is Zoomed (Level 1)" index="1" />
-					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="27 PDA" offset="0x36" visible="true">
+					<bit name="Visible In PDA" index="0" />
 				</bitfield16>
 			</reflexive>
 			<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
@@ -1717,16 +1281,16 @@
 					<option name="Grenade D" value="0x9" />
 					<option name="Scoreboard Friendly" value="0xA" />
 					<option name="Scoreboard Enemy" value="0xB" />
-					<option name="Health and Shield" value="0xC" />
+					<option name="Use Parent Widget" value="0xC" />
 					<option name="Bottom Edge" value="0xD" />
 					<option name="Unknown" value="0xE" />
 					<option name="Equipment" value="0xF" />
 					<option name="Unknown" value="0x10" />
-					<option name="Depreciated" value="0x11" />
-					<option name="Depreciated" value="0x12" />
-					<option name="Depreciated" value="0x13" />
-					<option name="Depreciated" value="0x14" />
-					<option name="Depreciated" value="0x15" />
+					<option name="Deprecated" value="0x11" />
+					<option name="Deprecated" value="0x12" />
+					<option name="Deprecated" value="0x13" />
+					<option name="Deprecated" value="0x14" />
+					<option name="Deprecated" value="0x15" />
 					<option name="Unknown" value="0x16" />
 					<option name="Gametype" value="0x17" />
 					<option name="Unknown" value="0x18" />
@@ -1753,72 +1317,78 @@
 				<float32 name="Scale Y" offset="0x18" visible="true" />
 			</reflexive>
 			<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
-				<bitfield16 name="Animation 1 Flags" offset="0x0" visible="true">
+				<comment title="HUD Initialize Animation" />
+				<bitfield16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 1 Function" offset="0x2" visible="true">
+				<enum16 name="Function" offset="0x2" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 1" offset="0x4" visible="true" />
-				<bitfield16 name="Animation 2 Flags" offset="0x14" visible="true">
+				<tagRef name="Animation" offset="0x4" visible="true" />
+				<comment title="Idle Animation" />
+				<bitfield16 name="Flags" offset="0x14" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 2 Function" offset="0x16" visible="true">
+				<enum16 name="Function" offset="0x16" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 2" offset="0x18" visible="true" />
-				<bitfield16 name="Animation 3 Flags" offset="0x28" visible="true">
+				<tagRef name="Animation" offset="0x18" visible="true" />
+				<comment title="Special State Animation" />
+				<bitfield16 name="Flags" offset="0x28" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 3 Function" offset="0x2A" visible="true">
+				<enum16 name="Function" offset="0x2A" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 3" offset="0x2C" visible="true" />
-				<bitfield16 name="Animation 4 Flags" offset="0x3C" visible="true">
+				<tagRef name="Animation" offset="0x2C" visible="true" />
+				<comment title="Transition In Animation" />
+				<bitfield16 name="Flags" offset="0x3C" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 4 Function" offset="0x3E" visible="true">
+				<enum16 name="Function" offset="0x3E" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 4" offset="0x40" visible="true" />
-				<bitfield16 name="Animation 5 Flags" offset="0x50" visible="true">
+				<tagRef name="Animation" offset="0x40" visible="true" />
+				<comment title="Transition Out Animation" />
+				<bitfield16 name="Flags" offset="0x50" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 5 Function" offset="0x52" visible="true">
+				<enum16 name="Function" offset="0x52" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 5" offset="0x54" visible="true" />
-				<bitfield16 name="Animation 6 Flags" offset="0x64" visible="true">
+				<tagRef name="Animation" offset="0x54" visible="true" />
+				<comment title="Brief State Animation" />
+				<bitfield16 name="Flags" offset="0x64" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 6 Function" offset="0x66" visible="true">
+				<enum16 name="Function" offset="0x66" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 6" offset="0x68" visible="true" />
+				<tagRef name="Animation" offset="0x68" visible="true" />
 			</reflexive>
 			<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x48">
 				<enum16 name="Shader Index" offset="0x0" visible="true">
@@ -1864,8 +1434,8 @@
 					<option name="Battery Fraction" value="0xB" />
 					<option name="Pickup" value="0xC" />
 					<option name="Unit Autoaimed" value="0xD" />
-					<option name="Grenade" value="0xE" />
-					<option name="Grenade Fraction" value="0xF" />
+					<option name="Grenade Anchor Selected" value="0xE" />
+					<option name="Grenade Anchor Fraction" value="0xF" />
 					<option name="Charge Fraction" value="0x10" />
 					<option name="Friendly Score" value="0x11" />
 					<option name="Enemy Score" value="0x12" />
@@ -1886,11 +1456,11 @@
 					<option name="Editor Budget Cost" value="0x21" />
 					<option name="Film Total Time" value="0x22" />
 					<option name="Film Current Time" value="0x23" />
-					<option name="Unknown" value="0x24" />
-					<option name="Film Timeline Fraction 1" value="0x25" />
-					<option name="Film Timeline Fraction 2" value="0x26" />
+					<option name="Deprecated" value="0x24" />
+					<option name="Film Timeline Last Marker Fraction" value="0x25" />
+					<option name="Film Timeline Fraction" value="0x26" />
 					<option name="Unknown" value="0x27" />
-					<option name="Unknown" value="0x28" />
+					<option name="Deprecated" value="0x28" />
 					<option name="Metagame Time" value="0x29" />
 					<option name="Metagame Score Transient" value="0x2A" />
 					<option name="Metagame Score Player 1" value="0x2B" />
@@ -1905,15 +1475,15 @@
 					<option name="NetDebug Host Quality" value="0x34" />
 					<option name="NetDebug Local Quality" value="0x35" />
 					<option name="Metagame Score Negative" value="0x36" />
-					<option name="Unknown" value="0x37" />
-					<option name="Compass Distance To User Target" value="0x38" />
-					<option name="Compass Distance To User Target 2" value="0x39" />
-					<option name="Unknown" value="0x3A" />
-					<option name="Compass Distance To Target" value="0x3B" />
-					<option name="Compass Distance To Target 2" value="0x3C" />
+					<option name="Compass User Target Unknown" value="0x37" />
+					<option name="Compass User Target Yaw" value="0x38" />
+					<option name="Compass User Target Distance" value="0x39" />
+					<option name="Compass Target Unknown" value="0x3A" />
+					<option name="Compass Target Yaw" value="0x3B" />
+					<option name="Compass Target Distance" value="0x3C" />
 					<option name="Survival Current Set" value="0x3D" />
-					<option name="Unknown" value="0x3E" />
-					<option name="Unknown" value="0x3F" />
+					<option name="Survival Current Round Unknown" value="0x3E" />
+					<option name="Survival Current Wave Unknown" value="0x3F" />
 					<option name="Survival Current Lives" value="0x40" />
 					<option name="Survival Bonus Time" value="0x41" />
 					<option name="Survival Bonus Score" value="0x42" />
@@ -1949,8 +1519,8 @@
 					<option name="Battery Fraction" value="0xB" />
 					<option name="Pickup" value="0xC" />
 					<option name="Unit Autoaimed" value="0xD" />
-					<option name="Grenade" value="0xE" />
-					<option name="Grenade Fraction" value="0xF" />
+					<option name="Grenade Anchor Selected" value="0xE" />
+					<option name="Grenade Anchor Fraction" value="0xF" />
 					<option name="Charge Fraction" value="0x10" />
 					<option name="Friendly Score" value="0x11" />
 					<option name="Enemy Score" value="0x12" />
@@ -1971,11 +1541,11 @@
 					<option name="Editor Budget Cost" value="0x21" />
 					<option name="Film Total Time" value="0x22" />
 					<option name="Film Current Time" value="0x23" />
-					<option name="Unknown" value="0x24" />
-					<option name="Film Timeline Fraction 1" value="0x25" />
-					<option name="Film Timeline Fraction 2" value="0x26" />
+					<option name="Deprecated" value="0x24" />
+					<option name="Film Timeline Last Marker Fraction" value="0x25" />
+					<option name="Film Timeline Fraction" value="0x26" />
 					<option name="Unknown" value="0x27" />
-					<option name="Unknown" value="0x28" />
+					<option name="Deprecated" value="0x28" />
 					<option name="Metagame Time" value="0x29" />
 					<option name="Metagame Score Transient" value="0x2A" />
 					<option name="Metagame Score Player 1" value="0x2B" />
@@ -1990,15 +1560,15 @@
 					<option name="NetDebug Host Quality" value="0x34" />
 					<option name="NetDebug Local Quality" value="0x35" />
 					<option name="Metagame Score Negative" value="0x36" />
-					<option name="Unknown" value="0x37" />
-					<option name="Compass Distance To User Target" value="0x38" />
-					<option name="Compass Distance To User Target 2" value="0x39" />
-					<option name="Unknown" value="0x3A" />
-					<option name="Compass Distance To Target" value="0x3B" />
-					<option name="Compass Distance To Target 2" value="0x3C" />
+					<option name="Compass User Target Unknown" value="0x37" />
+					<option name="Compass User Target Yaw" value="0x38" />
+					<option name="Compass User Target Distance" value="0x39" />
+					<option name="Compass Target Unknown" value="0x3A" />
+					<option name="Compass Target Yaw" value="0x3B" />
+					<option name="Compass Target Distance" value="0x3C" />
 					<option name="Survival Current Set" value="0x3D" />
-					<option name="Unknown" value="0x3E" />
-					<option name="Unknown" value="0x3F" />
+					<option name="Survival Current Round Unknown" value="0x3E" />
+					<option name="Survival Current Wave Unknown" value="0x3F" />
 					<option name="Survival Current Lives" value="0x40" />
 					<option name="Survival Bonus Time" value="0x41" />
 					<option name="Survival Bonus Score" value="0x42" />
@@ -2031,13 +1601,13 @@
 				<float32 name="Local Scalar b" offset="0x1C" visible="true" />
 				<float32 name="Local Scalar c" offset="0x20" visible="true" />
 				<float32 name="Local Scalar d" offset="0x24" visible="true" />
-				<enum16 name="Output Color a" offset="0x28" visible="true">
+				<enum16 name="Shader Output Color a" offset="0x28" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2045,7 +1615,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2075,13 +1645,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color b" offset="0x2A" visible="true">
+				<enum16 name="Shader Output Color b" offset="0x2A" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2089,7 +1659,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2119,13 +1689,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color c" offset="0x2C" visible="true">
+				<enum16 name="Shader Output Color c" offset="0x2C" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2133,7 +1703,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2163,13 +1733,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color d" offset="0x2E" visible="true">
+				<enum16 name="Shader Output Color d" offset="0x2E" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2177,7 +1747,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2207,13 +1777,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color e" offset="0x30" visible="true">
+				<enum16 name="Shader Output Color e" offset="0x30" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2221,7 +1791,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2251,13 +1821,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color f" offset="0x32" visible="true">
+				<enum16 name="Shader Output Color f" offset="0x32" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -2265,7 +1835,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -2295,70 +1865,67 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Scalar a" offset="0x34" visible="true">
+				<enum16 name="Shader Output Scalar a" offset="0x34" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar b" offset="0x36" visible="true">
+				<enum16 name="Shader Output Scalar b" offset="0x36" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar c" offset="0x38" visible="true">
+				<enum16 name="Shader Output Scalar c" offset="0x38" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar d" offset="0x3A" visible="true">
+				<enum16 name="Shader Output Scalar d" offset="0x3A" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar e" offset="0x3C" visible="true">
+				<enum16 name="Shader Output Scalar e" offset="0x3C" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar f" offset="0x3E" visible="true">
+				<enum16 name="Shader Output Scalar f" offset="0x3E" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<int16 name="Unknown" offset="0x40" visible="false" />
-				<int16 name="Unknown" offset="0x42" visible="false" />
-				<int16 name="Unknown" offset="0x44" visible="false" />
-				<int16 name="Unknown" offset="0x46" visible="false" />
+				<rect16 name="Texture Coordinates" offset="0x40" visible="true" />
 			</reflexive>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
 			<bitfield16 name="Bitmap Modifiers" offset="0x3C" visible="true">
@@ -2367,15 +1934,15 @@
 				<bit name="Stretch Edges" index="2" />
 				<bit name="Enable Texture Cam" index="3" />
 				<bit name="Looping" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
+				<bit name="Offset Sprite Index By Biped Type" index="5" />
+				<bit name="Offset Sprite Index By Survival ???" index="6" /><!--x14 short in survival mode globals memory-->
+				<bit name="Offset Sprite Index By Input" index="7" />
+				<bit name="Offset Sprite Index By Range Input" index="8" />
 				<bit name="Player 1 Emblem" index="9" />
 				<bit name="Player 2 Emblem" index="10" />
 				<bit name="Player 3 Emblem" index="11" />
 				<bit name="Player 4 Emblem" index="12" />
-				<bit name="Bit 13" index="13" />
+				<bit name="Unknown Alpha Modifier" index="13" />
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
 			</bitfield16>
@@ -2400,103 +1967,64 @@
 				<option name="Firebomb Grenade" value="0x8" />
 				<option name="Compass" value="0x9" />
 			</enum16>
-			<uint8 name="Unknown" offset="0x6" visible="false" />
-			<uint8 name="Unknown" offset="0x7" visible="false" />
+			<bitfield8 name="Flags" offset="0x6" visible="true">
+				<bit name="Bit 0" index="0" />
+			</bitfield8>
+			<enum8 name="Layer" offset="0x7" visible="true">
+				<option name="0" value="0x0" />
+				<option name="1" value="0x1" />
+				<option name="2" value="0x2" />
+				<option name="3" value="0x3" />
+				<option name="4" value="0x4" />
+				<option name="5" value="0x5" />
+				<option name="6/Use Parent Widget" value="0x6" />
+				<option name="7/Always Show/No Warping" value="0x7" />
+			</enum8>
 			<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x38">
 				<bitfield16 name="1 Engine" offset="0x0" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
+					<bit name="Campaign Solo" index="0" />
+					<bit name="Campaign Coop" index="1" />
 					<bit name="Survival" index="2" />
 					<bit name="Editor" index="3" />
 					<bit name="Theater" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="2" offset="0x2" visible="true">
-					<bit name="Biped 1" index="0" />
-					<bit name="Biped 2" index="1" />
-					<bit name="Biped 3" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+					<bit name="Spartan" index="0" />
+					<bit name="Elite" index="1" />
+					<bit name="Monitor" index="2" />
 				</bitfield16>
-				<bitfield16 name="3" offset="0x4" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="3 Unknown" offset="0x4" visible="true">
+					<bit name="Splitscreen PDA Open" index="0" />
+					<bit name="Splitscreen PDA Closed" index="1" />
+					<bit name="Camera Unknown" index="2" />
 				</bitfield16>
-				<bitfield16 name="4" offset="0x6" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="4 Multiplayer" offset="0x6" visible="true">
+					<bit name="Offense Team" index="0" />
+					<bit name="Defense Team" index="1" />
+					<bit name="Normal Team" index="2" />
+					<bit name="Special Team (Infected, VIP, Jugg, etc)" index="3" />
+					<bit name="Extra Special Team? (Broken?)" index="4" />
+					<bit name="No Microphone" index="5" />
+					<bit name="Talking Disabled" index="6" />
+					<bit name="Tap To Talk" index="7" />
+					<bit name="Talking Enabled" index="8" />
+					<bit name="Not Talking" index="9" />
+					<bit name="Talking" index="10" />
 				</bitfield16>
 				<bitfield16 name="5 Resolution" offset="0x8" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Widescreen" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Fullscreen" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Wide Full" index="0" />
+					<bit name="Wide Half" index="1" />
+					<bit name="Native Full" index="2" />
+					<bit name="Standard Full" index="3" />
+					<bit name="Wide Quarter" index="4" />
+					<bit name="Standard Half" index="5" />
+					<bit name="Native Quarter" index="6" />
+					<bit name="Standard Quarter" index="7" />
 				</bitfield16>
-				<bitfield16 name="6 Scoreboard" offset="0xA" visible="true">
+				<bitfield16 name="6 Multiplayer Events" offset="0xA" visible="true">
 					<bit name="Has Friends" index="0" />
 					<bit name="Has Enemies" index="1" />
-					<bit name="Has Variant Name?" index="2" />
+					<bit name="Variant Name Valid" index="2" />
 					<bit name="Someone Is Talking" index="3" />
 					<bit name="Is Arming" index="4" />
 					<bit name="Time Enabled" index="5" />
@@ -2506,80 +2034,50 @@
 					<bit name="Enemies Are X" index="9" />
 					<bit name="X is Down" index="10" />
 					<bit name="Summary Enabled" index="11" />
-					<bit name="NetDebug" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="NetDebug Enabled" index="12" />
 				</bitfield16>
-				<bitfield32 name="7" offset="0xC" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Autoaim" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
+				<bitfield32 name="7 Unit Base" offset="0xC" visible="true">
+					<bit name="Texture Cam Enabled" index="0" />
+					<bit name="Binoculars Targeted" index="1" />
+					<bit name="Bit 2 - UNUSED?" index="2" />
+					<bit name="Bit 3 - UNUSED?" index="3" />
 					<bit name="Training Prompt" index="4" />
 					<bit name="Objective Prompt" index="5" />
 					<bit name="Survival State" index="6" />
-					<bit name="Beacon Enabled" index="7" />
-					<bit name="User Waypoint Enabled" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Achievement 1" index="10" />
-					<bit name="Achievement 2" index="11" />
-					<bit name="Achievement 3" index="12" />
-					<bit name="Achievement 4" index="13" />
-					<bit name="Achievement 5" index="14" />
-					<bit name="ARG Enabled" index="15" />
-					<bit name="Bit 16" index="16" />
-					<bit name="Bit 17" index="17" />
-					<bit name="Bit 18" index="18" />
-					<bit name="Bit 19" index="19" />
-					<bit name="Bit 20" index="20" />
-					<bit name="Bit 21" index="21" />
-					<bit name="Bit 22" index="22" />
-					<bit name="Bit 23" index="23" />
-					<bit name="Bit 24" index="24" />
-					<bit name="Bit 25" index="25" />
-					<bit name="Bit 26" index="26" />
-					<bit name="Bit 27" index="27" />
-					<bit name="Bit 28" index="28" />
-					<bit name="Bit 29" index="29" />
-					<bit name="Bit 30" index="30" />
-					<bit name="Bit 31" index="31" />
+					<bit name="Beacon Exists" index="7" />
+					<bit name="User Waypoint Exists" index="8" />
+					<bit name="Camera Unknown" index="9" />
+					<bit name="Achievement 1 Updated" index="10" />
+					<bit name="Achievement 2 Updated" index="11" />
+					<bit name="Achievement 3 Updated" index="12" />
+					<bit name="Achievement 4 Updated" index="13" />
+					<bit name="Achievement 5 Updated" index="14" />
+					<bit name="ARG Is Playing" index="15" />
 				</bitfield32>
 				<bitfield16 name="8 Editor" offset="0x10" visible="true">
 					<bit name="Editor Inactive" index="0" />
 					<bit name="Editor Active" index="1" />
 					<bit name="Editor Holding" index="2" />
 					<bit name="Editor Not Allowed" index="3" />
-					<bit name="Is Editor Biped" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Is Editor" index="4" />
 				</bitfield16>
-				<bitfield16 name="9" offset="0x12" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Metagame Player 2 Exists" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Metagame Player 3 Exists" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Metagame Player 4 Exists" index="9" />
-					<bit name="Bit 10" index="10" />
+				<bitfield16 name="9 Engine General" offset="0x12" visible="true">
+					<bit name="Motion Tracker 10m" index="0" />
+					<bit name="Motion Tracker 25m" index="1" />
+					<bit name="Motion Tracker 75m" index="2" />
+					<bit name="Motion Tracker 150m" index="3" />
+					<bit name="Metagame Debug Enabled" index="4" />
+					<bit name="Metagame 2 FFA Players" index="5" />
+					<bit name="Metagame Bit 6 UNKNOWN" index="6" />
+					<bit name="Metagame 3 FFA Players" index="7" />
+					<bit name="Metagame Bit 8 UNKNOWN" index="8" />
+					<bit name="Metagame 4 FFA Players" index="9" />
+					<bit name="Metagame Bit 10 UNKNOWN" index="10" />
 					<bit name="Metagame Score Added" index="11" />
-					<bit name="Bit 12" index="12" />
+					<bit name="Metagame Multikill" index="12" />
 					<bit name="Metagame Score Removed" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Metagame Unknown NotZero" index="14" />
+					<bit name="Metagame Unknown Zero" index="15" />
 				</bitfield16>
 				<bitfield16 name="10 Skulls" offset="0x14" visible="true">
 					<bit name="Iron Skull Enabled" index="0" />
@@ -2599,311 +2097,156 @@
 					<bit name="Third Person Skull Enabled" index="14" />
 					<bit name="Director's Cut Skull Enabled" index="15" />
 				</bitfield16>
-				<bitfield16 name="11" offset="0x16" visible="true">
-					<bit name="Wave 1 Background" index="0" />
-					<bit name="Wave 2 Background" index="1" />
-					<bit name="Wave 3 Background" index="2" />
-					<bit name="Wave 4 Background" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
+				<bitfield16 name="11 Survival Rounds" offset="0x16" visible="true">
+					<!-- Technically all bits are supported, but since bonus round is "special" I'll stop there -->
+					<bit name="Round 0" index="0" />
+					<bit name="Round 1" index="1" />
+					<bit name="Round 2" index="2" />
+					<bit name="Round 3" index="3" />
+					<bit name="Round 4" index="4" />
+					<bit name="Round 5" index="5" />
 					<bit name="Bonus Round" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="12" offset="0x18" visible="true">
-					<bit name="Bit 0" index="0" />
+				<bitfield16 name="12 Survival Waves" offset="0x18" visible="true">
+					<bit name="Wave 0" index="0" />
 					<bit name="Wave 1" index="1" />
 					<bit name="Wave 2" index="2" />
 					<bit name="Wave 3" index="3" />
 					<bit name="Wave 4" index="4" />
 					<bit name="Wave 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+					<bit name="Wave 6" index="6" />
+					<bit name="Wave 7" index="7" />
+					<bit name="Wave 8" index="8" />
+					<bit name="Wave 9" index="9" />
+					<bit name="Wave 10" index="10" />
+					<bit name="Wave 11" index="11" />
+					<bit name="Wave 12" index="12" />
+					<bit name="Wave 13" index="13" />
+					<bit name="Wave 14" index="14" />
+					<bit name="Wave 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="13" offset="0x1A" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="13 Survival Lives" offset="0x1A" visible="true">
+					<bit name="0 Lives" index="0" />
+					<bit name="1 Lives" index="1" />
+					<bit name="2 Lives" index="2" />
+					<bit name="3 Lives" index="3" />
+					<bit name="4 Lives" index="4" />
+					<bit name="5 Lives" index="5" />
+					<bit name="6 Lives" index="6" />
+					<bit name="7 Lives" index="7" />
+					<bit name="8 Lives" index="8" />
+					<bit name="9 Lives" index="9" />
+					<bit name="10 Lives" index="10" />
+					<bit name="11 Lives" index="11" />
+					<bit name="12 Lives" index="12" />
+					<bit name="13 Lives" index="13" />
+					<bit name="14 Lives" index="14" />
+					<bit name="15 Lives" index="15" />
 				</bitfield16>
-				<bitfield16 name="14" offset="0x1C" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="14 Survival Difficulty" offset="0x1C" visible="true">
+					<bit name="Easy" index="0" />
+					<bit name="Normal" index="1" />
+					<bit name="Heroic" index="2" />
+					<bit name="Legendary" index="3" />
 				</bitfield16>
-				<bitfield16 name="15" offset="0x1E" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield16 name="16" offset="0x20" visible="true">
-					<bit name="Pickup Grenades" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
+				<uint16 name="15 Unused?" offset="0x1E" visible="false" />
+				<bitfield16 name="16 General Kudos [Brief]" offset="0x20" visible="true">
+					<bit name="Pickup Frag Grenades" index="0" />
+					<bit name="Pickup Plasma Grenades" index="1" />
+					<bit name="Pickup Spike Grenades" index="2" />
+					<bit name="Pickup Fire Grenades" index="3" />
+					<bit name="Bit 4 - UNUSED?" index="4" />
+					<bit name="Bit 5 - UNUSED?" index="5" />
+					<bit name="Bit 6 - UNUSED?" index="6" />
+					<bit name="Bit 7 - UNUSED?" index="7" />
+					<bit name="Bit 8 - UNUSED?" index="8" />
 					<bit name="Lives Added" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="17" offset="0x22" visible="true">
+				<bitfield16 name="17 Unit Zoom" offset="0x22" visible="true">
 					<bit name="Binoculars Enabled" index="0" />
 					<bit name="Unit Is Zoomed (Level 1)" index="1" />
 					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="18" offset="0x24" visible="true">
-					<bit name="Primary Weapon" index="0" />
-					<bit name="Secondary Weapon" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="18 Unit Inventory" offset="0x24" visible="true">
+					<bit name="None of the Below" index="0" />
+					<bit name="Is Single Wielding" index="1" />
+					<bit name="Is Dual Wielding" index="2" />
+					<bit name="Has Support Weapon" index="3" />
 				</bitfield16>
-				<bitfield16 name="19" offset="0x26" visible="true">
+				<bitfield16 name="19 Unit General" offset="0x26" visible="true">
 					<bit name="Motion Tracker Enabled" index="0" />
-					<bit name="Bit 1" index="1" />
+					<bit name="Motion Tracker Disabled" index="1" />
 					<bit name="Selected Frag Grenades" index="2" />
 					<bit name="Selected Plasma Grenades" index="3" />
 					<bit name="Selected Spike Grenades" index="4" />
 					<bit name="Selected Fire Grenades" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
+					<bit name="Binoculars Active" index="6" />
+					<bit name="Binoculars Not Active" index="7" />
+					<bit name="First Person Camera" index="8" />
+					<bit name="Third Person Camera" index="9" />
+					<bit name="Is Speaking" index="10" />
+					<bit name="Is Tapping To Talk" index="11" />
 					<bit name="Has 1x Overshield" index="12" />
 					<bit name="Has 2x Overshield" index="13" />
 					<bit name="Has 3x Overshield" index="14" />
 					<bit name="Has Shields" index="15" />
 				</bitfield16>
-				<bitfield16 name="20" offset="0x28" visible="true">
-					<bit name="Bit 0" index="0" />
+				<bitfield16 name="20 Weapon Kudos [Brief]" offset="0x28" visible="true">
+					<bit name="Bit 0 - UNUSED?" index="0" />
 					<bit name="Pickup Ammo" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="21" offset="0x2A" visible="true">
-					<bit name="Primary Weapon" index="0" />
-					<bit name="Secondary Weapon" index="1" />
-					<bit name="Backpack" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="21 Weapon Status" offset="0x2A" visible="true">
+					<bit name="Source Is Primary Weapon" index="0" />
+					<bit name="Source Is Dual Weapon" index="1" />
+					<bit name="Source Is Backpacked" index="2" />
+					<bit name="NOT ACTUALLY USED BIT" index="3" />
 				</bitfield16>
-				<bitfield16 name="22" offset="0x2C" visible="true">
-					<bit name="Not Autoaim?" index="0" />
-					<bit name="Autoaim Friendly" index="1" />
-					<bit name="Autoaim Enemy" index="2" />
-					<bit name="Autoaim Headshot" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Plasma Locked On" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="22 Weapon Target" offset="0x2C" visible="true">
+					<bit name="No Target" index="0" />
+					<bit name="Friendly Target" index="1" />
+					<bit name="Enemy Target" index="2" />
+					<bit name="Headshot Target" index="3" />
+					<bit name="Vulnerable Target" index="4" />
+					<bit name="Invincible Target (Defunct)" index="5" />
+					<bit name="Plasma Locked" index="6" />
+					<bit name="Plasma Locking" index="7" />
+					<bit name="Plasma Lock Available" index="8" />
+					<bit name="Unknown is 0" index="9" />
+					<bit name="Unknown is 1" index="10" />
 				</bitfield16>
-				<bitfield16 name="23" offset="0x2E" visible="true">
-					<bit name="Bit 0" index="0" />
-					<bit name="Missile Locked" index="1" />
-					<bit name="Missile Locking" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="23 Weapon Target B" offset="0x2E" visible="true">
+					<bit name="Human Locking" index="0" />
+					<bit name="Human Locked" index="1" />
+					<bit name="Human Lock Available" index="2" />
 				</bitfield16>
-				<bitfield16 name="24" offset="0x30" visible="true">
-					<bit name="Vitality Meter Minor Damage" index="0" />
-					<bit name="Vitality Meter Medium Damage" index="1" />
-					<bit name="Vitality Meter Heavy Damage" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Has Frag Grenades" index="6" />
-					<bit name="Has Plasma Grenades" index="7" />
-					<bit name="Has Spike Grenades" index="8" />
-					<bit name="Has Fire Grenades" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="24 Player [Special]" offset="0x30" visible="true">
+					<bit name="Health Minor Damage" index="0" />
+					<bit name="Health Medium Damage" index="1" />
+					<bit name="Health Heavy Damage" index="2" />
+					<bit name="Shields Minor Damage" index="3" />
+					<bit name="Shields Medium Damage" index="4" />
+					<bit name="Shields Heavy Damage" index="5" />
+					<bit name="Has Any Frag Grenades" index="6" />
+					<bit name="Has Any Plasma Grenades" index="7" />
+					<bit name="Has Any Spike Grenades" index="8" />
+					<bit name="Has Any Fire Grenades" index="9" />
 				</bitfield16>
-				<bitfield16 name="25 Ammo" offset="0x32" visible="true">
-					<bit name="Clip Warning" index="0" />
-					<bit name="Ammo Warning" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Low Battery 1" index="4" />
-					<bit name="Low Battery 2" index="5" />
+				<bitfield16 name="25 Weapon [Special]" offset="0x32" visible="true">
+					<bit name="Clip Below Cutoff" index="0" />
+					<bit name="Clip Empty (Broken?)" index="1" />
+					<bit name="Ammo Below Cutoff" index="2" />
+					<bit name="Ammo Empty (Broken?)" index="3" />
+					<bit name="Battery Below Cutoff" index="4" />
+					<bit name="Battery Empty (Broken?)" index="5" />
 					<bit name="Overheated" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
 				</bitfield16>
-				<bitfield16 name="26" offset="0x34" visible="true">
-					<bit name="Is Zoomed?" index="0" />
-					<bit name="Bit 1" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="26 Unit Extra" offset="0x34" visible="true">
+					<bit name="Not Zoomed In" index="0" />
+					<bit name="Not Armed With Support Weapon" index="1" />
+					<bit name="At Least 2 Weapons" index="2" />
 				</bitfield16>
-				<bitfield16 name="27" offset="0x36" visible="true">
-					<bit name="Binoculars Enabled" index="0" />
-					<bit name="Unit Is Zoomed (Level 1)" index="1" />
-					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
+				<bitfield16 name="27 PDA" offset="0x36" visible="true">
+					<bit name="Visible In PDA" index="0" />
 				</bitfield16>
 			</reflexive>
 			<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
@@ -2920,16 +2263,16 @@
 					<option name="Grenade D" value="0x9" />
 					<option name="Scoreboard Friendly" value="0xA" />
 					<option name="Scoreboard Enemy" value="0xB" />
-					<option name="Health and Shield" value="0xC" />
+					<option name="Use Parent Widget" value="0xC" />
 					<option name="Bottom Edge" value="0xD" />
 					<option name="Unknown" value="0xE" />
 					<option name="Equipment" value="0xF" />
 					<option name="Unknown" value="0x10" />
-					<option name="Depreciated" value="0x11" />
-					<option name="Depreciated" value="0x12" />
-					<option name="Depreciated" value="0x13" />
-					<option name="Depreciated" value="0x14" />
-					<option name="Depreciated" value="0x15" />
+					<option name="Deprecated" value="0x11" />
+					<option name="Deprecated" value="0x12" />
+					<option name="Deprecated" value="0x13" />
+					<option name="Deprecated" value="0x14" />
+					<option name="Deprecated" value="0x15" />
 					<option name="Unknown" value="0x16" />
 					<option name="Gametype" value="0x17" />
 					<option name="Unknown" value="0x18" />
@@ -2956,72 +2299,78 @@
 				<float32 name="Scale Y" offset="0x18" visible="true" />
 			</reflexive>
 			<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
-				<bitfield16 name="Animation 1 Flags" offset="0x0" visible="true">
+				<comment title="HUD Initialize Animation" />
+				<bitfield16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 1 Function" offset="0x2" visible="true">
+				<enum16 name="Function" offset="0x2" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 1" offset="0x4" visible="true" />
-				<bitfield16 name="Animation 2 Flags" offset="0x14" visible="true">
+				<tagRef name="Animation" offset="0x4" visible="true" />
+				<comment title="Idle Animation" />
+				<bitfield16 name="Flags" offset="0x14" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 2 Function" offset="0x16" visible="true">
+				<enum16 name="Function" offset="0x16" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 2" offset="0x18" visible="true" />
-				<bitfield16 name="Animation 3 Flags" offset="0x28" visible="true">
+				<tagRef name="Animation" offset="0x18" visible="true" />
+				<comment title="Special State Animation" />
+				<bitfield16 name="Flags" offset="0x28" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 3 Function" offset="0x2A" visible="true">
+				<enum16 name="Function" offset="0x2A" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 3" offset="0x2C" visible="true" />
-				<bitfield16 name="Animation 4 Flags" offset="0x3C" visible="true">
+				<tagRef name="Animation" offset="0x2C" visible="true" />
+				<comment title="Transition In Animation" />
+				<bitfield16 name="Flags" offset="0x3C" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 4 Function" offset="0x3E" visible="true">
+				<enum16 name="Function" offset="0x3E" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 4" offset="0x40" visible="true" />
-				<bitfield16 name="Animation 5 Flags" offset="0x50" visible="true">
+				<tagRef name="Animation" offset="0x40" visible="true" />
+				<comment title="Transition Out Animation" />
+				<bitfield16 name="Flags" offset="0x50" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 5 Function" offset="0x52" visible="true">
+				<enum16 name="Function" offset="0x52" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 5" offset="0x54" visible="true" />
-				<bitfield16 name="Animation 6 Flags" offset="0x64" visible="true">
+				<tagRef name="Animation" offset="0x54" visible="true" />
+				<comment title="Brief State Animation" />
+				<bitfield16 name="Flags" offset="0x64" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield16>
-				<enum16 name="Animation 6 Function" offset="0x66" visible="true">
+				<enum16 name="Function" offset="0x66" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
 					<option name="Use Range Input" value="0x2" />
 					<option name="Use Compass Target?" value="0x3" />
 					<option name="Use Compass User Target?" value="0x4" />
 				</enum16>
-				<tagRef name="Animation 6" offset="0x68" visible="true" />
+				<tagRef name="Animation" offset="0x68" visible="true" />
 			</reflexive>
 			<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x48">
 				<enum16 name="Shader Index" offset="0x0" visible="true">
@@ -3067,8 +2416,8 @@
 					<option name="Battery Fraction" value="0xB" />
 					<option name="Pickup" value="0xC" />
 					<option name="Unit Autoaimed" value="0xD" />
-					<option name="Grenade" value="0xE" />
-					<option name="Grenade Fraction" value="0xF" />
+					<option name="Grenade Anchor Selected" value="0xE" />
+					<option name="Grenade Anchor Fraction" value="0xF" />
 					<option name="Charge Fraction" value="0x10" />
 					<option name="Friendly Score" value="0x11" />
 					<option name="Enemy Score" value="0x12" />
@@ -3089,11 +2438,11 @@
 					<option name="Editor Budget Cost" value="0x21" />
 					<option name="Film Total Time" value="0x22" />
 					<option name="Film Current Time" value="0x23" />
-					<option name="Unknown" value="0x24" />
-					<option name="Film Timeline Fraction 1" value="0x25" />
-					<option name="Film Timeline Fraction 2" value="0x26" />
+					<option name="Deprecated" value="0x24" />
+					<option name="Film Timeline Last Marker Fraction" value="0x25" />
+					<option name="Film Timeline Fraction" value="0x26" />
 					<option name="Unknown" value="0x27" />
-					<option name="Unknown" value="0x28" />
+					<option name="Deprecated" value="0x28" />
 					<option name="Metagame Time" value="0x29" />
 					<option name="Metagame Score Transient" value="0x2A" />
 					<option name="Metagame Score Player 1" value="0x2B" />
@@ -3108,15 +2457,15 @@
 					<option name="NetDebug Host Quality" value="0x34" />
 					<option name="NetDebug Local Quality" value="0x35" />
 					<option name="Metagame Score Negative" value="0x36" />
-					<option name="Unknown" value="0x37" />
-					<option name="Compass Distance To User Target" value="0x38" />
-					<option name="Compass Distance To User Target 2" value="0x39" />
-					<option name="Unknown" value="0x3A" />
-					<option name="Compass Distance To Target" value="0x3B" />
-					<option name="Compass Distance To Target 2" value="0x3C" />
+					<option name="Compass User Target Unknown" value="0x37" />
+					<option name="Compass User Target Yaw" value="0x38" />
+					<option name="Compass User Target Distance" value="0x39" />
+					<option name="Compass Target Unknown" value="0x3A" />
+					<option name="Compass Target Yaw" value="0x3B" />
+					<option name="Compass Target Distance" value="0x3C" />
 					<option name="Survival Current Set" value="0x3D" />
-					<option name="Unknown" value="0x3E" />
-					<option name="Unknown" value="0x3F" />
+					<option name="Survival Current Round Unknown" value="0x3E" />
+					<option name="Survival Current Wave Unknown" value="0x3F" />
 					<option name="Survival Current Lives" value="0x40" />
 					<option name="Survival Bonus Time" value="0x41" />
 					<option name="Survival Bonus Score" value="0x42" />
@@ -3152,8 +2501,8 @@
 					<option name="Battery Fraction" value="0xB" />
 					<option name="Pickup" value="0xC" />
 					<option name="Unit Autoaimed" value="0xD" />
-					<option name="Grenade" value="0xE" />
-					<option name="Grenade Fraction" value="0xF" />
+					<option name="Grenade Anchor Selected" value="0xE" />
+					<option name="Grenade Anchor Fraction" value="0xF" />
 					<option name="Charge Fraction" value="0x10" />
 					<option name="Friendly Score" value="0x11" />
 					<option name="Enemy Score" value="0x12" />
@@ -3174,11 +2523,11 @@
 					<option name="Editor Budget Cost" value="0x21" />
 					<option name="Film Total Time" value="0x22" />
 					<option name="Film Current Time" value="0x23" />
-					<option name="Unknown" value="0x24" />
-					<option name="Film Timeline Fraction 1" value="0x25" />
-					<option name="Film Timeline Fraction 2" value="0x26" />
+					<option name="Deprecated" value="0x24" />
+					<option name="Film Timeline Last Marker Fraction" value="0x25" />
+					<option name="Film Timeline Fraction" value="0x26" />
 					<option name="Unknown" value="0x27" />
-					<option name="Unknown" value="0x28" />
+					<option name="Deprecated" value="0x28" />
 					<option name="Metagame Time" value="0x29" />
 					<option name="Metagame Score Transient" value="0x2A" />
 					<option name="Metagame Score Player 1" value="0x2B" />
@@ -3193,15 +2542,15 @@
 					<option name="NetDebug Host Quality" value="0x34" />
 					<option name="NetDebug Local Quality" value="0x35" />
 					<option name="Metagame Score Negative" value="0x36" />
-					<option name="Unknown" value="0x37" />
-					<option name="Compass Distance To User Target" value="0x38" />
-					<option name="Compass Distance To User Target 2" value="0x39" />
-					<option name="Unknown" value="0x3A" />
-					<option name="Compass Distance To Target" value="0x3B" />
-					<option name="Compass Distance To Target 2" value="0x3C" />
+					<option name="Compass User Target Unknown" value="0x37" />
+					<option name="Compass User Target Yaw" value="0x38" />
+					<option name="Compass User Target Distance" value="0x39" />
+					<option name="Compass Target Unknown" value="0x3A" />
+					<option name="Compass Target Yaw" value="0x3B" />
+					<option name="Compass Target Distance" value="0x3C" />
 					<option name="Survival Current Set" value="0x3D" />
-					<option name="Unknown" value="0x3E" />
-					<option name="Unknown" value="0x3F" />
+					<option name="Survival Current Round Unknown" value="0x3E" />
+					<option name="Survival Current Wave Unknown" value="0x3F" />
 					<option name="Survival Current Lives" value="0x40" />
 					<option name="Survival Bonus Time" value="0x41" />
 					<option name="Survival Bonus Score" value="0x42" />
@@ -3234,13 +2583,13 @@
 				<float32 name="Local Scalar b" offset="0x1C" visible="true" />
 				<float32 name="Local Scalar c" offset="0x20" visible="true" />
 				<float32 name="Local Scalar d" offset="0x24" visible="true" />
-				<enum16 name="Output Color a" offset="0x28" visible="true">
+				<enum16 name="Shader Output Color a" offset="0x28" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3248,7 +2597,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3278,13 +2627,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color b" offset="0x2A" visible="true">
+				<enum16 name="Shader Output Color b" offset="0x2A" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3292,7 +2641,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3322,13 +2671,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color c" offset="0x2C" visible="true">
+				<enum16 name="Shader Output Color c" offset="0x2C" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3336,7 +2685,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3366,13 +2715,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color d" offset="0x2E" visible="true">
+				<enum16 name="Shader Output Color d" offset="0x2E" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3380,7 +2729,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3410,13 +2759,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color e" offset="0x30" visible="true">
+				<enum16 name="Shader Output Color e" offset="0x30" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3424,7 +2773,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3454,13 +2803,13 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Color f" offset="0x32" visible="true">
+				<enum16 name="Shader Output Color f" offset="0x32" visible="true">
 					<option name="Local a" value="0x0" />
 					<option name="Local b" value="0x1" />
 					<option name="Local c" value="0x2" />
 					<option name="Local d" value="0x3" />
-					<option name="Unknown 4" value="0x4" />
-					<option name="Unknown 5" value="0x5" />
+					<option name="Deprecated" value="0x4" />
+					<option name="Deprecated" value="0x5" />
 					<option name="Scoreboard Friendly" value="0x6" />
 					<option name="Scoreboard Enemy" value="0x7" />
 					<option name="Arming Team" value="0x8" />
@@ -3468,7 +2817,7 @@
 					<option name="Metagame Player 2" value="0xA" />
 					<option name="Metagame Player 3" value="0xB" />
 					<option name="Metagame Player 4" value="0xC" />
-					<option name="Unknown 13" value="0xD" />
+					<option name="Deprecated" value="0xD" />
 					<option name="Global Dynamic 0" value="0xE" />
 					<option name="Global Dynamic 1" value="0xF" />
 					<option name="Global Dynamic 2" value="0x10" />
@@ -3498,70 +2847,67 @@
 					<option name="Global Dynamic 26" value="0x28" />
 					<option name="Global Dynamic 27" value="0x29" />
 				</enum16>
-				<enum16 name="Output Scalar a" offset="0x34" visible="true">
+				<enum16 name="Shader Output Scalar a" offset="0x34" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar b" offset="0x36" visible="true">
+				<enum16 name="Shader Output Scalar b" offset="0x36" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar c" offset="0x38" visible="true">
+				<enum16 name="Shader Output Scalar c" offset="0x38" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar d" offset="0x3A" visible="true">
+				<enum16 name="Shader Output Scalar d" offset="0x3A" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar e" offset="0x3C" visible="true">
+				<enum16 name="Shader Output Scalar e" offset="0x3C" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<enum16 name="Output Scalar f" offset="0x3E" visible="true">
+				<enum16 name="Shader Output Scalar f" offset="0x3E" visible="true">
 					<option name="Input" value="0x0" />
 					<option name="Range Input" value="0x1" />
 					<option name="Local a" value="0x2" />
 					<option name="Local b" value="0x3" />
 					<option name="Local c" value="0x4" />
 					<option name="Local d" value="0x5" />
-					<option name="Unknown 6" value="0x6" />
-					<option name="Unknown 7" value="0x7" />
+					<option name="Custom Animation" value="0x6" />
+					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-				<int16 name="Unknown" offset="0x40" visible="false" />
-				<int16 name="Unknown" offset="0x42" visible="false" />
-				<int16 name="Unknown" offset="0x44" visible="false" />
-				<int16 name="Unknown" offset="0x46" visible="false" />
+				<rect16 name="Texture Coordinates" offset="0x40" visible="true" />
 			</reflexive>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
 			<bitfield32 name="Flags" offset="0x3C" visible="true">
@@ -3574,7 +2920,7 @@
 				<bit name="Hundredths Decimal" index="6" />
 				<bit name="Thousandths Decimal" index="7" />
 				<bit name="Hundred Thousandths Decimal" index="8" />
-				<bit name="Only A Number" index="9" />
+				<bit name="Round Number (Obsolete)" index="9" />
 				<bit name="'x' Suffix" index="10" />
 				<bit name="In Brackets" index="11" />
 				<bit name="Time Format S:MS" index="12" />
@@ -3598,20 +2944,40 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</bitfield32>
+			<comment title="Font">Fonts use a dumb jump table that creates a custom font ordering for the HUD. The number in brackets is the proper engine order index from the fontpackage file.</comment>
 			<enum16 name="Font" offset="0x40" visible="true">
-				<option name="Conduit, 18" value="0x0" />
-				<option name="Agency, 16" value="0x1" />
-				<option name="Fixedsys, 9" value="0x2" />
-				<option name="Conduit, 14" value="0x3" />
-				<option name="Conduit, 32" value="0x4" />
-				<option name="Agency, 32" value="0x5" />
-				<option name="Conduit, 23" value="0x6" />
-				<option name="Agency, 18" value="0x7" />
-				<option name="Conduit, 18" value="0x8" />
-				<option name="Conduit, 16" value="0x9" />
-				<option name="Agency, 23" value="0xA" />
+				<option name="[06] Conduit, 18" value="0x0" />
+				<option name="[05] Agency, 16" value="0x1" />
+				<option name="[00] Fixedsys, 9" value="0x2" />
+				<option name="[01] Conduit, 14" value="0x3" />
+				<option name="[02] Conduit, 32" value="0x4" />
+				<option name="[03] Agency, 32" value="0x5" />
+				<option name="[04] Conduit, 23" value="0x6" />
+				<option name="[07] Agency, 18" value="0x7" />
+				<option name="[08] Conduit, 18" value="0x8" />
+				<option name="[09] Conduit, 16" value="0x9" />
+				<option name="[10] Agency, 23" value="0xA" />
 			</enum16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
+			<comment title="String">This value can be anything from the hud_messages unicode tag, or one of the following, where a-f correspond to Output Scalars a-f in the Render Data block:
+chud_out_a
+chud_out_b
+chud_out_c
+chud_out_d
+chud_out_e
+chud_out_f
+chud_variant_name
+chud_talking_player_name
+chud_arming_meter_name
+chud_time_left
+chud_training_text
+chud_campaign_objective_text
+chud_survival_objective_text
+chud_achievement_progression_toast_name1
+chud_achievement_progression_toast_name2
+chud_achievement_progression_toast_name3
+chud_achievement_progression_toast_name4
+chud_achievement_progression_toast_name5</comment>
 			<stringid name="String" offset="0x44" visible="true" />
 		</reflexive>
 	</reflexive>

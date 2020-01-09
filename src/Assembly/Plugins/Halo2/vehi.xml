@@ -4,7 +4,7 @@
 	<revisions>
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="Toabn" version="2">Weapon located and Seat values found...</revision>
-		<revision author="XZodia" version="3">Lots of string ids and some Sphere  s named</revision>
+		<revision author="XZodia" version="3">Lots of string ids and some Spheres named</revision>
 		<revision author="Shalted" version="4">Added Standard header, fixed some values and plugin errors, added some AI info</revision>
 		<revision author="Turk" version="5">fixed some values from the xml</revision>
 		<revision author="Shalted" version="6">Added Kornman's standard header</revision>
@@ -29,7 +29,7 @@
 		<option name="Crate" value="0xB" />
 		<option name="Creature" value="0xC" />
 	</enum16>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<bitfield16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -44,7 +44,7 @@
 		<bit name="Dead Bipeds Can't Localize" index="11" />
 		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-	</bitfield32>
+	</bitfield16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" />
 	<float32 name="Bounding Offset x" offset="0x8" visible="true" />
 	<float32 name="Bounding Offset y" offset="0xC" visible="true" />
@@ -167,19 +167,20 @@
 	<reflexive name="Change Colors" offset="0xAC" visible="true" entrySize="0x10">
 		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
-			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
+			<Colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
+			<Colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
-		<reflexive name="Functions" offset="0x8" visible="true" entrySize="0x20">
-			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
+		<reflexive name="Functions" offset="0x8" visible="true" entrySize="0x28">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
 			</bitfield32>
-			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
-			<stringId name="Darken By" offset="0x1C" visible="true" />
-			<stringId name="Scale By" offset="0x20" visible="true" />
+			<Colorf name="Color Lower Bound" offset="0x8" format="rgb" visible="true" />
+			<Colorf name="Color Upper Bound" offset="0x14" format="rgb" visible="true" />
+			<stringid name="Darken By..." offset="0x20" visible="true" />
+			<stringid name="Scale By..." offset="0x24" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resource" offset="0xB4" visible="true" entrySize="0x8">
@@ -269,7 +270,7 @@
 	<float32 name="Acceleration Range j" offset="0xF4" visible="true" />
 	<float32 name="Acceleration Range k" offset="0xF8" visible="true" />
 	<float32 name="Acceleration Action Scale" offset="0xFC" visible="true" />
-	<float32 name="Acceleration Attach Scale" offset="0xF8" visible="true" />
+	<float32 name="Acceleration Attach Scale" offset="0x100" visible="true" />
 	<float32 name="Soft Ping Threshold" offset="0x104" visible="true" />
 	<float32 name="Soft Ping Interrupt Time" offset="0x108" visible="true" />
 	<float32 name="Hard Ping Threshold" offset="0x10C" visible="true" />
@@ -315,7 +316,7 @@
 	<reflexive name="New HUD Interfaces" offset="0x1A0" visible="true" entrySize="0x8">
 		<tagRef name="New Unit HUD Interface" offset="0x0" visible="true" />
 	</reflexive>
-	<reflexive name="Dialogue Variants" offset="0x1A8" visible="true" entrySize="0x18">
+	<reflexive name="Dialogue Variants" offset="0x1A8" visible="true" entrySize="0xC">
 		<int16 name="Variant Number" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<tagRef name="Dialogue" offset="0x4" visible="true" />
@@ -532,9 +533,9 @@
 	<float32 name="Thrust Scale" offset="0x280" visible="true" />
 	<tagRef name="Suspension Sound" offset="0x284" visible="true" />
 	<tagRef name="Crash Sound" offset="0x28C" visible="true" />
-	<tagRef name="Unused" offset="0x294" visible="true" />
+	<tagRef name="Unknown" offset="0x294" visible="true" />
 	<tagRef name="Special Effect" offset="0x29C" visible="true" />
-	<tagRef name="Unused Effect" offset="0x2A4" visible="true" />
+	<tagRef name="Unknown Effect" offset="0x2A4" visible="true" />
 	<comment title="Physics" />
 	<bitfield32 name="Flags" offset="0x2AC" visible="true">
 		<bit name="Invalid" index="0" />
@@ -555,7 +556,7 @@
 	<float32 name="Radius" offset="0x2E4" visible="true" />
 	<reflexive name="Antigrav Points" offset="0x2E8" visible="true" entrySize="0x4C">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x2" visible="true">
+		<bitfield32 name="Flags" offset="0x4" visible="true">
 			<bit name="Gets Damage From Region" index="0" />
 		</bitfield32>
 		<float32 name="Antigrav Strength" offset="0x8" visible="true" />
@@ -579,7 +580,7 @@
 	</reflexive>
 	<reflexive name="Friction Points" offset="0x2F0" visible="true" entrySize="0x4C">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x2" visible="true">
+		<bitfield32 name="Flags" offset="0x4" visible="true">
 			<bit name="Gets Damage From Region" index="0" />
 			<bit name="Powered" index="1" />
 			<bit name="Front Turning" index="2" />
@@ -602,7 +603,7 @@
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
+		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<stringId name="Collision Global Material Name" offset="0x3C" visible="true" />
 		<int16 name="Collision Global Material Index" offset="0x40" visible="true" />
@@ -645,7 +646,6 @@
 			<option name="Mopp" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x1A" visible="true" />
-		<uint32 name="Shape Pointer (Type/Index Together)" offset="0x18" visible="true" />
 		<uint32 name="Collision Filter" offset="0x1C" visible="true" />
 		<comment title="Child Shapes Storage 3" />
 		<enum16 name="Shape Type" offset="0x20" visible="true">
@@ -667,7 +667,6 @@
 			<option name="Mopp" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x22" visible="true" />
-		<uint32 name="Shape Pointer (Type/Index Together)" offset="0x20" visible="true" />
 		<uint32 name="Collision Filter" offset="0x24" visible="true" />
 		<comment title="Child Shapes Storage 4" />
 		<enum16 name="Shape Type" offset="0x28" visible="true">
@@ -689,7 +688,6 @@
 			<option name="Mopp" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x2A" visible="true" />
-		<uint32 name="Shape Pointer (Type/Index Together)" offset="0x28" visible="true" />
 		<uint32 name="Collision Filter" offset="0x2C" visible="true" />
 		<comment title="Child Shapes Storage 4" />
 		<enum16 name="Shape Type" offset="0x30" visible="true">
@@ -711,7 +709,6 @@
 			<option name="Mopp" value="0xF" />
 		</enum16>
 		<int16 name="Shape Index" offset="0x32" visible="true" />
-		<uint32 name="Shape Pointer (Type/Index Together)" offset="0x30" visible="true" />
 		<uint32 name="Collision Filter" offset="0x34" visible="true" />
 		<uint32 name="Multisphere Count" offset="0x38" visible="true" />
 		<bitfield32 name="Flags" offset="0x3C" visible="true">

@@ -3,15 +3,20 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
+		<revision author="Lord Zedd" version="2">thanks h5</revision>
 	</revisions>
-	<reflexive name="Achievement Information" offset="0x0" visible="true" entrySize="0x14">
-		<StringID name="Achievement Name" offset="0x0" visible="true" />
-		<int8 name="Achievement Index" offset="0x4" visible="true" />
-		<int8 name="Unknown" offset="0x5" visible="false" />
-		<int8 name="Unknown" offset="0x6" visible="false" />
-		<int8 name="Unknown" offset="0x7" visible="false" />
-		<reflexive name="Achievement Unlock Information" offset="0x8" visible="true" entrySize="0x4">
-			<StringID name="Unlock Limitation" offset="0x0" visible="true" />
+	<reflexive name="Achievement" offset="0x0" visible="true" entrySize="0x14">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int8 name="Type" offset="0x4" visible="true" />
+		<bitfield8 name="Difficulty" offset="0x5" visible="true">
+			<bit name="Easy" index="0" />
+			<bit name="Normal" index="1" />
+			<bit name="Heroic" index="2" />
+			<bit name="Legendary" index="3" />
+		</bitfield8>
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<reflexive name="Restricted Levels" offset="0x8" visible="true" entrySize="0x4">
+			<stringid name="Level Name" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
 </plugin>
