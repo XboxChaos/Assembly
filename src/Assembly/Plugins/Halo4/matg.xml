@@ -82,10 +82,10 @@
 		<tagref name="Campaign Soundbank" offset="0x80" visible="true" />
 		<tagref name="Multiplayer Soundbank" offset="0x90" visible="true" />
 		<tagblock name="Streaming Pack Files" offset="0xA0" visible="true" elementSize="0x24">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
+			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Language Pack" index="0" />
 				<bit name="Sound Bank Pack" index="1" />
-			</bitfield32>
+			</flags32>
 			<ascii name="Streaming Pck File" offset="0x4" length="0x20" visible="true" />
 		</tagblock>
 		<tagblock name="Un-Spatialized Campaign Sounds" offset="0xAC" visible="true" elementSize="0x10">
@@ -500,7 +500,7 @@
 	</tagblock>
 	<tagblock name="Default Player Traits" offset="0x120" visible="true" elementSize="0x3C">
 		<tagblock name="Vitality Traits" offset="0x0" visible="true" elementSize="0x40">
-			<bitfield32 name="Should Apply Trait" offset="0x0" visible="true">
+			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
 				<bit name="Damage Resistance" index="0" />
 				<bit name="Shield Multiplier" index="1" />
 				<bit name="Body Multiplier" index="2" />
@@ -514,7 +514,7 @@
 				<bit name="Wheelman Armor Vehicle Recharge Time Modifier" index="10" />
 				<bit name="Wheelman Armor Vehicle EMP Disabled Time Modifier" index="11" />
 				<bit name="Fall Damage Multiplier" index="12" />
-			</bitfield32>
+			</flags32>
 			<comment title="Damage Resistance">Any damage taken is divided by this number. If you put -1, that means "invulnerable".</comment>
 			<float32 name="Damage Resistance" offset="0x4" visible="true" />
 			<float32 name="Shield Multiplier" offset="0x8" visible="true" />
@@ -558,7 +558,7 @@
 			<int16 name="Unknown" offset="0x3E" visible="false" />
 		</tagblock>
 		<tagblock name="Weapon Traits" offset="0xC" visible="true" elementSize="0x80">
-			<bitfield32 name="Should Apply Trait" offset="0x0" visible="true">
+			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
 				<bit name="Damage Multiplier" index="0" />
 				<bit name="Melee Damage Multiplier" index="1" />
 				<bit name="Grenade Recharge Seconds Frag" index="2" />
@@ -581,7 +581,7 @@
 				<bit name="Drop Recon Warning Seconds" index="19" />
 				<bit name="Drop Recon Distance Modifier" index="20" />
 				<bit name="Assassination Speed Modifier" index="21" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Damage Multiplier" offset="0x4" visible="true" />
 			<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
 			<float32 name="Grenade Recharge Seconds Frag" offset="0xC" visible="true" />
@@ -707,12 +707,12 @@
 			<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
 		</tagblock>
 		<tagblock name="Movement Traits" offset="0x18" visible="true" elementSize="0x1C">
-			<bitfield32 name="Should Apply Trait" offset="0x0" visible="true">
+			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
 				<bit name="Speed" index="0" />
 				<bit name="Gravity Multiplier" index="1" />
 				<bit name="Jump Multiplier" index="2" />
 				<bit name="Turn Speed Multiplier" index="3" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Speed" offset="0x4" visible="true" />
 			<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
 			<float32 name="Jump Multiplier" offset="0xC" visible="true" />
@@ -789,10 +789,10 @@
 			<stringid name="Attached Effect" offset="0x8" visible="true" />
 		</tagblock>
 		<tagblock name="Sensor Traits" offset="0x30" visible="true" elementSize="0x14">
-			<bitfield32 name="Should Apply Trait" offset="0x0" visible="true">
+			<flags32 name="Should Apply Trait" offset="0x0" visible="true">
 				<bit name="Motion Tracker Range" index="0" />
 				<bit name="Nemesis Duration" index="1" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Motion Tracker Range" offset="0x4" visible="true" />
 			<float32 name="Nemesis Duration" offset="0x8" visible="true" />
 			<enum8 name="Motion Tracker" offset="0xC" visible="true">
@@ -1133,9 +1133,9 @@
 		</tagblock>
 	</tagblock>
 	<tagblock name="Player Representation" offset="0x180" visible="true" elementSize="0x80">
-		<bitfield8 name="Flags" offset="0x0" visible="true">
+		<flags8 name="Flags" offset="0x0" visible="true">
 			<bit name="Can Use Health Packs" index="0" />
-		</bitfield8>
+		</flags8>
 		<int8 name="Unknown" offset="0x1" visible="false" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<tagref name="Hud Screen Reference" offset="0x4" visible="true" />
@@ -1145,9 +1145,9 @@
 		<stringid name="First Person Multiplayer Body Variant" offset="0x38" visible="true" />
 		<tagblock name="Hidden FP Body Regions" offset="0x3C" visible="false" elementSize="0x8">
 			<stringid name="Hidden Region" offset="0x0" visible="true" />
-			<bitfield8 name="Flags" offset="0x4" visible="true">
+			<flags8 name="Flags" offset="0x4" visible="true">
 				<bit name="Visible In ICS" index="0" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x5" visible="false" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
 		</tagblock>
@@ -1198,7 +1198,7 @@
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Parent Name" offset="0x4" visible="true" />
 		<int16 name="Parent Index" offset="0x8" visible="true" />
-		<bitfield16 name="Flags" offset="0xA" visible="true">
+		<flags16 name="Flags" offset="0xA" visible="true">
 			<bit name="Flammable" index="0" />
 			<bit name="Biomass" index="1" />
 			<bit name="Rad Xfer Interior" index="2" />
@@ -1215,7 +1215,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<stringid name="General Armor" offset="0xC" visible="true" />
 		<stringid name="Specific Armor" offset="0x10" visible="true" />
 		<stringid name="Wet Armor" offset="0x14" visible="true" />
@@ -1224,7 +1224,7 @@
 		<int16 name="Dry Base Material Index" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="false" />
 		<comment title="Physics Properties" />
-		<bitfield32 name="Flags" offset="0x20" visible="true">
+		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -1257,7 +1257,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Friction" offset="0x24" visible="true" />
 		<float32 name="Restitution" offset="0x28" visible="true" />
 		<float32 name="Density" offset="0x2C" visible="true" />
@@ -1292,7 +1292,7 @@
 		<tagRef name="Water Ripple Small" offset="0x158" visible="true" />
 		<tagRef name="Water Ripple Medium" offset="0x168" visible="true" />
 		<tagRef name="Water Ripple Large" offset="0x178" visible="true" />
-		<bitfield32 name="Sweetener Inheritance Flags" offset="0x188" visible="true">
+		<flags32 name="Sweetener Inheritance Flags" offset="0x188" visible="true">
 			<bit name="Sound Small" index="0" />
 			<bit name="Sound Medium" index="1" />
 			<bit name="Sound Large" index="2" />
@@ -1310,7 +1310,7 @@
 			<bit name="Water Ripple Small" index="14" />
 			<bit name="Water Ripple Medium" index="15" />
 			<bit name="Water Ripple Large" index="16" />
-		</bitfield32>
+		</flags32>
 		<tagRef name="Material Effects" offset="0x18C" visible="true" />
 		<tagblock name="Underwater Proxies" offset="0x19C" visible="true" elementSize="0xC">
 			<comment title="When This Material Is Encounted Under A Material Of This Type ..." />
@@ -1637,7 +1637,7 @@
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Parent Name" offset="0x4" visible="true" />
 		<int16 name="Parent Index" offset="0x8" visible="true" />
-		<bitfield16 name="Flags" offset="0xA" visible="true">
+		<flags16 name="Flags" offset="0xA" visible="true">
 			<bit name="Flammable" index="0" />
 			<bit name="Biomass" index="1" />
 			<bit name="Rad Xfer Interior" index="2" />
@@ -1654,7 +1654,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<stringid name="General Armor" offset="0xC" visible="true" />
 		<stringid name="Specific Armor" offset="0x10" visible="true" />
 		<stringid name="Wet Armor" offset="0x14" visible="true" />
@@ -1663,7 +1663,7 @@
 		<int16 name="Dry Base Material Index" offset="0x1C" visible="true" />
 		<int16 name="Unknown" offset="0x1E" visible="false" />
 		<comment title="Physics Properties" />
-		<bitfield32 name="Flags" offset="0x20" visible="true">
+		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -1696,7 +1696,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Friction" offset="0x24" visible="true" />
 		<float32 name="Restitution" offset="0x28" visible="true" />
 		<float32 name="Density" offset="0x2C" visible="true" />
@@ -1731,7 +1731,7 @@
 		<tagRef name="Water Ripple Small" offset="0x158" visible="true" />
 		<tagRef name="Water Ripple Medium" offset="0x168" visible="true" />
 		<tagRef name="Water Ripple Large" offset="0x178" visible="true" />
-		<bitfield32 name="Sweetener Inheritance Flags" offset="0x188" visible="true">
+		<flags32 name="Sweetener Inheritance Flags" offset="0x188" visible="true">
 			<bit name="Sound Small" index="0" />
 			<bit name="Sound Medium" index="1" />
 			<bit name="Sound Large" index="2" />
@@ -1749,7 +1749,7 @@
 			<bit name="Water Ripple Small" index="14" />
 			<bit name="Water Ripple Medium" index="15" />
 			<bit name="Water Ripple Large" index="16" />
-		</bitfield32>
+		</flags32>
 		<tagRef name="Material Effects" offset="0x18C" visible="true" />
 		<tagblock name="Underwater Proxies" offset="0x19C" visible="true" elementSize="0xC">
 			<comment title="When This Material Is Encounted Under A Material Of This Type ..." />

@@ -13,7 +13,7 @@
 	</tagblock>
 	<tagblock name="Squads" offset="0x10" visible="true" elementSize="0x74">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<bitfield32 name="Flags" offset="0x20" visible="true">
+		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Never Search" index="1" />
 			<bit name="Start Timer Immediately" index="2" />
@@ -28,7 +28,7 @@
 			<bit name="3D Firing Positions" index="11" />
 			<bit name="Initially Placed" index="12" />
 			<bit name="Units Not Enterable By Player" index="13" />
-		</bitfield32>
+		</flags32>
 		<enum16 name="Team" offset="0x24" visible="true">
 			<option name="Default" value="0x0" />
 			<option name="Player" value="0x1" />
@@ -82,13 +82,13 @@
 			<int16 name="Unknown" offset="0x12" visible="false" />
 			<degree name="Facing (Yaw, Pitch) y" offset="0x14" visible="true" />
 			<degree name="Facing (Yaw, Pitch) p" offset="0x18" visible="true" />
-			<bitfield32 name="Flags" offset="0x1C" visible="true">
+			<flags32 name="Flags" offset="0x1C" visible="true">
 				<bit name="Initially Asleep" index="0" />
 				<bit name="Infection Form Explode" index="1" />
 				<bit name="N/A" index="2" />
 				<bit name="Always Place" index="3" />
 				<bit name="Initially Hidden" index="4" />
-			</bitfield32>
+			</flags32>
 			<int16 name="Character Type Index" offset="0x20" visible="true" />
 			<int16 name="Initial Weapon Index" offset="0x22" visible="true" />
 			<int16 name="Initial Secondary Weapon Index" offset="0x24" visible="true" />
@@ -129,9 +129,9 @@
 	</tagblock>
 	<tagblock name="Zones" offset="0x18" visible="true" elementSize="0x38">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<bitfield32 name="Flags" offset="0x20" visible="true">
+		<flags32 name="Flags" offset="0x20" visible="true">
 			<bit name="Manual Bsp Index" index="0" />
-		</bitfield32>
+		</flags32>
 		<int16 name="Manual Bsp Index" offset="0x24" visible="true" />
 		<int16 name="Unknown" offset="0x26" visible="false" />
 		<tagblock name="Firing Positions" offset="0x28" visible="true" elementSize="0x20">
@@ -139,7 +139,7 @@
 			<float32 name="Position (Local) y" offset="0x4" visible="true" />
 			<float32 name="Position (Local) z" offset="0x8" visible="true" />
 			<int16 name="Reference Frame" offset="0xC" visible="true" />
-			<bitfield16 name="Flags" offset="0xE" visible="true">
+			<flags16 name="Flags" offset="0xE" visible="true">
 				<bit name="Open" index="0" />
 				<bit name="Partial" index="1" />
 				<bit name="Closed" index="2" />
@@ -148,7 +148,7 @@
 				<bit name="Perch" index="5" />
 				<bit name="Ground Point" index="6" />
 				<bit name="Dynamic Cover Point" index="7" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Area Index" offset="0x10" visible="true" />
 			<int16 name="Cluster Index" offset="0x12" visible="true" />
 			<undefined name="Unknown" offset="0x14" visible="false" />
@@ -157,11 +157,11 @@
 		</tagblock>
 		<tagblock name="Areas" offset="0x30" visible="true" elementSize="0x88">
 			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-			<bitfield32 name="Area Flags" offset="0x20" visible="true">
+			<flags32 name="Area Flags" offset="0x20" visible="true">
 				<bit name="Vehicle Area" index="0" />
 				<bit name="Perch" index="1" />
 				<bit name="Manual Reference Frame" index="2" />
-			</bitfield32>
+			</flags32>
 			<undefined name="Unknown" offset="0x24" visible="false" />
 			<undefined name="Unknown" offset="0x28" visible="false" />
 			<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -214,7 +214,7 @@
 	</tagblock>
 	<tagblock name="AI Conversations" offset="0x40" visible="true" elementSize="0x68">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<bitfield16 name="Flags" offset="0x20" visible="true">
+		<flags16 name="Flags" offset="0x20" visible="true">
 			<bit name="Stop If Death" index="0" />
 			<bit name="Stop If Damaged" index="1" />
 			<bit name="Stop If Visible Enemy" index="2" />
@@ -223,7 +223,7 @@
 			<bit name="Stop Other Actions" index="5" />
 			<bit name="Keep Trying To Play" index="6" />
 			<bit name="Player Must Be Looking" index="7" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0x22" visible="false" />
 		<float32 name="Trigger Distance" offset="0x24" visible="true" />
 		<float32 name="Run-To-Player Dist" offset="0x28" visible="true" />
@@ -254,14 +254,14 @@
 			<undefined name="Unknown" offset="0x50" visible="false" />
 		</tagblock>
 		<tagblock name="Lines" offset="0x58" visible="true" elementSize="0x4C">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Addressee Look At Speaker" index="0" />
 				<bit name="Everyone Look At Speaker" index="1" />
 				<bit name="Everyone Look At Addressee" index="2" />
 				<bit name="Wait After Until Told To Advance" index="3" />
 				<bit name="Wait Until Speaker Nearby" index="4" />
 				<bit name="Wait Until Everyone Nearby" index="5" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Participant Index" offset="0x2" visible="true" />
 			<enum16 name="Addressee" offset="0x4" visible="true">
 				<option name="None" value="0x0" />
@@ -300,10 +300,10 @@
 			</tagblock>
 			<int16 name="Bsp Index" offset="0x28" visible="true" />
 			<int16 name="Manual Reference Frame" offset="0x2A" visible="true" />
-			<bitfield32 name="Flags" offset="0x2C" visible="true">
+			<flags32 name="Flags" offset="0x2C" visible="true">
 				<bit name="Manual Reference Frame" index="0" />
 				<bit name="Turret Deployment" index="1" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
@@ -340,7 +340,7 @@
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 		<int16 name="Style Index" offset="0x20" visible="true" />
 		<int16 name="Unknown" offset="0x22" visible="false" />
-		<bitfield32 name="Flags" offset="0x24" visible="true">
+		<flags32 name="Flags" offset="0x24" visible="true">
 			<bit name="Locked" index="0" />
 			<bit name="Always Active" index="1" />
 			<bit name="Debug On" index="2" />
@@ -350,7 +350,7 @@
 			<bit name="Active Camo" index="6" />
 			<bit name="Suppress Combat Until Engaged" index="7" />
 			<bit name="Inhibit Vehicle Use" index="8" />
-		</bitfield32>
+		</flags32>
 		<enum16 name="Force Combat Status" offset="0x28" visible="true">
 			<option name="NONE" value="0x0" />
 			<option name="Asleep" value="0x1" />
@@ -403,15 +403,15 @@
 				<option name="Support" value="0xB" />
 			</enum16>
 			<tagblock name="Triggers" offset="0x4" visible="true" elementSize="0x8">
-				<bitfield32 name="Trigger Flags" offset="0x0" visible="true">
+				<flags32 name="Trigger Flags" offset="0x0" visible="true">
 					<bit name="Not" index="0" />
-				</bitfield32>
+				</flags32>
 				<int16 name="Trigger Index" offset="0x4" visible="true" />
 				<int16 name="Unknown" offset="0x6" visible="false" />
 			</tagblock>
 		</tagblock>
 		<tagblock name="Special Movement" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Special Movement 1" offset="0x0" visible="true">
+			<flags32 name="Special Movement 1" offset="0x0" visible="true">
 				<bit name="Jump" index="0" />
 				<bit name="Climb" index="1" />
 				<bit name="Vault" index="2" />
@@ -419,7 +419,7 @@
 				<bit name="Hoist" index="4" />
 				<bit name="Wall Jump" index="5" />
 				<bit name="N/A" index="6" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Order Endings" offset="0x74" visible="true" elementSize="0x14">
 			<int16 name="Next Order Index" offset="0x0" visible="true" />
@@ -444,9 +444,9 @@
 			</enum16>
 			<int16 name="Unknown" offset="0xA" visible="false" />
 			<tagblock name="Triggers" offset="0xC" visible="true" elementSize="0x8">
-				<bitfield32 name="Trigger Flags" offset="0x0" visible="true">
+				<flags32 name="Trigger Flags" offset="0x0" visible="true">
 					<bit name="Not" index="0" />
-				</bitfield32>
+				</flags32>
 				<int16 name="Trigger Index" offset="0x4" visible="true" />
 				<int16 name="Unknown" offset="0x6" visible="false" />
 			</tagblock>
@@ -454,9 +454,9 @@
 	</tagblock>
 	<tagblock name="Triggers" offset="0x58" visible="true" elementSize="0x30">
 		<ascii name="Name" offset="0x0" length="0x20" visible="true" />
-		<bitfield32 name="Trigger Flags" offset="0x20" visible="true">
+		<flags32 name="Trigger Flags" offset="0x20" visible="true">
 			<bit name="Latch ON When Triggered" index="0" />
-		</bitfield32>
+		</flags32>
 		<enum16 name="Combination Rule" offset="0x24" visible="true">
 			<option name="OR" value="0x0" />
 			<option name="AND" value="0x1" />
@@ -495,9 +495,9 @@
 			<ascii name="Exit Condition Script" offset="0x10" length="0x20" visible="true" />
 			<int16 name="Unknown" offset="0x30" visible="true" />
 			<int16 name="Unknown" offset="0x32" visible="false" />
-			<bitfield32 name="Flags" offset="0x34" visible="true">
+			<flags32 name="Flags" offset="0x34" visible="true">
 				<bit name="NOT" index="0" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 	</tagblock>
 	<tagblock name="BSP Preferences" offset="0x60" visible="true" elementSize="0x44">
@@ -514,9 +514,9 @@
 		<float32 name="Output White Reference" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<bitfield16 name="Flags" offset="0x3C" visible="true">
+		<flags16 name="Flags" offset="0x3C" visible="true">
 			<bit name="Default Sky Enabled" index="0" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0x3E" visible="false" />
 		<int16 name="Default Sky Index" offset="0x40" visible="true" />
 		<int16 name="Unknown" offset="0x42" visible="false" />
@@ -546,7 +546,7 @@
 	<tagblock name="Vehicle Datum References" offset="0x78" visible="true" elementSize="0x54">
 		<int16 name="Type Index" offset="0x0" visible="true" />
 		<int16 name="Name Index" offset="0x2" visible="true" />
-		<bitfield32 name="Placement Flags" offset="0x4" visible="true">
+		<flags32 name="Placement Flags" offset="0x4" visible="true">
 			<bit name="Not Automatically" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -556,7 +556,7 @@
 			<bit name="Never Placed" index="6" />
 			<bit name="Lock Name To Env. Object" index="7" />
 			<bit name="Create At Rest" index="8" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Position x" offset="0x8" visible="true" />
 		<float32 name="Position y" offset="0xC" visible="true" />
 		<float32 name="Position z" offset="0x10" visible="true" />
@@ -564,10 +564,10 @@
 		<degree name="Rotation p" offset="0x18" visible="true" />
 		<degree name="Rotation r" offset="0x1C" visible="true" />
 		<float32 name="Scale" offset="0x20" visible="true" />
-		<bitfield16 name="Transform Flags" offset="0x24" visible="true">
+		<flags16 name="Transform Flags" offset="0x24" visible="true">
 			<bit name="Mirrored" index="0" />
-		</bitfield16>
-		<bitfield16 name="Manual BSP Flags" offset="0x26" visible="true">
+		</flags16>
+		<flags16 name="Manual BSP Flags" offset="0x26" visible="true">
 			<bit name="Index 0" index="0" />
 			<bit name="Index 1" index="1" />
 			<bit name="Index 2" index="2" />
@@ -584,7 +584,7 @@
 			<bit name="Index 13" index="13" />
 			<bit name="Index 14" index="14" />
 			<bit name="Index 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<int32 name="Unique ID" offset="0x28" visible="true" />
 		<int16 name="Origin BSP Index" offset="0x2C" visible="true" />
 		<enum8 name="Type" offset="0x2E" visible="true">
@@ -617,30 +617,30 @@
 		<int16 name="Editor Folder Index" offset="0x32" visible="true" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant Name" offset="0x34" visible="true" />
-		<bitfield32 name="Active Change Colors" offset="0x38" visible="true">
+		<flags32 name="Active Change Colors" offset="0x38" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield32>
+		</flags32>
 		<color32 name="Primary Color" offset="0x3C" alpha="false" visible="true" />
 		<color32 name="Secondary Color" offset="0x40" alpha="false" visible="true" />
 		<color32 name="Tertiary Color" offset="0x44" alpha="false" visible="true" />
 		<color32 name="Quaternary Color" offset="0x48" alpha="false" visible="true" />
 		<comment title="Unit Data" />
 		<float32 name="Body Vitality" offset="0x4C" visible="true" />
-		<bitfield32 name="Flags" offset="0x50" visible="true">
+		<flags32 name="Flags" offset="0x50" visible="true">
 			<bit name="Dead" index="0" />
 			<bit name="Closed" index="1" />
 			<bit name="Not Enterable By Player" index="2" />
-		</bitfield32>
+		</flags32>
 	</tagblock>
 	<tagblock name="Mission Dialogue Scenes" offset="0x80" visible="true" elementSize="0x18">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x4" visible="true">
+		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Scene Can Play Multiple Times" index="0" />
 			<bit name="Enable Combat Dialogue" index="1" />
-		</bitfield32>
+		</flags32>
 		<tagblock name="Trigger Conditions" offset="0x8" visible="true" elementSize="0xC">
 			<enum16 name="Combination Rule" offset="0x0" visible="true">
 				<option name="OR" value="0x0" />
@@ -648,9 +648,9 @@
 			</enum16>
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<tagblock name="Triggers" offset="0x4" visible="true" elementSize="0x8">
-				<bitfield32 name="Trigger Flags" offset="0x0" visible="true">
+				<flags32 name="Trigger Flags" offset="0x0" visible="true">
 					<bit name="Not" index="0" />
-				</bitfield32>
+				</flags32>
 				<int16 name="Trigger Index" offset="0x4" visible="true" />
 				<int16 name="Unknown" offset="0x6" visible="false" />
 			</tagblock>
@@ -672,10 +672,10 @@
 		<int16 name="Bsp Index" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<int16 name="Bounding Volume Index" offset="0x4" visible="true" />
-		<bitfield16 name="Flags" offset="0x6" visible="true">
+		<flags16 name="Flags" offset="0x6" visible="true">
 			<bit name="Hard Boundaries On Volume" index="0" />
 			<bit name="Flock Initially Stopped" index="1" />
-		</bitfield16>
+		</flags16>
 		<float32 name="Ecology Margin" offset="0x8" visible="true" />
 		<tagblock name="Sources" offset="0xC" visible="true" elementSize="0x1C">
 			<float32 name="Position i" offset="0x0" visible="true" />

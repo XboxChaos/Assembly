@@ -12,7 +12,7 @@
 	<comment title="Placement Anchor">Only select "Use Parent Widget" for a Bitmap or Text Widget, otherwise the game will crash.</comment>
 	<comment title="Grenade Inputs">These will only function with the placement anchor value set to Grenade A/B/C/D.</comment>
 	<comment title="State Data">Things to note about them:
--Only 1 condition needs to match per bitfield for the game to count it. Split the flags between the parent and bitmap/text widgets to get around this.
+-Only 1 condition needs to match per flags for the game to count it. Split the flags between the parent and bitmap/text widgets to get around this.
 -Fields named with "Weapon" only resolve on HUDs referenced by weapons.
 -Fields named with [Special] mean the widget is always visible by default, but play a specific animation if a match occurs.
 -Fields named with [Brief] mean the widget is always invisible by default, but play a specific animation if a match occurs, then becomes invisible again.
@@ -30,13 +30,13 @@
 			<option name="Spike Grenade" value="0x7" />
 			<option name="Firebomb Grenade" value="0x8" />
 		</enum16>
-		<bitfield8 name="Flags" offset="0x6" visible="true">
+		<flags8 name="Flags" offset="0x6" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
 			<bit name="Bit 3" index="3" />
 			<bit name="Bit 4" index="4" />
-		</bitfield8>
+		</flags8>
 		<enum8 name="Layer" offset="0x7" visible="true">
 			<option name="0" value="0x0" />
 			<option name="1" value="0x1" />
@@ -48,7 +48,7 @@
 			<option name="7/Always Show/No Warping" value="0x7" />
 		</enum8>
 		<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
-			<bitfield16 name="1 Engine" offset="0x0" visible="true">
+			<flags16 name="1 Engine" offset="0x0" visible="true">
 				<bit name="Campaign Solo" index="0" />
 				<bit name="Campaign Coop" index="1" />
 				<bit name="Team Game" index="2" />
@@ -65,13 +65,13 @@
 				<bit name="Bit 13 - UNUSED?" index="13" />
 				<bit name="Editor" index="14" />
 				<bit name="Theater" index="15" />
-			</bitfield16>
-			<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+			</flags16>
+			<flags16 name="2 Player Type" offset="0x2" visible="true">
 				<bit name="Spartan" index="0" />
 				<bit name="Elite" index="1" />
 				<bit name="Monitor" index="2" />
-			</bitfield16>
-			<bitfield16 name="3 Multiplayer" offset="0x4" visible="true">
+			</flags16>
+			<flags16 name="3 Multiplayer" offset="0x4" visible="true">
 				<bit name="Offense Team" index="0" />
 				<bit name="Defense Team" index="1" />
 				<bit name="Normal Team" index="2" />
@@ -83,8 +83,8 @@
 				<bit name="Talking Enabled" index="8" />
 				<bit name="Not Talking" index="9" />
 				<bit name="Talking" index="10" />
-			</bitfield16>
-			<bitfield16 name="4 Resolution" offset="0x6" visible="true">
+			</flags16>
+			<flags16 name="4 Resolution" offset="0x6" visible="true">
 				<bit name="Wide Full" index="0" />
 				<bit name="Wide Half" index="1" />
 				<bit name="Native Full" index="2" />
@@ -93,8 +93,8 @@
 				<bit name="Standard Half" index="5" />
 				<bit name="Native Quarter" index="6" />
 				<bit name="Standard Quarter" index="7" />
-			</bitfield16>
-			<bitfield16 name="5 Multiplayer Events" offset="0x8" visible="true">
+			</flags16>
+			<flags16 name="5 Multiplayer Events" offset="0x8" visible="true">
 				<bit name="Has Friends" index="0" />
 				<bit name="Has Enemies" index="1" />
 				<bit name="Variant Name Valid" index="2" />
@@ -108,23 +108,23 @@
 				<bit name="X is Down" index="10" />
 				<bit name="Summary Enabled" index="11" />
 				<bit name="NetDebug Enabled" index="12" />
-			</bitfield16>
-			<bitfield16 name="6 Unit Base" offset="0xA" visible="true">
+			</flags16>
+			<flags16 name="6 Unit Base" offset="0xA" visible="true">
 				<bit name="Texture Cam Enabled" index="0" />
 				<bit name="Binoculars Targeted" index="1" />
 				<bit name="Bit 2 - UNUSED?" index="2" />
 				<bit name="Bit 3 - UNUSED?" index="3" />
 				<bit name="Training Prompt" index="4" />
 				<bit name="Objective Prompt" index="5" />
-			</bitfield16>
-			<bitfield16 name="7 Editor" offset="0xC" visible="true">
+			</flags16>
+			<flags16 name="7 Editor" offset="0xC" visible="true">
 				<bit name="Editor Inactive" index="0" />
 				<bit name="Editor Active" index="1" />
 				<bit name="Editor Holding" index="2" />
 				<bit name="Editor Not Allowed" index="3" />
 				<bit name="Is Editor" index="4" />
-			</bitfield16>
-			<bitfield16 name="8 Engine General" offset="0xE" visible="true">
+			</flags16>
+			<flags16 name="8 Engine General" offset="0xE" visible="true">
 				<bit name="Motion Tracker 10m" index="0" />
 				<bit name="Motion Tracker 25m" index="1" />
 				<bit name="Motion Tracker 75m" index="2" />
@@ -140,25 +140,25 @@
 				<bit name="Metagame Score Added" index="12" />
 				<bit name="Metagame Multikill" index="13" />
 				<bit name="Metagame Score Removed" index="14" />
-			</bitfield16>
-			<bitfield16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
+			</flags16>
+			<flags16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
 				<bit name="Pickup Frag Grenades" index="0" />
 				<bit name="Pickup Plasma Grenades" index="1" />
 				<bit name="Pickup Spike Grenades" index="2" />
 				<bit name="Pickup Fire Grenades" index="3" />
-			</bitfield16>
-			<bitfield16 name="10 Unit Zoom" offset="0x12" visible="true">
+			</flags16>
+			<flags16 name="10 Unit Zoom" offset="0x12" visible="true">
 				<bit name="Binoculars Enabled" index="0" />
 				<bit name="Unit Is Zoomed (Level 1)" index="1" />
 				<bit name="Unit Is Zoomed (Level 2)" index="2" />
-			</bitfield16>
-			<bitfield16 name="11 Unit Inventory" offset="0x14" visible="true">
+			</flags16>
+			<flags16 name="11 Unit Inventory" offset="0x14" visible="true">
 				<bit name="None of the Below" index="0" />
 				<bit name="Is Single Wielding" index="1" />
 				<bit name="Is Dual Wielding" index="2" />
 				<bit name="Has Support Weapon" index="3" />
-			</bitfield16>
-			<bitfield16 name="12 Unit General" offset="0x16" visible="true">
+			</flags16>
+			<flags16 name="12 Unit General" offset="0x16" visible="true">
 				<bit name="Motion Tracker Enabled" index="0" />
 				<bit name="Motion Tracker Disabled" index="1" />
 				<bit name="Selected Frag Grenades" index="2" />
@@ -175,18 +175,18 @@
 				<bit name="Has 2x Overshield" index="13" />
 				<bit name="Has 3x Overshield" index="14" />
 				<bit name="Has Shields" index="15" />
-			</bitfield16>
-			<bitfield16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
+			</flags16>
+			<flags16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
 				<bit name="Bit 0 - UNUSED?" index="0" />
 				<bit name="Pickup Ammo" index="1" />
-			</bitfield16>
-			<bitfield16 name="14 Weapon Status" offset="0x1A" visible="true">
+			</flags16>
+			<flags16 name="14 Weapon Status" offset="0x1A" visible="true">
 				<bit name="Source Is Primary Weapon" index="0" />
 				<bit name="Source Is Dual Weapon" index="1" />
 				<bit name="Source Is Backpacked" index="2" />
 				<bit name="NOT ACTUALLY USED BIT" index="3" />
-			</bitfield16>
-			<bitfield16 name="15 Weapon Target" offset="0x1C" visible="true">
+			</flags16>
+			<flags16 name="15 Weapon Target" offset="0x1C" visible="true">
 				<bit name="No Target" index="0" />
 				<bit name="Friendly Target" index="1" />
 				<bit name="Enemy Target" index="2" />
@@ -196,21 +196,21 @@
 				<bit name="Plasma Locked" index="6" />
 				<bit name="Plasma Locking" index="7" />
 				<bit name="Plasma Lock Available" index="8" />
-			</bitfield16>
-			<bitfield16 name="16 Weapon Target B" offset="0x1E" visible="true">
+			</flags16>
+			<flags16 name="16 Weapon Target B" offset="0x1E" visible="true">
 				<bit name="Human Locking" index="0" />
 				<bit name="Human Locked" index="1" />
 				<bit name="Human Lock Available" index="2" />
-			</bitfield16>
-			<bitfield16 name="17 Player [Special]" offset="0x20" visible="true">
+			</flags16>
+			<flags16 name="17 Player [Special]" offset="0x20" visible="true">
 				<bit name="Shields Low" index="0" />
 				<bit name="Shields Depleted" index="1" />
 				<bit name="Has Any Frag Grenades" index="2" />
 				<bit name="Has Any Plasma Grenades" index="3" />
 				<bit name="Has Any Spike Grenades" index="4" />
 				<bit name="Has Any Fire Grenades" index="5" />
-			</bitfield16>
-			<bitfield16 name="18 Weapon [Special]" offset="0x22" visible="true">
+			</flags16>
+			<flags16 name="18 Weapon [Special]" offset="0x22" visible="true">
 				<bit name="Clip Below Cutoff" index="0" />
 				<bit name="Clip Empty (Broken?)" index="1" />
 				<bit name="Ammo Below Cutoff" index="2" />
@@ -218,12 +218,12 @@
 				<bit name="Battery Below Cutoff" index="4" />
 				<bit name="Battery Empty (Broken?)" index="5" />
 				<bit name="Overheated" index="6" />
-			</bitfield16>
-			<bitfield16 name="19 Unit Extra" offset="0x24" visible="true">
+			</flags16>
+			<flags16 name="19 Unit Extra" offset="0x24" visible="true">
 				<bit name="Not Zoomed In" index="0" />
 				<bit name="Not Armed With Support Weapon" index="1" />
 				<bit name="At Least 2 Weapons" index="2" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x26" visible="false" />
 		</tagblock>
 		<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
@@ -276,9 +276,9 @@
 		</tagblock>
 		<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 			<comment title="HUD Initialize Animation" />
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x2" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -286,9 +286,9 @@
 			</enum16>
 			<tagRef name="Animation" offset="0x4" visible="true" />
 			<comment title="Idle Animation" />
-			<bitfield16 name="Flags" offset="0x14" visible="true">
+			<flags16 name="Flags" offset="0x14" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x16" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -296,9 +296,9 @@
 			</enum16>
 			<tagRef name="Animation" offset="0x18" visible="true" />
 			<comment title="Special State Animation" />
-			<bitfield16 name="Flags" offset="0x28" visible="true">
+			<flags16 name="Flags" offset="0x28" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x2A" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -306,9 +306,9 @@
 			</enum16>
 			<tagRef name="Animation" offset="0x2C" visible="true" />
 			<comment title="Transition In Animation" />
-			<bitfield16 name="Flags" offset="0x3C" visible="true">
+			<flags16 name="Flags" offset="0x3C" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x3E" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -316,9 +316,9 @@
 			</enum16>
 			<tagRef name="Animation" offset="0x40" visible="true" />
 			<comment title="Transition Out Animation" />
-			<bitfield16 name="Flags" offset="0x50" visible="true">
+			<flags16 name="Flags" offset="0x50" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x52" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -326,9 +326,9 @@
 			</enum16>
 			<tagRef name="Animation" offset="0x54" visible="true" />
 			<comment title="Brief State Animation" />
-			<bitfield16 name="Flags" offset="0x64" visible="true">
+			<flags16 name="Flags" offset="0x64" visible="true">
 				<bit name="Reverse Frames" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Function" offset="0x66" visible="true">
 				<option name="Default" value="0x0" />
 				<option name="Use Input" value="0x1" />
@@ -821,13 +821,13 @@
 				<option name="Spike Grenade" value="0x7" />
 				<option name="Firebomb Grenade" value="0x8" />
 			</enum16>
-			<bitfield8 name="Flags" offset="0x6" visible="true">
+			<flags8 name="Flags" offset="0x6" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
 				<bit name="Bit 3" index="3" />
 				<bit name="Bit 4" index="4" />
-			</bitfield8>
+			</flags8>
 			<enum8 name="Layer" offset="0x7" visible="true">
 				<option name="0" value="0x0" />
 				<option name="1" value="0x1" />
@@ -839,7 +839,7 @@
 				<option name="7/Always Show/No Warping" value="0x7" />
 			</enum8>
 			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
-				<bitfield16 name="1 Engine" offset="0x0" visible="true">
+				<flags16 name="1 Engine" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
 					<bit name="Team Game" index="2" />
@@ -856,13 +856,13 @@
 					<bit name="Bit 13 - UNUSED?" index="13" />
 					<bit name="Editor" index="14" />
 					<bit name="Theater" index="15" />
-				</bitfield16>
-				<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+				</flags16>
+				<flags16 name="2 Player Type" offset="0x2" visible="true">
 					<bit name="Spartan" index="0" />
 					<bit name="Elite" index="1" />
 					<bit name="Monitor" index="2" />
-				</bitfield16>
-				<bitfield16 name="3 Multiplayer" offset="0x4" visible="true">
+				</flags16>
+				<flags16 name="3 Multiplayer" offset="0x4" visible="true">
 					<bit name="Offense Team" index="0" />
 					<bit name="Defense Team" index="1" />
 					<bit name="Normal Team" index="2" />
@@ -874,8 +874,8 @@
 					<bit name="Talking Enabled" index="8" />
 					<bit name="Not Talking" index="9" />
 					<bit name="Talking" index="10" />
-				</bitfield16>
-				<bitfield16 name="4 Resolution" offset="0x6" visible="true">
+				</flags16>
+				<flags16 name="4 Resolution" offset="0x6" visible="true">
 					<bit name="Wide Full" index="0" />
 					<bit name="Wide Half" index="1" />
 					<bit name="Native Full" index="2" />
@@ -884,8 +884,8 @@
 					<bit name="Standard Half" index="5" />
 					<bit name="Native Quarter" index="6" />
 					<bit name="Standard Quarter" index="7" />
-				</bitfield16>
-				<bitfield16 name="5 Multiplayer Events" offset="0x8" visible="true">
+				</flags16>
+				<flags16 name="5 Multiplayer Events" offset="0x8" visible="true">
 					<bit name="Has Friends" index="0" />
 					<bit name="Has Enemies" index="1" />
 					<bit name="Variant Name Valid" index="2" />
@@ -899,23 +899,23 @@
 					<bit name="X is Down" index="10" />
 					<bit name="Summary Enabled" index="11" />
 					<bit name="NetDebug Enabled" index="12" />
-				</bitfield16>
-				<bitfield16 name="6 Unit Base" offset="0xA" visible="true">
+				</flags16>
+				<flags16 name="6 Unit Base" offset="0xA" visible="true">
 					<bit name="Texture Cam Enabled" index="0" />
 					<bit name="Binoculars Targeted" index="1" />
 					<bit name="Bit 2 - UNUSED?" index="2" />
 					<bit name="Bit 3 - UNUSED?" index="3" />
 					<bit name="Training Prompt" index="4" />
 					<bit name="Objective Prompt" index="5" />
-				</bitfield16>
-				<bitfield16 name="7 Editor" offset="0xC" visible="true">
+				</flags16>
+				<flags16 name="7 Editor" offset="0xC" visible="true">
 					<bit name="Editor Inactive" index="0" />
 					<bit name="Editor Active" index="1" />
 					<bit name="Editor Holding" index="2" />
 					<bit name="Editor Not Allowed" index="3" />
 					<bit name="Is Editor" index="4" />
-				</bitfield16>
-				<bitfield16 name="8 Engine General" offset="0xE" visible="true">
+				</flags16>
+				<flags16 name="8 Engine General" offset="0xE" visible="true">
 					<bit name="Motion Tracker 10m" index="0" />
 					<bit name="Motion Tracker 25m" index="1" />
 					<bit name="Motion Tracker 75m" index="2" />
@@ -931,25 +931,25 @@
 					<bit name="Metagame Score Added" index="12" />
 					<bit name="Metagame Multikill" index="13" />
 					<bit name="Metagame Score Removed" index="14" />
-				</bitfield16>
-				<bitfield16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
+				</flags16>
+				<flags16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
 					<bit name="Pickup Frag Grenades" index="0" />
 					<bit name="Pickup Plasma Grenades" index="1" />
 					<bit name="Pickup Spike Grenades" index="2" />
 					<bit name="Pickup Fire Grenades" index="3" />
-				</bitfield16>
-				<bitfield16 name="10 Unit Zoom" offset="0x12" visible="true">
+				</flags16>
+				<flags16 name="10 Unit Zoom" offset="0x12" visible="true">
 					<bit name="Binoculars Enabled" index="0" />
 					<bit name="Unit Is Zoomed (Level 1)" index="1" />
 					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-				</bitfield16>
-				<bitfield16 name="11 Unit Inventory" offset="0x14" visible="true">
+				</flags16>
+				<flags16 name="11 Unit Inventory" offset="0x14" visible="true">
 					<bit name="None of the Below" index="0" />
 					<bit name="Is Single Wielding" index="1" />
 					<bit name="Is Dual Wielding" index="2" />
 					<bit name="Has Support Weapon" index="3" />
-				</bitfield16>
-				<bitfield16 name="12 Unit General" offset="0x16" visible="true">
+				</flags16>
+				<flags16 name="12 Unit General" offset="0x16" visible="true">
 					<bit name="Motion Tracker Enabled" index="0" />
 					<bit name="Motion Tracker Disabled" index="1" />
 					<bit name="Selected Frag Grenades" index="2" />
@@ -966,18 +966,18 @@
 					<bit name="Has 2x Overshield" index="13" />
 					<bit name="Has 3x Overshield" index="14" />
 					<bit name="Has Shields" index="15" />
-				</bitfield16>
-				<bitfield16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
+				</flags16>
+				<flags16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
 					<bit name="Bit 0 - UNUSED?" index="0" />
 					<bit name="Pickup Ammo" index="1" />
-				</bitfield16>
-				<bitfield16 name="14 Weapon Status" offset="0x1A" visible="true">
+				</flags16>
+				<flags16 name="14 Weapon Status" offset="0x1A" visible="true">
 					<bit name="Source Is Primary Weapon" index="0" />
 					<bit name="Source Is Dual Weapon" index="1" />
 					<bit name="Source Is Backpacked" index="2" />
 					<bit name="NOT ACTUALLY USED BIT" index="3" />
-				</bitfield16>
-				<bitfield16 name="15 Weapon Target" offset="0x1C" visible="true">
+				</flags16>
+				<flags16 name="15 Weapon Target" offset="0x1C" visible="true">
 					<bit name="No Target" index="0" />
 					<bit name="Friendly Target" index="1" />
 					<bit name="Enemy Target" index="2" />
@@ -987,21 +987,21 @@
 					<bit name="Plasma Locked" index="6" />
 					<bit name="Plasma Locking" index="7" />
 					<bit name="Plasma Lock Available" index="8" />
-				</bitfield16>
-				<bitfield16 name="16 Weapon Target B" offset="0x1E" visible="true">
+				</flags16>
+				<flags16 name="16 Weapon Target B" offset="0x1E" visible="true">
 					<bit name="Human Locking" index="0" />
 					<bit name="Human Locked" index="1" />
 					<bit name="Human Lock Available" index="2" />
-				</bitfield16>
-				<bitfield16 name="17 Player [Special]" offset="0x20" visible="true">
+				</flags16>
+				<flags16 name="17 Player [Special]" offset="0x20" visible="true">
 					<bit name="Shields Low" index="0" />
 					<bit name="Shields Depleted" index="1" />
 					<bit name="Has Any Frag Grenades" index="2" />
 					<bit name="Has Any Plasma Grenades" index="3" />
 					<bit name="Has Any Spike Grenades" index="4" />
 					<bit name="Has Any Fire Grenades" index="5" />
-				</bitfield16>
-				<bitfield16 name="18 Weapon [Special]" offset="0x22" visible="true">
+				</flags16>
+				<flags16 name="18 Weapon [Special]" offset="0x22" visible="true">
 					<bit name="Clip Below Cutoff" index="0" />
 					<bit name="Clip Empty (Broken?)" index="1" />
 					<bit name="Ammo Below Cutoff" index="2" />
@@ -1009,12 +1009,12 @@
 					<bit name="Battery Below Cutoff" index="4" />
 					<bit name="Battery Empty (Broken?)" index="5" />
 					<bit name="Overheated" index="6" />
-				</bitfield16>
-				<bitfield16 name="19 Unit Extra" offset="0x24" visible="true">
+				</flags16>
+				<flags16 name="19 Unit Extra" offset="0x24" visible="true">
 					<bit name="Not Zoomed In" index="0" />
 					<bit name="Not Armed With Support Weapon" index="1" />
 					<bit name="At Least 2 Weapons" index="2" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x26" visible="false" />
 			</tagblock>
 			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
@@ -1067,9 +1067,9 @@
 			</tagblock>
 			<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 				<comment title="HUD Initialize Animation" />
-				<bitfield16 name="Flags" offset="0x0" visible="true">
+				<flags16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x2" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1077,9 +1077,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x4" visible="true" />
 				<comment title="Idle Animation" />
-				<bitfield16 name="Flags" offset="0x14" visible="true">
+				<flags16 name="Flags" offset="0x14" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x16" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1087,9 +1087,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x18" visible="true" />
 				<comment title="Special State Animation" />
-				<bitfield16 name="Flags" offset="0x28" visible="true">
+				<flags16 name="Flags" offset="0x28" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x2A" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1097,9 +1097,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x2C" visible="true" />
 				<comment title="Transition In Animation" />
-				<bitfield16 name="Flags" offset="0x3C" visible="true">
+				<flags16 name="Flags" offset="0x3C" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x3E" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1107,9 +1107,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x40" visible="true" />
 				<comment title="Transition Out Animation" />
-				<bitfield16 name="Flags" offset="0x50" visible="true">
+				<flags16 name="Flags" offset="0x50" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x52" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1117,9 +1117,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x54" visible="true" />
 				<comment title="Brief State Animation" />
-				<bitfield16 name="Flags" offset="0x64" visible="true">
+				<flags16 name="Flags" offset="0x64" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x66" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1600,7 +1600,7 @@
 				</enum16>
 			</tagblock>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
-			<bitfield16 name="Flags" offset="0x3C" visible="true">
+			<flags16 name="Flags" offset="0x3C" visible="true">
 				<bit name="Mirror Horizontally" index="0" />
 				<bit name="Mirror Vertically" index="1" />
 				<bit name="Stretch Edges" index="2" />
@@ -1617,7 +1617,7 @@
 				<bit name="Bit 13" index="13" />
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x3E" visible="false" />
 			<tagRef name="Bitmap" offset="0x40" visible="true" />
 			<uint8 name="Bitmap Sprite Index" offset="0x50" visible="true" />
@@ -1638,13 +1638,13 @@
 				<option name="Spike Grenade" value="0x7" />
 				<option name="Firebomb Grenade" value="0x8" />
 			</enum16>
-			<bitfield8 name="Flags" offset="0x6" visible="true">
+			<flags8 name="Flags" offset="0x6" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
 				<bit name="Bit 3" index="3" />
 				<bit name="Bit 4" index="4" />
-			</bitfield8>
+			</flags8>
 			<enum8 name="Layer" offset="0x7" visible="true">
 				<option name="0" value="0x0" />
 				<option name="1" value="0x1" />
@@ -1656,7 +1656,7 @@
 				<option name="7/Always Show/No Warping" value="0x7" />
 			</enum8>
 			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
-				<bitfield16 name="1 Engine" offset="0x0" visible="true">
+				<flags16 name="1 Engine" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
 					<bit name="Team Game" index="2" />
@@ -1673,13 +1673,13 @@
 					<bit name="Bit 13 - UNUSED?" index="13" />
 					<bit name="Editor" index="14" />
 					<bit name="Theater" index="15" />
-				</bitfield16>
-				<bitfield16 name="2 Player Type" offset="0x2" visible="true">
+				</flags16>
+				<flags16 name="2 Player Type" offset="0x2" visible="true">
 					<bit name="Spartan" index="0" />
 					<bit name="Elite" index="1" />
 					<bit name="Monitor" index="2" />
-				</bitfield16>
-				<bitfield16 name="3 Multiplayer" offset="0x4" visible="true">
+				</flags16>
+				<flags16 name="3 Multiplayer" offset="0x4" visible="true">
 					<bit name="Offense Team" index="0" />
 					<bit name="Defense Team" index="1" />
 					<bit name="Normal Team" index="2" />
@@ -1691,8 +1691,8 @@
 					<bit name="Talking Enabled" index="8" />
 					<bit name="Not Talking" index="9" />
 					<bit name="Talking" index="10" />
-				</bitfield16>
-				<bitfield16 name="4 Resolution" offset="0x6" visible="true">
+				</flags16>
+				<flags16 name="4 Resolution" offset="0x6" visible="true">
 					<bit name="Wide Full" index="0" />
 					<bit name="Wide Half" index="1" />
 					<bit name="Native Full" index="2" />
@@ -1701,8 +1701,8 @@
 					<bit name="Standard Half" index="5" />
 					<bit name="Native Quarter" index="6" />
 					<bit name="Standard Quarter" index="7" />
-				</bitfield16>
-				<bitfield16 name="5 Multiplayer Events" offset="0x8" visible="true">
+				</flags16>
+				<flags16 name="5 Multiplayer Events" offset="0x8" visible="true">
 					<bit name="Has Friends" index="0" />
 					<bit name="Has Enemies" index="1" />
 					<bit name="Variant Name Valid" index="2" />
@@ -1716,23 +1716,23 @@
 					<bit name="X is Down" index="10" />
 					<bit name="Summary Enabled" index="11" />
 					<bit name="NetDebug Enabled" index="12" />
-				</bitfield16>
-				<bitfield16 name="6 Unit Base" offset="0xA" visible="true">
+				</flags16>
+				<flags16 name="6 Unit Base" offset="0xA" visible="true">
 					<bit name="Texture Cam Enabled" index="0" />
 					<bit name="Binoculars Targeted" index="1" />
 					<bit name="Bit 2 - UNUSED?" index="2" />
 					<bit name="Bit 3 - UNUSED?" index="3" />
 					<bit name="Training Prompt" index="4" />
 					<bit name="Objective Prompt" index="5" />
-				</bitfield16>
-				<bitfield16 name="7 Editor" offset="0xC" visible="true">
+				</flags16>
+				<flags16 name="7 Editor" offset="0xC" visible="true">
 					<bit name="Editor Inactive" index="0" />
 					<bit name="Editor Active" index="1" />
 					<bit name="Editor Holding" index="2" />
 					<bit name="Editor Not Allowed" index="3" />
 					<bit name="Is Editor" index="4" />
-				</bitfield16>
-				<bitfield16 name="8 Engine General" offset="0xE" visible="true">
+				</flags16>
+				<flags16 name="8 Engine General" offset="0xE" visible="true">
 					<bit name="Motion Tracker 10m" index="0" />
 					<bit name="Motion Tracker 25m" index="1" />
 					<bit name="Motion Tracker 75m" index="2" />
@@ -1748,25 +1748,25 @@
 					<bit name="Metagame Score Added" index="12" />
 					<bit name="Metagame Multikill" index="13" />
 					<bit name="Metagame Score Removed" index="14" />
-				</bitfield16>
-				<bitfield16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
+				</flags16>
+				<flags16 name="9 General Kudos [Brief]" offset="0x10" visible="true">
 					<bit name="Pickup Frag Grenades" index="0" />
 					<bit name="Pickup Plasma Grenades" index="1" />
 					<bit name="Pickup Spike Grenades" index="2" />
 					<bit name="Pickup Fire Grenades" index="3" />
-				</bitfield16>
-				<bitfield16 name="10 Unit Zoom" offset="0x12" visible="true">
+				</flags16>
+				<flags16 name="10 Unit Zoom" offset="0x12" visible="true">
 					<bit name="Binoculars Enabled" index="0" />
 					<bit name="Unit Is Zoomed (Level 1)" index="1" />
 					<bit name="Unit Is Zoomed (Level 2)" index="2" />
-				</bitfield16>
-				<bitfield16 name="11 Unit Inventory" offset="0x14" visible="true">
+				</flags16>
+				<flags16 name="11 Unit Inventory" offset="0x14" visible="true">
 					<bit name="None of the Below" index="0" />
 					<bit name="Is Single Wielding" index="1" />
 					<bit name="Is Dual Wielding" index="2" />
 					<bit name="Has Support Weapon" index="3" />
-				</bitfield16>
-				<bitfield16 name="12 Unit General" offset="0x16" visible="true">
+				</flags16>
+				<flags16 name="12 Unit General" offset="0x16" visible="true">
 					<bit name="Motion Tracker Enabled" index="0" />
 					<bit name="Motion Tracker Disabled" index="1" />
 					<bit name="Selected Frag Grenades" index="2" />
@@ -1783,18 +1783,18 @@
 					<bit name="Has 2x Overshield" index="13" />
 					<bit name="Has 3x Overshield" index="14" />
 					<bit name="Has Shields" index="15" />
-				</bitfield16>
-				<bitfield16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
+				</flags16>
+				<flags16 name="13 Weapon Kudos [Brief]" offset="0x18" visible="true">
 					<bit name="Bit 0 - UNUSED?" index="0" />
 					<bit name="Pickup Ammo" index="1" />
-				</bitfield16>
-				<bitfield16 name="14 Weapon Status" offset="0x1A" visible="true">
+				</flags16>
+				<flags16 name="14 Weapon Status" offset="0x1A" visible="true">
 					<bit name="Source Is Primary Weapon" index="0" />
 					<bit name="Source Is Dual Weapon" index="1" />
 					<bit name="Source Is Backpacked" index="2" />
 					<bit name="NOT ACTUALLY USED BIT" index="3" />
-				</bitfield16>
-				<bitfield16 name="15 Weapon Target" offset="0x1C" visible="true">
+				</flags16>
+				<flags16 name="15 Weapon Target" offset="0x1C" visible="true">
 					<bit name="No Target" index="0" />
 					<bit name="Friendly Target" index="1" />
 					<bit name="Enemy Target" index="2" />
@@ -1804,21 +1804,21 @@
 					<bit name="Plasma Locked" index="6" />
 					<bit name="Plasma Locking" index="7" />
 					<bit name="Plasma Lock Available" index="8" />
-				</bitfield16>
-				<bitfield16 name="16 Weapon Target B" offset="0x1E" visible="true">
+				</flags16>
+				<flags16 name="16 Weapon Target B" offset="0x1E" visible="true">
 					<bit name="Human Locking" index="0" />
 					<bit name="Human Locked" index="1" />
 					<bit name="Human Lock Available" index="2" />
-				</bitfield16>
-				<bitfield16 name="17 Player [Special]" offset="0x20" visible="true">
+				</flags16>
+				<flags16 name="17 Player [Special]" offset="0x20" visible="true">
 					<bit name="Shields Low" index="0" />
 					<bit name="Shields Depleted" index="1" />
 					<bit name="Has Any Frag Grenades" index="2" />
 					<bit name="Has Any Plasma Grenades" index="3" />
 					<bit name="Has Any Spike Grenades" index="4" />
 					<bit name="Has Any Fire Grenades" index="5" />
-				</bitfield16>
-				<bitfield16 name="18 Weapon [Special]" offset="0x22" visible="true">
+				</flags16>
+				<flags16 name="18 Weapon [Special]" offset="0x22" visible="true">
 					<bit name="Clip Below Cutoff" index="0" />
 					<bit name="Clip Empty (Broken?)" index="1" />
 					<bit name="Ammo Below Cutoff" index="2" />
@@ -1826,12 +1826,12 @@
 					<bit name="Battery Below Cutoff" index="4" />
 					<bit name="Battery Empty (Broken?)" index="5" />
 					<bit name="Overheated" index="6" />
-				</bitfield16>
-				<bitfield16 name="19 Unit Extra" offset="0x24" visible="true">
+				</flags16>
+				<flags16 name="19 Unit Extra" offset="0x24" visible="true">
 					<bit name="Not Zoomed In" index="0" />
 					<bit name="Not Armed With Support Weapon" index="1" />
 					<bit name="At Least 2 Weapons" index="2" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x26" visible="false" />
 			</tagblock>
 			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
@@ -1884,9 +1884,9 @@
 			</tagblock>
 			<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 				<comment title="HUD Initialize Animation" />
-				<bitfield16 name="Flags" offset="0x0" visible="true">
+				<flags16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x2" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1894,9 +1894,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x4" visible="true" />
 				<comment title="Idle Animation" />
-				<bitfield16 name="Flags" offset="0x14" visible="true">
+				<flags16 name="Flags" offset="0x14" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x16" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1904,9 +1904,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x18" visible="true" />
 				<comment title="Special State Animation" />
-				<bitfield16 name="Flags" offset="0x28" visible="true">
+				<flags16 name="Flags" offset="0x28" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x2A" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1914,9 +1914,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x2C" visible="true" />
 				<comment title="Transition In Animation" />
-				<bitfield16 name="Flags" offset="0x3C" visible="true">
+				<flags16 name="Flags" offset="0x3C" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x3E" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1924,9 +1924,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x40" visible="true" />
 				<comment title="Transition Out Animation" />
-				<bitfield16 name="Flags" offset="0x50" visible="true">
+				<flags16 name="Flags" offset="0x50" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x52" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -1934,9 +1934,9 @@
 				</enum16>
 				<tagRef name="Animation" offset="0x54" visible="true" />
 				<comment title="Brief State Animation" />
-				<bitfield16 name="Flags" offset="0x64" visible="true">
+				<flags16 name="Flags" offset="0x64" visible="true">
 					<bit name="Reverse Frames" index="0" />
-				</bitfield16>
+				</flags16>
 				<enum16 name="Function" offset="0x66" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Use Input" value="0x1" />
@@ -2417,7 +2417,7 @@
 				</enum16>
 			</tagblock>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
-			<bitfield16 name="Flags" offset="0x3C" visible="true">
+			<flags16 name="Flags" offset="0x3C" visible="true">
 				<bit name="String Is A Number" index="0" />
 				<bit name="Force 2-Digit" index="1" />
 				<bit name="Force 3-Digit" index="2" />
@@ -2434,7 +2434,7 @@
 				<bit name="Money Format" index="13" />
 				<bit name="'-' Prefix" index="14" />
 				<bit name="Bit 15" index="15" />
-			</bitfield16>
+			</flags16>
 			<comment title="Font">Fonts use a dumb jump table that creates a custom font ordering for the HUD. The number in brackets is the proper engine order index from the fontpackage file.</comment>
 			<enum16 name="Font" offset="0x3E" visible="true">
 				<option name="[06] Conduit, 18" value="0x0" />

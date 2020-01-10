@@ -60,16 +60,16 @@
 			<tagblock name="Permutation" offset="0x8" visible="true" elementSize="0x24">
 				<stringId name="Name" offset="0x0" visible="true" />
 				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
-				<bitfield8 name="Flags" offset="0x5" visible="true">
+				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x6" visible="false" />
 				<int8 name="Unknown" offset="0x7" visible="false" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0xC">
 					<stringid name="Name" offset="0x0" visible="true" />
 					<int8 name="Model Permutation Index" offset="0x4" visible="true" />
-					<bitfield8 name="Property Flags" offset="0x5" visible="true">
+					<flags8 name="Property Flags" offset="0x5" visible="true">
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
 						<bit name="Shielded" index="2" />
@@ -78,7 +78,7 @@
 						<bit name="Bit 5" index="5" />
 						<bit name="Bit 6" index="6" />
 						<bit name="Bit 7" index="7" />
-					</bitfield8>
+					</flags8>
 					<enum16 name="State" offset="0x6" visible="true">
 						<option name="Default" value="0x0" />
 						<option name="Minor Damage" value="0x1" />
@@ -114,7 +114,7 @@
 			<stringid name="Child Variant" offset="0xC" visible="true" />
 			<tagref name="Child Object" offset="0x10" visible="true" />
 			<int16 name="Unknown" offset="0x20" visible="true" />
-			<bitfield8 name="Flags" offset="0x22" visible="true">
+			<flags8 name="Flags" offset="0x22" visible="true">
 				<bit name="Glued Attachment" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -123,7 +123,7 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x23" visible="true" />
 		</tagblock>
 		<int32 name="Instance Group Index" offset="0x2C" visible="true" />
@@ -152,7 +152,7 @@
 		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
 	<tagblock name="New Damage Info" offset="0xE4" visible="true" elementSize="0x10C">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Takes Shield Damage For Children" index="0" />
 			<bit name="Takes Body Damage For Children" index="1" />
 			<bit name="Always Shields Friendly Damage" index="2" />
@@ -185,7 +185,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringId name="Global Indirect Material" offset="0x4" visible="true" />
 		<int16 name="Indirect Damage Section" offset="0x8" visible="true" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
@@ -416,7 +416,7 @@
 		<tagRef name="Shield Recharge Effect" offset="0xBC" visible="true" />
 		<tagblock name="Damage Sections" offset="0xCC" visible="true" elementSize="0x44">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<bitfield32 name="Flags" offset="0x4" visible="true">
+			<flags32 name="Flags" offset="0x4" visible="true">
 				<bit name="Absorbs Body Damage" index="0" />
 				<bit name="Takes Full Damage When Object Dies" index="1" />
 				<bit name="Cannot Die With Riders" index="2" />
@@ -449,7 +449,7 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 			<tagblock name="Instant Responses" offset="0xC" visible="true" elementSize="0x98">
 				<enum16 name="Response Type" offset="0x0" visible="true">
@@ -465,7 +465,7 @@
 					<option name="Loosen Entire Group" value="0x4" />
 				</enum16>
 				<stringid name="Trigger" offset="0x4" visible="true" />
-				<bitfield32 name="Flags" offset="0x8" visible="true">
+				<flags32 name="Flags" offset="0x8" visible="true">
 					<bit name="Kills Object" index="0" />
 					<bit name="Inhibits Melee Attack" index="1" />
 					<bit name="Inhibits Weapon Attack" index="2" />
@@ -498,7 +498,7 @@
 					<bit name="Bit 29" index="29" />
 					<bit name="Bit 30" index="30" />
 					<bit name="Bit 31" index="31" />
-				</bitfield32>
+				</flags32>
 				<undefined name="Unknown" offset="0xC" visible="false" />
 				<float32 name="Damage Threshold" offset="0x10" visible="true" />
 				<int32 name="Unknown" offset="0x14" visible="false" />
@@ -604,7 +604,7 @@
 		</tagblock>
 	</tagblock>
 	<comment title="Omaha Damage Info">"New Damage Info" above is obsolete, all the good stuff is gonna be under here.</comment>
-	<bitfield32 name="Flags" offset="0xF0" visible="true">
+	<flags32 name="Flags" offset="0xF0" visible="true">
 		<bit name="Takes Damage For Children" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Cannot Die From Damage" index="2" />
@@ -637,7 +637,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Base Vitality" offset="0xF4" visible="true" />
 	<stringid name="Base Global Material" offset="0xF8" visible="true" />
 	<int16 name="Unknown" offset="0xFC" visible="false" />
@@ -831,7 +831,7 @@
 	<int16 name="Unknown" offset="0x102" visible="false" />
 	<tagblock name="Omaha Damage Sections" offset="0x104" visible="true" elementSize="0xB4">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x4" visible="true">
+		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -864,7 +864,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Vitality Percentage" offset="0x8" visible="true" />
 		<stringid name="Global Material" offset="0xC" visible="true" />
 		<float32 name="Health Recharge Delay" offset="0x10" visible="true" />
@@ -888,7 +888,7 @@
 		<float32 name="Unknown" offset="0x7C" visible="false" />
 		<undefined name="Unknown" offset="0x80" visible="false" />
 		<tagblock name="Omaha Instant Responses" offset="0x84" visible="true" elementSize="0xB0">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
+			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Kills Object" index="0" />
 				<bit name="Inhibits Melee Attack" index="1" />
 				<bit name="Inhibits Weapon Attack" index="2" />
@@ -921,7 +921,7 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			</flags32>
 			<stringid name="Trigger" offset="0x4" visible="true" />
 			<float32 name="Damage Threshold" offset="0x8" visible="true" />
 			<tagRef name="Primary Transition Effect" offset="0xC" visible="true" />
@@ -1024,7 +1024,7 @@
 		<int16 name="Variant" offset="0xE" visible="true" />
 		<float32 name="Targeting Relevance" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
-		<bitfield32 name="Flags" offset="0x18" visible="true">
+		<flags32 name="Flags" offset="0x18" visible="true">
 			<bit name="Locked By Human Tracking" index="0" />
 			<bit name="Locked By Plasma Tracking" index="1" />
 			<bit name="Headshot" index="2" />
@@ -1057,7 +1057,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Lock-On Distance" offset="0x1C" visible="true" />
 		<stringid name="Target Filter" offset="0x20" visible="true" />
 	</tagblock>
@@ -1073,7 +1073,7 @@
 		<int16 name="Variant" offset="0x12" visible="true" />
 		<float32 name="Targeting Relevance" offset="0x14" visible="true" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<bitfield32 name="Flags" offset="0x1C" visible="true">
+		<flags32 name="Flags" offset="0x1C" visible="true">
 			<bit name="Locked By Human Tracking" index="0" />
 			<bit name="Locked By Plasma Tracking" index="1" />
 			<bit name="Headshot" index="2" />
@@ -1106,7 +1106,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Lock-On Distance" offset="0x20" visible="true" />
 		<stringid name="Target Filter" offset="0x24" visible="true" />
 	</tagblock>
@@ -1118,7 +1118,7 @@
 		<int8 name="Unknown" offset="0x7" visible="false" />
 		<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x8">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<bitfield8 name="Flags" offset="0x4" visible="true">
+			<flags8 name="Flags" offset="0x4" visible="true">
 				<bit name="Cannot Be Chosen Randomly" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -1127,7 +1127,7 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Collision Permutation Index" offset="0x5" visible="true" />
 			<int8 name="Physics Permutation Index" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
@@ -1163,7 +1163,7 @@
 	<undefined name="Unknown" offset="0x15C" visible="false" />
 	<tagRef name="Primary Dialogue" offset="0x160" visible="true" />
 	<tagRef name="Secondary Dialogue" offset="0x170" visible="true" />
-	<bitfield32 name="Flags" offset="0x180" visible="true">
+	<flags32 name="Flags" offset="0x180" visible="true">
 		<bit name="Active Camo Always On" index="0" />
 		<bit name="Active Camo Always Merge" index="1" />
 		<bit name="Active Camo Never Merge" index="2" />
@@ -1196,9 +1196,9 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<stringid name="Default Dialogue Effect" offset="0x184" visible="true" />
-	<bitfield32 name="Render-Only Node Flags 1" offset="0x188" visible="false">
+	<flags32 name="Render-Only Node Flags 1" offset="0x188" visible="false">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -1231,8 +1231,8 @@
 		<bit name="Node 29" index="29" />
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 2" offset="0x18C" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 2" offset="0x18C" visible="false">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -1265,8 +1265,8 @@
 		<bit name="Node 61" index="29" />
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 3" offset="0x190" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 3" offset="0x190" visible="false">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -1299,8 +1299,8 @@
 		<bit name="Node 93" index="29" />
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 4" offset="0x194" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 4" offset="0x194" visible="false">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -1333,8 +1333,8 @@
 		<bit name="Node 125" index="29" />
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 5" offset="0x198" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 5" offset="0x198" visible="false">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -1367,8 +1367,8 @@
 		<bit name="Node 157" index="29" />
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 6" offset="0x19C" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 6" offset="0x19C" visible="false">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -1401,8 +1401,8 @@
 		<bit name="Node 189" index="29" />
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 7" offset="0x1A0" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 7" offset="0x1A0" visible="false">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -1435,8 +1435,8 @@
 		<bit name="Node 221" index="29" />
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Node Flags 8" offset="0x1A4" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Node Flags 8" offset="0x1A4" visible="false">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />
@@ -1469,8 +1469,8 @@
 		<bit name="Node 253" index="29" />
 		<bit name="Node 254" index="30" />
 		<bit name="Node 255" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 1" offset="0x1A8" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 1" offset="0x1A8" visible="false">
 		<bit name="Section 0" index="0" />
 		<bit name="Section 1" index="1" />
 		<bit name="Section 2" index="2" />
@@ -1503,8 +1503,8 @@
 		<bit name="Section 29" index="29" />
 		<bit name="Section 30" index="30" />
 		<bit name="Section 31" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 2" offset="0x1AC" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 2" offset="0x1AC" visible="false">
 		<bit name="Section 32" index="0" />
 		<bit name="Section 33" index="1" />
 		<bit name="Section 34" index="2" />
@@ -1537,8 +1537,8 @@
 		<bit name="Section 61" index="29" />
 		<bit name="Section 62" index="30" />
 		<bit name="Section 63" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 3" offset="0x1B0" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 3" offset="0x1B0" visible="false">
 		<bit name="Section 64" index="0" />
 		<bit name="Section 65" index="1" />
 		<bit name="Section 66" index="2" />
@@ -1571,8 +1571,8 @@
 		<bit name="Section 93" index="29" />
 		<bit name="Section 94" index="30" />
 		<bit name="Section 95" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 4" offset="0x1B4" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 4" offset="0x1B4" visible="false">
 		<bit name="Section 96" index="0" />
 		<bit name="Section 97" index="1" />
 		<bit name="Section 98" index="2" />
@@ -1605,8 +1605,8 @@
 		<bit name="Section 125" index="29" />
 		<bit name="Section 126" index="30" />
 		<bit name="Section 127" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 5" offset="0x1B8" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 5" offset="0x1B8" visible="false">
 		<bit name="Section 128" index="0" />
 		<bit name="Section 129" index="1" />
 		<bit name="Section 130" index="2" />
@@ -1639,8 +1639,8 @@
 		<bit name="Section 157" index="29" />
 		<bit name="Section 158" index="30" />
 		<bit name="Section 159" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 6" offset="0x1BC" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 6" offset="0x1BC" visible="false">
 		<bit name="Section 160" index="0" />
 		<bit name="Section 161" index="1" />
 		<bit name="Section 162" index="2" />
@@ -1673,8 +1673,8 @@
 		<bit name="Section 189" index="29" />
 		<bit name="Section 190" index="30" />
 		<bit name="Section 191" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 7" offset="0x1C0" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 7" offset="0x1C0" visible="false">
 		<bit name="Section 192" index="0" />
 		<bit name="Section 193" index="1" />
 		<bit name="Section 194" index="2" />
@@ -1707,8 +1707,8 @@
 		<bit name="Section 221" index="29" />
 		<bit name="Section 222" index="30" />
 		<bit name="Section 223" index="31" />
-	</bitfield32>
-	<bitfield32 name="Render-Only Section Flags 8" offset="0x1C4" visible="false">
+	</flags32>
+	<flags32 name="Render-Only Section Flags 8" offset="0x1C4" visible="false">
 		<bit name="Section 224" index="0" />
 		<bit name="Section 225" index="1" />
 		<bit name="Section 226" index="2" />
@@ -1741,8 +1741,8 @@
 		<bit name="Section 253" index="29" />
 		<bit name="Section 254" index="30" />
 		<bit name="Section 255" index="31" />
-	</bitfield32>
-	<bitfield32 name="Runtime Flags" offset="0x1C8" visible="false">
+	</flags32>
+	<flags32 name="Runtime Flags" offset="0x1C8" visible="false">
 		<bit name="Contains Runtime Nodes" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -1775,7 +1775,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<uint32 name="Scenario Load Parameters Block" offset="0x1CC" visible="false" />
 	<uint32 name="Scenario Load Parameters Block" offset="0x1D0" visible="false" />
 	<uint32 name="Scenario Load Parameters Block" offset="0x1D4" visible="false" />

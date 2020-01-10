@@ -8,9 +8,9 @@
 		<revision author="DiscoBob" version="4">Named alot of values</revision>
 		<revision author="XZodia" version="5">Completed.</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Deleted When Attachment Deactivated" index="0" />
-	</bitfield32>
+	</flags32>
 	<int16 name="Loop Start Event" offset="0x4" visible="true" />
 	<int16 name="Unknown" offset="0x6" visible="false" />
 	<undefined name="Unknown" offset="0x8" visible="false" />
@@ -18,9 +18,9 @@
 		<stringId name="Marker Name" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Events" offset="0x14" visible="true" elementSize="0x38">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Disabled For Debugging" index="0" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Skip Fraction" offset="0x4" visible="true" />
 		<float32 name="Delay Bounds" offset="0x8" visible="true" />
 		<float32 name="...To" offset="0xC" visible="true" />
@@ -39,13 +39,13 @@
 				<option name="NonViolent Mode Only" value="0x2" />
 			</enum16>
 			<int16 name="Location" offset="0x4" visible="true" />
-			<bitfield16 name="Flags" offset="0x6" visible="true">
+			<flags16 name="Flags" offset="0x6" visible="true">
 				<bit name="Face Down Regardless Of Location" index="0" />
 				<bit name="Offset Origin Away From Geometry" index="1" />
 				<bit name="Never Attached To Object" index="2" />
 				<bit name="Disabled For Debugging" index="3" />
 				<bit name="Draw Regardless Of Distance" index="4" />
-			</bitfield16>
+			</flags16>
 			<comment title="Anticipated Tag Group Note">For objects, use "obje" instead of the group.</comment>
 			<ascii name="Anticipated Tag Group" offset="0x8" visible="true" length="0x4" />
 			<tagRef name="Type" offset="0xC" visible="true" />
@@ -56,22 +56,22 @@
 			<float32 name="...To" offset="0x24" visible="true" />
 			<float32 name="Radius Modifier" offset="0x28" visible="true" />
 			<float32 name="...To" offset="0x2C" visible="true" />
-			<bitfield32 name="A Scales Values" offset="0x30" visible="true">
+			<flags32 name="A Scales Values" offset="0x30" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
 				<bit name="Velocity Cone Angle" index="2" />
 				<bit name="Angular Velocity" index="3" />
 				<bit name="Angular Velocity Delta" index="4" />
 				<bit name="Type-Specific Scale" index="5" />
-			</bitfield32>
-			<bitfield32 name="B Scales Values" offset="0x34" visible="true">
+			</flags32>
+			<flags32 name="B Scales Values" offset="0x34" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
 				<bit name="Velocity Cone Angle" index="2" />
 				<bit name="Angular Velocity" index="3" />
 				<bit name="Angular Velocity Delta" index="4" />
 				<bit name="Type-Specific Scale" index="5" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Beams" offset="0x20" visible="true" elementSize="0x3C">
 			<tagRef name="Shader" offset="0x0" visible="true" />
@@ -129,7 +129,7 @@
 				<option name="Both 1st And 3rd" value="0x3" />
 			</enum16>
 			<int16 name="Sort Bias" offset="0x14" visible="true" />
-			<bitfield16 name="Flags" offset="0x16" visible="true">
+			<flags16 name="Flags" offset="0x16" visible="true">
 				<bit name="Glow" index="0" />
 				<bit name="Cinematics" index="1" />
 				<bit name="Looping Particle" index="2" />
@@ -140,7 +140,7 @@
 				<bit name="Spread Between Ticks" index="7" />
 				<bit name="Persistent Particle" index="8" />
 				<bit name="Expensive Visibility" index="9" />
-			</bitfield16>
+			</flags16>
 			<float32 name="LOD In Distance" offset="0x18" visible="true" />
 			<float32 name="LOD Feather In Delta" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="false" />

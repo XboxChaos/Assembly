@@ -5,7 +5,7 @@
 		<revision author="Lord Zedd" version="2">Enums, better names, etc.</revision>
 		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Deleted When Attachment Deactivates" index="0" />
 		<bit name="Run Events In Parallel" index="1" />
 		<bit name="Do Not Re-Use Parts When Looping" index="2" />
@@ -38,7 +38,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<uint32 name="Fixed Random Seed" offset="0x4" visible="true" />
 	<float32 name="Restart If Within" offset="0x8" visible="true" />
 	<float32 name="Continue If Within" offset="0xC" visible="true" />
@@ -90,12 +90,12 @@ water_surface
 child
 -The location of the last detonated projectile, in case the parent object is a weapon (tracers only)</comment>
 		<stringid name="Marker Name" offset="0x0" visible="true" />
-		<bitfield16 name="Flags" offset="0x4" visible="true">
+		<flags16 name="Flags" offset="0x4" visible="true">
 			<bit name="Optional (No Error If Not Found)" index="0" />
 			<bit name="Destructible (No Error If Goes Away)" index="1" />
 			<bit name="Track Sub-Frame Movements" index="2" />
 			<bit name="Never Stagger Across Markers" index="3" />
-		</bitfield16>
+		</flags16>
 		<enum8 name="Priority" offset="0x6" visible="true">
 			<option name="Low" value="0x0" />
 			<option name="Normal" value="0x1" />
@@ -108,11 +108,11 @@ child
 	</tagblock>
 	<tagblock name="Events" offset="0x34" visible="true" elementSize="0x44">
 		<stringid name="Event Name" offset="0x0" visible="true" />
-		<bitfield16 name="Flags" offset="0x4" visible="true">
+		<flags16 name="Flags" offset="0x4" visible="true">
 			<bit name="Disabled For Debugging" index="0" />
 			<bit name="Particles Die When Effect Ends" index="1" />
 			<bit name="Loop Event Age Duration Override" index="2" />
-		</bitfield16>
+		</flags16>
 		<enum8 name="Priority" offset="0x6" visible="true">
 			<option name="Low" value="0x0" />
 			<option name="Normal" value="0x1" />
@@ -145,7 +145,7 @@ child
 			</enum16>
 			<int16 name="Location index" offset="0x4" visible="true" />
 			<int16 name="Secondary Location (Beams) index" offset="0x6" visible="true" />
-			<bitfield16 name="Flags" offset="0x8" visible="true">
+			<flags16 name="Flags" offset="0x8" visible="true">
 				<bit name="Face Down Regardless Of Location (Decals)" index="0" />
 				<bit name="Offset Origin Away From Geometry (Lights)" index="1" />
 				<bit name="Never Attached To Object" index="2" />
@@ -157,7 +157,7 @@ child
 				<bit name="Create Even When Event Loops Back To Self" index="8" />
 				<bit name="Face Up Regardless Of Location (Replace Up)" index="9" />
 				<bit name="Sound Only Plays In Killcam" index="10" />
-			</bitfield16>
+			</flags16>
 			<enum8 name="Priority" offset="0xA" visible="true">
 				<option name="Low" value="0x0" />
 				<option name="Normal" value="0x1" />
@@ -299,22 +299,22 @@ child
 			<degree name="Relative Orientation y" offset="0x54" visible="true" />
 			<degree name="Relative Orientation p" offset="0x58" visible="true" />
 			<comment title="SCALE MODIFIERS" />
-			<bitfield32 name="A Scales Values" offset="0x5C" visible="true">
+			<flags32 name="A Scales Values" offset="0x5C" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
 				<bit name="Velocity Cone Angle" index="2" />
 				<bit name="Angular Velocity" index="3" />
 				<bit name="Angular Velocity Delta" index="4" />
 				<bit name="Type-Specific Scale" index="5" />
-			</bitfield32>
-			<bitfield32 name="B Scales Values" offset="0x60" visible="true">
+			</flags32>
+			<flags32 name="B Scales Values" offset="0x60" visible="true">
 				<bit name="Velocity" index="0" />
 				<bit name="Velocity Delta" index="1" />
 				<bit name="Velocity Cone Angle" index="2" />
 				<bit name="Angular Velocity" index="3" />
 				<bit name="Angular Velocity Delta" index="4" />
 				<bit name="Type-Specific Scale" index="5" />
-			</bitfield32>
+			</flags32>
 			<tagRef name="Particleize" offset="0x64" visible="true" />
 		</tagblock>
 		<tagblock name="Accelerations" offset="0x2C" visible="true" elementSize="0x14">
@@ -383,7 +383,7 @@ child
 			</enum8>
 			<int8 name="Unknown" offset="0x21" visible="false" />
 			<int16 name="Sort Bias" offset="0x22" visible="true" />
-			<bitfield32 name="Flags" offset="0x24" visible="true">
+			<flags32 name="Flags" offset="0x24" visible="true">
 				<bit name="Particles Freeze When Offscreen" index="0" />
 				<bit name="Particles Continue As Usual When Offscreen" index="1" />
 				<bit name="Lod Always 1.0" index="2" />
@@ -416,7 +416,7 @@ child
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Percent Velocity To Inherit min" offset="0x28" visible="true" />
 			<float32 name="Percent Velocity To Inherit max" offset="0x2C" visible="true" />
 			<float32 name="Size Scale" offset="0x30" visible="true" />
@@ -458,7 +458,7 @@ child
 					<option name="Planar Orbit" value="0x12" />
 					<option name="Sphere Orbit" value="0x13" />
 				</enum8>
-				<bitfield8 name="Flags" offset="0x5" visible="true">
+				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -467,10 +467,10 @@ child
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-				</bitfield8>
-				<bitfield8 name="Emitter Flags" offset="0x6" visible="true">
+				</flags8>
+				<flags8 name="Emitter Flags" offset="0x6" visible="true">
 					<bit name="Volume Emitter Particle Velocities Are Random" index="0" />
-				</bitfield8>
+				</flags8>
 				<enum8 name="Particle Axis (For Models)" offset="0x7" visible="true">
 					<option name="Constant" value="0x0" />
 					<option name="Cone" value="0x1" />
@@ -573,7 +573,7 @@ child
 				</enum8>
 				<dataRef name="Function" offset="0x4C" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x60" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x64" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x64" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -590,7 +590,7 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x66" visible="false" />
 				<float32 name="Starting Interpolant x" offset="0x68" visible="true" />
 				<float32 name="Starting Interpolant y" offset="0x6C" visible="true" />
@@ -678,7 +678,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x84" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x98" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x9C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x9C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -695,7 +695,7 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x9E" visible="false" />
 				<degree name="Direction At 0 y" offset="0xA0" visible="true" />
 				<degree name="Direction At 0 p" offset="0xA4" visible="true" />
@@ -781,7 +781,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0xB4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0xC8" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0xCC" visible="true">
+				<flags16 name="Runtime m Flags" offset="0xCC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -798,10 +798,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0xCE" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0xCE" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0xCF" visible="false" />
 				<comment title="Emission Angle" />
 				<enum8 name="Input Variable" offset="0xD0" visible="true">
@@ -883,7 +883,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0xD4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0xE8" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0xEC" visible="true">
+				<flags16 name="Runtime m Flags" offset="0xEC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -900,10 +900,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0xEE" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0xEE" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0xEF" visible="false" />
 				<comment title="Emission Axis Angle" />
 				<enum8 name="Input Variable" offset="0xF0" visible="true">
@@ -985,7 +985,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0xF4" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x108" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x10C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x10C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1002,10 +1002,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x10E" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x10E" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x10F" visible="false" />
 				<comment title="Particle Starting Count" />
 				<enum8 name="Input Variable" offset="0x110" visible="true">
@@ -1087,7 +1087,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x114" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x128" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x12C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x12C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1104,10 +1104,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x12E" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x12E" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x12F" visible="false" />
 				<comment title="Particle Max Count" />
 				<enum8 name="Input Variable" offset="0x130" visible="true">
@@ -1189,7 +1189,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x134" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x148" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x14C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x14C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1206,10 +1206,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x14E" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x14E" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x14F" visible="false" />
 				<comment title="Particle Emission Rate" />
 				<enum8 name="Input Variable" offset="0x150" visible="true">
@@ -1291,7 +1291,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x154" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x168" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x16C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x16C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1308,10 +1308,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x16E" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x16E" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x16F" visible="false" />
 				<comment title="Particle Emission Per Distance" />
 				<enum8 name="Input Variable" offset="0x170" visible="true">
@@ -1393,7 +1393,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x174" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x188" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x18C" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x18C" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1410,10 +1410,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x18E" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x18E" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x18F" visible="false" />
 				<comment title="Particle Lifespan" />
 				<enum8 name="Input Variable" offset="0x190" visible="true">
@@ -1495,7 +1495,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x194" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x1A8" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x1AC" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x1AC" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1512,13 +1512,13 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x1AE" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x1AE" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x1AF" visible="false" />
 				<tagRef name="Particle Physics Template" offset="0x1B0" visible="true" />
-				<bitfield16 name="Flags" offset="0x1C0" visible="true">
+				<flags16 name="Flags" offset="0x1C0" visible="true">
 					<bit name="Physics" index="0" />
 					<bit name="Collide With Structure" index="1" />
 					<bit name="Collide With Water" index="2" />
@@ -1531,7 +1531,7 @@ child
 					<bit name="Turbulence" index="9" />
 					<bit name="Global Force" index="10" />
 					<bit name="Disable Swarm Collision" index="11" />
-				</bitfield16>
+				</flags16>
 				<int8 name="Collision Controller Index" offset="0x1C2" visible="true" />
 				<int8 name="Turbulence Controller Index" offset="0x1C3" visible="true" />
 				<int8 name="Global Force Controller Index" offset="0x1C4" visible="true" />
@@ -1546,9 +1546,9 @@ child
 						<option name="Turbulence" value="0x4" />
 						<option name="Global Force" value="0x5" />
 					</enum16>
-					<bitfield8 name="Flags" offset="0x2" visible="true">
+					<flags8 name="Flags" offset="0x2" visible="true">
 						<bit name="Properties Fully Indexed" index="0" />
-					</bitfield8>
+					</flags8>
 					<int8 name="Unknown" offset="0x3" visible="false" />
 					<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x24">
 						<int32 name="Parameter Id" offset="0x0" visible="true" />
@@ -1631,7 +1631,7 @@ child
 						</enum8>
 						<dataref name="Function" offset="0x8" visible="true" />
 						<float32 name="Runtime m Constant Value" offset="0x1C" visible="true" />
-						<bitfield16 name="Runtime m Flags" offset="0x20" visible="true">
+						<flags16 name="Runtime m Flags" offset="0x20" visible="true">
 							<bit name="Bit 0" index="0" />
 							<bit name="Bit 1" index="1" />
 							<bit name="Bit 2" index="2" />
@@ -1648,10 +1648,10 @@ child
 							<bit name="Bit 13" index="13" />
 							<bit name="Bit 14" index="14" />
 							<bit name="Bit 15" index="15" />
-						</bitfield16>
-						<bitfield8 name="Force Flags" offset="0x22" visible="true">
+						</flags16>
+						<flags8 name="Force Flags" offset="0x22" visible="true">
 							<bit name="Force Constant" index="0" />
-						</bitfield8>
+						</flags8>
 						<int8 name="Unknown" offset="0x23" visible="false" />
 					</tagblock>
 					<int32 name="Runtime m Constant Parameters" offset="0x10" visible="true" />
@@ -1659,9 +1659,9 @@ child
 				</tagblock>
 				<tagRef name="Turbulence Texture" offset="0x1D4" visible="true" />
 				<tagblock name="Particle Attractor/Repulsor" offset="0x1E4" visible="true" elementSize="0x28">
-					<bitfield8 name="Flags" offset="0x0" visible="true">
+					<flags8 name="Flags" offset="0x0" visible="true">
 						<bit name="Is Infinitely Long Cylinder" index="0" />
-					</bitfield8>
+					</flags8>
 					<int8 name="Unknown" offset="0x1" visible="false" />
 					<int16 name="Unknown" offset="0x2" visible="false" />
 					<float32 name="Force Strength" offset="0x4" visible="true" />
@@ -1760,7 +1760,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x200" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x214" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x218" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x218" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1777,7 +1777,7 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x21A" visible="false" />
 				<float32 name="Starting Interpolant i" offset="0x21C" visible="true" />
 				<float32 name="Starting Interpolant j" offset="0x220" visible="true" />
@@ -1865,7 +1865,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x238" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x24C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x250" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x250" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1882,10 +1882,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x252" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x252" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x253" visible="false" />
 				<comment title="Particle Rotation" />
 				<enum8 name="Input Variable" offset="0x254" visible="true">
@@ -1967,7 +1967,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x258" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x26C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x270" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x270" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -1984,10 +1984,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x272" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x272" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x273" visible="false" />
 				<comment title="Particle Initial Rotation Rate" />
 				<enum8 name="Input Variable" offset="0x274" visible="true">
@@ -2069,7 +2069,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x278" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x28C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x290" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x290" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2086,10 +2086,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x292" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x292" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x293" visible="false" />
 				<comment title="Particle Size" />
 				<enum8 name="Input Variable" offset="0x294" visible="true">
@@ -2171,7 +2171,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x298" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x2AC" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x2B0" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x2B0" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2188,10 +2188,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x2B2" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x2B2" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x2B3" visible="false" />
 				<comment title="Particle Scale" />
 				<enum8 name="Input Variable" offset="0x2B4" visible="true">
@@ -2273,7 +2273,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x2B8" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x2CC" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x2D0" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x2D0" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2290,10 +2290,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x2D2" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x2D2" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x2D3" visible="false" />
 				<comment title="Particle Scale X" />
 				<enum8 name="Input Variable" offset="0x2D4" visible="true">
@@ -2375,7 +2375,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x2D8" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x2EC" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x2F0" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x2F0" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2392,10 +2392,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x2F2" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x2F2" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x2F3" visible="false" />
 				<comment title="Particle Scale Y" />
 				<enum8 name="Input Variable" offset="0x2F4" visible="true">
@@ -2477,7 +2477,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x2F8" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x30C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x310" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x310" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2494,10 +2494,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x312" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x312" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x313" visible="false" />
 				<comment title="Particle Tint" />
 				<enum8 name="Input Variable" offset="0x314" visible="true">
@@ -2579,7 +2579,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x318" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x32C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x330" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x330" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2596,7 +2596,7 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x332" visible="false" />
 				<comment title="Particle Alpha" />
 				<enum8 name="Input Variable" offset="0x334" visible="true">
@@ -2678,7 +2678,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x338" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x34C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x350" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x350" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2695,10 +2695,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x352" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x352" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x353" visible="false" />
 				<comment title="Particle Alpha Black Point" />
 				<enum8 name="Input Variable" offset="0x354" visible="true">
@@ -2780,7 +2780,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x358" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x36C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x370" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x370" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2797,10 +2797,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x372" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x372" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x373" visible="false" />
 				<comment title="Particle Alpha White Point" />
 				<enum8 name="Input Variable" offset="0x374" visible="true">
@@ -2882,7 +2882,7 @@ child
 				</enum8>
 				<dataref name="Function" offset="0x378" visible="true" />
 				<float32 name="Runtime m Constant Value" offset="0x38C" visible="true" />
-				<bitfield16 name="Runtime m Flags" offset="0x390" visible="true">
+				<flags16 name="Runtime m Flags" offset="0x390" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -2899,10 +2899,10 @@ child
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<bitfield8 name="Force Flags" offset="0x392" visible="true">
+				</flags16>
+				<flags8 name="Force Flags" offset="0x392" visible="true">
 					<bit name="Force Constant" index="0" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown" offset="0x393" visible="false" />
 				<int32 name="Runtime m Constant Per Particle Properties" offset="0x394" visible="true" />
 				<int32 name="Runtime m Constant Over Time Properties" offset="0x398" visible="true" />

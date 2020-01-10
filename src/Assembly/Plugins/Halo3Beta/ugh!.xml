@@ -21,7 +21,7 @@
 	</tagblock>
 	<tagblock name="Playback Parameters" offset="0xC" visible="true" elementSize="0x44">
 		<comment title="Distances" />
-		<bitfield32 name="Field Disable Flags" offset="0x0" visible="true">
+		<flags32 name="Field Disable Flags" offset="0x0" visible="true">
 			<bit name="Distance A" index="0" />
 			<bit name="Distance B" index="1" />
 			<bit name="Distance C" index="2" />
@@ -54,7 +54,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Distance A" offset="0x4" visible="true" />
 		<float32 name="Distance B" offset="0x8" visible="true" />
 		<float32 name="Distance C" offset="0xC" visible="true" />
@@ -71,11 +71,11 @@
 		<degree name="Outer Cone Angle" offset="0x2C" visible="true" />
 		<float32 name="Outer Cone Gain" offset="0x30" visible="true" />
 		<comment title="Scripted Location Override" />
-		<bitfield32 name="Flags" offset="0x34" visible="true">
+		<flags32 name="Flags" offset="0x34" visible="true">
 			<bit name="Override Azimuth" index="0" />
 			<bit name="Override 3D Gain" index="1" />
 			<bit name="Override Speaker Gain" index="2" />
-		</bitfield32>
+		</flags32>
 		<degree name="Azimuth" offset="0x38" visible="true" />
 		<float32 name="Positional Gain" offset="0x3C" visible="true" />
 		<float32 name="First Person Gain" offset="0x40" visible="true" />
@@ -122,9 +122,9 @@
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
-		<bitfield32 name="Flags" offset="0xC" visible="true">
+		<flags32 name="Flags" offset="0xC" visible="true">
 			<bit name="Use 3D Radio Hack" index="0" />
-		</bitfield32>
+		</flags32>
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Filter" offset="0x18" visible="true" elementSize="0x48">
@@ -169,7 +169,7 @@
 	<undefined name="Unknown" offset="0x84" visible="false" />
 	<tagblock name="Permutation Chunks" offset="0x88" visible="true" elementSize="0x14">
 		<uint32 name="File Offset" offset="0x0" visible="true" />
-		<bitfield8 name="Flags" offset="0x4" visible="true">
+		<flags8 name="Flags" offset="0x4" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -178,7 +178,7 @@
 			<bit name="Has 'Unknown A' Value" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+		</flags8>
 		<comment title="Chunk Size">Chunk size is actually int24 but since that isn't supported the "Leftmost Byte" value will take care of it. It is for bits 16-24 as seen in windows calculator.</comment>
 		<uint8 name="Chunk Size Leftmost Byte" offset="0x5" visible="true" />
 		<uint16 name="Chunk Size" offset="0x6" visible="true" />

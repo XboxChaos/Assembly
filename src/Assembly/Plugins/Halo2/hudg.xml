@@ -49,11 +49,11 @@
 		<int16 name="Offset from Reference Corner (y)" offset="0x6" visible="true" />
 		<color32 name="Override Icon Color" offset="0x8" alpha="true" visible="true" />
 		<uint8 name="Frame Rate (0-30)" offset="0xC" visible="true" />
-		<bitfield8 name="Flags" offset="0xD" visible="true">
+		<flags8 name="Flags" offset="0xD" visible="true">
 			<bit name="Use text from string_list instead" index="0" />
 			<bit name="Override default color" index="1" />
 			<bit name="Width offset is absolute icon width" index="2" />
-		</bitfield8>
+		</flags8>
 		<int16 name="Text Index" offset="0xE" visible="true" />
 	</tagblock>
 	<color32 name="Hud Help Default Color" offset="0xA4" alpha="true" visible="true" />
@@ -61,9 +61,9 @@
 	<float32 name="Hud Help Flash Period" offset="0xAC" visible="true" />
 	<float32 name="Hud Help Flash Delay" offset="0xB0" visible="true" />
 	<int16 name="Number of Flashes" offset="0xB4" visible="true" />
-	<bitfield16 name="Hud Help Flash Flags" offset="0xB6" visible="true">
+	<flags16 name="Hud Help Flash Flags" offset="0xB6" visible="true">
 		<bit name="Reverse Default/Flashing Colors" index="0" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Hud Help Flash Length" offset="0xB8" visible="true" />
 	<color32 name="Disabled Color" offset="0xBC" alpha="true" visible="true" />
 	<color32 name="Disabled Color" offset="0xC0" alpha="true" visible="true" />
@@ -73,9 +73,9 @@
 	<float32 name="Objective Flash Period" offset="0xD4" visible="true" />
 	<float32 name="Objective Flash Delay" offset="0xD8" visible="true" />
 	<int16 name="Number of Flashes" offset="0xDC" visible="true" />
-	<bitfield16 name="Hud Help Flash Flags" offset="0xDE" visible="true">
+	<flags16 name="Hud Help Flash Flags" offset="0xDE" visible="true">
 		<bit name="Reverse Default/Flashing Colors" index="0" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Objective Flash Length" offset="0xE0" visible="true" />
 	<color32 name="Disabled Color" offset="0xE4" alpha="true" visible="true" />
 	<int16 name="Objective uptime ticks" offset="0xE8" visible="true" />
@@ -108,9 +108,9 @@
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
-		<bitfield32 name="Flags" offset="0x4C" visible="true">
+		<flags32 name="Flags" offset="0x4C" visible="true">
 			<bit name="Don't Rotate When Pointing Offscreen" index="0" />
-		</bitfield32>
+		</flags32>
 		<undefined name="Unknown" offset="0x50" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
@@ -250,9 +250,9 @@
 	<float32 name="Not Much Time Left Flash Period" offset="0x320" visible="true" />
 	<float32 name="Not Much Time Left Flash Delay" offset="0x324" visible="true" />
 	<int16 name="Number of Flashes" offset="0x328" visible="true" />
-	<bitfield16 name="Not Much Time Left Flash Flags" offset="0x32A" visible="true">
+	<flags16 name="Not Much Time Left Flash Flags" offset="0x32A" visible="true">
 		<bit name="Reverse Default/Flashing Colors" index="0" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Not Much Time Left Flash Length" offset="0x32C" visible="true" />
 	<undefined name="Unknown" offset="0x330" visible="false" />
 	<undefined name="Unknown" offset="0x334" visible="false" />
@@ -261,9 +261,9 @@
 	<float32 name="Time Out Flash Period" offset="0x340" visible="true" />
 	<float32 name="Time Out Flash Delay" offset="0x344" visible="true" />
 	<int16 name="Number of Flashes" offset="0x348" visible="true" />
-	<bitfield16 name="Time Out Flash Flags" offset="0x34A" visible="true">
+	<flags16 name="Time Out Flash Flags" offset="0x34A" visible="true">
 		<bit name="Reverse Default/Flashing Colors" index="0" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Time Out Flash Length" offset="0x34C" visible="true" />
 	<color32 name="Disabled Time Out Default Color" offset="0x350" alpha="true" visible="true" />
 	<undefined name="Unknown" offset="0x354" visible="false" />
@@ -312,9 +312,9 @@
 		<tagRef name="Bitmap" offset="0x0" visible="true" />
 		<tagRef name="Shader" offset="0x8" visible="true" />
 		<int16 name="Sequence Index" offset="0x10" visible="true" />
-		<bitfield16 name="Time Out Flash Flags" offset="0x12" visible="true">
+		<flags16 name="Time Out Flash Flags" offset="0x12" visible="true">
 			<bit name="Don't scale when pulsing" index="0" />
-		</bitfield16>
+		</flags16>
 		<tagRef name="Sound" offset="0x14" visible="true" />
 	</tagblock>
 	<tagblock name="Waypoint Arrows" offset="0x408" visible="true" elementSize="0x24">
@@ -335,7 +335,7 @@
 	</tagblock>
 	<tagblock name="Hud sounds" offset="0x418" visible="true" elementSize="0x18">
 		<tagRef name="Chief sound" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x8" visible="true">
+		<flags32 name="Flags" offset="0x8" visible="true">
 			<bit name="Shield recharging" index="0" />
 			<bit name="Shield damaged" index="1" />
 			<bit name="Shield low" index="2" />
@@ -345,7 +345,7 @@
 			<bit name="Health major damage" index="6" />
 			<bit name="Rocket locking" index="7" />
 			<bit name="Rocket Locked" index="8" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Scale" offset="0xC" visible="true" />
 		<tagRef name="Dervish sound" offset="0x10" visible="true" />
 	</tagblock>

@@ -9,7 +9,7 @@
 	<tagblock name="Trait Profiles" offset="0x4" visible="true" elementSize="0x40">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagblock name="Shields and Health" offset="0x4" visible="true" elementSize="0x40">
-			<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			<flags32 name="Modifier Flags" offset="0x0" visible="true">
 				<bit name="Damage Resistance Multiplier" index="0" />
 				<bit name="Shield Health Multiplier" index="1" />
 				<bit name="Body Health Multiplier" index="2" />
@@ -23,7 +23,7 @@
 				<bit name="Wheelman Mod Recharge Time" index="10" />
 				<bit name="Wheelman Mod EMP Disable Time" index="11" />
 				<bit name="Fall Damage Rate" index="12" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Damage Resistance Multiplier" offset="0x4" visible="true" />
 			<float32 name="Shield Health Multiplier" offset="0x8" visible="true" />
 			<float32 name="Body Health Multiplier" offset="0xC" visible="true" />
@@ -67,7 +67,7 @@
 			<int8 name="Unknown" offset="0x3F" visible="false" />
 		</tagblock>
 		<tagblock name="Weapons, Damage, and Equipment" offset="0x10" visible="true" elementSize="0x80">
-			<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			<flags32 name="Modifier Flags" offset="0x0" visible="true">
 				<bit name="Weapon Damage Multiplier" index="0" />
 				<bit name="Melee Damage Multiplier" index="1" />
 				<bit name="Frag Grenade Recharge Rate" index="2" />
@@ -90,7 +90,7 @@
 				<bit name="Drop Recon Mod Warning Time" index="19" />
 				<bit name="Drop Recon Mod Distance" index="20" />
 				<bit name="Assassination Speed Multiplier" index="21" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Weapon Damage Multiplier" offset="0x4" visible="true" />
 			<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
 			<float32 name="Frag Grenade Recharge Rate" offset="0xC" visible="true" />
@@ -204,12 +204,12 @@
 			<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
 		</tagblock>
 		<tagblock name="Movement" offset="0x1C" visible="true" elementSize="0x1C">
-			<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			<flags32 name="Modifier Flags" offset="0x0" visible="true">
 				<bit name="Movement Multiplier" index="0" />
 				<bit name="Gravity Multiplier" index="1" />
 				<bit name="Jump Height Multiplier" index="2" />
 				<bit name="Look Speed Multiplier" index="3" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Movement Multiplier" offset="0x4" visible="true" />
 			<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
 			<float32 name="Jump Height Multiplier" offset="0xC" visible="true" />
@@ -285,10 +285,10 @@
 			<stringid name="Looping Effect" offset="0x8" visible="true" />
 		</tagblock>
 		<tagblock name="HUD" offset="0x34" visible="true" elementSize="0x14">
-			<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			<flags32 name="Modifier Flags" offset="0x0" visible="true">
 				<bit name="Tracker Range" index="0" />
 				<bit name="Nemesis Duration" index="1" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Tracker Range" offset="0x4" visible="true" />
 			<float32 name="Nemesis Duration" offset="0x8" visible="true" />
 			<enum8 name="Tracker Mode" offset="0xC" visible="true">
@@ -422,11 +422,11 @@
 		<stringid name="Variant Name" offset="0x0" visible="true" />
 		<stringid name="Variant Description" offset="0x4" visible="true" />
 		<tagblock name="General Settings" offset="0x8" visible="true" elementSize="0x8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-			</bitfield16>
+			</flags16>
 			<int8 name="Early Victory Win Count" offset="0x2" visible="true" />
 			<int8 name="Time Limit" offset="0x3" visible="true" />
 			<int8 name="Number Of Rounds" offset="0x4" visible="true" />
@@ -440,7 +440,7 @@
 			<int8 name="Prometean Energy Time" offset="0x2" visible="true" /><!-- 7 options -->
 			<int8 name="Promethean Energy Medal" offset="0x3" visible="true" /><!-- 7 options -->
 			<int8 name="Promethean Duration" offset="0x4" visible="true" /><!-- 9 options -->
-			<bitfield8 name="Flags" offset="0x5" visible="true">
+			<flags8 name="Flags" offset="0x5" visible="true">
 				<bit name="Unknown Enabled" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -449,18 +449,18 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="true" />
 		</tagblock>
 		<tagblock name="Respawn Settings" offset="0x20" visible="true" elementSize="0x14">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Inherit Respawn Time" index="0" />
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
 				<bit name="Dual Respawn Timing" index="4" />
-			</bitfield16>
+			</flags16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
@@ -478,7 +478,7 @@
 			<int8 name="Unknown" offset="0x13" visible="false" />
 		</tagblock>
 		<tagblock name="Social Settings" offset="0x2C" visible="true" elementSize="0x4">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
+			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Obervers Enabled" index="0" />
 				<bit name="Team Changing Enabled" index="1" />
 				<bit name="Balanced Team Changing" index="2" />
@@ -487,7 +487,7 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Map Overrides" offset="0x38" visible="true" elementSize="0x3C">
 			<stringid name="Base Player Trait Profile" offset="0x0" visible="true" />
@@ -510,14 +510,14 @@
 			<uint8 name="Speed Boost Secondary Trait Duration" offset="0x35" visible="true" />
 			<uint8 name="Overshield Secondary Trait Duration" offset="0x36" visible="true" />
 			<uint8 name="Custom Powerup Secondary Trait Duration" offset="0x37" visible="true" />
-			<bitfield8 name="Flags" offset="0x38" visible="true">
+			<flags8 name="Flags" offset="0x38" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Shortcuts On Map" index="1" />
 				<bit name="Abilities On Map" index="2" />
 				<bit name="Powerups On Map" index="3" />
 				<bit name="Turrets On Map" index="4" />
 				<bit name="Indestructable Vehicles" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x39" visible="false" />
 			<int8 name="Unknown" offset="0x3A" visible="false" />
 			<int8 name="Unknown" offset="0x3B" visible="false" />
@@ -534,14 +534,14 @@
 			<int8 name="Unknown" offset="0x2" visible="false" />
 			<int8 name="Unknown" offset="0x3" visible="false" />
 			<comment title="Team 0" />
-			<bitfield8 name="Team Flags" offset="0x4" visible="true">
+			<flags8 name="Team Flags" offset="0x4" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x5" visible="true" />
 			<enum8 name="Team Model" offset="0x6" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -554,14 +554,14 @@
 			<color32 name="Text Color" offset="0x14" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x18" alpha="true" visible="true" />
 			<comment title="Team 1" />
-			<bitfield8 name="Team Flags" offset="0x1C" visible="true">
+			<flags8 name="Team Flags" offset="0x1C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x1D" visible="true" />
 			<enum8 name="Team Model" offset="0x1E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -574,14 +574,14 @@
 			<color32 name="Text Color" offset="0x2C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x30" alpha="true" visible="true" />
 			<comment title="Team 2" />
-			<bitfield8 name="Team Flags" offset="0x34" visible="true">
+			<flags8 name="Team Flags" offset="0x34" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x35" visible="true" />
 			<enum8 name="Team Model" offset="0x36" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -594,14 +594,14 @@
 			<color32 name="Text Color" offset="0x44" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x48" alpha="true" visible="true" />
 			<comment title="Team 3" />
-			<bitfield8 name="Team Flags" offset="0x4C" visible="true">
+			<flags8 name="Team Flags" offset="0x4C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x4D" visible="true" />
 			<enum8 name="Team Model" offset="0x4E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -614,14 +614,14 @@
 			<color32 name="Text Color" offset="0x5C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x60" alpha="true" visible="true" />
 			<comment title="Team 4" />
-			<bitfield8 name="Team Flags" offset="0x64" visible="true">
+			<flags8 name="Team Flags" offset="0x64" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x65" visible="true" />
 			<enum8 name="Team Model" offset="0x66" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -634,14 +634,14 @@
 			<color32 name="Text Color" offset="0x74" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x78" alpha="true" visible="true" />
 			<comment title="Team 5" />
-			<bitfield8 name="Team Flags" offset="0x7C" visible="true">
+			<flags8 name="Team Flags" offset="0x7C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x7D" visible="true" />
 			<enum8 name="Team Model" offset="0x7E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -654,14 +654,14 @@
 			<color32 name="Text Color" offset="0x8C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x90" alpha="true" visible="true" />
 			<comment title="Team 6" />
-			<bitfield8 name="Team Flags" offset="0x94" visible="true">
+			<flags8 name="Team Flags" offset="0x94" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x95" visible="true" />
 			<enum8 name="Team Model" offset="0x96" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -674,14 +674,14 @@
 			<color32 name="Text Color" offset="0xA4" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0xA8" alpha="true" visible="true" />
 			<comment title="Team 7" />
-			<bitfield8 name="Team Flags" offset="0xAC" visible="true">
+			<flags8 name="Team Flags" offset="0xAC" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0xAD" visible="true" />
 			<enum8 name="Team Model" offset="0xAE" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -695,12 +695,12 @@
 			<color32 name="UI Color" offset="0xC0" alpha="true" visible="true" />
 		</tagblock>
 		<tagblock name="Loadouts" offset="0x50" visible="true" elementSize="0x10">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Enable Map Loadouts" index="0" />
 				<bit name="Spartan Initial Selection" index="1" />
 				<bit name="Elite Initial Selection" index="2" />
 				<bit name="Use Personal Loadouts" index="3" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
 			<int8 name="Unknown" offset="0x3" visible="true" />
@@ -709,7 +709,7 @@
 			</tagblock>
 		</tagblock>
 		<tagblock name="Ordnance?" offset="0x5C" visible="true" elementSize="0x4">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Enable Personal Ordnance" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -718,15 +718,15 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
 			<int8 name="Unknown" offset="0x3" visible="true" />
 		</tagblock>
-		<bitfield32 name="Flags" offset="0x68" visible="true">
+		<flags32 name="Flags" offset="0x68" visible="true">
 			<bit name="Open Channel Voice Enabled" index="0" />
 			<bit name="Unknown" index="1" />
-		</bitfield32>
+		</flags32>
 		<enum16 name="Edit Mode" offset="0x6C" visible="true">
 			<option name="Everyone" value="0x0" />
 			<option name="Leader Only" value="0x1" />
@@ -738,11 +738,11 @@
 		<stringid name="Variant Name" offset="0x0" visible="true" />
 		<stringid name="Variant Description" offset="0x4" visible="true" />
 		<tagblock name="General Settings" offset="0x8" visible="true" elementSize="0x8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Teams Enabled" index="0" />
 				<bit name="Round Resets Players" index="1" />
 				<bit name="Round Resets Map" index="2" />
-			</bitfield16>
+			</flags16>
 			<int8 name="Early Victory Win Count" offset="0x2" visible="true" />
 			<int8 name="Time Limit" offset="0x3" visible="true" />
 			<int8 name="Number Of Rounds" offset="0x4" visible="true" />
@@ -756,7 +756,7 @@
 			<int8 name="Prometean Energy Time" offset="0x2" visible="true" />
 			<int8 name="Promethean Energy Medal" offset="0x3" visible="true" />
 			<int8 name="Promethean Duration" offset="0x4" visible="true" />
-			<bitfield8 name="Flags" offset="0x5" visible="true">
+			<flags8 name="Flags" offset="0x5" visible="true">
 				<bit name="Unknown Enabled" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -765,18 +765,18 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x6" visible="true" />
 			<int8 name="Unknown" offset="0x7" visible="true" />
 		</tagblock>
 		<tagblock name="Respawn Settings" offset="0x20" visible="true" elementSize="0x14">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Inherit Respawn Time" index="0" />
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
 				<bit name="Dual Respawn Timing" index="4" />
-			</bitfield16>
+			</flags16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
@@ -794,7 +794,7 @@
 			<int8 name="Unknown" offset="0x13" visible="false" />
 		</tagblock>
 		<tagblock name="Social Settings" offset="0x2C" visible="true" elementSize="0x4">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
+			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Obervers Enabled" index="0" />
 				<bit name="Team Changing Enabled" index="1" />
 				<bit name="Balanced Team Changing" index="2" />
@@ -803,7 +803,7 @@
 				<bit name="Enemy Voice Enabled" index="5" />
 				<bit name="Open Channel Voice Enabled" index="6" />
 				<bit name="Dead Player Voice Enabled" index="7" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Map Overrides" offset="0x38" visible="true" elementSize="0x3C">
 			<stringid name="Base Player Trait Profile" offset="0x0" visible="true" />
@@ -826,14 +826,14 @@
 			<uint8 name="Speed Boost Secondary Trait Duration" offset="0x35" visible="true" />
 			<uint8 name="Overshield Secondary Trait Duration" offset="0x36" visible="true" />
 			<uint8 name="Custom Powerup Secondary Trait Duration" offset="0x37" visible="true" />
-			<bitfield8 name="Flags" offset="0x38" visible="true">
+			<flags8 name="Flags" offset="0x38" visible="true">
 				<bit name="Grenades On Map" index="0" />
 				<bit name="Shortcuts On Map" index="1" />
 				<bit name="Abilities On Map" index="2" />
 				<bit name="Powerups On Map" index="3" />
 				<bit name="Turrets On Map" index="4" />
 				<bit name="Indestructable Vehicles" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x39" visible="false" />
 			<int8 name="Unknown" offset="0x3A" visible="false" />
 			<int8 name="Unknown" offset="0x3B" visible="false" />
@@ -850,14 +850,14 @@
 			<int8 name="Unknown" offset="0x2" visible="false" />
 			<int8 name="Unknown" offset="0x3" visible="false" />
 			<comment title="Team 0" />
-			<bitfield8 name="Team Flags" offset="0x4" visible="true">
+			<flags8 name="Team Flags" offset="0x4" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x5" visible="true" />
 			<enum8 name="Team Model" offset="0x6" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -870,14 +870,14 @@
 			<color32 name="Text Color" offset="0x14" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x18" alpha="true" visible="true" />
 			<comment title="Team 1" />
-			<bitfield8 name="Team Flags" offset="0x1C" visible="true">
+			<flags8 name="Team Flags" offset="0x1C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x1D" visible="true" />
 			<enum8 name="Team Model" offset="0x1E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -890,14 +890,14 @@
 			<color32 name="Text Color" offset="0x2C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x30" alpha="true" visible="true" />
 			<comment title="Team 2" />
-			<bitfield8 name="Team Flags" offset="0x34" visible="true">
+			<flags8 name="Team Flags" offset="0x34" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x35" visible="true" />
 			<enum8 name="Team Model" offset="0x36" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -910,14 +910,14 @@
 			<color32 name="Text Color" offset="0x44" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x48" alpha="true" visible="true" />
 			<comment title="Team 3" />
-			<bitfield8 name="Team Flags" offset="0x4C" visible="true">
+			<flags8 name="Team Flags" offset="0x4C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x4D" visible="true" />
 			<enum8 name="Team Model" offset="0x4E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -930,14 +930,14 @@
 			<color32 name="Text Color" offset="0x5C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x60" alpha="true" visible="true" />
 			<comment title="Team 4" />
-			<bitfield8 name="Team Flags" offset="0x64" visible="true">
+			<flags8 name="Team Flags" offset="0x64" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x65" visible="true" />
 			<enum8 name="Team Model" offset="0x66" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -950,14 +950,14 @@
 			<color32 name="Text Color" offset="0x74" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x78" alpha="true" visible="true" />
 			<comment title="Team 5" />
-			<bitfield8 name="Team Flags" offset="0x7C" visible="true">
+			<flags8 name="Team Flags" offset="0x7C" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x7D" visible="true" />
 			<enum8 name="Team Model" offset="0x7E" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -970,14 +970,14 @@
 			<color32 name="Text Color" offset="0x8C" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0x90" alpha="true" visible="true" />
 			<comment title="Team 6" />
-			<bitfield8 name="Team Flags" offset="0x94" visible="true">
+			<flags8 name="Team Flags" offset="0x94" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0x95" visible="true" />
 			<enum8 name="Team Model" offset="0x96" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -990,14 +990,14 @@
 			<color32 name="Text Color" offset="0xA4" alpha="true" visible="true" />
 			<color32 name="UI Color" offset="0xA8" alpha="true" visible="true" />
 			<comment title="Team 7" />
-			<bitfield8 name="Team Flags" offset="0xAC" visible="true">
+			<flags8 name="Team Flags" offset="0xAC" visible="true">
 				<bit name="Enabled" index="0" />
 				<bit name="Override Primary Color" index="1" />
 				<bit name="Override Secondary Color" index="2" />
 				<bit name="Override Text Color" index="3" />
 				<bit name="Override UI Color" index="4" />
 				<bit name="Override Emblem (No Use)" index="5" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Team Index" offset="0xAD" visible="true" />
 			<enum8 name="Team Model" offset="0xAE" visible="true">
 				<option name="Spartan/Default" value="0x0" />
@@ -1011,12 +1011,12 @@
 			<color32 name="UI Color" offset="0xC0" alpha="true" visible="true" />
 		</tagblock>
 		<tagblock name="Loadouts" offset="0x50" visible="true" elementSize="0x10">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Enable Map Loadouts" index="0" />
 				<bit name="Spartan Initial Selection" index="1" />
 				<bit name="Elite Initial Selection" index="2" />
 				<bit name="Use Personal Loadouts" index="3" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
 			<int8 name="Unknown" offset="0x3" visible="true" />
@@ -1025,7 +1025,7 @@
 			</tagblock>
 		</tagblock>
 		<tagblock name="Ordnance?" offset="0x5C" visible="true" elementSize="0x4">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Enable Personal Ordnance" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -1034,12 +1034,12 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
 			<int8 name="Unknown" offset="0x3" visible="true" />
 		</tagblock>
-		<bitfield8 name="Scenario Flags" offset="0x68" visible="true">
+		<flags8 name="Scenario Flags" offset="0x68" visible="true">
 			<bit name="Hazards" index="0" />
 			<bit name="One Generator To Lose" index="1" />
 			<bit name="Random Generator Order" index="2" />
@@ -1048,7 +1048,7 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+		</flags8>
 		<enum8 name="Campaign Difficulty Level" offset="0x69" visible="true">
 			<option name="Unchanged" value="0x0" />
 			<option name="Easy" value="0x1" />
@@ -1071,13 +1071,13 @@
 		<stringid name="Elite Trait Profile" offset="0x80" visible="true" />
 		<stringid name="AI Trait Profile" offset="0x84" visible="true" />
 		<tagblock name="Elite Respawn Settings" offset="0x88" visible="true" elementSize="0x14">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Inherit Respawn Time" index="0" />
 				<bit name="Respawn With Team" index="1" />
 				<bit name="Respawn At Location" index="2" />
 				<bit name="Respawn On Kills" index="3" />
 				<bit name="Dual Respawn Timing" index="4" />
-			</bitfield16>
+			</flags16>
 			<int8 name="Lives Per Round" offset="0x2" visible="true" />
 			<int8 name="Shared Team Lives" offset="0x3" visible="true" />
 			<int8 name="Respawn Time" offset="0x4" visible="true" />
@@ -1095,7 +1095,7 @@
 			<int8 name="Unknown" offset="0x13" visible="false" />
 		</tagblock>
 		<tagblock name="Unknown Skulls" offset="0x94" visible="true" elementSize="0x2">
-			<bitfield16 name="Skulls" offset="0x0" visible="true">
+			<flags16 name="Skulls" offset="0x0" visible="true">
 				<bit name="Iron" index="0" />
 				<bit name="Black Eye" index="1" />
 				<bit name="Tough Luck" index="2" />
@@ -1110,10 +1110,10 @@
 				<bit name="Cowbell" index="11" />
 				<bit name="Grunt Brithday" index="12" />
 				<bit name="IWHBYD" index="13" />
-			</bitfield16>
+			</flags16>
 		</tagblock>
 		<tagblock name="Rounds" offset="0xA0" visible="true" elementSize="0x34">
-			<bitfield32 name="Round Skulls" offset="0x0" visible="true">
+			<flags32 name="Round Skulls" offset="0x0" visible="true">
 				<bit name="Iron" index="0" />
 				<bit name="Black Eye" index="1" />
 				<bit name="Tough Luck" index="2" />
@@ -1131,45 +1131,45 @@
 				<bit name="Red Custom" index="14" />
 				<bit name="Yellow Custom" index="15" />
 				<bit name="Blue Custom" index="16" />
-			</bitfield32>
+			</flags32>
 			<comment title="Initial Wave" />
-			<bitfield8 name="Wave Flags" offset="0x4" visible="true">
+			<flags8 name="Wave Flags" offset="0x4" visible="true">
 				<bit name="Uses Dropship" index="0" />
-			</bitfield8>
-			<bitfield8 name="Squad Advance Type" offset="0x5" visible="true">
+			</flags8>
+			<flags8 name="Squad Advance Type" offset="0x5" visible="true">
 				<bit name="Ordered" index="0" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x6" visible="false" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
 			<tagblock name="Squads" offset="0x8" visible="true" elementSize="0x4">
 				<stringid name="Enemy" offset="0x0" visible="true" />
 			</tagblock>
 			<comment title="Main Wave" />
-			<bitfield8 name="Wave Flags" offset="0x14" visible="true">
+			<flags8 name="Wave Flags" offset="0x14" visible="true">
 				<bit name="Uses Dropship" index="0" />
-			</bitfield8>
-			<bitfield8 name="Squad Advance Type" offset="0x15" visible="true">
+			</flags8>
+			<flags8 name="Squad Advance Type" offset="0x15" visible="true">
 				<bit name="Ordered" index="0" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x16" visible="false" />
 			<int8 name="Unknown" offset="0x17" visible="false" />
 			<tagblock name="Squads" offset="0x18" visible="true" elementSize="0x4">
 				<stringid name="Enemy" offset="0x0" visible="true" />
 			</tagblock>
 			<comment title="Boss Wave" />
-			<bitfield8 name="Wave Flags" offset="0x24" visible="true">
+			<flags8 name="Wave Flags" offset="0x24" visible="true">
 				<bit name="Uses Dropship" index="0" />
-			</bitfield8>
-			<bitfield8 name="Squad Advance Type" offset="0x25" visible="true">
+			</flags8>
+			<flags8 name="Squad Advance Type" offset="0x25" visible="true">
 				<bit name="Ordered" index="0" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x26" visible="false" />
 			<int8 name="Unknown" offset="0x27" visible="false" />
 			<tagblock name="Squads" offset="0x28" visible="true" elementSize="0x4">
 				<stringid name="Enemy" offset="0x0" visible="true" />
 			</tagblock>
 		</tagblock>
-		<bitfield32 name="Bonus Round Skulls" offset="0xAC" visible="true">
+		<flags32 name="Bonus Round Skulls" offset="0xAC" visible="true">
 			<bit name="Iron" index="0" />
 			<bit name="Black Eye" index="1" />
 			<bit name="Tough Luck" index="2" />
@@ -1187,15 +1187,15 @@
 			<bit name="Red Custom" index="14" />
 			<bit name="Yellow Custom" index="15" />
 			<bit name="Blue Custom" index="16" />
-		</bitfield32>
+		</flags32>
 		<int16 name="Bonus Round Duration" offset="0xB0" visible="true" />
 		<int16 name="Unknown" offset="0xB2" visible="false" />
-		<bitfield8 name="Wave Flags" offset="0xB4" visible="true">
+		<flags8 name="Wave Flags" offset="0xB4" visible="true">
 			<bit name="Uses Dropship" index="0" />
-		</bitfield8>
-		<bitfield8 name="Squad Advance Type" offset="0xB5" visible="true">
+		</flags8>
+		<flags8 name="Squad Advance Type" offset="0xB5" visible="true">
 			<bit name="Ordered" index="0" />
-		</bitfield8>
+		</flags8>
 		<int8 name="Unknown" offset="0xB6" visible="false" />
 		<int8 name="Unknown" offset="0xB7" visible="false" />
 		<tagblock name="Bonus Round Squads" offset="0xB8" visible="true" elementSize="0x4">

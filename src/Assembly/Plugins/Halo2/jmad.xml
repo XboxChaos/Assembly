@@ -7,37 +7,37 @@
 		<revision author="Lord Zedd" version="3">Updated...</revision>
 	</revisions>
 	<tagRef name="Parent Animation Graph" offset="0x0" visible="true" />
-	<bitfield8 name="Inheritance Flags" offset="0x8" visible="true">
+	<flags8 name="Inheritance Flags" offset="0x8" visible="true">
 		<bit name="Inherit Root Trans Scale Only" index="0" />
 		<bit name="Inherit For Use On Player" index="1" />
-	</bitfield8>
-	<bitfield8 name="Private Flags" offset="0x9" visible="true">
+	</flags8>
+	<flags8 name="Private Flags" offset="0x9" visible="true">
 		<bit name="Prepared For Cache" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Imported With Codec Compressors" index="2" />
 		<bit name="Bit 3" index="3" />
 		<bit name="Written To Cache" index="4" />
 		<bit name="Animation Data Reordered" index="5" />
-	</bitfield8>
+	</flags8>
 	<int16 name="Animation Codec Pack" offset="0xA" visible="true" />
 	<tagblock name="Skeleton Nodes" offset="0xC" visible="true" elementSize="0x20">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Next Sibling Node Index" offset="0x4" visible="true" />
 		<int16 name="First Child Node Index" offset="0x6" visible="true" />
 		<int16 name="Parent Node Index" offset="0x8" visible="true" />
-		<bitfield8 name="Model Flags" offset="0xA" visible="true">
+		<flags8 name="Model Flags" offset="0xA" visible="true">
 			<bit name="Primary Model" index="0" />
 			<bit name="Secondary Model" index="1" />
 			<bit name="Local Root" index="2" />
 			<bit name="Left Hand" index="3" />
 			<bit name="Right Hand" index="4" />
 			<bit name="Left Arm Member" index="5" />
-		</bitfield8>
-		<bitfield8 name="Node Joint Flags" offset="0xB" visible="true">
+		</flags8>
+		<flags8 name="Node Joint Flags" offset="0xB" visible="true">
 			<bit name="Ball-Socket" index="0" />
 			<bit name="Hinge" index="1" />
 			<bit name="No Movement" index="2" />
-		</bitfield8>
+		</flags8>
 		<float32 name="Base Vector i" offset="0xC" visible="true" />
 		<float32 name="Base Vector j" offset="0x10" visible="true" />
 		<float32 name="Base Vector k" offset="0x14" visible="true" />
@@ -46,26 +46,26 @@
 	</tagblock>
 	<tagblock name="Sound References" offset="0x14" visible="true" elementSize="0xC">
 		<tagRef name="Sound" offset="0x0" visible="true" />
-		<bitfield16 name="Flags" offset="0x8" visible="true">
+		<flags16 name="Flags" offset="0x8" visible="true">
 			<bit name="Allow On Player" index="0" />
 			<bit name="Left Arm Only" index="1" />
 			<bit name="Right Arm Only" index="2" />
 			<bit name="First-Person Only" index="3" />
 			<bit name="Forward Only" index="4" />
 			<bit name="Reverse Only" index="5" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
 	<tagblock name="Effect References" offset="0x1C" visible="true" elementSize="0xC">
 		<tagRef name="Effect" offset="0x0" visible="true" />
-		<bitfield16 name="Flags" offset="0x8" visible="true">
+		<flags16 name="Flags" offset="0x8" visible="true">
 			<bit name="Allow On Player" index="0" />
 			<bit name="Left Arm Only" index="1" />
 			<bit name="Right Arm Only" index="2" />
 			<bit name="First-Person Only" index="3" />
 			<bit name="Forward Only" index="4" />
 			<bit name="Reverse Only" index="5" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0xA" visible="false" />
 	</tagblock>
 	<tagblock name="Blend Screens" offset="0x24" visible="true" elementSize="0x1C">
@@ -98,7 +98,7 @@
 		<int8 name="Blend Screen" offset="0x12" visible="true" />
 		<uint8 name="Node Count" offset="0x13" visible="true" />
 		<int16 name="Frame Count" offset="0x14" visible="true" />
-		<bitfield8 name="Internal Flags" offset="0x16" visible="true">
+		<flags8 name="Internal Flags" offset="0x16" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="World Relative" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -107,13 +107,13 @@
 			<bit name="Compression Disabled" index="5" />
 			<bit name="Old Production Checksum" index="6" />
 			<bit name="Valid Production Checksum" index="7" />
-		</bitfield8>
-		<bitfield8 name="Production Flags" offset="0x17" visible="true">
+		</flags8>
+		<flags8 name="Production Flags" offset="0x17" visible="true">
 			<bit name="Do Not Monitor Changes" index="0" />
 			<bit name="Verify Sound Events" index="1" />
 			<bit name="Do Not Inherit For Player Graphs" index="2" />
-		</bitfield8>
-		<bitfield16 name="Playback Flags" offset="0x18" visible="true">
+		</flags8>
+		<flags16 name="Playback Flags" offset="0x18" visible="true">
 			<bit name="Disable Interpolation In" index="0" />
 			<bit name="Disable Interpolation Out" index="1" />
 			<bit name="Disable Mode ik" index="2" />
@@ -121,7 +121,7 @@
 			<bit name="Disable Weapon Aim/First Person" index="4" />
 			<bit name="Disable Look Screen" index="5" />
 			<bit name="Disable Transition Adjustment" index="6" />
-		</bitfield16>
+		</flags16>
 		<enum8 name="Desired Compression" offset="0x1A" visible="true">
 			<option name="Best Score" value="0x0" />
 			<option name="Best Compression" value="0x1" />
@@ -181,11 +181,11 @@
 		</tagblock>
 		<tagblock name="Object-Space Parent Nodes" offset="0x58" visible="true" elementSize="0x1C">
 			<int16 name="Node Index" offset="0x0" visible="true" />
-			<bitfield16 name="Component Flags" offset="0x2" visible="true">
+			<flags16 name="Component Flags" offset="0x2" visible="true">
 				<bit name="Rotation" index="0" />
 				<bit name="Translation" index="1" />
 				<bit name="Scale" index="2" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Rotation x" offset="0x4" visible="true" />
 			<int16 name="Rotation y" offset="0x6" visible="true" />
 			<int16 name="Rotation z" offset="0x8" visible="true" />
@@ -292,7 +292,7 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 			<int16 name="Local Node" offset="0x0" visible="true" />
 		</tagblock>
 		<tagblock name="Node Map Flags" offset="0x10" visible="true" elementSize="0x4">
-			<bitfield32 name="Local Node Flags" offset="0x0" visible="true">
+			<flags32 name="Local Node Flags" offset="0x0" visible="true">
 				<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
 				<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
 				<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
@@ -325,10 +325,10 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 				<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="29" />
 				<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="30" />
 				<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<float32 name="Root z Offset" offset="0x18" visible="true" />
-		<bitfield32 name="Inheritance Flags" offset="0x1C" visible="true">
+		<flags32 name="Inheritance Flags" offset="0x1C" visible="true">
 			<bit name="Tighten Nodes" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -361,13 +361,13 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 	</tagblock>
 	<tagblock name="Weapon List" offset="0x54" visible="true" elementSize="0x8">
 		<stringId name="Weapon Name" offset="0x0" visible="true" />
 		<stringId name="Weapon Class" offset="0x4" visible="true" />
 	</tagblock>
-	<bitfield32 name="Left Arm Nodes Nodes 1" offset="0x5C" visible="true">
+	<flags32 name="Left Arm Nodes Nodes 1" offset="0x5C" visible="true">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -400,8 +400,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 29" index="29" />
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 2" offset="0x60" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 2" offset="0x60" visible="true">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -434,8 +434,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 61" index="29" />
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 3" offset="0x64" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 3" offset="0x64" visible="true">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -468,8 +468,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 93" index="29" />
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 4" offset="0x68" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 4" offset="0x68" visible="true">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -502,8 +502,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 125" index="29" />
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 5" offset="0x6C" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 5" offset="0x6C" visible="true">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -536,8 +536,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 157" index="29" />
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 6" offset="0x70" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 6" offset="0x70" visible="true">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -570,8 +570,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 189" index="29" />
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 7" offset="0x74" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 7" offset="0x74" visible="true">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -604,8 +604,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 221" index="29" />
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
-	</bitfield32>
-	<bitfield32 name="Left Arm Nodes 8" offset="0x78" visible="true">
+	</flags32>
+	<flags32 name="Left Arm Nodes 8" offset="0x78" visible="true">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />
@@ -638,8 +638,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 253" index="29" />
 		<bit name="Node 254" index="30" />
 		<bit name="Node 255" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 1" offset="0x7C" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 1" offset="0x7C" visible="true">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
 		<bit name="Node 2" index="2" />
@@ -672,8 +672,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 29" index="29" />
 		<bit name="Node 30" index="30" />
 		<bit name="Node 31" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 2" offset="0x80" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 2" offset="0x80" visible="true">
 		<bit name="Node 32" index="0" />
 		<bit name="Node 33" index="1" />
 		<bit name="Node 34" index="2" />
@@ -706,8 +706,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 61" index="29" />
 		<bit name="Node 62" index="30" />
 		<bit name="Node 63" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 3" offset="0x84" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 3" offset="0x84" visible="true">
 		<bit name="Node 64" index="0" />
 		<bit name="Node 65" index="1" />
 		<bit name="Node 66" index="2" />
@@ -740,8 +740,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 93" index="29" />
 		<bit name="Node 94" index="30" />
 		<bit name="Node 95" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 4" offset="0x88" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 4" offset="0x88" visible="true">
 		<bit name="Node 96" index="0" />
 		<bit name="Node 97" index="1" />
 		<bit name="Node 98" index="2" />
@@ -774,8 +774,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 125" index="29" />
 		<bit name="Node 126" index="30" />
 		<bit name="Node 127" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 5" offset="0x8C" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 5" offset="0x8C" visible="true">
 		<bit name="Node 128" index="0" />
 		<bit name="Node 129" index="1" />
 		<bit name="Node 130" index="2" />
@@ -808,8 +808,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 157" index="29" />
 		<bit name="Node 158" index="30" />
 		<bit name="Node 159" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 6" offset="0x90" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 6" offset="0x90" visible="true">
 		<bit name="Node 160" index="0" />
 		<bit name="Node 161" index="1" />
 		<bit name="Node 162" index="2" />
@@ -842,8 +842,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 189" index="29" />
 		<bit name="Node 190" index="30" />
 		<bit name="Node 191" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 7" offset="0x94" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 7" offset="0x94" visible="true">
 		<bit name="Node 192" index="0" />
 		<bit name="Node 193" index="1" />
 		<bit name="Node 194" index="2" />
@@ -876,8 +876,8 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 221" index="29" />
 		<bit name="Node 222" index="30" />
 		<bit name="Node 223" index="31" />
-	</bitfield32>
-	<bitfield32 name="Right Arm Nodes 8" offset="0x98" visible="true">
+	</flags32>
+	<flags32 name="Right Arm Nodes 8" offset="0x98" visible="true">
 		<bit name="Node 224" index="0" />
 		<bit name="Node 225" index="1" />
 		<bit name="Node 226" index="2" />
@@ -910,7 +910,7 @@ To reference an inherited graph, set the Graph Index value of the animation(s) y
 		<bit name="Node 253" index="29" />
 		<bit name="Node 254" index="30" />
 		<bit name="Node 255" index="31" />
-	</bitfield32>
+	</flags32>
 	<dataref name="Last Import Results" offset="0x9C" visible="true" />
 	<tagblock name="Additional Node Data" offset="0xA4" visible="true" elementSize="0x3C">
 		<stringid name="Node Name" offset="0x0" visible="true" />

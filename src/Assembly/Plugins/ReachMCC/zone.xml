@@ -75,7 +75,7 @@
 		<int32 name="Fixup Information Offset" offset="0x14" visible="true" />
 		<int32 name="Fixup Information Length" offset="0x18" visible="true" />
 		<int32 name="Secondary Fixup Information Offset" offset="0x1C" visible="true" />
-		<bitfield16 name="Fixup Flags" offset="0x20" visible="true">
+		<flags16 name="Fixup Flags" offset="0x20" visible="true">
 			<bit name="Primary Fixup Exists" index="0" />
 			<bit name="Secondary Fixup Exists" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -92,9 +92,9 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<int16 name="[play] Segment Index" offset="0x22" visible="true" />
-		<bitfield8 name="Root Definition Address Location/High Bits" offset="0x24" visible="true">
+		<flags8 name="Root Definition Address Location/High Bits" offset="0x24" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -103,14 +103,14 @@
 			<bit name="Fixup" index="5" />
 			<bit name="Raw Page" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+		</flags8>
 		<uint8 name="Root Definition Address Upper Bits" offset="0x25" visible="true" />
 		<uint16 name="Root Definition Address" offset="0x26" visible="true" />
 		<tagblock name="Resource Fixups" offset="0x28" visible="true" elementSize="0x8">
 			<comment title="Members">Block Offset: [offset in tag data sub-buffer].
 Address: fix-up address (either in the data sub-buffer, or a cache-resource offset.</comment>
 			<int32 name="Block Offset" offset="0x0" visible="true" />
-			<bitfield8 name="Address Location/High Bits" offset="0x4" visible="true">
+			<flags8 name="Address Location/High Bits" offset="0x4" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -119,12 +119,12 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="Fixup" index="5" />
 				<bit name="Raw Page" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="Address Upper Bits" offset="0x5" visible="true" />
 			<uint16 name="Address" offset="0x6" visible="true" />
 		</tagblock>
 		<tagblock name="Resource Definition Fixups" offset="0x34" visible="true" elementSize="0x8">
-			<bitfield8 name="Offset Location/High Bits" offset="0x0" visible="true">
+			<flags8 name="Offset Location/High Bits" offset="0x0" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -133,7 +133,7 @@ Address: fix-up address (either in the data sub-buffer, or a cache-resource offs
 				<bit name="Fixup" index="5" />
 				<bit name="Raw Page" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="Offset Upper Bits" offset="0x1" visible="true" />
 			<uint16 name="Offset" offset="0x2" visible="true" />
 			<int32 name="Resource Structure Type Index" offset="0x4" visible="true" />
@@ -144,7 +144,7 @@ Each bit corresponds to either a chunk in "Tag Resources" above (Raw Pools), or 
 If a bit is enabled then that member will be loaded.</comment>
 	<tagblock name="Designer Zonesets" offset="0x70" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -177,13 +177,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -216,10 +216,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -252,7 +252,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -275,7 +275,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -308,10 +308,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -344,7 +344,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -356,7 +356,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="Global Zoneset" offset="0x7C" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -389,13 +389,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -428,10 +428,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -464,7 +464,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -487,7 +487,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -520,10 +520,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -556,7 +556,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -571,7 +571,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	<undefined name="Unknown" offset="0x90" visible="false" />
 	<tagblock name="Unattached Zoneset" offset="0x94" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -604,13 +604,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -643,10 +643,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -679,7 +679,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -702,7 +702,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -735,10 +735,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -771,7 +771,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -783,7 +783,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="Disc-Forbidden Zoneset" offset="0xA0" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -816,13 +816,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -855,10 +855,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -891,7 +891,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -914,7 +914,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -947,10 +947,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -983,7 +983,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -995,7 +995,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="Disc-Always-Streaming Zoneset" offset="0xAC" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1028,13 +1028,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1067,10 +1067,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1103,7 +1103,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1126,7 +1126,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1159,10 +1159,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1195,7 +1195,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -1207,7 +1207,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="BSP Zonesets" offset="0xB8" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1240,13 +1240,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1279,10 +1279,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1315,7 +1315,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1338,7 +1338,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1371,10 +1371,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1407,7 +1407,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -1419,7 +1419,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="BSP Zonesets 2" offset="0xC4" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1452,13 +1452,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1491,10 +1491,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1527,7 +1527,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1550,7 +1550,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1583,10 +1583,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1619,7 +1619,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -1631,7 +1631,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="BSP Zonesets 3" offset="0xD0" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1664,13 +1664,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1703,10 +1703,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1739,7 +1739,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1762,7 +1762,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1795,10 +1795,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1831,7 +1831,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -1843,7 +1843,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="Cinematic Zonesets" offset="0xDC" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1876,13 +1876,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1915,10 +1915,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -1951,7 +1951,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -1974,7 +1974,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2007,10 +2007,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2043,7 +2043,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -2055,7 +2055,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	</tagblock>
 	<tagblock name="Scenario Zonesets" offset="0xE8" visible="true" elementSize="0xA0">
 		<tagblock name="Required Raw Pool" offset="0x0" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2088,13 +2088,13 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<tagblock name="Optional Raw Pool" offset="0x18" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2127,10 +2127,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Raw Pool 2" offset="0x24" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2163,7 +2163,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<stringid name="Set Name" offset="0x30" visible="true" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
@@ -2186,7 +2186,7 @@ If a bit is enabled then that member will be loaded.</comment>
 		<undefined name="Unknown" offset="0x64" visible="false" />
 		<undefined name="Unknown" offset="0x68" visible="false" />
 		<tagblock name="Required Tag Pool" offset="0x6C" visible="true" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2219,10 +2219,10 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<tagblock name="Optional Tag Pool" offset="0x78" visible="false" elementSize="0x4">
-			<bitfield32 name="Active Members" offset="0x0" visible="true">
+			<flags32 name="Active Members" offset="0x0" visible="true">
 				<bit name="0" index="0" />
 				<bit name="1" index="1" />
 				<bit name="2" index="2" />
@@ -2255,7 +2255,7 @@ If a bit is enabled then that member will be loaded.</comment>
 				<bit name="29" index="29" />
 				<bit name="30" index="30" />
 				<bit name="31" index="31" />
-			</bitfield32>
+			</flags32>
 		</tagblock>
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
@@ -2274,7 +2274,7 @@ If a bit is enabled then that member will be loaded.</comment>
 	<tagblock name="Scenario Zoneset Groups" offset="0x10C" visible="true" elementSize="0x24">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int32 name="BSP Group Index" offset="0x4" visible="true" />
-		<bitfield32 name="Import Loaded BSPs" offset="0x8" visible="true">
+		<flags32 name="Import Loaded BSPs" offset="0x8" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
 			<bit name="BSP 2" index="2" />
@@ -2307,8 +2307,8 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="BSP 29" index="29" />
 			<bit name="BSP 30" index="30" />
 			<bit name="BSP 31" index="31" />
-		</bitfield32>
-		<bitfield32 name="Loaded BSPs" offset="0xC" visible="true">
+		</flags32>
+		<flags32 name="Loaded BSPs" offset="0xC" visible="true">
 			<bit name="BSP 0" index="0" />
 			<bit name="BSP 1" index="1" />
 			<bit name="BSP 2" index="2" />
@@ -2341,8 +2341,8 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="BSP 29" index="29" />
 			<bit name="BSP 30" index="30" />
 			<bit name="BSP 31" index="31" />
-		</bitfield32>
-		<bitfield32 name="Loaded Designer Zonesets" offset="0x10" visible="true">
+		</flags32>
+		<flags32 name="Loaded Designer Zonesets" offset="0x10" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2375,8 +2375,8 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 29" index="29" />
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
-		</bitfield32>
-		<bitfield32 name="Unknown Loaded Designer Zonesets" offset="0x14" visible="true">
+		</flags32>
+		<flags32 name="Unknown Loaded Designer Zonesets" offset="0x14" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2409,8 +2409,8 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 29" index="29" />
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
-		</bitfield32>
-		<bitfield32 name="Unloaded Designer Zonesets" offset="0x18" visible="true">
+		</flags32>
+		<flags32 name="Unloaded Designer Zonesets" offset="0x18" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2443,8 +2443,8 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 29" index="29" />
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
-		</bitfield32>
-		<bitfield32 name="Loaded Cinematic Zonesets" offset="0x1C" visible="true">
+		</flags32>
+		<flags32 name="Loaded Cinematic Zonesets" offset="0x1C" visible="true">
 			<bit name="Set 0" index="0" />
 			<bit name="Set 1" index="1" />
 			<bit name="Set 2" index="2" />
@@ -2477,7 +2477,7 @@ If a bit is enabled then that member will be loaded.</comment>
 			<bit name="Set 29" index="29" />
 			<bit name="Set 30" index="30" />
 			<bit name="Set 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<int32 name="BSP Atlas Index" offset="0x20" visible="true" />
 	</tagblock>
 	<tagblock name="Scenario BSPs" offset="0x118" visible="true" elementSize="0x10">

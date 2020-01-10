@@ -32,9 +32,9 @@
 			<float32 name="Plane d" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Leaves" offset="0x10" visible="true" elementSize="0x4">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Contains Double-Sided Surfaces" index="0" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="BSP 2D Reference Count" offset="0x1" visible="true" />
 			<int16 name="First BSP 2D Reference" offset="0x2" visible="true" />
 		</tagblock>
@@ -52,14 +52,14 @@
 		<tagblock name="Surfaces" offset="0x28" visible="true" elementSize="0x8">
 			<int16 name="Plane" offset="0x0" visible="true" />
 			<int16 name="First Edge" offset="0x2" visible="true" />
-			<bitfield8 name="Flags" offset="0x4" visible="true">
+			<flags8 name="Flags" offset="0x4" visible="true">
 				<bit name="Two-Sided" index="0" />
 				<bit name="Invisible" index="1" />
 				<bit name="Climbable" index="2" />
 				<bit name="Breakable" index="3" />
 				<bit name="Invalid" index="4" />
 				<bit name="Conveyor" index="5" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="Breakable Surface Index" offset="0x5" visible="true" />
 			<int16 name="Material Index" offset="0x6" visible="true" />
 		</tagblock>
@@ -109,14 +109,14 @@
 		<float32 name="Centroid Y" offset="0xC" visible="true" />
 		<float32 name="Centroid Z" offset="0x10" visible="true" />
 		<float32 name="Bounding Radius" offset="0x14" visible="true" />
-		<bitfield32 name="Flags" offset="0x18" visible="true">
+		<flags32 name="Flags" offset="0x18" visible="true">
 			<bit name="AI Cannot Hear Through This" index="0" />
 			<bit name="One-Way" index="1" />
 			<bit name="Door" index="2" />
 			<bit name="No-Way" index="3" />
 			<bit name="One-Way Reversed" index="4" />
 			<bit name="No One Can Hear Through This" index="5" />
-		</bitfield32>
+		</flags32>
 		<tagblock name="Vertices" offset="0x1C" visible="true" elementSize="0xC">
 			<float32 name="Point X" offset="0x0" visible="true" />
 			<float32 name="Point Y" offset="0x4" visible="true" />
@@ -130,11 +130,11 @@
 		<float32 name="Plane j" offset="0x8" visible="true" />
 		<float32 name="Plane k" offset="0xC" visible="true" />
 		<float32 name="Plane d" offset="0x10" visible="true" />
-		<bitfield16 name="Flags" offset="0x14" visible="true">
+		<flags16 name="Flags" offset="0x14" visible="true">
 			<bit name="Extend Infinitely While Visible" index="0" />
 			<bit name="Do Not Floodfill" index="1" />
 			<bit name="Aggressive Floodfill" index="2" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Priority" offset="0x16" visible="true" />
 	</tagblock>
 	<undefined name="Unknown" offset="0x6C" visible="false" />
@@ -230,7 +230,7 @@
 			<option name="Skinned" value="0x3" />
 			<option name="Unsupported (Reimport)" value="0x4" />
 		</enum16>
-		<bitfield16 name="Geometry Compression Flags" offset="0x16" visible="true">
+		<flags16 name="Geometry Compression Flags" offset="0x16" visible="true">
 			<bit name="Compressed Position" index="0" />
 			<bit name="Compressed Texcoord" index="1" />
 			<bit name="Compressed Secondary Texcoord" index="2" />
@@ -247,7 +247,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<tagblock name="Compression Info" offset="0x18" visible="true" elementSize="0x38">
 			<float32 name="Position Bounds X min" offset="0x0" visible="true" />
 			<float32 name="Position Bounds X max" offset="0x4" visible="true" />
@@ -268,7 +268,7 @@
 		<uint8 name="Node Map Size" offset="0x21" visible="true" />
 		<uint16 name="Software Plane Sount" offset="0x22" visible="true" />
 		<uint16 name="Total Subpart Count" offset="0x24" visible="true" />
-		<bitfield16 name="Section Lighting Flags" offset="0x26" visible="true">
+		<flags16 name="Section Lighting Flags" offset="0x26" visible="true">
 			<bit name="Has Lm Texcoords" index="0" />
 			<bit name="Has Lm Inc. Rad." index="1" />
 			<bit name="Has Lm Colors" index="2" />
@@ -285,7 +285,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<uint32 name="Block Offset" offset="0x28" visible="true" />
 		<uint32 name="Block Size" offset="0x2C" visible="true" />
 		<uint32 name="Section Data Size" offset="0x30" visible="true" />
@@ -317,7 +317,7 @@
 					<option name="Transparent" value="0x4" />
 					<option name="Lightmap Only" value="0x5" />
 				</enum16>
-				<bitfield16 name="Flags" offset="0x2" visible="true">
+				<flags16 name="Flags" offset="0x2" visible="true">
 					<bit name="Decalable" index="0" />
 					<bit name="New Part Types" index="1" />
 					<bit name="Dislikes Photons" index="2" />
@@ -334,7 +334,7 @@
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Material Index" offset="0x4" visible="true" />
 				<int16 name="Strip Start Index" offset="0x6" visible="true" />
 				<int16 name="Strip Length" offset="0x8" visible="true" />
@@ -465,7 +465,7 @@
 		<int16 name="Unknown" offset="0x7A" visible="false" />
 		<int16 name="Unknown" offset="0x7C" visible="false" />
 		<int16 name="Unknown" offset="0x7E" visible="false" />
-		<bitfield16 name="Flags" offset="0x80" visible="true">
+		<flags16 name="Flags" offset="0x80" visible="true">
 			<bit name="One-Way Portal" index="0" />
 			<bit name="Door Portal" index="1" />
 			<bit name="Postprocessed Geometry" index="2" />
@@ -482,7 +482,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0x82" visible="false" />
 		<tagblock name="Predicted Resources" offset="0x84" visible="true" elementSize="0x8">
 			<enum16 name="Type" offset="0x0" visible="true">
@@ -552,7 +552,7 @@
 	</tagblock>
 	<tagblock name="Pathfinding Data" offset="0xC4" visible="true" elementSize="0x74">
 		<tagblock name="Sectors" offset="0x0" visible="true" elementSize="0x8">
-			<bitfield16 name="Pathfinding Sector Flags" offset="0x0" visible="true">
+			<flags16 name="Pathfinding Sector Flags" offset="0x0" visible="true">
 				<bit name="Sector Walkable" index="0" />
 				<bit name="Sector Breakable" index="1" />
 				<bit name="Sector Mobile" index="2" />
@@ -567,14 +567,14 @@
 				<bit name="Aligned" index="11" />
 				<bit name="Sector Step" index="12" />
 				<bit name="Sector Interior" index="13" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Hint Index" offset="0x2" visible="true" />
 			<int32 name="First Link" offset="0x4" visible="true" />
 		</tagblock>
 		<tagblock name="Links" offset="0x8" visible="true" elementSize="0x10">
 			<int16 name="Vertex 1" offset="0x0" visible="true" />
 			<int16 name="Vertex 2" offset="0x2" visible="true" />
-			<bitfield16 name="Link Flags" offset="0x4" visible="true">
+			<flags16 name="Link Flags" offset="0x4" visible="true">
 				<bit name="Sector Link From Collision Edge" index="0" />
 				<bit name="Sector Intersection Link" index="1" />
 				<bit name="Sector Link Bsp2d Creation Error" index="2" />
@@ -589,7 +589,7 @@
 				<bit name="Sector Link Leanable" index="11" />
 				<bit name="Sector Link Start Corner" index="12" />
 				<bit name="Sector Link End Corner" index="13" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Hint Index" offset="0x6" visible="true" />
 			<int16 name="Forward Link" offset="0x8" visible="true" />
 			<int16 name="Reverse Link" offset="0xA" visible="true" />
@@ -617,9 +617,9 @@
 			<float32 name="Point Z" offset="0x8" visible="true" />
 		</tagblock>
 		<tagblock name="Object Refs" offset="0x30" visible="true" elementSize="0x1C">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Mobile" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int32 name="First Sector" offset="0x4" visible="true" />
 			<int32 name="Last Sector" offset="0x8" visible="true" />
@@ -689,10 +689,10 @@
 				<degree name="Vector k" offset="0x18" visible="true" />
 			</tagblock>
 			<tagblock name="Line Segment Geometry" offset="0x10" visible="true" elementSize="0x24">
-				<bitfield32 name="Flags" offset="0x0" visible="true">
+				<flags32 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
 					<bit name="Closed" index="1" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Point 0 X" offset="0x4" visible="true" />
 				<float32 name="Point 0 Y" offset="0x8" visible="true" />
 				<float32 name="Point 0 Z" offset="0xC" visible="true" />
@@ -705,10 +705,10 @@
 				<int16 name="Unknown" offset="0x22" visible="false" />
 			</tagblock>
 			<tagblock name="Parallelogram Geometry" offset="0x18" visible="true" elementSize="0x44">
-				<bitfield32 name="Flags" offset="0x0" visible="true">
+				<flags32 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
 					<bit name="Closed" index="1" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Point 0 X" offset="0x4" visible="true" />
 				<float32 name="Point 0 Y" offset="0x8" visible="true" />
 				<float32 name="Point 0 Z" offset="0xC" visible="true" />
@@ -731,10 +731,10 @@
 				<int16 name="Unknown" offset="0x42" visible="false" />
 			</tagblock>
 			<tagblock name="Polygon Geometry" offset="0x20" visible="true" elementSize="0x10">
-				<bitfield32 name="Flags" offset="0x0" visible="true">
+				<flags32 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
 					<bit name="Closed" index="1" />
-				</bitfield32>
+				</flags32>
 				<tagblock name="Points" offset="0x4" visible="true" elementSize="0x10">
 					<float32 name="Point X" offset="0x0" visible="true" />
 					<float32 name="Point Y" offset="0x4" visible="true" />
@@ -745,10 +745,10 @@
 				<undefined name="Unknown" offset="0xC" visible="false" />
 			</tagblock>
 			<tagblock name="Jump Hints" offset="0x28" visible="true" elementSize="0x8">
-				<bitfield16 name="Flags" offset="0x0" visible="true">
+				<flags16 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
 					<bit name="Closed" index="1" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Geometry Index" offset="0x2" visible="true" />
 				<enum16 name="Force Jump Height" offset="0x4" visible="true">
 					<option name="None" value="0x0" />
@@ -760,21 +760,21 @@
 					<option name="Tower" value="0x6" />
 					<option name="Infinite" value="0x7" />
 				</enum16>
-				<bitfield16 name="Control Flags" offset="0x6" visible="true">
+				<flags16 name="Control Flags" offset="0x6" visible="true">
 					<bit name="Magic Lift" index="0" />
-				</bitfield16>
+				</flags16>
 			</tagblock>
 			<tagblock name="Climb Hints" offset="0x30" visible="true" elementSize="0x4">
-				<bitfield16 name="Flags" offset="0x0" visible="true">
+				<flags16 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
 					<bit name="Closed" index="1" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Geometry Index" offset="0x2" visible="true" />
 			</tagblock>
 			<tagblock name="Well Hints" offset="0x38" visible="true" elementSize="0x10">
-				<bitfield32 name="Flags" offset="0x0" visible="true">
+				<flags32 name="Flags" offset="0x0" visible="true">
 					<bit name="Bidirectional" index="0" />
-				</bitfield32>
+				</flags32>
 				<tagblock name="Points" offset="0x4" visible="true" elementSize="0x20">
 					<enum16 name="Type" offset="0x0" visible="true">
 						<option name="Jump" value="0x0" />
@@ -811,12 +811,12 @@
 		<tagRef name="Background Sound" offset="0x20" visible="true" />
 		<tagRef name="Inside Cluster Sound" offset="0x28" visible="true" />
 		<float32 name="Cutoff Distance" offset="0x30" visible="true" />
-		<bitfield32 name="Scale Flags" offset="0x34" visible="true">
+		<flags32 name="Scale Flags" offset="0x34" visible="true">
 			<bit name="Override Default Scale" index="0" />
 			<bit name="Use Adjacent Cluster As Portal Scale" index="1" />
 			<bit name="Use Adjacent Cluster As Exterior Scale" index="2" />
 			<bit name="Scale With Weather Intensity" index="3" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Interior Scale" offset="0x38" visible="true" />
 		<float32 name="Portal Scale" offset="0x3C" visible="true" />
 		<float32 name="Exterior Scale" offset="0x40" visible="true" />
@@ -861,7 +861,7 @@
 	<tagblock name="Environment Object Palette" offset="0xFC" visible="true" elementSize="0x14">
 		<tagRef name="Definition" offset="0x0" visible="true" />
 		<tagRef name="Model" offset="0x8" visible="true" />
-		<bitfield32 name="Object Type" offset="0x10" visible="true">
+		<flags32 name="Object Type" offset="0x10" visible="true">
 			<bit name="Biped" index="0" />
 			<bit name="Vehicle" index="1" />
 			<bit name="Weapon" index="2" />
@@ -894,7 +894,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 	</tagblock>
 	<tagblock name="Environment Objects" offset="0x104" visible="true" elementSize="0x68">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
@@ -940,7 +940,7 @@
 			<option name="Skinned" value="0x3" />
 			<option name="Unsupported (Reimport)" value="0x4" />
 		</enum16>
-		<bitfield16 name="Geometry Compression Flags" offset="0x16" visible="true">
+		<flags16 name="Geometry Compression Flags" offset="0x16" visible="true">
 			<bit name="Compressed Position" index="0" />
 			<bit name="Compressed Texcoord" index="1" />
 			<bit name="Compressed Secondary Texcoord" index="2" />
@@ -957,7 +957,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<tagblock name="Compression Info" offset="0x18" visible="true" elementSize="0x38">
 			<float32 name="Position Bounds X min" offset="0x0" visible="true" />
 			<float32 name="Position Bounds X max" offset="0x4" visible="true" />
@@ -978,7 +978,7 @@
 		<uint8 name="Node Map Size" offset="0x21" visible="true" />
 		<uint16 name="Software Plane Sount" offset="0x22" visible="true" />
 		<uint16 name="Total Subpart Count" offset="0x24" visible="true" />
-		<bitfield16 name="Section Lighting Flags" offset="0x26" visible="true">
+		<flags16 name="Section Lighting Flags" offset="0x26" visible="true">
 			<bit name="Has Lm Texcoords" index="0" />
 			<bit name="Has Lm Inc. Rad." index="1" />
 			<bit name="Has Lm Colors" index="2" />
@@ -995,7 +995,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<uint32 name="Block Offset" offset="0x28" visible="true" />
 		<uint32 name="Block Size" offset="0x2C" visible="true" />
 		<uint32 name="Section Data Size" offset="0x30" visible="true" />
@@ -1027,7 +1027,7 @@
 					<option name="Transparent" value="0x4" />
 					<option name="Lightmap Only" value="0x5" />
 				</enum16>
-				<bitfield16 name="Flags" offset="0x2" visible="true">
+				<flags16 name="Flags" offset="0x2" visible="true">
 					<bit name="Decalable" index="0" />
 					<bit name="New Part Types" index="1" />
 					<bit name="Dislikes Photons" index="2" />
@@ -1044,7 +1044,7 @@
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Material Index" offset="0x4" visible="true" />
 				<int16 name="Strip Start Index" offset="0x6" visible="true" />
 				<int16 name="Strip Length" offset="0x8" visible="true" />
@@ -1175,9 +1175,9 @@
 			<float32 name="Plane d" offset="0xC" visible="true" />
 		</tagblock>
 		<tagblock name="Leaves" offset="0x80" visible="true" elementSize="0x4">
-			<bitfield8 name="Flags" offset="0x0" visible="true">
+			<flags8 name="Flags" offset="0x0" visible="true">
 				<bit name="Contains Double-Sided Surfaces" index="0" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="BSP 2D Reference Count" offset="0x1" visible="true" />
 			<int16 name="First BSP 2D Reference" offset="0x2" visible="true" />
 		</tagblock>
@@ -1195,14 +1195,14 @@
 		<tagblock name="Surfaces" offset="0x98" visible="true" elementSize="0x8">
 			<int16 name="Plane" offset="0x0" visible="true" />
 			<int16 name="First Edge" offset="0x2" visible="true" />
-			<bitfield8 name="Flags" offset="0x4" visible="true">
+			<flags8 name="Flags" offset="0x4" visible="true">
 				<bit name="Two-Sided" index="0" />
 				<bit name="Invisible" index="1" />
 				<bit name="Climable" index="2" />
 				<bit name="Breakable" index="3" />
 				<bit name="Invalid" index="4" />
 				<bit name="Conveyor" index="5" />
-			</bitfield8>
+			</flags8>
 			<uint8 name="Breakable Surface Index" offset="0x5" visible="true" />
 			<int16 name="Material Index" offset="0x6" visible="true" />
 		</tagblock>
@@ -1279,9 +1279,9 @@
 		<float32 name="Position Y" offset="0x2C" visible="true" />
 		<float32 name="Position Z" offset="0x30" visible="true" />
 		<int16 name="Instance Definition Index" offset="0x34" visible="true" />
-		<bitfield16 name="Flags" offset="0x36" visible="true">
+		<flags16 name="Flags" offset="0x36" visible="true">
 			<bit name="Not In Lightprobes" index="0" />
-		</bitfield16>
+		</flags16>
 		<int32 name="Checksum" offset="0x38" visible="true" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
@@ -1373,7 +1373,7 @@
 		<undefined name="Unknown" offset="0x38" visible="false" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<tagblock name="Clusters" offset="0x40" visible="true" elementSize="0x48">
-			<bitfield16 name="Errors" offset="0x0" visible="true">
+			<flags16 name="Errors" offset="0x0" visible="true">
 				<bit name="Multiple Fog Planes" index="0" />
 				<bit name="Fog Zone Collision" index="1" />
 				<bit name="Fog Zone Immersion" index="2" />
@@ -1390,8 +1390,8 @@
 				<bit name="Bit 13" index="13" />
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
-			</bitfield16>
-			<bitfield16 name="Warnings" offset="0x2" visible="true">
+			</flags16>
+			<flags16 name="Warnings" offset="0x2" visible="true">
 				<bit name="Multiple Visible Fog Planes" index="0" />
 				<bit name="Visible Fog Cluster Omission" index="1" />
 				<bit name="Fog Plane Missed Render BSP" index="2" />
@@ -1408,7 +1408,7 @@
 				<bit name="Bit 13" index="13" />
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
-			</bitfield16>
+			</flags16>
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
@@ -1558,7 +1558,7 @@
 					<option name="Transparent" value="0x4" />
 					<option name="Lightmap Only" value="0x5" />
 				</enum16>
-				<bitfield16 name="Flags" offset="0x2" visible="true">
+				<flags16 name="Flags" offset="0x2" visible="true">
 					<bit name="Decalable" index="0" />
 					<bit name="New Part Types" index="1" />
 					<bit name="Dislikes Photons" index="2" />
@@ -1575,7 +1575,7 @@
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Material Index" offset="0x4" visible="true" />
 				<int16 name="Strip Start Index" offset="0x6" visible="true" />
 				<int16 name="Strip Length" offset="0x8" visible="true" />

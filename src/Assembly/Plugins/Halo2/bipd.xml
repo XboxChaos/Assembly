@@ -28,7 +28,7 @@
 		<option name="Crate" value="0xB" />
 		<option name="Creature" value="0xC" />
 	</enum16>
-	<bitfield16 name="Flags" offset="0x2" visible="true">
+	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -43,7 +43,7 @@
 		<bit name="Dead Bipeds Can't Localize" index="11" />
 		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" />
 	<float32 name="Bounding Offset X" offset="0x8" visible="true" />
 	<float32 name="Bounding Offset Y" offset="0xC" visible="true" />
@@ -72,11 +72,11 @@
 	<tagRef name="Creation Effect" offset="0x4C" visible="true" />
 	<tagRef name="Material Effects" offset="0x54" visible="true" />
 	<tagblock name="AI Properties" offset="0x5C" visible="true" elementSize="0x10">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
-		</bitfield32>
+		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Size" offset="0xC" visible="true">
@@ -100,12 +100,12 @@
 		</enum16>
 	</tagblock>
 	<tagblock name="Functions" offset="0x64" visible="true" elementSize="0x20">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
 			<bit name="Always Active" index="2" />
 			<bit name="Random Time Offset" index="3" />
-		</bitfield32>
+		</flags32>
 		<stringId name="Import Name" offset="0x4" visible="true" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
@@ -172,10 +172,10 @@
 		</tagblock>
 		<tagblock name="Functions" offset="0x8" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
-			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
+			<flags32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
-			</bitfield32>
+			</flags32>
 			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
@@ -198,7 +198,7 @@
 		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
 	</tagblock>
 	<comment title="UNIT" />
-	<bitfield32 name="Flags" offset="0xBC" visible="true">
+	<flags32 name="Flags" offset="0xBC" visible="true">
 		<bit name="Circular Aiming" index="0" />
 		<bit name="Destroyed After Dying" index="1" />
 		<bit name="Half-Speed Interpolation" index="2" />
@@ -228,7 +228,7 @@
 		<bit name="Controlled By Parent Gunner" index="26" />
 		<bit name="Parent's Primary Weapon" index="27" />
 		<bit name="Unit Has Boost" index="28" />
-	</bitfield32>
+	</flags32>
 	<enum16 name="Default Team" offset="0xC0" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Player" value="0x1" />
@@ -334,7 +334,7 @@
 		<tagRef name="Weapon" offset="0x0" visible="true" />
 	</tagblock>
 	<tagblock name="Seats" offset="0x1C8" visible="true" elementSize="0xB0">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invisible" index="0" />
 			<bit name="Locked" index="1" />
 			<bit name="Driver" index="2" />
@@ -355,7 +355,7 @@
 			<bit name="Invalid For Non-Player" index="17" />
 			<bit name="Gunner (Player Only)" index="18" />
 			<bit name="Invisible Under Major Damage" index="19" />
-		</bitfield32>
+		</flags32>
 		<stringId name="Seat Animation" offset="0x4" visible="true" />
 		<stringId name="Seat Marker Name" offset="0x8" visible="true" />
 		<stringId name="Entry Marker(s) Name" offset="0xC" visible="true" />
@@ -418,7 +418,7 @@
 	<float32 name="Lipsync Decay Weight" offset="0x1E8" visible="true" />
 	<comment title="BIPED" />
 	<degree name="Moving Turning Speed" offset="0x1EC" visible="true" />
-	<bitfield32 name="Flags" offset="0x1F0" visible="true">
+	<flags32 name="Flags" offset="0x1F0" visible="true">
 		<bit name="Turns Without Animating" index="0" />
 		<bit name="Passes Through Other Bipeds" index="1" />
 		<bit name="Immune To Falling Damage" index="2" />
@@ -431,7 +431,7 @@
 		<bit name="Stunned By EMP Damage" index="9" />
 		<bit name="Dead Physics When Stunned" index="10" />
 		<bit name="Always Ragdoll When Dead" index="11" />
-	</bitfield32>
+	</flags32>
 	<degree name="Stationary Turning Threshold" offset="0x1F4" visible="true" />
 	<float32 name="Jump Velocity" offset="0x1F8" visible="true" />
 	<float32 name="Maximum Soft Landing Time" offset="0x1FC" visible="true" />
@@ -451,11 +451,11 @@
 	<float32 name="Camera Vertical Movement Scale" offset="0x234" visible="true" />
 	<float32 name="Camera Exclusion Distance" offset="0x238" visible="true" />
 	<float32 name="Autoaim Width" offset="0x23C" visible="true" />
-	<bitfield32 name="Lock-On Flags" offset="0x240" visible="true">
+	<flags32 name="Lock-On Flags" offset="0x240" visible="true">
 		<bit name="Locked By Human Targeting" index="0" />
 		<bit name="Locked By Plasma Targeting" index="1" />
 		<bit name="Always Locked By Human Targeting" index="2" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Lock-On Distance" offset="0x244" visible="true" />
 	<int16 name="Unknown" offset="0x248" visible="false" />
 	<int16 name="Unknown" offset="0x24A" visible="false" />
@@ -466,7 +466,7 @@
 	<float32 name="Headshot Acceleration Scale" offset="0x258" visible="true" />
 	<tagRef name="Area Damage Effect" offset="0x25C" visible="true" />
 	<comment title="Physics" />
-	<bitfield32 name="Flags" offset="0x264" visible="true">
+	<flags32 name="Flags" offset="0x264" visible="true">
 		<bit name="Centered At Origin" index="0" />
 		<bit name="Shape Sperical" index="1" />
 		<bit name="Use Player Physics" index="2" />
@@ -474,7 +474,7 @@
 		<bit name="Flying" index="4" />
 		<bit name="Not Physical" index="5" />
 		<bit name="Dead Character Collision Group" index="6" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Height Standing" offset="0x268" visible="true" />
 	<float32 name="Height Crouching" offset="0x26C" visible="true" />
 	<float32 name="Radius" offset="0x270" visible="true" />
@@ -486,9 +486,9 @@
 	<tagblock name="Dead Sphere Shapes" offset="0x284" visible="true" elementSize="0x80">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x4" visible="true" />
-		<bitfield16 name="Flags" offset="0x6" visible="true">
+		<flags16 name="Flags" offset="0x6" visible="true">
 			<bit name="Bit 0" index="0" />
-		</bitfield16>
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -526,9 +526,9 @@
 	<tagblock name="Pill Shapes" offset="0x28C" visible="true" elementSize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x4" visible="true" />
-		<bitfield16 name="Flags" offset="0x6" visible="true">
+		<flags16 name="Flags" offset="0x6" visible="true">
 			<bit name="Bit 0" index="0" />
-		</bitfield16>
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />
@@ -553,9 +553,9 @@
 	<tagblock name="Sphere Shapes" offset="0x294" visible="true" elementSize="0x80">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x4" visible="true" />
-		<bitfield16 name="Flags" offset="0x6" visible="true">
+		<flags16 name="Flags" offset="0x6" visible="true">
 			<bit name="Bit 0" index="0" />
-		</bitfield16>
+		</flags16>
 		<float32 name="Relative Mass Scale" offset="0x8" visible="true" />
 		<float32 name="Friction" offset="0xC" visible="true" />
 		<float32 name="Restitution" offset="0x10" visible="true" />

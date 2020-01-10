@@ -10,12 +10,12 @@
 	<float32 name="Radius min" offset="0x10" visible="true" />
 	<float32 name="Radius max" offset="0x14" visible="true" />
 	<float32 name="Cutoff Scale" offset="0x18" visible="true" />
-	<bitfield32 name="Flags" offset="0x1C" visible="true">
+	<flags32 name="Flags" offset="0x1C" visible="true">
 		<bit name="Don't Scale Damage By Distance" index="0" />
 		<bit name="Area Damage Players Only" index="1" />
 		<bit name="Affects Model Targets" index="2" />
 		<bit name="Explosive Area Of Effect" index="3" />
-	</bitfield32>
+	</flags32>
 	<enum16 name="Side Effect" offset="0x20" visible="true">
 		<option name="None" value="0x0" />
 		<option name="Harmless" value="0x1" />
@@ -52,7 +52,7 @@
 		<option name="die_space" value="0xA" />
 		<option name="die_ass" value="0xB" />
 	</enum32>
-	<bitfield32 name="Flags" offset="0x28" visible="true">
+	<flags32 name="Flags" offset="0x28" visible="true">
 		<bit name="Does Not Hurt Owner" index="0" />
 		<bit name="Can Cause Headshots" index="1" />
 		<bit name="Ignores Headshot Obstructions" index="2" />
@@ -85,8 +85,8 @@
 		<bit name="Causes Incineration Dissolve On Headshot" index="29" />
 		<bit name="Does Not Hurt Damage Source" index="30" />
 		<bit name="Damage Vehicles Only" index="31" />
-	</bitfield32>
-	<bitfield32 name="Secondary Flags" offset="0x2C" visible="true">
+	</flags32>
+	<flags32 name="Secondary Flags" offset="0x2C" visible="true">
 		<bit name="Causes Incineration Dissolve To Dead Units" index="0" />
 		<bit name="Force Hard Ping As Attachment Feedback" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -119,7 +119,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Headshot Damage Multiplier" offset="0x30" visible="true" />
 	<float32 name="Area Of Effect Core Radius" offset="0x34" visible="true" />
 	<float32 name="Damage Lower Bound" offset="0x38" visible="true" />
@@ -175,13 +175,13 @@
 	<tagref name="Old Melee Sound" offset="0x114" visible="true" />
 	<tagblock name="Damage Sounds" offset="0x124" visible="true" elementSize="0x14">
 		<tagRef name="Sound" offset="0x0" visible="true" />
-		<bitfield16 name="Damage Types" offset="0x10" visible="true">
+		<flags16 name="Damage Types" offset="0x10" visible="true">
 			<bit name="None" index="0" />
 			<bit name="Lethal Instantaneous" index="1" />
 			<bit name="Lethal" index="2" />
 			<bit name="Non Lethal" index="3" />
-		</bitfield16>
-		<bitfield16 name="Object Types" offset="0x12" visible="true">
+		</flags16>
+		<flags16 name="Object Types" offset="0x12" visible="true">
 			<bit name="Biped" index="0" />
 			<bit name="Vehicle" index="1" />
 			<bit name="Weapon" index="2" />
@@ -198,7 +198,7 @@
 			<bit name="Giant" index="13" />
 			<bit name="Effect Scenery" index="14" />
 			<bit name="Spawner" index="15" />
-		</bitfield16>
+		</flags16>
 	</tagblock>
 	<comment title="Breaking Effect">Controls particle velocities when a damage effect shatters a materal.
 
