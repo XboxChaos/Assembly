@@ -10,7 +10,7 @@
 		<revision author="pokecancer" version="6">fixed broken structures,missing string ids</revision>
 		<revision author="shade45 and Talin64" version="7">Named some unknowns</revision>
 		<revision author="Shalted" version="8">Named some unknowns</revision>
-		<revision author="XZodia" version="9">Fixed Structure, wrongly named reflexive and named some unknowns</revision>
+		<revision author="XZodia" version="9">Fixed Structure, wrongly named tagblock and named some unknowns</revision>
 		<revision author="Shalted" version="10">Fixed the plugin added values, seriously, stop breaking my plugins....</revision>
 		<revision author="Winkler707" version="11">Added friction and bounce factor values</revision>
 		<revision author="XZodia" version="12">Corrected Bounding Box Values</revision>
@@ -59,7 +59,7 @@
 	<undefined name="Unknown" offset="0x1C" visible="true" />
 	<undefined name="Unknown" offset="0x20" visible="true" />
 	<undefined name="Unknown" offset="0x24" visible="true" />
-	<reflexive name="Lift Properties" offset="0x28" visible="true" entrySize="0x68">
+	<tagblock name="Lift Properties" offset="0x28" visible="true" elementSize="0x68">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<stringId name="Name" offset="0x8" visible="true" />
@@ -86,12 +86,12 @@
 		<degree name="Alignment Max Velocity" offset="0x5C" visible="true" />
 		<float32 name="Unknown" offset="0x60" visible="false" />
 		<float32 name="Unknown" offset="0x64" visible="false" />
-	</reflexive>
-	<reflexive name="Node Edges" offset="0x30" visible="true" entrySize="0x18">
+	</tagblock>
+	<tagblock name="Node Edges" offset="0x30" visible="true" elementSize="0x18">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Node A Index" offset="0x4" visible="true" />
 		<int16 name="Node B Index" offset="0x6" visible="true" />
-		<reflexive name="Constraints" offset="0x8" visible="true" entrySize="0xC">
+		<tagblock name="Constraints" offset="0x8" visible="true" elementSize="0xC">
 			<enum16 name="Type" offset="0x0" visible="true">
 				<option name="Hinge" value="0x0" />
 				<option name="Limited Hinge" value="0x1" />
@@ -106,11 +106,11 @@
 				<bit name="Disable Effects" index="1" />
 			</bitfield32>
 			<float32 name="Friction" offset="0x8" visible="true" />
-		</reflexive>
+		</tagblock>
 		<stringid name="Node A Material" offset="0x10" visible="true" />
 		<stringid name="Node B Material" offset="0x14" visible="true" />
-	</reflexive>
-	<reflexive name="Rigid Bodies" offset="0x38" visible="true" entrySize="0x90">
+	</tagblock>
+	<tagblock name="Rigid Bodies" offset="0x38" visible="true" elementSize="0x90">
 		<int16 name="Node" offset="0x0" visible="true" />
 		<int16 name="Region" offset="0x2" visible="true" />
 		<int16 name="Permutation" offset="0x4" visible="true" />
@@ -184,14 +184,14 @@
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
-	</reflexive>
-	<reflexive name="Materials" offset="0x40" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Materials" offset="0x40" visible="true" elementSize="0xC">
 		<stringId name="Material Base" offset="0x0" visible="true" />
 		<stringId name="Material" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x8" visible="false" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
-	</reflexive>
-	<reflexive name="Spheres" offset="0x48" visible="true" entrySize="0x80">
+	</tagblock>
+	<tagblock name="Spheres" offset="0x48" visible="true" elementSize="0x80">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Material" offset="0x4" visible="true" />
 		<int16 name="Global Material Index" offset="0x6" visible="true" />
@@ -228,10 +228,10 @@
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<reflexive name="Pills" offset="0x58" visible="true" entrySize="0x50">
+	<tagblock name="Pills" offset="0x58" visible="true" elementSize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Material" offset="0x4" visible="true" />
 		<int16 name="Global Material Index" offset="0x6" visible="true" />
@@ -256,8 +256,8 @@
 		<float32 name="Unknown" offset="0x44" visible="false" />
 		<float32 name="Unknown" offset="0x48" visible="false" />
 		<float32 name="Unknown" offset="0x4C" visible="false" />
-	</reflexive>
-	<reflexive name="Boxes" offset="0x60" visible="true" entrySize="0x90">
+	</tagblock>
+	<tagblock name="Boxes" offset="0x60" visible="true" elementSize="0x90">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Material" offset="0x4" visible="true" />
 		<int16 name="Global Material Index" offset="0x6" visible="true" />
@@ -298,10 +298,10 @@
 		<undefined name="Unknown" offset="0x84" visible="false" />
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x68" visible="false" />
 	<undefined name="Unknown" offset="0x6C" visible="false" />
-	<reflexive name="Polyhedra" offset="0x70" visible="true" entrySize="0x100">
+	<tagblock name="Polyhedra" offset="0x70" visible="true" elementSize="0x100">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Material" offset="0x4" visible="true" />
 		<int16 name="Global Material Index" offset="0x6" visible="true" />
@@ -370,8 +370,8 @@
 		<undefined name="Unknown" offset="0xF4" visible="false" />
 		<int32 name="Unknown" offset="0xF8" visible="false" />
 		<int32 name="Unknown" offset="0xFC" visible="false" />
-	</reflexive>
-	<reflexive name="Scalers" offset="0x78" visible="true" entrySize="0x30">
+	</tagblock>
+	<tagblock name="Scalers" offset="0x78" visible="true" elementSize="0x30">
 		<degree name="Length Vector i" offset="0x0" visible="true" />
 		<degree name="Length Vector j" offset="0x4" visible="true" />
 		<degree name="Length Vector k" offset="0x8" visible="true" />
@@ -384,16 +384,16 @@
 		<degree name="Height Vector j" offset="0x24" visible="true" />
 		<degree name="Height Vector k" offset="0x28" visible="true" />
 		<degree name="Height Vector w" offset="0x2C" visible="true" />
-	</reflexive>
-	<reflexive name="Planes" offset="0x80" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Planes" offset="0x80" visible="true" elementSize="0x10">
 		<float32 name="X" offset="0x0" visible="true" />
 		<float32 name="y" offset="0x4" visible="true" />
 		<float32 name="z" offset="0x8" visible="true" />
 		<float32 name="d" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x88" visible="false" />
 	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<reflexive name="Unknown" offset="0x90" visible="false" entrySize="0x38">
+	<tagblock name="Unknown" offset="0x90" visible="false" elementSize="0x38">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -408,22 +408,22 @@
 		<undefined name="Unknown" offset="0x2C" visible="false" />
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0x98" visible="false" entrySize="0x8">
+	</tagblock>
+	<tagblock name="Unknown" offset="0x98" visible="false" elementSize="0x8">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0xA0" visible="false" entrySize="0x14">
+	</tagblock>
+	<tagblock name="Unknown" offset="0xA0" visible="false" elementSize="0x14">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
-	</reflexive>
+	</tagblock>
 	<dataref name="Mopp Codes" offset="0xA8" visible="true" />
 	<undefined name="Unknown" offset="0xB0" visible="false" />
 	<undefined name="Unknown" offset="0xB4" visible="false" />
-	<reflexive name="Unknown" offset="0xB8" visible="false" entrySize="0x94">
+	<tagblock name="Unknown" offset="0xB8" visible="false" elementSize="0x94">
 		<stringId name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -461,30 +461,30 @@
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<undefined name="Unknown" offset="0x90" visible="false" />
-	</reflexive>
-	<reflexive name="Damage Permutations" offset="0xC0" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Damage Permutations" offset="0xC0" visible="true" elementSize="0xC">
 		<stringId name="Part" offset="0x0" visible="true" />
-		<reflexive name="Damage Levels" offset="0x4" visible="true" entrySize="0xC">
+		<tagblock name="Damage Levels" offset="0x4" visible="true" elementSize="0xC">
 			<stringId name="Level of Damage" offset="0x0" visible="true" />
-			<reflexive name="Phmo Variation" offset="0x4" visible="true" entrySize="0x2">
+			<tagblock name="Phmo Variation" offset="0x4" visible="true" elementSize="0x2">
 				<int16 name="Phmo Variation Chunk" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
-	<reflexive name="Bones" offset="0xC8" visible="true" entrySize="0xC">
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Bones" offset="0xC8" visible="true" elementSize="0xC">
 		<stringId name="Bone" offset="0x0" visible="true" />
 		<int16 name="Parent" offset="0x4" visible="true" />
 		<int16 name="Child" offset="0x6" visible="true" />
 		<int16 name="Next Sibling" offset="0x8" visible="true" />
 		<int16 name="Final Sibling?" offset="0xA" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0xD0" visible="false" />
 	<undefined name="Unknown" offset="0xD4" visible="false" />
 	<undefined name="Unknown" offset="0xD8" visible="false" />
 	<undefined name="Unknown" offset="0xDC" visible="false" />
 	<undefined name="Unknown" offset="0xE0" visible="false" />
 	<undefined name="Unknown" offset="0xE4" visible="false" />
-	<reflexive name="Hinges" offset="0xE8" visible="true" entrySize="0x84">
+	<tagblock name="Hinges" offset="0xE8" visible="true" elementSize="0x84">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Start Permutation" offset="0x4" visible="true" />
 		<int16 name="End Permutation" offset="0x6" visible="true" />
@@ -519,8 +519,8 @@
 		<undefined name="Unknown" offset="0x78" visible="false" />
 		<undefined name="Unknown" offset="0x7C" visible="false" />
 		<undefined name="Unknown" offset="0x80" visible="false" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0xF0" visible="true" entrySize="0x78">
+	</tagblock>
+	<tagblock name="Unknown" offset="0xF0" visible="true" elementSize="0x78">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Start Permutation" offset="0x4" visible="true" />
 		<int16 name="End Permutation" offset="0x6" visible="true" />
@@ -552,12 +552,12 @@
 		<undefined name="Unknown" offset="0x6C" visible="false" />
 		<undefined name="Unknown" offset="0x70" visible="false" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0xF8" visible="false" />
 	<undefined name="Unknown" offset="0xFC" visible="false" />
 	<undefined name="Unknown" offset="0x100" visible="false" />
 	<undefined name="Unknown" offset="0x104" visible="false" />
-	<reflexive name="Unknown" offset="0x108" visible="false" entrySize="0x20">
+	<tagblock name="Unknown" offset="0x108" visible="false" elementSize="0x20">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
@@ -566,5 +566,5 @@
 		<float32 name="Unknown" offset="0x14" visible="false" />
 		<float32 name="Unknown" offset="0x18" visible="false" />
 		<float32 name="Unknown" offset="0x1C" visible="false" />
-	</reflexive>
+	</tagblock>
 </plugin>

@@ -111,7 +111,7 @@
 	<tagRef name="Crate Object" offset="0x44" visible="true" />
 	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
-	<reflexive name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" entrySize="0x28">
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" />
 		<float32 name="X0" offset="0x4" visible="true" />
 		<float32 name="X1" offset="0x8" visible="true" />
@@ -122,11 +122,11 @@
 		<degree name="Angles y" offset="0x1C" visible="true" />
 		<degree name="Angles p" offset="0x20" visible="true" />
 		<degree name="Angles r" offset="0x24" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" />
-	<reflexive name="AI Properties" offset="0xA0" visible="true" entrySize="0x10">
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -182,8 +182,8 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0xAC" visible="true" entrySize="0x2C">
+	</tagblock>
+	<tagblock name="Functions" offset="0xAC" visible="true" elementSize="0x2C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -224,7 +224,7 @@
 		<float32 name="Minimum Value" offset="0x10" visible="true" />
 		<dataRef name="Default Function" offset="0x14" visible="true" />
 		<stringid name="Scale By" offset="0x28" visible="true" />
-	</reflexive>
+	</tagblock>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
 	<bitfield16 name="Secondary Flags" offset="0xBA" visible="true">
 		<bit name="Does Not Affect Projectile Aiming" index="0" />
@@ -244,7 +244,7 @@
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x20">
+	<tagblock name="Attachments" offset="0xBC" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum8 name="Change Color" offset="0x14" visible="true">
@@ -261,18 +261,18 @@
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
-	</reflexive>
-	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Widgets" offset="0xC8" visible="true" elementSize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0xD4" visible="true" entrySize="0x18">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0xD4" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
@@ -282,11 +282,11 @@
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
 			<stringid name="Scale By..." offset="0x24" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x0">
-	</reflexive>
-	<reflexive name="Multiplayer Object Properties" offset="0xEC" visible="true" entrySize="0xC4">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Multiplayer Object Properties" offset="0xEC" visible="true" elementSize="0xC4">
 		<bitfield16 name="Engine Flags" offset="0x0" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -382,7 +382,7 @@
 		<tagref name="Cylinder Opaque Shader" offset="0x94" visible="true" />
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="ITEM" />
 	<bitfield32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Always Maintains Z Up" index="0" />
@@ -431,9 +431,9 @@
 	<stringId name="Switch-To From AI Message" offset="0x120" visible="true" />
 	<stringid name="All Weapons Empty Message" offset="0x124" visible="true" />
 	<tagRef name="Collision Sound" offset="0x128" visible="true" />
-	<reflexive name="Predicted Bitmaps" offset="0x138" visible="false" entrySize="0x10">
+	<tagblock name="Predicted Bitmaps" offset="0x138" visible="false" elementSize="0x10">
 		<tagRef name="Bitmap" offset="0x0" visible="false" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Detonation Damage Effect" offset="0x144" visible="true" />
 	<float32 name="Detonation Delay min" offset="0x154" visible="true" />
 	<float32 name="Detonation Delay max" offset="0x158" visible="true" />
@@ -476,22 +476,22 @@
 	<float32 name="Unknown" offset="0x1B8" visible="false" />
 	<float32 name="Unknown" offset="0x1BC" visible="false" />
 	<float32 name="Unknown" offset="0x1C0" visible="false" />
-	<reflexive name="Health Pack" offset="0x1C4" visible="true" entrySize="0x3C">
+	<tagblock name="Health Pack" offset="0x1C4" visible="true" elementSize="0x3C">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Shields Given" offset="0x8" visible="true" />
 		<tagRef name="Unknown" offset="0xC" visible="true" />
 		<tagRef name="Unknown" offset="0x1C" visible="true" />
 		<tagRef name="Unknown" offset="0x2C" visible="true" />
-	</reflexive>
-	<reflexive name="Powerup" offset="0x1D0" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Powerup" offset="0x1D0" visible="true" elementSize="0x4">
 		<enum32 name="Powerup Trait Set" offset="0x0" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Yellow" value="0x2" />
 		</enum32>
-	</reflexive>
-	<reflexive name="Object Creation" offset="0x1DC" visible="true" entrySize="0x34">
+	</tagblock>
+	<tagblock name="Object Creation" offset="0x1DC" visible="true" elementSize="0x34">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
@@ -499,29 +499,29 @@
 		<float32 name="Unknown" offset="0x28" visible="false" />
 		<float32 name="Object Force" offset="0x2C" visible="true" />
 		<float32 name="Unknown" offset="0x30" visible="false" />
-	</reflexive>
-	<reflexive name="Destruction" offset="0x1E8" visible="true" entrySize="0x30">
+	</tagblock>
+	<tagblock name="Destruction" offset="0x1E8" visible="true" elementSize="0x30">
 		<tagRef name="Destroy Effect" offset="0x0" visible="true" />
 		<tagRef name="Destroy Damage Effect" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
 		<float32 name="Self Destruction Time" offset="0x24" visible="true" />
 		<float32 name="Unknown" offset="0x28" visible="false" />
 		<float32 name="Unknown" offset="0x2C" visible="false" />
-	</reflexive>
-	<reflexive name="Motion Tracker Noise" offset="0x1F4" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Motion Tracker Noise" offset="0x1F4" visible="true" elementSize="0x10">
 		<float32 name="Arm Time" offset="0x0" visible="true" />
 		<float32 name="Noise Radius" offset="0x4" visible="true" />
 		<int32 name="Noise Count" offset="0x8" visible="true" />
 		<float32 name="Flash Radius" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<uint32 name="Null" offset="0x200" visible="false" />
 	<uint32 name="Null" offset="0x204" visible="false" />
 	<uint32 name="Null" offset="0x208" visible="false" />
-	<reflexive name="Invisibility" offset="0x20C" visible="true" entrySize="0x8">
+	<tagblock name="Invisibility" offset="0x20C" visible="true" elementSize="0x8">
 		<float32 name="Unknown" offset="0x0" visible="true" />
 		<float32 name="Unknown" offset="0x4" visible="true" />
-	</reflexive>
-	<reflexive name="Invincibility" offset="0x218" visible="true" entrySize="0x3C">
+	</tagblock>
+	<tagblock name="Invincibility" offset="0x218" visible="true" elementSize="0x3C">
 		<stringid name="Material Name" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
@@ -529,10 +529,10 @@
 		<tagRef name="Activation Effect" offset="0xC" visible="true" />
 		<tagRef name="Active Effect" offset="0x1C" visible="true" />
 		<tagRef name="Deactivation Effect" offset="0x2C" visible="true" />
-	</reflexive>
-	<reflexive name="Regenerator" offset="0x224" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Regenerator" offset="0x224" visible="true" elementSize="0x4">
 		<float32 name="Unknown" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="HUD Interface" offset="0x230" visible="true" />
 	<tagRef name="Pickup Sound" offset="0x240" visible="true" />
 	<tagRef name="Activation Effect" offset="0x250" visible="true" />

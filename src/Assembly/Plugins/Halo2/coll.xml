@@ -13,17 +13,17 @@
 	<bitfield32 name="Flags" offset="0x10" visible="true">
 		<bit name="Contains Open Edges" index="0" />
 	</bitfield32>
-	<reflexive name="Materials" offset="0x14" visible="true" entrySize="0x4">
+	<tagblock name="Materials" offset="0x14" visible="true" elementSize="0x4">
 		<stringId name="Name" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Regions" offset="0x1C" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Regions" offset="0x1C" visible="true" elementSize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<reflexive name="Permutations" offset="0x4" visible="true" entrySize="0x14">
+		<tagblock name="Permutations" offset="0x4" visible="true" elementSize="0x14">
 			<stringId name="Name" offset="0x0" visible="true" />
-			<reflexive name="BSPs" offset="0x4" visible="true" entrySize="0x44">
+			<tagblock name="BSPs" offset="0x4" visible="true" elementSize="0x44">
 				<int16 name="Node Index" offset="0x0" visible="true" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-				<reflexive name="BSP 3D Nodes" offset="0x4" visible="true" entrySize="0x8">
+				<tagblock name="BSP 3D Nodes" offset="0x4" visible="true" elementSize="0x8">
 					<int16 name="Plane" offset="0x0" visible="true" />
 					<uint8 name="Front Child Lower" offset="0x2" visible="true" />
 					<uint8 name="Front Child Mid" offset="0x3" visible="true" />
@@ -31,32 +31,32 @@
 					<uint8 name="Back Child Lower" offset="0x5" visible="true" />
 					<uint8 name="Back Child Mid" offset="0x6" visible="true" />
 					<uint8 name="Back Child Upper" offset="0x7" visible="true" />
-				</reflexive>
-				<reflexive name="Planes" offset="0xC" visible="true" entrySize="0x10">
+				</tagblock>
+				<tagblock name="Planes" offset="0xC" visible="true" elementSize="0x10">
 					<float32 name="Plane i" offset="0x0" visible="true" />
 					<float32 name="Plane j" offset="0x4" visible="true" />
 					<float32 name="Plane k" offset="0x8" visible="true" />
 					<float32 name="Plane d" offset="0xC" visible="true" />
-				</reflexive>
-				<reflexive name="Leaves" offset="0x14" visible="true" entrySize="0x4">
+				</tagblock>
+				<tagblock name="Leaves" offset="0x14" visible="true" elementSize="0x4">
 					<bitfield8 name="Flags" offset="0x0" visible="true">
 						<bit name="Contains Double-Sided Surfaces" index="0" />
 					</bitfield8>
 					<uint8 name="BSP 2D Reference Count" offset="0x1" visible="true" />
 					<int16 name="First BSP 2D Reference" offset="0x2" visible="true" />
-				</reflexive>
-				<reflexive name="BSP 2D References" offset="0x1C" visible="true" entrySize="0x4">
+				</tagblock>
+				<tagblock name="BSP 2D References" offset="0x1C" visible="true" elementSize="0x4">
 					<int16 name="Plane" offset="0x0" visible="true" />
 					<int16 name="BSP 2D Node" offset="0x2" visible="true" />
-				</reflexive>
-				<reflexive name="BSP 2D Nodes" offset="0x24" visible="true" entrySize="0x10">
+				</tagblock>
+				<tagblock name="BSP 2D Nodes" offset="0x24" visible="true" elementSize="0x10">
 					<float32 name="Plane i" offset="0x0" visible="true" />
 					<float32 name="Plane j" offset="0x4" visible="true" />
 					<float32 name="Plane d" offset="0x8" visible="true" />
 					<int16 name="Left Child" offset="0xC" visible="true" />
 					<int16 name="Right Child" offset="0xE" visible="true" />
-				</reflexive>
-				<reflexive name="Surfaces" offset="0x2C" visible="true" entrySize="0x8">
+				</tagblock>
+				<tagblock name="Surfaces" offset="0x2C" visible="true" elementSize="0x8">
 					<int16 name="Plane" offset="0x0" visible="true" />
 					<int16 name="First Edge" offset="0x2" visible="true" />
 					<bitfield8 name="Flags" offset="0x4" visible="true">
@@ -69,24 +69,24 @@
 					</bitfield8>
 					<uint8 name="Breakable Surface" offset="0x5" visible="true" />
 					<int16 name="Material" offset="0x6" visible="true" />
-				</reflexive>
-				<reflexive name="Edges" offset="0x34" visible="true" entrySize="0xC">
+				</tagblock>
+				<tagblock name="Edges" offset="0x34" visible="true" elementSize="0xC">
 					<int16 name="Start Vertex" offset="0x0" visible="true" />
 					<int16 name="End Vertex" offset="0x2" visible="true" />
 					<int16 name="Forward Edge" offset="0x4" visible="true" />
 					<int16 name="Reverse Edge" offset="0x6" visible="true" />
 					<int16 name="Left Surface" offset="0x8" visible="true" />
 					<int16 name="Right Surface" offset="0xA" visible="true" />
-				</reflexive>
-				<reflexive name="Vertices" offset="0x3C" visible="true" entrySize="0x10">
+				</tagblock>
+				<tagblock name="Vertices" offset="0x3C" visible="true" elementSize="0x10">
 					<float32 name="Point x" offset="0x0" visible="true" />
 					<float32 name="Point y" offset="0x4" visible="true" />
 					<float32 name="Point z" offset="0x8" visible="true" />
 					<int16 name="First Edge" offset="0xC" visible="true" />
 					<int16 name="Unknown" offset="0xE" visible="false" />
-				</reflexive>
-			</reflexive>
-			<reflexive name="BSP Physics" offset="0xC" visible="true" entrySize="0x70">
+				</tagblock>
+			</tagblock>
+			<tagblock name="BSP Physics" offset="0xC" visible="true" elementSize="0x70">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Size" offset="0x4" visible="true" />
 				<int16 name="Count" offset="0x6" visible="true" />
@@ -117,10 +117,10 @@
 				<undefined name="Unknown" offset="0x60" visible="false" />
 				<dataref name="MOPP Code Data" offset="0x64" visible="true" />
 				<undefined name="Unknown" offset="0x6C" visible="false" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
-	<reflexive name="Pathfinding Spheres" offset="0x24" visible="true" entrySize="0x14">
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Pathfinding Spheres" offset="0x24" visible="true" elementSize="0x14">
 		<int16 name="Node" offset="0x0" visible="true" />
 		<bitfield16 name="Flags" offset="0x2" visible="true">
 			<bit name="Remains When Open" index="0" />
@@ -131,12 +131,12 @@
 		<float32 name="Center y" offset="0x8" visible="true" />
 		<float32 name="Center z" offset="0xC" visible="true" />
 		<float32 name="Radius" offset="0x10" visible="true" />
-	</reflexive>
-	<reflexive name="Nodes" offset="0x2C" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Nodes" offset="0x2C" visible="true" elementSize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x4" visible="false" />
 		<int16 name="Parent Node" offset="0x6" visible="true" />
 		<int16 name="Next Sibling Node" offset="0x8" visible="true" />
 		<int16 name="First Child Node" offset="0xA" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

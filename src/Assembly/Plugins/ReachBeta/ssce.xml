@@ -114,7 +114,7 @@
 	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x70" visible="true" />
 	<tagRef name="Brittle Collision Damage" offset="0x80" visible="true" />
-	<reflexive name="Early Mover Oriented Bounding Box" offset="0x90" visible="true" entrySize="0x2C">
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0x90" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
 		<float32 name="X0" offset="0x8" visible="true" />
@@ -126,11 +126,11 @@
 		<degree name="Angles y" offset="0x20" visible="true" />
 		<degree name="Angles p" offset="0x24" visible="true" />
 		<degree name="Angles r" offset="0x28" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Creation Effect" offset="0x9C" visible="true" />
 	<tagRef name="Material Effects" offset="0xAC" visible="true" />
 	<tagRef name="Melee Sound" offset="0xBC" visible="true" />
-	<reflexive name="AI Properties" offset="0xCC" visible="true" entrySize="0x10">
+	<tagblock name="AI Properties" offset="0xCC" visible="true" elementSize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -186,8 +186,8 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0xD8" visible="true" entrySize="0x3C">
+	</tagblock>
+	<tagblock name="Functions" offset="0xD8" visible="true" elementSize="0x3C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -229,7 +229,7 @@
 		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Default Function" offset="0x18" visible="true" />
 		<stringid name="Scale By" offset="0x2C" visible="true" />
-		<reflexive name="Interpolation" offset="0x30" visible="true" entrySize="0x18">
+		<tagblock name="Interpolation" offset="0x30" visible="true" elementSize="0x18">
 			<enum32 name="Interpolation Mode" offset="0x0" visible="true">
 				<option name="Constant Velocity" value="0x0" />
 				<option name="Linear Acceleration" value="0x1" />
@@ -247,8 +247,8 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Spring k" offset="0xC" visible="true" />
 			<float32 name="Spring c" offset="0x10" visible="true" />
 			<float32 name="Fraction" offset="0x14" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<int16 name="HUD Text Message Index" offset="0xE4" visible="true" />
 	<bitfield16 name="Secondary Flags" offset="0xE6" visible="true">
 		<bit name="Does Not Affect Projectile Aiming" index="0" />
@@ -268,7 +268,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<reflexive name="Attachments" offset="0xE8" visible="true" entrySize="0x20">
+	<tagblock name="Attachments" offset="0xE8" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum8 name="Change Color" offset="0x14" visible="true">
@@ -285,8 +285,8 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
-	</reflexive>
-	<reflexive name="Hull Surfaces" offset="0xF4" visible="true" entrySize="0x18">
+	</tagblock>
+	<tagblock name="Hull Surfaces" offset="0xF4" visible="true" elementSize="0x18">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Works On Land" index="0" />
 			<bit name="Effects Only" index="1" />
@@ -294,7 +294,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<stringid name="Marker Name" offset="0x4" visible="true" />
 		<float32 name="Radius" offset="0x8" visible="true" />
-		<reflexive name="Drag" offset="0xC" visible="true" entrySize="0x3C">
+		<tagblock name="Drag" offset="0xC" visible="true" elementSize="0x3C">
 			<stringid name="Material" offset="0x0" visible="true" />
 			<comment title="Drag" />
 			<dataref name="Velocity To Pressure Function" offset="0x4" visible="true" />
@@ -304,19 +304,19 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Max Velocity" offset="0x30" visible="true" />
 			<float32 name="Linear Damping" offset="0x34" visible="true" />
 			<float32 name="Angular Damping" offset="0x38" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Widgets" offset="0x100" visible="true" entrySize="0x10">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Widgets" offset="0x100" visible="true" elementSize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0x10C" visible="true" entrySize="0x18">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0x10C" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
@@ -326,11 +326,11 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
 			<stringid name="Scale By..." offset="0x24" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resources" offset="0x118" visible="false" entrySize="0x0">
-	</reflexive>
-	<reflexive name="Multiplayer Object Properties" offset="0x124" visible="true" entrySize="0xBC">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resources" offset="0x118" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Multiplayer Object Properties" offset="0x124" visible="true" elementSize="0xBC">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<enum8 name="Object Type" offset="0x1" visible="true">
 			<option name="Ordinary" value="0x0" />
@@ -418,15 +418,15 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<tagref name="Cylinder Opaque Shader" offset="0x8C" visible="true" />
 		<tagref name="Box Standard Shader" offset="0x9C" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xAC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagref name="Simulation Interpolation" offset="0x130" visible="true" />
-	<reflexive name="Spawn Effects" offset="0x140" visible="true" entrySize="0x30">
+	<tagblock name="Spawn Effects" offset="0x140" visible="true" elementSize="0x30">
 		<comment title="Spawn Effects">Effect played when an object of this type spawns in during each game mode.
 Unlike creation effect, it is only played when the object spawns in through certain methods, not whenever one is created.</comment>
 		<tagRef name="Multiplayer Spawn Effect" offset="0x0" visible="true" />
 		<tagRef name="Survival Spawn Effect" offset="0x10" visible="true" />
 		<tagRef name="Campaign Spawn Effect" offset="0x20" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="SOUND SCENERY" />
 	<float32 name="Distance min" offset="0x14C" visible="true" />
 	<float32 name="Distance max" offset="0x150" visible="true" />

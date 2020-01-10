@@ -14,7 +14,7 @@
 -Fields named with [Special] mean the widget is always visible by default, but play a specific animation if a match occurs.
 -Fields named with [Brief] mean the widget is always invisible by default, but play a specific animation if a match occurs, then becomes invisible again.
 -Every other field should behave as an on/off switch for whether or not the widget should be drawn.</comment>
-	<reflexive name="HUD Widgets" offset="0x0" visible="true" entrySize="0x50">
+	<tagblock name="HUD Widgets" offset="0x0" visible="true" elementSize="0x50">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum16 name="Special HUD Type" offset="0x4" visible="true">
 			<option name="Unspecial" value="0x0" />
@@ -38,7 +38,7 @@
 			<option name="6/Use Parent Widget" value="0x6" />
 			<option name="7/Always Show/No Warping" value="0x7" />
 		</enum8>
-		<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x28">
+		<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
 			<bitfield16 name="1 Engine" offset="0x0" visible="true">
 				<bit name="Campaign Solo" index="0" />
 				<bit name="Campaign Coop" index="1" />
@@ -185,8 +185,8 @@
 			</bitfield16>
 			<int16 name="Unknown" offset="0x24" visible="false" />
 			<int16 name="Unknown" offset="0x26" visible="false" />
-		</reflexive>
-		<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
+		</tagblock>
+		<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 			<enum16 name="Anchor" offset="0x0" visible="true">
 				<option name="Top Left" value="0x0" />
 				<option name="Top Right" value="0x1" />
@@ -227,8 +227,8 @@
 			<float32 name="Offset Y" offset="0x10" visible="true" />
 			<float32 name="Scale X" offset="0x14" visible="true" />
 			<float32 name="Scale Y" offset="0x18" visible="true" />
-		</reflexive>
-		<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
+		</tagblock>
+		<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 			<comment title="HUD Initialize Animation" />
 			<bitfield16 name="Flags" offset="0x0" visible="true">
 				<bit name="Reverse Frames" index="0" />
@@ -289,8 +289,8 @@
 				<option name="Use Range Input" value="0x2" />
 			</enum16>
 			<tagRef name="Animation" offset="0x68" visible="true" />
-		</reflexive>
-		<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x40">
+		</tagblock>
+		<tagblock name="Render Data" offset="0x2C" visible="true" elementSize="0x40">
 			<enum16 name="Shader Index" offset="0x0" visible="true">
 				<option name="Simple" value="0x0" />
 				<option name="Meter" value="0x1" />
@@ -652,8 +652,8 @@
 				<option name="Custom Animation" value="0x6" />
 				<option name="Unknown/Deprecated" value="0x7" />
 			</enum16>
-		</reflexive>
-		<reflexive name="Bitmap Widgets" offset="0x38" visible="true" entrySize="0x54">
+		</tagblock>
+		<tagblock name="Bitmap Widgets" offset="0x38" visible="true" elementSize="0x54">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<enum16 name="Special HUD Type" offset="0x4" visible="true">
 				<option name="Unspecial" value="0x0" />
@@ -677,7 +677,7 @@
 				<option name="6/Use Parent Widget" value="0x6" />
 				<option name="7/Always Show/No Warping" value="0x7" />
 			</enum8>
-			<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x28">
+			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
 				<bitfield16 name="1 Engine" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
@@ -824,8 +824,8 @@
 				</bitfield16>
 				<int16 name="Unknown" offset="0x24" visible="false" />
 				<int16 name="Unknown" offset="0x26" visible="false" />
-			</reflexive>
-			<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
+			</tagblock>
+			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 				<enum16 name="Anchor" offset="0x0" visible="true">
 					<option name="Top Left" value="0x0" />
 					<option name="Top Right" value="0x1" />
@@ -866,8 +866,8 @@
 				<float32 name="Offset Y" offset="0x10" visible="true" />
 				<float32 name="Scale X" offset="0x14" visible="true" />
 				<float32 name="Scale Y" offset="0x18" visible="true" />
-			</reflexive>
-			<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
+			</tagblock>
+			<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 				<comment title="HUD Initialize Animation" />
 				<bitfield16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
@@ -928,8 +928,8 @@
 					<option name="Use Range Input" value="0x2" />
 				</enum16>
 				<tagRef name="Animation" offset="0x68" visible="true" />
-			</reflexive>
-			<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x40">
+			</tagblock>
+			<tagblock name="Render Data" offset="0x2C" visible="true" elementSize="0x40">
 				<enum16 name="Shader Index" offset="0x0" visible="true">
 					<option name="Simple" value="0x0" />
 					<option name="Meter" value="0x1" />
@@ -1291,7 +1291,7 @@
 					<option name="Custom Animation" value="0x6" />
 					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-			</reflexive>
+			</tagblock>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
 			<bitfield16 name="Flags" offset="0x3C" visible="true">
 				<bit name="Mirror Horizontally" index="0" />
@@ -1317,8 +1317,8 @@
 			<uint8 name="Unknown" offset="0x51" visible="false" />
 			<uint8 name="Unknown" offset="0x52" visible="false" />
 			<uint8 name="Unknown" offset="0x53" visible="false" />
-		</reflexive>
-		<reflexive name="Text Widgets" offset="0x44" visible="true" entrySize="0x44">
+		</tagblock>
+		<tagblock name="Text Widgets" offset="0x44" visible="true" elementSize="0x44">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<enum16 name="Special HUD Type" offset="0x4" visible="true">
 				<option name="Unspecial" value="0x0" />
@@ -1342,7 +1342,7 @@
 				<option name="6/Use Parent Widget" value="0x6" />
 				<option name="7/Always Show/No Warping" value="0x7" />
 			</enum8>
-			<reflexive name="State Data" offset="0x8" visible="true" entrySize="0x28">
+			<tagblock name="State Data" offset="0x8" visible="true" elementSize="0x28">
 				<bitfield16 name="1 Engine" offset="0x0" visible="true">
 					<bit name="Campaign Solo" index="0" />
 					<bit name="Campaign Coop" index="1" />
@@ -1489,8 +1489,8 @@
 				</bitfield16>
 				<int16 name="Unknown" offset="0x24" visible="false" />
 				<int16 name="Unknown" offset="0x26" visible="false" />
-			</reflexive>
-			<reflexive name="Placement Data" offset="0x14" visible="true" entrySize="0x1C">
+			</tagblock>
+			<tagblock name="Placement Data" offset="0x14" visible="true" elementSize="0x1C">
 				<enum16 name="Anchor" offset="0x0" visible="true">
 					<option name="Top Left" value="0x0" />
 					<option name="Top Right" value="0x1" />
@@ -1531,8 +1531,8 @@
 				<float32 name="Offset Y" offset="0x10" visible="true" />
 				<float32 name="Scale X" offset="0x14" visible="true" />
 				<float32 name="Scale Y" offset="0x18" visible="true" />
-			</reflexive>
-			<reflexive name="Animation Data" offset="0x20" visible="true" entrySize="0x78">
+			</tagblock>
+			<tagblock name="Animation Data" offset="0x20" visible="true" elementSize="0x78">
 				<comment title="HUD Initialize Animation" />
 				<bitfield16 name="Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
@@ -1593,8 +1593,8 @@
 					<option name="Use Range Input" value="0x2" />
 				</enum16>
 				<tagRef name="Animation" offset="0x68" visible="true" />
-			</reflexive>
-			<reflexive name="Render Data" offset="0x2C" visible="true" entrySize="0x40">
+			</tagblock>
+			<tagblock name="Render Data" offset="0x2C" visible="true" elementSize="0x40">
 				<enum16 name="Shader Index" offset="0x0" visible="true">
 					<option name="Simple" value="0x0" />
 					<option name="Meter" value="0x1" />
@@ -1956,7 +1956,7 @@
 					<option name="Custom Animation" value="0x6" />
 					<option name="Unknown/Deprecated" value="0x7" />
 				</enum16>
-			</reflexive>
+			</tagblock>
 			<int32 name="Widget Index" offset="0x38" visible="true" />
 			<bitfield16 name="Flags" offset="0x3C" visible="true">
 				<bit name="String Is A Number" index="0" />
@@ -2002,8 +2002,8 @@ chud_arming_meter_name
 chud_time_left
 chud_training_text</comment>
 			<stringid name="String" offset="0x40" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<int32 name="Low Clip Cutoff" offset="0xC" visible="true" />
 	<int32 name="Low Ammo Cutoff" offset="0x10" visible="true" />
 	<int32 name="Age Cutoff" offset="0x14" visible="true" />

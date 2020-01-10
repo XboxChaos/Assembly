@@ -116,7 +116,7 @@
 	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x70" visible="true" />
 	<tagRef name="Brittle Collision Damage" offset="0x80" visible="true" />
-	<reflexive name="Early Mover Oriented Bounding Box" offset="0x90" visible="true" entrySize="0x2C">
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0x90" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
 		<float32 name="X0" offset="0x8" visible="true" />
@@ -128,11 +128,11 @@
 		<degree name="Angles y" offset="0x20" visible="true" />
 		<degree name="Angles p" offset="0x24" visible="true" />
 		<degree name="Angles r" offset="0x28" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Creation Effect" offset="0x9C" visible="true" />
 	<tagRef name="Material Effects" offset="0xAC" visible="true" />
 	<tagRef name="Melee Sound" offset="0xBC" visible="true" />
-	<reflexive name="AI Properties" offset="0xCC" visible="true" entrySize="0x10">
+	<tagblock name="AI Properties" offset="0xCC" visible="true" elementSize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -188,8 +188,8 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0xD8" visible="true" entrySize="0x3C">
+	</tagblock>
+	<tagblock name="Functions" offset="0xD8" visible="true" elementSize="0x3C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -231,7 +231,7 @@
 		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Default Function" offset="0x18" visible="true" />
 		<stringid name="Scale By" offset="0x2C" visible="true" />
-		<reflexive name="Interpolation" offset="0x30" visible="true" entrySize="0x18">
+		<tagblock name="Interpolation" offset="0x30" visible="true" elementSize="0x18">
 			<enum32 name="Interpolation Mode" offset="0x0" visible="true">
 				<option name="Constant Velocity" value="0x0" />
 				<option name="Linear Acceleration" value="0x1" />
@@ -249,8 +249,8 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Spring k" offset="0xC" visible="true" />
 			<float32 name="Spring c" offset="0x10" visible="true" />
 			<float32 name="Fraction" offset="0x14" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<int16 name="HUD Text Message Index" offset="0xE4" visible="true" />
 	<bitfield16 name="Secondary Flags" offset="0xE6" visible="true">
 		<bit name="Does Not Affect Projectile Aiming" index="0" />
@@ -270,7 +270,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<reflexive name="Attachments" offset="0xE8" visible="true" entrySize="0x20">
+	<tagblock name="Attachments" offset="0xE8" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum8 name="Change Color" offset="0x14" visible="true">
@@ -287,8 +287,8 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
-	</reflexive>
-	<reflexive name="Hull Surfaces" offset="0xF4" visible="true" entrySize="0x18">
+	</tagblock>
+	<tagblock name="Hull Surfaces" offset="0xF4" visible="true" elementSize="0x18">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Works On Land" index="0" />
 			<bit name="Effects Only" index="1" />
@@ -296,7 +296,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<stringid name="Marker Name" offset="0x4" visible="true" />
 		<float32 name="Radius" offset="0x8" visible="true" />
-		<reflexive name="Drag" offset="0xC" visible="true" entrySize="0x3C">
+		<tagblock name="Drag" offset="0xC" visible="true" elementSize="0x3C">
 			<stringid name="Material" offset="0x0" visible="true" />
 			<comment title="Drag" />
 			<dataref name="Velocity To Pressure Function" offset="0x4" visible="true" />
@@ -306,19 +306,19 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Max Velocity" offset="0x30" visible="true" />
 			<float32 name="Linear Damping" offset="0x34" visible="true" />
 			<float32 name="Angular Damping" offset="0x38" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Widgets" offset="0x100" visible="true" entrySize="0x10">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Widgets" offset="0x100" visible="true" elementSize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0x10C" visible="true" entrySize="0x18">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0x10C" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
@@ -328,11 +328,11 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
 			<stringid name="Scale By..." offset="0x24" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resources" offset="0x118" visible="false" entrySize="0x0">
-	</reflexive>
-	<reflexive name="Multiplayer Object Properties" offset="0x124" visible="true" entrySize="0xBC">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resources" offset="0x118" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Multiplayer Object Properties" offset="0x124" visible="true" elementSize="0xBC">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<enum8 name="Object Type" offset="0x1" visible="true">
 			<option name="Ordinary" value="0x0" />
@@ -420,15 +420,15 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<tagref name="Cylinder Opaque Shader" offset="0x8C" visible="true" />
 		<tagref name="Box Standard Shader" offset="0x9C" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xAC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagref name="Simulation Interpolation" offset="0x130" visible="true" />
-	<reflexive name="Spawn Effects" offset="0x140" visible="true" entrySize="0x30">
+	<tagblock name="Spawn Effects" offset="0x140" visible="true" elementSize="0x30">
 		<comment title="Spawn Effects">Effect played when an object of this type spawns in during each game mode.
 Unlike creation effect, it is only played when the object spawns in through certain methods, not whenever one is created.</comment>
 		<tagRef name="Multiplayer Spawn Effect" offset="0x0" visible="true" />
 		<tagRef name="Survival Spawn Effect" offset="0x10" visible="true" />
 		<tagRef name="Campaign Spawn Effect" offset="0x20" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="UNIT" />
 	<bitfield32 name="Flags" offset="0x14C" visible="true">
 		<bit name="Circular Aiming" index="0" />
@@ -481,7 +481,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<option name="Shout" value="0x3" />
 		<option name="Quiet" value="0x4" />
 	</enum16>
-	<reflexive name="Metagame Properties" offset="0x154" visible="true" entrySize="0x8">
+	<tagblock name="Metagame Properties" offset="0x154" visible="true" elementSize="0x8">
 		<bitfield8 name="Flags" offset="0x0" visible="true">
 			<bit name="Must Have Active Seats" index="0" />
 		</bitfield8>
@@ -530,7 +530,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x3" visible="false" />
 		<int16 name="Points" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Integrated Light Toggle" offset="0x160" visible="true" />
 	<int32 name="Unknown" offset="0x170" visible="false" />
 	<comment title="Unit Camera" />
@@ -551,10 +551,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Pitch Auto-Level" offset="0x17C" visible="true" />
 	<degree name="Pitch Range min" offset="0x180" visible="true" />
 	<degree name="Pitch Range max" offset="0x184" visible="true" />
-	<reflexive name="Camera Tracks" offset="0x188" visible="true" entrySize="0x20">
+	<tagblock name="Camera Tracks" offset="0x188" visible="true" elementSize="0x20">
 		<tagRef name="Track" offset="0x0" visible="true" />
 		<tagRef name="Screen Effect" offset="0x10" visible="true" />
-	</reflexive>
+	</tagblock>
 	<degree name="Camera Stiffness min" offset="0x194" visible="true" />
 	<degree name="Camera Stiffness max" offset="0x198" visible="true" />
 	<degree name="Unknown" offset="0x19C" visible="false" />
@@ -567,7 +567,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<undefined name="Unknown" offset="0x1B8" visible="false" />
 	<undefined name="Unknown" offset="0x1BC" visible="false" />
 	<undefined name="Unknown" offset="0x1C0" visible="false" />
-	<reflexive name="Unknown" offset="0x1C4" visible="false" entrySize="0x70">
+	<tagblock name="Unknown" offset="0x1C4" visible="false" elementSize="0x70">
 		<float32 name="Unknown" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
 		<dataRef name="Unknown" offset="0x8" visible="true" />
@@ -586,8 +586,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x64" visible="true" />
 		<float32 name="Unknown" offset="0x68" visible="true" />
 		<float32 name="Unknown" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0x1D0" visible="false" entrySize="0x28">
+	</tagblock>
+	<tagblock name="Unknown" offset="0x1D0" visible="false" elementSize="0x28">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
@@ -598,11 +598,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x14" visible="true" />
 		<degree name="Unknown" offset="0x18" visible="true" />
-		<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Space Fighter Camera" offset="0x1DC" visible="false" entrySize="0x28">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Space Fighter Camera" offset="0x1DC" visible="false" elementSize="0x28">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
@@ -613,10 +613,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x14" visible="true" />
 		<degree name="Unknown" offset="0x18" visible="true" />
-		<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<comment title="Assassination Camera" />
 	<bitfield8 name="Camera Flags" offset="0x1E8" visible="true">
 		<bit name="Bit 0" index="0" />
@@ -635,10 +635,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Pitch Auto-Level" offset="0x1F0" visible="true" />
 	<degree name="Pitch Range min" offset="0x1F4" visible="true" />
 	<degree name="Pitch Range max" offset="0x1F8" visible="true" />
-	<reflexive name="Camera Tracks" offset="0x1FC" visible="true" entrySize="0x20">
+	<tagblock name="Camera Tracks" offset="0x1FC" visible="true" elementSize="0x20">
 		<tagRef name="Track" offset="0x0" visible="true" />
 		<tagRef name="Screen Effect" offset="0x10" visible="true" />
-	</reflexive>
+	</tagblock>
 	<degree name="Camera Stiffness min" offset="0x208" visible="true" />
 	<degree name="Camera Stiffness max" offset="0x20C" visible="true" />
 	<degree name="Unknown" offset="0x210" visible="false" />
@@ -651,7 +651,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<undefined name="Unknown" offset="0x22C" visible="false" />
 	<undefined name="Unknown" offset="0x230" visible="false" />
 	<undefined name="Unknown" offset="0x234" visible="false" />
-	<reflexive name="Unknown" offset="0x238" visible="false" entrySize="0x70">
+	<tagblock name="Unknown" offset="0x238" visible="false" elementSize="0x70">
 		<float32 name="Unknown" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="true" />
 		<dataRef name="Unknown" offset="0x8" visible="true" />
@@ -670,8 +670,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x64" visible="true" />
 		<float32 name="Unknown" offset="0x68" visible="true" />
 		<float32 name="Unknown" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0x244" visible="false" entrySize="0x28">
+	</tagblock>
+	<tagblock name="Unknown" offset="0x244" visible="false" elementSize="0x28">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
@@ -682,11 +682,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x14" visible="true" />
 		<degree name="Unknown" offset="0x18" visible="true" />
-		<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Space Fighter Camera" offset="0x250" visible="false" entrySize="0x28">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Space Fighter Camera" offset="0x250" visible="false" elementSize="0x28">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
@@ -697,10 +697,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x14" visible="true" />
 		<degree name="Unknown" offset="0x18" visible="true" />
-		<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 			<dataRef name="Function" offset="0x0" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<tagRef name="Assassination Response" offset="0x25C" visible="true" />
 	<tagRef name="Assassination Tool" offset="0x26C" visible="true" />
 	<stringId name="Assassination Tool Marker" offset="0x27C" visible="true" />
@@ -766,20 +766,20 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<option name="Huge" value="0x3" />
 	</enum16>
 	<stringId name="Equipment Variant" offset="0x3CC" visible="true" />
-	<reflexive name="Postures" offset="0x3D0" visible="true" entrySize="0x10">
+	<tagblock name="Postures" offset="0x3D0" visible="true" elementSize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<float32 name="Pill Offset I" offset="0x4" visible="true" />
 		<float32 name="Pill Offset J" offset="0x8" visible="true" />
 		<float32 name="Pill Offset K" offset="0xC" visible="true" />
-	</reflexive>
-	<reflexive name="HUD Interfaces" offset="0x3DC" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="HUD Interfaces" offset="0x3DC" visible="true" elementSize="0x10">
 		<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Dialogue Variants" offset="0x3E8" visible="true" entrySize="0x14">
+	</tagblock>
+	<tagblock name="Dialogue Variants" offset="0x3E8" visible="true" elementSize="0x14">
 		<int16 name="Variant Number" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<tagRef name="Dialogue" offset="0x4" visible="true" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Grenade Arc" offset="0x3F4" visible="true" />
 	<float32 name="Grenade Force" offset="0x3F8" visible="true" />
 	<float32 name="Grenade Angle" offset="0x3FC" visible="true" />
@@ -789,25 +789,25 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<option name="Covenant Plasma" value="0x1" />
 	</enum16>
 	<int16 name="Grenade Count" offset="0x406" visible="true" />
-	<reflexive name="Powered Seats" offset="0x408" visible="true" entrySize="0x8">
+	<tagblock name="Powered Seats" offset="0x408" visible="true" elementSize="0x8">
 		<float32 name="Driver Powerup Time" offset="0x0" visible="true" />
 		<float32 name="Driver Powerdown Time" offset="0x4" visible="true" />
-	</reflexive>
-	<reflexive name="Weapons" offset="0x414" visible="true" entrySize="0x14">
+	</tagblock>
+	<tagblock name="Weapons" offset="0x414" visible="true" elementSize="0x14">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
 		<stringid name="Parent Marker" offset="0x10" visible="true" />
-	</reflexive>
-	<reflexive name="Target Tracking" offset="0x420" visible="true" entrySize="0x38">
-		<reflexive name="Tracking Types" offset="0x0" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Target Tracking" offset="0x420" visible="true" elementSize="0x38">
+		<tagblock name="Tracking Types" offset="0x0" visible="true" elementSize="0x4">
 			<stringid name="Tracking Type" offset="0x0" visible="true" />
-		</reflexive>
+		</tagblock>
 		<float32 name="Acquire Time" offset="0xC" visible="true" />
 		<float32 name="Grace Time" offset="0x10" visible="true" />
 		<float32 name="Decay Time" offset="0x14" visible="true" />
 		<tagRef name="Tracking Sound" offset="0x18" visible="true" />
 		<tagRef name="Locked Sound" offset="0x28" visible="true" />
-	</reflexive>
-	<reflexive name="Seats" offset="0x42C" visible="true" entrySize="0x12C">
+	</tagblock>
+	<tagblock name="Seats" offset="0x42C" visible="true" elementSize="0x12C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invisible" index="0" />
 			<bit name="Locked" index="1" />
@@ -888,10 +888,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<degree name="Pitch Auto-Level" offset="0x6C" visible="true" />
 		<degree name="Pitch Range min" offset="0x70" visible="true" />
 		<degree name="Pitch Range max" offset="0x74" visible="true" />
-		<reflexive name="Camera Tracks" offset="0x78" visible="true" entrySize="0x20">
+		<tagblock name="Camera Tracks" offset="0x78" visible="true" elementSize="0x20">
 			<tagRef name="Track" offset="0x0" visible="true" />
 			<tagRef name="Screen Effect" offset="0x10" visible="true" />
-		</reflexive>
+		</tagblock>
 		<degree name="Camera Stiffness min" offset="0x84" visible="true" />
 		<degree name="Camera Stiffness max" offset="0x88" visible="true" />
 		<degree name="Unknown" offset="0x8C" visible="false" />
@@ -904,7 +904,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<undefined name="Unknown" offset="0xA8" visible="false" />
 		<undefined name="Unknown" offset="0xAC" visible="false" />
 		<undefined name="Unknown" offset="0xB0" visible="false" />
-		<reflexive name="Unknown" offset="0xB4" visible="false" entrySize="0x70">
+		<tagblock name="Unknown" offset="0xB4" visible="false" elementSize="0x70">
 			<float32 name="Unknown" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="true" />
 			<dataRef name="Unknown" offset="0x8" visible="true" />
@@ -923,8 +923,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x64" visible="true" />
 			<float32 name="Unknown" offset="0x68" visible="true" />
 			<float32 name="Unknown" offset="0x6C" visible="true" />
-		</reflexive>
-		<reflexive name="Unknown" offset="0xC0" visible="false" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Unknown" offset="0xC0" visible="false" elementSize="0x28">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
@@ -935,11 +935,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x10" visible="true" />
 			<float32 name="Unknown" offset="0x14" visible="true" />
 			<degree name="Unknown" offset="0x18" visible="true" />
-			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+			<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 				<dataRef name="Function" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Space Fighter Camera" offset="0xCC" visible="true" entrySize="0x28">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Space Fighter Camera" offset="0xCC" visible="true" elementSize="0x28">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
@@ -950,13 +950,13 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x10" visible="true" />
 			<float32 name="Unknown" offset="0x14" visible="true" />
 			<degree name="Unknown" offset="0x18" visible="true" />
-			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+			<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 				<dataRef name="Function" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Unit HUD Interface" offset="0xD8" visible="true" entrySize="0x10">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Unit HUD Interface" offset="0xD8" visible="true" elementSize="0x10">
 			<tagRef name="Unit HUD Interface" offset="0x0" visible="true" />
-		</reflexive>
+		</tagblock>
 		<stringid name="Enter Seat String" offset="0xE4" visible="true" />
 		<degree name="Yaw Range min" offset="0xE8" visible="true" />
 		<degree name="Yaw Range max" offset="0xEC" visible="true" />
@@ -972,7 +972,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<stringid name="Closing Animation" offset="0x120" visible="true" />
 		<stringid name="Invisible Seat Region" offset="0x124" visible="true" />
 		<int32 name="Runtime Invisible Seat Region Index" offset="0x128" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x438" visible="false" />
 	<undefined name="Unknown" offset="0x43C" visible="false" />
 	<float32 name="EMP Radius" offset="0x440" visible="true" />
@@ -1041,7 +1041,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<stringid name="Unknown" offset="0x4D4" visible="true" />
 	<stringId name="Assassination String" offset="0x4D8" visible="true" />
 	<float32 name="Jump Velocity" offset="0x4DC" visible="true" />
-	<reflexive name="Tricks" offset="0x4E0" visible="true" entrySize="0x10">
+	<tagblock name="Tricks" offset="0x4E0" visible="true" elementSize="0x10">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum8 name="Initiate Direction" offset="0x4" visible="true">
 			<option name="Left" value="0x0" />
@@ -1054,7 +1054,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<int8 name="Unknown" offset="0x7" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="true" />
 		<float32 name="Unknown" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Maximum Soft Landing Time" offset="0x4EC" visible="true" />
 	<float32 name="Maximum Hard Landing Time" offset="0x4F0" visible="true" />
 	<float32 name="Minimum Soft Landing Velocity" offset="0x4F4" visible="true" />
@@ -1067,11 +1067,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<float32 name="Moving Crouching Camera Height" offset="0x510" visible="true" />
 	<float32 name="Crouch Transition Time" offset="0x514" visible="true" />
 	<dataRef name="Crouching Camera Function" offset="0x518" visible="true" />
-	<reflexive name="Weapon Camera Height" offset="0x52C" visible="true" entrySize="0xC">
+	<tagblock name="Weapon Camera Height" offset="0x52C" visible="true" elementSize="0xC">
 		<stringid name="Class" offset="0x0" visible="true" />
 		<float32 name="Standing Height Fraction" offset="0x4" visible="true" />
 		<float32 name="Crouching Height Fraction" offset="0x8" visible="true" />
-	</reflexive>
+	</tagblock>
 	<degree name="Camera Interpolation Start" offset="0x538" visible="true" />
 	<degree name="Camera Interpolation End" offset="0x53C" visible="true" />
 	<float32 name="Unknown" offset="0x540" visible="false" />
@@ -1087,31 +1087,31 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<float32 name="Unknown" offset="0x564" visible="false" />
 	<int16 name="Pelvis Node Index" offset="0x568" visible="true" />
 	<int16 name="Head Node Index" offset="0x56A" visible="true" />
-	<reflexive name="Unknown" offset="0x56C" visible="false" entrySize="0x18">
+	<tagblock name="Unknown" offset="0x56C" visible="false" elementSize="0x18">
 		<stringid name="Unknown" offset="0x0" visible="true" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<stringid name="Unknown" offset="0x14" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Area Damage Effect" offset="0x578" visible="true" />
-	<reflexive name="Unknown" offset="0x588" visible="false" entrySize="0x28">
+	<tagblock name="Unknown" offset="0x588" visible="false" elementSize="0x28">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Unknown" offset="0x10" visible="false" />
 		<dataRef name="Function" offset="0x14" visible="false" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0x594" visible="false" entrySize="0x28">
+	</tagblock>
+	<tagblock name="Unknown" offset="0x594" visible="false" elementSize="0x28">
 		<float32 name="Unknown" offset="0x0" visible="false" />
 		<float32 name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
 		<float32 name="Unknown" offset="0xC" visible="false" />
 		<float32 name="Unknown" offset="0x10" visible="false" />
 		<dataRef name="Function" offset="0x14" visible="false" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Unknown" offset="0x5A0" visible="false" />
 	<float32 name="Unknown" offset="0x5A4" visible="false" />
 	<float32 name="Unknown" offset="0x5A8" visible="false" />
@@ -1161,7 +1161,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<stringId name="Dead Material Name" offset="0x5D0" visible="true" />
 	<int16 name="Living Global Material Index" offset="0x5D4" visible="true" />
 	<int16 name="Dead Global Material Index" offset="0x5D6" visible="true" />
-	<reflexive name="Dead Sphere Shapes" offset="0x5D8" visible="true" entrySize="0x70" align="0x10">
+	<tagblock name="Dead Sphere Shapes" offset="0x5D8" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -1196,8 +1196,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Translation j" offset="0x64" visible="true" />
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Pill Shapes" offset="0x5E4" visible="true" entrySize="0x60" align="0x10">
+	</tagblock>
+	<tagblock name="Pill Shapes" offset="0x5E4" visible="true" elementSize="0x60" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -1227,8 +1227,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Top j" offset="0x54" visible="true" />
 		<float32 name="Top k" offset="0x58" visible="true" />
 		<float32 name="Top Radius" offset="0x5C" visible="true" />
-	</reflexive>
-	<reflexive name="Sphere Shapes" offset="0x5F0" visible="true" entrySize="0x70" align="0x10">
+	</tagblock>
+	<tagblock name="Sphere Shapes" offset="0x5F0" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -1263,7 +1263,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Translation j" offset="0x64" visible="true" />
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="Ground" />
 	<degree name="Maximum Slope Angle" offset="0x5FC" visible="true" />
 	<degree name="Downhill Falloff Angle" offset="0x600" visible="true" />
@@ -1295,9 +1295,9 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<degree name="Angular Acceleration Maximum" offset="0x664" visible="true" />
 	<float32 name="Crouch Velocity Modifier" offset="0x668" visible="true" />
 	<undefined name="Unknown" offset="0x66C" visible="false" />
-	<reflexive name="Contact Points" offset="0x670" visible="true" entrySize="0x4">
+	<tagblock name="Contact Points" offset="0x670" visible="true" elementSize="0x4">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Reanimation Character" offset="0x67C" visible="true" />
 	<tagRef name="Transformation Muffin" offset="0x68C" visible="true" />
 	<tagRef name="Death Spawn Character" offset="0x69C" visible="true" />

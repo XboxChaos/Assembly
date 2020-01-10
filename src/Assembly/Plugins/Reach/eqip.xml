@@ -121,7 +121,7 @@
 	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x84" visible="true" />
 	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
-	<reflexive name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" entrySize="0x2C">
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" />
 		<int32 name="Runtime Node Index" offset="0x4" visible="true" />
 		<float32 name="X0" offset="0x8" visible="true" />
@@ -133,11 +133,11 @@
 		<degree name="Angles y" offset="0x20" visible="true" />
 		<degree name="Angles p" offset="0x24" visible="true" />
 		<degree name="Angles r" offset="0x28" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Creation Effect" offset="0xB0" visible="true" />
 	<tagRef name="Material Effects" offset="0xC0" visible="true" />
 	<tagRef name="Melee Sound" offset="0xD0" visible="true" />
-	<reflexive name="AI Properties" offset="0xE0" visible="true" entrySize="0x10">
+	<tagblock name="AI Properties" offset="0xE0" visible="true" elementSize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -193,8 +193,8 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0xEC" visible="true" entrySize="0x40">
+	</tagblock>
+	<tagblock name="Functions" offset="0xEC" visible="true" elementSize="0x40">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -236,7 +236,7 @@
 		<float32 name="Minimum Value" offset="0x14" visible="true" />
 		<dataRef name="Default Function" offset="0x18" visible="true" />
 		<stringid name="Scale By" offset="0x2C" visible="true" />
-		<reflexive name="Interpolation" offset="0x30" visible="true" entrySize="0x18">
+		<tagblock name="Interpolation" offset="0x30" visible="true" elementSize="0x18">
 			<enum32 name="Interpolation Mode" offset="0x0" visible="true">
 				<option name="Constant Velocity" value="0x0" />
 				<option name="Linear Acceleration" value="0x1" />
@@ -254,12 +254,12 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Spring k" offset="0xC" visible="true" />
 			<float32 name="Spring c" offset="0x10" visible="true" />
 			<float32 name="Fraction" offset="0x14" visible="true" />
-		</reflexive>
+		</tagblock>
 		<int32 name="Runtime Interpolator Index" offset="0x3C" visible="true" />
-	</reflexive>
-	<reflexive name="Runtime Interpolator Functions" offset="0xF8" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Runtime Interpolator Functions" offset="0xF8" visible="true" elementSize="0x4">
 		<int32 name="Runtime Interpolator To Object Function Mapping" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<int16 name="HUD Text Message Index" offset="0x104" visible="true" />
 	<bitfield16 name="Secondary Flags" offset="0x106" visible="true">
 		<bit name="Does Not Affect Projectile Aiming" index="0" />
@@ -279,7 +279,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<reflexive name="Attachments" offset="0x108" visible="true" entrySize="0x20">
+	<tagblock name="Attachments" offset="0x108" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum8 name="Change Color" offset="0x14" visible="true">
@@ -296,8 +296,8 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
-	</reflexive>
-	<reflexive name="Hull Surfaces" offset="0x114" visible="true" entrySize="0x18">
+	</tagblock>
+	<tagblock name="Hull Surfaces" offset="0x114" visible="true" elementSize="0x18">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Works On Land" index="0" />
 			<bit name="Effects Only" index="1" />
@@ -305,7 +305,7 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<int16 name="Unknown" offset="0x2" visible="false" />
 		<stringid name="Marker Name" offset="0x4" visible="true" />
 		<float32 name="Radius" offset="0x8" visible="true" />
-		<reflexive name="Drag" offset="0xC" visible="true" entrySize="0x3C">
+		<tagblock name="Drag" offset="0xC" visible="true" elementSize="0x3C">
 			<stringid name="Material" offset="0x0" visible="true" />
 			<comment title="Drag" />
 			<dataref name="Velocity To Pressure Function" offset="0x4" visible="true" />
@@ -315,9 +315,9 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<float32 name="Max Velocity" offset="0x30" visible="true" />
 			<float32 name="Linear Damping" offset="0x34" visible="true" />
 			<float32 name="Angular Damping" offset="0x38" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Jetwash" offset="0x120" visible="true" entrySize="0x24">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Jetwash" offset="0x120" visible="true" elementSize="0x24">
 		<stringid name="Marker Name" offset="0x0" visible="true" />
 		<float32 name="Radius" offset="0x4" visible="true" />
 		<int32 name="Maximum Traces" offset="0x8" visible="true" />
@@ -327,18 +327,18 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<degree name="Trace Pitch Angle min" offset="0x18" visible="true" />
 		<degree name="Trace Pitch Angle max" offset="0x1C" visible="true" />
 		<float32 name="Particle Offset" offset="0x20" visible="true" />
-	</reflexive>
-	<reflexive name="Widgets" offset="0x12C" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Widgets" offset="0x12C" visible="true" elementSize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0x138" visible="true" entrySize="0x18">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0x138" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
@@ -348,11 +348,11 @@ the higher the value of k, the quicker the system will reach the target value</c
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
 			<stringid name="Scale By..." offset="0x24" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resources" offset="0x144" visible="false" entrySize="0x0">
-	</reflexive>
-	<reflexive name="Multiplayer Object Properties" offset="0x150" visible="true" entrySize="0xBC">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resources" offset="0x144" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Multiplayer Object Properties" offset="0x150" visible="true" elementSize="0xBC">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<enum8 name="Object Type" offset="0x1" visible="true">
 			<option name="Ordinary" value="0x0" />
@@ -440,15 +440,15 @@ the higher the value of k, the quicker the system will reach the target value</c
 		<tagref name="Cylinder Opaque Shader" offset="0x8C" visible="true" />
 		<tagref name="Box Standard Shader" offset="0x9C" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xAC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagref name="Simulation Interpolation" offset="0x15C" visible="true" />
-	<reflexive name="Spawn Effects" offset="0x16C" visible="true" entrySize="0x30">
+	<tagblock name="Spawn Effects" offset="0x16C" visible="true" elementSize="0x30">
 		<comment title="Spawn Effects">Effect played when an object of this type spawns in during each game mode.
 Unlike creation effect, it is only played when the object spawns in through certain methods, not whenever one is created.</comment>
 		<tagRef name="Multiplayer Spawn Effect" offset="0x0" visible="true" />
 		<tagRef name="Survival Spawn Effect" offset="0x10" visible="true" />
 		<tagRef name="Campaign Spawn Effect" offset="0x20" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="ITEM" />
 	<bitfield32 name="Flags" offset="0x178" visible="true">
 		<bit name="Always Maintains Z Up" index="0" />
@@ -498,9 +498,9 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<stringid name="All Weapons Empty Message" offset="0x1A4" visible="true" />
 	<stringid name="Overheated Message" offset="0x1A8" visible="true" />
 	<tagRef name="Collision Sound" offset="0x1AC" visible="true" />
-	<reflexive name="Predicted Bitmaps" offset="0x1BC" visible="false" entrySize="0x10">
+	<tagblock name="Predicted Bitmaps" offset="0x1BC" visible="false" elementSize="0x10">
 		<tagRef name="Bitmap" offset="0x0" visible="false" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Detonation Damage Effect" offset="0x1C8" visible="true" />
 	<float32 name="Detonation Delay min" offset="0x1D8" visible="true" />
 	<float32 name="Detonation Delay max" offset="0x1DC" visible="true" />
@@ -576,7 +576,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<undefined name="Unknown" offset="0x2A4" visible="false" />
 	<float32 name="Unknown" offset="0x2A8" visible="false" />
 	<stringid name="Unknown" offset="0x2AC" visible="true" />
-	<reflexive name="Equipment Camera" offset="0x2B0" visible="true" entrySize="0x78">
+	<tagblock name="Equipment Camera" offset="0x2B0" visible="true" elementSize="0x78">
 		<bitfield8 name="Camera Flags" offset="0x0" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -594,10 +594,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<degree name="Pitch Auto-Level" offset="0x8" visible="true" />
 		<degree name="Pitch Range min" offset="0xC" visible="true" />
 		<degree name="Pitch Range max" offset="0x10" visible="true" />
-		<reflexive name="Camera Tracks" offset="0x14" visible="true" entrySize="0x20">
+		<tagblock name="Camera Tracks" offset="0x14" visible="true" elementSize="0x20">
 			<tagRef name="Track" offset="0x0" visible="true" />
 			<tagRef name="Screen Effect" offset="0x10" visible="true" />
-		</reflexive>
+		</tagblock>
 		<degree name="Camera Stiffness min" offset="0x20" visible="true" />
 		<degree name="Camera Stiffness max" offset="0x24" visible="true" />
 		<degree name="Unknown" offset="0x28" visible="false" />
@@ -611,7 +611,7 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
-		<reflexive name="Unknown" offset="0x54" visible="false" entrySize="0x70">
+		<tagblock name="Unknown" offset="0x54" visible="false" elementSize="0x70">
 			<float32 name="Unknown" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="true" />
 			<dataRef name="Unknown" offset="0x8" visible="true" />
@@ -630,8 +630,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x64" visible="true" />
 			<float32 name="Unknown" offset="0x68" visible="true" />
 			<float32 name="Unknown" offset="0x6C" visible="true" />
-		</reflexive>
-		<reflexive name="Unknown" offset="0x60" visible="false" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Unknown" offset="0x60" visible="false" elementSize="0x28">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
@@ -642,11 +642,11 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x10" visible="true" />
 			<float32 name="Unknown" offset="0x14" visible="true" />
 			<degree name="Unknown" offset="0x18" visible="true" />
-			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+			<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 				<dataRef name="Function" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Space Fighter Camera" offset="0x6C" visible="false" entrySize="0x28">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Space Fighter Camera" offset="0x6C" visible="false" elementSize="0x28">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="true" />
@@ -657,19 +657,19 @@ Unlike creation effect, it is only played when the object spawns in through cert
 			<float32 name="Unknown" offset="0x10" visible="true" />
 			<float32 name="Unknown" offset="0x14" visible="true" />
 			<degree name="Unknown" offset="0x18" visible="true" />
-			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x14">
+			<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x14">
 				<dataRef name="Function" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
-	<reflexive name="Powerup" offset="0x2BC" visible="true" entrySize="0x4">
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Powerup" offset="0x2BC" visible="true" elementSize="0x4">
 		<enum32 name="Powerup Trait Set" offset="0x0" visible="true">
 			<option name="Red" value="0x0" />
 			<option name="Blue" value="0x1" />
 			<option name="Yellow" value="0x2" />
 		</enum32>
-	</reflexive>
-	<reflexive name="Object Creation" offset="0x2C8" visible="true" entrySize="0x34">
+	</tagblock>
+	<tagblock name="Object Creation" offset="0x2C8" visible="true" elementSize="0x34">
 		<tagRef name="Object" offset="0x0" visible="true" />
 		<tagRef name="Unknown" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
@@ -678,8 +678,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Object Force" offset="0x2C" visible="true" />
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<int16 name="Unknown" offset="0x32" visible="false" />
-	</reflexive>
-	<reflexive name="Destruction" offset="0x2D4" visible="true" entrySize="0x30">
+	</tagblock>
+	<tagblock name="Destruction" offset="0x2D4" visible="true" elementSize="0x30">
 		<tagRef name="Destroy Effect" offset="0x0" visible="true" />
 		<tagRef name="Destroy Damage Effect" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
@@ -687,17 +687,17 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Unknown" offset="0x28" visible="false" />
 		<int16 name="Unknown" offset="0x2C" visible="false" />
 		<int16 name="Unknown" offset="0x2E" visible="false" />
-	</reflexive>
-	<reflexive name="Motion Tracker Noise" offset="0x2E0" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Motion Tracker Noise" offset="0x2E0" visible="true" elementSize="0x10">
 		<float32 name="Arm Time" offset="0x0" visible="true" />
 		<float32 name="Noise Radius" offset="0x4" visible="true" />
 		<int32 name="Noise Count" offset="0x8" visible="true" />
 		<float32 name="Flash Radius" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x2EC" visible="false" />
 	<undefined name="Unknown" offset="0x2F0" visible="false" />
 	<undefined name="Unknown" offset="0x2F4" visible="false" />
-	<reflexive name="Armor Lockup" offset="0x2F8" visible="true" entrySize="0x80">
+	<tagblock name="Armor Lockup" offset="0x2F8" visible="true" elementSize="0x80">
 		<stringid name="Material Name" offset="0x0" visible="true" />
 		<int16 name="Global Material Index" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
@@ -711,13 +711,13 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<dataRef name="Function" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<dataRef name="Function" offset="0x60" visible="false" />
-		<reflexive name="EMP Discharge Levels" offset="0x74" visible="true" entrySize="0x18">
+		<tagblock name="EMP Discharge Levels" offset="0x74" visible="true" elementSize="0x18">
 			<float32 name="Charge Level" offset="0x0" visible="true" />
 			<float32 name="Unknown" offset="0x4" visible="true" />
 			<tagRef name="Discharge Effect" offset="0x8" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Regenerator" offset="0x304" visible="true" entrySize="0xC">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Regenerator" offset="0x304" visible="true" elementSize="0xC">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -754,14 +754,14 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		</bitfield32>
 		<stringid name="Center Marker" offset="0x4" visible="true" />
 		<float32 name="Unknown" offset="0x8" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x310" visible="false" />
 	<undefined name="Unknown" offset="0x314" visible="false" />
 	<undefined name="Unknown" offset="0x318" visible="false" />
-	<reflexive name="Runtime" offset="0x31C" visible="true" entrySize="0x1C">
+	<tagblock name="Runtime" offset="0x31C" visible="true" elementSize="0x1C">
 		<undefined name="Unknown" offset="0x0" visible="false" />
-		<reflexive name="Traits When Active" offset="0x4" visible="true" entrySize="0x3C">
-			<reflexive name="Shields and Health" offset="0x0" visible="true" entrySize="0xC">
+		<tagblock name="Traits When Active" offset="0x4" visible="true" elementSize="0x3C">
+			<tagblock name="Shields and Health" offset="0x0" visible="true" elementSize="0xC">
 				<enum8 name="Damage Resistance" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="10%" value="0x1" />
@@ -871,8 +871,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				</enum8>
 				<int8 name="Unknown" offset="0xA" visible="false" />
 				<int8 name="Unknown" offset="0xB" visible="false" />
-			</reflexive>
-			<reflexive name="Weapons and Damage" offset="0xC" visible="true" entrySize="0x18">
+			</tagblock>
+			<tagblock name="Weapons and Damage" offset="0xC" visible="true" elementSize="0x18">
 				<enum8 name="Damage Modifier" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="0%" value="0x1" />
@@ -958,8 +958,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				<stringId name="Primary Weapon" offset="0xC" visible="true" />
 				<stringId name="Secondary Weapon" offset="0x10" visible="true" />
 				<stringid name="Equipment" offset="0x14" visible="true" />
-			</reflexive>
-			<reflexive name="Movement" offset="0x18" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Movement" offset="0x18" visible="true" elementSize="0x8">
 				<enum8 name="Player Speed" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="0%" value="0x1" />
@@ -1014,8 +1014,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				</enum8>
 				<comment title="Jump Height">This is a percentage, and can be any integer up to 400. -1 Is unchanged/default.</comment>
 				<int32 name="Jump Height" offset="0x4" visible="true" />
-			</reflexive>
-			<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Appearance" offset="0x24" visible="true" elementSize="0x8">
 				<enum8 name="Active Camo" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="Disabled" value="0x1" />
@@ -1062,8 +1062,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				<int8 name="Unknown" offset="0x5" visible="false" />
 				<int8 name="Unknown" offset="0x6" visible="false" />
 				<int8 name="Unknown" offset="0x7" visible="false" />
-			</reflexive>
-			<reflexive name="HUD" offset="0x30" visible="true" entrySize="0x4">
+			</tagblock>
+			<tagblock name="HUD" offset="0x30" visible="true" elementSize="0x4">
 				<enum8 name="Motion Tracker Mode" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="Disabled" value="0x1" />
@@ -1087,10 +1087,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 					<option name="Enabled" value="0x2" />
 				</enum8>
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Traits When Inactive" offset="0x10" visible="true" entrySize="0x3C">
-			<reflexive name="Shields and Health" offset="0x0" visible="true" entrySize="0xC">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Traits When Inactive" offset="0x10" visible="true" elementSize="0x3C">
+			<tagblock name="Shields and Health" offset="0x0" visible="true" elementSize="0xC">
 				<enum8 name="Damage Resistance" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="10%" value="0x1" />
@@ -1200,8 +1200,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				</enum8>
 				<int8 name="Unknown" offset="0xA" visible="false" />
 				<int8 name="Unknown" offset="0xB" visible="false" />
-			</reflexive>
-			<reflexive name="Weapons and Damage" offset="0xC" visible="true" entrySize="0x18">
+			</tagblock>
+			<tagblock name="Weapons and Damage" offset="0xC" visible="true" elementSize="0x18">
 				<enum8 name="Damage Modifier" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="0%" value="0x1" />
@@ -1287,8 +1287,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				<stringId name="Primary Weapon" offset="0xC" visible="true" />
 				<stringId name="Secondary Weapon" offset="0x10" visible="true" />
 				<stringid name="Equipment" offset="0x14" visible="true" />
-			</reflexive>
-			<reflexive name="Movement" offset="0x18" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Movement" offset="0x18" visible="true" elementSize="0x8">
 				<enum8 name="Player Speed" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="0%" value="0x1" />
@@ -1343,8 +1343,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				</enum8>
 				<comment title="Jump Height">This is a percentage, and can be any integer up to 400. -1 Is unchanged/default.</comment>
 				<int32 name="Jump Height" offset="0x4" visible="true" />
-			</reflexive>
-			<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Appearance" offset="0x24" visible="true" elementSize="0x8">
 				<enum8 name="Active Camo" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="Disabled" value="0x1" />
@@ -1391,8 +1391,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 				<int8 name="Unknown" offset="0x5" visible="false" />
 				<int8 name="Unknown" offset="0x6" visible="false" />
 				<int8 name="Unknown" offset="0x7" visible="false" />
-			</reflexive>
-			<reflexive name="HUD" offset="0x30" visible="true" entrySize="0x4">
+			</tagblock>
+			<tagblock name="HUD" offset="0x30" visible="true" elementSize="0x4">
 				<enum8 name="Motion Tracker Mode" offset="0x0" visible="true">
 					<option name="Unchanged" value="0x0" />
 					<option name="Disabled" value="0x1" />
@@ -1416,27 +1416,27 @@ Unlike creation effect, it is only played when the object spawns in through cert
 					<option name="Enabled" value="0x2" />
 				</enum8>
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
-	<reflexive name="Invisibility Unknown" offset="0x328" visible="false" entrySize="0x18">
-		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0xC">
-			<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x4">
+			</tagblock>
+		</tagblock>
+	</tagblock>
+	<tagblock name="Invisibility Unknown" offset="0x328" visible="false" elementSize="0x18">
+		<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0xC">
+			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x4">
 				<int8 name="Unknown" offset="0x0" visible="false" />
 				<int8 name="Unknown" offset="0x1" visible="false" />
 				<int8 name="Unknown" offset="0x2" visible="false" />
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0xC">
-			<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x4">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Unknown" offset="0xC" visible="false" elementSize="0xC">
+			<tagblock name="Unknown" offset="0x0" visible="false" elementSize="0x4">
 				<int8 name="Unknown" offset="0x0" visible="false" />
 				<int8 name="Unknown" offset="0x1" visible="false" />
 				<int8 name="Unknown" offset="0x2" visible="false" />
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
+			</tagblock>
+		</tagblock>
+	</tagblock>
 	<undefined name="Unknown" offset="0x334" visible="false" />
 	<undefined name="Unknown" offset="0x338" visible="false" />
 	<undefined name="Unknown" offset="0x33C" visible="false" />
@@ -1455,10 +1455,10 @@ Unlike creation effect, it is only played when the object spawns in through cert
 	<undefined name="Unknown" offset="0x370" visible="false" />
 	<undefined name="Unknown" offset="0x374" visible="false" />
 	<undefined name="Unknown" offset="0x378" visible="false" />
-	<reflexive name="Health Pack" offset="0x37C" visible="false" entrySize="0x14">
+	<tagblock name="Health Pack" offset="0x37C" visible="false" elementSize="0x14">
 		<dataref name="Unknown" offset="0x0" visible="false" />
-	</reflexive>
-	<reflexive name="Jetpack" offset="0x388" visible="true" entrySize="0x2C">
+	</tagblock>
+	<tagblock name="Jetpack" offset="0x388" visible="true" elementSize="0x2C">
 		<dataRef name="Function" offset="0x0" visible="false" />
 		<float32 name="Downforce When Falling" offset="0x14" visible="true" />
 		<float32 name="Airtime" offset="0x18" visible="true" />
@@ -1466,8 +1466,8 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<float32 name="Vertical Force" offset="0x24" visible="true" />
 		<float32 name="Terminal Velocity Time" offset="0x28" visible="true" />
-	</reflexive>
-	<reflexive name="Hologram Properties" offset="0x394" visible="true" entrySize="0x60">
+	</tagblock>
+	<tagblock name="Hologram Properties" offset="0x394" visible="true" elementSize="0x60">
 		<float32 name="Time Active" offset="0x0" visible="true" />
 		<bitfield32 name="Flags" offset="0x4" visible="true">
 			<bit name="Bit 0" index="0" />
@@ -1512,25 +1512,25 @@ Unlike creation effect, it is only played when the object spawns in through cert
 		<float32 name="Stability min" offset="0x44" visible="true" />
 		<float32 name="Stability max" offset="0x48" visible="true" />
 		<dataRef name="Function" offset="0x4C" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x3A0" visible="false" />
 	<undefined name="Unknown" offset="0x3A4" visible="false" />
 	<undefined name="Unknown" offset="0x3A8" visible="false" />
-	<reflexive name="Evade" offset="0x3AC" visible="true" entrySize="0x10">
+	<tagblock name="Evade" offset="0x3AC" visible="true" elementSize="0x10">
 		<stringid name="Forward Animation" offset="0x0" visible="true" />
 		<stringid name="Left Animation" offset="0x4" visible="true" />
 		<stringid name="Back Animation" offset="0x8" visible="true" />
 		<stringid name="Right Animation" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x3B8" visible="false" />
 	<undefined name="Unknown" offset="0x3BC" visible="false" />
 	<undefined name="Unknown" offset="0x3C0" visible="false" />
-	<reflexive name="Sprint" offset="0x3C4" visible="true" entrySize="0x4">
+	<tagblock name="Sprint" offset="0x3C4" visible="true" elementSize="0x4">
 		<int8 name="Unknown" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
 		<int8 name="Unknown" offset="0x3" visible="true" />
-	</reflexive>
+	</tagblock>
 	<enum8 name="Damage Reporting Type" offset="0x3D0" visible="true">
 		<option name="Guardians (Unknown)" value="0x0" />
 		<option name="Guardians" value="0x1" />

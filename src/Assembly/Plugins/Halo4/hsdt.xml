@@ -8,7 +8,7 @@
 		<revision author="SnipeStyle" version="5">Added External Syntax Types, Corrected File Index.</revision>
 		<revision author="kornman00" version="6">Mark of the beast</revision>
 	</revisions>
-	<reflexive name="Source Files" offset="0x0" visible="true" entrySize="0x38">
+	<tagblock name="Source Files" offset="0x0" visible="true" elementSize="0x38">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<dataRef name="Data" format="asciiz" offset="0x20" visible="true" />
 		<bitfield32 name="Flags" offset="0x34" visible="true">
@@ -16,8 +16,8 @@
 			<bit name="AI Objective Fragments" index="1" />
 			<bit name="AI Performance Fragments" index="2" />
 		</bitfield32>
-	</reflexive>
-	<reflexive name="Scripts" offset="0xC" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Scripts" offset="0xC" visible="true" elementSize="0x20">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum16 name="Type" offset="0x4" visible="true">
 			<option name="Startup" value="0x0" />
@@ -138,7 +138,7 @@
 		<uint16 name="Root Expression Salt" offset="0xC" visible="true" />
 		<uint16 name="Root Expression Index" offset="0xE" visible="true" />
 		<int32 name="Locals Allocation Size" offset="0x10" visible="true" />
-		<reflexive name="Parameters" offset="0x14" visible="true" entrySize="0x24">
+		<tagblock name="Parameters" offset="0x14" visible="true" elementSize="0x24">
 			<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 			<enum32 name="Type" offset="0x20" visible="true">
 				<option name="unparsed" value="0x0" />
@@ -244,9 +244,9 @@
 				<option name="looping_sound_budget_reference" value="0x64" />
 				<option name="sound_budget_reference" value="0x65" />
 			</enum32>
-		</reflexive>
-	</reflexive>
-	<reflexive name="Globals" offset="0x18" visible="true" entrySize="0xC">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Globals" offset="0x18" visible="true" elementSize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum32 name="Type" offset="0x4" visible="true">
 			<option name="unparsed" value="0x0" />
@@ -354,8 +354,8 @@
 		</enum32>
 		<uint16 name="Initialization Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Initialization Expression Index" offset="0xA" visible="true" />
-	</reflexive>
-	<reflexive name="Instanced Variables" offset="0x24" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Instanced Variables" offset="0x24" visible="true" elementSize="0xC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum32 name="Type" offset="0x4" visible="true">
 			<option name="unparsed" value="0x0" />
@@ -463,11 +463,11 @@
 		</enum32>
 		<uint16 name="Expression Salt" offset="0x8" visible="true" />
 		<uint16 name="Expression Index" offset="0xA" visible="true" />
-	</reflexive>
-	<reflexive name="Script References" offset="0x30" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Script References" offset="0x30" visible="true" elementSize="0x10">
 		<tagRef name="Reference" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Unit Seats Mapping" offset="0x3C" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Unit Seats Mapping" offset="0x3C" visible="true" elementSize="0xC">
 		<tagref name="Unit" offset="0x0" withClass="false" visible="true" />
 		<bitfield32 name="Seats Bitvector" offset="0x4" visible="true">
 			<bit name="Seat 0" index="0" />
@@ -537,8 +537,8 @@
 			<bit name="Seat 62" index="30" />
 			<bit name="Seat 63" index="31" />
 		</bitfield32>
-	</reflexive>
-	<reflexive name="Expressions" offset="0x48" visible="true" entrySize="0x1C">
+	</tagblock>
+	<tagblock name="Expressions" offset="0x48" visible="true" elementSize="0x1C">
 		<!-- node body is filled with 0xBA when datum isn't valid, while header is zero (normal sentinel for invalid datums) -->
 		<uint16 name="Salt (0 means unused)" offset="0x0" visible="true" />
 		<!-- constant_type / function_index / script_index -->
@@ -672,19 +672,19 @@
 		</bitfield16>
 		<int16 name="Source File Index" offset="0x16" visible="true" />
 		<int32 name="Source File Offset" offset="0x18" visible="true" />
-	</reflexive>
+	</tagblock>
 	<dataRef name="String Constants" offset="0x54" visible="true" />
-	<reflexive name="Imports" offset="0x68" visible="true" entrySize="0x1C">
+	<tagblock name="Imports" offset="0x68" visible="true" elementSize="0x1C">
 		<tagRef name="Source" offset="0x0" visible="true" withClass="false" />
-		<reflexive name="Scripts" offset="0x4" visible="true" entrySize="0xC">
+		<tagblock name="Scripts" offset="0x4" visible="true" elementSize="0xC">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<int32 name="Number Of Parameters" offset="0x4" visible="true" />
 			<int32 name="Script Index" offset="0x8" visible="true" />
-		</reflexive>
-		<reflexive name="Globals" offset="0x10" visible="true" entrySize="0xC">
+		</tagblock>
+		<tagblock name="Globals" offset="0x10" visible="true" elementSize="0xC">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<int32 name="Library Index" offset="0x4" visible="true" />
 			<int32 name="Global Index" offset="0x8" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 </plugin>

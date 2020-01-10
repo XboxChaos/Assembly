@@ -17,7 +17,7 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 	<comment title="Render Data Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD.</comment>
 	<comment title="Placement Anchor">Only select "Use Parent Widget" for a Bitmap or Text Widget, otherwise the game will crash.</comment>
 	<comment title="Grenade Inputs">These will only function with the placement anchor value set to Grenade A/B/C/D.</comment>
-	<reflexive name="HUD Widgets" offset="0x0" visible="true" entrySize="0xDC">
+	<tagblock name="HUD Widgets" offset="0x0" visible="true" elementSize="0xDC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum8 name="Special HUD Type" offset="0x4" visible="true">
 			<option name="Unspecial" value="0x0" />
@@ -308,10 +308,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<option name="NetDebug Local Quality" value="0x87" />
 		</enum16>
 		<tagRef name="State Data Template" offset="0xC" visible="true" />
-		<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+		<tagblock name="State Data" offset="0x1C" visible="true" elementSize="0x38">
 			<comment title="State Data Note">The following blocks are import data.</comment>
-			<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
-				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+			<tagblock name="'Yes' States" offset="0x0" visible="true" elementSize="0xC">
+				<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 					<bitfield8 name="Flag" offset="0x0" visible="true">
 						<bit name="Input Variable" index="0" />
 					</bitfield8>
@@ -319,10 +319,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 					<int8 name="Unknown" offset="0x2" visible="false" />
 					<int8 name="Unknown" offset="0x3" visible="false" />
 					<int32 name="Trigger Index" offset="0x4" visible="true" />
-				</reflexive>
-			</reflexive>
-			<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
-				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+				</tagblock>
+			</tagblock>
+			<tagblock name="Unknown States" offset="0xC" visible="true" elementSize="0xC">
+				<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 					<bitfield8 name="Flag" offset="0x0" visible="true">
 						<bit name="Input Variable" index="0" />
 					</bitfield8>
@@ -330,10 +330,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 					<int8 name="Unknown" offset="0x2" visible="false" />
 					<int8 name="Unknown" offset="0x3" visible="false" />
 					<int32 name="Trigger Index" offset="0x4" visible="true" />
-				</reflexive>
-			</reflexive>
-			<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
-				<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+				</tagblock>
+			</tagblock>
+			<tagblock name="'No' States" offset="0x18" visible="true" elementSize="0xC">
+				<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 					<bitfield8 name="Flag" offset="0x0" visible="true">
 						<bit name="Input Variable" index="0" />
 					</bitfield8>
@@ -341,8 +341,8 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 					<int8 name="Unknown" offset="0x2" visible="false" />
 					<int8 name="Unknown" offset="0x3" visible="false" />
 					<int32 name="Trigger Index" offset="0x4" visible="true" />
-				</reflexive>
-			</reflexive>
+				</tagblock>
+			</tagblock>
 			<int16 name="Unknown" offset="0x24" visible="false" />
 			<int16 name="Unknown" offset="0x26" visible="false" />
 			<int16 name="Unknown" offset="0x28" visible="false" />
@@ -350,9 +350,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<undefined name="Unknown" offset="0x2C" visible="false" />
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
-		</reflexive>
+		</tagblock>
 		<tagref name="Placement Data Template" offset="0x28" visible="true" />
-		<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+		<tagblock name="Placement Data" offset="0x38" visible="true" elementSize="0x1C">
 			<bitfield8 name="Unknown" offset="0x0" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
@@ -409,9 +409,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<float32 name="Offset Y" offset="0x10" visible="true" />
 			<float32 name="Scale X" offset="0x14" visible="true" />
 			<float32 name="Scale Y" offset="0x18" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="Animation Data Template" offset="0x44" visible="true" />
-		<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+		<tagblock name="Animation Data" offset="0x54" visible="true" elementSize="0x64">
 			<bitfield8 name="Animation 1 Flags" offset="0x0" visible="true">
 				<bit name="Reverse Frames" index="0" />
 			</bitfield8>
@@ -467,9 +467,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			</enum8>
 			<int16 name="Unknown" offset="0x52" visible="false" />
 			<tagRef name="Animation 5" offset="0x54" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="Render Data Template" offset="0x60" visible="true" />
-		<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+		<tagblock name="Render Data" offset="0x70" visible="true" elementSize="0x78">
 			<enum8 name="Shader Index" offset="0x0" visible="true">
 				<option name="Cheap" value="0x0" />
 				<option name="Meter" value="0x1" />
@@ -961,9 +961,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<undefined name="Unknown" offset="0x70" visible="false" />
 			<int16 name="Unknown" offset="0x74" visible="false" />
 			<int16 name="Unknown" offset="0x76" visible="false" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="Datasource Template" offset="0x7C" visible="true" />
-		<reflexive name="Datasource" offset="0x8C" visible="true" entrySize="0x20">
+		<tagblock name="Datasource" offset="0x8C" visible="true" elementSize="0x20">
 			<int8 name="Unknown" offset="0x0" visible="false" />
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
@@ -973,14 +973,14 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
-			<reflexive name="Unknown" offset="0x14" visible="true" entrySize="0x10">
+			<tagblock name="Unknown" offset="0x14" visible="true" elementSize="0x10">
 				<float32 name="Unknown" offset="0x0" visible="true" />
 				<float32 name="Unknown" offset="0x4" visible="true" />
 				<float32 name="Unknown" offset="0x8" visible="true" />
 				<float32 name="Unknown" offset="0xC" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Bitmap Widgets" offset="0x98" visible="true" entrySize="0x9C">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Bitmap Widgets" offset="0x98" visible="true" elementSize="0x9C">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<enum8 name="Special HUD Type" offset="0x4" visible="true">
 				<option name="Unspecial" value="0x0" />
@@ -1271,10 +1271,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<option name="NetDebug Local Quality" value="0x87" />
 			</enum16>
 			<tagRef name="State Data Template" offset="0xC" visible="true" />
-			<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+			<tagblock name="State Data" offset="0x1C" visible="true" elementSize="0x38">
 				<comment title="State Data Note">The following blocks are import data.</comment>
-				<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+				<tagblock name="'Yes' States" offset="0x0" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -1282,10 +1282,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
-				<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					</tagblock>
+				</tagblock>
+				<tagblock name="Unknown States" offset="0xC" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -1293,10 +1293,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
-				<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					</tagblock>
+				</tagblock>
+				<tagblock name="'No' States" offset="0x18" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -1304,8 +1304,8 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
+					</tagblock>
+				</tagblock>
 				<int16 name="Unknown" offset="0x24" visible="false" />
 				<int16 name="Unknown" offset="0x26" visible="false" />
 				<int16 name="Unknown" offset="0x28" visible="false" />
@@ -1313,9 +1313,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
-			</reflexive>
+			</tagblock>
 			<tagref name="Placement Data Template" offset="0x28" visible="true" />
-			<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+			<tagblock name="Placement Data" offset="0x38" visible="true" elementSize="0x1C">
 				<bitfield8 name="Unknown" offset="0x0" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
@@ -1372,9 +1372,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<float32 name="Offset Y" offset="0x10" visible="true" />
 				<float32 name="Scale X" offset="0x14" visible="true" />
 				<float32 name="Scale Y" offset="0x18" visible="true" />
-			</reflexive>
+			</tagblock>
 			<tagRef name="Animation Data Template" offset="0x44" visible="true" />
-			<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+			<tagblock name="Animation Data" offset="0x54" visible="true" elementSize="0x64">
 				<bitfield8 name="Animation 1 Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield8>
@@ -1430,9 +1430,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				</enum8>
 				<int16 name="Unknown" offset="0x52" visible="false" />
 				<tagRef name="Animation 5" offset="0x54" visible="true" />
-			</reflexive>
+			</tagblock>
 			<tagRef name="Render Data Template" offset="0x60" visible="true" />
-			<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+			<tagblock name="Render Data" offset="0x70" visible="true" elementSize="0x78">
 				<enum8 name="Shader Index" offset="0x0" visible="true">
 					<option name="Cheap" value="0x0" />
 					<option name="Meter" value="0x1" />
@@ -1924,7 +1924,7 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<undefined name="Unknown" offset="0x70" visible="false" />
 				<int16 name="Unknown" offset="0x74" visible="false" />
 				<int16 name="Unknown" offset="0x76" visible="false" />
-			</reflexive>
+			</tagblock>
 			<bitfield32 name="Flags" offset="0x7C" visible="true">
 				<bit name="Mirror Horizontally" index="0" />
 				<bit name="Mirror Vertically" index="1" />
@@ -1966,8 +1966,8 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<uint8 name="Unknown" offset="0x93" visible="false" />
 			<undefined name="Unknown" offset="0x94" visible="false" />
 			<undefined name="Unknown" offset="0x98" visible="false" />
-		</reflexive>
-		<reflexive name="Text Widgets" offset="0xA4" visible="true" entrySize="0x84">
+		</tagblock>
+		<tagblock name="Text Widgets" offset="0xA4" visible="true" elementSize="0x84">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<enum8 name="Special HUD Type" offset="0x4" visible="true">
 				<option name="Unspecial" value="0x0" />
@@ -2258,10 +2258,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<option name="NetDebug Local Quality" value="0x87" />
 			</enum16>
 			<tagRef name="State Data Template" offset="0xC" visible="true" />
-			<reflexive name="State Data" offset="0x1C" visible="true" entrySize="0x38">
+			<tagblock name="State Data" offset="0x1C" visible="true" elementSize="0x38">
 				<comment title="State Data Note">The following blocks are import data.</comment>
-				<reflexive name="'Yes' States" offset="0x0" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+				<tagblock name="'Yes' States" offset="0x0" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -2269,10 +2269,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
-				<reflexive name="Unknown States" offset="0xC" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					</tagblock>
+				</tagblock>
+				<tagblock name="Unknown States" offset="0xC" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -2280,10 +2280,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
-				<reflexive name="'No' States" offset="0x18" visible="true" entrySize="0xC">
-					<reflexive name="Triggers" offset="0x0" visible="true" entrySize="0x8">
+					</tagblock>
+				</tagblock>
+				<tagblock name="'No' States" offset="0x18" visible="true" elementSize="0xC">
+					<tagblock name="Triggers" offset="0x0" visible="true" elementSize="0x8">
 						<bitfield8 name="Flag" offset="0x0" visible="true">
 							<bit name="Input Variable" index="0" />
 						</bitfield8>
@@ -2291,8 +2291,8 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 						<int8 name="Unknown" offset="0x2" visible="false" />
 						<int8 name="Unknown" offset="0x3" visible="false" />
 						<int32 name="Trigger Index" offset="0x4" visible="true" />
-					</reflexive>
-				</reflexive>
+					</tagblock>
+				</tagblock>
 				<int16 name="Unknown" offset="0x24" visible="false" />
 				<int16 name="Unknown" offset="0x26" visible="false" />
 				<int16 name="Unknown" offset="0x28" visible="false" />
@@ -2300,10 +2300,10 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<undefined name="Unknown" offset="0x2C" visible="false" />
 				<undefined name="Unknown" offset="0x30" visible="false" />
 				<undefined name="Unknown" offset="0x34" visible="false" />
-			</reflexive>
+			</tagblock>
 			<tagref name="Placement Data Template" offset="0x28" visible="true" />
 			<comment title="Placement Data Note"></comment>
-			<reflexive name="Placement Data" offset="0x38" visible="true" entrySize="0x1C">
+			<tagblock name="Placement Data" offset="0x38" visible="true" elementSize="0x1C">
 				<bitfield8 name="Unknown" offset="0x0" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
@@ -2360,9 +2360,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<float32 name="Offset Y" offset="0x10" visible="true" />
 				<float32 name="Scale X" offset="0x14" visible="true" />
 				<float32 name="Scale Y" offset="0x18" visible="true" />
-			</reflexive>
+			</tagblock>
 			<tagRef name="Animation Data Template" offset="0x44" visible="true" />
-			<reflexive name="Animation Data" offset="0x54" visible="true" entrySize="0x64">
+			<tagblock name="Animation Data" offset="0x54" visible="true" elementSize="0x64">
 				<bitfield8 name="Animation 1 Flags" offset="0x0" visible="true">
 					<bit name="Reverse Frames" index="0" />
 				</bitfield8>
@@ -2418,9 +2418,9 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				</enum8>
 				<int16 name="Unknown" offset="0x52" visible="false" />
 				<tagRef name="Animation 5" offset="0x54" visible="true" />
-			</reflexive>
+			</tagblock>
 			<tagRef name="Render Data Template" offset="0x60" visible="true" />
-			<reflexive name="Render Data" offset="0x70" visible="true" entrySize="0x78">
+			<tagblock name="Render Data" offset="0x70" visible="true" elementSize="0x78">
 				<enum8 name="Shader Index" offset="0x0" visible="true">
 					<option name="Cheap" value="0x0" />
 					<option name="Meter" value="0x1" />
@@ -2912,7 +2912,7 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<undefined name="Unknown" offset="0x70" visible="false" />
 				<int16 name="Unknown" offset="0x74" visible="false" />
 				<int16 name="Unknown" offset="0x76" visible="false" />
-			</reflexive>
+			</tagblock>
 			<bitfield16 name="Flags" offset="0x7C" visible="true">
 				<bit name="String Is A Number" index="0" />
 				<bit name="Force 2-Digit" index="1" />
@@ -2991,7 +2991,7 @@ chud_datasource_progression_toast_text
 chud_datasource_scripted_object_priority_text
 chud_datasource_scripted_object_priority_description_text</comment>
 			<stringid name="String" offset="0x80" visible="true" />
-		</reflexive>
+		</tagblock>
 		<int32 name="Unknown" offset="0xB0" visible="false" />
 		<int16 name="Unknown" offset="0xB4" visible="false" />
 		<int16 name="Unknown" offset="0xB6" visible="false" />
@@ -3056,12 +3056,12 @@ Check existing tags for examples, good luck.</comment>
 		<int16 name="10" offset="0xD6" visible="true" />
 		<int16 name="11" offset="0xD8" visible="true" />
 		<int16 name="12" offset="0xDA" visible="true" />
-	</reflexive>
+	</tagblock>
 	<int32 name="Low Clip Cutoff" offset="0xC" visible="true" />
 	<int32 name="Low Ammo Cutoff" offset="0x10" visible="true" />
 	<int32 name="Age Cutoff" offset="0x14" visible="true" />
 	<int32 name="Sword Age Cutoff" offset="0x18" visible="true" />
-	<reflexive name="Compiled Widget Data" offset="0x1C" visible="true" entrySize="0x5C">
+	<tagblock name="Compiled Widget Data" offset="0x1C" visible="true" elementSize="0x5C">
 		<enum8 name="Special HUD Type" offset="0x0" visible="true">
 			<option name="Unspecial" value="0x0" />
 			<option name="Ammo" value="0x1" />
@@ -3490,5 +3490,5 @@ Check existing tags for examples, good luck.</comment>
 		<int16 name="26" offset="0x56" visible="true" />
 		<int16 name="27" offset="0x58" visible="true" />
 		<int16 name="28" offset="0x5A" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

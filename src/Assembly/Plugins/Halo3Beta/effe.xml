@@ -44,11 +44,11 @@
 	<int16 name="Loop Start Event" offset="0xC" visible="true" />
 	<int16 name="Unknown" offset="0xE" visible="false" />
 	<undefined name="Unknown" offset="0x10" visible="false" />
-	<reflexive name="Locations" offset="0x14" visible="true" entrySize="0x8">
+	<tagblock name="Locations" offset="0x14" visible="true" elementSize="0x8">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-	</reflexive>
-	<reflexive name="Events" offset="0x20" visible="true" entrySize="0x40">
+	</tagblock>
+	<tagblock name="Events" offset="0x20" visible="true" elementSize="0x40">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<float32 name="Skip Fraction" offset="0x8" visible="true" />
@@ -56,7 +56,7 @@
 		<float32 name="Delay Bounds max" offset="0x10" visible="true" />
 		<float32 name="Duration Bounds min" offset="0x14" visible="true" />
 		<float32 name="Duration Bounds max" offset="0x18" visible="true" />
-		<reflexive name="Parts" offset="0x1C" visible="true" entrySize="0x54">
+		<tagblock name="Parts" offset="0x1C" visible="true" elementSize="0x54">
 			<enum16 name="Create In Environment" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -153,8 +153,8 @@
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
 			</bitfield32>
-		</reflexive>
-		<reflexive name="Accelerations" offset="0x28" visible="true" entrySize="0x14">
+		</tagblock>
+		<tagblock name="Accelerations" offset="0x28" visible="true" elementSize="0x14">
 			<enum16 name="Create In Environment" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -171,8 +171,8 @@
 			<float32 name="Acceleration" offset="0x8" visible="true" />
 			<float32 name="Inner Cone Angle" offset="0xC" visible="true" />
 			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
-		</reflexive>
-		<reflexive name="Particle Systems" offset="0x34" visible="true" entrySize="0x58">
+		</tagblock>
+		<tagblock name="Particle Systems" offset="0x34" visible="true" elementSize="0x58">
 			<tagRef name="Particle" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x10" visible="false" />
 			<int16 name="Location Index" offset="0x12" visible="true" />
@@ -227,7 +227,7 @@
 			<float32 name="LOD Out Distance" offset="0x3C" visible="true" />
 			<float32 name="LOD Feather Out Delta" offset="0x40" visible="true" />
 			<float32 name="Inverse LOD Feather Out" offset="0x44" visible="true" />
-			<reflexive name="Emitters" offset="0x48" visible="true" entrySize="0x2EC">
+			<tagblock name="Emitters" offset="0x48" visible="true" elementSize="0x2EC">
 				<stringid name="Name" offset="0x0" visible="true" />
 				<bitfield16 name="Unknown" offset="0x4" visible="true">
 					<bit name="Bit 0" index="0" />
@@ -379,9 +379,9 @@
 				<undefined name="Unknown" offset="0x15C" visible="false" />
 				<tagRef name="Particle Physics" offset="0x160" visible="true" />
 				<undefined name="Unknown" offset="0x170" visible="false" />
-				<reflexive name="Unknown" offset="0x174" visible="false" entrySize="0x18">
+				<tagblock name="Unknown" offset="0x174" visible="false" elementSize="0x18">
 					<undefined name="Unknown" offset="0x0" visible="false" />
-					<reflexive name="Unknown" offset="0x4" visible="false" entrySize="0x24">
+					<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x24">
 						<undefined name="Unknown" offset="0x0" visible="false" />
 						<int8 name="Input" offset="0x4" visible="true" />
 						<int8 name="Input Range" offset="0x5" visible="true" />
@@ -394,10 +394,10 @@
 						<dataRef name="Unknown" offset="0x8" visible="true" />
 						<undefined name="Unknown" offset="0x1C" visible="false" />
 						<undefined name="Unknown" offset="0x20" visible="false" />
-					</reflexive>
+					</tagblock>
 					<undefined name="Unknown" offset="0x10" visible="false" />
 					<undefined name="Unknown" offset="0x14" visible="false" />
-				</reflexive>
+				</tagblock>
 				<int8 name="Input" offset="0x180" visible="true" />
 				<int8 name="Input Range" offset="0x181" visible="true" />
 				<enum8 name="Output Kind" offset="0x182" visible="true">
@@ -507,13 +507,13 @@
 				<int32 name="Unknown" offset="0x2BC" visible="false" />
 				<int32 name="Unknown" offset="0x2C0" visible="false" />
 				<undefined name="Unknown" offset="0x2C4" visible="false" />
-				<reflexive name="Unknown" offset="0x2C8" visible="false" entrySize="0x10" align="0x10">
+				<tagblock name="Unknown" offset="0x2C8" visible="false" elementSize="0x10" align="0x10">
 					<float32 name="Unknown" offset="0x0" visible="false" />
 					<float32 name="Unknown" offset="0x4" visible="false" />
 					<float32 name="Unknown" offset="0x8" visible="false" />
 					<float32 name="Unknown" offset="0xC" visible="false" />
-				</reflexive>
-				<reflexive name="Compiled Functions" offset="0x2D4" visible="false" entrySize="0x40" align="0x10">
+				</tagblock>
+				<tagblock name="Compiled Functions" offset="0x2D4" visible="false" elementSize="0x40" align="0x10">
 					<float32 name="Unknown" offset="0x0" visible="false" />
 					<float32 name="Unknown" offset="0x4" visible="false" />
 					<float32 name="Unknown" offset="0x8" visible="false" />
@@ -530,17 +530,17 @@
 					<float32 name="Unknown" offset="0x34" visible="false" />
 					<float32 name="Unknown" offset="0x38" visible="false" />
 					<float32 name="Unknown" offset="0x3C" visible="false" />
-				</reflexive>
-				<reflexive name="Compiled Color Functions" offset="0x2E0" visible="true" entrySize="0x10" align="0x10">
+				</tagblock>
+				<tagblock name="Compiled Color Functions" offset="0x2E0" visible="true" elementSize="0x10" align="0x10">
 					<float32 name="Red" offset="0x0" visible="true" />
 					<float32 name="Green" offset="0x4" visible="true" />
 					<float32 name="Blue" offset="0x8" visible="true" />
 					<float32 name="Magnitude" offset="0xC" visible="true" />
-				</reflexive>
-			</reflexive>
+				</tagblock>
+			</tagblock>
 			<undefined name="Unknown" offset="0x54" visible="false" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<tagRef name="Looping Sound" offset="0x2C" visible="true" />
 	<int8 name="Location Index" offset="0x3C" visible="true" />
 	<int8 name="Event Index" offset="0x3D" visible="true" />
@@ -549,9 +549,9 @@
 	<float32 name="Never Play Distance" offset="0x44" visible="true" />
 	<undefined name="Unknown" offset="0x48" visible="false" />
 	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<reflexive name="Unknown" offset="0x50" visible="false" entrySize="0xC">
+	<tagblock name="Unknown" offset="0x50" visible="false" elementSize="0xC">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
-	</reflexive>
+	</tagblock>
 </plugin>

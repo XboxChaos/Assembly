@@ -5,7 +5,7 @@
 	</revisions>
 	<stringid name="Variant Name" offset="0x0" visible="true" />
 	<stringid name="Variant Description" offset="0x4" visible="true" />
-	<reflexive name="General Settings" offset="0x8" visible="true" entrySize="0x8">
+	<tagblock name="General Settings" offset="0x8" visible="true" elementSize="0x8">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Teams Enabled" index="0" />
 			<bit name="Round Resets Players" index="1" />
@@ -17,8 +17,8 @@
 		<int8 name="Mosh Difficulty" offset="0x5" visible="true" />
 		<int8 name="Sudden Death" offset="0x6" visible="true" />
 		<int8 name="Grace Period" offset="0x7" visible="true" />
-	</reflexive>
-	<reflexive name="Prototype Settings" offset="0x14" visible="true" entrySize="0x8">
+	</tagblock>
+	<tagblock name="Prototype Settings" offset="0x14" visible="true" elementSize="0x8">
 		<int8 name="Mode" offset="0x0" visible="true" />
 		<int8 name="Promethean Energy Kill" offset="0x1" visible="true" /><!-- 7 options -->
 		<int8 name="Prometean Energy Time" offset="0x2" visible="true" /><!-- 7 options -->
@@ -36,8 +36,8 @@
 		</bitfield8>
 		<int8 name="Unknown" offset="0x6" visible="true" />
 		<int8 name="Unknown" offset="0x7" visible="true" />
-	</reflexive>
-	<reflexive name="Respawn Settings" offset="0x20" visible="true" entrySize="0x14">
+	</tagblock>
+	<tagblock name="Respawn Settings" offset="0x20" visible="true" elementSize="0x14">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Inherit Respawn Time" index="0" />
 			<bit name="Respawn With Team" index="1" />
@@ -60,8 +60,8 @@
 		<int8 name="Respawn Trait Duration" offset="0x11" visible="true" />
 		<int8 name="Unknown" offset="0x12" visible="false" />
 		<int8 name="Unknown" offset="0x13" visible="false" />
-	</reflexive>
-	<reflexive name="Social Settings" offset="0x2C" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Social Settings" offset="0x2C" visible="true" elementSize="0x4">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Obervers Enabled" index="0" />
 			<bit name="Team Changing Enabled" index="1" />
@@ -72,8 +72,8 @@
 			<bit name="Open Channel Voice Enabled" index="6" />
 			<bit name="Dead Player Voice Enabled" index="7" />
 		</bitfield32>
-	</reflexive>
-	<reflexive name="Map Overrides" offset="0x38" visible="true" entrySize="0x3C">
+	</tagblock>
+	<tagblock name="Map Overrides" offset="0x38" visible="true" elementSize="0x3C">
 		<stringid name="Base Player Trait Profile" offset="0x0" visible="true" />
 		<stringid name="Weapon Set" offset="0x4" visible="true" />
 		<stringid name="Vehicle Set" offset="0x8" visible="true" />
@@ -105,8 +105,8 @@
 		<int8 name="Unknown" offset="0x39" visible="false" />
 		<int8 name="Unknown" offset="0x3A" visible="false" />
 		<int8 name="Unknown" offset="0x3B" visible="false" />
-	</reflexive>
-	<reflexive name="Teams" offset="0x44" visible="true" entrySize="0xC4">
+	</tagblock>
+	<tagblock name="Teams" offset="0x44" visible="true" elementSize="0xC4">
 		<enum8 name="Model Override" offset="0x0" visible="true">
 			<option name="Player Default" value="0x0" />
 			<option name="All Spartans" value="0x1" />
@@ -277,8 +277,8 @@
 		<color32 name="Secondary Color" offset="0xB8" alpha="false" visible="true" />
 		<color32 name="Text Color" offset="0xBC" alpha="true" visible="true" />
 		<color32 name="UI Color" offset="0xC0" alpha="true" visible="true" />
-	</reflexive>
-	<reflexive name="Loadouts" offset="0x50" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Loadouts" offset="0x50" visible="true" elementSize="0x10">
 		<bitfield8 name="Flags" offset="0x0" visible="true">
 			<bit name="Enable Map Loadouts" index="0" />
 			<bit name="Spartan Initial Selection" index="1" />
@@ -288,11 +288,11 @@
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
 		<int8 name="Unknown" offset="0x3" visible="true" />
-		<reflexive name="Loadout Palette" offset="0x4" visible="true" entrySize="0x4">
+		<tagblock name="Loadout Palette" offset="0x4" visible="true" elementSize="0x4">
 			<stringid name="Loadout" offset="0x0" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Ordnance?" offset="0x5C" visible="true" entrySize="0x4">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Ordnance?" offset="0x5C" visible="true" elementSize="0x4">
 		<bitfield8 name="Flags" offset="0x0" visible="true">
 			<bit name="Enable Personal Ordnance" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -306,7 +306,7 @@
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Unknown" offset="0x2" visible="true" />
 		<int8 name="Unknown" offset="0x3" visible="true" />
-	</reflexive>
+	</tagblock>
 	<bitfield32 name="Flags" offset="0x68" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
@@ -360,12 +360,12 @@
 	<int8 name="Unknown" offset="0x7E" visible="true" />
 	<int8 name="Unknown" offset="0x7F" visible="true" />
 	<ascii name="Starting Zone" offset="0x80" length="0x20" visible="true" />
-	<reflexive name="Unknown" offset="0xA0" visible="true" entrySize="0x68">
+	<tagblock name="Unknown" offset="0xA0" visible="true" elementSize="0x68">
 		<int8 name="Player Goal" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x1" visible="true" />
 		<int8 name="Duration" offset="0x2" visible="true" />
 		<int8 name="Unknown" offset="0x3" visible="true" />
-		<reflexive name="Unknown" offset="0x4" visible="true" entrySize="0x4C">
+		<tagblock name="Unknown" offset="0x4" visible="true" elementSize="0x4C">
 			<stringid name="Possible Wave Squad" offset="0x0" visible="true" />
 			<int8 name="Squad Delivery Type" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="true" />
@@ -377,7 +377,7 @@
 			<int8 name="Unknown" offset="0xB" visible="true" />
 			<ascii name="Unknown Level Event" offset="0xC" length="0x20" visible="true" />
 			<ascii name="Unknown Level Event" offset="0x2C" length="0x20" visible="true" />
-		</reflexive>
+		</tagblock>
 		<int8 name="Unknown" offset="0x10" visible="true" />
 		<int8 name="Unknown" offset="0x11" visible="true" />
 		<int8 name="Unknown" offset="0x12" visible="true" />
@@ -395,5 +395,5 @@
 		<int8 name="Unknown" offset="0x65" visible="true" />
 		<int8 name="Unknown" offset="0x66" visible="true" />
 		<int8 name="Unknown" offset="0x67" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

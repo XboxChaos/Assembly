@@ -32,7 +32,7 @@
 	<int32 name="Model Checksum" offset="0x8" visible="true" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
 	<undefined name="Unknown" offset="0x10" visible="false" />
-	<reflexive name="Compression Info" offset="0x14" visible="true" entrySize="0x38">
+	<tagblock name="Compression Info" offset="0x14" visible="true" elementSize="0x38">
 		<float32 name="Position Bounds X min" offset="0x0" visible="true" />
 		<float32 name="Position Bounds X max" offset="0x4" visible="true" />
 		<float32 name="Position Bounds Y min" offset="0x8" visible="true" />
@@ -47,12 +47,12 @@
 		<float32 name="Secondary Texcoord Bounds X max" offset="0x2C" visible="true" />
 		<float32 name="Secondary Texcoord Bounds Y min" offset="0x30" visible="true" />
 		<float32 name="Secondary Texcoord Bounds Y max" offset="0x34" visible="true" />
-	</reflexive>
-	<reflexive name="Regions" offset="0x1C" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Regions" offset="0x1C" visible="true" elementSize="0x10">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Old Node Map Offset" offset="0x4" visible="true" />
 		<int16 name="Old Node Map Size" offset="0x6" visible="true" />
-		<reflexive name="Permutations" offset="0x8" visible="true" entrySize="0x10">
+		<tagblock name="Permutations" offset="0x8" visible="true" elementSize="0x10">
 			<stringId name="Name" offset="0x0" visible="true" />
 			<int16 name="L1 Section Index (Super Low)" offset="0x4" visible="true" />
 			<int16 name="L2 Section Index (Low)" offset="0x6" visible="true" />
@@ -60,9 +60,9 @@
 			<int16 name="L4 Section Index (High)" offset="0xA" visible="true" />
 			<int16 name="L5 Section Index (Super High)" offset="0xC" visible="true" />
 			<int16 name="L6 Section Index (Hollywood)" offset="0xE" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Sections" offset="0x24" visible="true" entrySize="0x5C">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Sections" offset="0x24" visible="true" elementSize="0x5C">
 		<enum16 name="Global Geometry Classification" offset="0x0" visible="true">
 			<option name="Worldspace" value="0x0" />
 			<option name="Rigid" value="0x1" />
@@ -106,7 +106,7 @@
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
 		</bitfield16>
-		<reflexive name="Compression Info" offset="0x1C" visible="true" entrySize="0x38">
+		<tagblock name="Compression Info" offset="0x1C" visible="true" elementSize="0x38">
 			<float32 name="Position Bounds X min" offset="0x0" visible="true" />
 			<float32 name="Position Bounds X max" offset="0x4" visible="true" />
 			<float32 name="Position Bounds Y min" offset="0x8" visible="true" />
@@ -121,7 +121,7 @@
 			<float32 name="Secondary Texcoord Bounds X max" offset="0x2C" visible="true" />
 			<float32 name="Secondary Texcoord Bounds Y min" offset="0x30" visible="true" />
 			<float32 name="Secondary Texcoord Bounds Y max" offset="0x34" visible="true" />
-		</reflexive>
+		</tagblock>
 		<uint8 name="Hardware Node Count" offset="0x24" visible="true" />
 		<uint8 name="Node Map Size" offset="0x25" visible="true" />
 		<uint16 name="Software Plane Sount" offset="0x26" visible="true" />
@@ -169,7 +169,7 @@
 		<uint32 name="Block Size" offset="0x3C" visible="true" />
 		<uint32 name="Section Data Size" offset="0x40" visible="true" />
 		<uint32 name="Resource Data Size" offset="0x44" visible="true" />
-		<reflexive name="Resources" offset="0x48" visible="true" entrySize="0x10">
+		<tagblock name="Resources" offset="0x48" visible="true" elementSize="0x10">
 			<enum8 name="Type" offset="0x0" visible="true">
 				<option name="Tag Block" value="0x0" />
 				<option name="Tag Data" value="0x1" />
@@ -181,16 +181,16 @@
 			<int16 name="Secondary Locator" offset="0x6" visible="true" />
 			<uint32 name="Resoure Data Size" offset="0x8" visible="true" />
 			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagref name="Model" offset="0x50" withClass="false" visible="true" />
 		<int16 name="Owner Tag Section Offset" offset="0x54" visible="true" />
 		<int16 name="Unknown" offset="0x56" visible="false" />
 		<undefined name="Unknown" offset="0x58" visible="false" />
-	</reflexive>
-	<reflexive name="Invalid Section Pair Bits" offset="0x2C" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Invalid Section Pair Bits" offset="0x2C" visible="true" elementSize="0x4">
 		<int32 name="Bits" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Section Groups" offset="0x34" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Section Groups" offset="0x34" visible="true" elementSize="0xC">
 		<bitfield16 name="Detail Levels" offset="0x0" visible="true">
 			<bit name="L1 Section Index (Super Low)" index="0" />
 			<bit name="L2 Section Index (Low)" index="1" />
@@ -210,7 +210,7 @@
 			<bit name="Bit 15" index="15" />
 		</bitfield16>
 		<int16 name="Unknown" offset="0x2" visible="false" />
-		<reflexive name="Compound Nodes" offset="0x4" visible="true" entrySize="0x10">
+		<tagblock name="Compound Nodes" offset="0x4" visible="true" elementSize="0x10">
 			<int8 name="Node Index" offset="0x0" visible="true" />
 			<int8 name="Node Index" offset="0x1" visible="true" />
 			<int8 name="Node Index" offset="0x2" visible="true" />
@@ -218,8 +218,8 @@
 			<float32 name="Node Weight" offset="0x4" visible="true" />
 			<float32 name="Node Weight" offset="0x8" visible="true" />
 			<float32 name="Node Weight" offset="0xC" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<int8 name="L1 Section Index (Super Low)" offset="0x3C" visible="true" />
 	<int8 name="L2 Section Index (Low)" offset="0x3D" visible="true" />
 	<int8 name="L3 Section Index (Medium)" offset="0x3E" visible="true" />
@@ -228,7 +228,7 @@
 	<int8 name="L6 Section Index (Hollywood)" offset="0x41" visible="true" />
 	<int16 name="Unknown" offset="0x42" visible="false" />
 	<int32 name="Node List Checksum" offset="0x44" visible="true" />
-	<reflexive name="Nodes" offset="0x48" visible="true" entrySize="0x60">
+	<tagblock name="Nodes" offset="0x48" visible="true" elementSize="0x60">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<int16 name="Parent Node" offset="0x4" visible="true" />
 		<int16 name="First Child Node" offset="0x6" visible="true" />
@@ -255,12 +255,12 @@
 		<float32 name="Inverse Position y" offset="0x54" visible="true" />
 		<float32 name="Inverse Position z" offset="0x58" visible="true" />
 		<float32 name="Distance from Parent" offset="0x5C" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
-	<reflexive name="Marker Groups" offset="0x58" visible="true" entrySize="0xC">
+	<tagblock name="Marker Groups" offset="0x58" visible="true" elementSize="0xC">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<reflexive name="Markers" offset="0x4" visible="true" entrySize="0x24">
+		<tagblock name="Markers" offset="0x4" visible="true" elementSize="0x24">
 			<int8 name="Region Index" offset="0x0" visible="true" />
 			<int8 name="Permutation Index" offset="0x1" visible="true" />
 			<int8 name="Node Index" offset="0x2" visible="true" />
@@ -273,12 +273,12 @@
 			<float32 name="Rotation k" offset="0x18" visible="true" />
 			<float32 name="Rotation w" offset="0x1C" visible="true" />
 			<float32 name="Scale" offset="0x20" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Materials" offset="0x60" visible="true" entrySize="0x20">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Materials" offset="0x60" visible="true" elementSize="0x20">
 		<tagRef name="Old Shader" offset="0x0" visible="true" />
 		<tagRef name="Shader" offset="0x8" visible="true" />
-		<reflexive name="Properties" offset="0x10" visible="true" entrySize="0x8">
+		<tagblock name="Properties" offset="0x10" visible="true" elementSize="0x8">
 			<enum16 name="Type" offset="0x0" visible="true">
 				<option name="Lightmap Resolution" value="0x0" />
 				<option name="Lightmap Power" value="0x1" />
@@ -287,17 +287,17 @@
 			</enum16>
 			<int16 name="Int Value" offset="0x2" visible="true" />
 			<float32 name="Real Value" offset="0x4" visible="true" />
-		</reflexive>
+		</tagblock>
 		<undefined name="Unknown" offset="0x18" visible="false" />
 		<int8 name="Breakable Surface Index" offset="0x1C" visible="true" />
 		<int8 name="Unknown" offset="0x1D" visible="false" />
 		<int8 name="Unknown" offset="0x1E" visible="false" />
 		<int8 name="Unknown" offset="0x1F" visible="false" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x68" visible="false" />
 	<undefined name="Unknown" offset="0x6C" visible="false" />
 	<float32 name="Don't Draw Over Camera Cosine Angle" offset="0x70" visible="true" />
-	<reflexive name="PRT Info" offset="0x74" visible="true" entrySize="0x58">
+	<tagblock name="PRT Info" offset="0x74" visible="true" elementSize="0x58">
 		<uint16 name="SH Order" offset="0x0" visible="true" />
 		<uint16 name="Number Of Clusters" offset="0x2" visible="true" />
 		<uint16 name="PCA Vectors Per Cluster" offset="0x4" visible="true" />
@@ -307,16 +307,16 @@
 		<float32 name="Length Scale" offset="0xC" visible="true" />
 		<uint16 name="Number Of LODs In Model" offset="0x10" visible="true" />
 		<uint16 name="Unknown" offset="0x12" visible="false" />
-		<reflexive name="LOD Info" offset="0x14" visible="true" entrySize="0xC">
+		<tagblock name="LOD Info" offset="0x14" visible="true" elementSize="0xC">
 			<uint32 name="Cluster Offset" offset="0x0" visible="true" />
-			<reflexive name="Section Info" offset="0x4" visible="true" entrySize="0x8">
+			<tagblock name="Section Info" offset="0x4" visible="true" elementSize="0x8">
 				<int32 name="Section Index" offset="0x0" visible="true" />
 				<uint32 name="PCA Data Offset" offset="0x4" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Cluster Basis" offset="0x1C" visible="true" entrySize="0x4">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Cluster Basis" offset="0x1C" visible="true" elementSize="0x4">
 			<float32 name="Basis Data" offset="0x0" visible="true" />
-		</reflexive>
+		</tagblock>
 		<undefined name="Unknown" offset="0x24" visible="false" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
 		<undefined name="Unknown" offset="0x2C" visible="false" />
@@ -325,7 +325,7 @@
 		<uint32 name="Block Size" offset="0x38" visible="true" />
 		<uint32 name="Section Data Size" offset="0x3C" visible="true" />
 		<uint32 name="Resource Data Size" offset="0x40" visible="true" />
-		<reflexive name="Resources" offset="0x44" visible="true" entrySize="0x10">
+		<tagblock name="Resources" offset="0x44" visible="true" elementSize="0x10">
 			<enum8 name="Type" offset="0x0" visible="true">
 				<option name="Tag Block" value="0x0" />
 				<option name="Tag Data" value="0x1" />
@@ -337,24 +337,24 @@
 			<int16 name="Secondary Locator" offset="0x6" visible="true" />
 			<uint32 name="Resoure Data Size" offset="0x8" visible="true" />
 			<uint32 name="Resource Data Offset" offset="0xC" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagref name="Model" offset="0x4C" withClass="false" visible="true" />
 		<int16 name="Owner Tag Section Offset" offset="0x50" visible="true" />
 		<int16 name="Unknown" offset="0x52" visible="false" />
 		<undefined name="Unknown" offset="0x54" visible="false" />
-	</reflexive>
-	<reflexive name="Section Render Leaves" offset="0x7C" visible="true" entrySize="0x8">
-		<reflexive name="Node Render Leaves" offset="0x0" visible="true" entrySize="0x10">
-			<reflexive name="Collision Leaves" offset="0x0" visible="true" entrySize="0x8">
+	</tagblock>
+	<tagblock name="Section Render Leaves" offset="0x7C" visible="true" elementSize="0x8">
+		<tagblock name="Node Render Leaves" offset="0x0" visible="true" elementSize="0x10">
+			<tagblock name="Collision Leaves" offset="0x0" visible="true" elementSize="0x8">
 				<int16 name="Cluster" offset="0x0" visible="true" />
 				<int16 name="Surface Reference Count" offset="0x2" visible="true" />
 				<int32 name="First Surface Reference Index" offset="0x4" visible="true" />
-			</reflexive>
-			<reflexive name="Surface References" offset="0x8" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Surface References" offset="0x8" visible="true" elementSize="0x8">
 				<int16 name="Strip Index" offset="0x0" visible="true" />
 				<int16 name="Lightmap Triangle Index" offset="0x2" visible="true" />
 				<int32 name="BSP Node Index" offset="0x4" visible="true" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
+			</tagblock>
+		</tagblock>
+	</tagblock>
 </plugin>

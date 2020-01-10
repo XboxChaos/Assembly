@@ -57,7 +57,7 @@
 	<stringid name="Scale A Override" offset="0x1C" visible="true" />
 	<stringid name="Scale B Override" offset="0x20" visible="true" />
 	<float32 name="Runtime Danger Radius" offset="0x24" visible="true" />
-	<reflexive name="Locations" offset="0x28" visible="true" entrySize="0x8">
+	<tagblock name="Locations" offset="0x28" visible="true" elementSize="0x8">
 		<comment title="MARKER NAMES">In addition to the marker in the render model there are several special marker names:
 
 replace
@@ -105,8 +105,8 @@ child
 			<option name="Essential" value="0x5" />
 		</enum8>
 		<int8 name="Unknown" offset="0x7" visible="false" />
-	</reflexive>
-	<reflexive name="Events" offset="0x34" visible="true" entrySize="0x44">
+	</tagblock>
+	<tagblock name="Events" offset="0x34" visible="true" elementSize="0x44">
 		<stringid name="Event Name" offset="0x0" visible="true" />
 		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Disabled For Debugging" index="0" />
@@ -129,7 +129,7 @@ child
 		<float32 name="Duration Bounds max" offset="0x18" visible="true" />
 		<comment title="Event Age Duration Override">Parts and particle systems can take &quot;event age&quot; as a function input. Typically that goes from 0 to 1 over the event duration.  If you want a different time, specify it here.  0 means use the duration bounds above.</comment>
 		<float32 name="Event Age Duration Override" offset="0x1C" visible="true" />
-		<reflexive name="Parts" offset="0x20" visible="true" entrySize="0x74">
+		<tagblock name="Parts" offset="0x20" visible="true" elementSize="0x74">
 			<enum16 name="Create In" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -316,8 +316,8 @@ child
 				<bit name="Type-Specific Scale" index="5" />
 			</bitfield32>
 			<tagRef name="Particleize" offset="0x64" visible="true" />
-		</reflexive>
-		<reflexive name="Accelerations" offset="0x2C" visible="true" entrySize="0x14">
+		</tagblock>
+		<tagblock name="Accelerations" offset="0x2C" visible="true" elementSize="0x14">
 			<enum16 name="Create In" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -336,8 +336,8 @@ child
 			<float32 name="Acceleration" offset="0x8" visible="true" />
 			<float32 name="Inner Cone Angle" offset="0xC" visible="true" />
 			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
-		</reflexive>
-		<reflexive name="Particle Systems" offset="0x38" visible="true" entrySize="0x7C">
+		</tagblock>
+		<tagblock name="Particle Systems" offset="0x38" visible="true" elementSize="0x7C">
 			<enum8 name="Priority" offset="0x0" visible="true">
 				<option name="Low" value="0x0" />
 				<option name="Normal" value="0x1" />
@@ -434,7 +434,7 @@ child
 			<float32 name="LOD Out Distance" offset="0x5C" visible="true" />
 			<float32 name="LOD Feather Out Delta" offset="0x60" visible="true" />
 			<float32 name="Inverse LOD Feather Out" offset="0x64" visible="true" />
-			<reflexive name="Emitters" offset="0x68" visible="true" entrySize="0x3C4">
+			<tagblock name="Emitters" offset="0x68" visible="true" elementSize="0x3C4">
 				<stringid name="Emitter Name" offset="0x0" visible="true" />
 				<enum8 name="Emission Shape" offset="0x4" visible="true">
 					<option name="Sprayer" value="0x0" />
@@ -1537,7 +1537,7 @@ child
 				<int8 name="Global Force Controller Index" offset="0x1C4" visible="true" />
 				<int8 name="Unknown" offset="0x1C5" visible="false" />
 				<int16 name="Unknown" offset="0x1C6" visible="false" />
-				<reflexive name="Movements" offset="0x1C8" visible="true" entrySize="0x18">
+				<tagblock name="Movements" offset="0x1C8" visible="true" elementSize="0x18">
 					<enum16 name="Type" offset="0x0" visible="true">
 						<option name="Physics" value="0x0" />
 						<option name="Collider" value="0x1" />
@@ -1550,7 +1550,7 @@ child
 						<bit name="Properties Fully Indexed" index="0" />
 					</bitfield8>
 					<int8 name="Unknown" offset="0x3" visible="false" />
-					<reflexive name="Parameters" offset="0x4" visible="true" entrySize="0x24">
+					<tagblock name="Parameters" offset="0x4" visible="true" elementSize="0x24">
 						<int32 name="Parameter Id" offset="0x0" visible="true" />
 						<enum8 name="Input Variable" offset="0x4" visible="true">
 							<option name="Particle Age" value="0x0" />
@@ -1653,12 +1653,12 @@ child
 							<bit name="Force Constant" index="0" />
 						</bitfield8>
 						<int8 name="Unknown" offset="0x23" visible="false" />
-					</reflexive>
+					</tagblock>
 					<int32 name="Runtime m Constant Parameters" offset="0x10" visible="true" />
 					<int32 name="Runtime m Used Particle States" offset="0x14" visible="true" />
-				</reflexive>
+				</tagblock>
 				<tagRef name="Turbulence Texture" offset="0x1D4" visible="true" />
-				<reflexive name="Particle Attractor/Repulsor" offset="0x1E4" visible="true" entrySize="0x28">
+				<tagblock name="Particle Attractor/Repulsor" offset="0x1E4" visible="true" elementSize="0x28">
 					<bitfield8 name="Flags" offset="0x0" visible="true">
 						<bit name="Is Infinitely Long Cylinder" index="0" />
 					</bitfield8>
@@ -1673,13 +1673,13 @@ child
 					<float32 name="Direction (For Cylinder Forces) i" offset="0x1C" visible="true" />
 					<float32 name="Direction (For Cylinder Forces) j" offset="0x20" visible="true" />
 					<float32 name="Direction (For Cylinder Forces) k" offset="0x24" visible="true" />
-				</reflexive>
-				<reflexive name="Particle Clip Sphere" offset="0x1F0" visible="true" entrySize="0x10">
+				</tagblock>
+				<tagblock name="Particle Clip Sphere" offset="0x1F0" visible="true" elementSize="0x10">
 					<float32 name="Offset i" offset="0x0" visible="true" />
 					<float32 name="Offset j" offset="0x4" visible="true" />
 					<float32 name="Offset k" offset="0x8" visible="true" />
 					<float32 name="Radius" offset="0xC" visible="true" />
-				</reflexive>
+				</tagblock>
 				<comment title="Particle Self-Acceleration" />
 				<enum8 name="Input Variable" offset="0x1FC" visible="true">
 					<option name="Particle Age" value="0x0" />
@@ -2907,13 +2907,13 @@ child
 				<int32 name="Runtime m Constant Per Particle Properties" offset="0x394" visible="true" />
 				<int32 name="Runtime m Constant Over Time Properties" offset="0x398" visible="true" />
 				<int32 name="Runtime m Used Particle States" offset="0x39C" visible="true" />
-				<reflexive name="Runtime GPU Properties" offset="0x3A0" visible="false" entrySize="0x10" align="0x10">
+				<tagblock name="Runtime GPU Properties" offset="0x3A0" visible="false" elementSize="0x10" align="0x10">
 					<float32 name="Runtime GPU Property" offset="0x0" visible="true" />
 					<float32 name="Runtime GPU Property" offset="0x4" visible="true" />
 					<float32 name="Runtime GPU Property" offset="0x8" visible="true" />
 					<float32 name="Runtime GPU Property" offset="0xC" visible="true" />
-				</reflexive>
-				<reflexive name="Runtime GPU Functions" offset="0x3AC" visible="false" entrySize="0x40" align="0x10">
+				</tagblock>
+				<tagblock name="Runtime GPU Functions" offset="0x3AC" visible="false" elementSize="0x40" align="0x10">
 					<float32 name="Runtime GPU Function" offset="0x0" visible="true" />
 					<float32 name="Runtime GPU Function" offset="0x4" visible="true" />
 					<float32 name="Runtime GPU Function (Feather?)" offset="0x8" visible="true" />
@@ -2930,32 +2930,32 @@ child
 					<float32 name="Runtime GPU Function" offset="0x34" visible="true" />
 					<float32 name="Runtime GPU Function" offset="0x38" visible="true" />
 					<float32 name="Runtime GPU Function" offset="0x3C" visible="true" />
-				</reflexive>
-				<reflexive name="Runtime GPU Colors" offset="0x3B8" visible="true" entrySize="0x10" align="0x10">
+				</tagblock>
+				<tagblock name="Runtime GPU Colors" offset="0x3B8" visible="true" elementSize="0x10" align="0x10">
 					<float32 name="Red" offset="0x0" visible="true" />
 					<float32 name="Green" offset="0x4" visible="true" />
 					<float32 name="Blue" offset="0x8" visible="true" />
 					<float32 name="Magnitude" offset="0xC" visible="true" />
-				</reflexive>
-			</reflexive>
+				</tagblock>
+			</tagblock>
 			<float32 name="Runtime Maximum Lifespan" offset="0x74" visible="true" />
 			<float32 name="Runtime Overdraw" offset="0x78" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Looping Sounds" offset="0x40" visible="true" entrySize="0x14">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Looping Sounds" offset="0x40" visible="true" elementSize="0x14">
 		<tagRef name="Looping Sound" offset="0x0" visible="true" />
 		<int16 name="Location Index" offset="0x10" visible="true" />
 		<int16 name="Bind Scale To Event index" offset="0x12" visible="true" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Always Play Distance" offset="0x4C" visible="true" />
 	<float32 name="Never Play Distance" offset="0x50" visible="true" />
 	<float32 name="Runtime Lightprobe Death Delay" offset="0x54" visible="true" />
 	<float32 name="Runtime Local Space Death Delay" offset="0x58" visible="true" />
-	<reflexive name="Conical Distribution" offset="0x5C" visible="true" entrySize="0xC">
+	<tagblock name="Conical Distribution" offset="0x5C" visible="true" elementSize="0xC">
 		<comment title="Conical Projection">projectile_count = yaw_count*pitch_count</comment>
 		<int16 name="Yaw Count" offset="0x0" visible="true" />
 		<int16 name="Pitch Count" offset="0x2" visible="true" />
 		<float32 name="Distribution Exponent" offset="0x4" visible="true" />
 		<degree name="Spread" offset="0x8" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

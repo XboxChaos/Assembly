@@ -109,7 +109,7 @@
 	<tagRef name="Crate Object" offset="0x44" visible="true" />
 	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
-	<reflexive name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" entrySize="0x28">
+	<tagblock name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" elementSize="0x28">
 		<stringid name="Node Name" offset="0x0" visible="true" />
 		<float32 name="X0" offset="0x4" visible="true" />
 		<float32 name="X1" offset="0x8" visible="true" />
@@ -120,11 +120,11 @@
 		<degree name="Angles y" offset="0x1C" visible="true" />
 		<degree name="Angles p" offset="0x20" visible="true" />
 		<degree name="Angles r" offset="0x24" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
 	<tagRef name="Melee Sound" offset="0x90" visible="true" />
-	<reflexive name="AI Properties" offset="0xA0" visible="true" entrySize="0x10">
+	<tagblock name="AI Properties" offset="0xA0" visible="true" elementSize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
@@ -180,8 +180,8 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0xAC" visible="true" entrySize="0x2C">
+	</tagblock>
+	<tagblock name="Functions" offset="0xAC" visible="true" elementSize="0x2C">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
@@ -222,7 +222,7 @@
 		<float32 name="Minimum Value" offset="0x10" visible="true" />
 		<dataRef name="Default Function" offset="0x14" visible="true" />
 		<stringid name="Scale By" offset="0x28" visible="true" />
-	</reflexive>
+	</tagblock>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
 	<bitfield16 name="Secondary Flags" offset="0xBA" visible="true">
 		<bit name="Does Not Affect Projectile Aiming" index="0" />
@@ -242,7 +242,7 @@
 		<bit name="Bit 14" index="14" />
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
-	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x20">
+	<tagblock name="Attachments" offset="0xBC" visible="true" elementSize="0x20">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringid name="Marker" offset="0x10" visible="true" />
 		<enum8 name="Change Color" offset="0x14" visible="true">
@@ -259,18 +259,18 @@
 		<int16 name="Unknown" offset="0x16" visible="false" />
 		<stringid name="Primary Scale" offset="0x18" visible="true" />
 		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
-	</reflexive>
-	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Widgets" offset="0xC8" visible="true" elementSize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0xD4" visible="true" entrySize="0x18">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0xD4" visible="true" elementSize="0x18">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Functions" offset="0xC" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
@@ -280,11 +280,11 @@
 			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
 			<stringid name="Darken By..." offset="0x20" visible="true" />
 			<stringid name="Scale By..." offset="0x24" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x0">
-	</reflexive>
-	<reflexive name="Multiplayer Object Properties" offset="0xEC" visible="true" entrySize="0xC4">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resources" offset="0xE0" visible="false" elementSize="0x0">
+	</tagblock>
+	<tagblock name="Multiplayer Object Properties" offset="0xEC" visible="true" elementSize="0xC4">
 		<bitfield16 name="Engine Flags" offset="0x0" visible="true">
 			<bit name="Capture The Flag" index="0" />
 			<bit name="Slayer" index="1" />
@@ -380,7 +380,7 @@
 		<tagref name="Cylinder Opaque Shader" offset="0x94" visible="true" />
 		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
 		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="PROJECTILE" />
 	<bitfield32 name="Flags" offset="0xF8" visible="true">
 		<bit name="Oriented Along Velocity" index="0" />
@@ -548,7 +548,7 @@
 	<undefined name="Unknown" offset="0x264" visible="false" />
 	<float32 name="Targeted Leading Fraction" offset="0x268" visible="true" />
 	<undefined name="Unknown" offset="0x26C" visible="false" />
-	<reflexive name="Material Responses" offset="0x270" visible="true" entrySize="0x40">
+	<tagblock name="Material Responses" offset="0x270" visible="true" elementSize="0x40">
 		<bitfield16 name="Flags" offset="0x0" visible="true">
 			<bit name="Cannot Be Overpenetrated" index="0" />
 			<bit name="Bit 1" index="1" />
@@ -626,8 +626,8 @@
 		<comment title="Reflection" />
 		<float32 name="Parallel Friction" offset="0x38" visible="true" />
 		<float32 name="Perpendicular Friction" offset="0x3C" visible="true" />
-	</reflexive>
-	<reflexive name="Claymore Grenade" offset="0x27C" visible="true" entrySize="0x30">
+	</tagblock>
+	<tagblock name="Claymore Grenade" offset="0x27C" visible="true" elementSize="0x30">
 		<degree name="Unknown" offset="0x0" visible="true" />
 		<degree name="Unknown" offset="0x4" visible="true" />
 		<degree name="Unknown" offset="0x8" visible="true" />
@@ -640,14 +640,14 @@
 		<float32 name="Unknown" offset="0x24" visible="true" />
 		<float32 name="Unknown" offset="0x28" visible="true" />
 		<float32 name="Unknown" offset="0x2C" visible="true" />
-	</reflexive>
-	<reflexive name="Firebomb Grenade" offset="0x288" visible="true" entrySize="0x4">
+	</tagblock>
+	<tagblock name="Firebomb Grenade" offset="0x288" visible="true" elementSize="0x4">
 		<float32 name="Unknown" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Shotgun Properties" offset="0x294" visible="true" entrySize="0xC">
+	</tagblock>
+	<tagblock name="Shotgun Properties" offset="0x294" visible="true" elementSize="0xC">
 		<int16 name="Amount" offset="0x0" visible="true" />
 		<int16 name="Distance" offset="0x2" visible="true" />
 		<float32 name="Accuracy" offset="0x4" visible="true" />
 		<degree name="Spread Cone Angle" offset="0x8" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>
