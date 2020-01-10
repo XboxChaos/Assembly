@@ -166,10 +166,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RegisterMetaTag("int32", "Signed 32-bit integer");
 			RegisterMetaTag("float32", "32-bit floating-point value");
 			RegisterMetaTag("stringId", "32-bit string ID");
-			RegisterMetaTag("bitfield8", "8-bit bitfield");
-			RegisterMetaTag("bitfield16", "16-bit bitfield");
-			RegisterMetaTag("bitfield32", "32-bit bitfield");
-			RegisterMetaTag("bitfield64", "64-bit bitfield");
+			RegisterMetaTag("flags8", "8-bit flags value");
+			RegisterMetaTag("flags16", "16-bit flags value");
+			RegisterMetaTag("flags32", "32-bit flags value");
+			RegisterMetaTag("flags64", "64-bit flags value");
 			RegisterMetaTag("enum8", "8-bit enumeration value");
 			RegisterMetaTag("enum16", "8-bit enumeration value");
 			RegisterMetaTag("enum32", "8-bit enumeration value");

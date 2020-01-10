@@ -47,24 +47,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 			SeekToOffset(field.Offset);
 			switch (field.Type)
 			{
-				case BitfieldType.Bitfield8:
+				case FlagsType.Flags8:
 					_writer.WriteByte((byte) field.Value);
 					break;
 
-				case BitfieldType.Bitfield16:
+				case FlagsType.Flags16:
 					_writer.WriteUInt16((ushort) field.Value);
 					break;
 
-				case BitfieldType.Bitfield32:
+				case FlagsType.Flags32:
 					_writer.WriteUInt32((uint)field.Value);
 					break;
 
-				case BitfieldType.Bitfield64:
+				case FlagsType.Flags64:
 					_writer.WriteUInt64(field.Value);
 					break;
 			}

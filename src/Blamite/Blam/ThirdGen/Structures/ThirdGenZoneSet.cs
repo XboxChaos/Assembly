@@ -126,31 +126,31 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, TagBlockCache<int> cache, IPointerExpander expander)
 		{
 			var result = new StructureValueCollection();
-			SaveBitArray(_activeResources, "number of raw pool bitfields", "raw pool bitfield table address", allocator, stream, cache, result, expander);
-			SaveBitArray(_unknownResources, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator, stream, cache, result, expander);
-			SaveBitArray(_unknownResources2, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator, stream, cache, result, expander);
-			SaveBitArray(_activeTags, "number of tag bitfields", "tag bitfield table address", allocator, stream, cache, result, expander);
-			SaveBitArray(_unknownTags, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_activeResources, "number of raw pool flags", "raw pool flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownResources, "number of raw pool 2 flags", "raw pool 2 flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownResources2, "number of raw pool 3 flags", "raw pool 3 flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_activeTags, "number of tag flags", "tag flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownTags, "number of tag 2 flags", "tag 2 flag table address", allocator, stream, cache, result, expander);
 			return result;
 		}
 
 		public static void Free(StructureValueCollection values, MetaAllocator allocator, IPointerExpander expander)
 		{
-			FreeBitArray(values, "number of raw pool bitfields", "raw pool bitfield table address", allocator, expander);
-			FreeBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator, expander);
-			FreeBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator, expander);
-			FreeBitArray(values, "number of tag bitfields", "tag bitfield table address", allocator, expander);
-			FreeBitArray(values, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator, expander);
+			FreeBitArray(values, "number of raw pool flags", "raw pool flag table address", allocator, expander);
+			FreeBitArray(values, "number of raw pool 2 flags", "raw pool 2 flag table address", allocator, expander);
+			FreeBitArray(values, "number of raw pool 3 flags", "raw pool 3 flag table address", allocator, expander);
+			FreeBitArray(values, "number of tag flags", "tag flag table address", allocator, expander);
+			FreeBitArray(values, "number of tag 2 flags", "tag 2 flag table address", allocator, expander);
 		}
 
 		private void Load(StructureValueCollection values, IReader reader, IPointerExpander expander)
 		{
 			Name = new StringID(values.GetInteger("name stringid"));
-			_activeResources = LoadBitArray(values, "number of raw pool bitfields", "raw pool bitfield table address", reader, expander);
-			_unknownResources = LoadBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", reader, expander);
-			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", reader, expander);
-			_activeTags = LoadBitArray(values, "number of tag bitfields", "tag bitfield table address", reader, expander);
-			_unknownTags = LoadBitArray(values, "number of tag 2 bitfields", "tag 2 bitfield table address", reader, expander);
+			_activeResources = LoadBitArray(values, "number of raw pool flags", "raw pool flag table address", reader, expander);
+			_unknownResources = LoadBitArray(values, "number of raw pool 2 flags", "raw pool 2 flag table address", reader, expander);
+			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 flags", "raw pool 3 flag table address", reader, expander);
+			_activeTags = LoadBitArray(values, "number of tag flags", "tag flag table address", reader, expander);
+			_unknownTags = LoadBitArray(values, "number of tag 2 flags", "tag 2 flag table address", reader, expander);
 		}
 
 		private BitArray LoadBitArray(StructureValueCollection values, string countName, string addressName, IReader reader, IPointerExpander expander)

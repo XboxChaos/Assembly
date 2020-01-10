@@ -5,21 +5,21 @@ using System.Windows.Input;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-	public enum BitfieldType
+	public enum FlagsType
 	{
-		Bitfield8,
-		Bitfield16,
-		Bitfield32,
-		Bitfield64
+		Flags8,
+		Flags16,
+		Flags32,
+		Flags64
 	}
 
-	public class BitfieldData : ValueField
+	public class FlagData : ValueField
 	{
 		private readonly SortedList<int, BitData> _bits = new SortedList<int, BitData>();
-		private BitfieldType _type;
+		private FlagsType _type;
 		private ulong _value;
 
-		public BitfieldData(string name, uint offset, long address, BitfieldType type, uint pluginLine)
+		public FlagData(string name, uint offset, long address, FlagsType type, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -38,7 +38,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public BitfieldType Type
+		public FlagsType Type
 		{
 			get { return _type; }
 			set
@@ -71,12 +71,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			visitor.VisitBitfield(this);
+			visitor.VisitFlags(this);
 		}
 
 		public override MetaField CloneValue()
 		{
-			var result = new BitfieldData(Name, Offset, FieldAddress, _type, base.PluginLine);
+			var result = new FlagData(Name, Offset, FieldAddress, _type, base.PluginLine);
 			foreach (var bit in _bits)
 				result.DefineBit(bit.Key, bit.Value.Name);
 			result.Value = _value;
@@ -90,22 +90,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		/// <summary>
-		///     Command that quickly checks or unchecks all bits in a bitfield.
+		///     Command that quickly checks or unchecks all bits in a flags field.
 		/// </summary>
 		private class QuickCheckCommand : ICommand
 		{
 			private readonly bool _check;
-			private readonly BitfieldData _data;
+			private readonly FlagData _data;
 
 			/// <summary>
 			///     Initializes a new instance of the <see cref="QuickCheckCommand" /> class.
 			/// </summary>
-			/// <param name="data">The biefield.</param>
+			/// <param name="data">The flags field.</param>
 			/// <param name="check">
 			///     If set to <c>true</c>, the command will check all bits in the field, otherwise it will uncheck all
 			///     bits in the field.
 			/// </param>
-			public QuickCheckCommand(BitfieldData data, bool check)
+			public QuickCheckCommand(FlagData data, bool check)
 			{
 				_data = data;
 				_check = check;
@@ -123,7 +123,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			/// </returns>
 			public bool CanExecute(object parameter)
 			{
-				// Just make sure the bitfield has bits in it
+				// Just make sure the flags field has bits in it
 				return _data.Bits.Any();
 			}
 
@@ -154,10 +154,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class BitData : PropertyChangeNotifier
 	{
 		private readonly uint _mask;
-		private readonly BitfieldData _parent;
+		private readonly FlagData _parent;
 		private string _name;
 
-		public BitData(BitfieldData parent, string name, int index)
+		public BitData(FlagData parent, string name, int index)
 		{
 			_parent = parent;
 			_name = name;

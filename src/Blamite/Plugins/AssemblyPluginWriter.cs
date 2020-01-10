@@ -215,27 +215,27 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield8", name, offset, visible);
+			WriteValueStart("flags8", name, offset, visible);
 			return true;
 		}
 
-		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield16", name, offset, visible);
+			WriteValueStart("flags16", name, offset, visible);
 			return true;
 		}
 
-		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield32", name, offset, visible);
+			WriteValueStart("flags32", name, offset, visible);
 			return true;
 		}
 
-		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine)
 		{
-			WriteValueStart("bitfield64", name, offset, visible);
+			WriteValueStart("flags64", name, offset, visible);
 			return true;
 		}
 
@@ -247,7 +247,7 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public void LeaveBitfield()
+		public void LeaveFlags()
 		{
 			_output.WriteEndElement();
 		}

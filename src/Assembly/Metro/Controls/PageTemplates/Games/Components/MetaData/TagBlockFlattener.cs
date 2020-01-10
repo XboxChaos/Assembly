@@ -268,7 +268,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_changes = changes;
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 		}
 

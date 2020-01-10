@@ -156,30 +156,30 @@ namespace Blamite.Plugins
 			PrintBasicValue("Tag reference", name, offset, visible);
 		}
 
-		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine)
 		{
-			PrintBasicValue("Bitfield8", name, offset, visible);
+			PrintBasicValue("Flags8", name, offset, visible);
 			_level++;
 			return true;
 		}
 
-		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine)
 		{
-			PrintBasicValue("Bitfield16", name, offset, visible);
+			PrintBasicValue("Flags16", name, offset, visible);
 			_level++;
 			return true;
 		}
 
-		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine)
 		{
-			PrintBasicValue("Bitfield32", name, offset, visible);
+			PrintBasicValue("Flags32", name, offset, visible);
 			_level++;
 			return true;
 		}
 
-		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine)
 		{
-			PrintBasicValue("Bitfield64", name, offset, visible);
+			PrintBasicValue("Flags64", name, offset, visible);
 			_level++;
 			return true;
 		}
@@ -189,7 +189,7 @@ namespace Blamite.Plugins
 			Debug.WriteLine(Indent() + "Bit \"{0}\" at position {1}", name, index);
 		}
 
-		public void LeaveBitfield()
+		public void LeaveFlags()
 		{
 			_level--;
 		}

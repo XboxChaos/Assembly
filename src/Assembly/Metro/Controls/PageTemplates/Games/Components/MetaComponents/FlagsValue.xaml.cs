@@ -3,11 +3,11 @@
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
 	/// <summary>
-	///     Interaction logic for Bitfield.xaml
+	///     Interaction logic for FlagsValue.xaml
 	/// </summary>
-	public partial class Bitfield : UserControl
+	public partial class FlagsValue : UserControl
 	{
-		public Bitfield()
+		public FlagsValue()
 		{
 			InitializeComponent();
 		}

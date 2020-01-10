@@ -246,24 +246,28 @@ namespace Blamite.Plugins
 					visitor.VisitUtf16(name, offset, visible, 256, pluginLine);
 					break;
 
+				case "flags8":
 				case "bitfield8":
 				case "bitmask8":
-					if (visitor.EnterBitfield8(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags8(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
+				case "flags16":
 				case "bitmask16":
 				case "bitfield16":
-					if (visitor.EnterBitfield16(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags16(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
+				case "flags32":
 				case "bitmask32":
 				case "bitfield32":
-					if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags32(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
+				case "flags64":
 				case "bitmask64":
 				case "bitfield64":
-					if (visitor.EnterBitfield64(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags64(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
 
@@ -432,7 +436,7 @@ namespace Blamite.Plugins
 				}
 			}
 
-			visitor.LeaveBitfield();
+			visitor.LeaveFlags();
 		}
 
 		private static void ReadBit(XmlReader reader, IPluginVisitor visitor)

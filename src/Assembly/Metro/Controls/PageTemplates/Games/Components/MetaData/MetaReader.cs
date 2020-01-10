@@ -43,21 +43,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public long BaseOffset { get; set; }
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 			SeekToOffset(field.Offset);
 			switch (field.Type)
 			{
-				case BitfieldType.Bitfield8:
+				case FlagsType.Flags8:
 					field.Value = _reader.ReadByte();
 					break;
-				case BitfieldType.Bitfield16:
+				case FlagsType.Flags16:
 					field.Value = _reader.ReadUInt16();
 					break;
-				case BitfieldType.Bitfield32:
+				case FlagsType.Flags32:
 					field.Value = _reader.ReadUInt32();
 					break;
-				case BitfieldType.Bitfield64:
+				case FlagsType.Flags64:
 					field.Value = _reader.ReadUInt64();
 					break;
 			}

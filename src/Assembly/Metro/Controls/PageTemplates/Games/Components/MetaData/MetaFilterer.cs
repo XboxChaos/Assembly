@@ -26,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_highlighter = highlighter;
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 			FilterString(field, field.Name);
 			foreach (var bit in field.Bits)

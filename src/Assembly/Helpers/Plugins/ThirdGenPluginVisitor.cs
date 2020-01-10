@@ -22,7 +22,7 @@ namespace Assembly.Helpers.Plugins
 		private readonly bool _showInvisibles;
 		private readonly Trie _stringIDTrie;
 		private readonly TagHierarchy _tags;
-		private BitfieldData _currentBitfield;
+		private FlagData _currentFlags;
 		private EnumData _currentEnum;
 		private TagBlockData _currentTagBlock;
 
@@ -224,50 +224,50 @@ namespace Assembly.Helpers.Plugins
 
 		#endregion
 
-		#region Bitfield
+		#region Flags
 
-		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine)
 		{
-			return EnterBitfield(BitfieldType.Bitfield8, name, offset, visible, pluginLine);
+			return EnterFlags(FlagsType.Flags8, name, offset, visible, pluginLine);
 		}
 
-		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine)
 		{
-			return EnterBitfield(BitfieldType.Bitfield16, name, offset, visible, pluginLine);
+			return EnterFlags(FlagsType.Flags16, name, offset, visible, pluginLine);
 		}
 
-		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine)
 		{
-			return EnterBitfield(BitfieldType.Bitfield32, name, offset, visible, pluginLine);
+			return EnterFlags(FlagsType.Flags32, name, offset, visible, pluginLine);
 		}
 
-		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine)
 		{
-			return EnterBitfield(BitfieldType.Bitfield64, name, offset, visible, pluginLine);
+			return EnterFlags(FlagsType.Flags64, name, offset, visible, pluginLine);
 		}
 
 		public void VisitBit(string name, int index)
 		{
-			if (_currentBitfield != null)
-				_currentBitfield.DefineBit(index, name);
+			if (_currentFlags != null)
+				_currentFlags.DefineBit(index, name);
 			else
-				throw new InvalidOperationException("Cannot add a bit to a non-existant bitfield");
+				throw new InvalidOperationException("Cannot add a bit to a non-existant flags field");
 		}
 
-		public void LeaveBitfield()
+		public void LeaveFlags()
 		{
-			if (_currentBitfield == null)
-				throw new InvalidOperationException("Cannot leave a bitfield if one isn't active");
+			if (_currentFlags == null)
+				throw new InvalidOperationException("Cannot leave a flags field if one isn't active");
 
-			AddValue(_currentBitfield);
-			_currentBitfield = null;
+			AddValue(_currentFlags);
+			_currentFlags = null;
 		}
 
-		private bool EnterBitfield(BitfieldType type, string name, uint offset, bool visible, uint pluginLine)
+		private bool EnterFlags(FlagsType type, string name, uint offset, bool visible, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{
-				_currentBitfield = new BitfieldData(name, offset, 0, type, pluginLine);
+				_currentFlags = new FlagData(name, offset, 0, type, pluginLine);
 				return true;
 			}
 			return false;

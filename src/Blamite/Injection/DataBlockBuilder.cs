@@ -265,22 +265,22 @@ namespace Blamite.Injection
 		{
 		}
 
-		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine)
 		{
 			return false;
 		}
 
-		public bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine)
 		{
 			return false;
 		}
 
-		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine)
 		{
 			return false;
 		}
 
-		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		public bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine)
 		{
 			return false;
 		}
@@ -289,7 +289,7 @@ namespace Blamite.Injection
 		{
 		}
 
-		public void LeaveBitfield()
+		public void LeaveFlags()
 		{
 		}
 

@@ -17,7 +17,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			TagBlockSubEntryLeftPadding + TagBlockSubEntryRightPadding + TagBlockSubEntryBorderWidth * 2;
 
 		private static readonly AsciiValue _asciiControl = new AsciiValue();
-		private static readonly Bitfield _bitfieldControl = new Bitfield();
+		private static readonly FlagsValue _flagsControl = new FlagsValue();
 		private static readonly Comment _commentControl = new Comment();
 		private static readonly Enumeration _enumControl = new Enumeration();
 		private static readonly intValue _intControl = new intValue();
@@ -36,9 +36,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _totalWidth; }
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
-			AddWidth(_bitfieldControl.Width);
+			AddWidth(_flagsControl.Width);
 		}
 
 		public void VisitComment(CommentData field)

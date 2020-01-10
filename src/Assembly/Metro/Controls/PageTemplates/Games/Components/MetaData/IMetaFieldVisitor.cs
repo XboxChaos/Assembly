@@ -2,7 +2,7 @@
 {
 	public interface IMetaFieldVisitor
 	{
-		void VisitBitfield(BitfieldData field);
+		void VisitFlags(FlagData field);
 		void VisitComment(CommentData field);
 		void VisitEnum(EnumData field);
 		void VisitUint8(Uint8Data field);

@@ -123,25 +123,25 @@ namespace Blamite.Plugins
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine);
 
-		// These are called whenever a bitfield is found in the plugin.
+		// These are called whenever flags are found in the plugin.
 		// Return false from one of these methods to skip over the
-		// bits in the bitfield.
-		bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterBitfield16(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine);
+		// bits in the flags.
+		bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine);
 
 		/// <summary>
-		///     Called when a bit definition is encountered inside a bitfield.
+		///     Called when a bit definition is encountered inside a flags field.
 		/// </summary>
 		/// <param name="name">The bit's name.</param>
 		/// <param name="index">The bit's zero-based index (0 = LSB).</param>
 		void VisitBit(string name, int index);
 
 		/// <summary>
-		///     Called when a bitfield definition is exited.
+		///     Called when a flags definition is exited.
 		/// </summary>
-		void LeaveBitfield();
+		void LeaveFlags();
 
 		// These are called whenever an enum is found in the plugin.
 		// Return false from one of these methods to skip over the
