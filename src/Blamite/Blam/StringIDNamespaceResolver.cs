@@ -8,12 +8,12 @@ namespace Blamite.Blam
 	///     Implementation of IStringIDResolver that uses set definitions to translate stringIDs into array indices.
 	/// </summary>
 	/// <seealso cref="StringID" />
-	public class StringIDSetResolver : IStringIDResolver
+	public class StringIDNamespaceResolver : IStringIDResolver
 	{
-		private readonly SortedList<int, StringIDSet> _setsByGlobalIndex = new SortedList<int, StringIDSet>();
-		private readonly SortedList<int, StringIDSet> _setsByID = new SortedList<int, StringIDSet>();
+		private readonly SortedList<int, StringIDNamespace> _namespacesByGlobalIndex = new SortedList<int, StringIDNamespace>();
+		private readonly SortedList<int, StringIDNamespace> _namespacesByID = new SortedList<int, StringIDNamespace>();
 
-		public StringIDSetResolver(StringIDLayout idLayout)
+		public StringIDNamespaceResolver(StringIDLayout idLayout)
 		{
 			IDLayout = idLayout;
 		}
@@ -26,7 +26,7 @@ namespace Blamite.Blam
 		public int StringIDToIndex(StringID id)
 		{
 			// Find the index of the first set which is less than the set in the ID
-			int closestSetIndex = ListSearching.BinarySearch(_setsByID.Keys, id.GetSet(IDLayout));
+			int closestSetIndex = ListSearching.BinarySearch(_namespacesByID.Keys, id.GetNamespace(IDLayout));
 			if (closestSetIndex < 0)
 			{
 				// BinarySearch returns the bitwise complement of the index of the next highest value if not found
@@ -37,7 +37,7 @@ namespace Blamite.Blam
 			}
 
 			// If the index falls outside the set's min value, then put it into the previous set
-			if (id.GetIndex(IDLayout) < _setsByID.Values[closestSetIndex].MinIndex)
+			if (id.GetIndex(IDLayout) < _namespacesByID.Values[closestSetIndex].MinIndex)
 			{
 				closestSetIndex--;
 				if (closestSetIndex < 0)
@@ -46,7 +46,7 @@ namespace Blamite.Blam
 
 			// Calculate the array index by subtracting the value of the first ID in the set
 			// and then adding the index in the global array of the set's first string
-			StringIDSet set = _setsByID.Values[closestSetIndex];
+			StringIDNamespace set = _namespacesByID.Values[closestSetIndex];
 			var firstId = new StringID(set.ID, set.MinIndex, IDLayout);
 			return (int) (id.Value - firstId.Value + set.GlobalIndex);
 		}
@@ -59,7 +59,7 @@ namespace Blamite.Blam
 		public StringID IndexToStringID(int index)
 		{
 			// Determine which set the index belongs to by finding the set with the closest global index that comes before it
-			int closestSetIndex = ListSearching.BinarySearch(_setsByGlobalIndex.Keys, index);
+			int closestSetIndex = ListSearching.BinarySearch(_namespacesByGlobalIndex.Keys, index);
 			if (closestSetIndex < 0)
 			{
 				// BinarySearch returns the bitwise complement of the index of the next highest value if not found
@@ -71,7 +71,7 @@ namespace Blamite.Blam
 
 			// Calculate the StringID by subtracting the set's global array index
 			// and then adding the value of the first stringID in the set
-			StringIDSet set = _setsByGlobalIndex.Values[closestSetIndex];
+			StringIDNamespace set = _namespacesByGlobalIndex.Values[closestSetIndex];
 			var firstId = new StringID(set.ID, set.MinIndex, IDLayout);
 			return new StringID((uint) (index - set.GlobalIndex + firstId.Value));
 		}
@@ -89,23 +89,23 @@ namespace Blamite.Blam
 		/// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
 		public void RegisterSet(int id, int minIndex, int globalIndex)
 		{
-			var set = new StringIDSet(id, minIndex, globalIndex);
-			_setsByID[id] = set;
-			_setsByGlobalIndex[globalIndex] = set;
+			var set = new StringIDNamespace(id, minIndex, globalIndex);
+			_namespacesByID[id] = set;
+			_namespacesByGlobalIndex[globalIndex] = set;
 		}
 
 		/// <summary>
 		///     A stringID set definition.
 		/// </summary>
-		private class StringIDSet
+		private class StringIDNamespace
 		{
 			/// <summary>
 			///     Constructs a new set definition.
 			/// </summary>
 			/// <param name="id">The set's ID number.</param>
-			/// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the set.</param>
-			/// <param name="globalIndex">The index of the set's first string in the global stringID table.</param>
-			public StringIDSet(int id, int minIndex, int globalIndex)
+			/// <param name="minIndex">The minimum index that a stringID must have in order to be counted as part of the namespace.</param>
+			/// <param name="globalIndex">The index of the namespace's first string in the global stringID table.</param>
+			public StringIDNamespace(int id, int minIndex, int globalIndex)
 			{
 				ID = id;
 				MinIndex = minIndex;

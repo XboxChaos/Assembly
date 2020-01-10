@@ -8,7 +8,7 @@ namespace Blamite.Serialization.Settings
 	/// <summary>
 	///     Loads stringID set definitions from XML data.
 	/// </summary>
-	public class XMLStringIDSetLoader : IComplexSettingLoader
+	public class XMLStringIDNamespaceLoader : IComplexSettingLoader
 	{
 		/// <summary>
 		///     Loads setting data from a path.
@@ -19,7 +19,7 @@ namespace Blamite.Serialization.Settings
 		/// </returns>
 		public object LoadSetting(string path)
 		{
-			return LoadStringIDSets(path);
+			return LoadStringIDNamespaces(path);
 		}
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace Blamite.Serialization.Settings
 		/// </summary>
 		/// <param name="document">The XML document to load set definitions from.</param>
 		/// <returns>The StringIDSetResolver that was created.</returns>
-		public static StringIDSetResolver LoadStringIDSets(XDocument document)
+		public static StringIDNamespaceResolver LoadStringIDNamespaces(XDocument document)
 		{
 			// Make sure there is a root <stringIDs> tag
 			XElement container = document.Element("stringIDs");
@@ -37,8 +37,8 @@ namespace Blamite.Serialization.Settings
 			StringIDLayout idLayout = ProcessIDLayoutInfo(container);
 
 			// Process <set> elements
-			var resolver = new StringIDSetResolver(idLayout);
-			foreach (XElement element in container.Elements("set"))
+			var resolver = new StringIDNamespaceResolver(idLayout);
+			foreach (XElement element in container.Elements("namespace"))
 				ProcessSetElement(element, resolver);
 
 			return resolver;
@@ -49,20 +49,20 @@ namespace Blamite.Serialization.Settings
 		/// </summary>
 		/// <param name="documentPath">The path to the XML document to load.</param>
 		/// <returns>The StringIDSetResolver that was created.</returns>
-		public static StringIDSetResolver LoadStringIDSets(string documentPath)
+		public static StringIDNamespaceResolver LoadStringIDNamespaces(string documentPath)
 		{
-			return LoadStringIDSets(XDocument.Load(documentPath));
+			return LoadStringIDNamespaces(XDocument.Load(documentPath));
 		}
 
 		private static StringIDLayout ProcessIDLayoutInfo(XElement element)
 		{
 			int indexBits = (int)XMLUtil.GetNumericAttribute(element, "indexBits", 16);
-			int setBits = (int)XMLUtil.GetNumericAttribute(element, "setBits", 8);
+			int setBits = (int)XMLUtil.GetNumericAttribute(element, "namespaceBits", 8);
 			int lengthBits = (int)XMLUtil.GetNumericAttribute(element, "lengthBits", 0);
 			return new StringIDLayout(indexBits, setBits, lengthBits);
 		}
 
-		private static void ProcessSetElement(XElement element, StringIDSetResolver resolver)
+		private static void ProcessSetElement(XElement element, StringIDNamespaceResolver resolver)
 		{
 			int id = (int)XMLUtil.GetNumericAttribute(element, "id");
 			int min = (int)XMLUtil.GetNumericAttribute(element, "min", 0);

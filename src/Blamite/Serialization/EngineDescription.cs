@@ -78,7 +78,7 @@ namespace Blamite.Serialization
 		///     Gets the stringID set resolver for the engine.
 		///     Can be <c>null</c> if not present.
 		/// </summary>
-		public StringIDSetResolver StringIDs { get; private set; }
+		public StringIDNamespaceResolver StringIDs { get; private set; }
 
 		/// <summary>
 		///     Gets scripting info for the engine.
@@ -162,7 +162,7 @@ namespace Blamite.Serialization
 		private void LoadDatabases()
 		{
 			Layouts = Settings.GetSettingOrDefault<StructureLayoutCollection>("databases/layouts", null);
-			StringIDs = Settings.GetSettingOrDefault<StringIDSetResolver>("databases/stringIds", null);
+			StringIDs = Settings.GetSettingOrDefault<StringIDNamespaceResolver>("databases/stringIds", null);
 			ScriptInfo = Settings.GetSettingOrDefault<OpcodeLookup>("databases/scripting", null);
 			LocaleSymbols = Settings.GetSettingOrDefault<LocaleSymbolCollection>("databases/localeSymbols", null);
 			VertexLayouts = Settings.GetSettingOrDefault<VertexLayoutCollection>("databases/vertexLayouts", null);

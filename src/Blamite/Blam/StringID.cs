@@ -17,11 +17,11 @@ namespace Blamite.Blam
 		/// <summary>
 		///     Constructs a new StringID from a set and an index.
 		/// </summary>
-		/// <param name="set">The set the stringID belongs to.</param>
+		/// <param name="nspace">The namespace the stringID belongs to.</param>
 		/// <param name="index">The index of the stringID within the set.</param>
 		/// <param name="layout">The layout of the stringID.</param>
-		public StringID(int set, int index, StringIDLayout layout)
-			: this(0, set, index, layout)
+		public StringID(int nspace, int index, StringIDLayout layout)
+			: this(0, nspace, index, layout)
 		{
 		}
 
@@ -29,15 +29,15 @@ namespace Blamite.Blam
 		///     Constructs a new StringID from a length, a set, and an index.
 		/// </summary>
 		/// <param name="length">The length of the string.</param>
-		/// <param name="set">The set the stringID belongs to.</param>
+		/// <param name="nspace">The namespace the stringID belongs to.</param>
 		/// <param name="index">The index of the stringID within the set.</param>
 		/// <param name="layout">The layout of the stringID.</param>
-		public StringID(int length, int set, int index, StringIDLayout layout)
+		public StringID(int length, int nspace, int index, StringIDLayout layout)
 		{
 			var shiftedLength = (int) ((length & CreateMask(layout.LengthSize)) << layout.LengthStart);
-			var shiftedSet = (int) ((set & CreateMask(layout.SetSize)) << layout.SetStart);
+			var shiftedNamespace = (int) ((nspace & CreateMask(layout.NamespaceSize)) << layout.NamespaceStart);
 			var shiftedIndex = (int) ((index & CreateMask(layout.IndexSize)) << layout.IndexStart);
-			_value = (uint) (shiftedLength | shiftedSet | shiftedIndex);
+			_value = (uint) (shiftedLength | shiftedNamespace | shiftedIndex);
 		}
 
 		/// <summary>
@@ -74,9 +74,9 @@ namespace Blamite.Blam
 		/// </summary>
 		/// <param name="layout">The stringID layout to use to parse the set.</param>
 		/// <returns>The set portion of the stringID.</returns>
-		public int GetSet(StringIDLayout layout)
+		public int GetNamespace(StringIDLayout layout)
 		{
-			return (int) ((Value >> layout.SetStart) & CreateMask(layout.SetSize));
+			return (int) ((Value >> layout.NamespaceStart) & CreateMask(layout.NamespaceSize));
 		}
 
 		/// <summary>
