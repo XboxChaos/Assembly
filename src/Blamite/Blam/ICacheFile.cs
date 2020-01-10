@@ -189,7 +189,7 @@ namespace Blamite.Blam
 		/// </summary>
 		ISimulationDefinitionTable SimulationDefinitions { get; }
 
-		IList<IPolyart> PolyartTable { get; }
+		IList<ITagInterop> TagInteropTable { get; }
 
 		/// <summary>
 		///     Saves any changes that were made to the file.

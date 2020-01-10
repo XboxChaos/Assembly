@@ -214,9 +214,9 @@ namespace Blamite.Blam.ThirdGen
 			get { return _simulationDefinitions; }
 		}
 
-		public IList<IPolyart> PolyartTable
+		public IList<ITagInterop> TagInteropTable
 		{
-			get { return _tags.Polyart; }
+			get { return _tags.Interops; }
 		}
 
 		public IPointerExpander PointerExpander
@@ -436,7 +436,7 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("compiled effect entry"))
 			{
-				ITag scnr = _tags.GetImportantTag(CharConstant.FromString("scnr"));
+				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
 				if (scnr != null)
 					_effects = new EffectStorage(scnr, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}

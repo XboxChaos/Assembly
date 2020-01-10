@@ -556,7 +556,7 @@ namespace Blamite.Injection
 			long expLoc = _cacheFile.PointerExpander.Expand(loc) + offset;
 			uint cont = _cacheFile.PointerExpander.Contract(expLoc);
 
-			IPolyart a = _cacheFile.PolyartTable.Where(p => p.Pointer == cont).FirstOrDefault();
+			ITagInterop a = _cacheFile.TagInteropTable.Where(p => p.Pointer == cont).FirstOrDefault();
 			if (a == null) return;
 			int type = a.Type;
 

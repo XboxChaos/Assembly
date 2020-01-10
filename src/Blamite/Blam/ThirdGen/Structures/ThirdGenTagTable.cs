@@ -38,15 +38,15 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly IPointerExpander _expander;
 
 		private List<ITag> _tags;
-		private List<IPolyart> _polyart;
-		private Dictionary<int, ITag> _importantTags;
+		private List<ITagInterop> _interops;
+		private Dictionary<int, ITag> _globalTags;
 
 		public ThirdGenTagTable()
 		{
 			_tags = new List<ITag>();
-			_polyart = new List<IPolyart>();
+			_interops = new List<ITagInterop>();
 			Classes = new List<ITagClass>();
-			_importantTags = new Dictionary<int, ITag>();
+			_globalTags = new Dictionary<int, ITag>();
 		}
 
 		public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea,
@@ -69,15 +69,15 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// </value>
 		public IList<ITagClass> Classes { get; private set; }
 
-		public IList<IPolyart> Polyart
+		public IList<ITagInterop> Interops
 		{
-			get { return _polyart; }
+			get { return _interops; }
 		}
 
-		public ITag GetImportantTag(int magic)
+		public ITag GetGlobalTag(int magic)
 		{
-			if (_importantTags.ContainsKey(magic))
-				return _importantTags[magic];
+			if (_globalTags.ContainsKey(magic))
+				return _globalTags[magic];
 			else
 				return null;
 		}
@@ -149,18 +149,18 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			SaveTags(headerValues, stream);
 
-			if (Polyart != null && Polyart.Count > 0)
+			if (Interops != null && Interops.Count > 0)
 			{
-				var oldCount = (int)headerValues.GetInteger("number of polyart fixups");
-				long oldAddress = (long)headerValues.GetInteger("polyart fixup table address");
-				StructureLayout layout = _buildInfo.Layouts.GetLayout("polyart table entry");
-				IEnumerable<StructureValueCollection> entries = _polyart.Select(t => ((ThirdGenPolyart)t).Serialize());
+				var oldCount = (int)headerValues.GetInteger("number of tag interops");
+				long oldAddress = (long)headerValues.GetInteger("tag interop table address");
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop table entry");
+				IEnumerable<StructureValueCollection> entries = _interops.Select(t => ((ThirdGenTagInterop)t).Serialize());
 				// hax
-				long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _polyart.Count, layout, _metaArea,
+				long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _interops.Count, layout, _metaArea,
 					_allocator, stream);
 
-				headerValues.SetInteger("number of polyart fixups", (uint)_polyart.Count);
-				headerValues.SetInteger("polyart fixup table address", (ulong)newAddress);
+				headerValues.SetInteger("number of tag interops", (uint)_interops.Count);
+				headerValues.SetInteger("tag interop table address", (ulong)newAddress);
 			}
 
 			SaveHeader(headerValues, stream);
@@ -188,8 +188,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			Classes = LoadClasses(reader, headerValues).AsReadOnly();
 			_tags = LoadTags(reader, headerValues, Classes);
-			_importantTags = LoadImportant(reader, headerValues, _tags);
-			_polyart = LoadPolyart(reader, headerValues);
+			_globalTags = LoadGlobalTags(reader, headerValues, _tags);
+			_interops = LoadTagInterops(reader, headerValues);
 		}
 
 		private StructureValueCollection LoadHeader(IReader reader)
@@ -225,16 +225,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
 		}
 
-		private List<IPolyart> LoadPolyart(IReader reader, StructureValueCollection headerValues)
+		private List<ITagInterop> LoadTagInterops(IReader reader, StructureValueCollection headerValues)
 		{
-			if (!headerValues.HasInteger("number of polyart fixups"))
+			if (!headerValues.HasInteger("number of tag interops"))
 				return null;
 
-			var count = (int)headerValues.GetInteger("number of polyart fixups");
-			long address = (long)headerValues.GetInteger("polyart fixup table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("polyart table entry");
+			var count = (int)headerValues.GetInteger("number of tag interops");
+			long address = (long)headerValues.GetInteger("tag interop table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select<StructureValueCollection, IPolyart>(e => new ThirdGenPolyart(e, _metaArea)).ToList();
+			return entries.Select<StructureValueCollection, ITagInterop>(e => new ThirdGenTagInterop(e, _metaArea)).ToList();
 		}
 
 		private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagClass> classes)
@@ -248,12 +248,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 					.ToList();
 		}
 
-		private Dictionary<int, ITag> LoadImportant(IReader reader, StructureValueCollection headerValues, List<ITag> tags)
+		private Dictionary<int, ITag> LoadGlobalTags(IReader reader, StructureValueCollection headerValues, List<ITag> tags)
 		{
-			var count = (int)headerValues.GetInteger("number of important tags");
-			long address = (long)headerValues.GetInteger("important tag table address");
+			var count = (int)headerValues.GetInteger("number of global tags");
+			long address = (long)headerValues.GetInteger("global tag table address");
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("important tag entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("global tag entry");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
 
 			Dictionary<int, ITag> output = new Dictionary<int, ITag>();

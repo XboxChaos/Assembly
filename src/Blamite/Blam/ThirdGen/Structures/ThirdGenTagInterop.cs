@@ -4,17 +4,17 @@ using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
-	public class ThirdGenPolyart : IPolyart
+	public class ThirdGenTagInterop : ITagInterop
 	{
 
-		public ThirdGenPolyart(uint pointer, int type)
+		public ThirdGenTagInterop(uint pointer, int type)
 		{
 			Pointer = pointer;
 			Type = type;
 			
 		}
 
-		public ThirdGenPolyart(StructureValueCollection values, FileSegmentGroup metaArea)
+		public ThirdGenTagInterop(StructureValueCollection values, FileSegmentGroup metaArea)
 		{
 			Load(values, metaArea);
 		}

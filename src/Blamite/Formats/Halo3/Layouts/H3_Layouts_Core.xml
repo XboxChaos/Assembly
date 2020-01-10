@@ -44,8 +44,10 @@
 		<uint32 name="class table address" offset="0x4" />
 		<int32 name="number of tags" offset="0x8" />
 		<uint32 name="tag table address" offset="0xC" />
-		<int32 name="number of important tags" offset="0x10" />
-		<uint32 name="important tag table address" offset="0x14" />
+		<int32 name="number of global tags" offset="0x10" />
+		<uint32 name="global tag table address" offset="0x14" />
+		<int32 name="number of tag interops" offset="0x18" />
+		<uint32 name="tag interop table address" offset="0x1C" />
 		<int32 name="magic" offset="0x24" />
 	</layout>
 
@@ -64,12 +66,19 @@
 		<uint32 name="memory address" offset="0x4" />
 	</layout>
 
-	<!-- Important tag table entry -->
-	<layout for="important tag entry" size="0x8">
+	<!-- Global tag table entry -->
+	<layout for="global tag entry" size="0x8">
 		<int32 name="class magic" offset="0x0" />
 		<uint32 name="datum index" offset="0x4" />
 	</layout>
 
+	<!-- tag interop table entry -->
+	<layout for="tag interop entry" size="0x8">
+		<uint32 name="pointer" offset ="0x0" />
+		<int32 name="type" offset="0x4" />
+	</layout>
+
+	<!-- Map globals meta -->
 	<layout for="matg">
 		<array name="languages" offset="0x1C4" entrySize="0x44" count="12">
 			<uint32 name="string count" offset="0x0" />

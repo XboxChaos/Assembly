@@ -201,7 +201,7 @@ namespace Blamite.Blam.SecondGen
 			get { return null; }
 		}
 
-		public IList<IPolyart> PolyartTable
+		public IList<ITagInterop> TagInteropTable
 		{
 			get { return null; }
 		}

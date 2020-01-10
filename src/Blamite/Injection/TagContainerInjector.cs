@@ -538,7 +538,7 @@ namespace Blamite.Injection
 
 				uint contp = _cacheFile.PointerExpander.Contract(location.AsPointer() + fixup.WriteOffset);
 
-				_cacheFile.PolyartTable.Add(new Blam.ThirdGen.Structures.ThirdGenPolyart(contp, fixup.Type));
+				_cacheFile.TagInteropTable.Add(new Blam.ThirdGen.Structures.ThirdGenTagInterop(contp, fixup.Type));
 			}
 		}
 

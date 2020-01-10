@@ -1,9 +1,9 @@
 ﻿using Blamite.IO;
 
 /// <summary>
-/// A simulation definition table in a cache file.
+/// A tag interop inside a cache file.
 /// </summary>
-public interface IPolyart
+public interface ITagInterop
 {
 	uint Pointer { get; set; }
 
