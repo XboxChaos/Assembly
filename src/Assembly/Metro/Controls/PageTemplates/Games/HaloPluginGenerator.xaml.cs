@@ -364,7 +364,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
 		{
-			reader = new EndianReader(File.OpenRead(path), Endian.LittleEndian);//yuck
+			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
+			reader.SeekTo(0);
+			byte[] headerMagic = reader.ReadBlock(4);
+			reader.Endianness = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
 			var versionInfo = new CacheFileVersionInfo(reader);
 			EngineDescription buildInfo =
 				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);
