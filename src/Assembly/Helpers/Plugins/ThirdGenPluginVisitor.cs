@@ -168,7 +168,7 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine));
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine)
 		{
 			if (!visible && !_showInvisibles) return;
 
@@ -176,7 +176,7 @@ namespace Assembly.Helpers.Plugins
 				? Visibility.Visible
 				: Visibility.Hidden;
 
-			AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withClass, pluginLine));
+			AddValue(new TagRefData(name, offset, 0, _tags, jumpTo, withGroup, pluginLine));
 		}
 
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)

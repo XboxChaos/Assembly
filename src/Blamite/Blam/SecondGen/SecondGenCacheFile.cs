@@ -119,9 +119,9 @@ namespace Blamite.Blam.SecondGen
 			get { return _stringIDs; }
 		}
 
-		public IList<ITagClass> TagClasses
+		public IList<ITagGroup> TagGroups
 		{
-			get { return _tags.Classes; }
+			get { return _tags.Groups; }
 		}
 
 		public TagTable Tags

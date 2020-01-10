@@ -14,15 +14,15 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		public int SelectedTagIndex { get; private set; }
 		public TagEntry SelectedTag { get; private set; }
 		private Collection<TagEntry> AvailableTags { get; set; }
-		private TagClass TagClass { get; set; }
+		private TagGroup TagGroup { get; set; }
 
-		public TagValueSearcher(TagClass tagClass)
+		public TagValueSearcher(TagGroup tagGroup)
 		{
 			InitializeComponent();
-			TagClass = tagClass;
+			TagGroup = tagGroup;
 
-			string tagClassName = tagClass.TagClassMagic;
-			Title = $"[{tagClassName}] Tag Search";
+			string tagGroupName = tagGroup.TagGroupMagic;
+			Title = $"[{tagGroupName}] Tag Search";
 			lblTitle.Text = Title;
 
 			UpdateSearchResults();
@@ -43,7 +43,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void UpdateSearchResults()
 		{
 			listTagSearchResults.Items.Clear();
-			foreach (TagEntry tag in TagClass.Children)
+			foreach (TagEntry tag in TagGroup.Children)
 				if (tag != null)
 				{
 					if (textSearch.Text.StartsWith("0x"))
@@ -73,7 +73,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void UpdateSelectedTag()
 		{
 			SelectedTag = (TagEntry)listTagSearchResults.SelectedItem;
-			SelectedTagIndex = TagClass.Children.IndexOf(SelectedTag);
+			SelectedTagIndex = TagGroup.Children.IndexOf(SelectedTag);
 		}
 
 		private void ExitSuccessfully()

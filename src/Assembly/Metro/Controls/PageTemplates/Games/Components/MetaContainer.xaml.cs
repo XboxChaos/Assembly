@@ -74,7 +74,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			#region Models
 
-			//if (_cache.ResourceMetaLoader.SupportsRenderModels && _tag.RawTag.Class.Magic == CharConstant.FromString("mode"))
+			//if (_cache.ResourceMetaLoader.SupportsRenderModels && _tag.RawTag.Group.Magic == CharConstant.FromString("mode"))
 			//{
 			//	tabSound.Visibility = Visibility.Visible;
 			//	tabSound.Content = new SoundEditor(_tag, _cache, _streamManager);
@@ -90,7 +90,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			#region Sound
 
-			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Class.Magic == CharConstant.FromString("snd!"))
+			if (_cache.ResourceMetaLoader.SupportsSounds && _tag.RawTag.Group.Magic == CharConstant.FromString("snd!"))
 			{
 				tabSoundEditor.Visibility = Visibility.Visible;
 				tabSoundEditor.Content = new SoundEditor(_buildInfo, _cacheLocation, _tag, _cache, _streamManager);

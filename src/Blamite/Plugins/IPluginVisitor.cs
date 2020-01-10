@@ -9,7 +9,7 @@ namespace Blamite.Plugins
 		/// <summary>
 		///     Called when a plugin is started to be read.
 		/// </summary>
-		/// <param name="baseSize">The size of the class's base metadata, or 0 if not known.</param>
+		/// <param name="baseSize">The size of the group's base metadata, or 0 if not known.</param>
 		/// <returns>False if the contents of the plugin should not be read.</returns>
 		bool EnterPlugin(int baseSize);
 
@@ -66,7 +66,7 @@ namespace Blamite.Plugins
 		void VisitPlane3(string name, uint offset, bool visible, uint pluginLine);
 		void VisitRect16(string name, uint offset, bool visible, uint pluginLine);
 		void VisitStringID(string name, uint offset, bool visible, uint pluginLine);
-		void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine);
+		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine);
 		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine);
 
 		void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine);

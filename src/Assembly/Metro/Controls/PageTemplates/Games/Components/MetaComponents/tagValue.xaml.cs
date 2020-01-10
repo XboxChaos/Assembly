@@ -32,7 +32,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			if (cbTagEntry.SelectedIndex < 0)
 				cbTagEntry.SelectedIndex = 0;
 
-			if (cbTagClass.SelectedIndex > 0)
+			if (cbTagGroup.SelectedIndex > 0)
 			{
 				btnSearch.IsEnabled = true;
 				cbTagEntry.IsEnabled = true;
@@ -61,14 +61,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		private void btnNullTag_Click(object sender, RoutedEventArgs e)
 		{
-			cbTagClass.SelectedIndex = 0;
+			cbTagGroup.SelectedIndex = 0;
 		}
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            TagRefData currentTag = ((TagRefData)cbTagClass.DataContext);
+            TagRefData currentTag = ((TagRefData)cbTagGroup.DataContext);
 
-            TagValueSearcher searchDialog = new TagValueSearcher(currentTag.Class);
+            TagValueSearcher searchDialog = new TagValueSearcher(currentTag.Group);
             searchDialog.ShowDialog();
 
             if (searchDialog.DialogResult.HasValue && searchDialog.DialogResult.Value)
@@ -78,16 +78,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
         }
     }
 
-    /// <summary>
-    ///     Converts a TagClass to an index in the class list.
-    /// </summary>
-    [ValueConversion(typeof (TagClass), typeof (int))]
-	internal class TagClassConverter : DependencyObject, IValueConverter
+	/// <summary>
+	///     Converts a TagGroup to an index in the group list.
+	/// </summary>
+	[ValueConversion(typeof (TagGroup), typeof (int))]
+	internal class TagGroupConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty TagsSourceProperty = DependencyProperty.Register(
 			"TagsSource",
 			typeof (TagHierarchy),
-			typeof (TagClassConverter)
+			typeof (TagGroupConverter)
 			);
 
 		public TagHierarchy TagsSource
@@ -98,34 +98,34 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var sourceClass = (TagClass) value;
-			int index = TagsSource.Classes.IndexOf(sourceClass);
+			var sourceGroup = (TagGroup) value;
+			int index = TagsSource.Groups.IndexOf(sourceGroup);
 			return index + 1;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			int adjustedIndex = (int) value - 1;
-			if (adjustedIndex >= 0 && adjustedIndex < TagsSource.Classes.Count)
-				return TagsSource.Classes[adjustedIndex];
+			if (adjustedIndex >= 0 && adjustedIndex < TagsSource.Groups.Count)
+				return TagsSource.Groups[adjustedIndex];
 			return null;
 		}
 	}
 
-	[ValueConversion(typeof (TagClass), typeof (List<TagEntry>))]
+	[ValueConversion(typeof (TagGroup), typeof (List<TagEntry>))]
 	internal class TagEntryListRetriever : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var sourceClass = value as TagClass;
-			if (sourceClass == null)
+			var sourceGroup = value as TagGroup;
+			if (sourceGroup == null)
 				return null;
 
 			var tagList = new CompositeCollection();
-			tagList.Add(sourceClass.NullTag);
+			tagList.Add(sourceGroup.NullTag);
 
 			var mainTagListContainer = new CollectionContainer();
-			mainTagListContainer.Collection = sourceClass.Children;
+			mainTagListContainer.Collection = sourceGroup.Children;
 
 			tagList.Add(mainTagListContainer);
 

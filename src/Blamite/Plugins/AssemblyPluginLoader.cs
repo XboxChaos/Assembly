@@ -322,14 +322,14 @@ namespace Blamite.Plugins
 			uint pluginLine)
 		{
 			bool showJumpTo = true;
-			bool withClass = true;
+			bool withGroup = true;
 
 			if (reader.MoveToAttribute("showJumpTo"))
 				showJumpTo = ParseBool(reader.Value);
-			if (reader.MoveToAttribute("withClass"))
-				withClass = ParseBool(reader.Value);
+			if (reader.MoveToAttribute("withClass") || reader.MoveToAttribute("withGroup"))
+				withGroup = ParseBool(reader.Value);
 
-			visitor.VisitTagReference(name, offset, visible, withClass, showJumpTo, pluginLine);
+			visitor.VisitTagReference(name, offset, visible, withGroup, showJumpTo, pluginLine);
 		}
 
 		private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,

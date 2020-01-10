@@ -26,7 +26,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			_buildInfo = buildInfo;
 			_expander = expander;
 
-			_zone = _tag.Class.Magic != 1886151033;//"play"
+			_zone = _tag.Group.Magic != 1886151033;//"play"
 		}
 
 		public IEnumerable<ResourcePage> LoadPages(IReader reader)

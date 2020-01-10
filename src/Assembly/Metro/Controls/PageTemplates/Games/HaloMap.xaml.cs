@@ -353,7 +353,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void LoadTags()
 		{
-			if (_cacheFile.TagClasses.Count == 0)
+			if (_cacheFile.TagGroups.Count == 0)
 			{
 				// Cache file does not support tags
 				Dispatcher.Invoke(new Action(() => tabTags.Visibility = Visibility.Collapsed));
@@ -378,29 +378,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			UpdateTagFilter();
 		}
 
-		private TagHierarchy BuildTagHierarchy(Func<TagClass, bool> classFilter, Func<TagEntry, bool> tagFilter)
+		private TagHierarchy BuildTagHierarchy(Func<TagGroup, bool> groupFilter, Func<TagEntry, bool> tagFilter)
 		{
-			// Build a dictionary of tag classes
-			var classWrappers = new Dictionary<ITagClass, TagClass>();
-			foreach (ITagClass tagClass in _cacheFile.TagClasses)
+			// Build a dictionary of tag groups
+			var groupWrappers = new Dictionary<ITagGroup, TagGroup>();
+			foreach (ITagGroup tagGroup in _cacheFile.TagGroups)
 			{
-				string name = CharConstant.ToString(tagClass.Magic);
+				string name = CharConstant.ToString(tagGroup.Magic);
 				string description;
-				if (tagClass.Description.Value == 0)
+				if (tagGroup.Description.Value == 0)
 				{
-					if (_buildInfo.ClassNames != null)
-						description = _buildInfo.ClassNames.RetrieveName(name);
+					if (_buildInfo.GroupNames != null)
+						description = _buildInfo.GroupNames.RetrieveName(name);
 					else
 						description = "unknown";
 				}
 				else
-					description = _cacheFile.StringIDs.GetString(tagClass.Description) ?? "unknown";
+					description = _cacheFile.StringIDs.GetString(tagGroup.Description) ?? "unknown";
 
-				var wrapper = new TagClass(tagClass, name, description);
-				classWrappers[tagClass] = wrapper;
+				var wrapper = new TagGroup(tagGroup, name, description);
+				groupWrappers[tagGroup] = wrapper;
 			}
 
-			// Now add tags which match the filter to their respective classes
+			// Now add tags which match the filter to their respective groups
 			var result = new TagHierarchy
 			{
 				Entries = _tagEntries
@@ -408,22 +408,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			foreach (TagEntry tag in _tagEntries.Where(t => t != null))
 			{
-				TagClass parentClass = classWrappers[tag.RawTag.Class];
+				TagGroup parentGroup = groupWrappers[tag.RawTag.Group];
 				if (tagFilter(tag))
-					parentClass.Children.Add(tag);
+					parentGroup.Children.Add(tag);
 			}
 
-			// Build a sorted list of classes, and then sort each tag in them
-			List<TagClass> classList = classWrappers.Values.Where(classFilter).ToList();
-			classList.Sort((a, b) => String.Compare(a.TagClassMagic, b.TagClassMagic, StringComparison.OrdinalIgnoreCase));
-			foreach (TagClass tagClass in classList)
-				tagClass.Children.Sort((a, b) => String.Compare(a.TagFileName, b.TagFileName, StringComparison.OrdinalIgnoreCase));
+			// Build a sorted list of groups, and then sort each tag in them
+			List<TagGroup> groupList = groupWrappers.Values.Where(groupFilter).ToList();
+			groupList.Sort((a, b) => String.Compare(a.TagGroupMagic, b.TagGroupMagic, StringComparison.OrdinalIgnoreCase));
+			foreach (TagGroup tagGroup in groupList)
+				tagGroup.Children.Sort((a, b) => String.Compare(a.TagFileName, b.TagFileName, StringComparison.OrdinalIgnoreCase));
 
 			// Done!
 			Dispatcher.Invoke(new Action(delegate
 			{
 				// Give the dispatcher ownership of the ObservableCollection
-				result.Classes = new ObservableCollection<TagClass>(classList);
+				result.Groups = new ObservableCollection<TagGroup>(groupList);
 			}));
 
 			return result;
@@ -558,7 +558,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void tvTagList_SelectedTagChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
 		{
-			// Check it's actually a tag, and not a class the user clicked
+			// Check it's actually a tag, and not a group the user clicked
 			var selectedItem = ((TreeView) sender).SelectedItem as TagEntry;
 			if (selectedItem != null)
 				CreateTag(selectedItem);
@@ -633,15 +633,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void DumpClassTagList(object sender, RoutedEventArgs e)
+		private void DumpGroupTagList(object sender, RoutedEventArgs e)
 		{
-			// Get the menu item and the tag class
+			// Get the menu item and the tag group
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
 
-			var tagClass = item.DataContext as TagClass;
-			if (tagClass == null)
+			var tagGroup = item.DataContext as TagGroup;
+			if (tagGroup == null)
 				return;
 
 			// Ask the user where to save the dump
@@ -654,12 +654,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (!result.Value)
 				return;
 
-			// Dump all of the tags that belong to the class
+			// Dump all of the tags that belong to the group
 			using (var writer = new StreamWriter(sfd.FileName))
 			{
 				foreach (ITag tag in _cacheFile.Tags)
 				{
-					if (tag == null || tag.Class != tagClass.RawClass) continue;
+					if (tag == null || tag.Group != tagGroup.RawGroup) continue;
 
 					string name = _cacheFile.FileNames.GetTagName(tag);
 					if (name != null)
@@ -782,14 +782,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						continue;
 
 					// Get the plugin path
-					var className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(currentTag.Class.Magic)).Trim();
+					var groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(currentTag.Group.Magic)).Trim();
 					var pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-						_buildInfo.Settings.GetSetting<string>("plugins"), className);
+						_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
 					string fallbackPluginPath = null;
 					if (_buildInfo.Settings.PathExists("fallbackPlugins"))
 						fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+							_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 					string realpluginpath = pluginPath;
 
@@ -827,7 +827,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 					uint cont = _cacheFile.PointerExpander.Contract(currentTag.MetaLocation.AsPointer());
 
-					var extractedTag = new ExtractedTag(currentTag.Index, cont, currentTag.Class.Magic,
+					var extractedTag = new ExtractedTag(currentTag.Index, cont, currentTag.Group.Magic,
 						tagName);
 					container.AddTag(extractedTag);
 
@@ -939,12 +939,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 									if (res.ParentTag != null)
 									{
 										expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
-										expa.OriginalResourceClass = res.ParentTag.Class.Magic;
+										expa.OriginalResourceGroup = res.ParentTag.Group.Magic;
 									}
 									else
 									{
 										expa.OriginalResourceName = "null";
-										expa.OriginalResourceClass = -1;
+										expa.OriginalResourceGroup = -1;
 									}
 
 									expc.BEntry.AEntries.Add(expa);
@@ -961,12 +961,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								if (res.ParentTag != null)
 								{
 									expa.OriginalResourceName = _cacheFile.FileNames.GetTagName(res.ParentTag);
-									expa.OriginalResourceClass = res.ParentTag.Class.Magic;
+									expa.OriginalResourceGroup = res.ParentTag.Group.Magic;
 								}
 								else
 								{
 									expa.OriginalResourceName = "null";
-									expa.OriginalResourceClass = -1;
+									expa.OriginalResourceGroup = -1;
 								}
 
 								expred.AEntries.Add(expa);
@@ -1059,7 +1059,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			if (tag == null)
 				return;
 
-			Dialogs.ControlDialogs.DupeSettings dupe = new Dialogs.ControlDialogs.DupeSettings(_cacheFile, tag.RawTag.Class, tag.TagFileName);
+			Dialogs.ControlDialogs.DupeSettings dupe = new Dialogs.ControlDialogs.DupeSettings(_cacheFile, tag.RawTag.Group, tag.TagFileName);
 
 			dupe.ShowDialog();
 
@@ -1086,11 +1086,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				if (App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates)
 				{
-					ITag result = _cacheFile.Tags.FindTagByName(dupe.NewName, tag.RawTag.Class, _cacheFile.FileNames);
+					ITag result = _cacheFile.Tags.FindTagByName(dupe.NewName, tag.RawTag.Group, _cacheFile.FileNames);
 
-					foreach (TagClass c in tvTagList.Items)
+					foreach (TagGroup c in tvTagList.Items)
 					{
-						if (c.RawClass == result.Class)
+						if (c.RawGroup == result.Group)
 						{
 							foreach (TagEntry t in c.Children)
 							{
@@ -1176,7 +1176,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 		}
 
-		private void ClassContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
 
@@ -1188,7 +1188,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					if (tagItem is MenuItem)
 					{
 						MenuItem tagMenuItem = tagItem as MenuItem;
-						if (tagMenuItem.Name == "itemClassBatch")
+						if (tagMenuItem.Name == "itemGroupBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
 				}
@@ -1260,7 +1260,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private void contextBookmark_Click(object sender, RoutedEventArgs e)
 		{
-			// Get the menu item and the tag class
+			// Get the menu item and the tag group
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
@@ -1305,7 +1305,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			{
 				bookmarkStorage.BookmarkedTagNames = bookmarkedTags.Select(t => new[]
 				{
-					CharConstant.ToString(t.RawTag.Class.Magic),
+					CharConstant.ToString(t.RawTag.Group.Magic),
 					t.TagFileName.ToLowerInvariant()
 				}).ToList();
 			}
@@ -1344,9 +1344,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var bookmarkStorage = JsonConvert.DeserializeObject<BookmarkStorageFormat>(File.ReadAllText(ofd.FileName));
 			foreach (TagEntry tag in _tagEntries.Where(t => t != null))
 			{
-				string className = CharConstant.ToString(tag.RawTag.Class.Magic);
+				string groupName = CharConstant.ToString(tag.RawTag.Group.Magic);
 				tag.IsBookmark = bookmarkStorage.StorageUsingTagNames
-					? bookmarkStorage.BookmarkedTagNames.Any(pair => pair[0] == className && pair[1] == tag.TagFileName)
+					? bookmarkStorage.BookmarkedTagNames.Any(pair => pair[0] == groupName && pair[1] == tag.TagFileName)
 					: bookmarkStorage.BookmarkedDatumIndices.Contains(tag.RawTag.Index.Value);
 			}
 
@@ -1598,12 +1598,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				Content =
 							string.Format("{0}.{1}",
 								tag.TagFileName.Substring(tag.TagFileName.LastIndexOf('\\') + 1),
-								tag.ClassName),
+								tag.GroupName),
 				ContextMenu = BaseContextMenu,
 				ToolTip =
 							string.Format("{0}.{1}",
 								tag.TagFileName,
-								tag.ClassName),
+								tag.GroupName),
 			};
 		}
 
@@ -1756,23 +1756,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			Dispatcher.Invoke(new Action(delegate { filter = txtTagSearch.Text.ToLower(); }));
 
 			_visibleTags = BuildTagHierarchy(
-				c => FilterClass(c, filter),
+				c => FilterGroup(c, filter),
 				t => FilterTag(t, filter));
 
-			Dispatcher.Invoke(new Action(delegate { tvTagList.DataContext = _visibleTags.Classes; }));
+			Dispatcher.Invoke(new Action(delegate { tvTagList.DataContext = _visibleTags.Groups; }));
 		}
 
 		private TagEntry WrapTag(ITag tag)
 		{
-			if (tag == null || tag.Class == null || (_cacheFile.Engine != EngineType.SecondGeneration && tag.MetaLocation == null))
+			if (tag == null || tag.Group == null || (_cacheFile.Engine != EngineType.SecondGeneration && tag.MetaLocation == null))
 				return null;
 
-			string className = CharConstant.ToString(tag.Class.Magic);
+			string groupName = CharConstant.ToString(tag.Group.Magic);
 			string name = _cacheFile.FileNames.GetTagName(tag);
 			if (string.IsNullOrWhiteSpace(name))
 				name = tag.Index.ToString();
 
-			return new TagEntry(tag, className, name);
+			return new TagEntry(tag, groupName, name);
 		}
 
 		private void txtTagSearch_TextChanged(object sender = null, TextChangedEventArgs e = null)
@@ -1792,10 +1792,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			txtTagSearch.Focus();
 		}
 
-		private bool FilterClass(TagClass tagClass, string filter)
+		private bool FilterGroup(TagGroup tagGroup, string filter)
 		{
 			bool emptyFilter = string.IsNullOrWhiteSpace(filter);
-			return tagClass.Children.Count != 0 ||
+			return tagGroup.Children.Count != 0 ||
 			       (App.AssemblyStorage.AssemblySettings.HalomapShowEmptyClasses && emptyFilter &&
 			        !App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags);
 		}
@@ -1818,7 +1818,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 
 			// Name search
-			return tag.TagFileName.ToLower().Contains(filter) || tag.ClassName.ToLower().Contains(filter);
+			return tag.TagFileName.ToLower().Contains(filter) || tag.GroupName.ToLower().Contains(filter);
 		}
 
 		#endregion
@@ -1844,19 +1844,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		}
 
-		private void itemClassBatch_Click(object sender, RoutedEventArgs e)
+		private void itemGroupBatch_Click(object sender, RoutedEventArgs e)
 		{
-			// Get the menu item and the tag class
+			// Get the menu item and the tag group
 			var item = e.Source as MenuItem;
 			if (item == null)
 				return;
 
-			var tagClass = item.DataContext as TagClass;
-			if (tagClass == null)
+			var tagGroup = item.DataContext as TagGroup;
+			if (tagGroup == null)
 				return;
 
 			// Add everything
-			foreach (TagEntry entry in tagClass.Children)
+			foreach (TagEntry entry in tagGroup.Children)
 			{
 				// Is it already in the list?
 				if (batchTagList.Items.Contains(entry))

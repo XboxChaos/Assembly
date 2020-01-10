@@ -2,9 +2,9 @@
 
 namespace Blamite.Blam.SecondGen.Structures
 {
-	public class SecondGenTagClass : ITagClass
+	public class SecondGenTagGroup : ITagGroup
 	{
-		public SecondGenTagClass(StructureValueCollection values)
+		public SecondGenTagGroup(StructureValueCollection values)
 		{
 			Load(values);
 		}

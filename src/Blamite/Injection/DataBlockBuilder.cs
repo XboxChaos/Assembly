@@ -153,7 +153,7 @@ namespace Blamite.Injection
 			}
 			if (lowerName.Contains("compiled scenario index"))
 			{
-				switch (Util.CharConstant.ToString(_tag.Class.Magic))
+				switch (Util.CharConstant.ToString(_tag.Group.Magic))
 				{
 					case "effe":
 						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Effect));
@@ -235,9 +235,9 @@ namespace Blamite.Injection
 			ReadReferences(offset, ReadStringId);
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine)
 		{
-			ReadReferences(offset, (b, o) => ReadTagReference(b, o, withClass));
+			ReadReferences(offset, (b, o) => ReadTagReference(b, o, withGroup));
 		}
 
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
@@ -422,25 +422,25 @@ namespace Blamite.Injection
 			return block;
 		}
 
-		private void ReadTagReference(DataBlock block, uint offset, bool withClass)
+		private void ReadTagReference(DataBlock block, uint offset, bool withGroup)
 		{
 			SeekToOffset(block, offset);
 
 			DatumIndex index;
 			int fixupOffset;
 			bool valid;
-			if (withClass)
+			if (withGroup)
 			{
-				// Class info - do a flexible structure read to get the index
+				// Group info - do a flexible structure read to get the index
 				var values = StructureReader.ReadStructure(_reader, _tagRefLayout);
-				var classMagic = (int) values.GetInteger("class magic");
+				var groupMagic = (int) values.GetInteger("tag group magic");
 				index = new DatumIndex(values.GetInteger("datum index"));
 				fixupOffset = (int) offset + _tagRefLayout.GetFieldOffset("datum index");
 				valid = _cacheFile.Tags.IsValidIndex(index);
 			}
 			else
 			{
-				// No tag class - the datum index is at the offset
+				// No tag group - the datum index is at the offset
 				index = new DatumIndex(_reader.ReadUInt32());
 				fixupOffset = (int) offset;
 				valid = _cacheFile.Tags.IsValidIndex(index);
@@ -524,7 +524,7 @@ namespace Blamite.Injection
 						block.Data[offset + i] = 0xFF;
 
 					//Grab the shader from gpix
-					_reader.SeekTo(_cacheFile.Tags.FindTagByClass("gpix").MetaLocation.AsOffset() + 0x14);
+					_reader.SeekTo(_cacheFile.Tags.FindTagByGroup("gpix").MetaLocation.AsOffset() + 0x14);
 					var gpixBase = _reader.ReadUInt32() - _cacheFile.MetaArea.PointerMask;
 					_reader.SeekTo(gpixBase + (0x58 * index) + 0x54);
 

@@ -88,13 +88,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_stringIdTrie = stringIDTrie;
 
 			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), className);
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
 			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
 				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
@@ -108,7 +108,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Load Info
 			lblTagName.Text = tag.TagFileName != null
-				? tag.TagFileName + "." + tag.ClassName
+				? tag.TagFileName + "." + tag.GroupName
 				: "0x" + tag.RawTag.Index.Value.ToString("X");
 
 			lblDatum.Text = string.Format("{0}", tag.RawTag.Index);
@@ -203,7 +203,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void RevisionViewer()
 		{
 			if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
-				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Class.Magic));
+				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Group.Magic));
 			else
 				MetroMessageBox.Show("Press RB to...wait...how'd you do that?",
 					"How did you load the plugin revision viewer before you loaded a plugin? wat.");
@@ -323,13 +323,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_tag = tag;
 
 			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(_tag.RawTag.Group.Magic)).Trim();
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), className);
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
 
 			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
 				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className);
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
@@ -868,7 +868,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					StreamUtil.Fill(stream, 0, (int)(newSize - oldSize));
 
 					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
-					var classOffset = tagRefLayout.GetFieldOffset("class magic");
+					var groupOffset = tagRefLayout.GetFieldOffset("tag group magic");
 					var datumOffset = tagRefLayout.GetFieldOffset("datum index");
 
 					//go through each new page and write null for any tagrefs
@@ -880,16 +880,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 							if (mf.GetType() != typeof(TagRefData))
 								continue;
 							var tagref = (TagRefData)mf;
-							if (tagref.WithClass)
+							if (tagref.WithGroup)
 							{
-								stream.SeekTo(entryStart + tagref.Offset + classOffset);
+								stream.SeekTo(entryStart + tagref.Offset + groupOffset);
 								stream.WriteInt32(-1);
 								stream.SeekTo(entryStart + tagref.Offset + datumOffset);
 								stream.WriteInt32(-1);
 							}
 							else
 							{
-								//no class, write to field offset without adding anything
+								//no group, write to field offset without adding anything
 								stream.SeekTo(entryStart + tagref.Offset);
 								stream.WriteInt32(-1);
 							}

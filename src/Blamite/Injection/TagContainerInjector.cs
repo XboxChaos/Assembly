@@ -16,9 +16,9 @@ namespace Blamite.Injection
 		private bool _injectRaw;
 		private bool _findExistingPages;
 		private bool _renameShaders;
-		private static int SoundClass = CharConstant.FromString("snd!");
+		private static int SoundGroup = CharConstant.FromString("snd!");
 
-		private static int PCAClass = CharConstant.FromString("pcaa");
+		private static int PCAGroup = CharConstant.FromString("pcaa");
 
 		private readonly ICacheFile _cacheFile;
 		private readonly TagContainer _container;
@@ -37,9 +37,9 @@ namespace Blamite.Injection
 		private ResourceTable _resources;
 		private IZoneSetTable _zoneSets;
 		
-		private static HashSet<string> _simulationClasses = new HashSet<string>(new string[] { "jpt!", "effe", "argd", "bipd", "bloc", "crea", "ctrl", "efsc", "eqip", "gint", "mach", "proj", "scen", "ssce", "term", "vehi", "weap" });
+		private static HashSet<string> _simulationGroups = new HashSet<string>(new string[] { "jpt!", "effe", "argd", "bipd", "bloc", "crea", "ctrl", "efsc", "eqip", "gint", "mach", "proj", "scen", "ssce", "term", "vehi", "weap" });
 
-		private static HashSet<string> _shaderClasses = new HashSet<string>(new string[] { "mtsb", "mats", "pixl", "vtsh", "rmt2" });
+		private static HashSet<string> _shaderGroups = new HashSet<string>(new string[] { "mtsb", "mats", "pixl", "vtsh", "rmt2" });
 
 
 		public TagContainerInjector(ICacheFile cacheFile, TagContainer container)
@@ -123,11 +123,11 @@ namespace Blamite.Injection
 				return newIndex;
 
 			// Make sure there isn't already a tag with the given name
-			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Class, _cacheFile.FileNames);
+			ITag existingTag = _cacheFile.Tags.FindTagByName(tag.Name, tag.Group, _cacheFile.FileNames);
 			if (existingTag != null)
 			{
 				//check if we are doing shader tweaks
-				if (_renameShaders && _shaderClasses.Contains(CharConstant.ToString(tag.Class)))
+				if (_renameShaders && _shaderGroups.Contains(CharConstant.ToString(tag.Group)))
 				{
 					//append old tagid to make it unique
 					tagnameuniqifier = "_" + tag.OriginalIndex.ToString();
@@ -137,7 +137,7 @@ namespace Blamite.Injection
 						return existingTag.Index;
 
 					//make sure the appended name isn't already present
-					existingTag = _cacheFile.Tags.FindTagByName(tag.Name + tagnameuniqifier, tag.Class, _cacheFile.FileNames);
+					existingTag = _cacheFile.Tags.FindTagByName(tag.Name + tagnameuniqifier, tag.Group, _cacheFile.FileNames);
 
 					if (existingTag != null)
 						return existingTag.Index;
@@ -147,11 +147,11 @@ namespace Blamite.Injection
 					return existingTag.Index;
 			}
 				
-			if (!_keepSound && tag.Class == SoundClass)
+			if (!_keepSound && tag.Group == SoundGroup)
 				return DatumIndex.Null;
 	
 			//PCA resource type is not always present, so get rid of 'em for now
-			if (tag.Class == PCAClass)
+			if (tag.Group == PCAGroup)
 			return DatumIndex.Null;
 
 			// Look up the tag's datablock to get its size and allocate a tag for it
@@ -164,7 +164,7 @@ namespace Blamite.Injection
 					return DatumIndex.Null;
 			}
 
-			ITag newTag = _cacheFile.Tags.AddTag(tag.Class, tagData.Data.Length, stream);
+			ITag newTag = _cacheFile.Tags.AddTag(tag.Group, tagData.Data.Length, stream);
 			_tagIndices[tag] = newTag.Index;
 			_cacheFile.FileNames.SetTagName(newTag, tag.Name + tagnameuniqifier);
 
@@ -176,8 +176,8 @@ namespace Blamite.Injection
 			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
 				_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
 
-			// If its class matches one of the valid simulation class names, add it to the simulation definition table
-			if (_cacheFile.SimulationDefinitions != null && _simulationClasses.Contains(CharConstant.ToString(newTag.Class.Magic)))
+			// If its group matches one of the valid simulation group names, add it to the simulation definition table
+			if (_cacheFile.SimulationDefinitions != null && _simulationGroups.Contains(CharConstant.ToString(newTag.Group.Magic)))
 				_cacheFile.SimulationDefinitions.Add(newTag);
 
 			return newTag.Index;
@@ -638,7 +638,7 @@ namespace Blamite.Injection
 				subcount = 3;
 
 			//ignore it if the resource was null
-			if (expa.OriginalResourceClass == -1)
+			if (expa.OriginalResourceGroup == -1)
 				return null;
 
 			DatumIndex foundresource = DatumIndex.Null;
@@ -651,7 +651,7 @@ namespace Blamite.Injection
 			}
 			else
 			{
-				var foundtag = _cacheFile.Tags.FindTagByName(expa.OriginalResourceName, expa.OriginalResourceClass, _cacheFile.FileNames);
+				var foundtag = _cacheFile.Tags.FindTagByName(expa.OriginalResourceName, expa.OriginalResourceGroup, _cacheFile.FileNames);
 
 				if (foundtag != null)
 				{

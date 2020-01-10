@@ -181,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 				GenerateSubMaps(mapsToProcess, analyzer, reader, cacheFile);
 
-				var classMaps = new Dictionary<string, MetaMap>();
+				var groupMaps = new Dictionary<string, MetaMap>();
 				foreach (ITag tag in cacheFile.Tags)
 				{
 					if (tag.MetaLocation == null)
@@ -190,15 +190,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					MetaMap map = tagMaps[tag];
 					EstimateMapSize(map, tag.MetaLocation.AsPointer(), analyzer.GeneratedMemoryMap, 1);
 
-					string magicStr = CharConstant.ToString(tag.Class.Magic);
-					MetaMap oldClassMap;
-					if (classMaps.TryGetValue(magicStr, out oldClassMap))
-						oldClassMap.MergeWith(map);
+					string magicStr = CharConstant.ToString(tag.Group.Magic);
+					MetaMap oldGroupMap;
+					if (groupMaps.TryGetValue(magicStr, out oldGroupMap))
+						oldGroupMap.MergeWith(map);
 					else
-						classMaps[magicStr] = map;
+						groupMaps[magicStr] = map;
 				}
 
-				foreach (var map in classMaps)
+				foreach (var map in groupMaps)
 				{
 					MetaMap globalMap;
 					if (globalMaps.TryGetValue(map.Key, out globalMap))

@@ -246,7 +246,7 @@ namespace Blamite.Injection
 		public DatumIndex OriginalResourceIndex { get; set; }
 
 		public string OriginalResourceName { get; set; }
-		public int OriginalResourceClass { get; set; }
+		public int OriginalResourceGroup { get; set; }
 
 		public int OriginalResourceSubIndex { get; set; }
 	}

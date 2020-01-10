@@ -8,7 +8,7 @@ namespace Blamite.Plugins.Generation
 {
 	public class MetaAnalyzer
 	{
-		private readonly HashSet<int> _classIds = new HashSet<int>();
+		private readonly HashSet<int> _groupIds = new HashSet<int>();
 		private readonly MemoryMap _memMap = new MemoryMap();
 		private long _maxAddress;
 		private long _minAddress;
@@ -18,7 +18,7 @@ namespace Blamite.Plugins.Generation
 		{
 			_expander = cacheFile.PointerExpander;
 			InitializeMemoryMap(cacheFile);
-			RecognizeClassIDs(cacheFile);
+			RecognizeGroupIDs(cacheFile);
 		}
 
 		public MemoryMap GeneratedMemoryMap
@@ -31,7 +31,7 @@ namespace Blamite.Plugins.Generation
 			// Right now, this method only searches for the signatures of a few complex meta values.
 			// Tag blocks:      int32 element count + uint32 address     + 4 bytes of padding
 			// Data references: int32 size        + 8 bytes of padding + uint32 address
-			// Tag references:  int32 class id    + 8 bytes of padding + uint32 datum index
+			// Tag references:  int32 group id    + 8 bytes of padding + uint32 datum index
 			// ASCII strings:   characters with the values 0 or 0x20 - 0x7F
 
 			// End at the next-highest address
@@ -96,13 +96,13 @@ namespace Blamite.Plugins.Generation
 						}
 					}
 					if (paddingLength == 2 && offset >= 12 &&
-					    (_classIds.Contains((int) prePadding) || (prePadding == 0xFFFFFFFF && value == 0xFFFFFFFF)))
+					    (_groupIds.Contains((int) prePadding) || (prePadding == 0xFFFFFFFF && value == 0xFFFFFFFF)))
 					{
 						// Found a tag reference
-						uint classId = prePadding;
+						uint groupId = prePadding;
 						uint datumIndex = value;
-						var guess = new MetaValueGuess(offset - 12, MetaValueType.TagReference, datumIndex, classId);
-						// Guess with Pointer = datum index, Data1 = class id
+						var guess = new MetaValueGuess(offset - 12, MetaValueType.TagReference, datumIndex, groupId);
+						// Guess with Pointer = datum index, Data1 = group id
 						resultMap.AddGuess(guess);
 					}
 
@@ -146,10 +146,10 @@ namespace Blamite.Plugins.Generation
 			_memMap.AddAddress(cacheFile.IndexHeaderLocation.AsPointer(), 0);
 		}
 
-		private void RecognizeClassIDs(ICacheFile cacheFile)
+		private void RecognizeGroupIDs(ICacheFile cacheFile)
 		{
-			foreach (ITagClass tagClass in cacheFile.TagClasses)
-				_classIds.Add(tagClass.Magic);
+			foreach (ITagGroup tagGroup in cacheFile.TagGroups)
+				_groupIds.Add(tagGroup.Magic);
 		}
 
 		/// <summary>

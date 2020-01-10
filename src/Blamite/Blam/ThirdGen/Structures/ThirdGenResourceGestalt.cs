@@ -602,12 +602,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var result = new StructureValueCollection();
 			if (resource.ParentTag != null)
 			{
-				result.SetInteger("parent tag class magic", (uint) resource.ParentTag.Class.Magic);
+				result.SetInteger("parent tag group magic", (uint) resource.ParentTag.Group.Magic);
 				result.SetInteger("parent tag datum index", resource.ParentTag.Index.Value);
 			}
 			else
 			{
-				result.SetInteger("parent tag class magic", 0xFFFFFFFF);
+				result.SetInteger("parent tag group magic", 0xFFFFFFFF);
 				result.SetInteger("parent tag datum index", 0xFFFFFFFF);
 			}
 			result.SetInteger("datum index salt", resource.Index.Salt);

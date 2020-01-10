@@ -20,9 +20,9 @@ namespace Blamite.Serialization.Settings
 		}
 
 		/// <summary>
-		///     Loads all of the class names defined in an XML document.
+		///     Loads all of the group names defined in an XML document.
 		/// </summary>
-		/// <param name="layoutDocument">The XML document to load class names from.</param>
+		/// <param name="layoutDocument">The XML document to load group names from.</param>
 		/// <returns>The names that were loaded.</returns>
 		public static PokingCollection LoadPointers(XDocument namesDocument)
 		{

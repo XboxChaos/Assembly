@@ -5,17 +5,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class TagRefData : ValueField
 	{
 		private readonly TagHierarchy _allTags;
-		private readonly bool _withClass;
-		private TagClass _class;
+		private readonly bool _withGroup;
+		private TagGroup _group;
 		private Visibility _showTagOptions;
 		private TagEntry _value;
 
-		public TagRefData(string name, uint offset, long address, TagHierarchy allTags, Visibility showTagOptions, bool withClass,
+		public TagRefData(string name, uint offset, long address, TagHierarchy allTags, Visibility showTagOptions, bool withGroup,
 			uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_allTags = allTags;
-			_withClass = withClass;
+			_withGroup = withGroup;
 			_showTagOptions = showTagOptions;
 		}
 
@@ -39,19 +39,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public TagClass Class
+		public TagGroup Group
 		{
-			get { return _class; }
+			get { return _group; }
 			set
 			{
-				_class = value;
-				NotifyPropertyChanged("Class");
+				_group = value;
+				NotifyPropertyChanged("Group");
 			}
 		}
 
-		public bool WithClass
+		public bool WithGroup
 		{
-			get { return _withClass; }
+			get { return _withGroup; }
 		}
 
 		public TagHierarchy Tags
@@ -71,8 +71,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showTagOptions, _withClass, base.PluginLine);
-			result.Class = _class;
+			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showTagOptions, _withGroup, base.PluginLine);
+			result.Group = _group;
 			result.Value = _value;
 			return result;
 		}

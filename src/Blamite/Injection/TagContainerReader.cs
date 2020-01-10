@@ -188,9 +188,9 @@ namespace Blamite.Injection
 
 			var datum = new DatumIndex(reader.ReadUInt32());
 			uint address = reader.ReadUInt32();
-			int tagClass = reader.ReadInt32();
+			int tagGroup = reader.ReadInt32();
 			string name = reader.ReadAscii();
-			return new ExtractedTag(datum, address, tagClass, name);
+			return new ExtractedTag(datum, address, tagGroup, name);
 		}
 
 		private static ResourcePage ReadResourcePage(IReader reader, byte version)
@@ -388,7 +388,7 @@ namespace Blamite.Injection
 					ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
 					expa.OriginalResourceSubIndex = reader.ReadInt32();
 					expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
-					expa.OriginalResourceClass = reader.ReadInt32();
+					expa.OriginalResourceGroup = reader.ReadInt32();
 					expa.OriginalResourceName = reader.ReadAscii();
 					expc.BEntry.AEntries.Add(expa);
 				}
@@ -401,7 +401,7 @@ namespace Blamite.Injection
 				ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
 				expa.OriginalResourceSubIndex = reader.ReadInt32();
 				expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
-				expa.OriginalResourceClass = reader.ReadInt32();
+				expa.OriginalResourceGroup = reader.ReadInt32();
 				expa.OriginalResourceName = reader.ReadAscii();
 				prediction.AEntries.Add(expa);
 			}

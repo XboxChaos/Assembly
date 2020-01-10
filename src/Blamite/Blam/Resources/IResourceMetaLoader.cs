@@ -31,7 +31,7 @@ namespace Blamite.Blam.Resources
 		/// <param name="modeTag">The mode tag to load metadata from.</param>
 		/// <param name="reader">The reader to read the data with.</param>
 		/// <returns>An <see cref="IRenderModel" /> object holding the metadata in the tag. Can be null if loading failed.</returns>
-		/// <exception cref="ArgumentException">Thrown if modeTag points to null data or is not from the mode class.</exception>
+		/// <exception cref="ArgumentException">Thrown if modeTag points to null data or is not from the mode group.</exception>
 		/// <exception cref="NotSupportedException">Thrown if loading renderable model metadata is not supported.</exception>
 		IRenderModel LoadRenderModelMeta(ITag modeTag, IReader reader);
 
@@ -41,7 +41,7 @@ namespace Blamite.Blam.Resources
 		/// <param name="sbspTag">The sbsp tag to load metadata from.</param>
 		/// <param name="reader">The reader to read the data with.</param>
 		/// <returns>An <see cref="IScenarioBSP" /> object holding the metadata in the tag. Can be null if loading failed.</returns>
-		/// <exception cref="ArgumentException">Thrown if sbspTag points to null data or is not from the sbsp class.</exception>
+		/// <exception cref="ArgumentException">Thrown if sbspTag points to null data or is not from the sbsp group.</exception>
 		/// <exception cref="NotSupportedException">Thrown if loading scenario BSP metadata is not supported.</exception>
 		IScenarioBSP LoadScenarioBspMeta(ITag sbspTag, IReader reader);
 

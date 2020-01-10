@@ -24,24 +24,24 @@ namespace Blamite.Blam.ThirdGen.Structures
 {
 	public class ThirdGenTag : ITag
 	{
-		public ThirdGenTag(DatumIndex index, ITagClass tagClass, SegmentPointer metaLocation)
+		public ThirdGenTag(DatumIndex index, ITagGroup tagGroup, SegmentPointer metaLocation)
 		{
 			Index = index;
-			Class = tagClass;
+			Group = tagGroup;
 			MetaLocation = metaLocation;
 		}
 
 		public ThirdGenTag(StructureValueCollection values, ushort index, FileSegmentGroup metaArea,
-			IList<ITagClass> classList, IPointerExpander expander)
+			IList<ITagGroup> groupList, IPointerExpander expander)
 		{
-			Load(values, index, metaArea, classList, expander);
+			Load(values, index, metaArea, groupList, expander);
 		}
 
 		public DatumIndex Index { get; private set; }
-		public ITagClass Class { get; set; }
+		public ITagGroup Group { get; set; }
 		public SegmentPointer MetaLocation { get; set; }
 
-		public StructureValueCollection Serialize(IList<ITagClass> classList, IPointerExpander expander)
+		public StructureValueCollection Serialize(IList<ITagGroup> groupList, IPointerExpander expander)
 		{
 			var result = new StructureValueCollection();
 
@@ -50,12 +50,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 				cont = expander.Contract(MetaLocation.AsPointer());
 
 			result.SetInteger("memory address", cont);
-			result.SetInteger("class index", (Class != null) ? (uint) classList.IndexOf(Class) : 0xFFFFFFFF);
+			result.SetInteger("tag group index", (Group != null) ? (uint) groupList.IndexOf(Group) : 0xFFFFFFFF);
 			result.SetInteger("datum index salt", Index.Salt);
 			return result;
 		}
 
-		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagClass> classList, IPointerExpander expander)
+		private void Load(StructureValueCollection values, ushort index, FileSegmentGroup metaArea, IList<ITagGroup> groupList, IPointerExpander expander)
 		{
 			uint address = (uint)values.GetInteger("memory address");
 			if (address != 0 && address != 0xFFFFFFFF)
@@ -65,9 +65,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 				MetaLocation = SegmentPointer.FromPointer(expanded, metaArea);
 			}
 
-			var classIndex = (int) values.GetInteger("class index");
-			if (classIndex >= 0 && classIndex < classList.Count)
-				Class = classList[classIndex];
+			var groupIndex = (int) values.GetInteger("tag group index");
+			if (groupIndex >= 0 && groupIndex < groupList.Count)
+				Group = groupList[groupIndex];
 
 			var salt = (ushort) values.GetInteger("datum index salt");
 			if (salt != 0xFFFF)

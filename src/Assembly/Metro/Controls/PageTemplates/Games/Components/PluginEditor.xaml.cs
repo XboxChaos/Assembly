@@ -42,15 +42,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
 			_pluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
+					buildInfo.Settings.GetSetting<string>("plugins"), groupName.Trim());
 
 			if (buildInfo.Settings.PathExists("fallbackPlugins"))
 				_fallbackPluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), className.Trim());
+					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName.Trim());
 			LoadPlugin();
 		}
 
@@ -203,11 +203,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			colorf.RegisterAttribute(colorAlpha);
 
 			CompletableXMLTag tagRef = RegisterMetaTag("tagRef", "Tag reference");
-			var withClass = new CompletableXMLAttribute("withClass",
-				"Whether or not the reference includes a class ID (optional, default=true)");
-			withClass.RegisterValue(new CompletableXMLValue("true", "The reference includes a 12-byte class ID (default)"));
-			withClass.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
-			tagRef.RegisterAttribute(withClass);
+			var withGroup = new CompletableXMLAttribute("withGroup",
+				"Whether or not the reference includes a group ID (optional, default=true)");
+			withGroup.RegisterValue(new CompletableXMLValue("true", "The reference includes a group ID (default)"));
+			withGroup.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
+			tagRef.RegisterAttribute(withGroup);
 
 			CompletableXMLTag dataRef = RegisterMetaTag("dataRef", "Data reference");
 			var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");

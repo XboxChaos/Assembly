@@ -159,9 +159,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitTagRef(TagRefData field)
 		{
-			if (!FilterString(field, field.Name) && field.Class != null)
+			if (!FilterString(field, field.Name) && field.Group != null)
 			{
-				if (!FilterString(field, field.Class.TagClassMagic) && field.Value != null)
+				if (!FilterString(field, field.Group.TagGroupMagic) && field.Value != null)
 					FilterString(field, field.Value.TagFileName);
 			}
 		}

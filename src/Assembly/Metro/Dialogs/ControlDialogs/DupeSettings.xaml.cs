@@ -22,15 +22,15 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	public partial class DupeSettings : Window
 	{
 		ICacheFile _cacheFile;
-		ITagClass _tagClass;
+		ITagGroup _tagGroup;
 		string _origName;
 
-		public DupeSettings(ICacheFile cache, ITagClass tagClass, string origName)
+		public DupeSettings(ICacheFile cache, ITagGroup tagGroup, string origName)
 		{
 			InitializeComponent();
 
 			_cacheFile = cache;
-			_tagClass = tagClass;
+			_tagGroup = tagGroup;
 			_origName = origName;
 			NewName = origName;
 
@@ -90,7 +90,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				Close();
 			}
 
-			if (tagName.Text == _origName || _cacheFile.Tags.FindTagByName(tagName.Text, _tagClass, _cacheFile.FileNames) != null)
+			if (tagName.Text == _origName || _cacheFile.Tags.FindTagByName(tagName.Text, _tagGroup, _cacheFile.FileNames) != null)
 			{
 				MetroMessageBox.Show("Duplicate Tag", "Please enter a name that is different from the original and that is not in use.");
 				return;

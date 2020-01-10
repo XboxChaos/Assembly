@@ -68,7 +68,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					IsSelected = true,
 					LocalMapPath = fi.FullName,
-					PluginClassMagic = fi.Name.Remove(fi.Name.Length - 3)
+					PluginGroupMagic = fi.Name.Remove(fi.Name.Length - 3)
 				});
 			}
 		}
@@ -240,7 +240,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		public class PluginEntry
 		{
-			public string PluginClassMagic { get; set; }
+			public string PluginGroupMagic { get; set; }
 			public string LocalMapPath { get; set; }
 			public bool IsSelected { get; set; }
 		}

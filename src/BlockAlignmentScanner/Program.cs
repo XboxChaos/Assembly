@@ -30,13 +30,13 @@ namespace BlockAlignmentScanner
 			var outDir = args[2];
 
 			Console.WriteLine("Loading plugins...");
-			var pluginsByClass = new Dictionary<string, XDocument>();
+			var pluginsByGroup = new Dictionary<string, XDocument>();
 			foreach (var pluginPath in Directory.EnumerateFiles(inDir, "*.xml"))
 			{
 				Console.WriteLine("- {0}", pluginPath);
 				var document = XDocument.Load(pluginPath);
-				var className = Path.GetFileNameWithoutExtension(pluginPath);
-				pluginsByClass[className] = document;
+				var groupName = Path.GetFileNameWithoutExtension(pluginPath);
+				pluginsByGroup[groupName] = document;
 			}
 
 			Console.WriteLine("Loading engine database...");
@@ -55,13 +55,13 @@ namespace BlockAlignmentScanner
 					var visitedTagBlocks = new HashSet<uint>();
 					foreach (var tag in map.Tags)
 					{
-						if (tag == null || tag.Class == null || tag.MetaLocation == null)
+						if (tag == null || tag.Group == null || tag.MetaLocation == null)
 							continue;
 
 						// Get the plugin for the tag
-						var className = CharConstant.ToString(tag.Class.Magic);
+						var groupName = CharConstant.ToString(tag.Group.Magic);
 						XDocument plugin;
-						if (!pluginsByClass.TryGetValue(className, out plugin))
+						if (!pluginsByGroup.TryGetValue(groupName, out plugin))
 							continue;
 
 						// Process it
@@ -86,7 +86,7 @@ namespace BlockAlignmentScanner
 				Directory.CreateDirectory(outDir);
 
 			Console.WriteLine("Saving plugins...");
-			foreach (var plugin in pluginsByClass)
+			foreach (var plugin in pluginsByGroup)
 			{
 				var outPath = Path.Combine(outDir, plugin.Key + ".xml");
 				Console.WriteLine("- {0}", outPath);

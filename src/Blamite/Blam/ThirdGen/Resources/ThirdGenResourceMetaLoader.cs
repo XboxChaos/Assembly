@@ -33,7 +33,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 		public IRenderModel LoadRenderModelMeta(ITag modeTag, IReader reader)
 		{
-			if (modeTag.MetaLocation == null || modeTag.Class == null || modeTag.Class.Magic != ModeMagic)
+			if (modeTag.MetaLocation == null || modeTag.Group == null || modeTag.Group.Magic != ModeMagic)
 				throw new ArgumentException("modeTag does not point to metadata for a renderable model");
 			if (!SupportsRenderModels)
 				throw new NotSupportedException("Render model metadata loading is not supported for the cache file's engine.");
@@ -51,7 +51,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 		public IScenarioBSP LoadScenarioBspMeta(ITag sbspTag, IReader reader)
 		{
-			if (sbspTag.MetaLocation == null || sbspTag.Class == null || sbspTag.Class.Magic != SbspMagic)
+			if (sbspTag.MetaLocation == null || sbspTag.Group == null || sbspTag.Group.Magic != SbspMagic)
 				throw new ArgumentException("sbspTag does not point to metadata for a scenario BSP");
 			if (!SupportsScenarioBsps)
 				throw new NotSupportedException("Scenario BSP metadata loading is not supported for the cache file's engine.");
@@ -69,7 +69,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 		public ISound LoadSoundMeta(ITag sndTag, IReader reader)
 		{
-			if (sndTag.MetaLocation == null || sndTag.Class == null || sndTag.Class.Magic != SndMagic)
+			if (sndTag.MetaLocation == null || sndTag.Group == null || sndTag.Group.Magic != SndMagic)
 				throw new ArgumentException("sndTag");
 			if (!SupportsSounds)
 				throw new NotSupportedException("Sound metadata loading is not supported for the cache file's engine.");

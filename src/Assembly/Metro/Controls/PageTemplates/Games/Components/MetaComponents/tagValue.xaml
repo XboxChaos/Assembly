@@ -9,10 +9,10 @@
              HorizontalAlignment="Left"
              x:Name="control">
 	<UserControl.Resources>
-		<local:TagClassConverter x:Key="classToIndexConverter" TagsSource="{Binding DataContext.Tags, Source={x:Reference control}}" />
-		<local:TagEntryListRetriever x:Key="classItemsRetriever" />
-		<DataTemplate DataType="{x:Type games:TagClass}">
-			<TextBlock Text="{Binding TagClassMagic}" />
+		<local:TagGroupConverter x:Key="groupToIndexConverter" TagsSource="{Binding DataContext.Tags, Source={x:Reference control}}" />
+		<local:TagEntryListRetriever x:Key="groupItemsRetriever" />
+		<DataTemplate DataType="{x:Type games:TagGroup}">
+			<TextBlock Text="{Binding TagGroupMagic}" />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type games:TagEntry}">
 			<TextBlock Text="{Binding TagFileName}" ToolTip="{Binding TagToolTip}" />
@@ -27,21 +27,21 @@
 			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"
 			           Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
 			           TextTrimming="CharacterEllipsis" />
-			<ComboBox x:Name="cbTagClass" Width="65" VerticalAlignment="Center" Margin="20,0,0,0"
+			<ComboBox x:Name="cbTagGroup" Width="65" VerticalAlignment="Center" Margin="20,0,0,0"
 			          SelectionChanged="ValueChanged"
-			          ItemsSource="{DynamicResource classList}"
-			          SelectedIndex="{Binding Class, Mode=TwoWay, Converter={StaticResource classToIndexConverter}}"
-                      IsTextSearchEnabled="True" TextSearch.TextPath="TagClassMagic"
-                      ToolTip="Select an entry from the dropdown or type the desired class to jump to it.">
+			          ItemsSource="{DynamicResource groupList}"
+			          SelectedIndex="{Binding Group, Mode=TwoWay, Converter={StaticResource groupToIndexConverter}}"
+                      IsTextSearchEnabled="True" TextSearch.TextPath="TagGroupMagic"
+                      ToolTip="Select an entry from the dropdown or type the desired group to jump to it.">
 				<ComboBox.Resources>
-					<CompositeCollection x:Key="classList">
+					<CompositeCollection x:Key="groupList">
 						<ComboBoxItem>(null)</ComboBoxItem>
-						<CollectionContainer Collection="{Binding DataContext.Tags.Classes, Source={x:Reference cbTagClass}}" />
+						<CollectionContainer Collection="{Binding DataContext.Tags.Groups, Source={x:Reference cbTagGroup}}" />
 					</CompositeCollection>
 				</ComboBox.Resources>
 			</ComboBox>
 			<ComboBox x:Name="cbTagEntry" Width="452" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,0,0"
-			          ItemsSource="{Binding Class, Converter={StaticResource classItemsRetriever}, Mode=OneWay}"
+			          ItemsSource="{Binding Group, Converter={StaticResource groupItemsRetriever}, Mode=OneWay}"
 			          SelectedItem="{Binding Value, Mode=TwoWay}" ToolTip="{Binding Path=SelectedItem.TagToolTip, RelativeSource={RelativeSource Self}}"
 			          SelectionChanged="ValueChanged" />
 

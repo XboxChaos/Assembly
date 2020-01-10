@@ -253,7 +253,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			if (field.WithClass)
+			if (field.WithGroup)
 			{
 				var values = new StructureValueCollection();
 				if (field.Value != null)
@@ -261,18 +261,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					//hax
 					if (field.Value.RawTag == null)
 					{
-						values.SetInteger("class magic", (uint)field.Class.RawClass.Magic);
+						values.SetInteger("tag group magic", (uint)field.Group.RawGroup.Magic);
 						values.SetInteger("datum index", 0xFFFFFFFF);
 					}
 					else
 					{
-						values.SetInteger("class magic", (uint)field.Value.RawTag.Class.Magic);
+						values.SetInteger("tag group magic", (uint)field.Value.RawTag.Group.Magic);
 						values.SetInteger("datum index", field.Value.RawTag.Index.Value);
 					}
 				}
 				else
 				{
-					values.SetInteger("class magic", 0xFFFFFFFF);
+					values.SetInteger("tag group magic", 0xFFFFFFFF);
 					values.SetInteger("datum index", 0xFFFFFFFF);
 				}
 				StructureWriter.WriteStructure(values, _tagRefLayout, _writer);

@@ -12,13 +12,13 @@ namespace Blamite.Injection
 		/// </summary>
 		/// <param name="originalIndex">The original datum index of the tag.</param>
 		/// <param name="originalAddress">The original address of the tag's data.</param>
-		/// <param name="tagClass">The tag's class ID.</param>
+		/// <param name="tagGroup">The tag's group ID.</param>
 		/// <param name="name">The tag's name.</param>
-		public ExtractedTag(DatumIndex originalIndex, uint originalAddress, int tagClass, string name)
+		public ExtractedTag(DatumIndex originalIndex, uint originalAddress, int tagGroup, string name)
 		{
 			OriginalIndex = originalIndex;
 			OriginalAddress = originalAddress;
-			Class = tagClass;
+			Group = tagGroup;
 			Name = name;
 		}
 
@@ -34,9 +34,9 @@ namespace Blamite.Injection
 		public uint OriginalAddress { get; private set; }
 
 		/// <summary>
-		///     Gets the tag's class ID.
+		///     Gets the tag's group ID.
 		/// </summary>
-		public int Class { get; private set; }
+		public int Group { get; private set; }
 
 		/// <summary>
 		///     Gets the tag's name.

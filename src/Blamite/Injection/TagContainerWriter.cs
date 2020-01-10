@@ -134,7 +134,7 @@ namespace Blamite.Injection
 
 				writer.WriteUInt32(tag.OriginalIndex.Value);
 				writer.WriteUInt32(tag.OriginalAddress);
-				writer.WriteInt32(tag.Class);
+				writer.WriteInt32(tag.Group);
 				writer.WriteAscii(tag.Name);
 
 				container.EndBlock();
@@ -290,7 +290,7 @@ namespace Blamite.Injection
 					{
 						writer.WriteInt32(expa.OriginalResourceSubIndex);
 						writer.WriteUInt32(expa.OriginalResourceIndex.Value);
-						writer.WriteInt32(expa.OriginalResourceClass);
+						writer.WriteInt32(expa.OriginalResourceGroup);
 						writer.WriteAscii(expa.OriginalResourceName);
 					}	
 				}
@@ -300,7 +300,7 @@ namespace Blamite.Injection
 				{
 					writer.WriteInt32(expa.OriginalResourceSubIndex);
 					writer.WriteUInt32(expa.OriginalResourceIndex.Value);
-					writer.WriteInt32(expa.OriginalResourceClass);
+					writer.WriteInt32(expa.OriginalResourceGroup);
 					writer.WriteAscii(expa.OriginalResourceName);
 				}
 

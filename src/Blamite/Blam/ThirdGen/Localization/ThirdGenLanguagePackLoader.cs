@@ -101,7 +101,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 		/// <param name="cacheFile">The cache file.</param>
 		private void LoadGroups(IReader reader, ICacheFile cacheFile)
 		{
-			foreach (var tag in cacheFile.Tags.FindTagsByClass("unic"))
+			foreach (var tag in cacheFile.Tags.FindTagsByGroup("unic"))
 			{
 				var group = new ThirdGenMultilingualStringList(reader, tag, _buildInfo);
 				_groupsByTag[tag] = group;

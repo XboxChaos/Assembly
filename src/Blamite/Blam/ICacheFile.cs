@@ -136,9 +136,9 @@ namespace Blamite.Blam
 		ILanguagePackLoader Languages { get; }
 
 		/// <summary>
-		///     The tag classes stored in the file.
+		///     The tag groups stored in the file.
 		/// </summary>
-		IList<ITagClass> TagClasses { get; }
+		IList<ITagGroup> TagGroups { get; }
 
 		/// <summary>
 		///     The tags stored in the file.

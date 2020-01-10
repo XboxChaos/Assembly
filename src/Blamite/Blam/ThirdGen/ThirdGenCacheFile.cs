@@ -143,9 +143,9 @@ namespace Blamite.Blam.ThirdGen
 			get { return _stringIds; }
 		}
 
-		public IList<ITagClass> TagClasses
+		public IList<ITagGroup> TagGroups
 		{
-			get { return _tags.Classes; }
+			get { return _tags.Groups; }
 		}
 
 		public IResourceManager Resources
@@ -317,12 +317,12 @@ namespace Blamite.Blam.ThirdGen
 			// Check for a PATG tag, and if one isn't found, then use MATG
 			if (_buildInfo.Layouts.HasLayout("patg"))
 			{
-				tag = _tags.FindTagByClass("patg");
+				tag = _tags.FindTagByGroup("patg");
 				layout = _buildInfo.Layouts.GetLayout("patg");
 			}
 			if (tag == null)
 			{
-				tag = _tags.FindTagByClass("matg");
+				tag = _tags.FindTagByGroup("matg");
 				layout = _buildInfo.Layouts.GetLayout("matg");
 			}
 			return (tag != null && layout != null);
@@ -330,8 +330,8 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadResourceManager(IReader reader)
 		{
-			ITag zoneTag = _tags.FindTagByClass("zone");
-			ITag playTag = _tags.FindTagByClass("play");
+			ITag zoneTag = _tags.FindTagByGroup("zone");
+			ITag playTag = _tags.FindTagByGroup("play");
 			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
 			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
 			bool haveAltPlayLayout = _buildInfo.Layouts.HasLayout("resource layout table alt");
@@ -369,7 +369,7 @@ namespace Blamite.Blam.ThirdGen
 
 			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
 
-			var ugh = _tags.FindTagByClass("ugh!");
+			var ugh = _tags.FindTagByGroup("ugh!");
 			if (ugh == null)
 				return null;
 
@@ -384,9 +384,9 @@ namespace Blamite.Blam.ThirdGen
 			{
 				int tagCount = 0;
 
-				IEnumerable<ITag> scripttags = _tags.FindTagsByClass("hsdt");
+				IEnumerable<ITag> scripttags = _tags.FindTagsByGroup("hsdt");
 
-				ITag scnr = _tags.FindTagByClass("scnr");
+				ITag scnr = _tags.FindTagByGroup("scnr");
 				if (scnr == null)
 				{
 					ScriptFiles = new IScriptFile[0];
@@ -411,7 +411,7 @@ namespace Blamite.Blam.ThirdGen
 			}
 			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
-				ITag scnr = _tags.FindTagByClass("scnr");
+				ITag scnr = _tags.FindTagByGroup("scnr");
 				if (scnr != null)
 				{
 					ScriptFiles = new IScriptFile[1];
@@ -426,7 +426,7 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
 			{
-				ITag scnr = _tags.FindTagByClass("scnr");
+				ITag scnr = _tags.FindTagByGroup("scnr");
 				if (scnr != null)
 					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}

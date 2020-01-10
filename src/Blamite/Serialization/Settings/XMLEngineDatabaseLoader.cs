@@ -62,7 +62,7 @@ namespace Blamite.Serialization.Settings
 		{
 			var loader = new XMLSettingsGroupLoader();
 			loader.RegisterComplexSettingLoader("layouts", new XMLLayoutLoader());
-			loader.RegisterComplexSettingLoader("classNames", new XMLClassNameLoader());
+			loader.RegisterComplexSettingLoader("groupNames", new XMLGroupNameLoader());
 			loader.RegisterComplexSettingLoader("localeSymbols", new XMLLocaleSymbolLoader());
 			loader.RegisterComplexSettingLoader("stringIds", new XMLStringIDNamespaceLoader());
 			loader.RegisterComplexSettingLoader("scripting", new XMLOpcodeLookupLoader());

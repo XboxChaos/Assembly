@@ -169,7 +169,7 @@
 									<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
 										<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
 											<StackPanel>
-												<MenuItem x:Name="cbShowEmptyTags" Header="Show Unused Classes" IsCheckable="True" Foreground="White"
+												<MenuItem x:Name="cbShowEmptyTags" Header="Show Unused Groups" IsCheckable="True" Foreground="White"
 														  Checked="cbShowEmptyTags_Altered" Unchecked="cbShowEmptyTags_Altered"/>
 												<MenuItem x:Name="cbShowBookmarkedTagsOnly" Header="Show Only Bookmarked Tags" IsCheckable="True" Foreground="White"
 														  Checked="cbShowBookmarkedTagsOnly_Altered" Unchecked="cbShowBookmarkedTagsOnly_Altered"/>
@@ -208,18 +208,18 @@
 									                             VirtualizingStackPanel.VirtualizationMode="Standard"
 																 Grid.Row="0" Style="{StaticResource batchSizer}">
 										<MetroTreeView:MetroTreeView.Resources>
-											<HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}">
+											<HierarchicalDataTemplate DataType="{x:Type  DataBind:TagGroup}" ItemsSource="{Binding Children}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 													<TextBlock>
-													<Run Text="{Binding TagClassMagic}" />
+													<Run Text="{Binding TagGroupMagic}" />
 													<Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " />
 													<Run Foreground="{StaticResource TextBrushSecondary}"
 													     Text="{Binding Path=Description, Converter={StaticResource IValueTagDescriptionCleanup}}" />
 													</TextBlock>
 													<StackPanel.ContextMenu>
-														<ContextMenu IsVisibleChanged="ClassContextMenu_IsVisibleChanged">
-															<MenuItem Name="itemClassBatch" Header="Add Class To Extract List..." Click="itemClassBatch_Click" />
-															<MenuItem Header="Dump Tag List..." Click="DumpClassTagList" />
+														<ContextMenu IsVisibleChanged="GroupContextMenu_IsVisibleChanged">
+															<MenuItem Name="itemGroupBatch" Header="Add Group To Extract List..." Click="itemGroupBatch_Click" />
+															<MenuItem Header="Dump Tag List..." Click="DumpGroupTagList" />
 														</ContextMenu>
 													</StackPanel.ContextMenu>
 												</StackPanel>
@@ -297,7 +297,7 @@
 											<ListBox.ItemTemplate>
 												<DataTemplate DataType="{x:Type DataBind:TagEntry}">
 													<StackPanel Orientation="Horizontal" >
-														<TextBlock Text="{Binding Path=ClassName}" FontSize="10" Foreground="White" />
+														<TextBlock Text="{Binding Path=GroupName}" FontSize="10" Foreground="White" />
 														<TextBlock Text="{Binding Path=TagFileName}" FontSize="10" Margin="8,0,0,0" />
 													</StackPanel>
 

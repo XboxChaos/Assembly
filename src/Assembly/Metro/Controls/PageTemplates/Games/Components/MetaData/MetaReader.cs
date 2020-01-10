@@ -246,18 +246,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			TagClass tagClass = null;
+			TagGroup tagGroup = null;
 			DatumIndex index;
-			if (field.WithClass)
+			if (field.WithGroup)
 			{
 				// Read the datum index based upon the layout
 				StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
 				index = new DatumIndex(values.GetInteger("datum index"));
 
-				// Check the class, in case the datum index is null
-				var magic = values.GetInteger("class magic");
+				// Check the group, in case the datum index is null
+				var magic = values.GetInteger("tag group magic");
 				var str = CharConstant.ToString((int)magic);
-				tagClass = field.Tags.Classes.FirstOrDefault(c => c.TagClassMagic == str);
+				tagGroup = field.Tags.Groups.FirstOrDefault(c => c.TagGroupMagic == str);
 			}
 			else
 			{
@@ -275,12 +275,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			if (tag != null)
 			{
-				field.Class = field.Tags.Classes.FirstOrDefault(c => c.RawClass == tag.RawTag.Class);
+				field.Group = field.Tags.Groups.FirstOrDefault(c => c.RawGroup == tag.RawTag.Group);
 				field.Value = tag;
 			}
 			else
 			{
-				field.Class = tagClass;
+				field.Group = tagGroup;
 				field.Value = null;
 			}
 		}

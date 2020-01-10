@@ -16,7 +16,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			InitializeComponent();
 
 			lblTagName.Text = tag.TagFileName != null
-				? tag.TagFileName + "." + tag.ClassName
+				? tag.TagFileName + "." + tag.GroupName
 				: "0x" + tag.RawTag.Index.Value.ToString("X");
 
 			lblDatum.Text = string.Format("Datum Index: {0}", tag.RawTag.Index);

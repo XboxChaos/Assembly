@@ -16,28 +16,31 @@
  * along with Blamite.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Blamite.Serialization;
-
-namespace Blamite.Blam.ThirdGen.Structures
+namespace Blamite.Blam
 {
-	public class ThirdGenTagClass : ITagClass
+	/// <summary>
+	///     Information about a single tag group in a cache file.
+	/// </summary>
+	public interface ITagGroup
 	{
-		public ThirdGenTagClass(StructureValueCollection values)
-		{
-			Load(values);
-		}
+		/// <summary>
+		///     The group's magic as a character string constant.
+		/// </summary>
+		int Magic { get; set; }
 
-		public int Magic { get; set; }
-		public int ParentMagic { get; set; }
-		public int GrandparentMagic { get; set; }
-		public StringID Description { get; set; }
+		/// <summary>
+		///     The parent group's magic, or -1 if none.
+		/// </summary>
+		int ParentMagic { get; set; }
 
-		private void Load(StructureValueCollection values)
-		{
-			Magic = (int) values.GetInteger("magic");
-			ParentMagic = (int) values.GetInteger("parent magic");
-			GrandparentMagic = (int) values.GetInteger("grandparent magic");
-			Description = new StringID(values.GetIntegerOrDefault("stringid", 0));
-		}
+		/// <summary>
+		///     The magic of the parent group's parent, or -1 if none.
+		/// </summary>
+		int GrandparentMagic { get; set; }
+
+		/// <summary>
+		///     The stringID describing the group's purpose, if available.
+		/// </summary>
+		StringID Description { get; set; }
 	}
 }

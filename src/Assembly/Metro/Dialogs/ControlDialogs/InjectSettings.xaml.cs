@@ -27,7 +27,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			get { return _allTags; }
 		}
 
-		private List<ExtractedClass> UsedClasses = new List<ExtractedClass>();
+		private List<ExtractedGroup> UsedGroups = new List<ExtractedGroup>();
 
 		public InjectSettings(TagHierarchy tags, TagContainer container)
 		{
@@ -39,17 +39,17 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			List<int> blah = new List<int>();
 
 			foreach (ExtractedTag t in Container.Tags)
-				blah.Add(t.Class);
+				blah.Add(t.Group);
 
-			UsedClasses.Add(new ExtractedClass(0x2D2D2D2D));
+			UsedGroups.Add(new ExtractedGroup(0x2D2D2D2D));
 
 			foreach (int t in blah.Distinct())
-				UsedClasses.Add(new ExtractedClass(t));
+				UsedGroups.Add(new ExtractedGroup(t));
 
-			UsedClasses = UsedClasses.OrderBy(c => c.MagicString).ToList();
+			UsedGroups = UsedGroups.OrderBy(c => c.MagicString).ToList();
 
-			tagClasses.ItemsSource = UsedClasses;
-			tagClasses.SelectedIndex = 0;
+			tagGroups.ItemsSource = UsedGroups;
+			tagGroups.SelectedIndex = 0;
 
 		}
 
@@ -119,12 +119,12 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		}
 
 
-		private void tagClasses_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void tagGroups_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (tagClasses.SelectedIndex > 0)
+			if (tagGroups.SelectedIndex > 0)
 			{
-				ExtractedClass ec = tagClasses.SelectedItem as ExtractedClass;
-				listTags.ItemsSource = Container.Tags.Where(t => t.Class == ec.Magic).OrderBy(t => t.Name);
+				ExtractedGroup eg = tagGroups.SelectedItem as ExtractedGroup;
+				listTags.ItemsSource = Container.Tags.Where(t => t.Group == eg.Magic).OrderBy(t => t.Name);
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		private void MassRename_Click(object sender, RoutedEventArgs e)
 		{
-			bool ClassOnly = (bool)renameClassOnly.IsChecked;
+			bool GroupOnly = (bool)renameGroupOnly.IsChecked;
 			string find = massRenameFind.Text;
 			string replace = massRenameReplace.Text;
 			int counter = 0;
@@ -142,9 +142,9 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			if (string.IsNullOrEmpty(find))
 				return;
 
-			ExtractedClass CurrentClass = (ExtractedClass)tagClasses.SelectedItem;
+			ExtractedGroup CurrentGroup = (ExtractedGroup)tagGroups.SelectedItem;
 
-			foreach (ExtractedTag t in ClassOnly ? Container.Tags.Where(tt => tt.Class == CurrentClass.Magic) : Container.Tags)
+			foreach (ExtractedTag t in GroupOnly ? Container.Tags.Where(tt => tt.Group == CurrentGroup.Magic) : Container.Tags)
 			{
 				if (t.Name.Contains(find))
 				{
@@ -170,12 +170,12 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 				Height = yadjust;
 		}
 
-		private class ExtractedClass
+		private class ExtractedGroup
 		{
 			public string MagicString { get; }
 			public int Magic { get; set; }
 
-			public ExtractedClass(int magic)
+			public ExtractedGroup(int magic)
 			{
 				Magic = magic;
 
@@ -206,11 +206,11 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		{
 			var sourceTag = (ExtractedTag)value;
 
-			TagClass tc = TagsSource.Classes.Where(c => c.RawClass.Magic == sourceTag.Class).FirstOrDefault();
-			if (tc == null)
+			TagGroup tg = TagsSource.Groups.Where(c => c.RawGroup.Magic == sourceTag.Group).FirstOrDefault();
+			if (tg == null)
 				return false;
 
-			var existingTag = tc.Children.Find(t => t.TagFileName == sourceTag.Name);
+			var existingTag = tg.Children.Find(t => t.TagFileName == sourceTag.Name);
 
 			return existingTag != null;
 		}

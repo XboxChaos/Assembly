@@ -21,14 +21,14 @@ using Blamite.IO;
 namespace Blamite.Blam
 {
 	/// <summary>
-	///     Represents a single tag in a class file.
+	///     Represents a single tag in a cache file.
 	/// </summary>
 	public interface ITag
 	{
 		/// <summary>
-		///     The tag's class. Can be null.
+		///     The tag's group. Can be null.
 		/// </summary>
-		ITagClass Class { get; set; }
+		ITagGroup Group { get; set; }
 
 		/// <summary>
 		///     The pointer to the tag's metadata. Can be null.

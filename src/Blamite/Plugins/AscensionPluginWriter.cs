@@ -6,20 +6,20 @@ namespace Blamite.Plugins
 {
 	public class AscensionPluginWriter : IPluginVisitor
 	{
-		private readonly string _className;
+		private readonly string _groupName;
 		private readonly XmlWriter _output;
 
-		public AscensionPluginWriter(XmlWriter output, string className)
+		public AscensionPluginWriter(XmlWriter output, string groupName)
 		{
 			_output = output;
-			_className = className;
+			_groupName = groupName;
 		}
 
 		public bool EnterPlugin(int baseSize)
 		{
 			_output.WriteStartDocument();
 			_output.WriteStartElement("plugin");
-			_output.WriteAttributeString("class", _className);
+			_output.WriteAttributeString("class", _groupName);
 			_output.WriteAttributeString("headersize", baseSize.ToString(CultureInfo.InvariantCulture));
 			_output.WriteComment(" Automatically generated plugin ");
 			return true;
@@ -178,9 +178,9 @@ namespace Blamite.Plugins
 			WriteBasicValue("stringid", name, offset, visible);
 		}
 
-		public void VisitTagReference(string name, uint offset, bool visible, bool withClass, bool showJumpTo, uint pluginLine)
+		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine)
 		{
-			if (!withClass)
+			if (!withGroup)
 				WriteBasicValue("uint32", name + " Tag ID", offset, visible);
 			else
 				WriteBasicValue("tagref", name, offset, visible);
