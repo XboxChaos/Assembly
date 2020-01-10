@@ -196,7 +196,7 @@ namespace Blamite.IO
 		/// <param name="str">The ASCII string to write.</param>
 		public void WriteAscii(string str)
 		{
-			byte[] bytes = Encoding.ASCII.GetBytes(str);
+			byte[] bytes = Encoding.GetEncoding(28591).GetBytes(str);// using Latin1 for the full 8bit range
 			WriteBlock(bytes);
 			WriteByte(0);
 		}
