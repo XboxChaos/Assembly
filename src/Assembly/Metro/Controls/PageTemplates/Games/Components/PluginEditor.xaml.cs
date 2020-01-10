@@ -193,15 +193,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			
 			RegisterMetaTag("rect16", "4 16-bit values representing the sides of a rectangle (top, left, bottom, right)");
 
-			CompletableXMLTag color = RegisterMetaTag("color", "Integer color value");
+			CompletableXMLTag color = RegisterMetaTag("color32", "Integer color value");
 			CompletableXMLTag colorf = RegisterMetaTag("colorf", "Floating-point color value");
-			var colorFormat = new CompletableXMLAttribute("format",
-				"A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
-			color.RegisterAttribute(colorFormat);
-			colorf.RegisterAttribute(colorFormat);
-
-			RegisterMetaTag("color24", "32-bit RGB color");
-			RegisterMetaTag("color32", "32-bit ARGB color");
+			var colorAlpha = new CompletableXMLAttribute("alpha",
+				"Whether or not the color includes the alpha channel (required)");
+			colorAlpha.RegisterValue(new CompletableXMLValue("true", "The color includes an alpha channel"));
+			colorAlpha.RegisterValue(new CompletableXMLValue("false", "The color does not include an alpha channel"));
+			color.RegisterAttribute(colorAlpha);
+			colorf.RegisterAttribute(colorAlpha);
 
 			CompletableXMLTag tagRef = RegisterMetaTag("tagRef", "Tag reference");
 			var withClass = new CompletableXMLAttribute("withClass",
