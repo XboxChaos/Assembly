@@ -153,7 +153,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class BitData : PropertyChangeNotifier
 	{
-		private readonly uint _mask;
+		private readonly ulong _mask;
 		private readonly FlagData _parent;
 		private string _name;
 
@@ -161,7 +161,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			_parent = parent;
 			_name = name;
-			_mask = 1U << index;
+			_mask = (ulong)1U << index;
 		}
 
 		public string Name
