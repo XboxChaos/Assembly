@@ -41,7 +41,7 @@
 	</bitfield32>
 	<stringid name="Name" offset="0x4" visible="true" />
 	<int16 name="Unknown" offset="0x8" visible="false" />
-	<int16 name="Layer" offset="0x1A" visible="true" />
+	<int16 name="Layer" offset="0xA" visible="true" />
 	<int16 name="Widescreen Y Offset" offset="0xC" visible="true" />
 	<int16 name="Widescreen X Offset" offset="0xE" visible="true" />
 	<int16 name="Widescreen Y Unknown" offset="0x10" visible="true" />
@@ -205,7 +205,19 @@
 		<stringid name="Data Source Name" offset="0x3C" visible="true" />
 		<stringId name="Text String" offset="0x40" visible="true" />
 		<stringId name="Text Color" offset="0x44" visible="true" />
-		<int16 name="Text Font" offset="0x48" visible="true" />
+		<enum16 name="Font" offset="0x48" visible="true">
+			<option name="Fixedsys, 9pt" value="0x0" />
+			<option name="Conduit, 16pt" value="0x1" />
+			<option name="Conduit, 32pt" value="0x2" />
+			<option name="Conduit, 32pt" value="0x3" />
+			<option name="Conduit, 23pt" value="0x4" />
+			<option name="Conduit, 12pt" value="0x5" />
+			<option name="Conduit, 18pt" value="0x6" />
+			<option name="Lucida Console, 18pt" value="0x7" />
+			<option name="Conduit, 18pt" value="0x8" />
+			<option name="Conduit, 16pt" value="0x9" />
+			<option name="Broadband, 16pt" value="0xA" />
+		</enum16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 	</reflexive>
 	<reflexive name="Bitmap Widgets" offset="0x44" visible="true" entrySize="0x6C">
@@ -272,7 +284,6 @@
 			<option name="Inverted Alpha" value="0xA" />
 			<option name="unknown" value="0xB" />
 			<option name="unknown" value="0xC" />
-			<option name="unknown" value="0xD" />
 		</enum16>
 		<int16 name="Unknown" offset="0x5E" visible="false" />
 		<int16 name="Sprite Index" offset="0x60" visible="true" />
@@ -328,19 +339,19 @@
 		<int16 name="Standard Y Bounds max" offset="0x28" visible="true" />
 		<int16 name="Standard X Bounds max" offset="0x2A" visible="true" />
 		<tagRef name="Animation" offset="0x2C" visible="true" />
-		<float32 name="Unknown" offset="0x3C" visible="false" />
-		<float32 name="Unknown" offset="0x40" visible="false" />
-		<float32 name="Unknown" offset="0x44" visible="false" />
-		<float32 name="Unknown" offset="0x48" visible="false" />
-		<float32 name="Unknown" offset="0x4C" visible="false" />
-		<float32 name="Unknown" offset="0x50" visible="false" />
-		<float32 name="Unknown" offset="0x54" visible="false" />
+		<float32 name="Base Distance" offset="0x3C" visible="true" />
+		<float32 name="Distance Range min" offset="0x40" visible="true" />
+		<float32 name="Distance Range max" offset="0x44" visible="true" />
+		<float32 name="Distance Change Rate" offset="0x48" visible="true" />
+		<float32 name="Base Height" offset="0x4C" visible="true" />
+		<float32 name="Height Range min" offset="0x50" visible="true" />
+		<float32 name="Height Range max" offset="0x54" visible="true" />
 		<float32 name="Unknown" offset="0x58" visible="false" />
-		<reflexive name="Zoom Data 1" offset="0x5C" visible="false" entrySize="0x14">
-			<dataref name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Distance Function" offset="0x5C" visible="true" entrySize="0x14">
+			<dataref name="Function" offset="0x0" visible="true" />
 		</reflexive>
-		<reflexive name="Zoom Data 2" offset="0x68" visible="false" entrySize="0x14">
-			<dataref name="Unknown" offset="0x0" visible="false" />
+		<reflexive name="Height Function" offset="0x68" visible="true" entrySize="0x14">
+			<dataref name="Function" offset="0x0" visible="true" />
 		</reflexive>
 	</reflexive>
 </plugin>

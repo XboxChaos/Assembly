@@ -4,6 +4,7 @@
 	<revisions>
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Portin'</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<enum16 name="Object Type" offset="0x0" visible="true">
 		<option name="Biped" value="0x0" />
@@ -41,63 +42,98 @@
 		<bit name="Bit 15" index="15" />
 	</bitfield16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" />
-	<float32 name="Bounding Offset X" offset="0x8" visible="true" />
-	<float32 name="Bounding Offset Y" offset="0xC" visible="true" />
-	<float32 name="Bounding Offset Z" offset="0x10" visible="true" />
+	<float32 name="Bounding Offset x" offset="0x8" visible="true" />
+	<float32 name="Bounding Offset y" offset="0xC" visible="true" />
+	<float32 name="Bounding Offset z" offset="0x10" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
 	<enum16 name="Lightmap Shadow Mode Size" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Never" value="0x1" />
 		<option name="Always" value="0x2" />
-		<option name="Unknown" value="0x3" />
+		<option name="Blur" value="0x3" />
 	</enum16>
 	<enum8 name="Sweetener Size" offset="0x1A" visible="true">
-		<option name="Small" value="0x0" />
-		<option name="Medium" value="0x1" />
-		<option name="Large" value="0x2" />
+		<option name="Default" value="0x0" />
+		<option name="Small" value="0x1" />
+		<option name="Medium" value="0x2" />
+		<option name="Large" value="0x3" />
 	</enum8>
 	<enum8 name="Water Density" offset="0x1B" visible="true">
 		<option name="Default" value="0x0" />
-		<option name="Least" value="0x1" />
-		<option name="Some" value="0x2" />
-		<option name="Equal" value="0x3" />
-		<option name="More" value="0x4" />
-		<option name="More Still" value="0x5" />
-		<option name="Lots More" value="0x6" />
+		<option name="Super Floater" value="0x1" />
+		<option name="Floater" value="0x2" />
+		<option name="Neutral" value="0x3" />
+		<option name="Sinker" value="0x4" />
+		<option name="Super Sinker" value="0x5" />
+		<option name="None" value="0x6" />
 	</enum8>
-	<int32 name="Unknown" offset="0x1C" visible="false" />
+	<bitfield32 name="Runtime Flags" offset="0x1C" visible="true">
+		<bit name="Runtime Change Colors Allowed" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+		<bit name="Bit 16" index="16" />
+		<bit name="Bit 17" index="17" />
+		<bit name="Bit 18" index="18" />
+		<bit name="Bit 19" index="19" />
+		<bit name="Bit 20" index="20" />
+		<bit name="Bit 21" index="21" />
+		<bit name="Bit 22" index="22" />
+		<bit name="Bit 23" index="23" />
+		<bit name="Bit 24" index="24" />
+		<bit name="Bit 25" index="25" />
+		<bit name="Bit 26" index="26" />
+		<bit name="Bit 27" index="27" />
+		<bit name="Bit 28" index="28" />
+		<bit name="Bit 29" index="29" />
+		<bit name="Bit 30" index="30" />
+		<bit name="Bit 31" index="31" />
+	</bitfield32>
 	<float32 name="Dynamic Light Sphere Radius" offset="0x20" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset X" offset="0x24" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset Y" offset="0x28" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset Z" offset="0x2C" visible="true" />
-	<stringid name="Default Model Variant" offset="0x30" visible="true" />
+	<float32 name="Dynamic Light Sphere Offset x" offset="0x24" visible="true" />
+	<float32 name="Dynamic Light Sphere Offset y" offset="0x28" visible="true" />
+	<float32 name="Dynamic Light Sphere Offset z" offset="0x2C" visible="true" />
+	<stringid name="Default Variant" offset="0x30" visible="true" />
 	<tagRef name="Model" offset="0x34" visible="true" />
 	<tagRef name="Crate Object" offset="0x44" visible="true" />
+	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
 	<tagRef name="Collision Damage" offset="0x54" visible="true" />
-	<reflexive name="Early Mover Properties" offset="0x64" visible="true" entrySize="0x28">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
+	<reflexive name="Early Mover Oriented Bounding Box" offset="0x64" visible="true" entrySize="0x28">
+		<stringid name="Node Name" offset="0x0" visible="true" />
+		<float32 name="X0" offset="0x4" visible="true" />
+		<float32 name="X1" offset="0x8" visible="true" />
+		<float32 name="Y0" offset="0xC" visible="true" />
+		<float32 name="Y1" offset="0x10" visible="true" />
+		<float32 name="Z0" offset="0x14" visible="true" />
+		<float32 name="Z1" offset="0x18" visible="true" />
+		<degree name="Angles y" offset="0x1C" visible="true" />
+		<degree name="Angles p" offset="0x20" visible="true" />
+		<degree name="Angles r" offset="0x24" visible="true" />
 	</reflexive>
 	<tagRef name="Creation Effect" offset="0x70" visible="true" />
 	<tagRef name="Material Effects" offset="0x80" visible="true" />
-	<tagRef name="Melee Impact" offset="0x90" visible="true" />
+	<tagRef name="Melee Sound" offset="0x90" visible="true" />
 	<reflexive name="AI Properties" offset="0xA0" visible="true" entrySize="0x10">
 		<bitfield32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
+			<bit name="Non Flight-Blocking" index="3" />
+			<bit name="Dynamic Cover From Centre" index="4" />
+			<bit name="Has Corner Markers" index="5" />
+			<bit name="Idle When Flying" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
 			<bit name="Bit 9" index="9" />
@@ -124,7 +160,7 @@
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
 		</bitfield32>
-		<stringid name="AI Type Name" offset="0x4" visible="true" />
+		<stringId name="AI Type Name" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Size" offset="0xC" visible="true">
 			<option name="Default" value="0x0" />
@@ -189,70 +225,62 @@
 		<stringid name="Scale By" offset="0x28" visible="true" />
 	</reflexive>
 	<int16 name="HUD Text Message Index" offset="0xB8" visible="true" />
-	<int16 name="Unknown" offset="0xBA" visible="false" />
+	<bitfield16 name="Secondary Flags" offset="0xBA" visible="true">
+		<bit name="Does Not Affect Projectile Aiming" index="0" />
+		<bit name="Bit 1" index="1" />
+		<bit name="Bit 2" index="2" />
+		<bit name="Bit 3" index="3" />
+		<bit name="Bit 4" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</bitfield16>
 	<reflexive name="Attachments" offset="0xBC" visible="true" entrySize="0x20">
-		<tagRef name="Attachment" offset="0x0" visible="true" />
-		<stringId name="Marker" offset="0x10" visible="true" />
-		<enum16 name="Change Color" offset="0x14" visible="true">
+		<tagRef name="Type" offset="0x0" visible="true" />
+		<stringid name="Marker" offset="0x10" visible="true" />
+		<enum8 name="Change Color" offset="0x14" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Primary" value="0x1" />
 			<option name="Secondary" value="0x2" />
 			<option name="Tertiary" value="0x3" />
 			<option name="Quaternary" value="0x4" />
-		</enum16>
+		</enum8>
+		<bitfield8 name="Flags" offset="0x15" visible="true">
+			<bit name="Force Always On" index="0" />
+			<bit name="Effect Size Scale From Object Scale" index="1" />
+		</bitfield8>
 		<int16 name="Unknown" offset="0x16" visible="false" />
-		<stringId name="Primary Scale" offset="0x18" visible="true" />
-		<stringId name="Secondary Scale" offset="0x1C" visible="true" />
+		<stringid name="Primary Scale" offset="0x18" visible="true" />
+		<stringid name="Secondary Scale" offset="0x1C" visible="true" />
 	</reflexive>
 	<reflexive name="Widgets" offset="0xC8" visible="true" entrySize="0x10">
 		<tagRef name="Type" offset="0x0" visible="true" />
 	</reflexive>
 	<reflexive name="Change Colors" offset="0xD4" visible="true" entrySize="0x18">
 		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
-			<undefined name="Weight" offset="0x0" visible="true" />
+			<float32 name="Weight" offset="0x0" visible="true" />
 			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
 			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
 		</reflexive>
-		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x20">
-			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
+		<reflexive name="Functions" offset="0xC" visible="true" entrySize="0x28">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<bitfield32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
-				<bit name="Bit 2" index="2" />
-				<bit name="Bit 3" index="3" />
-				<bit name="Bit 4" index="4" />
-				<bit name="Bit 5" index="5" />
-				<bit name="Bit 6" index="6" />
-				<bit name="Bit 7" index="7" />
-				<bit name="Bit 8" index="8" />
-				<bit name="Bit 9" index="9" />
-				<bit name="Bit 10" index="10" />
-				<bit name="Bit 11" index="11" />
-				<bit name="Bit 12" index="12" />
-				<bit name="Bit 13" index="13" />
-				<bit name="Bit 14" index="14" />
-				<bit name="Bit 15" index="15" />
-				<bit name="Bit 16" index="16" />
-				<bit name="Bit 17" index="17" />
-				<bit name="Bit 18" index="18" />
-				<bit name="Bit 19" index="19" />
-				<bit name="Bit 20" index="20" />
-				<bit name="Bit 21" index="21" />
-				<bit name="Bit 22" index="22" />
-				<bit name="Bit 23" index="23" />
-				<bit name="Bit 24" index="24" />
-				<bit name="Bit 25" index="25" />
-				<bit name="Bit 26" index="26" />
-				<bit name="Bit 27" index="27" />
-				<bit name="Bit 28" index="28" />
-				<bit name="Bit 29" index="29" />
-				<bit name="Bit 30" index="30" />
-				<bit name="Bit 31" index="31" />
 			</bitfield32>
-			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
-			<stringid name="Darken By..." offset="0x1C" visible="true" />
-			<stringid name="Scale By..." offset="0x20" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
+			<stringid name="Darken By..." offset="0x20" visible="true" />
+			<stringid name="Scale By..." offset="0x24" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Predicted Resources" offset="0xE0" visible="false" entrySize="0x8">
@@ -306,8 +334,7 @@
 			<bit name="Allows Flying Vehicles" index="3" />
 			<bit name="Allows Projectiles" index="4" />
 		</bitfield8>
-		<int8 name="Unknown" offset="0x4" visible="false" />
-		<bitfield8 name="Flags" offset="0x5" visible="true">
+		<bitfield16 name="Flags" offset="0x4" visible="true">
 			<bit name="Editor Only" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -316,38 +343,47 @@
 			<bit name="Bit 5" index="5" />
 			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
-		</bitfield8>
+			<bit name="Bit 8" index="8" />
+			<bit name="Bit 9" index="9" />
+			<bit name="Bit 10" index="10" />
+			<bit name="Bit 11" index="11" />
+			<bit name="Bit 12" index="12" />
+			<bit name="Bit 13" index="13" />
+			<bit name="Bit 14" index="14" />
+			<bit name="Bit 15" index="15" />
+		</bitfield16>
 		<enum8 name="Shape" offset="0x6" visible="true">
 			<option name="None" value="0x0" />
 			<option name="Sphere" value="0x1" />
 			<option name="Cylinder" value="0x2" />
 			<option name="Box" value="0x3" />
 		</enum8>
-		<enum8 name="Spawn Timer Mode" offset="0x7" visible="true">
-			<option name="Default (One)" value="0x0" />
-			<option name="Multiple" value="0x1" />
+		<enum8 name="Spawn Timer Type" offset="0x7" visible="true">
+			<option name="Starts On Death" value="0x0" />
+			<option name="Starts On Disturbance" value="0x1" />
 		</enum8>
-		<int16 name="Spawn Time" offset="0x8" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0xA" visible="true" />
+		<int16 name="Default Spawn Time" offset="0x8" visible="true" />
+		<int16 name="Default Abandonment Time" offset="0xA" visible="true" />
 		<float32 name="Radius/Width" offset="0xC" visible="true" />
 		<float32 name="Length" offset="0x10" visible="true" />
 		<float32 name="Top" offset="0x14" visible="true" />
 		<float32 name="Bottom" offset="0x18" visible="true" />
-		<float32 name="Unknown" offset="0x1C" visible="false" />
-		<float32 name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Unknown" offset="0x24" visible="false" />
-		<int32 name="Unknown" offset="0x28" visible="false" />
-		<int32 name="Unknown" offset="0x2C" visible="false" />
-		<tagRef name="Child Object" offset="0x30" visible="true" />
+		<comment title="RESPAWN ZONE DATA">These are respawn zone weights, used only for respawn zones</comment>
+		<float32 name="Unknown Weight" offset="0x1C" visible="true" />
+		<float32 name="Unknown Weight" offset="0x20" visible="true" />
+		<float32 name="Unknown Weight" offset="0x24" visible="true" />
+		<stringid name="Boundary Center Marker" offset="0x28" visible="true" />
+		<stringid name="Spawned Object Marker Name" offset="0x2C" visible="true" />
+		<tagRef name="Spawned Object" offset="0x30" visible="true" />
 		<int32 name="Unknown" offset="0x40" visible="true" />
-		<tagRef name="Shape Shader" offset="0x44" visible="true" />
-		<tagRef name="Unknown Shader" offset="0x54" visible="true" />
-		<tagRef name="Unknown" offset="0x64" visible="true" />
-		<tagRef name="Unknown" offset="0x74" visible="true" />
-		<tagRef name="Unknown" offset="0x84" visible="true" />
-		<tagRef name="Unknown" offset="0x94" visible="true" />
-		<tagRef name="Unknown" offset="0xA4" visible="true" />
-		<tagRef name="Unknown" offset="0xB4" visible="true" />
+		<tagref name="Boundary Standard Shader" offset="0x44" visible="true" />
+		<tagref name="Boundary Opaque Shader" offset="0x54" visible="true" />
+		<tagref name="Sphere Standard Shader" offset="0x64" visible="true" />
+		<tagref name="Sphere Opaque Shader" offset="0x74" visible="true" />
+		<tagref name="Cylinder Standard Shader" offset="0x84" visible="true" />
+		<tagref name="Cylinder Opaque Shader" offset="0x94" visible="true" />
+		<tagref name="Box Standard Shader" offset="0xA4" visible="true" />
+		<tagref name="Box Opaque Shader" offset="0xB4" visible="true" />
 	</reflexive>
 	<comment title="UNIT" />
 	<bitfield32 name="Flags" offset="0xF8" visible="true">
@@ -410,11 +446,13 @@
 		<option name="Quiet" value="0x4" />
 	</enum16>
 	<reflexive name="Metagame Properties" offset="0x100" visible="true" entrySize="0x8">
-		<int8 name="Unit Kind" offset="0x0" visible="true" />
+		<bitfield8 name="Flags" offset="0x0" visible="true">
+			<bit name="Must Have Active Seats" index="0" />
+		</bitfield8>
 		<int8 name="Unit" offset="0x1" visible="true" />
 		<int8 name="Classification" offset="0x2" visible="true" />
 		<int8 name="Unknown" offset="0x3" visible="false" />
-		<int16 name="Base Point Worth" offset="0x4" visible="true" />
+		<int16 name="Points" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
 	</reflexive>
 	<tagRef name="Integrated Light Toggle" offset="0x10C" visible="true" />
@@ -490,10 +528,10 @@
 		<option name="Large" value="0x2" />
 	</enum16>
 	<enum16 name="Item Scale" offset="0x25A" visible="true">
-		<option name="Human" value="0x0" />
-		<option name="Covenant" value="0x1" />
-		<option name="Player" value="0x2" />
-		<option name="Boss" value="0x3" />
+		<option name="Small" value="0x0" />
+		<option name="Medium" value="0x1" />
+		<option name="Large" value="0x2" />
+		<option name="Huge" value="0x3" />
 	</enum16>
 	<reflexive name="Postures" offset="0x25C" visible="true" entrySize="0x10">
 		<stringId name="Name" offset="0x0" visible="true" />
@@ -514,7 +552,7 @@
 		<option name="Human Fragmentation" value="0x0" />
 		<option name="Covenant Plasma" value="0x1" />
 		<option name="Brute Spike" value="0x2" />
-		<option name="Incendiary" value="0x3" />
+		<option name="Firebomb" value="0x3" />
 	</enum16>
 	<int16 name="Grenade Count" offset="0x286" visible="true" />
 	<reflexive name="Powered Seats" offset="0x288" visible="true" entrySize="0x8">
@@ -1033,6 +1071,7 @@
 			<bit name="Rear Turning" index="3" />
 			<bit name="Attached To E-Brake" index="4" />
 			<bit name="Can Be Destroyed" index="5" />
+			<bit name="Bit 6" index="6" />
 			<bit name="Bit 7" index="7" />
 			<bit name="Bit 8" index="8" />
 			<bit name="Bit 9" index="9" />
@@ -1162,38 +1201,38 @@
 		<undefined name="Unknown" offset="0x88" visible="false" />
 		<undefined name="Unknown" offset="0x8C" visible="false" />
 		<comment title="Four Vectors Storage" />
-		<undefined name="Sphere 0 x" offset="0x90" visible="true" />
-		<undefined name="Sphere 0 y" offset="0x94" visible="true" />
-		<undefined name="Sphere 0 z" offset="0x98" visible="true" />
-		<undefined name="Sphere 0 Radius" offset="0x9C" visible="true" />
-		<undefined name="Sphere 1 x" offset="0xA0" visible="true" />
-		<undefined name="Sphere 1 y" offset="0xA4" visible="true" />
-		<undefined name="Sphere 1 z" offset="0xA8" visible="true" />
-		<undefined name="Sphere 1 Radius" offset="0xAC" visible="true" />
-		<undefined name="Sphere 2 x" offset="0xB0" visible="true" />
-		<undefined name="Sphere 2 y" offset="0xB4" visible="true" />
-		<undefined name="Sphere 2 z" offset="0xB8" visible="true" />
-		<undefined name="Sphere 2 Radius" offset="0xBC" visible="true" />
-		<undefined name="Sphere 3 x" offset="0xC0" visible="true" />
-		<undefined name="Sphere 3 y" offset="0xC4" visible="true" />
-		<undefined name="Sphere 3 z" offset="0xC8" visible="true" />
-		<undefined name="Sphere 3 Radius" offset="0xCC" visible="true" />
-		<undefined name="Sphere 4 x" offset="0xD0" visible="true" />
-		<undefined name="Sphere 4 y" offset="0xD4" visible="true" />
-		<undefined name="Sphere 4 z" offset="0xD8" visible="true" />
-		<undefined name="Sphere 4 Radius" offset="0xDC" visible="true" />
-		<undefined name="Sphere 5 x" offset="0xE0" visible="true" />
-		<undefined name="Sphere 5 y" offset="0xE4" visible="true" />
-		<undefined name="Sphere 5 z" offset="0xE8" visible="true" />
-		<undefined name="Sphere 5 Radius" offset="0xEC" visible="true" />
-		<undefined name="Sphere 6 x" offset="0xF0" visible="true" />
-		<undefined name="Sphere 6 y" offset="0xF4" visible="true" />
-		<undefined name="Sphere 6 z" offset="0xF8" visible="true" />
-		<undefined name="Sphere 6 Radius" offset="0xFC" visible="true" />
-		<undefined name="Sphere 7 x" offset="0x100" visible="true" />
-		<undefined name="Sphere 7 y" offset="0x104" visible="true" />
-		<undefined name="Sphere 7 z" offset="0x108" visible="true" />
-		<undefined name="Sphere 7 Radius" offset="0x10C" visible="true" />
+		<float32 name="Sphere 0 x" offset="0x90" visible="true" />
+		<float32 name="Sphere 0 y" offset="0x94" visible="true" />
+		<float32 name="Sphere 0 z" offset="0x98" visible="true" />
+		<float32 name="Sphere 0 Radius" offset="0x9C" visible="true" />
+		<float32 name="Sphere 1 x" offset="0xA0" visible="true" />
+		<float32 name="Sphere 1 y" offset="0xA4" visible="true" />
+		<float32 name="Sphere 1 z" offset="0xA8" visible="true" />
+		<float32 name="Sphere 1 Radius" offset="0xAC" visible="true" />
+		<float32 name="Sphere 2 x" offset="0xB0" visible="true" />
+		<float32 name="Sphere 2 y" offset="0xB4" visible="true" />
+		<float32 name="Sphere 2 z" offset="0xB8" visible="true" />
+		<float32 name="Sphere 2 Radius" offset="0xBC" visible="true" />
+		<float32 name="Sphere 3 x" offset="0xC0" visible="true" />
+		<float32 name="Sphere 3 y" offset="0xC4" visible="true" />
+		<float32 name="Sphere 3 z" offset="0xC8" visible="true" />
+		<float32 name="Sphere 3 Radius" offset="0xCC" visible="true" />
+		<float32 name="Sphere 4 x" offset="0xD0" visible="true" />
+		<float32 name="Sphere 4 y" offset="0xD4" visible="true" />
+		<float32 name="Sphere 4 z" offset="0xD8" visible="true" />
+		<float32 name="Sphere 4 Radius" offset="0xDC" visible="true" />
+		<float32 name="Sphere 5 x" offset="0xE0" visible="true" />
+		<float32 name="Sphere 5 y" offset="0xE4" visible="true" />
+		<float32 name="Sphere 5 z" offset="0xE8" visible="true" />
+		<float32 name="Sphere 5 Radius" offset="0xEC" visible="true" />
+		<float32 name="Sphere 6 x" offset="0xF0" visible="true" />
+		<float32 name="Sphere 6 y" offset="0xF4" visible="true" />
+		<float32 name="Sphere 6 z" offset="0xF8" visible="true" />
+		<float32 name="Sphere 6 Radius" offset="0xFC" visible="true" />
+		<float32 name="Sphere 7 x" offset="0x100" visible="true" />
+		<float32 name="Sphere 7 y" offset="0x104" visible="true" />
+		<float32 name="Sphere 7 z" offset="0x108" visible="true" />
+		<float32 name="Sphere 7 Radius" offset="0x10C" visible="true" />
 		<comment title="Multispheres 2" />
 		<int32 name="Unknown" offset="0x110" visible="false" />
 		<int16 name="Size" offset="0x114" visible="true" />
@@ -1205,38 +1244,38 @@
 		<undefined name="Unknown" offset="0x128" visible="false" />
 		<undefined name="Unknown" offset="0x12C" visible="false" />
 		<comment title="Four Vectors Storage" />
-		<undefined name="Sphere 0 x" offset="0x130" visible="true" />
-		<undefined name="Sphere 0 y" offset="0x134" visible="true" />
-		<undefined name="Sphere 0 z" offset="0x138" visible="true" />
-		<undefined name="Sphere 0 Radius" offset="0x13C" visible="true" />
-		<undefined name="Sphere 1 x" offset="0x140" visible="true" />
-		<undefined name="Sphere 1 y" offset="0x144" visible="true" />
-		<undefined name="Sphere 1 z" offset="0x148" visible="true" />
-		<undefined name="Sphere 1 Radius" offset="0x14C" visible="true" />
-		<undefined name="Sphere 2 x" offset="0x150" visible="true" />
-		<undefined name="Sphere 2 y" offset="0x154" visible="true" />
-		<undefined name="Sphere 2 z" offset="0x158" visible="true" />
-		<undefined name="Sphere 2 Radius" offset="0x15C" visible="true" />
-		<undefined name="Sphere 3 x" offset="0x160" visible="true" />
-		<undefined name="Sphere 3 y" offset="0x164" visible="true" />
-		<undefined name="Sphere 3 z" offset="0x168" visible="true" />
-		<undefined name="Sphere 3 Radius" offset="0x16C" visible="true" />
-		<undefined name="Sphere 4 x" offset="0x170" visible="true" />
-		<undefined name="Sphere 4 y" offset="0x174" visible="true" />
-		<undefined name="Sphere 4 z" offset="0x178" visible="true" />
-		<undefined name="Sphere 4 Radius" offset="0x17C" visible="true" />
-		<undefined name="Sphere 5 x" offset="0x180" visible="true" />
-		<undefined name="Sphere 5 y" offset="0x184" visible="true" />
-		<undefined name="Sphere 5 z" offset="0x188" visible="true" />
-		<undefined name="Sphere 5 Radius" offset="0x18C" visible="true" />
-		<undefined name="Sphere 6 x" offset="0x190" visible="true" />
-		<undefined name="Sphere 6 y" offset="0x194" visible="true" />
-		<undefined name="Sphere 6 z" offset="0x198" visible="true" />
-		<undefined name="Sphere 6 Radius" offset="0x19C" visible="true" />
-		<undefined name="Sphere 7 x" offset="0x1A0" visible="true" />
-		<undefined name="Sphere 7 y" offset="0x1A4" visible="true" />
-		<undefined name="Sphere 7 z" offset="0x1A8" visible="true" />
-		<undefined name="Sphere 7 Radius" offset="0x1AC" visible="true" />
+		<float32 name="Sphere 0 x" offset="0x130" visible="true" />
+		<float32 name="Sphere 0 y" offset="0x134" visible="true" />
+		<float32 name="Sphere 0 z" offset="0x138" visible="true" />
+		<float32 name="Sphere 0 Radius" offset="0x13C" visible="true" />
+		<float32 name="Sphere 1 x" offset="0x140" visible="true" />
+		<float32 name="Sphere 1 y" offset="0x144" visible="true" />
+		<float32 name="Sphere 1 z" offset="0x148" visible="true" />
+		<float32 name="Sphere 1 Radius" offset="0x14C" visible="true" />
+		<float32 name="Sphere 2 x" offset="0x150" visible="true" />
+		<float32 name="Sphere 2 y" offset="0x154" visible="true" />
+		<float32 name="Sphere 2 z" offset="0x158" visible="true" />
+		<float32 name="Sphere 2 Radius" offset="0x15C" visible="true" />
+		<float32 name="Sphere 3 x" offset="0x160" visible="true" />
+		<float32 name="Sphere 3 y" offset="0x164" visible="true" />
+		<float32 name="Sphere 3 z" offset="0x168" visible="true" />
+		<float32 name="Sphere 3 Radius" offset="0x16C" visible="true" />
+		<float32 name="Sphere 4 x" offset="0x170" visible="true" />
+		<float32 name="Sphere 4 y" offset="0x174" visible="true" />
+		<float32 name="Sphere 4 z" offset="0x178" visible="true" />
+		<float32 name="Sphere 4 Radius" offset="0x17C" visible="true" />
+		<float32 name="Sphere 5 x" offset="0x180" visible="true" />
+		<float32 name="Sphere 5 y" offset="0x184" visible="true" />
+		<float32 name="Sphere 5 z" offset="0x188" visible="true" />
+		<float32 name="Sphere 5 Radius" offset="0x18C" visible="true" />
+		<float32 name="Sphere 6 x" offset="0x190" visible="true" />
+		<float32 name="Sphere 6 y" offset="0x194" visible="true" />
+		<float32 name="Sphere 6 z" offset="0x198" visible="true" />
+		<float32 name="Sphere 6 Radius" offset="0x19C" visible="true" />
+		<float32 name="Sphere 7 x" offset="0x1A0" visible="true" />
+		<float32 name="Sphere 7 y" offset="0x1A4" visible="true" />
+		<float32 name="Sphere 7 z" offset="0x1A8" visible="true" />
+		<float32 name="Sphere 7 Radius" offset="0x1AC" visible="true" />
 		<comment title="Multispheres 3" />
 		<int32 name="Unknown" offset="0x1B0" visible="false" />
 		<int16 name="Size" offset="0x1B4" visible="true" />
@@ -1248,38 +1287,38 @@
 		<undefined name="Unknown" offset="0x1C8" visible="false" />
 		<undefined name="Unknown" offset="0x1CC" visible="false" />
 		<comment title="Four Vectors Storage" />
-		<undefined name="Sphere 0 x" offset="0x1D0" visible="true" />
-		<undefined name="Sphere 0 y" offset="0x1D4" visible="true" />
-		<undefined name="Sphere 0 z" offset="0x1D8" visible="true" />
-		<undefined name="Sphere 0 Radius" offset="0x1DC" visible="true" />
-		<undefined name="Sphere 1 x" offset="0x1E0" visible="true" />
-		<undefined name="Sphere 1 y" offset="0x1E4" visible="true" />
-		<undefined name="Sphere 1 z" offset="0x1E8" visible="true" />
-		<undefined name="Sphere 1 Radius" offset="0x1EC" visible="true" />
-		<undefined name="Sphere 2 x" offset="0x1F0" visible="true" />
-		<undefined name="Sphere 2 y" offset="0x1F4" visible="true" />
-		<undefined name="Sphere 2 z" offset="0x1F8" visible="true" />
-		<undefined name="Sphere 2 Radius" offset="0x1FC" visible="true" />
-		<undefined name="Sphere 3 x" offset="0x200" visible="true" />
-		<undefined name="Sphere 3 y" offset="0x204" visible="true" />
-		<undefined name="Sphere 3 z" offset="0x208" visible="true" />
-		<undefined name="Sphere 3 Radius" offset="0x20C" visible="true" />
-		<undefined name="Sphere 4 x" offset="0x210" visible="true" />
-		<undefined name="Sphere 4 y" offset="0x214" visible="true" />
-		<undefined name="Sphere 4 z" offset="0x218" visible="true" />
-		<undefined name="Sphere 4 Radius" offset="0x21C" visible="true" />
-		<undefined name="Sphere 5 x" offset="0x220" visible="true" />
-		<undefined name="Sphere 5 y" offset="0x224" visible="true" />
-		<undefined name="Sphere 5 z" offset="0x228" visible="true" />
-		<undefined name="Sphere 5 Radius" offset="0x22C" visible="true" />
-		<undefined name="Sphere 6 x" offset="0x230" visible="true" />
-		<undefined name="Sphere 6 y" offset="0x234" visible="true" />
-		<undefined name="Sphere 6 z" offset="0x238" visible="true" />
-		<undefined name="Sphere 6 Radius" offset="0x23C" visible="true" />
-		<undefined name="Sphere 7 x" offset="0x240" visible="true" />
-		<undefined name="Sphere 7 y" offset="0x244" visible="true" />
-		<undefined name="Sphere 7 z" offset="0x248" visible="true" />
-		<undefined name="Sphere 7 Radius" offset="0x24C" visible="true" />
+		<float32 name="Sphere 0 x" offset="0x1D0" visible="true" />
+		<float32 name="Sphere 0 y" offset="0x1D4" visible="true" />
+		<float32 name="Sphere 0 z" offset="0x1D8" visible="true" />
+		<float32 name="Sphere 0 Radius" offset="0x1DC" visible="true" />
+		<float32 name="Sphere 1 x" offset="0x1E0" visible="true" />
+		<float32 name="Sphere 1 y" offset="0x1E4" visible="true" />
+		<float32 name="Sphere 1 z" offset="0x1E8" visible="true" />
+		<float32 name="Sphere 1 Radius" offset="0x1EC" visible="true" />
+		<float32 name="Sphere 2 x" offset="0x1F0" visible="true" />
+		<float32 name="Sphere 2 y" offset="0x1F4" visible="true" />
+		<float32 name="Sphere 2 z" offset="0x1F8" visible="true" />
+		<float32 name="Sphere 2 Radius" offset="0x1FC" visible="true" />
+		<float32 name="Sphere 3 x" offset="0x200" visible="true" />
+		<float32 name="Sphere 3 y" offset="0x204" visible="true" />
+		<float32 name="Sphere 3 z" offset="0x208" visible="true" />
+		<float32 name="Sphere 3 Radius" offset="0x20C" visible="true" />
+		<float32 name="Sphere 4 x" offset="0x210" visible="true" />
+		<float32 name="Sphere 4 y" offset="0x214" visible="true" />
+		<float32 name="Sphere 4 z" offset="0x218" visible="true" />
+		<float32 name="Sphere 4 Radius" offset="0x21C" visible="true" />
+		<float32 name="Sphere 5 x" offset="0x220" visible="true" />
+		<float32 name="Sphere 5 y" offset="0x224" visible="true" />
+		<float32 name="Sphere 5 z" offset="0x228" visible="true" />
+		<float32 name="Sphere 5 Radius" offset="0x22C" visible="true" />
+		<float32 name="Sphere 6 x" offset="0x230" visible="true" />
+		<float32 name="Sphere 6 y" offset="0x234" visible="true" />
+		<float32 name="Sphere 6 z" offset="0x238" visible="true" />
+		<float32 name="Sphere 6 Radius" offset="0x23C" visible="true" />
+		<float32 name="Sphere 7 x" offset="0x240" visible="true" />
+		<float32 name="Sphere 7 y" offset="0x244" visible="true" />
+		<float32 name="Sphere 7 z" offset="0x248" visible="true" />
+		<float32 name="Sphere 7 Radius" offset="0x24C" visible="true" />
 		<comment title="Multispheres 4" />
 		<int32 name="Unknown" offset="0x250" visible="false" />
 		<int16 name="Size" offset="0x254" visible="true" />
@@ -1291,38 +1330,38 @@
 		<undefined name="Unknown" offset="0x268" visible="false" />
 		<undefined name="Unknown" offset="0x26C" visible="false" />
 		<comment title="Four Vectors Storage" />
-		<undefined name="Sphere 0 x" offset="0x270" visible="true" />
-		<undefined name="Sphere 0 y" offset="0x274" visible="true" />
-		<undefined name="Sphere 0 z" offset="0x278" visible="true" />
-		<undefined name="Sphere 0 Radius" offset="0x27C" visible="true" />
-		<undefined name="Sphere 1 x" offset="0x280" visible="true" />
-		<undefined name="Sphere 1 y" offset="0x284" visible="true" />
-		<undefined name="Sphere 1 z" offset="0x288" visible="true" />
-		<undefined name="Sphere 1 Radius" offset="0x28C" visible="true" />
-		<undefined name="Sphere 2 x" offset="0x290" visible="true" />
-		<undefined name="Sphere 2 y" offset="0x294" visible="true" />
-		<undefined name="Sphere 2 z" offset="0x298" visible="true" />
-		<undefined name="Sphere 2 Radius" offset="0x29C" visible="true" />
-		<undefined name="Sphere 3 x" offset="0x2A0" visible="true" />
-		<undefined name="Sphere 3 y" offset="0x2A4" visible="true" />
-		<undefined name="Sphere 3 z" offset="0x2A8" visible="true" />
-		<undefined name="Sphere 3 Radius" offset="0x2AC" visible="true" />
-		<undefined name="Sphere 4 x" offset="0x2B0" visible="true" />
-		<undefined name="Sphere 4 y" offset="0x2B4" visible="true" />
-		<undefined name="Sphere 4 z" offset="0x2B8" visible="true" />
-		<undefined name="Sphere 4 Radius" offset="0x2BC" visible="true" />
-		<undefined name="Sphere 5 x" offset="0x2C0" visible="true" />
-		<undefined name="Sphere 5 y" offset="0x2C4" visible="true" />
-		<undefined name="Sphere 5 z" offset="0x2C8" visible="true" />
-		<undefined name="Sphere 5 Radius" offset="0x2CC" visible="true" />
-		<undefined name="Sphere 6 x" offset="0x2D0" visible="true" />
-		<undefined name="Sphere 6 y" offset="0x2D4" visible="true" />
-		<undefined name="Sphere 6 z" offset="0x2D8" visible="true" />
-		<undefined name="Sphere 6 Radius" offset="0x2DC" visible="true" />
-		<undefined name="Sphere 7 x" offset="0x2E0" visible="true" />
-		<undefined name="Sphere 7 y" offset="0x2E4" visible="true" />
-		<undefined name="Sphere 7 z" offset="0x2E8" visible="true" />
-		<undefined name="Sphere 7 Radius" offset="0x2EC" visible="true" />
+		<float32 name="Sphere 0 x" offset="0x270" visible="true" />
+		<float32 name="Sphere 0 y" offset="0x274" visible="true" />
+		<float32 name="Sphere 0 z" offset="0x278" visible="true" />
+		<float32 name="Sphere 0 Radius" offset="0x27C" visible="true" />
+		<float32 name="Sphere 1 x" offset="0x280" visible="true" />
+		<float32 name="Sphere 1 y" offset="0x284" visible="true" />
+		<float32 name="Sphere 1 z" offset="0x288" visible="true" />
+		<float32 name="Sphere 1 Radius" offset="0x28C" visible="true" />
+		<float32 name="Sphere 2 x" offset="0x290" visible="true" />
+		<float32 name="Sphere 2 y" offset="0x294" visible="true" />
+		<float32 name="Sphere 2 z" offset="0x298" visible="true" />
+		<float32 name="Sphere 2 Radius" offset="0x29C" visible="true" />
+		<float32 name="Sphere 3 x" offset="0x2A0" visible="true" />
+		<float32 name="Sphere 3 y" offset="0x2A4" visible="true" />
+		<float32 name="Sphere 3 z" offset="0x2A8" visible="true" />
+		<float32 name="Sphere 3 Radius" offset="0x2AC" visible="true" />
+		<float32 name="Sphere 4 x" offset="0x2B0" visible="true" />
+		<float32 name="Sphere 4 y" offset="0x2B4" visible="true" />
+		<float32 name="Sphere 4 z" offset="0x2B8" visible="true" />
+		<float32 name="Sphere 4 Radius" offset="0x2BC" visible="true" />
+		<float32 name="Sphere 5 x" offset="0x2C0" visible="true" />
+		<float32 name="Sphere 5 y" offset="0x2C4" visible="true" />
+		<float32 name="Sphere 5 z" offset="0x2C8" visible="true" />
+		<float32 name="Sphere 5 Radius" offset="0x2CC" visible="true" />
+		<float32 name="Sphere 6 x" offset="0x2D0" visible="true" />
+		<float32 name="Sphere 6 y" offset="0x2D4" visible="true" />
+		<float32 name="Sphere 6 z" offset="0x2D8" visible="true" />
+		<float32 name="Sphere 6 Radius" offset="0x2DC" visible="true" />
+		<float32 name="Sphere 7 x" offset="0x2E0" visible="true" />
+		<float32 name="Sphere 7 y" offset="0x2E4" visible="true" />
+		<float32 name="Sphere 7 z" offset="0x2E8" visible="true" />
+		<float32 name="Sphere 7 Radius" offset="0x2EC" visible="true" />
 		<undefined name="Unknown" offset="0x2F0" visible="false" />
 		<undefined name="Unknown" offset="0x2F4" visible="false" />
 		<undefined name="Unknown" offset="0x2F8" visible="false" />

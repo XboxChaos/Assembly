@@ -150,7 +150,7 @@
 			<reflexive name="Clusters" offset="0xC" visible="true" entrySize="0xC">
 				<reflexive name="BSPs" offset="0x0" visible="true" entrySize="0xC">
 					<reflexive name="Unknown" offset="0x0" visible="true" entrySize="0x4">
-						<bitfield32 name="Show..." offset="0x0" visible="true">
+						<bitfield32 name="Allow..." offset="0x0" visible="true">
 							<bit name="Bit 0" index="0" />
 							<bit name="Bit 1" index="1" />
 							<bit name="Bit 2" index="2" />
@@ -190,8 +190,19 @@
 			<reflexive name="Cluster Skies" offset="0x18" visible="true" entrySize="0x1">
 				<int8 name="Sky Index" offset="0x0" visible="true" />
 			</reflexive>
-			<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x4">
+			<reflexive name="Cluster Visible Skies" offset="0x24" visible="true" entrySize="0x1">
+				<int8 name="Sky Index" offset="0x0" visible="true" />
+			</reflexive>
+			<undefined name="Unknown" offset="0x30" visible="false" />
+			<undefined name="Unknown" offset="0x34" visible="false" />
+			<undefined name="Unknown" offset="0x38" visible="false" />
+			<reflexive name="Unknown" offset="0x3C" visible="false" entrySize="0x4">
 				<undefined name="Unknown" offset="0x0" visible="false" />
+			</reflexive>
+			<reflexive name="Clusters" offset="0x48" visible="false" entrySize="0xC">
+				<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x1">
+					<int8 name="Unknown" offset="0x0" visible="false" />
+				</reflexive>
 			</reflexive>
 		</reflexive>
 		<reflexive name="BSPs" offset="0x20" visible="false" entrySize="0x18">
@@ -329,10 +340,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -384,7 +462,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -409,15 +487,12 @@
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
-		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
+		<bitfield32 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x51" visible="false" />
-		<int8 name="Unknown" offset="0x52" visible="false" />
-		<int8 name="Unknown" offset="0x53" visible="false" />
+		</bitfield32>
 		<color32 name="Primary Color" offset="0x54" alpha="true" visible="true" />
 		<color32 name="Secondary Color" offset="0x58" alpha="true" visible="true" />
 		<color32 name="Tertiary Color" offset="0x5C" alpha="true" visible="true" />
@@ -484,7 +559,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x84" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x86" visible="true" />
+		<int16 name="Abandon Time" offset="0x86" visible="true" />
 		<int8 name="Unknown" offset="0x88" visible="false" />
 		<enum8 name="Shape" offset="0x89" visible="true">
 			<option name="None" value="0x0" />
@@ -494,11 +569,11 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x8A" visible="false" />
 		<int8 name="Unknown" offset="0x8B" visible="false" />
-		<undefined name="Radius/Width" offset="0x8C" visible="true" />
-		<undefined name="Depth" offset="0x90" visible="true" />
-		<undefined name="Top" offset="0x94" visible="true" />
-		<undefined name="Bottom" offset="0x98" visible="true" />
-		<undefined name="Unknown" offset="0x9C" visible="false" />
+		<float32 name="Radius/Width" offset="0x8C" visible="true" />
+		<float32 name="Depth" offset="0x90" visible="true" />
+		<float32 name="Top" offset="0x94" visible="true" />
+		<float32 name="Bottom" offset="0x98" visible="true" />
+		<float32 name="Unknown" offset="0x9C" visible="false" />
 	</reflexive>
 	<reflexive name="Scenery Palette" offset="0xB4" visible="true" entrySize="0x30">
 		<tagRef name="Scenery" offset="0x0" visible="true" />
@@ -554,10 +629,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -609,7 +751,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -634,15 +776,12 @@
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
-		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
+		<bitfield32 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x51" visible="false" />
-		<int8 name="Unknown" offset="0x52" visible="false" />
-		<int8 name="Unknown" offset="0x53" visible="false" />
+		</bitfield32>
 		<color32 name="Primary Color" offset="0x54" alpha="true" visible="true" />
 		<color32 name="Secondary Color" offset="0x58" alpha="true" visible="true" />
 		<color32 name="Tertiary Color" offset="0x5C" alpha="true" visible="true" />
@@ -738,10 +877,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -793,7 +999,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -818,15 +1024,12 @@
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
-		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
+		<bitfield32 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x51" visible="false" />
-		<int8 name="Unknown" offset="0x52" visible="false" />
-		<int8 name="Unknown" offset="0x53" visible="false" />
+		</bitfield32>
 		<color32 name="Primary Color" offset="0x54" alpha="true" visible="true" />
 		<color32 name="Secondary Color" offset="0x58" alpha="true" visible="true" />
 		<color32 name="Tertiary Color" offset="0x5C" alpha="true" visible="true" />
@@ -910,7 +1113,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x78" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x7A" visible="true" />
+		<int16 name="Abandon Time" offset="0x7A" visible="true" />
 		<int8 name="Unknown" offset="0x7C" visible="false" />
 		<enum8 name="Shape" offset="0x7D" visible="true">
 			<option name="None" value="0x0" />
@@ -920,11 +1123,11 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x7E" visible="false" />
 		<int8 name="Unknown" offset="0x7F" visible="false" />
-		<undefined name="Radius/Width" offset="0x80" visible="true" />
-		<undefined name="Depth" offset="0x84" visible="true" />
-		<undefined name="Top" offset="0x88" visible="true" />
-		<undefined name="Bottom" offset="0x8C" visible="true" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
+		<float32 name="Radius/Width" offset="0x80" visible="true" />
+		<float32 name="Depth" offset="0x84" visible="true" />
+		<float32 name="Top" offset="0x88" visible="true" />
+		<float32 name="Bottom" offset="0x8C" visible="true" />
+		<float32 name="Unknown" offset="0x90" visible="false" />
 	</reflexive>
 	<reflexive name="Vehicle Palette" offset="0xE4" visible="true" entrySize="0x30">
 		<tagRef name="Vehicle" offset="0x0" visible="true" />
@@ -980,10 +1183,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -1035,7 +1305,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -1136,7 +1406,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x5C" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x5E" visible="true" />
+		<int16 name="Abandon Time" offset="0x5E" visible="true" />
 		<int8 name="Unknown" offset="0x60" visible="false" />
 		<enum8 name="Shape" offset="0x61" visible="true">
 			<option name="None" value="0x0" />
@@ -1146,11 +1416,11 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x62" visible="false" />
 		<int8 name="Unknown" offset="0x63" visible="false" />
-		<undefined name="Radius/Width" offset="0x64" visible="true" />
-		<undefined name="Depth" offset="0x68" visible="true" />
-		<undefined name="Top" offset="0x6C" visible="true" />
-		<undefined name="Bottom" offset="0x70" visible="true" />
-		<undefined name="Unknown" offset="0x74" visible="false" />
+		<float32 name="Radius/Width" offset="0x64" visible="true" />
+		<float32 name="Depth" offset="0x68" visible="true" />
+		<float32 name="Top" offset="0x6C" visible="true" />
+		<float32 name="Bottom" offset="0x70" visible="true" />
+		<float32 name="Unknown" offset="0x74" visible="false" />
 	</reflexive>
 	<reflexive name="Equipment Palette" offset="0xFC" visible="true" entrySize="0x30">
 		<tagRef name="Equipment" offset="0x0" visible="true" />
@@ -1206,10 +1476,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -1261,7 +1598,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -1286,15 +1623,12 @@
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
-		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
+		<bitfield32 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x51" visible="false" />
-		<int8 name="Unknown" offset="0x52" visible="false" />
-		<int8 name="Unknown" offset="0x53" visible="false" />
+		</bitfield32>
 		<color32 name="Primary Color" offset="0x54" alpha="true" visible="true" />
 		<color32 name="Secondary Color" offset="0x58" alpha="true" visible="true" />
 		<color32 name="Tertiary Color" offset="0x5C" alpha="true" visible="true" />
@@ -1379,7 +1713,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x78" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x7A" visible="true" />
+		<int16 name="Abandon Time" offset="0x7A" visible="true" />
 		<int8 name="Unknown" offset="0x7C" visible="false" />
 		<enum8 name="Shape" offset="0x7D" visible="true">
 			<option name="None" value="0x0" />
@@ -1389,11 +1723,11 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x7E" visible="false" />
 		<int8 name="Unknown" offset="0x7F" visible="false" />
-		<undefined name="Radius/Width" offset="0x80" visible="true" />
-		<undefined name="Depth" offset="0x84" visible="true" />
-		<undefined name="Top" offset="0x88" visible="true" />
-		<undefined name="Bottom" offset="0x8C" visible="true" />
-		<undefined name="Unknown" offset="0x90" visible="false" />
+		<float32 name="Radius/Width" offset="0x80" visible="true" />
+		<float32 name="Depth" offset="0x84" visible="true" />
+		<float32 name="Top" offset="0x88" visible="true" />
+		<float32 name="Bottom" offset="0x8C" visible="true" />
+		<float32 name="Unknown" offset="0x90" visible="false" />
 	</reflexive>
 	<reflexive name="Weapon Palette" offset="0x114" visible="true" entrySize="0x30">
 		<tagRef name="Weapon" offset="0x0" visible="true" />
@@ -1487,10 +1821,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -1542,7 +1943,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -1639,7 +2040,7 @@
 		</bitfield32>
 		<reflexive name="Pathfinding References" offset="0x58" visible="true" entrySize="0x4">
 			<int16 name="BSP Index" offset="0x0" visible="true" />
-			<int16 name="Pathfinding Object Index" offset="0x0" visible="true" />
+			<int16 name="Pathfinding Object Index" offset="0x2" visible="true" />
 		</reflexive>
 	</reflexive>
 	<reflexive name="Machine Palette" offset="0x138" visible="true" entrySize="0x30">
@@ -1710,10 +2111,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -1765,7 +2233,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -1931,10 +2399,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -1986,7 +2521,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -2086,10 +2621,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -2141,7 +2743,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -2293,7 +2895,7 @@
 		<int16 name="Unknown" offset="0x8" visible="true" />
 		<int16 name="Unknown" offset="0xA" visible="true" />
 	</reflexive>
-	<reflexive name="Player Starting Profile" offset="0x210" visible="false" entrySize="0x54">
+	<reflexive name="Player Starting Profile" offset="0x210" visible="true" entrySize="0x54">
 		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<float32 name="Starting Health Damage" offset="0x20" visible="true" />
 		<float32 name="Starting Shield Damage" offset="0x24" visible="true" />
@@ -2511,9 +3113,9 @@
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<int16 name="Unknown" offset="0x44" visible="false" />
 			<int16 name="Unknown" offset="0x46" visible="false" />
-			<undefined name="Multi-State Block" offset="0x48" visible="false" />
-			<undefined name="Multi-State Block" offset="0x4C" visible="false" />
-			<undefined name="Multi-State Block" offset="0x50" visible="false" />
+			<uint32 name="Multi-State Block" offset="0x48" visible="false" />
+			<uint32 name="Multi-State Block" offset="0x4C" visible="false" />
+			<uint32 name="Multi-State Block" offset="0x50" visible="false" />
 			<reflexive name="Starting Locations" offset="0x54" visible="true" entrySize="0x88">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
@@ -2522,7 +3124,7 @@
 				<float32 name="Position y" offset="0xC" visible="true" />
 				<float32 name="Position z" offset="0x10" visible="true" />
 				<int16 name="Reference Frame" offset="0x14" visible="true" />
-				<int16 name="Unknown" offset="0x16" visible="false" />
+				<int16 name="BSP Index" offset="0x16" visible="true" />
 				<degree name="Facing i" offset="0x18" visible="true" />
 				<degree name="Facing j" offset="0x1C" visible="true" />
 				<degree name="Facing k" offset="0x20" visible="true" />
@@ -2571,6 +3173,7 @@
 					<option name="Spawn In Gunner" value="0x2" />
 					<option name="Spawn In Driver" value="0x3" />
 					<option name="Spawn Out Of Vehicle" value="0x4" />
+					<option name="Unknown" value="0x5" />
 					<option name="Spawn Vehicle Only" value="0x6" />
 					<option name="Spawn In Passenger" value="0x7" />
 				</enum16>
@@ -2601,12 +3204,12 @@
 				<int16 name="Unknown" offset="0x76" visible="false" />
 				<int16 name="Unknown" offset="0x78" visible="false" />
 				<int16 name="Unknown" offset="0x7A" visible="false" />
-				<undefined name="Multi-State Block" offset="0x7C" visible="false" />
-				<undefined name="Multi-State Block" offset="0x80" visible="false" />
-				<undefined name="Multi-State Block" offset="0x84" visible="false" />
+				<uint32 name="Multi-State Block" offset="0x7C" visible="false" />
+				<uint32 name="Multi-State Block" offset="0x80" visible="false" />
+				<uint32 name="Multi-State Block" offset="0x84" visible="false" />
 			</reflexive>
 		</reflexive>
-		<int16 name="Unknown" offset="0x3C" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3C" visible="true" />
 		<int16 name="Unknown" offset="0x3E" visible="false" />
 	</reflexive>
 	<undefined name="Unknown" offset="0x360" visible="false" />
@@ -2940,7 +3543,7 @@
 	<undefined name="Unknown" offset="0x3E8" visible="false" />
 	<reflexive name="Scripting Data" offset="0x3EC" visible="true" entrySize="0x84">
 		<reflexive name="Point Sets" offset="0x0" visible="true" entrySize="0x34">
-			<ascii name="Name" offset="0x0" length="32" visible="true"/>
+			<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 			<reflexive name="Points" offset="0x20" visible="true" entrySize="0x3C">
 				<ascii name="Name" offset="0x0" length="0x20" visible="true" />
 				<float name="Position x" offset="0x20" visible="true" />
@@ -3363,7 +3966,7 @@
 		<undefined name="Unknown" offset="0x44" visible="true" />
 		<reflexive name="Dynamic Spawn Overloads" offset="0x48" visible="true" entrySize="0x10">
 			<int16 name="Overload Type" offset="0x0" visible="true" />
-			<int16 name="Unknown" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="true" />
 			<float32 name="Inner Radius" offset="0x4" visible="true" />
 			<float32 name="Outer Radius" offset="0x8" visible="true" />
 			<float32 name="Weight" offset="0xC" visible="true" />
@@ -3593,10 +4196,77 @@
 		<degree name="Rotation i" offset="0x14" visible="true" />
 		<degree name="Rotation j" offset="0x18" visible="true" />
 		<degree name="Rotation k" offset="0x1C" visible="true" />
-		<Float32 name="Scale" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<float32 name="Scale" offset="0x20" visible="true" />
+		<comment title="Node Positioning">This block allows you to "pose" this objects nodes. Used normally for dead bodies. The orientations block has an entry for each checked node flag, skipping unchecked ones.
+The blocks labeled [Readable] are modified to make reading/editing the values easier, but as a result the entry counts will be innaccurate, going too far may result in editing the wrong data.
+DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
+		<reflexive name="Node Positioning" offset="0x24" visible="true" entrySize="0x1C">
+			<int16 name="Node Count" offset="0x0" visible="true" />
+			<int16 name="Unknown" offset="0x2" visible="false" />
+			<reflexive name="Node Flags" offset="0x4" visible="true" entrySize="0x1">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96" index="0" />
+					<bit name="Node 1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97" index="1" />
+					<bit name="Node 2, 10, 18, 26, 34, 42, 50, 58, 66, 74, 82, 90, 98" index="2" />
+					<bit name="Node 3, 11, 19, 27, 35, 43, 51, 59, 67, 75, 83, 91, 99" index="3" />
+					<bit name="Node 4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100" index="4" />
+					<bit name="Node 5, 13, 21, 29, 37, 45, 53, 61, 69, 77, 85, 93, 101" index="5" />
+					<bit name="Node 6, 14, 22, 30, 38, 46, 54, 62, 70, 78, 86, 94, 102" index="6" />
+					<bit name="Node 7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations" offset="0x10" visible="true" entrySize="0x2">
+				<int16 name="Rotation x, y, z, w" offset="0x0" visible="true" />
+			</reflexive>
+			<reflexive name="Node Flags [Readable]" offset="0x4" visible="true" entrySize="0x4">
+				<bitfield8 name="Flags" offset="0x0" visible="true">
+					<bit name="Node 0, 32, 64, 96, 128, 160, 192, 224" index="0" />
+					<bit name="Node 1, 33, 65, 97, 129, 161, 193, 225" index="1" />
+					<bit name="Node 2, 34, 66, 98, 130, 162, 194, 226" index="2" />
+					<bit name="Node 3, 35, 67, 99, 131, 163, 195, 227" index="3" />
+					<bit name="Node 4, 36, 68, 100, 132, 164, 196, 228" index="4" />
+					<bit name="Node 5, 37, 69, 101, 133, 165, 197, 229" index="5" />
+					<bit name="Node 6, 38, 70, 102, 134, 166, 198, 230" index="6" />
+					<bit name="Node 7, 39, 71, 103, 135, 167, 199, 231" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x1" visible="true">
+					<bit name="Node 8, 40, 72, 104, 136, 168, 200, 232" index="0" />
+					<bit name="Node 9, 41, 73, 105, 137, 169, 201, 233" index="1" />
+					<bit name="Node 10, 42, 74, 106, 138, 170, 202, 234" index="2" />
+					<bit name="Node 11, 43, 75, 107, 139, 171, 203, 235" index="3" />
+					<bit name="Node 12, 44, 76, 108, 140, 172, 204, 236" index="4" />
+					<bit name="Node 13, 45, 77, 109, 141, 173, 205, 237" index="5" />
+					<bit name="Node 14, 46, 78, 110, 142, 174, 206, 238" index="6" />
+					<bit name="Node 15, 47, 79, 111, 143, 175, 207, 239" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x2" visible="true">
+					<bit name="Node 16, 48, 80, 112, 144, 176, 208, 240" index="0" />
+					<bit name="Node 17, 49, 81, 113, 145, 177, 209, 241" index="1" />
+					<bit name="Node 18, 50, 82, 114, 146, 178, 210, 242" index="2" />
+					<bit name="Node 19, 51, 83, 115, 147, 179, 211, 243" index="3" />
+					<bit name="Node 20, 52, 84, 116, 148, 180, 212, 244" index="4" />
+					<bit name="Node 21, 53, 85, 117, 149, 181, 213, 245" index="5" />
+					<bit name="Node 22, 54, 86, 118, 150, 182, 214, 246" index="6" />
+					<bit name="Node 23, 55, 87, 119, 151, 183, 215, 247" index="7" />
+				</bitfield8>
+				<bitfield8 name="Flags" offset="0x3" visible="true">
+					<bit name="Node 24, 56, 88, 120, 152, 184, 216, 248" index="0" />
+					<bit name="Node 25, 57, 89, 121, 153, 185, 217, 249" index="1" />
+					<bit name="Node 26, 58, 90, 122, 154, 186, 218, 250" index="2" />
+					<bit name="Node 27, 59, 91, 123, 155, 187, 219, 251" index="3" />
+					<bit name="Node 28, 60, 92, 124, 156, 188, 220, 252" index="4" />
+					<bit name="Node 29, 61, 93, 125, 157, 189, 221, 253" index="5" />
+					<bit name="Node 30, 62, 94, 126, 158, 190, 222, 254" index="6" />
+					<bit name="Node 31, 63, 95, 127, 159, 191, 223, 255" index="7" />
+				</bitfield8>
+			</reflexive>
+			<reflexive name="Orientations [Readable]" offset="0x10" visible="true" entrySize="0x8">
+				<int16 name="Rotation x" offset="0x0" visible="true" />
+				<int16 name="Rotation y" offset="0x2" visible="true" />
+				<int16 name="Rotation z" offset="0x4" visible="true" />
+				<int16 name="Rotation w" offset="0x6" visible="true" />
+			</reflexive>
+		</reflexive>
 		<int16 name="Unknown" offset="0x30" visible="false" />
 		<bitfield16 name="Old Manual BSP Flags (Now Zonesets)" offset="0x32" visible="true">
 			<bit name="Set 0" index="0" />
@@ -3648,7 +4318,7 @@
 			<option name="Manual BSP Index" value="0x2" />
 		</enum8>
 		<int8 name="Unknown" offset="0x3D" visible="false" />
-		<int16 name="Editor Folder Index" offset="0x3E" visible="false" />
+		<int16 name="Editor Folder Index" offset="0x3E" visible="true" />
 		<int16 name="Unknown" offset="0x40" visible="false" />
 		<int16 name="Parent Name Index" offset="0x42" visible="true" />
 		<stringid name="Child Name" offset="0x44" visible="true" />
@@ -3673,15 +4343,12 @@
 		<int16 name="Unknown" offset="0x4A" visible="false" />
 		<comment title="Permutation Data" />
 		<stringid name="Variant" offset="0x4C" visible="true" />
-		<bitfield8 name="Active Change Colors" offset="0x50" visible="true">
+		<bitfield32 name="Active Change Colors" offset="0x50" visible="true">
 			<bit name="Primary" index="0" />
 			<bit name="Secondary" index="1" />
 			<bit name="Tertiary" index="2" />
 			<bit name="Quaternary" index="3" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x51" visible="false" />
-		<int8 name="Unknown" offset="0x52" visible="false" />
-		<int8 name="Unknown" offset="0x53" visible="false" />
+		</bitfield32>
 		<color32 name="Primary Color" offset="0x54" alpha="true" visible="true" />
 		<color32 name="Secondary Color" offset="0x58" alpha="true" visible="true" />
 		<color32 name="Tertiary Color" offset="0x5C" alpha="true" visible="true" />
@@ -3734,7 +4401,7 @@
 			<bit name="Bit 7" index="7" />
 		</bitfield8>
 		<int16 name="Spawn Time" offset="0x80" visible="true" />
-		<int16 name="Unknown Spawn Time" offset="0x82" visible="true" />
+		<int16 name="Abandon Time" offset="0x82" visible="true" />
 		<int8 name="Unknown" offset="0x84" visible="false" />
 		<enum8 name="Shape" offset="0x85" visible="true">
 			<option name="None" value="0x0" />
@@ -3744,11 +4411,11 @@
 		</enum8>
 		<int8 name="Unknown" offset="0x86" visible="false" />
 		<int8 name="Unknown" offset="0x87" visible="false" />
-		<undefined name="Radius/Width" offset="0x88" visible="true" />
-		<undefined name="Depth" offset="0x8C" visible="true" />
-		<undefined name="Top" offset="0x90" visible="true" />
-		<undefined name="Bottom" offset="0x94" visible="true" />
-		<undefined name="Unknown" offset="0x98" visible="false" />
+		<float32 name="Radius/Width" offset="0x88" visible="true" />
+		<float32 name="Depth" offset="0x8C" visible="true" />
+		<float32 name="Top" offset="0x90" visible="true" />
+		<float32 name="Bottom" offset="0x94" visible="true" />
+		<float32 name="Unknown" offset="0x98" visible="false" />
 	</reflexive>
 	<reflexive name="Crate Palette" offset="0x5B0" visible="true" entrySize="0x30">
 		<tagRef name="Crate" offset="0x0" visible="true" />
@@ -3777,7 +4444,7 @@
 	<undefined name="Unknown" offset="0x608" visible="false" />
 	<reflexive name="Editor Folders" offset="0x60C" visible="true" entrySize="0x104">
 		<int32 name="Parent Folder" offset="0x0" visible="true" />
-		<ascii name="Name" offset="0x4" length="0x100" visible="true"/>
+		<ascii name="Name" offset="0x4" length="0x100" visible="true" />
 	</reflexive>
 	<reflexive name="Level Data" offset="0x618" visible="true" entrySize="0x2C">
 		<tagRef name="Level Description" offset="0x0" visible="true" />
@@ -3907,15 +4574,66 @@
 	<tagRef name="Global Lighting" offset="0x6A8" visible="true" />
 	<tagRef name="Lightmap" offset="0x6B8" visible="true" />
 	<tagRef name="Performance Throttles" offset="0x6C8" visible="true" />
-	<undefined name="Unknown" offset="0x6D8" visible="false" />
-	<undefined name="Unknown" offset="0x6DC" visible="false" />
-	<undefined name="Unknown" offset="0x6E0" visible="false" />
+	<reflexive name="Unknown Objects" offset="0x6D8" visible="true" entrySize="0x10">
+		<uint16 name="Unique ID Salt" offset="0x0" visible="true" />
+		<uint16 name="Unique ID Index" offset="0x2" visible="true" />
+		<int16 name="Origin BSP Index" offset="0x4" visible="true" />
+		<enum8 name="Type" offset="0x6" visible="true">
+			<option name="Biped" value="0x0" />
+			<option name="Vehicle" value="0x1" />
+			<option name="Weapon" value="0x2" />
+			<option name="Equipment" value="0x3" />
+			<option name="Terminal" value="0x4" />
+			<option name="Projectile" value="0x5" />
+			<option name="Scenery" value="0x6" />
+			<option name="Machine" value="0x7" />
+			<option name="Control" value="0x8" />
+			<option name="Light Fixture" value="0x9" />
+			<option name="Sound Scenery" value="0xA" />
+			<option name="Crate" value="0xB" />
+			<option name="Creature" value="0xC" />
+			<option name="Giant" value="0xD" />
+			<option name="Effect Scenery" value="0xE" />
+		</enum8>
+		<enum8 name="Source" offset="0x7" visible="true">
+			<option name="Structure" value="0x0" />
+			<option name="Editor" value="0x1" />
+			<option name="Dynamic" value="0x2" />
+			<option name="Legacy" value="0x3" />
+		</enum8>
+		<enum8 name="BSP Policy" offset="0x8" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Always Placed" value="0x1" />
+			<option name="Manual BSP Index" value="0x2" />
+		</enum8>
+		<int8 name="Unknown" offset="0x9" visible="false" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
+		<int16 name="Unknown" offset="0xC" visible="false" />
+		<int16 name="Unknown" offset="0xE" visible="false" />
+	</reflexive>
 	<reflexive name="AI Objectives" offset="0x6E4" visible="true" entrySize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int16 name="Zone" offset="0x4" visible="true" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
+		<int16 name="Unknown Role Index" offset="0x6" visible="true" />
 		<reflexive name="Roles" offset="0x8" visible="true" entrySize="0xCC">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+			<bitfield16 name="Flags" offset="0x0" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+				<bit name="Bit 8" index="8" />
+				<bit name="Bit 9" index="9" />
+				<bit name="Bit 10" index="10" />
+				<bit name="Bit 11" index="11" />
+				<bit name="Bit 12" index="12" />
+				<bit name="Bit 13" index="13" />
+				<bit name="Bit 14" index="14" />
+				<bit name="Bit 15" index="15" />
+			</bitfield16>
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<int16 name="Unknown" offset="0x4" visible="false" />
 			<int16 name="Unknown" offset="0x6" visible="false" />
@@ -3931,7 +4649,7 @@
 			<int16 name="Unknown" offset="0x76" visible="false" />
 			<int16 name="Unknown" offset="0x78" visible="false" />
 			<int16 name="Unknown" offset="0x7A" visible="false" />
-			<reflexive name="Unknown 84" offset="0x7C" visible="false" entrySize="0x8">
+			<reflexive name="Unknown" offset="0x7C" visible="false" entrySize="0x8">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
 			</reflexive>
@@ -3952,23 +4670,51 @@
 			<enum16 name="Filter" offset="0xA6" visible="true">
 				<option name="None" value="0x0" />
 				<option name="Leader" value="0x1" />
+				<option name="No Leader" value="0x2" />
 				<option name="Arbiter" value="0x3" />
-				<option name="Player" value="0x4" />
+				<option name="Player In My Vehicle" value="0x4" />
+				<option name="Sighted Player" value="0x5" />
+				<option name="Sighted Enemy" value="0x6" />
 				<option name="Infantry" value="0x7" />
-				<option name="Flood" value="0x10" />
-				<option name="Sentinel" value="0x11" />
+				<option name="Strength &gt; 0.25" value="0x8" />
+				<option name="Strength &gt; 0.5" value="0x9" />
+				<option name="Strength &gt; 0.75" value="0xA" />
+				<option name="Strength &lt; 0.25" value="0xB" />
+				<option name="Strength &lt; 0.5" value="0xC" />
+				<option name="Strength &lt; 0.75" value="0xD" />
+				<option name="Human Team" value="0xE" />
+				<option name="Covenant Team" value="0xF" />
+				<option name="Flood Team" value="0x10" />
+				<option name="Sentinel Team" value="0x11" />
+				<option name="Unknown" value="0x12" />
+				<option name="Unknown" value="0x13" />
+				<option name="Elite" value="0x14" />
 				<option name="Jackal" value="0x15" />
 				<option name="Grunt" value="0x16" />
+				<option name="Hunter" value="0x17" />
 				<option name="Marine" value="0x18" />
 				<option name="Flood Combat" value="0x19" />
 				<option name="Flood Carrier" value="0x1A" />
+				<option name="Sentinel" value="0x1B" />
 				<option name="Brute" value="0x1C" />
-				<option name="Drone" value="0x1E" />
+				<option name="Unknown" value="0x1D" />
+				<option name="Bugger" value="0x1E" />
 				<option name="Flood Pureform" value="0x1F" />
-				<option name="Warthog" value="0x22" />
+				<option name="Guardian" value="0x20" />
+				<option name="Sniper" value="0x21" />
+				<option name="Vehicle" value="0x22" />
+				<option name="Scorpion" value="0x23" />
+				<option name="Ghost" value="0x24" />
+				<option name="Warthog" value="0x25" />
+				<option name="Unknown" value="0x26" />
 				<option name="Wraith" value="0x27" />
 				<option name="Phantom" value="0x28" />
-				<option name="Brute Chopper" value="0x2C" />
+				<option name="Pelican" value="0x29" />
+				<option name="Banshee" value="0x2A" />
+				<option name="Hornet" value="0x2B" />
+				<option name="Chopper" value="0x2C" />
+				<option name="Mauler" value="0x2D" />
+				<option name="Mongoose" value="0x2E" />
 			</enum16>
 			<int16 name="Min" offset="0xA8" visible="true" />
 			<int16 name="Max" offset="0xAA" visible="true" />
@@ -3986,13 +4732,13 @@
 				<float32 name="Point 0 X" offset="0x0" visible="true" />
 				<float32 name="Point 0 Y" offset="0x4" visible="true" />
 				<float32 name="Point 0 Z" offset="0x8" visible="true" />
-				<int16 name="Reference Frame" offset="0xC" visible="true" />
-				<int16 name="Unknown" offset="0xE" visible="false" />
+				<int16 name="Reference Frame 0" offset="0xC" visible="true" />
+				<int16 name="BSP Index 0" offset="0xE" visible="true" />
 				<float32 name="Point 1 X" offset="0x10" visible="true" />
 				<float32 name="Point 1 Y" offset="0x14" visible="true" />
 				<float32 name="Point 1 Z" offset="0x18" visible="true" />
-				<int16 name="Reference Frame" offset="0x1C" visible="true" />
-				<int16 name="Unknown" offset="0x1E" visible="false" />
+				<int16 name="Reference Frame 1" offset="0x1C" visible="true" />
+				<int16 name="BSP Index 1" offset="0x1E" visible="true" />
 			</reflexive>
 		</reflexive>
 	</reflexive>
@@ -4058,28 +4804,12 @@
 	<undefined name="Unknown" offset="0x730" visible="false" />
 	<undefined name="Unknown" offset="0x734" visible="false" />
 	<reflexive name="Unknown" offset="0x738" visible="false" entrySize="0x18">
-		<reflexive name="Unknown" offset="0x0" visible="false" entrySize="0x20">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-		</reflexive>
-		<reflexive name="Unknown" offset="0xC" visible="false" entrySize="0x28">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-			<undefined name="Unknown" offset="0x8" visible="false" />
-			<undefined name="Unknown" offset="0xC" visible="false" />
-			<undefined name="Unknown" offset="0x10" visible="false" />
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
-			<undefined name="Unknown" offset="0x24" visible="false" />
-		</reflexive>
+		<undefined name="Unknown" offset="0x0" visible="false" />
+		<undefined name="Unknown" offset="0x4" visible="false" />
+		<undefined name="Unknown" offset="0x8" visible="false" />
+		<undefined name="Unknown" offset="0xC" visible="false" />
+		<undefined name="Unknown" offset="0x10" visible="false" />
+		<undefined name="Unknown" offset="0x14" visible="false" />
 	</reflexive>
 	<reflexive name="Unknown" offset="0x744" visible="false" entrySize="0x10">
 		<undefined name="Unknown" offset="0x0" visible="false" />
