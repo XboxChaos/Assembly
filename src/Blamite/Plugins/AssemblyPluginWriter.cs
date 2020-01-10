@@ -283,10 +283,10 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
+		public bool EnterTagBlock(string name, uint offset, bool visible, uint elementSize, int align, bool sort, uint pluginLine)
 		{
-			WriteValueStart("reflexive", name, offset, visible);
-			_output.WriteAttributeString("entrySize", ToHexString(entrySize));
+			WriteValueStart("tagblock", name, offset, visible);
+			_output.WriteAttributeString("elementSize", ToHexString(elementSize));
 			if (align != 4)
 				_output.WriteAttributeString("align", ToHexString(align));
 			if (sort == true)
@@ -294,7 +294,7 @@ namespace Blamite.Plugins
 			return true;
 		}
 
-		public void LeaveReflexive()
+		public void LeaveTagBlock()
 		{
 			_output.WriteEndElement();
 		}

@@ -7,19 +7,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		public delegate void FieldHighlighter(MetaField field, bool highlight);
 
-		public delegate void ResultCollector(MetaField foundField, MetaField listField, ReflexiveData parent);
+		public delegate void ResultCollector(MetaField foundField, MetaField listField, TagBlockData parent);
 
-		private readonly ReflexiveFlattener _flattener;
+		private readonly TagBlockFlattener _flattener;
 		private readonly FieldHighlighter _highlighter;
 		private readonly ResultCollector _resultCollector;
 
-		private ReflexiveData _currentReflexive;
+		private TagBlockData _currentTagBlock;
 		private string _filter;
 		private int _highlightLevel; // If greater than zero, then always highlight fields
 		private float? _numberFilter;
 		private MetaField _topLevelField;
 
-		public MetaFilterer(ReflexiveFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
+		public MetaFilterer(TagBlockFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
 		{
 			_flattener = flattener;
 			_resultCollector = resultCollector;
@@ -102,31 +102,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			FilterString(field, field.Name);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
-			// Don't enter empty reflexives
-			ReflexiveData oldReflexive = _currentReflexive;
-			_currentReflexive = field;
+			// Don't enter empty blocks
+			TagBlockData oldTagBlock = _currentTagBlock;
+			_currentTagBlock = field;
 
 			if (FilterString(field, field.Name) && field.Length > 0)
 			{
 				// Forcibly highlight everything inside it
 				_highlightLevel++;
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 				_highlightLevel--;
 			}
 			else if (field.Length > 0)
 			{
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 			}
 
-			_currentReflexive = oldReflexive;
+			_currentTagBlock = oldTagBlock;
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
-			// Ignore - wrapper handling is done inside VisitReflexive/HandleWrapper to ensure that
-			// closed reflexives aren't skipped over
+			// Ignore - wrapper handling is done inside VisitTagBlock/HandleWrapper to ensure that
+			// closed blocks aren't skipped over
 		}
 
 		public void VisitString(StringData field)
@@ -351,10 +351,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		// Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
-		private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
+		// Passed as the callback to TagBlockFlattener.EnumWrappers in VisitTagBlock
+		private void TagBlockFlattener_HandleWrapper(WrappedTagBlockEntry wrapper)
 		{
-			_topLevelField = _flattener.GetTopLevelWrapper(_currentReflexive, wrapper);
+			_topLevelField = _flattener.GetTopLevelWrapper(_currentTagBlock, wrapper);
 			_highlighter(wrapper, _highlightLevel > 0);
 			wrapper.WrappedField.Accept(this);
 		}
@@ -384,7 +384,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private void AcceptField(MetaField field)
 		{
 			_highlighter(field, true);
-			_resultCollector(field, _topLevelField, _currentReflexive);
+			_resultCollector(field, _topLevelField, _currentTagBlock);
 		}
 
 		private void RejectField(MetaField field)

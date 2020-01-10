@@ -19,7 +19,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly ICacheFile _cache;
 		private readonly FieldChangeSet _changes;
 		private readonly StructureLayout _dataRefLayout;
-		private readonly StructureLayout _reflexiveLayout;
+		private readonly StructureLayout _tagBlockLayout;
 		private readonly Trie _stringIdTrie;
 		private readonly StructureLayout _tagRefLayout;
 		private readonly SaveType _type;
@@ -42,7 +42,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_stringIdTrie = stringIdTrie;
 
 			// Load layouts
-			_reflexiveLayout = buildInfo.Layouts.GetLayout("tag block");
+			_tagBlockLayout = buildInfo.Layouts.GetLayout("tag block");
 			_tagRefLayout = buildInfo.Layouts.GetLayout("tag reference");
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
@@ -155,21 +155,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteFloat(field.Value.ScB);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
 			var values = new StructureValueCollection();
 
-			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstEntryAddress, (int)(field.Length * field.EntrySize)) ? (uint)field.Length : 0);
+			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)) ? (uint)field.Length : 0);
 
-			uint cont = _cache.PointerExpander.Contract(field.FirstEntryAddress);
+			uint cont = _cache.PointerExpander.Contract(field.FirstElementAddress);
 
 			values.SetInteger("pointer", cont);
 
 			SeekToOffset(field.Offset);
-			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
+			StructureWriter.WriteStructure(values, _tagBlockLayout, _writer);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 		}
 
@@ -406,22 +406,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (_changes == null || _changes.HasChanged(field))
 				field.Accept(this);
 
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
-				WriteReflexiveChildren(reflexive);
+			var block = field as TagBlockData;
+			if (block != null)
+				WriteTagBlockChildren(block);
 		}
 
-		public void WriteReflexiveChildren(ReflexiveData field)
+		public void WriteTagBlockChildren(TagBlockData field)
 		{
 			if (field.CurrentIndex < 0 || !field.HasChildren)
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
-			long newBaseOffset = field.FirstEntryAddress;
+			long newBaseOffset = field.FirstElementAddress;
 			if (_type == SaveType.File)
 				newBaseOffset = _cache.MetaArea.PointerToOffset(newBaseOffset);
 
-			// Save the old base offset and set the base offset to the reflexive's base
+			// Save the old base offset and set the base offset to the block's base
 			long oldBaseOffset = _baseOffset;
 			_baseOffset = newBaseOffset;
 
@@ -434,17 +434,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				if (_changes == null && field.CurrentIndex != i)
 					field.CurrentIndex = i;
 
-				// If we're not saving everything, then we can only poke template fields in reflexives
+				// If we're not saving everything, then we can only poke template fields in block
 				// if the current indices all line up
 				if (i != _oldIndex)
 					_pokeTemplateFields = false;
 
 				// Get each field in the page and write it
-				ReflexivePage page = field.Pages[i];
+				TagBlockPage page = field.Pages[i];
 				for (int j = 0; j < page.Fields.Length; j++)
 				{
 					MetaField pageField = page.Fields[j];
-					// The field in the page takes precedence over the field in the reflexive's template
+					// The field in the page takes precedence over the field in the block's template
 					if (pageField == null && (_changes == null || _pokeTemplateFields))
 						pageField = field.Template[j]; // Get it from the template
 					if (pageField != null)
@@ -452,7 +452,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				}
 
 				// Advance to the next chunk
-				_baseOffset += field.EntrySize;
+				_baseOffset += field.ElementSize;
 				_pokeTemplateFields = _oldPokeTemplates;
 			}
 			if (!Equals(field.CurrentIndex, _oldIndex))

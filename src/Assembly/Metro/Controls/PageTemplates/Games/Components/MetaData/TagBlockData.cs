@@ -5,12 +5,12 @@ using Blamite.IO;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-	public class ReflexivePage : PropertyChangeNotifier
+	public class TagBlockPage : PropertyChangeNotifier
 	{
 		private readonly MetaField[] _fields;
 		private int _index;
 
-		public ReflexivePage(int index, int size)
+		public TagBlockPage(int index, int size)
 		{
 			_index = index;
 			_fields = new MetaField[size];
@@ -37,9 +37,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			for (int i = 0; i < changedFields.Count; i++)
 			{
 				MetaField field = changedFields[i];
-				var reflexive = field as ReflexiveData;
+				var block = field as TagBlockData;
 				bool changed = changes.HasChanged(field);
-				if (field != null && (changed || reflexive != null))
+				if (field != null && (changed || block != null))
 				{
 					if (_fields[i] == null)
 					{
@@ -49,8 +49,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 							tracker.MarkChanged(_fields[i]);
 						tracker.MarkUnchanged(field);
 
-						if (reflexive != null)
-							reflexive.ResetPages();
+						if (block != null)
+							block.ResetPages();
 					}
 					else if (field != _fields[i])
 					{
@@ -66,43 +66,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_fields[i] = null;
 		}
 
-		public ReflexivePage CloneValue()
+		public TagBlockPage CloneValue()
 		{
-			var result = new ReflexivePage(_index, _fields.Length);
+			var result = new TagBlockPage(_index, _fields.Length);
 			Array.Copy(_fields, result._fields, _fields.Length);
 			return result;
 		}
 	}
 
-	public class ReflexiveClonedEventArgs : EventArgs
+	public class TagBlockClonedEventArgs : EventArgs
 	{
-		public ReflexiveClonedEventArgs(ReflexiveData old, ReflexiveData clone)
+		public TagBlockClonedEventArgs(TagBlockData old, TagBlockData clone)
 		{
 			Old = old;
 			Clone = clone;
 		}
 
-		public ReflexiveData Old { get; private set; }
-		public ReflexiveData Clone { get; private set; }
+		public TagBlockData Old { get; private set; }
+		public TagBlockData Clone { get; private set; }
 	}
 
-	public class ReflexiveData : ValueField
+	public class TagBlockData : ValueField
 	{
-		private const double MinWidth = 525; // The minimum width that a reflexive can have
+		private const double MinWidth = 525; // The minimum width that a block can have
 		private readonly FileSegmentGroup _metaArea;
-		private readonly ObservableCollection<ReflexivePage> _pages = new ObservableCollection<ReflexivePage>();
+		private readonly ObservableCollection<TagBlockPage> _pages = new ObservableCollection<TagBlockPage>();
 		private readonly ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
 		private int _currentIndex;
-		private uint _entrySize;
+		private uint _elementSize;
 		private bool _expanded;
-		private long _firstEntryAddr;
+		private long _firstElementAddr;
 		private double _width = MinWidth;
 
-		public ReflexiveData(string name, uint offset, long address, uint entrySize, int align,
+		public TagBlockData(string name, uint offset, long address, uint elementSize, int align,
 			bool sort, uint pluginLine, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{
-			_entrySize = entrySize;
+			_elementSize = elementSize;
 			_metaArea = metaArea;
 			_expanded = true;
 			Align = align;
@@ -120,46 +120,46 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			set { Resize(value); }
 		}
 
-		public int LastChunkIndex
+		public int LastElementIndex
 		{
 			get { return _pages.Count - 1; }
 		}
 
-		public uint EntrySize
+		public uint ElementSize
 		{
-			get { return _entrySize; }
+			get { return _elementSize; }
 			set
 			{
-				_entrySize = value;
-				NotifyPropertyChanged("EntrySize");
+				_elementSize = value;
+				NotifyPropertyChanged("ElementSize");
 			}
 		}
 
 		public int Align { get; private set; }
 		public bool Sort { get; private set; }
 
-		public long FirstEntryAddress
+		public long FirstElementAddress
 		{
-			get { return _firstEntryAddr; }
+			get { return _firstElementAddr; }
 			set
 			{
 				if (value != 0 && !_metaArea.ContainsPointer(value))
 					throw new ArgumentException("Invalid pointer");
 
-				_firstEntryAddr = value;
-				NotifyPropertyChanged("FirstEntryAddress");
-				NotifyPropertyChanged("FirstEntryAddressHex");
+				_firstElementAddr = value;
+				NotifyPropertyChanged("FirstElementAddress");
+				NotifyPropertyChanged("FirstElementAddressHex");
 			}
 		}
 
-		public string FirstEntryAddressHex
+		public string FirstElementAddressHex
 		{
-			get { return "0x" + FirstEntryAddress.ToString("X"); }
+			get { return "0x" + FirstElementAddress.ToString("X"); }
 			set
 			{
 				if (value.StartsWith("0x"))
 					value = value.Substring(2);
-				FirstEntryAddress = long.Parse(value, NumberStyles.HexNumber);
+				FirstElementAddress = long.Parse(value, NumberStyles.HexNumber);
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public ObservableCollection<ReflexivePage> Pages
+		public ObservableCollection<TagBlockPage> Pages
 		{
 			get { return _pages; }
 		}
@@ -200,7 +200,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		/// <summary>
-		///     Recalculates the reflexive's width.
+		///     Recalculates the block's width.
 		/// </summary>
 		public void UpdateWidth()
 		{
@@ -211,41 +211,41 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		/// <summary>
-		///     Throws out any fields that have been cached by the reflexive.
+		///     Throws out any fields that have been cached by the block.
 		/// </summary>
 		public void ResetPages()
 		{
-			foreach (ReflexivePage page in _pages)
+			foreach (TagBlockPage page in _pages)
 				page.Reset();
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			visitor.VisitReflexive(this);
+			visitor.VisitTagBlock(this);
 		}
 
-		public event EventHandler<ReflexiveClonedEventArgs> Cloned;
+		public event EventHandler<TagBlockClonedEventArgs> Cloned;
 
 		public override MetaField CloneValue()
 		{
-			var result = new ReflexiveData(Name, Offset, FieldAddress, EntrySize, Align, Sort, base.PluginLine, _metaArea);
+			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, base.PluginLine, _metaArea);
 			result._expanded = _expanded;
 			result._width = _width;
 			result._currentIndex = _currentIndex;
-			result._firstEntryAddr = _firstEntryAddr;
+			result._firstElementAddr = _firstElementAddr;
 			foreach (MetaField field in _template)
 				result._template.Add(field);
-			foreach (ReflexivePage page in _pages)
+			foreach (TagBlockPage page in _pages)
 				result._pages.Add(page.CloneValue());
 			if (Cloned != null)
-				Cloned(this, new ReflexiveClonedEventArgs(this, result));
+				Cloned(this, new TagBlockClonedEventArgs(this, result));
 			return result;
 		}
 
 		/// <summary>
-		///     Changes the size of the reflexive, adding or removing pages as necessary.
+		///     Changes the size of the block, adding or removing pages as necessary.
 		/// </summary>
-		/// <param name="count">The new size of the reflexive.</param>
+		/// <param name="count">The new size of the block.</param>
 		private void Resize(int count)
 		{
 			if (count == _pages.Count && count > 0)
@@ -268,12 +268,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				// Add new pages
 				for (int i = _pages.Count; i < count; i++)
-					_pages.Add(new ReflexivePage(i, _template.Count));
+					_pages.Add(new TagBlockPage(i, _template.Count));
 				if (CurrentIndex < 0)
 					CurrentIndex = 0;
 			}
 			NotifyPropertyChanged("Length");
-			NotifyPropertyChanged("LastChunkIndex");
+			NotifyPropertyChanged("LastElementIndex");
 			NotifyPropertyChanged("HasChildren");
 		}
 	}

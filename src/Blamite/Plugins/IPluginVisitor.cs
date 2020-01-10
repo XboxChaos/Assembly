@@ -163,22 +163,22 @@ namespace Blamite.Plugins
 		void LeaveEnum();
 
 		/// <summary>
-		///     Called when a reflexive definition is entered.
+		///     Called when a tag block definition is entered.
 		/// </summary>
-		/// <param name="name">The reflexive's name.</param>
-		/// <param name="offset">The offset of the reflexive's size and pointer.</param>
-		/// <param name="visible">True if the reflexive is visible.</param>
-		/// <param name="entrySize">The size of each entry in the reflexive.</param>
+		/// <param name="name">The block's name.</param>
+		/// <param name="offset">The offset of the block's size and pointer.</param>
+		/// <param name="visible">True if the block is visible.</param>
+		/// <param name="elementSize">The size of each element in the block.</param>
 		/// <param name="align">The power of two to align the block on.</param>
 		/// <param name="sort">Whether or not this block needs sorting.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		/// <returns>False if the entries in the reflexive should be skipped over.</returns>
-		bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine);
+		/// <returns>False if the entries in the block should be skipped over.</returns>
+		bool EnterTagBlock(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine);
 
 		/// <summary>
-		///     Called when a reflexive definition is exited.
+		///     Called when a tag block definition is exited.
 		/// </summary>
-		void LeaveReflexive();
+		void LeaveTagBlock();
 
 		/// <summary>
 		/// Called when a shader reference is encountered in the plugin.

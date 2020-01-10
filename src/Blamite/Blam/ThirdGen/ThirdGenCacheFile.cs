@@ -424,7 +424,7 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadSimulationDefinitions(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table entry"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
 			{
 				ITag scnr = _tags.FindTagByClass("scnr");
 				if (scnr != null)
@@ -434,7 +434,7 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadEffects(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("compiled effect entry"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("compiled effect element"))
 			{
 				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
 				if (scnr != null)

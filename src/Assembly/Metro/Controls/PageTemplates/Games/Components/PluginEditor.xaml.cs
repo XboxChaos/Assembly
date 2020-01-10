@@ -216,9 +216,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			format.RegisterValue(new CompletableXMLValue("unicode", "Null-terminated unicode string"));
 			dataRef.RegisterAttribute(format);
 
-			CompletableXMLTag reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
-			reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize",
-				"The size of each entry in the reflexive (required)"));
+			CompletableXMLTag tagblock = RegisterMetaTag("tagblock", "Tagblock pointer");
+			tagblock.RegisterAttribute(new CompletableXMLAttribute("elementSize",
+				"The size of each element in the tag block (required)"));
 
 			CompletableXMLTag ascii = RegisterMetaTag("ascii", "ASCII string");
 			CompletableXMLTag utf16 = RegisterMetaTag("utf16", "UTF-16 string");

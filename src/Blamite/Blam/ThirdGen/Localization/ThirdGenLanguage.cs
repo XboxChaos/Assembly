@@ -18,7 +18,7 @@ namespace Blamite.Blam.ThirdGen.Localization
 			FileSegmentGroup localeArea, EngineDescription buildInfo)
 		{
 			Language = language;
-			_pointerLayout = buildInfo.Layouts.GetLayout("locale index table entry");
+			_pointerLayout = buildInfo.Layouts.GetLayout("locale index table element");
 			_encryptionKey = buildInfo.LocaleKey;
 			_sizeAlign = (_encryptionKey != null) ? AES.BlockSize : 1;
 			Load(values, segmenter, localeArea);

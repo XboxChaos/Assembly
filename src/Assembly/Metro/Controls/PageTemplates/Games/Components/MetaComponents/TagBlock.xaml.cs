@@ -4,14 +4,14 @@ using System.Windows.Input;
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
 	/// <summary>
-	///     Interaction logic for MetaChunk.xaml
+	///     Interaction logic for TagBlock.xaml
 	/// </summary>
-	public partial class MetaChunk : UserControl
+	public partial class TagBlock : UserControl
 	{
 		public static RoutedCommand ReallocateCommand = new RoutedCommand();
 		public static RoutedCommand IsolateCommand = new RoutedCommand();
 
-		public MetaChunk()
+		public TagBlock()
 		{
 			InitializeComponent();
 

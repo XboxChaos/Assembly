@@ -66,7 +66,7 @@ namespace Blamite.Blam.SecondGen.Structures
 		private static List<ITagClass> ReadClasses(IReader reader, uint classTableOffset, int numClasses,
 			EngineDescription buildInfo)
 		{
-			StructureLayout layout = buildInfo.Layouts.GetLayout("class entry");
+			StructureLayout layout = buildInfo.Layouts.GetLayout("class element");
 
 			var result = new List<ITagClass>();
 			reader.SeekTo(classTableOffset);
@@ -89,7 +89,7 @@ namespace Blamite.Blam.SecondGen.Structures
 		private List<ITag> ReadTags(IReader reader, uint tagTableOffset, int numTags, EngineDescription buildInfo,
 			FileSegmentGroup metaArea)
 		{
-			StructureLayout layout = buildInfo.Layouts.GetLayout("tag entry");
+			StructureLayout layout = buildInfo.Layouts.GetLayout("tag element");
 
 			var result = new List<ITag>();
 			reader.SeekTo(tagTableOffset);

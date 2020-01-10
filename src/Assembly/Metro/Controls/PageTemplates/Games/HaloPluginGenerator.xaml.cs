@@ -273,16 +273,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 							}
 							break;
 
-						case MetaValueType.Reflexive:
+						case MetaValueType.TagBlock:
 							if (offset <= size - 0xC)
 							{
 								MetaMap subMap = map.GetSubMap(offset);
 								if (subMap != null)
 								{
 									int subMapSize = subMap.GetBestSizeEstimate();
-									writer.EnterReflexive("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0);
+									writer.EnterTagBlock("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0);
 									WritePlugin(subMap, subMapSize, writer);
-									writer.LeaveReflexive();
+									writer.LeaveTagBlock();
 									offset += 0x8;
 									continue;
 								}
@@ -307,7 +307,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			while (maps.Count > 0)
 			{
 				MetaMap map = maps.Dequeue();
-				foreach (MetaValueGuess guess in map.Guesses.Where(guess => guess.Type == MetaValueType.Reflexive))
+				foreach (MetaValueGuess guess in map.Guesses.Where(guess => guess.Type == MetaValueType.TagBlock))
 				{
 					MetaMap subMap;
 					if (!generatedMaps.TryGetValue(guess.Pointer, out subMap))
@@ -335,7 +335,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			foreach (MetaValueGuess guess in map.Guesses)
 			{
-				if (guess.Type != MetaValueType.Reflexive) continue;
+				if (guess.Type != MetaValueType.TagBlock) continue;
 
 				MetaMap subMap = map.GetSubMap(guess.Offset);
 				if (subMap != null)
@@ -347,7 +347,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			foreach (MetaValueGuess guess in map.Guesses)
 			{
-				if (guess.Type != MetaValueType.Reflexive) continue;
+				if (guess.Type != MetaValueType.TagBlock) continue;
 
 				MetaMap subMap = map.GetSubMap(guess.Offset);
 				if (subMap == null) continue;

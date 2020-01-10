@@ -296,14 +296,14 @@ namespace Blamite.Plugins
 			_output.WriteEndElement();
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
+		public bool EnterTagBlock(string name, uint offset, bool visible, uint elementSize, int align, bool sort, uint pluginLine)
 		{
 			WriteValueStart("struct", name, offset, visible);
-			_output.WriteAttributeString("size", entrySize.ToString(CultureInfo.InvariantCulture));
+			_output.WriteAttributeString("size", elementSize.ToString(CultureInfo.InvariantCulture));
 			return true;
 		}
 
-		public void LeaveReflexive()
+		public void LeaveTagBlock()
 		{
 			_output.WriteEndElement();
 		}

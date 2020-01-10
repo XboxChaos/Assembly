@@ -39,8 +39,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select((e, i) => LoadPage(e, i, files));
 		}
 
@@ -49,7 +49,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection values = LoadTag(stream);
 			ThirdGenCacheFileReference[] files = LoadExternalFiles(values, stream);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table element");
 			var oldCount = (int) values.GetInteger("number of raw pages");
 			uint oldAddress = (uint)values.GetInteger("raw page table address");
 
@@ -60,7 +60,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				p.AssetCount = pointers.Count(x => x.PrimaryPage == p || x.SecondaryPage == p || x.TertiaryPage == p);
 
 			IEnumerable<StructureValueCollection> entries = pages.Select(p => SerializePage(p, files));
-			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, pages.Count, layout, _metaArea,
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, expand, pages.Count, layout, _metaArea,
 				_allocator, stream);
 
 			// Update values
@@ -79,8 +79,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => LoadPointer(e, pages, sizes));
 		}
 
@@ -88,14 +88,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			StructureValueCollection values = LoadTag(stream);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table element");
 			var oldCount = (int) values.GetInteger("number of raw segments");
 			uint oldAddress = (uint)values.GetInteger("raw segment table address");
 
 			long expand = _expander.Expand(oldAddress);
 
 			IEnumerable<StructureValueCollection> entries = pointers.Select(p => SerializePointer(p));
-			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, pointers.Count, layout, _metaArea,
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, expand, pointers.Count, layout, _metaArea,
 				_allocator, stream);
 
 			// Update values
@@ -114,8 +114,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select((e, i) => LoadSize(e, i, reader)).ToList();
 		}
 
@@ -124,7 +124,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection values = LoadTag(stream);
 
 			var entries = new List<StructureValueCollection>();
-			var partCache = new ReflexiveCache<ResourceSizePart>();
+			var partCache = new TagBlockCache<ResourceSizePart>();
 
 			foreach (ResourceSize size in sizes)
 			{
@@ -134,13 +134,13 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table element");
 			var oldCount = (int)values.GetInteger("number of raw sizes");
 			uint oldAddress = (uint)values.GetInteger("raw size table address");
 
 			long expand = _expander.Expand(oldAddress);
 
-			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, sizes.Count, layout, _metaArea,
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, expand, sizes.Count, layout, _metaArea,
 				_allocator, stream);
 
 			// Update values
@@ -176,8 +176,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("external cache file table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("external cache file table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ThirdGenCacheFileReference(e)).ToArray();
 		}
 
@@ -316,8 +316,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceSizePart
 			{
 				Offset = (int)e.GetInteger("offset"),
@@ -326,27 +326,27 @@ namespace Blamite.Blam.ThirdGen.Structures
 		}
 
 		private void SaveSizeParts(IList<ResourceSizePart> parts, StructureValueCollection values, IStream stream,
-			ReflexiveCache<ResourceSizePart> cache)
+			TagBlockCache<ResourceSizePart> cache)
 		{
 			var oldCount = (int)values.GetIntegerOrDefault("number of size parts", 0);
 			uint oldAddress = (uint)values.GetIntegerOrDefault("size part table address", 0);
 
 			long expand = _expander.Expand(oldAddress);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table element");
 
 			long newAddress;
 			if (!cache.TryGetAddress(parts, out newAddress))
 			{
-				// Write a new reflexive
+				// Write a new block
 				IEnumerable<StructureValueCollection> entries = parts.Select(p => SerializeSizePart(p));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, parts.Count, layout, _metaArea,
+				newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, expand, parts.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, parts);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
-				// Reflexive was cached - just free it
+				// Block was cached - just free it
 				_allocator.Free(expand, oldCount * layout.Size);
 			}
 

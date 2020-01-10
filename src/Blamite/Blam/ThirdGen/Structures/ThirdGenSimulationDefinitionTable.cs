@@ -82,10 +82,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(oldAddress);
 
-			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table entry");
+			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table element");
 
 			var newTable = _table.Select(SerializeTag);
-			var newAddr = ReflexiveWriter.WriteReflexive(newTable, oldCount, expand, _table.Count, entryLayout, _metaArea, _allocator, stream);
+			var newAddr = TagBlockWriter.WriteTagBlock(newTable, oldCount, expand, _table.Count, entryLayout, _metaArea, _allocator, stream);
 
 			uint cont = _expander.Contract(newAddr);
 
@@ -114,8 +114,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table entry");
-			_table = ReflexiveReader.ReadReflexive(reader, count, expand, entryLayout, _metaArea).Select((e) => _tags[new DatumIndex(e.GetInteger("datum index"))]).ToList();
+			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table element");
+			_table = TagBlockReader.ReadTagBlock(reader, count, expand, entryLayout, _metaArea).Select((e) => _tags[new DatumIndex(e.GetInteger("datum index"))]).ToList();
 		}
 	}
 }

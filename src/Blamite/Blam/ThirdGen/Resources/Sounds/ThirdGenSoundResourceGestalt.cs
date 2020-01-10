@@ -36,7 +36,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of platform codecs");
 			var address = (uint)values.GetInteger("platform codecs table address");
 			var layout = buildInfo.Layouts.GetLayout("sound platform codecs");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundPlatformCodecs = (from entry in entries
 						   select new ThirdGenSoundPlatformCodec(entry)).ToArray<ISoundPlatformCodec>();
@@ -46,7 +46,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of playback parameters");
 			var address = (uint)values.GetInteger("playback parameters table address");
 			var layout = buildInfo.Layouts.GetLayout("sound playback parameters");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundPlaybackParameters = (from entry in entries
 								   select new ThirdGenSoundPlaybackParameter(entry)).ToArray<ISoundPlaybackParameter>();
@@ -56,7 +56,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of scales");
 			var address = (uint)values.GetInteger("scales table address");
 			var layout = buildInfo.Layouts.GetLayout("sound scales");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundScales = (from entry in entries
 						   select new ThirdGenSoundScale(entry)).ToArray<ISoundScale>();
@@ -66,7 +66,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of sound names");
 			var address = (uint)values.GetInteger("sound name table address");
 			var layout = buildInfo.Layouts.GetLayout("sound names");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundNames = entries.Select(e => new StringID(e.GetInteger("name index"))).ToArray();
 		}
@@ -75,7 +75,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of playbacks");
 			var address = (uint)values.GetInteger("playback table address");
 			var layout = buildInfo.Layouts.GetLayout("sound playbacks");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundPlaybacks = (from entry in entries
 							  select new ThirdGenSoundPlayback(entry, SoundNames)).ToArray<ISoundPlayback>();
@@ -85,7 +85,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of sound permutations");
 			var address = (uint)values.GetInteger("sound permutation table address");
 			var layout = buildInfo.Layouts.GetLayout("sound permutations");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundPermutations = (from entry in entries
 								 select new ThirdGenSoundPermutation(entry, SoundNames)).ToArray<ISoundPermutation>();
@@ -95,7 +95,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Sounds
 			var count = (int)values.GetInteger("number of permutation chunks");
 			var address = (uint)values.GetInteger("permutation chunk table address");
 			var layout = buildInfo.Layouts.GetLayout("sound permutation chunks");
-			var entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			var entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			SoundPermutationChunks = (from entry in entries
 							  select new ThirdGenSoundPermutationChunk(entry)).ToArray<ISoundPermutationChunk>();

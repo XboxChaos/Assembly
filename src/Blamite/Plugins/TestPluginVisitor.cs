@@ -225,14 +225,14 @@ namespace Blamite.Plugins
 			_level--;
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
+		public bool EnterTagBlock(string name, uint offset, bool visible, uint elementSize, int align, bool sort, uint pluginLine)
 		{
-			Debug.WriteLine(Indent() + "Reflexive \"{0}\" at {1}, visible = {2}, entrySize = {3}, align = {4}, sort = {5}", name, offset, visible, entrySize, align, sort);
+			Debug.WriteLine(Indent() + "Tag block \"{0}\" at {1}, visible = {2}, elementSize = {3}, align = {4}, sort = {5}", name, offset, visible, elementSize, align, sort);
 			_level++;
 			return true;
 		}
 
-		public void LeaveReflexive()
+		public void LeaveTagBlock()
 		{
 			_level--;
 		}

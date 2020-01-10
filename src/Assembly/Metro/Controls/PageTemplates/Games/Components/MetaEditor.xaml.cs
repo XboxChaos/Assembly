@@ -28,20 +28,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		/// </summary>
 		/// <param name="foundField">The field that was found and highlighted.</param>
 		/// <param name="listField">
-		///     The top-level field in the field list. For reflexive entries, this is the topmost wrapper
+		///     The top-level field in the field list. For tag block elements, this is the topmost wrapper
 		///     field, otherwise, this may be the same as foundField.
 		/// </param>
-		/// <param name="parent">The reflexive that the field is in. Can be null.</param>
-		public SearchResult(MetaField foundField, MetaField listField, ReflexiveData parent)
+		/// <param name="parent">The block that the field is in. Can be null.</param>
+		public SearchResult(MetaField foundField, MetaField listField, TagBlockData parent)
 		{
 			ListField = listField;
 			Field = foundField;
-			Reflexive = parent;
+			TagBlock = parent;
 		}
 
 		public MetaField Field { get; private set; }
 		public MetaField ListField { get; private set; }
-		public ReflexiveData Reflexive { get; private set; }
+		public TagBlockData TagBlock { get; private set; }
 	}
 
 	/// <summary>
@@ -64,7 +64,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private FieldChangeTracker _changeTracker;
 		private FieldChangeSet _fileChanges;
-		private ReflexiveFlattener _flattener;
+		private TagBlockFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
 		private string _fallbackPluginPath;
@@ -178,7 +178,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_memoryChanges = new FieldChangeSet();
 
 			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
-			_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+			_flattener = new TagBlockFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);
 			metaReader.ReadFields(_pluginVisitor.Values);
 			panelMetaComponents.ItemsSource = _pluginVisitor.Values;
@@ -400,12 +400,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			btnOptions.IsChecked = false;
 		}
 
-		private void cbReflexives_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (e.AddedItems.Count > 0)
-				panelMetaComponents.ScrollIntoView(e.AddedItems[0]);
-		}
-
 		private void btnPluginPokeAll_Click(object sender, RoutedEventArgs e)
 		{
 			UpdateMeta(MetaWriter.SaveType.Memory, false);
@@ -504,10 +498,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private static MetaField GetWrappedField(MetaField field)
 		{
-			WrappedReflexiveEntry wrapper = null;
+			WrappedTagBlockEntry wrapper = null;
 			while (true)
 			{
-				wrapper = field as WrappedReflexiveEntry;
+				wrapper = field as WrappedTagBlockEntry;
 				if (wrapper == null)
 					return field;
 				field = wrapper.WrappedField;
@@ -540,7 +534,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			var valueField = field as ValueField;
 			if (valueField == null)
 			{
-				var wrapper = field as WrappedReflexiveEntry;
+				var wrapper = field as WrappedTagBlockEntry;
 				if (wrapper != null)
 					valueField = GetWrappedField(wrapper) as ValueField;
 			}
@@ -620,7 +614,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			filterer.FilterFields(_pluginVisitor.Values, text);
 		}
 
-		private void MetaFilterer_CollectResult(MetaField foundField, MetaField listField, ReflexiveData parent)
+		private void MetaFilterer_CollectResult(MetaField foundField, MetaField listField, TagBlockData parent)
 		{
 			_resultIndices[listField] = _searchResults.Count;
 			_searchResults.Add(new SearchResult(foundField, listField, parent));
@@ -695,19 +689,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			field.Opacity = 1.0f;
 
-			// If the field is a reflexive, recursively set the opacity of its children
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
+			// If the field is a block, recursively set the opacity of its children
+			var block = field as TagBlockData;
+			if (block != null)
 			{
 				// Show wrappers
-				_flattener.EnumWrappers(reflexive, ShowField);
+				_flattener.EnumWrappers(block, ShowField);
 
 				// Show template fields
-				foreach (MetaField child in reflexive.Template)
+				foreach (MetaField child in block.Template)
 					ShowField(child);
 
 				// Show modified fields
-				foreach (ReflexivePage page in reflexive.Pages)
+				foreach (TagBlockPage page in block.Pages)
 				{
 					foreach (MetaField child in page.Fields)
 					{
@@ -783,9 +777,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		// Thread-safe
 		private void SelectResult(SearchResult result)
 		{
-			ReflexiveData reflexive = result.Reflexive;
-			if (reflexive != null)
-				_flattener.ForceVisible(reflexive);
+			TagBlockData block = result.TagBlock;
+			if (block != null)
+				_flattener.ForceVisible(block);
 			SelectField(result.ListField);
 		}
 
@@ -813,7 +807,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				var field = panelMetaComponents.SelectedItem as MetaField;
 				if (field != null && e.RemovedItems.Count > 0 && FindResultByListField(field) == -1)
 				{
-					// Disallow selecting filtered items and reflexive wrappers
+					// Disallow selecting filtered items and tag block wrappers
 					// as long as this wouldn't cause an infinite loop of selection changes
 					var oldField = e.RemovedItems[0] as MetaField;
 					if (oldField != null && FindResultByListField(oldField) != -1)
@@ -849,7 +843,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
-			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
+			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
 			if (field == null)
 				return;
 			var oldCount = field.Length;
@@ -857,9 +851,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			if (newCount == null || newCount == oldCount)
 				return; // Canceled
 
-			var oldAddress = field.FirstEntryAddress;
-			var oldSize = field.Length * field.EntrySize;
-			var newSize = (int)newCount * field.EntrySize;
+			var oldAddress = field.FirstElementAddress;
+			var oldSize = field.Length * field.ElementSize;
+			var newSize = (int)newCount * field.ElementSize;
 			long newAddress;
 			using (var stream = _fileManager.OpenReadWrite())
 			{
@@ -880,7 +874,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					//go through each new page and write null for any tagrefs
 					for (int i = oldCount; i < newCount; i++)
 					{
-						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.EntrySize * i);
+						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.ElementSize * i);
 						foreach (MetaField mf in field.Template)
 						{
 							if (mf.GetType() != typeof(TagRefData))
@@ -906,7 +900,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Changing these causes a read from the file, so the stream has to be closed first
 			field.Length = (int)newCount;
-			field.FirstEntryAddress = newAddress;
+			field.FirstElementAddress = newAddress;
 
 			using (var stream = _fileManager.OpenReadWrite())
 			{
@@ -953,12 +947,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				return;
 			}
 
-			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
+			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
 			if (field == null)
 				return;
 
-			var oldAddress = field.FirstEntryAddress;
-			int size = field.Length * (int)field.EntrySize;
+			var oldAddress = field.FirstElementAddress;
+			int size = field.Length * (int)field.ElementSize;
 			if (oldAddress == 0 || size == 0)
 			{
 				MetroMessageBox.Show("Tag Block Isolation", "Cannot isolate: block is null.");
@@ -985,7 +979,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			// Changing these causes a read from the file, so the stream has to be closed first
-			field.FirstEntryAddress = newAddress;
+			field.FirstElementAddress = newAddress;
 
 			using (var stream = _fileManager.OpenReadWrite())
 			{

@@ -108,9 +108,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			// but INotifyPropertyChanged has that problem anyway...
 			_propertyNames.Add("Value");
 			_propertyNames.Add("DataAddress"); // Datarefs
-			_propertyNames.Add("Length"); // Reflexives
-			_propertyNames.Add("EntrySize"); // Reflexives
-			_propertyNames.Add("FirstEntryAddress"); // Reflexives
+			_propertyNames.Add("Length"); // Blocks
+			_propertyNames.Add("ElementSize"); // Blocks
+			_propertyNames.Add("FirstElementAddress"); // Blocks
 			_propertyNames.Add("Class"); // Tagrefs
 			_propertyNames.Add("Degree"); // Degrees
 			_propertyNames.Add("Radian"); // Degrees

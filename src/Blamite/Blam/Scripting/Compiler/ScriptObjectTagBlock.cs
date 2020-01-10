@@ -8,22 +8,22 @@ using Blamite.IO;
 namespace Blamite.Blam.Scripting.Compiler
 {
 	/// <summary>
-	///     A reflexive which named script objects can be read from.
+	///     A block which named script objects can be read from.
 	/// </summary>
-	public class ScriptObjectReflexive
+	public class ScriptObjectTagBlock
 	{
 		private readonly string _addressEntryName;
-		private readonly List<ScriptObjectReflexive> _children = new List<ScriptObjectReflexive>();
+		private readonly List<ScriptObjectTagBlock> _children = new List<ScriptObjectTagBlock>();
 		private readonly string _countEntryName;
 		private readonly string _layoutName;
 
 		/// <summary>
-		///     Initializes a new instance of the <see cref="ScriptObjectReflexive" /> class.
+		///     Initializes a new instance of the <see cref="ScriptObjectTagBlock" /> class.
 		/// </summary>
 		/// <param name="countEntryName">Name of the count entry in the parent's layout.</param>
 		/// <param name="addressEntryName">Name of the address entry in the parent's layout.</param>
-		/// <param name="layoutName">Name of the layout of this reflexive.</param>
-		public ScriptObjectReflexive(string countEntryName, string addressEntryName, string layoutName)
+		/// <param name="layoutName">Name of the layout of this block.</param>
+		public ScriptObjectTagBlock(string countEntryName, string addressEntryName, string layoutName)
 		{
 			_countEntryName = countEntryName;
 			_addressEntryName = addressEntryName;
@@ -31,16 +31,16 @@ namespace Blamite.Blam.Scripting.Compiler
 		}
 
 		/// <summary>
-		///     Registers a child reflexive with this reflexive.
+		///     Registers a child block with this block.
 		/// </summary>
-		/// <param name="child">The child reflexive to register.</param>
-		public void RegisterChild(ScriptObjectReflexive child)
+		/// <param name="child">The child block to register.</param>
+		public void RegisterChild(ScriptObjectTagBlock child)
 		{
 			_children.Add(child);
 		}
 
 		/// <summary>
-		///     Reads all child objects of this reflexive.
+		///     Reads all child objects of this block.
 		/// </summary>
 		/// <param name="values">The values read from the parent.</param>
 		/// <param name="reader">The stream to read from.</param>
@@ -57,7 +57,7 @@ namespace Blamite.Blam.Scripting.Compiler
 			long expand = expander.Expand(address);
 
 			StructureLayout layout = buildInfo.Layouts.GetLayout(_layoutName);
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, metaArea);
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, metaArea);
 			return entries.Select(e => ReadScriptObject(e, reader, metaArea, stringIDs, buildInfo, expander)).ToArray();
 		}
 
@@ -67,7 +67,7 @@ namespace Blamite.Blam.Scripting.Compiler
 			string name = GetObjectName(values, stringIDs);
 			var result = new ScriptObject(name);
 
-			foreach (ScriptObjectReflexive child in _children)
+			foreach (ScriptObjectTagBlock child in _children)
 				result.RegisterChildren(child, child.ReadObjects(values, reader, metaArea, stringIDs, buildInfo, expander));
 
 			return result;

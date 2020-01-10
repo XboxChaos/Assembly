@@ -18,13 +18,13 @@ namespace Assembly.Helpers.Plugins
 
 		private readonly FileSegmentGroup _metaArea;
 		private readonly IList<PluginRevision> _pluginRevisions = new List<PluginRevision>();
-		private readonly List<ReflexiveData> _reflexives = new List<ReflexiveData>();
+		private readonly List<TagBlockData> _tagBlocks = new List<TagBlockData>();
 		private readonly bool _showInvisibles;
 		private readonly Trie _stringIDTrie;
 		private readonly TagHierarchy _tags;
 		private BitfieldData _currentBitfield;
 		private EnumData _currentEnum;
-		private ReflexiveData _currentReflexive;
+		private TagBlockData _currentTagBlock;
 
 		public bool ShowComments
 		{
@@ -38,7 +38,7 @@ namespace Assembly.Helpers.Plugins
 			_metaArea = metaArea;
 
 			Values = new ObservableCollection<MetaField>();
-			Reflexives = new ObservableCollection<ReflexiveData>();
+			TagBlocks = new ObservableCollection<TagBlockData>();
 			_showInvisibles = showInvisibles;
 		}
 
@@ -49,7 +49,7 @@ namespace Assembly.Helpers.Plugins
 		}
 
 		public ObservableCollection<MetaField> Values { get; private set; }
-		public ObservableCollection<ReflexiveData> Reflexives { get; private set; }
+		public ObservableCollection<TagBlockData> TagBlocks { get; private set; }
 
 		public bool EnterPlugin(int baseSize)
 		{
@@ -321,30 +321,30 @@ namespace Assembly.Helpers.Plugins
 
 		#endregion
 
-		#region Reflexive
+		#region Tag Block
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
+		public bool EnterTagBlock(string name, uint offset, bool visible, uint elementSize, int align, bool sort, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new ReflexiveData(name, offset, 0, entrySize, align, sort, pluginLine, _metaArea);
+				var data = new TagBlockData(name, offset, 0, elementSize, align, sort, pluginLine, _metaArea);
 				AddValue(data);
 
-				_reflexives.Add(data);
-				Reflexives.Add(data);
-				_currentReflexive = data;
+				_tagBlocks.Add(data);
+				TagBlocks.Add(data);
+				_currentTagBlock = data;
 				return true;
 			}
 			return false;
 		}
 
-		public void LeaveReflexive()
+		public void LeaveTagBlock()
 		{
-			if (_currentReflexive == null)
-				throw new InvalidOperationException("Not in a reflexive");
+			if (_currentTagBlock == null)
+				throw new InvalidOperationException("Not in a tagBlock");
 
-			_reflexives.RemoveAt(_reflexives.Count - 1);
-			_currentReflexive = _reflexives.Count > 0 ? _reflexives[_reflexives.Count - 1] : null;
+			_tagBlocks.RemoveAt(_tagBlocks.Count - 1);
+			_currentTagBlock = _tagBlocks.Count > 0 ? _tagBlocks[_tagBlocks.Count - 1] : null;
 		}
 
 		#endregion
@@ -421,18 +421,18 @@ namespace Assembly.Helpers.Plugins
 
 		private void AddValue(MetaField value)
 		{
-			if (_reflexives.Count > 0)
-				_reflexives[_reflexives.Count - 1].Template.Add(value);
+			if (_tagBlocks.Count > 0)
+				_tagBlocks[_tagBlocks.Count - 1].Template.Add(value);
 			else
 				Values.Add(value);
 			/*MetaField wrappedValue = value;
-            for (int i = _reflexives.Count - 1; i >= 0; i--)
+            for (int i = _tagBlocks.Count - 1; i >= 0; i--)
             {
-                ReflexiveData reflexive = _reflexives[i];
-                reflexive.Pages[0].Fields.Add(wrappedValue);
+                TagBlockData tagblock = _tagBlocks[i];
+                tagblock.Pages[0].Fields.Add(wrappedValue);
 
                 // hax, use a null parent for now so MetaReader doesn't have to cause it to unsubscribe
-                wrappedValue = new WrappedReflexiveEntry(null, reflexive.Pages[0].Fields.Count - 1);
+                wrappedValue = new WrappedTagBlockEntry(null, tagblock.Pages[0].Fields.Count - 1);
             }
 
             Values.Add(wrappedValue);*/

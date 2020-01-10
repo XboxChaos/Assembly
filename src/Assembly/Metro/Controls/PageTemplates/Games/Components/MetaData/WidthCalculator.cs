@@ -9,12 +9,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class WidthCalculator : IMetaFieldVisitor
 	{
-		private const double ReflexiveSubEntryLeftPadding = 20;
-		private const double ReflexiveSubEntryRightPadding = 20;
-		private const double ReflexiveSubEntryBorderWidth = 1;
+		private const double TagBlockSubEntryLeftPadding = 20;
+		private const double TagBlockSubEntryRightPadding = 20;
+		private const double TagBlockSubEntryBorderWidth = 1;
 
-		private const double ReflexiveSubEntryExtraWidth =
-			ReflexiveSubEntryLeftPadding + ReflexiveSubEntryRightPadding + ReflexiveSubEntryBorderWidth*2;
+		private const double TagBlockSubEntryExtraWidth =
+			TagBlockSubEntryLeftPadding + TagBlockSubEntryRightPadding + TagBlockSubEntryBorderWidth * 2;
 
 		private static readonly AsciiValue _asciiControl = new AsciiValue();
 		private static readonly Bitfield _bitfieldControl = new Bitfield();
@@ -86,12 +86,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_intControl.Width);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
 			AddWidth(field.Width);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 			// Save our state and recurse into it
 			double oldTotal = _totalWidth;
@@ -101,7 +101,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			double entryWidth = _totalWidth;
 			_totalWidth = oldTotal;
 
-			AddWidth(entryWidth + ReflexiveSubEntryExtraWidth);
+			AddWidth(entryWidth + TagBlockSubEntryExtraWidth);
 		}
 
 		public void VisitString(StringData field)

@@ -23,7 +23,7 @@ namespace Blamite.Injection
 		private readonly ITag _tag;
 		private readonly StructureLayout _tagRefLayout;
 		private CachedLanguagePackLoader _languageCache;
-		private List<DataBlock> _reflexiveBlocks;
+		private List<DataBlock> _tagBlocks;
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="DataBlockBuilder" /> class.
@@ -316,16 +316,16 @@ namespace Blamite.Injection
 		{
 		}
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
+		public bool EnterTagBlock(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
-			_reflexiveBlocks = new List<DataBlock>();
-			ReadReferences(offset, (b, o) => ReadReflexive(b, o, entrySize, align, sort));
-			if (_reflexiveBlocks.Count <= 0) return false;
-			_blockStack.Push(_reflexiveBlocks);
+			_tagBlocks = new List<DataBlock>();
+			ReadReferences(offset, (b, o) => ReadTagBlock(b, o, entrySize, align, sort));
+			if (_tagBlocks.Count <= 0) return false;
+			_blockStack.Push(_tagBlocks);
 			return true;
 		}
 
-		public void LeaveReflexive()
+		public void LeaveTagBlock()
 		{
 			// Pop the block stack
 			_blockStack.Pop();
@@ -472,7 +472,7 @@ namespace Blamite.Injection
 			block.AddressFixups.Add(fixup);
 		}
 
-		private void ReadReflexive(DataBlock block, uint offset, uint entrySize, int align, bool sort)
+		private void ReadTagBlock(DataBlock block, uint offset, uint entrySize, int align, bool sort)
 		{
 			// Read the count and pointer
 			SeekToOffset(block, offset);
@@ -490,8 +490,8 @@ namespace Blamite.Injection
 			var fixup = new DataBlockAddressFixup(pointer, (int) offset + _tagBlockLayout.GetFieldOffset("pointer"));
 			block.AddressFixups.Add(fixup);
 
-			// Add it to _reflexiveBlocks so it'll be recursed into
-			_reflexiveBlocks.Add(newBlock);
+			// Add it to _tagBlocks so it'll be recursed into
+			_tagBlocks.Add(newBlock);
 		}
 
 		private void ReadShader(DataBlock block, uint offset, ShaderType type)

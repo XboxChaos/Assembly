@@ -29,7 +29,7 @@ namespace Blamite.Plugins.Generation
 		public void AnalyzeArea(IReader reader, long startAddress, MetaMap resultMap)
 		{
 			// Right now, this method only searches for the signatures of a few complex meta values.
-			// Reflexives:      int32 entry count + uint32 address     + 4 bytes of padding
+			// Tag blocks:      int32 element count + uint32 address     + 4 bytes of padding
 			// Data references: int32 size        + 8 bytes of padding + uint32 address
 			// Tag references:  int32 class id    + 8 bytes of padding + uint32 datum index
 			// ASCII strings:   characters with the values 0 or 0x20 - 0x7F
@@ -78,7 +78,7 @@ namespace Blamite.Plugins.Generation
 					    && IsValidAddress(expValue + prePadding - 1)
 					    && !_memMap.BlockCrossesBoundary(expValue, (int) prePadding))
 					{
-						// Either a reflexive or a data reference
+						// Either a block or a data reference
 						// Check the padding to determine which (see the comments at the beginning of this method)
 						if (paddingLength == 2 && offset >= 12 && (prePadding & 3) == 0)
 						{
@@ -89,9 +89,9 @@ namespace Blamite.Plugins.Generation
 						}
 						else if (paddingLength == 0 && offset >= 4)
 						{
-							// Found a reflexive!
+							// Found a block!
 							uint entryCount = prePadding;
-							pendingGuess = new MetaValueGuess(offset - 4, MetaValueType.Reflexive, expValue, entryCount);
+							pendingGuess = new MetaValueGuess(offset - 4, MetaValueType.TagBlock, expValue, entryCount);
 							// Guess with Pointer = address, Data1 = entry count
 						}
 					}

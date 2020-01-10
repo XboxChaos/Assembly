@@ -209,25 +209,6 @@ namespace Blamite.Blam
 			StructureWriter.WriteStructure(pointerData, pointerLayout, stream);
 		}
 
-
-
-		/*<layout for="compiled effect entry" size="0x30">
-			<uint32 name = "effect pointer" offset="0x0" />
-			<uint32 name = "beam pointer" offset="0xC" />
-			<uint32 name = "contrail pointer" offset="0x18" />
-			<uint32 name = "light volume pointer" offset="0x24" />
-		</layout>
-	
-		<layout for="compiled effect pointer" size="0x14">
-			<int32 name = "size" offset="0x0" />
-			<uint32 name = "pointer" offset="0xC" />
-		</layout>
-		
-		<layout for="effect data" size="0x7A0" />
-		<layout for="beam data" size="0x740" />
-		<layout for="contrail data" size="0x770" />
-		<layout for="light volume data" size="0x700" />*/
-
 		private void Load(IReader reader)
 		{
 			//might need to tweak once more MCC games come out
@@ -242,13 +223,13 @@ namespace Blamite.Blam
 			long expand = _expander.Expand(address);
 
 			reader.SeekTo(_metaArea.PointerToOffset(expand));
-			var entryLayout = _buildInfo.Layouts.GetLayout("compiled effect entry");
-			var pointerReflexive = StructureReader.ReadStructure(reader, entryLayout);
+			var entryLayout = _buildInfo.Layouts.GetLayout("compiled effect element");
+			var pointerBlock = StructureReader.ReadStructure(reader, entryLayout);
 
-			var effeAddr = (uint)pointerReflexive.GetInteger("effect pointer");
-			var beamAddr = (uint)pointerReflexive.GetInteger("beam pointer");
-			var cntlAddr = (uint)pointerReflexive.GetInteger("contrail pointer");
-			var ltvlAddr = (uint)pointerReflexive.GetInteger("light volume pointer");
+			var effeAddr = (uint)pointerBlock.GetInteger("effect pointer");
+			var beamAddr = (uint)pointerBlock.GetInteger("beam pointer");
+			var cntlAddr = (uint)pointerBlock.GetInteger("contrail pointer");
+			var ltvlAddr = (uint)pointerBlock.GetInteger("light volume pointer");
 
 			var pointerLayout = _buildInfo.Layouts.GetLayout("compiled effect pointer");
 

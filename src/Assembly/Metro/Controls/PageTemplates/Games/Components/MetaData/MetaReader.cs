@@ -377,7 +377,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.D = _reader.ReadInt16();
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
 			SeekToOffset(field.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
@@ -387,15 +387,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			long expanded = _cache.PointerExpander.Expand(pointer);
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (int) (length*field.EntrySize)))
+			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (int) (length*field.ElementSize)))
 			{
 				length = 0;
 				pointer = 0;
 				expanded = 0;
 			}
 
-			if (expanded != field.FirstEntryAddress)
-				field.FirstEntryAddress = expanded;
+			if (expanded != field.FirstElementAddress)
+				field.FirstElementAddress = expanded;
 
 			field.Length = length;
 			
@@ -429,7 +429,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.RadianB = _reader.ReadFloat();
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 		}
 
@@ -448,10 +448,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
 				field.Accept(this);
 
-			// If it's a reflexive, read its children
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
-				ReadReflexiveChildren(reflexive);
+			// If it's a block, read its children
+			var block = field as TagBlockData;
+			if (block != null)
+				ReadTagBlockChildren(block);
 		}
 
 		public void ReadFields(IList<MetaField> fields)
@@ -474,9 +474,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public void ReadReflexiveChildren(ReflexiveData reflexive)
+		public void ReadTagBlockChildren(TagBlockData block)
 		{
-			if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
+			if (!block.HasChildren || block.CurrentIndex < 0)
 				return;
 
 			bool opened = OpenReader();
@@ -487,15 +487,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				// Calculate the base offset to read from
 				long oldBaseOffset = BaseOffset;
-				long dataOffset = reflexive.FirstEntryAddress;
+				long dataOffset = block.FirstElementAddress;
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
-				BaseOffset = (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
+				BaseOffset = (dataOffset + block.CurrentIndex* block.ElementSize);
 
-				ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
+				TagBlockPage page = block.Pages[block.CurrentIndex];
 				for (int i = 0; i < page.Fields.Length; i++)
 				{
-					ReadField(page.Fields[i] ?? reflexive.Template[i]);
+					ReadField(page.Fields[i] ?? block.Template[i]);
 				}
 
 				BaseOffset = oldBaseOffset;

@@ -288,7 +288,8 @@ namespace Blamite.Plugins
 				case "struct":
 				case "reflexive":
 				case "reflexives":
-					ReadReflexive(reader, name, offset, visible, visitor, pluginLine);
+				case "tagblock":
+					ReadTagBlock(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "bytearray":
@@ -529,12 +530,12 @@ namespace Blamite.Plugins
 			}
 		}
 
-		private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+		private void ReadTagBlock(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
 			uint pluginLine)
 		{
 			uint entrySize = 0;
 
-			if (reader.MoveToAttribute("entrySize") || reader.MoveToAttribute("size"))
+			if (reader.MoveToAttribute("entrySize") || reader.MoveToAttribute("size") || reader.MoveToAttribute("elementSize"))
 			{
 				if (!string.IsNullOrWhiteSpace(reader.Value))
 					entrySize = ParseUInt(reader.Value);
@@ -547,14 +548,14 @@ namespace Blamite.Plugins
 			if (reader.MoveToAttribute("sort"))
 				sort = ParseBool(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, sort, pluginLine))
+			if (visitor.EnterTagBlock(name, offset, visible, entrySize, align, sort, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();
 
 				subtree.ReadStartElement();
 				ReadElements(subtree, false, visitor);
-				visitor.LeaveReflexive();
+				visitor.LeaveTagBlock();
 			}
 		}
 

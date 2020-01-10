@@ -70,8 +70,8 @@ namespace Blamite.Blam.Scripting
 
 			long expand = expander.Expand(address);
 
-			StructureLayout layout = buildInfo.Layouts.GetLayout("script parameter entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, metaArea);
+			StructureLayout layout = buildInfo.Layouts.GetLayout("script parameter element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, metaArea);
 			return entries.Select(e => new ScriptParameter(e)).ToList();
 		}
 	}

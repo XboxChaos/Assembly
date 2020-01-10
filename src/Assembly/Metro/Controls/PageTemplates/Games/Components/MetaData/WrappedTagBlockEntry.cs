@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
-	public class WrappedReflexiveEntry : MetaField
+	public class WrappedTagBlockEntry : MetaField
 	{
 		private readonly int _index;
 		private readonly ObservableCollection<MetaField> _visibleItems;
@@ -11,7 +11,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private bool _last;
 		private MetaField _wrappedField;
 
-		public WrappedReflexiveEntry(ObservableCollection<MetaField> visibleItems, int index, double width, bool last)
+		public WrappedTagBlockEntry(ObservableCollection<MetaField> visibleItems, int index, double width, bool last)
 		{
 			_index = index;
 			_width = width;
@@ -56,12 +56,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
-			visitor.VisitReflexiveEntry(this);
+			visitor.VisitTagBlockEntry(this);
 		}
 
 		public override MetaField CloneValue()
 		{
-			return new WrappedReflexiveEntry(_visibleItems, _index, _width, _last);
+			return new WrappedTagBlockEntry(_visibleItems, _index, _width, _last);
 		}
 	}
 }

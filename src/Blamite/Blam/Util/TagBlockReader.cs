@@ -5,15 +5,15 @@ using Blamite.IO;
 namespace Blamite.Blam.Util
 {
 	/// <summary>
-	///     Utility class for reading reflexives from meta.
+	///     Utility class for reading blocks from meta.
 	/// </summary>
-	public static class ReflexiveReader
+	public static class TagBlockReader
 	{
-		public static StructureValueCollection[] ReadReflexive(IReader reader, int count, long address,
-			StructureLayout entryLayout, FileSegmentGroup metaArea)
+		public static StructureValueCollection[] ReadTagBlock(IReader reader, int count, long address,
+			StructureLayout elementLayout, FileSegmentGroup metaArea)
 		{
-			if (entryLayout.Size == 0)
-				throw new ArgumentException("The entry layout must have a size associated with it.");
+			if (elementLayout.Size == 0)
+				throw new ArgumentException("The element layout must have a size associated with it.");
 
 			// Handle null pointers
 			if (count <= 0 || !metaArea.ContainsPointer(address))
@@ -26,7 +26,7 @@ namespace Blamite.Blam.Util
 			// Read the entries
 			var result = new StructureValueCollection[count];
 			for (int i = 0; i < count; i++)
-				result[i] = StructureReader.ReadStructure(reader, entryLayout);
+				result[i] = StructureReader.ReadStructure(reader, elementLayout);
 
 			return result;
 		}

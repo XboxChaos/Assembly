@@ -29,7 +29,7 @@
 		public int PrimaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets a size reflexive index for the primary page.
+		///     Gets or sets a size block index for the primary page.
 		/// </summary>
 		public ResourceSize PrimarySize { get; set; }
 
@@ -44,7 +44,7 @@
 		public int SecondaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets a size reflexive index for the secondary page.
+		///     Gets or sets a size block index for the secondary page.
 		/// </summary>
 		public ResourceSize SecondarySize { get; set; }
 
@@ -60,7 +60,7 @@
 		public int TertiaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets a size reflexive index for the secondary page.
+		///     Gets or sets a size block index for the secondary page.
 		/// </summary>
 		public ResourceSize TertiarySize { get; set; }
 	}

@@ -58,28 +58,28 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection values = LoadTag(reader);
 			byte[] infoBuffer = LoadResourceInfoBuffer(values, reader);
 
-			StructureValueCollection[] entries = ReadReflexive(values, reader, "number of resources", "resource table address", "resource table entry");
+			StructureValueCollection[] entries = ReadTagBlock(values, reader, "number of resources", "resource table address", "resource table element");
 			return entries.Select((e, i) => LoadResource(e, i, tags, pointers, infoBuffer, reader));
 		}
 
 		public IList<ResourcePointer> SaveResources(ICollection<Resource> resources, IStream stream)
 		{
 			StructureValueCollection values = LoadTag(stream);
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table element");
 
 			FreeResources(values, stream);
 			FreeInfoBuffer(values);
 
-			// Serialize each resource entry
+			// Serialize each resource element
 			// This can't be lazily evaluated because allocations might cause the stream to expand
 			int infoOffset = 0;
 			int altInfoOffset = 0;
-			var infocache = new ReflexiveCache<int>();
+			var infocache = new TagBlockCache<int>();
 
 			var pointers = new List<ResourcePointer>();
 			var entries = new List<StructureValueCollection>();
-			var fixupCache = new ReflexiveCache<ResourceFixup>();
-			var defFixupCache = new ReflexiveCache<ResourceDefinitionFixup>();
+			var fixupCache = new TagBlockCache<ResourceFixup>();
+			var defFixupCache = new TagBlockCache<ResourceDefinitionFixup>();
 
 			List<byte[]> paddedInfos = new List<byte[]>();
 
@@ -146,15 +146,15 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 					long expand = _expander.Expand(oldAddress);
 
-					StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+					StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset element");
 
 					if (size > 0)
 					{
 						long newBlockAddress;
 
-						// Write a new reflexive
+						// Write a new block
 						IEnumerable<StructureValueCollection> infoentries = offsets.Select(f => SerializeInfos(f));
-						newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, expand, offsets.Count, infolayout, _metaArea,
+						newBlockAddress = TagBlockWriter.WriteTagBlock(infoentries, oldCount, expand, offsets.Count, infolayout, _metaArea,
 							_allocator, stream);
 						infocache.Add(newBlockAddress, offsets);
 
@@ -189,8 +189,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 					pointers.Add(resource.Location);
 			}
 
-			// Write the reflexive and update the tag values
-			long newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
+			// Write the block and update the tag values
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, layout, _metaArea, _allocator, stream);
 
 			uint contr = _expander.Contract(newAddress);
 
@@ -232,8 +232,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource type entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource type element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			_resourceTypes = entries.Select(e => new ThirdGenResourceType(e, stringIDs)).ToArray();
 		}
 
@@ -278,17 +278,17 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return null;
 
 			int subcount = 2;
-			StructureLayout templayout = _buildInfo.Layouts.GetLayout("raw segment table entry");
+			StructureLayout templayout = _buildInfo.Layouts.GetLayout("raw segment table element");
 			if (templayout.HasField("tertiary page index"))
 				subcount = 3;
 
 			var result = new List<ResourcePredictionD>();
 
-			StructureValueCollection[] d2entries = ReadReflexive(values, reader, "number of prediction d2s", "prediction d2 table address", "prediction d2 entry");
-			StructureValueCollection[] dentries = ReadReflexive(values, reader, "number of prediction ds", "prediction d table address", "prediction d entry");
-			StructureValueCollection[] centries = ReadReflexive(values, reader, "number of prediction cs", "prediction c table address", "prediction c entry");
-			StructureValueCollection[] bentries = ReadReflexive(values, reader, "number of prediction bs", "prediction b table address", "prediction b entry");
-			StructureValueCollection[] aentries = ReadReflexive(values, reader, "number of prediction as", "prediction a table address", "prediction a entry");
+			StructureValueCollection[] d2entries = ReadTagBlock(values, reader, "number of prediction d2s", "prediction d2 table address", "prediction d2 element");
+			StructureValueCollection[] dentries = ReadTagBlock(values, reader, "number of prediction ds", "prediction d table address", "prediction d element");
+			StructureValueCollection[] centries = ReadTagBlock(values, reader, "number of prediction cs", "prediction c table address", "prediction c element");
+			StructureValueCollection[] bentries = ReadTagBlock(values, reader, "number of prediction bs", "prediction b table address", "prediction b element");
+			StructureValueCollection[] aentries = ReadTagBlock(values, reader, "number of prediction as", "prediction a table address", "prediction a element");
 
 			for (int i = 0; i < d2entries.Length; i++)
 			{
@@ -498,8 +498,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 
 			// a
-			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction a entry");
-			long newa = ReflexiveWriter.WriteReflexive(aentries, alayout, _metaArea, _allocator, stream);
+			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction a element");
+			long newa = TagBlockWriter.WriteTagBlock(aentries, alayout, _metaArea, _allocator, stream);
 
 			uint conta = _expander.Contract(newa);
 
@@ -507,8 +507,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("prediction a table address", conta);
 
 			// b
-			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction b entry");
-			long newb = ReflexiveWriter.WriteReflexive(bentries, blayout, _metaArea, _allocator, stream);
+			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction b element");
+			long newb = TagBlockWriter.WriteTagBlock(bentries, blayout, _metaArea, _allocator, stream);
 
 			uint contb = _expander.Contract(newb);
 
@@ -516,8 +516,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("prediction b table address", contb);
 
 			// cc
-			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction c entry");
-			long newc = ReflexiveWriter.WriteReflexive(centries, clayout, _metaArea, _allocator, stream);
+			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction c element");
+			long newc = TagBlockWriter.WriteTagBlock(centries, clayout, _metaArea, _allocator, stream);
 
 			uint contc = _expander.Contract(newc);
 
@@ -525,8 +525,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("prediction c table address", contc);
 
 			// d
-			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction d entry");
-			long newd = ReflexiveWriter.WriteReflexive(dentries, dlayout, _metaArea, _allocator, stream);
+			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction d element");
+			long newd = TagBlockWriter.WriteTagBlock(dentries, dlayout, _metaArea, _allocator, stream);
 
 			uint contd = _expander.Contract(newd);
 
@@ -534,8 +534,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			values.SetInteger("prediction d table address", contd);
 
 			// d2
-			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction d2 entry");
-			long newd2 = ReflexiveWriter.WriteReflexive(dentries, d2layout, _metaArea, _allocator, stream);
+			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction d2 element");
+			long newd2 = TagBlockWriter.WriteTagBlock(dentries, d2layout, _metaArea, _allocator, stream);
 
 			uint contd2 = _expander.Contract(newd2);
 
@@ -572,8 +572,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 					long expand = _expander.Expand(address);
 
-					StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset entry");
-					StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, expand, layout, _metaArea);
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset element");
+					StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, infocount, expand, layout, _metaArea);
 
 					if (infocount > 0)
 						infoOffset = (int)entries[0].GetInteger("offset");
@@ -628,8 +628,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
@@ -638,27 +638,27 @@ namespace Blamite.Blam.ThirdGen.Structures
 		}
 
 		private void SaveResourceFixups(IList<ResourceFixup> fixups, StructureValueCollection values, IStream stream,
-			ReflexiveCache<ResourceFixup> cache)
+			TagBlockCache<ResourceFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of resource fixups", 0);
 			uint oldAddress = (uint)values.GetIntegerOrDefault("resource fixup table address", 0);
 
 			long oldExpand = _expander.Expand(oldAddress);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup element");
 
 			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
-				// Write a new reflexive
+				// Write a new block
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeResourceFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
+				newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
-				// Reflexive was cached - just free it
+				// Block was cached - just free it
 				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
@@ -683,8 +683,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceDefinitionFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
@@ -708,27 +708,27 @@ namespace Blamite.Blam.ThirdGen.Structures
 		}
 
 		private void SaveDefinitionFixups(IList<ResourceDefinitionFixup> fixups, StructureValueCollection values,
-			IStream stream, ReflexiveCache<ResourceDefinitionFixup> cache)
+			IStream stream, TagBlockCache<ResourceDefinitionFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of definition fixups", 0);
 			uint oldAddress = (uint)values.GetIntegerOrDefault("definition fixup table address", 0);
 
 			long oldExpand = _expander.Expand(oldAddress);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup element");
 
 			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
-				// Write a new reflexive
+				// Write a new block
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeDefinitionFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
+				newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
-				// Reflexive was cached - just free it
+				// Block was cached - just free it
 				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
@@ -745,8 +745,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			long expand = _expander.Expand(address);
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 			foreach (StructureValueCollection entry in entries)
 				FreeResource(entry);
 
@@ -757,10 +757,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void FreeResource(StructureValueCollection values)
 		{
-			FreeReflexive(values, "number of resource fixups", "resource fixup table address", "resource fixup entry");
-			FreeReflexive(values, "number of definition fixups", "definition fixup table address", "definition fixup entry");
+			FreeTagBlock(values, "number of resource fixups", "resource fixup table address", "resource fixup element");
+			FreeTagBlock(values, "number of definition fixups", "definition fixup table address", "definition fixup element");
 			if (values.HasInteger("number of resource info offsets"))
-				FreeReflexive(values, "number of resource info offsets", "resource info offsets table address", "resource info offset entry");
+				FreeTagBlock(values, "number of resource info offsets", "resource info offsets table address", "resource info offset element");
 		}
 
 		private void FreeInfoBuffer(StructureValueCollection values)
@@ -776,14 +776,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private void FreePredictions(StructureValueCollection values)
 		{
-			FreeReflexive(values, "number of prediction as", "prediction a table address", "prediction a entry");
-			FreeReflexive(values, "number of prediction bs", "prediction b table address", "prediction b entry");
-			FreeReflexive(values, "number of prediction cs", "prediction c table address", "prediction c entry");
-			FreeReflexive(values, "number of prediction ds", "prediction d table address", "prediction d entry");
-			FreeReflexive(values, "number of prediction d2s", "prediction d2 table address", "prediction d2 entry");
+			FreeTagBlock(values, "number of prediction as", "prediction a table address", "prediction a element");
+			FreeTagBlock(values, "number of prediction bs", "prediction b table address", "prediction b element");
+			FreeTagBlock(values, "number of prediction cs", "prediction c table address", "prediction c element");
+			FreeTagBlock(values, "number of prediction ds", "prediction d table address", "prediction d element");
+			FreeTagBlock(values, "number of prediction d2s", "prediction d2 table address", "prediction d2 element");
 		}
 
-		private void FreeReflexive(StructureValueCollection values, string countName, string addressName, string layoutName)
+		private void FreeTagBlock(StructureValueCollection values, string countName, string addressName, string layoutName)
 		{
 			var count = (int)values.GetInteger(countName);
 			uint address = (uint)values.GetInteger(addressName);
@@ -796,7 +796,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				_allocator.Free(expand, size);
 		}
 
-		private StructureValueCollection[] ReadReflexive(StructureValueCollection values, IReader reader, string countName, string addressName, string layoutName)
+		private StructureValueCollection[] ReadTagBlock(StructureValueCollection values, IReader reader, string countName, string addressName, string layoutName)
 		{
 			var count = (int)values.GetInteger(countName);
 			uint address = (uint)values.GetInteger(addressName);
@@ -804,7 +804,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			long expand = _expander.Expand(address);
 
 			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
-			return ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return TagBlockReader.ReadTagBlock(reader, count, expand, layout, _metaArea);
 		}
 
 		private int AlignInfoBlockOffset(Resource resource, int offset)

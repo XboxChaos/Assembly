@@ -31,7 +31,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		/// <summary>
-		///     The offset, from the start of the current meta block or reflexive, of the field's value.
+		///     The offset, from the start of the current meta block or tag block, of the field's value.
 		/// </summary>
 		public uint Offset
 		{

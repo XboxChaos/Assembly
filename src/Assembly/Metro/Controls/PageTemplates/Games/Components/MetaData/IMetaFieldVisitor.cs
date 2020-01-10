@@ -12,8 +12,8 @@
 		void VisitUint32(Uint32Data field);
 		void VisitInt32(Int32Data field);
 		void VisitFloat32(Float32Data field);
-		void VisitReflexive(ReflexiveData field);
-		void VisitReflexiveEntry(WrappedReflexiveEntry field);
+		void VisitTagBlock(TagBlockData field);
+		void VisitTagBlockEntry(WrappedTagBlockEntry field);
 		void VisitString(StringData field);
 		void VisitStringID(StringIDData field);
 		void VisitRawData(RawData field);

@@ -123,7 +123,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return IsTagActive(tag.Index);
 		}
 
-		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, ReflexiveCache<int> cache, IPointerExpander expander)
+		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, TagBlockCache<int> cache, IPointerExpander expander)
 		{
 			var result = new StructureValueCollection();
 			SaveBitArray(_activeResources, "number of raw pool bitfields", "raw pool bitfield table address", allocator, stream, cache, result, expander);
@@ -173,7 +173,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return new BitArray(ints);
 		}
 
-		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, ReflexiveCache<int> cache, StructureValueCollection values, IPointerExpander expander)
+		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, TagBlockCache<int> cache, StructureValueCollection values, IPointerExpander expander)
 		{
 			if (bits.Length == 0)
 			{

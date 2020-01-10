@@ -153,10 +153,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 			{
 				var oldCount = (int)headerValues.GetInteger("number of tag interops");
 				long oldAddress = (long)headerValues.GetInteger("tag interop table address");
-				StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop entry");
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop element");
 				IEnumerable<StructureValueCollection> entries = _interops.Select(t => ((ThirdGenTagInterop)t).Serialize());
 				// hax
-				long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _interops.Count, layout, _metaArea,
+				long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldAddress, _interops.Count, layout, _metaArea,
 					_allocator, stream);
 
 				headerValues.SetInteger("number of tag interops", (uint)_interops.Count);
@@ -170,10 +170,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			var oldCount = (int) headerValues.GetInteger("number of tags");
 			long oldAddress = (long)headerValues.GetInteger("tag table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag entry");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag element");
 			IEnumerable<StructureValueCollection> entries = _tags.Select(t => ((ThirdGenTag) t).Serialize(Classes, _expander));
 			// hax, _tags is a list of ITag objects so we have to upcast
-			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea,
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea,
 				_allocator, stream);
 
 			headerValues.SetInteger("number of tags", (uint) _tags.Count);
@@ -220,8 +220,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			var count = (int) headerValues.GetInteger("number of classes");
 			long address = (long)headerValues.GetInteger("class table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("class entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("class element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
 			return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
 		}
 
@@ -232,8 +232,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			var count = (int)headerValues.GetInteger("number of tag interops");
 			long address = (long)headerValues.GetInteger("tag interop table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
 			return entries.Select<StructureValueCollection, ITagInterop>(e => new ThirdGenTagInterop(e, _metaArea)).ToList();
 		}
 
@@ -241,8 +241,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			var count = (int) headerValues.GetInteger("number of tags");
 			long address = (long)headerValues.GetInteger("tag table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
 			return
 				entries.Select<StructureValueCollection, ITag>((e, i) => new ThirdGenTag(e, (ushort) i, _metaArea, classes, _expander))
 					.ToList();
@@ -253,8 +253,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var count = (int)headerValues.GetInteger("number of global tags");
 			long address = (long)headerValues.GetInteger("global tag table address");
 
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("global tag entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("global tag element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
 
 			Dictionary<int, ITag> output = new Dictionary<int, ITag>();
 			foreach (StructureValueCollection ent in entries)
