@@ -154,7 +154,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 				var oldCount = (int)headerValues.GetInteger("number of tag interops");
 				long oldAddress = (long)headerValues.GetInteger("tag interop table address");
 				StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop element");
-				IEnumerable<StructureValueCollection> entries = _interops.Select(t => ((ThirdGenTagInterop)t).Serialize());
+				IEnumerable<StructureValueCollection> entries = _interops.OrderBy(i=>i.Pointer).Select(t => ((ThirdGenTagInterop)t).Serialize());
 				// hax
 				long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldAddress, _interops.Count, layout, _metaArea,
 					_allocator, stream);
