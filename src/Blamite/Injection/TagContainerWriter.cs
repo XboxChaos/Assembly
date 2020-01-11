@@ -96,12 +96,12 @@ namespace Blamite.Injection
 				}
 
 				// Model Data fixups
-				writer.WriteInt32(dataBlock.ModelDataFixups.Count);
-				foreach (DataBlockModelDataFixup modelData in dataBlock.ModelDataFixups)
+				writer.WriteInt32(dataBlock.InteropFixups.Count);
+				foreach (DataBlockInteropFixup interop in dataBlock.InteropFixups)
 				{
-					writer.WriteUInt32(modelData.OriginalAddress);
-					writer.WriteInt32(modelData.WriteOffset);
-					writer.WriteInt32(modelData.Type);
+					writer.WriteUInt32(interop.OriginalAddress);
+					writer.WriteInt32(interop.WriteOffset);
+					writer.WriteInt32(interop.Type);
 				}
 
 				// Effect fixups

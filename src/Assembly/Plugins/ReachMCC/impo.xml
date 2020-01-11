@@ -373,9 +373,10 @@
 	<uint16 name="[easy read] Index" offset="0xB8" visible="true" />
 	<uint16 name="[easy read] Salt" offset="0xBA" visible="true" />
 	<int32 name="Useless Padding" offset="0xBC" visible="false" />
-	<tagblock name="Unknown Compression Info" offset="0xC0" visible="true" elementSize="0xC">
-		<uint32 name="Polyart Asset Address" offset="0x0" visible="true" />
+	<comment title="Interop Pointers">These pointers go to a dataref (x14 bytes) elsewhere in memory which contains the given buffer. A table in the tag header contains pointers to these pointers.</comment>
+	<tagblock name="Constant Buffer Interop" offset="0xC0" visible="true" elementSize="0xC">
+		<uint32 name="Interop Pointer" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
+		<int32 name="Useless Padding" offset="0x8" visible="false" />
 	</tagblock>
 </plugin>

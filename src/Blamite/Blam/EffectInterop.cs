@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Blamite.Blam
 {
-	public enum EffectStorageType
+	public enum EffectInteropType
 	{
 		Effect = 0,
 		Beam = 1,
@@ -17,7 +17,7 @@ namespace Blamite.Blam
 		LightVolume = 3,
 	}
 
-	public class EffectStorage
+	public class EffectInterop
 	{
 		private bool _effeChanged = false;
 		private bool _beamChanged = false;
@@ -45,16 +45,7 @@ namespace Blamite.Blam
 		private List<byte[]> _cntl;
 		private List<byte[]> _ltvl;
 
-		/*public List<byte[]> Effects { get; set; }
-
-		public List<byte[]> Beams { get; set; }
-
-		public List<byte[]> Contrails { get; set; }
-
-		public List<byte[]> LightVolumes { get; set; }*/
-
-
-		public EffectStorage(ITag scenario, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
+		public EffectInterop(ITag scenario, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_scenario = scenario;
 			_metaArea = metaArea;
@@ -70,28 +61,28 @@ namespace Blamite.Blam
 			Load(reader);
 		}
 
-		public byte[] GetData(EffectStorageType type, int index)
+		public byte[] GetData(EffectInteropType type, int index)
 		{
 			switch(type)
 			{
-				case EffectStorageType.Effect:
+				case EffectInteropType.Effect:
 					return _effe[index];
-				case EffectStorageType.Beam:
+				case EffectInteropType.Beam:
 					return _beam[index];
-				case EffectStorageType.Contrail:
+				case EffectInteropType.Contrail:
 					return _cntl[index];
-				case EffectStorageType.LightVolume:
+				case EffectInteropType.LightVolume:
 					return _ltvl[index];
 				default:
 					return null;
 			}
 		}
 
-		public int AddData(EffectStorageType type, byte[] data)
+		public int AddData(EffectInteropType type, byte[] data)
 		{
 			switch (type)
 			{
-				case EffectStorageType.Effect:
+				case EffectInteropType.Effect:
 					{
 						if (data.Length != _effeEntrySize)
 							return -1;
@@ -99,7 +90,7 @@ namespace Blamite.Blam
 						_effeChanged = true;
 						return _effe.Count - 1;
 					}
-				case EffectStorageType.Beam:
+				case EffectInteropType.Beam:
 					{
 						if (data.Length != _beamEntrySize)
 							return -1;
@@ -107,7 +98,7 @@ namespace Blamite.Blam
 						_beamChanged = true;
 						return _beam.Count - 1;
 					}
-				case EffectStorageType.Contrail:
+				case EffectInteropType.Contrail:
 					{
 						if (data.Length != _cntlEntrySize)
 							return -1;
@@ -115,7 +106,7 @@ namespace Blamite.Blam
 						_cntlChanged = true;
 						return _cntl.Count - 1;
 					}
-				case EffectStorageType.LightVolume:
+				case EffectInteropType.LightVolume:
 					{
 						if (data.Length != _ltvlEntrySize)
 							return -1;
@@ -124,7 +115,7 @@ namespace Blamite.Blam
 						return _ltvl.Count - 1;
 					}
 				default:
-					throw new ArgumentOutOfRangeException("Invalid EffectStorgeType value.");
+					throw new ArgumentOutOfRangeException("Invalid EffectInteropType value.");
 			}
 		}
 
@@ -132,48 +123,45 @@ namespace Blamite.Blam
 		{
 			if (_effeChanged)
 			{
-				SaveData(stream, EffectStorageType.Effect);
+				SaveData(stream, EffectInteropType.Effect);
 				_effeChanged = false;
 			}
 			if (_beamChanged)
 			{
-				SaveData(stream, EffectStorageType.Beam);
+				SaveData(stream, EffectInteropType.Beam);
 				_beamChanged = false;
 			}
 			if (_cntlChanged)
 			{
-				SaveData(stream, EffectStorageType.Contrail);
+				SaveData(stream, EffectInteropType.Contrail);
 				_cntlChanged = false;
 			}
 			if (_ltvlChanged)
 			{
-				SaveData(stream, EffectStorageType.LightVolume);
+				SaveData(stream, EffectInteropType.LightVolume);
 				_ltvlChanged = false;
 			}
-
-
-
 		}
 
-		private void SaveData(IStream stream, EffectStorageType type)
+		private void SaveData(IStream stream, EffectInteropType type)
 		{
 			long pointer;
 			byte[] data;
 			switch(type)
 			{
-				case EffectStorageType.Effect:
+				case EffectInteropType.Effect:
 					pointer = _effePointer;
 					data = _effe.SelectMany(a => a).ToArray();
 					break;
-				case EffectStorageType.Beam:
+				case EffectInteropType.Beam:
 					pointer = _beamPointer;
 					data = _beam.SelectMany(a => a).ToArray();
 					break;
-				case EffectStorageType.Contrail:
+				case EffectInteropType.Contrail:
 					pointer = _cntlPointer;
 					data = _cntl.SelectMany(a => a).ToArray();
 					break;
-				case EffectStorageType.LightVolume:
+				case EffectInteropType.LightVolume:
 					pointer = _ltvlPointer;
 					data = _ltvl.SelectMany(a => a).ToArray();
 					break;
@@ -181,7 +169,7 @@ namespace Blamite.Blam
 					return;
 			}
 
-			var pointerLayout = _buildInfo.Layouts.GetLayout("compiled effect pointer");
+			var pointerLayout = _buildInfo.Layouts.GetLayout("data reference");
 			stream.SeekTo(_metaArea.PointerToOffset(pointer));
 			var pointerData = StructureReader.ReadStructure(stream, pointerLayout);
 
@@ -217,13 +205,13 @@ namespace Blamite.Blam
 			var scenarioLayout = _buildInfo.Layouts.GetLayout("scnr");
 			var scenarioData = StructureReader.ReadStructure(reader, scenarioLayout);
 
-			var count = (int)scenarioData.GetInteger("compiled effects count");
-			var address = (uint)scenarioData.GetInteger("compiled effect address");
+			var count = (int)scenarioData.GetInteger("structured effect interops count");
+			var address = (uint)scenarioData.GetInteger("structured effect interop address");
 
 			long expand = _expander.Expand(address);
 
 			reader.SeekTo(_metaArea.PointerToOffset(expand));
-			var entryLayout = _buildInfo.Layouts.GetLayout("compiled effect element");
+			var entryLayout = _buildInfo.Layouts.GetLayout("structured effect interop element");
 			var pointerBlock = StructureReader.ReadStructure(reader, entryLayout);
 
 			var effeAddr = (uint)pointerBlock.GetInteger("effect pointer");
@@ -231,15 +219,15 @@ namespace Blamite.Blam
 			var cntlAddr = (uint)pointerBlock.GetInteger("contrail pointer");
 			var ltvlAddr = (uint)pointerBlock.GetInteger("light volume pointer");
 
-			var pointerLayout = _buildInfo.Layouts.GetLayout("compiled effect pointer");
+			var pointerLayout = _buildInfo.Layouts.GetLayout("data reference");
 
-			LoadData(reader, EffectStorageType.Effect, _expander.Expand(effeAddr), pointerLayout, "effect data");
-			LoadData(reader, EffectStorageType.Beam, _expander.Expand(beamAddr), pointerLayout, "beam data");
-			LoadData(reader, EffectStorageType.Contrail, _expander.Expand(cntlAddr), pointerLayout, "contrail data");
-			LoadData(reader, EffectStorageType.LightVolume, _expander.Expand(ltvlAddr), pointerLayout, "light volume data");
+			LoadData(reader, EffectInteropType.Effect, _expander.Expand(effeAddr), pointerLayout, "effect data");
+			LoadData(reader, EffectInteropType.Beam, _expander.Expand(beamAddr), pointerLayout, "beam data");
+			LoadData(reader, EffectInteropType.Contrail, _expander.Expand(cntlAddr), pointerLayout, "contrail data");
+			LoadData(reader, EffectInteropType.LightVolume, _expander.Expand(ltvlAddr), pointerLayout, "light volume data");
 		}
 
-		private void LoadData(IReader reader, EffectStorageType type, long pointer, StructureLayout pointerLayout, string dataLayout)
+		private void LoadData(IReader reader, EffectInteropType type, long pointer, StructureLayout pointerLayout, string dataLayout)
 		{
 			reader.SeekTo(_metaArea.PointerToOffset(pointer));
 			var layout = _buildInfo.Layouts.GetLayout(dataLayout);
@@ -257,7 +245,7 @@ namespace Blamite.Blam
 
 			switch (type)
 			{
-				case EffectStorageType.Effect:
+				case EffectInteropType.Effect:
 					{
 						_effeEntrySize = layout.Size;
 						_effePointer = pointer;
@@ -266,7 +254,7 @@ namespace Blamite.Blam
 
 						break;
 					}
-				case EffectStorageType.Beam:
+				case EffectInteropType.Beam:
 					{
 						_beamEntrySize = layout.Size;
 						_beamPointer = pointer;
@@ -276,7 +264,7 @@ namespace Blamite.Blam
 
 						break;
 					}
-				case EffectStorageType.Contrail:
+				case EffectInteropType.Contrail:
 					{
 						_cntlEntrySize = layout.Size;
 						_cntlPointer = pointer;
@@ -286,7 +274,7 @@ namespace Blamite.Blam
 
 						break;
 					}
-				case EffectStorageType.LightVolume:
+				case EffectInteropType.LightVolume:
 					{
 						_ltvlEntrySize = layout.Size;
 						_ltvlPointer = pointer;
@@ -297,7 +285,6 @@ namespace Blamite.Blam
 						break;
 					}
 			}
-
 
 		}
 

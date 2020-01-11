@@ -146,26 +146,25 @@ namespace Blamite.Injection
 				ReadReferences(offset, GlobalShaderFixup);
 
 			}
-			if (lowerName.Contains("polyart asset address"))
+			if (lowerName.Contains("interop pointer"))
 			{
-				//ReadReferences(offset, PolyartFixup);
-				ReadReferences(offset, (b, o) => ReadPolyart(b, o));
+				ReadReferences(offset, (b, o) => ReadInteropPointer(b, o));
 			}
-			if (lowerName.Contains("compiled scenario index"))
+			if (lowerName.Contains("scenario interop index"))
 			{
 				switch (Util.CharConstant.ToString(_tag.Group.Magic))
 				{
 					case "effe":
-						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Effect));
+						ReadReferences(offset, (b, o) => ReadEffectInterop(b, o, EffectInteropType.Effect));
 						break;
 					case "beam":
-						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Beam));
+						ReadReferences(offset, (b, o) => ReadEffectInterop(b, o, EffectInteropType.Beam));
 						break;
 					case "cntl":
-						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.Contrail));
+						ReadReferences(offset, (b, o) => ReadEffectInterop(b, o, EffectInteropType.Contrail));
 						break;
 					case "ltvl":
-						ReadReferences(offset, (b, o) => ReadCompiledEffect(b, o, EffectStorageType.LightVolume));
+						ReadReferences(offset, (b, o) => ReadEffectInterop(b, o, EffectInteropType.LightVolume));
 						break;
 					default:
 						return;
@@ -538,7 +537,7 @@ namespace Blamite.Injection
 				return;
 		}
 
-		private void ReadPolyart(DataBlock block, uint offset)
+		private void ReadInteropPointer(DataBlock block, uint offset)
 		{
 			// Read the address
 			SeekToOffset(block, offset);
@@ -561,13 +560,13 @@ namespace Blamite.Injection
 			int type = a.Type;
 
 			// Now create a fixup
-			var fixup = new DataBlockModelDataFixup(type, address, (int)offset);
-			block.ModelDataFixups.Add(fixup);
+			var fixup = new DataBlockInteropFixup(type, address, (int)offset);
+			block.InteropFixups.Add(fixup);
 		}
 
-		private void ReadCompiledEffect(DataBlock block, uint offset, EffectStorageType type)
+		private void ReadEffectInterop(DataBlock block, uint offset, EffectInteropType type)
 		{
-			if (_cacheFile.CompiledEffects == null)
+			if (_cacheFile.EffectInterops == null)
 				return;
 
 			// Read the index
@@ -575,7 +574,7 @@ namespace Blamite.Injection
 			int index = _reader.ReadInt32();
 
 			//get the data
-			byte[] data = _cacheFile.CompiledEffects.GetData(type, index);
+			byte[] data = _cacheFile.EffectInterops.GetData(type, index);
 
 			// Now create a fixup
 			var fixup = new DataBlockEffectFixup((int)type, index, (int)offset, data);

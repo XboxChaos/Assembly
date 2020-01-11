@@ -201,6 +201,6 @@ namespace Blamite.Blam
 
 		Endian Endianness { get; }
 
-		EffectStorage CompiledEffects { get; }
+		EffectInterop EffectInterops { get; }
 	}
 }

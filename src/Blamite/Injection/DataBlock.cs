@@ -191,9 +191,9 @@ namespace Blamite.Injection
 		public UnicListFixupString[] Strings { get; private set; }
 	}
 
-	public class DataBlockModelDataFixup
+	public class DataBlockInteropFixup
 	{
-		public DataBlockModelDataFixup(int type, uint originalAddress, int writeOffset)
+		public DataBlockInteropFixup(int type, uint originalAddress, int writeOffset)
 		{
 			Type = type;
 			OriginalAddress = originalAddress;
@@ -268,7 +268,7 @@ namespace Blamite.Injection
 			StringIDFixups = new List<DataBlockStringIDFixup>();
 			ShaderFixups = new List<DataBlockShaderFixup>();
 			UnicListFixups = new List<DataBlockUnicListFixup>();
-			ModelDataFixups = new List<DataBlockModelDataFixup>();
+			InteropFixups = new List<DataBlockInteropFixup>();
 			EffectFixups = new List<DataBlockEffectFixup>();
 		}
 
@@ -340,7 +340,7 @@ namespace Blamite.Injection
 		/// </summary>
 		public List<DataBlockUnicListFixup> UnicListFixups { get; private set; }
 
-		public List<DataBlockModelDataFixup> ModelDataFixups { get; private set; }
+		public List<DataBlockInteropFixup> InteropFixups { get; private set; }
 
 		public List<DataBlockEffectFixup> EffectFixups { get; private set; }
 	}

@@ -6621,18 +6621,23 @@ DO NOT USE THE BLOCK REALLOCATOR ON THE [READABLE] BLOCKS!</comment>
 	<tagRef name="Mission HUD" offset="0x848" visible="true" />
 	<tagRef name="Required Resources" offset="0x858" visible="true" />
 	<tagRef name="Variant Globals" offset="0x868" visible="true" />
-	<tagblock name="Compiled Data" offset="0x878" visible="true" elementSize="0x30">
-		<uint32 name="[effe] Compiled Data Pointer" offset="0x0" visible="true" />
+	<comment title="Structured Interop Pointers">These pointers go to a dataref (x14 bytes) elsewhere in memory which contains the given buffer. A table in the tag header contains pointers to these pointers. These particular buffers are tables containing compiled data for each bracketed tag. Assembly automatically handles this data.
+Effect Element Size: 0x7A0
+Beam Element Size: 0x740
+Contrail Element Size: 0x770
+Light Volume Element Size: 0x700</comment>
+	<tagblock name="Structured Buffer Introps" offset="0x878" visible="true" elementSize="0x30">
+		<uint32 name="[effe] Interop Pointer" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<uint32 name="[beam] Compiled Data Pointer" offset="0xC" visible="true" />
+		<int32 name="Useless Padding" offset="0x8" visible="false" />
+		<uint32 name="[beam] Interop Pointer" offset="0xC" visible="true" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
-		<uint32 name="[cntl] Compiled Data Pointer" offset="0x18" visible="true" />
+		<int32 name="Useless Padding" offset="0x14" visible="false" />
+		<uint32 name="[cntl] Interop Pointer" offset="0x18" visible="true" />
 		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<uint32 name="[ltvl] Compiled Data Pointer" offset="0x24" visible="true" />
+		<int32 name="Useless Padding" offset="0x20" visible="false" />
+		<uint32 name="[ltvl] Interop Pointer" offset="0x24" visible="true" />
 		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
+		<int32 name="Useless Padding" offset="0x2C" visible="false" />
 	</tagblock>
 </plugin>

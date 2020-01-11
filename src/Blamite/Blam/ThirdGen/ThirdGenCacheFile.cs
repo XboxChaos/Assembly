@@ -34,7 +34,7 @@ namespace Blamite.Blam.ThirdGen
 		private ThirdGenSimulationDefinitionTable _simulationDefinitions;
 		private ThirdGenPointerExpander _expander;
 		private Endian _endianness;
-		private EffectStorage _effects;
+		private EffectInterop _effects;
 
 		private bool _zoneOnly = false;
 
@@ -229,7 +229,7 @@ namespace Blamite.Blam.ThirdGen
 			get { return _endianness; }
 		}
 
-		public EffectStorage CompiledEffects
+		public EffectInterop EffectInterops
 		{
 			get { return _effects; }
 		}
@@ -434,11 +434,11 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadEffects(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("compiled effect element"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("structured effect interop element"))
 			{
 				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
 				if (scnr != null)
-					_effects = new EffectStorage(scnr, reader, MetaArea, Allocator, _buildInfo, _expander);
+					_effects = new EffectInterop(scnr, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}
 

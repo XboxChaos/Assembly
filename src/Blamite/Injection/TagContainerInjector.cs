@@ -425,7 +425,7 @@ namespace Blamite.Injection
 				FixStringIdReferences(block, bufferWriter);
 				if (tag != null)
 					FixUnicListReferences(block, tag, bufferWriter, stream);
-				FixModelDataReferences(block, bufferWriter, stream, location);
+				FixInteropReferences(block, bufferWriter, stream, location);
 				FixEffectReferences(block, bufferWriter);
 
 				// sort after fixups
@@ -525,9 +525,9 @@ namespace Blamite.Injection
 			}
 		}
 
-		private void FixModelDataReferences(DataBlock block, IWriter buffer, IStream stream, SegmentPointer location)
+		private void FixInteropReferences(DataBlock block, IWriter buffer, IStream stream, SegmentPointer location)
 		{
-			foreach (DataBlockModelDataFixup fixup in block.ModelDataFixups)
+			foreach (DataBlockInteropFixup fixup in block.InteropFixups)
 			{
 				long newAddress = InjectDataBlock(fixup.OriginalAddress, stream);
 
@@ -546,7 +546,7 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlockEffectFixup fixup in block.EffectFixups)
 			{
-				int newIndex = _cacheFile.CompiledEffects.AddData((EffectStorageType)fixup.Type, fixup.Data);
+				int newIndex = _cacheFile.EffectInterops.AddData((EffectInteropType)fixup.Type, fixup.Data);
 
 				buffer.SeekTo(fixup.WriteOffset);
 				buffer.WriteInt32(newIndex);

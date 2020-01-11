@@ -157,13 +157,13 @@ namespace Blamite.Injection
 
 			if (version >= 7)
 			{
-				int numModelFixups = reader.ReadInt32();
-				for (int i = 0; i < numModelFixups; i++)
+				int numInteropFixups = reader.ReadInt32();
+				for (int i = 0; i < numInteropFixups; i++)
 				{
 					uint dataAddress = reader.ReadUInt32();
 					int writeOffset = reader.ReadInt32();
 					int type = reader.ReadInt32();
-					block.ModelDataFixups.Add(new DataBlockModelDataFixup(type, dataAddress, writeOffset));
+					block.InteropFixups.Add(new DataBlockInteropFixup(type, dataAddress, writeOffset));
 				}
 
 				int numEffectFixups = reader.ReadInt32();

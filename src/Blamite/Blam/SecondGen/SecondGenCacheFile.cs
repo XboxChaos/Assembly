@@ -23,7 +23,7 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenTagTable _tags;
 		private SecondGenPointerExpander _expander;
 		private Endian _endianness;
-		private EffectStorage _effects;
+		private EffectInterop _effects;
 
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
@@ -216,7 +216,7 @@ namespace Blamite.Blam.SecondGen
 			get { return _endianness; }
 		}
 
-		public EffectStorage CompiledEffects
+		public EffectInterop EffectInterops
 		{
 			get { return _effects; }
 		}
