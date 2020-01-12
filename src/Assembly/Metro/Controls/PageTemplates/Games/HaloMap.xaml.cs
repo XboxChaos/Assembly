@@ -1226,7 +1226,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			var elem = e.Source as FrameworkElement;
 			if (elem == null) return;
 
-			string tabName = "Debug Tools";
+			string tabName = "Address Tools";
 			if (IsTagOpen(tabName))
 			{
 				SelectTabFromTitle(tabName);

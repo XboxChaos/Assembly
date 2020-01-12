@@ -10,6 +10,8 @@ namespace Blamite.IO
 	/// </summary>
 	public interface IPointerExpander
 	{
+		bool IsValid { get; }
+
 		long Expand(uint pointer);
 
 		uint Contract(long pointer);

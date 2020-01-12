@@ -15,9 +15,11 @@ namespace Blamite.Blam.ThirdGen
 			_magic = magic;
 		}
 
+		public bool IsValid { get { return _magic != 0; } }
+
 		public long Expand(uint pointer)
 		{
-			if (_magic != 0 && pointer != 0)
+			if (IsValid && pointer != 0)
 				return ((long)pointer << 2) + _magic;
 			else
 				return pointer;
@@ -25,7 +27,7 @@ namespace Blamite.Blam.ThirdGen
 
 		public uint Contract(long pointer)
 		{
-			if (_magic != 0 && pointer != 0)
+			if (IsValid && pointer != 0)
 				return (uint)((pointer - _magic) >> 2);
 			else
 				return (uint)pointer;
