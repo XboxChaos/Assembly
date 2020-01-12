@@ -1128,17 +1128,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				var _zonesets = _cacheFile.Resources.LoadZoneSets(stream);
 
 				foreach (ExtractedTag et in container.Tags)
-				{
-					DatumIndex oldindex = et.OriginalIndex;
+					_zonesets.GlobalZoneSet.ActivateTag(et.OriginalIndex, true);
 
-					_zonesets.GlobalZoneSet.ActivateTag(oldindex, true);
-				}
 				foreach (ExtractedResourceInfo eri in container.Resources)
-				{
-					DatumIndex oldindex = eri.OriginalIndex;
+					_zonesets.GlobalZoneSet.ActivateResource(eri.OriginalIndex, true);
 
-					_zonesets.GlobalZoneSet.ActivateResource(oldindex, true);
-				}
 				_zonesets.SaveChanges(stream);
 
 				_cacheFile.SaveChanges(stream);

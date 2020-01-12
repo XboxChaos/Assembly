@@ -55,6 +55,86 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public IZoneSet[] ScenarioZoneSets { get; private set; }
 
 		/// <summary>
+		///		Adjusts the length of the resource arrays for all possible zonesets to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandAllResources(int index)
+		{
+			if (GlobalZoneSet != null)
+				GlobalZoneSet.ExpandResources(index);
+			if (UnattachedZoneSet != null)
+				UnattachedZoneSet.ExpandResources(index);
+			if (DiscForbiddenZoneSet != null)
+				DiscForbiddenZoneSet.ExpandResources(index);
+			if (DiscAlwaysStreamingZoneSet != null)
+				DiscAlwaysStreamingZoneSet.ExpandResources(index);
+
+			if (RequiredMapVariantsZoneSet != null)
+				RequiredMapVariantsZoneSet.ExpandResources(index);
+			if (SandboxMapVariantsZoneSet != null)
+				SandboxMapVariantsZoneSet.ExpandResources(index);
+
+			if (GeneralZoneSets != null)
+				foreach (IZoneSet z in GeneralZoneSets)
+					z.ExpandResources(index);
+			if (BSPZoneSets != null)
+				foreach (IZoneSet z in BSPZoneSets)
+					z.ExpandResources(index);
+			if (BSPZoneSets2 != null)
+				foreach (IZoneSet z in BSPZoneSets2)
+					z.ExpandResources(index);
+			if (BSPZoneSets3 != null)
+				foreach (IZoneSet z in BSPZoneSets3)
+					z.ExpandResources(index);
+			if (CinematicZoneSets != null)
+				foreach (IZoneSet z in CinematicZoneSets)
+					z.ExpandResources(index);
+			if (ScenarioZoneSets != null)
+				foreach (IZoneSet z in ScenarioZoneSets)
+					z.ExpandResources(index);
+		}
+
+		/// <summary>
+		///		Adjusts the length of the tag arrays for all possible zonesets to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandAllTags(int index)
+		{
+			if (GlobalZoneSet != null)
+				GlobalZoneSet.ExpandTags(index);
+			if (UnattachedZoneSet != null)
+				UnattachedZoneSet.ExpandTags(index);
+			if (DiscForbiddenZoneSet != null)
+				DiscForbiddenZoneSet.ExpandTags(index);
+			if (DiscAlwaysStreamingZoneSet != null)
+				DiscAlwaysStreamingZoneSet.ExpandTags(index);
+
+			if (RequiredMapVariantsZoneSet != null)
+				RequiredMapVariantsZoneSet.ExpandTags(index);
+			if (SandboxMapVariantsZoneSet != null)
+				SandboxMapVariantsZoneSet.ExpandTags(index);
+
+			if (GeneralZoneSets != null)
+				foreach (IZoneSet z in GeneralZoneSets)
+					z.ExpandTags(index);
+			if (BSPZoneSets != null)
+				foreach (IZoneSet z in BSPZoneSets)
+					z.ExpandTags(index);
+			if (BSPZoneSets2 != null)
+				foreach (IZoneSet z in BSPZoneSets2)
+					z.ExpandTags(index);
+			if (BSPZoneSets3 != null)
+				foreach (IZoneSet z in BSPZoneSets3)
+					z.ExpandTags(index);
+			if (CinematicZoneSets != null)
+				foreach (IZoneSet z in CinematicZoneSets)
+					z.ExpandTags(index);
+			if (ScenarioZoneSets != null)
+				foreach (IZoneSet z in ScenarioZoneSets)
+					z.ExpandTags(index);
+		}
+
+		/// <summary>
 		///     Saves changes made to zone sets in the table.
 		/// </summary>
 		/// <param name="stream">The stream to write to.</param>

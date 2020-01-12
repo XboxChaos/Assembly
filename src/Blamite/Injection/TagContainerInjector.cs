@@ -173,8 +173,12 @@ namespace Blamite.Injection
 
 			// Make the tag load
 			LoadZoneSets(stream);
-			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
-				_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+			if (_zoneSets != null)
+			{
+				_zoneSets.ExpandAllTags(newTag.Index.Index);
+				if (_zoneSets.GlobalZoneSet != null)
+					_zoneSets.GlobalZoneSet.ActivateTag(newTag, true);
+			}
 
 			// If its group matches one of the valid simulation group names, add it to the simulation definition table
 			if (_cacheFile.SimulationDefinitions != null && _simulationGroups.Contains(CharConstant.ToString(newTag.Group.Magic)))
@@ -379,8 +383,12 @@ namespace Blamite.Injection
 
 			// Make it load
 			LoadZoneSets(stream);
-			if (_zoneSets != null && _zoneSets.GlobalZoneSet != null)
-				_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
+			if (_zoneSets != null)
+			{
+				_zoneSets.ExpandAllResources(newResource.Index.Index);
+				if (_zoneSets.GlobalZoneSet != null)
+					_zoneSets.GlobalZoneSet.ActivateResource(newResource, true);
+			}
 
 			return newIndex;
 		}

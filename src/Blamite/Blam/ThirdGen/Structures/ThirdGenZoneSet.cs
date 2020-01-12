@@ -38,7 +38,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <param name="activate"><c>true</c> if the resource should be made active, <c>false</c> otherwise.</param>
 		public void ActivateResource(DatumIndex index, bool activate)
 		{
-			_activeResources.Length = Math.Max(_activeResources.Length, index.Index + 1);
+			ExpandResources(index.Index);
 			_activeResources[index.Index] = activate;
 		}
 
@@ -84,7 +84,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <param name="activate"><c>true</c> if the tag should be made active, <c>false</c> otherwise.</param>
 		public void ActivateTag(DatumIndex index, bool activate)
 		{
-			_activeTags.Length = Math.Max(_activeTags.Length, index.Index + 1);
+			ExpandTags(index.Index);
 			_activeTags[index.Index] = activate;
 		}
 
@@ -121,6 +121,31 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (tag == null)
 				return false;
 			return IsTagActive(tag.Index);
+		}
+
+		/// <summary>
+		///		Adjusts the length of the resource arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandResources(int index)
+		{
+			_activeResources.Length = Math.Max(_activeResources.Length, index + 1);
+			if (_unknownResources.Length != 0)
+				_unknownResources.Length = Math.Max(_unknownResources.Length, index + 1);
+			if (_unknownResources2.Length != 0)
+				_unknownResources2.Length = Math.Max(_unknownResources2.Length, index + 1);
+		}
+
+		/// <summary>
+		///		Adjusts the length of the tag arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandTags(int index)
+		{
+			_activeTags.Length = Math.Max(_activeTags.Length, index + 1);
+
+			if (_unknownTags.Length != 0)
+				_unknownTags.Length = Math.Max(_unknownTags.Length, index + 1);
 		}
 
 		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, TagBlockCache<int> cache, IPointerExpander expander)
