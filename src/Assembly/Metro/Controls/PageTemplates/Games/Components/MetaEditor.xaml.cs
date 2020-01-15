@@ -830,12 +830,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		#endregion
 
-		private void ReallocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		private void ReallocateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = true;
 		}
 
-		private void ReallocateCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			if (_cache.Engine != EngineType.ThirdGeneration)
 			{
@@ -995,6 +995,55 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 					"The tag block was isolated successfully.");
 		}
 
+		private void AllocateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Data Reference Allocator", "Only third generation cache files are currently supported by the data reference allocator.");
+				return;
+			}
+
+			var field = GetWrappedField(e.OriginalSource) as DataRef;
+			if (field == null)
+				return;
+			var oldLength = field.Length;
+			var newLength = MetroDataRefAllocator.Show(_cache, field);
+			if (!newLength.HasValue)
+				return; // Canceled
+
+			var oldAddress = field.DataAddress;
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Allocate a new block as to not potentially disturb shared uses
+				newAddress = _cache.Allocator.Allocate(newLength.Value, stream);
+				_cache.SaveChanges(stream);
+			}
+
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.Length = newLength.Value;
+			field.DataAddress = newAddress;
+
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+
+			MetroMessageBox.Show("Data Reference Allocator - Assembly",
+				"The data was allocated successfully. Its address is 0x" + newAddress.ToString("X8") + ".");
+		}
+
 		private void IsolateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = true;
@@ -1027,7 +1076,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			long newAddress;
 			using (var stream = _fileManager.OpenReadWrite())
 			{
-				// Reallocate the block
+				// Allocate the data
 				newAddress = _cache.Allocator.Allocate(size, stream);
 				_cache.SaveChanges(stream);
 		
