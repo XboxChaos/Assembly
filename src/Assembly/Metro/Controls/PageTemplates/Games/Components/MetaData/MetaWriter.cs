@@ -230,28 +230,31 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
 
-			// Go to the data location
-			long offset = field.DataAddress;
-			if (_type == SaveType.File)
-				offset = _cache.MetaArea.PointerToOffset(offset);
-			_writer.SeekTo(offset);
-
-			// Build the data
-			byte[] buffer = new byte[field.Length];
-			byte[] bytes;
-
-			switch (field.Format)
+			if (isValid)
 			{
-				default:
-					bytes = FunctionHelpers.HexStringToBytes(field.Value);
-					break;
-				case "asciiz":
-					bytes = Encoding.GetEncoding(28591).GetBytes(field.Value);
-					break;
-			}
+				// Go to the data location
+				long offset = field.DataAddress;
+				if (_type == SaveType.File)
+					offset = _cache.MetaArea.PointerToOffset(offset);
+				_writer.SeekTo(offset);
 
-			Array.Copy(bytes, buffer, bytes.Length > field.Length ? field.Length : bytes.Length);
-			_writer.WriteBlock(buffer, 0, buffer.Length);
+				// Build the data
+				byte[] buffer = new byte[field.Length];
+				byte[] bytes;
+
+				switch (field.Format)
+				{
+					default:
+						bytes = FunctionHelpers.HexStringToBytes(field.Value);
+						break;
+					case "asciiz":
+						bytes = Encoding.GetEncoding(28591).GetBytes(field.Value);
+						break;
+				}
+
+				Array.Copy(bytes, buffer, bytes.Length > field.Length ? field.Length : bytes.Length);
+				_writer.WriteBlock(buffer, 0, buffer.Length);
+			}
 		}
 
 		public void VisitTagRef(TagRefData field)
