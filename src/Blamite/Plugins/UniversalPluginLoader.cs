@@ -348,9 +348,8 @@ namespace Blamite.Plugins
 				format = reader.Value;
 
 			if (format != "bytes" &&
-				format != "unicode" &&
 				format != "asciiz")
-				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
+				throw new ArgumentException("Invalid format. Must be either `bytes` or `asciiz`.");
 
 			int align = 4;
 			if (reader.MoveToAttribute("align"))

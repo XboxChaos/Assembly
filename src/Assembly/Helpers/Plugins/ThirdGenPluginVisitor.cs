@@ -165,7 +165,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine));
+				AddValue(new RawData(name, offset, "bytes", 0, "", size, pluginLine, _metaArea));
 		}
 
 		public void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine)
@@ -182,7 +182,7 @@ namespace Assembly.Helpers.Plugins
 		public void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine));
+				AddValue(new DataRef(name, offset, format, 0, 0, "", 0, pluginLine, _metaArea));
 		}
 
 		public void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine)

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using Blamite.IO;
+using System;
+using System.Globalization;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -11,20 +13,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _value;
 		private string _format;
 		private int _length;
+		internal FileSegmentGroup _metaArea;
 
-		public RawData(string name, uint offset, long address, string value, int length, uint pluginLine)
+		public RawData(string name, uint offset, long address, string value, int length, uint pluginLine, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = value;
 			_length = length;
+			_metaArea = metaArea;
 		}
 
-		public RawData(string name, uint offset, string format, long address, string value, int length, uint pluginLine)
+		public RawData(string name, uint offset, string format, long address, string value, int length, uint pluginLine, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine)
 		{
 			_value = value;
 			_length = length;
 			_format = format;
+			_metaArea = metaArea;
 		}
 
 		public string Value
@@ -62,6 +67,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _dataAddress; }
 			set
 			{
+				if (value != 0 && !_metaArea.ContainsPointer(value))
+					throw new ArgumentException("Invalid pointer");
+
 				_dataAddress = value;
 				NotifyPropertyChanged("DataAddress");
 				NotifyPropertyChanged("DataAddressHex");
@@ -75,7 +83,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				if (value.StartsWith("0x"))
 					value = value.Substring(2);
-				DataAddress = uint.Parse(value, NumberStyles.HexNumber);
+				DataAddress = long.Parse(value, NumberStyles.HexNumber);
 			}
 		}
 
@@ -102,7 +110,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RawData(Name, Offset, FieldAddress, _value, _length, PluginLine);
+			return new RawData(Name, Offset, FieldAddress, _value, _length, PluginLine, _metaArea);
 		}
 	}
 }

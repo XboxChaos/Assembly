@@ -1,13 +1,16 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using Blamite.IO;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	public class DataRef : RawData
 	{
 		public DataRef(string name, uint offset, string format, long address, long dataAddress, string value, int length,
-			uint pluginLine)
-			: base(name, offset, format, address, value, length, pluginLine)
+			uint pluginLine, FileSegmentGroup metaArea)
+			: base(name, offset, format, address, value, length, pluginLine, metaArea)
 		{
 			DataAddress = dataAddress;
 			Format = format;
+			_metaArea = metaArea;
 		}
 
 		public new string Type
@@ -27,7 +30,7 @@
 
 		public override MetaField CloneValue()
 		{
-			var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine);
+			var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine, _metaArea);
 			return result;
 		}
 	}

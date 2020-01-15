@@ -30,12 +30,38 @@
 			           HorizontalAlignment="Left" Margin="0,0,13,0" Width="90" TextTrimming="CharacterEllipsis" />
             <TextBlock Text="Length:" Grid.Column="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 			           HorizontalAlignment="Left" Margin="0,0,0,0" TextTrimming="CharacterEllipsis" />
-            <TextBox Text="{Binding Length}" Grid.Column="2" Width="80" Margin="4,0,0,0" IsReadOnly="True"/>
-            <TextBlock Text="Offset:" Grid.Column="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+			<TextBox Grid.Column="2" Width="80" Margin="4,0,0,0"
+					 Text="{Binding Length, UpdateSourceTrigger=LostFocus}"
+					 c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text">
+				<TextBox.Style>
+					<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+						<Setter Property="IsReadOnly" Value="True"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Type}" Value="dataref">
+								<Setter Property="IsReadOnly" Value="False"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBox.Style>
+			</TextBox>
+			<TextBlock Text="Offset:" Grid.Column="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 			           HorizontalAlignment="Left" Margin="8,0,0,0" TextTrimming="CharacterEllipsis" />
-            <TextBox Text="{Binding DataAddressHex}" Grid.Column="4" Width="90" Margin="4,0,0,0" IsReadOnly="True"/>
+			<TextBox Grid.Column="4" Width="90" Margin="4,0,0,0"
+					 Text="{Binding DataAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
+					 c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text">
+				<TextBox.Style>
+					<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+						<Setter Property="IsReadOnly" Value="True"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Type}" Value="dataref">
+								<Setter Property="IsReadOnly" Value="False"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBox.Style>
+			</TextBox>
 
-           <ToggleButton x:Name="btnOptions" Grid.Column="5" VerticalAlignment="Top" Margin="5,0,0,0" IsChecked="False" ToolTip="Click to view options relating to this field.">
+			<ToggleButton x:Name="btnOptions" Grid.Column="5" VerticalAlignment="Top" Margin="5,0,0,0" IsChecked="False" ToolTip="Click to view options relating to this field.">
                <Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
                <ToggleButton.Style>
                    <Style TargetType="ToggleButton" BasedOn="{StaticResource OptionsToggleButton}">

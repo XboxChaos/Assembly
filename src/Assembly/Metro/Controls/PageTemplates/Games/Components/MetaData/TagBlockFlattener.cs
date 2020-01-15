@@ -320,7 +320,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			// Create flatten information for the block and attach event handlers to it
 			var flattened = new FlattenedTagBlock(_flatParent, field, _topLevelFields, _tracker, _changes);
-			AttachTo(field, flattened);
+			AttachToTagBlock(field, flattened);
 
 			FlattenedTagBlock oldParent = _flatParent;
 			_flatParent = flattened;
@@ -354,6 +354,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitDataRef(DataRef field)
 		{
+			field.PropertyChanged += DataRefPropertyChanged;
+
 		}
 
 		public void VisitTagRef(TagRefData field)
@@ -471,7 +473,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				flattened = flattened.Parent;
 		}
 
-		private void AttachTo(TagBlockData field, FlattenedTagBlock flattened)
+		private void AttachToTagBlock(TagBlockData field, FlattenedTagBlock flattened)
 		{
 			field.PropertyChanged += TagBlockPropertyChanged;
 			field.Cloned += TagBlockCloned;
@@ -481,7 +483,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private void TagBlockCloned(object sender, TagBlockClonedEventArgs e)
 		{
 			FlattenedTagBlock flattened = _flattenInfo[e.Old];
-			AttachTo(e.Clone, flattened);
+			AttachToTagBlock(e.Clone, flattened);
 			flattened.SynchronizeWith(e.Clone);
 		}
 
@@ -570,6 +572,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					_flattenInfo[block].LoadPage(block, block.CurrentIndex);
 					RecursiveLoad(flattened.LoadedFields);
 				}
+			}
+		}
+
+		private void DataRefPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			var field = (DataRef)sender;
+
+			if (!_loading &&
+					 (e.PropertyName == "Length" || e.PropertyName == "DataAddress"))
+			{
+				_loading = true;
+				_tracker.Enabled = false;
+
+				_reader.ReadDataRefContents(field);
+
+				_tracker.Enabled = true;
+				_loading = false;
 			}
 		}
 	}

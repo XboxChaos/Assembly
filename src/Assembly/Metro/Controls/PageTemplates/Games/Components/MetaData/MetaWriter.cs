@@ -5,6 +5,7 @@ using Blamite.Blam;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
+using System.Text;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -159,11 +160,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 
-			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize)) ? (uint)field.Length : 0);
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.FirstElementAddress, (int)(field.Length * field.ElementSize));
+
+			values.SetInteger("entry count", isValid ? (uint)field.Length : 0);
 
 			uint cont = _cache.PointerExpander.Contract(field.FirstElementAddress);
 
-			values.SetInteger("pointer", cont);
+			values.SetInteger("pointer", isValid ? cont : 0);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _tagBlockLayout, _writer);
@@ -217,16 +220,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitDataRef(DataRef field)
 		{
 			var values = new StructureValueCollection();
-			values.SetInteger("size", (uint) field.Length);
+			bool isValid = _cache.MetaArea.ContainsBlockPointer(field.DataAddress, field.Length);
+			values.SetInteger("size", isValid ? (uint)field.Length : 0);
 
 			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
 
-			values.SetInteger("pointer", cont);
+			values.SetInteger("pointer", isValid ? cont : 0);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
-
-			if (field.DataAddress == 0xFFFFFFFF || field.DataAddress <= 0) return;
 
 			// Go to the data location
 			long offset = field.DataAddress;
@@ -234,19 +236,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				offset = _cache.MetaArea.PointerToOffset(offset);
 			_writer.SeekTo(offset);
 
-			// Write its data
+			// Build the data
+			byte[] buffer = new byte[field.Length];
+			byte[] bytes;
+
 			switch (field.Format)
 			{
 				default:
-					_writer.WriteBlock(FunctionHelpers.HexStringToBytes(field.Value), 0, field.Length);
-					break;
-				case "unicode":
-					_writer.WriteUTF16(field.Value);
+					bytes = FunctionHelpers.HexStringToBytes(field.Value);
 					break;
 				case "asciiz":
-					_writer.WriteAscii(field.Value);
+					bytes = Encoding.GetEncoding(28591).GetBytes(field.Value);
 					break;
 			}
+
+			Array.Copy(bytes, buffer, bytes.Length > field.Length ? field.Length : bytes.Length);
+			_writer.WriteBlock(buffer, 0, buffer.Length);
 		}
 
 		public void VisitTagRef(TagRefData field)

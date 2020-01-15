@@ -213,26 +213,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				field.DataAddress = expanded;
 				field.Length = length;
-
-				// Go to position
-				if (_type == LoadType.Memory)
-					_reader.SeekTo(expanded);
-				else
-					_reader.SeekTo(_cache.MetaArea.PointerToOffset(expanded));
-
-				switch (field.Format)
-				{
-					default:
-						byte[] data = _reader.ReadBlock(field.Length);
-						field.Value = FunctionHelpers.BytesToHexString(data);
-						break;
-					case "unicode":
-						field.Value = _reader.ReadUTF16(field.Length);
-						break;
-					case "asciiz":
-						field.Value = _reader.ReadAscii(field.Length);
-						break;
-				}
 			}
 			else
 			{
@@ -398,7 +378,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				field.FirstElementAddress = expanded;
 
 			field.Length = length;
-			
 		}
 
 		public void VisitShaderRef(ShaderRef field)
@@ -496,6 +475,45 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				for (int i = 0; i < page.Fields.Length; i++)
 				{
 					ReadField(page.Fields[i] ?? block.Template[i]);
+				}
+
+				BaseOffset = oldBaseOffset;
+			}
+			finally
+			{
+				if (opened)
+					CloseReader();
+			}
+		}
+
+		public void ReadDataRefContents(DataRef field)
+		{
+			if (field.Length < 0)
+				return;
+
+			bool opened = OpenReader();
+			if (_reader == null)
+				return;
+
+			try
+			{
+				// Calculate the base offset to read from
+				long oldBaseOffset = BaseOffset;
+				long dataOffset = field.DataAddress;
+				if (_type == LoadType.File)
+					dataOffset = (uint)_cache.MetaArea.PointerToOffset(dataOffset);
+
+				_reader.SeekTo(dataOffset);
+
+				switch (field.Format)
+				{
+					default:
+						byte[] data = _reader.ReadBlock(field.Length);
+						field.Value = FunctionHelpers.BytesToHexString(data);
+						break;
+					case "asciiz":
+						field.Value = _reader.ReadAscii(field.Length);
+						break;
 				}
 
 				BaseOffset = oldBaseOffset;
