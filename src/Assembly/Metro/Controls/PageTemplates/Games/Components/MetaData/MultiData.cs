@@ -7,8 +7,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private short _a, _b, _c, _d;
 		private string _type;
 
-		public RectangleData(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public RectangleData(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_type = type;
 			_a = a;
@@ -72,7 +72,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RectangleData(Name, Offset, FieldAddress, Type, A, B, C, D, base.PluginLine);
+			return new RectangleData(Name, Offset, FieldAddress, Type, A, B, C, D, PluginLine, Tooltip);
 		}
 
 	}
@@ -82,8 +82,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private float _a, _b, _c;
 		private string _type;
 
-		public DegreeMultData(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public DegreeMultData(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_a = a;
 			_b = b;
@@ -174,8 +174,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Degree2Data : DegreeMultData
 	{
-		public Degree2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0)
-			: base(name, offset, address, type, a, b, c, pluginLine)
+		public Degree2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip, float c = 0)
+			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
 		}
 
@@ -186,14 +186,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Degree2Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, base.PluginLine);
+			return new Degree2Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, PluginLine, Tooltip);
 		}
 	}
 
 	public class Degree3Data : DegreeMultData
 	{
-		public Degree3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine)
-			: base(name, offset, address, type, a, b, c, pluginLine)
+		public Degree3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
 		}
 
@@ -204,7 +204,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Degree3Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, RadianC, base.PluginLine);
+			return new Degree3Data(Name, Offset, FieldAddress, Type, RadianA, RadianB, RadianC, PluginLine, Tooltip);
 		}
 	}
 
@@ -213,8 +213,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private float _a, _b, _c, _d;
 		private string _type;
 
-		public VectorData(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public VectorData(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_a = a;
 			_b = b;
@@ -277,8 +277,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector2Data : VectorData
 	{
-		public Vector2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
-			: base(name, offset, address, type, a, b, c, d, pluginLine)
+		public Vector2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip, float c = 0, float d = 0)
+			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
 		}
 
@@ -289,14 +289,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Vector2Data(Name, Offset, FieldAddress, Type, A, B, base.PluginLine);
+			return new Vector2Data(Name, Offset, FieldAddress, Type, A, B, PluginLine, Tooltip);
 		}
 	}
 
 	public class Vector3Data : VectorData
 	{
-		public Vector3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, float d = 0)
-			: base(name, offset, address, type, a, b, c, d, pluginLine)
+		public Vector3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip, float d = 0)
+			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
 		}
 
@@ -307,14 +307,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Vector3Data(Name, Offset, FieldAddress, Type, A, B, C, base.PluginLine);
+			return new Vector3Data(Name, Offset, FieldAddress, Type, A, B, C, PluginLine, Tooltip);
 		}
 	}
 
 	public class Vector4Data : VectorData //needs to be split off with quaternion math someday
 	{
-		public Vector4Data(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine)
-			: base(name, offset, address, type, a, b, c, d, pluginLine)
+		public Vector4Data(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
 		}
 
@@ -325,7 +325,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Vector4Data(Name, Offset, FieldAddress, Type, A, B, C, D, base.PluginLine);
+			return new Vector4Data(Name, Offset, FieldAddress, Type, A, B, C, D, PluginLine, Tooltip);
 		}
 	}
 }

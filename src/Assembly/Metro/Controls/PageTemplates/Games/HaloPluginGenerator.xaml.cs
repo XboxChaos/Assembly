@@ -258,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.DataReference:
 							if (offset <= size - 0x14)
 							{
-								writer.VisitDataReference("Unknown", (uint) offset, "bytes", false, 4, 0);
+								writer.VisitDataReference("Unknown", (uint) offset, "bytes", false, 4, 0, "");
 								offset += 0x10;
 								continue;
 							}
@@ -267,7 +267,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.TagReference:
 							if (offset <= size - 0x10)
 							{
-								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0);
+								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0, "");
 								offset += 0xC;
 								continue;
 							}
@@ -280,7 +280,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 								if (subMap != null)
 								{
 									int subMapSize = subMap.GetBestSizeEstimate();
-									writer.EnterTagBlock("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0);
+									writer.EnterTagBlock("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0, "");
 									WritePlugin(subMap, subMapSize, writer);
 									writer.LeaveTagBlock();
 									offset += 0x8;
@@ -293,11 +293,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				// Just write an unknown value depending upon how much space we have left
 				if (offset <= size - 4)
-					writer.VisitUndefined("Unknown", (uint) offset, false, 0);
+					writer.VisitUndefined("Unknown", (uint) offset, false, 0, "");
 				else if (offset <= size - 2)
-					writer.VisitInt16("Unknown", (uint) offset, false, 0);
+					writer.VisitInt16("Unknown", (uint) offset, false, 0, "");
 				else
-					writer.VisitInt8("Unknown", (uint) offset, false, 0);
+					writer.VisitInt8("Unknown", (uint) offset, false, 0, "");
 			}
 		}
 

@@ -11,8 +11,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _type;
 		private T _a, _b;
 
-		public RangeNumberData(string name, uint offset, long address, string type, T a, T b, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public RangeNumberData(string name, uint offset, long address, string type, T a, T b, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_type = type;
 			_a = a;
@@ -68,8 +68,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeUint16Data : RangeNumberData<ushort>
 	{
-		public RangeUint16Data(string name, uint offset, long address, string type, ushort a, ushort b, uint pluginLine)
-			: base(name, offset, address, type, a, b, pluginLine)
+		public RangeUint16Data(string name, uint offset, long address, string type, ushort a, ushort b, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, a, b, pluginLine, tooltip)
 		{
 		}
 
@@ -80,7 +80,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RangeUint16Data(Name, Offset, FieldAddress, Type, A, B, base.PluginLine);
+			return new RangeUint16Data(Name, Offset, FieldAddress, Type, A, B, PluginLine, Tooltip);
 		}
 	}
 
@@ -89,8 +89,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeFloat32Data : VectorData
 	{
-		public RangeFloat32Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0, float d = 0)
-			: base(name, offset, address, type, a, b, c, d, pluginLine)
+		public RangeFloat32Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip, float c = 0, float d = 0)
+			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
 		}
 
@@ -101,7 +101,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RangeFloat32Data(Name, Offset, FieldAddress, Type, A, B, base.PluginLine);
+			return new RangeFloat32Data(Name, Offset, FieldAddress, Type, A, B, PluginLine, Tooltip);
 		}
 	}
 
@@ -110,8 +110,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeDegreeData : DegreeMultData
 	{
-		public RangeDegreeData(string name, uint offset, long address, string type, float a, float b, uint pluginLine, float c = 0)
-			: base(name, offset, address, type, a, b, c, pluginLine)
+		public RangeDegreeData(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip, float c = 0)
+			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
 		}
 
@@ -122,7 +122,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RangeDegreeData(Name, Offset, FieldAddress, Type, RadianA, RadianB, base.PluginLine);
+			return new RangeDegreeData(Name, Offset, FieldAddress, Type, RadianA, RadianB, PluginLine, Tooltip);
 		}
 	}
 }

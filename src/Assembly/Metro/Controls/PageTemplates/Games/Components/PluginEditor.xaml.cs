@@ -289,6 +289,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			visible.RegisterValue(new CompletableXMLValue("true", "Field is always visible"));
 			visible.RegisterValue(new CompletableXMLValue("false", "Field is only visible when invisibles are shown"));
 
+			tag.RegisterAttribute(new CompletableXMLAttribute("tooltip", "The field's tooltip (optional)"));
+
 			tag.RegisterAttribute(visible);
 			_completer.RegisterTag(tag);
 			return tag;

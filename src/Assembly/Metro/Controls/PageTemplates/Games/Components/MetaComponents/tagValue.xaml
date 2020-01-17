@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              xmlns:games="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games"
              mc:Ignorable="d" Height="28" Width="810"
-             HorizontalAlignment="Left"
+             HorizontalAlignment="Left" Background="Transparent" ToolTip="{Binding Path=Tooltip}"
              x:Name="control">
 	<UserControl.Resources>
 		<local:TagGroupConverter x:Key="groupToIndexConverter" TagsSource="{Binding DataContext.Tags, Source={x:Reference control}}" />
@@ -15,7 +15,7 @@
 			<TextBlock Text="{Binding TagGroupMagic}" />
 		</DataTemplate>
 		<DataTemplate DataType="{x:Type games:TagEntry}">
-			<TextBlock Text="{Binding TagFileName}" ToolTip="{Binding TagToolTip}" />
+			<TextBlock Text="{Binding TagFileName}" />
 		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.CommandBindings>
@@ -24,7 +24,7 @@
 	</UserControl.CommandBindings>
 	<Grid x:Name="TagValue" Background="Transparent">
 		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"
+			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
 			           Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
 			           TextTrimming="CharacterEllipsis" />
 			<ComboBox x:Name="cbTagGroup" Width="65" VerticalAlignment="Center" Margin="20,0,0,0"
@@ -35,15 +35,26 @@
                       ToolTip="Select an entry from the dropdown or type the desired group to jump to it.">
 				<ComboBox.Resources>
 					<CompositeCollection x:Key="groupList">
-						<ComboBoxItem>(null)</ComboBoxItem>
+						<ComboBoxItem ToolTip="null">(null)</ComboBoxItem>
 						<CollectionContainer Collection="{Binding DataContext.Tags.Groups, Source={x:Reference cbTagGroup}}" />
 					</CompositeCollection>
 				</ComboBox.Resources>
+				<ComboBox.ItemContainerStyle>
+					<Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+						<Setter Property="ToolTip" Value="{Binding Description}" />
+					</Style>
+				</ComboBox.ItemContainerStyle>
 			</ComboBox>
 			<ComboBox x:Name="cbTagEntry" Width="452" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,0,0"
 			          ItemsSource="{Binding Group, Converter={StaticResource groupItemsRetriever}, Mode=OneWay}"
 			          SelectedItem="{Binding Value, Mode=TwoWay}" ToolTip="{Binding Path=SelectedItem.TagToolTip, RelativeSource={RelativeSource Self}}"
-			          SelectionChanged="ValueChanged" />
+			          SelectionChanged="ValueChanged">
+				<ComboBox.ItemContainerStyle>
+					<Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+						<Setter Property="ToolTip" Value="{Binding TagToolTip}" />
+					</Style>
+				</ComboBox.ItemContainerStyle>
+			</ComboBox>
 
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="btnNullTag" Content="Ø" Margin="5,0,0,0" Width="20" Click="btnNullTag_Click" ToolTip="Nulls this tag reference."/>

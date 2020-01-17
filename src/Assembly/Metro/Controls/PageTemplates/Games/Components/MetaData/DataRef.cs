@@ -5,8 +5,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class DataRef : RawData
 	{
 		public DataRef(string name, uint offset, string format, long address, long dataAddress, string value, int length,
-			uint pluginLine, FileSegmentGroup metaArea)
-			: base(name, offset, format, address, value, length, pluginLine, metaArea)
+			uint pluginLine, string tooltip, FileSegmentGroup metaArea)
+			: base(name, offset, format, address, value, length, pluginLine, tooltip, metaArea)
 		{
 			DataAddress = dataAddress;
 			Format = format;
@@ -30,7 +30,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine, _metaArea);
+			var result = new DataRef(Name, Offset, Format, FieldAddress, DataAddress, Value, Length, PluginLine, Tooltip, _metaArea);
 			return result;
 		}
 	}

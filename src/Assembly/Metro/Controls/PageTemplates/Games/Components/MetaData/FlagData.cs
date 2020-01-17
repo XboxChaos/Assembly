@@ -19,8 +19,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private FlagsType _type;
 		private ulong _value;
 
-		public FlagData(string name, uint offset, long address, FlagsType type, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public FlagData(string name, uint offset, long address, FlagsType type, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_type = type;
 			CheckAllCommand = new QuickCheckCommand(this, true);
@@ -63,9 +63,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public ICommand UncheckAllCommand { get; private set; }
 
-		public void DefineBit(int index, string name)
+		public void DefineBit(int index, string name, string tooltip)
 		{
-			var data = new BitData(this, name, index);
+			var data = new BitData(this, name, index, tooltip);
 			_bits[index] = data;
 		}
 
@@ -76,9 +76,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new FlagData(Name, Offset, FieldAddress, _type, base.PluginLine);
+			var result = new FlagData(Name, Offset, FieldAddress, _type, PluginLine, Tooltip);
 			foreach (var bit in _bits)
-				result.DefineBit(bit.Key, bit.Value.Name);
+				result.DefineBit(bit.Key, bit.Value.Name, bit.Value.Tooltip);
 			result.Value = _value;
 			return result;
 		}
@@ -156,12 +156,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly ulong _mask;
 		private readonly FlagData _parent;
 		private string _name;
+		private string _tooltip;
 
-		public BitData(FlagData parent, string name, int index)
+		public BitData(FlagData parent, string name, int index, string tooltip)
 		{
 			_parent = parent;
 			_name = name;
 			_mask = (ulong)1U << index;
+			_tooltip = tooltip;
 		}
 
 		public string Name
@@ -171,6 +173,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_name = value;
 				NotifyPropertyChanged("Name");
+			}
+		}
+
+		public string Tooltip
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(_tooltip))
+					return Name;
+				else
+					return Name + "\r\n" + _tooltip;
+			}
+			set
+			{
+				_tooltip = value;
+				NotifyPropertyChanged("Tooltip");
 			}
 		}
 

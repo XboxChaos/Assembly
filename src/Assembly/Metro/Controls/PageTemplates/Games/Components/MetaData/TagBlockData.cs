@@ -99,8 +99,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private double _width = MinWidth;
 
 		public TagBlockData(string name, uint offset, long address, uint elementSize, int align,
-			bool sort, uint pluginLine, FileSegmentGroup metaArea)
-			: base(name, offset, address, pluginLine)
+			bool sort, uint pluginLine, string tooltip, FileSegmentGroup metaArea)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_elementSize = elementSize;
 			_metaArea = metaArea;
@@ -228,7 +228,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, base.PluginLine, _metaArea);
+			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, PluginLine, Tooltip, _metaArea);
 			result._expanded = _expanded;
 			result._width = _width;
 			result._currentIndex = _currentIndex;

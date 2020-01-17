@@ -45,33 +45,33 @@ namespace Blamite.Plugins
 
 		// These are called whenever basic values are found in the plugin.
 		// Parameters should be fairly self-explanatory.
-		void VisitUInt8(string name, uint offset, bool visible, uint pluginLine);
-		void VisitInt8(string name, uint offset, bool visible, uint pluginLine);
-		void VisitUInt16(string name, uint offset, bool visible, uint pluginLine);
-		void VisitInt16(string name, uint offset, bool visible, uint pluginLine);
-		void VisitUInt32(string name, uint offset, bool visible, uint pluginLine);
-		void VisitInt32(string name, uint offset, bool visible, uint pluginLine);
-		void VisitFloat32(string name, uint offset, bool visible, uint pluginLine);
-		void VisitUndefined(string name, uint offset, bool visible, uint pluginLine);
+		void VisitUInt8(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitInt8(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitUInt32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitInt32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitUndefined(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
-		void VisitPoint2(string name, uint offset, bool visible, uint pluginLine);
-		void VisitPoint3(string name, uint offset, bool visible, uint pluginLine);
-		void VisitVector2(string name, uint offset, bool visible, uint pluginLine);
-		void VisitVector3(string name, uint offset, bool visible, uint pluginLine);
-		void VisitVector4(string name, uint offset, bool visible, uint pluginLine);
-		void VisitDegree(string name, uint offset, bool visible, uint pluginLine);
-		void VisitDegree2(string name, uint offset, bool visible, uint pluginLine);
-		void VisitDegree3(string name, uint offset, bool visible, uint pluginLine);
-		void VisitPlane2(string name, uint offset, bool visible, uint pluginLine);
-		void VisitPlane3(string name, uint offset, bool visible, uint pluginLine);
-		void VisitRect16(string name, uint offset, bool visible, uint pluginLine);
-		void VisitStringID(string name, uint offset, bool visible, uint pluginLine);
-		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine);
-		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine);
+		void VisitPoint2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitPoint3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitVector2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitVector3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitVector4(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitDegree(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitDegree2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitDegree3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitPlane2(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitPlane3(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitTagReference(string name, uint offset, bool visible, bool withGroup, bool showJumpTo, uint pluginLine, string tooltip);
+		void VisitDataReference(string name, uint offset, string format, bool visible, int align, uint pluginLine, string tooltip);
 
-		void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine);
-		void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine);
-		void VisitRangeDegree(string name, uint offset, bool visible, uint pluginLine);
+		void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		void VisitRangeDegree(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a raw data block is encountered in the plugin.
@@ -81,7 +81,7 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the block is visible.</param>
 		/// <param name="size">The size of the block.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine);
+		void VisitRawData(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when an ASCII string is encountered in the plugin.
@@ -91,7 +91,7 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the string is visible.</param>
 		/// <param name="size">The size of the string in bytes.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine);
+		void VisitAscii(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a UTF16 string is encountered in the plugin.
@@ -101,7 +101,7 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the string is visible.</param>
 		/// <param name="size">The size of the string in bytes.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine);
+		void VisitUtf16(string name, uint offset, bool visible, int size, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a argb32 or rgb32 is encountered in the plugin.
@@ -111,7 +111,7 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the color entry is visible.</param>
 		/// <param name="alpha">True if alpha is used.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine);
+		void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a argbf or rgbf is encountered in the plugin.
@@ -121,22 +121,22 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the color entry is visible.</param>
 		/// <param name="alpha">True if alpha is used.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine);
+		void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip);
 
 		// These are called whenever flags are found in the plugin.
 		// Return false from one of these methods to skip over the
 		// bits in the flags.
-		bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterFlags8(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		bool EnterFlags16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		bool EnterFlags32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		bool EnterFlags64(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a bit definition is encountered inside a flags field.
 		/// </summary>
 		/// <param name="name">The bit's name.</param>
 		/// <param name="index">The bit's zero-based index (0 = LSB).</param>
-		void VisitBit(string name, int index);
+		void VisitBit(string name, int index, string tooltip);
 
 		/// <summary>
 		///     Called when a flags definition is exited.
@@ -146,16 +146,16 @@ namespace Blamite.Plugins
 		// These are called whenever an enum is found in the plugin.
 		// Return false from one of these methods to skip over the
 		// options in the enum.
-		bool EnterEnum8(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterEnum16(string name, uint offset, bool visible, uint pluginLine);
-		bool EnterEnum32(string name, uint offset, bool visible, uint pluginLine);
+		bool EnterEnum8(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		bool EnterEnum16(string name, uint offset, bool visible, uint pluginLine, string tooltip);
+		bool EnterEnum32(string name, uint offset, bool visible, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when an enum option definition is encountered inside an enum.
 		/// </summary>
 		/// <param name="name">The option's name.</param>
 		/// <param name="value">The option's value.</param>
-		void VisitOption(string name, int value);
+		void VisitOption(string name, int value, string tooltip);
 
 		/// <summary>
 		///     Called when an enum definition is exited.
@@ -173,7 +173,7 @@ namespace Blamite.Plugins
 		/// <param name="sort">Whether or not this block needs sorting.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
 		/// <returns>False if the entries in the block should be skipped over.</returns>
-		bool EnterTagBlock(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine);
+		bool EnterTagBlock(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine, string tooltip);
 
 		/// <summary>
 		///     Called when a tag block definition is exited.
@@ -188,7 +188,7 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the shader is visible.</param>
 		/// <param name="type">The shader's type.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine);
+		void VisitShader(string name, uint offset, bool visible, ShaderType type, uint pluginLine, string tooltip);
 
 		/// <summary>
 		/// Called when a multilingual unicode string list is encountered in the plugin.
@@ -198,6 +198,6 @@ namespace Blamite.Plugins
 		/// <param name="visible">True if the list is visible.</param>
 		/// <param name="languages">The number of languages in the list.</param>
 		/// <param name="pluginLine">The line in the plugin this entry is found.</param>
-		void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine);
+		void VisitUnicList(string name, uint offset, bool visible, int languages, uint pluginLine, string tooltip);
 	}
 }

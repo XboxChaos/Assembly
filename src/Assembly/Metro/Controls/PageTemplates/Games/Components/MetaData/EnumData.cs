@@ -15,8 +15,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private EnumType _type;
 		private int _value;
 
-		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_type = type;
 			_value = value;
@@ -69,10 +69,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, base.PluginLine);
+			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, PluginLine, Tooltip);
 			foreach (EnumValue option in Values)
 			{
-				var copiedValue = new EnumValue(option.Name, option.Value);
+				var copiedValue = new EnumValue(option.Name, option.Value, option.Tooltip);
 				result.Values.Add(copiedValue);
 				if (_selectedValue != null && copiedValue.Value == _selectedValue.Value)
 					result._selectedValue = copiedValue;
@@ -85,11 +85,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _name;
 		private int _value;
+		private string _tooltip;
 
-		public EnumValue(string name, int value)
+		public EnumValue(string name, int value, string tooltip)
 		{
 			_name = name;
 			_value = value;
+			_tooltip = tooltip;
 		}
 
 		public string Name
@@ -111,6 +113,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_name = value;
 				NotifyPropertyChanged("Name");
+			}
+		}
+
+		public string Tooltip
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(_tooltip))
+					return Name;
+				else
+					return Name + "\r\n" + _tooltip;
+			}
+			set
+			{
+				_tooltip = value;
+				NotifyPropertyChanged("Tooltip");
 			}
 		}
 

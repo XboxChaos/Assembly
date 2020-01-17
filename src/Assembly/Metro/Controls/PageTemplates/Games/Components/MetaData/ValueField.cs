@@ -8,13 +8,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private long _address;
 		private string _name;
 		private uint _offset;
+		private string _tooltip;
 
-		public ValueField(string name, uint offset, long address, uint pluginLine)
+		public ValueField(string name, uint offset, long address, uint pluginLine, string tooltip)
 		{
 			_name = name;
 			_offset = offset;
 			_address = address;
 			PluginLine = pluginLine;
+			_tooltip = tooltip;
 		}
 
 		/// <summary>
@@ -54,6 +56,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_address = value;
 				NotifyPropertyChanged("FieldAddress");
+			}
+		}
+
+		/// <summary>
+		///     The value's tooltip.
+		/// </summary>
+		public string Tooltip
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(_tooltip))
+					return Name;
+				else
+					return Name + "\r\n" + _tooltip;
+			}
+			set
+			{
+				_tooltip = value;
+				NotifyPropertyChanged("Tooltip");
 			}
 		}
 	}

@@ -12,8 +12,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private IShader _shader;
 		private string _dbString;
 
-		public ShaderRef(string name, uint offset, long address, ShaderType type, IShader value, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public ShaderRef(string name, uint offset, long address, ShaderType type, IShader value, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			Type = type;
 			Shader = value;
@@ -57,7 +57,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new ShaderRef(Name, Offset, FieldAddress, Type, Shader, PluginLine);
+			return new ShaderRef(Name, Offset, FieldAddress, Type, Shader, PluginLine, Tooltip);
 		}
 	}
 }

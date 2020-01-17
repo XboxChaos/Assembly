@@ -109,7 +109,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (selected == null)
 			{
 				// Nothing matched, so just add an option for it
-				selected = new EnumValue(field.Value.ToString(), field.Value);
+				selected = new EnumValue(field.Value.ToString(), field.Value, "");
 				field.Values.Add(selected);
 			}
 			field.SelectedValue = selected;
