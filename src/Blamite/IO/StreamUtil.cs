@@ -31,7 +31,7 @@ namespace Blamite.IO
 		public static void Copy(IReader input, IWriter output)
 		{
 			// http://stackoverflow.com/questions/230128/best-way-to-copy-between-two-stream-instances-c-sharp
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			int read;
 			while ((read = input.ReadBlock(buffer, 0, BufferSize)) > 0)
@@ -46,7 +46,7 @@ namespace Blamite.IO
 		/// <param name="size">The size of the data to copy.</param>
 		public static void Copy(IReader input, IWriter output, int size)
 		{
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			while (size > 0)
 			{
@@ -64,7 +64,7 @@ namespace Blamite.IO
 		/// <param name="size">The size of the data to copy.</param>
 		public static void Copy(Stream input, Stream output, int size)
 		{
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			while (size > 0)
 			{
@@ -89,7 +89,7 @@ namespace Blamite.IO
 			if (size < 0)
 				throw new ArgumentException("The size of the data to copy must be >= 0");
 
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			long remaining = size;
 			while (remaining > 0)
@@ -148,7 +148,7 @@ namespace Blamite.IO
 			if (size < 0)
 				throw new ArgumentException("The size of the data to insert must be >= 0");
 
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			long pos = writer.Position;
 			long endPos = pos + size;
