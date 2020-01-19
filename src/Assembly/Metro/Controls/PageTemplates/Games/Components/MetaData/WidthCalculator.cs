@@ -9,8 +9,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class WidthCalculator : IMetaFieldVisitor
 	{
-		private const double TagBlockSubEntryLeftPadding = 20;
-		private const double TagBlockSubEntryRightPadding = 20;
+		private const double TagBlockSubEntryLeftPadding = 10;
+		private const double TagBlockSubEntryRightPadding = 10;
 		private const double TagBlockSubEntryBorderWidth = 1;
 
 		private const double TagBlockSubEntryExtraWidth =
