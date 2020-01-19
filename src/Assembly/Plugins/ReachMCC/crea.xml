@@ -109,8 +109,7 @@
 	<stringid name="Default Variant" offset="0x60" visible="true" />
 	<tagRef name="Model" offset="0x64" visible="true" />
 	<tagRef name="Crate Object" offset="0x74" visible="true" />
-	<comment title="Only Set This Tag If You Want To Override The Default Collision Damage Values In Globals.Globals" />
-	<tagRef name="Collision Damage" offset="0x84" visible="true" />
+	<tagRef name="Collision Damage" offset="0x84" visible="true" tooltip="only set this tag if you want to override the default collision damage values in globals.globals" />
 	<tagRef name="Brittle Collision Damage" offset="0x94" visible="true" />
 	<tagblock name="Early Mover Oriented Bounding Box" offset="0xA4" visible="true" elementSize="0x2C">
 		<stringid name="Node Name" offset="0x0" visible="true" />
@@ -342,7 +341,13 @@ the higher the value of k, the quicker the system will reach the target value</c
 	<tagblock name="Predicted Resources" offset="0x144" visible="false" elementSize="0x0">
 	</tagblock>
 	<tagblock name="Multiplayer Object Properties" offset="0x150" visible="true" elementSize="0xBC">
-		<int8 name="Unknown" offset="0x0" visible="true" />
+		<flags8 name="Game Engine Flags" offset="0x0" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Sandbox" index="1" />
+			<bit name="Megalo" index="2" />
+			<bit name="Campaign" index="3" />
+			<bit name="Survival" index="4" />
+		</flags8>
 		<enum8 name="Object Type" offset="0x1" visible="true">
 			<option name="Ordinary" value="0x0" />
 			<option name="Weapon" value="0x1" />
