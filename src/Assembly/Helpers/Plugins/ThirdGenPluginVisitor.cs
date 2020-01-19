@@ -69,13 +69,13 @@ namespace Assembly.Helpers.Plugins
 		public void VisitPoint2(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new Vector2Data(name, offset, 0, "point2", 0, 0, pluginLine, tooltip));
+				AddValue(new Point2Data(name, offset, 0, "point2", 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitPoint3(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new Vector3Data(name, offset, 0, "point3", 0, 0, 0, pluginLine, tooltip));
+				AddValue(new Point3Data(name, offset, 0, "point3", 0, 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitVector2(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -111,13 +111,13 @@ namespace Assembly.Helpers.Plugins
 		public void VisitPlane2(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new Vector3Data(name, offset, 0, "plane2", 0, 0, 0, pluginLine, tooltip));
+				AddValue(new Plane2Data(name, offset, 0, "plane2", 0, 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitPlane3(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new Vector4Data(name, offset, 0, "plane3", 0, 0, 0, 0, pluginLine, tooltip));
+				AddValue(new Plane3Data(name, offset, 0, "plane3", 0, 0, 0, 0, pluginLine, tooltip));
 		}
 
 		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
@@ -129,19 +129,19 @@ namespace Assembly.Helpers.Plugins
 		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new DegreeData(name, offset, 0, 0, pluginLine, tooltip));
+				AddValue(new DegreeData(name, offset, 0, "degree", 0, pluginLine, tooltip));
 		}
 
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, alpha, "int", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "int", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColourData(name, offset, 0, alpha, "float", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "float", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)

@@ -56,7 +56,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Uint8Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Uint8Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -77,7 +77,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Int8Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Int8Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -98,7 +98,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Uint16Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Uint16Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -119,7 +119,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Int16Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Int16Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -140,7 +140,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Uint32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Uint32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -161,7 +161,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Int32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Int32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
@@ -182,30 +182,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new Float32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, Tooltip);
+			return new Float32Data(Name, Offset, FieldAddress, Type, Value, PluginLine, ToolTip);
 		}
 	}
 
 	/// <summary>
 	///     32-bit floating-point number, converted from radians to degrees
 	/// </summary>
-	public class DegreeData : ValueField
+	public class DegreeData : NumberData<float>
 	{
 		private float _radian;
 
-		public DegreeData(string name, uint offset, long address, float radian, uint pluginLine, string tooltip)
-			: base(name, offset, address, pluginLine, tooltip)
+		public DegreeData(string name, uint offset, long address, string type, float radian, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, radian, pluginLine, tooltip)
 		{
 			_radian = radian;
 		}
 
-		public float Degree
+		public new float Value
 		{
-			get { return (float)(_radian * (180 / Math.PI)); }
+			get { return FromRadian(_radian); }
 			set
 			{
-				_radian = (float)(value * (Math.PI / 180));
-				NotifyPropertyChanged("Degree");
+				_radian = ToRadian(value);
+				NotifyPropertyChanged("Value");
 			}
 		}
 
@@ -216,7 +216,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				_radian = value;
 				NotifyPropertyChanged("Radian");
-				NotifyPropertyChanged("Degree");
+				NotifyPropertyChanged("Value");
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new DegreeData(Name, Offset, FieldAddress, _radian, PluginLine, Tooltip);
+			return new DegreeData(Name, Offset, FieldAddress, Type, _radian, PluginLine, ToolTip);
 		}
 	}
 }

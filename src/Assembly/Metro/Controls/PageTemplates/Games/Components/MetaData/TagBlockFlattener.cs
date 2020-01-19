@@ -308,11 +308,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 		}
 
@@ -379,6 +379,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public void VisitVector4(Vector4Data field)
+		{
+		}
+
+		public void VisitPoint2(Point2Data field)
+		{
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+		}
+
+		public void VisitPlane2(Plane2Data field)
+		{
+		}
+
+		public void VisitPlane3(Plane3Data field)
 		{
 		}
 

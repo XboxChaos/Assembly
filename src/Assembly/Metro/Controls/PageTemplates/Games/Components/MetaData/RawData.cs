@@ -110,7 +110,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new RawData(Name, Offset, FieldAddress, _value, _length, PluginLine, Tooltip, _metaArea);
+			return new RawData(Name, Offset, FieldAddress, _value, _length, PluginLine, ToolTip, _metaArea);
 		}
 	}
 }

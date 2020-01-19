@@ -112,11 +112,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_propertyNames.Add("ElementSize"); // Blocks
 			_propertyNames.Add("FirstElementAddress"); // Blocks
 			_propertyNames.Add("Group"); // Tagrefs
-			_propertyNames.Add("Degree"); // Degrees
 			_propertyNames.Add("Radian"); // Degrees
 			_propertyNames.Add("X"); // Vectors
 			_propertyNames.Add("Y"); // Vectors
 			_propertyNames.Add("Z"); // Vectors
+			_propertyNames.Add("Min"); // Ranges
+			_propertyNames.Add("Max"); // Ranges
+			_propertyNames.Add("RadianMin"); // Degree ranges
+			_propertyNames.Add("RadianMax"); // Degree ranges
 			_propertyNames.Add("A"); // MultiValues
 			_propertyNames.Add("B"); // MultiValues
 			_propertyNames.Add("C"); // MultiValues

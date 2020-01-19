@@ -11,13 +11,13 @@ using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
 	/// <summary>
-	///     Interaction logic for tagValue.xaml
+	///     Interaction logic for TagValue.xaml
 	/// </summary>
-	public partial class tagValue : UserControl
+	public partial class TagValue : UserControl
 	{
 		public static RoutedCommand JumpToCommand = new RoutedCommand();
 
-		public tagValue()
+		public TagValue()
 		{
 			InitializeComponent();
 			//hax hax

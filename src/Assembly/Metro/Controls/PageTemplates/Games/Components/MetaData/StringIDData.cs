@@ -41,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new StringIDData(Name, Offset, FieldAddress, _value, _autocompleteTrie, PluginLine, Tooltip);
+			return new StringIDData(Name, Offset, FieldAddress, _value, _autocompleteTrie, PluginLine, ToolTip);
 		}
 	}
 }

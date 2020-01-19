@@ -3,12 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Width="606"
+			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
+             mc:Ignorable="d" Width="650"
              HorizontalAlignment="Left">
-	<Grid Margin="0,0,4,0">
-		<TextBlock x:Name="lblTitle" Text="{Binding Name}" Height="20" Margin="0,3,0,30" Foreground="#FF999999"
+	<UserControl.Resources>
+		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
+	</UserControl.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*" MaxHeight="120"/>
+		</Grid.RowDefinitions>
+		<TextBlock Grid.Row="0" x:Name="lblTitle" Text="{Binding Name}" Height="20" Margin="0,3,0,3" Foreground="#FF999999"
 		           VerticalAlignment="Top" Padding="5,2,5,0" Background="#FF474747" />
-		<ScrollViewer Margin="0,27,0,3" MaxHeight="115" VerticalScrollBarVisibility="Auto">
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding TextExists, Converter={StaticResource cb2v}}">
 			<TextBlock x:Name="lblComment" Text="{Binding Text}" HorizontalAlignment="Stretch"
 			           VerticalAlignment="Top" Foreground="#FF999999" Padding="5,0,5,5" TextWrapping="Wrap" />
 		</ScrollViewer>

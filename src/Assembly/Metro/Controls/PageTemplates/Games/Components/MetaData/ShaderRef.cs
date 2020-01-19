@@ -57,7 +57,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new ShaderRef(Name, Offset, FieldAddress, Type, Shader, PluginLine, Tooltip);
+			return new ShaderRef(Name, Offset, FieldAddress, Type, Shader, PluginLine, ToolTip);
 		}
 	}
 }

@@ -5,10 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
              xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
-             mc:Ignorable="d"
-             HorizontalAlignment="Stretch" x:Name="tagBlock"
-			 d:DesignWidth="602" MinWidth="602" Background="Transparent" ToolTip="{Binding Path=Tooltip}">
-
+             mc:Ignorable="d" HorizontalAlignment="Stretch" x:Name="tagBlock" MinWidth="602">
 	<UserControl.Style>
 		<Style TargetType="UserControl">
 			<Setter Property="Width" Value="{Binding Width}" />
@@ -28,7 +25,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			<BooleanToVisibilityConverter x:Key="b2v" />
+			<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
 			<Style x:Key="customBlockExpander" TargetType="{x:Type Expander}">
 				<Setter Property="Template">
 					<Setter.Value>
@@ -116,9 +113,25 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
-                <Expander Header="{Binding Name}" x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}" />
-                <ToggleButton x:Name="btnOptions" Grid.Column="2" VerticalAlignment="Top" Margin="4,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}" ToolTip="Click to view options relating to this field.">
+				<Expander x:Name="lblChunkName" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" ToolTipService.ShowOnDisabled="True"
+                          IsEnabled="{Binding HasChildren}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" Style="{DynamicResource customBlockExpander}">
+					<Expander.ToolTip>
+						<StackPanel>
+							<TextBlock Text="{Binding Name}" />
+							<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+						</StackPanel>
+					</Expander.ToolTip>
+					<Expander.Header>
+						<DockPanel>
+							<TextBlock DockPanel.Dock="Right" Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="2,0,2,0"
+								VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
+							<TextBlock DockPanel.Dock="Left" x:Name="lblValueName" Text="{Binding Path=Name}"
+								Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+								TextTrimming="CharacterEllipsis" />
+						</DockPanel>
+					</Expander.Header>
+				</Expander>
+				<ToggleButton x:Name="btnOptions" Grid.Column="2" VerticalAlignment="Top" Margin="4,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}" ToolTip="Click to view options relating to this field.">
                     <Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
                 </ToggleButton>
                 <Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
@@ -131,11 +144,13 @@
                         </StackPanel>
                     </Border>
                 </Popup>
-                <ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" Margin="4,0,0,0" Content="i" FontStyle="Italic">
-					<!--Tooltips inheriting text styles is dumb -->
-					<ToggleButton.ToolTip>
-						<TextBlock Text="Show/Hide Information" FontStyle="Normal" />
-					</ToggleButton.ToolTip>
+				<ToggleButton x:Name="infoToggle" Grid.Column="3" IsChecked="True" VerticalAlignment="Top" ToolTip="Show/Hide Information" Margin="4,0,0,0">
+					<Grid>
+						<Path Fill="#989898" Margin="4" Data="M236.851,208.655c2.335-5.993-.661-9-3.328-9-12.316,0-28.294,29.008-34.275,29.008a4.657,4.657,0,0,1-4.33-4.338c0-6,14.641-20,18.972-24.34,13.31-12.671,30.619-22.34,49.92-22.34,14.313,
+							  0,29.627,8.665,17.641,41.017l-23.963,65.016c-2,5-5.652,13.345-5.652,18.678,0,2.328,1.322,4.668,3.987,4.668,9.982,0,28.293-28.346,32.955-28.346,1.663,0,3.987,2,3.987,5,0,9.669-38.935,51.019-72.551,51.019-11.986,
+							  0-20.305-5.663-20.305-18.334,0-16.006,11.316-43.348,13.651-49.022Zm17.97-65.688c0-14.669,12.647-26.669,27.291-26.669,13.32,0,22.97,9,22.97,22.672,0,15.343-12.647,26.681-27.62,26.681C263.81,165.651,254.821,156.644,254.821,142.967Z"
+						  Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Grid>
 				</ToggleButton>
 				<ComboBox Grid.Column="1" x:Name="cbElementIndex" HorizontalAlignment="Stretch" Height="22" MinWidth="45" Margin="4,0,0,0"
 				          VerticalAlignment="Top" ItemsSource="{Binding Pages}" IsTextSearchEnabled="True" TextSearch.TextPath="Index"
@@ -155,7 +170,7 @@
 					</ComboBox.ItemsPanel>
 				</ComboBox>
 			</Grid>
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0" Visibility="{Binding IsChecked, ElementName=infoToggle, Converter={StaticResource b2v}}">
+			<StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" Margin="0,26,0,0" Visibility="{Binding IsChecked, ElementName=infoToggle, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}">
 				<Grid Height="28">
 					<Border Background="#333337">
 						<Grid>

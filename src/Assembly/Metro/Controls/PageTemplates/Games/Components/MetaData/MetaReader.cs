@@ -151,7 +151,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Value = _reader.ReadInt32();
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
 			SeekToOffset(field.Offset);
 
@@ -162,7 +162,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Value = Color.FromArgb(field.Alpha ? channels[3] : (byte)0xFF, channels[2], channels[1], channels[0]);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 			SeekToOffset(field.Offset);
 
@@ -310,6 +310,39 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.D = _reader.ReadFloat();
 		}
 
+
+		public void VisitPoint2(Point2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+			field.D = _reader.ReadFloat();
+		}
+
 		public void VisitDegree(DegreeData field)
 		{
 			SeekToOffset(field.Offset);
@@ -390,22 +423,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRangeUint16(RangeUint16Data field)
 		{
 			SeekToOffset(field.Offset);
-			field.A = _reader.ReadUInt16();
-			field.B = _reader.ReadUInt16();
+			field.Min = _reader.ReadUInt16();
+			field.Max = _reader.ReadUInt16();
 		}
 
 		public void VisitRangeFloat32(RangeFloat32Data field)
 		{
 			SeekToOffset(field.Offset);
-			field.A = _reader.ReadFloat();
-			field.B = _reader.ReadFloat();
+			field.Min = _reader.ReadFloat();
+			field.Max = _reader.ReadFloat();
 		}
 
 		public void VisitRangeDegree(RangeDegreeData field)
 		{
 			SeekToOffset(field.Offset);
-			field.RadianA = _reader.ReadFloat();
-			field.RadianB = _reader.ReadFloat();
+			field.RadianMin = _reader.ReadFloat();
+			field.RadianMax = _reader.ReadFloat();
 		}
 
 		public void VisitTagBlockEntry(WrappedTagBlockEntry field)

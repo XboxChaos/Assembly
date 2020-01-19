@@ -23,12 +23,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private static readonly intValue _intControl = new intValue();
 		private static readonly StringIDValue _stringIDControl = new StringIDValue();
 		private static readonly RawBlock _rawBlock = new RawBlock();
-		//private static MetaChunk _chunkControl = new MetaChunk();
-		private static readonly tagValue _tagControl = new tagValue();
-		private static readonly DegreeValue _degreeControl = new DegreeValue();
-		private static readonly ColourValue _colourValue = new ColourValue();
+		private static readonly TagValue _tagControl = new TagValue();
+		private static readonly ColorValue _colourValue = new ColorValue();
 		private static readonly Shader _shader = new Shader();
-		private static readonly MultiValue _multiValue = new MultiValue();
+		private static readonly Multi2Value _multi2Value = new Multi2Value();
+		private static readonly Multi3Value _multi3Value = new Multi3Value();
+		private static readonly Multi4Value _multi4Value = new Multi4Value();
+		private static readonly Plane2Value _plane2Value = new Plane2Value();
+		private static readonly Plane3Value _plane3Value = new Plane3Value();
+		private static readonly RangeValue _rangeValue = new RangeValue();
 		private double _totalWidth;
 
 		public double TotalWidth
@@ -131,65 +134,85 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitPoint2(Vector2Data field)
 		{
-			AddWidth(_multiValue.Multi2Width);
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitPoint3(Vector3Data field)
 		{
-			AddWidth(_multiValue.Multi3Width);
+			AddWidth(_multi3Value.Width);
 		}
 
 		public void VisitVector2(Vector2Data field)
 		{
-			AddWidth(_multiValue.Multi2Width);
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitVector3(Vector3Data field)
 		{
-			AddWidth(_multiValue.Multi3Width);
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitVector4(Vector4Data field)
 		{
-			AddWidth(_multiValue.Multi4Width);
+			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitPoint2(Point2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			AddWidth(_multi4Value.Width);
 		}
 
 		public void VisitDegree(DegreeData field)
 		{
-			AddWidth(_degreeControl.Width);
+			AddWidth(_intControl.Width);
 		}
 
 		public void VisitDegree2(Degree2Data field)
 		{
-			AddWidth(_multiValue.Multi2Width);
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitDegree3(Degree3Data field)
 		{
-			AddWidth(_multiValue.Multi3Width);
+			AddWidth(_multi3Value.Width);
 		}
 
 		public void VisitPlane2(Vector3Data field)
 		{
-			AddWidth(_multiValue.Plane2Width);
+			AddWidth(_plane2Value.Width);
 		}
 
 		public void VisitPlane3(Vector4Data field)
 		{
-			AddWidth(_multiValue.Plane3Width);
+			AddWidth(_plane3Value.Width);
 		}
 
 		public void VisitRect16(RectangleData field)
 		{
-			AddWidth(_multiValue.Multi4Width);
+			AddWidth(_multi4Value.Width);
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
 			AddWidth(_colourValue.Width);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 			AddWidth(_colourValue.Width);
 		}
@@ -201,17 +224,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitRangeUint16(RangeUint16Data field)
 		{
-			AddWidth(_multiValue.RangeWidth);
+			AddWidth(_rangeValue.Width);
 		}
 
 		public void VisitRangeFloat32(RangeFloat32Data field)
 		{
-			AddWidth(_multiValue.RangeWidth);
+			AddWidth(_rangeValue.Width);
 		}
 
 		public void VisitRangeDegree(RangeDegreeData field)
 		{
-			AddWidth(_multiValue.RangeWidth);
+			AddWidth(_rangeValue.Width);
 		}
 
 		public void Add(MetaField field)

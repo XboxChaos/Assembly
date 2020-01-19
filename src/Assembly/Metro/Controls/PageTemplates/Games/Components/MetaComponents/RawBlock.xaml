@@ -5,9 +5,11 @@
 			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:c="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components"
-			 mc:Ignorable="d" x:Name="rawBlock" Background="Transparent" ToolTip="{Binding Path=Tooltip}"
-			 Height="164" Width="606"
+			 mc:Ignorable="d" x:Name="rawBlock" Height="164" Width="606"
 			 HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
+	</UserControl.Resources>
 	<UserControl.CommandBindings>
 		<CommandBinding Command="{x:Static local:RawBlock.AllocateCommand}"
                         CanExecute="AllocateCommand_CanExecute" />
@@ -15,82 +17,108 @@
                         CanExecute="IsolateCommand_CanExecute" />
 	</UserControl.CommandBindings>
 	<Grid>
-		<TextBlock x:Name="lblValueName" Text="{Binding Name}"
-				   Style="{DynamicResource GenericTextblock}" VerticalAlignment="Top" HorizontalAlignment="Left"
-				   Margin="0,5,0,0" Width="180" TextTrimming="CharacterEllipsis" />
-		<TextBox Text="{Binding Value}" x:Name="txtValue" Height="130" Margin="200,0,4,28" MaxLength="{Binding MaxLength}"
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<StackPanel Grid.Column="0" Orientation="Horizontal" Height="28" VerticalAlignment="Top" Background="Transparent">
+			<StackPanel.ToolTip>
+				<StackPanel>
+					<TextBlock Text="{Binding Name}" />
+					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				</StackPanel>
+			</StackPanel.ToolTip>
+				<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
+					   VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
+				<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
+			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="0,0,0,0"
+			           TextTrimming="CharacterEllipsis" />
+			</StackPanel>
+		<Grid Grid.Column="1" Margin="0,0,4,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBox Text="{Binding Value}" x:Name="txtValue" MaxLength="{Binding MaxLength}" Margin="0,3,0,5"
 								   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-								   FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" />
+								   FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" Height="Auto" />
 
-		<Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="400" Margin="0,0,4,3">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-			</Grid.ColumnDefinitions>
-
-			<TextBlock Text="{Binding FullType}" Grid.Column="0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
-					   HorizontalAlignment="Left" Margin="0,0,13,0" Width="90" TextTrimming="CharacterEllipsis" />
-			<TextBlock Text="Length:" Grid.Column="1" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
-					   HorizontalAlignment="Left" Margin="0,0,0,0" TextTrimming="CharacterEllipsis" />
-			<TextBox Grid.Column="2" Width="80" Margin="4,0,0,0"
+			<Grid Grid.Row="1" Margin="0,0,0,3">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="90"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="90"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" Text="{Binding FullType}" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+					   TextTrimming="CharacterEllipsis" />
+				<TextBlock Grid.Row="1" Grid.Column="1" Text="Length:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+					   HorizontalAlignment="Left" Margin="0,0,4,0" TextTrimming="CharacterEllipsis" />
+				<TextBox Grid.Row="1" Grid.Column="2" Foreground="#FF999999"
 					 Text="{Binding Length, UpdateSourceTrigger=LostFocus}"
-					 c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text"
-					 ToolTip="Warning: Manually changing this value may cause corruption of data if not pasting in from another dataref field. Use the Allocator tool if you aren't sure what you are doing!">
-				<TextBox.Style>
-					<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-						<Setter Property="IsReadOnly" Value="True"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding Type}" Value="dataref">
-								<Setter Property="IsReadOnly" Value="False"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</TextBox.Style>
-			</TextBox>
-			<TextBlock Text="Address:" Grid.Column="3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
-					   HorizontalAlignment="Left" Margin="8,0,0,0" TextTrimming="CharacterEllipsis" />
-			<TextBox Grid.Column="4" Width="90" Margin="4,0,0,0"
+					 c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text">
+					<TextBox.ToolTip>
+						<TextBlock>
+							<Run Text="Warning: Manually changing this value may cause corruption of adjacent data." />
+							<LineBreak/>
+							<Run Text="Use the Allocator tool if you aren't sure what you are doing!" />
+						</TextBlock>
+					</TextBox.ToolTip>
+					<TextBox.Style>
+						<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+							<Setter Property="IsReadOnly" Value="True"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Type}" Value="dataref">
+									<Setter Property="IsReadOnly" Value="False"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBox.Style>
+				</TextBox>
+				<TextBlock Grid.Row="1" Grid.Column="3" Text="Address:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+					   HorizontalAlignment="Left" Margin="8,0,4,0" TextTrimming="CharacterEllipsis" />
+				<TextBox Grid.Row="1" Grid.Column="4" Foreground="#FF999999"
 					 Text="{Binding DataAddressHex, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
 					 c:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text">
-				<TextBox.Style>
-					<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-						<Setter Property="IsReadOnly" Value="True"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding Type}" Value="dataref">
-								<Setter Property="IsReadOnly" Value="False"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</TextBox.Style>
-			</TextBox>
+					<TextBox.Style>
+						<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+							<Setter Property="IsReadOnly" Value="True"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Type}" Value="dataref">
+									<Setter Property="IsReadOnly" Value="False"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBox.Style>
+				</TextBox>
 
-			<ToggleButton x:Name="btnOptions" Grid.Column="5" VerticalAlignment="Top" Margin="5,0,0,0" IsChecked="False" ToolTip="Click to view options relating to this field.">
-				<Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
-				<ToggleButton.Style>
-					<Style TargetType="ToggleButton" BasedOn="{StaticResource OptionsToggleButton}">
-						<Setter Property="IsEnabled" Value="False"/>
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding Type}" Value="dataref">
-								<Setter Property="IsEnabled" Value="True"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</ToggleButton.Style>
-			</ToggleButton>
-			<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
-				<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
-					<StackPanel>
-						<MenuItem Header="Allocate Data" Foreground="White" ToolTip="Opens the Data Reference Allocator tool to properly increase or decrease the length of this data. (Original data will not be copied.)"
+				<ToggleButton Grid.Row="1" Grid.Column="5" x:Name="btnOptions" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="False" ToolTip="Click to view options relating to this field.">
+					<Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
+					<ToggleButton.Style>
+						<Style TargetType="ToggleButton" BasedOn="{StaticResource OptionsToggleButton}">
+							<Setter Property="IsEnabled" Value="False"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Type}" Value="dataref">
+									<Setter Property="IsEnabled" Value="True"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ToggleButton.Style>
+				</ToggleButton>
+				<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
+					<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+						<StackPanel>
+							<MenuItem Header="Allocate Data" Foreground="White" ToolTip="Opens the Data Reference Allocator tool to properly increase or decrease the length of this data. (Original data will not be copied.)"
 								 Command="{x:Static local:RawBlock.AllocateCommand}" CommandTarget="{Binding ElementName=rawBlock}"/>
-						<MenuItem Header="Isolate Shared Data Reference" Foreground="White" ToolTip="Copy this dataref to a new address, isolating it from any shared instances."
+							<MenuItem Header="Isolate Shared Data Reference" Foreground="White" ToolTip="Copy this dataref to a new address, isolating it from any shared instances."
 								 Command="{x:Static local:RawBlock.IsolateCommand}" CommandTarget="{Binding ElementName=rawBlock}"/>
-					</StackPanel>
-				</Border>
-			</Popup>
+						</StackPanel>
+					</Border>
+				</Popup>
+			</Grid>
 		</Grid>
 	</Grid>
 </UserControl>

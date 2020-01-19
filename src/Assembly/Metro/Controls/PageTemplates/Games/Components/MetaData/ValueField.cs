@@ -1,3 +1,6 @@
+using System;
+using System.Windows;
+
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
@@ -62,20 +65,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		/// <summary>
 		///     The value's tooltip.
 		/// </summary>
-		public string Tooltip
+		public string ToolTip
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(_tooltip))
-					return Name;
-				else
-					return Name + "\r\n" + _tooltip;
+				return _tooltip;
 			}
 			set
 			{
 				_tooltip = value;
-				NotifyPropertyChanged("Tooltip");
+				NotifyPropertyChanged("ToolTip");
 			}
+		}
+
+		public bool ToolTipExists
+		{
+			get { return !string.IsNullOrEmpty(_tooltip); }
+		}
+
+		internal static float ToRadian(float input)
+		{
+			return (float)(input * (Math.PI / 180));
+		}
+
+		internal static float FromRadian(float input)
+		{
+			return (float)(input * (180 / Math.PI));
 		}
 	}
 }

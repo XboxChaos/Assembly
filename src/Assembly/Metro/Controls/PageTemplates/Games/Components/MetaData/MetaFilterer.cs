@@ -92,12 +92,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				FilterNumber(field, field.Value);
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
 			FilterString(field, field.Name);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 			FilterString(field, field.Name);
 		}
@@ -225,13 +225,65 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public void VisitPoint2(Point2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+
+
 		public void VisitDegree(DegreeData field)
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.Degree))
+				if (!FilterNumber(field, field.Value))
 				{
-					FilterNumber(field, field.Degree);
+					FilterNumber(field, field.Value);
 				}
 			}
 		}
@@ -307,9 +359,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.A))
+				if (!FilterNumber(field, field.Min))
 				{
-					FilterNumber(field, field.B);
+					FilterNumber(field, field.Max);
 				}
 			}
 		}
@@ -318,9 +370,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.A))
+				if (!FilterNumber(field, field.Min))
 				{
-					FilterNumber(field, field.B);
+					FilterNumber(field, field.Max);
 				}
 			}
 		}
@@ -329,9 +381,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.A))
+				if (!FilterNumber(field, field.Min))
 				{
-					FilterNumber(field, field.B);
+					FilterNumber(field, field.Max);
 				}
 			}
 		}

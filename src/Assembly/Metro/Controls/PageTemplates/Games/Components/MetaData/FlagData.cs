@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
@@ -76,9 +77,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new FlagData(Name, Offset, FieldAddress, _type, PluginLine, Tooltip);
+			var result = new FlagData(Name, Offset, FieldAddress, _type, PluginLine, ToolTip);
 			foreach (var bit in _bits)
-				result.DefineBit(bit.Key, bit.Value.Name, bit.Value.Tooltip);
+				result.DefineBit(bit.Key, bit.Value.Name, bit.Value.ToolTip);
 			result.Value = _value;
 			return result;
 		}
@@ -176,20 +177,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public string Tooltip
+		public string ToolTip
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(_tooltip))
-					return Name;
-				else
-					return Name + "\r\n" + _tooltip;
+				return _tooltip;
 			}
 			set
 			{
 				_tooltip = value;
-				NotifyPropertyChanged("Tooltip");
+				NotifyPropertyChanged("ToolTip");
 			}
+		}
+
+		public bool ToolTipExists
+		{
+			get { return !string.IsNullOrEmpty(_tooltip); }
 		}
 
 		public bool IsSet

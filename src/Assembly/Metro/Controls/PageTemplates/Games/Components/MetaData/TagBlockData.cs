@@ -228,7 +228,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, PluginLine, Tooltip, _metaArea);
+			var result = new TagBlockData(Name, Offset, FieldAddress, ElementSize, Align, Sort, PluginLine, ToolTip, _metaArea);
 			result._expanded = _expanded;
 			result._width = _width;
 			result._currentIndex = _currentIndex;

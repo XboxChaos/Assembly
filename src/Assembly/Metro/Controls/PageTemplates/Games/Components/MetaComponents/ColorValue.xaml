@@ -1,16 +1,13 @@
-﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents.StringIDValue"
+﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents.ColorValue"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:c="clr-namespace:Assembly.Metro.Controls"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
 			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
-             mc:Ignorable="d" Height="28" Width="650">
+             mc:Ignorable="d" Height="28" Width="580" HorizontalAlignment="Left">
 	<UserControl.Resources>
 		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
-		<ItemsPanelTemplate x:Key="VirtualPanel">
-			<VirtualizingStackPanel />
-		</ItemsPanelTemplate>
 	</UserControl.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -32,9 +29,10 @@
 			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 			           TextTrimming="CharacterEllipsis" />
 		</DockPanel>
-
-		<c:StringIDInput Grid.Column="1" x:Name="cbStringIDs" Text="{Binding Value}" SearchTrie="{Binding AutocompleteTrie}"
-			                 VerticalAlignment="Center" Focusable="True" ToolTip="{Binding Value}" />
-		<TextBlock Grid.Column="2" Text="stringid" Margin="10,0,0,0" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+		<xctk:ColorPicker Grid.Column="1" DisplayColorAndName="True" SelectedColor="{Binding Value}" VerticalAlignment="Center" Height="22"
+				                  Padding="0,0,0,0" ShowRecentColors="True"
+				                  ShowStandardColors="False" UsingAlphaChannel="{Binding Alpha}" />
+		<TextBlock Grid.Column="2" x:Name="lblType" Text="{Binding DataType}" Style="{DynamicResource GenericTextblock}"
+				           VerticalAlignment="Center" Margin="10,0,0,0" />
 	</Grid>
 </UserControl>

@@ -3,11 +3,11 @@
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
 	/// <summary>
-	///     Interaction logic for DegreeValue.xaml
+	///     Interaction logic for Plane3Value.xaml
 	/// </summary>
-	public partial class DegreeValue : UserControl
+	public partial class Plane3Value : UserControl
 	{
-		public DegreeValue()
+		public Plane3Value()
 		{
 			InitializeComponent();
 		}

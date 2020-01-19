@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -69,10 +70,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, PluginLine, Tooltip);
+			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, PluginLine, ToolTip);
 			foreach (EnumValue option in Values)
 			{
-				var copiedValue = new EnumValue(option.Name, option.Value, option.Tooltip);
+				var copiedValue = new EnumValue(option.Name, option.Value, option.ToolTip);
 				result.Values.Add(copiedValue);
 				if (_selectedValue != null && copiedValue.Value == _selectedValue.Value)
 					result._selectedValue = copiedValue;
@@ -116,20 +117,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public string Tooltip
+		public string ToolTip
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(_tooltip))
-					return Name;
-				else
-					return Name + "\r\n" + _tooltip;
+				return _tooltip;
 			}
 			set
 			{
 				_tooltip = value;
-				NotifyPropertyChanged("Tooltip");
+				NotifyPropertyChanged("ToolTip");
 			}
+		}
+
+		public bool ToolTipExists
+		{
+			get { return !string.IsNullOrEmpty(_tooltip); }
 		}
 
 		public int Value

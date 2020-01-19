@@ -3,15 +3,15 @@
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
-	///     Base class for colour data.
+	///     Base class for color data.
 	/// </summary>
-	public class ColourData : ValueField
+	public class ColorData : ValueField
 	{
 		private string _dataType;
 		private bool _alpha;
 		private Color _value;
 
-		public ColourData(string name, uint offset, long address, bool alpha, string dataType, Color value,
+		public ColorData(string name, uint offset, long address, bool alpha, string dataType, Color value,
 			uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -60,7 +60,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new ColourData(Name, Offset, FieldAddress, Alpha, DataType, Value, PluginLine, Tooltip);
+			return new ColorData(Name, Offset, FieldAddress, Alpha, DataType, Value, PluginLine, ToolTip);
 		}
 	}
 }

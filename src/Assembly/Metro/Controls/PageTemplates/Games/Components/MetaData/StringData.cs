@@ -80,7 +80,7 @@
 
 		public override MetaField CloneValue()
 		{
-			return new StringData(Name, Offset, FieldAddress, _type, _value, _size, PluginLine, Tooltip);
+			return new StringData(Name, Offset, FieldAddress, _type, _value, _size, PluginLine, ToolTip);
 		}
 	}
 }

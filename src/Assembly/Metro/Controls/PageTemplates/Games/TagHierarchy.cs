@@ -12,6 +12,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 		private List<TagEntry> _entries = new List<TagEntry>();
 
+		private static readonly TagGroup _null = new TagGroup(null, "(null)", "null");
+
 		public ObservableCollection<TagGroup> Groups
 		{
 			get { return _groups; }
@@ -31,6 +33,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				NotifyPropertyChanged("Entries");
 			}
 		}
+
+		public static TagGroup NullGroup
+		{ get { return _null; } }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
