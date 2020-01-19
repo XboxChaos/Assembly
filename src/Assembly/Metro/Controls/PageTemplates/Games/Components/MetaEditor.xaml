@@ -32,12 +32,17 @@
                         Executed="IsolateDataRefCommand_Executed"/>
     </UserControl.CommandBindings>
 	<Grid>
-		<Grid Name="gridSearch" Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-			<Border BorderThickness="0,1,0,1" BorderBrush="#434346" Background="#FF303032">
-				<DockPanel VerticalAlignment="Center">
-					<TextBlock Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="10,0,0,0" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="30"/>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Name="gridSearch">
+			<Border BorderThickness="0,0,0,1" BorderBrush="#434346" Background="#FF303032">
+				<DockPanel Margin="10,0,0,0">
+					<TextBlock Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"  />
 					<TextBox Name="txtSearch" Margin="10,0,0,0" Width="300" Padding="0,0,13,0" TextChanged="txtSearch_TextChanged_1" />
-					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Height="20" Width="14" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
+					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Width="14" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
 					        Visibility="Hidden" />
 					<Button Name="btnPreviousResult" Margin="5,0,0,0" Content="Previous" Width="64" Click="btnPreviousResult_Click_1"
 					        IsEnabled="False" />
@@ -54,24 +59,25 @@
 				</DockPanel>
 			</Border>
 		</Grid>
-		<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,30,0,30"
+		<Grid Grid.Row="1">
+			<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 		         VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 		         ScrollViewer.CanContentScroll="True"
 		         SelectionChanged="panelMetaComponents_SelectionChanged_1">
-			<ListBox.Template>
-				<ControlTemplate>
-					<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-						<ItemsPresenter />
-					</ScrollViewer>
-				</ControlTemplate>
-			</ListBox.Template>
-			<ListBox.ItemContainerStyle>
-				<Style TargetType="{x:Type ListBoxItem}">
-					<Setter Property="Template">
-						<Setter.Value>
-							<ControlTemplate>
-								<Grid Background="{TemplateBinding ListBoxItem.Background}">
-									<ContentPresenter Name="PART_Content"
+				<ListBox.Template>
+					<ControlTemplate>
+						<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+							<ItemsPresenter />
+						</ScrollViewer>
+					</ControlTemplate>
+				</ListBox.Template>
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate>
+									<Grid Background="{TemplateBinding ListBoxItem.Background}">
+										<ContentPresenter Name="PART_Content"
 									                  Content="{TemplateBinding ContentControl.Content}"
 									                  Margin="10,0,10,0"
 									                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
@@ -79,83 +85,45 @@
 									                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 									                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 									                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-									<Grid.ContextMenu>
-										<ContextMenu Name="metaFieldMenu">
-											<ContextMenu.CommandBindings>
-												<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+										<Grid.ContextMenu>
+											<ContextMenu Name="metaFieldMenu">
+												<ContextMenu.CommandBindings>
+													<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
 												                CanExecute="ViewValueAsCommand_CanExecute"
 												                Executed="ViewValueAsCommand_Executed" />
 
-												<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
+													<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
 												                CanExecute="GoToPlugin_CanExecute"
 												                Executed="GoToPlugin_Executed" />
-											</ContextMenu.CommandBindings>
-											<MenuItem Header="View Value As..."
+												</ContextMenu.CommandBindings>
+												<MenuItem Header="View Value As..."
 											          Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
-											<MenuItem Header="Go to plugin line..." Command="{x:Static local:MetaEditor.GoToPlugin}"
+												<MenuItem Header="Go to plugin line..." Command="{x:Static local:MetaEditor.GoToPlugin}"
 											          CommandParameter="{Binding}" />
-										</ContextMenu>
-									</Grid.ContextMenu>
-								</Grid>
-								<ControlTemplate.Triggers>
-									<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
-										<Setter Property="Background" Value="#FF181818" />
-									</DataTrigger>
-								</ControlTemplate.Triggers>
-							</ControlTemplate>
-						</Setter.Value>
-					</Setter>
-				</Style>
-			</ListBox.ItemContainerStyle>
-		</ListBox>
-		<!--<TreeView Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,30,0,35"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                  Padding="0,0,0,0">
-            <TreeView.Template>
-                <ControlTemplate>
-                    <ScrollViewer Focusable="False">
-                        <ItemsPresenter />
-                    </ScrollViewer>
-                </ControlTemplate>
-            </TreeView.Template>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <ContentPresenter Content="{TemplateBinding HeaderedContentControl.Header}"
-                                                  ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
-                                                  ContentStringFormat="{TemplateBinding HeaderedItemsControl.HeaderStringFormat}"
-                                                  ContentSource="Header"
-                                                  Name="PART_Header"
-                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TreeView.ItemContainerStyle>
-        </TreeView>-->
-		<Grid Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+											</ContextMenu>
+										</Grid.ContextMenu>
+									</Grid>
+									<ControlTemplate.Triggers>
+										<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+											<Setter Property="Background" Value="#FF181818" />
+										</DataTrigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+				<!--<ListBox.LayoutTransform>
+					<ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+				</ListBox.LayoutTransform>-->
+			</ListBox>
+		</Grid>
+		<Grid Grid.Row="2" HorizontalAlignment="Stretch">
 			<Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
-				<Grid>
-					<TextBlock TextAlignment="Right" VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" SnapsToDevicePixels="True" FontSize="10" Margin="0,0,2,0">
-						<TextBlock.ToolTip>
-							<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White" Text="Double-Click any value to copy it to the clipboard."/>
-						</TextBlock.ToolTip>
-						<Run x:Name="lblTagName" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="objects/mcc/hek/404notfound" MouseDown="InfoValueData_MouseDown"/>
-						<LineBreak/>
-						<Run Text="Datum Index:"/>
-						<Run x:Name="lblDatum" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
-						<Run Text="Memory Address:"/>
-						<Run x:Name="lblAddress" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
-						<Run Text="File Offset:"/>
-						<Run x:Name="lblOffset" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
-					</TextBlock>
-					
-					<StackPanel Orientation="Horizontal">
+				<DockPanel>
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="10,0,0,0">
 						<Button x:Name="btnPluginSave" ToolTip="Save the current changes to the cache file. (Ctrl + S)" Content="Save"
-						        Width="50" Margin="10,0,0,0" Click="btnPluginSave_Click" />
+						        Width="50" Click="btnPluginSave_Click" />
 						<xctk:SplitButton Content="Poke" x:Name="sbPluginPoke" Margin="5,0,0,0" Width="60" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. Click the arrow for more options.">
 							<xctk:SplitButton.DropDownContent>
 								<StackPanel>
@@ -207,7 +175,21 @@
 							</Border>
 						</Popup>
 					</StackPanel>
-				</Grid>
+
+					<TextBlock DockPanel.Dock="Right" TextAlignment="Right" VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" SnapsToDevicePixels="True" FontSize="10" Margin="0,0,10,0">
+						<TextBlock.ToolTip>
+							<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White" Text="Double-Click any value to copy it to the clipboard."/>
+						</TextBlock.ToolTip>
+						<Run x:Name="lblTagName" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="objects/mcc/hek/404notfound" MouseDown="InfoValueData_MouseDown"/>
+						<LineBreak/>
+						<Run Text="Datum Index:"/>
+						<Run x:Name="lblDatum" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+						<Run Text="Memory Address:"/>
+						<Run x:Name="lblAddress" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+						<Run Text="File Offset:"/>
+						<Run x:Name="lblOffset" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+					</TextBlock>
+				</DockPanel>
 			</Border>
 		</Grid>
 	</Grid>
