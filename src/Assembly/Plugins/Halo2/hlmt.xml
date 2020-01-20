@@ -13,6 +13,7 @@
 	<tagRef name="Animation" offset="0x10" visible="true" />
 	<tagRef name="Physics" offset="0x18" visible="true" />
 	<tagRef name="Physics Model" offset="0x20" visible="true" />
+	<comment title="Level of Detail" />
 	<float32 name="Disappear Distance" offset="0x28" visible="true" />
 	<float32 name="Begin Fade Distance" offset="0x2C" visible="true" />
 	<undefined name="Unknown" offset="0x30" visible="false" />
@@ -33,19 +34,44 @@
 	<int16 name="Unknown" offset="0x4E" visible="false" />
 	<tagblock name="Variants" offset="0x50" visible="true" elementSize="0x38">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
-		<undefined name="Unknown" offset="0x8" visible="false" />
-		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<comment title="Runtime Model Regions">Each index here points to a region in the render model, and each region in the below Regions block points to an index here instead. You want to point to the runtime index containing your actual index.</comment>
+		<int8 name="Runtime Model Region 0 Index" offset="0x4" visible="true" />
+		<int8 name="Runtime Model Region 1 Index" offset="0x5" visible="true" />
+		<int8 name="Runtime Model Region 2 Index" offset="0x6" visible="true" />
+		<int8 name="Runtime Model Region 3 Index" offset="0x7" visible="true" />
+		<int8 name="Runtime Model Region 4 Index" offset="0x8" visible="true" />
+		<int8 name="Runtime Model Region 5 Index" offset="0x9" visible="true" />
+		<int8 name="Runtime Model Region 6 Index" offset="0xA" visible="true" />
+		<int8 name="Runtime Model Region 7 Index" offset="0xB" visible="true" />
+		<int8 name="Runtime Model Region 8 Index" offset="0xC" visible="true" />
+		<int8 name="Runtime Model Region 9 Index" offset="0xD" visible="true" />
+		<int8 name="Runtime Model Region 10 Index" offset="0xE" visible="true" />
+		<int8 name="Runtime Model Region 11 Index" offset="0xF" visible="true" />
+		<int8 name="Runtime Model Region 12 Index" offset="0x10" visible="true" />
+		<int8 name="Runtime Model Region 13 Index" offset="0x11" visible="true" />
+		<int8 name="Runtime Model Region 14 Index" offset="0x12" visible="true" />
+		<int8 name="Runtime Model Region 15 Index" offset="0x13" visible="true" />
 		<tagblock name="Regions" offset="0x14" visible="true" elementSize="0x14">
-			<stringId name="Name" offset="0x0" visible="true" />
-			<int16 name="Parent Variant" offset="0x4" visible="true" />
-			<int16 name="Unknown" offset="0x6" visible="false" />
+			<stringid name="Region Name" offset="0x0" visible="true" />
+			<int8 name="Runtime Model Region Index" offset="0x4" visible="true" />
+			<flags8 name="Runtime Flags" offset="0x5" visible="true">
+				<bit name="Bit 0" index="0" />
+				<bit name="Bit 1" index="1" />
+				<bit name="Bit 2" index="2" />
+				<bit name="Bit 3" index="3" />
+				<bit name="Bit 4" index="4" />
+				<bit name="Bit 5" index="5" />
+				<bit name="Bit 6" index="6" />
+				<bit name="Bit 7" index="7" />
+			</flags8>
+			<int16 name="Parent Variant Index" offset="0x6" visible="true" />
 			<tagblock name="Permutation" offset="0x8" visible="true" elementSize="0x20">
-				<stringId name="Name" offset="0x0" visible="true" />
-				<flags32 name="Flags" offset="0x4" visible="true">
+				<stringid name="Permutation Name" offset="0x0" visible="true" />
+				<int8 name="Model Permutation Index" offset="0x4" visible="true" />
+				<flags8 name="Flags" offset="0x5" visible="true">
 					<bit name="Copy States To All Permutations" index="0" />
-				</flags32>
+				</flags8>
+				<int16 name="Unknown" offset="0x6" visible="false" />
 				<float32 name="Probability" offset="0x8" visible="true" />
 				<tagblock name="States" offset="0xC" visible="true" elementSize="0x18">
 					<stringId name="Name" offset="0x0" visible="true" />
@@ -53,6 +79,7 @@
 						<bit name="Blurred" index="0" />
 						<bit name="Hella Blurred" index="1" />
 						<bit name="Shielded" index="2" />
+						<bit name="Battery Depleted" index="3" />
 					</flags16>
 					<enum16 name="State" offset="0x6" visible="true">
 						<option name="Default" value="0x0" />
@@ -65,11 +92,16 @@
 					<stringId name="Looping Effect Marker Name" offset="0x10" visible="true" />
 					<float32 name="Initial Probability" offset="0x14" visible="true" />
 				</tagblock>
-				<undefined name="Unknown" offset="0x14" visible="false" />
-				<undefined name="Unknown" offset="0x18" visible="false" />
+				<int8 name="Runtime Permutation Index" offset="0x14" visible="true" />
+				<int8 name="Runtime Permutation Index" offset="0x15" visible="true" />
+				<int8 name="Runtime Permutation Index" offset="0x16" visible="true" />
+				<int8 name="Runtime Permutation Index" offset="0x17" visible="true" />
+				<int8 name="Runtime Permutation Index" offset="0x18" visible="true" />
+				<int8 name="Unknown" offset="0x19" visible="false" />
+				<int16 name="Unknown" offset="0x1A" visible="false" />
 				<undefined name="Unknown" offset="0x1C" visible="false" />
 			</tagblock>
-			<enum32 name="Sort Order" offset="0x10" visible="true">
+			<enum32 name="Sort Order" offset="0x10" visible="true" tooltip="negative values mean closer to the camera">
 				<option name="No Sorting" value="0x0" />
 				<option name="-5 (Closest)" value="0x1" />
 				<option name="-4" value="0x2" />
@@ -132,10 +164,11 @@
 			<option name="Hunter Shield" value="0x20" />
 		</enum16>
 		<int16 name="Damage Section Index" offset="0x6" visible="true" />
-		<int16 name="Unknown" offset="0x8" visible="false" />
-		<int16 name="Unknown" offset="0xA" visible="false" />
+		<int16 name="Collision Material Index" offset="0x8" visible="true" />
+		<int16 name="Damager Material Index" offset="0xA" visible="true" />
 		<stringid name="Global Material Name" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
+		<int16 name="Global Material Index" offset="0x10" visible="true" />
+		<int16 name="Unknown" offset="0x12" visible="false" />
 	</tagblock>
 	<tagblock name="New Damage Info" offset="0x60" visible="true" elementSize="0xF8">
 		<flags32 name="Flags" offset="0x0" visible="true">
@@ -149,8 +182,9 @@
 			<bit name="Cannot Die From Damage" index="7" />
 			<bit name="Passes Attached Damage To Riders" index="8" />
 		</flags32>
-		<stringId name="Global Indirect Material Name" offset="0x4" visible="true" />
-		<int32 name="Indirect Damage Section" offset="0x8" visible="true" />
+		<stringId name="Global Indirect Material Name" offset="0x4" visible="true" tooltip="absorbes AOE or child damage" />
+		<int16 name="Indirect Damage Section Index" offset="0x8" visible="true" tooltip="absorbes AOE or child damage" />
+		<int16 name="Unknown" offset="0xA" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<enum16 name="Collision Damage Reporting Type" offset="0x10" visible="true">
 			<option name="Teh Guardians" value="0x0" />
@@ -245,11 +279,12 @@
 		<undefined name="Unknown" offset="0x1C" visible="false" />
 		<undefined name="Unknown" offset="0x20" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
+		<comment title="Body" />
 		<float32 name="Maximum Vitality" offset="0x28" visible="true" />
-		<float32 name="Minimum Stun Damage" offset="0x2C" visible="true" />
-		<float32 name="Stun Time" offset="0x30" visible="true" />
-		<float32 name="Recharge Time" offset="0x34" visible="true" />
-		<float32 name="Recharge Fraction" offset="0x38" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x2C" visible="true" tooltip="the minimum damage required to stun this object's health" />
+		<float32 name="Stun Time" offset="0x30" visible="true" tooltip="the length of time the health stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x34" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
+		<float32 name="Recharge Fraction" offset="0x38" visible="true" tooltip="0 defaults to 1 - to what maximum level the body health will be allowed to recharge" />
 		<undefined name="Unknown" offset="0x3C" visible="false" />
 		<undefined name="Unknown" offset="0x40" visible="false" />
 		<undefined name="Unknown" offset="0x44" visible="false" />
@@ -266,50 +301,54 @@
 		<undefined name="Unknown" offset="0x70" visible="false" />
 		<undefined name="Unknown" offset="0x74" visible="false" />
 		<undefined name="Unknown" offset="0x78" visible="false" />
-		<tagRef name="Shield Damaged FP Shader" offset="0x7C" visible="true" />
+		<comment title="Shield" />
+		<tagRef name="Shield Damaged First Person Shader" offset="0x7C" visible="true" />
 		<tagRef name="Shield Damaged Shader" offset="0x84" visible="true" />
-		<float32 name="Maximum Shield Vitality" offset="0x8C" visible="true" />
-		<stringId name="Global Shield Material Name" offset="0x90" visible="true" />
-		<float32 name="Minimum Stun Damage" offset="0x94" visible="true" />
-		<float32 name="Stun Time" offset="0x98" visible="true" />
-		<float32 name="Shield Recharge Time" offset="0x9C" visible="true" />
+		<float32 name="Maximum Shield Vitality" offset="0x8C" visible="true" tooltip="the default initial and maximum shield vitality of this object" />
+		<stringid name="Global Shield Material Name" offset="0x90" visible="true" />
+		<float32 name="Minimum Stun Damage" offset="0x94" visible="true" tooltip="the minimum damage required to stun this object's shields" />
+		<float32 name="Stun Time" offset="0x98" visible="true" tooltip="the length of time the shields stay stunned (do not recharge) after taking damage" />
+		<float32 name="Recharge Time" offset="0x9C" visible="true" tooltip="the length of time it would take for the shields to fully recharge after being completely depleted" />
 		<float32 name="Shield Damaged Threshold" offset="0xA0" visible="true" />
 		<tagRef name="Shield Damaged Effect" offset="0xA4" visible="true" />
 		<tagRef name="Shield Depleted Effect" offset="0xAC" visible="true" />
 		<tagRef name="Shield Recharging Effect" offset="0xB4" visible="true" />
 		<tagblock name="Damage Sections" offset="0xBC" visible="true" elementSize="0x38">
-			<stringId name="Name" offset="0x0" visible="true" />
+			<stringid name="Name" offset="0x0" visible="true" />
 			<flags32 name="Flags" offset="0x4" visible="true">
-				<bit name="Absorbs Body Damage" index="0" />
+				<bit name="Absorbs Body Damage" index="0" tooltip="damage to this section does not count against body vitality" />
 				<bit name="Takes Full Damage When Object Dies" index="1" />
 				<bit name="Cannot Die With Riders" index="2" />
 				<bit name="Takes Full Damage When Object Destroyed" index="3" />
 				<bit name="Restored On Ressurection" index="4" />
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
-				<bit name="Headshotable" index="7" />
-				<bit name="Ignores Shields" index="8" />
+				<bit name="Headshotable" index="7" tooltip="takes extra headshot damage when shot" />
+				<bit name="Ignores Shields" index="8" tooltip="damage to this section bypasses shields" />
 			</flags32>
-			<float32 name="Vitality Percentage" offset="0x8" visible="true" />
-			<tagblock name="Instant Responses" offset="0xC" visible="true" elementSize="0x50">
+			<float32 name="Vitality Percentage" offset="0x8" visible="true" tooltip="percentage of total object vitality" />
+			<tagblock name="Instant Responses" offset="0xC" visible="true" elementSize="0x98">
 				<enum16 name="Response Type" offset="0x0" visible="true">
-					<option name="Receives All Damage" value="0x0" />
-					<option name="Receives Area Effect Damage" value="0x1" />
-					<option name="Receives Local Damage" value="0x2" />
+					<option name="Recieves All Damage" value="0x0" />
+					<option name="Recieves Area Effect Damage" value="0x1" />
+					<option name="Recieves Local Damage" value="0x2" />
 				</enum16>
+				<comment title="Constraint Damage Type">* if you specify a constraint group name (see lower section of this block) you can specify a constraint damage
+* loosening a constraint takes it out of the rigid state - activates it
+* destroying a constraint sets the attached body free</comment>
 				<enum16 name="Constraint Damage Type" offset="0x2" visible="true">
 					<option name="None" value="0x0" />
-					<option name="Destroy One Of Group" value="0x1" />
-					<option name="Destroy Entire Group" value="0x2" />
-					<option name="Loosen One Of Group" value="0x3" />
-					<option name="Loosen Entire Group" value="0x4" />
+					<option name="Destroy One Of Group" value="0x1" tooltip="sets the attached body of this constraint free" />
+					<option name="Destroy Entire Group" value="0x2" tooltip="sets the attached body of all constraints free" />
+					<option name="Loosen One Of Group" value="0x3" tooltip="takes this constraint out of the rigid state - activates it" />
+					<option name="Loosen Entire Group" value="0x4" tooltip="takes all constraints out of the rigid state - activates them" />
 				</enum16>
 				<flags32 name="Flags" offset="0x4" visible="true">
-					<bit name="Kills Object" index="0" />
-					<bit name="Inhibits Melee Attack" index="1" />
-					<bit name="Inhibits Weapon Attack" index="2" />
-					<bit name="Inhibits Walking" index="3" />
-					<bit name="Forces Drop Weapon" index="4" />
+					<bit name="Kills Object" index="0" tooltip="when the response fires the object dies regardless of its current health" />
+					<bit name="Inhibits Melee Attack" index="1" tooltip="from halo 1 - disallows melee for a unit" />
+					<bit name="Inhibits Weapon Attack" index="2" tooltip="from halo 1 - disallows weapon fire for a unit" />
+					<bit name="Inhibits Walking" index="3" tooltip="from halo 1 - disallows walking for a unit" />
+					<bit name="Forces Drop Weapon" index="4" tooltip="from halo 1 - makes the unit drop its current weapon" />
 					<bit name="Kills Weapon Primary Trigger" index="5" />
 					<bit name="Kills Weapon Secondary Trigger" index="6" />
 					<bit name="Light Damage Left Turn" index="7" />
@@ -342,27 +381,29 @@
 				<int16 name="Runtime Region Index" offset="0x22" visible="true" />
 				<stringId name="Effect Marker Name" offset="0x24" visible="true" />
 				<stringId name="Damage Effect Marker Name" offset="0x28" visible="true" />
-				<float32 name="Response Delay" offset="0x2C" visible="true" />
+				<comment title="Response Delay">If desired, you can specify a delay until the response fires.This delay is pre-empted if another timed response for the same section fires.The delay effect plays while the timer is counting down.If the damage threshold is taken in a single hit while counting down, it will prematurely fire.</comment>
+				<float32 name="Response Delay" offset="0x2C" visible="true" tooltip="in seconds" />
 				<tagRef name="Delay Effect" offset="0x30" visible="true" />
 				<stringId name="Delay Effect Marker Name" offset="0x38" visible="true" />
 				<stringId name="Contraint/Group Name" offset="0x3C" visible="true" />
 				<stringId name="Ejecting Seat Label" offset="0x40" visible="true" />
-				<float32 name="Skip Fraction" offset="0x44" visible="true" />
-				<stringId name="Destroyed Child Object Marker Name" offset="0x48" visible="true" />
-				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" />
+				<float32 name="Skip Fraction" offset="0x44" visible="true" tooltip="0.0 always fires, 1.0 never fires" />
+				<stringId name="Destroyed Child Object Marker Name" offset="0x48" visible="true" tooltip="when this response fires, any children objects created at the supplied marker name will be destroyed" />
+				<float32 name="Total Damage Threshold" offset="0x4C" visible="true" tooltip="scale on total damage section vitality" />
 			</tagblock>
-			<undefined name="Unknown" offset="0x14" visible="false" />
-			<undefined name="Unknown" offset="0x18" visible="false" />
-			<undefined name="Unknown" offset="0x1C" visible="false" />
-			<undefined name="Unknown" offset="0x20" visible="false" />
+			<uint32 name="Null Block Here 1" offset="0x14" visible="false" />
+			<uint32 name="Null Block Here 1" offset="0x18" visible="false" />
+			<uint32 name="Null Block Here 2" offset="0x1C" visible="false" />
+			<uint32 name="Null Block Here 2" offset="0x20" visible="false" />
 			<float32 name="Stun Time" offset="0x24" visible="true" />
 			<float32 name="Recharge Time" offset="0x28" visible="true" />
-			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<float32 name="Runtime Recharge Velocity" offset="0x2C" visible="true" />
 			<stringid name="Resurrection Restored Region Name" offset="0x30" visible="true" />
-			<undefined name="Unknown" offset="0x34" visible="false" />
+			<int16 name="Ressurection Region Runtime Index" offset="0x34" visible="true" />
+			<int16 name="Unknown" offset="0x36" visible="false" />
 		</tagblock>
 		<tagblock name="Nodes" offset="0xC4" visible="true" elementSize="0x10">
-			<int16 name="Unknown" offset="0x0" visible="false" />
+			<int16 name="Runtime Damage Part" offset="0x0" visible="true" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -373,8 +414,8 @@
 		<undefined name="Unknown" offset="0xD0" visible="false" />
 		<undefined name="Unknown" offset="0xD4" visible="false" />
 		<tagblock name="Damage Seats" offset="0xD8" visible="true" elementSize="0x14">
-			<stringId name="Seat Label" offset="0x0" visible="true" />
-			<float32 name="Direct Damage Scale" offset="0x4" visible="true" />
+			<stringid name="Seat Label" offset="0x0" visible="true" />
+			<float32 name="Direct Damage Scale" offset="0x4" visible="true" tooltip="0==no damage, 1==full damage" />
 			<float32 name="Damage Transfer Fall-Off Radius" offset="0x8" visible="true" />
 			<float32 name="Maximum Transfer Damage Scale" offset="0xC" visible="true" />
 			<float32 name="Minimum Transfer Damage Scale" offset="0x10" visible="true" />
@@ -398,13 +439,13 @@
 		<tagRef name="Overshield Shader" offset="0xF0" visible="true" />
 	</tagblock>
 	<tagblock name="Targets" offset="0x68" visible="true" elementSize="0x1C">
-		<stringId name="Marker Name" offset="0x0" visible="true" />
-		<float32 name="Size" offset="0x4" visible="true" />
-		<degree name="Cone Angle" offset="0x8" visible="true" />
-		<int16 name="Damage Section" offset="0xC" visible="true" />
-		<int16 name="Variant" offset="0xE" visible="true" />
-		<float32 name="Targeting Relevance" offset="0x10" visible="true" />
-		<flags32 name="Flags" offset="0x14" visible="true">
+		<stringid name="Marker Name" offset="0x0" visible="true" tooltip="multiple markers become multiple spheres of the same radius" />
+		<float32 name="Size" offset="0x4" visible="true" tooltip="sphere radius" />
+		<degree name="Cone Angle" offset="0x8" visible="true" tooltip="the target is only visible when viewed within this angle of the marker's x axis" />
+		<int16 name="Damage Section Index" offset="0xC" visible="true" tooltip="the target is associated with this damage section" />
+		<int16 name="Variant Index" offset="0xE" visible="true" tooltip="the target will only appear with this variant" />
+		<float32 name="Targeting Relevance" offset="0x10" visible="true" tooltip="higher relevances turn into stronger magnetisms" />
+		<flags32 name="Lock-On Flags" offset="0x14" visible="true">
 			<bit name="Locked By Human Tracking" index="0" />
 			<bit name="Locked By Plasma Tracking" index="1" />
 			<bit name="Headshot" index="2" />
@@ -413,7 +454,7 @@
 		</flags32>
 		<float32 name="Lock-On Distance" offset="0x18" visible="true" />
 	</tagblock>
-	<tagblock name="Model Variations" offset="0x70" visible="true" elementSize="0x10">
+	<tagblock name="Collision Regions" offset="0x70" visible="true" elementSize="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Collision Region Index" offset="0x4" visible="true" />
 		<int8 name="Physics Region Index" offset="0x5" visible="true" />
@@ -424,42 +465,28 @@
 				<bit name="Cannot Be Chosen Randomly" index="0" />
 			</flags8>
 			<int8 name="Collision Permutation Index" offset="0x5" visible="true" />
-			<int16 name="Unknown" offset="0x6" visible="false" />
+			<int8 name="Physics Permutation Index" offset="0x6" visible="true" />
+			<int8 name="Unknown" offset="0x7" visible="false" />
 		</tagblock>
 	</tagblock>
 	<tagblock name="Nodes" offset="0x78" visible="true" elementSize="0x5C">
-		<stringId name="Name" offset="0x0" visible="true" />
-		<int16 name="Parent (Index)" offset="0x4" visible="true" />
-		<int16 name="First Child (Index)" offset="0x6" visible="true" />
-		<int16 name="Next Sibling (Index)" offset="0x8" visible="true" />
+		<stringid name="Name" offset="0x0" visible="true" />
+		<int16 name="Parent Node Index" offset="0x4" visible="true" />
+		<int16 name="First Child Node Index" offset="0x6" visible="true" />
+		<int16 name="Next Sibling Node Index" offset="0x8" visible="true" />
 		<int16 name="Unknown" offset="0xA" visible="false" />
-		<float32 name="Y" offset="0xC" visible="true" />
-		<float32 name="X" offset="0x10" visible="true" />
-		<float32 name="Z" offset="0x14" visible="true" />
-		<degree name="i" offset="0x18" visible="true" />
-		<degree name="j" offset="0x1C" visible="true" />
-		<degree name="k" offset="0x20" visible="true" />
-		<degree name="w" offset="0x24" visible="true" />
-		<float32 name="Scale Factor" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<float32 name="Y (Leave Child)" offset="0x50" visible="true" />
-		<float32 name="X (Leave Child)" offset="0x54" visible="true" />
-		<float32 name="Z (Leave Child)" offset="0x58" visible="true" />
+		<point3 name="Default Translation" offset="0xC" visible="true" />
+		<vector4 name="Default Rotation" offset="0x18" visible="true" />
+		<float32 name="Default Inverse Scale" offset="0x28" visible="true" />
+		<vector3 name="Default Inverse Forward" offset="0x2C" visible="true" />
+		<vector3 name="Default Inverse Left" offset="0x38" visible="true" />
+		<vector3 name="Default Inverse Up" offset="0x44" visible="true" />
+		<point3 name="Default Inverse Position" offset="0x50" visible="true" />
 	</tagblock>
-	<undefined name="Unknown" offset="0x80" visible="false" />
+	<uint32 name="Node List Checksum" offset="0x80" visible="true" />
 	<tagblock name="Model Object Data" offset="0x84" visible="true" elementSize="0x14">
 		<enum32 name="Type" offset="0x0" visible="true" />
-		<float32 name="X" offset="0x4" visible="true" />
-		<float32 name="Y" offset="0x8" visible="true" />
-		<float32 name="Z" offset="0xC" visible="true" />
+		<point3 name="Offset" offset="0x4" visible="true" />
 		<float32 name="Radius" offset="0x10" visible="true" />
 	</tagblock>
 	<tagRef name="Unit Dialoge" offset="0x8C" visible="true" />
@@ -469,7 +496,7 @@
 		<bit name="Active Camo Always Merge" index="1" />
 		<bit name="Active Camo Never Merge" index="2" />
 	</flags32>
-	<stringId name="Default Dialogue Effect" offset="0xA0" visible="true" />
+	<stringId name="Default Dialogue Effect" offset="0xA0" visible="true" tooltip="The default dialogue tag for this model (overriden by variants)" />
 	<flags32 name="Render-Only Node Flags 1" offset="0xA4" visible="true">
 		<bit name="Node 0" index="0" />
 		<bit name="Node 1" index="1" />
@@ -1016,37 +1043,6 @@
 	</flags32>
 	<flags32 name="Runtime Flags" offset="0xE4" visible="true">
 		<bit name="Contains Runtime Nodes" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
 	</flags32>
 	<uint32 name="Scenario Load Parameters Block" offset="0xE8" visible="false" />
 	<uint32 name="Scenario Load Parameters Block" offset="0xEC" visible="false" />
