@@ -23,6 +23,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private readonly XMLCodeCompleter _completer = new XMLCodeCompleter();
 		private readonly MetaContainer _parent;
 		private readonly string _pluginPath;
+		private readonly string _fallbackPluginPath;
 		private readonly MetaEditor _sibling;
 		private CompletionWindow _completionWindow;
 
@@ -36,14 +37,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_sibling = sibling;
 
 			LoadSyntaxHighlighting();
+			SetHighlightColor();
 			LoadCodeCompletion();
 
 			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
 
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
 			_pluginPath =
 				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-					buildInfo.Settings.GetSetting<string>("plugins"), className.Trim());
+					buildInfo.Settings.GetSetting<string>("plugins"), groupName.Trim());
+
+			if (buildInfo.Settings.PathExists("fallbackPlugins"))
+				_fallbackPluginPath =
+				string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName.Trim());
 			LoadPlugin();
 		}
 
@@ -60,6 +67,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			// Reload the syntax highlighting definition in case the theme changed
 			LoadSyntaxHighlighting();
+
+			// Reset the highlight color in case the theme changed
+			SetHighlightColor();
 		}
 
 		private void btnPluginSave_Click(object sender, RoutedEventArgs e)
@@ -105,11 +115,45 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			txtPlugin.SyntaxHighlighting = HighlightLoader.LoadEmbeddedDefinition(filename);
 		}
 
+		private void SetHighlightColor()
+		{
+			var bconv = new System.Windows.Media.BrushConverter();
+			var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+
+			//yucky
+			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+			{
+				case Settings.Accents.Blue:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+					break;
+				case Settings.Accents.Green:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
+					break;
+				case Settings.Accents.Orange:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
+					break;
+				case Settings.Accents.Purple:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
+					break;
+			}
+
+			txtPlugin.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
+			selbrsh.Opacity = 0.3;
+			txtPlugin.TextArea.SelectionBrush = selbrsh;
+		}
+
 		private void LoadPlugin()
 		{
 			// Load Plugin Path
-			if (File.Exists(_pluginPath))
-				txtPlugin.Text = File.ReadAllText(_pluginPath);
+			string pluginpath = _pluginPath;
+
+			if (!File.Exists(pluginpath))
+				pluginpath = _fallbackPluginPath;
+
+			if (pluginpath == null || !File.Exists(pluginpath))
+				return;
+
+			txtPlugin.Text = File.ReadAllText(pluginpath);
 		}
 
 		private void LoadCodeCompletion()
@@ -122,42 +166,58 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			RegisterMetaTag("int32", "Signed 32-bit integer");
 			RegisterMetaTag("float32", "32-bit floating-point value");
 			RegisterMetaTag("stringId", "32-bit string ID");
-			RegisterMetaTag("bitfield8", "8-bit bitfield");
-			RegisterMetaTag("bitfield16", "16-bit bitfield");
-			RegisterMetaTag("bitfield32", "32-bit bitfield");
+			RegisterMetaTag("flags8", "8-bit flags value");
+			RegisterMetaTag("flags16", "16-bit flags value");
+			RegisterMetaTag("flags32", "32-bit flags value");
+			RegisterMetaTag("flags64", "64-bit flags value");
 			RegisterMetaTag("enum8", "8-bit enumeration value");
 			RegisterMetaTag("enum16", "8-bit enumeration value");
 			RegisterMetaTag("enum32", "8-bit enumeration value");
-			RegisterMetaTag("vector3", "3D vector of 32-bit floating point values");
+			RegisterMetaTag("range16", "Range of two 16-bit values");
+			RegisterMetaTag("rangeF", "Range of two 32-bit floating point values");
+			RegisterMetaTag("rangeD", "Range of two radian values converted to/from degrees");
+
+			RegisterMetaTag("point2", "2D point of 32-bit floating point values (x,y)");
+			RegisterMetaTag("point3", "3D point of 32-bit floating point values (x,y,z)");
+
+			RegisterMetaTag("vector2", "2D vector of 32-bit floating point values (i,j)");
+			RegisterMetaTag("vector3", "3D vector of 32-bit floating point values (i,j,k)");
+			RegisterMetaTag("vector4", "Quaternion of 32-bit floating point values (i,j,k,w)");
+
 			RegisterMetaTag("degree", "Radian value that should be converted to/from degrees");
+			RegisterMetaTag("degree2", "2D radian angles that should be converted to/from degrees (y,p)");
+			RegisterMetaTag("degree3", "3D radian angles that should be converted to/from degrees (y,p,r)");
 
-			CompletableXMLTag color = RegisterMetaTag("color", "Integer color value");
+			RegisterMetaTag("plane2", "2D plane of 3 32-bit floating point values (i,j,d)");
+			RegisterMetaTag("plane3", "3D plane of 4 of 32-bit floating point values (i,j,k,d)");
+			
+			RegisterMetaTag("rect16", "4 16-bit values representing the sides of a rectangle (top, left, bottom, right)");
+
+			CompletableXMLTag color = RegisterMetaTag("color32", "Integer color value");
 			CompletableXMLTag colorf = RegisterMetaTag("colorf", "Floating-point color value");
-			var colorFormat = new CompletableXMLAttribute("format",
-				"A string containing the characters 'a', 'r', 'g', and 'b' which describes the format of the color (required)");
-			color.RegisterAttribute(colorFormat);
-			colorf.RegisterAttribute(colorFormat);
-
-			RegisterMetaTag("color24", "32-bit RGB color");
-			RegisterMetaTag("color32", "32-bit ARGB color");
+			var colorAlpha = new CompletableXMLAttribute("alpha",
+				"Whether or not the color includes the alpha channel (required)");
+			colorAlpha.RegisterValue(new CompletableXMLValue("true", "The color includes an alpha channel"));
+			colorAlpha.RegisterValue(new CompletableXMLValue("false", "The color does not include an alpha channel"));
+			color.RegisterAttribute(colorAlpha);
+			colorf.RegisterAttribute(colorAlpha);
 
 			CompletableXMLTag tagRef = RegisterMetaTag("tagRef", "Tag reference");
-			var withClass = new CompletableXMLAttribute("withClass",
-				"Whether or not the reference includes a class ID (optional, default=true)");
-			withClass.RegisterValue(new CompletableXMLValue("true", "The reference includes a 12-byte class ID (default)"));
-			withClass.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
-			tagRef.RegisterAttribute(withClass);
+			var withGroup = new CompletableXMLAttribute("withGroup",
+				"Whether or not the reference includes a group ID (optional, default=true)");
+			withGroup.RegisterValue(new CompletableXMLValue("true", "The reference includes a group ID (default)"));
+			withGroup.RegisterValue(new CompletableXMLValue("false", "The reference only includes a 4-byte datum index"));
+			tagRef.RegisterAttribute(withGroup);
 
 			CompletableXMLTag dataRef = RegisterMetaTag("dataRef", "Data reference");
 			var format = new CompletableXMLAttribute("format", "The format of the data in the dataref (optional, default=bytes)");
 			format.RegisterValue(new CompletableXMLValue("bytes", "Raw byte data (default)"));
 			format.RegisterValue(new CompletableXMLValue("asciiz", "Null-terminated ASCII string"));
-			format.RegisterValue(new CompletableXMLValue("unicode", "Null-terminated unicode string"));
 			dataRef.RegisterAttribute(format);
 
-			CompletableXMLTag reflexive = RegisterMetaTag("reflexive", "Reflexive pointer");
-			reflexive.RegisterAttribute(new CompletableXMLAttribute("entrySize",
-				"The size of each entry in the reflexive (required)"));
+			CompletableXMLTag tagblock = RegisterMetaTag("tagblock", "Tagblock pointer");
+			tagblock.RegisterAttribute(new CompletableXMLAttribute("elementSize",
+				"The size of each element in the tag block (required)"));
 
 			CompletableXMLTag ascii = RegisterMetaTag("ascii", "ASCII string");
 			CompletableXMLTag utf16 = RegisterMetaTag("utf16", "UTF-16 string");
@@ -229,6 +289,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			visible.RegisterValue(new CompletableXMLValue("true", "Field is always visible"));
 			visible.RegisterValue(new CompletableXMLValue("false", "Field is only visible when invisibles are shown"));
 
+			tag.RegisterAttribute(new CompletableXMLAttribute("tooltip", "The field's tooltip (optional)"));
+
 			tag.RegisterAttribute(visible);
 			_completer.RegisterTag(tag);
 			return tag;
@@ -252,6 +314,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				else // Value completion
 					_completer.CompleteAttributeValue(lineText, txtPlugin.TextArea.Caret.Offset - lineOffset);
 			}
+		}
+
+		public void Dispose()
+		{
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
 		}
 	}
 }

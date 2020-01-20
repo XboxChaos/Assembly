@@ -5,7 +5,7 @@
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Updated and copypasted.</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -38,7 +38,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<stringid name="Name" offset="0x4" visible="true" />
 	<int16 name="Unknown" offset="0x8" visible="false" />
 	<int16 name="Layer" offset="0xA" visible="true" />
@@ -51,58 +51,377 @@
 	<int16 name="Standard Y Bounds max" offset="0x18" visible="true" />
 	<int16 name="Standard X Bounds max" offset="0x1A" visible="true" />
 	<tagRef name="Animation" offset="0x1C" visible="true" />
-	<reflexive name="Unknown 0" offset="0x2C" visible="true" entrySize="0x70">
+	<tagblock name="Camera Control" offset="0x2C" visible="true" elementSize="0x70">
 		<stringid name="Biped" offset="0x0" visible="true" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x10" visible="false" />
-		<undefined name="Unknown" offset="0x14" visible="false" />
+		<float32 name="Unknown" offset="0x10" visible="false" />
+		<float32 name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x24" visible="false" />
-		<undefined name="Unknown" offset="0x28" visible="false" />
-		<undefined name="Unknown" offset="0x2C" visible="false" />
-		<undefined name="Unknown" offset="0x30" visible="false" />
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<undefined name="Unknown" offset="0x40" visible="false" />
-		<undefined name="Unknown" offset="0x44" visible="false" />
-		<undefined name="Unknown" offset="0x48" visible="false" />
-		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<undefined name="Unknown" offset="0x50" visible="false" />
-		<undefined name="Unknown" offset="0x54" visible="false" />
-		<undefined name="Unknown" offset="0x58" visible="false" />
-		<tagref name="Unknown" offset="0x5C" visible="true" />
+		<float32 name="Base Offset x" offset="0x1C" visible="true" />
+		<float32 name="Base Offset y" offset="0x20" visible="true" />
+		<float32 name="Base Offset z" offset="0x24" visible="true" />
+		<float32 name="Unknown x" offset="0x28" visible="false" />
+		<float32 name="Unknown y" offset="0x2C" visible="false" />
+		<float32 name="Unknown z" offset="0x30" visible="false" />
+		<float32 name="Unknown x" offset="0x34" visible="false" />
+		<float32 name="Unknown y" offset="0x38" visible="false" />
+		<float32 name="Unknown z" offset="0x3C" visible="false" />
+		<float32 name="Unknown x" offset="0x40" visible="false" />
+		<float32 name="Unknown y" offset="0x44" visible="false" />
+		<float32 name="Unknown z" offset="0x48" visible="false" />
+		<float32 name="Unknown x" offset="0x4C" visible="false" />
+		<float32 name="Unknown y" offset="0x50" visible="false" />
+		<float32 name="Unknown z" offset="0x54" visible="false" />
+		<float32 name="Unknown" offset="0x58" visible="false" />
+		<tagref name="Unknown Object" offset="0x5C" visible="true" />
 		<undefined name="Unknown" offset="0x6C" visible="false" />
-	</reflexive>
-	<undefined name="Unknown" offset="0x38" visible="false" />
-	<undefined name="Unknown" offset="0x3C" visible="false" />
-	<undefined name="Unknown" offset="0x40" visible="false" />
-	<undefined name="Unknown" offset="0x44" visible="false" />
-	<undefined name="Unknown" offset="0x48" visible="false" />
-	<undefined name="Unknown" offset="0x4C" visible="false" />
-	<undefined name="Unknown" offset="0x50" visible="false" />
+	</tagblock>
+	<float32 name="Unknown" offset="0x38" visible="false" />
+	<float32 name="Unknown" offset="0x3C" visible="false" />
+	<float32 name="Unknown" offset="0x40" visible="false" />
+	<float32 name="Unknown" offset="0x44" visible="false" />
+	<float32 name="Unknown" offset="0x48" visible="false" />
+	<float32 name="Unknown" offset="0x4C" visible="false" />
+	<float32 name="Unknown" offset="0x50" visible="false" />
 	<undefined name="Unknown" offset="0x54" visible="false" />
 	<undefined name="Unknown" offset="0x58" visible="false" />
 	<undefined name="Unknown" offset="0x5C" visible="false" />
-	<undefined name="Unknown" offset="0x60" visible="false" />
-	<reflexive name="Unknown 1" offset="0x64" visible="false" entrySize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" />
-	</reflexive>
+	<float32 name="Unknown" offset="0x60" visible="false" />
+	<tagblock name="Zoom Function" offset="0x64" visible="true" elementSize="0x14">
+		<dataRef name="Unknown" offset="0x0" visible="true" />
+	</tagblock>
 	<undefined name="Unknown" offset="0x70" visible="false" />
 	<undefined name="Unknown" offset="0x74" visible="false" />
 	<undefined name="Unknown" offset="0x78" visible="false" />
 	<undefined name="Unknown" offset="0x7C" visible="false" />
-	<undefined name="Unknown" offset="0x80" visible="false" />
+	<degree name="Unknown" offset="0x80" visible="false" />
 	<undefined name="Unknown" offset="0x84" visible="false" />
-	<undefined name="Unknown" offset="0x88" visible="false" />
-	<undefined name="Unknown" offset="0x8C" visible="false" />
-	<undefined name="Unknown" offset="0x90" visible="false" />
-	<undefined name="Unknown" offset="0x94" visible="false" />
-	<undefined name="Unknown" offset="0x98" visible="false" />
-	<undefined name="Unknown" offset="0x9C" visible="false" />
-	<undefined name="Unknown" offset="0xA0" visible="false" />
+	<float32 name="Unknown" offset="0x88" visible="false" />
+	<comment title="Control Mapping" />
+	<enum16 name="Movement Left" offset="0x8C" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Movement Right" offset="0x8E" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Movement Up" offset="0x90" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Movement Down" offset="0x92" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Unknown" offset="0x94" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Unknown" offset="0x96" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Zoom In" offset="0x98" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Zoom Out" offset="0x9A" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Rotate Left" offset="0x9C" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Rotate Right" offset="0x9E" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Unknown" offset="0xA0" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
+	<enum16 name="Unknown" offset="0xA2" visible="true">
+		<option name="Left Trigger (LT)" value="0x0" />
+		<option name="Right Trigger (RT)" value="0x1" />
+		<option name="Dpad Up" value="0x2" />
+		<option name="Dpad Down" value="0x3" />
+		<option name="Dpad Left" value="0x4" />
+		<option name="Dpad Right" value="0x5" />
+		<option name="Start Button" value="0x6" />
+		<option name="Back Button" value="0x7" />
+		<option name="Left Stick Click" value="0x8" />
+		<option name="Right Stick Click" value="0x9" />
+		<option name="A Button" value="0xA" />
+		<option name="B Button" value="0xB" />
+		<option name="X Button" value="0xC" />
+		<option name="Y Button" value="0xD" />
+		<option name="Left Bumper (LB)" value="0xE" />
+		<option name="Right Bumper (RB)" value="0xF" />
+		<option name="Left Stick Left" value="0x10" />
+		<option name="Left Stick Right" value="0x11" />
+		<option name="Left Stick Up" value="0x12" />
+		<option name="Left Stick Down" value="0x13" />
+		<option name="Right Stick Left" value="0x14" />
+		<option name="Right Stick Right" value="0x15" />
+		<option name="Right Stick Up" value="0x16" />
+		<option name="Right Stick Down" value="0x17" />
+		<option name="Unknown" value="0x18" />
+	</enum16>
 </plugin>

@@ -8,21 +8,26 @@
 	<undefined name="Unknown" offset="0x8" visible="false" />
 	<tagref name="Cutscene Data" offset="0xC" visible="true" />
 	<dataref name="Import Script" format="asciiz" offset="0x1C" visible="true" />
-	<reflexive name="Puppets" offset="0x30" visible="true" entrySize="0x40">
+	<tagblock name="Puppets" offset="0x30" visible="true" elementSize="0x40">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="false" />
+		<stringid name="Variant" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
 		<undefined name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
-		<undefined name="Unknown" offset="0x1C" visible="false" />
+		<flags32 name="Coop Flags" offset="0x1C" visible="true">
+			<bit name="Solo" index="0" />
+			<bit name="2 Players" index="1" />
+			<bit name="3 Players" index="2" />
+			<bit name="4 Players" index="3" />
+		</flags32>
 		<dataref name="Import Script" format="asciiz" offset="0x20" visible="true" />
-		<undefined name="block here" offset="0x34" visible="false" />
-		<undefined name="block here" offset="0x38" visible="false" />
-		<undefined name="block here" offset="0x3C" visible="false" />
-	</reflexive>
-	<reflexive name="Shots" offset="0x3C" visible="true" entrySize="0xc8">
+		<uint32 name="block here" offset="0x34" visible="false" />
+		<uint32 name="block here" offset="0x38" visible="false" />
+		<uint32 name="block here" offset="0x3C" visible="false" />
+	</tagblock>
+	<tagblock name="Shots" offset="0x3C" visible="true" elementSize="0xC8">
 		<dataref name="Opening Import Script" format="asciiz" offset="0x0" visible="true" />
 		<int32 name="Unknown" offset="0x14" visible="false" />
 		<undefined name="Unknown" offset="0x18" visible="false" />
@@ -34,56 +39,62 @@
 		<tagref name="Fog" offset="0x30" visible="true" />
 		<tagref name="Screen Effect" offset="0x40" visible="true" />
 		<tagref name="Cube Map" offset="0x50" visible="true" />
-		<reflexive name="Lighting" offset="0x60" visible="true" entrySize="0x1C">
+		<tagblock name="Lighting" offset="0x60" visible="true" elementSize="0x1C">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<tagRef name="Cinematic Light" offset="0x4" visible="true" />
 			<int32 name="Owner Puppet Index" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
-		</reflexive>
-		<reflexive name="Unknown" offset="0x6C" visible="false" entrySize="0x2C">
-			<undefined name="Unknown" offset="0x0" visible="true" />
-			<undefined name="Unknown" offset="0x4" visible="true" />
-			<undefined name="Unknown" offset="0x8" visible="true" />
-			<undefined name="Unknown" offset="0xC" visible="true" />
-			<undefined name="Unknown" offset="0x10" visible="true" />
-			<undefined name="Unknown" offset="0x14" visible="true" />
-			<undefined name="Unknown" offset="0x18" visible="true" />
-			<undefined name="Unknown" offset="0x1C" visible="true" />
-			<reflexive name="Unknown" offset="0x20" visible="true" entrySize="0x4">
-				<undefined name="Unknown" offset="0x0" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Background Sounds" offset="0x78" visible="true" entrySize="0x18">
+		</tagblock>
+		<tagblock name="Unknown" offset="0x6C" visible="true" elementSize="0x2C">
+			<float32 name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Unknown" offset="0x8" visible="false" />
+			<float32 name="Unknown" offset="0xC" visible="false" />
+			<float32 name="Unknown" offset="0x10" visible="false" />
+			<float32 name="Unknown" offset="0x14" visible="false" />
+			<int32 name="Start Frame" offset="0x18" visible="true" />
+			<int32 name="End Frame" offset="0x1C" visible="true" />
+			<tagblock name="Puppets" offset="0x20" visible="true" elementSize="0x4">
+				<int32 name="Puppet Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Background Sounds" offset="0x78" visible="true" elementSize="0x18">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<tagRef name="Sound" offset="0x4" visible="true" />
 			<int32 name="Frame" offset="0x14" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0x84" visible="true" entrySize="0x14">
+		</tagblock>
+		<tagblock name="Functions" offset="0x84" visible="true" elementSize="0x14">
 			<int32 name="Owner Puppet Index" offset="0x0" visible="true" />
 			<stringid name="Target Function Name" offset="0x4" visible="true" />
-			<reflexive name="Values" offset="0x8" visible="false" entrySize="0x10">
+			<tagblock name="Values" offset="0x8" visible="false" elementSize="0x10">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<int32 name="Unknown" offset="0x4" visible="false" />
 				<float32 name="Unknown" offset="0x8" visible="false" />
 				<float32 name="Unknown" offset="0xC" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Screen Effects" offset="0x90" visible="true" entrySize="0x1C">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Screen Effects" offset="0x90" visible="true" elementSize="0x1C">
 			<tagRef name="Effect" offset="0x0" visible="true" />
 			<int32 name="Start Frame" offset="0x10" visible="true" />
 			<int32 name="End Frame" offset="0x14" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="true" />
-		</reflexive>
-		<undefined name="Unknown" offset="0x9C" visible="false" />
-		<undefined name="Unknown" offset="0xa0" visible="false" />
-		<undefined name="Unknown" offset="0xa4" visible="false" />
-		<undefined name="Unknown" offset="0xa8" visible="false" />
-		<undefined name="Unknown" offset="0xaC" visible="false" />
-		<undefined name="Unknown" offset="0xb0" visible="false" />
-		<dataref name="Import Script" format="asciiz" offset="0xb4" visible="true" />
-	</reflexive>
-	<reflexive name="Lightmap" offset="0x48" visible="true" entrySize="0x10">
+		</tagblock>
+		<tagblock name="User Input Constraints" offset="0x9C" visible="false" elementSize="0x14">
+			<int32 name="Unknown" offset="0x0" visible="false" />
+			<int32 name="Unknown" offset="0x4" visible="false" />
+			<int16 name="Unknown" offset="0x8" visible="false" />
+			<int16 name="Unknown" offset="0xA" visible="false" />
+			<int16 name="Unknown" offset="0xC" visible="false" />
+			<int16 name="Unknown" offset="0xE" visible="false" />
+			<float32 name="Unknown" offset="0x10" visible="false" />
+		</tagblock>
+		<undefined name="Unknown" offset="0xA8" visible="false" />
+		<undefined name="Unknown" offset="0xAC" visible="false" />
+		<undefined name="Unknown" offset="0xB0" visible="false" />
+		<dataref name="Import Script" format="asciiz" offset="0xB4" visible="true" />
+	</tagblock>
+	<tagblock name="Lightmap" offset="0x48" visible="true" elementSize="0x10">
 		<tagref name="Lightmap" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<dataref name="Import Script" format="asciiz" offset="0x54" visible="true" />
 </plugin>

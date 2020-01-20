@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Blamite.Blam.Shaders;
 using Blamite.Serialization;
 using Blamite.IO;
@@ -99,7 +96,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 
 					// Create the result from the memory stream's buffer
 					var result = new byte[memStream.Length];
-					Buffer.BlockCopy(memStream.GetBuffer(), 0, result, 0, (int)memStream.Length);
+					Buffer.BlockCopy(memStream.ToArray(), 0, result, 0, (int)memStream.Length);
 					return result;
 				}
 			}
@@ -158,7 +155,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 
 				// Allocate and zero space for the info structures
 				var infoSize = infoLayoutSize + (int)debugInfoSize;
-				var infoAddr = _cacheFile.Allocator.Allocate(infoSize, stream);
+				var infoAddr = _cacheFile.Allocator.Allocate(infoSize, 0x10, stream); // 16-byte aligned too
 				var infoOffset = _cacheFile.MetaArea.PointerToOffset(infoAddr);
 				stream.SeekTo(infoOffset);
 				StreamUtil.Fill(stream, 0, infoSize);
@@ -166,7 +163,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 				// Write the basic info structure
 				stream.SeekTo(infoOffset);
 				var infoValues = new StructureValueCollection();
-				infoValues.SetInteger("shader data address", dataAddr);
+				infoValues.SetInteger("shader data address", (uint)dataAddr);
 				StructureWriter.WriteStructure(infoValues, infoLayout, stream);
 
 				// Write the debug info structure
@@ -174,7 +171,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 
 				// Finally, write the shader pointer
 				stream.SeekTo(pointerOffset - _cacheFile.MetaArea.OffsetToPointer(0));
-				stream.WriteUInt32(infoAddr);
+				stream.WriteUInt32((uint)infoAddr);
 			}
 			return true;
 		}
@@ -205,7 +202,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 			// Do a quick check on the magic and size to verify that the debug info is valid
 			if (debugValues.GetIntegerOrDefault("magic", 0) >> 16 != 0x102A)
 				return null;
-			var debugSize = debugValues.GetIntegerOrDefault("structure size", 0);
+			var debugSize = (uint)debugValues.GetIntegerOrDefault("structure size", 0);
 			if (debugSize == 0)
 				return null;
 
@@ -213,7 +210,7 @@ namespace Blamite.Blam.ThirdGen.Shaders
 			var updbPath = "";
 			if (_updbPointerLayout != null)
 			{
-				var updbPointerOffset = debugValues.GetIntegerOrDefault("updb pointer offset", 0);
+				var updbPointerOffset = (uint)debugValues.GetIntegerOrDefault("updb pointer offset", 0);
 				if (updbPointerOffset != 0)
 				{
 					reader.SeekTo(debugInfoOffset + updbPointerOffset);
@@ -224,25 +221,25 @@ namespace Blamite.Blam.ThirdGen.Shaders
 				}
 			}
 
-			var totalSize = debugValues.GetIntegerOrDefault("shader data size", 0);
+			var totalSize = (uint)debugValues.GetIntegerOrDefault("shader data size", 0);
 			var constantSize = 0U;
 			var codeSize = totalSize;
 
 			// If code info is present, then use that to determine the shader data layout
 			if (_codeInfoLayout != null)
 			{
-				var codeInfoOffset = debugValues.GetIntegerOrDefault("code info offset", 0);
+				var codeInfoOffset = (uint)debugValues.GetIntegerOrDefault("code info offset", 0);
 				if (codeInfoOffset != 0)
 				{
 					reader.SeekTo(debugInfoOffset + codeInfoOffset);
 					var codeInfoValues = StructureReader.ReadStructure(reader, _codeInfoLayout);
-					constantSize = codeInfoValues.GetIntegerOrDefault("constant data size", 0);
-					codeSize = codeInfoValues.GetIntegerOrDefault("code data size", 0);
+					constantSize = (uint)codeInfoValues.GetIntegerOrDefault("constant data size", 0);
+					codeSize = (uint)codeInfoValues.GetIntegerOrDefault("code data size", 0);
 				}
 			}
 			
 			// Grab the data address
-			var dataAddr = infoValues.GetIntegerOrDefault("shader data address", 0);
+			var dataAddr = (uint)infoValues.GetIntegerOrDefault("shader data address", 0);
 			if (dataAddr == 0)
 				return null;
 

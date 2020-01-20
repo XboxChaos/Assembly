@@ -7,7 +7,7 @@
 		<revision author="XZodia" version="3">Completed</revision>
 		<revision author="Lord Zedd" version="4">Updated</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Deafening To AIs" index="0" />
 		<bit name="Not A Loop" index="1" />
 		<bit name="Stops Music" index="2" />
@@ -16,21 +16,21 @@
 		<bit name="Synchronize Tracks" index="5" />
 		<bit name="Fake Spatialization With Distance" index="6" />
 		<bit name="Combine All 3D Playback" index="7" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Marty's Music Time" offset="0x4" visible="true" />
 	<float32 name="Unknown" offset="0x8" visible="false" />
 	<float32 name="Unknown" offset="0xC" visible="false" />
 	<float32 name="Unknown" offset="0x10" visible="false" />
-	<tagRef name="Unused" offset="0x14" visible="true" />
-	<reflexive name="Tracks" offset="0x1C" visible="true" entrySize="0x58">
+	<tagRef name="Unknown" offset="0x14" visible="true" />
+	<tagblock name="Tracks" offset="0x1C" visible="true" elementSize="0x58">
 		<stringId name="Name" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x4" visible="true">
+		<flags32 name="Flags" offset="0x4" visible="true">
 			<bit name="Fade In At Start" index="0" />
 			<bit name="Fade Out At Stop" index="1" />
 			<bit name="Crossfade Alternate Loop" index="2" />
 			<bit name="Master Surround Sound Track" index="3" />
 			<bit name="Fade Out At Alternate Stop" index="4" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Gain" offset="0x8" visible="true" />
 		<float32 name="Fade In Duration" offset="0xC" visible="true" />
 		<float32 name="Fade Out Duration" offset="0x10" visible="true" />
@@ -50,19 +50,19 @@
 		<tagRef name="Alternate Transition Out" offset="0x48" visible="true" />
 		<float32 name="Alternate Crossfade Duration" offset="0x50" visible="true" />
 		<float32 name="Alternate Fade Out Duration" offset="0x54" visible="true" />
-	</reflexive>
-	<reflexive name="Detail Sounds" offset="0x24" visible="true" entrySize="0x34">
+	</tagblock>
+	<tagblock name="Detail Sounds" offset="0x24" visible="true" elementSize="0x34">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<tagRef name="Sound" offset="0x4" visible="true" />
 		<comment title="Frequency Of Play" />
 		<float32 name="Random Period Bounds min" offset="0xC" visible="true" />
 		<float32 name="Random Period Bounds max" offset="0x10" visible="true" />
 		<float32 name="Unknown" offset="0x14" visible="false" />
-		<bitfield32 name="Flags" offset="0x18" visible="true">
+		<flags32 name="Flags" offset="0x18" visible="true">
 			<bit name="Don't Play With Alternate" index="0" />
 			<bit name="Don't Play Without Alternate" index="1" />
 			<bit name="Start Immeditely With Loop" index="2" />
-		</bitfield32>
+		</flags32>
 		<comment title="Random Spatialization" />
 		<degree name="Yaw Bounds min" offset="0x1C" visible="true" />
 		<degree name="Yaw Bounds max" offset="0x20" visible="true" />
@@ -70,5 +70,5 @@
 		<degree name="Pitch Bounds max" offset="0x28" visible="true" />
 		<float32 name="Distance Bounds min" offset="0x2C" visible="true" />
 		<float32 name="Distance Bounds max" offset="0x30" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

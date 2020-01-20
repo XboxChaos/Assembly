@@ -7,8 +7,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private Trie _autocompleteTrie;
 		private string _value;
 
-		public StringIDData(string name, uint offset, uint address, string val, Trie autocompleteTrie, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public StringIDData(string name, uint offset, long address, string val, Trie autocompleteTrie, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_value = val;
 			_autocompleteTrie = autocompleteTrie;
@@ -41,7 +41,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			return new StringIDData(Name, Offset, FieldAddress, _value, _autocompleteTrie, base.PluginLine);
+			return new StringIDData(Name, Offset, FieldAddress, _value, _autocompleteTrie, PluginLine, ToolTip);
 		}
 	}
 }

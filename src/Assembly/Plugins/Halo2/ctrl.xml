@@ -22,7 +22,7 @@
 		<option name="Crate" value="0xB" />
 		<option name="Creature" value="0xC" />
 	</enum16>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags16 name="Flags" offset="0x2" visible="true">
 		<bit name="Does Not Cast Shadow" index="0" />
 		<bit name="Search Cardinal Direction Lightmaps" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -37,11 +37,9 @@
 		<bit name="Dead Bipeds Can't Localize" index="11" />
 		<bit name="Attach To Clusters By Dynamic Sphere" index="12" />
 		<bit name="Effects Created By This Object Do Not Spawn Objects In Multiplayer" index="13" />
-	</bitfield32>
+	</flags16>
 	<float32 name="Bounding Radius" offset="0x4" visible="true" />
-	<float32 name="Bounding Offset X" offset="0x8" visible="true" />
-	<float32 name="Bounding Offset Y" offset="0xC" visible="true" />
-	<float32 name="Bounding Offset Z" offset="0x10" visible="true" />
+	<point3 name="Bounding Offset" offset="0x8" visible="true" />
 	<float32 name="Acceleration Scale" offset="0x14" visible="true" />
 	<enum16 name="Lightmap Shadow Mode" offset="0x18" visible="true">
 		<option name="Default" value="0x0" />
@@ -56,21 +54,19 @@
 	<int8 name="Unknown" offset="0x1B" visible="false" />
 	<int32 name="Unknown" offset="0x1C" visible="false" />
 	<float32 name="Dynamic Light Sphere Radius" offset="0x20" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset X" offset="0x24" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset Y" offset="0x28" visible="true" />
-	<float32 name="Dynamic Light Sphere Offset Z" offset="0x2C" visible="true" />
+	<point3 name="Dynamic Light Sphere Offset" offset="0x24" visible="true" />
 	<stringId name="Default Model Variant" offset="0x30" visible="true" />
 	<tagRef name="Model" offset="0x34" visible="true" />
 	<tagRef name="Crate Object" offset="0x3C" visible="true" />
 	<tagRef name="Modifier Shader" offset="0x44" visible="true" />
 	<tagRef name="Creation Effect" offset="0x4C" visible="true" />
 	<tagRef name="Material Effects" offset="0x54" visible="true" />
-	<reflexive name="AI Properties" offset="0x5C" visible="true" entrySize="0x10">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+	<tagblock name="AI Properties" offset="0x5C" visible="true" elementSize="0x10">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Destroyable Cover" index="0" />
 			<bit name="Pathfinding Ignore When Dead" index="1" />
 			<bit name="Dynamic Cover" index="2" />
-		</bitfield32>
+		</flags32>
 		<stringId name="AI Type Name" offset="0x4" visible="true" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<enum16 name="Size" offset="0xC" visible="true">
@@ -92,21 +88,21 @@
 			<option name="Tower" value="0x6" />
 			<option name="Infinite" value="0x7" />
 		</enum16>
-	</reflexive>
-	<reflexive name="Functions" offset="0x64" visible="true" entrySize="0x20">
-		<bitfield32 name="Flags" offset="0x0" visible="true">
+	</tagblock>
+	<tagblock name="Functions" offset="0x64" visible="true" elementSize="0x20">
+		<flags32 name="Flags" offset="0x0" visible="true">
 			<bit name="Invert" index="0" />
 			<bit name="Mapping Does Not Controls Active" index="1" />
 			<bit name="Always Active" index="2" />
 			<bit name="Random Time Offset" index="3" />
-		</bitfield32>
+		</flags32>
 		<stringId name="Import Name" offset="0x4" visible="true" />
 		<stringId name="Export Name" offset="0x8" visible="true" />
 		<stringId name="Turn Off With" offset="0xC" visible="true" />
 		<float32 name="Minimum Value" offset="0x10" visible="true" />
 		<dataref name="Default Function" offset="0x14" visible="true" />
 		<stringId name="Scale By" offset="0x1C" visible="true" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Apply Collision Damage Scale" offset="0x6C" visible="true" />
 	<float32 name="Min Game Acceleration" offset="0x70" visible="true" />
 	<float32 name="Max Game Acceleration" offset="0x74" visible="true" />
@@ -118,7 +114,7 @@
 	<float32 name="Max Absolute Scale" offset="0x8C" visible="true" />
 	<int16 name="HUD Text Message Index" offset="0x90" visible="true" />
 	<int16 name="Unknown" offset="0x92" visible="false" />
-	<reflexive name="Attachments" offset="0x94" visible="true" entrySize="0x18">
+	<tagblock name="Attachments" offset="0x94" visible="true" elementSize="0x18">
 		<tagRef name="Type" offset="0x0" visible="true" />
 		<stringId name="Marker" offset="0x8" visible="true" />
 		<enum16 name="Change Color" offset="0xC" visible="true">
@@ -131,11 +127,11 @@
 		<int16 name="Unknown" offset="0xE" visible="false" />
 		<stringId name="Primary Scale" offset="0x10" visible="true" />
 		<stringId name="Secondary Scale" offset="0x14" visible="true" />
-	</reflexive>
-	<reflexive name="Widgets" offset="0x9C" visible="true" entrySize="0x8">
+	</tagblock>
+	<tagblock name="Widgets" offset="0x9C" visible="true" elementSize="0x8">
 		<tagRef name="Type" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Old Functions" offset="0xA4" visible="false" entrySize="0x50">
+	</tagblock>
+	<tagblock name="Old Functions" offset="0xA4" visible="false" elementSize="0x50">
 		<undefined name="Unknown" offset="0x0" visible="false" />
 		<undefined name="Unknown" offset="0x4" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
@@ -156,26 +152,27 @@
 		<undefined name="Unknown" offset="0x44" visible="false" />
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
-	</reflexive>
-	<reflexive name="Change Colors" offset="0xAC" visible="true" entrySize="0x10">
-		<reflexive name="Initial Permutations" offset="0x0" visible="true" entrySize="0x20">
+	</tagblock>
+	<tagblock name="Change Colors" offset="0xAC" visible="true" elementSize="0x10">
+		<tagblock name="Initial Permutations" offset="0x0" visible="true" elementSize="0x20">
 			<float32 name="Weight" offset="0x0" visible="true" />
-			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
+			<colorf name="Color Lower Bound" offset="0x4" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x10" alpha="false" visible="true" />
 			<stringId name="Variant Name" offset="0x1C" visible="true" />
-		</reflexive>
-		<reflexive name="Functions" offset="0x8" visible="true" entrySize="0x20">
-			<bitfield32 name="Scale Flags" offset="0x0" visible="true">
+		</tagblock>
+		<tagblock name="Functions" offset="0x8" visible="true" elementSize="0x28">
+			<undefined name="Unknown" offset="0x0" visible="true" />
+			<flags32 name="Scale Flags" offset="0x4" visible="true">
 				<bit name="Blend In HSV" index="0" />
 				<bit name="...More Colors" index="1" />
-			</bitfield32>
-			<colorf name="Color Lower Bound" offset="0x4" format="rgb" visible="true" />
-			<colorf name="Color Upper Bound" offset="0x10" format="rgb" visible="true" />
-			<stringId name="Darken By" offset="0x1C" visible="true" />
-			<stringId name="Scale By" offset="0x20" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Predicted Resource" offset="0xB4" visible="true" entrySize="0x8">
+			</flags32>
+			<colorf name="Color Lower Bound" offset="0x8" alpha="false" visible="true" />
+			<colorf name="Color Upper Bound" offset="0x14" alpha="false" visible="true" />
+			<stringid name="Darken By..." offset="0x20" visible="true" />
+			<stringid name="Scale By..." offset="0x24" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Predicted Resource" offset="0xB4" visible="true" elementSize="0x8">
 		<enum16 name="Type" offset="0x0" visible="true">
 			<option name="Bitmap" value="0x0" />
 			<option name="Sound" value="0x1" />
@@ -188,24 +185,24 @@
 			<option name="Lightmap Instance Bitmaps" value="0x8" />
 		</enum16>
 		<int16 name="Resource Index" offset="0x2" visible="true" />
-		<tagref name="Tag Index" offset="0x4" withClass="false" visible="true" />
-	</reflexive>
+		<tagref name="Tag Index" offset="0x4" withGroup="false" visible="true" />
+	</tagblock>
 	<comment title="DEVICE" />
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0xBC" visible="true">
 		<bit name="Position Loops" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Allow Interpolation" index="2" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Power Transition Time" offset="0xC0" visible="true" />
 	<float32 name="Power Acceleration Time" offset="0xC4" visible="true" />
 	<float32 name="Position Transition Time" offset="0xC8" visible="true" />
 	<float32 name="Position Acceleration Time" offset="0xCC" visible="true" />
 	<float32 name="Depowered Transition Time" offset="0xD0" visible="true" />
 	<float32 name="Depowered Acceleration Time" offset="0xD4" visible="true" />
-	<bitfield16 name="Lightmap Flags" offset="0xD8" visible="true">
+	<flags16 name="Lightmap Flags" offset="0xD8" visible="true">
 		<bit name="Don't Use In Lightmap" index="0" />
 		<bit name="Don't Use In Lightprobe" index="1" />
-	</bitfield16>
+	</flags16>
 	<int16 name="Unknown" offset="0xDA" visible="false" />
 	<tagRef name="Open (Up)" offset="0xDC" visible="true" />
 	<tagRef name="Close (Down)" offset="0xE4" visible="true" />

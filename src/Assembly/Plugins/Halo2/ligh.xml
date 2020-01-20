@@ -7,7 +7,7 @@
 		<revision author="XZodia" version="3">Completed</revision>
 		<revision author="Lord Zedd" version="4">Emum fixes</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="No Illumination" index="0" />
 		<bit name="No Specular" index="1" />
 		<bit name="Force Cast Environment Shadow" index="2" />
@@ -31,8 +31,8 @@
 		<bit name="Light Framerate Killer" index="20" />
 		<bit name="Allowed In Splitscreen" index="21" />
 		<bit name="Only On Parent Bipeds" index="22" />
-	</bitfield32>
-	<comment title="Shape"/>
+	</flags32>
+	<comment title="Shape" />
 	<enum16 name="Type" offset="0x4" visible="true">
 		<option name="Sphere" value="0x0" />
 		<option name="Orthogonal" value="0x1" />
@@ -45,33 +45,33 @@
 	<float32 name="Shadow Quality Bias" offset="0x10" visible="true" />
 	<enum16 name="Shadow Tap Bias" offset="0x14" visible="true">
 		<option name="3 Tap" value="0x0" />
-		<option name="unused" value="0x1" />
+		<option name="Unknown" value="0x1" />
 		<option name="1 Tap" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x16" visible="false" />
-	<comment title="Sphere Light"/>
+	<comment title="Sphere Light" />
 	<float32 name="Radius" offset="0x18" visible="true" />
 	<float32 name="Specular Radius" offset="0x1C" visible="true" />
-	<comment title="Frustum Light"/>
+	<comment title="Frustum Light" />
 	<float32 name="Near Width" offset="0x20" visible="true" />
 	<float32 name="Height Stretch" offset="0x24" visible="true" />
 	<degree name="Field Of View" offset="0x28" visible="true" />
 	<float32 name="Falloff Distance" offset="0x2C" visible="true" />
 	<float32 name="Cutoff Distance" offset="0x30" visible="true" />
-	<comment title="Color"/>
-	<bitfield32 name="Interpolation Flags" offset="0x34" visible="true">
+	<comment title="Color" />
+	<flags32 name="Interpolation Flags" offset="0x34" visible="true">
 		<bit name="Blend In HSV" index="0" />
 		<bit name="...More Colors" index="1" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Bloom Bounds min" offset="0x38" visible="true" />
 	<float32 name="Bloom Bounds max" offset="0x3C" visible="true" />
-	<colorf name="Specular Lower Bound" offset="0x40" format="rgb" visible="true" />
-	<colorf name="Specular Upper Bound" offset="0x4C" format="rgb" visible="true" />
-	<colorf name="Diffuse Lower Bound" offset="0x58" format="rgb" visible="true" />
-	<colorf name="Diffuse Upper Bound" offset="0x64" format="rgb" visible="true" />
+	<colorf name="Specular Lower Bound" offset="0x40" alpha="false" visible="true" />
+	<colorf name="Specular Upper Bound" offset="0x4C" alpha="false" visible="true" />
+	<colorf name="Diffuse Lower Bound" offset="0x58" alpha="false" visible="true" />
+	<colorf name="Diffuse Upper Bound" offset="0x64" alpha="false" visible="true" />
 	<float32 name="Brightness Bounds min" offset="0x70" visible="true" />
 	<float32 name="Brightness Bounds max" offset="0x74" visible="true" />
-	<comment title="Gel"/>
+	<comment title="Gel" />
 	<tagRef name="Gel Map" offset="0x78" visible="true" />
 	<enum16 name="Specular Mask" offset="0x80" visible="true">
 		<option name="Default" value="0x0" />
@@ -81,7 +81,7 @@
 	</enum16>
 	<int16 name="Unknown" offset="0x82" visible="false" />
 	<undefined name="Unknown" offset="0x84" visible="false" />
-	<comment title="Falloff"/>
+	<comment title="Falloff" />
 	<enum16 name="Falloff Function" offset="0x88" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Narrow" value="0x1" />
@@ -105,11 +105,11 @@
 		<option name="Directional" value="0x1" />
 		<option name="Spherical" value="0x2" />
 	</enum16>
-	<comment title="Lens Flare"/>
+	<comment title="Lens Flare" />
 	<tagRef name="Lens Flare" offset="0x90" visible="true" />
 	<float32 name="Bounding Radius" offset="0x98" visible="true" />
 	<tagRef name="Light Volume" offset="0x9C" visible="true" />
-	<comment title="Radiosity"/>
+	<comment title="Radiosity" />
 	<enum16 name="Default Lightmap Setting" offset="0xA4" visible="true">
 		<option name="Dynamic Only" value="0x0" />
 		<option name="Dynamic With Lightmaps" value="0x1" />
@@ -118,7 +118,7 @@
 	<int16 name="Unknown" offset="0xA6" visible="false" />
 	<float32 name="Lightmap Half Life" offset="0xA8" visible="true" />
 	<float32 name="Lightmap Light Scale" offset="0xAC" visible="true" />
-	<comment title="Effect Parameters"/>
+	<comment title="Effect Parameters" />
 	<float32 name="Duration" offset="0xB0" visible="true" />
 	<int16 name="Unknown" offset="0xB4" visible="false" />
 	<enum16 name="Falloff Function" offset="0xB6" visible="true">
@@ -131,7 +131,7 @@
 		<option name="Zero" value="0x6" />
 		<option name="One" value="0x7" />
 	</enum16>
-	<comment title="Distance Fading Parameters"/>
+	<comment title="Distance Fading Parameters" />
 	<enum16 name="Illumination Fade" offset="0xB8" visible="true">
 		<option name="Fade Very Far" value="0x0" />
 		<option name="Fade Far" value="0x1" />
@@ -154,20 +154,20 @@
 		<option name="Fade Very Close" value="0x4" />
 	</enum16>
 	<int16 name="Unknown" offset="0xBE" visible="false" />
-	<comment title="Animation Parameters"/>
-	<bitfield32 name="Flags" offset="0xC0" visible="true">
+	<comment title="Animation Parameters" />
+	<flags32 name="Flags" offset="0xC0" visible="true">
 		<bit name="Synchronized" index="0" />
-	</bitfield32>
-	<reflexive name="Brightness Animation" offset="0xC4" visible="true" entrySize="0x8">
+	</flags32>
+	<tagblock name="Brightness Animation" offset="0xC4" visible="true" elementSize="0x8">
 		<dataref name="Function" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Color Animation" offset="0xCC" visible="false" entrySize="0x8">
+	</tagblock>
+	<tagblock name="Color Animation" offset="0xCC" visible="true" elementSize="0x8">
 		<dataref name="Function" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Gel Animation" offset="0xD4" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Gel Animation" offset="0xD4" visible="true" elementSize="0x10">
 		<dataref name="dx Function" offset="0x0" visible="true" />
 		<dataref name="dy Function" offset="0x8" visible="true" />
-	</reflexive>
-	<comment title="Shader"/>
+	</tagblock>
+	<comment title="Shader" />
 	<tagRef name="Shader" offset="0xDC" visible="true" />
 </plugin>

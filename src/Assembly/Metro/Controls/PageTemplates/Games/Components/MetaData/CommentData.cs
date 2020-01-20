@@ -31,6 +31,11 @@
 			}
 		}
 
+		public bool TextExists
+		{
+			get { return !string.IsNullOrEmpty(_text); }
+		}
+
 		public override void Accept(IMetaFieldVisitor visitor)
 		{
 			visitor.VisitComment(this);

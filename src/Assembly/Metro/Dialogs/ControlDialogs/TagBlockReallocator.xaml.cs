@@ -18,10 +18,10 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	/// </summary>
 	public partial class TagBlockReallocator
 	{
-		private readonly ReflexiveData _block;
+		private readonly TagBlockData _block;
 		private readonly int _originalCount;
 
-		public TagBlockReallocator(ReflexiveData block)
+		public TagBlockReallocator(TagBlockData block)
 		{
 			_block = block;
 			_originalCount = block.Length;
@@ -35,16 +35,16 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void InitBlockInformation()
 		{
 			lblSubInfo.Text = string.Format(lblSubInfo.Text, _block.Name);
-			lblOriginalAddress.Text = string.Format("0x{0:X8}", _block.FirstEntryAddress);
+			lblOriginalAddress.Text = string.Format("0x{0:X8}", _block.FirstElementAddress);
 			lblOriginalCount.Text = _originalCount.ToString();
-			lblEntrySize.Text = string.Format("0x{0:X}", _block.EntrySize);
+			lblEntrySize.Text = string.Format("0x{0:X}", _block.ElementSize);
 			txtNewCount.Text = _block.Length.ToString();
 			UpdateTotalSize(_block.Length);
 		}
 
 		private void UpdateTotalSize(int count)
 		{
-			lblNewSize.Text = string.Format("0x{0:X}", count * _block.EntrySize);
+			lblNewSize.Text = string.Format("0x{0:X}", count * _block.ElementSize);
 		}
 
 		private void BtnContinue_OnClick(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			int newCount;
 			if (!int.TryParse(txtNewCount.Text, out newCount))
 			{
-				MetroMessageBox.Show("Tag Block Reallocator - Assembly", "Please enter a valid entry count.");
+				MetroMessageBox.Show("Tag Block Reallocator - Assembly", "Please enter a valid element count.");
 				return;
 			}
 			NewCount = newCount;
@@ -97,7 +97,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private void BtnAddMore_OnClick(object sender, RoutedEventArgs e)
 		{
 			var deltaStr = MetroInputBox.Show("Tag Block Reallocator - Assembly",
-				"Enter the number of entries to add to the block.\nEntering a negative number will remove entries from the end of the block.\nHexadecimal values starting with \"0x\" are allowed.",
+				"Enter the number of elements to add to the block.\nEntering a negative number will remove elements from the end of the block.\nHexadecimal values starting with \"0x\" are allowed.",
 				"", "Enter a number.", "^-?(0x[0-9a-f]+|[0-9]+)$");
 			if (string.IsNullOrEmpty(deltaStr))
 				return;

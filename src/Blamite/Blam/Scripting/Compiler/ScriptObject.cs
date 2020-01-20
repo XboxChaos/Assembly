@@ -7,8 +7,8 @@ namespace Blamite.Blam.Scripting.Compiler
 	/// </summary>
 	public class ScriptObject
 	{
-		private readonly Dictionary<ScriptObjectReflexive, ScriptObject[]> _children =
-			new Dictionary<ScriptObjectReflexive, ScriptObject[]>();
+		private readonly Dictionary<ScriptObjectTagBlock, ScriptObject[]> _children =
+			new Dictionary<ScriptObjectTagBlock, ScriptObject[]>();
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="ScriptObject" /> class.
@@ -28,19 +28,19 @@ namespace Blamite.Blam.Scripting.Compiler
 		/// <summary>
 		///     Registers an array of child objects with the object.
 		/// </summary>
-		/// <param name="source">The reflexive that the children belong to.</param>
+		/// <param name="source">The block that the children belong to.</param>
 		/// <param name="children">The child objects.</param>
-		public void RegisterChildren(ScriptObjectReflexive source, ScriptObject[] children)
+		public void RegisterChildren(ScriptObjectTagBlock source, ScriptObject[] children)
 		{
 			_children[source] = children;
 		}
 
 		/// <summary>
-		///     Gets the child objects read from a child reflexive.
+		///     Gets the child objects read from a child block.
 		/// </summary>
-		/// <param name="source">The reflexive that the children belong to.</param>
-		/// <returns>The child objects of the reflexive.</returns>
-		public ScriptObject[] GetChildren(ScriptObjectReflexive source)
+		/// <param name="source">The block that the children belong to.</param>
+		/// <returns>The child objects of the block.</returns>
+		public ScriptObject[] GetChildren(ScriptObjectTagBlock source)
 		{
 			return _children[source];
 		}

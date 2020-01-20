@@ -53,11 +53,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			SaveImage(filePath);
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		private void SaveImage(string filePath)
 		{
 			var encoder = new PngBitmapEncoder();

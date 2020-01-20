@@ -3,7 +3,7 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">I wanted to see what it did, sue me. Basically done.</revision>
 	</revisions>
-	<bitfield32 name="Animation Flags" offset="0x0" visible="true">
+	<flags32 name="Animation Flags" offset="0x0" visible="true">
 		<bit name="Loops" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -36,14 +36,26 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
-	<reflexive name="Animation Definition" offset="0x4" visible="true" entrySize="0x14">
+	</flags32>
+	<tagblock name="Animation Definition" offset="0x4" visible="true" elementSize="0x14">
 		<uint32 name="Frame" offset="0x0" visible="true" />
-		<int16 name="Font Index" offset="0x4" visible="true" />
+		<enum16 name="Font" offset="0x4" visible="true">
+			<option name="Fixedsys, 9pt" value="0x0" />
+			<option name="Conduit, 14pt" value="0x1" />
+			<option name="Conduit, 32pt" value="0x2" />
+			<option name="Agency, 32pt" value="0x3" />
+			<option name="Conduit, 23pt" value="0x4" />
+			<option name="Agency, 16pt" value="0x5" />
+			<option name="Conduit, 18pt" value="0x6" />
+			<option name="Agency, 18pt" value="0x7" />
+			<option name="Conduit, 18pt" value="0x8" />
+			<option name="Conduit, 16pt" value="0x9" />
+			<option name="Agency, 23pt" value="0xA" />
+		</enum16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<undefined name="Unknown" offset="0x8" visible="false" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
 		<undefined name="Unknown" offset="0x10" visible="false" />
-	</reflexive>
+	</tagblock>
 	<dataRef name="Data" offset="0x10" visible="true" />
 </plugin>

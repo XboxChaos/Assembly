@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Blamite.Blam.Shaders
+﻿namespace Blamite.Blam.Shaders
 {
 	/// <summary>
 	/// A vertex or pixel shader.

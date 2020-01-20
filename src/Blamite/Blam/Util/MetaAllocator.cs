@@ -14,7 +14,7 @@ namespace Blamite.Blam.Util
 
 		// Using SortedLists for these may not be the most efficient, but allocations are done
 		// so rarely that it *shouldn't* matter
-		private readonly SortedList<uint, FreeArea> _freeAreasByAddr = new SortedList<uint, FreeArea>();
+		private readonly SortedList<long, FreeArea> _freeAreasByAddr = new SortedList<long, FreeArea>();
 		private readonly List<FreeArea> _freeAreasBySize = new List<FreeArea>();
 		private readonly int _pageSize;
 
@@ -30,7 +30,7 @@ namespace Blamite.Blam.Util
 		/// <param name="size">The size of the memory block to allocate.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the allocated area.</returns>
-		public uint Allocate(int size, IStream stream)
+		public long Allocate(int size, IStream stream)
 		{
 			return Allocate(size, 4, stream);
 		}
@@ -42,10 +42,25 @@ namespace Blamite.Blam.Util
 		/// <param name="align">The power of two to align the block to.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns></returns>
-		public uint Allocate(int size, uint align, IStream stream)
+		public long Allocate(int size, uint align, IStream stream)
 		{
 			// Find the smallest block that fits, or if nothing is found, expand the meta area
 			FreeArea block = FindSmallestBlock(size, align);
+
+			// if data is aligned, we will assume this data should not be in a readonly partition
+			if (block != null && align > 4)
+			{
+				// readonly partitions are always 1 and 5 starting with halo 3. for halo 3 beta, only partition 0.
+				if (_cacheFile.HeaderSize != 0x800 && _cacheFile.Partitions.Length == 6)
+				{
+					//throw out the found area if readonly
+					if ((_cacheFile.Partitions[1] != null && _cacheFile.Partitions[1].Contains(block.Address))
+					|| (_cacheFile.Partitions[5] != null && _cacheFile.Partitions[5].Contains(block.Address)))
+						block = null;
+				}
+				// todo: h3beta support maybe
+			}
+
 			if (block == null)
 				block = Expand(size, stream);
 
@@ -57,11 +72,11 @@ namespace Blamite.Blam.Util
 			}
 
 			// Align the address
-			uint oldAddress = block.Address;
-			uint alignedAddress = (oldAddress + align - 1) & ~(align - 1);
+			long oldAddress = block.Address;
+			long alignedAddress = (oldAddress + align - 1) & ~((long)align - 1);
 
 			// Adjust the block's start address to free the data we're using
-			ChangeStartAddress(block, (uint) (alignedAddress + size));
+			ChangeStartAddress(block, (alignedAddress + size));
 
 			// Add a block at the beginning if we had to align
 			if (alignedAddress > oldAddress)
@@ -79,7 +94,7 @@ namespace Blamite.Blam.Util
 		/// <param name="newSize">The requested size of the newly-allocated data block. If this is 0, the block will be freed and 0 will be returned.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
-		public uint Reallocate(uint address, int oldSize, int newSize, IStream stream)
+		public long Reallocate(long address, int oldSize, int newSize, IStream stream)
 		{
 			return Reallocate(address, oldSize, newSize, 4, stream);
 		}
@@ -94,7 +109,7 @@ namespace Blamite.Blam.Util
 		/// <param name="align">The power of two to align the block to.</param>
 		/// <param name="stream">The stream to write cache file changes to.</param>
 		/// <returns>The memory address of the new block, or 0 if the block was freed.</returns>
-		public uint Reallocate(uint address, int oldSize, int newSize, uint align, IStream stream)
+		public long Reallocate(long address, int oldSize, int newSize, uint align, IStream stream)
 		{
 			if (newSize == oldSize)
 				return address;
@@ -131,7 +146,7 @@ namespace Blamite.Blam.Util
 
 			// Free the block and allocate a new one
 			Free(address, oldSize);
-			uint newAddress = Allocate(newSize, align, stream);
+			long newAddress = Allocate(newSize, align, stream);
 
 			// If the addresses differ, then copy the data across and zero the old data
 			if (newAddress != address)
@@ -151,12 +166,12 @@ namespace Blamite.Blam.Util
 		/// </summary>
 		/// <param name="address">The starting address of the block to free.</param>
 		/// <param name="size">The size of the block to free.</param>
-		public void Free(uint address, int size)
+		public void Free(long address, int size)
 		{
 			FreeBlock(address, size);
 		}
 
-		private FreeArea FreeBlock(uint address, int size)
+		private FreeArea FreeBlock(long address, int size)
 		{
 			if (size <= 0)
 				throw new ArgumentException("Invalid block size");
@@ -247,7 +262,7 @@ namespace Blamite.Blam.Util
 			while (index < _freeAreasBySize.Count)
 			{
 				FreeArea area = _freeAreasBySize[index];
-				uint alignedAddress = (area.Address + align - 1) & ~(align - 1);
+				long alignedAddress = (area.Address + align - 1) & ~((long)align - 1);
 				if (alignedAddress + minSize <= area.Address + area.Size)
 					return area;
 
@@ -314,7 +329,7 @@ namespace Blamite.Blam.Util
 			RegisterAreaSize(area);
 		}
 
-		private void ChangeStartAddress(FreeArea area, uint newAddress)
+		private void ChangeStartAddress(FreeArea area, long newAddress)
 		{
 			var sizeDelta = (int) (area.Address - newAddress);
 			if (area.Size + sizeDelta < 0)
@@ -336,7 +351,7 @@ namespace Blamite.Blam.Util
 			/// <summary>
 			///     The address of the free area.
 			/// </summary>
-			public uint Address { get; set; }
+			public long Address { get; set; }
 
 			/// <summary>
 			///     The size of the free area.

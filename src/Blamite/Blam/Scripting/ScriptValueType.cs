@@ -40,7 +40,7 @@ namespace Blamite.Blam.Scripting
 			get { return _quoted; }
 		}
 
-		public string TagClass
+		public string TagGroup
 		{
 			get { return _tag; }
 		}

@@ -57,7 +57,7 @@ namespace Blamite.Blam.SecondGen.Structures
 			result.SetInteger("file size", FileSize);
 			result.SetInteger("meta offset", (uint) MetaArea.Offset);
 			result.SetInteger("meta size", (uint) MetaArea.Size);
-			result.SetInteger("meta offset mask", MetaArea.BasePointer);
+			result.SetInteger("meta offset mask", (uint)MetaArea.BasePointer);
 			result.SetInteger("type", (uint) Type);
 			result.SetInteger("string table count", (uint) StringIDCount);
 			result.SetInteger("string table size", (uint) StringIDData.Size);
@@ -69,8 +69,8 @@ namespace Blamite.Blam.SecondGen.Structures
 			result.SetInteger("file table offset", (uint) FileNameData.Offset);
 			result.SetInteger("file table size", (uint) FileNameData.Size);
 			result.SetInteger("file index table offset", (uint) FileNameIndexTable.Offset);
-			result.SetInteger("raw table offset", (uint) RawTable.Offset);
-			result.SetInteger("raw table size", (uint) RawTable.Size);
+			result.SetInteger("raw table offset", RawTable != null ? (uint)RawTable.Offset : 0xFFFFFFFF);
+			result.SetInteger("raw table size", RawTable != null ? (uint)RawTable.Size : 0);
 			result.SetInteger("checksum", Checksum);
 			return result;
 		}
@@ -81,7 +81,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			var metaOffset = (int) values.GetInteger("meta offset");
 			var metaSize = (int) values.GetInteger("meta size");
-			uint metaOffsetMask = values.GetInteger("meta offset mask");
+			uint metaOffsetMask = (uint)values.GetInteger("meta offset mask");
 
 			var metaSegment = new FileSegment(
 				segmenter.DefineSegment(metaOffset, metaSize, 0x200, SegmentResizeOrigin.Beginning), segmenter);
@@ -127,9 +127,12 @@ namespace Blamite.Blam.SecondGen.Structures
 
 			var rawTableOffset = (int) values.GetInteger("raw table offset");
 			var rawTableSize = (int) values.GetInteger("raw table size");
-			RawTable = segmenter.WrapSegment(rawTableOffset, rawTableSize, 1, SegmentResizeOrigin.End);
 
-			Checksum = values.GetInteger("checksum");
+			// It is apparently possible to create a cache without a raw table, but -1 gets written as the offset
+			if (rawTableOffset != -1)
+				RawTable = segmenter.WrapSegment(rawTableOffset, rawTableSize, 1, SegmentResizeOrigin.End);
+
+			Checksum = (uint)values.GetInteger("checksum");
 
 			// Set up a bogus partition table
 			Partitions = new Partition[1];

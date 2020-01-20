@@ -18,14 +18,17 @@
 	<float32 name="Ground damp function" offset="0x28" visible="true" />
 	<float32 name="Normal K1" offset="0x2C" visible="true" />
 	<float32 name="Normal K0" offset="0x30" visible="true" />
+	<undefined name="Unknown" offset="0x34" visible="false" />
 	<float32 name="Water Friction" offset="0x38" visible="true" />
 	<float32 name="Water Depth" offset="0x3C" visible="true" />
 	<float32 name="Water Density" offset="0x40" visible="true" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
 	<float32 name="Air friction" offset="0x48" visible="true" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
 	<float32 name="xx movement" offset="0x50" visible="true" />
 	<float32 name="yy movement" offset="0x54" visible="true" />
 	<float32 name="zz movement" offset="0x58" visible="true" />
-	<reflexive name="Internal Matrix" offset="0x5C" visible="true" entrySize="0x24">
+	<tagblock name="Internal Matrix" offset="0x5C" visible="true" elementSize="0x24">
 		<float32 name="yy+zz" offset="0x0" visible="true" />
 		<float32 name="-xy" offset="0x4" visible="true" />
 		<float32 name="-zx" offset="0x8" visible="true" />
@@ -35,10 +38,10 @@
 		<float32 name="-zx" offset="0x18" visible="true" />
 		<float32 name="-yz" offset="0x1C" visible="true" />
 		<float32 name="xx+yy" offset="0x20" visible="true" />
-	</reflexive>
-	<reflexive name="Mass Points" offset="0x64" visible="true" entrySize="0x3C">
-		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
-		<bitfield32 name="flags" offset="0x20" visible="true">
+	</tagblock>
+	<tagblock name="Mass Points" offset="0x64" visible="true" elementSize="0x3C">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
+		<flags32 name="flags" offset="0x20" visible="true">
 			<bit name="ground friction" index="0" />
 			<bit name="water friction" index="1" />
 			<bit name="air friction" index="2" />
@@ -46,21 +49,21 @@
 			<bit name="air lift" index="4" />
 			<bit name="thrust" index="5" />
 			<bit name="antigrav" index="6" />
-		</bitfield32>
+		</flags32>
 		<float32 name="strength" offset="0x24" visible="true" />
-		<float32 name="offset    real" offset="0x28" visible="true" />
-		<float32 name="height    real" offset="0x2C" visible="true" />
+		<float32 name="offset real" offset="0x28" visible="true" />
+		<float32 name="height real" offset="0x2C" visible="true" />
 		<float32 name="damp fraction" offset="0x30" visible="true" />
 		<float32 name="normal k1" offset="0x34" visible="true" />
 		<float32 name="normal k0" offset="0x38" visible="true" />
-	</reflexive>
-	<reflexive name="Mass Points" offset="0x6C" visible="true" entrySize="0x80">
-		<ascii name="Name" offset="0x0" visible="true" size="0x20" />
+	</tagblock>
+	<tagblock name="Mass Points" offset="0x6C" visible="true" elementSize="0x80">
+		<ascii name="Name" offset="0x0" visible="true" length="0x20" />
 		<int16 name="Model Node" offset="0x20" visible="true" />
 		<int16 name="Powered Mass Point" offset="0x22" visible="true" />
-		<bitfield32 name="flags" offset="0x24" visible="true">
+		<flags32 name="flags" offset="0x24" visible="true">
 			<bit name="Metallic" index="0" />
-		</bitfield32>
+		</flags32>
 		<float32 name="Relative Mass" offset="0x28" visible="true" />
 		<float32 name="Mass" offset="0x2C" visible="true" />
 		<float32 name="Relative Density" offset="0x30" visible="true" />
@@ -80,8 +83,13 @@
 			<option name="left" value="0x2" />
 			<option name="up" value="0x3" />
 		</enum32>
-		<float32 name="friction parallel scale" offset="0x60" visible="true" />
-		<float32 name="friction perependicular scale" offset="0x64" visible="true" />
-		<float32 name="radius" offset="0x68" visible="true" />
-	</reflexive>
+		<float32 name="Friction Parallel Scale" offset="0x60" visible="true" />
+		<float32 name="Friction Perpendicular Scale" offset="0x64" visible="true" />
+		<float32 name="Radius" offset="0x68" visible="true" />
+		<undefined name="Unknown" offset="0x6C" visible="false" />
+		<undefined name="Unknown" offset="0x70" visible="false" />
+		<undefined name="Unknown" offset="0x74" visible="false" />
+		<undefined name="Unknown" offset="0x78" visible="false" />
+		<undefined name="Unknown" offset="0x7C" visible="false" />
+	</tagblock>
 </plugin>

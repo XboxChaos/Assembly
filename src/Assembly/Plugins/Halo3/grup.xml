@@ -6,7 +6,7 @@
 		<revision author="-DeToX-" version="2">added two string ids</revision>
 		<revision author="Lord Zedd" version="3">Updated and copypasted.</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -39,7 +39,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<stringid name="Name" offset="0x4" visible="true" />
 	<int16 name="Unknown" offset="0x8" visible="false" />
 	<int16 name="Layer" offset="0xA" visible="true" />
@@ -52,9 +52,9 @@
 	<int16 name="Standard Y Unknown" offset="0x18" visible="true" />
 	<int16 name="Standard X Unknown" offset="0x1A" visible="true" />
 	<tagRef name="Animation" offset="0x1C" visible="true" />
-	<reflexive name="List Widgets" offset="0x2C" visible="true" entrySize="0x80">
+	<tagblock name="List Widgets" offset="0x2C" visible="true" elementSize="0x80">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -87,7 +87,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringId name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -103,8 +103,8 @@
 		<stringid name="Data Source Name" offset="0x3C" visible="true" />
 		<tagRef name="Skin" offset="0x40" visible="true" />
 		<int32 name="Row Count" offset="0x50" visible="true" />
-		<reflexive name="List Widget Items" offset="0x54" visible="true" entrySize="0x30">
-			<bitfield32 name="Flags" offset="0x0" visible="true">
+		<tagblock name="List Widget Items" offset="0x54" visible="true" elementSize="0x30">
+			<flags32 name="Flags" offset="0x0" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -137,7 +137,7 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			</flags32>
 			<stringId name="Name" offset="0x4" visible="true" />
 			<int16 name="Unknown" offset="0x8" visible="false" />
 			<int16 name="Layer" offset="0xA" visible="true" />
@@ -151,13 +151,13 @@
 			<int16 name="Standard X Unknown" offset="0x1A" visible="true" />
 			<tagRef name="Animation" offset="0x1C" visible="true" />
 			<stringid name="Target" offset="0x2C" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="Up Arrow Bitmap" offset="0x60" visible="true" />
 		<tagRef name="Down Arrow Bitmap" offset="0x70" visible="true" />
-	</reflexive>
-	<reflexive name="Text Widgets" offset="0x38" visible="true" entrySize="0x4C">
+	</tagblock>
+	<tagblock name="Text Widgets" offset="0x38" visible="true" elementSize="0x4C">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -190,7 +190,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -206,12 +206,24 @@
 		<stringid name="Data Source Name" offset="0x3C" visible="true" />
 		<stringId name="Text String" offset="0x40" visible="true" />
 		<stringId name="Text Color" offset="0x44" visible="true" />
-		<int16 name="Text Font" offset="0x48" visible="true" />
+		<enum16 name="Font" offset="0x48" visible="true">
+			<option name="Fixedsys, 9pt" value="0x0" />
+			<option name="Conduit, 16pt" value="0x1" />
+			<option name="Conduit, 32pt" value="0x2" />
+			<option name="Conduit, 32pt" value="0x3" />
+			<option name="Conduit, 23pt" value="0x4" />
+			<option name="Fixedsys, 9pt" value="0x5" />
+			<option name="Conduit, 18pt" value="0x6" />
+			<option name="Larabie, 10pt" value="0x7" />
+			<option name="Conduit, 18pt" value="0x8" />
+			<option name="Conduit, 16pt" value="0x9" />
+			<option name="Pragmata, 14pt" value="0xA" />
+		</enum16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-	</reflexive>
-	<reflexive name="Bitmap Widgets" offset="0x44" visible="true" entrySize="0x6C">
+	</tagblock>
+	<tagblock name="Bitmap Widgets" offset="0x44" visible="true" elementSize="0x6C">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -244,7 +256,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -273,17 +285,16 @@
 			<option name="Inverted Alpha" value="0xA" />
 			<option name="unknown" value="0xB" />
 			<option name="unknown" value="0xC" />
-			<option name="unknown" value="0xD" />
 		</enum16>
 		<int16 name="Unknown" offset="0x5E" visible="false" />
 		<int16 name="Sprite Index" offset="0x60" visible="true" />
 		<int16 name="Unknown" offset="0x62" visible="false" />
 		<stringid name="Data Source Name" offset="0x64" visible="true" />
 		<stringid name="Sprite Data Source Name" offset="0x68" visible="true" />
-	</reflexive>
-	<reflexive name="Model Widgets" offset="0x50" visible="true" entrySize="0x48">
+	</tagblock>
+	<tagblock name="Model Widgets" offset="0x50" visible="true" elementSize="0x48">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -316,7 +327,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -329,22 +340,22 @@
 		<int16 name="Standard Y Bounds max" offset="0x28" visible="true" />
 		<int16 name="Standard X Bounds max" offset="0x2A" visible="true" />
 		<tagRef name="Animation" offset="0x2C" visible="true" />
-		<reflexive name="Camera Refinement" offset="0x3C" visible="false" entrySize="0x3C">
-			<stringid name="Biped" offset="0x0" visible="false" />
-			<float32 name="Unknown" offset="0x4" visible="false" />
-			<float32 name="Unknown" offset="0x8" visible="false" />
-			<float32 name="Unknown" offset="0xC" visible="false" />
-			<float32 name="Unknown" offset="0x10" visible="false" />
-			<float32 name="Unknown" offset="0x14" visible="false" />
-			<float32 name="Unknown" offset="0x18" visible="false" />
-			<float32 name="Unknown" offset="0x1C" visible="false" />
+		<tagblock name="Camera Control" offset="0x3C" visible="true" elementSize="0x3C">
+			<stringid name="Biped" offset="0x0" visible="true" />
+			<float32 name="Base Distance" offset="0x4" visible="true" />
+			<float32 name="Distance Range min" offset="0x8" visible="true" />
+			<float32 name="Distance Range max" offset="0xC" visible="true" />
+			<float32 name="Distance Change Rate" offset="0x10" visible="true" />
+			<float32 name="Base Height" offset="0x14" visible="true" />
+			<float32 name="Height Range min" offset="0x18" visible="true" />
+			<float32 name="Height Range max" offset="0x1C" visible="true" />
 			<float32 name="Unknown" offset="0x20" visible="false" />
-			<reflexive name="Zoom Data 1" offset="0x24" visible="false" entrySize="0x14">
-				<dataref name="Unknown" offset="0x0" visible="false" />
-			</reflexive>
-			<reflexive name="Zoom Data 2" offset="0x30" visible="false" entrySize="0x14">
-				<dataref name="Unknown" offset="0x0" visible="false" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
+			<tagblock name="Distance Function" offset="0x24" visible="true" elementSize="0x14">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+			<tagblock name="Height Function" offset="0x30" visible="true" elementSize="0x14">
+				<dataref name="Function" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+	</tagblock>
 </plugin>

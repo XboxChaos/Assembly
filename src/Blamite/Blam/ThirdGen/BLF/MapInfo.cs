@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Blamite.Extensions;
 using Blamite.IO;
 using Blamite.Serialization.MapInfo;
 
@@ -29,7 +30,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 		Unknown15 = 1 << 15,
 	}
 
-	public class MapInfo
+	public class MapInfo : IDisposable
 	{
 		private MaplevlInfo _mapInformation;
 		private EndianStream _stream;
@@ -86,10 +87,6 @@ namespace Blamite.Blam.ThirdGen.BLF
 			_defaultAuthorOffset = _insertionOffset + (Engine.InsertionCount * Engine.InsertionSize);
 		}
 
-		public void Close()
-		{
-			_stream.Close();
-		}
 
 		#region Loading Code
 
@@ -289,7 +286,10 @@ namespace Blamite.Blam.ThirdGen.BLF
 			if (Engine.UsesDefaultAuthor)
 			{
 				_stream.SeekTo(_defaultAuthorOffset);
-				_stream.WriteAscii(_mapInformation.DefaultAuthor);
+				//_stream.WriteAscii(_mapInformation.DefaultAuthor);
+				foreach (byte b in _mapInformation.DefaultAuthor)
+					_stream.WriteByte(b);
+				_stream.WriteByte(0);
 			}
 		}
 
@@ -324,8 +324,7 @@ namespace Blamite.Blam.ThirdGen.BLF
 
 		private void UpdateMPObjectTable(int baseOffset)
 		{
-			var buffer = new int[64];
-			_mapInformation.ObjectTable.CopyTo(buffer, 0);
+			var buffer = _mapInformation.ObjectTable.ToIntArray();
 			_stream.SeekTo(baseOffset);
 			for (int i = 0; i < 64; i++)
 				_stream.WriteInt32(buffer[i]);
@@ -374,6 +373,11 @@ namespace Blamite.Blam.ThirdGen.BLF
 					_stream.WriteUTF16(_mapInformation.MapCheckpoints[i].CheckpointDescriptions[d]);
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			_stream.Dispose();
 		}
 
 		#endregion

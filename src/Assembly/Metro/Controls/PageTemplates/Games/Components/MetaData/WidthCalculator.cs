@@ -9,26 +9,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class WidthCalculator : IMetaFieldVisitor
 	{
-		private const double ReflexiveSubEntryLeftPadding = 20;
-		private const double ReflexiveSubEntryRightPadding = 20;
-		private const double ReflexiveSubEntryBorderWidth = 1;
+		private const double TagBlockSubEntryLeftPadding = 10;
+		private const double TagBlockSubEntryRightPadding = 10;
+		private const double TagBlockSubEntryBorderWidth = 1;
 
-		private const double ReflexiveSubEntryExtraWidth =
-			ReflexiveSubEntryLeftPadding + ReflexiveSubEntryRightPadding + ReflexiveSubEntryBorderWidth*2;
+		private const double TagBlockSubEntryExtraWidth =
+			TagBlockSubEntryLeftPadding + TagBlockSubEntryRightPadding + TagBlockSubEntryBorderWidth * 2;
 
 		private static readonly AsciiValue _asciiControl = new AsciiValue();
-		private static readonly Bitfield _bitfieldControl = new Bitfield();
+		private static readonly FlagsValue _flagsControl = new FlagsValue();
 		private static readonly Comment _commentControl = new Comment();
 		private static readonly Enumeration _enumControl = new Enumeration();
 		private static readonly intValue _intControl = new intValue();
 		private static readonly StringIDValue _stringIDControl = new StringIDValue();
-		private static readonly rawBlock _rawBlock = new rawBlock();
-		//private static MetaChunk _chunkControl = new MetaChunk();
-		private static readonly tagValue _tagControl = new tagValue();
-		private static readonly VectorValue _vectorControl = new VectorValue();
-		private static readonly DegreeValue _degreeControl = new DegreeValue();
-		private static readonly ColourValue _colourValue = new ColourValue();
+		private static readonly RawBlock _rawBlock = new RawBlock();
+		private static readonly TagValue _tagControl = new TagValue();
+		private static readonly ColorValue _colourValue = new ColorValue();
 		private static readonly Shader _shader = new Shader();
+		private static readonly Multi2Value _multi2Value = new Multi2Value();
+		private static readonly Multi3Value _multi3Value = new Multi3Value();
+		private static readonly Multi4Value _multi4Value = new Multi4Value();
+		private static readonly Plane2Value _plane2Value = new Plane2Value();
+		private static readonly Plane3Value _plane3Value = new Plane3Value();
+		private static readonly RangeValue _rangeValue = new RangeValue();
 		private double _totalWidth;
 
 		public double TotalWidth
@@ -36,9 +39,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _totalWidth; }
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
-			AddWidth(_bitfieldControl.Width);
+			AddWidth(_flagsControl.Width);
 		}
 
 		public void VisitComment(CommentData field)
@@ -86,12 +89,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_intControl.Width);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
 			AddWidth(field.Width);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 			// Save our state and recurse into it
 			double oldTotal = _totalWidth;
@@ -101,7 +104,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			double entryWidth = _totalWidth;
 			_totalWidth = oldTotal;
 
-			AddWidth(entryWidth + ReflexiveSubEntryExtraWidth);
+			AddWidth(entryWidth + TagBlockSubEntryExtraWidth);
 		}
 
 		public void VisitString(StringData field)
@@ -129,22 +132,87 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_tagControl.Width);
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
-			AddWidth(_vectorControl.Width);
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			AddWidth(_multi3Value.Width);
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitPoint2(Point2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			AddWidth(_multi4Value.Width);
 		}
 
 		public void VisitDegree(DegreeData field)
 		{
-			AddWidth(_degreeControl.Width);
+			AddWidth(_intControl.Width);
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitDegree2(Degree2Data field)
+		{
+			AddWidth(_multi2Value.Width);
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			AddWidth(_multi3Value.Width);
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			AddWidth(_plane2Value.Width);
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			AddWidth(_plane3Value.Width);
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitColourInt(ColorData field)
 		{
 			AddWidth(_colourValue.Width);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 			AddWidth(_colourValue.Width);
 		}
@@ -152,6 +220,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitShaderRef(ShaderRef field)
 		{
 			AddWidth(_shader.Width);
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			AddWidth(_rangeValue.Width);
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			AddWidth(_rangeValue.Width);
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			AddWidth(_rangeValue.Width);
 		}
 
 		public void Add(MetaField field)

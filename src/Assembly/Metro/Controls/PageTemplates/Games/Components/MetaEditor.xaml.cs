@@ -28,20 +28,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		/// </summary>
 		/// <param name="foundField">The field that was found and highlighted.</param>
 		/// <param name="listField">
-		///     The top-level field in the field list. For reflexive entries, this is the topmost wrapper
+		///     The top-level field in the field list. For tag block elements, this is the topmost wrapper
 		///     field, otherwise, this may be the same as foundField.
 		/// </param>
-		/// <param name="parent">The reflexive that the field is in. Can be null.</param>
-		public SearchResult(MetaField foundField, MetaField listField, ReflexiveData parent)
+		/// <param name="parent">The block that the field is in. Can be null.</param>
+		public SearchResult(MetaField foundField, MetaField listField, TagBlockData parent)
 		{
 			ListField = listField;
 			Field = foundField;
-			Reflexive = parent;
+			TagBlock = parent;
 		}
 
 		public MetaField Field { get; private set; }
 		public MetaField ListField { get; private set; }
-		public ReflexiveData Reflexive { get; private set; }
+		public TagBlockData TagBlock { get; private set; }
 	}
 
 	/// <summary>
@@ -64,9 +64,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private FieldChangeTracker _changeTracker;
 		private FieldChangeSet _fileChanges;
-		private ReflexiveFlattener _flattener;
+		private TagBlockFlattener _flattener;
 		private FieldChangeSet _memoryChanges;
 		private string _pluginPath;
+		private string _fallbackPluginPath;
 		private ThirdGenPluginVisitor _pluginVisitor;
 		private ObservableCollection<SearchResult> _searchResults;
 		private TagEntry _tag;
@@ -87,18 +88,32 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_stringIdTrie = stringIDTrie;
 
 			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(tag.RawTag.Group.Magic)).Trim();
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), className);
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
+
+			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
+				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+
+			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
+
+			// Load Info
+			lblTagName.Text = tag.TagFileName != null
+				? tag.TagFileName + "." + tag.GroupName
+				: "0x" + tag.RawTag.Index.Value.ToString("X");
+
+			lblDatum.Text = string.Format("{0}", tag.RawTag.Index);
+			lblAddress.Text = string.Format("0x{0:X8}", tag.RawTag.MetaLocation.AsPointer());
+			lblOffset.Text = string.Format("0x{0:X}", tag.RawTag.MetaLocation.AsOffset());
 
 			// Set init finished
 			hasInitFinished = true;
@@ -106,7 +121,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		public void RefreshEditor(MetaReader.LoadType type)
 		{
-			if (!File.Exists(_pluginPath))
+			string pluginpath = _pluginPath;
+
+			if (!File.Exists(pluginpath))
+				pluginpath = _fallbackPluginPath;
+
+			if (pluginpath == null || !File.Exists(pluginpath))
 			{
 				UpdateMetaButtons(false);
 				StatusUpdater.Update("Plugin doesn't exist. It can't be loaded for this tag.");
@@ -118,7 +138,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			// Set the stream manager and base offset to use based upon the LoadType
 			IStreamManager streamManager = null;
-			uint baseOffset = 0;
+			long baseOffset = 0;
 			switch (type)
 			{
 				case MetaReader.LoadType.File:
@@ -146,7 +166,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 
 			// Load Plugin File
-			using (XmlReader xml = XmlReader.Create(_pluginPath))
+			using (XmlReader xml = XmlReader.Create(pluginpath))
 			{
 				_pluginVisitor = new ThirdGenPluginVisitor(_tags, _stringIdTrie, _cache.MetaArea,
 					App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles);
@@ -158,7 +178,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_memoryChanges = new FieldChangeSet();
 
 			var metaReader = new MetaReader(streamManager, baseOffset, _cache, _buildInfo, type, _fileChanges);
-			_flattener = new ReflexiveFlattener(metaReader, _changeTracker, _fileChanges);
+			_flattener = new TagBlockFlattener(metaReader, _changeTracker, _fileChanges);
 			_flattener.Flatten(_pluginVisitor.Values);
 			metaReader.ReadFields(_pluginVisitor.Values);
 			panelMetaComponents.ItemsSource = _pluginVisitor.Values;
@@ -183,7 +203,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		private void RevisionViewer()
 		{
 			if (_pluginVisitor != null && _pluginVisitor.PluginRevisions != null)
-				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Class.Magic));
+				MetroPluginRevisionViewer.Show(_pluginVisitor.PluginRevisions, CharConstant.ToString(_tag.RawTag.Group.Magic));
 			else
 				MetroMessageBox.Show("Press RB to...wait...how'd you do that?",
 					"How did you load the plugin revision viewer before you loaded a plugin? wat.");
@@ -251,7 +271,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			}
 			else if (_rteProvider != null)
 			{
-				using (IStream metaStream = _rteProvider.GetMetaStream(_cache))
+				var rteProvider = _rteProvider;
+				if (App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider != null)
+				{
+					rteProvider = App.AssemblyStorage.AssemblyNetworkPoke.NetworkRteProvider;
+				}
+
+				using (IStream metaStream = rteProvider.GetMetaStream(_cache))
 				{
 					if (metaStream != null)
 					{
@@ -263,9 +289,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						if (showActionDialog)
 						{
 							if (onlyUpdateChanged)
-								MetroMessageBox.Show("Meta Poked", "All changed metadata has been poked to the game.");
+								StatusUpdater.Update("All changed metadata has been poked to the game.");
 							else
-								MetroMessageBox.Show("Meta Poked", "The metadata has been poked to the game.");
+								StatusUpdater.Update("The metadata has been poked to the game.");
 						}
 					}
 					else
@@ -297,15 +323,20 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			_tag = tag;
 
 			// Load Plugin Path
-			string className = VariousFunctions.SterilizeTagClassName(CharConstant.ToString(_tag.RawTag.Class.Magic)).Trim();
+			string groupName = VariousFunctions.SterilizeTagGroupName(CharConstant.ToString(_tag.RawTag.Group.Magic)).Trim();
 			_pluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
-				_buildInfo.Settings.GetSetting<string>("plugins"), className);
+				_buildInfo.Settings.GetSetting<string>("plugins"), groupName);
+
+			if (_buildInfo.Settings.PathExists("fallbackPlugins"))
+				_fallbackPluginPath = string.Format("{0}\\{1}\\{2}.xml", VariousFunctions.GetApplicationLocation() + @"Plugins",
+					_buildInfo.Settings.GetSetting<string>("fallbackPlugins"), groupName);
 
 			// Set Option boxes
 			cbShowInvisibles.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInvisibles;
 			cbShowComments.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowComments;
-			cbShowEnumIndex.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex;
 			cbShowInformation.IsChecked = App.AssemblyStorage.AssemblySettings.PluginsShowInformation;
+
+			cbEnumPrefix.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix;
 
 			// Load Meta
 			RefreshEditor(MetaReader.LoadType.File);
@@ -353,13 +384,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			btnOptions.IsChecked = false;
 		}
 
-		private void cbShowEnumIndex_Altered(object sender, RoutedEventArgs e)
+		private void cbEnumPrefix_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (!hasInitFinished) return;
+			if (!hasInitFinished || cbEnumPrefix == null || cbEnumPrefix.SelectedIndex < 0) return;
 
-
-			App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex = (bool)cbShowEnumIndex.IsChecked;
-			btnOptions.IsChecked = false;
+			App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix = (Settings.EnumPrefix)cbEnumPrefix.SelectedIndex;
 		}
 
 		private void cbShowInformation_Altered(object sender, RoutedEventArgs e)
@@ -369,12 +398,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 			App.AssemblyStorage.AssemblySettings.PluginsShowInformation = (bool)cbShowInformation.IsChecked;
 			btnOptions.IsChecked = false;
-		}
-
-		private void cbReflexives_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (e.AddedItems.Count > 0)
-				panelMetaComponents.ScrollIntoView(e.AddedItems[0]);
 		}
 
 		private void btnPluginPokeAll_Click(object sender, RoutedEventArgs e)
@@ -435,6 +458,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						RefreshEditor(MetaReader.LoadType.File);
 					}
 					break;
+
+				case Key.F:
+					txtSearch.Focus();
+					break;
 			}
 		}
 
@@ -471,10 +498,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		private static MetaField GetWrappedField(MetaField field)
 		{
-			WrappedReflexiveEntry wrapper = null;
+			WrappedTagBlockEntry wrapper = null;
 			while (true)
 			{
-				wrapper = field as WrappedReflexiveEntry;
+				wrapper = field as WrappedTagBlockEntry;
 				if (wrapper == null)
 					return field;
 				field = wrapper.WrappedField;
@@ -507,7 +534,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			var valueField = field as ValueField;
 			if (valueField == null)
 			{
-				var wrapper = field as WrappedReflexiveEntry;
+				var wrapper = field as WrappedTagBlockEntry;
 				if (wrapper != null)
 					valueField = GetWrappedField(wrapper) as ValueField;
 			}
@@ -587,7 +614,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			filterer.FilterFields(_pluginVisitor.Values, text);
 		}
 
-		private void MetaFilterer_CollectResult(MetaField foundField, MetaField listField, ReflexiveData parent)
+		private void MetaFilterer_CollectResult(MetaField foundField, MetaField listField, TagBlockData parent)
 		{
 			_resultIndices[listField] = _searchResults.Count;
 			_searchResults.Add(new SearchResult(foundField, listField, parent));
@@ -662,19 +689,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			field.Opacity = 1.0f;
 
-			// If the field is a reflexive, recursively set the opacity of its children
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
+			// If the field is a block, recursively set the opacity of its children
+			var block = field as TagBlockData;
+			if (block != null)
 			{
 				// Show wrappers
-				_flattener.EnumWrappers(reflexive, ShowField);
+				_flattener.EnumWrappers(block, ShowField);
 
 				// Show template fields
-				foreach (MetaField child in reflexive.Template)
+				foreach (MetaField child in block.Template)
 					ShowField(child);
 
 				// Show modified fields
-				foreach (ReflexivePage page in reflexive.Pages)
+				foreach (TagBlockPage page in block.Pages)
 				{
 					foreach (MetaField child in page.Fields)
 					{
@@ -750,9 +777,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		// Thread-safe
 		private void SelectResult(SearchResult result)
 		{
-			ReflexiveData reflexive = result.Reflexive;
-			if (reflexive != null)
-				_flattener.ForceVisible(reflexive);
+			TagBlockData block = result.TagBlock;
+			if (block != null)
+				_flattener.ForceVisible(block);
 			SelectField(result.ListField);
 		}
 
@@ -780,7 +807,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				var field = panelMetaComponents.SelectedItem as MetaField;
 				if (field != null && e.RemovedItems.Count > 0 && FindResultByListField(field) == -1)
 				{
-					// Disallow selecting filtered items and reflexive wrappers
+					// Disallow selecting filtered items and tag block wrappers
 					// as long as this wouldn't cause an infinite loop of selection changes
 					var oldField = e.RemovedItems[0] as MetaField;
 					if (oldField != null && FindResultByListField(oldField) != -1)
@@ -803,41 +830,77 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 
 		#endregion
 
-		private void ReallocateCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		private void ReallocateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
 			e.CanExecute = true;
 		}
 
-		private void ReallocateCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		private void ReallocateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
-			var field = GetWrappedField(e.OriginalSource) as ReflexiveData;
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Tag Block Reallocator", "Only third generation cache files are currently supported by the block reallocator.");
+				return;
+			}
+
+			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
 			if (field == null)
 				return;
+			var oldCount = field.Length;
 			var newCount = MetroTagBlockReallocator.Show(_cache, field);
-			if (newCount == null || (int)newCount == field.Length)
+			if (newCount == null || newCount == oldCount)
 				return; // Canceled
 
-			var oldAddress = field.FirstEntryAddress;
-			var oldSize = field.Length * field.EntrySize;
-			var newSize = (int)newCount * field.EntrySize;
-			uint newAddress;
+			var oldAddress = field.FirstElementAddress;
+			var oldSize = field.Length * field.ElementSize;
+			var newSize = (int)newCount * field.ElementSize;
+			long newAddress;
 			using (var stream = _fileManager.OpenReadWrite())
 			{
 				// Reallocate the block
 				newAddress = _cache.Allocator.Reallocate(oldAddress, (int)oldSize, (int)newSize, (uint)field.Align, stream);
 				_cache.SaveChanges(stream);
 
-				// If the block was made larger, zero extra data
+				// If the block was made larger, zero extra data and null tagrefs
 				if (newAddress != 0 && newSize > oldSize)
 				{
 					stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress) + oldSize);
 					StreamUtil.Fill(stream, 0, (int)(newSize - oldSize));
+
+					var tagRefLayout = _buildInfo.Layouts.GetLayout("tag reference");
+					var groupOffset = tagRefLayout.GetFieldOffset("tag group magic");
+					var datumOffset = tagRefLayout.GetFieldOffset("datum index");
+
+					//go through each new page and write null for any tagrefs
+					for (int i = oldCount; i < newCount; i++)
+					{
+						var entryStart = _cache.MetaArea.PointerToOffset(newAddress) + (field.ElementSize * i);
+						foreach (MetaField mf in field.Template)
+						{
+							if (mf.GetType() != typeof(TagRefData))
+								continue;
+							var tagref = (TagRefData)mf;
+							if (tagref.WithGroup)
+							{
+								stream.SeekTo(entryStart + tagref.Offset + groupOffset);
+								stream.WriteInt32(-1);
+								stream.SeekTo(entryStart + tagref.Offset + datumOffset);
+								stream.WriteInt32(-1);
+							}
+							else
+							{
+								//no group, write to field offset without adding anything
+								stream.SeekTo(entryStart + tagref.Offset);
+								stream.WriteInt32(-1);
+							}
+						}
+					}
 				}
 			}
 
 			// Changing these causes a read from the file, so the stream has to be closed first
 			field.Length = (int)newCount;
-			field.FirstEntryAddress = newAddress;
+			field.FirstElementAddress = newAddress;
 
 			using (var stream = _fileManager.OpenReadWrite())
 			{
@@ -869,6 +932,183 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				MetroMessageBox.Show("Tag Block Reallocator - Assembly",
 					"The tag block was freed successfully.");
 			}
+		}
+
+		private void IsolateBlockCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void IsolateBlockCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Tag Block Isolation", "Only third generation cache files are currently supported.");
+				return;
+			}
+
+			var field = GetWrappedField(e.OriginalSource) as TagBlockData;
+			if (field == null)
+				return;
+
+			var oldAddress = field.FirstElementAddress;
+			int size = field.Length * (int)field.ElementSize;
+			if (oldAddress == 0 || size == 0)
+			{
+				MetroMessageBox.Show("Tag Block Isolation", "Cannot isolate: block is null.");
+				return;
+			}
+
+			var result = MetroMessageBox.Show("Tag Block Isolation", "Are you sure you want to copy this block to a new location?", MetroMessageBox.MessageBoxButtons.OkCancel);
+			if (result != MetroMessageBox.MessageBoxResult.OK)
+				return;
+
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Reallocate the block
+				newAddress = _cache.Allocator.Allocate(size, stream);
+				_cache.SaveChanges(stream);
+
+				//copy data
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				var data = stream.ReadBlock(size);
+
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.WriteBlock(data);
+			}
+
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.FirstElementAddress = newAddress;
+
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+			MetroMessageBox.Show("Tag Block Isolation - Assembly",
+					"The tag block was isolated successfully.");
+		}
+
+		private void AllocateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void AllocateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Data Reference Allocator", "Only third generation cache files are currently supported by the data reference allocator.");
+				return;
+			}
+
+			var field = GetWrappedField(e.OriginalSource) as DataRef;
+			if (field == null)
+				return;
+			var oldLength = field.Length;
+			var newLength = MetroDataRefAllocator.Show(_cache, field);
+			if (!newLength.HasValue)
+				return; // Canceled
+
+			var oldAddress = field.DataAddress;
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Allocate a new block as to not potentially disturb shared uses
+				newAddress = _cache.Allocator.Allocate(newLength.Value, stream);
+				_cache.SaveChanges(stream);
+			}
+
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.Length = newLength.Value;
+			field.DataAddress = newAddress;
+
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+
+			MetroMessageBox.Show("Data Reference Allocator - Assembly",
+				"The data was allocated successfully. Its address is 0x" + newAddress.ToString("X8") + ".");
+		}
+
+		private void IsolateDataRefCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+		
+		private void IsolateDataRefCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (_cache.Engine != EngineType.ThirdGeneration)
+			{
+				MetroMessageBox.Show("Data Reference Isolation", "Only third generation cache files are currently supported.");
+				return;
+			}
+		
+			var field = GetWrappedField(e.OriginalSource) as DataRef;
+			if (field == null)
+				return;
+		
+			var oldAddress = field.DataAddress;
+			int size = field.Length;
+			if (oldAddress == 0 || size == 0)
+			{
+				MetroMessageBox.Show("Data Reference Isolation", "Cannot isolate: data is null.");
+				return;
+			}
+		
+			var result = MetroMessageBox.Show("Data Reference Isolation", "Are you sure you want to copy this data to a new location?", MetroMessageBox.MessageBoxButtons.OkCancel);
+			if (result != MetroMessageBox.MessageBoxResult.OK)
+				return;
+		
+			long newAddress;
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Allocate the data
+				newAddress = _cache.Allocator.Allocate(size, stream);
+				_cache.SaveChanges(stream);
+		
+				//copy data
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(oldAddress));
+				var data = stream.ReadBlock(size);
+		
+				stream.SeekTo(_cache.MetaArea.PointerToOffset(newAddress));
+				stream.WriteBlock(data);
+			}
+		
+			// Changing these causes a read from the file, so the stream has to be closed first
+			field.DataAddress = newAddress;
+		
+			using (var stream = _fileManager.OpenReadWrite())
+			{
+				// Force a save back to the file
+				var changes = new FieldChangeSet();
+				changes.MarkChanged(field);
+				var metaUpdate = new MetaWriter(stream, (uint)_tag.RawTag.MetaLocation.AsOffset(), _cache, _buildInfo,
+					MetaWriter.SaveType.File, changes, _stringIdTrie);
+				metaUpdate.WriteFields(_pluginVisitor.Values);
+				_fileChanges.MarkUnchanged(field);
+			}
+			MetroMessageBox.Show("Data Reference Isolation - Assembly",
+					"The data reference was isolated successfully.");
+		}
+
+		private void InfoValueData_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+				Clipboard.SetText(((System.Windows.Documents.Run)e.OriginalSource).Text);
 		}
 	}
 }

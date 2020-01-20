@@ -7,13 +7,12 @@
 		<revision author="XZodia" version="3">Completed</revision>
 		<revision author="Lord Zedd" version="4">Cleaning</revision>
 	</revisions>
-	<float32 name="Radius min" offset="0x0" visible="true" />
-	<float32 name="Radius max" offset="0x4" visible="true" />
+	<rangef name="Radius" offset="0x0" visible="true" />
 	<float32 name="Cutoff Scale" offset="0x8" visible="true" />
-	<bitfield32 name="Flags" offset="0xC" visible="true">
+	<flags32 name="Flags" offset="0xC" visible="true">
 		<bit name="Don't Scale Damage By Distance" index="0" />
 		<bit name="Area Damage Players Only" index="1" />
-	</bitfield32>
+	</flags32>
 	<enum16 name="Side Effect" offset="0x10" visible="true">
 		<option name="None" value="0x0" />
 		<option name="Harmless" value="0x1" />
@@ -35,7 +34,7 @@
 		<option name="Needle" value="0xB" />
 		<option name="Shotgun" value="0xC" />
 	</enum16>
-	<bitfield32 name="Flags" offset="0x14" visible="true">
+	<flags32 name="Flags" offset="0x14" visible="true">
 		<bit name="Does Not Hurt Owner" index="0" />
 		<bit name="Can Cause Headshots" index="1" />
 		<bit name="Pings Resistant Units" index="2" />
@@ -46,17 +45,16 @@
 		<bit name="Causes Flaming Death" index="7" />
 		<bit name="Damage Indicators Always Point Down" index="8" />
 		<bit name="Skips Shields" index="9" />
-		<bit name="Only Hurts One Infection Form" index="11" />
-		<bit name="Unused" index="12" />
-		<bit name="Infection Form Pop" index="13" />
-		<bit name="Ignore Seat Scale For Direct Damage" index="14" />
-		<bit name="Forces Hard Ping" index="15" />
-		<bit name="Does Not Hurt Players" index="16" />
-	</bitfield32>
+		<bit name="Only Hurts One Infection Form" index="10" />
+		<bit name="Obsolete, Was Can Cause Multiplayer Headshots" index="11" />
+		<bit name="Infection Form Pop" index="12" />
+		<bit name="Ignore Seat Scale For Dir. Dmg" index="13" />
+		<bit name="Forces Hard Ping" index="14" />
+		<bit name="Does Not Hurt Players" index="15" />
+	</flags32>
 	<float32 name="Area Of Effect Core Radius" offset="0x18" visible="true" />
 	<float32 name="Damage Lower Bound" offset="0x1C" visible="true" />
-	<float32 name="Damage Upper Bound min" offset="0x20" visible="true" />
-	<float32 name="Damage Upper Bound max" offset="0x24" visible="true" />
+	<rangef name="Damage Upper Bound" offset="0x20" visible="true" />
 	<degree name="Damage Inner Cone Angle" offset="0x28" visible="true" />
 	<degree name="Damage Outter Cone Angle" offset="0x2C" visible="true" />
 	<float32 name="Active Camoflage Damage" offset="0x30" visible="true" />
@@ -70,11 +68,10 @@
 	<stringId name="General Damage" offset="0x50" visible="true" />
 	<stringId name="Specific Damage" offset="0x54" visible="true" />
 	<float32 name="AI Stun Radius" offset="0x58" visible="true" />
-	<float32 name="AI Stun Bounds min" offset="0x5C" visible="true" />
-	<float32 name="AI Stun Bounds max" offset="0x60" visible="true" />
+	<rangef name="AI Stun Bounds" offset="0x5C" visible="true" />
 	<float32 name="Shake Radius" offset="0x64" visible="true" />
 	<float32 name="EMP Radius" offset="0x68" visible="true" />
-	<reflexive name="Player Responses" offset="0x6C" visible="true" entrySize="0x4C">
+	<tagblock name="Player Responses" offset="0x6C" visible="true" elementSize="0x4C">
 		<enum16 name="Response Type" offset="0x0" visible="true">
 			<option name="Shielded" value="0x0" />
 			<option name="Unshielded" value="0x1" />
@@ -109,10 +106,7 @@
 		</enum16>
 		<int16 name="Unknown" offset="0xE" visible="false" />
 		<float32 name="Max Intensity" offset="0x10" visible="true" />
-		<float32 name="Color Alpha" offset="0x14" visible="true" />
-		<float32 name="Color Red" offset="0x18" visible="true" />
-		<float32 name="Color Green" offset="0x1C" visible="true" />
-		<float32 name="Color Blue" offset="0x20" visible="true" />
+		<colorf name="Color" offset="0x14" alpha="true" visible="true" />
 		<comment title="Vibration" />
 		<float32 name="Low Frequency Vibration Duration" offset="0x24" visible="true" />
 		<dataref name="Low Frequency Whore Function" offset="0x28" visible="true" /><!-- lol bungie -->
@@ -122,7 +116,7 @@
 		<stringId name="Effect Name" offset="0x3C" visible="true" />
 		<float32 name="Duration" offset="0x40" visible="true" />
 		<dataref name="Effect Scale Function" offset="0x44" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="Temporary Camera Impulse" />
 	<float32 name="Duration" offset="0x74" visible="true" />
 	<enum16 name="Fade Function" offset="0x78" visible="true">

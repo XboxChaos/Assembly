@@ -4,6 +4,7 @@
 	<revisions>
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="Lord Zedd" version="2">Got most things</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
 	<int16 name="Inc. Text Update Period" offset="0x0" visible="true" />
 	<int16 name="Inc. Text Block Character" offset="0x2" visible="true" />
@@ -11,98 +12,123 @@
 	<float32 name="Projection Plane Distance" offset="0x8" visible="true" />
 	<float32 name="Far Clip Plane Distance" offset="0xC" visible="true" />
 	<tagRef name="Global Strings" offset="0x10" visible="true" />
-	<tagRef name="Damage Type Strings" offset="0x20" visible="true" />
-	<tagRef name="Fireteam Name Strings" offset="0x30" visible="true" />
-	<tagRef name="Fireteam Service Tag Strings" offset="0x40" visible="true" />
+	<tagRef name="Damage Reporting Strings" offset="0x20" visible="true" />
+	<tagRef name="Fire Team Member Name Strings" offset="0x30" visible="true" />
+	<tagRef name="Fire Team Member Service Tag Strings" offset="0x40" visible="true" />
 	<tagRef name="Main Menu Music" offset="0x50" visible="true" />
-	<tagref name="Unknown" offset="0x60" visible="true" />
+	<tagref name="Main Menu Alternate Music" offset="0x60" visible="true" />
 	<int32 name="Music Fade Time" offset="0x70" visible="true" />
-	<colorf name="Color" offset="0x74" visible="true" format="argb" />
-	<colorf name="Text Stroke Color" offset="0x84" visible="true" format="argb" />
-	<reflexive name="Text Colors" offset="0x94" visible="true" entrySize="0x14">
+	<colorf name="Default Text Color" offset="0x74" visible="true" alpha="true" />
+	<colorf name="Default Text Shadow Color" offset="0x84" visible="true" alpha="true" />
+	<comment title="Color Presets">Colors are defined here and used in text widgets throughout the UI. Specify a string_id here and the same one in a text widget. If you don't specify one in a text widget, you'll use the first entry here.</comment>
+	<tagblock name="Color Presets" offset="0x94" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<colorf name="Color" offset="0x4" visible="true" format="argb" />
-	</reflexive>
-	<reflexive name="Player Colors" offset="0xA0" visible="true" entrySize="0x80">
-		<reflexive name="Player Text Color" offset="0x0" visible="true" entrySize="0x10">
-			<colorf name="Color" offset="0x0" visible="true" format="argb" />
-		</reflexive>
-		<reflexive name="Team Text Color" offset="0xC" visible="true" entrySize="0x10">
-			<colorf name="Color" offset="0x0" visible="true" format="argb" />
-		</reflexive>
-		<reflexive name="Player UI Color" offset="0x18" visible="true" entrySize="0x10">
-			<colorf name="Color" offset="0x0" visible="true" format="argb" />
-		</reflexive>
-		<reflexive name="Team UI Color" offset="0x24" visible="true" entrySize="0x10">
-			<colorf name="Color" offset="0x0" visible="true" format="argb" />
-		</reflexive>
-		<colorf name="Color" offset="0x30" visible="true" format="argb" />
-		<colorf name="Color" offset="0x40" visible="true" format="argb" />
-		<colorf name="Color" offset="0x50" visible="true" format="argb" />
-		<colorf name="Color" offset="0x60" visible="true" format="argb" />
-		<colorf name="Color" offset="0x70" visible="true" format="argb" />
-	</reflexive>
-	<int16 name="Unknown" offset="0xAC" visible="false" />
-	<int16 name="Unknown" offset="0xAE" visible="false" />
-	<tagRef name="UI Sounds" offset="0xB0" visible="true" />
-	<reflexive name="Alerts" offset="0xC0" visible="true" entrySize="0x10">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<bitfield8 name="Flags" offset="0x4" visible="true">
-			<bit name="Bit 0" index="0" />
-			<bit name="Bit 1" index="1" />
-			<bit name="Bit 2" index="2" />
-			<bit name="Bit 3" index="3" />
-			<bit name="Bit 4" index="4" />
-			<bit name="Bit 5" index="5" />
-			<bit name="Bit 6" index="6" />
-			<bit name="Bit 7" index="7" />
-		</bitfield8>
-		<int8 name="Unknown" offset="0x5" visible="true" />
-		<int8 name="Icon" offset="0x6" visible="true" />
+		<colorf name="Color" offset="0x4" visible="true" alpha="true" />
+	</tagblock>
+	<tagblock name="Tint Colors" offset="0xA0" visible="true" elementSize="0x80">
+		<tagblock name="Text Player" offset="0x0" visible="true" elementSize="0x10">
+			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
+		</tagblock>
+		<tagblock name="Text Team" offset="0xC" visible="true" elementSize="0x10">
+			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
+		</tagblock>
+		<tagblock name="Bitmap Player" offset="0x18" visible="true" elementSize="0x10">
+			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
+		</tagblock>
+		<tagblock name="Bitmap Team" offset="0x24" visible="true" elementSize="0x10">
+			<colorf name="Color" offset="0x0" visible="true" alpha="true" />
+		</tagblock>
+		<comment title="Affiliation" />
+		<colorf name="Bitmap Friend" offset="0x30" alpha="true" visible="true" />
+		<colorf name="Bitmap Enemy" offset="0x40" alpha="true" visible="true" />
+		<colorf name="Bitmap Neutral" offset="0x50" alpha="true" visible="true" />
+		<comment title="Flood Team Colors" />
+		<colorf name="Bitmap Flood" offset="0x60" alpha="true" visible="true" />
+		<colorf name="Bitmap Spartans" offset="0x70" alpha="true" visible="true" />
+	</tagblock>
+	<int16 name="Primary Emblem Count" offset="0xAC" visible="true" />
+	<int16 name="Secondary Emblem Count" offset="0xAE" visible="true" />
+	<tagRef name="Default Sounds" offset="0xB0" visible="true" />
+	<tagblock name="Alert Descriptions" offset="0xC0" visible="true" elementSize="0x10">
+		<stringid name="Error Name" offset="0x0" visible="true" />
+		<flags8 name="Flags" offset="0x4" visible="true">
+			<bit name="Allow Auto Dismissal" index="0" />
+			<bit name="Show Spinner" index="1" />
+		</flags8>
+		<enum8 name="Error Category" offset="0x5" visible="true">
+			<option name="Default" value="0x0" />
+			<option name="Networking" value="0x1" />
+			<option name="Storage (Reading/Writing Failure)" value="0x2" />
+			<option name="Controller" value="0x3" />
+		</enum8>
+		<enum8 name="Error Icon" offset="0x6" visible="true">
+			<option name="Default Alert" value="0x0" />
+			<option name="Downloading" value="0x1" />
+			<option name="Paused" value="0x2" />
+			<option name="Uploading" value="0x3" />
+			<option name="Completed" value="0x4" />
+		</enum8>
 		<int8 name="Unknown" offset="0x7" visible="false" />
 		<stringid name="Title" offset="0x8" visible="true" />
-		<stringid name="Body" offset="0xC" visible="true" />
-	</reflexive>
-	<reflexive name="Dialogs" offset="0xCC" visible="true" entrySize="0x28">
-		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="true" />
+		<stringid name="Message" offset="0xC" visible="true" />
+	</tagblock>
+	<tagblock name="Dialog Descriptions" offset="0xCC" visible="true" elementSize="0x28">
+		<stringid name="Dialog Name" offset="0x0" visible="true" />
+		<flags16 name="Flags" offset="0x4" visible="true">
+			<bit name="Bit 0" index="0" />
+		</flags16>
 		<int16 name="Unknown" offset="0x6" visible="false" />
 		<stringid name="Title" offset="0x8" visible="true" />
-		<stringid name="Body" offset="0xC" visible="true" />
-		<stringid name="Option 1" offset="0x10" visible="true" />
-		<stringid name="Option 2" offset="0x14" visible="true" />
-		<stringid name="Option 3" offset="0x18" visible="true" />
-		<stringid name="Option 4" offset="0x1C" visible="true" />
-		<stringid name="Key Legend" offset="0x20" visible="true" />
-		<enum16 name="Default Option" offset="0x24" visible="true">
-			<option name="Option 1" value="0x0" />
-			<option name="Option 2" value="0x1" />
-			<option name="Option 3" value="0x2" />
-			<option name="Option 4" value="0x3" />
+		<stringid name="Message" offset="0xC" visible="true" />
+		<stringid name="First Item" offset="0x10" visible="true" />
+		<stringid name="Second Item" offset="0x14" visible="true" />
+		<stringid name="Third Item" offset="0x18" visible="true" />
+		<stringid name="Fourth Item" offset="0x1C" visible="true" />
+		<stringid name="Button Key" offset="0x20" visible="true" />
+		<enum16 name="Default Item" offset="0x24" visible="true">
+			<option name="First Item" value="0x0" />
+			<option name="Second Item" value="0x1" />
+			<option name="Third Item" value="0x2" />
+			<option name="Fourth Item" value="0x3" />
 		</enum16>
-		<int16 name="Unknown" offset="0x26" visible="false" />
-	</reflexive>
-	<float32 name="Widescreen Bitmap Scale X" offset="0xD8" visible="true" />
-	<float32 name="Widescreen Bitmap Scale Y" offset="0xDC" visible="true" />
-	<float32 name="Standard Bitmap Scale X" offset="0xE0" visible="true" />
-	<float32 name="Standard Bitmap Scale Y" offset="0xE4" visible="true" />
-	<float32 name="Menu Blur X" offset="0xE8" visible="true" />
-	<float32 name="Menu Blur Y" offset="0xEC" visible="true" />
-	<stringid name="UI Spartan Biped Name" offset="0xF0" visible="true" />
-	<ascii name="UI Spartan AI Squad Name" offset="0xF4" length="0x20" visible="true" />
-	<stringid name="UI Spartan AI Location Name" offset="0x114" visible="true" />
-	<stringid name="UI Elite Biped Name" offset="0x118" visible="true" />
-	<ascii name="UI Elite AI Squad Name" offset="0x11C" length="0x20" visible="true" />
-	<stringid name="UI Elite AI Location Name" offset="0x13C" visible="true" />
-	<stringid name="Roster Spartan Biped Name" offset="0x140" visible="true" />
-	<stringid name="Roster Elite Biped Name" offset="0x144" visible="true" />
-	<int32 name="Single Scroll Speed" offset="0x148" visible="true" />
-	<int32 name="Scroll Speed Transition Wait Time" offset="0x14C" visible="true" />
-	<int32 name="Held Scroll Speed" offset="0x150" visible="true" />
-	<dataref name="Unknown" offset="0x154" visible="true" />
-	<int32 name="Unknown" offset="0x168" visible="false" />
-	<int32 name="Attract Video Idle Wait" offset="0x16C" visible="true" />
-	<undefined name="Unknown" offset="0x170" visible="false" />
-	<undefined name="Unknown" offset="0x174" visible="false" />
-	<undefined name="Unknown" offset="0x178" visible="false" />
+		<enum16 name="B Button Action" offset="0x26" visible="true">
+			<option name="Dismisses Dialog" value="0x0" />
+			<option name="Button Ignored" value="0x1" />
+			<option name="First Item Activates" value="0x2" />
+			<option name="Second Item Activates" value="0x3" />
+			<option name="Third Item Activates" value="0x4" />
+			<option name="Fourth Item Activates" value="0x5" />
+		</enum16>
+	</tagblock>
+	<float32 name="16x9 i" offset="0xD8" visible="true" />
+	<float32 name="16x9 j" offset="0xDC" visible="true" />
+	<float32 name="4x3 i" offset="0xE0" visible="true" />
+	<float32 name="4x3 j" offset="0xE4" visible="true" />
+	<float32 name="Horizontal Blur Factor" offset="0xE8" visible="true" />
+	<float32 name="Vertical Blur Factor" offset="0xEC" visible="true" />
+	<comment title="Appearance Model Names">These specify the name of a scenario-placed biped to be used for the Start Menu Appearance model
+If you want to use a scenario-placed biped (non-AI), enter the biped name in the 'biped name' field
+If you want to use an AI-placed biped, enter the squad name string and starting position string_id</comment>
+	<stringid name="MC Biped Name" offset="0xF0" visible="true" />
+	<ascii name="MC AI Squad Name" offset="0xF4" length="0x20" visible="true" />
+	<stringid name="MC AI Start Position Name" offset="0x114" visible="true" />
+	<stringid name="Elite Biped Name" offset="0x118" visible="true" />
+	<ascii name="Elite AI Squad Name" offset="0x11C" length="0x20" visible="true" />
+	<stringid name="Elite AI Start Position Name" offset="0x13C" visible="true" />
+	<comment title="Player Portrait Model Names">These specify the name of a scenario-placed biped to be used for the Player Portrait Appearance model
+Enter the scenario-placed biped (non-AI) name in the 'spartan biped name' and 'elite biped name' field</comment>
+	<stringid name="Spartan Portrait Biped Name" offset="0x140" visible="true" />
+	<stringid name="Elite Portrait Biped Name" offset="0x144" visible="true" />
+	<comment title="UI Navigation Speed">This controls tabbing around the UI. The tab delay is how fast you move around normally. 
+Tab fast wait is how long the UI waits till using the tab fast delay instead of the tab delay.</comment>
+	<int32 name="Navigation Tab Delay ms" offset="0x148" visible="true" />
+	<int32 name="Navigation Tab Fast Wait ms" offset="0x14C" visible="true" />
+	<int32 name="Navigation Tab Fast Delay ms" offset="0x150" visible="true" />
+	<dataref name="Spinner Tab Speed Function" offset="0x154" visible="true" />
+	<int32 name="Maximum Input Time (X) On The Graph ms" offset="0x168" visible="true" />
+	<int32 name="Attract Mode Delay" offset="0x16C" visible="true" />
+	<tagblock name="PGCR Per Player Tracked Incidents" offset="0x170" visible="true" elementSize="0x8">
+		<stringid name="Incident Name" offset="0x0" visible="true" />
+		<int32 name="Maximum Stat Count" offset="0x4" visible="true" />
+	</tagblock>
 </plugin>

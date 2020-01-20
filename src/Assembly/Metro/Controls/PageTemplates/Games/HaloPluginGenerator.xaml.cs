@@ -33,11 +33,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			DataContext = GeneratorMaps;
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public bool Close()
 		{
 			return !_isWorking;
@@ -64,7 +59,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					fis.Where(
 						fi =>
 							!fi.Name.ToLower().StartsWith("campaign") && !fi.Name.ToLower().StartsWith("shared") &&
-							!fi.Name.ToLower().StartsWith("single_player_shared")))
+							!fi.Name.ToLower().StartsWith("english") && !fi.Name.ToLower().StartsWith("single_player_shared")))
 			{
 				GeneratorMaps.Add(new MapEntry
 				{
@@ -186,7 +181,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				}
 				GenerateSubMaps(mapsToProcess, analyzer, reader, cacheFile);
 
-				var classMaps = new Dictionary<string, MetaMap>();
+				var groupMaps = new Dictionary<string, MetaMap>();
 				foreach (ITag tag in cacheFile.Tags)
 				{
 					if (tag.MetaLocation == null)
@@ -195,15 +190,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 					MetaMap map = tagMaps[tag];
 					EstimateMapSize(map, tag.MetaLocation.AsPointer(), analyzer.GeneratedMemoryMap, 1);
 
-					string magicStr = CharConstant.ToString(tag.Class.Magic);
-					MetaMap oldClassMap;
-					if (classMaps.TryGetValue(magicStr, out oldClassMap))
-						oldClassMap.MergeWith(map);
+					string magicStr = CharConstant.ToString(tag.Group.Magic);
+					MetaMap oldGroupMap;
+					if (groupMaps.TryGetValue(magicStr, out oldGroupMap))
+						oldGroupMap.MergeWith(map);
 					else
-						classMaps[magicStr] = map;
+						groupMaps[magicStr] = map;
 				}
 
-				foreach (var map in classMaps)
+				foreach (var map in groupMaps)
 				{
 					MetaMap globalMap;
 					if (globalMaps.TryGetValue(map.Key, out globalMap))
@@ -212,7 +207,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						globalMaps[map.Key] = map.Value;
 				}
 
-				reader.Close();
+				reader.Dispose();
 
 				worker.ReportProgress(100*(i+1)/(generatorMaps.Count));
 			}
@@ -263,7 +258,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.DataReference:
 							if (offset <= size - 0x14)
 							{
-								writer.VisitDataReference("Unknown", (uint) offset, "bytes", false, 4, 0);
+								writer.VisitDataReference("Unknown", (uint) offset, "bytes", false, 4, 0, "");
 								offset += 0x10;
 								continue;
 							}
@@ -272,22 +267,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 						case MetaValueType.TagReference:
 							if (offset <= size - 0x10)
 							{
-								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0);
+								writer.VisitTagReference("Unknown", (uint) offset, false, true, true, 0, "");
 								offset += 0xC;
 								continue;
 							}
 							break;
 
-						case MetaValueType.Reflexive:
+						case MetaValueType.TagBlock:
 							if (offset <= size - 0xC)
 							{
 								MetaMap subMap = map.GetSubMap(offset);
 								if (subMap != null)
 								{
 									int subMapSize = subMap.GetBestSizeEstimate();
-									writer.EnterReflexive("Unknown", (uint) offset, false, (uint)subMapSize, 4, 0);
+									writer.EnterTagBlock("Unknown", (uint) offset, false, (uint)subMapSize, 4, false, 0, "");
 									WritePlugin(subMap, subMapSize, writer);
-									writer.LeaveReflexive();
+									writer.LeaveTagBlock();
 									offset += 0x8;
 									continue;
 								}
@@ -298,21 +293,21 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 				// Just write an unknown value depending upon how much space we have left
 				if (offset <= size - 4)
-					writer.VisitUndefined("Unknown", (uint) offset, false, 0);
+					writer.VisitUndefined("Unknown", (uint) offset, false, 0, "");
 				else if (offset <= size - 2)
-					writer.VisitInt16("Unknown", (uint) offset, false, 0);
+					writer.VisitInt16("Unknown", (uint) offset, false, 0, "");
 				else
-					writer.VisitInt8("Unknown", (uint) offset, false, 0);
+					writer.VisitInt8("Unknown", (uint) offset, false, 0, "");
 			}
 		}
 
 		private void GenerateSubMaps(Queue<MetaMap> maps, MetaAnalyzer analyzer, IReader reader, ICacheFile cacheFile)
 		{
-			var generatedMaps = new Dictionary<uint, MetaMap>();
+			var generatedMaps = new Dictionary<long, MetaMap>();
 			while (maps.Count > 0)
 			{
 				MetaMap map = maps.Dequeue();
-				foreach (MetaValueGuess guess in map.Guesses.Where(guess => guess.Type == MetaValueType.Reflexive))
+				foreach (MetaValueGuess guess in map.Guesses.Where(guess => guess.Type == MetaValueType.TagBlock))
 				{
 					MetaMap subMap;
 					if (!generatedMaps.TryGetValue(guess.Pointer, out subMap))
@@ -328,7 +323,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		private void EstimateMapSize(MetaMap map, uint mapAddress, MemoryMap memMap, int entryCount)
+		private void EstimateMapSize(MetaMap map, long mapAddress, MemoryMap memMap, int entryCount)
 		{
 			bool alreadyVisited = map.HasSizeEstimates;
 
@@ -340,7 +335,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			foreach (MetaValueGuess guess in map.Guesses)
 			{
-				if (guess.Type != MetaValueType.Reflexive) continue;
+				if (guess.Type != MetaValueType.TagBlock) continue;
 
 				MetaMap subMap = map.GetSubMap(guess.Offset);
 				if (subMap != null)
@@ -352,7 +347,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			foreach (MetaValueGuess guess in map.Guesses)
 			{
-				if (guess.Type != MetaValueType.Reflexive) continue;
+				if (guess.Type != MetaValueType.TagBlock) continue;
 
 				MetaMap subMap = map.GetSubMap(guess.Offset);
 				if (subMap == null) continue;
@@ -370,6 +365,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private KeyValuePair<ICacheFile, EngineDescription> LoadMap(string path, out IReader reader)
 		{
 			reader = new EndianReader(File.OpenRead(path), Endian.BigEndian);
+			reader.SeekTo(0);
+			byte[] headerMagic = reader.ReadBlock(4);
+			reader.Endianness = CacheFileLoader.DetermineCacheFileEndianness(headerMagic);
 			var versionInfo = new CacheFileVersionInfo(reader);
 			EngineDescription buildInfo =
 				App.AssemblyStorage.AssemblySettings.DefaultDatabase.FindEngineByVersion(versionInfo.BuildString);

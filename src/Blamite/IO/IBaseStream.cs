@@ -47,10 +47,5 @@ namespace Blamite.IO
 		/// </summary>
 		/// <param name="count">The number of bytes to skip.</param>
 		void Skip(long count);
-
-		/// <summary>
-		///     Closes the stream, releasing any I/O resources it has acquired.
-		/// </summary>
-		void Close();
 	}
 }

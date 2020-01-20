@@ -10,10 +10,10 @@ namespace Assembly.Metro.Dialogs
 		/// <summary>
 		///     Show the Plugin Revision Viewer Window
 		/// </summary>
-		public static void Show(IList<PluginRevision> revisions, string pluginClass)
+		public static void Show(IList<PluginRevision> revisions, string pluginGroup)
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
-			var revisionViewer = new PluginRevisionViewer(revisions, pluginClass)
+			var revisionViewer = new PluginRevisionViewer(revisions, pluginGroup)
 			{
 				Owner = App.AssemblyStorage.AssemblySettings.HomeWindow,
 				WindowStartupLocation = WindowStartupLocation.CenterOwner

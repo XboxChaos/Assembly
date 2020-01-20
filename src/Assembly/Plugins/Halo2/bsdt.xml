@@ -9,7 +9,7 @@
 	<float32 name="Maximum Vitality" offset="0x0" visible="true" />
 	<tagRef name="Effect" offset="0x4" visible="true" />
 	<tagRef name="Sound" offset="0xC" visible="true" />
-	<reflexive name="Particle Effects" offset="0x14" visible="true" entrySize="0x38">
+	<tagblock name="Particle Effects" offset="0x14" visible="true" elementSize="0x38">
 		<tagRef name="Particle" offset="0x0" visible="true" />
 		<int32 name="Location" offset="0x8" visible="true" />
 		<enum16 name="Coordinate System" offset="0xC" visible="true">
@@ -35,7 +35,7 @@
 			<option name="Both First And Third" value="0x3" />
 		</enum16>
 		<int16 name="Sort Bias" offset="0x14" visible="true" />
-		<bitfield16 name="Flags" offset="0x16" visible="true">
+		<flags16 name="Flags" offset="0x16" visible="true">
 			<bit name="Glow" index="0" />
 			<bit name="Cinematics" index="1" />
 			<bit name="Looping Particle" index="2" />
@@ -46,16 +46,16 @@
 			<bit name="Spread Between Ticks" index="7" />
 			<bit name="Persistent Particle" index="8" />
 			<bit name="Expensive Visibility" index="9" />
-		</bitfield16>
+		</flags16>
 		<float32 name="LOD In Distance" offset="0x18" visible="true" />
 		<float32 name="LOD Feather In Delta" offset="0x1C" visible="true" />
 		<float32 name="Unknown" offset="0x20" visible="false" />
 		<float32 name="LOD Out Distance" offset="0x24" visible="true" />
 		<float32 name="LOD Feather Out Delta" offset="0x28" visible="true" />
 		<float32 name="Unknown" offset="0x2C" visible="false" />
-		<reflexive name="Emitters" offset="0x30" visible="true" entrySize="0xB8">
+		<tagblock name="Emitters" offset="0x30" visible="true" elementSize="0xB8">
 			<tagRef name="Particle Physics" offset="0x0" visible="true" />
-			<comment title="Particle Emission Rate"/>
+			<comment title="Particle Emission Rate" />
 			<enum16 name="Input Variable" offset="0x8" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -119,8 +119,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x10" visible="true" />
-
-			<comment title="Particle Lifespan"/>
+			<comment title="Particle Lifespan" />
 			<enum16 name="Input Variable" offset="0x18" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -184,8 +183,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x20" visible="true" />
-			
-			<comment title="Particle Velocity"/>
+			<comment title="Particle Velocity" />
 			<enum16 name="Input Variable" offset="0x28" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -249,8 +247,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x30" visible="true" />
-			
-			<comment title="Particle Angular Velocity"/>
+			<comment title="Particle Angular Velocity" />
 			<enum16 name="Input Variable" offset="0x38" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -314,8 +311,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x40" visible="true" />
-			
-			<comment title="Particle Size"/>
+			<comment title="Particle Size" />
 			<enum16 name="Input Variable" offset="0x48" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -379,8 +375,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x50" visible="true" />
-			
-			<comment title="Particle Tint"/>
+			<comment title="Particle Tint" />
 			<enum16 name="Input Variable" offset="0x58" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -444,8 +439,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x60" visible="true" />
-			
-			<comment title="Particle Alpha"/>
+			<comment title="Particle Alpha" />
 			<enum16 name="Input Variable" offset="0x68" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -509,8 +503,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x70" visible="true" />
-			
-			<comment title="Emission Settings"/>
+			<comment title="Emission Settings" />
 			<enum32 name="Emission Shape" offset="0x78" visible="true">
 				<option name="Sprayer" value="0x0" />
 				<option name="Disc" value="0x1" />
@@ -523,8 +516,7 @@
 				<option name="Debris" value="0x8" />
 				<option name="Line" value="0x9" />
 			</enum32>
-			
-			<comment title="Emission Radius"/>
+			<comment title="Emission Radius" />
 			<enum16 name="Input Variable" offset="0x7C" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -588,8 +580,7 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x84" visible="true" />
-			
-			<comment title="Emission Angle"/>
+			<comment title="Emission Angle" />
 			<enum16 name="Input Variable" offset="0x8C" visible="true">
 				<option name="Particle Age" value="0x0" />
 				<option name="Particle Emit Time" value="0x1" />
@@ -653,7 +644,6 @@
 				<option name="Location Random" value="0x10" />
 			</enum16>
 			<dataref name="Function" offset="0x94" visible="true" />
-			
 			<float32 name="Translational Offset x" offset="0x9C" visible="true" />
 			<float32 name="Translational Offset y" offset="0xA0" visible="true" />
 			<float32 name="Translational Offset z" offset="0xA4" visible="true" />
@@ -661,7 +651,7 @@
 			<degree name="Relative Direction p" offset="0xAC" visible="true" />
 			<int32 name="Unknown" offset="0xB0" visible="false" />
 			<int32 name="Unknown" offset="0xB4" visible="false" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 	<float32 name="Particle Density" offset="0x1C" visible="true" />
 </plugin>

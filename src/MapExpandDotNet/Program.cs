@@ -99,7 +99,7 @@ namespace MapExpandDotNet
 			Console.WriteLine("Adjusting the header...");
 
 			cacheFile.SaveChanges(stream);
-			stream.Close();
+			stream.Dispose();
 
 			Console.WriteLine();
 

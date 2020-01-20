@@ -54,10 +54,10 @@
 		public ScriptObject[] AISquads { get; set; }
 
 		/// <summary>
-		///     Gets or sets the reflexive to read AI squad single locations from.
+		///     Gets or sets the block to read AI squad single locations from.
 		/// </summary>
-		/// <value>The reflexive to read AI squad single locations from.</value>
-		public ScriptObjectReflexive AISquadSingleLocations { get; set; }
+		/// <value>The block to read AI squad single locations from.</value>
+		public ScriptObjectTagBlock AISquadSingleLocations { get; set; }
 
 		/// <summary>
 		///     Gets or sets available AI objectives.
@@ -66,10 +66,10 @@
 		public ScriptObject[] AIObjectives { get; set; }
 
 		/// <summary>
-		///     Gets or sets the reflexive to read AI object waves from.
+		///     Gets or sets the block to read AI object waves from.
 		/// </summary>
-		/// <value>The reflexive to read AI object waves from.</value>
-		public ScriptObjectReflexive AIObjectiveRoles { get; set; }
+		/// <value>The block to read AI object waves from.</value>
+		public ScriptObjectTagBlock AIObjectWaves { get; set; }
 
 		/// <summary>
 		///     Gets or sets available starting profiles.
@@ -101,11 +101,11 @@
 		/// <value>Available point sets.</value>
 		public ScriptObject[] PointSets { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the reflexive to read point set points from.
-        /// </summary>
-        /// <value>The reflexive to read point set points from.</value>
-        public ScriptObjectReflexive PointSetPoints { get; set; }
+		/// <summary>
+		///     Gets or sets the tag block to read point set points from.
+		/// </summary>
+		/// <value>The block to read point set points from.</value>
+		public ScriptObjectTagBlock PointSetPoints { get; set; }
 
 
         /// <summary>

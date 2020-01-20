@@ -6,9 +6,9 @@
 		<revision author="Lord Zedd" version="2">Updated and copypasted.</revision>
 	</revisions>
 	<undefined name="Unknown" offset="0x0" visible="false" />
-	<reflexive name="Text Widgets" offset="0x4" visible="true" entrySize="0x4C">
+	<tagblock name="Text Widgets" offset="0x4" visible="true" elementSize="0x4C">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -41,7 +41,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -57,12 +57,24 @@
 		<stringid name="Data Source Name" offset="0x3C" visible="true" />
 		<stringId name="Text String" offset="0x40" visible="true" />
 		<stringId name="Text Color" offset="0x44" visible="true" />
-		<int16 name="Text Font" offset="0x48" visible="true" />
+		<enum16 name="Font" offset="0x48" visible="true">
+			<option name="Fixedsys, 9pt" value="0x0" />
+			<option name="Conduit, 14pt" value="0x1" />
+			<option name="Conduit, 32pt" value="0x2" />
+			<option name="Agency, 32pt" value="0x3" />
+			<option name="Conduit, 23pt" value="0x4" />
+			<option name="Agency, 16pt" value="0x5" />
+			<option name="Conduit, 18pt" value="0x6" />
+			<option name="Agency, 18pt" value="0x7" />
+			<option name="Conduit, 18pt" value="0x8" />
+			<option name="Conduit, 16pt" value="0x9" />
+			<option name="Agency, 23pt" value="0xA" />
+		</enum16>
 		<int16 name="Unknown" offset="0x4A" visible="false" />
-	</reflexive>
-	<reflexive name="Bitmap Widgets" offset="0x10" visible="true" entrySize="0x6C">
+	</tagblock>
+	<tagblock name="Bitmap Widgets" offset="0x10" visible="true" elementSize="0x6C">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -95,7 +107,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Layer" offset="0x1A" visible="true" />
@@ -124,17 +136,16 @@
 			<option name="Inverted Alpha" value="0xA" />
 			<option name="unknown" value="0xB" />
 			<option name="unknown" value="0xC" />
-			<option name="unknown" value="0xD" />
 		</enum16>
 		<int16 name="Unknown" offset="0x5E" visible="false" />
 		<int16 name="Sprite Index" offset="0x60" visible="true" />
 		<int16 name="Unknown" offset="0x62" visible="false" />
 		<stringid name="Data Source Name" offset="0x64" visible="true" />
 		<stringid name="Sprite Data Source Name" offset="0x68" visible="true" />
-	</reflexive>
-	<reflexive name="Model Widgets" offset="0x1C" visible="true" entrySize="0x94">
+	</tagblock>
+	<tagblock name="Model Widgets" offset="0x1C" visible="true" elementSize="0x94">
 		<tagRef name="Parent" offset="0x0" visible="true" />
-		<bitfield32 name="Flags" offset="0x10" visible="true">
+		<flags32 name="Flags" offset="0x10" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -167,7 +178,7 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<stringid name="Name" offset="0x14" visible="true" />
 		<int16 name="Unknown" offset="0x18" visible="false" />
 		<int16 name="Unknown" offset="0x1A" visible="false" />
@@ -180,7 +191,7 @@
 		<int16 name="Standard Y Bounds max" offset="0x28" visible="true" />
 		<int16 name="Standard X Bounds max" offset="0x2A" visible="true" />
 		<tagRef name="Animation" offset="0x2C" visible="true" />
-		<reflexive name="Unknown" offset="0x3C" visible="true" entrySize="0xA0">
+		<tagblock name="Unknown" offset="0x3C" visible="true" elementSize="0xA0">
 			<stringid name="Biped" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -206,9 +217,9 @@
 			<undefined name="Unknown" offset="0x58" visible="false" />
 			<undefined name="Unknown" offset="0x5C" visible="false" />
 			<undefined name="Unknown" offset="0x60" visible="false" />
-			<reflexive name="Unknown" offset="0x64" visible="false" entrySize="0x14">
+			<tagblock name="Unknown" offset="0x64" visible="false" elementSize="0x14">
 				<dataRef name="Unknown" offset="0x0" visible="false" />
-			</reflexive>
+			</tagblock>
 			<undefined name="Unknown" offset="0x70" visible="false" />
 			<undefined name="Unknown" offset="0x74" visible="false" />
 			<degree name="Unknown" offset="0x78" visible="false" />
@@ -218,7 +229,7 @@
 			<undefined name="Unknown" offset="0x88" visible="false" />
 			<tagRef name="Unknown" offset="0x8C" visible="true" />
 			<undefined name="Unknown" offset="0x9C" visible="false" />
-		</reflexive>
+		</tagblock>
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
 		<undefined name="Unknown" offset="0x50" visible="false" />
@@ -226,9 +237,9 @@
 		<undefined name="Unknown" offset="0x58" visible="false" />
 		<undefined name="Unknown" offset="0x5C" visible="false" />
 		<undefined name="Unknown" offset="0x60" visible="false" />
-		<reflexive name="Unknown" offset="0x64" visible="false" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x64" visible="false" elementSize="0x14">
 			<dataRef name="Unknown" offset="0x0" visible="false" />
-		</reflexive>
+		</tagblock>
 		<int16 name="Unknown" offset="0x70" visible="false" />
 		<int16 name="Unknown" offset="0x72" visible="false" />
 		<int16 name="Unknown" offset="0x74" visible="false" />
@@ -241,12 +252,12 @@
 		<int16 name="Unknown" offset="0x82" visible="false" />
 		<int16 name="Unknown" offset="0x84" visible="false" />
 		<int16 name="Unknown" offset="0x86" visible="false" />
-		<reflexive name="Unknown" offset="0x88" visible="false" entrySize="0x14">
+		<tagblock name="Unknown" offset="0x88" visible="false" elementSize="0x14">
 			<stringid name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
 			<undefined name="Unknown" offset="0x10" visible="false" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 </plugin>

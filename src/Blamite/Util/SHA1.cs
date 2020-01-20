@@ -1,10 +1,8 @@
-﻿using System.Security.Cryptography;
-
-namespace Blamite.Util
+﻿namespace Blamite.Util
 {
 	public static class SHA1
 	{
-		private static readonly SHA1CryptoServiceProvider _sha1 = new SHA1CryptoServiceProvider();
+		private static readonly System.Security.Cryptography.SHA1 _sha1 = System.Security.Cryptography.SHA1.Create();
 
 		public static byte[] Transform(byte[] data)
 		{

@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents.FlagsValue"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
+             mc:Ignorable="d" Width="650" MinHeight="28" MaxHeight="146" HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
+		<Style x:Key="BitfieldItemStyle" TargetType="{x:Type ListBoxItem}">
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="Height" Value="17" />
+			<Setter Property="HorizontalAlignment" Value="Stretch" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ListBoxItem}">
+						<Grid>
+							<Border x:Name="BorderOutline" BorderThickness="1,1,1,1" />
+							<Border x:Name="BorderInline" BorderThickness="0" />
+							<Grid Background="Black" Opacity="0" />
+							<ContentPresenter VerticalAlignment="Center" />
+						</Grid>
+						<ControlTemplate.Triggers>
+							<MultiTrigger>
+								<MultiTrigger.Conditions>
+									<Condition Property="IsMouseOver" Value="True" />
+									<Condition Property="IsSelected" Value="False" />
+								</MultiTrigger.Conditions>
+								<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+								<Setter Property="Opacity" Value="0.8" TargetName="BorderOutline" />
+								<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+								<Setter Property="Opacity" Value="0.2" TargetName="BorderInline" />
+							</MultiTrigger>
+							<Trigger Property="IsSelected" Value="True">
+								<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrush}" TargetName="BorderOutline" />
+								<Setter Property="Background" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="BorderInline" />
+								<Setter Property="Opacity" Value="0.4" TargetName="BorderInline" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="100"/>
+		</Grid.ColumnDefinitions>
+
+		<DockPanel Grid.Column="0" Height="28" VerticalAlignment="Top" Background="Transparent">
+			<DockPanel.ToolTip>
+				<StackPanel>
+					<TextBlock Text="{Binding Name}" />
+					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				</StackPanel>
+			</DockPanel.ToolTip>
+			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
+					   VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
+			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
+			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+			           TextTrimming="CharacterEllipsis" />
+		</DockPanel>
+		<ListBox Grid.Column="1" x:Name="bitfieldEntries" ItemsSource="{Binding Bits}"
+				 ScrollViewer.CanContentScroll="True" Margin="0,3,0,3" Padding="0" VerticalContentAlignment="Center"
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+				 Background="{x:Null}" BorderBrush="#FF3C3C3C" Foreground="{x:Null}"
+				 ItemContainerStyle="{StaticResource BitfieldItemStyle}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<CheckBox Grid.Column="0" x:Name="cbBitChecked" IsChecked="{Binding IsSet}" Margin="2,0,0,0" VerticalAlignment="Center"
+						          VerticalContentAlignment="Center" HorizontalAlignment="Stretch" FontSize="12">
+						<CheckBox.ToolTip>
+							<StackPanel>
+								<TextBlock Text="{Binding Name}" />
+								<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+							</StackPanel>
+						</CheckBox.ToolTip>
+						<DockPanel>
+							<TextBlock DockPanel.Dock="Right" Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontWeight="Bold" Margin="2,0,2,0"
+									   FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" HorizontalAlignment="Right" />
+							<TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="#999" FontFamily="{DynamicResource MetroFontRegular}"  TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" />
+						</DockPanel>
+					</CheckBox>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+			<ListBox.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="Check All" Command="{Binding CheckAllCommand}" />
+					<MenuItem Header="Uncheck All" Command="{Binding UncheckAllCommand}" />
+				</ContextMenu>
+			</ListBox.ContextMenu>
+		</ListBox>
+		<DockPanel Grid.Column="2" Height="28" VerticalAlignment="Top">
+			<TextBlock  x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
+			           VerticalAlignment="Center" Margin="10,0,0,0"/>
+		</DockPanel>
+	</Grid>
+</UserControl>

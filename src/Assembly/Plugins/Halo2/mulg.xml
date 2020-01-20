@@ -9,15 +9,15 @@
 		<revision author="XZodia" version="5">Completed</revision>
 		<revision author="Lord Zedd" version="6">Cleaned up</revision>
 	</revisions>
-	<reflexive name="Universal" offset="0x0" visible="true" entrySize="0x20">
+	<tagblock name="Universal" offset="0x0" visible="true" elementSize="0x20">
 		<tagRef name="Random Player Names" offset="0x0" visible="true" />
 		<tagRef name="Team Names" offset="0x8" visible="true" />
-		<reflexive name="Team Colors" offset="0x10" visible="true" entrySize="0xC">
-			<colorf name="Color" offset="0x0" format="rgb" visible="true" />
-		</reflexive>
+		<tagblock name="Team Colors" offset="0x10" visible="true" elementSize="0xC">
+			<colorf name="Color" offset="0x0" alpha="false" visible="true" />
+		</tagblock>
 		<tagRef name="Multiplayer Text" offset="0x18" visible="true" />
-	</reflexive>
-	<reflexive name="Runtime" offset="0x8" visible="true" entrySize="0x568">
+	</tagblock>
+	<tagblock name="Runtime" offset="0x8" visible="true" elementSize="0x568">
 		<tagRef name="Flag" offset="0x0" visible="true" />
 		<tagRef name="Ball" offset="0x8" visible="true" />
 		<tagRef name="Unit" offset="0x10" visible="true" />
@@ -31,42 +31,42 @@
 		<tagRef name="Unknown" offset="0x50" visible="true" />
 		<tagRef name="Unknown" offset="0x58" visible="true" />
 		<tagRef name="Unknown" offset="0x60" visible="true" />
-		<reflexive name="Weapons" offset="0x68" visible="true" entrySize="0x8">
+		<tagblock name="Weapons" offset="0x68" visible="true" elementSize="0x8">
 			<tagRef name="Weapon" offset="0x0" visible="true" />
-		</reflexive>
-		<reflexive name="Vehicles" offset="0x70" visible="true" entrySize="0x8">
+		</tagblock>
+		<tagblock name="Vehicles" offset="0x70" visible="true" elementSize="0x8">
 			<tagRef name="Vehicle" offset="0x0" visible="true" />
-		</reflexive>
-		<reflexive name="Grenades" offset="0x78" visible="true" entrySize="0x8">
+		</tagblock>
+		<tagblock name="Grenades" offset="0x78" visible="true" elementSize="0x8">
 			<tagRef name="Weapon" offset="0x0" visible="true" />
-		</reflexive>
-		<reflexive name="Powerups" offset="0x80" visible="true" entrySize="0x8">
+		</tagblock>
+		<tagblock name="Powerups" offset="0x80" visible="true" elementSize="0x8">
 			<tagRef name="Weapon" offset="0x0" visible="true" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="In Game Text" offset="0x88" visible="true" />
-		<reflexive name="Sounds" offset="0x90" visible="true" entrySize="0x8">
+		<tagblock name="Sounds" offset="0x90" visible="true" elementSize="0x8">
 			<tagRef name="Sound" offset="0x0" visible="true" />
-		</reflexive>
-		<reflexive name="General Events" offset="0x98" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+		</tagblock>
+		<tagblock name="General Events" offset="0x98" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Kill" value="0x0" />
@@ -74,8 +74,8 @@
 				<option name="Kill Teammate" value="0x2" />
 				<option name="Victory" value="0x3" />
 				<option name="Team Victory" value="0x4" />
-				<option name="unused1" value="0x5" />
-				<option name="unused2" value="0x6" />
+				<option name="Unknown" value="0x5" />
+				<option name="Unknown" value="0x6" />
 				<option name="1 Min To Win" value="0x7" />
 				<option name="Team 1 Min To Win" value="0x8" />
 				<option name="30 Secs To Win" value="0x9" />
@@ -154,9 +154,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -167,11 +167,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -182,28 +187,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Flavor Events" offset="0xA0" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Flavor Events" offset="0xA0" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Double Kill" value="0x0" />
@@ -255,9 +260,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -268,11 +273,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -283,28 +293,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Slayer Events" offset="0xA8" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Slayer Events" offset="0xA8" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -345,9 +355,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -358,11 +368,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -373,28 +388,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="CTF Events" offset="0xB0" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="CTF Events" offset="0xB0" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -447,9 +462,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -460,11 +475,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -475,28 +495,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Oddball Events" offset="0xB8" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Oddball Events" offset="0xB8" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -541,9 +561,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -554,11 +574,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -569,30 +594,30 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<undefined name="Null Block" offset="0xC0" visible="false" />
-		<undefined name="Null Block" offset="0xC4" visible="false" />
-		<reflexive name="King Of The Hill Events" offset="0xC8" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<uint32 name="Null Block" offset="0xC0" visible="false" />
+		<uint32 name="Null Block" offset="0xC4" visible="false" />
+		<tagblock name="King Of The Hill Events" offset="0xC8" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -638,9 +663,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -651,11 +676,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -666,30 +696,30 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<undefined name="Null Block" offset="0xD0" visible="false" />
-		<undefined name="Null Block" offset="0xD4" visible="false" />
-		<reflexive name="Juggernaut Events" offset="0xD8" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<uint32 name="Null Block" offset="0xD0" visible="false" />
+		<uint32 name="Null Block" offset="0xD4" visible="false" />
+		<tagblock name="Juggernaut Events" offset="0xD8" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -731,9 +761,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -744,11 +774,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -759,28 +794,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Territories Events" offset="0xE0" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Territories Events" offset="0xE0" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -826,9 +861,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -839,11 +874,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -854,28 +894,28 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Assualt Events" offset="0xE8" visible="true" entrySize="0xA8">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Assualt Events" offset="0xE8" visible="true" elementSize="0xA8">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Quantity Message" index="0" />
-			</bitfield16>
+			</flags16>
 			<enum16 name="Type" offset="0x2" visible="true">
 				<option name="General" value="0x0" />
 				<option name="Flavor" value="0x1" />
 				<option name="Slayer" value="0x2" />
 				<option name="Capture the Flag" value="0x3" />
 				<option name="Oddball" value="0x4" />
-				<option name="Unused" value="0x5" />
+				<option name="Unknown" value="0x5" />
 				<option name="King of the Hill" value="0x6" />
-				<option name="Unused" value="0x7" />
+				<option name="Unknown" value="0x7" />
 				<option name="Juggernaut" value="0x8" />
 				<option name="Territories" value="0x9" />
 				<option name="Assault" value="0xA" />
-				<option name="Unused" value="0xB" />
-				<option name="Unused" value="0xC" />
-				<option name="Unused" value="0xD" />
-				<option name="Unused" value="0xE" />
+				<option name="Unknown" value="0xB" />
+				<option name="Unknown" value="0xC" />
+				<option name="Unknown" value="0xD" />
+				<option name="Unknown" value="0xE" />
 			</enum16>
 			<enum16 name="Event" offset="0x4" visible="true">
 				<option name="Game Start" value="0x0" />
@@ -931,9 +971,9 @@
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<float32 name="Sound Delay (Announcer Only)" offset="0x3C" visible="true" />
-			<bitfield16 name="Sound Flags" offset="0x40" visible="true">
+			<flags16 name="Sound Flags" offset="0x40" visible="true">
 				<bit name="Announcer Sound" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x42" visible="false" />
 			<tagRef name="Sound" offset="0x44" visible="true" />
 			<tagRef name="Japanese Sound" offset="0x4C" visible="true" />
@@ -944,11 +984,16 @@
 			<tagRef name="Korean Sound" offset="0x74" visible="true" />
 			<tagRef name="Chinese Sound" offset="0x7C" visible="true" />
 			<tagRef name="Portuguese Sound" offset="0x84" visible="true" />
-			<reflexive name="Sound Permutations" offset="0x8C" visible="true" entrySize="0x50">
-				<bitfield16 name="Sound Flags" offset="0x0" visible="true">
+			<undefined name="Unknown" offset="0x8C" visible="false" />
+			<undefined name="Unknown" offset="0x90" visible="false" />
+			<undefined name="Unknown" offset="0x94" visible="false" />
+			<undefined name="Unknown" offset="0x98" visible="false" />
+			<undefined name="Unknown" offset="0x9C" visible="false" />
+			<tagblock name="Sound Permutations" offset="0xA0" visible="true" elementSize="0x50">
+				<flags16 name="Sound Flags" offset="0x0" visible="true">
 					<bit name="Announcer Sound" index="0" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0x42" visible="false" />
+				</flags16>
+				<int16 name="Unknown" offset="0x2" visible="false" />
 				<tagRef name="English Sound" offset="0x4" visible="true" />
 				<tagRef name="Japanese Sound" offset="0xC" visible="true" />
 				<tagRef name="German Sound" offset="0x14" visible="true" />
@@ -959,16 +1004,16 @@
 				<tagRef name="Chinese Sound" offset="0x3C" visible="true" />
 				<tagRef name="Portuguese Sound" offset="0x44" visible="true" />
 				<float32 name="Probability" offset="0x4C" visible="true" />
-			</reflexive>
-		</reflexive>
-		<undefined name="Null Block" offset="0xF0" visible="false" />
-		<undefined name="Null Block" offset="0xF4" visible="false" />
-		<undefined name="Null Block" offset="0xF8" visible="false" />
-		<undefined name="Null Block" offset="0xFC" visible="false" />
-		<undefined name="Null Block" offset="0x100" visible="false" />
-		<undefined name="Null Block" offset="0x104" visible="false" />
-		<undefined name="Null Block" offset="0x108" visible="false" />
-		<undefined name="Null Block" offset="0x10C" visible="false" />
+			</tagblock>
+		</tagblock>
+		<uint32 name="Null Block" offset="0xF0" visible="false" />
+		<uint32 name="Null Block" offset="0xF4" visible="false" />
+		<uint32 name="Null Block" offset="0xF8" visible="false" />
+		<uint32 name="Null Block" offset="0xFC" visible="false" />
+		<uint32 name="Null Block" offset="0x100" visible="false" />
+		<uint32 name="Null Block" offset="0x104" visible="false" />
+		<uint32 name="Null Block" offset="0x108" visible="false" />
+		<uint32 name="Null Block" offset="0x10C" visible="false" />
 		<tagRef name="Default Item Collection 1" offset="0x110" visible="true" />
 		<tagRef name="Default Item Collection 2" offset="0x118" visible="true" />
 		<int32 name="Default Frag Grenade Count" offset="0x120" visible="true" />
@@ -1231,7 +1276,7 @@
 		<undefined name="Unknown" offset="0x524" visible="false" />
 		<undefined name="Unknown" offset="0x528" visible="false" />
 		<undefined name="Unknown" offset="0x52C" visible="false" />
-		<reflexive name="Multiplayer Constants" offset="0x530" visible="true" entrySize="0x160">
+		<tagblock name="Multiplayer Constants" offset="0x530" visible="true" elementSize="0x160">
 			<float32 name="Maximum Random Spawn Bias" offset="0x0" visible="true" />
 			<float32 name="Teleporter Recharge Time" offset="0x4" visible="true" />
 			<float32 name="Grenade Danger Weight" offset="0x8" visible="true" />
@@ -1316,11 +1361,11 @@
 			<undefined name="Unknown" offset="0x154" visible="false" />
 			<undefined name="Unknown" offset="0x158" visible="false" />
 			<undefined name="Unknown" offset="0x15C" visible="false" />
-		</reflexive>
-		<reflexive name="State Responses" offset="0x538" visible="true" entrySize="0x1C">
-			<bitfield16 name="Flags" offset="0x0" visible="true">
+		</tagblock>
+		<tagblock name="State Responses" offset="0x538" visible="true" elementSize="0x1C">
+			<flags16 name="Flags" offset="0x0" visible="true">
 				<bit name="Bit 0" index="0" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<enum16 name="State" offset="0x4" visible="true">
 				<option name="Waiting For Space To Clear" value="0x0" />
@@ -1357,11 +1402,11 @@
 			<stringId name="Team Message" offset="0xC" visible="true" />
 			<tagRef name="Unknown" offset="0x10" visible="true" />
 			<undefined name="Unknown" offset="0x18" visible="false" />
-		</reflexive>
+		</tagblock>
 		<tagRef name="Scorebard HUD Definition" offset="0x540" visible="true" />
 		<tagRef name="Scorebard Emblem Shader" offset="0x548" visible="true" />
 		<tagRef name="Scorebard Emblem Bitmap" offset="0x550" visible="true" />
 		<tagRef name="Scorebard Dead Emblem Shader" offset="0x558" visible="true" />
 		<tagRef name="Scorebard Dead Emblem Bitmap" offset="0x560" visible="true" />
-	</reflexive>
+	</tagblock>
 </plugin>

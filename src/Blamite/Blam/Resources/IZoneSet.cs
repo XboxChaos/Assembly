@@ -65,5 +65,17 @@
 		/// <param name="tag">The tag to check.</param>
 		/// <returns><c>true</c> if the tag is active, <c>false</c> otherwise.</returns>
 		bool IsTagActive(ITag tag);
+
+		/// <summary>
+		///		Adjusts the length of the resource arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		void ExpandResources(int index);
+
+		/// <summary>
+		///		Adjusts the length of the tag arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		void ExpandTags(int index);
 	}
 }

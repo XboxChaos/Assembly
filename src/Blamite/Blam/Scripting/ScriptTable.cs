@@ -13,6 +13,11 @@ namespace Blamite.Blam.Scripting
 		public List<ScriptGlobal> Globals { get; set; }
 
 		/// <summary>
+		///     Gets or sets the list of local variables in the file.
+		/// </summary>
+		public List<ScriptGlobal> Variables { get; set; }
+
+		/// <summary>
 		///     Gets or sets the list of scripts in the file.
 		/// </summary>
 		public List<Script> Scripts { get; set; }

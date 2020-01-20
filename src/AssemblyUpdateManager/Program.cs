@@ -91,6 +91,16 @@ namespace AssemblyUpdateManager
 				{
 				}
 
+				// Delete assembly.exe.config
+				try
+				{
+					if (File.Exists("Assembly.exe.config"))
+						File.Delete("Assembly.exe.config");
+				}
+				catch
+				{
+				}
+
 				// Delete the meta folder
 				try
 				{

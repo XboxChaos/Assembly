@@ -62,7 +62,7 @@ namespace Blamite.Serialization.Settings
 		{
 			// Vertex tags have the format:
 			// <vertex type="(type index)" name="(vertex name)">(elements)</vertex>
-			int type = XMLUtil.GetNumericAttribute(vertexElement, "type");
+			int type = (int)XMLUtil.GetNumericAttribute(vertexElement, "type");
 			string name = XMLUtil.GetStringAttribute(vertexElement, "name");
 			var result = new VertexLayout(type, name);
 
@@ -76,11 +76,11 @@ namespace Blamite.Serialization.Settings
 			// <value stream="(stream)" offset="(offset)" type="(type)" usage="(usage)" usageIndex="(usage index)" />
 			return (from element in container.Elements("value")
 				select new VertexElementLayout(
-					XMLUtil.GetNumericAttribute(element, "stream"),
-					XMLUtil.GetNumericAttribute(element, "offset"),
+					(int)XMLUtil.GetNumericAttribute(element, "stream"),
+					(int)XMLUtil.GetNumericAttribute(element, "offset"),
 					XMLUtil.GetEnumAttribute<VertexElementType>(element, "type"),
 					XMLUtil.GetEnumAttribute<VertexElementUsage>(element, "usage"),
-					XMLUtil.GetNumericAttribute(element, "usageIndex")));
+					(int)XMLUtil.GetNumericAttribute(element, "usageIndex")));
 		}
 	}
 }

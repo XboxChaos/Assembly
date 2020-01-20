@@ -1,9 +1,12 @@
-﻿using System;
+﻿#if NET45
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using Blamite.Blam;
 using Blamite.IO;
 using Blamite.Native;
+using Blamite.Serialization;
 
 namespace Blamite.RTE.H2Vista
 {
@@ -12,19 +15,22 @@ namespace Blamite.RTE.H2Vista
 	/// </summary>
 	public class H2VistaRTEProvider : IRTEProvider
 	{
+		private readonly EngineDescription _buildInfo;
+
 		/// <summary>
 		///     Constructs a new H2VistaRTEProvider.
 		/// </summary>
 		/// <param name="exeName">The name of the executable to connect to.</param>
-		public H2VistaRTEProvider(string exeName)
+		public H2VistaRTEProvider(EngineDescription engine)
 		{
-			EXEName = exeName;
+			_buildInfo = engine;
+			ExecutableName = _buildInfo.GameExecutable;
 		}
 
 		/// <summary>
 		///     Gets or sets the name of the executable to connect to.
 		/// </summary>
-		public string EXEName { get; set; }
+		public string ExecutableName { get; set; }
 
 		/// <summary>
 		///     The type of connection that the provider will establish.
@@ -43,12 +49,22 @@ namespace Blamite.RTE.H2Vista
 		/// <returns>The stream if it was opened successfully, or null otherwise.</returns>
 		public IStream GetMetaStream(ICacheFile cacheFile)
 		{
+			if (string.IsNullOrEmpty(ExecutableName))
+				throw new InvalidOperationException("No gameExecutable value found in Engines.xml for engine " + _buildInfo.Name + ".");
+			if (_buildInfo.Poking == null)
+				throw new InvalidOperationException("No poking definitions found in Engines.xml for engine " + _buildInfo.Name + ".");
+
 			Process gameProcess = FindGameProcess();
 			if (gameProcess == null)
 				return null;
 
+			string version = gameProcess.MainModule.FileVersionInfo.FileVersion;
+			long pointer = _buildInfo.Poking.RetrievePointer(version);
+			if (pointer == -1)
+				throw new InvalidOperationException("Game version " + version + " does not have a pointer defined in the Formats folder.");
+
 			var gameMemory = new ProcessMemoryStream(gameProcess);
-			var mapInfo = new H2VistaMapPointerReader(gameMemory);
+			var mapInfo = new H2VistaMapPointerReader(gameMemory, pointer);
 
 			long metaAddress;
 			if (cacheFile.Type != CacheFileType.Shared)
@@ -81,8 +97,10 @@ namespace Blamite.RTE.H2Vista
 
 		private Process FindGameProcess()
 		{
-			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(EXEName));
+			Process[] processes = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ExecutableName));
 			return processes.Length > 0 ? processes[0] : null;
 		}
 	}
 }
+
+#endif

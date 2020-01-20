@@ -52,21 +52,32 @@ namespace Blamite.Injection
 						// Resource info
 						tags.AddResource(ReadResource(reader, containerFile.BlockVersion));
 						break;
+
+					case "pdct":
+						// Prediction info
+						tags.AddPrediction(ReadPrediction(reader, containerFile.BlockVersion));
+						break;
 				}
 			}
 		}
 
 		private static DataBlock ReadDataBlock(IReader reader, byte version)
 		{
-			if (version > 6)
+			if (version > 7)
 				throw new InvalidOperationException("Unrecognized \"data\" block version");
 
 			// Block data
 			uint originalAddress = reader.ReadUInt32();
 			int entryCount = (version >= 1) ? reader.ReadInt32() : 1;
 			int align = (version >= 3) ? reader.ReadInt32() : 4;
+			bool sort = false;
+			if (version >= 7)
+			{
+				byte sortval = reader.ReadByte();
+				sort = sortval > 0;
+			}
 			byte[] data = ReadByteArray(reader);
-			var block = new DataBlock(originalAddress, entryCount, align, data);
+			var block = new DataBlock(originalAddress, entryCount, align, sort, data);
 
 			// Address fixups
 			int numAddressFixups = reader.ReadInt32();
@@ -144,6 +155,29 @@ namespace Blamite.Injection
 				}
 			}
 
+			if (version >= 7)
+			{
+				int numInteropFixups = reader.ReadInt32();
+				for (int i = 0; i < numInteropFixups; i++)
+				{
+					uint dataAddress = reader.ReadUInt32();
+					int writeOffset = reader.ReadInt32();
+					int type = reader.ReadInt32();
+					block.InteropFixups.Add(new DataBlockInteropFixup(type, dataAddress, writeOffset));
+				}
+
+				int numEffectFixups = reader.ReadInt32();
+				for (int i = 0; i < numEffectFixups; i++)
+				{
+					int index = reader.ReadInt32();
+					int writeOffset = reader.ReadInt32();
+					int type = reader.ReadInt32();
+					int effectDataSize = reader.ReadInt32();
+					byte[] effectData = reader.ReadBlock(effectDataSize);
+					block.EffectFixups.Add(new DataBlockEffectFixup(type, index, writeOffset, effectData));
+				}
+			}
+
 			return block;
 		}
 
@@ -154,9 +188,9 @@ namespace Blamite.Injection
 
 			var datum = new DatumIndex(reader.ReadUInt32());
 			uint address = reader.ReadUInt32();
-			int tagClass = reader.ReadInt32();
+			int tagGroup = reader.ReadInt32();
 			string name = reader.ReadAscii();
-			return new ExtractedTag(datum, address, tagClass, name);
+			return new ExtractedTag(datum, address, tagGroup, name);
 		}
 
 		private static ResourcePage ReadResourcePage(IReader reader, byte version)
@@ -181,8 +215,8 @@ namespace Blamite.Injection
 			page.Hash2 = ReadByteArray(reader);
 			page.Hash3 = ReadByteArray(reader);
 			page.Unknown1 = reader.ReadInt32();
+			page.AssetCount = reader.ReadInt32();
 			page.Unknown2 = reader.ReadInt32();
-			page.Unknown3 = reader.ReadInt32();
 			return page;
 		}
 
@@ -200,7 +234,7 @@ namespace Blamite.Injection
 
 		private static ExtractedResourceInfo ReadResource(IReader reader, byte version)
 		{
-			if (version != 1)
+			if (version > 2)
 				throw new InvalidOperationException("Unrecognized \"rsrc\" block version");
 
 			var originalIndex = new DatumIndex(reader.ReadUInt32());
@@ -217,14 +251,95 @@ namespace Blamite.Injection
 				resource.Location = new ExtractedResourcePointer();
 				resource.Location.OriginalPrimaryPageIndex = reader.ReadInt32();
 				resource.Location.PrimaryOffset = reader.ReadInt32();
-				resource.Location.PrimaryUnknown = reader.ReadInt32();
+				if (version > 1)
+				{
+					var size = reader.ReadInt32();
+					if (size != -1)
+					{
+						ResourceSize newSize = new ResourceSize();
+						newSize.Size = size;
+						byte partCount = reader.ReadByte();
+						for (int i = 0; i < partCount; i++)
+						{
+							ResourceSizePart newPart = new ResourceSizePart();
+							newPart.Offset = reader.ReadInt32();
+							newPart.Size = reader.ReadInt32();
+							newSize.Parts.Add(newPart);
+						}
+						resource.Location.PrimarySize = newSize;
+					}
+					else
+						resource.Location.PrimarySize = null;
+				}
+				else
+				{
+					resource.Location.PrimarySize = null;
+					reader.Skip(4);
+				}
+					
+
 				resource.Location.OriginalSecondaryPageIndex = reader.ReadInt32();
 				resource.Location.SecondaryOffset = reader.ReadInt32();
-				resource.Location.SecondaryUnknown = reader.ReadInt32();
+				if (version > 1)
+				{
+					var size = reader.ReadInt32();
+					if (size != -1)
+					{
+						ResourceSize newSize = new ResourceSize();
+						newSize.Size = size;
+						byte partCount = reader.ReadByte();
+						for (int i = 0; i < partCount; i++)
+						{
+							ResourceSizePart newPart = new ResourceSizePart();
+							newPart.Offset = reader.ReadInt32();
+							newPart.Size = reader.ReadInt32();
+							newSize.Parts.Add(newPart);
+						}
+						resource.Location.SecondarySize = newSize;
+					}
+					else
+						resource.Location.SecondarySize = null;
+				}
+				else
+				{
+					resource.Location.SecondarySize = null;
+					reader.Skip(4);
+				}
+
+				if (version > 1)
+				{
+					resource.Location.OriginalTertiaryPageIndex = reader.ReadInt32();
+					resource.Location.TertiaryOffset = reader.ReadInt32();
+					var size = reader.ReadInt32();
+					if (size != -1)
+					{
+						ResourceSize newSize = new ResourceSize();
+						newSize.Size = size;
+						byte partCount = reader.ReadByte();
+						for (int i = 0; i < partCount; i++)
+						{
+							ResourceSizePart newPart = new ResourceSizePart();
+							newPart.Offset = reader.ReadInt32();
+							newPart.Size = reader.ReadInt32();
+							newSize.Parts.Add(newPart);
+						}
+						resource.Location.TertiarySize = newSize;
+					}
+					else
+						resource.Location.TertiarySize = null;
+				}
 			}
-			resource.Unknown1 = reader.ReadInt32();
-			resource.Unknown2 = reader.ReadInt32();
-			resource.Unknown3 = reader.ReadInt32();
+			if (version == 1)
+			{
+				reader.BaseStream.Position += 4;
+				resource.ResourceBits = reader.ReadUInt16();
+				reader.BaseStream.Position += 2;
+			}
+			else
+			{
+				resource.ResourceBits = reader.ReadInt32();
+			}
+			resource.BaseDefinitionAddress = reader.ReadInt32();
 
 			int numResourceFixups = reader.ReadInt32();
 			for (int i = 0; i < numResourceFixups; i++)
@@ -245,6 +360,53 @@ namespace Blamite.Injection
 			}
 
 			return resource;
+		}
+
+		private static ExtractedResourcePredictionD ReadPrediction(IReader reader, byte version)
+		{
+			if (version > 0)
+				throw new InvalidOperationException("Unrecognized \"pdct\" block version");
+
+			var prediction = new ExtractedResourcePredictionD();
+
+			prediction.OriginalIndex = reader.ReadInt32();
+			prediction.OriginalTagIndex = new DatumIndex(reader.ReadUInt32());
+
+			prediction.Unknown1 = reader.ReadInt32();
+			prediction.Unknown2 = reader.ReadInt32();
+
+			int cCount = reader.ReadInt32();
+			for (int c = 0; c < cCount; c++)
+			{
+				var expc = new ExtractedResourcePredictionC();
+
+				expc.BEntry = new ExtractedResourcePredictionB();
+
+				int baCount = reader.ReadInt32();
+				for (int a = 0; a < baCount; a++)
+				{
+					ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
+					expa.OriginalResourceSubIndex = reader.ReadInt32();
+					expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
+					expa.OriginalResourceGroup = reader.ReadInt32();
+					expa.OriginalResourceName = reader.ReadAscii();
+					expc.BEntry.AEntries.Add(expa);
+				}
+				prediction.CEntries.Add(expc);
+			}
+
+			int aCount = reader.ReadInt32();
+			for (int a = 0; a < aCount; a++)
+			{
+				ExtractedResourcePredictionA expa = new ExtractedResourcePredictionA();
+				expa.OriginalResourceSubIndex = reader.ReadInt32();
+				expa.OriginalResourceIndex = new DatumIndex(reader.ReadUInt32());
+				expa.OriginalResourceGroup = reader.ReadInt32();
+				expa.OriginalResourceName = reader.ReadAscii();
+				prediction.AEntries.Add(expa);
+			}
+
+			return prediction;
 		}
 
 		private static byte[] ReadByteArray(IReader reader)

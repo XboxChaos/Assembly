@@ -6,30 +6,30 @@ namespace Blamite.Blam.ThirdGen
 	{
 		private readonly int _defaultStartOffset;
 
-		public BasedPointerConverter(uint basePointer, int defaultStartOffset)
+		public BasedPointerConverter(long basePointer, int defaultStartOffset)
 		{
 			BasePointer = basePointer;
 			_defaultStartOffset = defaultStartOffset;
 		}
 
-		public uint BasePointer { get; set; }
+		public long BasePointer { get; set; }
 
-		public int PointerToOffset(uint pointer)
+		public int PointerToOffset(long pointer)
 		{
 			return (int) (pointer - BasePointer + _defaultStartOffset);
 		}
 
-		public int PointerToOffset(uint pointer, int areaStartOffset)
+		public int PointerToOffset(long pointer, int areaStartOffset)
 		{
 			return (int) (pointer - BasePointer + areaStartOffset);
 		}
 
-		public uint OffsetToPointer(int offset)
+		public long OffsetToPointer(int offset)
 		{
 			return (uint) (offset - _defaultStartOffset + BasePointer);
 		}
 
-		public uint OffsetToPointer(int offset, int areaStartOffset)
+		public long OffsetToPointer(int offset, int areaStartOffset)
 		{
 			return (uint) (offset - areaStartOffset + BasePointer);
 		}

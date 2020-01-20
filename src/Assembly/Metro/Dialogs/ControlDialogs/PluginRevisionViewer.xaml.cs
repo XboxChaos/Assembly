@@ -10,18 +10,18 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 	/// </summary>
 	public partial class PluginRevisionViewer
 	{
-		private readonly string _pluginClass;
-		private readonly string _pluginClassDescription;
+		private readonly string _pluginGroup;
+		private readonly string _pluginGroupDescription;
 		private readonly IList<PluginRevision> _revisions = new List<PluginRevision>();
 
-		public PluginRevisionViewer(IList<PluginRevision> revisions, string pluginClass)
+		public PluginRevisionViewer(IList<PluginRevision> revisions, string pluginGroup)
 		{
 			InitializeComponent();
 			DwmDropShadow.DropShadowToWindow(this);
 
 			_revisions = revisions;
-			_pluginClass = pluginClass;
-			_pluginClassDescription = string.Format("Revision history for the {0} plugin:", _pluginClass);
+			_pluginGroup = pluginGroup;
+			_pluginGroupDescription = string.Format("Revision history for the {0} plugin:", _pluginGroup);
 
 			DataContext = this;
 		}
@@ -31,14 +31,14 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 			get { return _revisions; }
 		}
 
-		public string PluginClass
+		public string PluginGroup
 		{
-			get { return _pluginClass; }
+			get { return _pluginGroup; }
 		}
 
-		public string PluginClassDescription
+		public string PluginGroupDescription
 		{
-			get { return _pluginClassDescription; }
+			get { return _pluginGroupDescription; }
 		}
 
 		private void btnActionClose_Click(object sender, RoutedEventArgs e)

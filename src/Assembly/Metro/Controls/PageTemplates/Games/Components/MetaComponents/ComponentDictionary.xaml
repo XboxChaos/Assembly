@@ -23,14 +23,41 @@
 	<DataTemplate DataType="{x:Type types:Float32Data}">
 		<MetaComps:intValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
-	<DataTemplate DataType="{x:Type types:VectorData}">
-		<MetaComps:VectorValue Opacity="{Binding Opacity}" />
+	<DataTemplate DataType="{x:Type types:Plane2Data}">
+		<MetaComps:Plane2Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Plane3Data}">
+		<MetaComps:Plane3Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Vector2Data}">
+		<MetaComps:Multi2Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Vector3Data}">
+		<MetaComps:Multi3Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Vector4Data}">
+		<MetaComps:Multi4Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Point2Data}">
+		<MetaComps:Multi2Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Point3Data}">
+		<MetaComps:Multi3Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:RectangleData}">
+		<MetaComps:Multi4Value Opacity="{Binding Opacity}" />
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type types:DegreeData}">
-		<MetaComps:DegreeValue Opacity="{Binding Opacity}" />
+		<MetaComps:intValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
-	<DataTemplate DataType="{x:Type types:ColourData}">
-		<MetaComps:ColourValue Opacity="{Binding Opacity}" />
+	<DataTemplate DataType="{x:Type types:Degree2Data}">
+		<MetaComps:Multi2Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:Degree3Data}">
+		<MetaComps:Multi3Value Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:ColorData}">
+		<MetaComps:ColorValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type types:StringIDData}">
@@ -43,30 +70,40 @@
 		<MetaComps:AsciiValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type types:DataRef}">
-		<MetaComps:rawBlock Opacity="{Binding Opacity}" />
+		<MetaComps:RawBlock Opacity="{Binding Opacity}" />
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type types:RawData}">
-		<MetaComps:rawBlock Opacity="{Binding Opacity}" />
+		<MetaComps:RawBlock Opacity="{Binding Opacity}" />
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type types:TagRefData}">
-		<MetaComps:tagValue Opacity="{Binding Opacity}" />
+		<MetaComps:TagValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
-	<DataTemplate DataType="{x:Type types:BitfieldData}">
-		<MetaComps:Bitfield Opacity="{Binding Opacity}" />
+	<DataTemplate DataType="{x:Type types:FlagData}">
+		<MetaComps:FlagsValue Opacity="{Binding Opacity}" />
 	</DataTemplate>
 	<DataTemplate DataType="{x:Type types:EnumData}">
 		<MetaComps:Enumeration Opacity="{Binding Opacity}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type types:ReflexiveData}">
-		<MetaComps:MetaChunk HorizontalAlignment="Left" Opacity="{Binding Opacity}" />
+	<DataTemplate DataType="{x:Type types:TagBlockData}">
+		<MetaComps:TagBlock HorizontalAlignment="Left" Opacity="{Binding Opacity}" />
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type types:ShaderRef}">
 		<MetaComps:Shader Opacity="{Binding Opacity}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type types:WrappedReflexiveEntry}">
+	<DataTemplate DataType="{x:Type types:RangeUint16Data}">
+		<MetaComps:RangeValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:RangeFloat32Data}">
+		<MetaComps:RangeValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+	<DataTemplate DataType="{x:Type types:RangeDegreeData}">
+		<MetaComps:RangeValue Opacity="{Binding Opacity}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type types:WrappedTagBlockEntry}">
 		<!-- Moving this into a UserControl causes severe lag for some reason :S -->
 		<Grid>
 			<Border Width="{Binding Width}" HorizontalAlignment="Left" VerticalAlignment="Stretch" BorderBrush="#474747"
@@ -88,10 +125,10 @@
 			                HorizontalAlignment="Left">
 				<ContentControl.Style>
 					<Style TargetType="ContentControl">
-						<Setter Property="Margin" Value="20,0,0,0" />
+						<Setter Property="Margin" Value="10,0,0,0" />
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding IsLast}" Value="True">
-								<Setter Property="Margin" Value="20,0,0,12" />
+								<Setter Property="Margin" Value="10,0,0,12" />
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>

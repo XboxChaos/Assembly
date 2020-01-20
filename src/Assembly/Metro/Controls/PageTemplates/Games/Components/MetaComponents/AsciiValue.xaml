@@ -3,17 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Height="28" Width="580"
-             HorizontalAlignment="Left">
+			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
+             mc:Ignorable="d" Height="28" Width="650" HorizontalAlignment="Left">
+	<UserControl.Resources>
+		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
+	</UserControl.Resources>
 	<Grid>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}" ToolTip="{Binding Path=Name}"
-			           Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="200"/>
+		</Grid.ColumnDefinitions>
+
+		<DockPanel Grid.Column="0" Background="Transparent">
+			<DockPanel.ToolTip>
+				<StackPanel>
+					<TextBlock Text="{Binding Name}" />
+					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				</StackPanel>
+			</DockPanel.ToolTip>
+			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
+					   VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
+			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
+			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
 			           TextTrimming="CharacterEllipsis" />
-			<TextBox x:Name="txtValue" Text="{Binding Path=Value}" MaxLength="{Binding MaxLength}" VerticalAlignment="Center"
-			         Width="250" Padding="0,0,0,0" Margin="20,0,0,0" />
-			<TextBlock x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
-			           VerticalAlignment="Center" Width="150" Margin="20,0,0,0" />
-		</StackPanel>
+		</DockPanel>
+		<TextBox Grid.Column="1" x:Name="txtValue" Text="{Binding Path=Value}" MaxLength="{Binding MaxLength}" VerticalAlignment="Center"
+			         Padding="0,0,0,0" />
+		<TextBlock Grid.Column="2" x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
+			           VerticalAlignment="Center" Margin="10,0,0,0" />
 	</Grid>
 </UserControl>

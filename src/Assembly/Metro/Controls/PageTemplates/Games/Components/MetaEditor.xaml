@@ -8,88 +8,41 @@
              xmlns:MetaData="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData"
 			 xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000" Margin="-5,-5,-5,0" KeyDown="metaEditor_KeyDown">
+             d:DesignHeight="600" d:DesignWidth="1000" KeyDown="metaEditor_KeyDown">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="MetaComponents/ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			<Style x:Key="optionsToggleButton" TargetType="{x:Type ToggleButton}">
-				<Setter Property="Foreground" Value="#FF999999" />
-				<Setter Property="Background" Value="#FF222222" />
-				<Setter Property="BorderBrush" Value="#FF616161" />
-				<Setter Property="BorderThickness" Value="1" />
-				<Setter Property="Padding" Value="0,0,0,0" />
-				<Setter Property="Height" Value="22" />
-				<Setter Property="FontSize" Value="12" />
-				<Setter Property="HorizontalContentAlignment" Value="Center"/>
-				<Setter Property="VerticalContentAlignment" Value="Center"/>
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="{x:Type ToggleButton}">
-							<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
-								Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-								<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
-									ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-									Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-							</Border>
-							<ControlTemplate.Triggers>
-								<!-- Checked Button -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsChecked" Value="true" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#333333" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Mouse Over -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsMouseOver" Value="true" SourceName="border" />
-										<Condition Property="IsPressed" Value="false" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#393939" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Mouse Pressed -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsPressed" Value="true" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#393939" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Disabled -->
-								<Trigger Property="IsEnabled" Value="false">
-									<Setter Property="Background" Value="#FF575757" TargetName="border" />
-									<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
-								</Trigger>
-							</ControlTemplate.Triggers>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
 		</ResourceDictionary>
 	</UserControl.Resources>
     <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static MetaComps:MetaChunk.ReallocateCommand}"
-                        CanExecute="ReallocateCommand_CanExecute"
-                        Executed="ReallocateCommand_Executed"/>
+        <CommandBinding Command="{x:Static MetaComps:TagBlock.ReallocateCommand}"
+                        CanExecute="ReallocateBlockCommand_CanExecute"
+                        Executed="ReallocateBlockCommand_Executed"/>
+		<CommandBinding Command="{x:Static MetaComps:TagBlock.IsolateCommand}"
+                        CanExecute="IsolateBlockCommand_CanExecute"
+                        Executed="IsolateBlockCommand_Executed"/>
+
+		<CommandBinding Command="{x:Static MetaComps:RawBlock.AllocateCommand}"
+                        CanExecute="AllocateDataRefCommand_CanExecute"
+                        Executed="AllocateDataRefCommand_Executed"/>
+        <CommandBinding Command="{x:Static MetaComps:RawBlock.IsolateCommand}"
+                        CanExecute="IsolateDataRefCommand_CanExecute"
+                        Executed="IsolateDataRefCommand_Executed"/>
     </UserControl.CommandBindings>
 	<Grid>
-		<Grid Name="gridSearch" Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-			<Border BorderThickness="0,1,0,1" BorderBrush="#434346" Background="#FF303032">
-				<DockPanel VerticalAlignment="Center">
-					<TextBlock Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="10,0,0,0" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="30"/>
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Name="gridSearch">
+			<Border BorderThickness="0,0,0,1" BorderBrush="#434346" Background="#FF303032">
+				<DockPanel Margin="10,0,0,0">
+					<TextBlock Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"  />
 					<TextBox Name="txtSearch" Margin="10,0,0,0" Width="300" Padding="0,0,13,0" TextChanged="txtSearch_TextChanged_1" />
-					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Height="20" Width="12" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
+					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Width="14" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
 					        Visibility="Hidden" />
 					<Button Name="btnPreviousResult" Margin="5,0,0,0" Content="Previous" Width="64" Click="btnPreviousResult_Click_1"
 					        IsEnabled="False" />
@@ -106,94 +59,71 @@
 				</DockPanel>
 			</Border>
 		</Grid>
-		<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,30,0,30"
+		<Grid Grid.Row="1">
+			<ListBox Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 		         VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Standard"
 		         ScrollViewer.CanContentScroll="True"
-		         Padding="0,7,0,7" SelectionChanged="panelMetaComponents_SelectionChanged_1">
-			<ListBox.Template>
-				<ControlTemplate>
-					<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-						<ItemsPresenter />
-					</ScrollViewer>
-				</ControlTemplate>
-			</ListBox.Template>
-			<ListBox.ItemContainerStyle>
-				<Style TargetType="{x:Type ListBoxItem}">
-					<Setter Property="Template">
-						<Setter.Value>
-							<ControlTemplate>
-								<Grid Background="{TemplateBinding ListBoxItem.Background}">
-									<ContentPresenter Name="PART_Content"
+		         SelectionChanged="panelMetaComponents_SelectionChanged_1">
+				<ListBox.Template>
+					<ControlTemplate>
+						<ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+							<ItemsPresenter />
+						</ScrollViewer>
+					</ControlTemplate>
+				</ListBox.Template>
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate>
+									<Grid Background="{TemplateBinding ListBoxItem.Background}">
+										<ContentPresenter Name="PART_Content"
 									                  Content="{TemplateBinding ContentControl.Content}"
-									                  Margin="20,0,20,0"
+									                  Margin="10,0,10,0"
 									                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
 									                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
 									                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 									                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 									                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-									<Grid.ContextMenu>
-										<ContextMenu Name="metaFieldMenu">
-											<ContextMenu.CommandBindings>
-												<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
+										<Grid.ContextMenu>
+											<ContextMenu Name="metaFieldMenu">
+												<ContextMenu.CommandBindings>
+													<CommandBinding Command="{x:Static local:MetaEditor.ViewValueAsCommand}"
 												                CanExecute="ViewValueAsCommand_CanExecute"
 												                Executed="ViewValueAsCommand_Executed" />
 
-												<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
+													<CommandBinding Command="{x:Static local:MetaEditor.GoToPlugin}"
 												                CanExecute="GoToPlugin_CanExecute"
 												                Executed="GoToPlugin_Executed" />
-											</ContextMenu.CommandBindings>
-											<MenuItem Header="View Value As..." Foreground="White"
+												</ContextMenu.CommandBindings>
+												<MenuItem Header="View Value As..."
 											          Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
-											<MenuItem Header="Go to plugin line..." Foreground="White" Command="{x:Static local:MetaEditor.GoToPlugin}"
+												<MenuItem Header="Go to plugin line..." Command="{x:Static local:MetaEditor.GoToPlugin}"
 											          CommandParameter="{Binding}" />
-										</ContextMenu>
-									</Grid.ContextMenu>
-								</Grid>
-								<ControlTemplate.Triggers>
-									<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
-										<Setter Property="Background" Value="#FF181818" />
-									</DataTrigger>
-								</ControlTemplate.Triggers>
-							</ControlTemplate>
-						</Setter.Value>
-					</Setter>
-				</Style>
-			</ListBox.ItemContainerStyle>
-		</ListBox>
-		<!--<TreeView Name="panelMetaComponents" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,30,0,35"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                  Padding="0,0,0,0">
-            <TreeView.Template>
-                <ControlTemplate>
-                    <ScrollViewer Focusable="False">
-                        <ItemsPresenter />
-                    </ScrollViewer>
-                </ControlTemplate>
-            </TreeView.Template>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
-                                <ContentPresenter Content="{TemplateBinding HeaderedContentControl.Header}"
-                                                  ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
-                                                  ContentStringFormat="{TemplateBinding HeaderedItemsControl.HeaderStringFormat}"
-                                                  ContentSource="Header"
-                                                  Name="PART_Header"
-                                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TreeView.ItemContainerStyle>
-        </TreeView>-->
-		<Grid Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+											</ContextMenu>
+										</Grid.ContextMenu>
+									</Grid>
+									<ControlTemplate.Triggers>
+										<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True">
+											<Setter Property="Background" Value="#FF181818" />
+										</DataTrigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+				<!--<ListBox.LayoutTransform>
+					<ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+				</ListBox.LayoutTransform>-->
+			</ListBox>
+		</Grid>
+		<Grid Grid.Row="2" HorizontalAlignment="Stretch">
 			<Border BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
-				<Grid>
-					<StackPanel Orientation="Horizontal">
+				<DockPanel>
+					<StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="10,0,0,0">
 						<Button x:Name="btnPluginSave" ToolTip="Save the current changes to the cache file. (Ctrl + S)" Content="Save"
-						        Width="50" Margin="10,0,0,0" Click="btnPluginSave_Click" />
+						        Width="50" Click="btnPluginSave_Click" />
 						<xctk:SplitButton Content="Poke" x:Name="sbPluginPoke" Margin="5,0,0,0" Width="60" Click="btnPluginPokeChanged_Click" ToolTip="Pokes current changes to the cache file in memory. Click the arrow for more options.">
 							<xctk:SplitButton.DropDownContent>
 								<StackPanel>
@@ -213,7 +143,7 @@
 						<Button x:Name="btnPluginRevisionViewer"
 						        ToolTip="View who researched the plugin and what they did. (Ctrl + Shift + R)" Content="Revisions"
 						        Width="70" Margin="5,0,0,0" Click="btnPluginRevisionViewer_Click" />
-						<ToggleButton x:Name="btnOptions" Width="75" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource optionsToggleButton}">
+						<ToggleButton x:Name="btnOptions" Width="75" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}">
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="50"/>
@@ -229,13 +159,37 @@
 								<StackPanel>
 									<MenuItem x:Name="cbShowInvisibles" Header="Show Invisibles" IsCheckable="True" Foreground="White" Checked="cbShowInvisibles_Altered" Unchecked="cbShowInvisibles_Altered" ToolTip="Toggles display of plugin elements that aren't visible by default. (Auto Reload)"/>
 									<MenuItem x:Name="cbShowComments" Header="Show Comments" IsCheckable="True" Foreground="White" Checked="cbShowComments_Altered" Unchecked="cbShowComments_Altered" ToolTip="Toggles display of comment plugin elements. (Auto Reload)"/>
-									<MenuItem x:Name="cbShowEnumIndex" Header="Show Enumerator Indices" IsCheckable="True" Foreground="White" Checked="cbShowEnumIndex_Altered" Unchecked="cbShowEnumIndex_Altered" ToolTip="Toggles display of enum option indexes. (Manual Reload)" />
 									<MenuItem x:Name="cbShowInformation" Header="Show Block Information" IsCheckable="True" Foreground="White" Checked="cbShowInformation_Altered" Unchecked="cbShowInformation_Altered" ToolTip="Toggles default display of block information. (Manual Reload)" />
+									<Separator/>
+
+									<StackPanel ToolTip="Changes how enum indices are displayed. (Manual Reload)">
+										<TextBlock Text="Enumerator Indices:" VerticalAlignment="Center" Foreground="#CCC" Margin="30,0,4,0" Style="{DynamicResource GenericTextblock}"/>
+
+										<ComboBox x:Name="cbEnumPrefix" Margin="40,4,4,4" Grid.Column="1" SelectionChanged="cbEnumPrefix_SelectionChanged">
+											<ComboBoxItem Content="Don't Display" />
+											<ComboBoxItem Content="Display As Decimal" />
+											<ComboBoxItem Content="Display As Hexidecimal" />
+										</ComboBox>
+									</StackPanel>
 								</StackPanel>
 							</Border>
 						</Popup>
 					</StackPanel>
-				</Grid>
+
+					<TextBlock DockPanel.Dock="Right" TextAlignment="Right" VerticalAlignment="Center" Style="{DynamicResource GenericTextblock}" SnapsToDevicePixels="True" FontSize="10" Margin="0,0,10,0">
+						<TextBlock.ToolTip>
+							<TextBlock Style="{DynamicResource GenericTextblock}" Foreground="White" Text="Double-Click any value to copy it to the clipboard."/>
+						</TextBlock.ToolTip>
+						<Run x:Name="lblTagName" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="objects/mcc/hek/404notfound" MouseDown="InfoValueData_MouseDown"/>
+						<LineBreak/>
+						<Run Text="Datum Index:"/>
+						<Run x:Name="lblDatum" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+						<Run Text="Memory Address:"/>
+						<Run x:Name="lblAddress" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+						<Run Text="File Offset:"/>
+						<Run x:Name="lblOffset" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Text="xxxxxx" MouseDown="InfoValueData_MouseDown"/>
+					</TextBlock>
+				</DockPanel>
 			</Border>
 		</Grid>
 	</Grid>

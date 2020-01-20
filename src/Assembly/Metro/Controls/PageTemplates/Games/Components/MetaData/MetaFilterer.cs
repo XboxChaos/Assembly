@@ -7,26 +7,26 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		public delegate void FieldHighlighter(MetaField field, bool highlight);
 
-		public delegate void ResultCollector(MetaField foundField, MetaField listField, ReflexiveData parent);
+		public delegate void ResultCollector(MetaField foundField, MetaField listField, TagBlockData parent);
 
-		private readonly ReflexiveFlattener _flattener;
+		private readonly TagBlockFlattener _flattener;
 		private readonly FieldHighlighter _highlighter;
 		private readonly ResultCollector _resultCollector;
 
-		private ReflexiveData _currentReflexive;
+		private TagBlockData _currentTagBlock;
 		private string _filter;
 		private int _highlightLevel; // If greater than zero, then always highlight fields
 		private float? _numberFilter;
 		private MetaField _topLevelField;
 
-		public MetaFilterer(ReflexiveFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
+		public MetaFilterer(TagBlockFlattener flattener, ResultCollector resultCollector, FieldHighlighter highlighter)
 		{
 			_flattener = flattener;
 			_resultCollector = resultCollector;
 			_highlighter = highlighter;
 		}
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 			FilterString(field, field.Name);
 			foreach (var bit in field.Bits)
@@ -92,43 +92,41 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				FilterNumber(field, field.Value);
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
-			if (!FilterString(field, field.Name))
-				FilterString(field, field.Value);
+			FilterString(field, field.Name);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
-			if (!FilterString(field, field.Name))
-				FilterString(field, field.Value);
+			FilterString(field, field.Name);
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitTagBlock(TagBlockData field)
 		{
-			// Don't enter empty reflexives
-			ReflexiveData oldReflexive = _currentReflexive;
-			_currentReflexive = field;
+			// Don't enter empty blocks
+			TagBlockData oldTagBlock = _currentTagBlock;
+			_currentTagBlock = field;
 
 			if (FilterString(field, field.Name) && field.Length > 0)
 			{
 				// Forcibly highlight everything inside it
 				_highlightLevel++;
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 				_highlightLevel--;
 			}
 			else if (field.Length > 0)
 			{
-				_flattener.EnumWrappers(field, ReflexiveFlattener_HandleWrapper);
+				_flattener.EnumWrappers(field, TagBlockFlattener_HandleWrapper);
 			}
 
-			_currentReflexive = oldReflexive;
+			_currentTagBlock = oldTagBlock;
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
-			// Ignore - wrapper handling is done inside VisitReflexive/HandleWrapper to ensure that
-			// closed reflexives aren't skipped over
+			// Ignore - wrapper handling is done inside VisitTagBlock/HandleWrapper to ensure that
+			// closed blocks aren't skipped over
 		}
 
 		public void VisitString(StringData field)
@@ -161,32 +159,192 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public void VisitTagRef(TagRefData field)
 		{
-			if (!FilterString(field, field.Name) && field.Class != null)
+			if (!FilterString(field, field.Name) && field.Group != null)
 			{
-				if (!FilterString(field, field.Class.TagClassMagic) && field.Value != null)
+				if (!FilterString(field, field.Group.TagGroupMagic) && field.Value != null)
 					FilterString(field, field.Value.TagFileName);
 			}
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.X))
+				if (!FilterNumber(field, field.A))
 				{
-					if (!FilterNumber(field, field.Y))
-						FilterNumber(field, field.Z);
+					FilterNumber(field, field.B);
 				}
 			}
 		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+		public void VisitPoint2(Point2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+
 
 		public void VisitDegree(DegreeData field)
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.Degree))
+				if (!FilterNumber(field, field.Value))
 				{
-					FilterNumber(field, field.Degree);
+					FilterNumber(field, field.Value);
+				}
+			}
+		}
+
+		public void VisitDegree2(Degree2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
 				}
 			}
 		}
@@ -195,6 +353,39 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (!FilterString(field, field.Name))
 				FilterString(field, field.DatabasePath);
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Min))
+				{
+					FilterNumber(field, field.Max);
+				}
+			}
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Min))
+				{
+					FilterNumber(field, field.Max);
+				}
+			}
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.Min))
+				{
+					FilterNumber(field, field.Max);
+				}
+			}
 		}
 
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)
@@ -212,10 +403,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		// Passed as the callback to ReflexiveFlattener.EnumWrappers in VisitReflexive
-		private void ReflexiveFlattener_HandleWrapper(WrappedReflexiveEntry wrapper)
+		// Passed as the callback to TagBlockFlattener.EnumWrappers in VisitTagBlock
+		private void TagBlockFlattener_HandleWrapper(WrappedTagBlockEntry wrapper)
 		{
-			_topLevelField = _flattener.GetTopLevelWrapper(_currentReflexive, wrapper);
+			_topLevelField = _flattener.GetTopLevelWrapper(_currentTagBlock, wrapper);
 			_highlighter(wrapper, _highlightLevel > 0);
 			wrapper.WrappedField.Accept(this);
 		}
@@ -245,7 +436,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private void AcceptField(MetaField field)
 		{
 			_highlighter(field, true);
-			_resultCollector(field, _topLevelField, _currentReflexive);
+			_resultCollector(field, _topLevelField, _currentTagBlock);
 		}
 
 		private void RejectField(MetaField field)

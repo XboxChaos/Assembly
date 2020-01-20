@@ -3,27 +3,13 @@
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
 	/// <summary>
-	///     Interaction logic for TrackBar.xaml
+	///     Interaction logic for RangeValue.xaml
 	/// </summary>
-	public partial class TrackBar : UserControl
+	public partial class RangeValue : UserControl
 	{
-		private double large_change;
-		private double maximum;
-		private double minimum;
-		private double small_change;
-
-		public TrackBar()
+		public RangeValue()
 		{
 			InitializeComponent();
-		}
-
-		public void LoadValues(string title, string type, double min, double max, double smallStep, double largeStep)
-		{
-			lblName.ToolTip = lblName.Text = title;
-			minimum = min;
-			maximum = max;
-			small_change = smallStep;
-			large_change = largeStep;
 		}
 	}
 }

@@ -12,6 +12,7 @@ using Blamite.Blam.ThirdGen.Structures;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Util;
 
 namespace Blamite.Blam.ThirdGen
 {
@@ -31,11 +32,18 @@ namespace Blamite.Blam.ThirdGen
 		private IndexedStringIDSource _stringIds;
 		private ThirdGenTagTable _tags;
 		private ThirdGenSimulationDefinitionTable _simulationDefinitions;
+		private ThirdGenPointerExpander _expander;
+		private Endian _endianness;
+		private EffectInterop _effects;
+
+		private bool _zoneOnly = false;
 
 		public ThirdGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
+			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
+			_expander = new ThirdGenPointerExpander((uint)buildInfo.ExpandMagic);
 			Allocator = new MetaAllocator(this, 0x10000);
 			Load(reader, buildString);
 		}
@@ -52,6 +60,8 @@ namespace Blamite.Blam.ThirdGen
 			_stringIds.SaveChanges(stream);
 			if (_simulationDefinitions != null)
 				_simulationDefinitions.SaveChanges(stream);
+			if (_effects != null)
+				_effects.SaveChanges(stream);
 			WriteHeader(stream);
 			WriteLanguageInfo(stream);
 		}
@@ -61,7 +71,7 @@ namespace Blamite.Blam.ThirdGen
 			get { return _header.HeaderSize; }
 		}
 
-		public uint FileSize
+		public long FileSize
 		{
 			get { return _header.FileSize; }
 		}
@@ -97,6 +107,11 @@ namespace Blamite.Blam.ThirdGen
 			set { _header.XDKVersion = value; }
 		}
 
+		public bool ZoneOnly
+		{
+			get { return _zoneOnly; }
+		}
+
 		public SegmentPointer IndexHeaderLocation
 		{
 			get { return _header.IndexHeaderLocation; }
@@ -128,9 +143,9 @@ namespace Blamite.Blam.ThirdGen
 			get { return _stringIds; }
 		}
 
-		public IList<ITagClass> TagClasses
+		public IList<ITagGroup> TagGroups
 		{
-			get { return _tags.Classes; }
+			get { return _tags.Groups; }
 		}
 
 		public IResourceManager Resources
@@ -199,6 +214,26 @@ namespace Blamite.Blam.ThirdGen
 			get { return _simulationDefinitions; }
 		}
 
+		public IList<ITagInterop> TagInteropTable
+		{
+			get { return _tags.Interops; }
+		}
+
+		public IPointerExpander PointerExpander
+		{
+			get { return _expander; }
+		}
+
+		public Endian Endianness
+		{
+			get { return _endianness; }
+		}
+
+		public EffectInterop EffectInterops
+		{
+			get { return _effects; }
+		}
+
 		private void Load(IReader reader, string buildString)
 		{
 			LoadHeader(reader, buildString);
@@ -209,6 +244,7 @@ namespace Blamite.Blam.ThirdGen
 			LoadScriptFiles(reader);
 			LoadResourceManager(reader);
 			LoadSimulationDefinitions(reader);
+			LoadEffects(reader);
 			ShaderStreamer = new ThirdGenShaderStreamer(this, _buildInfo);
 		}
 
@@ -216,7 +252,7 @@ namespace Blamite.Blam.ThirdGen
 		{
 			reader.SeekTo(0);
 			StructureValueCollection values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("header"));
-			_header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter);
+			_header = new ThirdGenHeader(values, _buildInfo, buildString, _segmenter, _expander);
 		}
 
 		private void LoadTags(IReader reader)
@@ -227,7 +263,7 @@ namespace Blamite.Blam.ThirdGen
 				return;
 			}
 
-			_tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo);
+			_tags = new ThirdGenTagTable(reader, _header.IndexHeaderLocation, _header.MetaArea, Allocator, _buildInfo, _expander);
 			_resourceMetaLoader = new ThirdGenResourceMetaLoader(_buildInfo, _header.MetaArea);
 		}
 
@@ -281,12 +317,12 @@ namespace Blamite.Blam.ThirdGen
 			// Check for a PATG tag, and if one isn't found, then use MATG
 			if (_buildInfo.Layouts.HasLayout("patg"))
 			{
-				tag = _tags.FindTagByClass("patg");
+				tag = _tags.FindTagByGroup("patg");
 				layout = _buildInfo.Layouts.GetLayout("patg");
 			}
 			if (tag == null)
 			{
-				tag = _tags.FindTagByClass("matg");
+				tag = _tags.FindTagByGroup("matg");
 				layout = _buildInfo.Layouts.GetLayout("matg");
 			}
 			return (tag != null && layout != null);
@@ -294,22 +330,30 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadResourceManager(IReader reader)
 		{
-			ITag zoneTag = _tags.FindTagByClass("zone");
-			ITag playTag = _tags.FindTagByClass("play");
+			ITag zoneTag = _tags.FindTagByGroup("zone");
+			ITag playTag = _tags.FindTagByGroup("play");
 			bool haveZoneLayout = _buildInfo.Layouts.HasLayout("resource gestalt");
 			bool havePlayLayout = _buildInfo.Layouts.HasLayout("resource layout table");
-			bool canLoadZone = (zoneTag != null && haveZoneLayout);
-			bool canLoadPlay = (playTag != null && havePlayLayout);
+			bool haveAltPlayLayout = _buildInfo.Layouts.HasLayout("resource layout table alt");
+			bool canLoadZone = (zoneTag != null && zoneTag.MetaLocation != null && haveZoneLayout);
+			bool canLoadPlay = (playTag != null && playTag.MetaLocation != null && havePlayLayout);
 			if (canLoadZone || canLoadPlay)
 			{
 				ThirdGenResourceGestalt gestalt = null;
 				ThirdGenResourceLayoutTable layoutTable = null;
 				if (canLoadZone)
-					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo);
-				if (canLoadPlay)
-					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo);
+					gestalt = new ThirdGenResourceGestalt(reader, zoneTag, MetaArea, Allocator, StringIDs, _buildInfo, _expander);
 
-				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo);
+				if (canLoadPlay)
+					layoutTable = new ThirdGenResourceLayoutTable(playTag, MetaArea, Allocator, _buildInfo, _expander);
+				else if (canLoadZone && haveAltPlayLayout)
+				{
+					layoutTable = new ThirdGenResourceLayoutTable(zoneTag, MetaArea, Allocator, _buildInfo, _expander);
+					_zoneOnly = true;
+				}
+					
+
+				_resources = new ThirdGenResourceManager(gestalt, layoutTable, _tags, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}
 
@@ -325,7 +369,7 @@ namespace Blamite.Blam.ThirdGen
 
 			var layout = _buildInfo.Layouts.GetLayout("sound resource gestalt");
 
-			var ugh = _tags.FindTagByClass("ugh!");
+			var ugh = _tags.FindTagByGroup("ugh!");
 			if (ugh == null)
 				return null;
 
@@ -336,15 +380,43 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadScriptFiles(IReader reader)
 		{
-			// Scripts are just loaded from scnr for now...
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
+			{
+				int tagCount = 0;
+
+				IEnumerable<ITag> scripttags = _tags.FindTagsByGroup("hsdt");
+
+				ITag scnr = _tags.FindTagByGroup("scnr");
+				if (scnr == null)
+				{
+					ScriptFiles = new IScriptFile[0];
+					return;
+				}
+
+
+				foreach (ITag aHS in scripttags)
+					tagCount++;
+
+				ScriptFiles = new IScriptFile[tagCount];
+
+				int i = 0;
+				foreach (ITag aHS in scripttags)
+				{
+					string tagname = _fileNames.GetTagName(aHS.Index);
+					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander);
+					i++;
+				}
+
+				return;
+			}
+			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
 				ITag scnr = _tags.FindTagByClass("scnr");
                 ITag mdlg = _tags.FindTagByClass("mdlg");
 				if (scnr != null)
 				{
 					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, mdlg, ScenarioName, MetaArea, Allocator, StringIDs, _buildInfo);
+					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, mdlg, ScenarioName, MetaArea, Allocator, StringIDs, _buildInfo, _expander);
 					return;
 				}
 			}
@@ -353,11 +425,21 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadSimulationDefinitions(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table entry"))
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("simulation definition table element"))
 			{
-				ITag scnr = _tags.FindTagByClass("scnr");
+				ITag scnr = _tags.FindTagByGroup("scnr");
 				if (scnr != null)
-					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo);
+					_simulationDefinitions = new ThirdGenSimulationDefinitionTable(scnr, _tags, reader, MetaArea, Allocator, _buildInfo, _expander);
+			}
+		}
+
+		private void LoadEffects(IReader reader)
+		{
+			if (_tags != null && _buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("structured effect interop element"))
+			{
+				ITag scnr = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+				if (scnr != null)
+					_effects = new EffectInterop(scnr, reader, MetaArea, Allocator, _buildInfo, _expander);
 			}
 		}
 

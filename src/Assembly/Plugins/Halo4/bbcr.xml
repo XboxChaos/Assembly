@@ -4,7 +4,7 @@
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="Lord Zedd" version="2">Movement physics cleaning.</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Infection Form" index="1" />
 		<bit name="Immune To Falling Damage" index="2" />
@@ -37,7 +37,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<enum16 name="Team" offset="0x4" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="Player" value="0x1" />
@@ -59,7 +59,7 @@
 	<float32 name="Casual Turing Modifer" offset="0x10" visible="true" />
 	<float32 name="Autoaim Width" offset="0x14" visible="true" />
 	<comment title="Physics" />
-	<bitfield32 name="Flags" offset="0x18" visible="true">
+	<flags32 name="Flags" offset="0x18" visible="true">
 		<bit name="Centered At Origin" index="0" />
 		<bit name="Shape Sperical" index="1" />
 		<bit name="Use Player Physics" index="2" />
@@ -92,7 +92,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<float32 name="Height Standing" offset="0x1C" visible="true" />
 	<float32 name="Height Crouching" offset="0x20" visible="true" />
 	<float32 name="Radius" offset="0x24" visible="true" />
@@ -101,7 +101,7 @@
 	<stringId name="Dead Material Name" offset="0x30" visible="true" />
 	<int16 name="Living Global Material Index" offset="0x34" visible="true" />
 	<int16 name="Dead Global Material Index" offset="0x36" visible="true" />
-	<reflexive name="Dead Sphere Shapes" offset="0x38" visible="true" entrySize="0x70">
+	<tagblock name="Dead Sphere Shapes" offset="0x38" visible="true" elementSize="0x70">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -136,8 +136,8 @@
 		<float32 name="Translation j" offset="0x64" visible="true" />
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Pill Shapes" offset="0x44" visible="true" entrySize="0x60">
+	</tagblock>
+	<tagblock name="Pill Shapes" offset="0x44" visible="true" elementSize="0x60">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -167,8 +167,8 @@
 		<float32 name="Top j" offset="0x54" visible="true" />
 		<float32 name="Top k" offset="0x58" visible="true" />
 		<float32 name="Top Radius" offset="0x5C" visible="true" />
-	</reflexive>
-	<reflexive name="Sphere Shapes" offset="0x50" visible="true" entrySize="0x70">
+	</tagblock>
+	<tagblock name="Sphere Shapes" offset="0x50" visible="true" elementSize="0x70">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -203,8 +203,8 @@
 		<float32 name="Translation j" offset="0x64" visible="true" />
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Unknown Spheres" offset="0x5C" visible="true" entrySize="0x70" align="0x10">
+	</tagblock>
+	<tagblock name="Unknown Spheres" offset="0x5C" visible="true" elementSize="0x70" align="0x10">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Material Index" offset="0x4" visible="true" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -239,8 +239,8 @@
 		<float32 name="Translation j" offset="0x64" visible="true" />
 		<float32 name="Translation k" offset="0x68" visible="true" />
 		<float32 name="Translation Radius" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="Lists" offset="0x68" visible="true" entrySize="0x70" align="0x10">
+	</tagblock>
+	<tagblock name="Lists" offset="0x68" visible="true" elementSize="0x70" align="0x10">
 		<int32 name="Unknown" offset="0x0" visible="false" />
 		<int16 name="Size" offset="0x4" visible="true" />
 		<int16 name="Count" offset="0x6" visible="true" />
@@ -270,14 +270,14 @@
 		<int32 name="Unknown" offset="0x64" visible="true" />
 		<int32 name="Unknown" offset="0x68" visible="true" />
 		<int32 name="Unknown" offset="0x6C" visible="true" />
-	</reflexive>
-	<reflexive name="List Shapes" offset="0x74" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="List Shapes" offset="0x74" visible="true" elementSize="0x10">
 		<int16 name="Unknown" offset="0x0" visible="true" />
 		<int16 name="Unknown" offset="0x2" visible="true" />
 		<int32 name="Unknown" offset="0x4" visible="true" />
 		<int32 name="Unknown" offset="0x8" visible="true" />
 		<int32 name="Unknown" offset="0xC" visible="true" />
-	</reflexive>
+	</tagblock>
 	<comment title="Ground" />
 	<degree name="Maximum Slope Angle" offset="0x80" visible="true" />
 	<degree name="Downhill Falloff Angle" offset="0x84" visible="true" />
@@ -311,10 +311,10 @@
 	<undefined name="Unknown" offset="0xF0" visible="true" />
 	<tagRef name="Impact Damage" offset="0xF4" visible="true" />
 	<tagRef name="Impact Shield Damage" offset="0x104" visible="true" />
-	<reflexive name="Metagame Properties" offset="0x114" visible="true" entrySize="0x8">
-		<bitfield8 name="Flags" offset="0x0" visible="true">
+	<tagblock name="Metagame Properties" offset="0x114" visible="true" elementSize="0x8">
+		<flags8 name="Flags" offset="0x0" visible="true">
 			<bit name="Must Have Active Seats" index="0" />
-		</bitfield8>
+		</flags8>
 		<enum8 name="Unit" offset="0x1" visible="true">
 			<option name="Brute" value="0x0" />
 			<option name="Grunt" value="0x1" />
@@ -374,7 +374,7 @@
 		<int8 name="Unknown" offset="0x3" visible="false" />
 		<int16 name="Points" offset="0x4" visible="true" />
 		<int16 name="Unknown" offset="0x6" visible="false" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Destroy After Death Time min" offset="0x120" visible="true" />
 	<float32 name="Destroy After Death Time max" offset="0x124" visible="true" />
 	<int32 name="Unknown" offset="0x128" visible="false" />
@@ -386,9 +386,9 @@
 	<undefined name="Unknown" offset="0x158" visible="false" />
 	<undefined name="Unknown" offset="0x15C" visible="false" />
 	<undefined name="Unknown" offset="0x160" visible="false" />
-	<reflexive name="Unknown" offset="0x164" visible="true" entrySize="0x14">
+	<tagblock name="Unknown" offset="0x164" visible="true" elementSize="0x14">
 		<dataref name="Function" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<tagref name="Firing Effect" offset="0x170" visible="true" />
 	<undefined name="Unknown" offset="0x180" visible="true" />
 	<undefined name="Unknown" offset="0x184" visible="true" />

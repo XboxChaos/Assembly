@@ -5,18 +5,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class TagRefData : ValueField
 	{
 		private readonly TagHierarchy _allTags;
-		private readonly bool _withClass;
-		private TagClass _class;
-		private Visibility _showJumpTo;
+		private readonly bool _withGroup;
+		private TagGroup _group;
+		private Visibility _showTagOptions;
 		private TagEntry _value;
 
-		public TagRefData(string name, uint offset, uint address, TagHierarchy allTags, Visibility showJumpTo, bool withClass,
-			uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public TagRefData(string name, uint offset, long address, TagHierarchy allTags, Visibility showTagOptions, bool withGroup,
+			uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_allTags = allTags;
-			_withClass = withClass;
-			_showJumpTo = showJumpTo;
+			_withGroup = withGroup;
+			_showTagOptions = showTagOptions;
 		}
 
 		public TagEntry Value
@@ -29,34 +29,39 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public Visibility ShowJumpTo
+		public Visibility ShowTagOptions
 		{
-			get { return _showJumpTo; }
+			get { return _showTagOptions; }
 			set
 			{
-				_showJumpTo = value;
-				NotifyPropertyChanged("ShowJumpTo");
+				_showTagOptions = value;
+				NotifyPropertyChanged("ShowTagOptions");
 			}
 		}
 
-		public TagClass Class
+		public TagGroup Group
 		{
-			get { return _class; }
+			get { return _group; }
 			set
 			{
-				_class = value;
-				NotifyPropertyChanged("Class");
+				_group = value;
+				NotifyPropertyChanged("Group");
 			}
 		}
 
-		public bool WithClass
+		public bool WithGroup
 		{
-			get { return _withClass; }
+			get { return _withGroup; }
 		}
 
 		public TagHierarchy Tags
 		{
 			get { return _allTags; }
+		}
+
+		public bool CanJump
+		{
+			get { return _value != null && !_value.IsNull; }
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)
@@ -66,8 +71,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showJumpTo, _withClass, base.PluginLine);
-			result.Class = _class;
+			var result = new TagRefData(Name, Offset, FieldAddress, _allTags, _showTagOptions, _withGroup, PluginLine, ToolTip);
+			result.Group = _group;
 			result.Value = _value;
 			return result;
 		}

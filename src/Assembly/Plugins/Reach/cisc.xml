@@ -9,13 +9,13 @@
 	<stringid name="Anchor Name" offset="0x4" visible="true" />
 	<undefined name="Unknown" offset="0x8" visible="false" />
 	<dataRef name="Import Script" format="asciiz" offset="0xC" visible="true" />
-	<reflexive name="Puppets" offset="0x20" visible="true" entrySize="0x5C">
+	<tagblock name="Puppets" offset="0x20" visible="true" elementSize="0x5C">
 		<stringid name="Import Name" offset="0x0" visible="true" />
 		<stringid name="Name" offset="0x4" visible="true" />
 		<stringId name="Variant" offset="0x8" visible="true" />
 		<tagRef name="Puppet Animation" offset="0xC" visible="true" />
 		<tagRef name="Puppet Object" offset="0x1C" visible="true" />
-		<bitfield32 name="Flags" offset="0x2C" visible="true">
+		<flags32 name="Flags" offset="0x2C" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -48,38 +48,53 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
+		</flags32>
 		<uint32 name="Unknown" offset="0x30" visible="false" />
 		<int32 name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
+		<flags32 name="Coop Flags" offset="0x38" visible="true">
+			<bit name="Solo" index="0" />
+			<bit name="2 Players" index="1" />
+			<bit name="3 Players" index="2" />
+			<bit name="4 Players" index="3" />
+		</flags32>
 		<dataRef name="Import Script" format="asciiz" offset="0x3C" visible="true" />
-		<reflexive name="Puppet Firing" offset="0x50" visible="true" entrySize="0x20">
+		<tagblock name="Puppet Firing" offset="0x50" visible="true" elementSize="0x20">
 			<int16 name="Unknown" offset="0x0" visible="false" />
 			<int16 name="Unknown" offset="0x2" visible="false" />
 			<stringid name="Unknown" offset="0x4" visible="true" />
 			<stringid name="Name" offset="0x8" visible="true" />
 			<stringid name="Unknown" offset="0xC" visible="true" />
 			<tagRef name="Object" offset="0x10" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Shots" offset="0x2C" visible="true" entrySize="0xD0">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Shots" offset="0x2C" visible="true" elementSize="0xD0">
 		<dataRef name="Opening Import Script" format="asciiz" offset="0x0" visible="true" />
 		<int32 name="Unknown" offset="0x14" visible="false" />
 		<float32 name="Unknown" offset="0x18" visible="false" />
 		<float32 name="Unknown" offset="0x1C" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<undefined name="Unknown" offset="0x22" visible="false" />
+		<int16 name="Unknown" offset="0x20" visible="false" />
+		<int16 name="Unknown" offset="0x22" visible="false" />
 		<undefined name="Unknown" offset="0x24" visible="false" />
-		<reflexive name="Lighting" offset="0x28" visible="true" entrySize="0x1C">
+		<tagblock name="Lighting" offset="0x28" visible="true" elementSize="0x1C">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<tagRef name="Cinematic Light" offset="0x4" visible="true" />
 			<int32 name="Owner Puppet Index" offset="0x14" visible="true" />
 			<int32 name="Unknown" offset="0x18" visible="false" />
-		</reflexive>
-		<undefined name="Unknown" offset="0x34" visible="false" />
-		<undefined name="Unknown" offset="0x38" visible="false" />
-		<undefined name="Unknown" offset="0x3C" visible="false" />
-		<reflexive name="Sounds" offset="0x40" visible="true" entrySize="0x3C">
+		</tagblock>
+		<tagblock name="Unknown" offset="0x34" visible="true" elementSize="0x2C">
+			<float32 name="Unknown" offset="0x0" visible="false" />
+			<float32 name="Unknown" offset="0x4" visible="false" />
+			<float32 name="Unknown" offset="0x8" visible="false" />
+			<float32 name="Unknown" offset="0xC" visible="false" />
+			<float32 name="Unknown" offset="0x10" visible="false" />
+			<float32 name="Unknown" offset="0x14" visible="false" />
+			<int32 name="Start Frame" offset="0x18" visible="true" />
+			<int32 name="End Frame" offset="0x1C" visible="true" />
+			<tagblock name="Puppets" offset="0x20" visible="true" elementSize="0x4">
+				<int32 name="Puppet Index" offset="0x0" visible="true" />
+			</tagblock>
+		</tagblock>
+		<tagblock name="Sounds" offset="0x40" visible="true" elementSize="0x3C">
 			<tagRef name="Sound" offset="0x0" visible="true" />
 			<tagRef name="Sound" offset="0x10" visible="true" />
 			<int32 name="Frame" offset="0x20" visible="true" />
@@ -89,13 +104,13 @@
 			<stringid name="Unknown" offset="0x30" visible="true" />
 			<stringid name="Unknown" offset="0x34" visible="true" />
 			<stringid name="Unknown" offset="0x38" visible="true" />
-		</reflexive>
-		<reflexive name="Background Sounds" offset="0x4C" visible="true" entrySize="0x18">
+		</tagblock>
+		<tagblock name="Background Sounds" offset="0x4C" visible="true" elementSize="0x18">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<tagRef name="Sound" offset="0x4" visible="true" />
 			<int32 name="Frame" offset="0x14" visible="true" />
-		</reflexive>
-		<reflexive name="Effects" offset="0x58" visible="true" entrySize="0x28">
+		</tagblock>
+		<tagblock name="Effects" offset="0x58" visible="true" elementSize="0x28">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<tagRef name="Effect" offset="0x4" visible="true" />
 			<int32 name="Frame" offset="0x14" visible="true" />
@@ -103,23 +118,23 @@
 			<int32 name="Owner Puppet Index" offset="0x1C" visible="true" />
 			<undefined name="Unknown" offset="0x20" visible="false" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
-		</reflexive>
-		<reflexive name="Functions" offset="0x64" visible="true" entrySize="0x14">
+		</tagblock>
+		<tagblock name="Functions" offset="0x64" visible="true" elementSize="0x14">
 			<int32 name="Owner Puppet Index" offset="0x0" visible="true" />
 			<stringid name="Target Function Name" offset="0x4" visible="true" />
-			<reflexive name="Values" offset="0x8" visible="false" entrySize="0x10">
+			<tagblock name="Values" offset="0x8" visible="false" elementSize="0x10">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<int32 name="Unknown" offset="0x4" visible="false" />
 				<float32 name="Unknown" offset="0x8" visible="false" />
 				<float32 name="Unknown" offset="0xC" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Screen Effects" offset="0x70" visible="true" entrySize="0x18">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Screen Effects" offset="0x70" visible="true" elementSize="0x18">
 			<tagRef name="Effect" offset="0x0" visible="true" />
 			<int32 name="Start Frame" offset="0x10" visible="true" />
 			<int32 name="End Frame" offset="0x14" visible="true" />
-		</reflexive>
-		<reflexive name="Import Scripts" offset="0x7C" visible="true" entrySize="0x24">
+		</tagblock>
+		<tagblock name="Import Scripts" offset="0x7C" visible="true" elementSize="0x24">
 			<int8 name="Unknown" offset="0x0" visible="false" />
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
@@ -128,8 +143,8 @@
 			<dataRef name="Import Script" format="asciiz" offset="0x8" visible="true" />
 			<uint32 name="Unknown" offset="0x1C" visible="false" />
 			<int32 name="Unknown" offset="0x20" visible="false" />
-		</reflexive>
-		<reflexive name="Unknown 10" offset="0x88" visible="false" entrySize="0x14" align="0x8">
+		</tagblock>
+		<tagblock name="User Input Constraints" offset="0x88" visible="false" elementSize="0x14">
 			<int32 name="Unknown" offset="0x0" visible="false" />
 			<int32 name="Unknown" offset="0x4" visible="false" />
 			<int16 name="Unknown" offset="0x8" visible="false" />
@@ -137,13 +152,13 @@
 			<int16 name="Unknown" offset="0xC" visible="false" />
 			<int16 name="Unknown" offset="0xE" visible="false" />
 			<float32 name="Unknown" offset="0x10" visible="false" />
-		</reflexive>
+		</tagblock>
 		<dataRef name="Import Script" format="asciiz" offset="0x94" visible="true" />
 		<int32 name="Loaded Frame Count" offset="0xA8" visible="true" />
 		<undefined name="Unknown" offset="0xAC" visible="false" />
 		<undefined name="Unknown" offset="0xB0" visible="false" />
 		<undefined name="Unknown" offset="0xB4" visible="false" />
-		<reflexive name="Camera Frames" offset="0xB8" visible="true" entrySize="0x24">
+		<tagblock name="Camera Frames" offset="0xB8" visible="true" elementSize="0x24">
 			<float32 name="X" offset="0x0" visible="true" />
 			<float32 name="Y" offset="0x4" visible="true" />
 			<float32 name="Z" offset="0x8" visible="true" />
@@ -153,11 +168,11 @@
 			<float32 name="Unknown" offset="0x18" visible="true" />
 			<float32 name="Unknown" offset="0x1C" visible="true" />
 			<float32 name="Unknown" offset="0x20" visible="true" />
-		</reflexive>
-		<reflexive name="Depth Of Field Frames" offset="0xC4" visible="true" entrySize="0x1C">
+		</tagblock>
+		<tagblock name="Depth Of Field Frames" offset="0xC4" visible="true" elementSize="0x1C">
 			<int32 name="Frame" offset="0x0" visible="true" />
 			<float32 name="FOV" offset="0x4" visible="true" />
-			<bitfield32 name="Flags" offset="0x8" visible="true">
+			<flags32 name="Flags" offset="0x8" visible="true">
 				<bit name="Enable Depth Of Field" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -190,18 +205,18 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
+			</flags32>
 			<float32 name="Near Plane" offset="0xC" visible="true" />
 			<float32 name="Far Plane" offset="0x10" visible="true" />
 			<float32 name="Focal Depth" offset="0x14" visible="true" />
 			<float32 name="Blur Amount" offset="0x18" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Texture Cameras" offset="0x38" visible="true" entrySize="0x14">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Texture Cameras" offset="0x38" visible="true" elementSize="0x14">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Unknown" offset="0x4" visible="true" />
-		<reflexive name="Shots" offset="0x8" visible="true" entrySize="0xC">
-			<reflexive name="Frames" offset="0x0" visible="true" entrySize="0x40">
+		<tagblock name="Shots" offset="0x8" visible="true" elementSize="0xC">
+			<tagblock name="Frames" offset="0x0" visible="true" elementSize="0x40">
 				<int32 name="Unknown" offset="0x0" visible="false" />
 				<float32 name="X" offset="0x4" visible="true" />
 				<float32 name="Y" offset="0x8" visible="true" />
@@ -213,8 +228,8 @@
 				<float32 name="Unknown" offset="0x20" visible="false" />
 				<float32 name="Unknown" offset="0x24" visible="false" />
 				<float32 name="FOV" offset="0x28" visible="true" />
-				<comment title="Depth Of Field"/>
-				<bitfield32 name="Flags" offset="0x2C" visible="true">
+				<comment title="Depth Of Field" />
+				<flags32 name="Flags" offset="0x2C" visible="true">
 					<bit name="Enable Depth Of Field" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -247,14 +262,14 @@
 					<bit name="Bit 29" index="29" />
 					<bit name="Bit 30" index="30" />
 					<bit name="Bit 31" index="31" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Near Plane" offset="0x30" visible="true" />
 				<float32 name="Far Plane" offset="0x34" visible="true" />
 				<float32 name="Focal Depth" offset="0x38" visible="true" />
 				<float32 name="Blur Amount" offset="0x3C" visible="true" />
-			</reflexive>
-		</reflexive>
-	</reflexive>
+			</tagblock>
+		</tagblock>
+	</tagblock>
 	<dataRef name="Import Script" format="asciiz" offset="0x44" visible="true" />
 	<int32 name="Unknown" offset="0x58" visible="false" />
 </plugin>

@@ -62,6 +62,14 @@ namespace Blamite.Serialization
 					_collection.SetInteger(name, (uint) _reader.ReadInt32());
 					_offset += 4;
 					break;
+				case StructureValueType.UInt64:
+					_collection.SetInteger(name, _reader.ReadUInt64());
+					_offset += 8;
+					break;
+				case StructureValueType.Int64:
+					_collection.SetInteger(name, (ulong)_reader.ReadInt64());
+					_offset += 8;
+					break;
 				case StructureValueType.Asciiz:
 					_collection.SetString(name, _reader.ReadAscii());
 					_offset = _reader.Position;

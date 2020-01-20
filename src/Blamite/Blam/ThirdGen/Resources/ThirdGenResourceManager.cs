@@ -18,6 +18,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		private readonly ThirdGenResourceLayoutTable _layoutTable;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly TagTable _tags;
+		private readonly IPointerExpander _expander;
 
 		/// <summary>
 		///     Initializes a new instance of the <see cref="ThirdGenResourceManager" /> class.
@@ -29,7 +30,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// <param name="allocator">The cache file's tag data allocator.</param>
 		/// <param name="buildInfo">The cache file's build information.</param>
 		public ThirdGenResourceManager(ThirdGenResourceGestalt gestalt, ThirdGenResourceLayoutTable layoutTable, TagTable tags,
-			FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
+			FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_gestalt = gestalt;
 			_layoutTable = layoutTable;
@@ -37,6 +38,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 		}
 
 		/// <summary>
@@ -53,8 +55,10 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 			var result = new ResourceTable();
 			result.Pages.AddRange(_layoutTable.LoadPages(reader));
-			var pointers = _layoutTable.LoadPointers(reader, result.Pages);
+			result.Sizes.AddRange(_layoutTable.LoadSizes(reader));
+			var pointers = _layoutTable.LoadPointers(reader, result.Pages, result.Sizes);
 			result.Resources.AddRange(_gestalt.LoadResources(reader, _tags, pointers.ToList()));
+			result.Predictions.AddRange(_gestalt.LoadPredictions(reader, _tags, result.Resources));
 			return result;
 		}
 		
@@ -70,7 +74,10 @@ namespace Blamite.Blam.ThirdGen.Resources
 
 			var pointers = _gestalt.SaveResources(table.Resources, stream);
 			_layoutTable.SavePointers(pointers, stream);
-			_layoutTable.SavePages(table.Pages, stream);
+			_layoutTable.SaveSizes(table.Sizes, stream);
+			_layoutTable.SavePages(table.Pages, pointers, stream);
+
+			_gestalt.SavePredictions(table.Predictions, stream);
 		}
 
 		/// <summary>
@@ -82,7 +89,7 @@ namespace Blamite.Blam.ThirdGen.Resources
 		/// </returns>
 		public IZoneSetTable LoadZoneSets(IReader reader)
 		{
-			return _gestalt == null ? null : new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo);
+			return _gestalt == null ? null : new ThirdGenZoneSetTable(_gestalt, reader, _metaArea, _allocator, _buildInfo, _expander);
 		}
 	}
 }

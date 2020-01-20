@@ -65,7 +65,7 @@ namespace Blamite.Blam
 			}
 		}
 
-		private static Endian DetermineCacheFileEndianness(byte[] headerMagic)
+		public static Endian DetermineCacheFileEndianness(byte[] headerMagic)
 		{
 			if (headerMagic[0] == 'h' && headerMagic[1] == 'e' && headerMagic[2] == 'a' && headerMagic[3] == 'd')
 				return Endian.BigEndian;

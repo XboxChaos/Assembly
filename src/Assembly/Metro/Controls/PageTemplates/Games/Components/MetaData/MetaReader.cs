@@ -4,6 +4,8 @@ using Blamite.Blam;
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
+using System;
+using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -24,7 +26,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly LoadType _type;
 		private IReader _reader;
 
-		public MetaReader(IStreamManager streamManager, uint baseOffset, ICacheFile cache, EngineDescription buildInfo,
+		public MetaReader(IStreamManager streamManager, long baseOffset, ICacheFile cache, EngineDescription buildInfo,
 			LoadType type, FieldChangeSet ignore)
 		{
 			_streamManager = streamManager;
@@ -39,21 +41,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_dataRefLayout = buildInfo.Layouts.GetLayout("data reference");
 		}
 
-		public uint BaseOffset { get; set; }
+		public long BaseOffset { get; set; }
 
-		public void VisitBitfield(BitfieldData field)
+		public void VisitFlags(FlagData field)
 		{
 			SeekToOffset(field.Offset);
 			switch (field.Type)
 			{
-				case BitfieldType.Bitfield8:
+				case FlagsType.Flags8:
 					field.Value = _reader.ReadByte();
 					break;
-				case BitfieldType.Bitfield16:
+				case FlagsType.Flags16:
 					field.Value = _reader.ReadUInt16();
 					break;
-				case BitfieldType.Bitfield32:
+				case FlagsType.Flags32:
 					field.Value = _reader.ReadUInt32();
+					break;
+				case FlagsType.Flags64:
+					field.Value = _reader.ReadUInt64();
 					break;
 			}
 		}
@@ -104,7 +109,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (selected == null)
 			{
 				// Nothing matched, so just add an option for it
-				selected = new EnumValue(field.Value.ToString(), field.Value);
+				selected = new EnumValue(field.Value.ToString(), field.Value, "");
 				field.Values.Add(selected);
 			}
 			field.SelectedValue = selected;
@@ -146,24 +151,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Value = _reader.ReadInt32();
 		}
 
-		public void VisitColourInt(ColourData field)
+		public void VisitColourInt(ColorData field)
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += (_reader.ReadByte().ToString("X2"));
-			field.Value = colorValue;
+			var val = _reader.ReadUInt32();
+
+			byte[] channels = BitConverter.GetBytes(val);
+
+			field.Value = Color.FromArgb(field.Alpha ? channels[3] : (byte)0xFF, channels[2], channels[1], channels[0]);
 		}
 
-		public void VisitColourFloat(ColourData field)
+		public void VisitColourFloat(ColorData field)
 		{
 			SeekToOffset(field.Offset);
 
-			string colorValue = "#";
-			foreach (char formatChar in field.Format)
-				colorValue += ((int) (_reader.ReadFloat()*255)).ToString("X2");
-			field.Value = colorValue;
+			Color scColor = Color.FromScRgb(field.Alpha ? _reader.ReadFloat() : 1, _reader.ReadFloat(), _reader.ReadFloat(), _reader.ReadFloat());
+			//Color.ToString() doesnt display hex code when using scrgb, so gotta do this
+			field.Value = Color.FromArgb(scColor.A, scColor.R, scColor.G, scColor.B);
 		}
 
 		public void VisitString(StringData field)
@@ -200,32 +205,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _dataRefLayout);
 
 			var length = (int) values.GetInteger("size");
-			uint pointer = values.GetInteger("pointer");
+			uint pointer = (uint)values.GetInteger("pointer");
 
-			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(pointer, length))
+			long expanded = _cache.PointerExpander.Expand(pointer);
+
+			if (length > 0 && _cache.MetaArea.ContainsBlockPointer(expanded, length))
 			{
-				field.DataAddress = pointer;
+				field.DataAddress = expanded;
 				field.Length = length;
-
-				// Go to position
-				if (_type == LoadType.Memory)
-					_reader.SeekTo(pointer);
-				else
-					_reader.SeekTo(_cache.MetaArea.PointerToOffset(pointer));
-
-				switch (field.Format)
-				{
-					default:
-						byte[] data = _reader.ReadBlock(field.Length);
-						field.Value = FunctionHelpers.BytesToHexString(data);
-						break;
-					case "unicode":
-						field.Value = _reader.ReadUTF16(field.Length);
-						break;
-					case "asciiz":
-						field.Value = _reader.ReadAscii(field.Length);
-						break;
-				}
 			}
 			else
 			{
@@ -239,18 +226,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			SeekToOffset(field.Offset);
 
-			TagClass tagClass = null;
+			TagGroup tagGroup = null;
 			DatumIndex index;
-			if (field.WithClass)
+			if (field.WithGroup)
 			{
 				// Read the datum index based upon the layout
 				StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagRefLayout);
 				index = new DatumIndex(values.GetInteger("datum index"));
 
-				// Check the class, in case the datum index is null
-				var magic = values.GetInteger("class magic");
+				// Check the group, in case the datum index is null
+				var magic = values.GetInteger("tag group magic");
 				var str = CharConstant.ToString((int)magic);
-				tagClass = field.Tags.Classes.FirstOrDefault(c => c.TagClassMagic == str);
+				tagGroup = field.Tags.Groups.FirstOrDefault(c => c.TagGroupMagic == str);
 			}
 			else
 			{
@@ -268,12 +255,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 			if (tag != null)
 			{
-				field.Class = field.Tags.Classes.FirstOrDefault(c => c.RawClass == tag.RawTag.Class);
+				field.Group = field.Tags.Groups.FirstOrDefault(c => c.RawGroup == tag.RawTag.Group);
 				field.Value = tag;
 			}
 			else
 			{
-				field.Class = tagClass;
+				field.Group = tagGroup;
 				field.Value = null;
 			}
 		}
@@ -284,12 +271,76 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Value = _reader.ReadFloat();
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
 			SeekToOffset(field.Offset);
-			field.X = _reader.ReadFloat();
-			field.Y = _reader.ReadFloat();
-			field.Z = _reader.ReadFloat();
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+			field.D = _reader.ReadFloat();
+		}
+
+
+		public void VisitPoint2(Point2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+		}
+
+		public void VisitPoint3(Point3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitPlane2(Plane2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitPlane3(Plane3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+			field.D = _reader.ReadFloat();
 		}
 
 		public void VisitDegree(DegreeData field)
@@ -298,23 +349,68 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Radian = _reader.ReadFloat();
 		}
 
-		public void VisitReflexive(ReflexiveData field)
+		public void VisitDegree2(Degree2Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.RadianA = _reader.ReadFloat();
+			field.RadianB = _reader.ReadFloat();
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.RadianA = _reader.ReadFloat();
+			field.RadianB = _reader.ReadFloat();
+			field.RadianC = _reader.ReadFloat();
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadFloat();
+			field.B = _reader.ReadFloat();
+			field.C = _reader.ReadFloat();
+			field.D = _reader.ReadFloat();
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadInt16();
+			field.B = _reader.ReadInt16();
+			field.C = _reader.ReadInt16();
+			field.D = _reader.ReadInt16();
+		}
+
+		public void VisitTagBlock(TagBlockData field)
 		{
 			SeekToOffset(field.Offset);
 			StructureValueCollection values = StructureReader.ReadStructure(_reader, _tagBlockLayout);
 			var length = (int) values.GetInteger("entry count");
-			uint pointer = values.GetInteger("pointer");
+			uint pointer = (uint)values.GetInteger("pointer");
+
+			long expanded = _cache.PointerExpander.Expand(pointer);
 
 			// Make sure the pointer looks valid
-			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(pointer, (int) (length*field.EntrySize)))
+			if (length < 0 || !_cache.MetaArea.ContainsBlockPointer(expanded, (int) (length*field.ElementSize)))
 			{
 				length = 0;
 				pointer = 0;
+				expanded = 0;
 			}
 
+			if (expanded != field.FirstElementAddress)
+				field.FirstElementAddress = expanded;
+
 			field.Length = length;
-			if (pointer != field.FirstEntryAddress)
-				field.FirstEntryAddress = pointer;
 		}
 
 		public void VisitShaderRef(ShaderRef field)
@@ -324,7 +420,28 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				field.Shader = _cache.ShaderStreamer.ReadShader(_reader, field.Type);
 		}
 
-		public void VisitReflexiveEntry(WrappedReflexiveEntry field)
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.Min = _reader.ReadUInt16();
+			field.Max = _reader.ReadUInt16();
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.Min = _reader.ReadFloat();
+			field.Max = _reader.ReadFloat();
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			SeekToOffset(field.Offset);
+			field.RadianMin = _reader.ReadFloat();
+			field.RadianMax = _reader.ReadFloat();
+		}
+
+		public void VisitTagBlockEntry(WrappedTagBlockEntry field)
 		{
 		}
 
@@ -336,17 +453,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			{
 				valueField.FieldAddress = BaseOffset + valueField.Offset;
 				if (_type == LoadType.File)
-					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int) valueField.FieldAddress);
+					valueField.FieldAddress = _cache.MetaArea.OffsetToPointer((int)valueField.FieldAddress);
 			}
 
 			// Read its contents if it hasn't changed (or if change detection is disabled)
 			if (_ignoredFields == null || !_ignoredFields.HasChanged(field))
 				field.Accept(this);
 
-			// If it's a reflexive, read its children
-			var reflexive = field as ReflexiveData;
-			if (reflexive != null)
-				ReadReflexiveChildren(reflexive);
+			// If it's a block, read its children
+			var block = field as TagBlockData;
+			if (block != null)
+				ReadTagBlockChildren(block);
 		}
 
 		public void ReadFields(IList<MetaField> fields)
@@ -369,9 +486,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public void ReadReflexiveChildren(ReflexiveData reflexive)
+		public void ReadTagBlockChildren(TagBlockData block)
 		{
-			if (!reflexive.HasChildren || reflexive.CurrentIndex < 0)
+			if (!block.HasChildren || block.CurrentIndex < 0)
 				return;
 
 			bool opened = OpenReader();
@@ -381,16 +498,55 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			try
 			{
 				// Calculate the base offset to read from
-				uint oldBaseOffset = BaseOffset;
-				uint dataOffset = reflexive.FirstEntryAddress;
+				long oldBaseOffset = BaseOffset;
+				long dataOffset = block.FirstElementAddress;
 				if (_type == LoadType.File)
 					dataOffset = (uint) _cache.MetaArea.PointerToOffset(dataOffset);
-				BaseOffset = (uint) (dataOffset + reflexive.CurrentIndex*reflexive.EntrySize);
+				BaseOffset = (dataOffset + block.CurrentIndex* block.ElementSize);
 
-				ReflexivePage page = reflexive.Pages[reflexive.CurrentIndex];
+				TagBlockPage page = block.Pages[block.CurrentIndex];
 				for (int i = 0; i < page.Fields.Length; i++)
 				{
-					ReadField(page.Fields[i] ?? reflexive.Template[i]);
+					ReadField(page.Fields[i] ?? block.Template[i]);
+				}
+
+				BaseOffset = oldBaseOffset;
+			}
+			finally
+			{
+				if (opened)
+					CloseReader();
+			}
+		}
+
+		public void ReadDataRefContents(DataRef field)
+		{
+			if (field.Length < 0)
+				return;
+
+			bool opened = OpenReader();
+			if (_reader == null)
+				return;
+
+			try
+			{
+				// Calculate the base offset to read from
+				long oldBaseOffset = BaseOffset;
+				long dataOffset = field.DataAddress;
+				if (_type == LoadType.File)
+					dataOffset = (uint)_cache.MetaArea.PointerToOffset(dataOffset);
+
+				_reader.SeekTo(dataOffset);
+
+				switch (field.Format)
+				{
+					default:
+						byte[] data = _reader.ReadBlock(field.Length);
+						field.Value = FunctionHelpers.BytesToHexString(data);
+						break;
+					case "asciiz":
+						field.Value = _reader.ReadAscii(field.Length);
+						break;
 				}
 
 				BaseOffset = oldBaseOffset;
@@ -420,7 +576,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			if (_reader != null)
 			{
-				_reader.Close();
+				_reader.Dispose();
 				_reader = null;
 			}
 		}

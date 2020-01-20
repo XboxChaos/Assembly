@@ -1,19 +1,19 @@
 /* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
  * 
- * This file is part of ExtryzeDLL.
+ * This file is part of Blamite.
  * 
- * Extryze is free software: you can redistribute it and/or modify
+ * Blamite is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * Extryze is distributed in the hope that it will be useful,
+ * Blamite is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Blamite.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -31,7 +31,7 @@ namespace Blamite.IO
 		public static void Copy(IReader input, IWriter output)
 		{
 			// http://stackoverflow.com/questions/230128/best-way-to-copy-between-two-stream-instances-c-sharp
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			int read;
 			while ((read = input.ReadBlock(buffer, 0, BufferSize)) > 0)
@@ -46,7 +46,7 @@ namespace Blamite.IO
 		/// <param name="size">The size of the data to copy.</param>
 		public static void Copy(IReader input, IWriter output, int size)
 		{
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			while (size > 0)
 			{
@@ -64,7 +64,7 @@ namespace Blamite.IO
 		/// <param name="size">The size of the data to copy.</param>
 		public static void Copy(Stream input, Stream output, int size)
 		{
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			while (size > 0)
 			{
@@ -89,7 +89,7 @@ namespace Blamite.IO
 			if (size < 0)
 				throw new ArgumentException("The size of the data to copy must be >= 0");
 
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			long remaining = size;
 			while (remaining > 0)
@@ -148,7 +148,7 @@ namespace Blamite.IO
 			if (size < 0)
 				throw new ArgumentException("The size of the data to insert must be >= 0");
 
-			const int BufferSize = 0x1000;
+			const int BufferSize = 81920;
 			var buffer = new byte[BufferSize];
 			long pos = writer.Position;
 			long endPos = pos + size;

@@ -8,17 +8,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 {
 	public class TagHierarchy : INotifyPropertyChanged
 	{
-		private ObservableCollection<TagClass> _classes = new ObservableCollection<TagClass>();
+		private ObservableCollection<TagGroup> _groups = new ObservableCollection<TagGroup>();
 
 		private List<TagEntry> _entries = new List<TagEntry>();
 
-		public ObservableCollection<TagClass> Classes
+		private static readonly TagGroup _null = new TagGroup(null, "(null)", "null");
+
+		public ObservableCollection<TagGroup> Groups
 		{
-			get { return _classes; }
+			get { return _groups; }
 			set
 			{
-				_classes = value;
-				NotifyPropertyChanged("Classes");
+				_groups = value;
+				NotifyPropertyChanged("Groups");
 			}
 		}
 
@@ -32,6 +34,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public static TagGroup NullGroup
+		{ get { return _null; } }
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)
@@ -43,28 +48,29 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		}
 	}
 
-	public class TagClass : INotifyPropertyChanged
+	public class TagGroup : INotifyPropertyChanged
 	{
 		private List<TagEntry> _children = new List<TagEntry>();
 		private string _description = string.Empty;
-		private ITagClass _rawClass;
-		private string _tagClassMagic = string.Empty;
+		private ITagGroup _rawGroup;
+		private string _tagGroupMagic = string.Empty;
+		private TagEntry _null = new TagEntry(null, null, "(null)");
 
-		public TagClass(ITagClass baseClass, string name, string description)
+		public TagGroup(ITagGroup baseGroup, string name, string description)
 		{
-			RawClass = baseClass;
-			TagClassMagic = name;
+			RawGroup = baseGroup;
+			TagGroupMagic = name;
 			Description = description;
 			Children = new List<TagEntry>();
 		}
 
-		public string TagClassMagic
+		public string TagGroupMagic
 		{
-			get { return _tagClassMagic; }
+			get { return _tagGroupMagic; }
 			set
 			{
-				_tagClassMagic = value;
-				NotifyPropertyChanged("TagClassMagic");
+				_tagGroupMagic = value;
+				NotifyPropertyChanged("TagGroupMagic");
 			}
 		}
 
@@ -78,13 +84,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		public ITagClass RawClass
+		public ITagGroup RawGroup
 		{
-			get { return _rawClass; }
+			get { return _rawGroup; }
 			set
 			{
-				_rawClass = value;
-				NotifyPropertyChanged("RawClass");
+				_rawGroup = value;
+				NotifyPropertyChanged("RawGroup");
 			}
 		}
 
@@ -96,6 +102,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_children = value;
 				NotifyPropertyChanged("Children");
 			}
+		}
+
+		public TagEntry NullTag
+		{
+			get { return _null; }
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -111,16 +122,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 	public class TagEntry : INotifyPropertyChanged
 	{
-		private string _className = string.Empty;
+		private string _groupName = string.Empty;
 		private bool _isBookmark;
 		private ITag _rawTag;
 		private string _tagFileName = string.Empty;
+		private bool _isNull;
 
-		public TagEntry(ITag baseTag, string className, string name)
+		private string _tagToolTip = null;
+
+		public TagEntry(ITag baseTag, string groupName, string name)
 		{
 			RawTag = baseTag;
-			ClassName = className;
+			GroupName = groupName;
 			TagFileName = name;
+
+			if (baseTag != null)
+			{
+				if (baseTag.MetaLocation == null)
+				{
+					_isNull = true;
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nThis tag refers to a shared cache.\r\nIt cannot be modified directly, only referenced.", _tagFileName, baseTag.Index);
+				}
+				else
+				{
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
+				}
+			}
+		}
+
+		public bool IsNull
+		{
+			get { return _isNull; }
 		}
 
 		public bool IsBookmark
@@ -133,13 +165,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
-		public string ClassName
+		public string GroupName
 		{
-			get { return _className; }
+			get { return _groupName; }
 			internal set
 			{
-				_className = value;
-				NotifyPropertyChanged("ClassName");
+				_groupName = value;
+				NotifyPropertyChanged("GroupName");
 			}
 		}
 
@@ -153,6 +185,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public string TagToolTip
+		{
+			get { return _tagToolTip; }
+			internal set
+			{
+				_tagToolTip = value;
+				NotifyPropertyChanged("TagToolTip");
+			}
+		}
+
 		public ITag RawTag
 		{
 			get { return _rawTag; }
@@ -163,6 +205,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public override string ToString()
+		{
+			return TagFileName;
+		}
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)

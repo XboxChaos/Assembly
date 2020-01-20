@@ -3,50 +3,64 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Height="28" Width="580"
-             HorizontalAlignment="Left">
+			 xmlns:local="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
+             mc:Ignorable="d" Height="28" Width="650" HorizontalAlignment="Left">
 	<UserControl.Resources>
-		<ResourceDictionary>
-			<Style x:Key="ValuePanel" TargetType="StackPanel">
-				<Setter Property="Visibility" Value="Collapsed" />
-				<Style.Triggers>
-					<DataTrigger Binding="{Binding ShowValue}" Value="true">
-						<Setter Property="Visibility" Value="Visible" />
-					</DataTrigger>
-				</Style.Triggers>
-			</Style>
-		</ResourceDictionary>
+		<local:CustomBooleanToVisibilityConverter x:Key="cb2v" />
 	</UserControl.Resources>
 	<Grid>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="lblEnumName" Text="{Binding Name}" ToolTip="{Binding Path=Name}"
-			           Style="{DynamicResource GenericTextblock}" Width="180" VerticalAlignment="Center" Margin="0,0,0,0"
-			           TextTrimming="CharacterEllipsis" />
-			<ComboBox x:Name="cbEnumOptions"
-			          ItemsSource="{Binding Values}"
-			          SelectedValue="{Binding SelectedValue}"
-			          HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0" Width="250">
-				<ComboBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
-						                        VirtualizingStackPanel.VirtualizationMode="Recycling" />
-					</ItemsPanelTemplate>
-				</ComboBox.ItemsPanel>
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<StackPanel x:Name="indexPrefix" Orientation="Horizontal" Style="{StaticResource ValuePanel}">
-								<TextBlock Text="{Binding Value}" />
-								<TextBlock Text=". " />
-							</StackPanel>
-							<TextBlock Text="{Binding Name}" />
-						</StackPanel>
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
-			<TextBlock x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
-			           VerticalAlignment="Center" Width="150" Margin="20,0,0,0" />
-		</StackPanel>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="200"/>
+		</Grid.ColumnDefinitions>
 
+		<DockPanel Grid.Column="0" Background="Transparent">
+			<DockPanel.ToolTip>
+				<StackPanel>
+					<TextBlock Text="{Binding Name}" />
+					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				</StackPanel>
+			</DockPanel.ToolTip>
+			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
+					   VerticalAlignment="Center" FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" />
+			<TextBlock x:Name="lblValueName" Text="{Binding Path=Name}"
+			           Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"
+			           TextTrimming="CharacterEllipsis" />
+		</DockPanel>
+		<ComboBox Grid.Column="1" x:Name="cbEnumOptions"
+			          ItemsSource="{Binding Values}"
+			          SelectedValue="{Binding SelectedValue}" HorizontalContentAlignment="Center"
+					  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.ToolTip}">
+			<ComboBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
+						                        VirtualizingStackPanel.VirtualizationMode="Recycling" />
+				</ItemsPanelTemplate>
+			</ComboBox.ItemsPanel>
+			<ComboBox.ItemContainerStyle>
+				<Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+					<Setter Property="ToolTip">
+						<Setter.Value>
+							<StackPanel>
+								<TextBlock Text="{Binding Name}" />
+								<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+							</StackPanel>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ComboBox.ItemContainerStyle>
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<DockPanel>
+						<TextBlock DockPanel.Dock="Right" Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontWeight="Bold" Margin="2,0,2,0"
+									   FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" HorizontalAlignment="Right" />
+						<TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" />
+					</DockPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+		<TextBlock Grid.Column="2" x:Name="lblType" Text="{Binding TypeStr}" Style="{DynamicResource GenericTextblock}"
+			           VerticalAlignment="Center" Margin="10,0,0,0" />
 	</Grid>
 </UserControl>

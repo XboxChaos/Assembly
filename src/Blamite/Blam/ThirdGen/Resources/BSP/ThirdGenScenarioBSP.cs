@@ -35,9 +35,9 @@ namespace Blamite.Blam.ThirdGen.Resources.BSP
 			EngineDescription buildInfo)
 		{
 			var count = (int) values.GetInteger("number of sections");
-			uint address = values.GetInteger("section table address");
+			uint address = (uint)values.GetInteger("section table address");
 			StructureLayout layout = buildInfo.Layouts.GetLayout("model section");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, metaArea);
 
 			Sections = (from entry in entries
 				select new ThirdGenModelSection(entry, reader, metaArea, buildInfo)).ToArray();
@@ -47,9 +47,9 @@ namespace Blamite.Blam.ThirdGen.Resources.BSP
 			EngineDescription buildInfo)
 		{
 			var count = (int) values.GetInteger("number of bounding boxes");
-			uint address = values.GetInteger("bounding box table address");
+			uint address = (uint)values.GetInteger("bounding box table address");
 			StructureLayout layout = buildInfo.Layouts.GetLayout("model bounding box");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, 1, address, layout, metaArea);
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, 1, address, layout, metaArea);
 
 			BoundingBoxes = (from entry in entries
 				select BoundingBox.Deserialize(entry)).ToArray();

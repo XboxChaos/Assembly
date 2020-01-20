@@ -30,13 +30,13 @@ namespace BlockAlignmentScanner
 			var outDir = args[2];
 
 			Console.WriteLine("Loading plugins...");
-			var pluginsByClass = new Dictionary<string, XDocument>();
+			var pluginsByGroup = new Dictionary<string, XDocument>();
 			foreach (var pluginPath in Directory.EnumerateFiles(inDir, "*.xml"))
 			{
 				Console.WriteLine("- {0}", pluginPath);
 				var document = XDocument.Load(pluginPath);
-				var className = Path.GetFileNameWithoutExtension(pluginPath);
-				pluginsByClass[className] = document;
+				var groupName = Path.GetFileNameWithoutExtension(pluginPath);
+				pluginsByGroup[groupName] = document;
 			}
 
 			Console.WriteLine("Loading engine database...");
@@ -55,13 +55,13 @@ namespace BlockAlignmentScanner
 					var visitedTagBlocks = new HashSet<uint>();
 					foreach (var tag in map.Tags)
 					{
-						if (tag == null || tag.Class == null || tag.MetaLocation == null)
+						if (tag == null || tag.Group == null || tag.MetaLocation == null)
 							continue;
 
 						// Get the plugin for the tag
-						var className = CharConstant.ToString(tag.Class.Magic);
+						var groupName = CharConstant.ToString(tag.Group.Magic);
 						XDocument plugin;
-						if (!pluginsByClass.TryGetValue(className, out plugin))
+						if (!pluginsByGroup.TryGetValue(groupName, out plugin))
 							continue;
 
 						// Process it
@@ -86,7 +86,7 @@ namespace BlockAlignmentScanner
 				Directory.CreateDirectory(outDir);
 
 			Console.WriteLine("Saving plugins...");
-			foreach (var plugin in pluginsByClass)
+			foreach (var plugin in pluginsByGroup)
 			{
 				var outPath = Path.Combine(outDir, plugin.Key + ".xml");
 				Console.WriteLine("- {0}", outPath);
@@ -104,7 +104,7 @@ namespace BlockAlignmentScanner
 			// Loop through all tag blocks and data references
 			foreach (var elem in baseElement.Elements())
 			{
-				var isTagBlock = (elem.Name.LocalName == "reflexive");
+				var isTagBlock = (elem.Name.LocalName == "tagblock");
 				var isDataRef = (elem.Name.LocalName == "dataRef");
 				if (!isTagBlock && !isDataRef)
 					continue;
@@ -112,12 +112,12 @@ namespace BlockAlignmentScanner
 				// Read the address
 				var offset = ParseInteger(elem.Attribute("offset").Value);
 				var count = 0;
-				var entrySize = 0;
+				var elementSize = 0;
 				if (isTagBlock)
 				{
 					reader.SeekTo(baseOffset + offset);
 					count = reader.ReadInt32();
-					entrySize = ParseInteger(elem.Attribute("entrySize").Value);
+					elementSize = ParseInteger(elem.Attribute("elementSize").Value);
 				}
 				else
 				{
@@ -127,7 +127,7 @@ namespace BlockAlignmentScanner
 				var addr = reader.ReadUInt32();
 				if (addr == 0)
 					continue;
-				if (isTagBlock && !cacheFile.MetaArea.ContainsBlockPointer(addr, count * entrySize))
+				if (isTagBlock && !cacheFile.MetaArea.ContainsBlockPointer(addr, count * elementSize))
 					continue;
 
 				// Only update the alignment if it's less than the currently-guessed alignment
@@ -142,7 +142,7 @@ namespace BlockAlignmentScanner
 					visitedTagBlocks.Add(addr);
 					var blockBaseOffset = cacheFile.MetaArea.PointerToOffset(addr);
 					for (var i = 0; i < count; i++)
-						DetectAlignment(cacheFile, reader, blockBaseOffset + i * entrySize, elem, alignsByElem, visitedTagBlocks);
+						DetectAlignment(cacheFile, reader, blockBaseOffset + i * elementSize, elem, alignsByElem, visitedTagBlocks);
 				}
 			}
 		}

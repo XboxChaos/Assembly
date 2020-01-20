@@ -43,8 +43,8 @@ namespace Blamite.Serialization.MapInfo
 			foreach (XElement elem in container.Elements("engine"))
 			{
 				string name = XMLUtil.GetStringAttribute(elem, "name");
-				int levlSize = XMLUtil.GetNumericAttribute(elem, "levlSize");
-				int version = XMLUtil.GetNumericAttribute(elem, "version");
+				int levlSize = (int)XMLUtil.GetNumericAttribute(elem, "levlSize");
+				int version = (int)XMLUtil.GetNumericAttribute(elem, "version");
 				SettingsGroup settings = loader.LoadSettingsGroup(elem);
 				var desc = new EngineDescription(name, levlSize, version, settings);
 				result.RegisterEngine(desc);

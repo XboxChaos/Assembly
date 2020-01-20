@@ -5,7 +5,7 @@
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="DarkShallFall" version="2">H2</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Doesn't Use Wind" index="0" />
 		<bit name="Uses Grid Attach Top" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -38,7 +38,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<stringid name="Marker Attachment Name" offset="0x4" visible="true" />
 	<stringid name="Second Marker Attachment Name" offset="0x8" visible="true" />
 	<tagRef name="Shader" offset="0xC" visible="true" />
@@ -64,23 +64,23 @@
 	<undefined name="Unknown" offset="0x58" visible="false" />
 	<undefined name="Unknown" offset="0x5C" visible="false" />
 	<undefined name="Unknown" offset="0x60" visible="false" />
-	<reflexive name="Vertices" offset="0x64" visible="true" entrySize="0x14">
+	<tagblock name="Vertices" offset="0x64" visible="true" elementSize="0x14">
 		<float32 name="Initial Position X" offset="0x0" visible="true" />
 		<float32 name="Initial Position Y" offset="0x4" visible="true" />
 		<float32 name="Initial Position Z" offset="0x8" visible="true" />
 		<float32 name="UV i" offset="0xC" visible="true" />
 		<float32 name="UV j" offset="0x10" visible="true" />
-	</reflexive>
-	<reflexive name="Indices" offset="0x70" visible="true" entrySize="0x2">
+	</tagblock>
+	<tagblock name="Indices" offset="0x70" visible="true" elementSize="0x2">
 		<int16 name="Index" offset="0x0" visible="true" />
-	</reflexive>
+	</tagblock>
 	<undefined name="Unknown" offset="0x7C" visible="false" />
 	<undefined name="Unknown" offset="0x80" visible="false" />
 	<undefined name="Unknown" offset="0x84" visible="false" />
-	<reflexive name="Links" offset="0x88" visible="true" entrySize="0x10">
+	<tagblock name="Links" offset="0x88" visible="true" elementSize="0x10">
 		<float32 name="Default Distance" offset="0x0" visible="true" />
 		<int32 name="Index 1" offset="0x4" visible="true" />
 		<int32 name="Index 2" offset="0x8" visible="true" />
 		<undefined name="Unknown" offset="0xC" visible="false" />
-	</reflexive>
+	</tagblock>
 </plugin>

@@ -5,50 +5,22 @@
 		<revision author="Assembly" version="1">Generated plugin from scratch.</revision>
 		<revision author="Lord Zedd" version="2">Updated and standardized.</revision>
 		<revision author="Lord Zedd" version="3">Now with comments.</revision>
+		<revision author="Lord Zedd" version="4">thanks h5</revision>
 	</revisions>
-	<tagref name="Unknown" offset="0x0" visible="true" />
-	<float32 name="Radius min" offset="0x10" visible="true" />
-	<float32 name="Radius max" offset="0x14" visible="true" />
+	<tagref name="Area Of Effect Behavior Equipment" offset="0x0" visible="true" />
+	<rangef name="Radius" offset="0x10" visible="true" />
 	<float32 name="Cutoff Scale" offset="0x18" visible="true" />
-	<bitfield32 name="Flags" offset="0x1C" visible="true">
+	<flags32 name="Flags" offset="0x1C" visible="true">
 		<bit name="Don't Scale Damage By Distance" index="0" />
 		<bit name="Area Damage Players Only" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</bitfield32>
+		<bit name="Affects Model Targets" index="2" />
+		<bit name="Explosive Area Of Effect" index="3" />
+	</flags32>
 	<enum16 name="Side Effect" offset="0x20" visible="true">
 		<option name="None" value="0x0" />
 		<option name="Harmless" value="0x1" />
 		<option name="Lethal To The Unsuspecting" value="0x2" />
-		<option name="Emp" value="0x3" />
+		<option name="EMP" value="0x3" />
 	</enum16>
 	<enum16 name="Category" offset="0x22" visible="true">
 		<option name="None" value="0x0" />
@@ -64,8 +36,9 @@
 		<option name="Plasma" value="0xA" />
 		<option name="Needle" value="0xB" />
 		<option name="Shotgun" value="0xC" />
+		<option name="Assassinated" value="0xD" />
 	</enum16>
-	<enum32 name="Forced Death Dialogue" offset="0x24" visible="true">
+	<enum32 name="Death Vocalization" offset="0x24" visible="true">
 		<option name="Default" value="0x0" />
 		<option name="dth" value="0x1" />
 		<option name="dth_fall" value="0x2" />
@@ -79,10 +52,10 @@
 		<option name="die_space" value="0xA" />
 		<option name="die_ass" value="0xB" />
 	</enum32>
-	<bitfield32 name="Flags" offset="0x28" visible="true">
+	<flags32 name="Flags" offset="0x28" visible="true">
 		<bit name="Does Not Hurt Owner" index="0" />
 		<bit name="Can Cause Headshots" index="1" />
-		<bit name="Bit 2" index="2" />
+		<bit name="Ignores Headshot Obstructions" index="2" />
 		<bit name="Pings Resistant Units" index="3" />
 		<bit name="Does Not Hurt Friends" index="4" />
 		<bit name="Does Not Ping Units" index="5" />
@@ -91,85 +64,115 @@
 		<bit name="Causes Flaming Death" index="8" />
 		<bit name="Skips Shields" index="9" />
 		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Ignore Seat Scale For Direct Damage" index="12" />
-		<bit name="Forces Hard Ping" index="13" />
+		<bit name="Ignore Seat Scale For Direct Damage" index="11" />
+		<bit name="Forces Hard Ping If Body Damage" index="12" />
+		<bit name="Forces Hard Ping Always" index="13" />
 		<bit name="Does Not Hurt Players" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
+		<bit name="Enables Special Death" index="15" />
+		<bit name="Cannot Cause Betrayals" index="16" />
+		<bit name="Uses Old EMP Behavior" index="17" />
+		<bit name="Ignores Damage Resistance" index="18" />
+		<bit name="Force S Kill On Death" index="19" />
+		<bit name="Cause Magic Deceleration" index="20" />
+		<bit name="Area Of Effect Skip Obstruction Test" index="21" />
+		<bit name="Does Not Spill Over" index="22" />
+		<bit name="Does Not Hurt Boarders" index="23" />
+		<bit name="Does Not Cause Biped Area Of Effect Effect" index="24" />
 		<bit name="Bit 25" index="25" />
-		<bit name="Only Affects Shield" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Can Dissolve" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Causes No Damage" index="31" />
-	</bitfield32>
-	<undefined name="Unknown" offset="0x2C" visible="false" />
+		<bit name="Apply Tree Of Life" index="26" />
+		<bit name="Hurt Only Friends" index="27" />
+		<bit name="Causes Incineration Dissolve" index="28" />
+		<bit name="Causes Incineration Dissolve On Headshot" index="29" />
+		<bit name="Does Not Hurt Damage Source" index="30" />
+		<bit name="Damage Vehicles Only" index="31" />
+	</flags32>
+	<float32 name="Headshot Damage Multiplier" offset="0x2C" visible="true" />
 	<float32 name="Area Of Effect Core Radius" offset="0x30" visible="true" />
 	<float32 name="Damage Lower Bound" offset="0x34" visible="true" />
-	<float32 name="Damage Upper Bound min" offset="0x38" visible="true" />
-	<float32 name="Damage Upper Bound max" offset="0x3C" visible="true" />
-	<dataRef name="Unknown" offset="0x40" visible="true" />
+	<rangef name="Damage Upper Bound" offset="0x38" visible="true" />
+	<dataref name="Damage Falloff Function" offset="0x40" visible="true" />
 	<degree name="Damage Inner Cone Angle" offset="0x54" visible="true" />
 	<degree name="Damage Outer Cone Angle" offset="0x58" visible="true" />
 	<float32 name="Active Camoflage Damage" offset="0x5C" visible="true" />
 	<float32 name="Stun" offset="0x60" visible="true" />
-	<float32 name="Max Stun" offset="0x64" visible="true" />
+	<float32 name="Maximum Stun" offset="0x64" visible="true" />
 	<float32 name="Stun Time" offset="0x68" visible="true" />
-	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<int32 name="Damage Stun" offset="0x6C" visible="true" />
 	<float32 name="Instantaneous Acceleration" offset="0x70" visible="true" />
-	<undefined name="Unknown" offset="0x74" visible="false" />
+	<float32 name="Acceleration Cap" offset="0x74" visible="true" />
+	<comment title="Rider Damage Scales" />
 	<float32 name="Rider Direct Damage Scale" offset="0x78" visible="true" />
-	<float32 name="Rider Max Transfer Damage" offset="0x7C" visible="true" />
-	<float32 name="Rider Min Transfer Damage" offset="0x80" visible="true" />
-	<undefined name="Unknown" offset="0x84" visible="false" />
-	<undefined name="Unknown" offset="0x88" visible="false" />
+	<float32 name="Rider Maximum Transfer Damage" offset="0x7C" visible="true" />
+	<float32 name="Rider Minimum Transfer Damage" offset="0x80" visible="true" />
+	<float32 name="Vehicle Damage Multiplier" offset="0x84" visible="true" />
+	<float32 name="Soft Ping Pain Screen Scale" offset="0x88" visible="true" />
 	<stringId name="General Damage" offset="0x8C" visible="true" />
 	<stringId name="Specific Damage" offset="0x90" visible="true" />
-	<reflexive name="Special Damages" offset="0x94" visible="true" entrySize="0x4">
-		<stringid name="Special Damage" offset="0x0" visible="true" />
-	</reflexive>
+	<tagblock name="Custom Response Labels" offset="0x94" visible="true" elementSize="0x4">
+		<stringid name="Custom Label" offset="0x0" visible="true" />
+	</tagblock>
 	<float32 name="AI Stun Radius" offset="0xA0" visible="true" />
-	<float32 name="AI Stun Bounds min" offset="0xA4" visible="true" />
-	<float32 name="AI Stun Bounds max" offset="0xA8" visible="true" />
+	<rangef name="AI Stun Bounds" offset="0xA4" visible="true" />
 	<float32 name="Shake Radius" offset="0xAC" visible="true" />
 	<float32 name="EMP Radius" offset="0xB0" visible="true" />
-	<undefined name="Unknown" offset="0xB4" visible="false" />
-	<undefined name="Unknown" offset="0xB8" visible="false" />
-	<undefined name="Unknown" offset="0xBC" visible="false" />
+	<float32 name="Area Of Effect Spike Radius" offset="0xB4" visible="true" />
+	<float32 name="Area Of Effect Spike Damage Bump" offset="0xB8" visible="true" />
+	<float32 name="Shield Render Effects Scale" offset="0xBC" visible="true" />
 	<undefined name="Unknown" offset="0xC0" visible="false" />
 	<undefined name="Unknown" offset="0xC4" visible="false" />
 	<undefined name="Unknown" offset="0xC8" visible="false" />
 	<undefined name="Unknown" offset="0xCC" visible="false" />
-	<undefined name="Unknown" offset="0xD0" visible="false" />
-	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<float32 name="Equipment Hack Time" offset="0xD0" visible="true" />
+	<float32 name="Unknown" offset="0xD4" visible="false" />
 	<undefined name="Unknown" offset="0xD8" visible="false" />
 	<undefined name="Unknown" offset="0xDC" visible="false" />
 	<undefined name="Unknown" offset="0xE0" visible="false" />
 	<undefined name="Unknown" offset="0xE4" visible="false" />
 	<undefined name="Unknown" offset="0xE8" visible="false" />
-	<undefined name="Unknown" offset="0xEC" visible="false" />
+	<float32 name="Unknown" offset="0xEC" visible="false" />
 	<undefined name="Unknown" offset="0xF0" visible="false" />
-	<undefined name="Unknown" offset="0xF4" visible="false" />
-	<undefined name="Unknown" offset="0xF8" visible="false" />
+	<float32 name="Unknown" offset="0xF4" visible="false" />
+	<float32 name="Unknown" offset="0xF8" visible="false" />
 	<tagRef name="Damage Response" offset="0xFC" visible="true" />
 	<comment title="Sound" />
-	<tagRef name="Sound" offset="0x10C" visible="true" />
-	<reflexive name="Ricochets" offset="0x11C" visible="true" entrySize="0x14">
+	<tagRef name="Old Melee Sound" offset="0x10C" visible="true" />
+	<tagblock name="Damage Sounds" offset="0x11C" visible="true" elementSize="0x14">
 		<tagRef name="Sound" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x10" visible="false" />
-		<int16 name="Unknown" offset="0x12" visible="false" />
-	</reflexive>
-	<comment title="Breaking Effect" />
+		<flags16 name="Damage Types" offset="0x10" visible="true">
+			<bit name="None" index="0" />
+			<bit name="Lethal Instantaneous" index="1" />
+			<bit name="Lethal" index="2" />
+			<bit name="Non Lethal" index="3" />
+		</flags16>
+		<flags16 name="Object Types" offset="0x12" visible="true">
+			<bit name="Biped" index="0" />
+			<bit name="Vehicle" index="1" />
+			<bit name="Weapon" index="2" />
+			<bit name="Equipment" index="3" />
+			<bit name="Terminal" index="4" />
+			<bit name="Projectile" index="5" />
+			<bit name="Scenery" index="6" />
+			<bit name="Machine" index="7" />
+			<bit name="Control" index="8" />
+			<bit name="Dispenser" index="9" />
+			<bit name="Sound Scenery" index="10" />
+			<bit name="Crate" index="11" />
+			<bit name="Creature" index="12" />
+			<bit name="Giant" index="13" />
+			<bit name="Effect Scenery" index="14" />
+		</flags16>
+	</tagblock>
+	<comment title="Breaking Effect">Controls particle velocities when a damage effect shatters a materal.
+
+All particles created within 'forward radius' will be kicked along the
+damage direction with a speed equivalent to 'forward velocity' at the
+epicenter of the damage and 0 at the outer radius. 'Forward exponent'
+is used to modify the velocity scale. A low exponent (like 0.5) means that
+particles between the epicenter and the radius will be kicked out with a speed
+closer to 'forward velocity' than if a higher exponent (like 2.0) was used
+
+The outward fields work in a similar way, except instead of kicking along the
+damage direction, they get kick away from the damage epicenter.</comment>
 	<float32 name="Forward Velocity" offset="0x128" visible="true" />
 	<float32 name="Forward Radius" offset="0x12C" visible="true" />
 	<float32 name="Forward Exponent" offset="0x130" visible="true" />

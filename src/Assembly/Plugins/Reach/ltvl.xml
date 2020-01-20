@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <plugin game="Reach" baseSize="0xC">
 	<!-- Automatically generated plugin -->
 	<revisions>
@@ -7,24 +7,24 @@
 		<revision author="Lord Zedd" version="3">Standardized and some types.</revision>
 		<revision author="Lord Zedd" version="4">Standardizing.</revision>
 	</revisions>
-	<reflexive name="Light Volume System" offset="0x0" visible="true" entrySize="0x1C8" align="0x8">
+	<tagblock name="Light Volume System" offset="0x0" visible="true" elementSize="0x1C8" align="0x8">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<tagRef name="Base Render Method" offset="0x4" visible="true" />
 		<tagref name="Unknown" offset="0x14" visible="true" />
-		<reflexive name="Unknown" offset="0x24" visible="false" entrySize="0x2">
-			<int16 name="Unknown" offset="0x0" visible="false" />
-		</reflexive>
+		<tagblock name="Template Identifier" offset="0x24" visible="true" elementSize="0x2">
+			<int16 name="Value" offset="0x0" visible="true" />
+		</tagblock>
 		<undefined name="Unknown" offset="0x30" visible="false" />
 		<undefined name="Unknown" offset="0x34" visible="false" />
 		<undefined name="Unknown" offset="0x38" visible="false" />
-		<reflexive name="Shader Properties" offset="0x3C" visible="true" entrySize="0xAC">
+		<tagblock name="Shader Properties" offset="0x3C" visible="true" elementSize="0xAC">
 			<tagRef name="Template" offset="0x0" visible="true" />
-			<reflexive name="Shader Maps" offset="0x10" visible="true" entrySize="0x18">
+			<tagblock name="Shader Maps" offset="0x10" visible="true" elementSize="0x18">
 				<tagRef name="Bitmap" offset="0x0" visible="true" />
 				<int8 name="Unknown" offset="0x10" visible="false" />
 				<int8 name="Bitmap Index" offset="0x11" visible="true" />
 				<int8 name="Unknown" offset="0x12" visible="false" />
-				<bitfield8 name="Bitmap Flags" offset="0x13" visible="true">
+				<flags8 name="Bitmap Flags" offset="0x13" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -33,13 +33,13 @@
 					<bit name="Bit 5" index="5" />
 					<bit name="Bit 6" index="6" />
 					<bit name="Bit 7" index="7" />
-				</bitfield8>
+				</flags8>
 				<int8 name="Unknown Bitmap Index Enable" offset="0x14" visible="true" />
 				<int8 name="UV Argument Index" offset="0x15" visible="true" />
 				<int8 name="Unknown" offset="0x16" visible="false" />
 				<int8 name="Unknown" offset="0x17" visible="false" />
-			</reflexive>
-			<reflexive name="Arguments" offset="0x1C" visible="true" entrySize="0x10">
+			</tagblock>
+			<tagblock name="Arguments" offset="0x1C" visible="true" elementSize="0x10">
 				<comment title="Arguments">Play around with each entry to find the desired setting.
 
 &gt;FOR TINTS:
@@ -57,30 +57,30 @@ Arg 4-Y Offset</comment>
 				<float32 name="Arg 2" offset="0x4" visible="true" />
 				<float32 name="Arg 3" offset="0x8" visible="true" />
 				<float32 name="Arg 4" offset="0xC" visible="true" />
-			</reflexive>
-			<reflexive name="Unknown" offset="0x28" visible="false" entrySize="0x4">
+			</tagblock>
+			<tagblock name="Unknown" offset="0x28" visible="false" elementSize="0x4">
 				<undefined name="Unknown" offset="0x0" visible="false" />
-			</reflexive>
+			</tagblock>
 			<undefined name="Unknown" offset="0x34" visible="false" />
-			<reflexive name="Unknown" offset="0x38" visible="false" entrySize="0x2">
+			<tagblock name="Unknown" offset="0x38" visible="false" elementSize="0x2">
 				<int16 name="Unknown" offset="0x0" visible="false" />
-			</reflexive>
-			<reflexive name="Unknown" offset="0x44" visible="false" entrySize="0x6">
+			</tagblock>
+			<tagblock name="Unknown" offset="0x44" visible="false" elementSize="0x6">
 				<undefined name="Unknown" offset="0x0" visible="false" />
 				<int8 name="Unknown" offset="0x4" visible="false" />
 				<int8 name="Unknown" offset="0x5" visible="false" />
-			</reflexive>
-			<reflexive name="Unknown" offset="0x50" visible="false" entrySize="0x4">
+			</tagblock>
+			<tagblock name="Unknown" offset="0x50" visible="false" elementSize="0x4">
 				<int16 name="Unknown" offset="0x0" visible="false" />
 				<int16 name="Unknown" offset="0x2" visible="false" />
-			</reflexive>
-			<reflexive name="Functions" offset="0x5C" visible="true" entrySize="0x24">
+			</tagblock>
+			<tagblock name="Functions" offset="0x5C" visible="true" elementSize="0x24">
 				<int32 name="Unknown" offset="0x0" visible="false" />
 				<stringid name="Name" offset="0x4" visible="true" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
 				<dataRef name="Function" offset="0x10" visible="true" />
-			</reflexive>
+			</tagblock>
 			<int32 name="Unknown" offset="0x68" visible="false" />
 			<int32 name="Unknown" offset="0x6C" visible="false" />
 			<undefined name="Unknown" offset="0x70" visible="false" />
@@ -112,14 +112,14 @@ Arg 4-Y Offset</comment>
 			<int16 name="Unknown" offset="0xA6" visible="false" />
 			<int16 name="Unknown" offset="0xA8" visible="false" />
 			<int16 name="Unknown" offset="0xAA" visible="false" />
-		</reflexive>
+		</tagblock>
 		<undefined name="Unknown" offset="0x48" visible="false" />
 		<undefined name="Unknown" offset="0x4C" visible="false" />
-		<reflexive name="Unknown" offset="0x50" visible="false" entrySize="0xC">
+		<tagblock name="Unknown" offset="0x50" visible="false" elementSize="0xC">
 			<stringid name="Unknown" offset="0x0" visible="false" />
 			<int32 name="Unknown" offset="0x4" visible="false" />
 			<int32 name="Unknown" offset="0x8" visible="false" />
-		</reflexive>
+		</tagblock>
 		<int8 name="Unknown" offset="0x5C" visible="false" />
 		<int8 name="Unknown" offset="0x5D" visible="false" />
 		<int8 name="Unknown" offset="0x5E" visible="false" />
@@ -226,13 +226,13 @@ Arg 4-Y Offset</comment>
 		<undefined name="Unknown" offset="0x18C" visible="false" />
 		<undefined name="Unknown" offset="0x190" visible="false" />
 		<undefined name="Unknown" offset="0x194" visible="false" />
-		<reflexive name="Unknown" offset="0x198" visible="false" entrySize="0x10" align="0x10">
+		<tagblock name="Unknown" offset="0x198" visible="false" elementSize="0x10" align="0x10">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
 			<undefined name="Unknown" offset="0xC" visible="false" />
-		</reflexive>
-		<reflexive name="Compiled Functions" offset="0x1A4" visible="false" entrySize="0x40" align="0x10">
+		</tagblock>
+		<tagblock name="Compiled Functions" offset="0x1A4" visible="false" elementSize="0x40" align="0x10">
 			<undefined name="Unknown" offset="0x0" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<undefined name="Unknown" offset="0x8" visible="false" />
@@ -249,16 +249,18 @@ Arg 4-Y Offset</comment>
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<undefined name="Unknown" offset="0x3C" visible="false" />
-		</reflexive>
-		<reflexive name="Compiled Color Functions" offset="0x1B0" visible="true" entrySize="0x10" align="0x10">
+		</tagblock>
+		<tagblock name="Compiled Color Functions" offset="0x1B0" visible="true" elementSize="0x10" align="0x10">
 			<float32 name="Red" offset="0x0" visible="true" />
 			<float32 name="Green" offset="0x4" visible="true" />
 			<float32 name="Blue" offset="0x8" visible="true" />
 			<float32 name="Magnitude" offset="0xC" visible="true" />
-		</reflexive>
-		<reflexive name="Unknown" offset="0x1BC" visible="false" entrySize="0x8" align="0x10">
-			<undefined name="Unknown" offset="0x0" visible="false" />
-			<undefined name="Unknown" offset="0x4" visible="false" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+		<tagblock name="Unknown" offset="0x1BC" visible="false" elementSize="0x8" align="0x10">
+			<uint16 name="Unknown" offset="0x0" visible="false" />
+			<uint16 name="Unknown" offset="0x2" visible="false" />
+			<uint16 name="Unknown" offset="0x4" visible="false" />
+			<uint16 name="Unknown" offset="0x6" visible="false" />
+		</tagblock>
+	</tagblock>
 </plugin>

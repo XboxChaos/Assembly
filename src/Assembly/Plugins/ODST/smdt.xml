@@ -9,8 +9,8 @@
 	<tagRef name="In Game Strings" offset="0x4" visible="true" />
 	<tagRef name="Timer Sound" offset="0x14" visible="true" />
 	<tagRef name="Timer Sound Zero" offset="0x24" visible="true" />
-	<reflexive name="Survival Events" offset="0x34" visible="true" entrySize="0x108">
-		<bitfield16 name="Flags" offset="0x0" visible="true">
+	<tagblock name="Survival Events" offset="0x34" visible="true" elementSize="0x108">
+		<flags16 name="Flags" offset="0x0" visible="true">
 			<bit name="Bit 0" index="0" />
 			<bit name="Bit 1" index="1" />
 			<bit name="Bit 2" index="2" />
@@ -27,7 +27,7 @@
 			<bit name="Bit 13" index="13" />
 			<bit name="Bit 14" index="14" />
 			<bit name="Bit 15" index="15" />
-		</bitfield16>
+		</flags16>
 		<enum16 name="Type" offset="0x2" visible="true">
 			<option name="General" value="0x0" />
 			<option name="Flavor" value="0x1" />
@@ -94,9 +94,9 @@
 		<int32 name="Primary String Duration" offset="0x28" visible="true" />
 		<stringid name="Plural Display String" offset="0x2C" visible="true" />
 		<float32 name="Sound Delay (Announcer Only)" offset="0x30" visible="true" />
-		<bitfield16 name="Sound Flags" offset="0x34" visible="true">
+		<flags16 name="Sound Flags" offset="0x34" visible="true">
 			<bit name="Announcer Sound" index="0" />
-		</bitfield16>
+		</flags16>
 		<int16 name="Unknown" offset="0x36" visible="false" />
 		<tagRef name="English Sound" offset="0x38" visible="true" />
 		<tagRef name="Japanese Sound" offset="0x48" visible="true" />
@@ -114,39 +114,25 @@
 		<undefined name="Unknown" offset="0xFC" visible="false" />
 		<undefined name="Unknown" offset="0x100" visible="false" />
 		<undefined name="Unknown" offset="0x104" visible="false" />
-	</reflexive>
-	<reflexive name="Armor Customization" offset="0x40" visible="true" entrySize="0x10">
+	</tagblock>
+	<tagblock name="Armor Customization" offset="0x40" visible="true" elementSize="0x10">
 		<stringid name="Character Name" offset="0x0" visible="true" />
-		<reflexive name="Regions" offset="0x4" visible="true" entrySize="0x10">
+		<tagblock name="Categories" offset="0x4" visible="true" elementSize="0x10">
 			<stringid name="Name" offset="0x0" visible="true" />
-			<reflexive name="Permuations" offset="0x4" visible="true" entrySize="0x1C">
+			<tagblock name="Items" offset="0x4" visible="true" elementSize="0x1C">
 				<stringid name="Name" offset="0x0" visible="true" />
 				<stringid name="Description" offset="0x4" visible="true" />
-				<bitfield16 name="Flags" offset="0x8" visible="true">
-					<bit name="Has Requirement" index="0" />
-					<bit name="Has Special Requirement" index="1" />
-					<bit name="Bit 2" index="2" />
-					<bit name="Bit 3" index="3" />
-					<bit name="Bit 4" index="4" />
-					<bit name="Bit 5" index="5" />
-					<bit name="Bit 6" index="6" />
-					<bit name="Bit 7" index="7" />
-					<bit name="Bit 8" index="8" />
-					<bit name="Bit 9" index="9" />
-					<bit name="Bit 10" index="10" />
-					<bit name="Bit 11" index="11" />
-					<bit name="Bit 12" index="12" />
-					<bit name="Bit 13" index="13" />
-					<bit name="Bit 14" index="14" />
-					<bit name="Bit 15" index="15" />
-				</bitfield16>
-				<int16 name="Unknown" offset="0xA" visible="true" />
-				<stringid name="Achievement Requirement" offset="0xC" visible="true" />
-				<reflexive name="Variant" offset="0x10" visible="true" entrySize="0x8">
+				<flags16 name="Flags" offset="0x8" visible="true">
+					<bit name="Must Be Unlocked" index="0" />
+					<bit name="Hidden While Locked" index="1" />
+				</flags16>
+				<int16 name="Unknown" offset="0xA" visible="false" />
+				<stringid name="Unlock Condition" offset="0xC" visible="true" />
+				<tagblock name="Definitions" offset="0x10" visible="true" elementSize="0x8">
 					<stringId name="Region" offset="0x0" visible="true" />
 					<stringId name="Permutation" offset="0x4" visible="true" />
-				</reflexive>
-			</reflexive>
-		</reflexive>
-	</reflexive>
+				</tagblock>
+			</tagblock>
+		</tagblock>
+	</tagblock>
 </plugin>

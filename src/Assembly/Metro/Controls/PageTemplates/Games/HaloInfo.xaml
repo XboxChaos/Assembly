@@ -6,8 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              Background="#28282b"
-             d:DesignHeight="1000" d:DesignWidth="1200"
-			 Loaded="UserControl_Loaded" Focusable="True">
+             d:DesignHeight="1000" d:DesignWidth="1200">
 	<Grid>
 		<Grid x:Name="sideBar" Width="350" VerticalAlignment="Stretch" HorizontalAlignment="Left" Background="#2d2d30">
 			<Rectangle Fill="#FF545456" Width="2" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Right"
@@ -49,26 +48,33 @@
 								<TextBlock Text="Map ID:" Margin="0,7,0,3" ToolTip="The unique ID from the map's scenario tag." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Map Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .map file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Image Filename:" Margin="0,7,0,3" ToolTip="Name of the relative .blf file." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<TextBlock Text="Map Type:" Margin="0,7,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 								<TextBlock Text="Map Flags:" Margin="0,7,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-								<TextBlock x:Name="lblDefaultAuthor" Text="Default Author:" Margin="0,55,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
+								<TextBlock x:Name="lblDefaultAuthor" Text="Default Author:" Margin="0,72,0,3" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
 							</StackPanel>
 							<StackPanel Grid.Column="1" Margin="0,0,10,0">
 								<TextBlock x:Name="txtGameName" Text="" Margin="10,0,0,0" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" VerticalAlignment="Center" />
 								<TextBox x:Name="txtMapID" Margin="10,4,0,0" TextChanged="txtMapID_TextChanged" />
 								<TextBox x:Name="txtMapInternalName" Margin="10,4,0,0" MaxLength="30" />
-                                <TextBox x:Name="txtMapPhysicalName" Margin="10,4,0,0" MaxLength="30" />
-								<ComboBox x:Name="cbType"  Margin="10,4,0,0" HorizontalAlignment="Stretch" >
-									<ComboBoxItem x:Name="cbType_MM" Content="Main Menu"/>
-									<ComboBoxItem x:Name="cbType_MP" Content="Multiplayer"/>
-									<ComboBoxItem x:Name="cbType_Camp" Content="Campaign"/>
-									<ComboBoxItem x:Name="cbType_Cine" Content="Campaign (Cinematic)"/>
-									<ComboBoxItem x:Name="cbType_FF" Content="Firefight"/>
-								</ComboBox>
-								<CheckBox x:Name="cbVisible" Margin="10,7,0,0" Content="Is Visible" ToolTip="This map will be visible in the lobby."/>
-								<CheckBox x:Name="cbGeneratesFilm" Margin="10,1,0,0" Content="Generates Film" ToolTip="If supported, this map will generate a film to the cache."/>
-								<CheckBox x:Name="cbDLC" Margin="10,1,0,0" Content="DLC" ToolTip="This map's origin is DLC."/>
-								<CheckBox x:Name="cbForgeOnly" Margin="10,1,0,0" Content="Forge Only" ToolTip="The base map can only be selected in Forge."/>
+								<TextBox x:Name="txtMapPhysicalName" Margin="10,4,0,0" MaxLength="30" />
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<StackPanel Grid.Column="0" Margin="10,0,0,0">
+										<CheckBox x:Name="cbMM" Margin="0,7,0,0" Content="Mainmenu" ToolTip="This map is a main menu."/>
+										<CheckBox x:Name="cbMP" Margin="0,1,0,0" Content="Multiplayer" ToolTip="This map will appear in the multiplayer lobby."/>
+										<CheckBox x:Name="cbCamp" Margin="0,1,0,0" Content="Campaign" ToolTip="This map will appear in the campaign lobby."/>
+										<CheckBox x:Name="cbFF" Margin="0,1,0,0" Content="Firefight" ToolTip="This map will appear in the firefight lobby."/>
+									</StackPanel>
+									<StackPanel Grid.Column="1">
+										<CheckBox x:Name="cbVisible" Margin="0,7,0,0" Content="Is Visible" ToolTip="This map will be visible in the lobby."/>
+										<CheckBox x:Name="cbGeneratesFilm" Margin="0,1,0,0" Content="Generates Film" ToolTip="If supported, this map will generate a film to the cache."/>
+										<CheckBox x:Name="cbDLC" Margin="0,1,0,0" Content="DLC" ToolTip="This map's origin is DLC."/>
+										<CheckBox x:Name="cbCine" Margin="0,1,0,0" Content="Cinematic" ToolTip="This map is a cinematic."/>
+										<CheckBox x:Name="cbForgeOnly" Margin="0,1,0,0" Content="Forge Only" ToolTip="The base map can only be selected in Forge."/>
+									</StackPanel>
+								</Grid>
 								<TextBox x:Name="txtDefaultAuthor" Margin="10,4,0,0" MaxLength="16" />
 							</StackPanel>
 						</Grid>

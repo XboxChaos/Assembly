@@ -4,6 +4,7 @@ using Blamite.Blam.Resources;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Extensions;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
@@ -19,10 +20,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private BitArray _unknownResources2;
 		private BitArray _unknownTags;
 
-		public ThirdGenZoneSet(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea)
+		public ThirdGenZoneSet(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, IPointerExpander expander)
 		{
 			_metaArea = metaArea;
-			Load(values, reader);
+			Load(values, reader, expander);
 		}
 
 		/// <summary>
@@ -37,7 +38,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <param name="activate"><c>true</c> if the resource should be made active, <c>false</c> otherwise.</param>
 		public void ActivateResource(DatumIndex index, bool activate)
 		{
-			_activeResources.Length = Math.Max(_activeResources.Length, index.Index + 1);
+			ExpandResources(index.Index);
 			_activeResources[index.Index] = activate;
 		}
 
@@ -59,7 +60,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns><c>true</c> if the resource is active, <c>false</c> otherwise.</returns>
 		public bool IsResourceActive(DatumIndex index)
 		{
-			if (index.Index >= _activeResources.Count)
+			if (index.Index >= _activeResources.Length)
 				return false;
 			return _activeResources[index.Index];
 		}
@@ -83,7 +84,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <param name="activate"><c>true</c> if the tag should be made active, <c>false</c> otherwise.</param>
 		public void ActivateTag(DatumIndex index, bool activate)
 		{
-			_activeTags.Length = Math.Max(_activeTags.Length, index.Index + 1);
+			ExpandTags(index.Index);
 			_activeTags[index.Index] = activate;
 		}
 
@@ -105,7 +106,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <returns><c>true</c> if the tag is active, <c>false</c> otherwise.</returns>
 		public bool IsTagActive(DatumIndex index)
 		{
-			if (index.Index >= _activeTags.Count)
+			if (index.Index >= _activeTags.Length)
 				return false;
 			return _activeTags[index.Index];
 		}
@@ -122,55 +123,82 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return IsTagActive(tag.Index);
 		}
 
-		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, ReflexiveCache<int> cache)
+		/// <summary>
+		///		Adjusts the length of the resource arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandResources(int index)
+		{
+			_activeResources.Length = Math.Max(_activeResources.Length, index + 1);
+			if (_unknownResources.Length != 0)
+				_unknownResources.Length = Math.Max(_unknownResources.Length, index + 1);
+			if (_unknownResources2.Length != 0)
+				_unknownResources2.Length = Math.Max(_unknownResources2.Length, index + 1);
+		}
+
+		/// <summary>
+		///		Adjusts the length of the tag arrays to fit the given index, if necessary.
+		/// </summary>
+		/// <param name="index">The index to adjust for.</param>
+		public void ExpandTags(int index)
+		{
+			_activeTags.Length = Math.Max(_activeTags.Length, index + 1);
+
+			if (_unknownTags.Length != 0)
+				_unknownTags.Length = Math.Max(_unknownTags.Length, index + 1);
+		}
+
+		public StructureValueCollection Serialize(IStream stream, MetaAllocator allocator, TagBlockCache<int> cache, IPointerExpander expander)
 		{
 			var result = new StructureValueCollection();
-			SaveBitArray(_activeResources, "number of raw pool bitfields", "raw pool bitfield table address", allocator, stream, cache, result);
-			SaveBitArray(_unknownResources, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator, stream, cache, result);
-			SaveBitArray(_unknownResources2, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator, stream, cache, result);
-			SaveBitArray(_activeTags, "number of tag bitfields", "tag bitfield table address", allocator, stream, cache, result);
-			SaveBitArray(_unknownTags, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator, stream, cache, result);
+			SaveBitArray(_activeResources, "number of raw pool flags", "raw pool flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownResources, "number of raw pool 2 flags", "raw pool 2 flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownResources2, "number of raw pool 3 flags", "raw pool 3 flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_activeTags, "number of tag flags", "tag flag table address", allocator, stream, cache, result, expander);
+			SaveBitArray(_unknownTags, "number of tag 2 flags", "tag 2 flag table address", allocator, stream, cache, result, expander);
 			return result;
 		}
 
-		public static void Free(StructureValueCollection values, MetaAllocator allocator)
+		public static void Free(StructureValueCollection values, MetaAllocator allocator, IPointerExpander expander)
 		{
-			FreeBitArray(values, "number of raw pool bitfields", "raw pool bitfield table address", allocator);
-			FreeBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", allocator);
-			FreeBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", allocator);
-			FreeBitArray(values, "number of tag bitfields", "tag bitfield table address", allocator);
-			FreeBitArray(values, "number of tag 2 bitfields", "tag 2 bitfield table address", allocator);
+			FreeBitArray(values, "number of raw pool flags", "raw pool flag table address", allocator, expander);
+			FreeBitArray(values, "number of raw pool 2 flags", "raw pool 2 flag table address", allocator, expander);
+			FreeBitArray(values, "number of raw pool 3 flags", "raw pool 3 flag table address", allocator, expander);
+			FreeBitArray(values, "number of tag flags", "tag flag table address", allocator, expander);
+			FreeBitArray(values, "number of tag 2 flags", "tag 2 flag table address", allocator, expander);
 		}
 
-		private void Load(StructureValueCollection values, IReader reader)
+		private void Load(StructureValueCollection values, IReader reader, IPointerExpander expander)
 		{
 			Name = new StringID(values.GetInteger("name stringid"));
-			_activeResources = LoadBitArray(values, "number of raw pool bitfields", "raw pool bitfield table address", reader);
-			_unknownResources = LoadBitArray(values, "number of raw pool 2 bitfields", "raw pool 2 bitfield table address", reader);
-			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 bitfields", "raw pool 3 bitfield table address", reader);
-			_activeTags = LoadBitArray(values, "number of tag bitfields", "tag bitfield table address", reader);
-			_unknownTags = LoadBitArray(values, "number of tag 2 bitfields", "tag 2 bitfield table address", reader);
+			_activeResources = LoadBitArray(values, "number of raw pool flags", "raw pool flag table address", reader, expander);
+			_unknownResources = LoadBitArray(values, "number of raw pool 2 flags", "raw pool 2 flag table address", reader, expander);
+			_unknownResources2 = LoadBitArray(values, "number of raw pool 3 flags", "raw pool 3 flag table address", reader, expander);
+			_activeTags = LoadBitArray(values, "number of tag flags", "tag flag table address", reader, expander);
+			_unknownTags = LoadBitArray(values, "number of tag 2 flags", "tag 2 flag table address", reader, expander);
 		}
 
-		private BitArray LoadBitArray(StructureValueCollection values, string countName, string addressName, IReader reader)
+		private BitArray LoadBitArray(StructureValueCollection values, string countName, string addressName, IReader reader, IPointerExpander expander)
 		{
 			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
 				return new BitArray(0);
 
 			var count = (int) values.GetInteger(countName);
-			uint address = values.GetInteger(addressName);
+			uint address = (uint)values.GetInteger(addressName);
 			if (count <= 0 || address == 0)
 				return new BitArray(0);
 
+			long expand = expander.Expand(address);
+
 			var ints = new int[count];
-			reader.SeekTo(_metaArea.PointerToOffset(address));
+			reader.SeekTo(_metaArea.PointerToOffset(expand));
 			for (int i = 0; i < count; i++)
 				ints[i] = reader.ReadInt32();
 
 			return new BitArray(ints);
 		}
 
-		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, ReflexiveCache<int> cache, StructureValueCollection values)
+		private void SaveBitArray(BitArray bits, string countName, string addressName, MetaAllocator allocator, IStream stream, TagBlockCache<int> cache, StructureValueCollection values, IPointerExpander expander)
 		{
 			if (bits.Length == 0)
 			{
@@ -179,11 +207,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 			}
 
-			var ints = new int[((bits.Length + 31) & ~31)/32];
-			bits.CopyTo(ints, 0);
+			var ints = bits.ToIntArray();
 
 			// If the address isn't cached, then allocate space and write a new array
-			uint newAddress;
+			long newAddress;
 			if (!cache.TryGetAddress(ints, out newAddress))
 			{
 				newAddress = allocator.Allocate(ints.Length*4, stream);
@@ -194,19 +221,24 @@ namespace Blamite.Blam.ThirdGen.Structures
 				cache.Add(newAddress, ints);
 			}
 
+			uint cont = expander.Contract(newAddress);
+
 			values.SetInteger(countName, (uint)ints.Length);
-			values.SetInteger(addressName, newAddress);
+			values.SetInteger(addressName, cont);
 		}
 
-		private static void FreeBitArray(StructureValueCollection values, string countName, string addressName, MetaAllocator allocator)
+		private static void FreeBitArray(StructureValueCollection values, string countName, string addressName, MetaAllocator allocator, IPointerExpander expander)
 		{
 			if (!values.HasInteger(countName) || !values.HasInteger(addressName))
 				return;
 
 			var oldCount = (int)values.GetInteger(countName);
-			uint oldAddress = values.GetInteger(addressName);
+			uint oldAddress = (uint)values.GetInteger(addressName);
+
+			long expand = expander.Expand(oldAddress);
+
 			if (oldCount > 0 && oldAddress > 0)
-				allocator.Free(oldAddress, oldCount*4);
+				allocator.Free(expand, oldCount*4);
 		}
 	}
 }

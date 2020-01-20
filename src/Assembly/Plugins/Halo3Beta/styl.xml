@@ -11,41 +11,10 @@
 		<option name="Latch at Combat" value="0x2" />
 	</enum16>
 	<int16 name="Unknown" offset="0x22" visible="false" />
-	<bitfield32 name="Style Control" offset="0x24" visible="true">
+	<flags32 name="Style Control" offset="0x24" visible="true">
 		<bit name="New Behaviors Default To ON" index="0" />
-		<bit name="Bit 1" index="1" />
-		<bit name="Bit 2" index="2" />
-		<bit name="Bit 3" index="3" />
-		<bit name="Bit 4" index="4" />
-		<bit name="Bit 5" index="5" />
-		<bit name="Bit 6" index="6" />
-		<bit name="Bit 7" index="7" />
-		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
-		<bit name="Bit 10" index="10" />
-		<bit name="Bit 11" index="11" />
-		<bit name="Bit 12" index="12" />
-		<bit name="Bit 13" index="13" />
-		<bit name="Bit 14" index="14" />
-		<bit name="Bit 15" index="15" />
-		<bit name="Bit 16" index="16" />
-		<bit name="Bit 17" index="17" />
-		<bit name="Bit 18" index="18" />
-		<bit name="Bit 19" index="19" />
-		<bit name="Bit 20" index="20" />
-		<bit name="Bit 21" index="21" />
-		<bit name="Bit 22" index="22" />
-		<bit name="Bit 23" index="23" />
-		<bit name="Bit 24" index="24" />
-		<bit name="Bit 25" index="25" />
-		<bit name="Bit 26" index="26" />
-		<bit name="Bit 27" index="27" />
-		<bit name="Bit 28" index="28" />
-		<bit name="Bit 29" index="29" />
-		<bit name="Bit 30" index="30" />
-		<bit name="Bit 31" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors1" offset="0x28" visible="true">
+	</flags32>
+	<flags32 name="Behaviors1" offset="0x28" visible="true">
 		<bit name="------GENERAL------" index="0" />
 		<bit name="root" index="1" />
 		<bit name="null" index="2" />
@@ -78,8 +47,8 @@
 		<bit name="surprise" index="29" />
 		<bit name="grenade_impulse" index="30" />
 		<bit name="anti_vehicle_grenade" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors2" offset="0x2C" visible="true">
+	</flags32>
+	<flags32 name="Behaviors2" offset="0x2C" visible="true">
 		<bit name="stalk" index="0" />
 		<bit name="flank" index="1" />
 		<bit name="berserk_wander_impulse" index="2" />
@@ -112,8 +81,8 @@
 		<bit name="refresh_target" index="29" />
 		<bit name="sense_target" index="30" />
 		<bit name="postsearch" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors3" offset="0x30" visible="true">
+	</flags32>
+	<flags32 name="Behaviors3" offset="0x30" visible="true">
 		<bit name="coverme_investigate" index="0" />
 		<bit name="------SELF-DEFENSE------" index="1" />
 		<bit name="self_preservation" index="2" />
@@ -146,8 +115,8 @@
 		<bit name="surprise_retreat" index="29" />
 		<bit name="overheated_weapon_retreat" index="30" />
 		<bit name="------AMBUSH------" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors4" offset="0x34" visible="true">
+	</flags32>
+	<flags32 name="Behaviors4" offset="0x34" visible="true">
 		<bit name="ambush" index="0" />
 		<bit name="coordinated_ambush" index="1" />
 		<bit name="proximity_ambush" index="2" />
@@ -180,8 +149,8 @@
 		<bit name="------POSTCOMBAT------" index="29" />
 		<bit name="postcombat" index="30" />
 		<bit name="post_postcombat" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors5" offset="0x38" visible="true">
+	</flags32>
+	<flags32 name="Behaviors5" offset="0x38" visible="true">
 		<bit name="check_friend" index="0" />
 		<bit name="shoot_corpse" index="1" />
 		<bit name="postcombat_approach" index="2" />
@@ -214,8 +183,8 @@
 		<bit name="guardian_isolation_surge" index="29" />
 		<bit name="------PUREFORMS------" index="30" />
 		<bit name="group_morph_impulse" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors6" offset="0x3C" visible="true">
+	</flags32>
+	<flags32 name="Behaviors6" offset="0x3C" visible="true">
 		<bit name="arrival_morph_impulse" index="0" />
 		<bit name="pureform_default_impulse" index="1" />
 		<bit name="search_morph" index="2" />
@@ -248,8 +217,8 @@
 		<bit name="posture" index="29" />
 		<bit name="activity_default" index="30" />
 		<bit name="------SPECIAL------" index="31" />
-	</bitfield32>
-	<bitfield32 name="Behaviors7" offset="0x40" visible="true">
+	</flags32>
+	<flags32 name="Behaviors7" offset="0x40" visible="true">
 		<bit name="formation" index="0" />
 		<bit name="grunt scared by elite" index="1" />
 		<bit name="stunned" index="2" />
@@ -282,9 +251,9 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
-	<reflexive name="Special Movement" offset="0x44" visible="true" entrySize="0x4">
-		<bitfield32 name="Special Movement 1" offset="0x0" visible="true">
+	</flags32>
+	<tagblock name="Special Movement" offset="0x44" visible="true" elementSize="0x4">
+		<flags32 name="Special Movement 1" offset="0x0" visible="true">
 			<bit name="Jump" index="0" />
 			<bit name="Climb" index="1" />
 			<bit name="Vault" index="2" />
@@ -317,9 +286,9 @@
 			<bit name="Bit 29" index="29" />
 			<bit name="Bit 30" index="30" />
 			<bit name="Bit 31" index="31" />
-		</bitfield32>
-	</reflexive>
-	<reflexive name="Behavior List" offset="0x50" visible="true" entrySize="0x20">
+		</flags32>
+	</tagblock>
+	<tagblock name="Behavior List" offset="0x50" visible="true" elementSize="0x20">
 		<ascii name="Behavior Name" offset="0x0" visible="true" length="0x20" />
-	</reflexive>
+	</tagblock>
 </plugin>

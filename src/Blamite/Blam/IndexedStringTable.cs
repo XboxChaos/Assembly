@@ -30,8 +30,13 @@ namespace Blamite.Blam
 			stringReader.SeekTo(0);
 			for (int i = 0; i < offsets.Length; i++)
 			{
-				stringReader.SeekTo(offsets[i]);
-				_strings.Add(stringReader.ReadAscii());
+				if (offsets[i] == -1)
+					_strings.Add(null);
+				else
+				{
+					stringReader.SeekTo(offsets[i]);
+					_strings.Add(stringReader.ReadAscii());
+				}
 			}
 		}
 
@@ -129,7 +134,7 @@ namespace Blamite.Blam
 				}
 				else
 				{
-					stream.WriteInt32(0);
+					stream.WriteInt32(-1);
 				}
 			}
 		}
@@ -137,9 +142,8 @@ namespace Blamite.Blam
 		private void SaveData(IStream stream)
 		{
 			// Create a memory buffer and write the strings there
-			var buffer = new MemoryStream();
-			var bufferWriter = new EndianWriter(buffer, stream.Endianness);
-			try
+			using (var buffer = new MemoryStream())
+			using (var bufferWriter = new EndianWriter(buffer, stream.Endianness))
 			{
 				// Write the strings to the buffer
 				foreach (string str in _strings)
@@ -150,22 +154,18 @@ namespace Blamite.Blam
 
 				// Align the buffer's length if encryption is necessary
 				if (_key != null)
-					buffer.SetLength(AES.AlignSize((int) buffer.Length));
+					buffer.SetLength(AES.AlignSize((int)buffer.Length));
 
-				byte[] data = buffer.GetBuffer();
+				byte[] data = buffer.ToArray();
 
 				// Encrypt the buffer if necessary
 				if (_key != null)
-					data = AES.Encrypt(data, 0, (int) buffer.Length, _key.Key, _key.IV);
+					data = AES.Encrypt(data, 0, (int)buffer.Length, _key.Key, _key.IV);
 
 				// Resize the data area and write it in
-				_data.Resize((int) buffer.Length, stream);
+				_data.Resize((int)buffer.Length, stream);
 				stream.SeekTo(_data.Offset);
-				stream.WriteBlock(data, 0, (int) buffer.Length);
-			}
-			finally
-			{
-				bufferWriter.Close();
+				stream.WriteBlock(data, 0, (int)buffer.Length);
 			}
 		}
 

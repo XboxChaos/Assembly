@@ -171,12 +171,12 @@ namespace Assembly.Helpers
 		}
 
 		/// <summary>
-		///     Replaces invalid filename characters in a tag class with an underscore (_) so that it can be used as part of a
+		///     Replaces invalid filename characters in a tag group with an underscore (_) so that it can be used as part of a
 		///     path.
 		/// </summary>
-		/// <param name="name">The tag class string to replace invalid characters in.</param>
+		/// <param name="name">The tag group string to replace invalid characters in.</param>
 		/// <returns>The "sterilized" name.</returns>
-		public static string SterilizeTagClassName(string name)
+		public static string SterilizeTagGroupName(string name)
 		{
 			// http://stackoverflow.com/questions/309485/c-sharp-sanitize-file-name
 			string regex = string.Format(@"(\.+$)|([{0}])", InvalidFileNameChars);

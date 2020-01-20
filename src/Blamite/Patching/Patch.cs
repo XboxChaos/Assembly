@@ -11,6 +11,7 @@ namespace Blamite.Patching
 			SegmentChanges = new List<SegmentChange>();
 			MapID = -1;
 			MetaChangesIndex = -1;
+			PC = false;
 		}
 
 		/// <summary>
@@ -49,6 +50,13 @@ namespace Blamite.Patching
 		public byte[] Screenshot { get; set; }
 
 		/// <summary>
+		/// The build string of the original cache file.
+		/// </summary>
+		public string BuildString { get; set; }
+
+		public bool PC { get; set; }
+
+		/// <summary>
 		///     Changes which should be made to different parts of a map file.
 		/// </summary>
 		public List<SegmentChange> SegmentChanges { get; private set; }
@@ -56,7 +64,7 @@ namespace Blamite.Patching
 		/// <summary>
 		///     The base pointer to add to meta change offsets to get a pointer to poke to.
 		/// </summary>
-		public uint MetaPokeBase { get; set; }
+		public long MetaPokeBase { get; set; }
 
 		/// <summary>
 		///     The index in <see cref="SegmentChanges" /> of the file's meta area changes.

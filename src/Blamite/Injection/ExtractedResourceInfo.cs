@@ -18,10 +18,14 @@ namespace Blamite.Injection
 		{
 			OriginalPrimaryPageIndex = -1;
 			PrimaryOffset = -1;
-			PrimaryUnknown = -1;
+			PrimarySize = null;
 			OriginalSecondaryPageIndex = -1;
 			SecondaryOffset = -1;
-			SecondaryUnknown = -1;
+			SecondarySize = null;
+
+			OriginalTertiaryPageIndex = -1;
+			TertiaryOffset = -1;
+			TertiarySize = null;
 		}
 
 		/// <summary>
@@ -32,10 +36,14 @@ namespace Blamite.Injection
 		{
 			OriginalPrimaryPageIndex = (basePointer.PrimaryPage != null) ? basePointer.PrimaryPage.Index : -1;
 			PrimaryOffset = basePointer.PrimaryOffset;
-			PrimaryUnknown = basePointer.PrimaryUnknown;
+			PrimarySize = basePointer.PrimarySize;
 			OriginalSecondaryPageIndex = (basePointer.SecondaryPage != null) ? basePointer.SecondaryPage.Index : -1;
 			SecondaryOffset = basePointer.SecondaryOffset;
-			SecondaryUnknown = basePointer.SecondaryUnknown;
+			SecondarySize = basePointer.SecondarySize;
+
+			OriginalTertiaryPageIndex = (basePointer.TertiaryPage != null) ? basePointer.TertiaryPage.Index : -1;
+			TertiaryOffset = basePointer.TertiaryOffset;
+			TertiarySize = basePointer.TertiarySize;
 		}
 
 		/// <summary>
@@ -48,7 +56,10 @@ namespace Blamite.Injection
 		/// </summary>
 		public int PrimaryOffset { get; set; }
 
-		public int PrimaryUnknown { get; set; }
+		/// <summary>
+		///     Gets or sets the original index of the resource's primary size.
+		/// </summary>
+		public ResourceSize PrimarySize { get; set; }
 
 		/// <summary>
 		///     Gets or sets the original index of the resource's secondary page.
@@ -60,7 +71,26 @@ namespace Blamite.Injection
 		/// </summary>
 		public int SecondaryOffset { get; set; }
 
-		public int SecondaryUnknown { get; set; }
+		/// <summary>
+		///     Gets or sets the original index of the resource's secondary size.
+		/// </summary>
+		public ResourceSize SecondarySize { get; set; }
+
+
+		/// <summary>
+		///     Gets or sets the original index of the resource's secondary page.
+		/// </summary>
+		public int OriginalTertiaryPageIndex { get; set; }
+
+		/// <summary>
+		///     Gets or sets the offset of the resource in its secondary page.
+		/// </summary>
+		public int TertiaryOffset { get; set; }
+
+		/// <summary>
+		///     Gets or sets the original index of the resource's tertiary size.
+		/// </summary>
+		public ResourceSize TertiarySize { get; set; }
 	}
 
 	/// <summary>
@@ -97,9 +127,8 @@ namespace Blamite.Injection
 			Location = (baseResource.Location != null) ? new ExtractedResourcePointer(baseResource.Location) : null;
 			ResourceFixups = new List<ResourceFixup>(baseResource.ResourceFixups);
 			DefinitionFixups = new List<ResourceDefinitionFixup>(baseResource.DefinitionFixups);
-			Unknown1 = baseResource.Unknown1;
-			Unknown2 = baseResource.Unknown2;
-			Unknown3 = baseResource.Unknown3;
+			ResourceBits = baseResource.ResourceBits;
+			BaseDefinitionAddress = baseResource.BaseDefinitionAddress;
 		}
 
 		/// <summary>
@@ -135,8 +164,90 @@ namespace Blamite.Injection
 		public List<ResourceFixup> ResourceFixups { get; private set; }
 		public List<ResourceDefinitionFixup> DefinitionFixups { get; private set; }
 
+		public int ResourceBits { get; set; }
+		public int BaseDefinitionAddress { get; set; }
+	}
+
+	public class ExtractedResourcePredictionD
+	{
+		public ExtractedResourcePredictionD()
+		{
+			CEntries = new List<ExtractedResourcePredictionC>();
+			AEntries = new List<ExtractedResourcePredictionA>();
+		}
+		public ExtractedResourcePredictionD(ResourcePredictionD pred)
+		{
+			CEntries = new List<ExtractedResourcePredictionC>();
+			AEntries = new List<ExtractedResourcePredictionA>();
+
+			OriginalIndex = pred.Index;
+			OriginalTagIndex = pred.Tag.Index;
+			Unknown1 = pred.Unknown1;
+			Unknown2 = pred.Unknown2;
+		}
+
+		public DatumIndex OriginalTagIndex { get; set; }
+
 		public int Unknown1 { get; set; }
 		public int Unknown2 { get; set; }
-		public int Unknown3 { get; set; }
+
+		public List<ExtractedResourcePredictionC> CEntries { get; private set; }
+		public List<ExtractedResourcePredictionA> AEntries { get; private set; }
+
+		public int OriginalIndex { get; set; }
+	}
+
+	public class ExtractedResourcePredictionC
+	{
+		public ExtractedResourcePredictionC() { }
+		public ExtractedResourcePredictionC(ResourcePredictionC pred)
+		{
+			OriginalIndex = pred.Index;
+			OverallIndex = pred.OverallIndex;
+			BEntry = new ExtractedResourcePredictionB(pred.BEntry);
+		}
+
+		public int OriginalIndex { get; set; }
+		public short OverallIndex { get; set; }
+		public ExtractedResourcePredictionB BEntry { get; set; }
+	}
+
+	public class ExtractedResourcePredictionB
+	{
+		public ExtractedResourcePredictionB()
+		{
+			AEntries = new List<ExtractedResourcePredictionA>();
+		}
+		public ExtractedResourcePredictionB(ResourcePredictionB pred)
+		{
+			AEntries = new List<ExtractedResourcePredictionA>();
+
+			OriginalIndex = pred.Index;
+			OverallIndex = pred.OverallIndex;
+		}
+
+		public int OriginalIndex { get; set; }
+		public short OverallIndex { get; set; }
+		public List<ExtractedResourcePredictionA> AEntries { get; private set; }
+	}
+
+	public class ExtractedResourcePredictionA
+	{
+		public ExtractedResourcePredictionA() { }
+		public ExtractedResourcePredictionA(ResourcePredictionA pred)
+		{
+			OriginalIndex = pred.Index;
+			OriginalResourceIndex = pred.Resource;
+			OriginalResourceSubIndex = pred.SubResource;
+		}
+
+		public int OriginalIndex { get; set; }
+
+		public DatumIndex OriginalResourceIndex { get; set; }
+
+		public string OriginalResourceName { get; set; }
+		public int OriginalResourceGroup { get; set; }
+
+		public int OriginalResourceSubIndex { get; set; }
 	}
 }

@@ -5,7 +5,7 @@ namespace Blamite.Util
 	public class MemoryMap
 	{
 		// Sorted list containing the boundary addresses in the map
-		private readonly List<uint> _addresses = new List<uint>();
+		private readonly List<long> _addresses = new List<long>();
 		private readonly List<long> _sourceOffsets = new List<long>();
 
 		/// <summary>
@@ -14,7 +14,7 @@ namespace Blamite.Util
 		/// </summary>
 		/// <param name="address">The address to add to the map.</param>
 		/// <seealso cref="BlockCrossesBoundary" />
-		public void AddBoundaryAddress(uint address)
+		public void AddBoundaryAddress(long address)
 		{
 			AddAddress(address, 0);
 		}
@@ -24,7 +24,7 @@ namespace Blamite.Util
 		/// </summary>
 		/// <param name="address">The address to add to the map.</param>
 		/// <param name="sourceOffset">The address's file offset, for debugging purposes. Cannot be zero.</param>
-		public void AddAddress(uint address, long sourceOffset)
+		public void AddAddress(long address, long sourceOffset)
 		{
 			// Binary-search the address list, and insert the address at the appropriate
 			// location to maintain the list's sorting if it isn't already in there
@@ -41,7 +41,7 @@ namespace Blamite.Util
 		/// </summary>
 		/// <param name="address">The address to remove.</param>
 		/// <returns>true if the address was found in the map and removed.</returns>
-		public bool RemoveAddress(uint address)
+		public bool RemoveAddress(long address)
 		{
 			// Binary-search it, and if it's found (result is >= 0), remove it
 			int index = _addresses.BinarySearch(address);
@@ -60,7 +60,7 @@ namespace Blamite.Util
 		/// <param name="start"></param>
 		/// <param name="size"></param>
 		/// <returns></returns>
-		public bool BlockCrossesBoundary(uint start, int size)
+		public bool BlockCrossesBoundary(long start, int size)
 		{
 			int index = _addresses.BinarySearch(start);
 			if (index >= 0)
@@ -78,7 +78,7 @@ namespace Blamite.Util
 			return false;
 		}
 
-		public uint GetNextHighestAddress(uint address)
+		public long GetNextHighestAddress(long address)
 		{
 			// Binary-search the address list
 			int index = _addresses.BinarySearch(address);
@@ -99,7 +99,7 @@ namespace Blamite.Util
 			return 0xFFFFFFFF; // Address is at or beyond the end of the map
 		}
 
-		public int EstimateBlockSize(uint startAddress)
+		public int EstimateBlockSize(long startAddress)
 		{
 			// Just get the next-highest address and subtract
 			return (int) (GetNextHighestAddress(startAddress) - startAddress);

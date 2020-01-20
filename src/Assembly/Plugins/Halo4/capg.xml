@@ -6,16 +6,16 @@
 	<int32 name="Unknown" offset="0x0" visible="true" />
 	<int16 name="Unknown" offset="0x4" visible="true" />
 	<int16 name="Unknown" offset="0x6" visible="true" />
-	<reflexive name="Apps" offset="0x8" visible="true" entrySize="0x3C">
+	<tagblock name="Apps" offset="0x8" visible="true" elementSize="0x3C">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<stringid name="Unknown" offset="0x4" visible="true" />
 		<stringid name="Unknown" offset="0x8" visible="true" />
 		<stringid name="Icon" offset="0xC" visible="true" />
 		<tagref name="Unknown" offset="0x10" visible="true" />
 		<undefined name="Unknown" offset="0x20" visible="true" />
-		<reflexive name="App Traits" offset="0x24" visible="true" entrySize="0x3C">
-			<reflexive name="Shields and Health" offset="0x0" visible="true" entrySize="0x40">
-				<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+		<tagblock name="App Traits" offset="0x24" visible="true" elementSize="0x3C">
+			<tagblock name="Shields and Health" offset="0x0" visible="true" elementSize="0x40">
+				<flags32 name="Modifier Flags" offset="0x0" visible="true">
 					<bit name="Damage Resistance Multiplier" index="0" />
 					<bit name="Shield Health Multiplier" index="1" />
 					<bit name="Body Health Multiplier" index="2" />
@@ -29,7 +29,7 @@
 					<bit name="Wheelman Mod Recharge Time" index="10" />
 					<bit name="Wheelman Mod EMP Disable Time" index="11" />
 					<bit name="Fall Damage Rate" index="12" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Damage Resistance Multiplier" offset="0x4" visible="true" />
 				<float32 name="Shield Health Multiplier" offset="0x8" visible="true" />
 				<float32 name="Body Health Multiplier" offset="0xC" visible="true" />
@@ -74,9 +74,9 @@
 				<int8 name="Unknown" offset="0x3D" visible="false" />
 				<int8 name="Unknown" offset="0x3E" visible="false" />
 				<int8 name="Unknown" offset="0x3F" visible="false" />
-			</reflexive>
-			<reflexive name="Weapons, Damage, and Equipment" offset="0xC" visible="true" entrySize="0x80">
-				<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			</tagblock>
+			<tagblock name="Weapons, Damage, and Equipment" offset="0xC" visible="true" elementSize="0x80">
+				<flags32 name="Modifier Flags" offset="0x0" visible="true">
 					<bit name="Weapon Damage Multiplier" index="0" />
 					<bit name="Melee Damage Multiplier" index="1" />
 					<bit name="Frag Grenade Recharge Rate" index="2" />
@@ -99,7 +99,7 @@
 					<bit name="Drop Recon Mod Warning Time" index="19" />
 					<bit name="Drop Recon Mod Distance" index="20" />
 					<bit name="Assassination Speed Multiplier" index="21" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Weapon Damage Multiplier" offset="0x4" visible="true" />
 				<float32 name="Melee Damage Multiplier" offset="0x8" visible="true" />
 				<float32 name="Frag Grenade Recharge Rate" offset="0xC" visible="true" />
@@ -205,20 +205,20 @@
 					<option name="False" value="0x1" />
 					<option name="True" value="0x2" />
 				</enum8>
-				<int8 name="Unknown" offset="0x6b" visible="false" />
-				<stringid name="Initial Primary Weapon" offset="0x6c" visible="true" />
+				<int8 name="Unknown" offset="0x6B" visible="false" />
+				<stringid name="Initial Primary Weapon" offset="0x6C" visible="true" />
 				<stringid name="Initial Secondary Weapon" offset="0x70" visible="true" />
 				<stringid name="Initial Ability" offset="0x74" visible="true" />
 				<stringid name="Initial Tactical Package" offset="0x78" visible="true" />
 				<stringid name="Initial Support Upgrade" offset="0x7C" visible="true" />
-			</reflexive>
-			<reflexive name="Movement" offset="0x18" visible="true" entrySize="0x1C">
-				<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			</tagblock>
+			<tagblock name="Movement" offset="0x18" visible="true" elementSize="0x1C">
+				<flags32 name="Modifier Flags" offset="0x0" visible="true">
 					<bit name="Movement Multiplier" index="0" />
 					<bit name="Gravity Multiplier" index="1" />
 					<bit name="Jump Height Multiplier" index="2" />
 					<bit name="Look Speed Multiplier" index="3" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Movement Multiplier" offset="0x4" visible="true" />
 				<float32 name="Gravity Multiplier" offset="0x8" visible="true" />
 				<float32 name="Jump Height Multiplier" offset="0xC" visible="true" />
@@ -259,10 +259,10 @@
 					<option name="Disabled" value="0x1" />
 					<option name="Enabled" value="0x2" />
 				</enum8>
-				<int8 name="Unknown" offset="0x1a" visible="false" />
-				<int8 name="Unknown" offset="0x1b" visible="false" />
-			</reflexive>
-			<reflexive name="Appearance" offset="0x24" visible="true" entrySize="0xC">
+				<int8 name="Unknown" offset="0x1A" visible="false" />
+				<int8 name="Unknown" offset="0x1B" visible="false" />
+			</tagblock>
+			<tagblock name="Appearance" offset="0x24" visible="true" elementSize="0xC">
 				<enum8 name="Active Camo" offset="0x0" visible="true">
 					<option name="Default" value="0x0" />
 					<option name="Disabled" value="0x1" />
@@ -292,12 +292,12 @@
 				</enum8>
 				<stringid name="Death Effect" offset="0x4" visible="true" />
 				<stringid name="Looping Effect" offset="0x8" visible="true" />
-			</reflexive>
-			<reflexive name="HUD" offset="0x30" visible="true" entrySize="0x14">
-				<bitfield32 name="Modifier Flags" offset="0x0" visible="true">
+			</tagblock>
+			<tagblock name="HUD" offset="0x30" visible="true" elementSize="0x14">
+				<flags32 name="Modifier Flags" offset="0x0" visible="true">
 					<bit name="Tracker Range" index="0" />
 					<bit name="Nemesis Duration" index="1" />
-				</bitfield32>
+				</flags32>
 				<float32 name="Tracker Range" offset="0x4" visible="true" />
 				<float32 name="Nemesis Duration" offset="0x8" visible="true" />
 				<enum8 name="Tracker Mode" offset="0xC" visible="true">
@@ -342,11 +342,11 @@
 					<option name="Disabled" value="0x1" />
 					<option name="Enabled" value="0x2" />
 				</enum8>
-			</reflexive>
-		</reflexive>
-		<reflexive name="Sprinty" offset="0x30" visible="true" entrySize="0x8">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Sprinty" offset="0x30" visible="true" elementSize="0x8">
 			<undefined name="Unknown" offset="0x0" visible="true" />
 			<undefined name="Unknown" offset="0x4" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 </plugin>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin game="Halo2" baseSize="0x10">
+	<revisions>
+		<revision author="Lord Zedd" version="1">ayy lmao</revision>
+	</revisions>
+	<tagblock name="Decorator" offset="0x0" visible="true" elementSize="0x30">
+		<float32 name="Grid Origin x" offset="0x0" visible="true" />
+		<float32 name="Grid Origin y" offset="0x4" visible="true" />
+		<float32 name="Grid Origin z" offset="0x8" visible="true" />
+		<int32 name="Cell Count Per Dimension" offset="0xC" visible="true" />
+		<tagblock name="Cache Blocks" offset="0x10" visible="true" elementSize="0x34">
+			<int32 name="Block Offset" offset="0x0" visible="true" />
+			<int32 name="Block Size" offset="0x4" visible="true" />
+			<int32 name="Section Data Size" offset="0x8" visible="true" />
+			<int32 name="Resource Data Size" offset="0xC" visible="true" />
+			<tagblock name="Resources" offset="0x10" visible="true" elementSize="0x10">
+				<enum8 name="Type" offset="0x0" visible="true">
+					<option name="Tag Block" value="0x0" />
+					<option name="Tag Data" value="0x1" />
+					<option name="Vertex Buffer" value="0x2" />
+				</enum8>
+				<int8 name="Unknown" offset="0x1" visible="false" />
+				<int16 name="Unknown" offset="0x2" visible="false" />
+				<int16 name="Primary Locator" offset="0x4" visible="true" />
+				<int16 name="Secondary Locator" offset="0x6" visible="true" />
+				<int32 name="Resource Data Size" offset="0x8" visible="true" />
+				<int32 name="Resource Data Offset" offset="0xC" visible="true" />
+			</tagblock>
+			<undefined name="Unknown" offset="0x18" visible="false" />
+			<int16 name="Owner Tag Section Offset" offset="0x1C" visible="true" />
+			<int16 name="Unknown" offset="0x1E" visible="false" />
+			<undefined name="Unknown" offset="0x20" visible="false" />
+			<tagblock name="Cache Block Data" offset="0x24" visible="true" elementSize="0x50">
+				<tagblock name="Placements" offset="0x0" visible="true" elementSize="0x18">
+					<int32 name="Internal Data 1" offset="0x0" visible="true" />
+					<int32 name="Compressed Position" offset="0x4" visible="true" />
+					<color32 name="Tint Color" offset="0x8" alpha="false" visible="true" />
+					<color32 name="Lightmap Color" offset="0xC" alpha="false" visible="true" />
+					<int32 name="Compressed Light Direction" offset="0x10" visible="true" />
+					<int32 name="Compressed Light 2 Direction" offset="0x14" visible="true" />
+				</tagblock>
+				<tagblock name="Decal Vertices" offset="0x8" visible="true" elementSize="0x20">
+					<float32 name="Position x" offset="0x0" visible="true" />
+					<float32 name="Position y" offset="0x4" visible="true" />
+					<float32 name="Position z" offset="0x8" visible="true" />
+					<float32 name="Texcoord 0 x" offset="0xC" visible="true" />
+					<float32 name="Texcoord 0 y" offset="0x10" visible="true" />
+					<float32 name="Texcoord 1 x" offset="0x14" visible="true" />
+					<float32 name="Texcoord 1 y" offset="0x18" visible="true" />
+					<color32 name="Color" offset="0x1C" alpha="false" visible="true" />
+				</tagblock>
+				<tagblock name="Decal Indices" offset="0x10" visible="true" elementSize="0x2">
+					<int16 name="Index" offset="0x0" visible="true" />
+				</tagblock>
+				<uint32 name="Decal Vertex Buffer" offset="0x18" visible="true" />
+				<undefined name="Unknown" offset="0x1C" visible="false" />
+				<undefined name="Unknown" offset="0x20" visible="false" />
+				<undefined name="Unknown" offset="0x24" visible="false" />
+				<undefined name="Unknown" offset="0x28" visible="false" />
+				<tagblock name="Sprite Vertices" offset="0x2C" visible="true" elementSize="0x30">
+					<float32 name="Position x" offset="0x0" visible="true" />
+					<float32 name="Position y" offset="0x4" visible="true" />
+					<float32 name="Position z" offset="0x8" visible="true" />
+					<float32 name="Offset i" offset="0xC" visible="true" />
+					<float32 name="Offset j" offset="0x10" visible="true" />
+					<float32 name="Offset k" offset="0x14" visible="true" />
+					<float32 name="Axis i" offset="0x18" visible="true" />
+					<float32 name="Axis j" offset="0x1C" visible="true" />
+					<float32 name="Axis k" offset="0x20" visible="true" />
+					<float32 name="Texcoord x" offset="0x24" visible="true" />
+					<float32 name="Texcoord y" offset="0x28" visible="true" />
+					<color32 name="Color" offset="0x2C" alpha="false" visible="true" />
+				</tagblock>
+				<tagblock name="Sprite Indices" offset="0x34" visible="true" elementSize="0x2">
+					<int16 name="Index" offset="0x0" visible="true" />
+				</tagblock>
+				<uint32 name="Sprite Vertex Buffer" offset="0x3C" visible="true" />
+				<undefined name="Unknown" offset="0x40" visible="false" />
+				<undefined name="Unknown" offset="0x44" visible="false" />
+				<undefined name="Unknown" offset="0x48" visible="false" />
+				<undefined name="Unknown" offset="0x4C" visible="false" />
+			</tagblock>
+			<undefined name="Unknown" offset="0x2C" visible="false" />
+			<undefined name="Unknown" offset="0x30" visible="false" />
+		</tagblock>
+		<tagblock name="Groups" offset="0x18" visible="true" elementSize="0x18">
+			<int8 name="Decorator Set Index" offset="0x0" visible="true" />
+			<enum8 name="Decorator Type" offset="0x1" visible="true">
+				<option name="Model" value="0x0" />
+				<option name="Floating Decal" value="0x1" />
+				<option name="Projected Decal" value="0x2" />
+				<option name="Screen Facing Quad" value="0x3" />
+				<option name="Axis Rotating Quad" value="0x4" />
+				<option name="Cross Quad" value="0x5" />
+			</enum8>
+			<int8 name="Shader Index" offset="0x2" visible="true" />
+			<int8 name="Compressed Radius" offset="0x3" visible="true" />
+			<int16 name="Cluster" offset="0x4" visible="true" />
+			<int16 name="Cache Block Index" offset="0x6" visible="true" />
+			<int16 name="Decorator Start Index" offset="0x8" visible="true" />
+			<int16 name="Decorator Count" offset="0xA" visible="true" />
+			<int16 name="Vertex Start Offset" offset="0xC" visible="true" />
+			<int16 name="Vertex Count" offset="0xE" visible="true" />
+			<int16 name="Index Start Offset" offset="0x10" visible="true" />
+			<int16 name="Index Count" offset="0x12" visible="true" />
+			<int32 name="Compressed Bounding Center" offset="0x14" visible="true" />
+		</tagblock>
+		<tagblock name="Cells" offset="0x20" visible="true" elementSize="0x18">
+			<int16 name="Child Index" offset="0x0" visible="true" />
+			<int16 name="Child Index" offset="0x2" visible="true" />
+			<int16 name="Child Index" offset="0x4" visible="true" />
+			<int16 name="Child Index" offset="0x6" visible="true" />
+			<int16 name="Child Index" offset="0x8" visible="true" />
+			<int16 name="Child Index" offset="0xA" visible="true" />
+			<int16 name="Child Index" offset="0xC" visible="true" />
+			<int16 name="Child Index" offset="0xE" visible="true" />
+			<int16 name="Cache Block Index" offset="0x10" visible="true" />
+			<int16 name="Group Count" offset="0x12" visible="true" />
+			<int32 name="Group Start Index" offset="0x14" visible="true" />
+		</tagblock>
+		<tagblock name="Decals" offset="0x28" visible="true" elementSize="0x40">
+			<int8 name="Decorator Set Index" offset="0x0" visible="true" />
+			<int8 name="Decorator Class" offset="0x1" visible="true" />
+			<int8 name="Decorator Permutation" offset="0x2" visible="true" />
+			<int8 name="Sprite Index" offset="0x3" visible="true" />
+			<float32 name="Position x" offset="0x4" visible="true" />
+			<float32 name="Position y" offset="0x8" visible="true" />
+			<float32 name="Position z" offset="0xC" visible="true" />
+			<float32 name="Left i" offset="0x10" visible="true" />
+			<float32 name="Left j" offset="0x14" visible="true" />
+			<float32 name="Left k" offset="0x18" visible="true" />
+			<float32 name="Up i" offset="0x1C" visible="true" />
+			<float32 name="Up j" offset="0x20" visible="true" />
+			<float32 name="Up k" offset="0x24" visible="true" />
+			<float32 name="Extents i" offset="0x28" visible="true" />
+			<float32 name="Extents j" offset="0x2C" visible="true" />
+			<float32 name="Extents k" offset="0x30" visible="true" />
+			<float32 name="Previous Position x" offset="0x34" visible="true" />
+			<float32 name="Previous Position y" offset="0x38" visible="true" />
+			<float32 name="Previous Position z" offset="0x3C" visible="true" />
+		</tagblock>
+	</tagblock>
+	<tagblock name="Decorator Palette" offset="0x8" visible="true" elementSize="0x8">
+		<tagRef name="Decorator Set" offset="0x0" visible="true" />
+	</tagblock>
+</plugin>

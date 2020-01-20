@@ -18,11 +18,10 @@ namespace System
 	///     All functions, where is used conversion half->float/float->half,
 	///     are approx. ten times slower than float->double/double->float, i.e. ~3ns on 2GHz CPU.
 	///     References:
-	///     - Fast Half Float Conversions, Jeroen van der Zijp, link:
+	///   ///   - Fast Half Float Conversions, Jeroen van der Zijp, link:
 	///     http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf
 	///     - IEEE 754 revision, link: http://grouper.ieee.org/groups/754/
 	/// </remarks>
-	[Serializable]
 	public struct Half : IComparable, IFormattable, IConvertible, IComparable<Half>, IEquatable<Half>
 	{
 		/// <summary>

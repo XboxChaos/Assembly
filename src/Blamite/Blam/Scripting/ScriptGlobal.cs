@@ -12,9 +12,9 @@ namespace Blamite.Blam.Scripting
 		{
 		}
 
-		internal ScriptGlobal(StructureValueCollection values)
+		internal ScriptGlobal(StructureValueCollection values, StringIDSource stringIDs)
 		{
-			Load(values);
+			Load(values, stringIDs);
 		}
 
 		/// <summary>
@@ -32,9 +32,12 @@ namespace Blamite.Blam.Scripting
 		/// </summary>
 		public DatumIndex ExpressionIndex { get; set; }
 
-		private void Load(StructureValueCollection values)
+		private void Load(StructureValueCollection values, StringIDSource stringIDs)
 		{
-			Name = values.GetString("name");
+			Name = values.HasInteger("name index")
+				? stringIDs.GetString(new StringID(values.GetInteger("name index")))
+				: values.GetString("name");
+
 			Type = (short) values.GetInteger("type");
 			ExpressionIndex = new DatumIndex(values.GetInteger("expression index"));
 		}

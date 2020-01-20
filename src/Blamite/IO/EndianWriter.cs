@@ -1,19 +1,19 @@
 /* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
  * 
- * This file is part of ExtryzeDLL.
+ * This file is part of Blamite.
  * 
- * Extryze is free software: you can redistribute it and/or modify
+ * Blamite is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * Extryze is distributed in the hope that it will be useful,
+ * Blamite is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Blamite.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -49,14 +49,6 @@ namespace Blamite.IO
 		{
 			get { return _bigEndian ? Endian.BigEndian : Endian.LittleEndian; }
 			set { _bigEndian = (value == Endian.BigEndian); }
-		}
-
-		/// <summary>
-		///     Closes the stream, releasing any I/O resources it has acquired.
-		/// </summary>
-		public void Close()
-		{
-			_stream.Close();
 		}
 
 		/// <summary>
@@ -204,7 +196,7 @@ namespace Blamite.IO
 		/// <param name="str">The ASCII string to write.</param>
 		public void WriteAscii(string str)
 		{
-			byte[] bytes = Encoding.ASCII.GetBytes(str);
+			byte[] bytes = Encoding.GetEncoding(28591).GetBytes(str);// using Latin1 for the full 8bit range
 			WriteBlock(bytes);
 			WriteByte(0);
 		}

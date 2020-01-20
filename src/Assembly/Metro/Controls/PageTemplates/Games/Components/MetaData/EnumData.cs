@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -15,8 +16,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private EnumType _type;
 		private int _value;
 
-		public EnumData(string name, uint offset, uint address, EnumType type, int value, uint pluginLine)
-			: base(name, offset, address, pluginLine)
+		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine, string tooltip)
+			: base(name, offset, address, pluginLine, tooltip)
 		{
 			_type = type;
 			_value = value;
@@ -69,10 +70,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public override MetaField CloneValue()
 		{
-			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, base.PluginLine);
+			var result = new EnumData(Name, Offset, FieldAddress, _type, _value, PluginLine, ToolTip);
 			foreach (EnumValue option in Values)
 			{
-				var copiedValue = new EnumValue(option.Name, option.Value);
+				var copiedValue = new EnumValue(option.Name, option.Value, option.ToolTip);
 				result.Values.Add(copiedValue);
 				if (_selectedValue != null && copiedValue.Value == _selectedValue.Value)
 					result._selectedValue = copiedValue;
@@ -85,21 +86,53 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _name;
 		private int _value;
+		private string _tooltip;
 
-		public EnumValue(string name, int value)
+		public EnumValue(string name, int value, string tooltip)
 		{
 			_name = name;
 			_value = value;
+			_tooltip = tooltip;
 		}
 
 		public string Name
 		{
-			get { return _name; }
+			get
+			{
+				switch (App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix)
+				{
+					default:
+					case Helpers.Settings.EnumPrefix.None:
+						return _name;
+					case Helpers.Settings.EnumPrefix.Decimal:
+						return _value.ToString() + ". " + _name;
+					case Helpers.Settings.EnumPrefix.Hexidecimal:
+						return _value.ToString("X") + ". " + _name;
+				}
+			}
 			set
 			{
 				_name = value;
 				NotifyPropertyChanged("Name");
 			}
+		}
+
+		public string ToolTip
+		{
+			get
+			{
+				return _tooltip;
+			}
+			set
+			{
+				_tooltip = value;
+				NotifyPropertyChanged("ToolTip");
+			}
+		}
+
+		public bool ToolTipExists
+		{
+			get { return !string.IsNullOrEmpty(_tooltip); }
 		}
 
 		public int Value
@@ -110,11 +143,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_value = value;
 				NotifyPropertyChanged("Value");
 			}
-		}
-		
-		public bool ShowValue
-		{
-		get { return App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex; }
 		}
 	}
 }

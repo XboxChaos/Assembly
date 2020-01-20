@@ -7,7 +7,7 @@
 		<revision author="Lord Zedd" version="3">Particle Emitter Structure set up, a few particle names.</revision>
 		<revision author="Lord Zedd" version="4">Ported and fixed. I really fucked it up before.</revision>
 	</revisions>
-	<bitfield32 name="Flags" offset="0x0" visible="true">
+	<flags32 name="Flags" offset="0x0" visible="true">
 		<bit name="Bit 0" index="0" />
 		<bit name="Bit 1" index="1" />
 		<bit name="Bit 2" index="2" />
@@ -17,7 +17,7 @@
 		<bit name="Bit 6" index="6" />
 		<bit name="Bit 7" index="7" />
 		<bit name="Bit 8" index="8" />
-		<bit name="Bit 9" index="9" />
+		<bit name="Enable Accelerations?" index="9" />
 		<bit name="Dark Casings?" index="10" />
 		<bit name="Bit 11" index="11" />
 		<bit name="Bit 12" index="12" />
@@ -40,7 +40,7 @@
 		<bit name="Bit 29" index="29" />
 		<bit name="Bit 30" index="30" />
 		<bit name="Bit 31" index="31" />
-	</bitfield32>
+	</flags32>
 	<int32 name="Unknown" offset="0x4" visible="false" />
 	<float32 name="Unknown" offset="0x8" visible="false" />
 	<undefined name="Unknown" offset="0xC" visible="false" />
@@ -52,14 +52,14 @@
 	<int16 name="Unknown" offset="0x18" visible="false" />
 	<int16 name="Unknown" offset="0x1A" visible="false" />
 	<undefined name="Unknown" offset="0x1C" visible="false" />
-	<reflexive name="Locations" offset="0x20" visible="true" entrySize="0x8">
+	<tagblock name="Locations" offset="0x20" visible="true" elementSize="0x8">
 		<stringId name="Marker Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int8 name="Unknown" offset="0x6" visible="false" />
 		<int8 name="Unknown" offset="0x7" visible="false" />
-	</reflexive>
-	<reflexive name="Events" offset="0x2C" visible="true" entrySize="0x40">
+	</tagblock>
+	<tagblock name="Events" offset="0x2C" visible="true" elementSize="0x40">
 		<stringid name="Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
@@ -70,7 +70,7 @@
 		<float32 name="Delay Bounds max" offset="0x10" visible="true" />
 		<float32 name="Duration Bounds min" offset="0x14" visible="true" />
 		<float32 name="Duration Bounds max" offset="0x18" visible="true" />
-		<reflexive name="Parts" offset="0x1C" visible="true" entrySize="0x64">
+		<tagblock name="Parts" offset="0x1C" visible="true" elementSize="0x64">
 			<enum16 name="Create In Environment" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -92,11 +92,11 @@
 				<option name="Third Person Only" value="0x2" />
 				<option name="Both First And Third" value="0x3" />
 			</enum8>
-			<comment title="Anticipated Tag Class Note">For objects, use "obje" instead of the class.</comment>
-			<ascii name="Anticipated Tag Class" offset="0xC" visible="true" length="0x4" />
+			<comment title="Anticipated Tag Group Note">For objects, use "obje" instead of the group.</comment>
+			<ascii name="Anticipated Tag Group" offset="0xC" visible="true" length="0x4" />
 			<enum8 name="Damage Reporting Type" offset="0x10" visible="true">
 				<option name="Guardians (Unknown)" value="0x0" />
-				<option name="Guardians" value="0x1" />
+				<option name="Guardians (Default)" value="0x1" />
 				<option name="Guardians (Scripting)" value="0x2" />
 				<option name="Suicide" value="0x3" />
 				<option name="Magnum" value="0x4" />
@@ -196,7 +196,7 @@
 			<float32 name="Origin Offset Z" offset="0x50" visible="true" />
 			<degree name="Origin Rotation i" offset="0x54" visible="true" />
 			<degree name="Origin Rotation j" offset="0x58" visible="true" />
-			<bitfield32 name="A Scales Values" offset="0x5C" visible="true">
+			<flags32 name="A Scales Values" offset="0x5C" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -229,8 +229,8 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
-			<bitfield32 name="B Scales Values" offset="0x60" visible="true">
+			</flags32>
+			<flags32 name="B Scales Values" offset="0x60" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -263,9 +263,9 @@
 				<bit name="Bit 29" index="29" />
 				<bit name="Bit 30" index="30" />
 				<bit name="Bit 31" index="31" />
-			</bitfield32>
-		</reflexive>
-		<reflexive name="Accelerations" offset="0x28" visible="true" entrySize="0x14">
+			</flags32>
+		</tagblock>
+		<tagblock name="Accelerations" offset="0x28" visible="true" elementSize="0x14">
 			<enum16 name="Create In Environment" offset="0x0" visible="true">
 				<option name="Any Environment" value="0x0" />
 				<option name="Air Only" value="0x1" />
@@ -282,8 +282,8 @@
 			<float32 name="Acceleration" offset="0x8" visible="true" />
 			<float32 name="Inner Cone Angle" offset="0xC" visible="true" />
 			<float32 name="Outer Cone Angle" offset="0x10" visible="true" />
-		</reflexive>
-		<reflexive name="Particle Systems" offset="0x34" visible="true" entrySize="0x70">
+		</tagblock>
+		<tagblock name="Particle Systems" offset="0x34" visible="true" elementSize="0x70">
 			<int8 name="Unknown" offset="0x0" visible="false" />
 			<int8 name="Unknown" offset="0x1" visible="false" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
@@ -314,7 +314,7 @@
 				<option name="Both First And Third" value="0x3" />
 			</enum16>
 			<int16 name="Sort Bias" offset="0x20" visible="true" />
-			<bitfield16 name="Flags" offset="0x22" visible="true">
+			<flags16 name="Flags" offset="0x22" visible="true">
 				<bit name="Bit 0" index="0" />
 				<bit name="Bit 1" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -331,7 +331,7 @@
 				<bit name="Bit 13" index="13" />
 				<bit name="Bit 14" index="14" />
 				<bit name="Bit 15" index="15" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x24" visible="true" />
 			<int16 name="Unknown" offset="0x26" visible="true" />
 			<float32 name="Unknown" offset="0x28" visible="true" />
@@ -344,12 +344,12 @@
 			<float32 name="Unknown" offset="0x44" visible="true" />
 			<float32 name="Unknown" offset="0x48" visible="true" />
 			<float32 name="Maximum Viewing Distance" offset="0x4C" visible="true" />
-			<float32 name="LOD In Distance" offset="0x50" visible="true" />
-			<float32 name="LOD Feather In Delta" offset="0x54" visible="true" />
-			<float32 name="Unknown" offset="0x58" visible="true" />
-			<reflexive name="Emitters" offset="0x5C" visible="true" entrySize="0x330">
+			<float32 name="LOD Out Distance" offset="0x50" visible="true" />
+			<float32 name="LOD Feather Out Delta" offset="0x54" visible="true" />
+			<float32 name="Inverse LOD Feather Out" offset="0x58" visible="true" />
+			<tagblock name="Emitters" offset="0x5C" visible="true" elementSize="0x330">
 				<stringId name="Name" offset="0x0" visible="true" />
-				<bitfield16 name="Unknown" offset="0x4" visible="true">
+				<flags16 name="Unknown" offset="0x4" visible="true">
 					<bit name="Bit 0" index="0" />
 					<bit name="Bit 1" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -366,7 +366,7 @@
 					<bit name="Bit 13" index="13" />
 					<bit name="Bit 14" index="14" />
 					<bit name="Bit 15" index="15" />
-				</bitfield16>
+				</flags16>
 				<int16 name="Unknown" offset="0x6" visible="false" />
 				<undefined name="Unknown" offset="0x8" visible="false" />
 				<tagRef name="Custom Emitter Points" offset="0xC" visible="true" />
@@ -491,9 +491,9 @@
 				<undefined name="Unknown" offset="0x194" visible="false" />
 				<tagref name="Particle Physics" offset="0x198" visible="true" />
 				<undefined name="Unknown" offset="0x1A8" visible="false" />
-				<reflexive name="Unknown" offset="0x1AC" visible="false" entrySize="0x18">
+				<tagblock name="Unknown" offset="0x1AC" visible="false" elementSize="0x18">
 					<int32 name="Unknown" offset="0x0" visible="false" />
-					<reflexive name="Unknown" offset="0x4" visible="false" entrySize="0x24">
+					<tagblock name="Unknown" offset="0x4" visible="false" elementSize="0x24">
 						<undefined name="Unknown" offset="0x0" visible="false" />
 						<int8 name="Input" offset="0x4" visible="true" />
 						<int8 name="Input Range" offset="0x5" visible="true" />
@@ -506,10 +506,10 @@
 						<dataRef name="Unknown" offset="0x8" visible="true" />
 						<undefined name="Unknown" offset="0x1C" visible="false" />
 						<undefined name="Unknown" offset="0x20" visible="false" />
-					</reflexive>
+					</tagblock>
 					<undefined name="Unknown" offset="0x10" visible="false" />
 					<undefined name="Unknown" offset="0x14" visible="false" />
-				</reflexive>
+				</tagblock>
 				<tagref name="Displacement Map" offset="0x1B8" visible="true" />
 				<int8 name="Input" offset="0x1C8" visible="true" />
 				<int8 name="Input Range" offset="0x1C9" visible="true" />
@@ -619,13 +619,13 @@
 				<int32 name="Unknown" offset="0x300" visible="false" />
 				<int32 name="Unknown" offset="0x304" visible="false" />
 				<int32 name="Unknown" offset="0x308" visible="false" />
-				<reflexive name="Unknown" offset="0x30C" visible="false" entrySize="0x10" align="0x10">
+				<tagblock name="Unknown" offset="0x30C" visible="false" elementSize="0x10" align="0x10">
 					<undefined name="Unknown" offset="0x0" visible="false" />
 					<undefined name="Unknown" offset="0x4" visible="false" />
 					<undefined name="Unknown" offset="0x8" visible="false" />
 					<undefined name="Unknown" offset="0xC" visible="false" />
-				</reflexive>
-				<reflexive name="Compiled Functions" offset="0x318" visible="false" entrySize="0x40" align="0x10">
+				</tagblock>
+				<tagblock name="Compiled Functions" offset="0x318" visible="false" elementSize="0x40" align="0x10">
 					<float32 name="Unknown" offset="0x0" visible="true" />
 					<float32 name="Unknown" offset="0x4" visible="true" />
 					<float32 name="Feather Amount" offset="0x8" visible="true" />
@@ -642,23 +642,23 @@
 					<float32 name="Unknown" offset="0x34" visible="true" />
 					<float32 name="Unknown" offset="0x38" visible="true" />
 					<undefined name="Unknown" offset="0x3C" visible="true" />
-				</reflexive>
-				<reflexive name="Compiled Color Functions" offset="0x324" visible="true" entrySize="0x10" align="0x10">
+				</tagblock>
+				<tagblock name="Compiled Color Functions" offset="0x324" visible="true" elementSize="0x10" align="0x10">
 					<float32 name="Red" offset="0x0" visible="true" />
 					<float32 name="Green" offset="0x4" visible="true" />
 					<float32 name="Blue" offset="0x8" visible="true" />
 					<float32 name="Magnitude" offset="0xC" visible="true" />
-				</reflexive>
-			</reflexive>
+				</tagblock>
+			</tagblock>
 			<float32 name="Unknown" offset="0x68" visible="true" />
 			<float32 name="Unknown" offset="0x6C" visible="true" />
-		</reflexive>
-	</reflexive>
-	<reflexive name="Looping Sounds" offset="0x38" visible="true" entrySize="0x14">
+		</tagblock>
+	</tagblock>
+	<tagblock name="Looping Sounds" offset="0x38" visible="true" elementSize="0x14">
 		<tagRef name="Looping Sound" offset="0x0" visible="true" />
 		<int16 name="Location Index" offset="0x10" visible="true" />
 		<int16 name="Event Index" offset="0x12" visible="true" />
-	</reflexive>
+	</tagblock>
 	<float32 name="Always Play Distance" offset="0x44" visible="true" />
 	<float32 name="Never Play Distance" offset="0x48" visible="true" />
 	<float32 name="Unknown" offset="0x4C" visible="true" />

@@ -1,19 +1,19 @@
 ﻿/* Copyright 2012 Aaron Dierking, TJ Tunnell, Jordan Mueller, Alex Reed
  * 
- * This file is part of ExtryzeDLL.
+ * This file is part of Blamite.
  * 
- * Extryze is free software: you can redistribute it and/or modify
+ * Blamite is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * Extryze is distributed in the hope that it will be useful,
+ * Blamite is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with ExtryzeDLL.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Blamite.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -27,7 +27,7 @@ using Blamite.Util;
 namespace Blamite.Blam.ThirdGen.Structures
 {
 	/// <summary>
-	///     The tag + class table in a third-generation cache file.
+	///     The tag + group table in a third-generation cache file.
 	/// </summary>
 	public class ThirdGenTagTable : TagTable
 	{
@@ -35,33 +35,52 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly SegmentPointer _indexHeaderLocation;
 		private readonly FileSegmentGroup _metaArea;
+		private readonly IPointerExpander _expander;
 
 		private List<ITag> _tags;
+		private List<ITagInterop> _interops;
+		private Dictionary<int, ITag> _globalTags;
 
 		public ThirdGenTagTable()
 		{
 			_tags = new List<ITag>();
-			Classes = new List<ITagClass>();
+			_interops = new List<ITagInterop>();
+			Groups = new List<ITagGroup>();
+			_globalTags = new Dictionary<int, ITag>();
 		}
 
 		public ThirdGenTagTable(IReader reader, SegmentPointer indexHeaderLocation, FileSegmentGroup metaArea,
-			MetaAllocator allocator, EngineDescription buildInfo)
+			MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_indexHeaderLocation = indexHeaderLocation;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 
 			Load(reader);
 		}
 
 		/// <summary>
-		///     Gets a read-only list of available tag classes.
+		///     Gets a read-only list of available tag groups.
 		/// </summary>
 		/// <value>
-		///     Available tag classes.
+		///     Available tag groups.
 		/// </value>
-		public IList<ITagClass> Classes { get; private set; }
+		public IList<ITagGroup> Groups { get; private set; }
+
+		public IList<ITagInterop> Interops
+		{
+			get { return _interops; }
+		}
+
+		public ITag GetGlobalTag(int magic)
+		{
+			if (_globalTags.ContainsKey(magic))
+				return _globalTags[magic];
+			else
+				return null;
+		}
 
 		/// <summary>
 		///     Gets the tag at a given index.
@@ -84,24 +103,24 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
 		/// </summary>
-		/// <param name="classMagic">The magic number (ID) of the tag's class.</param>
+		/// <param name="groupMagic">The magic number (ID) of the tag's group.</param>
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>
 		///     The tag that was allocated.
 		/// </returns>
-		public override ITag AddTag(int classMagic, int baseSize, IStream stream)
+		public override ITag AddTag(int groupMagic, int baseSize, IStream stream)
 		{
 			if (_indexHeaderLocation == null)
 				throw new InvalidOperationException("Tags cannot be added to a shared map");
 
-			ITagClass tagClass = Classes.FirstOrDefault(c => (c.Magic == classMagic));
-			if (tagClass == null)
-				throw new InvalidOperationException("Invalid tag class");
+			ITagGroup tagGroup = Groups.FirstOrDefault(g => (g.Magic == groupMagic));
+			if (tagGroup == null)
+				throw new InvalidOperationException("Invalid tag group");
 
-			uint address = _allocator.Allocate(baseSize, stream);
+			long address = _allocator.Allocate(baseSize, stream);
 			var index = new DatumIndex(0x4153, (ushort) _tags.Count); // 0x4153 = 'AS' because the salt doesn't matter
-			var result = new ThirdGenTag(index, tagClass, SegmentPointer.FromPointer(address, _metaArea));
+			var result = new ThirdGenTag(index, tagGroup, SegmentPointer.FromPointer(address, _metaArea));
 			_tags.Add(result);
 
 			return result;
@@ -129,21 +148,36 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 
 			SaveTags(headerValues, stream);
+
+			if (Interops != null && Interops.Count > 0)
+			{
+				var oldCount = (int)headerValues.GetInteger("number of tag interops");
+				long oldAddress = (long)headerValues.GetInteger("tag interop table address");
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop element");
+				IEnumerable<StructureValueCollection> entries = _interops.OrderBy(i=>i.Pointer).Select(t => ((ThirdGenTagInterop)t).Serialize());
+				// hax
+				long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldAddress, _interops.Count, layout, _metaArea,
+					_allocator, stream);
+
+				headerValues.SetInteger("number of tag interops", (uint)_interops.Count);
+				headerValues.SetInteger("tag interop table address", (ulong)newAddress);
+			}
+
 			SaveHeader(headerValues, stream);
 		}
 
 		private void SaveTags(StructureValueCollection headerValues, IStream stream)
 		{
 			var oldCount = (int) headerValues.GetInteger("number of tags");
-			uint oldAddress = headerValues.GetInteger("tag table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag entry");
-			IEnumerable<StructureValueCollection> entries = _tags.Select(t => ((ThirdGenTag) t).Serialize(Classes));
+			long oldAddress = (long)headerValues.GetInteger("tag table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag element");
+			IEnumerable<StructureValueCollection> entries = _tags.Select(t => ((ThirdGenTag) t).Serialize(Groups, _expander));
 			// hax, _tags is a list of ITag objects so we have to upcast
-			uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea,
+			long newAddress = TagBlockWriter.WriteTagBlock(entries, oldCount, oldAddress, _tags.Count, layout, _metaArea,
 				_allocator, stream);
 
 			headerValues.SetInteger("number of tags", (uint) _tags.Count);
-			headerValues.SetInteger("tag table address", newAddress);
+			headerValues.SetInteger("tag table address", (ulong)newAddress);
 		}
 
 		private void Load(IReader reader)
@@ -152,8 +186,10 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (headerValues == null)
 				return;
 
-			Classes = LoadClasses(reader, headerValues).AsReadOnly();
-			_tags = LoadTags(reader, headerValues, Classes);
+			Groups = LoadTagGroups(reader, headerValues).AsReadOnly();
+			_tags = LoadTags(reader, headerValues, Groups);
+			_globalTags = LoadGlobalTags(reader, headerValues, _tags);
+			_interops = LoadTagInterops(reader, headerValues);
 		}
 
 		private StructureValueCollection LoadHeader(IReader reader)
@@ -164,7 +200,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 			reader.SeekTo(_indexHeaderLocation.AsOffset());
 			StructureLayout headerLayout = _buildInfo.Layouts.GetLayout("index header");
 			StructureValueCollection result = StructureReader.ReadStructure(reader, headerLayout);
-			if (result.GetInteger("magic") != CharConstant.FromString("tags"))
+			if ((uint)result.GetInteger("magic") != CharConstant.FromString("tags"))
 				throw new ArgumentException("Invalid index table header magic");
 
 			return result;
@@ -180,24 +216,51 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 		}
 
-		private List<ITagClass> LoadClasses(IReader reader, StructureValueCollection headerValues)
+		private List<ITagGroup> LoadTagGroups(IReader reader, StructureValueCollection headerValues)
 		{
-			var count = (int) headerValues.GetInteger("number of classes");
-			uint address = headerValues.GetInteger("class table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("class entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select<StructureValueCollection, ITagClass>(e => new ThirdGenTagClass(e)).ToList();
+			var count = (int) headerValues.GetInteger("number of tag groups");
+			long address = (long)headerValues.GetInteger("tag group table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag group element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
+			return entries.Select<StructureValueCollection, ITagGroup>(e => new ThirdGenTagGroup(e)).ToList();
 		}
 
-		private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagClass> classes)
+		private List<ITagInterop> LoadTagInterops(IReader reader, StructureValueCollection headerValues)
+		{
+			if (!headerValues.HasInteger("number of tag interops"))
+				return null;
+
+			var count = (int)headerValues.GetInteger("number of tag interops");
+			long address = (long)headerValues.GetInteger("tag interop table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag interop element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
+			return entries.Select<StructureValueCollection, ITagInterop>(e => new ThirdGenTagInterop(e, _metaArea)).ToList();
+		}
+
+		private List<ITag> LoadTags(IReader reader, StructureValueCollection headerValues, IList<ITagGroup> groups)
 		{
 			var count = (int) headerValues.GetInteger("number of tags");
-			uint address = headerValues.GetInteger("tag table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			long address = (long)headerValues.GetInteger("tag table address");
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("tag element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
 			return
-				entries.Select<StructureValueCollection, ITag>((e, i) => new ThirdGenTag(e, (ushort) i, _metaArea, classes))
+				entries.Select<StructureValueCollection, ITag>((e, i) => new ThirdGenTag(e, (ushort) i, _metaArea, groups, _expander))
 					.ToList();
+		}
+
+		private Dictionary<int, ITag> LoadGlobalTags(IReader reader, StructureValueCollection headerValues, List<ITag> tags)
+		{
+			var count = (int)headerValues.GetInteger("number of global tags");
+			long address = (long)headerValues.GetInteger("global tag table address");
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("global tag element");
+			StructureValueCollection[] entries = TagBlockReader.ReadTagBlock(reader, count, address, layout, _metaArea);
+
+			Dictionary<int, ITag> output = new Dictionary<int, ITag>();
+			foreach (StructureValueCollection ent in entries)
+				output[(int)ent.GetInteger("tag group magic")] = tags[(int)ent.GetInteger("datum index") & 0xFFFF];
+
+			return output;
 		}
 	}
 }

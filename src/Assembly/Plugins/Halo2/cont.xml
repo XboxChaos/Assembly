@@ -5,8 +5,9 @@
 		<revision author="Iron_Forge" version="1">Added basic layout of plugin...</revision>
 		<revision author="Shalted" version="2">Added Xbox7887's known values</revision>
 		<revision author="DiscoBob" version="3">Completed plugin</revision>
+		<revision author="Lord Zedd" version="4">Fixed big problems</revision>
 	</revisions>
-	<bitfield16 name="Flags" offset="0x0" visible="true">
+	<flags16 name="Flags" offset="0x0" visible="true">
 		<bit name="First point unfaded" index="0" />
 		<bit name="Last point unfaded" index="1" />
 		<bit name="Points start pinned to media" index="2" />
@@ -15,8 +16,8 @@
 		<bit name="Points always pinned to ground" index="5" />
 		<bit name="Edge effects fade slowly" index="6" />
 		<bit name="Don't Inherit Object Change Color" index="7" />
-	</bitfield16>
-	<bitfield16 name="Scale Flags" offset="0x2" visible="true">
+	</flags16>
+	<flags16 name="Scale Flags" offset="0x2" visible="true">
 		<bit name="Point Generation Rate" index="0" />
 		<bit name="Point Velocity" index="1" />
 		<bit name="Point Velocity Delta" index="2" />
@@ -27,7 +28,7 @@
 		<bit name="Texture Scale V" index="7" />
 		<bit name="Texture Animation U" index="8" />
 		<bit name="Texture Animation V" index="9" />
-	</bitfield16>
+	</flags16>
 	<float32 name="Point Generation Rate" offset="0x4" visible="true" />
 	<float32 name="Min Point Velocity" offset="0x8" visible="true" />
 	<float32 name="Max Point Velocity" offset="0xC" visible="true" />
@@ -41,6 +42,7 @@
 		<option name="Viewer Facing" value="0x4" />
 		<option name="Double Marker Linked" value="0x5" />
 	</enum16>
+	<int16 name="Unknown" offset="0x1A" visible="false" />
 	<float32 name="Texture Repeats U" offset="0x1C" visible="true" />
 	<float32 name="Texture Repeats V" offset="0x20" visible="true" />
 	<float32 name="Texture Animation U" offset="0x24" visible="true" />
@@ -49,12 +51,22 @@
 	<tagRef name="Bitmap" offset="0x30" visible="true" />
 	<int16 name="First Sequence Index" offset="0x38" visible="true" />
 	<int16 name="Sequence Count" offset="0x3A" visible="true" />
-	<bitfield16 name="Shader Flags" offset="0x60" visible="true">
+	<undefined name="Unknown" offset="0x3C" visible="false" />
+	<undefined name="Unknown" offset="0x40" visible="false" />
+	<undefined name="Unknown" offset="0x44" visible="false" />
+	<undefined name="Unknown" offset="0x48" visible="false" />
+	<undefined name="Unknown" offset="0x4C" visible="false" />
+	<undefined name="Unknown" offset="0x50" visible="false" />
+	<undefined name="Unknown" offset="0x54" visible="false" />
+	<undefined name="Unknown" offset="0x58" visible="false" />
+	<undefined name="Unknown" offset="0x5C" visible="false" />
+	<undefined name="Unknown" offset="0x60" visible="false" />
+	<flags16 name="Shader Flags" offset="0x64" visible="true">
 		<bit name="Sort Bias" index="0" />
 		<bit name="Nonlinear Tint" index="1" />
 		<bit name="Don't Overdraw FP Weapon" index="2" />
-	</bitfield16>
-	<enum16 name="Framebuffer Blend Function" offset="0x62" visible="true">
+	</flags16>
+	<enum16 name="Framebuffer Blend Function" offset="0x66" visible="true">
 		<option name="Alpha Blend" value="0x0" />
 		<option name="Multiply" value="0x1" />
 		<option name="Double Multiply" value="0x2" />
@@ -64,40 +76,95 @@
 		<option name="Component Max" value="0x6" />
 		<option name="Alpha-Multiply-Add" value="0x7" />
 	</enum16>
-	<enum16 name="Framebuffer Fade Mode" offset="0x64" visible="true">
+	<enum16 name="Framebuffer Fade Mode" offset="0x68" visible="true">
 		<option name="None" value="0x0" />
 		<option name="Fade When Perpendicular" value="0x1" />
 		<option name="Fade When Parallel" value="0x2" />
 		<option name="Fade After Duration" value="0x3" />
 	</enum16>
-	<bitfield32 name="Map Flags" offset="0x66" visible="true">
+	<flags16 name="Map Flags" offset="0x6A" visible="true">
 		<bit name="Unfiltered" index="0" />
-	</bitfield32>
+	</flags16>
+	<undefined name="Unknown" offset="0x6C" visible="false" />
+	<undefined name="Unknown" offset="0x70" visible="false" />
+	<undefined name="Unknown" offset="0x74" visible="false" />
+	<undefined name="Unknown" offset="0x78" visible="false" />
+	<undefined name="Unknown" offset="0x7C" visible="false" />
+	<undefined name="Unknown" offset="0x80" visible="false" />
+	<undefined name="Unknown" offset="0x84" visible="false" />
 	<tagRef name="Bitmap" offset="0x88" visible="true" />
-	<enum16 name="Anchor" offset="0xAC" visible="true">
+	<enum16 name="Anchor" offset="0x90" visible="true">
 		<option name="With Primary" value="0x0" />
 		<option name="With Screen Space" value="0x1" />
 		<option name="ZSprite" value="0x2" />
 	</enum16>
-	<bitfield16 name="Flags" offset="0xAE" visible="true">
+	<flags16 name="Flags" offset="0x92" visible="true">
 		<bit name="Unfiltered" index="0" />
-	</bitfield16>
-	<enum16 name="U-Animation Function" offset="0xB0" visible="true" />
-	<float32 name="U-Animation Period" offset="0xB2" visible="true" />
-	<float32 name="U-Animation Phase" offset="0xB6" visible="true" />
-	<float32 name="U-Animation Scale" offset="0xBA" visible="true" />
-	<enum16 name="V-Animation Function" offset="0xBE" visible="true" />
-	<float32 name="V-Animation Period" offset="0xC0" visible="true" />
-	<float32 name="V-Animation Phase" offset="0xC4" visible="true" />
-	<float32 name="V-Animation Scale" offset="0xC8" visible="true" />
-	<enum16 name="Rotation-Animation Function" offset="0xCC" visible="true" />
-	<float32 name="Rotation-Animation Period" offset="0xCE" visible="true" />
-	<float32 name="Rotation-Animation Phase" offset="0xD2" visible="true" />
-	<float32 name="Rotation-Animation Scale" offset="0xD6" visible="true" />
-	<float32 name="Rotation-Animation Center X" offset="0xDA" visible="true" />
-	<float32 name="Rotation-Animation Center Y" offset="0xDE" visible="true" />
-	<float32 name="ZSprite Radius Scale" offset="0xE2" visible="true" />
-	<reflexive name="Point States" offset="0xE8" visible="true" entrySize="0x42">
+	</flags16>
+	<int16 name="Unknown" offset="0x94" visible="false" />
+	<enum16 name="U-Animation Function" offset="0x96" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="U-Animation Period" offset="0x98" visible="true" />
+	<float32 name="U-Animation Phase" offset="0x9C" visible="true" />
+	<float32 name="U-Animation Scale" offset="0xA0" visible="true" />
+	<int16 name="Unknown" offset="0xA4" visible="false" />
+	<enum16 name="V-Animation Function" offset="0xA6" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="V-Animation Period" offset="0xA8" visible="true" />
+	<float32 name="V-Animation Phase" offset="0xAC" visible="true" />
+	<float32 name="V-Animation Scale" offset="0xB0" visible="true" />
+	<int16 name="Unknown" offset="0xB4" visible="false" />
+	<enum16 name="Rotation-Animation Function" offset="0xB6" visible="true">
+		<option name="One" value="0x0" />
+		<option name="Zero" value="0x1" />
+		<option name="Cosine" value="0x2" />
+		<option name="Cosine (Variable Period)" value="0x3" />
+		<option name="Diagonal Wave" value="0x4" />
+		<option name="Diagonal Wave (Variable Period)" value="0x5" />
+		<option name="Slide" value="0x6" />
+		<option name="Slide (Variable Period)" value="0x7" />
+		<option name="Noise" value="0x8" />
+		<option name="Jitter" value="0x9" />
+		<option name="Wander" value="0xA" />
+		<option name="Spark" value="0xB" />
+	</enum16>
+	<float32 name="Rotation-Animation Period" offset="0xB8" visible="true" />
+	<float32 name="Rotation-Animation Phase" offset="0xBC" visible="true" />
+	<float32 name="Rotation-Animation Scale" offset="0xC0" visible="true" />
+	<float32 name="Rotation-Animation Center X" offset="0xC4" visible="true" />
+	<float32 name="Rotation-Animation Center Y" offset="0xC8" visible="true" />
+	<undefined name="Unknown" offset="0xCC" visible="false" />
+	<float32 name="ZSprite Radius Scale" offset="0xD0" visible="true" />
+	<undefined name="Unknown" offset="0xD4" visible="false" />
+	<undefined name="Unknown" offset="0xD8" visible="false" />
+	<undefined name="Unknown" offset="0xDC" visible="false" />
+	<undefined name="Unknown" offset="0xE0" visible="false" />
+	<undefined name="Unknown" offset="0xE4" visible="false" />
+	<tagblock name="Point States" offset="0xE8" visible="true" elementSize="0x40">
 		<float32 name="Duration Lower" offset="0x0" visible="true" />
 		<float32 name="Duration Upper" offset="0x4" visible="true" />
 		<float32 name="Transition Lower" offset="0x8" visible="true" />
@@ -112,13 +179,13 @@
 		<float32 name="Color Upper Red" offset="0x30" visible="true" />
 		<float32 name="Color Upper Green" offset="0x34" visible="true" />
 		<float32 name="Color Upper Blue" offset="0x38" visible="true" />
-		<bitfield32 name="Scale Flags" offset="0x3C" visible="true">
+		<flags32 name="Scale Flags" offset="0x3C" visible="true">
 			<bit name="Duration" index="0" />
 			<bit name="Duration Delta" index="1" />
 			<bit name="Transition Duration" index="2" />
 			<bit name="Transition Duration Delta" index="3" />
 			<bit name="Width" index="4" />
 			<bit name="Color" index="5" />
-		</bitfield32>
-	</reflexive>
+		</flags32>
+	</tagblock>
 </plugin>

@@ -130,6 +130,7 @@ namespace Blamite.Plugins
 			uint offset = 0;
 			var pluginLine = (uint) (reader as IXmlLineInfo).LineNumber;
 			bool visible = true;
+			string tooltip = "";
 
 			if (reader.MoveToAttribute("name"))
 				name = reader.Value;
@@ -137,153 +138,190 @@ namespace Blamite.Plugins
 				offset = ParseUInt(reader.Value);
 			if (reader.MoveToAttribute("visible"))
 				visible = ParseBool(reader.Value);
+			if (reader.MoveToAttribute("tooltip"))
+				visible = ParseBool(reader.Value);
 
 			reader.MoveToElement();
 			switch (elementName.ToLower())
 			{
 				case "uint8":
 				case "byte":
-					visitor.VisitUInt8(name, offset, visible, pluginLine);
+					visitor.VisitUInt8(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "sbyte":
 				case "int8":
-					visitor.VisitInt8(name, offset, visible, pluginLine);
+					visitor.VisitInt8(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "ushort":
 				case "uint16":
-					visitor.VisitUInt16(name, offset, visible, pluginLine);
+					visitor.VisitUInt16(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "short":
 				case "int16":
-					visitor.VisitInt16(name, offset, visible, pluginLine);
+					visitor.VisitInt16(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "dword":
 				case "uint":
 				case "uint32":
 				case "long":
 				case "true":
-					visitor.VisitUInt32(name, offset, visible, pluginLine);
+					visitor.VisitUInt32(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "int":
 				case "int32":
-					visitor.VisitInt32(name, offset, visible, pluginLine);
+					visitor.VisitInt32(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "undefined":
 				case "unknown":
-					visitor.VisitUndefined(name, offset, visible, pluginLine);
+					visitor.VisitUndefined(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "float":
 				case "float32":
 				case "degree":
-					visitor.VisitFloat32(name, offset, visible, pluginLine);
+					visitor.VisitFloat32(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "point2":
+					visitor.VisitPoint2(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "point3":
+					visitor.VisitPoint3(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "vector2":
+					visitor.VisitVector2(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "vector3":
-					visitor.VisitVector3(name, offset, visible, pluginLine);
+					visitor.VisitVector3(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "vector4":
+				case "quaternion":
+					visitor.VisitVector4(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "degree2":
+					visitor.VisitDegree2(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "degree3":
+					visitor.VisitDegree3(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "plane2":
+					visitor.VisitPlane2(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "plane3":
+					visitor.VisitPlane3(name, offset, visible, pluginLine, tooltip);
+					break;
+				case "rect16":
+					visitor.VisitRect16(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "stringid":
-					visitor.VisitStringID(name, offset, visible, pluginLine);
+					visitor.VisitStringID(name, offset, visible, pluginLine, tooltip);
 					break;
 				case "tag":
 				case "tagid":
 				case "tagref":
 				case "ident":
-					ReadTagRef(reader, name, offset, visible, visitor, pluginLine);
+					ReadTagRef(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "string":
 				case "ascii":
-					ReadAscii(reader, name, offset, visible, visitor, pluginLine);
+					ReadAscii(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 				case "string32":
-					visitor.VisitAscii(name, offset, visible, 32, pluginLine);
+					visitor.VisitAscii(name, offset, visible, 32, pluginLine, tooltip);
 					break;
 				case "string64":
-					visitor.VisitAscii(name, offset, visible, 64, pluginLine);
+					visitor.VisitAscii(name, offset, visible, 64, pluginLine, tooltip);
 					break;
 				case "string256":
-					visitor.VisitAscii(name, offset, visible, 256, pluginLine);
+					visitor.VisitAscii(name, offset, visible, 256, pluginLine, tooltip);
 					break;
 
 				case "unicode":
 				case "utf16":
-					ReadUtf16(reader, name, offset, visible, visitor, pluginLine);
+					ReadUtf16(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 				case "unicode32":
-					visitor.VisitUtf16(name, offset, visible, 32, pluginLine);
+					visitor.VisitUtf16(name, offset, visible, 32, pluginLine, tooltip);
 					break;
 				case "unicode64":
-					visitor.VisitUtf16(name, offset, visible, 64, pluginLine);
+					visitor.VisitUtf16(name, offset, visible, 64, pluginLine, tooltip);
 					break;
 				case "unicode256":
-					visitor.VisitUtf16(name, offset, visible, 256, pluginLine);
+					visitor.VisitUtf16(name, offset, visible, 256, pluginLine, tooltip);
 					break;
 
+				case "flags8":
 				case "bitfield8":
 				case "bitmask8":
-					if (visitor.EnterBitfield8(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags8(name, offset, visible, pluginLine, tooltip))
 						ReadBits(reader, visitor);
 					break;
+				case "flags16":
 				case "bitmask16":
 				case "bitfield16":
-					if (visitor.EnterBitfield16(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags16(name, offset, visible, pluginLine, tooltip))
 						ReadBits(reader, visitor);
 					break;
+				case "flags32":
 				case "bitmask32":
 				case "bitfield32":
-					if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
+					if (visitor.EnterFlags32(name, offset, visible, pluginLine, tooltip))
+						ReadBits(reader, visitor);
+					break;
+				case "flags64":
+				case "bitmask64":
+				case "bitfield64":
+					if (visitor.EnterFlags64(name, offset, visible, pluginLine, tooltip))
 						ReadBits(reader, visitor);
 					break;
 
 				case "enum8":
-					if (visitor.EnterEnum8(name, offset, visible, pluginLine))
+					if (visitor.EnterEnum8(name, offset, visible, pluginLine, tooltip))
 						ReadOptions(reader, visitor);
 					break;
 				case "enum16":
-					if (visitor.EnterEnum16(name, offset, visible, pluginLine))
+					if (visitor.EnterEnum16(name, offset, visible, pluginLine, tooltip))
 						ReadOptions(reader, visitor);
 					break;
 				case "enum32":
-					if (visitor.EnterEnum32(name, offset, visible, pluginLine))
+					if (visitor.EnterEnum32(name, offset, visible, pluginLine, tooltip))
 						ReadOptions(reader, visitor);
 					break;
 
 				case "tagdata":
 				case "dataref":
-					ReadDataRef(reader, name, offset, visible, visitor, pluginLine);
+					ReadDataRef(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "struct":
 				case "reflexive":
 				case "reflexives":
-					ReadReflexive(reader, name, offset, visible, visitor, pluginLine);
+				case "tagblock":
+					ReadTagBlock(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "bytearray":
 				case "raw":
-					ReadRaw(reader, name, offset, visible, visitor, pluginLine);
+					ReadRaw(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "shader":
-					ReadShader(reader, name, offset, visible, visitor, pluginLine);
+					ReadShader(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
 				case "uniclist":
-					ReadUnicList(reader, name, offset, visible, visitor, pluginLine);
+					ReadUnicList(reader, name, offset, visible, visitor, pluginLine, tooltip);
 					break;
 
-				case "color8":
-				case "color16":
-				case "color24":
 				case "color32":
-					visitor.VisitColorInt(name, offset, visible, ReadColorFormat(reader), pluginLine);
+					visitor.VisitColorInt(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
 					break;
 
 				case "colorf":
-					visitor.VisitColorF(name, offset, visible, ReadColorFormat(reader), pluginLine);
+					visitor.VisitColorF(name, offset, visible, ReadColorAlpha(reader), pluginLine, tooltip);
 					break;
 
 				case "id":
-					// Class ID, part of a tag reference
+					// Group ID, part of a tag reference
 					break;
 
 				case "unused":
@@ -305,7 +343,7 @@ namespace Blamite.Plugins
 		}
 
 		private static void ReadDataRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			string format = "bytes";
 
@@ -313,15 +351,14 @@ namespace Blamite.Plugins
 				format = reader.Value;
 
 			if (format != "bytes" &&
-				format != "unicode" &&
 				format != "asciiz")
-				throw new ArgumentException("Invalid format. Must be either `bytes`, `unicode` or `asciiz`.");
+				throw new ArgumentException("Invalid format. Must be either `bytes` or `asciiz`.");
 
 			int align = 4;
 			if (reader.MoveToAttribute("align"))
 				align = ParseInt(reader.Value);
 
-			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine);
+			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine, tooltip);
 		}
 
 		private void ReadRevision(XmlReader reader)
@@ -350,39 +387,39 @@ namespace Blamite.Plugins
 		}
 
 		private static void ReadTagRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			bool showJumpTo = true;
-			bool withClass = true;
+			bool withGroup = true;
 
 			if (reader.MoveToAttribute("showJumpTo"))
 				showJumpTo = ParseBool(reader.Value);
-			if (reader.MoveToAttribute("withClass"))
-				withClass = ParseBool(reader.Value);
+			if (reader.MoveToAttribute("withClass") || reader.MoveToAttribute("withGroup"))
+				withGroup = ParseBool(reader.Value);
 
-			visitor.VisitTagReference(name, offset, visible, withClass, showJumpTo, pluginLine);
+			visitor.VisitTagReference(name, offset, visible, withGroup, showJumpTo, pluginLine, tooltip);
 		}
 
 		private static void ReadAscii(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			int size = 0;
 
 			if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
 				size = ParseInt(reader.Value);
 
-			visitor.VisitAscii(name, offset, visible, size, pluginLine);
+			visitor.VisitAscii(name, offset, visible, size, pluginLine, tooltip);
 		}
 
 		private static void ReadUtf16(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			int size = 0;
 
 			if (reader.MoveToAttribute("size") || reader.MoveToAttribute("length"))
 				size = ParseInt(reader.Value);
 
-			visitor.VisitUtf16(name, offset, visible, size, pluginLine);
+			visitor.VisitUtf16(name, offset, visible, size, pluginLine, tooltip);
 		}
 
 		private static void ReadBits(XmlReader reader, IPluginVisitor visitor)
@@ -401,25 +438,28 @@ namespace Blamite.Plugins
 				}
 			}
 
-			visitor.LeaveBitfield();
+			visitor.LeaveFlags();
 		}
 
 		private static void ReadBit(XmlReader reader, IPluginVisitor visitor)
 		{
 			string name = "Unknown";
 			int index = 0;
+			string tooltip = "";
 
 			if (reader.MoveToAttribute("name"))
 				name = reader.Value;
+			if (reader.MoveToAttribute("tooltip"))
+				tooltip = reader.Value;
 			if (!reader.MoveToAttribute("index") && !reader.MoveToAttribute("value"))
 				throw new ArgumentException("Bit definitions must have an index" + PositionInfo(reader));
 			index = ParseInt(reader.Value);
 
-			visitor.VisitBit(name, index);
+			visitor.VisitBit(name, index, tooltip);
 		}
 
 		private static void ReadRaw(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			int size;
 
@@ -427,11 +467,11 @@ namespace Blamite.Plugins
 				throw new ArgumentException("Raw data blocks must have a size or length attribute." + PositionInfo(reader));
 			size = ParseInt(reader.Value);
 
-			visitor.VisitRawData(name, offset, visible, size, pluginLine);
+			visitor.VisitRawData(name, offset, visible, size, pluginLine, tooltip);
 		}
 
 		private static void ReadShader(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			if (!reader.MoveToAttribute("type"))
 				throw new ArgumentException("Shaders must have a type attribute." + PositionInfo(reader));
@@ -444,17 +484,17 @@ namespace Blamite.Plugins
 			else
 				throw new ArgumentException("Invalid shader type \"" + reader.Value + "\"");
 
-			visitor.VisitShader(name, offset, visible, type, pluginLine);
+			visitor.VisitShader(name, offset, visible, type, pluginLine, tooltip);
 		}
 
 		private static void ReadUnicList(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+			uint pluginLine, string tooltip)
 		{
 			if (!reader.MoveToAttribute("languages"))
 				throw new ArgumentException("Unicode string lists must have a languages attribute." + PositionInfo(reader));
 			int languages = ParseInt(reader.Value);
 
-			visitor.VisitUnicList(name, offset, visible, languages, pluginLine);
+			visitor.VisitUnicList(name, offset, visible, languages, pluginLine, tooltip);
 		}
 
 		private static void ReadOptions(XmlReader reader, IPluginVisitor visitor)
@@ -472,39 +512,42 @@ namespace Blamite.Plugins
 		{
 			string name = "Unknown";
 			int value = 0;
+			string tooltip = "";
 
 			if (reader.MoveToAttribute("name"))
 				name = reader.Value;
+			if (reader.MoveToAttribute("tooltip"))
+				tooltip = reader.Value;
 			if (reader.MoveToAttribute("value"))
 				value = ParseInt(reader.Value);
 
-			visitor.VisitOption(name, value);
+			visitor.VisitOption(name, value, tooltip);
 		}
 
-		private static string ReadColorFormat(XmlReader reader)
+		private static bool ReadColorAlpha(XmlReader reader)
 		{
 			string format;
 
-			if (!reader.MoveToAttribute("format") && !reader.MoveToAttribute("order"))
-				throw new ArgumentException("Color tags must have a format or order attribute." + PositionInfo(reader));
+			if (!reader.MoveToAttribute("alpha") && !reader.MoveToAttribute("order"))
+				throw new ArgumentException("Color tags must have a alpha or order attribute." + PositionInfo(reader));
 			format = reader.Value.ToLower();
 
-			for (int i = 0; i < format.Length; i++)
+			if (format.ToLower() == "true")
+				return true;
+			else if (format.ToLower() == "false")
+				return false;
+			else
 			{
-				char ch = format[i];
-				if (ch != 'r' && ch != 'g' && ch != 'b' && ch != 'a')
-					throw new ArgumentException("Invalid color format: \"" + format + "\"" + PositionInfo(reader));
+				return format.ToLower().Contains("a");
 			}
-
-			return format;
 		}
 
-		private void ReadReflexive(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
+		private void ReadTagBlock(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
+			uint pluginLine, string tooltip)
 		{
 			uint entrySize = 0;
 
-			if (reader.MoveToAttribute("entrySize") || reader.MoveToAttribute("size"))
+			if (reader.MoveToAttribute("entrySize") || reader.MoveToAttribute("size") || reader.MoveToAttribute("elementSize"))
 			{
 				if (!string.IsNullOrWhiteSpace(reader.Value))
 					entrySize = ParseUInt(reader.Value);
@@ -513,15 +556,18 @@ namespace Blamite.Plugins
 			int align = 4;
 			if (reader.MoveToAttribute("align"))
 				align = ParseInt(reader.Value);
+			bool sort = false;
+			if (reader.MoveToAttribute("sort"))
+				sort = ParseBool(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
+			if (visitor.EnterTagBlock(name, offset, visible, entrySize, align, sort, pluginLine, tooltip))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();
 
 				subtree.ReadStartElement();
 				ReadElements(subtree, false, visitor);
-				visitor.LeaveReflexive();
+				visitor.LeaveTagBlock();
 			}
 		}
 

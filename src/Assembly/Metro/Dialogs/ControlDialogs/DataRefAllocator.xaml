@@ -1,0 +1,67 @@
+﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.DataRefAllocator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:n="clr-namespace:Assembly.Helpers.Native"
+        AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterOwner"
+        SnapsToDevicePixels="True" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        ShowInTaskbar="False"
+        SizeToContent="Height"
+        Width="480" MinHeight="200"
+        n:WindowMovement.IsDraggable="True">
+	<Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60px" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="36px" />
+            </Grid.RowDefinitions>
+
+			<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
+			<TextBlock Grid.Row="0" x:Name="lblTitle" Text="Data Reference Allocator - Assembly" Foreground="#989898"
+			           VerticalAlignment="Top" HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
+			           FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
+
+            <Grid
+				Grid.Row="0"
+				x:Name="headerThumb"
+				Opacity="0"
+				Background="Transparent"
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				n:WindowMovement.DragsWindow="True" />
+
+            <StackPanel Grid.Row="1" Margin="33,0,33,6" CanVerticallyScroll="True">
+                <TextBlock x:Name="lblSubInfo" TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left"
+				           Text="This will allow you to allocate new data for the &quot;{0}&quot; field without overwriting any data which may be in use by pointing to another section of the file, and the file may be expanded to ensure that the data fits." FontFamily="{DynamicResource MetroFontRegular}" />
+                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="White" HorizontalAlignment="Left" Margin="0,10,0,0"
+                           Text="It is highly recommended to create a backup of the file before proceeding."/>
+
+                <Grid x:Name="cbItems" Margin="0,20,0,0" HorizontalAlignment="Left" IsSharedSizeScope="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" SharedSizeGroup="row" />
+                        <RowDefinition Height="*" SharedSizeGroup="row" />
+						<RowDefinition Height="*" SharedSizeGroup="row" />
+					</Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Old Address:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="lblOriginalAddress" Text="0xDEADBEEF" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Old Length:" Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="lblOriginalLength" Text="32" Foreground="{DynamicResource ExtryzeAccentBrushSecondary}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="New Length:" Foreground="White" VerticalAlignment="Center" />
+					<TextBox Grid.Row="2" Grid.Column="1" x:Name="txtNewLength" Margin="10,2,0,2" Width="100" VerticalAlignment="Center" TextChanged="TxtNewLength_OnTextChanged" />
+				</Grid>
+
+            </StackPanel>
+
+            <Grid Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
+			            VerticalAlignment="Bottom">
+                <Button x:Name="btnContinue" Padding="10,0,10,0" Margin="10,0,10,0" Click="BtnContinue_OnClick" IsEnabled="False">Allocate</Button>
+                <Button x:Name="btnCancel" Padding="10,0,10,0" Margin="0" Click="BtnCancel_OnClick">Cancel</Button>
+            </StackPanel>
+        </Grid>
+	</Border>
+</Window>

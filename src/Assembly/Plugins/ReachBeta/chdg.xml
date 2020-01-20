@@ -5,18 +5,19 @@
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
 		<revision author="OrangeMohawk" version="2">Mapped everything I could figure out.</revision>
 	</revisions>
-	<reflexive name="Challenge Definitions" offset="0x0" visible="true" entrySize="0x14">
+	<tagblock name="Challenge Definitions" offset="0x0" visible="true" elementSize="0x14">
 		<stringid name="Type" offset="0x0" visible="true" />
-		<enum8 name="Type" offset="0x4" visible="true" >
+		<enum8 name="Type" offset="0x4" visible="true">
 			<option name="Bounties" value="0x0" />
 			<option name="Weekly" value="0x1" />
 			<option name="Campaign" value="0x2" />
+			<option name="Unknown" value="0x3" />
 			<option name="Firefight/Multiplayer" value="0x4" />
 		</enum8>
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int8 name="Unknown" offset="0x6" visible="false" />
 		<int8 name="Unknown" offset="0x7" visible="false" />
-		<reflexive name="Challenges" offset="0x8" visible="true" entrySize="0x48">
+		<tagblock name="Challenges" offset="0x8" visible="true" elementSize="0x48">
 			<stringid name="Name" offset="0x0" visible="true" />
 			<stringid name="Description" offset="0x4" visible="true" />
 			<stringid name="Unknown" offset="0x8" visible="false" />
@@ -27,7 +28,7 @@
 			<int32 name="Progress Amount" offset="0x1C" visible="true" />
 			<stringid name="In Progress Name" offset="0x20" visible="true" />
 			<undefined name="Unknown" offset="0x24" visible="false" />
-			<bitfield16 name="Requirements" offset="0x28" visible="true">
+			<flags16 name="Requirements" offset="0x28" visible="true">
 				<bit name="Win MP Game" index="0" />
 				<bit name="Complete Campaign Mission" index="1" />
 				<bit name="Play MP Game" index="2" />
@@ -44,9 +45,9 @@
 				<bit name="13" index="13" />
 				<bit name="14" index="14" />
 				<bit name="15" index="15" />
-			</bitfield16>
+			</flags16>
 			<int16 name="Unknown" offset="0x2A" visible="false" />
-			<bitfield8 name="Game Type Limitation" offset="0x2C" visible="true">
+			<flags8 name="Game Type Limitation" offset="0x2C" visible="true">
 				<bit name="Campaign" index="0" />
 				<bit name="Firefight" index="1" />
 				<bit name="Multiplayer" index="2" />
@@ -55,8 +56,8 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
-			<bitfield8 name="Map Type Limitation" offset="0x2D" visible="true">
+			</flags8>
+			<flags8 name="Map Type Limitation" offset="0x2D" visible="true">
 				<bit name="Campaign" index="0" />
 				<bit name="Firefight/Multiplayer" index="1" />
 				<bit name="Bit 2" index="2" />
@@ -65,8 +66,8 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
-			<bitfield8 name="Difficulty Limitation" offset="0x2E" visible="false">
+			</flags8>
+			<flags8 name="Difficulty Limitation" offset="0x2E" visible="false">
 				<bit name="Easy" index="0" />
 				<bit name="Normal" index="1" />
 				<bit name="Heroic" index="2" />
@@ -75,8 +76,8 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
-			<bitfield8 name="Campaign Difficulty/Player Amount Limitation" offset="0x2F" visible="false">
+			</flags8>
+			<flags8 name="Campaign Difficulty/Player Amount Limitation" offset="0x2F" visible="false">
 				<bit name="Easy/Solo (Checked Alone)" index="0" />
 				<bit name="Normal/Coop (Solo Checked Also)" index="1" />
 				<bit name="Heroic" index="2" />
@@ -85,13 +86,13 @@
 				<bit name="Bit 5" index="5" />
 				<bit name="Bit 6" index="6" />
 				<bit name="Bit 7" index="7" />
-			</bitfield8>
+			</flags8>
 			<undefined name="Unknown" offset="0x30" visible="false" />
 			<undefined name="Unknown" offset="0x34" visible="false" />
 			<undefined name="Unknown" offset="0x38" visible="false" />
 			<undefined name="Unknown" offset="0x3C" visible="false" />
 			<undefined name="Unknown" offset="0x40" visible="false" />
 			<undefined name="Unknown" offset="0x44" visible="false" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 </plugin>

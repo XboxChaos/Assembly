@@ -3,51 +3,92 @@
 	<revisions>
 		<revision author="Lord Zedd" version="1">Portin without generation</revision>
 		<revision author="Lord Zedd" version="2">Standardizing</revision>
+		<revision author="Lord Zedd" version="3">thanks h5</revision>
 	</revisions>
-	<int16 name="Unknown" offset="0x0" visible="false" />
-	<int16 name="Unknown" offset="0x2" visible="false" />
-	<reflexive name="Screen Effect" offset="0x4" visible="true" entrySize="0x118">
+	<flags16 name="Global Flags" offset="0x0" visible="true">
+		<bit name="Play Sequentially - Ignore Delay Settings" index="0" />
+		<bit name="Debug This Screen Effect" index="1" />
+		<bit name="Force Delete When Attached To Dead Object" index="2" />
+		<bit name="Force Max One Per Object" index="3" />
+		<bit name="Force Looping (Dangerous; Lasts Forever)" index="4" />
+		<bit name="Bit 5" index="5" />
+		<bit name="Bit 6" index="6" />
+		<bit name="Bit 7" index="7" />
+		<bit name="Bit 8" index="8" />
+		<bit name="Bit 9" index="9" />
+		<bit name="Bit 10" index="10" />
+		<bit name="Bit 11" index="11" />
+		<bit name="Bit 12" index="12" />
+		<bit name="Bit 13" index="13" />
+		<bit name="Bit 14" index="14" />
+		<bit name="Bit 15" index="15" />
+	</flags16>
+	<flags16 name="Global Hidden Flags" offset="0x2" visible="true">
+		<bit name="Update Thread" index="0" />
+		<bit name="Render Thread" index="1" />
+	</flags16>
+	<tagblock name="Screen Effects" offset="0x4" visible="true" elementSize="0x118">
 		<stringid name="Name" offset="0x0" visible="true" />
-		<int16 name="Unknown" offset="0x4" visible="false" />
-		<int16 name="Unknown" offset="0x6" visible="false" />
-		<float32 name="Unknown" offset="0x8" visible="false" />
-		<dataref name="Function" offset="0xC" visible="false" />
-		<undefined name="Unknown" offset="0x20" visible="false" />
-		<float32 name="Duration" offset="0x24" visible="true" />
-		<dataref name="Function" offset="0x28" visible="false" />
-		<dataref name="Function" offset="0x3C" visible="false" />
-		<stringid name="Trigger" offset="0x50" visible="true" />
-		<stringid name="Trigger" offset="0x54" visible="true" />
-		<dataref name="Function" offset="0x58" visible="false" />
-		<tagref name="Unknown" offset="0x6C" visible="true" />
-		<float32 name="Unknown" offset="0x7C" visible="true" />
-		<undefined name="Light Intensity" offset="0x80" visible="true" />
-		<undefined name="Dark Intensity" offset="0x84" visible="true" />
-		<undefined name="Primary Hue" offset="0x88" visible="true" />
-		<undefined name="Secondary Hue" offset="0x8C" visible="true" />
-		<undefined name="Saturation" offset="0x90" visible="true" />
-		<undefined name="Color Muting" offset="0x94" visible="true" />
-		<undefined name="Contrast" offset="0x98" visible="true" />
-		<undefined name="Darkness" offset="0x9C" visible="true" />
-		<undefined name="Brightness" offset="0xa0" visible="true" />
-		<undefined name="Dark Grain" offset="0xa4" visible="true" />
-		<undefined name="Light Grain" offset="0xa8" visible="true" />
-		<Colorf name="Tint" offset="0xAC" format="rgb" visible="true" />
-		<Colorf name="Tone" offset="0xB8" format="rgb" visible="true" />
-		<colorf name="Mask" offset="0xC4" visible="true" format="argb" />
-		<undefined name="Holograph" offset="0xd4" visible="true" />
-		<undefined name="Tunnel Vison" offset="0xd8" visible="true" />
-		<undefined name="Tunnel Light" offset="0xdC" visible="true" />
-		<undefined name="Unknown" offset="0xe0" visible="false" />
-		<undefined name="Unknown" offset="0xe4" visible="false" />
-		<undefined name="Unknown" offset="0xe8" visible="false" />
-		<undefined name="Horizontal Blur" offset="0xeC" visible="true" />
-		<undefined name="Vertical Blur" offset="0xf0" visible="true" />
-		<undefined name="Unknown" offset="0xf4" visible="false" />
-		<undefined name="HUD Transparency (Obsolete)" offset="0xf8" visible="true" />
-		<undefined name="Zoom In" offset="0xfC" visible="true" />
-		<undefined name="Zoom Out" offset="0x100" visible="true" />
-		<undefined name="Turbulence" offset="0x104" visible="true" />
-		<tagref name="Screen Shader" offset="0x108" visible="true" />
-	</reflexive>
+		<flags16 name="Flags" offset="0x4" visible="true">
+			<bit name="Debug Disable" index="0" />
+			<bit name="Allow Effect Outside Radius" index="1" />
+			<bit name="Unattached" index="2" />
+			<bit name="First Person" index="3" />
+			<bit name="Third Person" index="4" />
+			<bit name="Disable Camera Falloffs" index="5" />
+			<bit name="Only Affects Attached Object" index="6" />
+			<bit name="Draw Precisely One" index="7" />
+			<bit name="Use Player Travel Direction" index="8" />
+		</flags16>
+		<flags16 name="Hidden Flags" offset="0x6" visible="true">
+			<bit name="Update Thread" index="0" />
+			<bit name="Render Thread" index="1" />
+		</flags16>
+		<comment title="DISTANCE FALLOFF">controls the maximum distance and the distance falloff of this effect</comment>
+		<float32 name="Maximum Distance" offset="0x8" visible="true" />
+		<dataref name="Distance Falloff Function" offset="0xC" visible="true" />
+		<comment title="TIME EVOLUTION">controls the lifetime and time falloff of this effect</comment>
+		<float32 name="Delay" offset="0x20" visible="true" />
+		<float32 name="Lifetime" offset="0x24" visible="true" />
+		<dataref name="Time Falloff Function" offset="0x28" visible="true" />
+		<comment title="ANGLE FALLOFF">controls the falloff of this effect based on how close you are to looking directly at it</comment>
+		<dataref name="Angle Falloff Function" offset="0x3C" visible="true" />
+		<comment title="OBJECT FALLOFF">applies a falloff based on an object function - ignored if the effect is not attached to an object</comment>
+		<stringid name="Input Variable" offset="0x50" visible="true" />
+		<stringid name="Range Variable" offset="0x54" visible="true" />
+		<dataref name="Object Falloff Function" offset="0x58" visible="true" />
+		<comment title="EFFECTS">a selection of effects to choose from
+in the case of overlapping effects, the maximum will be taken</comment>
+		<tagRef name="Color Grading Look-Up-Texture" offset="0x6C" visible="true" />
+		<float32 name="Runtime Color Grading Strength" offset="0x7C" visible="true" />
+		<float32 name="Exposure Boost" offset="0x80" visible="true" />
+		<float32 name="Exposure Deboost" offset="0x84" visible="true" />
+		<float32 name="Hue Left" offset="0x88" visible="true" />
+		<float32 name="Hue Right" offset="0x8C" visible="true" />
+		<float32 name="Saturation" offset="0x90" visible="true" />
+		<float32 name="Desaturation" offset="0x94" visible="true" />
+		<float32 name="Contrast Enhance" offset="0x98" visible="true" />
+		<float32 name="Gamma Enhance" offset="0x9C" visible="true" />
+		<float32 name="Gamma Reduce" offset="0xA0" visible="true" />
+		<float32 name="Bright Noise" offset="0xA4" visible="true" />
+		<float32 name="Dark Noise" offset="0xA8" visible="true" />
+		<colorf name="Color Filter" offset="0xAC" alpha="false" visible="true" />
+		<colorf name="Color Floor" offset="0xB8" alpha="false" visible="true" />
+		<float32 name="Color Replace Strength" offset="0xC4" visible="true" />
+		<colorf name="Color Replace" offset="0xC8" alpha="false" visible="true" />
+		<float32 name="Tron" offset="0xD4" visible="true" />
+		<float32 name="Motion Suck" offset="0xD8" visible="true" />
+		<float32 name="Bloom Buffer Radial Blur" offset="0xDC" visible="true" />
+		<float32 name="Radial Blur Direction i" offset="0xE0" visible="true" />
+		<float32 name="Radial Blur Direction j" offset="0xE4" visible="true" />
+		<float32 name="Radial Blur Direction k" offset="0xE8" visible="true" />
+		<float32 name="Horizontal Blur" offset="0xEC" visible="true" />
+		<float32 name="Vertical Blur" offset="0xF0" visible="true" />
+		<float32 name="Vision Mode" offset="0xF4" visible="true" />
+		<float32 name="HUD Fade" offset="0xF8" visible="true" />
+		<float32 name="FOV In" offset="0xFC" visible="true" />
+		<float32 name="FOV Out" offset="0x100" visible="true" />
+		<float32 name="Screen Shake" offset="0x104" visible="true" />
+		<tagRef name="Shader Effect" offset="0x108" visible="true" />
+	</tagblock>
 </plugin>

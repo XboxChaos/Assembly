@@ -9,7 +9,7 @@ namespace Assembly.Metro.Dialogs
 {
 	public class MetroTagBlockReallocator
 	{
-		public static int? Show(ICacheFile cache, ReflexiveData data)
+		public static int? Show(ICacheFile cache, TagBlockData data)
 		{
 			App.AssemblyStorage.AssemblySettings.HomeWindow.ShowMask();
 			var dialog = new TagBlockReallocator(data)

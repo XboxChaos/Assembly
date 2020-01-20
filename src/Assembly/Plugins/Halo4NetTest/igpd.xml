@@ -25,44 +25,44 @@
 	<undefined name="Unknown" offset="0x5C" visible="false" />
 	<undefined name="Unknown" offset="0x60" visible="false" />
 	<undefined name="Unknown" offset="0x64" visible="false" />
-	<reflexive name="Incident Global Definitions" offset="0x68" visible="true" entrySize="0x10">
+	<tagblock name="Incident Global Definitions" offset="0x68" visible="true" elementSize="0x10">
 		<tagRef name="Definition" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="Default Incidents" offset="0x74" visible="true" entrySize="0x48">
+	</tagblock>
+	<tagblock name="Default Incidents" offset="0x74" visible="true" elementSize="0x48">
 		<stringid name="Incident Name" offset="0x0" visible="true" />
 		<int8 name="Unknown" offset="0x4" visible="false" />
 		<int8 name="Unknown" offset="0x5" visible="false" />
 		<int8 name="Unknown" offset="0x6" visible="false" />
 		<int8 name="Unknown" offset="0x7" visible="false" />
-		<bitfield8 name="Not Allowed In Mode" offset="0x8" visible="true">
+		<flags8 name="Not Allowed In Mode" offset="0x8" visible="true">
 			<bit name="Campaign" index="0" />
 			<bit name="Firefight" index="1" />
 			<bit name="Multiplayer" index="2" />
-		</bitfield8>
-		<bitfield8 name="Not Allowed In Mode Type" offset="0x9" visible="true">
+		</flags8>
+		<flags8 name="Not Allowed In Mode Type" offset="0x9" visible="true">
 			<bit name="Custom Game" index="0" />
 			<bit name="Matchmaking" index="1" />
-		</bitfield8>
-		<bitfield8 name="Not Allowed On Difficulty" offset="0xA" visible="true">
+		</flags8>
+		<flags8 name="Not Allowed On Difficulty" offset="0xA" visible="true">
 			<bit name="Easy" index="0" />
 			<bit name="Normal" index="1" />
 			<bit name="Heroic" index="2" />
 			<bit name="Legendary" index="3" />
-		</bitfield8>
+		</flags8>
 		<int8 name="Unknown" offset="0xB" visible="false" />
-		<reflexive name="Unknown" offset="0xC" visible="true" entrySize="0x8">
+		<tagblock name="Unknown" offset="0xC" visible="true" elementSize="0x8">
 			<stringid name="Incident" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x4" visible="true" />
 			<int8 name="Unknown" offset="0x5" visible="false" />
 			<int8 name="Unknown" offset="0x6" visible="false" />
 			<int8 name="Unknown" offset="0x7" visible="false" />
-		</reflexive>
-		<reflexive name="Case Triggers" offset="0x18" visible="true" entrySize="0x40">
+		</tagblock>
+		<tagblock name="Case Triggers" offset="0x18" visible="true" elementSize="0x40">
 			<stringid name="Parent Incident" offset="0x0" visible="true" />
-			<reflexive name="Weapons Filter" offset="0x4" visible="true" entrySize="0x4">
+			<tagblock name="Weapons Filter" offset="0x4" visible="true" elementSize="0x4">
 				<enum8 name="Damage Reporting Type" offset="0x0" visible="true">
 					<option name="Guardians (Unknown)" value="0x0" />
-					<option name="Guardians" value="0x1" />
+					<option name="Guardians (Default)" value="0x1" />
 					<option name="Guardians (Scripting)" value="0x2" />
 					<option name="Suicide" value="0x3" />
 					<option name="Burst Gun" value="0x4" />
@@ -156,9 +156,9 @@
 				<int8 name="Unknown" offset="0x1" visible="false" />
 				<int8 name="Unknown" offset="0x2" visible="false" />
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-			<reflexive name="Cause Unit" offset="0x10" visible="true" entrySize="0x34">
-				<bitfield32 name="Action Flags" offset="0x0" visible="true">
+			</tagblock>
+			<tagblock name="Cause Unit" offset="0x10" visible="true" elementSize="0x34">
+				<flags32 name="Action Flags" offset="0x0" visible="true">
 					<bit name="Is Player" index="0" />
 					<bit name="Is AI" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -191,7 +191,7 @@
 					<bit name="Is Scoped Out" index="29" />
 					<bit name="Is Hijacking" index="30" />
 					<bit name="Bit 31" index="31" />
-				</bitfield32>
+				</flags32>
 				<enum8 name="Unit" offset="0x4" visible="true">
 					<option name="Any" value="0xFF" />
 					<option name="Brute" value="0x0" />
@@ -244,7 +244,7 @@
 				<int8 name="Unknown" offset="0x6" visible="true" />
 				<int8 name="Unknown" offset="0x7" visible="true" />
 				<ascii name="Profile Name" offset="0x8" length="0x20" visible="true" />
-				<reflexive name="In Vehicle" offset="0x28" visible="true" entrySize="0x4">
+				<tagblock name="In Vehicle" offset="0x28" visible="true" elementSize="0x4">
 					<enum32 name="Vehicle" offset="0x0" visible="true">
 						<option name="Tank Engine" value="0x0" />
 						<option name="Engine" value="0x1" />
@@ -263,10 +263,10 @@
 						<option name="Space Fighter" value="0xE" />
 						<option name="Unknown 15" value="0xF" />
 					</enum32>
-				</reflexive>
-			</reflexive>
-			<reflexive name="Effect Unit" offset="0x1C" visible="true" entrySize="0x34">
-				<bitfield32 name="Action Flags" offset="0x0" visible="true">
+				</tagblock>
+			</tagblock>
+			<tagblock name="Effect Unit" offset="0x1C" visible="true" elementSize="0x34">
+				<flags32 name="Action Flags" offset="0x0" visible="true">
 					<bit name="Is Player" index="0" />
 					<bit name="Is AI" index="1" />
 					<bit name="Bit 2" index="2" />
@@ -299,7 +299,7 @@
 					<bit name="Is Scoped Out" index="29" />
 					<bit name="Is Hijacking" index="30" />
 					<bit name="Bit 31" index="31" />
-				</bitfield32>
+				</flags32>
 				<enum8 name="Unit" offset="0x4" visible="true">
 					<option name="Any" value="0xFF" />
 					<option name="Brute" value="0x0" />
@@ -352,7 +352,7 @@
 				<int8 name="Unknown" offset="0x6" visible="true" />
 				<int8 name="Unknown" offset="0x7" visible="true" />
 				<ascii name="Profile Name" offset="0x8" length="0x20" visible="true" />
-				<reflexive name="In Vehicle" offset="0x28" visible="true" entrySize="0x4">
+				<tagblock name="In Vehicle" offset="0x28" visible="true" elementSize="0x4">
 					<enum32 name="Vehicle" offset="0x0" visible="true">
 						<option name="Tank Engine" value="0x0" />
 						<option name="Engine" value="0x1" />
@@ -371,10 +371,10 @@
 						<option name="Space Fighter" value="0xE" />
 						<option name="Unknown 15" value="0xF" />
 					</enum32>
-				</reflexive>
-			</reflexive>
-			<reflexive name="Special Filters" offset="0x28" visible="true" entrySize="0x4">
-				<enum8 name="Filter" offset="0x5" visible="true">
+				</tagblock>
+			</tagblock>
+			<tagblock name="Special Filters" offset="0x28" visible="true" elementSize="0x4">
+				<enum8 name="Filter" offset="0x0" visible="true">
 					<option name="Headshot" value="0x0" />
 					<option name="Stick" value="0x1" />
 					<option name="Backsmack" value="0x2" />
@@ -387,58 +387,58 @@
 				<int8 name="Unknown" offset="0x1" visible="false" />
 				<int8 name="Unknown" offset="0x2" visible="false" />
 				<int8 name="Unknown" offset="0x3" visible="false" />
-			</reflexive>
-			<reflexive name="Endgame" offset="0x34" visible="true" entrySize="0x8">
+			</tagblock>
+			<tagblock name="Endgame" offset="0x34" visible="true" elementSize="0x8">
 				<int16 name="Unknown" offset="0x0" visible="true" />
 				<int16 name="Unknown" offset="0x2" visible="true" />
 				<int8 name="Unknown" offset="0x4" visible="true" />
 				<int8 name="Unknown" offset="0x5" visible="false" />
 				<int8 name="Unknown" offset="0x6" visible="false" />
 				<int8 name="Unknown" offset="0x7" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Cumulative Single-Incident Triggers" offset="0x24" visible="true" entrySize="0x10">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Cumulative Single-Incident Triggers" offset="0x24" visible="true" elementSize="0x10">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
 			<int8 name="Unknown" offset="0x3" visible="false" />
-			<reflexive name="Trigger" offset="0x4" visible="true" entrySize="0x10">
+			<tagblock name="Trigger" offset="0x4" visible="true" elementSize="0x10">
 				<int8 name="Unknown" offset="0x0" visible="false" />
 				<int8 name="Unknown" offset="0x1" visible="false" />
 				<int8 name="Unknown" offset="0x2" visible="false" />
 				<int8 name="Unknown" offset="0x3" visible="false" />
 				<int32 name="Amount" offset="0x4" visible="true" />
-				<stringid name="Target Incident" offset="0x8" visible="true" />>
+				<stringid name="Target Incident" offset="0x8" visible="true" />
 				<undefined name="Unknown" offset="0xC" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Cumulative Multiple-Incident Triggers" offset="0x30" visible="true" entrySize="0x14">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Cumulative Multiple-Incident Triggers" offset="0x30" visible="true" elementSize="0x14">
 			<int8 name="Unknown" offset="0x0" visible="true" />
 			<int8 name="Unknown" offset="0x1" visible="true" />
 			<int8 name="Unknown" offset="0x2" visible="false" />
 			<int8 name="Unknown" offset="0x3" visible="false" />
 			<int32 name="Amount" offset="0x4" visible="true" />
-			<reflexive name="Qualifying Target Incidents" offset="0x8" visible="true" entrySize="0x8">
+			<tagblock name="Qualifying Target Incidents" offset="0x8" visible="true" elementSize="0x8">
 				<stringid name="Incident" offset="0x0" visible="true" />
 				<undefined name="Unknown" offset="0x4" visible="false" />
-			</reflexive>
-		</reflexive>
-		<reflexive name="Responses" offset="0x3C" visible="true" entrySize="0x4C">
-			<bitfield8 name="Mode" offset="0x0" visible="true">
+			</tagblock>
+		</tagblock>
+		<tagblock name="Responses" offset="0x3C" visible="true" elementSize="0x4C">
+			<flags8 name="Mode" offset="0x0" visible="true">
 				<bit name="Campaign" index="0" />
 				<bit name="Firefight" index="1" />
 				<bit name="Multiplayer" index="2" />
-			</bitfield8>
-			<bitfield8 name="Mode Type" offset="0x1" visible="true">
+			</flags8>
+			<flags8 name="Mode Type" offset="0x1" visible="true">
 				<bit name="Custom Game" index="0" />
 				<bit name="Matchmaking" index="1" />
-			</bitfield8>
-			<bitfield8 name="Difficulty" offset="0x2" visible="true">
+			</flags8>
+			<flags8 name="Difficulty" offset="0x2" visible="true">
 				<bit name="Easy" index="0" />
 				<bit name="Normal" index="1" />
 				<bit name="Heroic" index="2" />
 				<bit name="Legendary" index="3" />
-			</bitfield8>
+			</flags8>
 			<int8 name="Unknown" offset="0x3" visible="false" />
 			<undefined name="Unknown" offset="0x4" visible="false" />
 			<stringid name="Event" offset="0x8" visible="true" />
@@ -446,13 +446,13 @@
 			<stringid name="Commendation" offset="0x10" visible="true" />
 			<stringid name="Achievement" offset="0x14" visible="true" />
 			<stringid name="Avatar Award" offset="0x18" visible="true" />
-			<reflexive name="Unknown" offset="0x1C" visible="true" entrySize="0x4">
+			<tagblock name="Unknown" offset="0x1C" visible="true" elementSize="0x4">
 				<stringid name="Unknown" offset="0x0" visible="true" />
-			</reflexive>
+			</tagblock>
 			<stringid name="Script" offset="0x28" visible="true" />
 			<int16 name="Script Index" offset="0x2C" visible="true" />
 			<int16 name="Unknown" offset="0x2E" visible="false" />
-			<reflexive name="Widgets" offset="0x30" visible="true" entrySize="0x40">
+			<tagblock name="Widgets" offset="0x30" visible="true" elementSize="0x40">
 				<int32 name="Unknown" offset="0x0" visible="true" />
 				<int8 name="Unknown" offset="0x4" visible="true" />
 				<int8 name="Unknown" offset="0x5" visible="true" />
@@ -464,8 +464,11 @@
 				<tagref name="CUI Container" offset="0x10" visible="true" />
 				<tagref name="Sound Group" offset="0x20" visible="true" />
 				<stringid name="Objective Carried" offset="0x30" visible="true" />
-			</reflexive>
+				<undefined name="Unknown" offset="0x34" visible="true" />
+				<undefined name="Unknown" offset="0x38" visible="true" />
+				<undefined name="Unknown" offset="0x3C" visible="true" />
+			</tagblock>
 			<tagRef name="Sound Incident Response" offset="0x3C" visible="true" />
-		</reflexive>
-	</reflexive>
+		</tagblock>
+	</tagblock>
 </plugin>

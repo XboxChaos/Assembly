@@ -25,11 +25,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 			tutHaloReach.Content = new RssPage(HoldingVault.XboxChaosHReachTuts);*/
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public bool Close()
 		{
 			return true;
@@ -80,7 +75,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 				int recentsCount = 0;
 				foreach (Settings.RecentFileEntry entry in App.AssemblyStorage.AssemblySettings.ApplicationRecents)
 				{
-					if (recentsCount > 9)
+					if (recentsCount > 31)
 						break;
 
 					var btnRecent = new Button

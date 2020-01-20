@@ -60,119 +60,119 @@ namespace Blamite.Blam
 		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
 		/// </summary>
-		/// <param name="classMagic">The magic number (ID) of the tag's class.</param>
+		/// <param name="groupMagic">The magic number (ID) of the tag's group.</param>
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public abstract ITag AddTag(int classMagic, int baseSize, IStream stream);
+		public abstract ITag AddTag(int groupMagic, int baseSize, IStream stream);
 
 		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
 		/// </summary>
-		/// <param name="tagClass">The tag's class.</param>
+		/// <param name="tagGroup">The tag's group.</param>
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public ITag AddTag(ITagClass tagClass, int baseSize, IStream stream)
+		public ITag AddTag(ITagGroup tagGroup, int baseSize, IStream stream)
 		{
-			return AddTag(tagClass.Magic, baseSize, stream);
+			return AddTag(tagGroup.Magic, baseSize, stream);
 		}
 
 		/// <summary>
 		///     Adds a tag to the table and allocates space for its base data.
 		/// </summary>
-		/// <param name="className">The case-sensitive four-letter string representation of the name of the tag's class.</param>
+		/// <param name="groupName">The case-sensitive four-letter string representation of the name of the tag's group.</param>
 		/// <param name="baseSize">The size of the data to initially allocate for the tag.</param>
 		/// <param name="stream">The stream to write to.</param>
 		/// <returns>The tag that was added.</returns>
-		public ITag AddTag(string className, int baseSize, IStream stream)
+		public ITag AddTag(string groupName, int baseSize, IStream stream)
 		{
-			return AddTag(CharConstant.FromString(className), baseSize, stream);
+			return AddTag(CharConstant.FromString(groupName), baseSize, stream);
 		}
 
 		/// <summary>
-		///     Finds the first tag which belongs to a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Finds the first tag which belongs to a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="classMagic">The magic number (ID) of the class to search for.</param>
-		/// <returns>The first tag which is a member of the class, or null if not found.</returns>
-		public ITag FindTagByClass(int classMagic)
+		/// <param name="groupMagic">The magic number (ID) of the group to search for.</param>
+		/// <returns>The first tag which is a member of the group, or null if not found.</returns>
+		public ITag FindTagByGroup(int groupMagic)
 		{
 			foreach (ITag tag in this)
 			{
-				if (tag != null && tag.Class != null &&
-				    (tag.Class.Magic == classMagic || tag.Class.ParentMagic == classMagic ||
-				     tag.Class.GrandparentMagic == classMagic))
+				if (tag != null && tag.Group != null &&
+				    (tag.Group.Magic == groupMagic || tag.Group.ParentMagic == groupMagic ||
+				     tag.Group.GrandparentMagic == groupMagic))
 					return tag;
 			}
 			return null;
 		}
 
 		/// <summary>
-		///     Finds the first tag which belongs to a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Finds the first tag which belongs to a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="className">
-		///     The case-sensitive four-letter string representation of the name of the class to search for
+		/// <param name="groupName">
+		///     The case-sensitive four-letter string representation of the name of the group to search for
 		///     (e.g. "bipd").
 		/// </param>
-		/// <returns>The first tag which is a member of the class, or null if not found.</returns>
-		public ITag FindTagByClass(string className)
+		/// <returns>The first tag which is a member of the group, or null if not found.</returns>
+		public ITag FindTagByGroup(string groupName)
 		{
-			return FindTagByClass(CharConstant.FromString(className));
+			return FindTagByGroup(CharConstant.FromString(groupName));
 		}
 
 		/// <summary>
-		///     Finds the first tag which belongs to a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Finds the first tag which belongs to a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="tagClass">The tag class to search for.</param>
-		/// <returns>The first tag which is a member of the class, or null if not found.</returns>
-		public ITag FindTagByClass(ITagClass tagClass)
+		/// <param name="tagGroup">The tag group to search for.</param>
+		/// <returns>The first tag which is a member of the group, or null if not found.</returns>
+		public ITag FindTagByGroup(ITagGroup tagGroup)
 		{
-			return FindTagByClass(tagClass.Magic);
+			return FindTagByGroup(tagGroup.Magic);
 		}
 
 		/// <summary>
-		///     Retrieves a collection of tags which are members of a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Retrieves a collection of tags which are members of a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="classMagic">The magic number (ID) of the class to search for.</param>
-		/// <returns>A collection of tags which are members of the class.</returns>
-		public IEnumerable<ITag> FindTagsByClass(int classMagic)
+		/// <param name="groupMagic">The magic number (ID) of the group to search for.</param>
+		/// <returns>A collection of tags which are members of the group.</returns>
+		public IEnumerable<ITag> FindTagsByGroup(int groupMagic)
 		{
 			foreach (ITag tag in this)
 			{
-				if (tag != null && tag.Class != null &&
-				    (tag.Class.Magic == classMagic || tag.Class.ParentMagic == classMagic ||
-				     tag.Class.GrandparentMagic == classMagic))
+				if (tag != null && tag.Group != null &&
+				    (tag.Group.Magic == groupMagic || tag.Group.ParentMagic == groupMagic ||
+				     tag.Group.GrandparentMagic == groupMagic))
 					yield return tag;
 			}
 		}
 
 		/// <summary>
-		///     Retrieves a collection of tags which are members of a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Retrieves a collection of tags which are members of a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="className">
-		///     The case-sensitive four-letter string representation of the name of the class to search for
+		/// <param name="groupName">
+		///     The case-sensitive four-letter string representation of the name of the group to search for
 		///     (e.g. "bipd").
 		/// </param>
-		/// <returns>A collection of tags which are members of the class.</returns>
-		public IEnumerable<ITag> FindTagsByClass(string className)
+		/// <returns>A collection of tags which are members of the group.</returns>
+		public IEnumerable<ITag> FindTagsByGroup(string groupName)
 		{
-			return FindTagsByClass(CharConstant.FromString(className));
+			return FindTagsByGroup(CharConstant.FromString(groupName));
 		}
 
 		/// <summary>
-		///     Retrieves a collection of tags which are members of a given class.
-		///     Tags which inherit from the class will be included as well.
+		///     Retrieves a collection of tags which are members of a given group.
+		///     Tags which inherit from the group will be included as well.
 		/// </summary>
-		/// <param name="tagClass">The tag class to search for.</param>
-		/// <returns>A collection of tags which are members of the class.</returns>
-		public IEnumerable<ITag> FindTagsByClass(ITagClass tagClass)
+		/// <param name="tagGroup">The tag group to search for.</param>
+		/// <returns>A collection of tags which are members of the group.</returns>
+		public IEnumerable<ITag> FindTagsByGroup(ITagGroup tagGroup)
 		{
-			return FindTagsByClass(tagClass.Magic);
+			return FindTagsByGroup(tagGroup.Magic);
 		}
 
 		/// <summary>
@@ -190,15 +190,15 @@ namespace Blamite.Blam
 		}
 
 		/// <summary>
-		///     Finds the first tag in a class which has a given name.
+		///     Finds the first tag in a group which has a given name.
 		/// </summary>
 		/// <param name="name">The case-sensitive tag name to search for.</param>
-		/// <param name="classMagic">The magic number (ID) of the tag class to search in.</param>
+		/// <param name="groupMagic">The magic number (ID) of the tag group to search in.</param>
 		/// <param name="names">The <see cref="FileNameSource" /> containing tag names.</param>
-		/// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
-		public ITag FindTagByName(string name, int classMagic, FileNameSource names)
+		/// <returns>The first tag in the group which has the given name, or null if nothing was found.</returns>
+		public ITag FindTagByName(string name, int groupMagic, FileNameSource names)
 		{
-			foreach (ITag tag in FindTagsByClass(classMagic))
+			foreach (ITag tag in FindTagsByGroup(groupMagic))
 			{
 				if (names.GetTagName(tag) == name)
 					return tag;
@@ -207,30 +207,30 @@ namespace Blamite.Blam
 		}
 
 		/// <summary>
-		///     Finds the first tag in a class which has a given name.
+		///     Finds the first tag in a group which has a given name.
 		/// </summary>
 		/// <param name="name">The case-sensitive tag name to search for.</param>
-		/// <param name="className">
-		///     The case-sensitive four-letter string representation of the name of the class to search in
+		/// <param name="groupName">
+		///     The case-sensitive four-letter string representation of the name of the group to search in
 		///     (e.g. "bipd").
 		/// </param>
 		/// <param name="names">The <see cref="FileNameSource" /> containing tag names.</param>
-		/// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
-		public ITag FindTagByName(string name, string className, FileNameSource names)
+		/// <returns>The first tag in the group which has the given name, or null if nothing was found.</returns>
+		public ITag FindTagByName(string name, string groupName, FileNameSource names)
 		{
-			return FindTagByName(name, CharConstant.FromString(className), names);
+			return FindTagByName(name, CharConstant.FromString(groupName), names);
 		}
 
 		/// <summary>
-		///     Finds the first tag in a class which has a given name.
+		///     Finds the first tag in a group which has a given name.
 		/// </summary>
 		/// <param name="name">The case-sensitive tag name to search for.</param>
-		/// <param name="tagClass">The tag class to search in.</param>
+		/// <param name="tagGroup">The tag group to search in.</param>
 		/// <param name="names">The <see cref="FileNameSource" /> containing tag names.</param>
-		/// <returns>The first tag in the class which has the given name, or null if nothing was found.</returns>
-		public ITag FindTagByName(string name, ITagClass tagClass, FileNameSource names)
+		/// <returns>The first tag in the group which has the given name, or null if nothing was found.</returns>
+		public ITag FindTagByName(string name, ITagGroup tagGroup, FileNameSource names)
 		{
-			return FindTagByName(name, tagClass.Magic, names);
+			return FindTagByName(name, tagGroup.Magic, names);
 		}
 
 		/// <summary>
@@ -248,18 +248,18 @@ namespace Blamite.Blam
 		}
 
 		/// <summary>
-		///     Checks a datum index and class ID to see if they actually point to a tag.
+		///     Checks a datum index and group ID to see if they actually point to a tag.
 		/// </summary>
 		/// <param name="index">The datum index to check.</param>
-		/// <param name="classMagic">The magic number (ID) of the tag class which the tag should belong to.</param>
-		/// <returns>true if the datum index points to a valid tag and its class ID matches.</returns>
-		public bool IsValidIndex(DatumIndex index, int classMagic)
+		/// <param name="groupMagic">The magic number (ID) of the tag group which the tag should belong to.</param>
+		/// <returns>true if the datum index points to a valid tag and its group ID matches.</returns>
+		public bool IsValidIndex(DatumIndex index, int groupMagic)
 		{
 			if (!IsValidIndex(index))
 				return false;
 
 			ITag tag = this[index];
-			return (tag.Class != null && tag.Class.Magic == classMagic);
+			return (tag.Group != null && tag.Group.Magic == groupMagic);
 		}
 	}
 }

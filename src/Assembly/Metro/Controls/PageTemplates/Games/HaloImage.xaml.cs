@@ -44,11 +44,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			thrd.Start();
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		private void loadBLF()
 		{
 			try
@@ -122,7 +117,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			try
 			{
-				_blf.Close();
+				_blf.Dispose();
 			}
 			catch (Exception)
 			{

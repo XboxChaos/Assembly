@@ -1,3 +1,6 @@
+using System;
+using System.Windows;
+
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
@@ -5,16 +8,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public abstract class ValueField : MetaField
 	{
-		private uint _address;
+		private long _address;
 		private string _name;
 		private uint _offset;
+		private string _tooltip;
 
-		public ValueField(string name, uint offset, uint address, uint pluginLine)
+		public ValueField(string name, uint offset, long address, uint pluginLine, string tooltip)
 		{
 			_name = name;
 			_offset = offset;
 			_address = address;
 			PluginLine = pluginLine;
+			_tooltip = tooltip;
 		}
 
 		/// <summary>
@@ -31,7 +36,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		/// <summary>
-		///     The offset, from the start of the current meta block or reflexive, of the field's value.
+		///     The offset, from the start of the current meta block or tag block, of the field's value.
 		/// </summary>
 		public uint Offset
 		{
@@ -47,7 +52,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		///     The estimated memory address of the field itself.
 		///     Do not rely upon the accuracy of this value, especially when saving or poking.
 		/// </summary>
-		public uint FieldAddress
+		public long FieldAddress
 		{
 			get { return _address; }
 			set
@@ -55,6 +60,37 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_address = value;
 				NotifyPropertyChanged("FieldAddress");
 			}
+		}
+
+		/// <summary>
+		///     The value's tooltip.
+		/// </summary>
+		public string ToolTip
+		{
+			get
+			{
+				return _tooltip;
+			}
+			set
+			{
+				_tooltip = value;
+				NotifyPropertyChanged("ToolTip");
+			}
+		}
+
+		public bool ToolTipExists
+		{
+			get { return !string.IsNullOrEmpty(_tooltip); }
+		}
+
+		internal static float ToRadian(float input)
+		{
+			return (float)(input * (Math.PI / 180));
+		}
+
+		internal static float FromRadian(float input)
+		{
+			return (float)(input * (180 / Math.PI));
 		}
 	}
 }

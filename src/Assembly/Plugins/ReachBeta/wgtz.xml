@@ -3,70 +3,88 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="-DeToX-" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">thanks h5</revision>
 	</revisions>
-	<tagRef name="Shared UI Globals" offset="0x0" visible="true" />
-	<tagRef name="Editable Settings" offset="0x10" visible="true" />
-	<tagRef name="Matchmaking Hopper Strings" offset="0x20" visible="true" />
-	<reflexive name="Screen Widgets" offset="0x30" visible="true" entrySize="0x10">
+	<tagRef name="Shared Globals" offset="0x0" visible="true" />
+	<tagRef name="MP Variant Settings UI" offset="0x10" visible="true" />
+	<tagRef name="Game Hopper Strings" offset="0x20" visible="true" />
+	<tagblock name="Screen Widgets" offset="0x30" visible="true" elementSize="0x10">
 		<tagRef name="Widget" offset="0x0" visible="true" />
-	</reflexive>
-	<reflexive name="CUI Screen Index" offset="0x3C" visible="true" entrySize="0x14">
+	</tagblock>
+	<tagblock name="CUI Screen Widgets" offset="0x3C" visible="true" elementSize="0x14">
+		<stringId name="Name" offset="0x0" visible="true" />
+		<tagRef name="CUI Screen" offset="0x4" visible="true" />
+	</tagblock>
+	<tagblock name="CUI Overlay Cameras" offset="0x48" visible="true" elementSize="0x18">
+		<stringid name="Resolution Name" offset="0x0" visible="true" />
+		<enum8 name="Pivot Corner" offset="0x4" visible="true">
+			<option name="Top Left" value="0x0" />
+			<option name="Top Right" value="0x1" />
+			<option name="Bottom Right" value="0x2" />
+			<option name="Bottom Left" value="0x3" />
+		</enum8>
+		<int8 name="Unknown" offset="0x5" visible="false" />
+		<int16 name="Unknown" offset="0x6" visible="false" />
+		<float32 name="Z Near" offset="0x8" visible="true" />
+		<float32 name="Z Far" offset="0xC" visible="true" />
+		<float32 name="X Angle Degrees" offset="0x10" visible="true" />
+		<float32 name="Y Angle Degrees" offset="0x14" visible="true" />
+	</tagblock>
+	<tagblock name="Player Model Camera Settings" offset="0x54" visible="true" elementSize="0x64">
+		<comment title="Camera Settings">These are model-viewing camera parameters that you can control
+* FOV is the field of view used by the texture camera. if left 0, a suitable default FOV is used
+* Initial Radial Offset is the initial radial distance of the camera from the target model
+* Final Radial Offset is the final radial distance of the camera from the target model
+* Camera Radial Step Size is the incremental change in input to the radial transition function per tick
+* Initial Vertical Offset is the initial vertical distance of the camera from the target's center
+* Final Vertical Offset is the final vertical distance of the camera from the target's center
+* Camera Vertical Step Size is the incremental change in input to the vertical transition function per tick
+* Camera Rotational Step Size is the incremental change in camera rotation per game tick
+* The Transition Functions are used to control the camera zoom with controller input. if left empty, a linear interpolation is used for camera zoom</comment>
 		<stringid name="Name" offset="0x0" visible="true" />
-		<tagRef name="Screen" offset="0x4" visible="true" />
-	</reflexive>
-	<reflexive name="CUI Global Skewing" offset="0x48" visible="true" entrySize="0x18">
-		<stringId name="Resolution" offset="0x0" visible="true" />
-		<int32 name="Offset Scale Y Anchor" offset="0x4" visible="true" />
-		<float32 name="Right Screen Skew 1" offset="0x8" visible="true" />
-		<float32 name="Right Screen Skew 2" offset="0xC" visible="true" />
-		<undefined name="Y Offset Scale" offset="0x10" visible="true" />
-		<float32 name="X Offset Scale" offset="0x14" visible="true" />
-	</reflexive>
-	<reflexive name="CUI Camera Definitions" offset="0x54" visible="true" entrySize="0x64">
-		<stringid name="Camera Name" offset="0x0" visible="true" />
-		<undefined name="Unknown" offset="0x4" visible="true" />
-		<undefined name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0xC" visible="true" />
-		<undefined name="Unknown" offset="0x10" visible="true" />
-		<undefined name="Unknown" offset="0x14" visible="true" />
-		<undefined name="Unknown" offset="0x18" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<undefined name="Unknown" offset="0x24" visible="true" />
-		<stringid name="Unknown" offset="0x28" visible="true" />
-		<undefined name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-		<undefined name="Unknown" offset="0x38" visible="true" />
-		<undefined name="Unknown" offset="0x3C" visible="true" />
-		<undefined name="Unknown" offset="0x40" visible="true" />
-		<undefined name="Unknown" offset="0x44" visible="true" />
-		<undefined name="Unknown" offset="0x48" visible="true" />
-		<undefined name="Unknown" offset="0x4C" visible="true" />
-		<undefined name="Unknown" offset="0x50" visible="true" />
-		<undefined name="Unknown" offset="0x54" visible="true" />
-		<undefined name="Unknown" offset="0x58" visible="true" />
-		<undefined name="Unknown" offset="0x5C" visible="true" />
-		<undefined name="Unknown" offset="0x60" visible="true" />
-	</reflexive>
-	<reflexive name="CUI Camera Modifiers" offset="0x60" visible="true" entrySize="0x38">
-		<stringId name="Camera Name" offset="0x0" visible="true" />
-		<float32 name="Unknown" offset="0x4" visible="true" />
-		<dataRef name="Unknown" offset="0x8" visible="true" />
-		<undefined name="Unknown" offset="0x1C" visible="true" />
-		<undefined name="Unknown" offset="0x20" visible="true" />
-		<degree name="Unknown" offset="0x24" visible="true" />
-		<undefined name="Unknown" offset="0x28" visible="true" />
-		<degree name="Unknown" offset="0x2C" visible="true" />
-		<undefined name="Unknown" offset="0x30" visible="true" />
-		<undefined name="Unknown" offset="0x34" visible="true" />
-	</reflexive>
-	<reflexive name="Unknown" offset="0x6C" visible="false" entrySize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" />
-	</reflexive>
+		<float32 name="Model World Position x" offset="0x4" visible="true" />
+		<float32 name="Model World Position y" offset="0x8" visible="true" />
+		<float32 name="Model World Position z" offset="0xC" visible="true" />
+		<float32 name="Minimum World Position x" offset="0x10" visible="true" />
+		<float32 name="Minimum World Position y" offset="0x14" visible="true" />
+		<float32 name="Minimum World Position z" offset="0x18" visible="true" />
+		<float32 name="Maximum World Position x" offset="0x1C" visible="true" />
+		<float32 name="Maximum World Position y" offset="0x20" visible="true" />
+		<float32 name="Maximum World Position z" offset="0x24" visible="true" />
+		<stringid name="Viewed Model Marker Name" offset="0x28" visible="true" />
+		<float32 name="Minimum Camera Offset x" offset="0x2C" visible="true" />
+		<float32 name="Minimum Camera Offset y" offset="0x30" visible="true" />
+		<float32 name="Minimum Camera Offset z" offset="0x34" visible="true" />
+		<float32 name="Minimum Camera Focal Offset x" offset="0x38" visible="true" />
+		<float32 name="Minimum Camera Focal Offset y" offset="0x3C" visible="true" />
+		<float32 name="Minimum Camera Focal Offset z" offset="0x40" visible="true" />
+		<float32 name="Maximum Camera Offset x" offset="0x44" visible="true" />
+		<float32 name="Maximum Camera Offset y" offset="0x48" visible="true" />
+		<float32 name="Maximum Camera Offset z" offset="0x4C" visible="true" />
+		<float32 name="Maximum Camera Focal Offset x" offset="0x50" visible="true" />
+		<float32 name="Maximum Camera Focal Offset y" offset="0x54" visible="true" />
+		<float32 name="Maximum Camera Focal Offset z" offset="0x58" visible="true" />
+		<float32 name="Initial Zoom" offset="0x5C" visible="true" />
+		<float32 name="FOV" offset="0x60" visible="true" />
+	</tagblock>
+	<tagblock name="Player Model Input Settings" offset="0x60" visible="true" elementSize="0x38">
+		<stringid name="Name" offset="0x0" visible="true" />
+		<float32 name="Zoom Speed" offset="0x4" visible="true" />
+		<dataref name="Zoom Transition Function" offset="0x8" visible="true" />
+		<degree name="Initial Rotation y" offset="0x1C" visible="true" />
+		<degree name="Initial Rotation p" offset="0x20" visible="true" />
+		<degree name="Minimum Rotation y" offset="0x24" visible="true" />
+		<degree name="Minimum Rotation p" offset="0x28" visible="true" />
+		<degree name="Maximum Rotation y" offset="0x2C" visible="true" />
+		<degree name="Maximum Rotation p" offset="0x30" visible="true" />
+		<float32 name="Rotation Speed" offset="0x34" visible="true" />
+	</tagblock>
+	<tagblock name="Player Model Camera Transition Settings" offset="0x6C" visible="true" elementSize="0x14">
+		<dataref name="Camera Transition Function" offset="0x0" visible="true" />
+	</tagblock>
 	<tagRef name="Cookie Purchase Globals" offset="0x78" visible="true" />
-	<reflexive name="Unknown 6" offset="0x88" visible="false" entrySize="0x14">
-		<dataRef name="Unknown" offset="0x0" visible="false" />
-	</reflexive>
-	<tagRef name="Postgame Enemy Mapping" offset="0x94" visible="true" />
+	<tagblock name="Active Roster Settings" offset="0x88" visible="true" elementSize="0x14">
+		<dataref name="Analog Scroll Function" offset="0x0" visible="true" />
+	</tagblock>
+	<tagRef name="PGCR Categories Definitions" offset="0x94" visible="true" />
 </plugin>

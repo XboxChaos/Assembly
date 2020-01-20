@@ -2,7 +2,7 @@
 {
 	public interface IMetaFieldVisitor
 	{
-		void VisitBitfield(BitfieldData field);
+		void VisitFlags(FlagData field);
 		void VisitComment(CommentData field);
 		void VisitEnum(EnumData field);
 		void VisitUint8(Uint8Data field);
@@ -12,17 +12,29 @@
 		void VisitUint32(Uint32Data field);
 		void VisitInt32(Int32Data field);
 		void VisitFloat32(Float32Data field);
-		void VisitReflexive(ReflexiveData field);
-		void VisitReflexiveEntry(WrappedReflexiveEntry field);
+		void VisitTagBlock(TagBlockData field);
+		void VisitTagBlockEntry(WrappedTagBlockEntry field);
 		void VisitString(StringData field);
 		void VisitStringID(StringIDData field);
 		void VisitRawData(RawData field);
 		void VisitDataRef(DataRef field);
 		void VisitTagRef(TagRefData field);
-		void VisitVector(VectorData field);
+		void VisitPoint2(Point2Data field);
+		void VisitPoint3(Point3Data field);
+		void VisitVector2(Vector2Data field);
+		void VisitVector3(Vector3Data field);
+		void VisitVector4(Vector4Data field);
 		void VisitDegree(DegreeData field);
-		void VisitColourInt(ColourData field);
-		void VisitColourFloat(ColourData field);
+		void VisitDegree2(Degree2Data field);
+		void VisitDegree3(Degree3Data field);
+		void VisitPlane2(Plane2Data field);
+		void VisitPlane3(Plane3Data field);
+		void VisitRect16(RectangleData field);
+		void VisitColourInt(ColorData field);
+		void VisitColourFloat(ColorData field);
 		void VisitShaderRef(ShaderRef field);
+		void VisitRangeUint16(RangeUint16Data field);
+		void VisitRangeFloat32(RangeFloat32Data field);
+		void VisitRangeDegree(RangeDegreeData field);
 	}
 }
