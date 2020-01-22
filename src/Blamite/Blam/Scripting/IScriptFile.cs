@@ -1,5 +1,6 @@
 ﻿using Blamite.Blam.Scripting.Compiler;
 using Blamite.IO;
+using System.Collections.Generic;
 
 namespace Blamite.Blam.Scripting
 {
@@ -41,5 +42,13 @@ namespace Blamite.Blam.Scripting
 		/// <returns>The script file's context, or null if not available.</returns>
 		/// <seealso cref="ScriptContext" />
 		ScriptContext LoadContext(IReader reader);
+
+		/// <summary>
+		///		Retrieves all unique Seat Mappings which were referenced in this map's scripts.
+		/// </summary>
+		/// <param name="reader">The stream to read from.</param>
+		/// <param name="opcode">The ID which identifies Seat mapping expressions.</param>
+		/// <returns></returns>
+		SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode);
 	}
 }

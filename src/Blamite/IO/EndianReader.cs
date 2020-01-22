@@ -272,7 +272,7 @@ namespace Blamite.IO
                 chars.Add(ch);
             }
 
-            sbyte[] charss = chars.ToArray<sbyte>();
+            sbyte[] charss = chars.ToArray();
             fixed (sbyte* prt = charss)
                 return new string(prt, 0, chars.Count, Encoding.GetEncoding(1252));
         }

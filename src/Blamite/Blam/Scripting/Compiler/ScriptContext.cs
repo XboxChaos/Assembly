@@ -9,7 +9,7 @@
 		///     Gets or sets available object references.
 		/// </summary>
 		/// <value>Available object references.</value>
-		public ScriptObject[] ObjectNames { get; set; }
+		public ScriptObject[] ObjectReferences { get; set; }
 
 		/// <summary>
 		///     Gets or sets available trigger volumes.
@@ -63,7 +63,7 @@
 		///     Gets or sets available AI objectives.
 		/// </summary>
 		/// <value>Available AI objects.</value>
-		public ScriptObject[] AIObjectives { get; set; }
+		public ScriptObject[] AIObjects { get; set; }
 
 		/// <summary>
 		///     Gets or sets the block to read AI object waves from.
@@ -118,7 +118,7 @@
         ///     Gets or sets the reflexive to Ai Line Variants from.
         /// </summary>
         /// <value>The reflexive to read point set points from.</value>
-        public ScriptObjectReflexive AILineVariants { get; set; }
+        public ScriptObjectTagBlock AILineVariants { get; set; }
 
         /// <summary>
         ///     Gets or sets the unit_seat_mapping count.

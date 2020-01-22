@@ -257,7 +257,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private bool IsObject_Name(BS_ReachParser.LitContext context, string valueType, string castTo)
         {
             string name = context.GetText().Trim('"');
-            int index = Array.FindIndex(_scriptContext.ObjectNames, o => o.Name == name);
+            int index = Array.FindIndex(_scriptContext.ObjectReferences, o => o.Name == name);
             // not found
             if (index == -1)
                 return false;
@@ -331,10 +331,10 @@ namespace Blamite.Blam.Scripting.Compiler
                     else
                     {
                         //objectives
-                        index = Array.FindIndex(_scriptContext.AIObjectives, o => o.Name == subStrings[0]);
+                        index = Array.FindIndex(_scriptContext.AIObjects, o => o.Name == subStrings[0]);
                         if (index != -1)
                         {
-                            var children = _scriptContext.AIObjectives[index].GetChildren(_scriptContext.AIObjectiveRoles);
+                            var children = _scriptContext.AIObjects[index].GetChildren(_scriptContext.AIObjectWaves);
                             if (subStrings.LongCount() == 2)
                             {
                                 int role = Array.FindIndex(children, r => r.Name == subStrings[1]);
@@ -518,7 +518,7 @@ namespace Blamite.Blam.Scripting.Compiler
             if (subStrings.LongCount() == 2)
             {
                 var ids = _cashefile.StringIDs;
-                ITagClass cla = _cashefile.TagClasses.Single(c => ids.GetString(c.Description) == subStrings[1]);
+                ITagGroup cla = _cashefile.TagGroups.Single(c => ids.GetString(c.Description) == subStrings[1]);
                 ITag tag = _cashefile.Tags.FindTagByName(subStrings[0], cla, _cashefile.FileNames);
                 if (tag != null)
                 {
@@ -531,7 +531,7 @@ namespace Blamite.Blam.Scripting.Compiler
             }
             else
             {
-                string classMagic = _opcodes.GetTypeInfo(expectedValueType).TagClass;
+                string classMagic = _opcodes.GetTypeInfo(expectedValueType).TagGroup;
                 if (classMagic == null)
                     return false;
 

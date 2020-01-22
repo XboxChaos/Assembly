@@ -21,7 +21,7 @@ namespace Blamite.Blam.Scripting.Compiler
         private ICacheFile _cashefile;
         private OpcodeLookup _opcodes;
         private ScriptContext _scriptContext;
-        private Dictionary<int, UnitSeatMapping> _seatMappings;
+        private Dictionary<long, UnitSeatMapping> _seatMappings;
         private List<ScriptDeclInfo> _scriptLookup = new List<ScriptDeclInfo>();
         private List<GlobalDeclInfo> _globalLookup = new List<GlobalDeclInfo>();
         private List<ParameterInfo> _variables = new List<ParameterInfo>();
@@ -60,7 +60,7 @@ namespace Blamite.Blam.Scripting.Compiler
 
 
 
-        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<int, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
+        public ScriptCompiler(ICacheFile casheFile, ScriptContext context, OpcodeLookup opCodes, Dictionary<long, UnitSeatMapping> seatMappings, IProgress<int> progress, Logger logger)
         {
             _progress = progress;
             _cashefile = casheFile;

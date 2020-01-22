@@ -1,52 +1,51 @@
-﻿using System;
-using System.Text;
-using System.CodeDom.Compiler;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Collections.Generic;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Assembly.Helpers;
-using Assembly.Metro.Dialogs;
+using Blamite.Blam;
 using Blamite.Blam.Scripting;
 using Blamite.Blam.Scripting.Compiler;
-using Blamite.Serialization;
 using Blamite.IO;
-using Blamite.Blam;
+using Blamite.Serialization;
+using Blamite.Util;
+using ICSharpCode.AvalonEdit.Search;
 using Microsoft.Win32;
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Xml;
 using System.Xml.Linq;
-using Blamite.Util;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using System.Diagnostics;
-using Assembly.Helpers;
-using ICSharpCode.AvalonEdit.Search;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
-	/// <summary>
-	///     Interaction logic for ScriptEditor.xaml
-	/// </summary>
-	public partial class ScriptEditor : UserControl
-	{
-		private readonly EngineDescription _buildInfo;
-		private readonly IScriptFile _scriptFile;
+    /// <summary>
+    ///     Interaction logic for ScriptEditor.xaml
+    /// </summary>
+    public partial class ScriptEditor : UserControl
+    {
+        private readonly EngineDescription _buildInfo;
+        private readonly IScriptFile _scriptFile;
         private readonly IStreamManager _streamManager;
         private readonly OpcodeLookup _opcodes;
         private readonly ICacheFile _cashefile;
         private readonly string _casheName;
+        private bool _showInfo;
+        private Endian _endian;
         private Action _metaRefresh;
 
 
-        public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName)
-		{
+        public ScriptEditor(Action metaRefresh, EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, ICacheFile casheFile, string casheName, Endian endian)
+        {
             _endian = endian;
             _metaRefresh = metaRefresh;
-			_buildInfo = buildInfo;
+            _buildInfo = buildInfo;
             _opcodes = _buildInfo.ScriptInfo;
             _scriptFile = scriptFile;
             _streamManager = streamManager;
@@ -55,13 +54,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             _showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 
 
-			InitializeComponent();
+            InitializeComponent();
 
             List<Task> tasks = new List<Task>();
             tasks.Add(Task.Run(() => { DecompileScripts(); }));
-            tasks.Add(Task.Run(() => { GenerateSeatMappings(); }));
+            //tasks.Add(Task.Run(() => { GenerateSeatMappings(); }));
             //tasks.Add(Task.Run(() => { DumpEngineGlobalsToXML(); }));
-           // tasks.Add(Task.Run(() => { DumpSpecialGlobalsToXML(); }));
+            // tasks.Add(Task.Run(() => { DumpSpecialGlobalsToXML(); }));
 
             //var thrd1 = new Thread(DecompileScripts);
             //thrd1.SetApartmentState(ApartmentState.STA);
@@ -69,87 +68,87 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             SearchPanel srch = SearchPanel.Install(txtScript);
 
-			var bconv = new System.Windows.Media.BrushConverter();
-			var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
+            var bconv = new System.Windows.Media.BrushConverter();
+            var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
 
-			srch.MarkerBrush = srchbrsh;
+            srch.MarkerBrush = srchbrsh;
 
-			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
-			SetHighlightColor();
+            App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
+            SetHighlightColor();
         }
 
-		private void DecompileScripts()
-		{
-			DateTime startTime = DateTime.Now;
+        private void DecompileScripts()
+        {
+            DateTime startTime = DateTime.Now;
 
-			ScriptTable scripts;
-			using (IReader reader = ((IStreamManager) _streamManager).OpenRead())
-			{
-				scripts = _scriptFile.LoadScripts(reader);
-				if (scripts == null)
-					return;
-			}
+            ScriptTable scripts;
+            using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
+            {
+                scripts = _scriptFile.LoadScripts(reader);
+                if (scripts == null)
+                    return;
+            }
 
-			OpcodeLookup opcodes = _buildInfo.ScriptInfo;
-			var generator = new BlamScriptGenerator(scripts, opcodes, _endian);
-			var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
+            OpcodeLookup opcodes = _buildInfo.ScriptInfo;
+            var generator = new BlamScriptGenerator(scripts, opcodes, _endian);
+            var code = new IndentedTextWriter(new StringWriter(CultureInfo.InvariantCulture));
 
-			generator.WriteComment("Decompiled with Assembly", code);
-			generator.WriteComment("", code);
-			generator.WriteComment("Source file: " + _scriptFile.Name, code);
-			generator.WriteComment("Start time: " + startTime, code);
-			generator.WriteComment("", code);
-			generator.WriteComment("Remember that all script code is property of Bungie/343 Industries.", code);
-			generator.WriteComment("You have no rights. Play nice.", code);
-			code.WriteLine();
+            generator.WriteComment("Decompiled with Assembly", code);
+            generator.WriteComment("", code);
+            generator.WriteComment("Source file: " + _scriptFile.Name, code);
+            generator.WriteComment("Start time: " + startTime, code);
+            generator.WriteComment("", code);
+            generator.WriteComment("Remember that all script code is property of Bungie/343 Industries.", code);
+            generator.WriteComment("You have no rights. Play nice.", code);
+            code.WriteLine();
 
-			int counter = 0;
+            int counter = 0;
 
-			if (scripts.Variables != null)
-			{
-				generator.WriteComment("VARIABLES", code);
-				foreach (ScriptGlobal variable in scripts.Variables)
-				{
-					code.Write("(variable {0} {1} ", opcodes.GetTypeInfo((ushort)variable.Type).Name, variable.Name);
-					generator.WriteExpression(variable.ExpressionIndex, code);
-					if (_showInfo)
-						code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), variable.ExpressionIndex.Index.ToString());
-					else
-						code.WriteLine(")");
-					counter++;
-				}
-				code.WriteLine();
-				counter = 0;
-			}
+            if (scripts.Variables != null)
+            {
+                generator.WriteComment("VARIABLES", code);
+                foreach (ScriptGlobal variable in scripts.Variables)
+                {
+                    code.Write("(variable {0} {1} ", opcodes.GetTypeInfo((ushort)variable.Type).Name, variable.Name);
+                    generator.WriteExpression(variable.ExpressionIndex, code);
+                    if (_showInfo)
+                        code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), variable.ExpressionIndex.Index.ToString());
+                    else
+                        code.WriteLine(")");
+                    counter++;
+                }
+                code.WriteLine();
+                counter = 0;
+            }
 
-			generator.WriteComment("GLOBALS", code);
-			foreach (ScriptGlobal global in scripts.Globals)
-			{
-				code.Write("(global {0} {1} ", _opcodes.GetTypeInfo((ushort) global.Type).Name, global.Name);
-				generator.WriteExpression(global.ExpressionIndex, code);
-				if (_showInfo)
-					code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), global.ExpressionIndex.Index.ToString());
-				else
-					code.WriteLine(")");
-				counter++;
-			}
-			code.WriteLine();
-			counter = 0;
+            generator.WriteComment("GLOBALS", code);
+            foreach (ScriptGlobal global in scripts.Globals)
+            {
+                code.Write("(global {0} {1} ", _opcodes.GetTypeInfo((ushort)global.Type).Name, global.Name);
+                generator.WriteExpression(global.ExpressionIndex, code);
+                if (_showInfo)
+                    code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), global.ExpressionIndex.Index.ToString());
+                else
+                    code.WriteLine(")");
+                counter++;
+            }
+            code.WriteLine();
+            counter = 0;
 
-			generator.WriteComment("SCRIPTS", code);
-			foreach (Script script in scripts.Scripts)
-			{
+            generator.WriteComment("SCRIPTS", code);
+            foreach (Script script in scripts.Scripts)
+            {
                 // filter out branch scripts which were generated by the compiler
                 var split = script.Name.Split(new string[] { "_to_" }, StringSplitOptions.RemoveEmptyEntries);
-                if (split.Length > 1 && scripts.Scripts.Exists(s=> s.Name == split[0]))
+                if (split.Length > 1 && scripts.Scripts.Exists(s => s.Name == split[0]))
                 {
                     continue;
                 }
 
-				if (_showInfo)
-				{
-					generator.WriteComment(string.Format("Index: {0}, Expression Index: {1}", counter.ToString(), script.RootExpressionIndex.Index.ToString()), code);
-				}	
+                if (_showInfo)
+                {
+                    generator.WriteComment(string.Format("Index: {0}, Expression Index: {1}", counter.ToString(), script.RootExpressionIndex.Index.ToString()), code);
+                }
 
                 code.Write("(script {0} {1} {2}", _opcodes.GetScriptTypeName((ushort)script.ExecutionType),
                     _opcodes.GetTypeInfo((ushort)script.ReturnType).Name, script.Name);
@@ -172,38 +171,38 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
                 code.Indent++;
                 code.WriteLine();
-				generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
+                generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
                 code.Indent--;
 
                 code.WriteLine();
                 code.WriteLine(")");
                 code.WriteLine();
                 counter++;
-			}
+            }
 
-			DateTime endTime = DateTime.Now;
-			TimeSpan duration = endTime.Subtract(startTime);
-			generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
+            DateTime endTime = DateTime.Now;
+            TimeSpan duration = endTime.Subtract(startTime);
+            generator.WriteComment("Decompilation finished in ~" + duration.TotalSeconds + "s", code);
 
-			Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
-		}
+            Dispatcher.Invoke(new Action(delegate { txtScript.Text = code.InnerWriter.ToString(); }));
+        }
 
         private void btnExport_Click(object sender, RoutedEventArgs e)
-		{
-			var sfd = new SaveFileDialog();
+        {
+            var sfd = new SaveFileDialog();
             sfd.FileName = $"{_cashefile.InternalName}.hsc";
-			sfd.Title = "Save Script As";
-			sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
-			if (!(bool) sfd.ShowDialog())
-				return;
+            sfd.Title = "Save Script As";
+            sfd.Filter = "BlamScript Files|*.hsc|Text Files|*.txt|All Files|*.*";
+            if (!(bool)sfd.ShowDialog())
+                return;
 
-			File.WriteAllText(sfd.FileName, txtScript.Text);
-			MetroMessageBox.Show("Script Exported", "Script exported successfully.");
-		}
+            File.WriteAllText(sfd.FileName, txtScript.Text);
+            MetroMessageBox.Show("Script Exported", "Script exported successfully.");
+        }
 
         private void btnPrint_Click(object sender, RoutedEventArgs e)
         {
-            if(txtScript.LineCount > 0)
+            if (txtScript.LineCount > 0)
             {
                 StringBuilder sb = new StringBuilder();
                 int counter = 1;
@@ -211,7 +210,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 for (int i = 0; i < lines.Length; i++)
                 {
                     sb.AppendLine(lines[i]);
-                    if(lines[i].Contains("(script"))
+                    if (lines[i].Contains("(script"))
                     {
                         string[] words = lines[i].Split(' ');
                         sb.AppendLine($"\t(print \"Enter Script {words[3].TrimEnd('\r', '\n')}\")");
@@ -223,8 +222,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-		private async void btnCompile_Click(object sender, RoutedEventArgs e)
-		{
+        private async void btnCompile_Click(object sender, RoutedEventArgs e)
+        {
 
             if (_buildInfo.Name == "Halo: Reach")
             {
@@ -301,7 +300,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             {
                 MetroMessageBox.Show("Not Implemented", $"Unsupported Game: {_buildInfo.Name}");
             }
-                
+
 
         }
 
@@ -327,7 +326,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 parser.BuildParseTree = true;
                 IParseTree tree = parser.hsc();
                 ScriptContext scrContext = _scriptFile.LoadContext(reader);
-                ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, LoadSeatMappings(), progress, logger);
+                Dictionary<long, UnitSeatMapping> seats = LoadSeatMappings();
+                 ScriptCompiler compiler = new ScriptCompiler(_cashefile, scrContext, _opcodes, seats, progress, logger);
                 ParseTreeWalker.Default.Walk(compiler, tree);
                 return compiler.Result();
             }
@@ -339,33 +339,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             ExpressionsToXML();
         }
 
-        // Remove Later
-        private void WriteClasses()
-        {
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            var fileName = "Reach_classes.xml";
-
-
-            using (var writer = XmlWriter.Create(fileName, settings))
-            {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("Classes");
-
-                foreach (var cla in _cashefile.TagClasses)
-                {
-                    writer.WriteStartElement("Tagclass");
-                    writer.WriteAttributeString("Magic", CharConstant.ToString(cla.Magic));
-                    writer.WriteAttributeString("Parent", CharConstant.ToString(cla.ParentMagic));
-                    writer.WriteAttributeString("Grandparent", CharConstant.ToString(cla.GrandparentMagic));
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-                writer.Close();
-            }
-        }
-        
         // remover later?
         private void ExpressionsToXML()
         {
@@ -373,7 +346,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             string searchString = SearchTermTextBox.Text;
             var info = _opcodes.GetTypeInfo(searchString);
 
-            if(info == null)
+            if (info == null)
             {
                 MetroMessageBox.Show("Unable to retrieve value type information. Please check your spelling.");
                 return;
@@ -386,7 +359,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
 
             string folder = "Dump";
-            string fileName =_cashefile.InternalName + "_Expressions_" + searchString + ".xml";
+            string fileName = _cashefile.InternalName + "_Expressions_" + searchString + ".xml";
             string path = Path.Combine(folder, fileName);
             if (!Directory.Exists(folder))
             {
@@ -404,7 +377,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 writer.WriteComment($"Map: \"{_cashefile.InternalName}\" ValueType: \"{searchString}\" Opcode: \"{info.Opcode}\"");
                 writer.WriteStartElement("Expressions");
 
-                for(int i = 0; i < expressions.Count; i++)
+                for (int i = 0; i < expressions.Count; i++)
                 {
                     var exp = expressions[i];
                     if (exp.Type == ScriptExpressionType.Expression && (exp.Opcode == info.Opcode || exp.ReturnType == info.Opcode))
@@ -477,7 +450,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
                         writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
                         writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                        if(exp.Next != null)
+                        if (exp.Next != null)
                         {
                             writer.WriteAttributeString("Next_Salt", exp.Next.Index.Salt.ToString());
                             writer.WriteAttributeString("Next_Index", exp.Next.Index.Index.ToString());
@@ -496,7 +469,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     writer.WriteEndDocument();
                     writer.Close();
                 }
-            }           
+            }
         }
 
         private void DumpEngineGlobalsToXML()
@@ -535,10 +508,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         ushort first16 = BitConverter.ToUInt16(bytes, 2);
                         ushort second16 = (ushort)(BitConverter.ToUInt16(bytes, 0) ^ 0x8000);
 
-                        if(first16 == 0xFFFF)
+                        if (first16 == 0xFFFF)
                         {
                             int con = (int)exp.Value;
-                            
+
                             writer.WriteStartElement("global");
                             writer.WriteAttributeString("Index", i.ToString());
                             writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
@@ -595,16 +568,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                         ushort first16 = BitConverter.ToUInt16(bytes, 2);
                         ushort second16 = BitConverter.ToUInt16(bytes, 0);
 
-                            writer.WriteStartElement("global");
-                            writer.WriteAttributeString("Index", i.ToString());
-                            writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
-                            writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
-                            writer.WriteAttributeString("ExpType", exp.Type.ToString());
-                            writer.WriteAttributeString("String", exp.StringValue);
-                            writer.WriteAttributeString("Value", exp.Value.ToString("X"));
-                            writer.WriteEndElement();
+                        writer.WriteStartElement("global");
+                        writer.WriteAttributeString("Index", i.ToString());
+                        writer.WriteAttributeString("Opcode", exp.Opcode.ToString());
+                        writer.WriteAttributeString("ValueType", exp.ReturnType.ToString());
+                        writer.WriteAttributeString("ExpType", exp.Type.ToString());
+                        writer.WriteAttributeString("String", exp.StringValue);
+                        writer.WriteAttributeString("Value", exp.Value.ToString("X"));
+                        writer.WriteEndElement();
 
-                            occurences++;
+                        occurences++;
                     }
                 }
                 writer.WriteEndElement();
@@ -644,15 +617,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                     writer.WriteAttributeString("Index", i.ToString());
                     writer.WriteAttributeString("DatumSalt", tag.Index.Salt.ToString());
                     writer.WriteAttributeString("DatumIndex", tag.Index.Index.ToString());
-                    if(tag.Class == null)
+                    if (tag.Group == null)
                         writer.WriteAttributeString("Class", "");
                     else
-                        writer.WriteAttributeString("Class", CharConstant.ToString(tag.Class.Magic));
-                    if(tag.MetaLocation == null)
+                        writer.WriteAttributeString("Class", CharConstant.ToString(tag.Group.Magic));
+                    if (tag.MetaLocation == null)
                         writer.WriteAttributeString("MetaLocation", "");
                     else
                         writer.WriteAttributeString("MetaLocation", tag.MetaLocation.AsPointer().ToString());
-                    if(tag.Index.IsValid)
+                    if (tag.Index.IsValid)
                         writer.WriteAttributeString("Name", _cashefile.FileNames.GetTagName(tag));
                     else
                         writer.WriteAttributeString("Name", "");
@@ -682,14 +655,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
                 writer.WriteComment($"Map: \"{_cashefile.InternalName}\"");
                 writer.WriteStartElement("String_IDs");
 
-                foreach(string str in _cashefile.StringIDs)
+                foreach (string str in _cashefile.StringIDs)
                 {
 
-                    StringID id = _cashefile.StringIDs.FindStringID(str);                  
+                    StringID id = _cashefile.StringIDs.FindStringID(str);
 
                     writer.WriteStartElement("String_ID");
                     writer.WriteAttributeString("String", str);
-                    writer.WriteAttributeString("Set", id.GetSet(_cashefile.StringIDs.IDLayout).ToString());
+                    writer.WriteAttributeString("Set", id.GetNamespace(_cashefile.StringIDs.IDLayout).ToString());
                     writer.WriteAttributeString("Index", id.GetIndex(_cashefile.StringIDs.IDLayout).ToString());
                     writer.WriteAttributeString("Value", id.Value.ToString());
                     writer.WriteEndElement();
@@ -700,61 +673,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             }
         }
 
-        private void GenerateSeatMappings()
-        {
-            string folder = _buildInfo.SeatMappings;
-            string filename = _casheName + "_Mappings.xml";
-            string path = Path.Combine(folder, filename);
-
-            if (!File.Exists(path))
-            {
-                ScriptTable scripts;
-                using (IReader reader = ((IStreamManager)_streamManager).OpenRead())
-                {
-                    scripts = _scriptFile.LoadScripts(reader);
-                }
-
-                var expressions = scripts.Expressions.ExpressionsAsReadonly;
-                ushort opc = _opcodes.GetTypeInfo("unit_seat_mapping").Opcode;
-                SortedDictionary<uint, ScriptExpression> uniqueMappings = new SortedDictionary<uint, ScriptExpression>();
-                
-                // find all unique mappings
-                foreach(var exp in expressions)
-                {
-                    if(exp.Opcode == opc && exp.ReturnType == opc && exp.Type == ScriptExpressionType.Expression && exp.Value != 0xFFFFFFFF)
-                    {
-                        uint index = exp.Value & 0xFFFF;
-                        if (!uniqueMappings.ContainsKey(index))
-                        {
-                            uniqueMappings.Add(index, exp);
-                        }
-                    }
-                }
-
-                var settings = new XmlWriterSettings();
-                settings.Indent = true;
-                using (var writer = XmlWriter.Create(path, settings))
-                {
-                    writer.WriteComment($"Map Name: '{_casheName}'    Internal Name: '{_cashefile.InternalName}'");
-                    writer.WriteStartElement("UnitSeatMappings");
-                    foreach(var mapping in uniqueMappings)
-                    {
-                        string name = mapping.Value.StringValue;
-                        uint count = (mapping.Value.Value & 0xFFFF0000) >> 16;
-                        writer.WriteStartElement("Mapping");
-                        writer.WriteAttributeString("Index", mapping.Key.ToString());
-                        writer.WriteAttributeString("Name", name);
-                        writer.WriteAttributeString("Count", count.ToString());
-                        writer.WriteEndElement();
-                    }
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                    writer.Close();
-                }
-            }
-        }
-
-        private Dictionary<int, UnitSeatMapping> LoadSeatMappings()
+        private Dictionary<long, UnitSeatMapping> LoadSeatMappings()
         {
             string folder = _buildInfo.SeatMappings;
             string filename = _casheName + "_Mappings.xml";
@@ -763,11 +682,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             XDocument doc = XDocument.Load(path);
             var mappings = doc.Element("UnitSeatMappings").Elements("Mapping");
 
-            Dictionary<int, UnitSeatMapping> result = new Dictionary<int, UnitSeatMapping>();
+            Dictionary<long, UnitSeatMapping> result = new Dictionary<long, UnitSeatMapping>();
             foreach (XElement mapping in mappings)
             {
-                int index = XMLUtil.GetNumericAttribute(mapping, "Index");
-                int count = XMLUtil.GetNumericAttribute(mapping, "Count");
+                long index = XMLUtil.GetNumericAttribute(mapping, "Index");
+                long count = XMLUtil.GetNumericAttribute(mapping, "Count");
                 string name = XMLUtil.GetStringAttribute(mapping, "Name");
 
                 if (result.ContainsKey(index))
@@ -781,45 +700,44 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
             return result;
         }
+
+
+        private void Settings_SettingsChanged(object sender, EventArgs e)
+        {
+            // Reset the highlight color in case the theme changed
+            SetHighlightColor();
+        }
+
+        private void SetHighlightColor()
+        {
+            var bconv = new System.Windows.Media.BrushConverter();
+            var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+
+            //yucky
+            switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+            {
+                case Settings.Accents.Blue:
+                    selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+                    break;
+                case Settings.Accents.Green:
+                    selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
+                    break;
+                case Settings.Accents.Orange:
+                    selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
+                    break;
+                case Settings.Accents.Purple:
+                    selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
+                    break;
+            }
+            txtScript.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
+            selbrsh.Opacity = 0.3;
+            txtScript.TextArea.SelectionBrush = selbrsh;
+        }
+
+        public void Dispose()
+        {
+            txtScript.Clear();
+            App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
+        }
     }
-
-
-		private void Settings_SettingsChanged(object sender, EventArgs e)
-		{
-			// Reset the highlight color in case the theme changed
-			SetHighlightColor();
-		}
-
-		private void SetHighlightColor()
-		{
-			var bconv = new System.Windows.Media.BrushConverter();
-			var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
-
-			//yucky
-			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
-			{
-				case Settings.Accents.Blue:
-					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
-					break;
-				case Settings.Accents.Green:
-					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
-					break;
-				case Settings.Accents.Orange:
-					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
-					break;
-				case Settings.Accents.Purple:
-					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
-					break;
-			}
-			txtScript.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
-			selbrsh.Opacity = 0.3;
-			txtScript.TextArea.SelectionBrush = selbrsh;
-		}
-
-		public void Dispose()
-		{
-			txtScript.Clear();
-			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
-		}
-	}
 }

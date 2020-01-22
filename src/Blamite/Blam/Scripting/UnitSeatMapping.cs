@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Blamite.Blam.Scripting.Compiler
+namespace Blamite.Blam.Scripting
 {
     public class UnitSeatMapping
     {

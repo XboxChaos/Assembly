@@ -255,6 +255,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				LoadTags();
 				LoadLocales();
 				LoadScripts();
+				GenerateSeatMappings();
 			}
 		}
 
@@ -481,6 +482,62 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				StatusUpdater.Update("Initialized Scripts");
 			}
 				));
+		}
+
+		private void GenerateSeatMappings()
+		{
+			string casheName = Path.GetFileNameWithoutExtension(_cacheLocation);
+			string folder = _buildInfo.SeatMappings;
+			string filename = casheName + "_Mappings.xml";
+			string path = Path.Combine(folder, filename);
+
+			if (!File.Exists(path) && _cacheFile.ScriptFiles != null)
+			{
+				// retrieve all seat mappings which were named in this map's scripts
+				IScriptFile scriptFile;
+
+				if (_buildInfo.Layouts.HasLayout("hsdt"))
+				{
+					scriptFile = _cacheFile.ScriptFiles.Single(e => e.Name == _cacheFile.InternalName + "_scenario.hsc");
+				}
+				else
+				{
+					scriptFile = _cacheFile.ScriptFiles[0];
+				}
+
+				var op = _buildInfo.ScriptInfo.GetTypeInfo("unit_seat_mapping").Opcode;
+				SortedDictionary<uint, UnitSeatMapping> mappings;
+				using (IReader reader = _mapManager.OpenRead())
+				{
+					mappings = scriptFile.GetUniqueSeatMappings(reader, op);
+				}
+
+				// Write the seat mappings to a xml file.
+				var settings = new XmlWriterSettings();
+				settings.Indent = true;
+				using (var writer = XmlWriter.Create(path, settings))
+				{
+					writer.WriteComment($"Map Name: '{casheName}'    Internal Name: '{_cacheFile.InternalName}'");
+					writer.WriteStartElement("UnitSeatMappings");
+					foreach (var m in mappings)
+					{
+						writer.WriteStartElement("Mapping");
+						writer.WriteAttributeString("Index", m.Key.ToString());
+						writer.WriteAttributeString("Name", m.Value.Name);
+						writer.WriteAttributeString("Count", m.Value.Count.ToString());
+						writer.WriteEndElement();
+					}
+					writer.WriteEndElement();
+					writer.WriteEndDocument();
+					writer.Close();
+				}
+
+				// update the status
+				Dispatcher.Invoke(new Action(delegate
+				{
+					StatusUpdater.Update("Generated Unit Seat Mappings");
+				}));
+			}
 		}
 
 		private void HeaderValueData_MouseDown(object sender, MouseButtonEventArgs e)

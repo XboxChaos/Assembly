@@ -6,6 +6,7 @@ using Blamite.Blam.Scripting.Compiler;
 using Blamite.Blam.Util;
 using Blamite.Serialization;
 using Blamite.IO;
+using Blamite.Util;
 using System.Diagnostics;
 
 namespace Blamite.Blam.ThirdGen.Structures
@@ -16,12 +17,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly FileSegmentGroup _metaArea;
 		private readonly StringIDSource _stringIDs;
         private readonly MetaAllocator _allocator;
-		private readonly ITag _scnrTag;
-        private readonly ITag _mdlgTag;
+        private readonly IPointerExpander _expander;
 
         private readonly ITag _scenarioTag;
 		private readonly ITag _scriptTag;
-		private readonly IPointerExpander _expander;
+        private readonly ITag _mdlgTag;
 
 		private ScriptObjectTagBlock _aiObjectWaves;
 		private ScriptObjectTagBlock _aiObjects;
@@ -46,31 +46,36 @@ namespace Blamite.Blam.ThirdGen.Structures
         private ScriptObjectTagBlock _aiLines;
         private ScriptObjectTagBlock _aiLineVariants;
 
-		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag mdlgTag, string tagName, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
+		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, ITag mdlgTag, string tagName, FileSegmentGroup metaArea,
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
 		{
-			_scenarioTag = _scriptTag = scenarioTag;
-			_expander = expander;
+			_scenarioTag = scenarioTag;
+            _scriptTag = scriptTag;
             _mdlgTag = mdlgTag;
-			_stringIDs = stringIDs;
-			_metaArea = metaArea;
+            _metaArea = metaArea;
+            _stringIDs = stringIDs;
+            _buildInfo = buildInfo;
+            _expander = expander;
             _allocator = allocator;
-			_buildInfo = buildInfo;
+
 			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
 
 			DefineScriptObjectTagBlocks();
 		}
 
 		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
-	        StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
+	        StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
 		{
-			_scenarioTag = scenarioTag;
-			_expander = expander;
-			_scriptTag = scriptTag;
-			_stringIDs = stringIDs;
-			_metaArea = metaArea;
-			_buildInfo = buildInfo;
-			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
+            _scenarioTag = scenarioTag;
+            _scriptTag = scriptTag;
+            _mdlgTag = null;
+            _metaArea = metaArea;
+            _stringIDs = stringIDs;
+            _buildInfo = buildInfo;
+            _expander = expander;
+            _allocator = allocator;
+
+            Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
 
 			DefineScriptObjectTagBlocks();
 		}
@@ -85,14 +90,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public ScriptTable LoadScripts(IReader reader)
 		{
-			StructureValueCollection values;
+            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
 
-			if (_scriptTag != _scenarioTag)
-				values = LoadScriptTag(reader);
-			else
-				values = LoadTag(reader);
+			//if (_scriptTag != _scenarioTag)
+			//	values = LoadScriptTag(reader);
+			//else
+			//	values = LoadTag(reader);
                 
-            uint strSize = values.GetInteger("script string table size");
+            ulong strSize = values.GetInteger("script string table size");
 			var result = new ScriptTable();
 			var stringReader = new StringTableReader();
 				
@@ -110,36 +115,109 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public void SaveScripts(ScriptData data, IStream stream)
 		{
-            StructureValueCollection scnr = LoadScnrTag(stream);
+            StructureValueCollection values = LoadScriptTag(stream, _scriptTag);
             StructureLayout scnrLayout = _buildInfo.Layouts.GetLayout("scnr");
 
-            WriteExpressions(data, stream, scnr);
-            WriteScriptsAndParams(data, stream, scnr);
-            WriteStrings(data, stream, scnr);
-            WriteGlobals(data, stream, scnr);
-            WriteTagReferences(data, stream, scnr);
+            WriteExpressions(data, stream, values);
+            WriteScriptsAndParams(data, stream, values);
+            WriteStrings(data, stream, values);
+            WriteGlobals(data, stream, values);
+            WriteTagReferences(data, stream, values);
 
-            stream.SeekTo(_scnrTag.MetaLocation.AsOffset());
-            StructureWriter.WriteStructure(scnr, scnrLayout, stream);
+            stream.SeekTo(_scriptTag.MetaLocation.AsOffset());
+            StructureWriter.WriteStructure(values, scnrLayout, stream);
         }
 
-		public ScriptContext LoadContext(IReader reader)
+        public SortedDictionary<uint, UnitSeatMapping> GetUniqueSeatMappings(IReader reader, ushort opcode)
+        {
+            // load the expressions
+            StructureValueCollection values = LoadScriptTag(reader, _scriptTag);
+            var stringReader = new StringTableReader();
+            ScriptExpressionTable expressions = LoadExpressions(reader, values, stringReader);
+            CachedStringTable strings = LoadStrings(reader, values, stringReader);
+            foreach (ScriptExpression expr in expressions.Where(e => (e != null)))
+                expr.ResolveStrings(strings);
+
+
+            // find all unique mappings
+            SortedDictionary<uint, UnitSeatMapping> uniqueMappings = new SortedDictionary<uint, UnitSeatMapping>();
+
+            foreach (var exp in expressions)
+            {
+                if (exp.Opcode == opcode && exp.ReturnType == opcode && exp.Value != 0xFFFFFFFF)
+                {
+                    // Calculate the index and only add it if it doesn't exist yet.
+                    uint index = exp.Value & 0xFFFF;
+                    if (!uniqueMappings.ContainsKey(index))
+                    {
+                        uint count = (exp.Value & 0xFFFF0000) >> 16;
+                        string name = exp.StringValue;
+                        UnitSeatMapping mapping = new UnitSeatMapping((short)index, (short)count, name);
+                        uniqueMappings.Add(index, mapping);
+                    }
+                }
+            }
+            return uniqueMappings;
+        }
+
+        private void DefineScriptObjectTagBlocks()
+        {
+            _referencedObjects = new ScriptObjectTagBlock("number of script objects", "script object table address",
+                "script object element");
+            _triggerVolumes = new ScriptObjectTagBlock("number of trigger volumes", "trigger volumes table address",
+                "trigger volume element");
+            _cutsceneFlags = new ScriptObjectTagBlock("number of cutscene flags", "cutscene flags table address",
+                "cutscene flag element");
+            _cutsceneCameraPoints = new ScriptObjectTagBlock("number of cutscene camera points",
+                "cutscene camera points table address", "cutscene camera point element");
+            _cutsceneTitles = new ScriptObjectTagBlock("number of cutscene titles", "cutscene titles table address",
+                "cutscene title element");
+            _deviceGroups = new ScriptObjectTagBlock("number of device groups", "device groups table address",
+                "device group element");
+            _aiSquadGroups = new ScriptObjectTagBlock("number of ai squad groups", "ai squad groups table address",
+                "ai squad group element");
+            _aiSquads = new ScriptObjectTagBlock("number of ai squads", "ai squads table address", "ai squad element");
+            _aiSquadSingleLocations = new ScriptObjectTagBlock("number of single locations", "single locations table address",
+                "ai squad single location element");
+            _aiObjects = new ScriptObjectTagBlock("number of ai objects", "ai objects table address", "ai object element");
+            _aiObjectWaves = new ScriptObjectTagBlock("number of waves", "waves table address", "ai object wave element");
+            _startingProfiles = new ScriptObjectTagBlock("number of starting profiles", "starting profiles table address",
+                "starting profile element");
+            _zoneSets = new ScriptObjectTagBlock("number of zone sets", "zone sets table address", "zone set element");
+            _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address",
+                "object folder element");
+            _designerZones = new ScriptObjectTagBlock("number of designer zones", "designer zones table address", "designer zone entry");
+            _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address", "object folder element");
+            _pointSets = new ScriptObjectTagBlock("number of point sets", "point sets table address", "point set element");
+            _pointSetPoints = new ScriptObjectTagBlock("number of points", "points table address", "point set point element");
+
+            _aiSquads.RegisterChild(_aiSquadSingleLocations);
+            _aiObjects.RegisterChild(_aiObjectWaves);
+            _pointSets.RegisterChild(_pointSetPoints);
+
+
+            _aiLines = new ScriptObjectTagBlock("number of lines", "lines table address", "line entry");
+            _aiLineVariants = new ScriptObjectTagBlock("number of variants", "variants table address", "line variants entry");
+            _aiLines.RegisterChild(_aiLineVariants);
+        }
+
+        public ScriptContext LoadContext(IReader reader)
 		{
-			StructureValueCollection scnrValues = LoadScnrTag(reader);
+			StructureValueCollection scnrValues = LoadScriptTag(reader, _scenarioTag);
 
             ScriptObject[] lines = new ScriptObject[0];
             //ScriptObject[] lineVariants = new ScriptObject[0];
 
             if(_mdlgTag != null)
             {
-                StructureValueCollection mdlgValues = LoadMdlgTag(reader);
+                StructureValueCollection mdlgValues = LoadScriptTag(reader, _mdlgTag);
                 lines = ReadObjects(reader, mdlgValues, _aiLines);
             }
 
 
             return new ScriptContext
             {
-                ObjectNames = ReadObjects(reader, scnrValues, _objectNames),
+                ObjectReferences = ReadObjects(reader, scnrValues, _referencedObjects),
                 TriggerVolumes = ReadObjects(reader, scnrValues, _triggerVolumes),
                 CutsceneFlags = ReadObjects(reader, scnrValues, _cutsceneFlags),
                 CutsceneCameraPoints = ReadObjects(reader, scnrValues, _cutsceneCameraPoints),
@@ -147,36 +225,62 @@ namespace Blamite.Blam.ThirdGen.Structures
                 DeviceGroups = ReadObjects(reader, scnrValues, _deviceGroups),
                 AISquadGroups = ReadObjects(reader, scnrValues, _aiSquadGroups),
                 AISquads = ReadObjects(reader, scnrValues, _aiSquads),
-                AIObjectives = ReadObjects(reader, scnrValues, _aiObjectives),
+                AIObjects = ReadObjects(reader, scnrValues, _aiObjects),
                 StartingProfiles = ReadObjects(reader, scnrValues, _startingProfiles),
                 ZoneSets = ReadObjects(reader, scnrValues, _zoneSets),
                 DesignerZones = ReadObjects(reader, scnrValues, _designerZones),
                 ObjectFolders = ReadObjects(reader, scnrValues, _objectFolders),
                 PointSets = ReadPointSets(reader, scnrValues),
                 AISquadSingleLocations = _aiSquadSingleLocations,
-                AIObjectiveRoles = _aoObjectiveRoles,
+                AIObjectWaves = _aiObjectWaves,
                 PointSetPoints = _pointSetPoints,
+
                 AILines = lines,
                 AILineVariants = _aiLineVariants,
                 UnitSeatMappingCount = (int)scnrValues.GetInteger("unit seat mapping count")
             };
 		}
 
-		private StructureValueCollection LoadScnrTag(IReader reader)
-		{
-			reader.SeekTo(_scenarioTag.MetaLocation.AsOffset());
-			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
-		}
-		private StructureValueCollection LoadScriptTag(IReader reader)
-		{
-			reader.SeekTo(_scriptTag.MetaLocation.AsOffset());
-			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
-		}
+        //private StructureValueCollection LoadScnrTag(IReader reader)
+        //{
+        //    reader.SeekTo(_scenarioTag.MetaLocation.AsOffset());
+        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+        //}
+        //private StructureValueCollection LoadScriptTag(IReader reader)
+        //{
+        //    reader.SeekTo(_scriptTag.MetaLocation.AsOffset());
+        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
+        //}
 
-        private StructureValueCollection LoadMdlgTag(IReader reader)
+        //private StructureValueCollection LoadMdlgTag(IReader reader)
+        //{
+        //    reader.SeekTo(_mdlgTag.MetaLocation.AsOffset());
+        //    return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("mdlg"));
+        //}
+
+        private StructureValueCollection LoadScriptTag(IReader reader, ITag tag)
         {
-            reader.SeekTo(_mdlgTag.MetaLocation.AsOffset());
-            return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("mdlg"));
+            reader.SeekTo(tag.MetaLocation.AsOffset());
+            string groupMagic = CharConstant.ToString(tag.Group.Magic);
+            switch (groupMagic)
+            {
+                case "scnr":
+                    {
+                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+                    }
+                case "hsdt":
+                    {
+                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
+                    }
+                case "mdlg":
+                    {
+                        return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("mdlg"));
+                    }
+                default:
+                    {
+                        throw new Exception("The tag doesn't belong to a script related tag class");
+                    }
+            }
         }
 
         private List<ScriptGlobal> LoadGlobals(IReader reader, StructureValueCollection values)
@@ -258,47 +362,6 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return result;
 		}
 
-		private void DefineScriptObjectTagBlocks()
-		{
-			_referencedObjects = new ScriptObjectTagBlock("number of script objects", "script object table address",
-				"script object element");
-			_triggerVolumes = new ScriptObjectTagBlock("number of trigger volumes", "trigger volumes table address",
-				"trigger volume element");
-			_cutsceneFlags = new ScriptObjectTagBlock("number of cutscene flags", "cutscene flags table address",
-				"cutscene flag element");
-			_cutsceneCameraPoints = new ScriptObjectTagBlock("number of cutscene camera points",
-				"cutscene camera points table address", "cutscene camera point element");
-			_cutsceneTitles = new ScriptObjectTagBlock("number of cutscene titles", "cutscene titles table address",
-				"cutscene title element");
-			_deviceGroups = new ScriptObjectTagBlock("number of device groups", "device groups table address",
-				"device group element");
-			_aiSquadGroups = new ScriptObjectTagBlock("number of ai squad groups", "ai squad groups table address",
-				"ai squad group element");
-			_aiSquads = new ScriptObjectTagBlock("number of ai squads", "ai squads table address", "ai squad element");
-			_aiSquadSingleLocations = new ScriptObjectTagBlock("number of single locations", "single locations table address",
-				"ai squad single location element");
-			_aiObjects = new ScriptObjectTagBlock("number of ai objects", "ai objects table address", "ai object element");
-			_aiObjectWaves = new ScriptObjectTagBlock("number of waves", "waves table address", "ai object wave element");
-			_startingProfiles = new ScriptObjectTagBlock("number of starting profiles", "starting profiles table address",
-				"starting profile element");
-			_zoneSets = new ScriptObjectTagBlock("number of zone sets", "zone sets table address", "zone set element");
-			_objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address",
-				"object folder element");
-            _designerZones = new ScriptObjectTagBlock("number of designer zones", "designer zones table address", "designer zone entry");
-            _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address",
-			_pointSets = new ScriptObjectTagBlock("number of point sets", "point sets table address", "point set element");
-			_pointSetPoints = new ScriptObjectTagBlock("number of points", "points table address", "point set point element");
-
-            _aiSquads.RegisterChild(_aiSquadSingleLocations);
-			_aiObjectives.RegisterChild(_aoObjectiveRoles);
-			_pointSets.RegisterChild(_pointSetPoints);
-
-
-            _aiLines = new ScriptObjectReflexive("number of lines", "lines table address", "line entry");
-            _aiLineVariants = new ScriptObjectReflexive("number of variants", "variants table address", "line variants entry");
-            _aiLines.RegisterChild(_aiLineVariants);
-		}
-
 		private ScriptObject[] ReadObjects(IReader reader, StructureValueCollection values, ScriptObjectTagBlock block)
 		{
 			return block.ReadObjects(values, reader, _metaArea, _stringIDs, _buildInfo, _expander);
@@ -326,23 +389,23 @@ namespace Blamite.Blam.ThirdGen.Structures
             StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script entry");
             StructureLayout paramlayout = _buildInfo.Layouts.GetLayout("script parameter entry");
 
-            var oldScriptCount = (int)scnr.GetInteger("number of scripts");
-            uint oldScriptAddress = scnr.GetInteger("script table address");
+            int oldScriptCount = (int)scnr.GetInteger("number of scripts");
+            long oldScriptAddress = (long)scnr.GetInteger("script table address");
             int oldScriptSize = oldScriptCount * scrlayout.Size;
-            uint newScriptAddress = 0;
+            long newScriptAddress = 0;
 
-            uint oldParamAddress = 0;
+            long oldParamAddress = 0;
             int oldParamSize = 0;
 
             // Get the param table address and size
-            StructureValueCollection[] oldScripts = ReflexiveReader.ReadReflexive(stream, oldScriptCount, oldScriptAddress, scrlayout, _metaArea);
+            StructureValueCollection[] oldScripts = TagBlockReader.ReadTagBlock(stream, oldScriptCount, oldScriptAddress, scrlayout, _metaArea);
             StructureValueCollection first = Array.Find(oldScripts, s => s.GetInteger("number of parameters") > 0);
             StructureValueCollection last = Array.FindLast(oldScripts, s => s.GetInteger("number of parameters") > 0);
             if (first != null && last != null)
             {
-                oldParamAddress = first.GetInteger("address of parameter list");
-                uint lastCount = last.GetInteger("number of parameters");
-                uint endAddress = last.GetInteger("address of parameter list") + (uint)(lastCount * paramlayout.Size);
+                oldParamAddress = (uint)first.GetInteger("address of parameter list");
+                uint lastCount = (uint)last.GetInteger("number of parameters");
+                uint endAddress = (uint)last.GetInteger("address of parameter list") + (uint)(lastCount * paramlayout.Size);
                 oldParamSize = (int)(endAddress - oldParamAddress);
             }
 
@@ -360,7 +423,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                     }
                 }
 
-                uint newParamAddress = 0;
+                long newParamAddress = 0;
 
                 if (newParams.Count > 0)
                 {
@@ -386,6 +449,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
                 // new address of the script reflexive
                 int newScriptSize = data.Scripts.Count * scrlayout.Size;
+
                 if (oldScriptSize > 0)
                 {
                     newScriptAddress = _allocator.Reallocate(oldScriptAddress, oldScriptSize, newScriptSize, stream);
@@ -397,13 +461,14 @@ namespace Blamite.Blam.ThirdGen.Structures
 
                 // write scripts
                 stream.SeekTo(_metaArea.PointerToOffset(newScriptAddress));
+
                 foreach (var scr in data.Scripts)
                 {
                     int paramCount = scr.Parameters.Count;
                     // has parameters
                     if (paramCount > 0)
                     {
-                        scr.Write(stream, _stringIDs, paramCount, newParamAddress);
+                        scr.Write(stream, _stringIDs, paramCount, _expander.Contract(newParamAddress));
                         newParamAddress += (uint)(paramCount * paramlayout.Size);
                     }
                     // doesn't have parameters
@@ -425,14 +490,14 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             scnr.SetInteger("number of scripts", (uint)data.Scripts.Count);
-            scnr.SetInteger("script table address", newScriptAddress);
+            scnr.SetInteger("script table address", _expander.Contract(newScriptAddress));
         }
 
         private void WriteStrings(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            var oldStringsSize = (int)scnr.GetInteger("script string table size");
-            uint oldStringAddress = scnr.GetInteger("script string table address");
-            uint newStringsAddress = 0;
+            int oldStringsSize = (int)scnr.GetInteger("script string table size");
+            long oldStringAddress = (long)scnr.GetInteger("script string table address");
+            long newStringsAddress = 0;
 
             // Check if the returned data contained strings
             if (data.Strings.Size > 0)
@@ -457,16 +522,16 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             scnr.SetInteger("script string table size", (uint)data.Strings.Size);
-            scnr.SetInteger("script string table address", newStringsAddress);
+            scnr.SetInteger("script string table address", _expander.Contract(newStringsAddress));
         }
 
         private void WriteGlobals(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
             StructureLayout glolayout = _buildInfo.Layouts.GetLayout("script global entry");
-            var oldGlobalCount = (int)scnr.GetInteger("number of script globals");
-            uint oldGlobalAddress = scnr.GetInteger("script global table address");
+            int oldGlobalCount = (int)scnr.GetInteger("number of script globals");
+            long oldGlobalAddress = (long)scnr.GetInteger("script global table address");
             int oldGlobalSize = oldGlobalCount * glolayout.Size;
-            uint newGlobalAddress = 0;
+            long newGlobalAddress = 0;
 
             // check if the returned data contains globals
             if (data.Globals.Count > 0)
@@ -496,16 +561,16 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             scnr.SetInteger("number of script globals", (uint)data.Globals.Count);
-            scnr.SetInteger("script global table address", newGlobalAddress);
+            scnr.SetInteger("script global table address", _expander.Contract(newGlobalAddress));
         }
 
         private void WriteExpressions(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
             StructureLayout expLayout = _buildInfo.Layouts.GetLayout("script expression entry");
-            var oldExpCount = (int)scnr.GetInteger("number of script expressions");
-            uint oldExpAddress = scnr.GetInteger("script expression table address");
+            int oldExpCount = (int)scnr.GetInteger("number of script expressions");
+            long oldExpAddress = (long)scnr.GetInteger("script expression table address");
             int oldExpSize = oldExpCount * expLayout.Size;
-            uint newExpAddress = 0;
+            long newExpAddress = 0;
 
             if (data.Expressions.Count > 0)
             {
@@ -534,15 +599,15 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             scnr.SetInteger("number of script expressions", (uint)data.Expressions.Count);
-            scnr.SetInteger("script expression table address", newExpAddress);
+            scnr.SetInteger("script expression table address", _expander.Contract(newExpAddress));
         }
 
         private void WriteTagReferences(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            var oldRefCount = (int)scnr.GetInteger("number of script references");
-            uint oldRefAddress = scnr.GetInteger("script references table address");
+            int oldRefCount = (int)scnr.GetInteger("number of script references");
+            long oldRefAddress = (long)scnr.GetInteger("script references table address");
             int oldRefSize = oldRefCount * 0x10;
-            uint newRefAddress = 0;
+            long newRefAddress = 0;
 
             //check if the returned data contained tag references
             if (data.TagReferences.Count > 0)
@@ -563,7 +628,7 @@ namespace Blamite.Blam.ThirdGen.Structures
                 stream.SeekTo(_metaArea.PointerToOffset(newRefAddress));
                 foreach (ITag tag in data.TagReferences)
                 {
-                    stream.WriteInt32(tag.Class.Magic);
+                    stream.WriteInt32(tag.Group.Magic);
                     stream.WriteUInt32(0);
                     stream.WriteUInt32(0);
                     stream.WriteUInt32(tag.Index.Value);
@@ -575,7 +640,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             }
 
             scnr.SetInteger("number of script references", (uint)data.TagReferences.Count);
-            scnr.SetInteger("script references table address", newRefAddress);
+            scnr.SetInteger("script references table address", _expander.Contract(newRefAddress));
         }
     }
 }

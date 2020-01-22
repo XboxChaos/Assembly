@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Blamite.Blam.Localization;
 using Blamite.Blam.Resources;
 using Blamite.Blam.Resources.Sounds;
@@ -382,9 +383,8 @@ namespace Blamite.Blam.ThirdGen
 		{
 			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
 			{
-				int tagCount = 0;
 
-				IEnumerable<ITag> scripttags = _tags.FindTagsByGroup("hsdt");
+				ITag[] scripttags = _tags.FindTagsByGroup("hsdt").ToArray();
 
 				ITag scnr = _tags.FindTagByGroup("scnr");
 				if (scnr == null)
@@ -393,31 +393,38 @@ namespace Blamite.Blam.ThirdGen
 					return;
 				}
 
-
-				foreach (ITag aHS in scripttags)
-					tagCount++;
+				int tagCount = scripttags.Length;
 
 				ScriptFiles = new IScriptFile[tagCount];
 
-				int i = 0;
-				foreach (ITag aHS in scripttags)
+				for(int i = 0; i < tagCount; i++)
 				{
+					ITag aHS = scripttags[i];
 					string tagname = _fileNames.GetTagName(aHS.Index);
-					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander);
-					i++;
+					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
 				}
 
 				return;
 			}
 			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
 			{
-				ITag scnr = _tags.FindTagByClass("scnr");
-                ITag mdlg = _tags.FindTagByClass("mdlg");
+				ITag scnr = _tags.FindTagByGroup("scnr");
+                ITag mdlg = _tags.FindTagByGroup("mdlg");
 				if (scnr != null)
 				{
-					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, mdlg, ScenarioName, MetaArea, Allocator, StringIDs, _buildInfo, _expander);
-					return;
+					if(_buildInfo.Layouts.HasLayout("mdlg") && mdlg != null)
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, scnr, mdlg, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
+						return;
+					}
+					else
+					{
+						ScriptFiles = new IScriptFile[1];
+						ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, scnr, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander, Allocator);
+						return;
+					}
+
 				}
 			}
 			ScriptFiles = new IScriptFile[0];
