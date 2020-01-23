@@ -135,13 +135,13 @@ namespace Assembly.Helpers.Plugins
 		public void VisitColorInt(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "int", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "color32", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitColorF(string name, uint offset, bool visible, bool alpha, uint pluginLine, string tooltip)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new ColorData(name, offset, 0, alpha, "float", Colors.Transparent, pluginLine, tooltip));
+				AddValue(new ColorData(name, offset, 0, alpha, "colorf", Colors.Transparent, pluginLine, tooltip));
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)
