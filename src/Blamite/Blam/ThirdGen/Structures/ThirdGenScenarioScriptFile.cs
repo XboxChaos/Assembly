@@ -186,7 +186,7 @@ namespace Blamite.Blam.ThirdGen.Structures
             _zoneSets = new ScriptObjectTagBlock("number of zone sets", "zone sets table address", "zone set element");
             _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address",
                 "object folder element");
-            _designerZones = new ScriptObjectTagBlock("number of designer zones", "designer zones table address", "designer zone entry");
+            _designerZones = new ScriptObjectTagBlock("number of designer zones", "designer zones table address", "designer zone element");
             _objectFolders = new ScriptObjectTagBlock("number of object folders", "object folders table address", "object folder element");
             _pointSets = new ScriptObjectTagBlock("number of point sets", "point sets table address", "point set element");
             _pointSetPoints = new ScriptObjectTagBlock("number of points", "points table address", "point set point element");
@@ -196,8 +196,8 @@ namespace Blamite.Blam.ThirdGen.Structures
             _pointSets.RegisterChild(_pointSetPoints);
 
 
-            _aiLines = new ScriptObjectTagBlock("number of lines", "lines table address", "line entry");
-            _aiLineVariants = new ScriptObjectTagBlock("number of variants", "variants table address", "line variants entry");
+            _aiLines = new ScriptObjectTagBlock("number of lines", "lines table address", "line element");
+            _aiLineVariants = new ScriptObjectTagBlock("number of variants", "variants table address", "line variants element");
             _aiLines.RegisterChild(_aiLineVariants);
         }
 
@@ -386,8 +386,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void WriteScriptsAndParams(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script entry");
-            StructureLayout paramlayout = _buildInfo.Layouts.GetLayout("script parameter entry");
+            StructureLayout scrlayout = _buildInfo.Layouts.GetLayout("script element");
+            StructureLayout paramlayout = _buildInfo.Layouts.GetLayout("script parameter element");
 
             int oldScriptCount = (int)scnr.GetInteger("number of scripts");
             long oldScriptAddress = (long)scnr.GetInteger("script table address");
@@ -527,7 +527,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void WriteGlobals(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            StructureLayout glolayout = _buildInfo.Layouts.GetLayout("script global entry");
+            StructureLayout glolayout = _buildInfo.Layouts.GetLayout("script global element");
             int oldGlobalCount = (int)scnr.GetInteger("number of script globals");
             long oldGlobalAddress = (long)scnr.GetInteger("script global table address");
             int oldGlobalSize = oldGlobalCount * glolayout.Size;
@@ -566,7 +566,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
         private void WriteExpressions(ScriptData data, IStream stream, StructureValueCollection scnr)
         {
-            StructureLayout expLayout = _buildInfo.Layouts.GetLayout("script expression entry");
+            StructureLayout expLayout = _buildInfo.Layouts.GetLayout("script expression element");
             int oldExpCount = (int)scnr.GetInteger("number of script expressions");
             long oldExpAddress = (long)scnr.GetInteger("script expression table address");
             int oldExpSize = oldExpCount * expLayout.Size;
