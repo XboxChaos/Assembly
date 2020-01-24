@@ -70,7 +70,37 @@
 					<DockPanel>
 						<TextBlock DockPanel.Dock="Right" Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontWeight="Bold" Margin="2,0,2,0"
 									   FontFamily="{DynamicResource MetroFontRegular}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}}" HorizontalAlignment="Right" />
-						<TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" />
+						<TextBlock Grid.Column="0" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left">
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding AssemblyStorage.AssemblySettings.PluginsEnumPrefix, Source={x:Static Application.Current}}" Value="None">
+											<Setter Property="Text" Value="{Binding Name}" />
+										</DataTrigger>
+										<DataTrigger Binding="{Binding AssemblyStorage.AssemblySettings.PluginsEnumPrefix, Source={x:Static Application.Current}}" Value="Decimal">
+											<Setter Property="Text">
+												<Setter.Value>
+													<MultiBinding StringFormat="{}{0}. {1}">
+														<Binding Path="Value" />
+														<Binding Path="Name" />
+													</MultiBinding>
+												</Setter.Value>
+											</Setter>
+										</DataTrigger>
+										<DataTrigger Binding="{Binding AssemblyStorage.AssemblySettings.PluginsEnumPrefix, Source={x:Static Application.Current}}" Value="Hexidecimal">
+											<Setter Property="Text">
+												<Setter.Value>
+													<MultiBinding StringFormat="{}{0:X}. {1}">
+														<Binding Path="Value" />
+														<Binding Path="Name" />
+													</MultiBinding>
+												</Setter.Value>
+											</Setter>
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
 					</DockPanel>
 				</DataTemplate>
 			</ComboBox.ItemTemplate>

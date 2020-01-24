@@ -27,7 +27,7 @@ namespace Assembly
 
 		#endregion
 
-		public static Storage AssemblyStorage;
+		public static Storage AssemblyStorage { get; set; }
 
 		[STAThread]
 		public static void Main()
