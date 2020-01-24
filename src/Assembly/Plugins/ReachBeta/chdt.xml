@@ -16,7 +16,6 @@ Mapping the Trigger indexes will take time. There is a block at the bottom of CH
 As for Placement Data, each index likely refers to each "HUD Attributes" index in CHGD to change depending on resolution.</comment>
 	<comment title="Render Data Shader Index">While represented as an enum, it is actually an index to the "HUD Shaders" block in CHGD.</comment>
 	<comment title="Placement Anchor">Only select "Use Parent Widget" for a Bitmap or Text Widget, otherwise the game will crash.</comment>
-	<comment title="Grenade Inputs">These will only function with the placement anchor value set to Grenade A/B/C/D.</comment>
 	<tagblock name="HUD Widgets" offset="0x0" visible="true" elementSize="0xDC">
 		<stringId name="Name" offset="0x0" visible="true" />
 		<enum8 name="Special HUD Type" offset="0x4" visible="true">
@@ -1948,7 +1947,7 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 				<bit name="Unk Persistent CHUD Data2" index="19" />
 				<bit name="Unk Persistent CHUD Data3" index="20" />
 				<bit name="Unk Persistent CHUD Data4" index="21" />
-				<bit name="Unk Bit 22" index="22" />
+				<bit name="Manual Texture Coordinates" index="22" />
 				<bit name="Bit 23" index="23" />
 				<bit name="Bit 24" index="24" />
 				<bit name="Bit 25" index="25" />
@@ -1964,8 +1963,7 @@ As for Placement Data, each index likely refers to each "HUD Attributes" index i
 			<uint8 name="Unknown" offset="0x91" visible="false" />
 			<uint8 name="Unknown" offset="0x92" visible="false" />
 			<uint8 name="Unknown" offset="0x93" visible="false" />
-			<undefined name="Unknown" offset="0x94" visible="false" />
-			<undefined name="Unknown" offset="0x98" visible="false" />
+			<rect16 name="Manual Texture Coordinates" offset="0x94" visible="true" tooltip="This defines the visible rectangle for the bitmap if the bit of the same name is set. For ammo counters, L/R should be a multiple of 8, and T/B a multiple of 12." />
 		</tagblock>
 		<tagblock name="Text Widgets" offset="0xA4" visible="true" elementSize="0x84">
 			<stringid name="Name" offset="0x0" visible="true" />
