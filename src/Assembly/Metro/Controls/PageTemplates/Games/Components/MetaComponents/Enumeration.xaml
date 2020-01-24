@@ -17,9 +17,13 @@
 
 		<DockPanel Grid.Column="0" Background="Transparent">
 			<DockPanel.ToolTip>
-				<StackPanel>
-					<TextBlock Text="{Binding Name}" />
-					<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+				<StackPanel MaxWidth="500">
+					<TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
+					<TextBlock Text="{Binding Offset, StringFormat='Field Offset: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding FieldAddress, StringFormat='Address: 0x{0:X}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding PluginLine, StringFormat='Plugin Line: {0}'}" Foreground="#CCC" />
+					<TextBlock Text="{Binding ToolTip}" TextWrapping="WrapWithOverflow" 
+							   Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
 				</StackPanel>
 			</DockPanel.ToolTip>
 			<TextBlock Text="?" Foreground="{DynamicResource ExtryzeAccentBrush}" FontSize="12" FontWeight="Bold" Margin="0,0,2,0"
@@ -30,8 +34,17 @@
 		</DockPanel>
 		<ComboBox Grid.Column="1" x:Name="cbEnumOptions"
 			          ItemsSource="{Binding Values}"
-			          SelectedValue="{Binding SelectedValue}" HorizontalContentAlignment="Center"
-					  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=SelectedValue.ToolTip}">
+			          SelectedValue="{Binding SelectedValue}" HorizontalContentAlignment="Center">
+			<ComboBox.ToolTip>
+				<ToolTip DataContext="{Binding PlacementTarget, RelativeSource={RelativeSource Self}}">
+					<StackPanel MaxWidth="500">
+						<TextBlock Text="{Binding SelectedItem.Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
+						<TextBlock Text="{Binding SelectedValue.Value, StringFormat=Index {0}}" Foreground="#CCC" />
+						<TextBlock Text="{Binding SelectedValue.ToolTip}" TextWrapping="WrapWithOverflow" 
+							   Visibility="{Binding SelectedValue.ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+					</StackPanel>
+				</ToolTip>
+			</ComboBox.ToolTip>
 			<ComboBox.ItemsPanel>
 				<ItemsPanelTemplate>
 					<VirtualizingStackPanel VirtualizingStackPanel.IsVirtualizing="True"
@@ -42,9 +55,11 @@
 				<Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
 					<Setter Property="ToolTip">
 						<Setter.Value>
-							<StackPanel>
-								<TextBlock Text="{Binding Name}" />
-								<TextBlock Text="{Binding ToolTip}" Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
+							<StackPanel MaxWidth="500">
+								<TextBlock Text="{Binding Name}" TextWrapping="WrapWithOverflow" FontWeight="Bold" />
+								<TextBlock Text="{Binding Value, StringFormat=Index {0}}" Foreground="#CCC" />
+								<TextBlock Text="{Binding ToolTip}" TextWrapping="WrapWithOverflow" 
+							   Visibility="{Binding ToolTipExists, Converter={StaticResource cb2v}, ConverterParameter={x:Static Visibility.Collapsed}}" />
 							</StackPanel>
 						</Setter.Value>
 					</Setter>
