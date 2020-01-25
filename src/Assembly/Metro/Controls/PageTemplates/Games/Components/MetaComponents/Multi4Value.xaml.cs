@@ -21,11 +21,15 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			if (DataContext.GetType() != typeof(Vector4Data))
 				return;
 
-			if (!double.TryParse(txtConvY.Text, out double yaw))
+			double yaw;
+			double pitch;
+			double roll;
+
+			if (!double.TryParse(txtConvY.Text, out yaw))
 				return;
-			if (!double.TryParse(txtConvP.Text, out double pitch))
+			if (!double.TryParse(txtConvP.Text, out pitch))
 				return;
-			if (!double.TryParse(txtConvR.Text, out double roll))
+			if (!double.TryParse(txtConvR.Text, out roll))
 				return;
 
 			yaw *= (Math.PI / 180);
