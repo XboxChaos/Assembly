@@ -1230,19 +1230,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private void GroupContextMenu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			var tagContext = sender as ContextMenu;
+			var group = tagContext.DataContext as TagGroup;
 
-			// Check if we need to hide stuff because the cache isn't thirdgen
-			if (_cacheFile.Engine != EngineType.ThirdGeneration)
-				foreach (object tagItem in tagContext.Items)
+
+			foreach (object tagItem in tagContext.Items)
+			{
+				// Check for particular names/objects to hide because datatemplate
+				if (tagItem is MenuItem)
 				{
-					// Check for particular names/objects to hide because datatemplate
-					if (tagItem is MenuItem)
+					MenuItem tagMenuItem = tagItem as MenuItem;
+
+					// Check if we need to hide stuff because the cache isn't thirdgen
+					if (_cacheFile.Engine != EngineType.ThirdGeneration)
 					{
-						MenuItem tagMenuItem = tagItem as MenuItem;
+						
 						if (tagMenuItem.Name == "itemGroupBatch")
 							tagMenuItem.Visibility = Visibility.Collapsed;
 					}
+
+					if(group.TagGroupMagic != "hsc*" && tagMenuItem.Name == "hscItem")
+					{
+						tagMenuItem.Visibility = Visibility.Collapsed;
+					}
 				}
+			}
 		}
 
 		private void SIDButton_Click(object sender, RoutedEventArgs e)
@@ -1298,6 +1309,63 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				contentTabs.SelectedItem = tab;
 			}
 
+		}
+
+		private void HscItem_Click(object sender, RoutedEventArgs e)
+		{
+			DumpHscs();
+		}
+
+		private void DumpHscs()
+		{
+			var tags = _cacheFile.Tags.FindTagsByGroup("hsc*");
+
+			if (_buildInfo.Layouts.HasLayout("hsc*") && tags != null)
+			{
+				string folder;
+
+				using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+				{
+					System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+					if (result == System.Windows.Forms.DialogResult.OK)
+					{
+						folder = dialog.SelectedPath;
+					}
+					else
+					{
+						return;
+					}
+				}
+
+				foreach (var tag in tags)
+				{
+					string fileName;
+					byte[] data;
+
+					using (IReader reader = _mapManager.OpenRead())
+					{
+						reader.SeekTo(tag.MetaLocation.AsOffset());
+						var values = StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsc*"));
+
+						uint pointer = (uint)values.GetInteger("source pointer");
+						var exp = _cacheFile.PointerExpander.Expand(pointer);
+						var offset = _cacheFile.MetaArea.PointerToOffset(exp);
+						reader.SeekTo(offset);
+						data = reader.ReadBlock((int)values.GetInteger("source size"));
+						fileName = values.GetString("file name") + ".hsc";
+					}
+
+					string path = Path.Combine(folder, fileName);
+
+					File.WriteAllBytes(path, data);
+				}
+
+				MetroMessageBox.Show("All source files have been extracted.");
+			}
+			else
+			{
+				MetroMessageBox.Show("This map doesn't contain hsc files.");
+			}
 		}
 
 		#region Tag List
