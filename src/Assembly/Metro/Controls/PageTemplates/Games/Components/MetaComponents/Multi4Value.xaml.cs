@@ -18,9 +18,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		private void ConvertToQuat()
 		{
-			if (DataContext.GetType() != typeof(Vector4Data))
-				return;
-
 			double yaw;
 			double pitch;
 			double roll;
@@ -46,11 +43,27 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			double c3 = Math.Cos(roll / 2);
 			double s3 = Math.Sin(roll / 2);
 
-			Vector4Data field = (Vector4Data)DataContext;
-			field.D = (float)(c1 * c2 * c3 - s1 * s2 * s3);
-			field.A = (float)(c1 * c2 * s3 + s1 * s2 * c3);
-			field.B = (float)(s1 * c2 * c3 + c1 * s2 * s3);
-			field.C = (float)(c1 * s2 * c3 - s1 * c2 * s3);
+			double w = (c1 * c2 * c3 - s1 * s2 * s3);
+			double i = (c1 * c2 * s3 + s1 * s2 * c3);
+			double j = (s1 * c2 * c3 + c1 * s2 * s3);
+			double k = (c1 * s2 * c3 - s1 * c2 * s3);
+
+			if (DataContext.GetType() == typeof(Vector4Data))
+			{
+				Vector4Data field = (Vector4Data)DataContext;
+				field.D = (float)w;
+				field.A = (float)i;
+				field.B = (float)j;
+				field.C = (float)k;
+			}
+			else if (DataContext.GetType() == typeof(Quaternion16Data))
+			{
+				Quaternion16Data field = (Quaternion16Data)DataContext;
+				field.D = (short)(w * short.MaxValue);
+				field.A = (short)(i * short.MaxValue);
+				field.B = (short)(j * short.MaxValue);
+				field.C = (short)(k * short.MaxValue);
+			}
 		}
 
 		private void TxtConv_TextChanged(object sender, TextChangedEventArgs e)
@@ -63,14 +76,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		private void ConvertToAngle()
 		{
-			if (DataContext.GetType() != typeof(Vector4Data))
-				return;
+			double w;
+			double i;
+			double j;
+			double k;
 
-			Vector4Data field = (Vector4Data)DataContext;
-			double w = field.D;
-			double i = field.A;
-			double j = field.B;
-			double k = field.C;
+			if (DataContext.GetType() == typeof(Vector4Data))
+			{
+				Vector4Data field = (Vector4Data)DataContext;
+				w = field.D;
+				i = field.A;
+				j = field.B;
+				k = field.C;
+			}
+			else if (DataContext.GetType() == typeof(Quaternion16Data))
+			{
+				Quaternion16Data field = (Quaternion16Data)DataContext;
+				w = field.D;
+				i = field.A;
+				j = field.B;
+				k = field.C;
+
+				w = w / short.MaxValue * 100000 / 100000;
+				i = i / short.MaxValue * 100000 / 100000;
+				j = j / short.MaxValue * 100000 / 100000;
+				k = k / short.MaxValue * 100000 / 100000;
+			}
+			else return;
 
 			// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
 			double yaw;

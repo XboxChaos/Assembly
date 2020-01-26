@@ -11,6 +11,8 @@
 		void VisitInt16(Int16Data field);
 		void VisitUint32(Uint32Data field);
 		void VisitInt32(Int32Data field);
+		void VisitUint64(Uint64Data field);
+		void VisitInt64(Int64Data field);
 		void VisitFloat32(Float32Data field);
 		void VisitTagBlock(TagBlockData field);
 		void VisitTagBlockEntry(WrappedTagBlockEntry field);
@@ -30,6 +32,8 @@
 		void VisitPlane2(Plane2Data field);
 		void VisitPlane3(Plane3Data field);
 		void VisitRect16(RectangleData field);
+		void VisitQuat16(Quaternion16Data field);
+		void VisitPoint16(Point16Data field);
 		void VisitColourInt(ColorData field);
 		void VisitColourFloat(ColorData field);
 		void VisitShaderRef(ShaderRef field);

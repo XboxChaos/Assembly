@@ -177,6 +177,15 @@ namespace Blamite.Injection
 			VisitUInt32(name, offset, visible, pluginLine, tooltip);
 		}
 
+		public void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			VisitUInt64(name, offset, visible, pluginLine, tooltip);
+		}
+
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 		}
@@ -226,6 +235,14 @@ namespace Blamite.Injection
 		}
 
 		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+		}
+
+		public void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 		}
 

@@ -453,5 +453,41 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			return new RectangleData(Name, Offset, FieldAddress, Type, A, B, C, D, PluginLine, ToolTip);
 		}
 	}
-	
+
+	public class Quaternion16Data : Multi4Data<short>
+	{
+		public Quaternion16Data(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
+		{
+		}
+
+		public override void Accept(IMetaFieldVisitor visitor)
+		{
+			visitor.VisitQuat16(this);
+		}
+
+		public override MetaField CloneValue()
+		{
+			return new Quaternion16Data(Name, Offset, FieldAddress, Type, A, B, C, D, PluginLine, ToolTip);
+		}
+	}
+
+	public class Point16Data : Multi2Data<short>
+	{
+		public Point16Data(string name, uint offset, long address, string type, short a, short b, uint pluginLine, string tooltip)
+			: base(name, offset, address, type, a, b, pluginLine, tooltip)
+		{
+		}
+
+		public override void Accept(IMetaFieldVisitor visitor)
+		{
+			visitor.VisitPoint16(this);
+		}
+
+		public override MetaField CloneValue()
+		{
+			return new Point16Data(Name, Offset, FieldAddress, Type, A, B, PluginLine, ToolTip);
+		}
+	}
+
 }

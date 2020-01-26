@@ -130,6 +130,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteInt32(field.Value);
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt64(field.Value);
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteInt64(field.Value);
+		}
+
 		public void VisitFloat32(Float32Data field)
 		{
 			SeekToOffset(field.Offset);
@@ -407,6 +419,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteInt16(field.B);
 			_writer.WriteInt16(field.C);
 			_writer.WriteInt16(field.D);
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteInt16(field.A);
+			_writer.WriteInt16(field.B);
+			_writer.WriteInt16(field.C);
+			_writer.WriteInt16(field.D);
+		}
+
+		public void VisitPoint16(Point16Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteInt16(field.A);
+			_writer.WriteInt16(field.B);
 		}
 
 		public void VisitShaderRef(ShaderRef field)

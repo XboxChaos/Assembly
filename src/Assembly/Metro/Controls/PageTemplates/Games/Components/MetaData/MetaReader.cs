@@ -151,6 +151,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.Value = _reader.ReadInt32();
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.Value = _reader.ReadUInt64();
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.Value = _reader.ReadInt64();
+		}
+
 		public void VisitColourInt(ColorData field)
 		{
 			SeekToOffset(field.Offset);
@@ -388,6 +400,22 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			field.B = _reader.ReadInt16();
 			field.C = _reader.ReadInt16();
 			field.D = _reader.ReadInt16();
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadInt16();
+			field.B = _reader.ReadInt16();
+			field.C = _reader.ReadInt16();
+			field.D = _reader.ReadInt16();
+		}
+
+		public void VisitPoint16(Point16Data field)
+		{
+			SeekToOffset(field.Offset);
+			field.A = _reader.ReadInt16();
+			field.B = _reader.ReadInt16();
 		}
 
 		public void VisitTagBlock(TagBlockData field)

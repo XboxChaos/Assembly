@@ -81,6 +81,16 @@ namespace Blamite.Plugins
 			PrintBasicValue("Int32", name, offset, visible, tooltip);
 		}
 
+		public void VisitUInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("UInt64", name, offset, visible, tooltip);
+		}
+
+		public void VisitInt64(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("Int64", name, offset, visible, tooltip);
+		}
+
 		public void VisitFloat32(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Float32", name, offset, visible, tooltip);
@@ -144,6 +154,16 @@ namespace Blamite.Plugins
 		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
 		{
 			PrintBasicValue("Rect16", name, offset, visible, tooltip);
+		}
+
+		public void VisitQuat16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("Quat16", name, offset, visible, tooltip);
+		}
+
+		public void VisitPoint16(string name, uint offset, bool visible, uint pluginLine, string tooltip)
+		{
+			PrintBasicValue("Point16", name, offset, visible, tooltip);
 		}
 
 		public void VisitStringID(string name, uint offset, bool visible, uint pluginLine, string tooltip)

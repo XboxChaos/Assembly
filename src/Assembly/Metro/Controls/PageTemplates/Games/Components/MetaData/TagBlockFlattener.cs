@@ -304,6 +304,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+		}
+
 		public void VisitFloat32(Float32Data field)
 		{
 		}
@@ -419,6 +427,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		}
 
 		public void VisitRect16(RectangleData field)
+		{
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+		}
+
+		public void VisitPoint16(Point16Data field)
 		{
 		}
 

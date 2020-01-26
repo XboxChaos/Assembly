@@ -84,6 +84,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			AddWidth(_intControl.Width);
 		}
 
+		public void VisitUint64(Uint64Data field)
+		{
+			AddWidth(_intControl.Width);
+		}
+
+		public void VisitInt64(Int64Data field)
+		{
+			AddWidth(_intControl.Width);
+		}
+
 		public void VisitFloat32(Float32Data field)
 		{
 			AddWidth(_intControl.Width);
@@ -205,6 +215,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitRect16(RectangleData field)
 		{
 			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitQuat16(Quaternion16Data field)
+		{
+			AddWidth(_multi4Value.Width);
+		}
+
+		public void VisitPoint16(Point16Data field)
+		{
+			AddWidth(_multi2Value.Width);
 		}
 
 		public void VisitColourInt(ColorData field)
