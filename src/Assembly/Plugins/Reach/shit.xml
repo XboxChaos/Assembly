@@ -3,74 +3,103 @@
 	<!-- Automatically generated plugin -->
 	<revisions>
 		<revision author="DarkShallFall" version="1">Mapped plugin structure a new.</revision>
+		<revision author="Lord Zedd" version="2">thanks h5</revision>
 	</revisions>
-	<int16 name="Unknown" offset="0x0" visible="false" />
-	<int16 name="Unknown" offset="0x2" visible="false" />
-	<float32 name="Unknown" offset="0x4" visible="false" />
-	<float32 name="Unknown" offset="0x8" visible="false" />
-	<float32 name="Unknown" offset="0xC" visible="false" />
-	<float32 name="Unknown" offset="0x10" visible="false" />
-	<float32 name="Unknown" offset="0x14" visible="false" />
-	<float32 name="Unknown" offset="0x18" visible="false" />
-	<stringid name="Unknown" offset="0x1C" visible="true" />
-	<stringid name="Unknown" offset="0x20" visible="true" />
-	<dataRef name="Unknown" offset="0x24" visible="true" />
-	<stringid name="Unknown" offset="0x38" visible="true" />
-	<stringid name="Unknown" offset="0x3C" visible="true" />
-	<dataRef name="Unknown" offset="0x40" visible="true" />
-	<float32 name="Unknown" offset="0x54" visible="false" />
-	<tagRef name="Unknown" offset="0x58" visible="true" />
-	<tagRef name="Unknown" offset="0x68" visible="true" />
-	<float32 name="Unknown" offset="0x78" visible="false" />
-	<float32 name="Unknown" offset="0x7C" visible="false" />
-	<float32 name="Unknown" offset="0x80" visible="false" />
-	<float32 name="Unknown" offset="0x84" visible="false" />
-	<float32 name="Unknown" offset="0x88" visible="false" />
-	<float32 name="Unknown" offset="0x8C" visible="false" />
-	<float32 name="Unknown" offset="0x90" visible="false" />
-	<stringid name="Unknown" offset="0x94" visible="true" />
-	<stringid name="Unknown" offset="0x98" visible="true" />
-	<dataRef name="Unknown" offset="0x9C" visible="true" />
-	<stringid name="Unknown" offset="0xB0" visible="true" />
-	<stringid name="Unknown" offset="0xB4" visible="true" />
-	<dataRef name="Unknown" offset="0xB8" visible="true" />
-	<stringid name="Unknown" offset="0xCC" visible="true" />
-	<stringid name="Unknown" offset="0xD0" visible="true" />
-	<dataRef name="Unknown" offset="0xD4" visible="true" />
-	<stringid name="Unknown" offset="0xE8" visible="true" />
-	<stringid name="Unknown" offset="0xEC" visible="true" />
-	<dataRef name="Unknown" offset="0xF0" visible="true" />
-	<tagRef name="Unknown" offset="0x104" visible="true" />
-	<tagRef name="Unknown" offset="0x114" visible="true" />
-	<float32 name="Unknown" offset="0x124" visible="false" />
-	<float32 name="Unknown" offset="0x128" visible="false" />
-	<stringid name="Unknown" offset="0x12C" visible="true" />
-	<stringid name="Unknown" offset="0x130" visible="true" />
-	<dataRef name="Unknown" offset="0x134" visible="true" />
-	<stringid name="Unknown" offset="0x148" visible="true" />
-	<stringid name="Unknown" offset="0x14C" visible="true" />
-	<dataRef name="Unknown" offset="0x150" visible="true" />
-	<float32 name="Unknown" offset="0x164" visible="false" />
-	<stringid name="Unknown" offset="0x168" visible="true" />
-	<stringid name="Unknown" offset="0x16C" visible="true" />
-	<dataRef name="Unknown" offset="0x170" visible="true" />
-	<stringid name="Unknown" offset="0x184" visible="true" />
-	<stringid name="Unknown" offset="0x188" visible="true" />
-	<dataRef name="Unknown" offset="0x18C" visible="true" />
-	<float32 name="Unknown" offset="0x1A0" visible="false" />
-	<float32 name="Unknown" offset="0x1A4" visible="false" />
-	<float32 name="Unknown" offset="0x1A8" visible="false" />
-	<float32 name="Unknown" offset="0x1AC" visible="false" />
-	<float32 name="Unknown" offset="0x1B0" visible="false" />
-	<float32 name="Unknown" offset="0x1B4" visible="false" />
-	<float32 name="Unknown" offset="0x1B8" visible="false" />
-	<float32 name="Unknown" offset="0x1BC" visible="false" />
-	<float32 name="Unknown" offset="0x1C0" visible="false" />
-	<float32 name="Unknown" offset="0x1C4" visible="false" />
-	<float32 name="Unknown" offset="0x1C8" visible="false" />
-	<float32 name="Unknown" offset="0x1CC" visible="false" />
-	<float32 name="Unknown" offset="0x1D0" visible="false" />
-	<float32 name="Unknown" offset="0x1D4" visible="false" />
-	<undefined name="Unknown" offset="0x1D8" visible="false" />
-	<undefined name="Unknown" offset="0x1DC" visible="false" />
+	<comment title="Shield Controls">You can use the following variables as inputs to the functions here, in addition to any object variables
+    shield_vitality        percentage of shield remaining
+    shield_intensity       mixture of recent and current damage (see below)
+    current_shield_damage
+    recent_shield_damage</comment>
+	<flags16 name="Flags" offset="0x0" visible="true">
+		<bit name="Render Always" index="0" />
+		<bit name="Render First Person" index="1" />
+		<bit name="Dont Render Third Person" index="2" />
+	</flags16>
+	<int16 name="Version" offset="0x2" visible="true" />
+	<comment title="Shield Intensity">Shield intensity is a combination of recent damage and current damage.
+These controls let you adjust the relative intensity contribution from each.
+'shield_intensity' can be used as an input to any of the animation function curves below.</comment>
+	<float32 name="Recent Damage Intensity" offset="0x4" visible="true" />
+	<float32 name="Current Damage Intensity" offset="0x8" visible="true" />
+	<comment title="Shield Edge">These controls allow you to define the location and width of the shield edges.
+The edge is faded as a function of the surface normal with respect to the camera.
+Radius 1.0 corresponds to the glancing edges of the surface (the silhouette edges).
+Radius 0.0 corresponds to the area of the surface directly facing the camera (the center).
+You can control separately the inner and outer fades.</comment>
+	<float32 name="Depth Fade Range" offset="0xC" visible="true" />
+	<float32 name="Outer Fade Radius" offset="0x10" visible="true" />
+	<float32 name="Center Radius" offset="0x14" visible="true" />
+	<float32 name="Inner Fade Radius" offset="0x18" visible="true" />
+	<comment title="Edge Glow Color" />
+	<stringid name="Input Variable" offset="0x1C" visible="true" />
+	<stringid name="Range Variable" offset="0x20" visible="true" />
+	<dataref name="Function" offset="0x24" visible="true" />
+	<comment title="Edge Glow Intensity" />
+	<stringid name="Input Variable" offset="0x38" visible="true" />
+	<stringid name="Range Variable" offset="0x3C" visible="true" />
+	<dataref name="Function" offset="0x40" visible="true" />
+	<comment title="Plasma">These controls allow you to define the appearance of the plasma effect.
+The plasma is calculated using the standard formula (1-abs(tex0-tex1))^(sharpness).
+Tiling scale controls the spatial tiling of the plasma textures.
+Scroll speed controls how fast the textures scroll on the surface.
+You can specify separate sharpness values for the edge and the center.</comment>
+	<float32 name="Plasma Depth Fade Range" offset="0x54" visible="true" />
+	<tagRef name="Plasma Noise Texture 0" offset="0x58" visible="true" />
+	<tagRef name="Plasma Noise Texture 1" offset="0x68" visible="true" />
+	<float32 name="Tiling Scale" offset="0x78" visible="true" />
+	<float32 name="Scroll Speed" offset="0x7C" visible="true" />
+	<float32 name="Edge Sharpness" offset="0x80" visible="true" />
+	<float32 name="Center Sharpness" offset="0x84" visible="true" />
+	<float32 name="Plasma Outer Fade Radius" offset="0x88" visible="true" />
+	<float32 name="Plasma Center Radius" offset="0x8C" visible="true" />
+	<float32 name="Plasma Inner Fade Radius" offset="0x90" visible="true" />
+	<comment title="Plasma Center Color" />
+	<stringid name="Input Variable" offset="0x94" visible="true" />
+	<stringid name="Range Variable" offset="0x98" visible="true" />
+	<dataref name="Function" offset="0x9C" visible="true" />
+	<comment title="Plasma Center Intensity" />
+	<stringid name="Input Variable" offset="0xB0" visible="true" />
+	<stringid name="Range Variable" offset="0xB4" visible="true" />
+	<dataref name="Function" offset="0xB8" visible="true" />
+	<comment title="Plasma Edge Color" />
+	<stringid name="Input Variable" offset="0xCC" visible="true" />
+	<stringid name="Range Variable" offset="0xD0" visible="true" />
+	<dataref name="Function" offset="0xD4" visible="true" />
+	<comment title="Plasma Edge Intensity" />
+	<stringid name="Input Variable" offset="0xE8" visible="true" />
+	<stringid name="Range Variable" offset="0xEC" visible="true" />
+	<dataref name="Function" offset="0xF0" visible="true" />
+	<comment title="Extrusion Oscillation">These controls allow you to define the oscillation in the extrusion.
+These textures are tiled and scrolled in the xy and yz planes, and their red channel is applied as an offset to the extrusion
+Tiling scale controls the spatial tiling of the plasma textures.
+Scroll speed controls how fast the textures scroll on the surface.
+You can specify separate sharpness values for the edge and the center.</comment>
+	<tagRef name="Oscillation Texture 0" offset="0x104" visible="true" />
+	<tagRef name="Oscillation Texture 1" offset="0x114" visible="true" />	
+	<float32 name="Oscillation Tiling Scale" offset="0x124" visible="true" />
+	<float32 name="Oscillation Scroll Speed" offset="0x128" visible="true" />
+	<comment title="Extrusion Amount" />
+	<stringid name="Input Variable" offset="0x12C" visible="true" />
+	<stringid name="Range Variable" offset="0x130" visible="true" />
+	<dataref name="Function" offset="0x134" visible="true" />
+	<comment title="Oscillation Amplitude" />
+	<stringid name="Input Variable" offset="0x148" visible="true" />
+	<stringid name="Range Variable" offset="0x14C" visible="true" />
+	<dataref name="Function" offset="0x150" visible="true" />
+	<comment title="Hit Response">These controls allow you to define the color variation in the area surrounding projectile impacts.
+You can control the color, and the size of the colored area.
+The default input is time since impact.</comment>
+	<float32 name="Hit Time" offset="0x164" visible="true" />
+	<comment title="Hit Color" />
+	<stringid name="Input Variable" offset="0x168" visible="true" />
+	<stringid name="Range Variable" offset="0x16C" visible="true" />
+	<dataref name="Function" offset="0x170" visible="true" />
+	<comment title="Hit Radius" />
+	<stringid name="Input Variable" offset="0x184" visible="true" />
+	<stringid name="Range Variable" offset="0x188" visible="true" />
+	<dataref name="Function" offset="0x18C" visible="true" />
+	<vector4 name="Edge Scales" offset="0x1A0" visible="true" />
+	<vector4 name="Edge Offsets" offset="0x1B0" visible="true" />
+	<vector4 name="Plasma Scales" offset="0x1C0" visible="true" />
+	<vector4 name="Depth Fade Params" offset="0x1D0" visible="true" />
 </plugin>
