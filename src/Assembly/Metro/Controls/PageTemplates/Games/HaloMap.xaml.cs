@@ -1913,6 +1913,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			ExternalTabsClose(tabs, false);
 
+			_stringIdTrie = null;
+
+			_tagEntries.Clear();
+			_allTags.Entries.Clear();
+			_visibleTags.Entries.Clear();
+
 			//check for any viewvalueas dialogs that rely on this cache and close them
 			foreach (Window w in Application.Current.Windows)
 			{

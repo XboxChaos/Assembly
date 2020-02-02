@@ -804,10 +804,6 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 		#endregion
 
-		#region Patch Convertion Functions
-
-		#endregion
-
 		#region Patch Poking Functions
 
 		private Patch currentPatchToPoke;
@@ -1021,5 +1017,14 @@ namespace Assembly.Metro.Controls.PageTemplates
 		#endregion
 
 		// ReSharper restore UnusedMember.Global
+
+		public void Dispose()
+		{
+			if (currentPatch != null && currentPatch.SegmentChanges != null)
+				currentPatch.SegmentChanges.Clear();
+
+			if (currentPatchToPoke != null && currentPatchToPoke.SegmentChanges != null)
+				currentPatchToPoke.SegmentChanges.Clear();
+		}
 	}
 }
