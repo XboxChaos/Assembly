@@ -47,7 +47,7 @@ namespace Blamite.IO
 		/// <param name="pointer">The pointer to create a SegmentPointer to.</param>
 		/// <param name="baseGroup">The segment group containing the pointer.</param>
 		/// <returns>The SegmentPointer corresponding to the file pointer.</returns>
-		public static SegmentPointer FromPointer(uint pointer, FileSegmentGroup baseGroup)
+		public static SegmentPointer FromPointer(long pointer, FileSegmentGroup baseGroup)
 		{
 			if (baseGroup.Segments.Count == 0)
 				throw new ArgumentException("Cannot create a SegmentPointer from an empty group");
@@ -76,7 +76,7 @@ namespace Blamite.IO
 		///     Gets the raw pointer corresponding to the SegmentPointer.
 		/// </summary>
 		/// <returns>The raw pointer corresponding to the SegmentPointer.</returns>
-		public uint AsPointer()
+		public long AsPointer()
 		{
 			return _baseGroup.OffsetToPointer(AsOffset());
 		}

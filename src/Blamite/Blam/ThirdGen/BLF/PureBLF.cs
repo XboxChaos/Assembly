@@ -5,7 +5,7 @@ using Blamite.IO;
 
 namespace Blamite.Blam.ThirdGen
 {
-	public class PureBLF
+	public class PureBLF : IDisposable
 	{
 		private IList<BLFChunk> _blfChunks;
 		private EndianStream _blfStream;
@@ -64,7 +64,6 @@ namespace Blamite.Blam.ThirdGen
 
 			if (!isValidBLF())
 			{
-				Close();
 				throw new Exception("Invalid BLF Container!");
 			}
 
@@ -136,11 +135,6 @@ namespace Blamite.Blam.ThirdGen
 			if (magic == "_blf")
 				return true;
 			return false;
-		}
-
-		public void Close()
-		{
-			_blfStream.Close();
 		}
 
 		#region Loading Code
@@ -218,5 +212,10 @@ namespace Blamite.Blam.ThirdGen
 		}
 
 		#endregion
+
+		public void Dispose()
+		{
+			_blfStream.Dispose();
+		}
 	}
 }

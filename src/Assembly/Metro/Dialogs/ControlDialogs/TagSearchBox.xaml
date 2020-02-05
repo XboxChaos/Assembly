@@ -1,0 +1,67 @@
+﻿<Window
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:n="clr-namespace:Assembly.Helpers.Native"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:MetaComponents="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents" x:Class="Assembly.Metro.Dialogs.ControlDialogs.TagValueSearcher"
+		AllowsTransparency="True" ResizeMode="CanResize" WindowStyle="None" WindowStartupLocation="CenterScreen"
+		SnapsToDevicePixels="True" SizeToContent="WidthAndHeight" Height="350"
+		Width="664.186" MaxWidth="550" MinHeight="350" MinWidth="664.186" ShowInTaskbar="False"
+		n:WindowMovement.IsDraggable="True">
+	<Border Background="#FF2E2E31" BorderThickness="1,1,1,5" BorderBrush="{DynamicResource ExtryzeAccentBrush}" Height="350" Margin="0,0,0,0">
+		<Grid Margin="0,0,0,5">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="60px" />
+				<RowDefinition Height="22" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="36px" />
+			</Grid.RowDefinitions>
+			<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
+			<TextBlock Grid.Row="0" x:Name="lblTitle" Text="Search" Foreground="#989898" VerticalAlignment="Top"
+					   HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
+					   FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
+
+			<Grid
+				Grid.Row="0"
+				x:Name="headerThumb"
+				Opacity="0"
+				Background="Transparent"
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				n:WindowMovement.DragsWindow="True" />
+
+
+			<Grid x:Name="searchContainer" Grid.Row="1" Margin="33,0,10,0">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid x:Name="searchInputContainer" Grid.Column="0" Margin="0,0,0,0">
+						<TextBox x:Name="textSearch" TextChanged="textSearch_TextChanged" ToolTip="Start typing here to search by name, or prefix &quot;0x&quot; to search by datum index. Injected tags always begin with 0x4153." />
+					</Grid>
+				</Grid>
+			</Grid>
+
+			<Grid x:Name="listContainer" Grid.Row="2" Margin="33,0,10,0">
+				<ListBox x:Name="listTagSearchResults" Margin="0,12,0,12" Background="Transparent" SelectionChanged="listTagSearchResults_SelectionChanged" MouseDoubleClick="listTagSearchResults_MouseDoubleClick">
+					<ListBox.ItemTemplate>
+						<ItemContainerTemplate>
+							<TextBlock Text="{Binding Path=TagFileName}" ToolTip="{Binding Path=TagToolTip}" Background="Transparent" Style="{DynamicResource GenericTextblock}" />
+						</ItemContainerTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+
+			<Grid Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="36" Background="#FF424244" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="453*"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+			</Grid>
+			<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
+						VerticalAlignment="Bottom">
+				<Button x:Name="btnOK" Padding="10,0,10,0" Margin="10,0,10,0" Click="btnOK_Click" Content="OK"/>
+				<Button x:Name="btnCancel" Padding="10,0,10,0" Margin="0" Click="btnCancel_Click" Content="Cancel"/>
+			</StackPanel>
+		</Grid>
+	</Border>
+</Window>

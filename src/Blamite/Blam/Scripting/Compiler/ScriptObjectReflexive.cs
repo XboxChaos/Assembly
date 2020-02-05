@@ -49,23 +49,26 @@ namespace Blamite.Blam.Scripting.Compiler
 		/// <param name="buildInfo">The build info for the cache file.</param>
 		/// <returns>The objects that were read.</returns>
 		public ScriptObject[] ReadObjects(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo)
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			var count = (int) values.GetInteger(_countEntryName);
-			uint address = values.GetInteger(_addressEntryName);
+			uint address = (uint)values.GetInteger(_addressEntryName);
+
+			long expand = expander.Expand(address);
+
 			StructureLayout layout = buildInfo.Layouts.GetLayout(_layoutName);
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
-			return entries.Select(e => ReadScriptObject(e, reader, metaArea, stringIDs, buildInfo)).ToArray();
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, metaArea);
+			return entries.Select(e => ReadScriptObject(e, reader, metaArea, stringIDs, buildInfo, expander)).ToArray();
 		}
 
 		private ScriptObject ReadScriptObject(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo)
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			string name = GetObjectName(values, stringIDs);
 			var result = new ScriptObject(name);
 
 			foreach (ScriptObjectReflexive child in _children)
-				result.RegisterChildren(child, child.ReadObjects(values, reader, metaArea, stringIDs, buildInfo));
+				result.RegisterChildren(child, child.ReadObjects(values, reader, metaArea, stringIDs, buildInfo, expander));
 
 			return result;
 		}

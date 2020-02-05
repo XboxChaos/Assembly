@@ -21,7 +21,7 @@ namespace Blamite.Blam.Resources
 		IZoneSet[] BSPZoneSets2 { get; }
 		IZoneSet[] BSPZoneSets3 { get; }
 		IZoneSet[] CinematicZoneSets { get; }
-		IZoneSet[] CustomZoneSets { get; }
+		IZoneSet[] ScenarioZoneSets { get; }
 
 		/// <summary>
 		///     Saves changes made to zone sets in the table.

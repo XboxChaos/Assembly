@@ -14,14 +14,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ITag _tag;
+		private readonly bool _zone;
+		private readonly IPointerExpander _expander;
 
 		public ThirdGenResourceLayoutTable(ITag playTag, FileSegmentGroup metaArea, MetaAllocator allocator,
-			EngineDescription buildInfo)
+			EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_tag = playTag;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
+
+			_zone = _tag.Class.Magic != 1886151033;//"play"
 		}
 
 		public IEnumerable<ResourcePage> LoadPages(IReader reader)
@@ -30,38 +35,53 @@ namespace Blamite.Blam.ThirdGen.Structures
 			ThirdGenCacheFileReference[] files = LoadExternalFiles(values, reader);
 
 			var count = (int) values.GetInteger("number of raw pages");
-			uint address = values.GetInteger("raw page table address");
+			uint address = (uint)values.GetInteger("raw page table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select((e, i) => LoadPage(e, i, files));
 		}
 
-		public void SavePages(ICollection<ResourcePage> pages, IStream stream)
+		public void SavePages(ICollection<ResourcePage> pages, ICollection<ResourcePointer> pointers, IStream stream)
 		{
 			StructureValueCollection values = LoadTag(stream);
 			ThirdGenCacheFileReference[] files = LoadExternalFiles(values, stream);
 
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw page table entry");
 			var oldCount = (int) values.GetInteger("number of raw pages");
-			uint oldAddress = values.GetInteger("raw page table address");
+			uint oldAddress = (uint)values.GetInteger("raw page table address");
+
+			long expand = _expander.Expand(oldAddress);
+
+			// recount asset count values for every page for predictions
+			foreach (ResourcePage p in pages)
+				p.AssetCount = pointers.Count(x => x.PrimaryPage == p || x.SecondaryPage == p || x.TertiaryPage == p);
+
 			IEnumerable<StructureValueCollection> entries = pages.Select(p => SerializePage(p, files));
-			uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, pages.Count, layout, _metaArea,
+			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, pages.Count, layout, _metaArea,
 				_allocator, stream);
 
 			// Update values
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of raw pages", (uint) pages.Count);
-			values.SetInteger("raw page table address", newAddress);
+			values.SetInteger("raw page table address", cont);
 			SaveTag(values, stream);
 		}
 
-		public IEnumerable<ResourcePointer> LoadPointers(IReader reader, IList<ResourcePage> pages)
+		public IEnumerable<ResourcePointer> LoadPointers(IReader reader, IList<ResourcePage> pages, IList<ResourceSize> sizes)
 		{
 			StructureValueCollection values = LoadTag(reader);
 			var count = (int) values.GetInteger("number of raw segments");
-			uint address = values.GetInteger("raw segment table address");
+			uint address = (uint)values.GetInteger("raw segment table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => LoadPointer(e, pages));
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select(e => LoadPointer(e, pages, sizes));
 		}
 
 		public void SavePointers(ICollection<ResourcePointer> pointers, IStream stream)
@@ -70,35 +90,94 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw segment table entry");
 			var oldCount = (int) values.GetInteger("number of raw segments");
-			uint oldAddress = values.GetInteger("raw segment table address");
+			uint oldAddress = (uint)values.GetInteger("raw segment table address");
+
+			long expand = _expander.Expand(oldAddress);
+
 			IEnumerable<StructureValueCollection> entries = pointers.Select(p => SerializePointer(p));
-			uint newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, pointers.Count, layout, _metaArea,
+			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, pointers.Count, layout, _metaArea,
 				_allocator, stream);
 
 			// Update values
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of raw segments", (uint) pointers.Count);
-			values.SetInteger("raw segment table address", newAddress);
+			values.SetInteger("raw segment table address", cont);
+			SaveTag(values, stream);
+		}
+
+		public List<ResourceSize> LoadSizes(IReader reader)
+		{
+			StructureValueCollection values = LoadTag(reader);
+			var count = (int)values.GetInteger("number of raw sizes");
+			uint address = (uint)values.GetInteger("raw size table address");
+
+			long expand = _expander.Expand(address);
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table entry");
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select((e, i) => LoadSize(e, i, reader)).ToList();
+		}
+
+		public void SaveSizes(ICollection<ResourceSize> sizes, IStream stream)
+		{
+			StructureValueCollection values = LoadTag(stream);
+
+			var entries = new List<StructureValueCollection>();
+			var partCache = new ReflexiveCache<ResourceSizePart>();
+
+			foreach (ResourceSize size in sizes)
+			{
+				StructureValueCollection entry = SerializeSize(size);
+				entries.Add(entry);
+				SaveSizeParts(size.Parts, entry, stream, partCache);
+			}
+
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("raw size table entry");
+			var oldCount = (int)values.GetInteger("number of raw sizes");
+			uint oldAddress = (uint)values.GetInteger("raw size table address");
+
+			long expand = _expander.Expand(oldAddress);
+
+			long newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, sizes.Count, layout, _metaArea,
+				_allocator, stream);
+
+			// Update values
+			uint cont = _expander.Contract(newAddress);
+
+			values.SetInteger("number of raw sizes", (uint)sizes.Count);
+			values.SetInteger("raw size table address", cont);
 			SaveTag(values, stream);
 		}
 
 		private StructureValueCollection LoadTag(IReader reader)
 		{
 			reader.SeekTo(_tag.MetaLocation.AsOffset());
-			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
+			if (!_zone)
+				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table"));
+			else
+				return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("resource layout table alt"));
 		}
 
 		private void SaveTag(StructureValueCollection values, IWriter writer)
 		{
 			writer.SeekTo(_tag.MetaLocation.AsOffset());
-			StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
+			if (!_zone)
+				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table"), writer);
+			else
+				StructureWriter.WriteStructure(values, _buildInfo.Layouts.GetLayout("resource layout table alt"), writer);
 		}
 
 		private ThirdGenCacheFileReference[] LoadExternalFiles(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of external cache files");
-			uint address = values.GetInteger("external cache file table address");
+			uint address = (uint)values.GetInteger("external cache file table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("external cache file table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ThirdGenCacheFileReference(e)).ToArray();
 		}
 
@@ -117,12 +196,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.Offset = (int) values.GetInteger("compressed block offset");
 			result.CompressedSize = (int) values.GetInteger("compressed block size");
 			result.UncompressedSize = (int) values.GetInteger("uncompressed block size");
-			result.Checksum = values.GetInteger("checksum");
+			result.Checksum = (uint)values.GetInteger("checksum");
 			result.Hash1 = values.GetRaw("hash 1");
 			result.Hash2 = values.GetRaw("hash 2");
 			result.Hash3 = values.GetRaw("hash 3");
+			result.AssetCount = (int) values.GetIntegerOrDefault("asset count", 0);
 			result.Unknown2 = (int) values.GetIntegerOrDefault("unknown 2", 0);
-			result.Unknown3 = (int) values.GetIntegerOrDefault("unknown 3", 0);
 			return result;
 		}
 
@@ -143,8 +222,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.SetRaw("hash 1", page.Hash1);
 			result.SetRaw("hash 2", page.Hash2);
 			result.SetRaw("hash 3", page.Hash3);
+			result.SetInteger("asset count", (uint) page.AssetCount);
 			result.SetInteger("unknown 2", (uint) page.Unknown2);
-			result.SetInteger("unknown 3", (uint) page.Unknown3);
 			return result;
 		}
 
@@ -152,24 +231,37 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			for (int i = 0; i < externalFiles.Length; i++)
 			{
-				if (externalFiles[i].Path.Equals(path, StringComparison.InvariantCultureIgnoreCase))
+				if (externalFiles[i].Path.ToLowerInvariant() == path.ToLowerInvariant())
 					return i;
 			}
 			throw new InvalidOperationException("Invalid shared map path \"" + path + "\"");
 		}
 
-		private ResourcePointer LoadPointer(StructureValueCollection values, IList<ResourcePage> pages)
+		private ResourcePointer LoadPointer(StructureValueCollection values, IList<ResourcePage> pages, IList<ResourceSize> sizes)
 		{
 			var result = new ResourcePointer();
 			var primaryPage = (int) values.GetInteger("primary page index");
 			result.PrimaryPage = (primaryPage != -1) ? pages[primaryPage] : null;
 			result.PrimaryOffset = (int) values.GetInteger("primary offset");
-			result.PrimaryUnknown = (int) values.GetInteger("primary unknown");
+			var primarySize = (int) values.GetInteger("primary size index");
+			result.PrimarySize = (primarySize != -1) ? sizes[primarySize] : null;
 
 			var secondaryPage = (int) values.GetInteger("secondary page index");
 			result.SecondaryPage = (secondaryPage != -1) ? pages[secondaryPage] : null;
 			result.SecondaryOffset = (int) values.GetInteger("secondary offset");
-			result.SecondaryUnknown = (int) values.GetInteger("secondary unknown");
+			var secondarySize = (int) values.GetInteger("secondary size index");
+			result.SecondarySize = (secondarySize != -1) ? sizes[secondarySize] : null;
+
+
+			if (values.HasInteger("tertiary page index"))
+			{
+				var tertiaryPage = (int)values.GetInteger("tertiary page index");
+				result.TertiaryPage = (tertiaryPage != -1) ? pages[tertiaryPage] : null;
+				result.TertiaryOffset = (int)values.GetInteger("tertiary offset");
+				var tertiarySize = (int) values.GetInteger("tertiary size index");
+				result.TertiarySize = (tertiarySize != -1) ? sizes[tertiarySize] : null;
+			}
+
 
 			return result;
 		}
@@ -179,11 +271,96 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var result = new StructureValueCollection();
 			result.SetInteger("primary page index", (pointer.PrimaryPage != null) ? (uint) pointer.PrimaryPage.Index : 0xFFFFFFFF);
 			result.SetInteger("primary offset", (uint) pointer.PrimaryOffset);
-			result.SetInteger("primary unknown", (uint) pointer.PrimaryUnknown);
+			result.SetInteger("primary size index", (pointer.PrimarySize != null) ? (uint)pointer.PrimarySize.Index : 0xFFFFFFFF);
 			result.SetInteger("secondary page index",
 				(pointer.SecondaryPage != null) ? (uint) pointer.SecondaryPage.Index : 0xFFFFFFFF);
 			result.SetInteger("secondary offset", (uint) pointer.SecondaryOffset);
-			result.SetInteger("secondary unknown", (uint) pointer.SecondaryUnknown);
+			result.SetInteger("secondary size index", (pointer.SecondarySize != null) ? (uint)pointer.SecondarySize.Index : 0xFFFFFFFF);
+
+			if (_buildInfo.HeaderSize == 0x1E000)
+			{
+				result.SetInteger("tertiary page index", (pointer.TertiaryPage != null) ? (uint)pointer.TertiaryPage.Index : 0xFFFFFFFF);
+				result.SetInteger("tertiary offset", (uint)pointer.TertiaryOffset);
+				result.SetInteger("tertiary size index", (pointer.TertiarySize != null) ? (uint)pointer.TertiarySize.Index : 0xFFFFFFFF);
+			}
+
+			return result;
+		}
+
+		private ResourceSize LoadSize(StructureValueCollection values, int index, IReader reader)
+		{
+			var result = new ResourceSize();
+
+			result.Index = index;
+
+			result.Size = (int)values.GetInteger("overall size");
+
+			result.Parts.AddRange(LoadSizeParts(values, reader));
+
+			return result;
+		}
+
+		private StructureValueCollection SerializeSize(ResourceSize size)
+		{
+			var result = new StructureValueCollection();
+
+			result.SetInteger("overall size", (uint)size.Size);
+
+			return result;
+		}
+
+		private IEnumerable<ResourceSizePart> LoadSizeParts(StructureValueCollection values, IReader reader)
+		{
+			var count = (int)values.GetInteger("number of size parts");
+			uint address = (uint)values.GetInteger("size part table address");
+
+			long expand = _expander.Expand(address);
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table entry");
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select(e => new ResourceSizePart
+			{
+				Offset = (int)e.GetInteger("offset"),
+				Size = (int)e.GetInteger("size")
+			});
+		}
+
+		private void SaveSizeParts(IList<ResourceSizePart> parts, StructureValueCollection values, IStream stream,
+			ReflexiveCache<ResourceSizePart> cache)
+		{
+			var oldCount = (int)values.GetIntegerOrDefault("number of size parts", 0);
+			uint oldAddress = (uint)values.GetIntegerOrDefault("size part table address", 0);
+
+			long expand = _expander.Expand(oldAddress);
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("size part table entry");
+
+			long newAddress;
+			if (!cache.TryGetAddress(parts, out newAddress))
+			{
+				// Write a new reflexive
+				IEnumerable<StructureValueCollection> entries = parts.Select(p => SerializeSizePart(p));
+				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, expand, parts.Count, layout, _metaArea,
+					_allocator, stream);
+				cache.Add(newAddress, parts);
+			}
+			else if (oldAddress != 0 && oldCount > 0)
+			{
+				// Reflexive was cached - just free it
+				_allocator.Free(expand, oldCount * layout.Size);
+			}
+
+			uint cont = _expander.Contract(newAddress);
+
+			values.SetInteger("number of size parts", (uint)parts.Count);
+			values.SetInteger("size part table address", cont);
+		}
+
+		private StructureValueCollection SerializeSizePart(ResourceSizePart part)
+		{
+			var result = new StructureValueCollection();
+			result.SetInteger("offset", (uint)part.Offset);
+			result.SetInteger("size", (uint)part.Size);
 			return result;
 		}
 	}

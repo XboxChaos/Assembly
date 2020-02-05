@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
+
+#if NET45 
 using System.Runtime.InteropServices;
+#endif
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -14,15 +17,17 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
+#if NET45
+
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-
 [assembly: Guid("e98bfe6c-56bb-4977-b91f-134fc7f880d0")]
+
+#endif
 
 // Version information for an assembly consists of the following four values:
 //

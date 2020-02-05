@@ -16,11 +16,11 @@ namespace Blamite.Util
 		/// <param name="numberStr">The string to parse. If it begins with "0x", it will be parsed as hexadecimal.</param>
 		/// <param name="result">The variable to store the parsed value to if parsing succeeds.</param>
 		/// <returns>true if parsing the string succeeded.</returns>
-		public static bool ParseNumber(string numberStr, out int result)
+		public static bool ParseNumber(string numberStr, out long result)
 		{
 			if (numberStr.StartsWith("0x"))
-				return int.TryParse(numberStr.Substring(2), NumberStyles.HexNumber, null, out result);
-			return int.TryParse(numberStr, out result);
+				return long.TryParse(numberStr.Substring(2), NumberStyles.HexNumber, null, out result);
+			return long.TryParse(numberStr, out result);
 		}
 
 		/// <summary>
@@ -34,19 +34,19 @@ namespace Blamite.Util
 		/// <exception cref="ArgumentException">Thrown if the attribute is missing.</exception>
 		/// <exception cref="FormatException">Thrown if the attribute does not represent an integer.</exception>
 		/// <seealso cref="ParseNumber" />
-		public static int GetNumericAttribute(XElement element, string name)
+		public static long GetNumericAttribute(XElement element, string name)
 		{
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
-			int result;
+			long result;
 			if (ParseNumber(attribute.Value, out result))
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -59,18 +59,18 @@ namespace Blamite.Util
 		/// <returns>The attribute's value, or the default value if the attribute was not found.</returns>
 		/// <exception cref="FormatException">Thrown if the attribute does not represent an integer.</exception>
 		/// <seealso cref="ParseNumber" />
-		public static int GetNumericAttribute(XElement element, string name, int defaultValue)
+		public static long GetNumericAttribute(XElement element, string name, int defaultValue)
 		{
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				return defaultValue;
 
-			int result;
+			long result;
 			if (ParseNumber(attribute.Value, out result))
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 			return attribute.Value;
 		}
 
@@ -118,7 +118,7 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
 			if (attribute.Value == "true")
 				return true;
@@ -126,7 +126,7 @@ namespace Blamite.Util
 				return false;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace Blamite.Util
 				return false;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -168,14 +168,14 @@ namespace Blamite.Util
 			XAttribute attribute = element.Attribute(name);
 			if (attribute == null)
 				throw new ArgumentException("A(n) \"" + element.Name + "\" element is missing the required \"" + name +
-				                            "\" attribute.");
+											"\" attribute.");
 
 			EnumType result;
 			if (FindEnumValueLower(attribute.Value, out result))
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -198,7 +198,7 @@ namespace Blamite.Util
 				return result;
 
 			throw new FormatException("A(n) \"" + element.Name + "\" element has an invalid \"" + name + "\" attribute: " +
-			                          attribute.Value);
+									  attribute.Value);
 		}
 
 		/// <summary>
@@ -222,15 +222,14 @@ namespace Blamite.Util
 		private static bool FindEnumValueLower<T>(string name, out T result)
 		{
 			// Use reflection to scan the enum and find the first case-insensitive match
-			string[] names = typeof (T).GetEnumNames();
+			string[] names = Enum.GetNames(typeof(T));
 			for (int i = 0; i < names.Length; i++)
 			{
-				if (names[i].ToLower() == name)
-				{
-					var values = (T[]) typeof (T).GetEnumValues();
-					result = values[i];
-					return true;
-				}
+				if (names[i].ToLower() != name) continue;
+				
+				var values = (T[]) Enum.GetValues(typeof(T));
+				result = values[i];
+				return true;
 			}
 
 			result = default(T);

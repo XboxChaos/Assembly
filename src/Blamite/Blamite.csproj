@@ -20,68 +20,76 @@
     </SccProvider>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG;NET45;X64</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;EXPORT_GPPG;NET45;X64</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET45;X86</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;NET45;X86</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EXPORT_GPPG;NET45;X64</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;EXPORT_GPPG</DefineConstants>
+    <DefineConstants>TRACE;EXPORT_GPPG;NET45;X64</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -95,8 +103,11 @@
   <ItemGroup>
     <Compile Include="Blam\CacheFileLoader.cs" />
     <Compile Include="Blam\EngineType.cs" />
+    <Compile Include="Blam\EffectStorage.cs" />
+    <Compile Include="Blam\IPolyart.cs" />
     <Compile Include="Blam\Localization\CachedLanguagePackLoader.cs" />
     <Compile Include="Blam\Resources\ResourcePageInjector.cs" />
+    <Compile Include="Blam\Resources\ResourceSize.cs" />
     <Compile Include="Blam\Resources\Sounds\ISoundCodec.cs" />
     <Compile Include="Blam\Resources\Sounds\ISoundPermutation.cs" />
     <Compile Include="Blam\Resources\Sounds\ISoundPlayback.cs" />
@@ -106,6 +117,7 @@
     <Compile Include="Blam\Resources\Sounds\ISoundScale.cs" />
     <Compile Include="Blam\Resources\Sounds\SoundReader.cs" />
     <Compile Include="Blam\ISimulationDefinitionTable.cs" />
+    <Compile Include="Blam\SecondGen\SecondGenPointerExpander.cs" />
     <Compile Include="Blam\Shaders\IShader.cs" />
     <Compile Include="Blam\Shaders\IShaderStreamer.cs" />
     <Compile Include="Blam\Localization\DummyLanguagePackLoader.cs" />
@@ -140,15 +152,6 @@
     <Compile Include="Blam\Resources\ResourcePointer.cs" />
     <Compile Include="Blam\Resources\ResourceTable.cs" />
     <Compile Include="Blam\Resources\IZoneSetTable.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ConstantNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\FunctionCallNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\IScriptNodeVisitor.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ScriptDefinitionParam.cs" />
-    <Compile Include="Blam\Scripting\Analysis\GlobalDefinitionNode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\ShiftReduceParserCode.cs" />
-    <Compile Include="Blam\Scripting\Analysis\VariableReferenceNode.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptContext.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObject.cs" />
     <Compile Include="Blam\Scripting\Compiler\ScriptObjectReflexive.cs" />
@@ -177,6 +180,7 @@
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShader.cs" />
     <Compile Include="Blam\ThirdGen\Shaders\ThirdGenShaderStreamer.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenInteropSection.cs" />
+    <Compile Include="Blam\ThirdGen\Structures\ThirdGenPolyart.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenSimulationDefinitionTable.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenZoneSetTable.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenResourceLayoutTable.cs" />
@@ -191,10 +195,17 @@
     <Compile Include="Blam\ThirdGen\Resources\ThirdGenResourceMetaLoader.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenScenarioScriptFile.cs" />
     <Compile Include="Blam\ThirdGen\Structures\ThirdGenZoneSet.cs" />
+    <Compile Include="Blam\ThirdGen\ThirdGenPointerExpander.cs" />
     <Compile Include="Blam\Util\MetaAllocator.cs" />
     <Compile Include="Blam\Util\ReflexiveCache.cs" />
     <Compile Include="Blam\Util\ReflexiveReader.cs" />
     <Compile Include="Blam\Util\ReflexiveWriter.cs" />
+    <Compile Include="Extensions\BitArrayExtensions.cs" />
+    <Compile Include="IO\IPointerExpander.cs" />
+    <Compile Include="Native\ProcessModuleMemoryStream.cs" />
+    <Compile Include="RTE\MCC\MCCRTEProvider.cs" />
+    <Compile Include="Serialization\PokingCollection.cs" />
+    <Compile Include="Serialization\ClassNameCollection.cs" />
     <Compile Include="Serialization\MapInfo\EngineDatabase.cs" />
     <Compile Include="Serialization\MapInfo\EngineDescription.cs" />
     <Compile Include="Serialization\MapInfo\NameIndexCollection.cs" />
@@ -202,6 +213,8 @@
     <Compile Include="Serialization\MapInfo\XMLEngineDatabaseLoader.cs" />
     <Compile Include="Serialization\MapInfo\XMLMultiplayerObjectSetLoader.cs" />
     <Compile Include="Serialization\MapInfo\XMLMaxTeamSetLoader.cs" />
+    <Compile Include="Serialization\Settings\XMLPokingLoader.cs" />
+    <Compile Include="Serialization\Settings\XMLClassNameLoader.cs" />
     <Compile Include="Serialization\Settings\XMLLocaleSymbolLoader.cs" />
     <Compile Include="Serialization\EngineDatabase.cs" />
     <Compile Include="Serialization\EngineDescription.cs" />
@@ -348,24 +361,19 @@
     <Compile Include="IO\ContainerReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Lexer Include="Blam\Scripting\Analysis\LispScriptScanner.lex" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptScanner.cs">
-      <DependentUpon>LispScriptScanner.lex</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Parser Include="Blam\Scripting\Analysis\LispScriptParser.y" />
-    <Compile Include="Blam\Scripting\Analysis\LispScriptParser.cs">
-      <DependentUpon>LispScriptParser.y</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Blam\Scripting\Analysis\Executables\gplex.exe" />
-    <Content Include="Blam\Scripting\Analysis\Executables\gppg.exe" />
     <Content Include="Formats\Engines.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo2Vista\H2V_ClassNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo2Vista\H2V_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo2Vista\Layouts\H2V_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo2Vista\H2V_Poking.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo3Beta\H3B_LocaleSymbols.xml">
@@ -410,6 +418,9 @@
     <Content Include="Formats\Halo4NetTest\H4Net_LocaleSymbols.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo4NetTest\H4Net_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo4NetTest\H4Net_StringIDs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -419,10 +430,16 @@
     <Content Include="Formats\Halo4NetTest\Layouts\H4Net_Layouts_Resources.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\Halo4NetTest\Layouts\H4Net_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Halo4NetTest\Layouts\H4Net_Layouts_Shaders.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\H4_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4\H4_Scripting.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\H4_StringIDs.xml">
@@ -435,6 +452,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\Layouts\H4_Layouts_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\Halo4\Layouts\H4_Layouts_Scenario.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Formats\Halo4\Layouts\H4_Layouts_Shaders.xml">
@@ -503,6 +523,27 @@
     <Content Include="Formats\ReachBeta\Layouts\ReachBeta_Layouts_Shaders.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Formats\ReachMCC\Layouts\ReachMCC_Layouts_Core.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\Layouts\ReachMCC_Layouts_Resources.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\Layouts\ReachMCC_Layouts_Scenario.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\ReachMCC_Scripting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\ReachMCC_LocaleSymbols.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\ReachMCC_Poking.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Formats\ReachMCC\ReachMCC_StringIDs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Formats\Reach\Layouts\Reach_Layouts_Shaders.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -543,21 +584,5 @@
   </Target>
   -->
   <Target Name="TeamCitySetup">
-  </Target>
-  <PropertyGroup>
-    <CompileDependsOn>GenerateLexers;$(CompileDependsOn)</CompileDependsOn>
-    <CompileDependsOn>GenerateParsers;$(CompileDependsOn)</CompileDependsOn>
-  </PropertyGroup>
-  <Target Name="GenerateLexers" Inputs="@(Lexer)" Outputs="@(Lexer -> '%(RelativeDir)%(Filename).cs')">
-    <Exec Command="Blam\Scripting\Analysis\Executables\gplex.exe /out:@(Lexer -> '%(RelativeDir)%(Filename).cs') %(Lexer.Identity)" />
-    <CreateItem Include="%(Lexer.Filename).cs">
-      <Output TaskParameter="Include" ItemName="FileWrites" />
-    </CreateItem>
-  </Target>
-  <Target Name="GenerateParsers" Inputs="@(Parser)" Outputs="@(Parser -> '%(RelativeDir)%(Filename).cs')">
-    <Exec Command="Blam\Scripting\Analysis\Executables\gppg.exe /gplex /out:@(Parser -> '%(RelativeDir)%(Filename).cs') %(Parser.Identity)" />
-    <CreateItem Include="%(Parser.Filename).cs">
-      <Output TaskParameter="Include" ItemName="FileWrites" />
-    </CreateItem>
   </Target>
 </Project>

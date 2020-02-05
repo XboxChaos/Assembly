@@ -177,8 +177,36 @@ namespace Blamite.Plugins
 				case "degree":
 					visitor.VisitFloat32(name, offset, visible, pluginLine);
 					break;
+				case "point2":
+					visitor.VisitPoint2(name, offset, visible, pluginLine);
+					break;
+				case "point3":
+					visitor.VisitPoint3(name, offset, visible, pluginLine);
+					break;
+				case "vector2":
+					visitor.VisitVector2(name, offset, visible, pluginLine);
+					break;
 				case "vector3":
 					visitor.VisitVector3(name, offset, visible, pluginLine);
+					break;
+				case "vector4":
+				case "quaternion":
+					visitor.VisitVector4(name, offset, visible, pluginLine);
+					break;
+				case "degree2":
+					visitor.VisitDegree2(name, offset, visible, pluginLine);
+					break;
+				case "degree3":
+					visitor.VisitDegree3(name, offset, visible, pluginLine);
+					break;
+				case "plane2":
+					visitor.VisitPlane2(name, offset, visible, pluginLine);
+					break;
+				case "plane3":
+					visitor.VisitPlane3(name, offset, visible, pluginLine);
+					break;
+				case "rect16":
+					visitor.VisitRect16(name, offset, visible, pluginLine);
 					break;
 				case "stringid":
 					visitor.VisitStringID(name, offset, visible, pluginLine);
@@ -231,6 +259,11 @@ namespace Blamite.Plugins
 				case "bitmask32":
 				case "bitfield32":
 					if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
+						ReadBits(reader, visitor);
+					break;
+				case "bitmask64":
+				case "bitfield64":
+					if (visitor.EnterBitfield64(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					break;
 
@@ -513,8 +546,11 @@ namespace Blamite.Plugins
 			int align = 4;
 			if (reader.MoveToAttribute("align"))
 				align = ParseInt(reader.Value);
+			bool sort = false;
+			if (reader.MoveToAttribute("sort"))
+				sort = ParseBool(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, sort, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

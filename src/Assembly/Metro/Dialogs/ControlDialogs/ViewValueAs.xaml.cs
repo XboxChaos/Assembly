@@ -23,7 +23,12 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		private readonly IStreamManager _streamManager;
 		private uint _cacheOffset;
 		private MetaReader _reader;
-		private uint _memOffset;
+		private long _memOffset;
+
+		public ICacheFile ParentCache
+		{
+			get { return _cacheFile; }
+		}
 
 		public ViewValueAs(ICacheFile cacheFile, EngineDescription buildInfo, IStreamManager streamManager,
 			IList<MetaField> fields, uint cacheOffset)
@@ -123,19 +128,19 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 
 		private void RefreshMemAddr()
 		{
-			uint offset;
+			long offset;
 
 			// Validate Textbox
 			bool success;
 			if (txtMemOffset.Text.StartsWith("0x") || txtMemOffset.Text.StartsWith("0X"))
 			{
 				// Is Hex
-				success = uint.TryParse(txtMemOffset.Text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset);
+				success = long.TryParse(txtMemOffset.Text.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset);
 			}
 			else
 			{
 				// Not Hex
-				success = uint.TryParse(txtMemOffset.Text, out offset);
+				success = long.TryParse(txtMemOffset.Text, out offset);
 			}
 
 			if (!success || offset < _cacheFile.MetaArea.Offset + _cacheFile.MetaArea.PointerMask ||
@@ -147,7 +152,7 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 					);
 				return;
 			}
-			_cacheOffset = offset - _cacheFile.MetaArea.PointerMask;
+			_cacheOffset = (uint)(offset - _cacheFile.MetaArea.PointerMask);
 
 			//Update the other textbox
 			txtOffset.Text = "0x" + _cacheOffset.ToString("X");

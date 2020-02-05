@@ -117,6 +117,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_propertyNames.Add("X"); // Vectors
 			_propertyNames.Add("Y"); // Vectors
 			_propertyNames.Add("Z"); // Vectors
+			_propertyNames.Add("A"); // MultiValues
+			_propertyNames.Add("B"); // MultiValues
+			_propertyNames.Add("C"); // MultiValues
+			_propertyNames.Add("D"); // MultiValues
 		}
 	}
 }

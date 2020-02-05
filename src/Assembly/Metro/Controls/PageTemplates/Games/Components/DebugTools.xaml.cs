@@ -26,24 +26,24 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 			bool convertingToOffset = string.IsNullOrEmpty(txtCoverterOffset.Text.Trim());
 
 			// Parse
-			uint action;
+			long action;
 			if (convertingToOffset)
 			{
 				action = txtConverterAddress.Text.ToLowerInvariant().StartsWith("0x")
-					? uint.Parse(txtConverterAddress.Text.Remove(0, 2), NumberStyles.HexNumber)
-					: uint.Parse(txtConverterAddress.Text);
+					? long.Parse(txtConverterAddress.Text.Remove(0, 2), NumberStyles.HexNumber)
+					: long.Parse(txtConverterAddress.Text);
 			}
 			else
 			{
 				action = txtCoverterOffset.Text.ToLowerInvariant().StartsWith("0x")
-					? uint.Parse(txtCoverterOffset.Text.Remove(0, 2), NumberStyles.HexNumber)
-					: uint.Parse(txtCoverterOffset.Text);
+					? long.Parse(txtCoverterOffset.Text.Remove(0, 2), NumberStyles.HexNumber)
+					: long.Parse(txtCoverterOffset.Text);
 			}
 
 			// Do calc
 			if (convertingToOffset)
 			{
-				action = (uint) _cache.MetaArea.PointerToOffset(action);
+				action = _cache.MetaArea.PointerToOffset(action);
 			}
 			else
 			{

@@ -2,7 +2,7 @@
 {
 	public class DataRef : RawData
 	{
-		public DataRef(string name, uint offset, string format, uint address, uint dataAddress, string value, int length,
+		public DataRef(string name, uint offset, string format, long address, long dataAddress, string value, int length,
 			uint pluginLine)
 			: base(name, offset, format, address, value, length, pluginLine)
 		{
@@ -10,9 +10,14 @@
 			Format = format;
 		}
 
-		public new string Kind
+		public string Type
 		{
-			get { return "dataref " + Format; }
+			get { return "dataref"; }
+		}
+		
+		public string FullType
+		{
+			get { return Type + " " + Format; }
 		}
 
 		public override void Accept(IMetaFieldVisitor visitor)

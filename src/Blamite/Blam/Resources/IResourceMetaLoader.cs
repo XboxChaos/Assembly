@@ -1,5 +1,4 @@
-﻿using System;
-using Blamite.Blam.Resources.BSP;
+﻿using Blamite.Blam.Resources.BSP;
 using Blamite.Blam.Resources.Models;
 using Blamite.Blam.Resources.Sounds;
 using Blamite.IO;

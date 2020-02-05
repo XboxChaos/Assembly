@@ -78,8 +78,8 @@ namespace Blamite.Blam.Scripting
 			Type = (ScriptExpressionType) values.GetInteger("expression type");
 			_nextIndex = new DatumIndex(values.GetInteger("next expression index"));
 			_stringTableOffset = (int) values.GetIntegerOrDefault("string table offset", 0);
-			Value = values.GetInteger("value");
-			LineNumber = (short) values.GetIntegerOrDefault("source line", 0);
+			Value = (uint)values.GetInteger("value");
+			LineNumber = (short) values.GetIntegerOrDefault("source line", 1);
 
 			stringReader.RequestString(_stringTableOffset);
 		}

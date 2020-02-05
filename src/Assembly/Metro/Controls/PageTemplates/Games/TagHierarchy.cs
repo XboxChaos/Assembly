@@ -49,6 +49,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private string _description = string.Empty;
 		private ITagClass _rawClass;
 		private string _tagClassMagic = string.Empty;
+		private TagEntry _null = new TagEntry(null, null, "(null)");
 
 		public TagClass(ITagClass baseClass, string name, string description)
 		{
@@ -98,6 +99,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public TagEntry NullTag
+		{
+			get { return _null; }
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)
@@ -115,12 +121,33 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private bool _isBookmark;
 		private ITag _rawTag;
 		private string _tagFileName = string.Empty;
+		private bool _isNull;
+
+		private string _tagToolTip = null;
 
 		public TagEntry(ITag baseTag, string className, string name)
 		{
 			RawTag = baseTag;
 			ClassName = className;
 			TagFileName = name;
+
+			if (baseTag != null)
+			{
+				if (baseTag.MetaLocation == null)
+				{
+					_isNull = true;
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nThis tag refers to a shared cache.\r\nIt cannot be modified directly, only referenced.", _tagFileName, baseTag.Index);
+				}
+				else
+				{
+					TagToolTip = string.Format("{0}\r\nDatum Index: {1}\r\nMemory Address: 0x{2:X8}\r\nFile Offset: 0x{3:X}", _tagFileName, baseTag.Index, baseTag.MetaLocation.AsPointer(), baseTag.MetaLocation.AsOffset());
+				}
+			}
+		}
+
+		public bool IsNull
+		{
+			get { return _isNull; }
 		}
 
 		public bool IsBookmark
@@ -153,6 +180,16 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public string TagToolTip
+		{
+			get { return _tagToolTip; }
+			internal set
+			{
+				_tagToolTip = value;
+				NotifyPropertyChanged("TagToolTip");
+			}
+		}
+
 		public ITag RawTag
 		{
 			get { return _rawTag; }
@@ -163,6 +200,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		public override string ToString()
+		{
+			return TagFileName;
+		}
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void NotifyPropertyChanged(String info)

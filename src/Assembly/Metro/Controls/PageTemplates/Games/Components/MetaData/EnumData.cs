@@ -15,7 +15,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private EnumType _type;
 		private int _value;
 
-		public EnumData(string name, uint offset, uint address, EnumType type, int value, uint pluginLine)
+		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -94,7 +94,19 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 		public string Name
 		{
-			get { return _name; }
+			get
+			{
+				switch (App.AssemblyStorage.AssemblySettings.PluginsEnumPrefix)
+				{
+					default:
+					case Helpers.Settings.EnumPrefix.None:
+						return _name;
+					case Helpers.Settings.EnumPrefix.Decimal:
+						return _value.ToString() + ". " + _name;
+					case Helpers.Settings.EnumPrefix.Hexidecimal:
+						return _value.ToString("X") + ". " + _name;
+				}
+			}
 			set
 			{
 				_name = value;
@@ -110,11 +122,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_value = value;
 				NotifyPropertyChanged("Value");
 			}
-		}
-		
-		public bool ShowValue
-		{
-		get { return App.AssemblyStorage.AssemblySettings.PluginsShowEnumIndex; }
 		}
 	}
 }

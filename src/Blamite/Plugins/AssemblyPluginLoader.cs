@@ -139,21 +139,45 @@ namespace Blamite.Plugins
 				case "undefined":
 					visitor.VisitUndefined(name, offset, visible, pluginLine);
 					break;
+				case "point2":
+					visitor.VisitPoint2(name, offset, visible, pluginLine);
+					break;
+				case "point3":
+					visitor.VisitPoint3(name, offset, visible, pluginLine);
+					break;
+				case "vector2":
+					visitor.VisitVector2(name, offset, visible, pluginLine);
+					break;
 				case "vector3":
 					visitor.VisitVector3(name, offset, visible, pluginLine);
 					break;
+				case "vector4":
+				case "quaternion":
+					visitor.VisitVector4(name, offset, visible, pluginLine);
+					break;
 				case "degree":
 					visitor.VisitDegree(name, offset, visible, pluginLine);
+					break;
+				case "degree2":
+					visitor.VisitDegree2(name, offset, visible, pluginLine);
+					break;
+				case "degree3":
+					visitor.VisitDegree3(name, offset, visible, pluginLine);
+					break;
+				case "plane2":
+					visitor.VisitPlane2(name, offset, visible, pluginLine);
+					break;
+				case "plane3":
+					visitor.VisitPlane3(name, offset, visible, pluginLine);
+					break;
+				case "rect16":
+					visitor.VisitRect16(name, offset, visible, pluginLine);
 					break;
 				case "stringid":
 					visitor.VisitStringID(name, offset, visible, pluginLine);
 					break;
 				case "tagref":
 					ReadTagRef(reader, name, offset, visible, visitor, pluginLine);
-					break;
-
-				case "range":
-					ReadRange(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
 				case "ascii":
@@ -178,6 +202,12 @@ namespace Blamite.Plugins
 					break;
 				case "bitfield32":
 					if (visitor.EnterBitfield32(name, offset, visible, pluginLine))
+						ReadBits(reader, visitor);
+					else
+						reader.Skip();
+					break;
+				case "bitfield64":
+					if (visitor.EnterBitfield64(name, offset, visible, pluginLine))
 						ReadBits(reader, visitor);
 					else
 						reader.Skip();
@@ -241,6 +271,16 @@ namespace Blamite.Plugins
 					ReadUnicList(reader, name, offset, visible, visitor, pluginLine);
 					break;
 
+				case "range16":
+					visitor.VisitRangeUInt16(name, offset, visible, pluginLine);
+					break;
+				case "rangef":
+					visitor.VisitRangeFloat32(name, offset, visible, pluginLine);
+					break;
+				case "ranged":
+					visitor.VisitRangeDegree(name, offset, visible, pluginLine);
+					break;
+
 				default:
 					throw new ArgumentException("Unknown element \"" + elementName + "\"." + PositionInfo(reader));
 			}
@@ -286,29 +326,6 @@ namespace Blamite.Plugins
 				align = ParseInt(reader.Value);
 
 			visitor.VisitDataReference(name, offset, format, visible, align, pluginLine);
-		}
-
-		private static void ReadRange(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
-			uint pluginLine)
-		{
-			double min = 0.0;
-			double max = 0.0;
-			double largeChange = 0.0;
-			double smallChange = 0.0;
-			string type = "int32";
-
-			if (reader.MoveToAttribute("min"))
-				min = double.Parse(reader.Value);
-			if (reader.MoveToAttribute("max"))
-				max = double.Parse(reader.Value);
-			if (reader.MoveToAttribute("smallStep"))
-				smallChange = double.Parse(reader.Value);
-			if (reader.MoveToAttribute("largeStep"))
-				largeChange = double.Parse(reader.Value);
-			if (reader.MoveToAttribute("type"))
-				type = reader.Value.ToLower();
-
-			visitor.VisitRange(name, offset, visible, type, min, max, smallChange, largeChange, pluginLine);
 		}
 
 		private static void ReadTagRef(XmlReader reader, string name, uint offset, bool visible, IPluginVisitor visitor,
@@ -419,8 +436,11 @@ namespace Blamite.Plugins
 			int align = 4;
 			if (reader.MoveToAttribute("align"))
 				align = ParseInt(reader.Value);
+			bool sort = false;
+			if (reader.MoveToAttribute("sort"))
+				sort = ParseBool(reader.Value);
 
-			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, pluginLine))
+			if (visitor.EnterReflexive(name, offset, visible, entrySize, align, sort, pluginLine))
 			{
 				reader.MoveToElement();
 				XmlReader subtree = reader.ReadSubtree();

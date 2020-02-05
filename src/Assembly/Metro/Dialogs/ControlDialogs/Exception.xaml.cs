@@ -32,19 +32,5 @@ namespace Assembly.Metro.Dialogs.ControlDialogs
 		{
 			Application.Current.Shutdown();
 		}
-
-		private void btnReportToGithub_Click(object sender, RoutedEventArgs e)
-		{
-			string title = HttpUtility.HtmlEncode(_exception.Message);
-			string body = HttpUtility.HtmlEncode(_exception.ToString());
-			const string labels = "bug";
-
-			string githubIssueCreate =
-				string.Format("https://github.com/XboxChaos/Assembly/issues/new?title={0}&body={1}&labels={2}",
-					title, body, labels);
-
-			btnReportToGithub.IsEnabled = false;
-			Process.Start(githubIssueCreate);
-		}
 	}
 }

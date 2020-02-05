@@ -65,25 +65,70 @@ namespace Assembly.Helpers.Plugins
 				AddValue(new CommentData(title, text, pluginLine));
 		}
 
+		public void VisitPoint2(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector2Data(name, offset, 0, "point2", 0, 0, pluginLine));
+		}
+
+		public void VisitPoint3(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector3Data(name, offset, 0, "point3", 0, 0, 0, pluginLine));
+		}
+
+		public void VisitVector2(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector2Data(name, offset, 0, "vector2", 0, 0, pluginLine));
+		}
+
 		public void VisitVector3(string name, uint offset, bool visible, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
-				AddValue(new VectorData(name, offset, 0, 0, 0, 0, pluginLine));
+				AddValue(new Vector3Data(name, offset, 0, "vector3", 0, 0, 0, pluginLine));
+		}
+
+		public void VisitVector4(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector4Data(name, offset, 0, "quaternion", 0, 0, 0, 0, pluginLine));
+		}
+
+		public void VisitDegree2(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Degree2Data(name, offset, 0, "degree2", 0, 0, pluginLine));
+		}
+
+		public void VisitDegree3(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Degree3Data(name, offset, 0, "degree3", 0, 0, 0, pluginLine));
+		}
+
+		public void VisitPlane2(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector3Data(name, offset, 0, "plane2", 0, 0, 0, pluginLine));
+		}
+
+		public void VisitPlane3(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new Vector4Data(name, offset, 0, "plane3", 0, 0, 0, 0, pluginLine));
+		}
+
+		public void VisitRect16(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new RectangleData(name, offset, 0, "rectangle16", 0, 0, 0, 0, pluginLine));
 		}
 
 		public void VisitDegree(string name, uint offset, bool visible, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 				AddValue(new DegreeData(name, offset, 0, 0, pluginLine));
-		}
-
-		public void VisitRange(string name, uint offset, bool visible, string type, double minval, double maxval,
-			double smallchange, double largechange, uint pluginLine)
-		{
-			/*TrackBar metaComponents = new TrackBar();
-            metaComponents.LoadValues(name, type, minval, maxval, smallchange, largechange);
-
-            AddUIElement(metaComponents, visible);*/
 		}
 
 		public void VisitColorInt(string name, uint offset, bool visible, string format, uint pluginLine)
@@ -156,6 +201,28 @@ namespace Assembly.Helpers.Plugins
 			}
 		}
 
+		#region Range
+
+		public void VisitRangeUInt16(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new RangeUint16Data(name, offset, 0, "range16", 0, 0, pluginLine));
+		}
+
+		public void VisitRangeFloat32(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new RangeFloat32Data(name, offset, 0, "rangeF", 0, 0, pluginLine));
+		}
+
+		public void VisitRangeDegree(string name, uint offset, bool visible, uint pluginLine)
+		{
+			if (visible || _showInvisibles)
+				AddValue(new RangeDegreeData(name, offset, 0, "rangeD", 0, 0, pluginLine));
+		}
+
+		#endregion
+
 		#region Bitfield
 
 		public bool EnterBitfield8(string name, uint offset, bool visible, uint pluginLine)
@@ -171,6 +238,11 @@ namespace Assembly.Helpers.Plugins
 		public bool EnterBitfield32(string name, uint offset, bool visible, uint pluginLine)
 		{
 			return EnterBitfield(BitfieldType.Bitfield32, name, offset, visible, pluginLine);
+		}
+
+		public bool EnterBitfield64(string name, uint offset, bool visible, uint pluginLine)
+		{
+			return EnterBitfield(BitfieldType.Bitfield64, name, offset, visible, pluginLine);
 		}
 
 		public void VisitBit(string name, int index)
@@ -250,11 +322,11 @@ namespace Assembly.Helpers.Plugins
 
 		#region Reflexive
 
-		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, uint pluginLine)
+		public bool EnterReflexive(string name, uint offset, bool visible, uint entrySize, int align, bool sort, uint pluginLine)
 		{
 			if (visible || _showInvisibles)
 			{
-				var data = new ReflexiveData(name, offset, 0, entrySize, align, pluginLine, _metaArea);
+				var data = new ReflexiveData(name, offset, 0, entrySize, align, sort, pluginLine, _metaArea);
 				AddValue(data);
 
 				_reflexives.Add(data);

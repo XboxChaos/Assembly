@@ -92,9 +92,29 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\DLLs\ICSharpCode.AvalonEdit.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <LibZ>True</LibZ>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing">
@@ -103,13 +123,17 @@
     <Reference Include="Microsoft.Expression.Interactions">
       <LibZ>True</LibZ>
     </Reference>
+    <Reference Include="Mono.Nat, Version=1.2.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Nat.1.2.24.0\lib\net40\Mono.Nat.dll</HintPath>
+      <LibZ>True</LibZ>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
       <LibZ>True</LibZ>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
@@ -183,6 +207,19 @@
     <Compile Include="Helpers\Native\ShellChanges.cs" />
     <Compile Include="Helpers\Models\ObjExporter.cs" />
     <Compile Include="Helpers\Net\HttpMethod.cs" />
+    <Compile Include="Helpers\Net\Sockets\ClientPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\CommandSerialization.cs" />
+    <Compile Include="Helpers\Net\Sockets\IPokeCommandHandler.cs" />
+    <Compile Include="Helpers\Net\Sockets\IPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\MemoryCommand.cs" />
+    <Compile Include="Helpers\Net\Sockets\NetworkPokeClient.cs" />
+    <Compile Include="Helpers\Net\Sockets\NetworkPokeServer.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommand.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommandDispatcher.cs" />
+    <Compile Include="Helpers\Net\Sockets\PokeCommandType.cs" />
+    <Compile Include="Helpers\Net\Sockets\ServerPokeSessionManager.cs" />
+    <Compile Include="Helpers\Net\Sockets\SocketRTEProvider.cs" />
+    <Compile Include="Helpers\Net\Sockets\SocketStream.cs" />
     <Compile Include="Helpers\Plugins\ThirdGenPluginVisitor.cs" />
     <Compile Include="Helpers\Net\Imgur.cs" />
     <Compile Include="Helpers\Settings.cs" />
@@ -233,6 +270,14 @@
     <Compile Include="Metro\Controls\AvalonDockMetro\Vectors\VTabGroup.xaml.cs">
       <DependentUpon>VTabGroup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\MultiValue.xaml.cs">
+      <DependentUpon>MultiValue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\MultiData.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\RangeNumberData.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\Games\Components\SIDTools.xaml.cs">
+      <DependentUpon>SIDTools.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Controls\PageTemplates\ImgurHistoryPage.xaml.cs">
       <DependentUpon>ImgurHistoryPage.xaml</DependentUpon>
     </Compile>
@@ -275,14 +320,10 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\StringIDValue.xaml.cs">
       <DependentUpon>StringIDValue.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\VectorValue.xaml.cs">
-      <DependentUpon>VectorValue.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\BitfieldData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\ColourData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\CommentData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\DataRef.cs" />
-    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\DegreeData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\EnumData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\FieldChangeSet.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\FieldChangeTracker.cs" />
@@ -308,7 +349,6 @@
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\WrappedReflexiveEntry.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\StringData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\TagRefData.cs" />
-    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\VectorData.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaData\WidthCalculator.cs" />
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\RssPage.xaml.cs">
       <DependentUpon>RssPage.xaml</DependentUpon>
@@ -330,8 +370,14 @@
       <DependentUpon>HaloPluginGenerator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\TagHierarchy.cs" />
+    <Compile Include="Metro\Controls\PageTemplates\MapNames.xaml.cs">
+      <DependentUpon>MapNames.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Controls\PageTemplates\MemoryManager.xaml.cs">
       <DependentUpon>MemoryManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Controls\PageTemplates\NetworkPoking.xaml.cs">
+      <DependentUpon>NetworkPoking.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\PatchControl.xaml.cs">
       <DependentUpon>PatchControl.xaml</DependentUpon>
@@ -382,6 +428,9 @@
     <Compile Include="Metro\Controls\XamlStyleSandbox.xaml.cs">
       <DependentUpon>XamlStyleSandbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Metro\Dialogs\ControlDialogs\DupeSettings.xaml.cs">
+      <DependentUpon>DupeSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\MessageBoxCode.xaml.cs">
       <DependentUpon>MessageBoxCode.xaml</DependentUpon>
     </Compile>
@@ -402,6 +451,12 @@
     </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\TagBookmarkSaver.xaml.cs">
       <DependentUpon>TagBookmarkSaver.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Dialogs\ControlDialogs\InjectSettings.xaml.cs">
+      <DependentUpon>InjectSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Metro\Dialogs\ControlDialogs\TagSearchBox.xaml.cs">
+      <DependentUpon>TagSearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Dialogs\ControlDialogs\ViewValueAs.xaml.cs">
       <DependentUpon>ViewValueAs.xaml</DependentUpon>
@@ -442,9 +497,6 @@
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\TagValue.xaml.cs">
       <DependentUpon>TagValue.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\RangeValue.xaml.cs">
-      <DependentUpon>RangeValue.xaml</DependentUpon>
     </Compile>
     <Compile Include="Metro\Controls\PageTemplates\Games\Components\MetaContainer.xaml.cs">
       <DependentUpon>MetaContainer.xaml</DependentUpon>
@@ -682,6 +734,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\MultiValue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Controls\PageTemplates\Games\Components\SIDTools.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Metro\Controls\PageTemplates\ImgurHistoryPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -762,14 +822,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\RangeValue.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaComponents\VectorValue.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Metro\Controls\PageTemplates\Games\Components\MetaContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -830,7 +882,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Metro\Controls\PageTemplates\MapNames.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Metro\Controls\PageTemplates\MemoryManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Metro\Controls\PageTemplates\NetworkPoking.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -926,6 +986,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Metro\Dialogs\ControlDialogs\DupeSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Metro\Dialogs\ControlDialogs\MessageBoxCode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -967,6 +1031,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Metro\Dialogs\ControlDialogs\TagBookmarkSaver.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Metro\Dialogs\ControlDialogs\InjectSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Metro\Dialogs\ControlDialogs\TagSearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1020,16 +1092,16 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SyntaxHighlighting\XMLPurple.xshd" />
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <LibZ>True</LibZ>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
       <LibZ>True</LibZ>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
       <LibZ>True</LibZ>
     </Reference>
     <Resource Include="Helpers\0xabad1dea\GodOfAllThingsHolyAndModdy.png" />
@@ -4208,6 +4280,171 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\ReachBeta\zone.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\bbcr.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\beam.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\bipd.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\bitm.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\cmps.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\cntl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\coll.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\crea.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\decs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\effe.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\glps.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\glvs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\gpix.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\hcfd.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\hlmt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\hsc_.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\iimz.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\impo.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\jmad.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\Lbsp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\ltvl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\matg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\mode.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\phmo.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\pixl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\play.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\pmdf.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\prt3.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rasg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmcs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmd.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmfl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmfs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmfu.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmgl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmhg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmmx.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmsh.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmss.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmt2.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmtr.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\rmw.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\sadt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\sbsp.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\scnr.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\sddt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\sLdT.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\smdt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\snd!.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\snmm.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\ugh!.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\vehi.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\vtsh.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\wigl.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plugins\ReachMCC\zone.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\Reach\achi.xml">

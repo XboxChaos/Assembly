@@ -6,6 +6,19 @@
 	public class ResourcePointer
 	{
 		/// <summary>
+		///     Returns all 3 ResourcePage objects in an array.
+		/// </summary>
+		public ResourcePage[] PagesToArray()
+		{
+			return new ResourcePage[]
+			{
+				PrimaryPage,
+				SecondaryPage,
+				TertiaryPage
+			};
+		}
+
+		/// <summary>
 		///     Gets or sets the primary resource page that the resource belongs to. Can be null.
 		/// </summary>
 		public ResourcePage PrimaryPage { get; set; }
@@ -16,9 +29,9 @@
 		public int PrimaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets an unknown reflexive index related to the primary page.
+		///     Gets or sets a size reflexive index for the primary page.
 		/// </summary>
-		public int PrimaryUnknown { get; set; }
+		public ResourceSize PrimarySize { get; set; }
 
 		/// <summary>
 		///     Gets or sets the secondary resource page that the resource belongs to. Can be null.
@@ -31,8 +44,24 @@
 		public int SecondaryOffset { get; set; }
 
 		/// <summary>
-		///     Gets or sets an unknown reflexive index related to the secondary page.
+		///     Gets or sets a size reflexive index for the secondary page.
 		/// </summary>
-		public int SecondaryUnknown { get; set; }
+		public ResourceSize SecondarySize { get; set; }
+
+
+		/// <summary>
+		///     Gets or sets the secondary resource page that the resource belongs to. Can be null.
+		/// </summary>
+		public ResourcePage TertiaryPage { get; set; }
+
+		/// <summary>
+		///     Gets or sets the offset of the resource data within the secondary page. Can be -1.
+		/// </summary>
+		public int TertiaryOffset { get; set; }
+
+		/// <summary>
+		///     Gets or sets a size reflexive index for the secondary page.
+		/// </summary>
+		public ResourceSize TertiarySize { get; set; }
 	}
 }

@@ -14,74 +14,19 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="MetaComponents/ComponentDictionary.xaml" />
 			</ResourceDictionary.MergedDictionaries>
-			<Style x:Key="optionsToggleButton" TargetType="{x:Type ToggleButton}">
-				<Setter Property="Foreground" Value="#FF999999" />
-				<Setter Property="Background" Value="#FF222222" />
-				<Setter Property="BorderBrush" Value="#FF616161" />
-				<Setter Property="BorderThickness" Value="1" />
-				<Setter Property="Padding" Value="0,0,0,0" />
-				<Setter Property="Height" Value="22" />
-				<Setter Property="FontSize" Value="12" />
-				<Setter Property="HorizontalContentAlignment" Value="Center"/>
-				<Setter Property="VerticalContentAlignment" Value="Center"/>
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="{x:Type ToggleButton}">
-							<Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
-								Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-								<ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
-									ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-									Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-							</Border>
-							<ControlTemplate.Triggers>
-								<!-- Checked Button -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsChecked" Value="true" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#333333" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Mouse Over -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsMouseOver" Value="true" SourceName="border" />
-										<Condition Property="IsPressed" Value="false" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#393939" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Mouse Pressed -->
-								<MultiTrigger>
-									<MultiTrigger.Conditions>
-										<Condition Property="IsPressed" Value="true" />
-										<Condition Property="IsEnabled" Value="true" />
-									</MultiTrigger.Conditions>
-									<Setter Property="Background" Value="#393939" TargetName="border" />
-									<Setter Property="BorderBrush" Value="{DynamicResource ExtryzeAccentBrushSecondary}" TargetName="border" />
-								</MultiTrigger>
-
-								<!-- Disabled -->
-								<Trigger Property="IsEnabled" Value="false">
-									<Setter Property="Background" Value="#FF575757" TargetName="border" />
-									<Setter Property="BorderBrush" Value="#FF8B8B8B" TargetName="border" />
-								</Trigger>
-							</ControlTemplate.Triggers>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
 		</ResourceDictionary>
 	</UserControl.Resources>
     <UserControl.CommandBindings>
         <CommandBinding Command="{x:Static MetaComps:MetaChunk.ReallocateCommand}"
                         CanExecute="ReallocateCommand_CanExecute"
                         Executed="ReallocateCommand_Executed"/>
+		<CommandBinding Command="{x:Static MetaComps:MetaChunk.IsolateCommand}"
+                        CanExecute="IsolateBlockCommand_CanExecute"
+                        Executed="IsolateBlockCommand_Executed"/>
+
+        <CommandBinding Command="{x:Static MetaComps:RawBlock.IsolateCommand}"
+                        CanExecute="IsolateDataRefCommand_CanExecute"
+                        Executed="IsolateDataRefCommand_Executed"/>
     </UserControl.CommandBindings>
 	<Grid>
 		<Grid Name="gridSearch" Height="30" VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -89,7 +34,7 @@
 				<DockPanel VerticalAlignment="Center">
 					<TextBlock Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" Margin="10,0,0,0" />
 					<TextBox Name="txtSearch" Margin="10,0,0,0" Width="300" Padding="0,0,13,0" TextChanged="txtSearch_TextChanged_1" />
-					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Height="20" Width="12" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
+					<Button Name="btnResetSearch" Margin="-14,0,0,0" Padding="0,0,0,4" Height="20" Width="14" Content="x" BorderThickness="0" Background="Transparent" Click="btnResetSearch_Click_1"
 					        Visibility="Hidden" />
 					<Button Name="btnPreviousResult" Margin="5,0,0,0" Content="Previous" Width="64" Click="btnPreviousResult_Click_1"
 					        IsEnabled="False" />
@@ -142,9 +87,9 @@
 												                CanExecute="GoToPlugin_CanExecute"
 												                Executed="GoToPlugin_Executed" />
 											</ContextMenu.CommandBindings>
-											<MenuItem Header="View Value As..." Foreground="White"
+											<MenuItem Header="View Value As..."
 											          Command="{x:Static local:MetaEditor.ViewValueAsCommand}" CommandParameter="{Binding}" />
-											<MenuItem Header="Go to plugin line..." Foreground="White" Command="{x:Static local:MetaEditor.GoToPlugin}"
+											<MenuItem Header="Go to plugin line..." Command="{x:Static local:MetaEditor.GoToPlugin}"
 											          CommandParameter="{Binding}" />
 										</ContextMenu>
 									</Grid.ContextMenu>
@@ -213,7 +158,7 @@
 						<Button x:Name="btnPluginRevisionViewer"
 						        ToolTip="View who researched the plugin and what they did. (Ctrl + Shift + R)" Content="Revisions"
 						        Width="70" Margin="5,0,0,0" Click="btnPluginRevisionViewer_Click" />
-						<ToggleButton x:Name="btnOptions" Width="75" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource optionsToggleButton}">
+						<ToggleButton x:Name="btnOptions" Width="75" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}">
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="50"/>
@@ -229,8 +174,18 @@
 								<StackPanel>
 									<MenuItem x:Name="cbShowInvisibles" Header="Show Invisibles" IsCheckable="True" Foreground="White" Checked="cbShowInvisibles_Altered" Unchecked="cbShowInvisibles_Altered" ToolTip="Toggles display of plugin elements that aren't visible by default. (Auto Reload)"/>
 									<MenuItem x:Name="cbShowComments" Header="Show Comments" IsCheckable="True" Foreground="White" Checked="cbShowComments_Altered" Unchecked="cbShowComments_Altered" ToolTip="Toggles display of comment plugin elements. (Auto Reload)"/>
-									<MenuItem x:Name="cbShowEnumIndex" Header="Show Enumerator Indices" IsCheckable="True" Foreground="White" Checked="cbShowEnumIndex_Altered" Unchecked="cbShowEnumIndex_Altered" ToolTip="Toggles display of enum option indexes. (Manual Reload)" />
 									<MenuItem x:Name="cbShowInformation" Header="Show Block Information" IsCheckable="True" Foreground="White" Checked="cbShowInformation_Altered" Unchecked="cbShowInformation_Altered" ToolTip="Toggles default display of block information. (Manual Reload)" />
+									<Separator/>
+
+									<StackPanel ToolTip="Changes how enum indices are displayed. (Manual Reload)">
+										<TextBlock Text="Enumerator Indices:" VerticalAlignment="Center" Foreground="#CCC" Margin="30,0,4,0" Style="{DynamicResource GenericTextblock}"/>
+
+										<ComboBox x:Name="cbEnumPrefix" Margin="40,4,4,4" Grid.Column="1" SelectionChanged="cbEnumPrefix_SelectionChanged">
+											<ComboBoxItem Content="Don't Display" />
+											<ComboBoxItem Content="Display As Decimal" />
+											<ComboBoxItem Content="Display As Hexidecimal" />
+										</ComboBox>
+									</StackPanel>
 								</StackPanel>
 							</Border>
 						</Popup>

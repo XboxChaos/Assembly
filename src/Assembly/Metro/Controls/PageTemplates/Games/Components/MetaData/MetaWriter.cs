@@ -24,14 +24,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly StructureLayout _tagRefLayout;
 		private readonly SaveType _type;
 		private readonly IWriter _writer;
-		private uint _baseOffset;
+		private long _baseOffset;
 
 		private bool _pokeTemplateFields = true;
 
 		/// <summary>
 		///     Save meta to the Blam Cache File
 		/// </summary>
-		public MetaWriter(IWriter writer, uint baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
+		public MetaWriter(IWriter writer, long baseOffset, ICacheFile cache, EngineDescription buildInfo, SaveType type,
 			FieldChangeSet changes, Trie stringIdTrie)
 		{
 			_writer = writer;
@@ -61,7 +61,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 					break;
 
 				case BitfieldType.Bitfield32:
-					_writer.WriteUInt32(field.Value);
+					_writer.WriteUInt32((uint)field.Value);
+					break;
+
+				case BitfieldType.Bitfield64:
+					_writer.WriteUInt64(field.Value);
 					break;
 			}
 		}
@@ -198,8 +202,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public void VisitReflexive(ReflexiveData field)
 		{
 			var values = new StructureValueCollection();
-			values.SetInteger("entry count", (uint) field.Length);
-			values.SetInteger("pointer", field.FirstEntryAddress);
+
+			values.SetInteger("entry count", _cache.MetaArea.ContainsBlockPointer(field.FirstEntryAddress, (int)(field.Length * field.EntrySize)) ? (uint)field.Length : 0);
+
+			uint cont = _cache.PointerExpander.Contract(field.FirstEntryAddress);
+
+			values.SetInteger("pointer", cont);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _reflexiveLayout, _writer);
@@ -254,7 +262,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var values = new StructureValueCollection();
 			values.SetInteger("size", (uint) field.Length);
-			values.SetInteger("pointer", field.DataAddress);
+
+			uint cont = _cache.PointerExpander.Contract(field.DataAddress);
+
+			values.SetInteger("pointer", cont);
 
 			SeekToOffset(field.Offset);
 			StructureWriter.WriteStructure(values, _dataRefLayout, _writer);
@@ -262,9 +273,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			if (field.DataAddress == 0xFFFFFFFF || field.DataAddress <= 0) return;
 
 			// Go to the data location
-			uint offset = field.DataAddress;
+			long offset = field.DataAddress;
 			if (_type == SaveType.File)
-				offset = (uint) _cache.MetaArea.PointerToOffset(offset);
+				offset = _cache.MetaArea.PointerToOffset(offset);
 			_writer.SeekTo(offset);
 
 			// Write its data
@@ -316,12 +327,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
 			SeekToOffset(field.Offset);
-			_writer.WriteFloat(field.X);
-			_writer.WriteFloat(field.Y);
-			_writer.WriteFloat(field.Z);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+			_writer.WriteFloat(field.D);
 		}
 
 		public void VisitDegree(DegreeData field)
@@ -330,9 +372,71 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			_writer.WriteFloat(field.Radian);
 		}
 
+		public void VisitDegree2(Degree2Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
+			_writer.WriteFloat(field.RadianC);
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+			_writer.WriteFloat(field.C);
+			_writer.WriteFloat(field.D);
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteInt16(field.A);
+			_writer.WriteInt16(field.B);
+			_writer.WriteInt16(field.C);
+			_writer.WriteInt16(field.D);
+		}
+
 		public void VisitShaderRef(ShaderRef field)
 		{
 			// Don't do anything
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteUInt16(field.A);
+			_writer.WriteUInt16(field.B);
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.A);
+			_writer.WriteFloat(field.B);
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			SeekToOffset(field.Offset);
+			_writer.WriteFloat(field.RadianA);
+			_writer.WriteFloat(field.RadianB);
 		}
 
 		public void WriteFields(IList<MetaField> fields)
@@ -357,12 +461,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				return;
 
 			// Get the base address and convert it to an offset if we're writing to the file
-			uint newBaseOffset = field.FirstEntryAddress;
+			long newBaseOffset = field.FirstEntryAddress;
 			if (_type == SaveType.File)
-				newBaseOffset = (uint) _cache.MetaArea.PointerToOffset(newBaseOffset);
+				newBaseOffset = _cache.MetaArea.PointerToOffset(newBaseOffset);
 
 			// Save the old base offset and set the base offset to the reflexive's base
-			uint oldBaseOffset = _baseOffset;
+			long oldBaseOffset = _baseOffset;
 			_baseOffset = newBaseOffset;
 
 			// Write each page

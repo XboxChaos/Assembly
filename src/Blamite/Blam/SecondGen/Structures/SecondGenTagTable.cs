@@ -46,19 +46,19 @@ namespace Blamite.Blam.SecondGen.Structures
 		private void Load(IReader reader, StructureValueCollection headerValues, FileSegmentGroup metaArea,
 			EngineDescription buildInfo)
 		{
-			if (headerValues.GetInteger("magic") != CharConstant.FromString("tags"))
+			if ((uint)headerValues.GetInteger("magic") != CharConstant.FromString("tags"))
 				throw new ArgumentException("Invalid index table header magic");
 
 			// Classes
 			var numClasses = (int) headerValues.GetInteger("number of classes");
-			var classTableOffset = (uint) (metaArea.Offset + headerValues.GetInteger("class table offset"));
+			var classTableOffset = (uint) (metaArea.Offset + (uint)headerValues.GetInteger("class table offset"));
 			// Offset is relative to the header
 			_classes = ReadClasses(reader, classTableOffset, numClasses, buildInfo);
 			_classesById = BuildClassLookup(_classes);
 
 			// Tags
 			var numTags = (int) headerValues.GetInteger("number of tags");
-			var tagTableOffset = (uint) (metaArea.Offset + headerValues.GetInteger("tag table offset"));
+			var tagTableOffset = (uint) (metaArea.Offset + (uint)headerValues.GetInteger("tag table offset"));
 			// Offset is relative to the header
 			_tags = ReadTags(reader, tagTableOffset, numTags, buildInfo, metaArea);
 		}

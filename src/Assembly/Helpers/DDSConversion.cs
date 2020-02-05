@@ -89,7 +89,7 @@ namespace Assembly.Helpers
 			es.SeekTo(0x80);
 			int size = width*height*4;
 			byte[] buffer = es.ReadBlock(size);
-			es.Close();
+			es.Dispose();
 
 			Bitmap bitmap = null;
 

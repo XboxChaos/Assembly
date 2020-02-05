@@ -11,8 +11,7 @@
              xmlns:meta="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents"
              mc:Ignorable="d"
              Background="#28282b"
-             d:DesignWidth="1000" d:DesignHeight="600"
-			 Loaded="UserControl_Loaded" Focusable="True">
+             d:DesignWidth="1000" d:DesignHeight="600">
 	<UserControl.Resources>
 		<Converters:TagDescriptionCleanup x:Key="IValueTagDescriptionCleanup" />
 		<Converters:TagBookmarkVisibility x:Key="IValueTagBookmarkVisibility" />
@@ -28,6 +27,25 @@
 				           Text="{Binding Path=Header.Content}" />
 			</Border>
 		</DataTemplate>
+
+		<Style x:Key="batchVisibility" TargetType="{x:Type FrameworkElement}">
+			<Setter Property="Visibility" Value="Collapsed" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding HasItems, ElementName=batchTagList}" Value="True">
+					<Setter Property="Visibility" Value="Visible" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="batchSizer" TargetType="{x:Type MetroTreeView:MetroTreeView}">
+			<Setter Property="Grid.RowSpan" Value="2" />
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding HasItems, ElementName=batchTagList}" Value="True">
+					<Setter Property="Grid.RowSpan" Value="1" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
 	</UserControl.Resources>
 
 	<UserControl.CommandBindings>
@@ -45,7 +63,7 @@
 			<Grid x:Name="sideBar" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			      Background="#2d2d30">
 				<TabControl x:Name="mapInfoSelection" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Margin="0">
-					<TabItem Header="Map Information" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15"
+					<TabItem Header="Header" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
 					         VerticalAlignment="Bottom">
 						<Grid>
 							<TextBlock x:Name="lblMapName" FontFamily="{DynamicResource MetroFontLight}" Text="" Foreground="White"
@@ -105,61 +123,102 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabTags" Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15"
+					<TabItem x:Name="tabTags" Header="Tags" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
 					         VerticalAlignment="Bottom">
 						<Grid Margin="15,25,15,5">
 							<DockPanel>
-								<Expander DockPanel.Dock="Top" IsExpanded="False" Header="Options" Padding="2">
-									<StackPanel Grid.Row="2" Margin="15,4,0,4">
-										<CheckBox x:Name="cbShowEmptyTags" Margin="0,0,0,5" Content="Show unused classes" VerticalAlignment="Center"
-										          HorizontalAlignment="Stretch" Unchecked="cbShowEmptyTags_Altered" Checked="cbShowEmptyTags_Altered" />
-										<CheckBox x:Name="cbShowBookmarkedTagsOnly" Margin="0,0,0,5" Content="Only Show Bookmarked Tags"
-										          VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-										          Unchecked="cbShowBookmarkedTagsOnly_Altered" Checked="cbShowBookmarkedTagsOnly_Altered" />
-
-										<TextBlock Text="Open Tag Action:" Margin="0,5,0,0" />
-										<ComboBox x:Name="cbTabOpenMode" Margin="15,5,20,0" SelectionChanged="cbTabOpenMode_SelectionChanged">
-											<ComboBoxItem Content="Open in New Tab" />
-											<ComboBoxItem Content="Open in Existing" />
-										</ComboBox>
-									</StackPanel>
-								</Expander>
-
-								<Grid DockPanel.Dock="Top" VerticalAlignment="Bottom" Margin="0,4,0,0">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
+								<Grid DockPanel.Dock="Top">
 									<Grid.RowDefinitions>
-										<RowDefinition Height="20" />
-										<RowDefinition Height="35" />
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="32" />
 									</Grid.RowDefinitions>
-
 									<TextBlock Grid.Row="0" Text="Search:" Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center" />
-									<TextBox Grid.Row="1" Name="txtTagSearch" Text="{Binding Path=SearchString, Mode=TwoWay}" Padding="0,0,13,0"
-									         TextChanged="txtTagSearch_TextChanged" ToolTip="Start typing here to search by name, or prefix &quot;0x&quot; to search by datum index." />
-									<Button Name="btnResetSearch" Grid.Row="1" Margin="0,0,1,1" Padding="0,0,0,7" Height="20" Width="12" Content="x" BorderThickness="0"
+									<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+										<Button Grid.Row="0" Style="{DynamicResource TabActiveButtons}" Click="SIDButton_Click" ToolTip="Convert values to/from String IDs.">
+											<Button.Content>
+												<TextBlock Text="StringID Tool" TextDecorations="Underline" />
+											</Button.Content>
+										</Button>
+										<Button Grid.Row="0" Style="{DynamicResource TabActiveButtons}" Click="AddrButton_Click" ToolTip="Convert between memory addresses and file offsets." Margin="10,0,0,0">
+											<Button.Content>
+												<TextBlock Text="Address Tool" TextDecorations="Underline" />
+											</Button.Content>
+										</Button>
+									</StackPanel>
+
+									<TextBox Grid.Row="1" Name="txtTagSearch" Text="{Binding Path=SearchString, Mode=TwoWay}"
+									         TextChanged="txtTagSearch_TextChanged" ToolTip="Start typing here to search by name, or prefix &quot;0x&quot; to search by datum index. Injected tags always begin with 0x4153." />
+									<Button Name="btnResetSearch" Grid.Row="1" Margin="0,0,1,0" Padding="0,0,0,7" Height="20" Width="14" Content="x" BorderThickness="0"
 											HorizontalAlignment="Right" Background="Transparent" Click="btnResetSearch_Click" Visibility="Hidden" />
 								</Grid>
 
-								<Grid>
-									<MetroTreeView:MetroTreeView DockPanel.Dock="Top" x:Name="tvTagList" Margin="0,0,0,28"
+								<StackPanel x:Name="panelTagButtons" Orientation="Horizontal" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Grid.Row="2" Margin="0,4,0,0">
+									<Button x:Name="btnImport" Content="Import..." Width="72" Margin="0,0,5,0" Click="btnImport_Click" />
+									<Button x:Name="btnSaveNames" Content="Save Tag Names" Width="110" Margin="0,0,5,0" Click="btnSaveNames_Click" />
+									<ToggleButton x:Name="btnOptions" Width="75" IsChecked="False" Style="{DynamicResource OptionsToggleButton}">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="50"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+
+											<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
+											<Path x:Name="Arrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+										</Grid>
+									</ToggleButton>
+									<Popup x:Name="popOptions" IsOpen="{Binding IsChecked, ElementName=btnOptions}" PlacementTarget="{x:Reference btnOptions}" StaysOpen="False" >
+										<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+											<StackPanel>
+												<MenuItem x:Name="cbShowEmptyTags" Header="Show Unused Classes" IsCheckable="True" Foreground="White"
+														  Checked="cbShowEmptyTags_Altered" Unchecked="cbShowEmptyTags_Altered"/>
+												<MenuItem x:Name="cbShowBookmarkedTagsOnly" Header="Show Only Bookmarked Tags" IsCheckable="True" Foreground="White"
+														  Checked="cbShowBookmarkedTagsOnly_Altered" Unchecked="cbShowBookmarkedTagsOnly_Altered"/>
+												<MenuItem x:Name="cbOpenDuplicate" Header="Auto-Open Duplicated Tags" IsCheckable="True" Foreground="White"
+														  Checked="cbOpenDuplicate_Altered" Unchecked="cbOpenDuplicate_Altered"/>
+
+												<Separator/>
+
+												<StackPanel>
+													<TextBlock Text="Open Tag Action:" VerticalAlignment="Center" Foreground="#CCC" Margin="30,0,4,0" Style="{DynamicResource GenericTextblock}"/>
+
+													<ComboBox x:Name="cbTabOpenMode" Margin="40,4,4,4" Grid.Column="1" SelectionChanged="cbTabOpenMode_SelectionChanged">
+														<ComboBoxItem Content="Open in New Tab" />
+														<ComboBoxItem Content="Open in Existing" />
+													</ComboBox>
+												</StackPanel>
+
+											</StackPanel>
+										</Border>
+									</Popup>
+								</StackPanel>
+
+
+
+								<Grid Grid.Row="1" DockPanel.Dock="Top">
+									<Grid.RowDefinitions>
+										<RowDefinition MinHeight="2" Height="*"/>
+										<RowDefinition MinHeight="50" Height="*"/>
+									</Grid.RowDefinitions>
+									<MetroTreeView:MetroTreeView DockPanel.Dock="Top" x:Name="tvTagList"
 									                             SelectedItemChanged="tvTagList_SelectedTagChanged" ItemsSource="{Binding}"
 									                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}"
 									                             BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2"
 									                             Foreground="White"
 									                             VirtualizingStackPanel.IsVirtualizing="True"
-									                             VirtualizingStackPanel.VirtualizationMode="Standard">
+									                             VirtualizingStackPanel.VirtualizationMode="Standard"
+																 Grid.Row="0" Style="{StaticResource batchSizer}">
 										<MetroTreeView:MetroTreeView.Resources>
 											<HierarchicalDataTemplate DataType="{x:Type  DataBind:TagClass}" ItemsSource="{Binding Children}">
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 													<TextBlock>
-														<Run Text="{Binding TagClassMagic}" />
-														<Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " />
-														<Run Foreground="{StaticResource TextBrushSecondary}"
-														     Text="{Binding Path=Description, Converter={StaticResource IValueTagDescriptionCleanup}}" />
+													<Run Text="{Binding TagClassMagic}" />
+													<Run Foreground="{StaticResource TextBrushSecondary}" Text=" - " />
+													<Run Foreground="{StaticResource TextBrushSecondary}"
+													     Text="{Binding Path=Description, Converter={StaticResource IValueTagDescriptionCleanup}}" />
 													</TextBlock>
 													<StackPanel.ContextMenu>
-														<ContextMenu>
+														<ContextMenu IsVisibleChanged="ClassContextMenu_IsVisibleChanged">
+															<MenuItem Name="itemClassBatch" Header="Add Class To Extract List..." Click="itemClassBatch_Click" />
 															<MenuItem Header="Dump Tag List..." Click="DumpClassTagList" />
 														</ContextMenu>
 													</StackPanel.ContextMenu>
@@ -169,51 +228,91 @@
 												<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
 													<StackPanel.ContextMenu>
 														<!--<ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-													<ContextMenu.CommandBindings>
-														<CommandBinding Command="{x:Static DataBind:HaloMap.CommandTagBookmarking }"
-																		CanExecute="CommandTagBookmarking_CanExecute"
-																		/>
-													</ContextMenu.CommandBindings>
-													<MenuItem Header="Bookmark Tag" Foreground="White" Command="{x:Static DataBind:HaloMap.CommandTagBookmarking}" CommandParameter="{Binding}" />
-												</ContextMenu>-->
+												<ContextMenu.CommandBindings>
+													<CommandBinding Command="{x:Static DataBind:HaloMap.CommandTagBookmarking }"
+																	CanExecute="CommandTagBookmarking_CanExecute"
+																	/>
+												</ContextMenu.CommandBindings>
+												<MenuItem Header="Bookmark Tag" Foreground="White" Command="{x:Static DataBind:HaloMap.CommandTagBookmarking}" CommandParameter="{Binding}" />
+											</ContextMenu>-->
 														<ContextMenu IsVisibleChanged="TagContextMenu_IsVisibleChanged">
 															<MenuItem Name="itemRename" Header="Rename..." Click="contextRename_Click" />
 															<MenuItem Name="itemDuplicate" Header="Duplicate..." Click="contextDuplicate_Click" />
-															<MenuItem Name="itemExtract" Header="Extract... (With Raw)" Click="contextExtract_Click" />
-															<MenuItem Name="itemExtractNoRaw" Header="Extract... (Without Raw)" Click="contextExtractClassic_Click" />
+															<MenuItem Name="itemForce" Header="Forceload..." Click="contextForce_Click" ToolTip="Adds everything related to this tag into the Global Zoneset as if it were injected. Will crash the game if any raw data is null." />
+															<MenuItem Name="itemExtract" Header="Extract..." Click="contextExtract_Click" />
+															<MenuItem Name="itemTagBatch" Header="Add To Extract List..." Click="itemTagBatch_Click" />
 															<Separator Name="sepTopBookmark"/>
 															<MenuItem x:Name="contextmenuBookmark" Header="Add/Remove Bookmark" Foreground="White"
-															          Click="contextBookmark_Click" />
+														          Click="contextBookmark_Click" />
 															<Separator />
 															<MenuItem Header="Save Bookmarks" Click="contextSaveBookmarks_Click" />
 															<MenuItem Header="Load Bookmarks" Click="contextLoadBookmarks_Click" />
 														</ContextMenu>
 													</StackPanel.ContextMenu>
 													<TextBlock Text="{Binding Path=TagFileName}"
-													           Visibility="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkVisibility}}"
-													           Foreground="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkForeground}}" />
+												           Visibility="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkVisibility}}"
+												           Foreground="{Binding Path=IsBookmark, Converter={StaticResource IValueTagBookmarkForeground}}"
+														   ToolTip="{Binding Path=TagToolTip}"/>
 												</StackPanel>
 											</DataTemplate>
 										</MetroTreeView:MetroTreeView.Resources>
 										<MetroTreeView:MetroTreeView.ItemContainerStyle>
 											<Style TargetType="{x:Type MetroTreeView:MetroTreeViewItem}"
-											       BasedOn="{StaticResource {x:Type MetroTreeView:MetroTreeViewItem}}">
+										       BasedOn="{StaticResource {x:Type MetroTreeView:MetroTreeViewItem}}">
 												<EventSetter Event="MouseDoubleClick" Handler="tvTagList_ItemDoubleClick" />
 											</Style>
 										</MetroTreeView:MetroTreeView.ItemContainerStyle>
 									</MetroTreeView:MetroTreeView>
-									<StackPanel x:Name="panelTagButtons" Orientation="Horizontal" VerticalAlignment="Bottom" DockPanel.Dock="Top">
-										<Button x:Name="btnImport" Content="Import..." Width="72" Click="btnImport_Click" />
-										<Button Content="Save Tag Names" Width="120" Margin="5,0,0,0" Click="btnSaveNames_Click" />
-									</StackPanel>
+
+									<GridSplitter ResizeDirection="Rows" Grid.Row="1"  HorizontalAlignment="Stretch"  VerticalAlignment="Top" ResizeBehavior="PreviousAndCurrent"
+												 Background="Transparent" Style="{StaticResource batchVisibility}" Margin="0,2,0,0">
+
+										<GridSplitter.Template>
+											<ControlTemplate>
+												<Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="18"  Background="Transparent">
+													<Canvas RenderOptions.EdgeMode="Aliased" UseLayoutRounding="True" VerticalAlignment="Center" HorizontalAlignment="Center" >
+														<Line X1="-15" X2="15" Y1="-2" Y2="-2" Stroke="{DynamicResource ExtryzeAccentBrush}" StrokeThickness="1"/>
+														<Line X1="-15" X2="15" Y1="2" Y2="2" Stroke="{DynamicResource ExtryzeAccentBrush}" StrokeThickness="1"/>
+													</Canvas>
+												</Grid>
+
+											</ControlTemplate>
+										</GridSplitter.Template>
+									</GridSplitter>
+
+									<DockPanel Grid.Row="1" Style="{StaticResource batchVisibility}">
+
+
+										<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Grid.Row="2" Margin="0,5,0,0">
+											<TextBlock Text="List..." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"/>
+											<Button Content="Extract All" Width="100" Margin="5,0,0,0" Click="BatchExtract_Click" />
+											<Button Content="Clear All" Width="72" Margin="5,0,0,0" Click="BatchClear_Click" />
+										</StackPanel>
+
+										<TextBlock Text="Extract List:" Grid.Row="1" DockPanel.Dock="Top" Style="{DynamicResource GenericTextblock}" Margin="0,4,0,1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+										<ListBox x:Name="batchTagList" DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Null}"
+									                             BorderBrush="{DynamicResource ExtryzeAccentBrushSecondary}" BorderThickness="2" SelectionMode="Extended"
+									                             Margin="0" ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewKeyUp="BatchList_PreviewKeyUp">
+											
+											<ListBox.ItemTemplate>
+												<DataTemplate DataType="{x:Type DataBind:TagEntry}">
+													<StackPanel Orientation="Horizontal" >
+														<TextBlock Text="{Binding Path=ClassName}" FontSize="10" Foreground="White" />
+														<TextBlock Text="{Binding Path=TagFileName}" FontSize="10" Margin="8,0,0,0" />
+													</StackPanel>
+
+												</DataTemplate>
+											</ListBox.ItemTemplate>
+										</ListBox>
+									</DockPanel>
 								</Grid>
 							</DockPanel>
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabStrings" Header="Strings" Style="{StaticResource MetroHeaderTabItem}" Height="15.96" Margin="18,0,-18,-15"
+					<TabItem x:Name="tabStrings" Header="Strings" Style="{StaticResource MetroHeaderTabItem}" Height="16" Margin="18,0,-18,-15"
 					         VerticalAlignment="Bottom">
-						<Grid Margin="25,30,25,30">
+						<Grid Margin="25,25,15,5">
 							<TextBlock FontFamily="{DynamicResource MetroFontSemiLight}" Text="Localized Strings;" Foreground="White"
 							           FontSize="16" />
 							<ListBox x:Name="lbLanguages" Margin="0,30,0,0" BorderBrush="{x:Null}" Background="{x:Null}"
@@ -253,7 +352,7 @@
 										<Setter Property="Template">
 											<Setter.Value>
 												<ControlTemplate>
-													<ContentPresenter Margin="8,5"
+													<ContentPresenter Margin="2,5"
 													                  Content="{TemplateBinding ContentControl.Content}"
 													                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
 													                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
@@ -269,59 +368,82 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="15.96"
+					<TabItem x:Name="tabScripts" Header="Scripts" Style="{StaticResource MetroHeaderTabItem}" Height="16"
 					         Margin="18,0,-18,-15" VerticalAlignment="Bottom">
-						<Grid Margin="25,30,25,30">
-							<ListBox x:Name="lbScripts" Margin="0" BorderBrush="{x:Null}" Background="{x:Null}" VerticalAlignment="Stretch"
-							         ScrollViewer.CanContentScroll="False">
-								<ListBox.ItemTemplate>
-									<DataTemplate>
-										<Button Name="PART_Button" HorizontalAlignment="Stretch" Height="Auto" Click="ScriptButtonClick">
-											<Button.Template>
-												<ControlTemplate TargetType="{x:Type Button}">
-													<Border Background="Transparent" HorizontalAlignment="Stretch">
-														<ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-													</Border>
-												</ControlTemplate>
-											</Button.Template>
-											<TextBlock Text="{Binding Name}" FontSize="20">
-												<TextBlock.Style>
-													<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
-														<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
-														<Style.Triggers>
-															<MultiDataTrigger>
-																<MultiDataTrigger.Conditions>
-																	<Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
-																	<Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
-																</MultiDataTrigger.Conditions>
-																<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
-															</MultiDataTrigger>
-														</Style.Triggers>
-													</Style>
-												</TextBlock.Style>
-											</TextBlock>
-										</Button>
-									</DataTemplate>
-								</ListBox.ItemTemplate>
-								<ListBox.ItemContainerStyle>
-									<Style TargetType="{x:Type ListBoxItem}">
-										<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate>
-													<ContentPresenter Margin="8,5"
+						<Grid Margin="25,25,15,5">
+							<DockPanel>
+								<ToggleButton x:Name="btnScriptOptions" Width="75" IsChecked="False" Style="{DynamicResource OptionsToggleButton}"
+											  VerticalAlignment="Stretch" HorizontalAlignment="Left" DockPanel.Dock="Bottom" Margin="-10,4,0,0">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="50"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+
+										<TextBlock Text="Options" Grid.Column="0" HorizontalAlignment="Center"/>
+										<Path x:Name="Arrow2" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+									</Grid>
+								</ToggleButton>
+								<Popup x:Name="popScriptOptions" IsOpen="{Binding IsChecked, ElementName=btnScriptOptions}" PlacementTarget="{x:Reference btnScriptOptions}" StaysOpen="False" >
+									<Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+										<StackPanel>
+											<MenuItem x:Name="cbShowHSInfo" Header="Show Extra Information" IsCheckable="True" Foreground="White"
+														  Checked="cbShowHSInfo_Altered" Unchecked="cbShowHSInfo_Altered" ToolTip="Toggles the display of block indices and expression indices for variables/globals/scripts as comments. Will need to close/reopen any script tabs to take effect."/>
+
+										</StackPanel>
+									</Border>
+								</Popup>
+								<ListBox x:Name="lbScripts" BorderBrush="{x:Null}" Background="Transparent" VerticalAlignment="Stretch"
+							         ScrollViewer.CanContentScroll="False" DockPanel.Dock="Top">
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<Button Name="PART_Button" HorizontalAlignment="Stretch" Height="Auto" Click="ScriptButtonClick" ToolTip="{Binding Name}">
+												<Button.Template>
+													<ControlTemplate TargetType="{x:Type Button}">
+														<Border Background="Transparent" HorizontalAlignment="Stretch">
+															<ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+														</Border>
+													</ControlTemplate>
+												</Button.Template>
+												<TextBlock Text="{Binding Name}" FontSize="18">
+													<TextBlock.Style>
+														<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GenericTextblock}">
+															<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrush}" />
+															<Style.Triggers>
+																<MultiDataTrigger>
+																	<MultiDataTrigger.Conditions>
+																		<Condition Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True" />
+																		<Condition Binding="{Binding ElementName=PART_Button, Path=IsPressed}" Value="False" />
+																	</MultiDataTrigger.Conditions>
+																	<Setter Property="Foreground" Value="{DynamicResource ExtryzeAccentBrushSecondary}" />
+																</MultiDataTrigger>
+															</Style.Triggers>
+														</Style>
+													</TextBlock.Style>
+												</TextBlock>
+											</Button>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+									<ListBox.ItemContainerStyle>
+										<Style TargetType="{x:Type ListBoxItem}">
+											<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate>
+														<ContentPresenter Margin="0,5"
 													                  Content="{TemplateBinding ContentControl.Content}"
 													                  ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
 													                  ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
 													                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
 													                  VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
 													                  SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</ListBox.ItemContainerStyle>
-							</ListBox>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</ListBox.ItemContainerStyle>
+								</ListBox>
+							</DockPanel>
 						</Grid>
 					</TabItem>
 				</TabControl>

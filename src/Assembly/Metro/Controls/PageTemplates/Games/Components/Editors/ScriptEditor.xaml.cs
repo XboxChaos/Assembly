@@ -4,11 +4,13 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using Assembly.Helpers;
 using Assembly.Metro.Dialogs;
 using Blamite.Blam.Scripting;
 using Blamite.Serialization;
 using Blamite.IO;
 using Microsoft.Win32;
+using ICSharpCode.AvalonEdit.Search;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 {
@@ -19,16 +21,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 	{
 		private readonly EngineDescription _buildInfo;
 		private readonly IScriptFile _scriptFile;
+		private bool _showInfo;
+		private Endian _endian;
 
-		public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager)
+		public ScriptEditor(EngineDescription buildInfo, IScriptFile scriptFile, IStreamManager streamManager, Endian endian)
 		{
+			_endian = endian;
 			_buildInfo = buildInfo;
 			_scriptFile = scriptFile;
+			_showInfo = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
 			InitializeComponent();
 
 			var thrd = new Thread(DecompileScripts);
 			thrd.SetApartmentState(ApartmentState.STA);
 			thrd.Start(streamManager);
+
+			SearchPanel srch = SearchPanel.Install(txtScript);
+
+			var bconv = new System.Windows.Media.BrushConverter();
+			var srchbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#40F0F0F0");
+
+			srch.MarkerBrush = srchbrsh;
+
+			App.AssemblyStorage.AssemblySettings.PropertyChanged += Settings_SettingsChanged;
+			SetHighlightColor();
 		}
 
 		private void DecompileScripts(object streamManager)
@@ -44,7 +60,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			}
 
 			OpcodeLookup opcodes = _buildInfo.ScriptInfo;
-			var generator = new BlamScriptGenerator(scripts, opcodes);
+			var generator = new BlamScriptGenerator(scripts, opcodes, _endian);
 			var code = new IndentedTextWriter(new StringWriter());
 
 			generator.WriteComment("Decompiled with Assembly", code);
@@ -56,18 +72,47 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 			generator.WriteComment("You have no rights. Play nice.", code);
 			code.WriteLine();
 
-			generator.WriteComment("Globals", code);
+			int counter = 0;
+
+			if (scripts.Variables != null)
+			{
+				generator.WriteComment("VARIABLES", code);
+				foreach (ScriptGlobal variable in scripts.Variables)
+				{
+					code.Write("(variable {0} {1} ", opcodes.GetTypeInfo((ushort)variable.Type).Name, variable.Name);
+					generator.WriteExpression(variable.ExpressionIndex, code);
+					if (_showInfo)
+						code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), variable.ExpressionIndex.Index.ToString());
+					else
+						code.WriteLine(")");
+					counter++;
+				}
+				code.WriteLine();
+				counter = 0;
+			}
+
+			generator.WriteComment("GLOBALS", code);
 			foreach (ScriptGlobal global in scripts.Globals)
 			{
 				code.Write("(global {0} {1} ", opcodes.GetTypeInfo((ushort) global.Type).Name, global.Name);
 				generator.WriteExpression(global.ExpressionIndex, code);
-				code.WriteLine(")");
+				if (_showInfo)
+					code.WriteLine(")\t\t; Index: {0}, Expression Index: {1}", counter.ToString(), global.ExpressionIndex.Index.ToString());
+				else
+					code.WriteLine(")");
+				counter++;
 			}
 			code.WriteLine();
+			counter = 0;
 
-			generator.WriteComment("Scripts", code);
+			generator.WriteComment("SCRIPTS", code);
 			foreach (Script script in scripts.Scripts)
 			{
+				if (_showInfo)
+				{
+					generator.WriteComment(string.Format("Index: {0}, Expression Index: {1}", counter.ToString(), script.RootExpressionIndex.Index.ToString()), code);
+				}	
+
 				code.Write("(script {0} {1} ", opcodes.GetScriptTypeName((ushort) script.ExecutionType),
 					opcodes.GetTypeInfo((ushort) script.ReturnType).Name);
 
@@ -93,12 +138,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
 
 				code.Indent++;
 				code.WriteLine();
-				generator.WriteExpression(script.RootExpressionIndex, code);
+				generator.WriteExpression(script.RootExpressionIndex, code, _buildInfo.HeaderSize == 0x1E000);
 				code.Indent--;
 
 				code.WriteLine();
 				code.WriteLine(")");
 				code.WriteLine();
+				counter++;
 			}
 
 			DateTime endTime = DateTime.Now;
@@ -128,6 +174,44 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.Editors
             LispScriptParser parser = new LispScriptParser(scanner);
             parser.Parse();*/
 			// You have to stick a breakpoint here to look at the parsed nodes :P
+		}
+
+		private void Settings_SettingsChanged(object sender, EventArgs e)
+		{
+			// Reset the highlight color in case the theme changed
+			SetHighlightColor();
+		}
+
+		private void SetHighlightColor()
+		{
+			var bconv = new System.Windows.Media.BrushConverter();
+			var selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+
+			//yucky
+			switch (App.AssemblyStorage.AssemblySettings.ApplicationAccent)
+			{
+				case Settings.Accents.Blue:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#1D98EB");
+					break;
+				case Settings.Accents.Green:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#98e062");
+					break;
+				case Settings.Accents.Orange:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#D66F2B");
+					break;
+				case Settings.Accents.Purple:
+					selbrsh = (System.Windows.Media.Brush)bconv.ConvertFromString("#9C40B4");
+					break;
+			}
+			txtScript.TextArea.SelectionBorder = new System.Windows.Media.Pen(selbrsh, 1);
+			selbrsh.Opacity = 0.3;
+			txtScript.TextArea.SelectionBrush = selbrsh;
+		}
+
+		public void Dispose()
+		{
+			txtScript.Clear();
+			App.AssemblyStorage.AssemblySettings.PropertyChanged -= Settings_SettingsChanged;
 		}
 	}
 }

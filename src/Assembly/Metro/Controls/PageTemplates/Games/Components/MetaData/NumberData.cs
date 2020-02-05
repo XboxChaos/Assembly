@@ -1,4 +1,6 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using System;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
 	///     Base class for number data.
@@ -9,7 +11,7 @@
 		private string _type;
 		private T _value;
 
-		public NumberData(string name, uint offset, uint address, string type, T value, uint pluginLine)
+		public NumberData(string name, uint offset, long address, string type, T value, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -42,7 +44,7 @@
 	/// </summary>
 	public class Uint8Data : NumberData<byte>
 	{
-		public Uint8Data(string name, uint offset, uint address, string type, byte value, uint pluginLine)
+		public Uint8Data(string name, uint offset, long address, string type, byte value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -63,7 +65,7 @@
 	/// </summary>
 	public class Int8Data : NumberData<sbyte>
 	{
-		public Int8Data(string name, uint offset, uint address, string type, sbyte value, uint pluginLine)
+		public Int8Data(string name, uint offset, long address, string type, sbyte value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -84,7 +86,7 @@
 	/// </summary>
 	public class Uint16Data : NumberData<ushort>
 	{
-		public Uint16Data(string name, uint offset, uint address, string type, ushort value, uint pluginLine)
+		public Uint16Data(string name, uint offset, long address, string type, ushort value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -105,7 +107,7 @@
 	/// </summary>
 	public class Int16Data : NumberData<short>
 	{
-		public Int16Data(string name, uint offset, uint address, string type, short value, uint pluginLine)
+		public Int16Data(string name, uint offset, long address, string type, short value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -126,7 +128,7 @@
 	/// </summary>
 	public class Uint32Data : NumberData<uint>
 	{
-		public Uint32Data(string name, uint offset, uint address, string type, uint value, uint pluginLine)
+		public Uint32Data(string name, uint offset, long address, string type, uint value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -147,7 +149,7 @@
 	/// </summary>
 	public class Int32Data : NumberData<int>
 	{
-		public Int32Data(string name, uint offset, uint address, string type, int value, uint pluginLine)
+		public Int32Data(string name, uint offset, long address, string type, int value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -168,7 +170,7 @@
 	/// </summary>
 	public class Float32Data : NumberData<float>
 	{
-		public Float32Data(string name, uint offset, uint address, string type, float value, uint pluginLine)
+		public Float32Data(string name, uint offset, long address, string type, float value, uint pluginLine)
 			: base(name, offset, address, type, value, pluginLine)
 		{
 		}
@@ -181,6 +183,51 @@
 		public override MetaField CloneValue()
 		{
 			return new Float32Data(Name, Offset, FieldAddress, Type, Value, base.PluginLine);
+		}
+	}
+
+	/// <summary>
+	///     32-bit floating-point number, converted from radians to degrees
+	/// </summary>
+	public class DegreeData : ValueField
+	{
+		private float _radian;
+
+		public DegreeData(string name, uint offset, long address, float radian, uint pluginLine)
+			: base(name, offset, address, pluginLine)
+		{
+			_radian = radian;
+		}
+
+		public float Degree
+		{
+			get { return (float)(_radian * (180 / Math.PI)); }
+			set
+			{
+				_radian = (float)(value * (Math.PI / 180));
+				NotifyPropertyChanged("Degree");
+			}
+		}
+
+		public float Radian
+		{
+			get { return _radian; }
+			set
+			{
+				_radian = value;
+				NotifyPropertyChanged("Radian");
+				NotifyPropertyChanged("Degree");
+			}
+		}
+
+		public override void Accept(IMetaFieldVisitor visitor)
+		{
+			visitor.VisitDegree(this);
+		}
+
+		public override MetaField CloneValue()
+		{
+			return new DegreeData(Name, Offset, FieldAddress, _radian, PluginLine);
 		}
 	}
 }

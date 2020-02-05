@@ -58,11 +58,13 @@ namespace SharedDump
 					ResourcePointer loc = resource.Location;
 					string primaryFile = (loc.PrimaryPage != null) ? loc.PrimaryPage.FilePath : null;
 					string secondaryFile = (loc.SecondaryPage != null) ? loc.SecondaryPage.FilePath : null;
-					if (primaryFile != null || secondaryFile != null)
+					string tertiaryFile = (loc.TertiaryPage != null) ? loc.TertiaryPage.FilePath : null;
+
+					if (primaryFile != null || secondaryFile != null || tertiaryFile != null)
 					{
 						string className = CharConstant.ToString(resource.ParentTag.Class.Magic);
 						string name = cacheFile.FileNames.GetTagName(resource.ParentTag) ?? resource.ParentTag.Index.ToString();
-						string fileName = primaryFile ?? secondaryFile;
+						string fileName = primaryFile ?? secondaryFile ?? tertiaryFile;
 						fileName = fileName.Substring(fileName.IndexOf('\\') + 1);
 						output.WriteLine("{0}  {1, -12}  {2}   {3}", resource.Index, fileName, className, name);
 					}

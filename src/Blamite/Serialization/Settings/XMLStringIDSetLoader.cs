@@ -56,17 +56,17 @@ namespace Blamite.Serialization.Settings
 
 		private static StringIDLayout ProcessIDLayoutInfo(XElement element)
 		{
-			int indexBits = XMLUtil.GetNumericAttribute(element, "indexBits", 16);
-			int setBits = XMLUtil.GetNumericAttribute(element, "setBits", 8);
-			int lengthBits = XMLUtil.GetNumericAttribute(element, "lengthBits", 0);
+			int indexBits = (int)XMLUtil.GetNumericAttribute(element, "indexBits", 16);
+			int setBits = (int)XMLUtil.GetNumericAttribute(element, "setBits", 8);
+			int lengthBits = (int)XMLUtil.GetNumericAttribute(element, "lengthBits", 0);
 			return new StringIDLayout(indexBits, setBits, lengthBits);
 		}
 
 		private static void ProcessSetElement(XElement element, StringIDSetResolver resolver)
 		{
-			int id = XMLUtil.GetNumericAttribute(element, "id");
-			int min = XMLUtil.GetNumericAttribute(element, "min", 0);
-			int globalIndex = XMLUtil.GetNumericAttribute(element, "startIndex");
+			int id = (int)XMLUtil.GetNumericAttribute(element, "id");
+			int min = (int)XMLUtil.GetNumericAttribute(element, "min", 0);
+			int globalIndex = (int)XMLUtil.GetNumericAttribute(element, "startIndex");
 
 			resolver.RegisterSet(id, min, globalIndex);
 		}

@@ -1,0 +1,60 @@
+﻿<Window x:Class="Assembly.Metro.Dialogs.ControlDialogs.DupeSettings"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:n="clr-namespace:Assembly.Helpers.Native"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:Assembly.Metro.Dialogs.ControlDialogs"
+		xmlns:Vectors="clr-namespace:Assembly.Metro.Controls.Vectors"
+		AllowsTransparency="True" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="CenterScreen"
+		SnapsToDevicePixels="True" Title="Duplication Options" Height="320" Width="700"
+		ShowInTaskbar="True" n:WindowMovement.IsDraggable="True" x:Name="control">
+	<Border Background="#FF2E2E31" BorderThickness="1,1,1,23" BorderBrush="{DynamicResource ExtryzeAccentBrush}">
+		<Grid>
+			<Grid Margin="0,0,0,5">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="60px" />
+					<RowDefinition Height="*" />
+					<RowDefinition Height="36px" />
+				</Grid.RowDefinitions>
+				<Path Style="{StaticResource AsmLogo}" Margin="6,6,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="34" Width="34" />
+				<TextBlock Grid.Row="0" x:Name="lblTitle" Text="Duplication Options" Foreground="#989898" VerticalAlignment="Top"
+					   HorizontalAlignment="Stretch" FontSize="15" Margin="45,12,141,0"
+					   FontFamily="{DynamicResource MetroFontLight}" TextTrimming="CharacterEllipsis" />
+
+				<Grid
+				Grid.Row="0"
+				x:Name="headerThumb"
+				Opacity="0"
+				Background="Transparent"
+				Margin="0,0,0,0" Height="53.5" VerticalAlignment="Top"
+				n:WindowMovement.DragsWindow="True" />
+
+				<Grid Grid.Row="1">
+					<StackPanel Margin="15,0,15,0">
+						<TextBlock TextWrapping="Wrap" Margin="0,0,0,4" Style="{StaticResource GenericTextblock}" Text="Please enter a name for the new tag." />
+
+						<TextBox x:Name="tagName" Margin="0,0,0,16" KeyDown="tagName_KeyDown"/>
+
+						<TextBlock TextWrapping="Wrap" Margin="0,0,0,4" Style="{StaticResource GenericTextblock}" Text="Note: The defaults here will apply to a majority of cases, only change if you know what you are doing!" />
+
+						<CheckBox x:Name="dupeRaw" Content="Duplicate Resource" Margin="0,8,0,0" IsChecked="True"/>
+						<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="This will create a duplicate resource entry for this tag, if applicable. (MCC: Disable for shaders if you wish to null the datum anyways.) If disabled on a resource tag, you may encounter issues injecting it elsewhere." />
+
+						<CheckBox x:Name="dupePrediction" Content="Duplicate Prediction Data" Margin="0,8,0,0" IsChecked="True"/>
+						<TextBlock Margin="32,0,0,0" TextWrapping="Wrap" Style="{StaticResource GenericTextblock}" FontSize="10" Text="This will create duplicate prediction entires for this tag, if applicable. If disabled on an object tag, your object might have blurry textures." />
+
+					</StackPanel>
+
+				</Grid>
+			</Grid>
+
+			<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,20,5"
+						VerticalAlignment="Bottom">
+				<Button x:Name="btnOK" Padding="10,0,10,0" Margin="10,0,10,0" Click="btnOK_Click" Content="Duplicate"/>
+				<Button x:Name="btnCancel" Padding="10,0,10,0" Margin="0" Click="btnCancel_Click" Content="Cancel"/>
+			</StackPanel>
+
+		</Grid>
+	</Border>
+</Window>

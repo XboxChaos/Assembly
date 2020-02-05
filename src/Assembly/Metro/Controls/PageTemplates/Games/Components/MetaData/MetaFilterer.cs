@@ -168,14 +168,61 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
-		public void VisitVector(VectorData field)
+		public void VisitPoint2(Vector2Data field)
 		{
 			if (!FilterString(field, field.Name))
 			{
-				if (!FilterNumber(field, field.X))
+				if (!FilterNumber(field, field.A))
 				{
-					if (!FilterNumber(field, field.Y))
-						FilterNumber(field, field.Z);
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitPoint3(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitVector2(Vector2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitVector3(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitVector4(Vector4Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
 				}
 			}
 		}
@@ -191,10 +238,104 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public void VisitDegree2(Degree2Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitDegree3(Degree3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane2(Vector3Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						FilterNumber(field, field.C);
+				}
+			}
+		}
+
+		public void VisitPlane3(Vector4Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
+		public void VisitRect16(RectangleData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					if (!FilterNumber(field, field.B))
+						if (!FilterNumber(field, field.C))
+							FilterNumber(field, field.D);
+				}
+			}
+		}
+
 		public void VisitShaderRef(ShaderRef field)
 		{
 			if (!FilterString(field, field.Name))
 				FilterString(field, field.DatabasePath);
+		}
+
+		public void VisitRangeUint16(RangeUint16Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitRangeFloat32(RangeFloat32Data field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
+		}
+
+		public void VisitRangeDegree(RangeDegreeData field)
+		{
+			if (!FilterString(field, field.Name))
+			{
+				if (!FilterNumber(field, field.A))
+				{
+					FilterNumber(field, field.B);
+				}
+			}
 		}
 
 		public void FilterFields(IEnumerable<MetaField> fields, string filter)

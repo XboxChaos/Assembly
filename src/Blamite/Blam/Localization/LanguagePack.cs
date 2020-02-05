@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Blamite.IO;
 
 namespace Blamite.Blam.Localization
 {

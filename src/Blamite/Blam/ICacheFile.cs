@@ -22,7 +22,7 @@ namespace Blamite.Blam
 		/// <summary>
 		///     The size of the cache file.
 		/// </summary>
-		uint FileSize { get; }
+		long FileSize { get; }
 
 		/// <summary>
 		///     The purpose of the cache file.
@@ -53,6 +53,11 @@ namespace Blamite.Blam
 		///     The XDK version that the cache file was developed with, or 0 if unknown.
 		/// </summary>
 		int XDKVersion { get; set; }
+
+		/// <summary>
+		///     True if the cache file's resource page information is located in the zone tag, rather than play.
+		/// </summary>
+		bool ZoneOnly { get; }
 
 		/// <summary>
 		///     The meta area of the cache file.
@@ -184,10 +189,18 @@ namespace Blamite.Blam
 		/// </summary>
 		ISimulationDefinitionTable SimulationDefinitions { get; }
 
+		IList<IPolyart> PolyartTable { get; }
+
 		/// <summary>
 		///     Saves any changes that were made to the file.
 		/// </summary>
 		/// <param name="stream">The stream to write changes to.</param>
 		void SaveChanges(IStream stream);
+
+		IPointerExpander PointerExpander { get; }
+
+		Endian Endianness { get; }
+
+		EffectStorage CompiledEffects { get; }
 	}
 }

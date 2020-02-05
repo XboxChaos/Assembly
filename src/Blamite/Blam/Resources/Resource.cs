@@ -74,6 +74,80 @@ namespace Blamite.Blam.Resources
 		}
 	}
 
+	public class ResourcePredictionD
+	{
+		public ResourcePredictionD()
+		{
+			CEntries = new List<ResourcePredictionC>();
+			AEntries = new List<ResourcePredictionA>();
+		}
+
+		public ITag Tag { get; set; }
+
+		public int Unknown1 { get; set; }
+		public int Unknown2 { get; set; }
+
+		public List<ResourcePredictionC> CEntries { get; private set; }
+		public List<ResourcePredictionA> AEntries { get; private set; }
+
+		public int Index { get; set; }
+
+		public long GetCHash()
+		{
+			long result = 9103;
+			for (int i = 0; i < CEntries.Count; i++)
+				for (int k = 0; k < CEntries[i].BEntry.AEntries.Count; k++)
+					result = result * 8171 + CEntries[i].BEntry.AEntries[k].Value.Value;
+
+			return result;
+		}
+	}
+
+	public class ResourcePredictionC
+	{
+		public short OverallIndex { get; set; }
+		public ResourcePredictionB BEntry { get; set; }
+
+		public int Index { get; set; }
+
+		public long GetBHash()
+		{
+			return (BEntry.GetAHash() << 1) * 5233;
+		}
+	}
+
+	public class ResourcePredictionB
+	{
+		public ResourcePredictionB()
+		{
+			AEntries = new List<ResourcePredictionA>();
+		}
+
+		public short OverallIndex { get; set; }
+		public List<ResourcePredictionA> AEntries { get; private set; }
+
+		public int Index { get; set; }
+
+		public long GetAHash()
+		{
+			long result = 7057;
+			for (int i = 0; i < AEntries.Count; i++)
+				result = result * 8171 + (AEntries[i].Value.Value << i);
+
+			return result;
+		}
+	}
+
+	public class ResourcePredictionA
+	{
+		public DatumIndex Value { get; set; }
+
+		public DatumIndex Resource { get; set; }
+		public int SubResource { get; set; }
+
+		public int Index { get; set; }
+	}
+
 	/// <summary>
 	///     A resource in a cache file.
 	/// </summary>
@@ -121,8 +195,7 @@ namespace Blamite.Blam.Resources
 		public List<ResourceFixup> ResourceFixups { get; private set; }
 		public List<ResourceDefinitionFixup> DefinitionFixups { get; private set; }
 
-		public int Unknown1 { get; set; }
-		public int Unknown2 { get; set; }
-		public int Unknown3 { get; set; }
+		public int ResourceBits { get; set; }
+		public int BaseDefinitionAddress { get; set; }
 	}
 }

@@ -21,11 +21,16 @@ namespace Blamite.Blam.SecondGen
 		private SecondGenHeader _header;
 		private IndexedStringIDSource _stringIDs;
 		private SecondGenTagTable _tags;
+		private SecondGenPointerExpander _expander;
+		private Endian _endianness;
+		private EffectStorage _effects;
 
 		public SecondGenCacheFile(IReader reader, EngineDescription buildInfo, string buildString)
 		{
+			_endianness = reader.Endianness;
 			_buildInfo = buildInfo;
 			_segmenter = new FileSegmenter(buildInfo.SegmentAlignment);
+			_expander = new SecondGenPointerExpander();
 			Allocator = new MetaAllocator(this, 0x10000);
 			Load(reader, buildInfo, buildString);
 		}
@@ -42,7 +47,7 @@ namespace Blamite.Blam.SecondGen
 			get { return _header.HeaderSize; }
 		}
 
-		public uint FileSize
+		public long FileSize
 		{
 			get { return _header.FileSize; }
 		}
@@ -76,6 +81,11 @@ namespace Blamite.Blam.SecondGen
 		{
 			get { return _header.XDKVersion; }
 			set { _header.XDKVersion = value; }
+		}
+
+		public bool ZoneOnly
+		{
+			get { return false; }
 		}
 
 		public SegmentPointer IndexHeaderLocation
@@ -189,6 +199,26 @@ namespace Blamite.Blam.SecondGen
 		public ISimulationDefinitionTable SimulationDefinitions
 		{
 			get { return null; }
+		}
+
+		public IList<IPolyart> PolyartTable
+		{
+			get { return null; }
+		}
+
+		public IPointerExpander PointerExpander
+		{
+			get { return _expander; }
+		}
+
+		public Endian Endianness
+		{
+			get { return _endianness; }
+		}
+
+		public EffectStorage CompiledEffects
+		{
+			get { return _effects; }
 		}
 
 		private void Load(IReader reader, EngineDescription buildInfo, string buildString)

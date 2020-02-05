@@ -17,9 +17,9 @@ namespace Blamite.Blam.Scripting
 		}
 
 		internal Script(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
-			EngineDescription buildInfo)
+			EngineDescription buildInfo, IPointerExpander expander)
 		{
-			Load(values, reader, metaArea, stringIDs, buildInfo);
+			Load(values, reader, metaArea, stringIDs, buildInfo, expander);
 		}
 
 		/// <summary>
@@ -48,7 +48,7 @@ namespace Blamite.Blam.Scripting
 		public DatumIndex RootExpressionIndex { get; set; }
 
 		private void Load(StructureValueCollection values, IReader reader, FileSegmentGroup metaArea, StringIDSource stringIDs,
-			EngineDescription buildInfo)
+			EngineDescription buildInfo, IPointerExpander expander)
 		{
 			Name = values.HasInteger("name index")
 				? stringIDs.GetString(new StringID(values.GetInteger("name index")))
@@ -59,16 +59,19 @@ namespace Blamite.Blam.Scripting
 			if (Name == null)
 				Name = "script_" + RootExpressionIndex.Value.ToString("X8");
 
-			Parameters = LoadParameters(reader, values, metaArea, buildInfo);
+			Parameters = LoadParameters(reader, values, metaArea, buildInfo, expander);
 		}
 
 		private IList<ScriptParameter> LoadParameters(IReader reader, StructureValueCollection values,
-			FileSegmentGroup metaArea, EngineDescription buildInfo)
+			FileSegmentGroup metaArea, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			var count = (int) values.GetInteger("number of parameters");
-			uint address = values.GetInteger("address of parameter list");
+			uint address = (uint)values.GetInteger("address of parameter list");
+
+			long expand = expander.Expand(address);
+
 			StructureLayout layout = buildInfo.Layouts.GetLayout("script parameter entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, metaArea);
 			return entries.Select(e => new ScriptParameter(e)).ToList();
 		}
 	}

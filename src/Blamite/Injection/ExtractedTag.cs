@@ -41,6 +41,6 @@ namespace Blamite.Injection
 		/// <summary>
 		///     Gets the tag's name.
 		/// </summary>
-		public string Name { get; private set; }
+		public string Name { get; set; }
 	}
 }

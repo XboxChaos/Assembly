@@ -39,14 +39,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ITag _tag;
 		private ThirdGenResourceType[] _resourceTypes;
+		private IPointerExpander _expander;
 
 		public ThirdGenResourceGestalt(IReader reader, ITag zoneTag, FileSegmentGroup metaArea, MetaAllocator allocator,
-			StringIDSource stringIDs, EngineDescription buildInfo)
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_tag = zoneTag;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 
 			Load(reader, stringIDs);
 		}
@@ -56,54 +58,147 @@ namespace Blamite.Blam.ThirdGen.Structures
 			StructureValueCollection values = LoadTag(reader);
 			byte[] infoBuffer = LoadResourceInfoBuffer(values, reader);
 
-			var count = (int)values.GetInteger("number of resources");
-			uint address = values.GetInteger("resource table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReadReflexive(values, reader, "number of resources", "resource table address", "resource table entry");
 			return entries.Select((e, i) => LoadResource(e, i, tags, pointers, infoBuffer, reader));
 		}
 
 		public IList<ResourcePointer> SaveResources(ICollection<Resource> resources, IStream stream)
 		{
 			StructureValueCollection values = LoadTag(stream);
+			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
 
-			// Free everything
 			FreeResources(values, stream);
+			FreeInfoBuffer(values);
 
 			// Serialize each resource entry
 			// This can't be lazily evaluated because allocations might cause the stream to expand
 			int infoOffset = 0;
+			int altInfoOffset = 0;
+			var infocache = new ReflexiveCache<int>();
+
 			var pointers = new List<ResourcePointer>();
 			var entries = new List<StructureValueCollection>();
 			var fixupCache = new ReflexiveCache<ResourceFixup>();
 			var defFixupCache = new ReflexiveCache<ResourceDefinitionFixup>();
+
+			List<byte[]> paddedInfos = new List<byte[]>();
+
 			foreach (Resource resource in resources)
 			{
-				infoOffset = AlignInfoBlockOffset(resource, infoOffset);
-				StructureValueCollection entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1,
-					(resource.Info != null) ? infoOffset : 0, stream);
+
+				StructureValueCollection entry = SerializeResource(resource, (resource.Location != null) ? pointers.Count : -1, stream);
 				entries.Add(entry);
 
 				// Save fixups
 				SaveResourceFixups(resource.ResourceFixups, entry, stream, fixupCache);
 				SaveDefinitionFixups(resource.DefinitionFixups, entry, stream, defFixupCache);
 
-				// Update info offset and pointer info
-				if (resource.Info != null)
-					infoOffset += resource.Info.Length;
+				uint bits = (uint)entry.GetInteger("resource bits");
+				int size = (int)entry.GetInteger("resource info size");
+
+				List<int> offsets = new List<int>();
+
+				if (size > 0)
+				{
+					int dirtyoffset = infoOffset;
+
+					infoOffset = AlignInfoBlockOffset(resource, infoOffset);
+
+					offsets.Add(infoOffset);
+
+					int padding =  infoOffset - dirtyoffset;
+
+					byte[] temp = new byte[padding + size];
+
+					Buffer.BlockCopy(resource.Info, 0, temp, padding, size);
+
+					paddedInfos.Add(temp);
+
+					infoOffset += size;
+				}
+				else
+					offsets.Add(0);
+
+				if ((bits & 2) > 0)
+				{
+					int tempalt = AlignInfoBlockOffset(resource, altInfoOffset);
+					offsets.Add(tempalt);
+
+					altInfoOffset += size;
+				}
+				else
+					offsets.Add(size > 0 ? -1 : 0);
+
+				if ((bits & 4) > 0)
+				{
+					int tempalt = AlignInfoBlockOffset(resource, altInfoOffset);
+					offsets.Add(tempalt);
+
+					altInfoOffset += size;
+				}
+				else
+					offsets.Add(size > 0 ? -1 : 0);
+
+				if (layout.HasField("number of resource info offsets"))
+				{
+					var oldCount = (int)entry.GetIntegerOrDefault("number of resource info offsets", 0);
+					uint oldAddress = (uint)entry.GetIntegerOrDefault("resource info offsets table address", 0);
+
+					long expand = _expander.Expand(oldAddress);
+
+					StructureLayout infolayout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+
+					if (size > 0)
+					{
+						long newBlockAddress;
+
+						// Write a new reflexive
+						IEnumerable<StructureValueCollection> infoentries = offsets.Select(f => SerializeInfos(f));
+						newBlockAddress = ReflexiveWriter.WriteReflexive(infoentries, oldCount, expand, offsets.Count, infolayout, _metaArea,
+							_allocator, stream);
+						infocache.Add(newBlockAddress, offsets);
+
+						uint cont = _expander.Contract(newBlockAddress);
+
+						entry.SetInteger("number of resource info offsets", (uint)offsets.Count);
+						entry.SetInteger("resource info offsets table address", cont);
+					}
+					else
+					{
+						entry.SetInteger("number of resource info offsets", 0);
+						entry.SetInteger("resource info offsets table address", 0);
+					}
+				}
+				else
+				{
+					if (size > 0)
+					{
+						entry.SetInteger("resource info offset", (uint)offsets[0]);
+						entry.SetInteger("alt resource info offset", (uint)offsets[1]);
+					}
+					else
+					{
+						entry.SetInteger("resource info offset", 0);
+						entry.SetInteger("alt resource info offset", 0);
+					}
+
+				}
+					
+				// Update pointer info
 				if (resource.Location != null)
 					pointers.Add(resource.Location);
 			}
 
 			// Write the reflexive and update the tag values
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
-			uint newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
-			values.SetInteger("number of resources", (uint) entries.Count);
-			values.SetInteger("resource table address", newAddress);
+			long newAddress = ReflexiveWriter.WriteReflexive(entries, layout, _metaArea, _allocator, stream);
 
-			// Build and save the info buffer
-			byte[] infoBuffer = BuildResourceInfoBuffer(resources);
-			SaveResourceInfoBuffer(infoBuffer, values, stream);
+			uint contr = _expander.Contract(newAddress);
+
+			values.SetInteger("number of resources", (uint) entries.Count);
+			values.SetInteger("resource table address", contr);
+
+			// Save the info buffer
+			SaveResourceInfoBuffer(paddedInfos.SelectMany(a => a).ToArray(), values, stream);
 
 			SaveTag(values, stream);
 			return pointers;
@@ -133,57 +228,33 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return;
 
 			var count = (int) values.GetInteger("number of resource types");
-			uint address = values.GetInteger("resource type table address");
+			uint address = (uint)values.GetInteger("resource type table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource type entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			_resourceTypes = entries.Select(e => new ThirdGenResourceType(e, stringIDs)).ToArray();
 		}
 
 		private byte[] LoadResourceInfoBuffer(StructureValueCollection values, IReader reader)
 		{
 			var size = (int) values.GetInteger("resource info buffer size");
-			uint address = values.GetInteger("resource info buffer address");
+			uint address = (uint)values.GetInteger("resource info buffer address");
+
+			long expand = _expander.Expand(address);
+
 			if (size <= 0 || address == 0)
 				return new byte[0];
 
-			int offset = _metaArea.PointerToOffset(address);
+			int offset = _metaArea.PointerToOffset(expand);
 			reader.SeekTo(offset);
 			return reader.ReadBlock(size);
 		}
 
-		private byte[] BuildResourceInfoBuffer(IEnumerable<Resource> resources)
-		{
-			// Add up all of the sizes to compute the total buffer size
-			int size = 0;
-			foreach (Resource resource in resources.Where(r => r.Info != null))
-			{
-				size = AlignInfoBlockOffset(resource, size);
-				size += resource.Info.Length;
-			}
-
-			// Now copy each info block into the buffer
-			int offset = 0;
-			var result = new byte[size];
-			foreach (Resource resource in resources.Where(r => r.Info != null))
-			{
-				offset = AlignInfoBlockOffset(resource, offset);
-				Buffer.BlockCopy(resource.Info, 0, result, offset, resource.Info.Length);
-				offset += resource.Info.Length;
-			}
-
-			return result;
-		}
-
 		private void SaveResourceInfoBuffer(byte[] buffer, StructureValueCollection values, IStream stream)
 		{
-			// Free the old info buffer
-			var oldSize = (int) values.GetInteger("resource info buffer size");
-			uint oldAddress = values.GetInteger("resource info buffer address");
-			if (oldAddress >= 0 && oldSize > 0)
-				_allocator.Free(oldAddress, oldSize);
-
-			// Write a new one
-			uint newAddress = 0;
+			long newAddress = 0;
 			if (buffer.Length > 0)
 			{
 				newAddress = _allocator.Allocate(buffer.Length, 0x10, stream);
@@ -192,8 +263,286 @@ namespace Blamite.Blam.ThirdGen.Structures
 			}
 
 			// Update values
+
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("resource info buffer size", (uint) buffer.Length);
-			values.SetInteger("resource info buffer address", newAddress);
+			values.SetInteger("resource info buffer address", cont);
+		}
+
+		public IEnumerable<ResourcePredictionD> LoadPredictions(IReader reader, TagTable tags, List<Resource> resources)
+		{
+			StructureValueCollection values = LoadTag(reader);
+
+			if (!values.HasInteger("number of prediction d2s") || !values.HasInteger("prediction d2 table address"))
+				return null;
+
+			int subcount = 2;
+			StructureLayout templayout = _buildInfo.Layouts.GetLayout("raw segment table entry");
+			if (templayout.HasField("tertiary page index"))
+				subcount = 3;
+
+			var result = new List<ResourcePredictionD>();
+
+			StructureValueCollection[] d2entries = ReadReflexive(values, reader, "number of prediction d2s", "prediction d2 table address", "prediction d2 entry");
+			StructureValueCollection[] dentries = ReadReflexive(values, reader, "number of prediction ds", "prediction d table address", "prediction d entry");
+			StructureValueCollection[] centries = ReadReflexive(values, reader, "number of prediction cs", "prediction c table address", "prediction c entry");
+			StructureValueCollection[] bentries = ReadReflexive(values, reader, "number of prediction bs", "prediction b table address", "prediction b entry");
+			StructureValueCollection[] aentries = ReadReflexive(values, reader, "number of prediction as", "prediction a table address", "prediction a entry");
+
+			for (int i = 0; i < d2entries.Length; i++)
+			{
+				ResourcePredictionD pd = new ResourcePredictionD();
+				pd.Index = i;
+				var tag = new DatumIndex(d2entries[i].GetInteger("tag datum"));
+				pd.Tag = tag.IsValid ? tags[tag] : null;
+				pd.Unknown1 = (int)d2entries[i].GetInteger("unknown 1");
+				pd.Unknown2 = (int)d2entries[i].GetInteger("unknown 2");
+
+				var dccount = (int)dentries[i].GetInteger("c count");
+				var dcindex = (int)dentries[i].GetInteger("c index");
+
+				var dacount = (int)dentries[i].GetInteger("a count");
+				var daindex = (int)dentries[i].GetInteger("a index");
+
+				for (int c = dcindex; c < dcindex + dccount; c++)
+				{
+					ResourcePredictionC pc = new ResourcePredictionC();
+					pc.Index = c;
+					var cbindex = (int)centries[c].GetInteger("b index");
+					pc.OverallIndex = (short)centries[c].GetInteger("overall index");
+
+					ResourcePredictionB pb = new ResourcePredictionB();
+					pb.Index = cbindex;
+					var bacount = (int)bentries[cbindex].GetInteger("a count");
+					var baindex = (int)bentries[cbindex].GetInteger("a index");
+					pb.OverallIndex = (short)bentries[cbindex].GetInteger("overall index");
+
+					for (int a = baindex; a < baindex + bacount; a++)
+					{
+						ResourcePredictionA pa = new ResourcePredictionA();
+						pa.Index = a;
+						pa.Value = new DatumIndex(aentries[a].GetInteger("value"));
+
+						int resolvedresource = pa.Value.Index / subcount;
+						int subresource = pa.Value.Index - resolvedresource * subcount;
+
+						if (resolvedresource >= resources.Count)
+							continue;
+						var res = resources[resolvedresource];
+
+						pa.Resource = res.Index;
+						pa.SubResource = subresource;
+
+						pb.AEntries.Add(pa);
+					}
+
+					pc.BEntry = pb;
+					pd.CEntries.Add(pc);
+				}
+
+				for (int a = daindex; a < daindex + dacount; a++)
+				{
+					ResourcePredictionA pa = new ResourcePredictionA();
+					pa.Index = a;
+					pa.Value = new DatumIndex(aentries[a].GetInteger("value"));
+
+					int resolvedresource = pa.Value.Index / subcount;
+					int subresource = pa.Value.Index - resolvedresource * subcount;
+
+					if (resolvedresource >= resources.Count)
+						continue;
+					var res = resources[resolvedresource];
+
+					pa.Resource = res.Index;
+					pa.SubResource = subresource;
+
+					pd.AEntries.Add(pa);
+				}
+				result.Add(pd);
+			}
+			return result;
+		}
+
+		private StructureValueCollection SerializePredictionD(ResourcePredictionD prediction, int cStart, int aStart, IStream stream)
+		{
+			var result = new StructureValueCollection();
+			result.SetInteger("tag datum", prediction.Tag.Index.Value);
+			result.SetInteger("unknown 1", (uint)prediction.Unknown1);
+			result.SetInteger("unknown 2", (uint)prediction.Unknown2);
+
+			result.SetInteger("c index", (uint)cStart);
+			result.SetInteger("c count", (uint)prediction.CEntries.Count);
+
+			result.SetInteger("a index", (uint)aStart);
+			result.SetInteger("a count", (uint)prediction.AEntries.Count);
+
+			return result;
+		}
+
+		private StructureValueCollection SerializePredictionC(ResourcePredictionC prediction, int bStart, int overall, IStream stream)
+		{
+			var result = new StructureValueCollection();
+			if (prediction.OverallIndex == -1)
+				result.SetInteger("overall index", (uint)overall);
+			else
+				result.SetInteger("overall index", (uint)prediction.OverallIndex);
+
+			result.SetInteger("b index", (uint)bStart);
+
+			return result;
+		}
+
+		private StructureValueCollection SerializePredictionB(ResourcePredictionB prediction, int aStart, int overall, IStream stream)
+		{
+			var result = new StructureValueCollection();
+			if (prediction.OverallIndex == -1)
+				result.SetInteger("overall index", (uint)overall);
+			else
+				result.SetInteger("overall index", (uint)prediction.OverallIndex);
+
+			result.SetInteger("a index", (uint)aStart);
+			result.SetInteger("a count", (uint)prediction.AEntries.Count);
+
+			return result;
+		}
+
+		private StructureValueCollection SerializePredictionA(ResourcePredictionA prediction, IStream stream)
+		{
+			var result = new StructureValueCollection();
+			result.SetInteger("value", prediction.Value.Value);
+
+			return result;
+		}
+
+		public void SavePredictions(ICollection<ResourcePredictionD> predictions, IStream stream)
+		{
+			StructureValueCollection values = LoadTag(stream);
+
+			FreePredictions(values);
+
+			var dentries = new List<StructureValueCollection>();
+			var centries = new List<StructureValueCollection>();
+			var bentries = new List<StructureValueCollection>();
+			var aentries = new List<StructureValueCollection>();
+
+			var writtenc = new Dictionary<long, int>();//hash, index
+			var writtenb = new Dictionary<long, int>();
+
+			int firstnullc = -1;
+
+			DatumIndex currenttag = DatumIndex.Null;
+
+			foreach (ResourcePredictionD pred in predictions)
+			{
+				long dchash = pred.GetCHash();
+
+				int dcstart = centries.Count();
+				int dastart = aentries.Count;
+
+				if (pred.CEntries.Count > 0)
+				{
+					int exist;
+					bool found = writtenc.TryGetValue(dchash, out exist);
+
+					if (!found)
+					{
+						foreach (ResourcePredictionC pc in pred.CEntries)
+						{
+							long cbhash = pc.GetBHash();
+
+							int cbstart = bentries.Count;
+
+							int bexist;
+							bool bfound = writtenb.TryGetValue(cbhash, out bexist);
+
+							if (!bfound)
+							{
+								int bkstart = aentries.Count();
+
+								foreach (ResourcePredictionA pa in pc.BEntry.AEntries)
+									aentries.Add(SerializePredictionA(pa, stream));
+
+								writtenb[cbhash] = cbstart;
+
+								bentries.Add(SerializePredictionB(pc.BEntry, bkstart, cbstart, stream));
+							}
+							else
+								cbstart = bexist;
+
+							writtenc[dchash] = dcstart;
+
+							centries.Add(SerializePredictionC(pc, cbstart, cbstart, stream));
+						}
+					}
+					else
+						dcstart = exist;
+				}
+				else
+				{
+					if (firstnullc == -1)
+						firstnullc = dcstart;
+					else
+						dcstart = firstnullc;	
+				}
+
+				if (pred.AEntries.Count > 0)
+				{
+					foreach (ResourcePredictionA pa in pred.AEntries)
+						aentries.Add(SerializePredictionA(pa, stream));
+				}
+				else
+					dastart = -1;
+
+				dentries.Add(SerializePredictionD(pred, dcstart, dastart, stream));
+			}
+
+			// a
+			StructureLayout alayout = _buildInfo.Layouts.GetLayout("prediction a entry");
+			long newa = ReflexiveWriter.WriteReflexive(aentries, alayout, _metaArea, _allocator, stream);
+
+			uint conta = _expander.Contract(newa);
+
+			values.SetInteger("number of prediction as", (uint)aentries.Count);
+			values.SetInteger("prediction a table address", conta);
+
+			// b
+			StructureLayout blayout = _buildInfo.Layouts.GetLayout("prediction b entry");
+			long newb = ReflexiveWriter.WriteReflexive(bentries, blayout, _metaArea, _allocator, stream);
+
+			uint contb = _expander.Contract(newb);
+
+			values.SetInteger("number of prediction bs", (uint)bentries.Count);
+			values.SetInteger("prediction b table address", contb);
+
+			// cc
+			StructureLayout clayout = _buildInfo.Layouts.GetLayout("prediction c entry");
+			long newc = ReflexiveWriter.WriteReflexive(centries, clayout, _metaArea, _allocator, stream);
+
+			uint contc = _expander.Contract(newc);
+
+			values.SetInteger("number of prediction cs", (uint)centries.Count);
+			values.SetInteger("prediction c table address", contc);
+
+			// d
+			StructureLayout dlayout = _buildInfo.Layouts.GetLayout("prediction d entry");
+			long newd = ReflexiveWriter.WriteReflexive(dentries, dlayout, _metaArea, _allocator, stream);
+
+			uint contd = _expander.Contract(newd);
+
+			values.SetInteger("number of prediction ds", (uint)dentries.Count);
+			values.SetInteger("prediction d table address", contd);
+
+			// d2
+			StructureLayout d2layout = _buildInfo.Layouts.GetLayout("prediction d2 entry");
+			long newd2 = ReflexiveWriter.WriteReflexive(dentries, d2layout, _metaArea, _allocator, stream);
+
+			uint contd2 = _expander.Contract(newd2);
+
+			values.SetInteger("number of prediction d2s", (uint)dentries.Count);
+			values.SetInteger("prediction d2 table address", contd2);
+
+			SaveTag(values, stream);
 		}
 
 		private Resource LoadResource(StructureValueCollection values, int index, TagTable tags,
@@ -208,29 +557,47 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var typeIndex = (int) values.GetInteger("resource type index");
 			if (typeIndex >= 0 && typeIndex < _resourceTypes.Length)
 				result.Type = _resourceTypes[typeIndex].Name;
-			result.Flags = values.GetInteger("flags");
+			result.Flags = (uint)values.GetInteger("flags");
 
-			var infoOffset = (int) values.GetInteger("resource info offset");
 			var infoSize = (int) values.GetInteger("resource info size");
+
 			if (infoSize > 0)
 			{
+				var infoOffset = 0;
+
+				if (values.HasInteger("number of resource info offsets"))//for h4
+				{
+					var infocount = (int)values.GetInteger("number of resource info offsets");
+					uint address = (uint)values.GetInteger("resource info offsets table address");
+
+					long expand = _expander.Expand(address);
+
+					StructureLayout layout = _buildInfo.Layouts.GetLayout("resource info offset entry");
+					StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, infocount, expand, layout, _metaArea);
+
+					if (infocount > 0)
+						infoOffset = (int)entries[0].GetInteger("offset");
+				}
+				else
+					infoOffset = (int)values.GetInteger("resource info offset");
+
 				// Copy the section of the info buffer that the resource is pointing to
 				result.Info = new byte[infoSize];
 				Buffer.BlockCopy(infoBuffer, infoOffset, result.Info, 0, infoSize);
 			}
 
-			result.Unknown1 = (int) values.GetInteger("unknown 1");
-			result.Unknown2 = (int) values.GetInteger("unknown 2");
+			result.ResourceBits = (ushort) values.GetInteger("resource bits");
 			var segmentIndex = (int) values.GetInteger("segment index");
 			result.Location = (segmentIndex >= 0) ? pointers[segmentIndex] : null;
-			result.Unknown3 = (int) values.GetInteger("unknown 3");
+			result.BaseDefinitionAddress = (int) values.GetInteger("base definition address");
 
 			result.ResourceFixups.AddRange(LoadResourceFixups(values, reader));
 			result.DefinitionFixups.AddRange(LoadDefinitionFixups(values, reader));
+
 			return result;
 		}
 
-		private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, int infoOffset, IStream stream)
+		private StructureValueCollection SerializeResource(Resource resource, int pointerIndex, IStream stream)
 		{
 			var result = new StructureValueCollection();
 			if (resource.ParentTag != null)
@@ -246,25 +613,27 @@ namespace Blamite.Blam.ThirdGen.Structures
 			result.SetInteger("datum index salt", resource.Index.Salt);
 			result.SetInteger("resource type index", (uint) FindResourceType(resource.Type));
 			result.SetInteger("flags", resource.Flags);
-			result.SetInteger("resource info offset", (uint) infoOffset);
-			result.SetInteger("resource info size", (resource.Info != null) ? (uint) resource.Info.Length : 0);
-			result.SetInteger("unknown 1", (uint) resource.Unknown1);
-			result.SetInteger("unknown 2", (uint) resource.Unknown2);
+			result.SetInteger("resource info size", (resource.Info != null) ? (uint)resource.Info.Length : 0);
+
+			result.SetInteger("resource bits", (ushort) resource.ResourceBits);
 			result.SetInteger("segment index", (uint) pointerIndex);
-			result.SetInteger("unknown 3", (uint) resource.Unknown3);
+			result.SetInteger("base definition address", (uint) resource.BaseDefinitionAddress);
 			return result;
 		}
 
 		private IEnumerable<ResourceFixup> LoadResourceFixups(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of resource fixups");
-			uint address = values.GetInteger("resource fixup table address");
+			uint address = (uint)values.GetInteger("resource fixup table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
-				Address = e.GetInteger("address")
+				Address = (uint)e.GetInteger("address")
 			});
 		}
 
@@ -272,26 +641,31 @@ namespace Blamite.Blam.ThirdGen.Structures
 			ReflexiveCache<ResourceFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of resource fixups", 0);
-			uint oldAddress = values.GetIntegerOrDefault("resource fixup table address", 0);
+			uint oldAddress = (uint)values.GetIntegerOrDefault("resource fixup table address", 0);
+
+			long oldExpand = _expander.Expand(oldAddress);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
 
-			uint newAddress;
+			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
 				// Write a new reflexive
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeResourceFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, fixups.Count, layout, _metaArea,
+				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Reflexive was cached - just free it
-				_allocator.Free(oldAddress, oldCount*layout.Size);
+				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of resource fixups", (uint) fixups.Count);
-			values.SetInteger("resource fixup table address", newAddress);
+			values.SetInteger("resource fixup table address", cont);
 		}
 
 		private StructureValueCollection SerializeResourceFixup(ResourceFixup fixup)
@@ -305,9 +679,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private IEnumerable<ResourceDefinitionFixup> LoadDefinitionFixups(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of definition fixups");
-			uint address = values.GetInteger("definition fixup table address");
+			uint address = (uint)values.GetInteger("definition fixup table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return entries.Select(e => new ResourceDefinitionFixup
 			{
 				Offset = (int) e.GetInteger("offset"),
@@ -323,70 +700,111 @@ namespace Blamite.Blam.ThirdGen.Structures
 			return result;
 		}
 
+		private StructureValueCollection SerializeInfos(int info)
+		{
+			var result = new StructureValueCollection();
+			result.SetInteger("offset", (uint)info);
+			return result;
+		}
+
 		private void SaveDefinitionFixups(IList<ResourceDefinitionFixup> fixups, StructureValueCollection values,
 			IStream stream, ReflexiveCache<ResourceDefinitionFixup> cache)
 		{
 			var oldCount = (int) values.GetIntegerOrDefault("number of definition fixups", 0);
-			uint oldAddress = values.GetIntegerOrDefault("definition fixup table address", 0);
+			uint oldAddress = (uint)values.GetIntegerOrDefault("definition fixup table address", 0);
+
+			long oldExpand = _expander.Expand(oldAddress);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
 
-			uint newAddress;
+			long newAddress;
 			if (!cache.TryGetAddress(fixups, out newAddress))
 			{
 				// Write a new reflexive
 				IEnumerable<StructureValueCollection> entries = fixups.Select(f => SerializeDefinitionFixup(f));
-				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldAddress, fixups.Count, layout, _metaArea,
+				newAddress = ReflexiveWriter.WriteReflexive(entries, oldCount, oldExpand, fixups.Count, layout, _metaArea,
 					_allocator, stream);
 				cache.Add(newAddress, fixups);
 			}
 			else if (oldAddress != 0 && oldCount > 0)
 			{
 				// Reflexive was cached - just free it
-				_allocator.Free(oldAddress, oldCount*layout.Size);
+				_allocator.Free(oldExpand, oldCount*layout.Size);
 			}
 
+			uint cont = _expander.Contract(newAddress);
+
 			values.SetInteger("number of definition fixups", (uint) fixups.Count);
-			values.SetInteger("definition fixup table address", newAddress);
+			values.SetInteger("definition fixup table address", cont);
 		}
 
 		private void FreeResources(StructureValueCollection values, IReader reader)
 		{
 			var count = (int) values.GetInteger("number of resources");
-			uint address = values.GetInteger("resource table address");
+			uint address = (uint)values.GetInteger("resource table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource table entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			foreach (StructureValueCollection entry in entries)
 				FreeResource(entry);
 
 			int size = count*layout.Size;
-			if (address >= 0 && size > 0)
-				_allocator.Free(address, size);
+			if (expand >= 0 && size > 0)
+				_allocator.Free(expand, size);
 		}
 
 		private void FreeResource(StructureValueCollection values)
 		{
-			FreeResourceFixups(values);
-			FreeDefinitionFixups(values);
+			FreeReflexive(values, "number of resource fixups", "resource fixup table address", "resource fixup entry");
+			FreeReflexive(values, "number of definition fixups", "definition fixup table address", "definition fixup entry");
+			if (values.HasInteger("number of resource info offsets"))
+				FreeReflexive(values, "number of resource info offsets", "resource info offsets table address", "resource info offset entry");
 		}
 
-		private void FreeResourceFixups(StructureValueCollection values)
+		private void FreeInfoBuffer(StructureValueCollection values)
 		{
-			var count = (int) values.GetInteger("number of resource fixups");
-			uint address = values.GetInteger("resource fixup table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("resource fixup entry");
-			int size = count*layout.Size;
-			if (address >= 0 && size > 0)
-				_allocator.Free(address, size);
+			var buffsize = (int)values.GetInteger("resource info buffer size");
+			uint buffaddr = (uint)values.GetInteger("resource info buffer address");
+
+			long expand = _expander.Expand(buffaddr);
+
+			if (buffaddr >= 0 && buffsize > 0)
+				_allocator.Free(expand, buffsize);
 		}
 
-		private void FreeDefinitionFixups(StructureValueCollection values)
+		private void FreePredictions(StructureValueCollection values)
 		{
-			var count = (int) values.GetInteger("number of definition fixups");
-			uint address = values.GetInteger("definition fixup table address");
-			StructureLayout layout = _buildInfo.Layouts.GetLayout("definition fixup entry");
-			int size = count*layout.Size;
-			if (address >= 0 && size > 0)
-				_allocator.Free(address, size);
+			FreeReflexive(values, "number of prediction as", "prediction a table address", "prediction a entry");
+			FreeReflexive(values, "number of prediction bs", "prediction b table address", "prediction b entry");
+			FreeReflexive(values, "number of prediction cs", "prediction c table address", "prediction c entry");
+			FreeReflexive(values, "number of prediction ds", "prediction d table address", "prediction d entry");
+			FreeReflexive(values, "number of prediction d2s", "prediction d2 table address", "prediction d2 entry");
+		}
+
+		private void FreeReflexive(StructureValueCollection values, string countName, string addressName, string layoutName)
+		{
+			var count = (int)values.GetInteger(countName);
+			uint address = (uint)values.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
+			int size = count * layout.Size;
+			if (expand >= 0 && size > 0)
+				_allocator.Free(expand, size);
+		}
+
+		private StructureValueCollection[] ReadReflexive(StructureValueCollection values, IReader reader, string countName, string addressName, string layoutName)
+		{
+			var count = (int)values.GetInteger(countName);
+			uint address = (uint)values.GetInteger(addressName);
+
+			long expand = _expander.Expand(address);
+
+			StructureLayout layout = _buildInfo.Layouts.GetLayout(layoutName);
+			return ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 		}
 
 		private int AlignInfoBlockOffset(Resource resource, int offset)

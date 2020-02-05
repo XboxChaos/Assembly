@@ -9,7 +9,7 @@ namespace Blamite.Blam.Util
 	/// </summary>
 	public static class ReflexiveReader
 	{
-		public static StructureValueCollection[] ReadReflexive(IReader reader, int count, uint address,
+		public static StructureValueCollection[] ReadReflexive(IReader reader, int count, long address,
 			StructureLayout entryLayout, FileSegmentGroup metaArea)
 		{
 			if (entryLayout.Size == 0)

@@ -4,17 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Editors="clr-namespace:Assembly.Metro.Controls.PageTemplates.Games.Components.Editors"
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000">
 	<Grid>
-		<TextBox x:Name="txtScript" Margin="0,0,0,30" Padding="0" BorderThickness="0" Foreground="White"
-		         VerticalAlignment="Stretch" Height="Auto" VerticalScrollBarVisibility="Auto"
-		         HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="10pt" AcceptsReturn="True"
-		         AcceptsTab="True" />
-		<Border Height="30" VerticalAlignment="Bottom" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
+        <avalonEdit:TextEditor Name="txtScript" Height="Auto" Margin="0,0,0,30"
+		                       FontFamily="Consolas" FontSize="10pt"
+		                       Background="#252526" BorderBrush="#FF595959" Foreground="White"
+		                       ShowLineNumbers="True" IsReadOnly="True">
+            <avalonEdit:TextEditor.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="Cut"/>
+                    <MenuItem Command="Copy"/>
+                    <MenuItem Command="Paste"/>
+                </ContextMenu>
+            </avalonEdit:TextEditor.ContextMenu>
+        </avalonEdit:TextEditor>
+        <Border Height="30" VerticalAlignment="Bottom" BorderThickness="0,1,0,0" BorderBrush="#434346" Background="#FF303032">
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="btnCompile" Content="Save and Compile" Width="132" VerticalAlignment="Center"
-				        HorizontalAlignment="Left" Margin="10,0,0,0" Click="btnCompile_Click" />
+				        HorizontalAlignment="Left" Margin="10,0,0,0" Click="btnCompile_Click" Visibility="Collapsed"/>
 				<Button x:Name="btnExport" Content="Export..." Width="80" VerticalAlignment="Center" HorizontalAlignment="Left"
 				        Margin="10,0,0,0" Click="btnExport_Click" />
 			</StackPanel>

@@ -15,6 +15,7 @@ namespace Blamite.Injection
 			WriteExtractedResourcePages(tags, container, writer);
 			WriteResourcePages(tags, container, writer);
 			WriteResources(tags, container, writer);
+			WritePredictions(tags, container, writer);
 
 			container.EndBlock();
 		}
@@ -23,12 +24,13 @@ namespace Blamite.Injection
 		{
 			foreach (DataBlock dataBlock in tags.DataBlocks)
 			{
-				container.StartBlock("data", 6);
+				container.StartBlock("data", 7);
 
 				// Main data
 				writer.WriteUInt32(dataBlock.OriginalAddress);
 				writer.WriteInt32(dataBlock.EntryCount);
 				writer.WriteInt32(dataBlock.Alignment);
+				writer.WriteByte((byte)(dataBlock.Sortable == true ? 1 : 0));
 				WriteByteArray(dataBlock.Data, writer);
 
 				// Address fixups
@@ -93,6 +95,33 @@ namespace Blamite.Injection
 					}
 				}
 
+				// Model Data fixups
+				writer.WriteInt32(dataBlock.ModelDataFixups.Count);
+				foreach (DataBlockModelDataFixup modelData in dataBlock.ModelDataFixups)
+				{
+					writer.WriteUInt32(modelData.OriginalAddress);
+					writer.WriteInt32(modelData.WriteOffset);
+					writer.WriteInt32(modelData.Type);
+				}
+
+				// Effect fixups
+				writer.WriteInt32(dataBlock.EffectFixups.Count);
+				foreach (DataBlockEffectFixup effectData in dataBlock.EffectFixups)
+				{
+					writer.WriteInt32(effectData.OriginalIndex);
+					writer.WriteInt32(effectData.WriteOffset);
+					writer.WriteInt32(effectData.Type);
+					if (effectData.Data != null)
+					{
+						writer.WriteInt32(effectData.Data.Length);
+						writer.WriteBlock(effectData.Data);
+					}
+					else
+					{
+						writer.WriteInt32(0);
+					}
+				}
+
 				container.EndBlock();
 			}
 		}
@@ -131,8 +160,8 @@ namespace Blamite.Injection
 				WriteByteArray(page.Hash2, writer);
 				WriteByteArray(page.Hash3, writer);
 				writer.WriteInt32(page.Unknown1);
+				writer.WriteInt32(page.AssetCount);
 				writer.WriteInt32(page.Unknown2);
-				writer.WriteInt32(page.Unknown3);
 
 				container.EndBlock();
 			}
@@ -155,7 +184,7 @@ namespace Blamite.Injection
 		{
 			foreach (ExtractedResourceInfo resource in tags.Resources)
 			{
-				container.StartBlock("rsrc", 1);
+				container.StartBlock("rsrc", 2);
 
 				writer.WriteUInt32(resource.OriginalIndex.Value);
 				writer.WriteUInt32(resource.Flags);
@@ -164,24 +193,63 @@ namespace Blamite.Injection
 				else
 					writer.WriteByte(0);
 				WriteByteArray(resource.Info, writer);
+
 				writer.WriteUInt32(resource.OriginalParentTagIndex.Value);
 				if (resource.Location != null)
 				{
 					writer.WriteByte(1);
 					writer.WriteInt32(resource.Location.OriginalPrimaryPageIndex);
 					writer.WriteInt32(resource.Location.PrimaryOffset);
-					writer.WriteInt32(resource.Location.PrimaryUnknown);
+					if (resource.Location.PrimarySize != null)
+					{
+						writer.WriteInt32(resource.Location.PrimarySize.Size);
+						writer.WriteByte((byte)resource.Location.PrimarySize.Parts.Count);
+						foreach (ResourceSizePart part in resource.Location.PrimarySize.Parts)
+						{
+							writer.WriteInt32(part.Offset);
+							writer.WriteInt32(part.Size);
+						}
+					}
+					else
+						writer.WriteInt32(-1);
+
 					writer.WriteInt32(resource.Location.OriginalSecondaryPageIndex);
 					writer.WriteInt32(resource.Location.SecondaryOffset);
-					writer.WriteInt32(resource.Location.SecondaryUnknown);
+					if (resource.Location.SecondarySize != null)
+					{
+						writer.WriteInt32(resource.Location.SecondarySize.Size);
+						writer.WriteByte((byte)resource.Location.SecondarySize.Parts.Count);
+						foreach (ResourceSizePart part in resource.Location.SecondarySize.Parts)
+						{
+							writer.WriteInt32(part.Offset);
+							writer.WriteInt32(part.Size);
+						}
+					}
+					else
+						writer.WriteInt32(-1);
+
+					writer.WriteInt32(resource.Location.OriginalTertiaryPageIndex);
+					writer.WriteInt32(resource.Location.TertiaryOffset);
+					if (resource.Location.TertiarySize != null)
+					{
+						writer.WriteInt32(resource.Location.TertiarySize.Size);
+						writer.WriteByte((byte)resource.Location.TertiarySize.Parts.Count);
+						foreach (ResourceSizePart part in resource.Location.TertiarySize.Parts)
+						{
+							writer.WriteInt32(part.Offset);
+							writer.WriteInt32(part.Size);
+						}
+					}
+					else
+						writer.WriteInt32(-1);
 				}
 				else
 				{
 					writer.WriteByte(0);
 				}
-				writer.WriteInt32(resource.Unknown1);
-				writer.WriteInt32(resource.Unknown2);
-				writer.WriteInt32(resource.Unknown3);
+
+				writer.WriteInt32(resource.ResourceBits);
+				writer.WriteInt32(resource.BaseDefinitionAddress);
 
 				writer.WriteInt32(resource.ResourceFixups.Count);
 				foreach (ResourceFixup fixup in resource.ResourceFixups)
@@ -195,6 +263,45 @@ namespace Blamite.Injection
 				{
 					writer.WriteInt32(fixup.Offset);
 					writer.WriteInt32(fixup.Type);
+				}
+
+				container.EndBlock();
+			}
+		}
+
+		private static void WritePredictions(TagContainer tags, ContainerWriter container, IWriter writer)
+		{
+			foreach (var prediction in tags.Predictions)
+			{
+				container.StartBlock("pdct", 0);
+
+				writer.WriteInt32(prediction.OriginalIndex);
+
+				writer.WriteUInt32(prediction.OriginalTagIndex.Value);
+
+				writer.WriteInt32(prediction.Unknown1);
+				writer.WriteInt32(prediction.Unknown2);
+
+				writer.WriteInt32(prediction.CEntries.Count);
+				foreach (ExtractedResourcePredictionC expc in prediction.CEntries)
+				{
+					writer.WriteInt32(expc.BEntry.AEntries.Count);
+					foreach (ExtractedResourcePredictionA expa in expc.BEntry.AEntries)
+					{
+						writer.WriteInt32(expa.OriginalResourceSubIndex);
+						writer.WriteUInt32(expa.OriginalResourceIndex.Value);
+						writer.WriteInt32(expa.OriginalResourceClass);
+						writer.WriteAscii(expa.OriginalResourceName);
+					}	
+				}
+
+				writer.WriteInt32(prediction.AEntries.Count);
+				foreach (ExtractedResourcePredictionA expa in prediction.AEntries)
+				{
+					writer.WriteInt32(expa.OriginalResourceSubIndex);
+					writer.WriteUInt32(expa.OriginalResourceIndex.Value);
+					writer.WriteInt32(expa.OriginalResourceClass);
+					writer.WriteAscii(expa.OriginalResourceName);
 				}
 
 				container.EndBlock();

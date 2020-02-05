@@ -9,16 +9,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		Bitfield8,
 		Bitfield16,
-		Bitfield32
+		Bitfield32,
+		Bitfield64
 	}
 
 	public class BitfieldData : ValueField
 	{
 		private readonly SortedList<int, BitData> _bits = new SortedList<int, BitData>();
 		private BitfieldType _type;
-		private uint _value;
+		private ulong _value;
 
-		public BitfieldData(string name, uint offset, uint address, BitfieldType type, uint pluginLine)
+		public BitfieldData(string name, uint offset, long address, BitfieldType type, uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{
 			_type = type;
@@ -26,7 +27,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			UncheckAllCommand = new QuickCheckCommand(this, false);
 		}
 
-		public uint Value
+		public ulong Value
 		{
 			get { return _value; }
 			set

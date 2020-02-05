@@ -9,6 +9,7 @@ namespace Blamite.Blam.Resources
 	public class ResourcePageInjector
 	{
 		private readonly FileSegment _rawTable;
+		private bool _fileOffsets;
 
 		/// <summary>
 		///     Creates a new ResourcePageInjector which can inject resource pages into a cache file.
@@ -16,6 +17,7 @@ namespace Blamite.Blam.Resources
 		/// <param name="cacheFile">The cache file to inject resource pages into.</param>
 		public ResourcePageInjector(ICacheFile cacheFile)
 		{
+			_fileOffsets = cacheFile.ZoneOnly;
 			_rawTable = cacheFile.RawTable;
 		}
 
@@ -36,7 +38,8 @@ namespace Blamite.Blam.Resources
 			cacheStream.SeekTo(offsetInCache);
 			cacheStream.WriteBlock(data);
 
-			return offsetInRaw;
+			return offsetInRaw
+				+ (_fileOffsets ? _rawTable.Offset : 0);
 		}
 	}
 }

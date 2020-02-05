@@ -26,11 +26,22 @@
 		<uint32 name="bsp 3 zone set table address" offset="0xC8" />
 		<int32 name="number of cinematic zone sets" offset="0xD0" />
 		<uint32 name="cinematic zone set table address" offset="0xD4" />
-		<int32 name="number of custom zone sets" offset="0xDC" />
-		<uint32 name="custom zone set table address" offset="0xE0" />
+		<int32 name="number of scenario zone sets" offset="0xDC" />
+		<uint32 name="scenario zone set table address" offset="0xE0" />
 
 		<int32 name="resource info buffer size" offset="0x13C" />
 		<uint32 name="resource info buffer address" offset="0x148" />
+
+		<int32 name="number of prediction as" offset="0x1D0" />
+		<uint32 name="prediction a table address" offset="0x1D4" />
+		<int32 name="number of prediction bs" offset="0x1DC" />
+		<uint32 name="prediction b table address" offset="0x1E0" />
+		<int32 name="number of prediction cs" offset="0x1E8" />
+		<uint32 name="prediction c table address" offset="0x1EC" />
+		<int32 name="number of prediction ds" offset="0x1F4" />
+		<uint32 name="prediction d table address" offset="0x1F8" />
+		<int32 name="number of prediction d2s" offset="0x200" />
+		<uint32 name="prediction d2 table address" offset="0x204" />
 	</layout>
 
 	<!-- Reflexive at 0x4 in zone -->
@@ -48,10 +59,10 @@
 		<byte name="flags" offset="0x13" />
 		<int32 name="resource info offset" offset="0x14" />
 		<int32 name="resource info size" offset="0x18" />
-		<int32 name="unknown 1" offset="0x1C" />
-		<int32 name="unknown 2" offset="0x20" />
+		<int32 name="alt resource info offset" offset="0x1C" />
+		<uint16 name="resource bits" offset="0x20" />
 		<int16 name="segment index" offset="0x22" />
-		<uint32 name="unknown 3" offset="0x24" />
+		<uint32 name="base definition address" offset="0x24" />
 		<int32 name="number of resource fixups" offset="0x28" />
 		<uint32 name="resource fixup table address" offset="0x2C" />
 		<int32 name="number of definition fixups" offset="0x34" />
@@ -89,6 +100,39 @@
 		<uint32 name="tag 2 bitfield table address" offset="0x64" />
 	</layout>
 
+	<!-- Reflexive at 0x1D0 in resource table entry -->
+	<layout for="prediction a entry" size="0x4">
+		<int32 name="value" offset="0x0" />
+	</layout>
+
+	<!-- Reflexive at 0x1DC in resource table entry -->
+	<layout for="prediction b entry" size="0x8">
+		<int16 name="overall index" offset="0x0" />
+		<int16 name="a count" offset="0x2" />
+		<int32 name="a index" offset="0x4" />
+	</layout>
+
+	<!-- Reflexive at 0x1E8 in resource table entry -->
+	<layout for="prediction c entry" size="0x4">
+		<int16 name="overall index" offset="0x0" />
+		<int16 name="b index" offset="0x2" />
+	</layout>
+
+	<!-- Reflexive at 0x1F4 in resource table entry -->
+	<layout for="prediction d entry" size="0x8">
+		<int16 name="c count" offset="0x0" />
+		<int16 name="c index" offset="0x2" />
+		<int16 name="a count" offset="0x4" />
+		<int16 name="a index" offset="0x6" />
+	</layout>
+
+	<!-- Reflexive at 0x200 in resource table entry -->
+	<layout for="prediction d2 entry" size="0xC">
+		<int32 name="tag datum" offset="0x0" />
+		<int32 name="unknown 1" offset="0x4" />
+		<int32 name="unknown 2" offset="0x8" />
+	</layout>
+
 	<!-- play (cache_file_resource_layout_table) -->
 	<layout for="resource layout table">
 		<int32 name="number of external cache files" offset="0xC" />
@@ -96,9 +140,26 @@
 
 		<int32 name="number of raw pages" offset="0x18" />
 		<uint32 name="raw page table address" offset="0x1C" />
+		
+		<int32 name="number of raw sizes" offset="0x24" />
+		<uint32 name="raw size table address" offset="0x28" />
 
 		<int32 name="number of raw segments" offset="0x30" />
 		<uint32 name="raw segment table address" offset="0x34" />
+	</layout>
+	<!-- zone version of (cache_file_resource_layout_table) -->
+	<layout for="resource layout table alt">
+		<int32 name="number of external cache files" offset="0x28" />
+		<uint32 name="external cache file table address" offset="0x2C" />
+
+		<int32 name="number of raw pages" offset="0x34" />
+		<uint32 name="raw page table address" offset="0x38" />
+		
+		<int32 name="number of raw sizes" offset="0x40" />
+		<uint32 name="raw size table address" offset="0x44" />
+
+		<int32 name="number of raw segments" offset="0x4C" />
+		<uint32 name="raw segment table address" offset="0x50" />
 	</layout>
 
 	<!-- Reflexive at 0xC in play -->
@@ -120,8 +181,20 @@
 		<raw name="hash 1" offset="0x18" size="0x14" />
 		<raw name="hash 2" offset="0x2C" size="0x14" />
 		<raw name="hash 3" offset="0x40" size="0x14" />
-		<int16 name="unknown 2" offset="0x54" />
-		<int16 name="unknown 3" offset="0x56" />
+		<int16 name="asset count" offset="0x54" />
+		<int16 name="unknown 2" offset="0x56" />
+	</layout>
+	
+	<!-- Reflexive at 0x24 in play -->
+	<layout for="raw size table entry" size="0x10">
+		<int32 name="overall size" offset="0x0" />
+		<int32 name="number of size parts" offset="0x4" />
+		<uint32 name="size part table address" offset="0x8" />
+	</layout>
+	
+	<layout for="size part table entry" size="0x8">
+		<int32 name="offset" offset="0x0" />
+		<int32 name="size" offset="0x4" />
 	</layout>
 
 	<!-- Reflexive at 0x30 in play -->
@@ -130,7 +203,7 @@
 		<int16 name="secondary page index" offset="0x2" />
 		<int32 name="primary offset" offset="0x4" />
 		<int32 name="secondary offset" offset="0x8" />
-		<int16 name="primary unknown" offset="0xC" />
-		<int16 name="secondary unknown" offset="0xE" />
+		<int16 name="primary size index" offset="0xC" />
+		<int16 name="secondary size index" offset="0xE" />
 	</layout>
 </layouts>

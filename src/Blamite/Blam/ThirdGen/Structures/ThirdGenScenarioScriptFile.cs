@@ -14,7 +14,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private readonly EngineDescription _buildInfo;
 		private readonly FileSegmentGroup _metaArea;
 		private readonly StringIDSource _stringIDs;
-		private readonly ITag _tag;
+		private readonly ITag _scenarioTag;
+		private readonly ITag _scriptTag;
+		private readonly IPointerExpander _expander;
 		private ScriptObjectReflexive _aiObjectWaves;
 		private ScriptObjectReflexive _aiObjects;
 		private ScriptObjectReflexive _aiSquadGroups;
@@ -33,14 +35,29 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private ScriptObjectReflexive _triggerVolumes;
 		private ScriptObjectReflexive _zoneSets;
 
-		public ThirdGenScenarioScriptFile(ITag scenarioTag, string scenarioName, FileSegmentGroup metaArea,
-			StringIDSource stringIDs, EngineDescription buildInfo)
+		public ThirdGenScenarioScriptFile(ITag scenarioTag, string tagName, FileSegmentGroup metaArea,
+			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
-			_tag = scenarioTag;
+			_scenarioTag = _scriptTag = scenarioTag;
+			_expander = expander;
 			_stringIDs = stringIDs;
 			_metaArea = metaArea;
 			_buildInfo = buildInfo;
-			Name = scenarioName.Substring(scenarioName.LastIndexOf('\\') + 1) + ".hsc";
+			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
+
+			DefineScriptObjectReflexives();
+		}
+
+		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
+	StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
+		{
+			_scenarioTag = scenarioTag;
+			_expander = expander;
+			_scriptTag = scriptTag;
+			_stringIDs = stringIDs;
+			_metaArea = metaArea;
+			_buildInfo = buildInfo;
+			Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
 
 			DefineScriptObjectReflexives();
 		}
@@ -55,12 +72,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		public ScriptTable LoadScripts(IReader reader)
 		{
-			StructureValueCollection values = LoadTag(reader);
+			StructureValueCollection values;
+
+			if (_scriptTag != _scenarioTag)
+				values = LoadScriptTag(reader);
+			else
+				values = LoadTag(reader);
 
 			var result = new ScriptTable();
 			var stringReader = new StringTableReader();
+				
 			result.Scripts = LoadScripts(reader, values);
 			result.Globals = LoadGlobals(reader, values);
+			result.Variables = LoadVariables(reader, values);
 			result.Expressions = LoadExpressions(reader, values, stringReader);
 
 			CachedStringTable strings = LoadStrings(reader, values, stringReader);
@@ -102,35 +126,67 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private StructureValueCollection LoadTag(IReader reader)
 		{
-			reader.SeekTo(_tag.MetaLocation.AsOffset());
+			reader.SeekTo(_scenarioTag.MetaLocation.AsOffset());
 			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("scnr"));
+		}
+		private StructureValueCollection LoadScriptTag(IReader reader)
+		{
+			reader.SeekTo(_scriptTag.MetaLocation.AsOffset());
+			return StructureReader.ReadStructure(reader, _buildInfo.Layouts.GetLayout("hsdt"));
 		}
 
 		private List<ScriptGlobal> LoadGlobals(IReader reader, StructureValueCollection values)
 		{
 			var count = (int) values.GetInteger("number of script globals");
-			uint address = values.GetInteger("script global table address");
+			uint address = (uint)values.GetInteger("script global table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script global entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => new ScriptGlobal(e)).ToList();
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
+		}
+
+		private List<ScriptGlobal> LoadVariables(IReader reader, StructureValueCollection values)
+		{
+			if (_buildInfo.Layouts.HasLayout("script variable entry"))
+			{
+				var count = (int)values.GetInteger("number of script variables");
+				uint address = (uint)values.GetInteger("script variable table address");
+
+				long expand = _expander.Expand(address);
+
+				StructureLayout layout = _buildInfo.Layouts.GetLayout("script variable entry");
+				StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+				return entries.Select(e => new ScriptGlobal(e, _stringIDs)).ToList();
+			}
+			else
+				return null;
+
 		}
 
 		private List<Script> LoadScripts(IReader reader, StructureValueCollection values)
 		{
 			var count = (int) values.GetInteger("number of scripts");
-			uint address = values.GetInteger("script table address");
+			uint address = (uint)values.GetInteger("script table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
-			return entries.Select(e => new Script(e, reader, _metaArea, _stringIDs, _buildInfo)).ToList();
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
+			return entries.Select(e => new Script(e, reader, _metaArea, _stringIDs, _buildInfo, _expander)).ToList();
 		}
 
 		private ScriptExpressionTable LoadExpressions(IReader reader, StructureValueCollection values,
 			StringTableReader stringReader)
 		{
 			var count = (int) values.GetInteger("number of script expressions");
-			uint address = values.GetInteger("script expression table address");
+			uint address = (uint)values.GetInteger("script expression table address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("script expression entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 
 			var result = new ScriptExpressionTable();
 			result.AddExpressions(entries.Select((e, i) => new ScriptExpression(e, (ushort) i, stringReader)));
@@ -148,7 +204,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 				return new CachedStringTable();
 
 			var result = new CachedStringTable();
-			int tableOffset = _metaArea.PointerToOffset(values.GetInteger("script string table address"));
+
+			uint tableAddr = (uint)values.GetInteger("script string table address");
+
+			long expand = _expander.Expand(tableAddr);
+
+			int tableOffset = _metaArea.PointerToOffset(expand);
 			stringReader.ReadRequestedStrings(reader, tableOffset, result);
 			return result;
 		}
@@ -189,7 +250,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 
 		private ScriptObject[] ReadObjects(IReader reader, StructureValueCollection values, ScriptObjectReflexive reflexive)
 		{
-			return reflexive.ReadObjects(values, reader, _metaArea, _stringIDs, _buildInfo);
+			return reflexive.ReadObjects(values, reader, _metaArea, _stringIDs, _buildInfo, _expander);
 		}
 
 		private ScriptObject[] ReadPointSets(IReader reader, StructureValueCollection values)
@@ -200,9 +261,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			if (count == 0)
 				return new ScriptObject[0];
 
-			uint address = values.GetInteger("point set data address");
+			uint address = (uint)values.GetInteger("point set data address");
+
+			long expand = _expander.Expand(address);
+
 			StructureLayout layout = _buildInfo.Layouts.GetLayout("point set data entry");
-			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, _metaArea);
+			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, expand, layout, _metaArea);
 			return ReadObjects(reader, entries.First(), _pointSets);
 		}
 	}

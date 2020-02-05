@@ -19,7 +19,7 @@ namespace Blamite.Blam.SecondGen.Structures
 
 		private void Load(StructureValueCollection values, FileSegmentGroup metaArea, Dictionary<int, ITagClass> classesById)
 		{
-			uint offset = values.GetInteger("offset");
+			uint offset = (uint)values.GetInteger("offset");
 			if (offset > 0)
 				MetaLocation = SegmentPointer.FromPointer(offset, metaArea);
 

@@ -35,8 +35,8 @@ namespace Blamite.Blam.ThirdGen.Structures
 		/// <param name="values">The structure to load values from.</param>
 		public ThirdGenInteropSection(StructureValueCollection values)
 		{
-			VirtualAddress = values.GetInteger("virtual address");
-			Size = values.GetInteger("size");
+			VirtualAddress = (uint)values.GetInteger("virtual address");
+			Size = (uint)values.GetInteger("size");
 		}
 
 		/// <summary>

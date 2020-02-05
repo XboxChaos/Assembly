@@ -9,7 +9,7 @@
 		private string _format;
 		private string _value;
 
-		public ColourData(string name, uint offset, uint address, string format, string dataType, string value,
+		public ColourData(string name, uint offset, long address, string format, string dataType, string value,
 			uint pluginLine)
 			: base(name, offset, address, pluginLine)
 		{

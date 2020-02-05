@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Assembly.Metro.Dialogs.ControlDialogs;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 {
@@ -25,17 +27,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 
 		}
 
-		private void cbTagClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ValueChanged(object sender, SelectionChangedEventArgs e)
 		{
-			bool enable = (cbTagClass.SelectedIndex > 0);
-			cbTagEntry.IsEnabled = enable;
-			btnJumpToTag.IsEnabled = enable;
-		}
-
-		private void cbTagEntry_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (cbTagEntry.SelectedIndex < 0 && cbTagClass.SelectedIndex > 0)
+			if (cbTagEntry.SelectedIndex < 0)
 				cbTagEntry.SelectedIndex = 0;
+
+			if (cbTagClass.SelectedIndex > 0)
+			{
+				btnSearch.IsEnabled = true;
+				cbTagEntry.IsEnabled = true;
+
+				TagEntry currentTag = ((TagEntry)cbTagEntry.SelectedItem);
+
+				if (currentTag != null && currentTag.RawTag != null && !currentTag.IsNull)
+					btnJumpToTag.IsEnabled = true;
+				else
+					btnJumpToTag.IsEnabled = false;
+			}
+			else
+			{
+				btnJumpToTag.IsEnabled = false;
+				btnSearch.IsEnabled = false;
+				cbTagEntry.IsEnabled = false;
+			}
+			bool tagValid = cbTagEntry.SelectedIndex != 1;
 		}
 
 		private void CanExecuteJumpToCommand(object sender, CanExecuteRoutedEventArgs e)
@@ -48,12 +63,25 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 		{
 			cbTagClass.SelectedIndex = 0;
 		}
-	}
 
-	/// <summary>
-	///     Converts a TagClass to an index in the class list.
-	/// </summary>
-	[ValueConversion(typeof (TagClass), typeof (int))]
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            TagRefData currentTag = ((TagRefData)cbTagClass.DataContext);
+
+            TagValueSearcher searchDialog = new TagValueSearcher(currentTag.Class);
+            searchDialog.ShowDialog();
+
+            if (searchDialog.DialogResult.HasValue && searchDialog.DialogResult.Value)
+            {
+                cbTagEntry.SelectedValue = searchDialog.SelectedTag;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Converts a TagClass to an index in the class list.
+    /// </summary>
+    [ValueConversion(typeof (TagClass), typeof (int))]
 	internal class TagClassConverter : DependencyObject, IValueConverter
 	{
 		public static DependencyProperty TagsSourceProperty = DependencyProperty.Register(
@@ -93,11 +121,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaComponents
 			if (sourceClass == null)
 				return null;
 
-			//hax 2 tha max
-			var nullTag = new TagEntry(null, null, "(null)");
-
 			var tagList = new CompositeCollection();
-			tagList.Add(nullTag);
+			tagList.Add(sourceClass.NullTag);
 
 			var mainTagListContainer = new CollectionContainer();
 			mainTagListContainer.Collection = sourceClass.Children;

@@ -5,11 +5,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public abstract class ValueField : MetaField
 	{
-		private uint _address;
+		private long _address;
 		private string _name;
 		private uint _offset;
 
-		public ValueField(string name, uint offset, uint address, uint pluginLine)
+		public ValueField(string name, uint offset, long address, uint pluginLine)
 		{
 			_name = name;
 			_offset = offset;
@@ -47,7 +47,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		///     The estimated memory address of the field itself.
 		///     Do not rely upon the accuracy of this value, especially when saving or poking.
 		/// </summary>
-		public uint FieldAddress
+		public long FieldAddress
 		{
 			get { return _address; }
 			set

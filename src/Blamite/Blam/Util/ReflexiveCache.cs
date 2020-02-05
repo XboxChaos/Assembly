@@ -17,7 +17,7 @@ namespace Blamite.Blam.Util
 		/// </summary>
 		/// <param name="address">The address of the reflexive.</param>
 		/// <param name="entries">The entries in the reflexive.</param>
-		public void Add(uint address, ICollection<EntryType> entries)
+		public void Add(long address, ICollection<EntryType> entries)
 		{
 			List<CachedReflexive> reflexives;
 			if (!_reflexivesBySize.TryGetValue(entries.Count, out reflexives))
@@ -36,7 +36,7 @@ namespace Blamite.Blam.Util
 		/// <param name="reflexive">The reflexive to search for.</param>
 		/// <param name="address">The variable to store the reflexive's address to on success.</param>
 		/// <returns>true if the reflexive was cached and its address was retrieved.</returns>
-		public bool TryGetAddress(ICollection<EntryType> reflexive, out uint address)
+		public bool TryGetAddress(ICollection<EntryType> reflexive, out long address)
 		{
 			address = 0;
 
@@ -67,7 +67,7 @@ namespace Blamite.Blam.Util
 			/// </summary>
 			/// <param name="address">The address of the reflexive.</param>
 			/// <param name="entries">The entries in the reflexive.</param>
-			public CachedReflexive(uint address, ICollection<EntryType> entries)
+			public CachedReflexive(long address, ICollection<EntryType> entries)
 			{
 				Address = address;
 				Entries = entries;
@@ -76,7 +76,7 @@ namespace Blamite.Blam.Util
 			/// <summary>
 			///     Gets the address of the cached reflexive.
 			/// </summary>
-			public uint Address { get; private set; }
+			public long Address { get; private set; }
 
 			/// <summary>
 			///     Gets the entries in the cached reflexive.

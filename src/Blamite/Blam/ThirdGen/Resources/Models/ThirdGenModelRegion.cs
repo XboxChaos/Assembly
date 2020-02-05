@@ -30,7 +30,7 @@ namespace Blamite.Blam.ThirdGen.Resources.Models
 			EngineDescription buildInfo)
 		{
 			var count = (int) values.GetInteger("number of permutations");
-			uint address = values.GetInteger("permutation table address");
+			uint address = (uint)values.GetInteger("permutation table address");
 			StructureLayout layout = buildInfo.Layouts.GetLayout("model permutation");
 			StructureValueCollection[] entries = ReflexiveReader.ReadReflexive(reader, count, address, layout, metaArea);
 

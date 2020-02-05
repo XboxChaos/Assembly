@@ -2,10 +2,8 @@
 using Blamite.Serialization;
 using Blamite.IO;
 using Blamite.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Blamite.Blam.ThirdGen.Structures
 {
@@ -19,14 +17,16 @@ namespace Blamite.Blam.ThirdGen.Structures
 		private FileSegmentGroup _metaArea;
 		private MetaAllocator _allocator;
 		private EngineDescription _buildInfo;
+		private IPointerExpander _expander;
 
-		public ThirdGenSimulationDefinitionTable(ITag scenario, TagTable tags, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo)
+		public ThirdGenSimulationDefinitionTable(ITag scenario, TagTable tags, IReader reader, FileSegmentGroup metaArea, MetaAllocator allocator, EngineDescription buildInfo, IPointerExpander expander)
 		{
 			_scenario = scenario;
 			_tags = tags;
 			_metaArea = metaArea;
 			_allocator = allocator;
 			_buildInfo = buildInfo;
+			_expander = expander;
 
 			Load(reader);
 		}
@@ -78,13 +78,19 @@ namespace Blamite.Blam.ThirdGen.Structures
 			stream.SeekTo(_scenario.MetaLocation.AsOffset());
 			var scenarioData = StructureReader.ReadStructure(stream, scenarioLayout);
 			var oldCount = (int)scenarioData.GetInteger("simulation definition table count");
-			var oldAddress = scenarioData.GetInteger("simulation definition table address");
+			var oldAddress = (uint)scenarioData.GetInteger("simulation definition table address");
+
+			long expand = _expander.Expand(oldAddress);
+
 			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table entry");
 
 			var newTable = _table.Select(SerializeTag);
-			var newAddr = ReflexiveWriter.WriteReflexive(newTable, oldCount, oldAddress, _table.Count, entryLayout, _metaArea, _allocator, stream);
+			var newAddr = ReflexiveWriter.WriteReflexive(newTable, oldCount, expand, _table.Count, entryLayout, _metaArea, _allocator, stream);
+
+			uint cont = _expander.Contract(newAddr);
+
 			scenarioData.SetInteger("simulation definition table count", (uint)_table.Count);
-			scenarioData.SetInteger("simulation definition table address", newAddr);
+			scenarioData.SetInteger("simulation definition table address", cont);
 			stream.SeekTo(_scenario.MetaLocation.AsOffset());
 			StructureWriter.WriteStructure(scenarioData, scenarioLayout, stream);
 			_changed = false;
@@ -104,9 +110,12 @@ namespace Blamite.Blam.ThirdGen.Structures
 			var scenarioData = StructureReader.ReadStructure(reader, scenarioLayout);
 
 			var count = (int)scenarioData.GetInteger("simulation definition table count");
-			var address = scenarioData.GetInteger("simulation definition table address");
+			var address = (uint)scenarioData.GetInteger("simulation definition table address");
+
+			long expand = _expander.Expand(address);
+
 			var entryLayout = _buildInfo.Layouts.GetLayout("simulation definition table entry");
-			_table = ReflexiveReader.ReadReflexive(reader, count, address, entryLayout, _metaArea).Select((e) => _tags[new DatumIndex(e.GetInteger("datum index"))]).ToList();
+			_table = ReflexiveReader.ReadReflexive(reader, count, expand, entryLayout, _metaArea).Select((e) => _tags[new DatumIndex(e.GetInteger("datum index"))]).ToList();
 		}
 	}
 }

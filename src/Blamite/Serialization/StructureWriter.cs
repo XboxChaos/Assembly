@@ -54,12 +54,20 @@ namespace Blamite.Serialization
 					_offset += 2;
 					break;
 				case StructureValueType.UInt32:
-					_writer.WriteUInt32(_collection.GetInteger(name));
+					_writer.WriteUInt32((uint)_collection.GetInteger(name));
 					_offset += 4;
 					break;
 				case StructureValueType.Int32:
 					_writer.WriteInt32((int) _collection.GetInteger(name));
 					_offset += 4;
+					break;
+				case StructureValueType.UInt64:
+					_writer.WriteUInt64(_collection.GetInteger(name));
+					_offset += 8;
+					break;
+				case StructureValueType.Int64:
+					_writer.WriteInt64((long)_collection.GetInteger(name));
+					_offset += 8;
 					break;
 				case StructureValueType.Asciiz:
 					_writer.WriteAscii(_collection.GetString(name));

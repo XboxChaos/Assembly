@@ -7,8 +7,12 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using Assembly.Helpers.Net;
+using Assembly.Helpers.Net.Sockets;
+using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
+using Blamite.Blam;
+using Blamite.RTE;
 using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Newtonsoft.Json;
@@ -21,6 +25,7 @@ namespace Assembly.Helpers
 	public class Storage : INotifyPropertyChanged
 	{
 		private Settings _assemblySettings = new Settings();
+		private NetworkPoke _networkPoke = new NetworkPoke();
 
 		#region Helpers
 
@@ -116,6 +121,12 @@ namespace Assembly.Helpers
 				FileDefaults.UpdateFileDefaults();
 			}
 		}
+
+		public NetworkPoke AssemblyNetworkPoke
+		{
+			get { return _networkPoke; }
+			set { _networkPoke = AssemblyNetworkPoke; }
+		}
 	}
 
 	/// <summary>
@@ -148,7 +159,7 @@ namespace Assembly.Helpers
 		private bool _pluginsShowComments = true;
 		private bool _pluginsShowInvisibles;
 		private bool _pluginsShowInformation;
-		private bool _pluginsShowEnumIndex;
+		private EnumPrefix _pluginsEnumPrefix = EnumPrefix.None;
 		private bool _startpageHideOnLaunch;
 		private bool _startpageShowOnLoad = true;
 		private bool _startpageShowRecentsBlf = true;
@@ -168,6 +179,8 @@ namespace Assembly.Helpers
 		private ObservableCollection<ImgurHistoryEntry> _imgurHistory = new ObservableCollection<ImgurHistoryEntry>();
 		private UpdateSource _updateChannel = UpdateSource.Stable;
 		private bool _shownCheatingDialog = false;
+		private bool _autoOpenDuplicates = false;
+		private bool _showScriptInfo = false;
 
 		#region Enums
 
@@ -231,6 +244,13 @@ namespace Assembly.Helpers
 		{
 			Stable,
 			Experimental
+		}
+
+		public enum EnumPrefix
+		{
+			None,
+			Decimal,
+			Hexidecimal
 		}
 
 		#endregion
@@ -572,10 +592,10 @@ namespace Assembly.Helpers
 
 		/// <summary>
 		/// </summary>
-		public bool PluginsShowEnumIndex
+		public EnumPrefix PluginsEnumPrefix
 		{
-			get { return _pluginsShowEnumIndex; }
-			set { SetField(ref _pluginsShowEnumIndex, value, "PluginsShowEnumIndex"); }
+			get { return _pluginsEnumPrefix; }
+			set { SetField(ref _pluginsEnumPrefix, value, "PluginsEnumPrefix"); }
 		}
 
 		/// <summary>
@@ -663,6 +683,22 @@ namespace Assembly.Helpers
 		{
 			get { return _shownCheatingDialog; }
 			set { SetField(ref _shownCheatingDialog, value, "ShownCheatingDialog"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool AutoOpenDuplicates
+		{
+			get { return _autoOpenDuplicates; }
+			set { SetField(ref _autoOpenDuplicates, value, "AutoOpenDuplicates"); }
+		}
+
+		/// <summary>
+		/// </summary>
+		public bool ShowScriptInfo
+		{
+			get { return _showScriptInfo; }
+			set { SetField(ref _showScriptInfo, value, "ShowScriptInfo"); }
 		}
 
 		/// <summary>
@@ -847,5 +883,84 @@ namespace Assembly.Helpers
 		{
 			App.AssemblyStorage.AssemblySettings.ImgurUploadHistory.Clear();
 		}
+	}
+
+	public class NetworkPoke : INotifyPropertyChanged
+	{
+		private bool _isConnected;
+		private bool _isServer;
+		private List<Tuple<ICacheFile, IRTEProvider>> _maps = new List<Tuple<ICacheFile, IRTEProvider>>();
+		private IPokeSessionManager _pokeSessionManager = null;
+		private SocketRTEProvider _networkProvider = null;
+		private ObservableCollection<string> _clients = new ObservableCollection<string>();
+		private string _address = "127.0.0.1";
+		private string _port = "19002";
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public bool IsConnected
+		{
+			get { return _isConnected; }
+			set { SetField(ref _isConnected, value, "IsConnected"); }
+		}
+
+		public bool IsServer
+		{
+			get { return _isServer; }
+			set { SetField(ref _isServer, value, "IsServer");  }
+		}
+
+		public List<Tuple<ICacheFile, IRTEProvider>> Maps
+		{
+			get { return _maps; }
+			set { SetField(ref _maps, value, "Maps"); }
+		}
+
+		public IPokeSessionManager PokeSessionManager
+		{
+			get { return _pokeSessionManager; }
+			set { SetField(ref _pokeSessionManager, value, "PokeSessionManager"); }
+		}
+
+		public SocketRTEProvider NetworkRteProvider
+		{
+			get { return _networkProvider; }
+			set { SetField(ref _networkProvider, value, "NetworkRteProvider"); }
+		}
+
+		public ObservableCollection<string> Clients
+		{
+			get { return _clients; }
+			set { SetField(ref _clients, value, "Clients"); }
+		}
+
+		public string Address
+		{
+			get { return _address; }
+			set { SetField(ref _address, value, "Address"); }
+		}
+
+		public string Port
+		{
+			get { return _port; }
+			set { SetField(ref _port, value, "Port"); }
+		}
+
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected bool SetField<T>(ref T field, T value, string propertyName)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
+
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
+
 	}
 }

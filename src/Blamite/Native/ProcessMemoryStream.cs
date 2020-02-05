@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NET45
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -126,3 +128,5 @@ namespace Blamite.Native
 		#endregion Native Functions
 	}
 }
+
+#endif

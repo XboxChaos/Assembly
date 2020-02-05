@@ -227,11 +227,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			thrd.Start();
 		}
 
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			this.Focus();
-		}
-
 		public void LoadCampaign()
 		{
 			try
@@ -240,7 +235,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_blf = new PureBLF(_blfLocation);
 				if (_blf.BLFChunks[1].ChunkMagic != "cmpn")
 					throw new Exception("The selected Campaign BLF is not a valid Campaign BLF file.");
-				_blf.Close();
+				_blf.Dispose();
 
 				_campaign = new Campaign(_blfLocation);
 
@@ -289,8 +284,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		{
 			try
 			{
-				_campaign.Close();
-				_campaignNew.Close();
+				_campaign.Dispose();
+				_campaignNew.Dispose();
 			}
 			catch
 			{
