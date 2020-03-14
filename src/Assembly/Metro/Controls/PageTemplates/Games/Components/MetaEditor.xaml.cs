@@ -267,7 +267,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 				}
 
 				if (showActionDialog)
-					MetroMessageBox.Show("Meta Saved", "The metadata has been saved back to the original file.");
+					MetroMessageBox.Show("Tag Saved", "The changes have been saved back to the original file.");
 			}
 			else if (_rteProvider != null)
 			{
@@ -289,9 +289,9 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 						if (showActionDialog)
 						{
 							if (onlyUpdateChanged)
-								StatusUpdater.Update("All changed metadata has been poked to the game.");
+								StatusUpdater.Update("All changed fields have been poked to the game.");
 							else
-								StatusUpdater.Update("The metadata has been poked to the game.");
+								StatusUpdater.Update("The changes have been poked to the game.");
 						}
 					}
 					else
@@ -358,11 +358,6 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components
 		{
 			RevisionViewer();
 		}
-
-	//	private void btnOptions_Click(object sender, RoutedEventArgs e)
-	//	{
-	//		popOptions.IsOpen = true;
-	//	}
 
 		private void cbShowInvisibles_Altered(object sender, RoutedEventArgs e)
 		{

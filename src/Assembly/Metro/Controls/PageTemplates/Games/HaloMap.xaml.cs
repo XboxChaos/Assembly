@@ -283,10 +283,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				{
 					HeaderDetails.Add(new HeaderValue
 					{
-						Title = "Meta Base:",
+						Title = "Tag Data Base:",
 						Data = "0x" + _cacheFile.MetaArea.BasePointer.ToString("X8")
 					});
-					HeaderDetails.Add(new HeaderValue {Title = "Meta Size:", Data = "0x" + _cacheFile.MetaArea.Size.ToString("X")});
+					HeaderDetails.Add(new HeaderValue {Title = "Tag Data Size:", Data = "0x" + _cacheFile.MetaArea.Size.ToString("X")});
 					HeaderDetails.Add(new HeaderValue
 					{
 						Title = "Map Magic:",
