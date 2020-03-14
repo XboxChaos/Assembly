@@ -10,8 +10,8 @@ namespace Assembly.Helpers
 			var exceptions = new Dictionary<Type, Exception>
 			{
 				{ typeof(UnauthorizedAccessException), new Exception("An UnauthorizedAccessException has occurred.\r\n\r\n"
-						+ "Chances are the map/content file you just tried to modify is set to readonly.\r\n"
-						+ "Verify the readonly status of your file and try again before reporting this.\r\n\r\n", ex)},
+						+ "Chances are you either need Admin privileges or the map/content file you just tried to modify is set to readonly.\r\n"
+						+ "Run Assembly as Administrator and verify the readonly status of your file before reporting this.\r\n\r\n", ex)},
 
 			};
 
