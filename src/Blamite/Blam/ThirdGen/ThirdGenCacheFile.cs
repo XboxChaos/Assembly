@@ -380,46 +380,31 @@ namespace Blamite.Blam.ThirdGen
 
 		private void LoadScriptFiles(IReader reader)
 		{
-			if (_tags != null && _buildInfo.Layouts.HasLayout("hsdt"))
-			{
-				int tagCount = 0;
-
-				IEnumerable<ITag> scripttags = _tags.FindTagsByGroup("hsdt");
-
-				ITag scnr = _tags.FindTagByGroup("scnr");
-				if (scnr == null)
-				{
-					ScriptFiles = new IScriptFile[0];
-					return;
-				}
-
-
-				foreach (ITag aHS in scripttags)
-					tagCount++;
-
-				ScriptFiles = new IScriptFile[tagCount];
-
-				int i = 0;
-				foreach (ITag aHS in scripttags)
-				{
-					string tagname = _fileNames.GetTagName(aHS.Index);
-					ScriptFiles[i] = new ThirdGenScenarioScriptFile(scnr, aHS, tagname, MetaArea, StringIDs, _buildInfo, _expander);
-					i++;
-				}
-
-				return;
-			}
-			else if (_tags != null && _buildInfo.Layouts.HasLayout("scnr"))
-			{
-				ITag scnr = _tags.FindTagByGroup("scnr");
-				if (scnr != null)
-				{
-					ScriptFiles = new IScriptFile[1];
-					ScriptFiles[0] = new ThirdGenScenarioScriptFile(scnr, ScenarioName, MetaArea, StringIDs, _buildInfo, _expander);
-					return;
-				}
-			}
 			ScriptFiles = new IScriptFile[0];
+
+			if (_tags != null)
+			{
+				List<ThirdGenScenarioScriptFile> l_scriptfiles = new List<ThirdGenScenarioScriptFile>();
+
+				if (_buildInfo.Layouts.HasLayout("hsdt"))
+				{
+					ITag mainScenario = _tags.GetGlobalTag(CharConstant.FromString("scnr"));
+					if (mainScenario == null)
+						return;
+
+					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else if (_buildInfo.Layouts.HasLayout("scnr"))
+				{
+					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+				}
+				else
+					return;
+
+				ScriptFiles = l_scriptfiles.ToArray();
+			}
 		}
 
 		private void LoadSimulationDefinitions(IReader reader)

@@ -38,8 +38,9 @@ namespace Blamite.Blam.ThirdGen.Structures
 		public ThirdGenScenarioScriptFile(ITag scenarioTag, string tagName, FileSegmentGroup metaArea,
 			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander)
 		{
-			_scenarioTag = _scriptTag = scenarioTag;
+			_scenarioTag = scenarioTag;
 			_expander = expander;
+			_scriptTag = null;
 			_stringIDs = stringIDs;
 			_metaArea = metaArea;
 			_buildInfo = buildInfo;
@@ -74,7 +75,7 @@ namespace Blamite.Blam.ThirdGen.Structures
 		{
 			StructureValueCollection values;
 
-			if (_scriptTag != _scenarioTag)
+			if (_scriptTag != null)
 				values = LoadScriptTag(reader);
 			else
 				values = LoadTag(reader);
