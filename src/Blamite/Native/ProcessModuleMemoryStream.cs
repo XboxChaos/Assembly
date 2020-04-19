@@ -12,7 +12,6 @@ namespace Blamite.Native
 	{
 		private readonly Process _process;
 		private readonly ProcessModule _processModule;
-		private readonly long _moduleaddress;
 
 		/// <summary>
 		///     Constructs a new ProcessMemoryStream that accesses the memory of a specified process.
@@ -26,9 +25,7 @@ namespace Blamite.Native
 				if (Path.GetFileNameWithoutExtension(m.FileName) == module)
 					_processModule = m;
 
-			_moduleaddress = (long)_processModule.BaseAddress - 0x180000000;
-
-			Position = _moduleaddress;
+			Position = (long)_processModule.BaseAddress;
 		}
 
 		/// <summary>
@@ -42,11 +39,6 @@ namespace Blamite.Native
 		public ProcessModule BaseModule
 		{
 			get { return _processModule; }
-		}
-
-		public long BaseModuleAddress
-		{
-			get { return _moduleaddress; }
 		}
 
 		public override bool CanRead

@@ -10,7 +10,7 @@ using Blamite.Serialization;
 using Blamite.Serialization.Settings;
 using Blamite.IO;
 using Blamite.Patching;
-using Blamite.RTE.MCC;
+using Blamite.RTE.ThirdGen;
 
 namespace Assembly.Metro.Controls.PageTemplates
 {
@@ -918,7 +918,7 @@ namespace Assembly.Metro.Controls.PageTemplates
 
 				
 
-				var gameRTE = new MCCRTEProvider(pokeInfo);
+				var gameRTE = new ThirdGenMCCRTEProvider(pokeInfo);
 				var gameStream = gameRTE.GetMetaStream();
 
 				if (currentPatchToPoke.MetaChangesIndex >= 0)

@@ -9,6 +9,7 @@ namespace Blamite.Blam
 	{
 		private const int SecondGenVersion = 8;
 		private const int ThirdGenVersion = 9;
+		private const int SecondGenMCCVersion = 10;
 
 		public CacheFileVersionInfo(IReader reader)
 		{
@@ -21,6 +22,14 @@ namespace Blamite.Blam
 
 				// Read second-generation build string
 				reader.SeekTo(0x12C);
+				BuildString = reader.ReadAscii();
+			}
+			else if (Version == SecondGenMCCVersion)
+			{
+				Engine = EngineType.SecondGeneration;
+
+				// Read second-generation build string
+				reader.SeekTo(0x128);
 				BuildString = reader.ReadAscii();
 			}
 			else if (Version >= ThirdGenVersion)
@@ -36,7 +45,7 @@ namespace Blamite.Blam
 				BuildString = reader.ReadAscii();
 			}
 
-			if (string.IsNullOrWhiteSpace(BuildString))
+			if (BuildString == null)
 			{
 				// Assume it's a first-generation build
 				Engine = EngineType.FirstGeneration;

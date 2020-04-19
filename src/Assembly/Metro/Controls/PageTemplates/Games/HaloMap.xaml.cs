@@ -25,14 +25,14 @@ using Blamite.Injection;
 using Blamite.IO;
 using Blamite.Plugins;
 using Blamite.RTE;
-using Blamite.RTE.H2Vista;
+using Blamite.RTE.SecondGen;
 using Blamite.Util;
 using CloseableTabItemDemo;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
-using Blamite.RTE.MCC;
+using Blamite.RTE.ThirdGen;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -201,14 +201,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				switch (_cacheFile.Engine)
 				{
 					case EngineType.SecondGeneration:
-						_rteProvider = new H2VistaRTEProvider(_buildInfo);
+						if (!string.IsNullOrEmpty(_buildInfo.GameModule))
+							_rteProvider = new SecondGenMCCRTEProvider(_buildInfo);
+						else
+							_rteProvider = new SecondGenRTEProvider(_buildInfo);
 						break;
 
 					case EngineType.ThirdGeneration:
 						if (_cacheFile.Endianness == Endian.BigEndian)
 							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
 						else
-							_rteProvider = new MCCRTEProvider(_buildInfo);
+							_rteProvider = new ThirdGenMCCRTEProvider(_buildInfo);
 						break;
 				}
 

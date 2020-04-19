@@ -1,7 +1,6 @@
 ﻿using Blamite.Blam;
 using Blamite.IO;
 using Blamite.RTE;
-using Blamite.RTE.H2Vista;
 
 namespace Assembly.Helpers.Net.Sockets
 {
