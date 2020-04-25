@@ -13,6 +13,9 @@ namespace Assembly.Metro.Controls.PageTemplates
 		{
 			InitializeComponent();
 
+			listH1c.ItemsSource = Halo1CE.Where(e => e.Type == MapType.Campaign);
+			listH1m.ItemsSource = Halo1CE.Where(e => e.Type == MapType.Multiplayer);
+
 			listH2c.ItemsSource = Halo2.Where(e => e.Type == MapType.Campaign);
 			listH2m.ItemsSource = Halo2.Where(e => e.Type == MapType.Multiplayer);
 
@@ -51,6 +54,40 @@ namespace Assembly.Metro.Controls.PageTemplates
 				Type = type;
 			}
 		}
+
+		private List<MapEntry> Halo1CE = new List<MapEntry>()
+		{
+			new MapEntry("a10", "The Pillar of Autumn", MapType.Campaign),
+			new MapEntry("a30", "Halo", MapType.Campaign),
+			new MapEntry("a50", "The Truth and Reconciliation", MapType.Campaign),
+			new MapEntry("b30", "The Silent Cartographer", MapType.Campaign),
+			new MapEntry("b40", "Assault on the Control Room", MapType.Campaign),
+			new MapEntry("c10", "343 Guilty Spark", MapType.Campaign),
+			new MapEntry("c20", "The Library", MapType.Campaign),
+			new MapEntry("c40", "Two Betrayals", MapType.Campaign),
+			new MapEntry("d20", "Keyes", MapType.Campaign),
+			new MapEntry("d40", "The Maw", MapType.Campaign),
+
+			new MapEntry("beavercreek", "Battle Creek", MapType.Multiplayer),
+			new MapEntry("bloodgulch", "Blood Gulch", MapType.Multiplayer),
+			new MapEntry("boardingaction", "Boarding Action", MapType.Multiplayer),
+			new MapEntry("carousel", "Derelict", MapType.Multiplayer),
+			new MapEntry("chillout", "Chill Out", MapType.Multiplayer),
+			new MapEntry("damnation", "Damnation", MapType.Multiplayer),
+			new MapEntry("dangercanyon", "Danger Canyon", MapType.Multiplayer),
+			new MapEntry("deathisland", "Death Island", MapType.Multiplayer),
+			new MapEntry("gephyrophobia", "Gephyrophobia", MapType.Multiplayer),
+			new MapEntry("hangemhigh", "Hang 'Em High", MapType.Multiplayer),
+			new MapEntry("icefields", "Ice Fields", MapType.Multiplayer),
+			new MapEntry("infinity", "Infinity", MapType.Multiplayer),
+			new MapEntry("longest", "Longest", MapType.Multiplayer),
+			new MapEntry("prisoner", "Prisoner", MapType.Multiplayer),
+			new MapEntry("putput", "Chiron TL-34", MapType.Multiplayer),
+			new MapEntry("ratrace", "Rat Race", MapType.Multiplayer),
+			new MapEntry("sidewinder", "Sidewinder", MapType.Multiplayer),
+			new MapEntry("timberland", "Timberland", MapType.Multiplayer),
+			new MapEntry("wizard", "Wizard", MapType.Multiplayer),
+		};
 
 		private List<MapEntry> Halo2 = new List<MapEntry>()
 		{
