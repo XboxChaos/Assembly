@@ -611,16 +611,13 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		{
 			var field = (DataRef)sender;
 
-			if (!_loading &&
-					 (e.PropertyName == "Length" || e.PropertyName == "DataAddress"))
+			if (e.PropertyName == "Length" || e.PropertyName == "DataAddress")
 			{
-				_loading = true;
 				_tracker.Enabled = false;
 
 				_reader.ReadDataRefContents(field);
 
 				_tracker.Enabled = true;
-				_loading = false;
 			}
 		}
 	}
