@@ -256,7 +256,7 @@ namespace Blamite.Blam.Scripting.Compiler
         /// <returns>The salt value.</returns>
         private ushort IndexToSalt(ushort index)
         {
-            ushort init = 0xE373;           // initial value for the expression reflexive
+            ushort init = SaltGenerator.GetSalt("script node");           // initial value for the expression reflexive
             ushort restart = 0x7FFF;        // the value which is used to calculate the salt once it exceeds 0xFFFF
 
             var salt = init + index;

@@ -394,12 +394,14 @@ namespace Blamite.Blam.ThirdGen
 						return;
 
 					foreach (ITag hs in _tags.FindTagsByGroup("hsdt"))
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(mainScenario, hs, null, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
 				}
-				else if (_buildInfo.Layouts.HasLayout("scnr"))
+				else if (_buildInfo.Layouts.HasLayout("scnr") && _buildInfo.Layouts.HasLayout("mdlg"))
 				{
+					var mdlg = _tags.FindTagByGroup("mdlg");
+
 					foreach (ITag hs in _tags.FindTagsByGroup("scnr"))
-						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander));
+						l_scriptfiles.Add(new ThirdGenScenarioScriptFile(hs, hs, mdlg, _fileNames.GetTagName(hs.Index), MetaArea, StringIDs, _buildInfo, _expander, Allocator));
 				}
 				else
 					return;

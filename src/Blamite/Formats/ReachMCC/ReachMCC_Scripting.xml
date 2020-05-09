@@ -10,7 +10,51 @@
 		<type opcode="0x5" name="stub" />
 	</scriptTypes>
 
-  <typecasting> </typecasting>
+  <typecasting>
+    <to name="object" castOnly="true">
+      <from>object_name</from>
+      <from>player</from>
+      <from>ai</from>
+      <from>vehicle</from>
+      <from>weapon</from>
+      <from>device</from>
+      <from>scenery</from>
+      <from>effect_scenery</from>
+      <from>unit</from>
+    </to>
+    <to name="object_list" castOnly="true">
+      <from>object</from>
+    </to>
+    <to name="unit" castOnly="true">
+      <from>unit_name</from>
+      <from>ai</from>
+      <from>vehicle</from>
+      <from>player</from>
+    </to>
+    <to name="vehicle" castOnly="true">
+      <from>vehicle_name</from>
+      <from>ai</from>
+    </to>
+    <to name="weapon" castOnly="true">
+      <from>weapon_name</from>
+    </to>
+    <to name="device" castOnly="true">
+      <from>device_name</from>
+    </to>
+    <to name="scenery" castOnly="true">
+      <from>scenery_name</from>
+    </to>
+    <to name="effect_scenery" castOnly="true">
+      <from>effect_scenery_name</from>
+    </to>
+    <to name="player">
+      <from>unit</from>
+    </to>
+    <to name="boolean">
+      <from>short</from>
+      <from>long</from>
+    </to>
+  </typecasting>
 
 	<valueTypes version="1">
 		<type opcode="0x00" name="unparsed" size="0" />
@@ -361,8 +405,8 @@
 	<functions>
 		<function opcode="0x000" name="begin" returnType="passthrough" flags="2" group="Begin" />
 		<function opcode="0x001" name="begin_random" returnType="passthrough" flags="2" group="Begin" />
-		<function opcode="0x002" name="begin_count" returnType="passthrough" flags="2" />
-		<function opcode="0x003" name="begin_random_count" returnType="passthrough" flags="2" />
+		<function opcode="0x002" name="begin_count" returnType="passthrough" flags="2" group="BeginCount"/>
+		<function opcode="0x003" name="begin_random_count" returnType="passthrough" flags="2" group="BeginCount"/>
 		<function opcode="0x004" name="if" returnType="passthrough" flags="2" group="If" />
 		<function opcode="0x005" name="cond" returnType="passthrough" flags="2" group="Cond" />
 		<function opcode="0x006" name="set" returnType="passthrough" flags="2" group="Set" />
@@ -383,18 +427,18 @@
 		<function opcode="0x015" name="&lt;=" returnType="boolean" flags="2" group="Inequality" />
 		<function opcode="0x016" name="sleep" returnType="void" flags="2" group="Sleep" />
 		<function opcode="0x017" name="sleep_forever" returnType="void" flags="2" group="SleepForever" />
-		<function opcode="0x018" name="sleep_until" returnType="boolean" flags="2" />
-		<function opcode="0x019" name="sleep_until_game_ticks" returnType="boolean" flags="2" /><!-- MCC -->
-		<function opcode="0x01A" name="wake" returnType="void" flags="2" />
-		<function opcode="0x01B" name="cinematic_sleep" returnType="void" flags="2" /><!-- MCC -->
-		<function opcode="0x01C" name="inspect" returnType="void" flags="2" />
-		<function opcode="0x01D" name="branch" returnType="void" flags="2" />
-		<function opcode="0x01E" name="unit" returnType="unit" flags="2" />
-		<function opcode="0x01F" name="vehicle" returnType="vehicle" flags="2" />
-		<function opcode="0x020" name="weapon" returnType="weapon" flags="2" />
-		<function opcode="0x021" name="device" returnType="device" flags="2" />
-		<function opcode="0x022" name="scenery" returnType="scenery" flags="2" />
-		<function opcode="0x023" name="effect_scenery" returnType="effect_scenery" flags="2" />
+		<function opcode="0x018" name="sleep_until" returnType="boolean" flags="2" group="SleepUntil"/>
+		<function opcode="0x019" name="sleep_until_game_ticks" returnType="boolean" flags="2" group="SleepUntilGameTicks"/><!-- MCC -->
+		<function opcode="0x01A" name="wake" returnType="void" flags="2" group="Wake"/>
+		<function opcode="0x01B" name="cinematic_sleep" returnType="void" flags="2" group="CinematicSleep"/><!-- MCC -->
+		<function opcode="0x01C" name="inspect" returnType="void" flags="2" group="Inspect"/>
+		<function opcode="0x01D" name="branch" returnType="void" flags="2" group="Branch"/>
+		<function opcode="0x01E" name="unit" returnType="unit" flags="2" group="ObjectCast"/>
+		<function opcode="0x01F" name="vehicle" returnType="vehicle" flags="2" group="ObjectCast"/>
+		<function opcode="0x020" name="weapon" returnType="weapon" flags="2" group="ObjectCast"/>
+		<function opcode="0x021" name="device" returnType="device" flags="2" group="ObjectCast"/>
+		<function opcode="0x022" name="scenery" returnType="scenery" flags="2" group="ObjectCast"/>
+		<function opcode="0x023" name="effect_scenery" returnType="effect_scenery" flags="2" group="ObjectCast"/>
 		<function opcode="0x024" name="evaluate" returnType="void" argc="1">
 			<arg type="script" />
 		</function>

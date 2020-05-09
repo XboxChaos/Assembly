@@ -46,6 +46,7 @@ namespace Blamite.Blam.ThirdGen.Structures
         private ScriptObjectTagBlock _aiLines;
         private ScriptObjectTagBlock _aiLineVariants;
 
+        // For Games before Halo 4
 		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, ITag mdlgTag, string tagName, FileSegmentGroup metaArea,
 			StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
 		{
@@ -63,22 +64,23 @@ namespace Blamite.Blam.ThirdGen.Structures
 			DefineScriptObjectTagBlocks();
 		}
 
-		public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
-	        StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
-		{
-            _scenarioTag = scenarioTag;
-            _scriptTag = scriptTag;
-            _mdlgTag = null;
-            _metaArea = metaArea;
-            _stringIDs = stringIDs;
-            _buildInfo = buildInfo;
-            _expander = expander;
-            _allocator = allocator;
+        // For Halo4 and Games thereafter
+		//public ThirdGenScenarioScriptFile(ITag scenarioTag, ITag scriptTag, string tagName, FileSegmentGroup metaArea,
+	 //       StringIDSource stringIDs, EngineDescription buildInfo, IPointerExpander expander, MetaAllocator allocator)
+		//{
+  //          _scenarioTag = scenarioTag;
+  //          _scriptTag = scriptTag;
+  //          _mdlgTag = null;
+  //          _metaArea = metaArea;
+  //          _stringIDs = stringIDs;
+  //          _buildInfo = buildInfo;
+  //          _expander = expander;
+  //          _allocator = allocator;
 
-            Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
+  //          Name = tagName.Substring(tagName.LastIndexOf('\\') + 1) + ".hsc";
 
-			DefineScriptObjectTagBlocks();
-		}
+		//	DefineScriptObjectTagBlocks();
+		//}
 
 		public string Name { get; private set; }
 

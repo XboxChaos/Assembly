@@ -48,7 +48,16 @@ namespace Blamite.Blam.Scripting.Compiler
             switch (expectedValueType)
             {
                 case "ANY":
-                    return GuessValueType(context);
+                    if(IsNumber(context))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new CompilerException($"The Compiler encountered the literal {name} which could be of ANY value type." +
+                                "Guessing the value type would lead to too many inaccuracies.", context);
+                    }
+
 
                 case "NUMBER": 
                     return IsNumber(context);
@@ -245,7 +254,7 @@ namespace Blamite.Blam.Scripting.Compiler
                     return IsLong(context);
                 }                               
             }
-            // if the number a real?
+            // is the number a real?
             else if (context.FLOAT() != null)
             {
                 return IsReal(context);

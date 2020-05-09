@@ -258,7 +258,8 @@ namespace Blamite.Blam.Scripting
 					//floatBytes[1] = (byte) ((value >> 8) & 0xFF);
 					//floatBytes[2] = (byte) ((value >> 16) & 0xFF);
 					//floatBytes[3] = (byte) ((value >> 24) & 0xFF);
-					output.Write(BitConverter.ToSingle(val, 0));
+					var fl = BitConverter.ToSingle(val, 0);
+					output.Write(fl.ToString("0.0#######", CultureInfo.InvariantCulture));
 					break;
 				case "function_name":
 					if (_nextFunctionIsScript)

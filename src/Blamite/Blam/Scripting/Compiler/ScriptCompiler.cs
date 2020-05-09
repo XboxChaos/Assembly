@@ -5,8 +5,6 @@ using System.Text;
 using Antlr4.Runtime;
 using System.Xml;
 using Blamite.Blam.Scripting.Compiler.Expressions;
-using Blamite.IO;
-using System.IO;
 using System.Diagnostics;
 
 namespace Blamite.Blam.Scripting.Compiler
@@ -35,8 +33,8 @@ namespace Blamite.Blam.Scripting.Compiler
 
         // utility
         private const UInt32 _randomAddress = 0xCDCDCDCD;  // used for expressions where the string address doesn't point to the string table
-        private ushort _currentSalt = 0xE373;
-        private ushort _currentExpressionIndex = 0;
+        private ushort _currentSalt;
+        private ushort _currentExpressionIndex;
         private Stack<Int32> _openDatums = new Stack<Int32>();
         private Stack<string> _expectedTypes = new Stack<string>();
 
@@ -68,6 +66,9 @@ namespace Blamite.Blam.Scripting.Compiler
             _opcodes = opCodes;
             _seatMappings = seatMappings;
             _logger = logger;
+
+            _currentSalt = SaltGenerator.GetSalt("script node");
+            _currentExpressionIndex = 0;
         }
 
         public ScriptData Result()
@@ -635,7 +636,7 @@ namespace Blamite.Blam.Scripting.Compiler
                 }
                 else
                 {
-                    throw new CompilerException($"The variable  \"{name}\" can't be casted from \"{_variables[index]}\" to \"{expectedReturnType}\".", context);
+                    throw new CompilerException($"The variable  \"{name}\" can't be casted from \"{_variables[index].ValueType}\" to \"{expectedReturnType}\".", context);
                 }
             }
 
@@ -803,6 +804,26 @@ namespace Blamite.Blam.Scripting.Compiler
                         PushTypes("boolean");
                         break;
 
+                    case "SleepUntilGameTicks":
+                        if (contextParameterCount != 2)
+                        {
+                            throw new CompilerException("The Compiler encountered a sleep_until_game_ticks " +
+                                "call with more than two arguments.", context);
+                        }
+
+                        PushTypes("boolean", "short");
+                        break;
+
+                    case "CinematicSleep":
+                        if (contextParameterCount != 1)
+                        {
+                            throw new CompilerException("The Compiler encountered a sleep_until_game_ticks " +
+                                "call with more than one arguments.", context);
+                        }
+
+                        PushTypes("short");
+                        break;
+
                     case "Wake":
                         PushTypes("script");
                         break;
@@ -817,7 +838,14 @@ namespace Blamite.Blam.Scripting.Compiler
                     case "ObjectCast":
                         PushTypes("object");
                         break;
-                        #endregion
+
+                    case null:
+                        break;
+
+                    default:
+                        throw new CompilerException($"Unimplemented function group: {info.Group}", context);
+                    #endregion
+
                 }
             }
         }
